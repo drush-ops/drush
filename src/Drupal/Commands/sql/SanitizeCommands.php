@@ -2,15 +2,28 @@
 
 namespace Drush\Drupal\Commands\sql;
 
+use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\AnnotatedCommand\Events\CustomEventAwareInterface;
 use Consolidation\AnnotatedCommand\Events\CustomEventAwareTrait;
 use Drush\Commands\DrushCommands;
 use Drush\Exceptions\UserAbortException;
+use Drush\Utils\StringUtils;
 
 class SanitizeCommands extends DrushCommands implements CustomEventAwareInterface
 {
-
+    protected $database;
     use CustomEventAwareTrait;
+
+    public function __construct($database) {
+       $this->database = $database;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDatabase() {
+        return $this->database;
+    }
 
     /**
      * Sanitize the database by removing or obfuscating user data.
@@ -56,5 +69,54 @@ class SanitizeCommands extends DrushCommands implements CustomEventAwareInterfac
 
         // All sanitize operations defined in post-command hooks, including Drush
         // core sanitize routines. See \Drush\Commands\sql\SanitizePluginInterface.
+    }
+
+    /**
+     * Handles wildcard mail addresses and conversion of mails to uids.
+     *
+     * @hook pre-command sql-sanitize
+     */
+    public function adjustSanitizeOptions(CommandData $commandData) {
+        $input = $commandData->input();
+        $whitelist_mails = StringUtils::csvToArray($input->getOption('whitelist-mails'));
+        var_dump($input->getOption('whitelist-mails'));
+        $whitelist_uids = StringUtils::csvToArray($input->getOption('whitelist-uids'));
+        $uids_mail_list = $this->uidsByMails($this->handleMailWildcard($whitelist_mails));
+//                var_dump($uids_mail_list);
+//                var_dump($whitelist_uids);
+        $input->setOption('whitelist-uids', implode(",", array_merge($whitelist_uids, $uids_mail_list)));
+    }
+
+    private function uidsByMails($mail_list) {
+        //print_r($mail_list);
+        if (empty($mail_list)) {
+            return [];
+        }
+        $conn = $this->getDatabase();
+        return $conn->select('users_field_data', 'ufd')
+            ->fields('ufd', ['uid'])
+            ->condition('mail', $mail_list, 'IN')
+            ->execute()
+            ->fetchCol(0);
+    }
+
+    private function handleMailWildcard($mail_list) {
+        foreach ($mail_list as $key => $mail) {
+            $mail_parts = explode('@', $mail);
+            if ($mail_parts[0] === '*') {
+                $conn = $this->getDatabase();
+                $result = $conn->select('users_field_data', 'ufd')
+                    ->fields('ufd', ['mail'])
+                    ->condition('mail', "%@" . $mail_parts[1], "LIKE")
+                    ->execute()
+                    ->fetchCol(0);
+
+                unset($mail_list[$key]);
+                if (!empty($result)) {
+                    $mail_list += $result;
+                }
+            }
+        }
+        return $mail_list;
     }
 }

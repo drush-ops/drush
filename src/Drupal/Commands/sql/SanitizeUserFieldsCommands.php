@@ -68,6 +68,10 @@ class SanitizeUserFieldsCommands extends DrushCommands implements SanitizePlugin
             $table = 'user__' . $key;
             $query = $conn->update($table);
 
+            if (!empty($whitelist_uids)) {
+                $query->condition('entity_id', $whitelist_uids, 'IN');
+            }
+
             $name = $def->getName();
             $field_type_class = \Drupal::service('plugin.manager.field.field_type')->getPluginClass($def->getType());
             $value_array = $field_type_class::generateSampleValue($def);
@@ -140,47 +144,5 @@ class SanitizeUserFieldsCommands extends DrushCommands implements SanitizePlugin
      */
     public function options($options = ['whitelist-fields' => '', 'whitelist-uids' => '', 'whitelist-mails' => ''])
     {
-    }
-
-    /**
-     * Handles wildcard mail addresses and conversion of mails to uids.
-     *
-     * @hook pre-command sql-sanitize
-     */
-    public function adjustSanitizeOptions(CommandData $commandData) {
-        $input = $commandData->input();
-        $whitelist_mails = $input->getOption('whitelist-mails');
-        $whitelist_uids = $input->getOption('whitelist-uids');
-        $uids_mail_list = $this->uidsByMails($this->handleMailWildcard(StringUtils::csvToArray($whitelist_mails)));
-        $input->setOption('whitelist-mails', implode(",", $uids_mail_list));
-    }
-
-    private function uidsByMails($mail_list) {
-        $conn = $this->getDatabase();
-        return $conn->select('users_field_data', 'ufd')
-            ->fields('ufd', ['uid'])
-            ->condition('mail', $mail_list, 'IN')
-            ->execute()
-            ->fetchCol(0);
-    }
-
-    private function handleMailWildcard($mail_list) {
-        foreach ($mail_list as $key => $mail) {
-            $mail_parts = explode('@', $mail);
-            if ($mail_parts[0] === '*') {
-                $conn = $this->getDatabase();
-                $result = $conn->select('users_field_data', 'ufd')
-                    ->fields('ufd', ['mail'])
-                    ->condition('mail', "%@" . $mail_parts[1], "LIKE")
-                    ->execute()
-                    ->fetchCol(0);
-                
-                unset($mail_list[$key]);
-                if (!empty($result)) {
-                    $mail_list += $result;
-                }
-            }
-        }
-        return $mail_list;
     }
 }

@@ -1,7 +1,7 @@
 services:
   sanitize.commands:
     class: \Drush\Drupal\Commands\sql\SanitizeCommands
-    arguments: []
+    arguments: ['@database']
     tags:
       -  { name: drush.command }
   sanitize.comments.commands:
