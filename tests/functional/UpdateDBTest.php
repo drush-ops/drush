@@ -300,8 +300,12 @@ UPDATE;
 >  [notice] Update completed: woot_post_update_batch
 POST_UPDATE;
 
-        $this->assertContains($expected_update_output, $this->getErrorOutputRaw());
-        $this->assertContains($expected_post_update_output, $this->getErrorOutputRaw());
+        // On Windows systems the new line delimiter is a CR+LF (\r\n) sequence
+        // instead of LF (\n) as it is on *nix systems.
+        $actual_output = str_replace("\r\n", "\n", $this->getErrorOutputRaw());
+
+        $this->assertContains($expected_update_output, $actual_output);
+        $this->assertContains($expected_post_update_output, $actual_output);
     }
 
     public function tearDown()
