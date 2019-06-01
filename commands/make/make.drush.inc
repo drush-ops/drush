@@ -590,7 +590,7 @@ function drush_make_convert_make_to_composer($info) {
     );
 
     $conflict = array(
-      'drupal/core' => '8.*',
+      'drupal/core' => '*',
     );
 
     $extra = array(
@@ -649,7 +649,7 @@ function drush_make_convert_make_to_composer($info) {
     switch ($project['type']) {
       case 'core':
         $project['name'] = $core_project_name;
-        $projects[$project['name']] = '^' . str_replace('x', '*', $project['version']);
+        $projects[$project['name']] = str_replace('x', '*', $project['version']);
         break;
 
       default:
@@ -660,18 +660,55 @@ function drush_make_convert_make_to_composer($info) {
 
     // Add project patches.
     if (!empty($project['patch'])) {
-      foreach($project['patch'] as $key => $patch) {
-        $patch_description = "Enter {$project['name']} patch #$key description here";
-        $extra['patches'][$project['name']][$patch_description] = $patch;
-      }
+      $extra['patches'][$project['name']] = $project['patch'];
     }
   }
+
+  $repositories = array(
+    array('type' => 'composer', 'url' => 'https://packages.drupal.org/' . $core_major_version),
+  );
 
   // Iterate over libraries, populating composer-friendly array.
   if (!empty($info['libraries'])) {
     foreach ($info['libraries'] as $library_name => $library) {
-      $library_name = 'Verify project name: ' . $library_name;
-      $projects[$library_name] = drush_make_convert_project_to_composer($library, $core_major_version);
+      if (isset($library['directory_name'])) {
+        $library_name = $library['directory_name'];
+      }
+
+      $projects['drupal-library/' . $library_name] = '999.999.999';
+
+      $repository = array(
+        'type' => 'package',
+        'package' => array(
+          'name' => 'drupal-library/' . $library_name,
+          'version' => '999.999.999',
+          'type' => 'drupal-library',
+        ),
+      );
+      if (isset($library['download']) && isset($library['download']['url'])) {
+        $url = $library['download']['url'];
+        if (isset($library['download']['type']) && $library['download']['type'] === 'git') {
+          $repository['package']['source'] = array(
+            'type' => 'git',
+            'url' => $url,
+          );
+          if (isset($library['download']['tag'])) {
+            $repository['package']['source']['reference'] = $library['download']['tag'];
+          }
+        }
+        else {
+          $type = 'zip';
+          if (substr_compare($url, '.tar', -4) === 0 || substr_compare($url, '.tar.gz', -7) === 0) {
+            $type = 'tar';
+          }
+          $repository['package']['dist'] = array(
+            'type' => $type,
+            'url' => $url,
+          );
+        }
+      }
+
+      $repositories[] = $repository;
     }
   }
 
@@ -683,9 +720,7 @@ function drush_make_convert_make_to_composer($info) {
     'name' => 'Enter project name here',
     'description' => 'Enter project description here',
     'type' => 'project',
-    'repositories' => array(
-      array('type' => 'composer', 'url' => 'https://packages.drupal.org/' . $core_major_version),
-    ),
+    'repositories' => $repositories,
     'require' => array_merge($php_reqs, $projects),
     'conflict'=> $conflict,
     'minimum-stability' => 'dev',
@@ -760,8 +795,8 @@ function drush_make_convert_version_to_composer($version) {
       $cver = $version;
     }
     else {
-      // Replace '1.x' with '^1.*'.
-      $cver = '^' . str_replace('x', '*', $version);
+      // Replace '1.x' with '1.*'.
+      $cver = str_replace('x', '*', $version);
     }
   }
 
