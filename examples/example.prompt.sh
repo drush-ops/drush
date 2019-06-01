@@ -2,6 +2,14 @@
 #
 # Example PS1 prompt.
 #
+# Note: This file does a lot, and is designed for Bash. If you want to show the
+# currently set alias in your prompt, use the first 2 values below as an example.
+# This example can be used directly for the POWERLEVEL9K theme for Oh My Zsh.
+#FILE="${TMPDIR:-/tmp/}/drush-env-${USER}/drush-drupal-site-$$"
+#POWERLEVEL9K_CUSTOM_DRUSH="[ -r $FILE ] && cat $FILE"
+#POWERLEVEL9K_CUSTOM_DRUSH_BACKGROUND="green"
+#POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(context dir vcs custom_drush)
+#
 # Use `drush init` to copy this to ~/.drush/drush.prompt.sh, and source it in
 # ~/.bashrc or ~/.bash_profile.
 #
