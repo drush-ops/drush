@@ -91,13 +91,8 @@ class SanitizeUserTableCommands extends DrushCommands implements SanitizePluginI
      * @option sanitize-password
      *   By default, passwords are randomized. Specify 'no' to disable that. Specify any other value to set all passwords
      *   to that value.
-     * @option whitelist-mails
-     *   A comma delimited list of mails corresponding to the user accounts exempt from sanitization.
-     *   wildcard can be used to target all mail accounts on a domain.
-     * @option whitelist-uids
-     *   A comma delimited list of uids corresponding to the user accounts exempt from sanitization.
      */
-    public function options($options = ['sanitize-email' => 'user+%uid@localhost.localdomain', 'sanitize-password' => null,'whitelist-uids' => '', 'whitelist-mails' => ''])
+    public function options($options = ['sanitize-email' => 'user+%uid@localhost.localdomain', 'sanitize-password' => null])
     {
     }
 
