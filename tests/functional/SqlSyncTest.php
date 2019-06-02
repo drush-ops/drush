@@ -97,13 +97,20 @@ class SqlSyncTest extends CommandUnishTestCase
             'uri' => 'stage',
         ] + $options;
 
-        // Create a user in the staging site
-        $name = 'joe.user';
-        $mail = "joe.user@myhome.com";
+        $users = [
+          'joe' => [
+            'name' => 'joe.user',
+            'mail' => 'joe.user@myhome.com'
+          ],
+          'mark' => [
+            'name' => 'mark.drushman',
+            'mail' => 'mark.drushman@whitelistme.com'
+          ]
+        ];
 
         // Add user fields and a test User.
         $this->drush('pm-enable', ['field,text,telephone,comment'], $stage_options + ['yes' => null]);
-        $this->drush('php-script', ['user_fields-D8', $name, $mail], $stage_options + ['script-path' => __DIR__ . '/resources',]);
+        $this->drush('php-script', ['user_fields-D8', $users['joe']['name'], $users['joe']['mail']], $stage_options + ['script-path' => __DIR__ . '/resources',]);
 
         // Copy stage to dev, and then sql:sanitize.
         $sync_options = [
@@ -116,19 +123,19 @@ class SqlSyncTest extends CommandUnishTestCase
         $this->drush('sql-sanitize', [], ['yes' => null, 'uri' => 'dev',], '@sut.dev');
 
         // Confirm that the sample user is unchanged on the staging site
-        $this->drush('user-information', [$name], $options + ['format' => 'json'], '@sut.stage');
+        $this->drush('user-information', [$users['joe']['name']], $options + ['format' => 'json'], '@sut.stage');
         $info = $this->getOutputFromJSON(2);
-        $this->assertEquals($mail, $info['mail'], 'Email address is unchanged on source site.');
-        $this->assertEquals($name, $info['name']);
+        $this->assertEquals($users['joe']['mail'], $info['mail'], 'Email address is unchanged on source site.');
+        $this->assertEquals($users['joe']['name'], $info['name']);
         // Get the unchanged pass.
-        $this->drush('user-information', [$name], $stage_options + ['field' => 'pass']);
+        $this->drush('user-information', [$users['joe']['name']], $stage_options + ['field' => 'pass']);
         $original_hashed_pass = $this->getOutput();
 
         // Confirm that the sample user's email and password have been sanitized on the dev site
-        $this->drush('user-information', [$name], $options + ['fields' => 'uid,name,mail,pass', 'format' => 'json', 'yes' => null], '@sut.dev');
+        $this->drush('user-information', [$users['joe']['name']], $options + ['fields' => 'uid,name,mail,pass', 'format' => 'json', 'yes' => null], '@sut.dev');
         $info = $this->getOutputFromJSON(2);
         $this->assertEquals("user+2@localhost.localdomain", $info['mail'], 'Email address was sanitized on destination site.');
-        $this->assertEquals($name, $info['name']);
+        $this->assertEquals($users['joe']['name'], $info['name']);
         $this->assertNotEquals($info['pass'], $original_hashed_pass);
 
         // Copy stage to dev with --sanitize and a fixed sanitized email
@@ -142,10 +149,10 @@ class SqlSyncTest extends CommandUnishTestCase
         $this->drush('sql-sanitize', [], ['yes' => null, 'sanitize-email' => 'user@mysite.org', 'uri' => 'OMIT',], '@sut.dev');
 
         // Confirm that the sample user's email address has been sanitized on the dev site
-        $this->drush('user-information', [$name], $options + ['yes' => null, 'format' => 'json'], '@sut.dev');
+        $this->drush('user-information', [$users['joe']['name']], $options + ['yes' => null, 'format' => 'json'], '@sut.dev');
         $info = $this->getOutputFromJSON(2);
         $this->assertEquals('user@mysite.org', $info['mail'], 'Email address was sanitized (fixed email) on destination site.');
-        $this->assertEquals($name, $info['name']);
+        $this->assertEquals($users['joe']['name'], $info['name']);
 
 
         $fields = [
