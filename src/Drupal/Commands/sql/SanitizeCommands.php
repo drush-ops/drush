@@ -72,6 +72,17 @@ class SanitizeCommands extends DrushCommands implements CustomEventAwareInterfac
     }
 
     /**
+     * @hook option sql-sanitize
+     * @option whitelist-uids A comma delimited list of uids corresponding to the user accounts exempt from sanitization.
+     * @option whitelist-mails
+     *   A comma delimited list of mails corresponding to the user accounts exempt from sanitization.
+     *   wildcard can be used to target all mail accounts on a domain.
+     */
+    public function options($options = ['whitelist-uids' => '', 'whitelist-mails' => ''])
+    {
+    }
+
+    /**
      * Handles wildcard mail addresses and conversion of user mails to uids.
      *
      * @hook pre-command sql-sanitize

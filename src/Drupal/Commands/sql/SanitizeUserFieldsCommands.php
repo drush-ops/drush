@@ -137,12 +137,8 @@ class SanitizeUserFieldsCommands extends DrushCommands implements SanitizePlugin
     /**
      * @hook option sql-sanitize
      * @option whitelist-fields A comma delimited list of fields exempt from sanitization.
-     * @option whitelist-uids A comma delimited list of uids corresponding to the user accounts exempt from sanitization.
-     * @option whitelist-mails
-     *   A comma delimited list of mails corresponding to the user accounts exempt from sanitization.
-     *   wildcard can be used to target all mail accounts on a domain.
      */
-    public function options($options = ['whitelist-fields' => '', 'whitelist-uids' => '', 'whitelist-mails' => ''])
+    public function options($options = ['whitelist-fields' => ''])
     {
     }
 }
