@@ -72,11 +72,11 @@ class SanitizeCommands extends DrushCommands implements CustomEventAwareInterfac
     }
 
     /**
-     * Handles wildcard mail addresses and conversion of mails to uids.
+     * Handles wildcard mail addresses and conversion of user mails to uids.
      *
      * @hook pre-command sql-sanitize
      */
-    public function adjustSanitizeOptions(CommandData $commandData) {
+    public function handleMilWhitelist(CommandData $commandData) {
         $input = $commandData->input();
         $whitelist_mails = StringUtils::csvToArray($input->getOption('whitelist-mails'));
         var_dump($input->getOption('whitelist-mails'));
@@ -87,6 +87,13 @@ class SanitizeCommands extends DrushCommands implements CustomEventAwareInterfac
         $input->setOption('whitelist-uids', implode(",", array_merge($whitelist_uids, $uids_mail_list)));
     }
 
+    /**
+     * Helper function which returns user ids based on their mail addresses.
+     *
+     * @param array $mail_list
+     *
+     * @return array
+     */
     private function uidsByMails($mail_list) {
         //print_r($mail_list);
         if (empty($mail_list)) {
@@ -100,6 +107,13 @@ class SanitizeCommands extends DrushCommands implements CustomEventAwareInterfac
             ->fetchCol(0);
     }
 
+    /**
+     * Helper function which returns a list of all mails based on wildcard.
+     *
+     * @param array $mail_list
+     *
+     * @return mixed
+     */
     private function handleMailWildcard($mail_list) {
         foreach ($mail_list as $key => $mail) {
             $mail_parts = explode('@', $mail);
