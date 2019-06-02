@@ -53,8 +53,8 @@ class SanitizeUserFieldsCommands extends DrushCommands implements SanitizePlugin
         $conn = $this->getDatabase();
         $field_definitions = $this->getEntityManager()->getFieldDefinitions('user', 'user');
         $field_storage = $this->getEntityManager()->getFieldStorageDefinitions('user');
-        $whitelist_mails = explode(',', $options['whitelist-mails']);
-        $whitelist_uids = explode(',', $options['whitelist-uids']);
+        $whitelist_uids = !is_null($options['whitelist-uids']) ? explode(',', $options['whitelist-uids']) : [];
+
         foreach (explode(',', $options['whitelist-fields']) as $key) {
             unset($field_definitions[$key], $field_storage[$key]);
         }
@@ -69,7 +69,7 @@ class SanitizeUserFieldsCommands extends DrushCommands implements SanitizePlugin
             $query = $conn->update($table);
 
             if (!empty($whitelist_uids)) {
-                $query->condition('entity_id', $whitelist_uids, 'IN');
+                $query->condition('entity_id', $whitelist_uids, 'NOT IN');
             }
 
             $name = $def->getName();
