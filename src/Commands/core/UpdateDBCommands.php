@@ -2,6 +2,7 @@
 namespace Drush\Commands\core;
 
 use Consolidation\Log\ConsoleLogLevel;
+use DrushBatchContext;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Consolidation\OutputFormatters\StructuredData\UnstructuredListData;
 use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
@@ -169,14 +170,16 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
      *
      * This method is static since since it is called by _drush_batch_worker().
      *
-     * @param $module
+     * @param string $module
      *   The module whose update will be run.
-     * @param $number
+     * @param int $number
      *   The update number to run.
-     * @param $context
-     *   The batch context array
+     * @param array $dependency_map
+     *   The update dependency map.
+     * @param DrushBatchContext $context
+     *   The batch context object.
      */
-    public static function updateDoOne($module, $number, $dependency_map, &$context)
+    public static function updateDoOne($module, $number, array $dependency_map, DrushBatchContext $context)
     {
         $function = $module . '_update_' . $number;
 
@@ -202,9 +205,13 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
                     Database::startLog($function);
                 }
 
-                Drush::logger()->notice("Update started: $function");
+                if (empty($context['results'][$module][$number]['type'])) {
+                    Drush::logger()->notice("Update started: $function");
+                }
+
                 $ret['results']['query'] = $function($context['sandbox']);
                 $ret['results']['success'] = true;
+                $ret['type'] = 'update';
             } catch (\Throwable $e) {
                 // PHP 7 introduces Throwable, which covers both Error and Exception throwables.
                 $ret['#abort'] = ['success' => false, 'query' => $e->getMessage()];
@@ -263,10 +270,10 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
      *
      * @param string $function
      *   The post-update function to execute.
-     * @param array $context
-     *   The batch context.
+     * @param DrushBatchContext $context
+     *   The batch context object.
      */
-    public static function updateDoOnePostUpdate($function, &$context)
+    public static function updateDoOnePostUpdate($function, DrushBatchContext $context)
     {
         $ret = [];
 
@@ -284,10 +291,13 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
         list($module, $name) = explode('_post_update_', $function, 2);
         module_load_include('php', $module, $module . '.post_update');
         if (function_exists($function)) {
-            Drush::logger()->notice("Update started: $function");
+            if (empty($context['results'][$module][$name]['type'])) {
+                Drush::logger()->notice("Update started: $function");
+            }
             try {
                 $ret['results']['query'] = $function($context['sandbox']);
                 $ret['results']['success'] = true;
+                $ret['type'] = 'post_update';
 
                 if (!isset($context['sandbox']['#finished']) || (isset($context['sandbox']['#finished']) && $context['sandbox']['#finished'] >= 1)) {
                     \Drupal::service('update.post_update_registry')->registerInvokedUpdates([$function]);
@@ -328,7 +338,7 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
             // Setting this value will output an error message.
             // @see \DrushBatchContext::offsetSet()
             $context['error_message'] = "Update failed: $function";
-        } else {
+        } elseif ($context['finished'] == 1 && empty($ret['#abort'])) {
             // Setting this value will output a success message.
             // @see \DrushBatchContext::offsetSet()
             $context['message'] = "Update completed: $function";

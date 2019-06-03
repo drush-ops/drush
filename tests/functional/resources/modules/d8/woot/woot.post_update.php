@@ -40,3 +40,11 @@ function woot_post_update_render()
     ];
     \Drupal::service('renderer')->renderPlain($render_array);
 }
+
+/**
+ * Batch post update.
+ */
+function woot_post_update_batch(array &$sandbox)
+{
+    return woot_update_8105($sandbox);
+}
