@@ -17,6 +17,9 @@ class SqlCliTest extends CommandUnishTestCase
 
     public function testSqlCli()
     {
+        if ($this->isWindows()) {
+            $this->markTestSkipped('On Windows, STDIN redirection is not supported.');
+        }
         $this->setUpDrupal(1, true);
         // Ensure SQL dumps can be imported via sql:cli.
         $this->drush('sql:cli < ' . __DIR__ . '/resources/sqlcli.sql');
