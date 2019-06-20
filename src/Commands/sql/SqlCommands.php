@@ -135,6 +135,8 @@ class SqlCommands extends DrushCommands
      *   Open a SQL command-line interface using Drupal's credentials.
      * @usage drush sql:cli --extra=--progress-reports
      *   Open a SQL CLI and skip reading table information.
+     * @usage drush sql:cli < example.sql
+     *   Import sql statements from a file into the current database.
      * @remote-tty
      * @bootstrap max configuration
      */
