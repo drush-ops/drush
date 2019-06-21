@@ -99,6 +99,11 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
             throw new \Exception(dt('entity-updates command does not support --simulate option.'));
         }
 
+        // @todo - Do same check for updatedb as well.
+        if (version_compare(drush_drupal_version(), '8.7.0', '>=')) {
+            throw new \Exception(dt('Drupal removed its automatic entity-updates API in 8.7. See https://www.drupal.org/node/3034742.'));
+        }
+
         if ($this->entityUpdatesMain() === false) {
             throw new \Exception('Entity updates not run.');
         }
