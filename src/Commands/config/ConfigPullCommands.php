@@ -83,7 +83,6 @@ class ConfigPullCommands extends DrushCommands implements SiteAliasManagerAwareI
         ];
         $process = $this->processManager()->drush($runner, 'core-rsync', $args, ['yes' => true, 'debug' => true], $options_double_dash);
         $process->mustRun();
-        drush_backend_set_result($destinationHostPath->getOriginal());
         return new PropertyList(['path' => $destinationHostPath->getOriginal()]);
     }
 

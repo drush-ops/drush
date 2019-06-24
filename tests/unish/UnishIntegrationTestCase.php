@@ -112,7 +112,7 @@ abstract class UnishIntegrationTestCase extends UnishTestCase
 
     protected function buildCommandLine($command, $args, $options)
     {
-        $global_option_list = ['simulate', 'root', 'uri', 'include', 'config', 'alias-path', 'ssh-options', 'backend', 'cd'];
+        $global_option_list = ['simulate', 'root', 'uri', 'include', 'config', 'alias-path', 'ssh-options', 'cd'];
         $options += ['root' => $this->webroot(), 'uri' => self::INTEGRATION_TEST_ENV]; // Default value.
         $cmd = [self::getDrush()];
 
