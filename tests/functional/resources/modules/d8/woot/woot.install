@@ -49,3 +49,12 @@ function woot_update_8105(array &$sandbox) {
   }
   return "Iteration {$sandbox['current']}.";
 }
+
+/**
+ * Install entity_test.module
+ */
+function woot_update_8106()
+{
+    \Drupal::service('module_installer')->install(['entity_test']);
+    return \Drupal::entityTypeManager()->getDefinition('entity_test')->id();
+}

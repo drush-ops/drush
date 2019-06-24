@@ -48,3 +48,12 @@ function woot_post_update_batch(array &$sandbox)
 {
     return woot_update_8105($sandbox);
 }
+
+/**
+ * Install entity_test.module
+ */
+function woot_post_update_install_entity_test()
+{
+    \Drupal::service('module_installer')->install(['entity_test']);
+    return \Drupal::entityTypeManager()->getDefinition('entity_test')->id();
+}
