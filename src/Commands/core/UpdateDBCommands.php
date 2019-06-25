@@ -376,6 +376,8 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
      */
     public function updateBatch($options)
     {
+        $initial_extension_list = \Drupal::config('core.extension')->getRawData();
+
         $start = $this->getUpdateList();
         // Resolve any update dependencies to determine the actual updates that will
         // be run and the order they will be run in.
@@ -459,6 +461,14 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
                 '!process' => implode(', ', $result[0]['#abort']),
             ]));
         } else {
+            // Check if updates or post-updates changed the installed extensions.
+            \Drupal::configFactory()->reset('core.extension');
+            $final_extension_list = \Drupal::config('core.extension')->getRawData();
+            if ($final_extension_list !== $initial_extension_list) {
+                // If the installed extension list has been changed, clear caches and rebuilds the container.
+                \Drupal::service('kernel')->invalidateContainer();
+            }
+
             $success = true;
         }
 
