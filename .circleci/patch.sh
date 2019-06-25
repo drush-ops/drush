@@ -16,3 +16,7 @@ if [ "$1" == "8.7.x" ]; then
 fi
 
 curl -S $PATCH | patch -p1
+
+# Apply patch for schema support in PostreSQL.
+PATCH=https://www.drupal.org/files/issues/drupal-1060476-85.patch
+curl -S $PATCH | patch -p1
