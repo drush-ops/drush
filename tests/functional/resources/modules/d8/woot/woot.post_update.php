@@ -50,10 +50,10 @@ function woot_post_update_batch(array &$sandbox)
 }
 
 /**
- * Install entity_test.module
+ * Install taxonomy.module
  */
-function woot_post_update_install_entity_test()
+function woot_post_update_install_taxonomy()
 {
-    \Drupal::service('module_installer')->install(['entity_test']);
-    return \Drupal::entityTypeManager()->getDefinition('entity_test')->id();
+    \Drupal::service('module_installer')->install(['taxonomy']);
+    return \Drupal::entityTypeManager()->getDefinition('taxonomy_term')->id();
 }

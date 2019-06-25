@@ -323,20 +323,15 @@ POST_UPDATE;
         // Force re-run of woot_update_8106().
         $this->drush('php:eval', ['drupal_set_installed_schema_version("woot", 8105)'], $options);
 
-        // Allow installation of testing modules.
-        $settings_php = $this->webroot() . '/sites/dev/settings.php';
-        @chmod($settings_php, 0777);
-        file_put_contents($settings_php, "\n\$settings['extension_discovery_scan_tests'] = TRUE;\n", FILE_APPEND);
-
         // Run updates.
         $this->drush('updatedb', [], $options);
 
         // Check that the post-update function returns the new entity type ID.
-        $this->assertContains('[notice] entity_test', $this->getErrorOutputRaw());
+        $this->assertContains('[notice] taxonomy_term', $this->getErrorOutputRaw());
 
         // Check that the new entity type is installed.
-        $this->drush('php:eval', ['print \Drupal::entityTypeManager()->getDefinition("entity_test")->id();']);
-        $this->assertContains('entity_test', $this->getOutputRaw());
+        $this->drush('php:eval', ['print \Drupal::entityTypeManager()->getDefinition("taxonomy_term")->id();']);
+        $this->assertContains('taxonomy_term', $this->getOutputRaw());
     }
 
     /**
@@ -351,23 +346,18 @@ POST_UPDATE;
         $this->setupModulesForTests(['woot'], Path::join(__DIR__, 'resources/modules/d8'));
         $this->drush('pm:enable', ['woot'], $options);
 
-        // Force re-run of woot_post_update_install_entity_test().
-        $this->forcePostUpdate('woot_post_update_install_entity_test', $options);
-
-        // Allow installation of testing modules.
-        $settings_php = $this->webroot() . '/sites/dev/settings.php';
-        @chmod($settings_php, 0777);
-        file_put_contents($settings_php, "\n\$settings['extension_discovery_scan_tests'] = TRUE;\n", FILE_APPEND);
+        // Force re-run of woot_post_update_install_taxonomy().
+        $this->forcePostUpdate('woot_post_update_install_taxonomy', $options);
 
         // Run updates.
         $this->drush('updatedb', [], $options);
 
         // Check that the post-update function returns the new entity type ID.
-        $this->assertContains('[notice] entity_test', $this->getErrorOutputRaw());
+        $this->assertContains('[notice] taxonomy_term', $this->getErrorOutputRaw());
 
         // Check that the new entity type is installed.
-        $this->drush('php:eval', ['print \Drupal::entityTypeManager()->getDefinition("entity_test")->id();']);
-        $this->assertContains('entity_test', $this->getOutputRaw());
+        $this->drush('php:eval', ['print \Drupal::entityTypeManager()->getDefinition("taxonomy_term")->id();']);
+        $this->assertContains('taxonomy_term', $this->getOutputRaw());
     }
 
     public function tearDown()
