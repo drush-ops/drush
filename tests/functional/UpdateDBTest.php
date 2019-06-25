@@ -330,7 +330,7 @@ POST_UPDATE;
         $this->assertContains('[notice] taxonomy_term', $this->getErrorOutputRaw());
 
         // Check that the new entity type is installed.
-        $this->drush('php:eval', ['print \Drupal::entityTypeManager()->getDefinition("taxonomy_term")->id();']);
+        $this->drush('php:eval', ['woot_get_taxonomy_term_entity_type_id();']);
         $this->assertContains('taxonomy_term', $this->getOutputRaw());
     }
 
@@ -356,7 +356,7 @@ POST_UPDATE;
         $this->assertContains('[notice] taxonomy_term', $this->getErrorOutputRaw());
 
         // Check that the new entity type is installed.
-        $this->drush('php:eval', ['print \Drupal::entityTypeManager()->getDefinition("taxonomy_term")->id();']);
+        $this->drush('php:eval', ['woot_get_taxonomy_term_entity_type_id();']);
         $this->assertContains('taxonomy_term', $this->getOutputRaw());
     }
 
