@@ -373,7 +373,7 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
         \Drupal::configFactory()->reset('core.extension');
         $final_extension_list = \Drupal::config('core.extension')->getRawData();
         if ($final_extension_list !== $this->originalExtensionList) {
-            // If the installed extension list has been changed, clear caches and invalidate the container.
+            // Invalidate the container if the installed extension list has been changed.
             \Drupal::service('kernel')->invalidateContainer();
         }
     }
