@@ -7,6 +7,7 @@
 
 namespace Unish;
 
+use Drush\Sql\SqlBase;
 use Webmozart\PathUtil\Path;
 
 /**
@@ -19,18 +20,11 @@ class SqlCliTest extends UnishIntegrationTestCase
 
     public function testSqlCli()
     {
-        if ($this->isWindows()) {
-            $this->markTestSkipped('On Windows, STDIN redirection is not supported.');
-        }
-        $this->setUpDrupal(1, true);
-        $path = Path::join(__DIR__, 'resources/sqlcli.sql');
-        // temporary: just prove that the file exists.
-        // why doesn't it get imported below?
-        $this->assertFileExists($path);
+        $stdin = file_get_contents(Path::join(__DIR__, 'resources/sqlcli.sql'));
         // Ensure SQL dumps can be imported via sql:cli.
-        $this->drush('sql:cli', [], [], null, $path);
-        $this->drush('sql-query', ["SHOW TABLES"]);
-        $output = $this->getOutput();
-        $this->assertContains('sqlcli', $output);
+        $this->drush('sql:cli', [], [], null, $stdin);
+        $sql = SqlBase::create();
+        $tables = $sql->listTables();
+        $this->assertContains('sqlcli', $tables);
     }
 }
