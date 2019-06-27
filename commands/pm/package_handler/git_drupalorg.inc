@@ -52,7 +52,7 @@ function package_handler_download_project(&$request, $release) {
     $repository = 'git@git.drupal.org:project/' . $request['name'] . '.git';
   }
   else {
-    $repository = 'https://git.drupal.org/project/' . $request['name'] . '.git';
+    $repository = 'https://git.drupalcode.org/project/' . $request['name'] . '.git';
   }
   $request['repository'] = $repository;
   $tag = $release['tag'];

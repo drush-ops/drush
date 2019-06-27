@@ -86,7 +86,7 @@ class makeConvertCase extends CommandUnishTestCase {
           // Ensure Drupal core tag is set correctly.
           'projects[drupal][download][tag] = "7.43"',
           'projects[features][download][type] = "git"',
-          'projects[features][download][url] = "https://git.drupal.org/project/features"',
+          'projects[features][download][url] = "https://git.drupalcode.org/project/features"',
           'projects[features][download][tag] = "7.x-1.0-beta4"',
           'projects[features][patch][0] = "http://drupal.org/files/issues/features-drush-backend-invoke-25.patch"'),
       ),
