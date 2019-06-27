@@ -412,6 +412,7 @@ class makeMakefileCase extends CommandUnishTestCase {
   }
 
   function testMakeFile() {
+    $this->markTestSkipped('Test depends on drush_make, which can no longer be downloaded from drupal.org.');
     $this->runMakefileTest('file');
   }
 
@@ -456,6 +457,7 @@ class makeMakefileCase extends CommandUnishTestCase {
   }
 
   function testMakeIgnoreChecksums() {
+    $this->markTestSkipped('Test depends on drush_make, which can no longer be downloaded from drupal.org.');
     $this->runMakefileTest('ignore-checksums');
   }
 
@@ -501,6 +503,7 @@ class makeMakefileCase extends CommandUnishTestCase {
   }
 
   function testMakeMd5Succeed() {
+    $this->markTestSkipped('Test depends on drush_make, which can no longer be downloaded from drupal.org.');
     $this->runMakefileTest('md5-succeed');
   }
 
