@@ -27,7 +27,7 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
      *
      * @command updatedb
      * @option cache-clear Clear caches upon completion.
-     * @option entity-updates Run automatic entity schema updates at the end of any update hooks.
+     * @option entity-updates Run automatic entity schema updates at the end of any update hooks. Not supported in Drupal >= 8.7.0.
      * @option post-updates Run post updates after hook_update_n and entity updates.
      * @bootstrap full
      * @kernel update
@@ -39,6 +39,11 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
         require_once DRUPAL_ROOT . '/core/includes/install.inc';
         require_once DRUPAL_ROOT . '/core/includes/update.inc';
         drupal_load_updates();
+
+        if ($options['entity-updates'] && version_compare(drush_drupal_version(), '8.7.0', '>=')) {
+            $this->logger()->warning(dt('Drupal removed its automatic entity-updates API in 8.7. See https://www.drupal.org/node/3034742.'));
+            $options['entity-updates'] = false;
+        }
 
         // Disables extensions that have a lower Drupal core major version, or too high of a PHP requirement.
         // Those are rare, and this function does a full rebuild. So commenting it out for now.
