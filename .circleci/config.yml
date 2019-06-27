@@ -98,7 +98,8 @@ jobs:
       - run: composer require --dev drupal/core:8.7.x-dev --no-update
       - run: composer require --dev webflo/drupal-core-require-dev:8.7.x-dev --no-update
       - run: composer config platform.php 7.2
-      - run: composer update
+      - run: composer update --no-scripts
+      - run: composer install
       - run: composer lint
       - run: composer functional
 
