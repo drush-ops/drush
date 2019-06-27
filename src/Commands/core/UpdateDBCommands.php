@@ -41,7 +41,7 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
         drupal_load_updates();
 
         if ($options['entity-updates'] && version_compare(drush_drupal_version(), '8.7.0', '>=')) {
-            trigger_error(dt('Drupal removed its automatic entity-updates API in 8.7. See https://www.drupal.org/node/3034742.'), E_USER_WARNING);
+            $this->logger()->warning(dt('Drupal removed its automatic entity-updates API in 8.7. See https://www.drupal.org/node/3034742.'));
             $options['entity-updates'] = false;
         }
 
