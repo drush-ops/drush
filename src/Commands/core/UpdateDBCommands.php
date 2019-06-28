@@ -23,6 +23,7 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
     protected $maintenanceModeOriginalState;
 
     /**
+     * The list of extensions that are installed before updates are applied.
      * @var array
      */
     protected $originalExtensionList;
