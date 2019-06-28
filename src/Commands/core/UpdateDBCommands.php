@@ -386,6 +386,8 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
      */
     public function updateBatch($options)
     {
+        // Track the currently installed extensions so that we can detect if any
+        // new extensions are added in the update.
         $this->originalExtensionList = \Drupal::config('core.extension')->getRawData();
 
         $start = $this->getUpdateList();
