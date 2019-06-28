@@ -6,7 +6,7 @@ projects:
     type: core
   atom:
     download:
-      url: 'https://git.drupal.org/project/atom.git'
+      url: 'https://git.drupalcode.org/project/atom.git'
       type: git
       branch: 7.x-1.x
       revision: a9e05aa6e6c45641a0b56dbeb55ede35f51ae3e1

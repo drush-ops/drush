@@ -6,4 +6,4 @@ projects:
     version: 7.42
   atom:
     download:
-      url: https://git.drupal.org/project/atom.git
+      url: https://git.drupalcode.org/project/atom.git
