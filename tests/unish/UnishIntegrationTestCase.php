@@ -61,6 +61,8 @@ abstract class UnishIntegrationTestCase extends UnishTestCase
      * @param int $expected_return
      *   The expected exit code. Usually self::EXIT_ERROR or self::EXIT_SUCCESS.
      * @param string|bool $stdin
+     *   A string that will be written to a tmp file. Note that the command you
+     *   are testing must implement StdinAwareInterface.
      * @return integer
      *   An exit code.
      */
