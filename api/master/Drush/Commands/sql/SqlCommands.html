@@ -79,7 +79,8 @@
     </div>
 
     <p>    class
-    <strong>SqlCommands</strong>        extends <a href="../../../Drush/Commands/DrushCommands.html"><abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a>        (<a href="https://github.com/drush-ops/drush/blob/master/src/Commands/sql/SqlCommands.php">View source</a>)
+    <strong>SqlCommands</strong>        extends <a href="../../../Drush/Commands/DrushCommands.html"><abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a>        implements
+        <abbr title="Consolidation\AnnotatedCommand\Input\StdinAwareInterface">StdinAwareInterface</abbr>        (<a href="https://github.com/drush-ops/drush/blob/master/src/Commands/sql/SqlCommands.php">View source</a>)
 </p>
 
         
@@ -93,6 +94,15 @@
                     <div class="row">
                 <div class="col-md-6">
                                             <a href="../../../Drush/Exec/ExecTrait.html"><abbr title="Drush\Exec\ExecTrait">ExecTrait</abbr></a>
+                                            
+                </div>
+                <div class="col-md-6">
+                    
+                </div>
+            </div>
+                    <div class="row">
+                <div class="col-md-6">
+                                            <abbr title="Consolidation\AnnotatedCommand\Input\StdinAwareTrait">StdinAwareTrait</abbr>
                                             
                 </div>
                 <div class="col-md-6">
@@ -575,7 +585,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </div>
                     <div class="method-item">
                     <h3 id="method_conf">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/sql/SqlCommands.php#L30">line 30</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/sql/SqlCommands.php#L33">line 33</a></div>
         <code>                    
     <strong>conf</strong>($options = [&#039;format&#039; =&gt; &#039;yaml&#039;, &#039;all&#039; =&gt; false, &#039;show-passwords&#039; =&gt; false])
         </code>
@@ -606,7 +616,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </div>
                     <div class="method-item">
                     <h3 id="method_connect">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/sql/SqlCommands.php#L64">line 64</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/sql/SqlCommands.php#L67">line 67</a></div>
         <code>                    
     <strong>connect</strong>($options = [&#039;extra&#039; =&gt; self::REQ])
         </code>
@@ -637,7 +647,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </div>
                     <div class="method-item">
                     <h3 id="method_create">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/sql/SqlCommands.php#L86">line 86</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/sql/SqlCommands.php#L89">line 89</a></div>
         <code>                    
     <strong>create</strong>($options = [&#039;db-su&#039; =&gt; self::REQ, &#039;db-su-pw&#039; =&gt; self::REQ])
         </code>
@@ -668,7 +678,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </div>
                     <div class="method-item">
                     <h3 id="method_drop">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/sql/SqlCommands.php#L114">line 114</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/sql/SqlCommands.php#L117">line 117</a></div>
         <code>                    
     <strong>drop</strong>($options = [])
         </code>
@@ -699,7 +709,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </div>
                     <div class="method-item">
                     <h3 id="method_cli">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/sql/SqlCommands.php#L141">line 141</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/sql/SqlCommands.php#L146">line 146</a></div>
         <code>                    
     <strong>cli</strong>(<abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr> $input, $options = [&#039;extra&#039; =&gt; self::REQ])
         </code>
@@ -735,7 +745,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </div>
                     <div class="method-item">
                     <h3 id="method_query">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/sql/SqlCommands.php#L177">line 177</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/sql/SqlCommands.php#L182">line 182</a></div>
         <code>                    
     <strong>query</strong>($query = &#039;&#039;, $options = [&#039;result-file&#039; =&gt; null, &#039;file&#039; =&gt; self::REQ, &#039;file-delete&#039; =&gt; false, &#039;extra&#039; =&gt; self::REQ, &#039;db-prefix&#039; =&gt; false])
         </code>
@@ -771,7 +781,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </div>
                     <div class="method-item">
                     <h3 id="method_dump">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/sql/SqlCommands.php#L231">line 231</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/sql/SqlCommands.php#L236">line 236</a></div>
         <code>                    <abbr title="Consolidation\OutputFormatters\StructuredData\PropertyList">PropertyList</abbr>
     <strong>dump</strong>($options = [&#039;result-file&#039; =&gt; self::REQ, &#039;create-db&#039; =&gt; false, &#039;data-only&#039; =&gt; false, &#039;ordered-dump&#039; =&gt; false, &#039;gzip&#039; =&gt; false, &#039;extra&#039; =&gt; self::REQ, &#039;extra-dump&#039; =&gt; self::REQ, &#039;format&#039; =&gt; &#039;null&#039;])
         </code>
@@ -811,7 +821,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </div>
                     <div class="method-item">
                     <h3 id="method_validate">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/sql/SqlCommands.php#L254">line 254</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/sql/SqlCommands.php#L259">line 259</a></div>
         <code>                    bool
     <strong>validate</strong>(<abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr> $commandData)
         </code>
