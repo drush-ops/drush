@@ -773,6 +773,7 @@ function _drush_sitealias_wildcard_check($aliasname, &$aliases) {
   }
 
   $aliases[$aliasname] = _drush_sitealias_replace_wildcard_values($aliases[$wildcard_alias_name], $alias_env);
+  $aliases[$aliasname]['#name'] = $aliasname;
 }
 
 /**

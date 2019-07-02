@@ -66,6 +66,22 @@ function policy_drush_sitealias_alter(&$alias_record) {
     }
     unset($alias_record['parent']);
   }
+
+  // If the alias is a remote wildcard alias, then test to see if the
+  // environment exists, and raise an "environment not found" error if
+  // it does not.
+  if (isset($alias_record['remote-host'])) {
+    $host = $alias_record['remote-host'];
+    if (preg_match('#\.myserver.com$#', $host)) {
+      $ip = gethostbyname($host);
+      // If the return value of gethostbyname equals its input parameter,
+      // that indicates failure.
+      if ($host == $ip) {
+        $aliasName = $alias_record['#name'];
+        return drush_set_error('NO_SUCH_ALIAS', "The alias $aliasName refers to a multidev environment that does not exist.");
+      }
+    }
+  }
 }
 
 /**
