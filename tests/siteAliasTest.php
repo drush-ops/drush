@@ -195,7 +195,7 @@ EOD;
     );
     $this->drush('sa', array('@foo.bar'), $options, NULL, NULL, self::EXIT_SUCCESS);
     $output = $this->getOutput();
-    $this->assertEquals("\$aliases[\"wild.foo.*\"] = array (
+    $this->assertEquals("\$aliases[\"foo.bar\"] = array (
   'remote-host' => 'bar.remote-host.com',
   'remote-user' => 'www-admin',
   'root' => '/path/to/bar',
