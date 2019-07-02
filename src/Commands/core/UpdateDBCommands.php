@@ -364,8 +364,10 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
      */
     public static function updateFinished($success, $results, $operations)
     {
-        // Some (post)updates might install/uninstall extensions that require
-        // clearing the static and persistent caches and container invalidation.
+        // Flush all caches at the end of the batch operation. When Drupal core
+        // performs database updates it also clears the cache at the end. This
+        // ensures that we are compatible with updates that rely on this
+        // behavior.
         drupal_flush_all_caches();
     }
 
