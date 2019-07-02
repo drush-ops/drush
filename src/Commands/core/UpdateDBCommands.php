@@ -23,12 +23,6 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
     protected $maintenanceModeOriginalState;
 
     /**
-     * The list of extensions that are installed before updates are applied.
-     * @var array
-     */
-    protected $originalExtensionList;
-
-    /**
      * Apply any database updates required (as with running update.php).
      *
      * @command updatedb
@@ -368,16 +362,13 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
      * @param array $results
      * @param array $operations
      */
-    public function updateFinished($success, $results, $operations)
+    public static function updateFinished($success, $results, $operations)
     {
-        // Check if updates or post-updates changed the installed extensions.
-        \Drupal::configFactory()->reset('core.extension');
-        $final_extension_list = \Drupal::config('core.extension')->getRawData();
-        if ($final_extension_list !== $this->originalExtensionList) {
-            // Invalidate the container if the installed extension list has been changed.
-            \Drupal::service('kernel')->invalidateContainer();
-        }
+        // Some (post)updates might install/uninstall extensions that require
+        // clearing the static and persistent caches and container invalidation.
+        drupal_flush_all_caches();
     }
+
 
     /**
      * Start the database update batch process.
@@ -386,10 +377,6 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
      */
     public function updateBatch($options)
     {
-        // Track the currently installed extensions so that we can detect if any
-        // new extensions are added in the update.
-        $this->originalExtensionList = \Drupal::config('core.extension')->getRawData();
-
         $start = $this->getUpdateList();
         // Resolve any update dependencies to determine the actual updates that will
         // be run and the order they will be run in.
@@ -456,7 +443,7 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
             'title' => 'Updating',
             'init_message' => 'Starting updates',
             'error_message' => 'An unrecoverable error has occurred. You can find the error message below. It is advised to copy it to the clipboard for reference.',
-            'finished' => [$this, 'updateFinished'],
+            'finished' => '\Drush\Commands\core\UpdateDBCommands::updateFinished',
             'file' => 'core/includes/update.inc',
         ];
         batch_set($batch);
