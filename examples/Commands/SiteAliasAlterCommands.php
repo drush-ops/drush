@@ -34,6 +34,19 @@ class SiteAliasAlterCommands extends DrushCommands implements SiteAliasManagerAw
 
             // Change the SSH user.
             $input->setOption('remote-user', 'mw2');
+
+            // Test to see if specific environment really exists in wildcard
+            // aliases, but only if the target is a specific host.
+            $host = $self->get('host');
+            if (preg_match('#\.myserver.com$#', $host)) {
+                $ip = gethostbyname($host);
+                // If the return value of gethostbyname equals its input parameter,
+                // that indicates failure.
+                if ($host == $ip) {
+                    $aliasName = $self->name();
+                    throw new \Exception("The alias $aliasName refers to an environment that does not exist.");
+                }
+            }
         }
     }
 }
