@@ -722,6 +722,9 @@ function _drush_sitealias_find_and_load_alias_from_file($aliasname, $alias_files
           $aliases[$group_name] = array('site-list' => implode(',', $alias_names), '#group' => $group_name, '#name' => $group_name);
         }
       }
+      // Wildcard check if necessary. This will insert a resolved alias
+      // record into the aliases list, allowing the existing code to match it.
+      _drush_sitealias_wildcard_check($aliasname, $aliases);
       // Store only the named alias into the alias cache
       if ((isset($aliases)) && !empty($aliasname) && array_key_exists($aliasname, $aliases)) {
         drush_set_config_special_contexts($options); // maybe unnecessary
@@ -749,6 +752,49 @@ function _drush_sitealias_find_and_load_alias_from_file($aliasname, $alias_files
     $result = array('site-list' => $result_names);
   }
 
+  return $result;
+}
+
+/**
+ * Convert a matching wildcard record into the requested record if needed.
+ */
+function _drush_sitealias_wildcard_check($aliasname, &$aliases) {
+  // Don't overwrite a specific alias record with a resolved wildcard record.
+  if (array_key_exists($aliasname, $aliases) || empty($aliasname)) {
+    return;
+  }
+  // If the alias is 'site.dev', then $alias_env is 'dev'
+  $alias_env = preg_replace('#^.*\.#', '', $aliasname);
+  // Check to see if there is a wildcard record.
+  // e.g. if alias is 'site.dev', then look for a record 'site.*'.
+  $wildcard_alias_name = preg_replace('#\.[^.]*$#', '.*', $aliasname);
+  if (($wildcard_alias_name == $aliasname) || empty($alias_env) || !array_key_exists($wildcard_alias_name, $aliases)) {
+    return;
+  }
+
+  $aliases[$aliasname] = _drush_sitealias_replace_wildcard_values($aliases[$wildcard_alias_name], $alias_env);
+  $aliases[$aliasname]['#name'] = $aliasname;
+}
+
+/**
+ * Make substitutions in a wildcard alias record.
+ */
+function _drush_sitealias_replace_wildcard_values($alias_record, $alias_env) {
+  $result = array();
+
+  foreach ($alias_record as $key => $value) {
+    if (is_array($value)) {
+      $result[$key] = _drush_sitealias_replace_wildcard_values($value, $alias_env);
+    }
+    elseif (is_string($value)) {
+      // This substitution looks just like a consolidation/config variable,
+      // although this is the only one we support.
+      $result[$key] = str_replace('${env-name}', $alias_env, $value);
+    }
+    else {
+      $result[$key] = $value;
+    }
+  }
   return $result;
 }
 

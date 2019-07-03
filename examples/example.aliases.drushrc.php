@@ -179,6 +179,36 @@
  *
  *   $ drush @none status
  *
+ * Wildcard Aliases for Service Providers
+ *
+ * Some service providers that manage Drupal sites allow customers to create
+ * multiple "environments" for a site. It is common for these providers to
+ * also have a feature to automatically create Drush aliases for all of a
+ * user's sites. Rather than write one record for every environment in that
+ * site, it is also possible to write a single "wildcard" alias that represents
+ * all possible environments. This is possible if the contents of each
+ * environment alias are identical save for the name of the environment in
+ * one or more values. The variable `${env-name}` will be substituted with the
+ * environment name wherever it appears.
+ *
+ * Example wildcard record:
+ *
+ * @code
+ *   $aliases['remote-example.*'] = array(
+ *     'remote-host' => '${env-name}.server.domain.com',
+ *     'remote-user' => 'www-admin',
+ *     'root' => '/path/to/${env-name}',
+ *     'uri' => '${env-name}.example.com',
+ *   );
+ * @endcode
+ *
+ * With a wildcard record, any environment name may be used, and will always
+ * match. This is not desirable in instances where the specified environment
+ * does not exist (e.g. if the user made a typo). An alias alter hook in a
+ * policy file may be used to catch these mistakes and report an error.
+ * @see policy.drush.inc for an example on how to do this.
+
+ *
  * See `drush help site-alias` for more options for displaying site
  * aliases.  See `drush topic docs-bastion` for instructions on configuring
  * remote access to a Drupal site behind a firewall via a bastion server.
