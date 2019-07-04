@@ -58,6 +58,4 @@ class Logger extends RoboLogger
       // Robo-styled output
         parent::log($level, $message, $context);
     }
-
-
 }
