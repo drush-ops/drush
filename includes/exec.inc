@@ -100,6 +100,17 @@ function drush_always_exec($cmd) {
 }
 
 /**
+ * Returns executable code for invoking preferred test editor.
+ *
+ * @see \Drush\Drupal\Commands\config\ConfigCommands::edit, among others.
+ *
+ */
+function drush_get_editor() {
+    // See http://drupal.org/node/1740294
+    return '${VISUAL-${EDITOR-vi}} %s';
+}
+
+/**
  * Executes a command in interactive mode.
  *
  * @see drush_shell_exec.

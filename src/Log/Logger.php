@@ -25,11 +25,8 @@
 
 namespace Drush\Log;
 
-use Drush\Drush;
-use Drush\Log\LogLevel;
 use Robo\Log\RoboLogger;
 use Symfony\Component\Console\Output\OutputInterface;
-use Drush\Utils\StringUtils;
 
 class Logger extends RoboLogger
 {
@@ -41,15 +38,23 @@ class Logger extends RoboLogger
 
     public function log($level, $message, array $context = [])
     {
-        // @todo Get rid of custom log levels entirely?
+        // @todo Get rid of custom log levels entirely? See \Drush\Log\LogLevel.
 
         // Save the original level, then map it to a standard log level.
         $context['_level'] = $level;
         switch ($level) {
+            case LogLevel::CANCEL:
+                $level = LogLevel::WARNING;
+                break;
+            case LogLevel::SUCCESS:
+            case LogLevel::OK:
+                $level = LogLevel::NOTICE;
+                break;
             case LogLevel::PREFLIGHT:
+            case LogLevel::BOOTSTRAP:
+            case LogLevel::DEBUG_NOTIFY:
                 $level = LogLevel::DEBUG;
                 break;
-            case LogLevel::BOOTSTRAP:
             default:
                 $level = LogLevel::DEBUG;
                 break;
