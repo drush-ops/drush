@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * The drush API implementation and helpers.
- */
-
 use Drush\Drush;
 use Drush\Log\LogLevel;
 use Drush\Utils\StringUtils;
@@ -14,7 +9,6 @@ use Psr\Log\LoggerInterface;
  * @name Error status definitions
  * @{
  * Error code definitions for interpreting the current error status.
- * @see drush_set_error(), drush_get_error(), drush_get_error_log(), drush_cmp_error()
  */
 
 /** The command completed successfully. */
@@ -32,7 +26,7 @@ pipe when using drush_backend_invoke in a distributed manner. */
 define('DRUSH_APPLICATION_ERROR', 255);
 
 /**
- * @} End of "name Error status defintions".
+ * @} End of "name Error status definitions".
  */
 
 /**
@@ -57,28 +51,6 @@ define('DRUSH_KILOBYTE', 1024);
  */
 function _convert_csv_to_array($args) {
   return StringUtils::csvToArray($args);
-}
-
-/**
- * Convert a nested array into a flat array.  Thows away
- * the array keys, returning only the values.
- *
- * @param $args
- *   An array that may potentially be nested.
- *   e.g. array('a', array('b', 'c'))
- *
- * @returns array
- *   A simple list of items (e.g. array('a','b','c')
- */
-function drush_flatten_array($a) {
-  $result = [];
-  if (!is_array($a)) {
-    return [$a];
-  }
-  foreach ($a as $value) {
-    $result = array_merge($result, drush_flatten_array($value));
-  }
-  return $result;
 }
 
 /**
@@ -236,109 +208,6 @@ function drush_call_user_func_array($function, $args = []) {
     case 9: return $function($args[0], $args[1], $args[2], $args[3], $args[4], $args[5], $args[6], $args[7], $args[8]); break;
     default: return call_user_func_array($function,$args);
   }
-}
-
-/**
- * Determines the MIME content type of the specified file.
- *
- * The power of this function depends on whether the PHP installation
- * has either mime_content_type() or finfo installed -- if not, only tar,
- * gz, zip and bzip2 types can be detected.
- *
- * If mime type can't be obtained, an error will be set.
- *
- * @return string|bool
- *   The MIME content type of the file or FALSE.
- */
-function drush_mime_content_type($filename) {
-  $content_type = drush_attempt_mime_content_type($filename);
-  if ($content_type) {
-    Drush::logger()->info(dt('Mime type for !file is !mt', ['!file' => $filename, '!mt' => $content_type]));
-    return $content_type;
-  }
-  Drush::logger()->error(dt('Unable to determine mime type for !file.', ['!file' => $filename]));
-  return false;
-}
-
-/**
- * Works like drush_mime_content_type, but does not set an error
- * if the type is unknown.
- */
-function drush_attempt_mime_content_type($filename) {
-  $content_type = FALSE;
-  if (class_exists('finfo')) {
-    $finfo = new finfo(FILEINFO_MIME_TYPE);
-    $content_type = $finfo->file($filename);
-    if ($content_type == 'application/octet-stream') {
-      Drush::logger()->debug(dt('Mime type for !file is application/octet-stream.', ['!file' => $filename]));
-      $content_type = FALSE;
-    }
-  }
-  // If apache is configured in such a way that all files are considered
-  // octet-stream (e.g with mod_mime_magic and an http conf that's serving all
-  // archives as octet-stream for other reasons) we'll detect mime types on our
-  //  own by examing the file's magic header bytes.
-  if (!$content_type) {
-    Drush::logger()->debug(dt('Examining !file headers.', ['!file' => $filename]));
-    if ($file = fopen($filename, 'rb')) {
-      $first = fread($file, 2);
-      fclose($file);
-
-      if ($first !== FALSE) {
-        // Interpret the two bytes as a little endian 16-bit unsigned int.
-        $data = unpack('v', $first);
-        switch ($data[1]) {
-          case 0x8b1f:
-            // First two bytes of gzip files are 0x1f, 0x8b (little-endian).
-            // See http://www.gzip.org/zlib/rfc-gzip.html#header-trailer
-            $content_type = 'application/x-gzip';
-            break;
-
-          case 0x4b50:
-            // First two bytes of zip files are 0x50, 0x4b ('PK') (little-endian).
-            // See http://en.wikipedia.org/wiki/Zip_(file_format)#File_headers
-            $content_type = 'application/zip';
-            break;
-
-          case 0x5a42:
-            // First two bytes of bzip2 files are 0x5a, 0x42 ('BZ') (big-endian).
-            // See http://en.wikipedia.org/wiki/Bzip2#File_format
-            $content_type = 'application/x-bzip2';
-            break;
-
-          default:
-            Drush::logger()->debug(dt('Unable to determine mime type from header bytes 0x!hex of !file.', ['!hex' => dechex($data[1]), '!file' => $filename,]));
-        }
-      }
-      else {
-        Drush::logger()->warning(dt('Unable to read !file.', ['!file' => $filename]));
-      }
-    }
-    else {
-      Drush::logger()->warning(dt('Unable to open !file.', ['!file' => $filename]));
-    }
-  }
-
-  // 3. Lastly if above methods didn't work, try to guess the mime type from
-  // the file extension. This is useful if the file has no identifiable magic
-  // header bytes (for example tarballs).
-  if (!$content_type) {
-    Drush::logger()->debug(dt('Examining !file extension.', ['!file' => $filename]));
-
-    // Remove querystring from the filename, if present.
-    $filename = basename(current(explode('?', $filename, 2)));
-    $extension_mimetype = [
-      '.tar'     => 'application/x-tar',
-      '.sql'     => 'application/octet-stream',
-    ];
-    foreach ($extension_mimetype as $extension => $ct) {
-      if (substr($filename, -strlen($extension)) === $extension) {
-        $content_type = $ct;
-        break;
-      }
-    }
-  }
-  return $content_type;
 }
 
 /**
