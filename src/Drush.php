@@ -435,16 +435,6 @@ class Drush
     }
 
     /**
-     * Return 'true' if we are in backend mode
-     *
-     * @deprecated Inject configuration and use $this->getConfig()->backend().
-     */
-    public static function backend()
-    {
-        return \Drush\Drush::config()->backend();
-    }
-
-    /**
      * Return 'true' if we are in affirmative mode
      */
     public static function affirmative()
@@ -452,7 +442,7 @@ class Drush
         if (!self::hasService('input')) {
             throw new \Exception('No input service available.');
         }
-        return Drush::input()->getOption('yes') || (Drush::backend() && !Drush::negative());
+        return Drush::input()->getOption('yes') || !Drush::negative();
     }
 
     /**
