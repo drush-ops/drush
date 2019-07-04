@@ -34,7 +34,7 @@ class RsyncTest extends CommandUnishTestCase
             'alias-path' => __DIR__ . '/resources/alias-fixtures',
         ];
 
-        // Test simulated backend invoke.
+        // Test simulated remote invoke.
         // Note that command-specific options are not processed for remote
         // targets. The aliases are not interpreted at all until they recache
         // the remote side, at which point they will be evaluated & any needed

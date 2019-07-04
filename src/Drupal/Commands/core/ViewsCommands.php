@@ -247,7 +247,6 @@ class ViewsCommands extends DrushCommands
             $this->logger()->success(dt('No results returned for this View.'));
             return null;
         } elseif ($options['count']) {
-            drush_backend_set_result(count($view->result));
             $this->io()->writeln(count($view->result));
             return null;
         } else {

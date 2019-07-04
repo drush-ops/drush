@@ -42,8 +42,6 @@ abstract class UnishTestCase extends TestCase
 
     private static $usergroup = null;
 
-    private static $backendOutputDelimiter = 'DRUSH_BACKEND_OUTPUT_START>>>%s<<<DRUSH_BACKEND_OUTPUT_END';
-
     public function __construct($name = null, array $data = [], $dataName = '')
     {
         parent::__construct($name, $data, $dataName);
@@ -184,14 +182,6 @@ abstract class UnishTestCase extends TestCase
     public static function getUserGroup()
     {
         return self::$usergroup;
-    }
-
-    /**
-     * @return string
-     */
-    public static function getBackendOutputDelimiter()
-    {
-        return self::$backendOutputDelimiter;
     }
 
     /**
