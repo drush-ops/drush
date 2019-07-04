@@ -94,14 +94,6 @@ class Logger extends RoboLogger
     {
         $entry = $this->buildEntry($level, $message, $context);
 
-        if (Drush::backend()) {
-            $this->logs[] = $entry;
-        }
-
-        if ($level != LogLevel::DEBUG_NOTIFY) {
-            drush_backend_packet('log', $entry);
-        }
-
         if ($this->output->isDecorated()) {
             $red = "\033[31;40m\033[1m[%s]\033[0m";
             $yellow = "\033[1;33;40m\033[1m[%s]\033[0m";
@@ -178,12 +170,6 @@ class Logger extends RoboLogger
                 break;
         }
 
-        // When running in backend mode, log messages are not displayed, as they will
-        // be returned in the JSON encoded associative array.
-        if (\Drush\Drush::backend()) {
-            return;
-        }
-
         $columns = drush_get_context('DRUSH_COLUMNS', 80);
 
         $width[1] = 11;
@@ -196,14 +182,6 @@ class Logger extends RoboLogger
 
       // Robo-styled output
         parent::log($level, $message, $context);
-    }
-
-    public function error($message, array $context = [])
-    {
-        if (Drush::backend()) {
-            $this->logs_error[] = $this->buildEntry(LogLevel::ERROR, $message, $context);
-        }
-        parent::error($message, $context);
     }
 
     /**

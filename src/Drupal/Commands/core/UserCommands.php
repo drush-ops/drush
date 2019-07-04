@@ -234,7 +234,6 @@ class UserCommands extends DrushCommands
         if (!$this->getConfig()->simulate()) {
             if ($account = User::create($new_user)) {
                 $account->save();
-                drush_backend_set_result($this->infoArray($account));
                 $this->logger()->success(dt('Created a new user with uid !uid', ['!uid' => $account->id()]));
             } else {
                 return new CommandError("Could not create a new user account with the name " . $name . ".");

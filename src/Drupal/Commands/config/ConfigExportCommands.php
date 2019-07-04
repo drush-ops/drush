@@ -149,7 +149,6 @@ class ConfigExportCommands extends DrushCommands
         ConfigCommands::copyConfig($this->getConfigStorage(), $target_storage);
 
         $this->logger()->success(dt('Configuration successfully exported to !target.', ['!target' => $destination_dir]));
-        drush_backend_set_result($destination_dir);
         return isset($preview) ? $preview : 'No existing configuration to diff against.';
     }
 

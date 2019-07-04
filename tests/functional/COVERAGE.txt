@@ -44,12 +44,10 @@ user-*: GOOD.
 
 /src
 ------------
-backend: GOOD
-  need test: --pipe with remote alias and --pipe with list of aliases
 batch: GOOD
 bootstrap:
 command: FAIR
 environment
-sitealias. FAIR. Explicit test for alias lists. Single aliases implicitly tested by contextTest.  Option propagation tested by backendTest.  Option recovery for @self alias tested by sqlDumpTest.
+sitealias. FAIR. Explicit test for alias lists. Single aliases implicitly tested by contextTest. Option recovery for @self alias tested by sqlDumpTest.
 exec: GOOD: Implicitly tested all over.
 filesystem: Implicit.
