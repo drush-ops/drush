@@ -14,6 +14,7 @@ use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
 use Drush\Exec\ExecTrait;
 use Drush\Sql\SqlBase;
 use Drush\Utils\StringUtils;
+use Symfony\Component\Filesystem\Filesystem;
 use Webmozart\PathUtil\Path;
 
 class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAwareInterface
@@ -288,6 +289,7 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
      */
     public function pre(CommandData $commandData)
     {
+        $fs = new Filesystem();
         $sql = SqlBase::create($commandData->input()->getOptions());
         $db_spec = $sql->getDbSpec();
 
@@ -338,8 +340,8 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
 
         // Can't install without sites subdirectory and settings.php.
         if (!file_exists($confPath)) {
-            if (!drush_mkdir($confPath) && !$this->getConfig()->simulate()) {
-                throw new \Exception(dt('Failed to create directory @confPath', ['@confPath' => $confPath]));
+            if (!$this->getConfig()->simulate()) {
+                $fs->mkdir($confPath);
             }
         } else {
             $this->logger()->info(dt('Sites directory @subdir already exists - proceeding.', ['@subdir' => $confPath]));

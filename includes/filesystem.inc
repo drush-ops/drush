@@ -2,10 +2,9 @@
 
 /**
  * @file
- * Filesystem utilities.
+ * Legacy filesystem utilities.
  */
 use Drush\Drush;
-use Drush\Sql\SqlBase;
 use Symfony\Component\Filesystem\Filesystem;
 use Webmozart\PathUtil\Path;
 
@@ -13,127 +12,6 @@ use Webmozart\PathUtil\Path;
  * @defgroup filesystemfunctions Filesystem convenience functions.
  * @{
  */
-
-/**
- * Behavior for drush_copy_dir() when destinations exist.
- */
-define('FILE_EXISTS_ABORT', 0);
-define('FILE_EXISTS_OVERWRITE', 1);
-define('FILE_EXISTS_MERGE', 2);
-
-/**
- * Deletes the specified file or directory and everything inside it.
- *
- * Usually respects read-only files and folders. To do a forced delete use
- * drush_delete_tmp_dir() or set the parameter $forced.
- *
- * @param string $dir
- *   The file or directory to delete.
- * @param bool $force
- *   Whether or not to try everything possible to delete the directory, even if
- *   it's read-only. Defaults to FALSE.
- * @param bool $follow_symlinks
- *   Whether or not to delete symlinked files. Defaults to FALSE--simply
- *   unlinking symbolic links.
- *
- * @return bool
- *   FALSE on failure, TRUE if everything was deleted.
- *
- * @deprecated Use \Symfony\Component\Filesystem\Filesystem::remove.
- */
-function drush_delete_dir($dir, $force = FALSE, $follow_symlinks = FALSE) {
-  // Do not delete symlinked files, only unlink symbolic links
-  if (is_link($dir) && !$follow_symlinks) {
-    return unlink($dir);
-  }
-  // Allow to delete symlinks even if the target doesn't exist.
-  if (!is_link($dir) && !file_exists($dir)) {
-    return TRUE;
-  }
-  if (!is_dir($dir)) {
-    if ($force) {
-      // Force deletion of items with readonly flag.
-      @chmod($dir, 0777);
-    }
-    return unlink($dir);
-  }
-  if (drush_delete_dir_contents($dir, $force) === FALSE) {
-    return FALSE;
-  }
-  if ($force) {
-    // Force deletion of items with readonly flag.
-    @chmod($dir, 0777);
-  }
-  return rmdir($dir);
-}
-
-/**
- * Deletes the contents of a directory.
- *
- * @param string $dir
- *   The directory to delete.
- * @param bool $force
- *   Whether or not to try everything possible to delete the contents, even if
- *   they're read-only. Defaults to FALSE.
- *
- * @return bool
- *   FALSE on failure, TRUE if everything was deleted.
- */
-function drush_delete_dir_contents($dir, $force = FALSE) {
-  $scandir = @scandir($dir);
-  if (!is_array($scandir)) {
-    return FALSE;
-  }
-
-  foreach ($scandir as $item) {
-    if ($item == '.' || $item == '..') {
-      continue;
-    }
-    if ($force) {
-      @chmod($dir, 0777);
-    }
-    if (!drush_delete_dir($dir . '/' . $item, $force)) {
-      return FALSE;
-    }
-  }
-  return TRUE;
-}
-
-/**
- * Recursively create a directory tree.
- *
- * @param path
- *   Path to directory to create.
- *
- * @throws IOException On any directory creation failure
- * @deprecated See \Symfony\Component\Filesystem\Filesystem::mkdir.
- */
-function drush_mkdir($path) {
-  $fs = new Filesystem();
-  $fs->mkdir($path);
-  return true;
-}
-
-/*
- * Determine if program exists on user's PATH.
- *
- * @return bool|null
- *
- * @deprecated
- *   See \Drush\Exec\ExecTrait::programExists.
- */
-function drush_program_exists($program) {
-  if (drush_has_bash()) {
-    $bucket = drush_bit_bucket();
-
-    // Remove environment variables (eg. PGPASSFILE=) before testing program.
-    $program = preg_replace('#^([A-Z0-9]+=.+? )+#', '', $program);
-
-    // Don't use drush_op_system() since we don't want output during tests.
-    system("command -v $program > $bucket 2>&1", $result_code);
-    return $result_code === 0 ? TRUE : FALSE;
-  }
-}
 
 /**
  * Save a string to a temporary file. Does not depend on Drupal's API.
@@ -159,14 +37,6 @@ function drush_save_data_to_temp_file($data, $suffix = NULL) {
   return $file;
 }
 
-/**
- * Returns the path to a temporary directory.
- *
- * @deprecated Use $this->getConfig()->tmp() in a ConfigAware command.
- */
-function drush_find_tmp() {
-  return Drush::config()->tmp();
-}
 
 /**
  * Creates a temporary file, and registers it so that
@@ -224,6 +94,7 @@ function drush_register_file_for_deletion($file = NULL) {
  * Delete all of the registered temporary files.
  */
 function _drush_delete_registered_files() {
+  $fs = new Filesystem();
   $files_to_delete = drush_register_file_for_deletion();
 
   foreach ($files_to_delete as $file) {
@@ -232,7 +103,7 @@ function _drush_delete_registered_files() {
     // though they did not need to.
     if (file_exists($file)) {
       if (is_dir($file)) {
-        drush_delete_dir($file, TRUE);
+        $fs->remove($file);
       }
       else {
         @chmod($file, 0777); // Make file writeable

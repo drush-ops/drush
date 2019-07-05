@@ -5,6 +5,7 @@ use Composer\Autoload\ClassLoader;
 
 use Drush\Drush;
 use Drush\Utils\FsUtils;
+use Symfony\Component\Filesystem\Filesystem;
 use Webmozart\PathUtil\Path;
 
 /**
@@ -102,6 +103,7 @@ class Environment
     protected function getTmp()
     {
         $directories = [];
+        $fs = new Filesystem();
 
         // Get user specific and operating system temp folders from system environment variables.
         // See http://www.microsoft.com/resources/documentation/windows/xp/all/proddocs/en-us/ntcmds_shelloverview.mspx?mfr=true
@@ -137,10 +139,7 @@ class Environment
         if (empty($temporary_directory)) {
             // If no directory has been found, create one in cwd.
             $temporary_directory = Path::join(Drush::config()->cwd(), 'tmp');
-            drush_mkdir($temporary_directory, true);
-            if (!is_dir($temporary_directory)) {
-                throw new \Exception(dt("Unable to create a temporary directory."));
-            }
+            $fs->mkdir($temporary_directory);
             // Function not available yet - this is not likely to get reached anyway.
             // drush_register_file_for_deletion($temporary_directory);
         }

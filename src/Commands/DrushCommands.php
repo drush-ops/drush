@@ -3,6 +3,7 @@ namespace Drush\Commands;
 
 use Drush\Drush;
 use Drush\Style\DrushStyle;
+use Drush\Utils\StringUtils;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
@@ -68,7 +69,7 @@ abstract class DrushCommands implements IOAwareInterface, LoggerAwareInterface, 
     {
         if ((substr($file, -4) == ".htm") || (substr($file, -5) == ".html")) {
             $tmp_file = drush_tempnam(basename($file));
-            file_put_contents($tmp_file, drush_html_to_text(file_get_contents($file)));
+            file_put_contents($tmp_file, StringUtils::htmlToText(file_get_contents($file)));
             $file = $tmp_file;
         }
 

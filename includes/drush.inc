@@ -34,25 +34,6 @@ define('DRUSH_APPLICATION_ERROR', 255);
  */
 define('DRUSH_KILOBYTE', 1024);
 
-
-/**
- * Convert a csv string, or an array of items which
- * may contain csv strings, into an array of items.
- *
- * @param $args
- *   A simple csv string; e.g. 'a,b,c'
- *   or a simple list of items; e.g. array('a','b','c')
- *   or some combination; e.g. array('a,b','c') or array('a,','b,','c,')
- *
- * @returns array
- *   A simple list of items (e.g. array('a','b','c')
- *
- * @deprecated Use \Drush\StringUtils::csvToArray
- */
-function _convert_csv_to_array($args) {
-  return StringUtils::csvToArray($args);
-}
-
 /**
  * Get the available global options. Used by list/help commands. All other users
  * should pull options from $application.
@@ -227,32 +208,4 @@ function drush_memory_limit() {
   }
 
   return $size;
-}
-
-
-/**
- * Form an associative array from a linear array.
- *
- * This function walks through the provided array and constructs an associative
- * array out of it. The keys of the resulting array will be the values of the
- * input array. The values will be the same as the keys unless a function is
- * specified, in which case the output of the function is used for the values
- * instead.
- *
- * @param $array
- *   A linear array.
- * @param $function
- *   A name of a function to apply to all values before output.
- *
- * @return
- *   An associative array.
- */
-function drush_map_assoc($array, $function = NULL) {
-  // array_combine() fails with empty arrays:
-  // http://bugs.php.net/bug.php?id=34857.
-  $array = !empty($array) ? array_combine($array, $array) : [];
-  if (is_callable($function)) {
-    $array = array_map($function, $array);
-  }
-  return $array;
 }

@@ -416,8 +416,6 @@ abstract class UnishTestCase extends TestCase
      *
      * @return bool
      *   FALSE on failure, TRUE if everything was deleted.
-     *
-     * @see drush_delete_dir()
      */
     public static function recursiveDelete($dir, $force = true, $follow_symlinks = false, $exclude = [])
     {
@@ -465,8 +463,6 @@ abstract class UnishTestCase extends TestCase
      *
      * @return bool
      *   FALSE on failure, TRUE if everything was deleted.
-     *
-     * @see drush_delete_dir_contents()
      */
     public static function recursiveDeleteDirContents($dir, $force = false, $exclude = [])
     {

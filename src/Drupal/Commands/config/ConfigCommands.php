@@ -19,6 +19,7 @@ use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\ConsoleOutputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Yaml\Parser;
 use Webmozart\PathUtil\Path;
 
@@ -317,7 +318,8 @@ class ConfigCommands extends DrushCommands implements StdinAwareInterface
                 $return = FsUtils::prepareBackupDir('config-import-export');
             } else {
                 // The user has specified a directory.
-                drush_mkdir($directory);
+                $fs = new Filesystem();
+                $fs->mkdir($path);
                 $return = $directory;
             }
         } else {
@@ -413,7 +415,8 @@ class ConfigCommands extends DrushCommands implements StdinAwareInterface
     {
         if (empty($input->getArgument('config_name'))) {
             $config_names = $this->getConfigFactory()->listAll();
-            $choice = $this->io()->choice('Choose a configuration', drush_map_assoc($config_names));
+            $choices = array_combine($config_names, $config_names);
+            $choice = $this->io()->choice('Choose a configuration', $choices);
             $input->setArgument('config_name', $choice);
         }
     }
@@ -427,7 +430,7 @@ class ConfigCommands extends DrushCommands implements StdinAwareInterface
 
         $option_name = $input->hasOption('destination') ? 'destination' : 'source';
         if (empty($input->getArgument('label') && empty($input->getOption($option_name)))) {
-            $choices = drush_map_assoc(array_keys($config_directories));
+            $choices = array_combine(array_keys($config_directories), array_keys($config_directories));
             unset($choices[CONFIG_ACTIVE_DIRECTORY]);
             if (count($choices) >= 2) {
                 $label = $this->io()->choice('Choose a '. $option_name, $choices);

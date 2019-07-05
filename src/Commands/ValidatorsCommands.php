@@ -64,7 +64,7 @@ class ValidatorsCommands
     public function validateFileExists(CommandData $commandData)
     {
         $missing = [];
-        $arg_names = _convert_csv_to_array($commandData->annotationData()->get('validate-file-exists', null));
+        $arg_names = StringUtils::csvToArray($commandData->annotationData()->get('validate-file-exists', null));
         foreach ($arg_names as $arg_name) {
             if ($commandData->input()->hasArgument($arg_name)) {
                 $path = $commandData->input()->getArgument($arg_name);
@@ -95,7 +95,7 @@ class ValidatorsCommands
     public function validatePHPExtension(CommandData $commandData)
     {
         $missing = [];
-        $arg_names = _convert_csv_to_array($commandData->annotationData()->get('validate-php-extension', null));
+        $arg_names = StringUtils::csvToArray($commandData->annotationData()->get('validate-php-extension', null));
         foreach ($arg_names as $arg_name) {
             if (!extension_loaded($arg_name)) {
                 $missing[] = $arg_name;

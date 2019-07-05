@@ -5,6 +5,7 @@ namespace Drush\Sql;
 use Drush\Drush;
 use Drush\Log\LogLevel;
 use mysql_xdevapi\Exception;
+use Symfony\Component\Filesystem\Filesystem;
 
 class SqlSqlite extends SqlBase
 {
@@ -35,19 +36,18 @@ class SqlSqlite extends SqlBase
      */
     public function createdb($quoted = false)
     {
+        $fs = new Filesystem();
         $file = $this->getDbSpec()['database'];
         if (file_exists($file)) {
             Drush::logger()->debug("SQLITE: Deleting existing database '$file'");
-            drush_delete_dir($file, true);
+            $fs->remove($file);
         }
 
         // Make sure sqlite can create file
         $path = dirname($file);
         Drush::logger()->debug("SQLITE: creating '$path' for creating '$file'");
-        if (!drush_mkdir($path)) {
-            throw new Exception("SQLITE: Cannot create $path");
-        }
-        return file_exists($path);
+        $fs->mkdir($path);
+        return true;
     }
 
     public function dbExists()
