@@ -319,7 +319,7 @@ class ConfigCommands extends DrushCommands implements StdinAwareInterface
             } else {
                 // The user has specified a directory.
                 $fs = new Filesystem();
-                $fs->mkdir($path);
+                $fs->mkdir($directory);
                 $return = $directory;
             }
         } else {
