@@ -81,7 +81,6 @@ class ConfigCommands extends DrushCommands implements StdinAwareInterface
      * Set config value directly. Does not perform a config import.
      *
      * @command config:set
-     * @validate-config-name
      * @todo @interact-config-name deferred until we have interaction for key.
      * @param $config_name The config object name, for example "system.site".
      * @param $key The config key, for example "page.front".
