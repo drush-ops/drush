@@ -520,7 +520,7 @@ class SqlBase implements ConfigAwareInterface
         $parameter_strings = [];
         foreach ($parameters as $key => $value) {
             // Only escape the values, not the keys or the rest of the string.
-            $value = drush_escapeshellarg($value);
+            $value = Escape::shellArg($value);
             $parameter_strings[] = "--$key=$value";
         }
 
