@@ -211,27 +211,6 @@ function drush_call_user_func_array($function, $args = []) {
 }
 
 /**
- * Check whether a file is a supported tarball.
- *
- * @return mixed
- *   The file content type if it's a tarball. FALSE otherwise.
- */
-function drush_file_is_tarball($path) {
-  $content_type = drush_attempt_mime_content_type($path);
-  $supported = [
-    'application/x-bzip2',
-    'application/x-gzip',
-    'application/x-tar',
-    'application/x-zip',
-    'application/zip',
-  ];
-  if (in_array($content_type, $supported)) {
-    return $content_type;
-  }
-  return FALSE;
-}
-
-/**
  * Get the PHP memory_limit value in bytes.
  */
 function drush_memory_limit() {
