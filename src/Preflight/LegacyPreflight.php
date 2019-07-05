@@ -69,12 +69,9 @@ class LegacyPreflight
         // We still need preflight for drush_shutdown()
         require_once $drushBasePath . '/includes/preflight.inc';
         require_once $drushBasePath . '/includes/bootstrap.inc';
-        require_once $drushBasePath . '/includes/environment.inc';
         require_once $drushBasePath . '/includes/backend.inc';
         require_once $drushBasePath . '/includes/drush.inc';
         require_once $drushBasePath . '/includes/batch.inc';
-        require_once $drushBasePath . '/includes/sitealias.inc';
-        require_once $drushBasePath . '/includes/exec.inc';
         require_once $drushBasePath . '/includes/drupal.inc';
         require_once $drushBasePath . '/includes/output.inc';
         require_once $drushBasePath . '/includes/cache.inc';
