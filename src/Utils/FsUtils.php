@@ -82,12 +82,14 @@ class FsUtils
     /**
      * Check whether a file is a supported tarball.
      *
-     * @return mixed
+     * @param string $path
+     *
+     * @return string|bool
      *   The file content type if it's a tarball. FALSE otherwise.
      */
     public static function isTarball($path)
     {
-        $content_type = self::attemptMimeContentType($path);
+        $content_type = self::getMimeContentType($path);
         $supported = [
             'application/x-bzip2',
             'application/x-gzip',
@@ -108,34 +110,19 @@ class FsUtils
      * has either mime_content_type() or finfo installed -- if not, only tar,
      * gz, zip and bzip2 types can be detected.
      *
-     * If mime type can't be obtained, an error will be set.
+     * @param string $path
      *
-     * @return string|bool
-     *   The MIME content type of the file or FALSE.
+     * @return string|bool|null
+     *   The MIME content type of the file.
      */
-    protected static function mimeContentType($filename)
-    {
-        $content_type = self::attemptMimeContentType($filename);
-        if ($content_type) {
-            Drush::logger()->info(dt('Mime type for !file is !mt', ['!file' => $filename, '!mt' => $content_type]));
-            return $content_type;
-        }
-        Drush::logger()->error(dt('Unable to determine mime type for !file.', ['!file' => $filename]));
-        return false;
-    }
-
-    /**
-     * Works like mimeContentType, but does not set an error
-     * if the type is unknown.
-     */
-    public static function attemptMimeContentType($filename)
+    public static function getMimeContentType($path)
     {
         $content_type = false;
         if (class_exists('finfo')) {
             $finfo = new finfo(FILEINFO_MIME_TYPE);
-            $content_type = $finfo->file($filename);
+            $content_type = $finfo->file($path);
             if ($content_type == 'application/octet-stream') {
-                Drush::logger()->debug(dt('Mime type for !file is application/octet-stream.', ['!file' => $filename]));
+                Drush::logger()->debug(dt('Mime type for !file is application/octet-stream.', ['!file' => $path]));
                 $content_type = false;
             }
         }
@@ -144,8 +131,8 @@ class FsUtils
         // archives as octet-stream for other reasons) we'll detect mime types on our
         //  own by examining the file's magic header bytes.
         if (!$content_type) {
-            Drush::logger()->debug(dt('Examining !file headers.', ['!file' => $filename]));
-            if ($file = fopen($filename, 'rb')) {
+            Drush::logger()->debug(dt('Examining !file headers.', ['!file' => $path]));
+            if ($file = fopen($path, 'rb')) {
                 $first = fread($file, 2);
                 fclose($file);
 
@@ -172,15 +159,13 @@ class FsUtils
                             break;
 
                         default:
-                            Drush::logger()->debug(dt('Unable to determine mime type from header bytes 0x!hex of !file.', ['!hex' => dechex($data[1]), '!file' => $filename,]));
+                            Drush::logger()->debug(dt('Unable to determine mime type from header bytes 0x!hex of !file.', ['!hex' => dechex($data[1]), '!file' => $path,]));
                     }
+                } else {
+                    Drush::logger()->warning(dt('Unable to read !file.', ['!file' => $path]));
                 }
-                else {
-                    Drush::logger()->warning(dt('Unable to read !file.', ['!file' => $filename]));
-                }
-            }
-            else {
-                Drush::logger()->warning(dt('Unable to open !file.', ['!file' => $filename]));
+            } else {
+                Drush::logger()->warning(dt('Unable to open !file.', ['!file' => $path]));
             }
         }
 
@@ -188,16 +173,16 @@ class FsUtils
         // the file extension. This is useful if the file has no identifiable magic
         // header bytes (for example tarballs).
         if (!$content_type) {
-            Drush::logger()->debug(dt('Examining !file extension.', ['!file' => $filename]));
+            Drush::logger()->debug(dt('Examining !file extension.', ['!file' => $path]));
 
             // Remove querystring from the filename, if present.
-            $filename = basename(current(explode('?', $filename, 2)));
+            $path = basename(current(explode('?', $path, 2)));
             $extension_mimetype = [
                 '.tar'     => 'application/x-tar',
                 '.sql'     => 'application/octet-stream',
             ];
             foreach ($extension_mimetype as $extension => $ct) {
-                if (substr($filename, -strlen($extension)) === $extension) {
+                if (substr($path, -strlen($extension)) === $extension) {
                     $content_type = $ct;
                     break;
                 }
