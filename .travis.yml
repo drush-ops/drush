@@ -25,9 +25,6 @@ matrix:
     - php: 7.2
       env: 'DEPENDENCIES=highest'
     - php: 7.2
-    - php: 7.0.11
-    - php: 5.6
-      env: 'SCENARIO=php5 DEPENDENCIES=lowest COMPOSER_MEMORY_LIMIT=-1'
 
 env:
   global:
@@ -44,7 +41,7 @@ before_install:
 
 # Build a System-Under-Test.
 install:
-  - '.scenarios.lock/install "${SCENARIO}" "${DEPENDENCIES}"'
+  #- '.scenarios.lock/install "${SCENARIO}" "${DEPENDENCIES}"'
 
 before_script:
   - phpenv config-rm xdebug.ini
