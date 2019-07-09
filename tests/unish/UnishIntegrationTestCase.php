@@ -98,10 +98,6 @@ abstract class UnishIntegrationTestCase extends UnishTestCase
         $this->stdout = $output->fetch();
         $this->stderr = $output->getErrorOutput()->fetch();
 
-        // Empty Drush's legacy context system
-        $cache = &drush_get_context();
-        $cache = [];
-
         return $return;
     }
 
