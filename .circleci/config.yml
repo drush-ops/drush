@@ -103,28 +103,6 @@ jobs:
       - run: composer lint
       - run: composer functional
 
-  # PHP 5.6 test with LOWEST dependencies:
-  #   Determines whether any code introduced in this branch uses language
-  #   features not available in PHP 5.6, or whether there are any API calls
-  #   to dependency features not available in the lowest version listed
-  #   for a dependency in our composer.json file.
-  test_56_lowest:
-    <<: *defaults
-    docker:
-      - image: wodby/php:5.6
-        environment:
-          - MYSQL_HOST=127.0.0.1
-          - UNISH_DB_URL=mysql://root:@127.0.0.1
-          - COMPOSER_MEMORY_LIMIT=-1
-      - image: circleci/mysql:5.7.24
-    steps:
-      - checkout
-      - run: cp .docker/zz-php.ini /usr/local/etc/php/conf.d/
-      - run: .scenarios.lock/install php5 lowest
-      - run: $HOME/drush/.circleci/patch.sh
-      - run: composer lint
-      - run: composer functional
-
 workflows:
   version: 2
   # Drush test jobs:
@@ -142,9 +120,6 @@ workflows:
           requires:
             - check_mergable
             - code_style
-      - test_56_lowest:
-          requires:
-            - check_mergable
   # Drush nightly scheduled jobs:
   #   - Run the HIGHEST tests.
   #   - Run functional tests under Sqlite and Postgres.

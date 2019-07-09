@@ -30,7 +30,7 @@
     }
   },
   "require": {
-    "php": ">=5.6.0",
+    "php": ">=7.1.3",
     "ext-dom": "*",
     "chi-teck/drupal-code-generator": "^1.28.1",
     "composer/semver": "^1.4",
@@ -86,7 +86,7 @@
     "sort-packages": true,
     "process-timeout": 9600,
     "platform": {
-      "php": "7.0.11"
+      "php": "7.1.3"
     }
   },
   "scripts": {
@@ -121,19 +121,6 @@
       "sut/profiles/contrib/{$name}": ["type:drupal-profile"],
       "sut/themes/contrib/{$name}": ["type:drupal-theme"],
       "sut/drush/contrib/{$name}": ["type:drupal-drush"]
-    },
-    "scenarios": {
-      "php5": {
-        "config": {
-          "platform": {
-            "php": "5.6.38"
-          }
-        },
-        "require-dev": {
-          "webflo/drupal-core-strict": "8.6.x-dev",
-          "webflo/drupal-core-require-dev": "8.6.x-dev"
-        }
-      }
     },
     "branch-alias": {
         "dev-master": "9.x-dev"
