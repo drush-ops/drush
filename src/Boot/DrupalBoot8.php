@@ -116,7 +116,7 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
     public function addLogger()
     {
         // Provide a logger which sends
-        // output to drush_log(). This should catch every message logged through every
+        // output to log(). This should catch every message logged through every
         // channel.
         $container = \Drupal::getContainer();
         $parser = $container->get('logger.log_message_parser');
