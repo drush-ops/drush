@@ -85,18 +85,3 @@ function drush_invoke_process($site_alias_record, $command_name, $commandline_ar
 
   return drush_backend_invoke_concurrent($invocations, $commandline_options, $backend_options);
 }
-
-/**
- * Substrings to ignore during commandfile and site alias searching.
- * TODO: Do we do any searching in the new code that should be filtered like this?
- */
-function drush_filename_blacklist() {
-  $blacklist = ['.', '..', 'drush_make', 'examples', 'tests', 'disabled', 'gitcache', 'cache'];
-  for ($v=4; $v<=(DRUSH_MAJOR_VERSION)+3; ++$v) {
-    if ($v != DRUSH_MAJOR_VERSION) {
-      $blacklist[] = 'drush' . $v;
-    }
-  }
-  $blacklist = array_merge($blacklist, drush_get_option_list('exclude'));
-  return $blacklist;
-}

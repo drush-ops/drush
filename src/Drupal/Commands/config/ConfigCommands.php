@@ -168,9 +168,9 @@ class ConfigCommands extends DrushCommands implements StdinAwareInterface
         $temp_storage = new FileStorage($temp_dir);
         $temp_storage->write($config_name, $contents);
 
-        // Note that `drush_get_editor` returns a string that contains a
+        // Note that `getEditor()` returns a string that contains a
         // %s placeholder for the config file path.
-        $exec = drush_get_editor();
+        $exec = self::getEditor();
         $cmd = sprintf($exec, Escape::shellArg($temp_storage->getFilePath($config_name)));
         $process = $this->processManager()->shell($cmd);
         $process->setTty(true);

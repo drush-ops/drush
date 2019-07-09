@@ -102,16 +102,12 @@ function drush_always_exec($cmd) {
 /**
  * Returns executable code for invoking preferred test editor.
  *
- * @see drush_config_edit()
+ * @see \Drush\Drupal\Commands\config\ConfigCommands::edit, among others.
  *
- * @deprecated
- *   Please make sure your shell is configured as desired.
  */
 function drush_get_editor() {
-  $bg = drush_get_option('bg') ? '&' : '';
-  // see http://drupal.org/node/1740294
-  $exec = drush_get_option('editor', '${VISUAL-${EDITOR-vi}}') . " %s $bg";
-  return $exec;
+    // See http://drupal.org/node/1740294
+    return '${VISUAL-${EDITOR-vi}} %s';
 }
 
 /**

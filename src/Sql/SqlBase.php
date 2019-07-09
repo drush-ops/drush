@@ -307,7 +307,7 @@ class SqlBase implements ConfigAwareInterface
     public function alwaysQuery($query, $input_file = null, $result_file = '')
     {
         $input_file_original = $input_file;
-        if ($input_file && drush_file_is_tarball($input_file)) {
+        if ($input_file && FsUtils::isTarball($input_file)) {
             $process = Drush::process(['gzip', '-df', $input_file]);
             $process->setSimulated(false);
             $process->run();

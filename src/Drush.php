@@ -442,7 +442,7 @@ class Drush
         if (!self::hasService('input')) {
             throw new \Exception('No input service available.');
         }
-        return Drush::input()->getOption('yes') || !Drush::negative();
+        return Drush::input()->getOption('yes');
     }
 
     /**
