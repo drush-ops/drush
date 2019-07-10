@@ -59,7 +59,7 @@ class QueueCommands extends DrushCommands
      * @option time-limit The maximum number of seconds allowed to run the queue
      * @option items-limit The maximum number of items allowed to run the queue
      */
-    public function run($name, $options = ['time-limit' => self::REQ])
+    public function run($name, $options = ['time-limit' => self::REQ, 'items-limit' => self::OPT])
     {
         $time_limit = (int) $options['time-limit'];
         $items_limit = (int) $options['items-limit'];
