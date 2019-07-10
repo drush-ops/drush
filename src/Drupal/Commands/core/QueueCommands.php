@@ -69,8 +69,7 @@ class QueueCommands extends DrushCommands
         $queue = $this->getQueue($name);
         $count = 0;
 
-        while (
-          (!$time_limit || time() < $end) && (!$items_limit || $count < $items_limit) && ($item = $queue->claimItem())) {
+        while ((!$time_limit || time() < $end) && (!$items_limit || $count < $items_limit) && ($item = $queue->claimItem())) {
             try {
                 $this->logger()->info(dt('Processing item @id from @name queue.', ['@name' => $name, '@id' => $item->item_id]));
                 $worker->processItem($item->data);
