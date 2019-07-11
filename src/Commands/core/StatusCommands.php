@@ -172,7 +172,7 @@ class StatusCommands extends DrushCommands implements SiteAliasManagerAwareInter
             return implode("\n", $cellData);
         }
         return $cellData;
-    }``
+    }
 
     /**
      * @param array $options
