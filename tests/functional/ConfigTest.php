@@ -71,7 +71,7 @@ class ConfigCase extends CommandUnishTestCase
         $this->assertContains('unish partial', $page['front'], '--partial was successfully imported.');
 
         // Test the --existing-config option for site:install.
-        $this->drush('core:status', ['drupal-version'], ['format' => 'string']);
+        $this->drush('core:status', [], ['field' => 'drupal-version']);
         $drupal_version = $this->getOutputRaw();
         if (Comparator::greaterThanOrEqualTo($drupal_version, '8.6')) {
             $contents = file_get_contents($system_site_yml);

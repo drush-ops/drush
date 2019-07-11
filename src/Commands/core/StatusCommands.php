@@ -23,6 +23,7 @@ class StatusCommands extends DrushCommands implements SiteAliasManagerAwareInter
      * An overview of the environment - Drush and Drupal.
      *
      * @command core:status
+     * @param $filter A field to filter on. @deprecated - use --field option instead.
      * @option project A comma delimited list of projects. Their paths will be added to path-aliases section.
      * @usage drush core-status --field=files
      *   Emit just one field, not all the default fields.
@@ -76,7 +77,7 @@ class StatusCommands extends DrushCommands implements SiteAliasManagerAwareInter
      *
      * @return \Consolidation\OutputFormatters\StructuredData\PropertyList
      */
-    public function status($options = ['project' => self::REQ, 'format' => 'table'])
+    public function status($filter = '', $options = ['project' => self::REQ, 'format' => 'table'])
     {
         $data = $this->getPropertyList($options);
 
@@ -172,6 +173,18 @@ class StatusCommands extends DrushCommands implements SiteAliasManagerAwareInter
             return implode("\n", $cellData);
         }
         return $cellData;
+    }
+
+    /**
+     * @hook pre-command core-status
+     */
+    public function adjustStatusOptions(CommandData $commandData)
+    {
+        $input = $commandData->input();
+        $args = $input->getArguments();
+        if (!empty($args['filter'])) {
+            $input->setOption('fields', '*' . $args['filter'] . '*');
+        }
     }
 
     /**

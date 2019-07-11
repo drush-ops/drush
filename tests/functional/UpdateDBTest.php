@@ -231,7 +231,7 @@ YAML_FRAGMENT;
         // Assert that the updates were run correctly.
         $this->drush('updatedb:status');
         $err = $this->getErrorOutput();
-        $this->assertEquals('[success] No database updates required.', $err);
+        $this->assertContains('[success] No database updates required.', $err);
     }
 
     /**
