@@ -28,37 +28,43 @@ Drupal Compatibility
     <th rowspan="2"> PHP </th>
     <th colspan="4"> Drupal versions </th>
   </tr>
-    <th>6</th> <th>7</th> <th>-8.3</th> <th>8.4+</th>
+    <th>6</th> <th>7</th> <th>-8.3</th> <th>8.4-8.7</th> <th>8.8+</th>
+  </tr>
+  <tr>
+    <td> Drush 10 </td>
+    <td> <a href="https://travis-ci.org/drush-ops/drush">master</a> </td>
+    <td> 7.1+ </td>
+    <td></td> <td></td> <td></td> <td></td> <td><b>✅</b></td>
   </tr>
   <tr>
     <td> Drush 9 </td>
-    <td> <a href="https://travis-ci.org/drush-ops/drush">master</a> </td>
+    <td> <a href="https://travis-ci.org/drush-ops/drush">9.x</a> </td>
     <td> 5.6+ </td>
-    <td></td> <td></td> <td></td> <td>✅</td>
+    <td></td> <td></td> <td></td> <td>✅</td> <td><b>⚠️</b></td>
   </tr>
   <tr>
     <td> Drush 8 </td>
     <td> <a href="https://travis-ci.org/drush-ops/drush">8.x</a> </td>
     <td> 5.4.5+ </td>
-    <td>✅</td> <td>✅</td> <td>✅</td> <td><b>⚠️</b></td>
+    <td>✅</td> <td>✅</td> <td>✅</td> <td><b>⚠️</b></td> <td><b>⚠️</b></td>
   </tr>
   <tr>
     <td> Drush 7 </td>
     <td> <a href="https://travis-ci.org/drush-ops/drush">7.x</a> </td>
     <td> 5.3.0+ </td>
-    <td>✓</td> <td>✓</td> <td></td> <td></td>
+    <td>✓</td> <td>✓</td> <td></td> <td></td> <td></td>
   </tr>
   <tr>
     <td> Drush 6 </td>
     <td> <a href="https://travis-ci.org/drush-ops/drush">6.x</a> </td>
     <td> 5.3.0+ </td>
-    <td>✓</td> <td>✓</td> <td></td> <td></td>
+    <td>✓</td> <td>✓</td> <td></td> <td></td> <td></td>
   </tr>
   <tr>
     <td> Drush 5 </td>
     <td> <a href="https://travis-ci.org/drush-ops/drush">5.x</a> </td>
     <td> 5.2.0+ </td>
-    <td>✓</td> <td>✓</td> <td></td> <td></td>
+    <td>✓</td> <td>✓</td> <td></td> <td></td> <td></td>
   </tr>
 </table>
 
