@@ -193,7 +193,7 @@ trait DrupalKernelTrait
                 return $dir . '/' . $serviceYmlPath;
             }
         }
-        Drush::logger()->debug(dt('{module} has Drush commands, but none of {constraints} match the current Drush version "{version}"', ['module' => $module, 'constraints' => implode(',', $services), 'version' => $version]));
+        Drush::logger()->warning(dt('{module} has Drush commands, but none of {constraints} match the current Drush version "{version}"', ['module' => $module, 'constraints' => implode(',', $services), 'version' => $version]));
         return false;
     }
 
