@@ -28,13 +28,13 @@ Drupal Compatibility
     <th rowspan="2"> PHP </th>
     <th colspan="4"> Drupal versions </th>
   </tr>
-    <th>6</th> <th>7</th> <th>-8.3</th> <th>8.4-8.7</th> <th>8.8+</th>
+    <th>6</th> <th>7</th> <th>-8.3</th> <th>8.4+</th> <th>9+</th>
   </tr>
   <tr>
     <td> Drush 10 </td>
     <td> <a href="https://travis-ci.org/drush-ops/drush">master</a> </td>
     <td> 7.1+ </td>
-    <td></td> <td></td> <td></td> <td></td> <td><b>✅</b></td>
+    <td></td> <td></td> <td></td> <td>✅</td> <td><b>✅</b></td>
   </tr>
   <tr>
     <td> Drush 9 </td>
