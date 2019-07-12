@@ -186,14 +186,14 @@ trait DrupalKernelTrait
     protected function findAppropriateServicesFile($module, $services, $dir)
     {
         $version = Drush::getVersion();
+        $version = preg_replace('#-dev.*#', '', $version);
         foreach ($services as $serviceYmlPath => $versionConstraint) {
-            $version = preg_replace('#-dev.*#', '', $version);
             if (Semver::satisfies($version, $versionConstraint)) {
                 Drush::logger()->debug(dt('Found {services} for {module} Drush commands', ['module' => $module, 'services' => $serviceYmlPath]));
                 return $dir . '/' . $serviceYmlPath;
             }
         }
-        Drush::logger()->warning(dt('{module} has Drush commands, but none of {constraints} match the current Drush version "{version}"', ['module' => $module, 'constraints' => implode(',', $services), 'version' => $version]));
+        Drush::logger()->warning(dt('{module} commands not loaded because its constraint ({constraints}) is incompatible with Drush {version}. Broaden the constraint in {composer} (see \'extra\drush\services\' section) to make the commands loadable.', ['module' => $module, 'composer' => drupal_get_path('module', $module) . '/composer.json', 'constraints' => implode(',', $services), 'version' => $version]));
         return false;
     }
 
