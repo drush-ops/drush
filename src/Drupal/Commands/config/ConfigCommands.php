@@ -428,7 +428,7 @@ class ConfigCommands extends DrushCommands implements StdinAwareInterface
         $option_name = $input->hasOption('destination') ? 'destination' : 'source';
         if (empty($input->getArgument('label') && empty($input->getOption($option_name)))) {
             $choices = drush_map_assoc(array_keys($config_directories));
-            unset($choices[CONFIG_ACTIVE_DIRECTORY]);
+            unset($choices[CONFIG_SYNC_DIRECTORY]);
             if (count($choices) >= 2) {
                 $label = $this->io()->choice('Choose a '. $option_name, $choices);
                 $input->setArgument('label', $label);
