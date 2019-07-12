@@ -145,7 +145,7 @@ trait DrupalKernelTrait
         if (!file_exists($result)) {
             return;
         }
-        Drush::logger()->debug(dt("!module should have an extra.drush.services section in its composer.json. See http://docs.drush.org/en/master/commands/#specifying-the-services-file.", ['!module' => $module]));
+        Drush::logger()->warning(dt("!module should have an extra.drush.services section in its composer.json. See http://docs.drush.org/en/master/commands/#specifying-the-services-file.", ['!module' => $module]));
         return $result;
     }
 
