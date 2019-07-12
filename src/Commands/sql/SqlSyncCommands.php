@@ -115,7 +115,7 @@ class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwareInte
             return 'simulated_db';
         }
 
-        $process = $this->processManager()->drush($record, 'core-status', ['db-name'], ['format' => 'json']);
+        $process = $this->processManager()->drush($record, 'core-status', [], ['fields' => 'db-name', 'format' => 'json']);
         $process->setSimulated(false);
         $process->mustRun();
         $data = $process->getOutputAsJson();
