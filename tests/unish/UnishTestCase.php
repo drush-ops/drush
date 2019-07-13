@@ -272,11 +272,6 @@ abstract class UnishTestCase extends TestCase
         return strtoupper(substr(PHP_OS, 0, 3)) == "WIN";
     }
 
-    public static function getTarExecutable()
-    {
-        return self::isWindows() ? "bsdtar.exe" : "tar";
-    }
-
     /**
      * Print out a tick mark.
      *
