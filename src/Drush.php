@@ -415,16 +415,6 @@ class Drush
     }
 
     /**
-     * Return the path to this Drush.
-     *
-     * @deprecated Inject configuration and use $this->getConfig()->drushScript().
-     */
-    public static function drushScript()
-    {
-        return \Drush\Drush::config()->drushScript();
-    }
-
-    /**
      * Return 'true' if we are in simulated mode
      *
      * @deprecated Inject configuration and use $this->getConfig()->simulate().
