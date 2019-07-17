@@ -114,7 +114,8 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
         }
 
         if ($options['cache-clear']) {
-            drush_drupal_cache_clear_all();
+            $process = Drush::drush(Drush::aliasManager()->getSelf(), 'cache-rebuild');
+            $process->mustrun();
         }
 
         $this->logger()->success(dt('Finished performing updates.'));
@@ -517,7 +518,6 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
      * explicitly rebuilding the container as the container is rebuilt on the next
      * HTTP request of the batch.
      *
-     * @see drush_drupal_cache_clear_all()
      * @see \Drupal\system\Controller\DbUpdateController::triggerBatch()
      */
     public static function cacheRebuild()

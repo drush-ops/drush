@@ -33,14 +33,6 @@ function drush_drupal_version($drupal_root = NULL) {
 }
 
 /**
- * @deprecated @see Drush::drush()
- */
-function drush_drupal_cache_clear_all() {
-    $process = Drush::drush(Drush::aliasManager()->getSelf(), 'cache-rebuild');
-    $process->mustrun();
-}
-
-/**
  * Returns the Drupal major version number (6, 7, 8 ...)
  */
 function drush_drupal_major_version($drupal_root = NULL) {
