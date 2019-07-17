@@ -15,20 +15,6 @@ use Drush\Log\LogLevel;
 use Webmozart\PathUtil\Path;
 
 /**
- * Converts a Windows path (dir1\dir2\dir3) into a Unix path (dir1/dir2/dir3).
- * Also converts a cygwin "drive emulation" path (/cygdrive/c/dir1) into a
- * proper drive path, still with Unix slashes (c:/dir1).
- */
-function _drush_convert_path($path) {
-  $path = str_replace('\\','/', $path);
-  if (drush_is_windows() && !drush_is_cygwin()) {
-    $path = preg_replace('/^\/cygdrive\/([A-Za-z])(.*)$/', '\1:\2', $path);
-  }
-
-  return $path;
-}
-
-/**
  * Check if the operating system is Winodws
  * running some variant of cygwin -- either
  * Cygwin or the MSYSGIT shell.  If you care
@@ -91,21 +77,6 @@ function _drush_test_os($os, $os_list_to_check) {
     }
   }
   return FALSE;
-}
-
-/**
- * Make a determination whether or not the given
- * host is local or not.
- *
- * @param host
- *   A hostname, 'localhost' or '127.0.0.1'.
- * @return
- *   True if the host is local.
- */
-function drush_is_local_host($host) {
-  // Check to see if the provided host is "local".
-  // @see hook_drush_sitealias_alter() in drush.api.php.
-  return $host == 'localhost' || $host == '127.0.0.1';
 }
 
 /**
