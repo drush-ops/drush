@@ -10,7 +10,6 @@ use Consolidation\SiteAlias\SiteAliasInterface;
 use Consolidation\SiteAlias\SiteAliasManager;
 use Consolidation\SiteProcess\ProcessBase;
 use Consolidation\SiteProcess\SiteProcess;
-use Drush\Style\DrushStyle;
 use League\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Application;
@@ -40,14 +39,6 @@ use Symfony\Component\Process\Process;
  * than a few non-reusable lines, it is recommended to instantiate an object
  * implementing the actual logic.
  *
- * @code
- *   // Legacy procedural code.
- *   $object = drush_get_context('DRUSH_CLASS_LABEL');
- *
- * Better:
- *   $object = Drush::service('label');
- *
- * @endcode
  */
 class Drush
 {
