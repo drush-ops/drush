@@ -15,13 +15,6 @@ use Webmozart\PathUtil\Path;
  */
 
 /**
- * Behavior for drush_copy_dir() when destinations exist.
- */
-define('FILE_EXISTS_ABORT', 0);
-define('FILE_EXISTS_OVERWRITE', 1);
-define('FILE_EXISTS_MERGE', 2);
-
-/**
  * Deletes the specified file or directory and everything inside it.
  *
  * Usually respects read-only files and folders. To do a forced delete use
@@ -112,27 +105,6 @@ function drush_mkdir($path) {
   $fs = new Filesystem();
   $fs->mkdir($path);
   return true;
-}
-
-/*
- * Determine if program exists on user's PATH.
- *
- * @return bool|null
- *
- * @deprecated
- *   See \Drush\Exec\ExecTrait::programExists.
- */
-function drush_program_exists($program) {
-  if (drush_has_bash()) {
-    $bucket = drush_bit_bucket();
-
-    // Remove environment variables (eg. PGPASSFILE=) before testing program.
-    $program = preg_replace('#^([A-Z0-9]+=.+? )+#', '', $program);
-
-    // Don't use drush_op_system() since we don't want output during tests.
-    system("command -v $program > $bucket 2>&1", $result_code);
-    return $result_code === 0 ? TRUE : FALSE;
-  }
 }
 
 /**
