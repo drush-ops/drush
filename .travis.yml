@@ -2,6 +2,7 @@
 branches:
   only:
     - fix-travis
+    - ten
     - master
     - 8.x
     - 7.x
