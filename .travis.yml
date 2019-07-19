@@ -2,6 +2,7 @@
 branches:
   only:
     - master
+    - 9.x
     - 8.x
     - 7.x
     - 6.x
@@ -41,7 +42,7 @@ before_install:
 
 # Build a System-Under-Test.
 install:
-  #- '.scenarios.lock/install "${SCENARIO}" "${DEPENDENCIES}"'
+  - '.scenarios.lock/install "${SCENARIO}" "${DEPENDENCIES}"'
 
 before_script:
   - phpenv config-rm xdebug.ini
