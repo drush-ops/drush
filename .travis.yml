@@ -1,9 +1,8 @@
 # Configuration file for unit test runner at http://travis-ci.org/#!/drush-ops/drush
 branches:
   only:
-    - fix-travis
-    - ten
     - master
+    - 9.x
     - 8.x
     - 7.x
     - 6.x
