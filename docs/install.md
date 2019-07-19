@@ -40,13 +40,13 @@ Drupal Compatibility
     <td> Drush 9 </td>
     <td> <a href="https://travis-ci.org/drush-ops/drush">9.x</a> </td>
     <td> 5.6+ </td>
-    <td></td> <td></td> <td></td> <td>✅</td> <td><b>⚠️</b></td>
+    <td></td> <td></td> <td></td> <td>✅</td> <td></td>
   </tr>
   <tr>
     <td> Drush 8 </td>
     <td> <a href="https://travis-ci.org/drush-ops/drush">8.x</a> </td>
     <td> 5.4.5+ </td>
-    <td>✅</td> <td>✅</td> <td>✅</td> <td><b>⚠️</b></td> <td><b>⚠️</b></td>
+    <td>✅</td> <td>✅</td> <td>✅</td> <td><b>⚠️</b></td> <td></td>
   </tr>
   <tr>
     <td> Drush 7 </td>
