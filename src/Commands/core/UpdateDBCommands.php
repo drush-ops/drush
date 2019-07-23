@@ -362,15 +362,16 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
      * @param array $results
      * @param array $operations
      */
-    public static function updateFinished($success, $results, $operations)
+    public function updateFinished($success, $results, $operations)
     {
-        // Flush all caches at the end of the batch operation. When Drupal core
-        // performs database updates it also clears the cache at the end. This
-        // ensures that we are compatible with updates that rely on this
-        // behavior.
-        drupal_flush_all_caches();
+        if ($this->cache_clear) {
+            // Flush all caches at the end of the batch operation. When Drupal
+            // core performs database updates it also clears the cache at the
+            // end. This ensures that we are compatible with updates that rely
+            // on this behavior.
+            drupal_flush_all_caches();
+        }
     }
-
 
     /**
      * Start the database update batch process.
@@ -445,7 +446,7 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
             'title' => 'Updating',
             'init_message' => 'Starting updates',
             'error_message' => 'An unrecoverable error has occurred. You can find the error message below. It is advised to copy it to the clipboard for reference.',
-            'finished' => '\Drush\Commands\core\UpdateDBCommands::updateFinished',
+            'finished' => [$this, 'updateFinished'],
             'file' => 'core/includes/update.inc',
         ];
         batch_set($batch);
