@@ -49,3 +49,12 @@ function woot_update_8105(array &$sandbox) {
   }
   return "Iteration {$sandbox['current']}.";
 }
+
+/**
+ * Install taxonomy.module
+ */
+function woot_update_8106()
+{
+    \Drupal::service('module_installer')->install(['taxonomy']);
+    return \Drupal::entityTypeManager()->getDefinition('taxonomy_term')->id();
+}
