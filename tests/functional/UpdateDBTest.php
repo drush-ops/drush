@@ -308,6 +308,58 @@ POST_UPDATE;
         $this->assertContains($expected_post_update_output, $actual_output);
     }
 
+    /**
+     * Tests installing modules with entity type definitions via update hooks.
+     */
+    public function testEnableModuleViaUpdate()
+    {
+        $options = [
+            'yes' => null,
+        ];
+        $this->setUpDrupal(1, true);
+        $this->setupModulesForTests(['woot'], Path::join(__DIR__, 'resources/modules/d8'));
+        $this->drush('pm:enable', ['woot'], $options);
+
+        // Force re-run of woot_update_8106().
+        $this->drush('php:eval', ['drupal_set_installed_schema_version("woot", 8105)'], $options);
+
+        // Run updates.
+        $this->drush('updatedb', [], $options);
+
+        // Check that the post-update function returns the new entity type ID.
+        $this->assertContains('[notice] taxonomy_term', $this->getErrorOutputRaw());
+
+        // Check that the new entity type is installed.
+        $this->drush('php:eval', ['woot_get_taxonomy_term_entity_type_id();']);
+        $this->assertContains('taxonomy_term', $this->getOutputRaw());
+    }
+
+    /**
+     * Tests installing modules with entity type definitions via post-update hooks.
+     */
+    public function testEnableModuleViaPostUpdate()
+    {
+        $options = [
+            'yes' => null,
+        ];
+        $this->setUpDrupal(1, true);
+        $this->setupModulesForTests(['woot'], Path::join(__DIR__, 'resources/modules/d8'));
+        $this->drush('pm:enable', ['woot'], $options);
+
+        // Force re-run of woot_post_update_install_taxonomy().
+        $this->forcePostUpdate('woot_post_update_install_taxonomy', $options);
+
+        // Run updates.
+        $this->drush('updatedb', [], $options);
+
+        // Check that the post-update function returns the new entity type ID.
+        $this->assertContains('[notice] taxonomy_term', $this->getErrorOutputRaw());
+
+        // Check that the new entity type is installed.
+        $this->drush('php:eval', ['woot_get_taxonomy_term_entity_type_id();']);
+        $this->assertContains('taxonomy_term', $this->getOutputRaw());
+    }
+
     public function tearDown()
     {
         $this->recursiveDelete($this->pathPostUpdate, true);
