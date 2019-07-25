@@ -102,6 +102,15 @@
             </div>
                     <div class="row">
                 <div class="col-md-6">
+                                            <a href="../../../Drush/Exec/ExecTrait.html"><abbr title="Drush\Exec\ExecTrait">ExecTrait</abbr></a>
+                                            
+                </div>
+                <div class="col-md-6">
+                    
+                </div>
+            </div>
+                    <div class="row">
+                <div class="col-md-6">
                                             <abbr title="Consolidation\SiteProcess\ProcessManagerAwareTrait">ProcessManagerAwareTrait</abbr>
                                             
                 </div>
@@ -236,6 +245,38 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
         
                                             <p>Print the contents of a file.</p>                </div>
                 <div class="col-md-2"><small>from&nbsp;<a href="../../../Drush/Commands/DrushCommands.html#method_printFile"><abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    bool
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_startBrowser">startBrowser</a>($uri = null, int $sleep = 0, bool $port = false, bool $browser = true)
+        
+                                            <p>Starts a background browser/tab for the current site or a specified URL.</p>                </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../../Drush/Exec/ExecTrait.html#method_startBrowser"><abbr title="Drush\Exec\ExecTrait">ExecTrait</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    static&nbsp;
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_programExists">programExists</a>($program)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../../Drush/Exec/ExecTrait.html#method_programExists"><abbr title="Drush\Exec\ExecTrait">ExecTrait</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    static&nbsp;
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_getEditor">getEditor</a>()
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../../Drush/Exec/ExecTrait.html#method_getEditor"><abbr title="Drush\Exec\ExecTrait">ExecTrait</abbr></a></small></div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
@@ -451,8 +492,114 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
 
             </div>
                     <div class="method-item">
+                    <h3 id="method_startBrowser">
+        <div class="location">in <a href="../../../Drush/Exec/ExecTrait.html#method_startBrowser"><abbr title="Drush\Exec\ExecTrait">ExecTrait</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/Exec/ExecTrait.php#L26">line 26</a></div>
+        <code>                    bool
+    <strong>startBrowser</strong>($uri = null, int $sleep = 0, bool $port = false, bool $browser = true)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Starts a background browser/tab for the current site or a specified URL.</p>                    <p>Uses a non-blocking Process call, so Drush execution will continue.</p>                            </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$uri</td>
+                <td>Optional URI or site path to open in browser. If omitted, or if a site path
+  is specified, the current site home page uri will be prepended if the site's
+  hostname resolves.</td>
+            </tr>
+                    <tr>
+                <td>int</td>
+                <td>$sleep</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>bool</td>
+                <td>$port</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>bool</td>
+                <td>$browser</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>bool</td>
+            <td>TRUE if browser was opened. FALSE if browser was disabled by the user or a
+  default browser could not be found.</td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_programExists">
+        <div class="location">in <a href="../../../Drush/Exec/ExecTrait.html#method_programExists"><abbr title="Drush\Exec\ExecTrait">ExecTrait</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/Exec/ExecTrait.php#L90">line 90</a></div>
+        <code>        static            
+    <strong>programExists</strong>($program)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$program</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getEditor">
+        <div class="location">in <a href="../../../Drush/Exec/ExecTrait.html#method_getEditor"><abbr title="Drush\Exec\ExecTrait">ExecTrait</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/Exec/ExecTrait.php#L102">line 102</a></div>
+        <code>        static            
+    <strong>getEditor</strong>()
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                <div class="tags">
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
                     <h3 id="method_edit">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/core/EditCommands.php#L35">line 35</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/core/EditCommands.php#L37">line 37</a></div>
         <code>                    
     <strong>edit</strong>($filter = null)
         </code>
@@ -483,7 +630,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </div>
                     <div class="method-item">
                     <h3 id="method_load">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/core/EditCommands.php#L67">line 67</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/core/EditCommands.php#L69">line 69</a></div>
         <code>                    
     <strong>load</strong>($headers = true)
         </code>
@@ -512,7 +659,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </div>
                     <div class="method-item">
                     <h3 id="method_phpIniFiles">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/core/EditCommands.php#L116">line 116</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/core/EditCommands.php#L118">line 118</a></div>
         <code>        static            
     <strong>phpIniFiles</strong>()
         </code>
@@ -531,7 +678,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </div>
                     <div class="method-item">
                     <h3 id="method_bashFiles">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/core/EditCommands.php#L135">line 135</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/core/EditCommands.php#L137">line 137</a></div>
         <code>        static            
     <strong>bashFiles</strong>()
         </code>
@@ -550,7 +697,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </div>
                     <div class="method-item">
                     <h3 id="method_findBashrc">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/core/EditCommands.php#L155">line 155</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/core/EditCommands.php#L157">line 157</a></div>
         <code>        static            
     <strong>findBashrc</strong>($home)
         </code>
@@ -582,7 +729,7 @@ way to share code like this.</p>                            </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_complete">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/core/EditCommands.php#L160">line 160</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/core/EditCommands.php#L162">line 162</a></div>
         <code>                    
     <strong>complete</strong>()
         </code>

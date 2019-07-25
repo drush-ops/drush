@@ -122,6 +122,26 @@
                                             <p>Returns canonicalized absolute pathname.</p>                </div>
                 <div class="col-md-2"></div>
             </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    static&nbsp;string|bool
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_isTarball">isTarball</a>(string $path)
+        
+                                            <p>Check whether a file is a supported tarball.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    static&nbsp;string|bool|null
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_getMimeContentType">getMimeContentType</a>(string $path)
+        
+                                            <p>Determines the MIME content type of the specified file.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
             </div>
 
 
@@ -130,7 +150,7 @@
             <div id="method-details">
                     <div class="method-item">
                     <h3 id="method_getBackupDir">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Utils/FsUtils.php#L24">line 24</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Utils/FsUtils.php#L25">line 25</a></div>
         <code>        static            <abbr title="Drush\Utils\A">A</abbr>
     <strong>getBackupDir</strong>(string $subdir = null)
         </code>
@@ -180,7 +200,7 @@
             </div>
                     <div class="method-item">
                     <h3 id="method_prepareBackupDir">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Utils/FsUtils.php#L55">line 55</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Utils/FsUtils.php#L56">line 56</a></div>
         <code>        static            string
     <strong>prepareBackupDir</strong>(string $subdir = null)
         </code>
@@ -229,7 +249,7 @@
             </div>
                     <div class="method-item">
                     <h3 id="method_realpath">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Utils/FsUtils.php#L75">line 75</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Utils/FsUtils.php#L76">line 76</a></div>
         <code>        static            string
     <strong>realpath</strong>(string $path)
         </code>
@@ -259,6 +279,88 @@ return the original path even if it doesn't exist.</p>                          
         <tr>
             <td>string</td>
             <td>The canonicalized absolute pathname.</td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_isTarball">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Utils/FsUtils.php#L90">line 90</a></div>
+        <code>        static            string|bool
+    <strong>isTarball</strong>(string $path)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Check whether a file is a supported tarball.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$path</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string|bool</td>
+            <td>The file content type if it's a tarball. FALSE otherwise.</td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getMimeContentType">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Utils/FsUtils.php#L118">line 118</a></div>
+        <code>        static            string|bool|null
+    <strong>getMimeContentType</strong>(string $path)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Determines the MIME content type of the specified file.</p>                    <p>The power of this function depends on whether the PHP installation
+has either mime_content_type() or finfo installed -- if not, only tar,
+gz, zip and bzip2 types can be detected.</p>                            </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$path</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string|bool|null</td>
+            <td>The MIME content type of the file.</td>
         </tr>
     </table>
 

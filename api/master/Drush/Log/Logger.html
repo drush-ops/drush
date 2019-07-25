@@ -88,27 +88,6 @@
     
     
     
-            <h2>Properties</h2>
-
-            <table class="table table-condensed">
-                    <tr>
-                <td class="type" id="property_logs">
-                                        protected                                        array
-                </td>
-                <td>$logs</td>
-                <td class="last">Array of logs. For use by backend responses.</td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td class="type" id="property_logs_error">
-                                        protected                                        array
-                </td>
-                <td>$logs_error</td>
-                <td class="last">Array of error logs. For use by backend responses.</td>
-                <td></td>
-            </tr>
-            </table>
-
     
             <h2>Methods</h2>
 
@@ -126,62 +105,10 @@
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    array
-                </div>
-                <div class="col-md-8 type">
-                    <a href="#method_getLogs">getLogs</a>()
-        <small><sup><span class="label label-danger">deprecated</span></sup></small>
-                                            <p>Get an array of logs for the current request.</p>                </div>
-                <div class="col-md-2"></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    array
-                </div>
-                <div class="col-md-8 type">
-                    <a href="#method_getErrorLogs">getErrorLogs</a>()
-        <small><sup><span class="label label-danger">deprecated</span></sup></small>
-                                            <p>Get an array of error logs for the current request.</p>                </div>
-                <div class="col-md-2"></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    
-                </div>
-                <div class="col-md-8 type">
-                    <a href="#method_clearLogs">clearLogs</a>()
-        <small><sup><span class="label label-danger">deprecated</span></sup></small>
-                                            <p>Empty log collections.</p>                </div>
-                <div class="col-md-2"></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
                     
                 </div>
                 <div class="col-md-8 type">
                     <a href="#method_log">log</a>($level, $message, array $context = [])
-        
-                                            <p class="no-description">No description</p>
-                                    </div>
-                <div class="col-md-2"></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    
-                </div>
-                <div class="col-md-8 type">
-                    <a href="#method_error">error</a>($message, array $context = [])
-        
-                                            <p class="no-description">No description</p>
-                                    </div>
-                <div class="col-md-2"></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    array
-                </div>
-                <div class="col-md-8 type">
-                    <a href="#method_buildEntry">buildEntry</a>($level, $message, array $context)
         
                                             <p class="no-description">No description</p>
                                     </div>
@@ -195,7 +122,7 @@
             <div id="method-details">
                     <div class="method-item">
                     <h3 id="method___construct">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Log/Logger.php#L54">line 54</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Log/Logger.php#L34">line 34</a></div>
         <code>                    
     <strong>__construct</strong>(<abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr> $output)
         </code>
@@ -223,110 +150,8 @@
 
             </div>
                     <div class="method-item">
-                    <h3 id="method_getLogs">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Log/Logger.php#L66">line 66</a></div>
-        <code>                    array
-    <strong>getLogs</strong>()
-        <small><sup><span class="label label-danger">deprecated</span></sup></small></code>
-    </h3>
-    <div class="details">
-            
-            <p>
-                <small><sup><span class="label label-danger">deprecated</span></sup></small>
-                            <tr>
-                    <td>Used</td>
-                    <td>by drush_backend_output().</td>
-                </tr>
-                    </p>
-    
-
-                    <div class="method-description">
-                                    <p>Get an array of logs for the current request.</p>                                                </div>
-                <div class="tags">
-            
-                            <h4>Return Value</h4>
-
-                    <table class="table table-condensed">
-        <tr>
-            <td>array</td>
-            <td></td>
-        </tr>
-    </table>
-
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
-                    <h3 id="method_getErrorLogs">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Log/Logger.php#L78">line 78</a></div>
-        <code>                    array
-    <strong>getErrorLogs</strong>()
-        <small><sup><span class="label label-danger">deprecated</span></sup></small></code>
-    </h3>
-    <div class="details">
-            
-            <p>
-                <small><sup><span class="label label-danger">deprecated</span></sup></small>
-                            <tr>
-                    <td>Used</td>
-                    <td>by drush_backend_output().</td>
-                </tr>
-                    </p>
-    
-
-                    <div class="method-description">
-                                    <p>Get an array of error logs for the current request.</p>                                                </div>
-                <div class="tags">
-            
-                            <h4>Return Value</h4>
-
-                    <table class="table table-condensed">
-        <tr>
-            <td>array</td>
-            <td></td>
-        </tr>
-    </table>
-
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
-                    <h3 id="method_clearLogs">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Log/Logger.php#L88">line 88</a></div>
-        <code>                    
-    <strong>clearLogs</strong>()
-        <small><sup><span class="label label-danger">deprecated</span></sup></small></code>
-    </h3>
-    <div class="details">
-            
-            <p>
-                <small><sup><span class="label label-danger">deprecated</span></sup></small>
-                            <tr>
-                    <td></td>
-                    <td></td>
-                </tr>
-                    </p>
-    
-
-                    <div class="method-description">
-                                    <p>Empty log collections.</p>                                                </div>
-                <div class="tags">
-            
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
                     <h3 id="method_log">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Log/Logger.php#L93">line 93</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Log/Logger.php#L39">line 39</a></div>
         <code>                    
     <strong>log</strong>($level, $message, array $context = [])
         </code>
@@ -357,88 +182,6 @@
             </table>
 
             
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
-                    <h3 id="method_error">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Log/Logger.php#L201">line 201</a></div>
-        <code>                    
-    <strong>error</strong>($message, array $context = [])
-        </code>
-    </h3>
-    <div class="details">
-            
-    
-
-                <div class="tags">
-                            <h4>Parameters</h4>
-
-                    <table class="table table-condensed">
-                    <tr>
-                <td></td>
-                <td>$message</td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td>array</td>
-                <td>$context</td>
-                <td></td>
-            </tr>
-            </table>
-
-            
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
-                    <h3 id="method_buildEntry">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Log/Logger.php#L215">line 215</a></div>
-        <code>            protected        array
-    <strong>buildEntry</strong>($level, $message, array $context)
-        </code>
-    </h3>
-    <div class="details">
-            
-    
-
-                <div class="tags">
-                            <h4>Parameters</h4>
-
-                    <table class="table table-condensed">
-                    <tr>
-                <td></td>
-                <td>$level</td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td></td>
-                <td>$message</td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td>array</td>
-                <td>$context</td>
-                <td></td>
-            </tr>
-            </table>
-
-            
-                            <h4>Return Value</h4>
-
-                    <table class="table table-condensed">
-        <tr>
-            <td>array</td>
-            <td></td>
-        </tr>
-    </table>
-
             
             
                     </div>
