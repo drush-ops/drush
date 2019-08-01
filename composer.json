@@ -27,6 +27,10 @@
     "drupal_org": {
       "type": "composer",
       "url": "https://packages.drupal.org/8"
+    },
+    "drupal-finder": {
+        "type": "git",
+        "url": "https://github.com/greg-1-anderson/drupal-finder"
     }
   },
   "require": {
@@ -51,7 +55,7 @@
     "symfony/process": "^3.4",
     "symfony/var-dumper": "^3.4 || ^4.0",
     "symfony/yaml": "^3.4",
-    "webflo/drupal-finder": "^1.1",
+    "webflo/drupal-finder": "dev-find-drupal-drupal-root",
     "webmozart/path-util": "^2.1.0"
   },
   "require-dev": {
