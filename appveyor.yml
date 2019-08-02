@@ -71,6 +71,6 @@ on_finish:
 # environment variables
 environment:
   global:
-    php_ver_target: 7.1
+    php_ver_target: 7.3
     UNISH_DB_URL: "mysql://root:Password12!@localhost"
     APPVEYOR_RDP_PASSWORD: un1sh@Windows
