@@ -5,6 +5,8 @@
  * Drush sql commands
  */
 
+use Drush\Log\LogLevel;
+
 /**
  * Implementation of hook_drush_help().
  */
@@ -529,7 +531,28 @@ function drush_sql_get_class($db_spec = NULL) {
   // Try a few times to quickly get $db_spec.
   if (!empty($db_spec)) {
     if (!empty($db_spec['driver'])) {
-      return drush_get_class(array('Drush\Sql\Sql', 'Drupal\Driver\Database\\' .  $db_spec['driver'] . '\Drush'), array($db_spec), array($db_spec['driver']));
+      $class_name = [
+        'Drush\Sql\Sql',
+        'Drupal\Driver\Database\\' . $db_spec['driver'] . '\Drush',
+      ];
+      try {
+        $class = drush_get_class($class_name, [$db_spec], [$db_spec['driver']]);
+        return $class;
+      }
+      catch (ArgumentCountError $e) {
+        /** @var \Drush\Log\Logger $logger */
+        $logger = drush_get_context('DRUSH_LOGGER');
+        $logger->error(dt('Could not load SQL class. There is a mismatch between your Drupal root and your PHP autoloading.'));
+        $logger->error(dt('This can happen if you mix Drupal 8 and Drupal 7.'));
+        $logger->error(dt('Please check that the location of Drush matches the Drupal core version you want Drush to talk to.'));
+        if (drush_get_context('DRUSH_DEBUG')) {
+          $message = sprintf(
+            dt('drush_sql_get_class threw a %s exception: %s'),
+            get_class($e),
+            $e->getMessage());
+          $logger->log(LogLevel::DEBUG, $message);
+        }
+      }
     }
   }
   elseif ($url = drush_get_option('db-url')) {
