@@ -950,6 +950,7 @@ window.projectVersion = 'master';
             {"type": "Class", "fromName": "Drush\\Log", "fromLink": "Drush/Log.html", "link": "Drush/Log/Logger.html", "name": "Drush\\Log\\Logger", "doc": "&quot;&quot;"},
                                                         {"type": "Method", "fromName": "Drush\\Log\\Logger", "fromLink": "Drush/Log/Logger.html", "link": "Drush/Log/Logger.html#method___construct", "name": "Drush\\Log\\Logger::__construct", "doc": "&quot;&quot;"},
                     {"type": "Method", "fromName": "Drush\\Log\\Logger", "fromLink": "Drush/Log/Logger.html", "link": "Drush/Log/Logger.html#method_log", "name": "Drush\\Log\\Logger::log", "doc": "&quot;&quot;"},
+                    {"type": "Method", "fromName": "Drush\\Log\\Logger", "fromLink": "Drush/Log/Logger.html", "link": "Drush/Log/Logger.html#method_formatSize", "name": "Drush\\Log\\Logger::formatSize", "doc": "&quot;&quot;"},
             
             {"type": "Class", "fromName": "Drush\\Preflight", "fromLink": "Drush/Preflight.html", "link": "Drush/Preflight/ArgsPreprocessor.html", "name": "Drush\\Preflight\\ArgsPreprocessor", "doc": "&quot;Preprocess commandline arguments.&quot;"},
                                                         {"type": "Method", "fromName": "Drush\\Preflight\\ArgsPreprocessor", "fromLink": "Drush/Preflight/ArgsPreprocessor.html", "link": "Drush/Preflight/ArgsPreprocessor.html#method___construct", "name": "Drush\\Preflight\\ArgsPreprocessor::__construct", "doc": "&quot;ArgsPreprocessor constructor&quot;"},
