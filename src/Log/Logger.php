@@ -25,6 +25,7 @@
 
 namespace Drush\Log;
 
+use Drush\Drush;
 use Robo\Log\RoboLogger;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -60,7 +61,43 @@ class Logger extends RoboLogger
                 break;
         }
 
+        // Append timer and memory values.
+        if (Drush::debug()) {
+            $timer = round(microtime(true) - DRUSH_REQUEST_TIME, 2);
+            $suffix = sprintf(' [%s sec, %s]', $timer, self::formatSize(memory_get_usage()));
+            $message .= $suffix;
+        }
+
       // Robo-styled output
         parent::log($level, $message, $context);
+    }
+
+    // Copy of format_size() in Drupal.
+    public static function formatSize($size)
+    {
+        if ($size < DRUSH_KILOBYTE) {
+            // format_plural() not always available.
+            return dt('@count bytes', ['@count' => $size]);
+        } else {
+            $size = $size / DRUSH_KILOBYTE; // Convert bytes to kilobytes.
+            $units = [
+                dt('@size KB', []),
+                dt('@size MB', []),
+                dt('@size GB', []),
+                dt('@size TB', []),
+                dt('@size PB', []),
+                dt('@size EB', []),
+                dt('@size ZB', []),
+                dt('@size YB', []),
+            ];
+            foreach ($units as $unit) {
+                if (round($size, 2) >= DRUSH_KILOBYTE) {
+                    $size = $size / DRUSH_KILOBYTE;
+                } else {
+                    break;
+                }
+            }
+            return str_replace('@size', round($size, 2), $unit);
+        }
     }
 }
