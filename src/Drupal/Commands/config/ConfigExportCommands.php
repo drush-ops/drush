@@ -64,6 +64,15 @@ class ConfigExportCommands extends DrushCommands
     /**
      * @return StorageInterface
      */
+    public function getConfigStorage()
+    {
+        // @todo: deprecate this method.
+        return $this->getConfigStorageExport();
+    }
+
+    /**
+     * @return StorageInterface
+     */
     public function getConfigStorageSync()
     {
         return $this->configStorageSync;
