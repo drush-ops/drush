@@ -90,6 +90,9 @@ drush_invoke("version", $arg);
   }
 
   function testDrupalDirectory() {
+    if (explode('.', UNISH_DRUPAL_MINOR_VERSION)[0] < '5') {
+      $this->markTestSkipped('Test uses devel, which requires Drupal 8.5.x or later');
+    }
     $root = $this->webroot();
     $sitewide = $this->drupalSitewideDirectory();
     $options = array(

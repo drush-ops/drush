@@ -42,7 +42,7 @@ function sitealias_drush_command() {
       'field-mappings' => array('name' => '#name'),
       'output-data-type' => 'format-table',
     ),
-    'aliases' => array('sa'),
+    'aliases' => array('sa', 'site:alias'),
     'examples' => array(
       'drush site-alias' => 'List all alias records known to drush.',
       'drush site-alias @dev' => 'Print an alias record for the alias \'dev\'.',
@@ -57,7 +57,7 @@ function sitealias_drush_command() {
     'arguments' => array(
       'site' => 'Site specification to use, or "-" for previous site. Omit this argument to "unset"',
     ),
-    'aliases' => array('use'),
+    'aliases' => array('use', 'site:set'),
     'examples' => array(
       'drush site-set @dev' => 'Set the current session to use the @dev alias.',
       'drush site-set user@server/path/to/drupal#sitename' => 'Set the current session to use a remote site via site specification.',

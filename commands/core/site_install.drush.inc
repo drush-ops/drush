@@ -67,7 +67,7 @@ function site_install_drush_command() {
       'drush site-install standard install_configure_form.enable_update_status_module=NULL install_configure_form.enable_update_status_emails=NULL' => 'Disable email notification during install and later (D8). If your server has no mail transfer agent, this gets rid of an error during install.',
     ),
     'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_ROOT,
-    'aliases' => array('si'),
+    'aliases' => array('si', 'site:install'),
   );
   return $items;
 }
@@ -99,6 +99,7 @@ function drush_core_site_install_validate() {
     }
     // Make sure that we will bootstrap to the 'sites-subdir' site.
     drush_set_context('DRUSH_SELECTED_URI', 'http://' . $sites_subdir);
+    drush_sitealias_create_self_alias();
   }
 
   if ($config = drush_get_option('config-dir')) {
@@ -175,24 +176,11 @@ function drush_core_pre_site_install($profile = NULL) {
     if (!drush_op('copy', 'sites/default/default.settings.php', $settingsfile) && !drush_get_context('DRUSH_SIMULATE')) {
       return drush_set_error(dt('Failed to copy sites/default/default.settings.php to @settingsfile', array('@settingsfile' => $settingsfile)));
     }
+  }
 
-    if (drush_drupal_major_version() == 6) {
-      // On D6, we have to write $db_url ourselves. In D7+, the installer does it.
-      file_put_contents($settingsfile, "\n" . '$db_url = \'' . drush_get_option('db-url') . "';\n", FILE_APPEND);
-      // Instead of parsing and performing string replacement on the configuration file,
-      // the options are appended and override the defaults.
-      // Database table prefix
-      if (!empty($db_spec['db_prefix'])) {
-        if (is_array($db_spec['db_prefix'])) {
-          // Write db_prefix configuration as an array
-          $db_prefix_config = '$db_prefix = ' . var_export($db_spec['db_prefix'], TRUE) . ';';
-        }
-        else {
-          // Write db_prefix configuration as a string
-          $db_prefix_config = '$db_prefix = \'' . $db_spec['db_prefix'] . '\';';
-        }
-        file_put_contents($settingsfile, "\n" . $db_prefix_config . "\n", FILE_APPEND);
-      }
+  if (drush_drupal_major_version() == 6) {
+    if (!_drush_core_site_install_add_db_url_to_settings($settingsfile, $db_spec)) {
+      return drush_set_error(dt('Failed to write database settings to @settingsfile', array('@settingsfile' => $settingsfile)));
     }
   }
 
@@ -219,6 +207,34 @@ function drush_core_pre_site_install($profile = NULL) {
 
   return TRUE;
 }
+
+function _drush_core_site_install_add_db_url_to_settings($settingsfile, $db_spec) {
+  $settingsContents = file_get_contents($settingsfile);
+  if (preg_match('#^.db_url *=#', $settingsContents)) {
+    return true;
+  }
+  // On D6, we have to write $db_url ourselves. In D7+, the installer does it.
+  if (file_put_contents($settingsfile, "\n" . '$db_url = \'' . drush_convert_db_url(drush_get_option('db-url')) . "';\n", FILE_APPEND) === false) {
+    return false;
+  }
+
+  // Instead of parsing and performing string replacement on the configuration file,
+  // the options are appended and override the defaults.
+  // Database table prefix
+  if (!empty($db_spec['db_prefix'])) {
+    if (is_array($db_spec['db_prefix'])) {
+      // Write db_prefix configuration as an array
+      $db_prefix_config = '$db_prefix = ' . var_export($db_spec['db_prefix'], TRUE) . ';';
+    }
+    else {
+      // Write db_prefix configuration as a string
+      $db_prefix_config = '$db_prefix = \'' . $db_spec['db_prefix'] . '\';';
+    }
+    file_put_contents($settingsfile, "\n" . $db_prefix_config . "\n", FILE_APPEND);
+  }
+  return true;
+}
+
 
 /**
  * Command callback.

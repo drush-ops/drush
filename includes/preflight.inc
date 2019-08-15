@@ -5,6 +5,7 @@
  * Preflight, postflight and shutdown code.
  */
 
+use Drush\Drush;
 use Drush\Log\LogLevel;
 
 /**
@@ -143,6 +144,10 @@ function drush_preflight_prepare() {
   drush_set_context('DRUSH_VENDOR_PATH', dirname($vendor_path));
   drush_set_context('DRUSH_CLASSLOADER', $classloader);
 
+  // Make a read-only copy of the vendor path at drush.vendor-dir
+  // for forwards-compatibility
+  drush_set_option('drush.vendor-dir', dirname($vendor_path));
+
   // Can't log until we have a logger, so we'll create this ASAP.
   _drush_create_default_logger();
 
@@ -165,16 +170,19 @@ function drush_preflight_prepare() {
     return; // An error was logged.
   }
 
-  $drush_info = drush_read_drush_info();
-  define('DRUSH_VERSION', $drush_info['drush_version']);
-  $version_parts = explode('.', DRUSH_VERSION);
-  define('DRUSH_MAJOR_VERSION', $version_parts[0]);
-  define('DRUSH_MINOR_VERSION', $version_parts[1]);
+  // For backwards compatibility. Prefer the static accessors.
+  define('DRUSH_VERSION', Drush::getVersion());
+  define('DRUSH_MAJOR_VERSION', Drush::getMajorVersion());
+  define('DRUSH_MINOR_VERSION', Drush::getMinorVersion());
 
   define('DRUSH_REQUEST_TIME', microtime(TRUE));
 
   drush_set_context('argc', $GLOBALS['argc']);
   drush_set_context('argv', $GLOBALS['argv']);
+
+  // Make a read-only copy of the arguments at runtime.argv
+  // for forwards-compatibility
+  drush_set_option('runtime.argv', $GLOBALS['argv']);
 
   // Set an error handler and a shutdown function
   set_error_handler('drush_error_handler');
@@ -325,6 +333,13 @@ function drush_preflight_root() {
   if (!isset($root)) {
     $root = drush_locate_root();
   }
+  // If the old ways do not find a Drupal root, use DrupalFinder.
+  if (!$root) {
+    $finder = new \DrupalFinder\DrupalFinder();
+    if ($finder->locateRoot(getcwd())) {
+      $root = $finder->getDrupalRoot();
+    }
+  }
   if ($root) {
     $root = realpath($root);
   }
@@ -382,7 +397,7 @@ function _drush_preflight_global_options() {
 
   // Backend implies affirmative unless negative is explicitly specified
   drush_set_context('DRUSH_NEGATIVE',    drush_get_option('no', FALSE));
-  drush_set_context('DRUSH_AFFIRMATIVE', drush_get_option(array('yes', 'pipe'), FALSE) || (drush_get_context('DRUSH_BACKEND') && !drush_get_context('DRUSH_NEGATIVE')));
+  drush_set_context('DRUSH_AFFIRMATIVE', drush_get_option(array('yes', 'pipe', 'no-interaction'), FALSE) || (drush_get_context('DRUSH_BACKEND') && !drush_get_context('DRUSH_NEGATIVE')));
 
   // Pipe implies quiet.
   drush_set_context('DRUSH_QUIET', drush_get_option(array('quiet', 'pipe')));
@@ -441,10 +456,12 @@ function _drush_preflight_columns() {
   if (!($columns = getenv('COLUMNS') ?: 0)) {
     // Trying to export the columns using stty.
     exec('stty size 2>&1', $columns_output, $columns_status);
-    if (!$columns_status) $columns = preg_replace('/\d+\s(\d+)/', '$1', $columns_output[0], -1, $columns_count);
-
+    $matched = FALSE;
+    if (!$columns_status && $matched = preg_match('/^\d+\s(\d+)$/', $columns_output[0], $matches, 0)) {
+        $columns = $matches[1];
+    }
     // If stty fails and Drush us running on Windows are we trying with mode con.
-    if (($columns_status || !$columns_count) && drush_is_windows()) {
+    if (($columns_status || !$matched) && drush_is_windows()) {
       $columns_output = array();
       exec('mode con', $columns_output, $columns_status);
       if (!$columns_status && is_array($columns_output)) {
@@ -611,7 +628,7 @@ function drush_preflight_command_dispatch() {
     $local_drush = find_wrapper_or_launcher($root);
   }
   $is_local = drush_get_option('local');
-  $must_use_site_local = !empty($root) && !empty($local_drush) && empty($is_local);
+  $must_use_site_local = !empty($root) && !empty($local_drush) && !empty($is_local);
   // If the command sets the 'handle-remote-commands' flag, then we will short-circuit
   // remote command dispatching and site-list command dispatching, and always let
   // the command handler run on the local machine.

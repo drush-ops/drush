@@ -189,7 +189,7 @@ function pm_drush_command() {
       'resolve-dependencies' => 'Attempt to download any missing dependencies. At the moment, only works when the module name is the same as the project name.',
       'skip' => 'Skip automatic downloading of libraries (c.f. devel).',
     ),
-    'aliases' => array('en'),
+    'aliases' => array('en', 'pm:enable'),
     'engines' => array(
       'release_info' => array(
         'add-options-to-command' => FALSE,
@@ -201,7 +201,7 @@ function pm_drush_command() {
     'arguments' => array(
       'extensions' => 'A list of modules or themes. You can use the * wildcard at the end of extension names to disable multiple matches.',
     ),
-    'aliases' => array('dis'),
+    'aliases' => array('dis', 'pm:disable'),
     'engines' => array(
       'version_control',
       'package_handler',
@@ -215,7 +215,7 @@ function pm_drush_command() {
     'arguments' => array(
       'extensions' => 'A list of modules or themes. You can use the * wildcard at the end of extension names to show info for multiple matches. If no argument is provided it will show info for all available extensions.',
     ),
-    'aliases' => array('pmi'),
+    'aliases' => array('pmi', 'pm:info'),
     'outputformat' => array(
       'default' => 'key-value-list',
       'pipe-format' => 'json',
@@ -280,7 +280,7 @@ function pm_drush_command() {
       'fields-pipe' => array('label'),
       'output-data-type' => 'format-table',
     ),
-    'aliases' => array('pmpi'),
+    'aliases' => array('pmpi', 'pm:projectinfo'),
   );
 
   // Install command is reserved for the download and enable of projects including dependencies.
@@ -293,7 +293,7 @@ function pm_drush_command() {
     'arguments' => array(
       'modules' => 'A list of modules.',
     ),
-    'aliases' => array('pmu'),
+    'aliases' => array('pmu', 'pm:uninstall'),
   );
   $items['pm-list'] = array(
     'description' => 'Show a list of available extensions (modules and themes).',
@@ -317,7 +317,7 @@ function pm_drush_command() {
       'field-labels' => array('package' => 'Package', 'name' => 'Name', 'type' => 'Type', 'status' => 'Status', 'version' => 'Version'),
       'output-data-type' => 'format-table',
     ),
-    'aliases' => array('pml'),
+    'aliases' => array('pml', 'pm:list'),
   );
   $items['pm-refresh'] = array(
     'description' => 'Refresh update status information.',
@@ -326,7 +326,7 @@ function pm_drush_command() {
         'add-options-to-command' => FALSE,
       ),
     ),
-    'aliases' => array('rf'),
+    'aliases' => array('rf', 'pm:refresh'),
   );
   $items['pm-updatestatus'] = array(
     'description' => 'Show a report of available minor updates to Drupal core and contrib projects.',
@@ -348,7 +348,7 @@ function pm_drush_command() {
       'fields-pipe' => array('name', 'existing_version', 'candidate_version', 'status_msg'),
       'output-data-type' => 'format-table',
     ),
-    'aliases' => array('ups'),
+    'aliases' => array('ups', 'pm:updatestatus'),
   );
   $items['pm-updatecode'] = array(
     'description' => 'Update Drupal core and contrib projects to latest recommended releases.',
@@ -365,7 +365,7 @@ function pm_drush_command() {
       'check-updatedb' => 'Check to see if an updatedb is needed after updating the code. Default is on; use --check-updatedb=0 to disable.',
     ) + $update_options,
     'sub-options' => $update_suboptions,
-    'aliases' => array('upc'),
+    'aliases' => array('upc', 'pm:updatecode'),
     'topics' => array('docs-policy'),
     'engines' => array(
       'version_control',
@@ -379,12 +379,13 @@ function pm_drush_command() {
   // Merge all items from above.
   $items['pm-update'] = array(
     'description' => 'Update Drupal core and contrib projects and apply any pending database updates (Same as pm-updatecode + updatedb).',
-    'aliases' => array('up'),
+    'aliases' => array('up', 'pm:update'),
     'allow-additional-options' => array('pm-updatecode', 'updatedb'),
   );
   $items['pm-updatecode-postupdate'] = array(
     'description' => 'Notify of pending db updates.',
     'hidden' => TRUE,
+    'aliases' => array('pm:updatecode:postupdate'),
   );
   $items['pm-releasenotes'] = array(
     'description' => 'Print release notes for given projects.',
@@ -399,7 +400,7 @@ function pm_drush_command() {
       'drush rln token-1.13' => 'View release notes of a specfic version of the Token project for my version of Drupal.',
       'drush rln pathauto zen' => 'View release notes for the recommended version of Pathauto and Zen projects.',
     ),
-    'aliases' => array('rln'),
+    'aliases' => array('rln', 'pm:releasenotes'),
     'bootstrap' => DRUSH_BOOTSTRAP_MAX,
     'engines' => array(
       'release_info',
@@ -416,7 +417,7 @@ function pm_drush_command() {
     'options' => array(
       'default-major' => 'Show releases compatible with the specified major version of Drupal.',
     ),
-    'aliases' => array('rl'),
+    'aliases' => array('rl', 'pm:releases'),
     'bootstrap' => DRUSH_BOOTSTRAP_MAX,
     'outputformat' => array(
       'default' => 'table',
@@ -474,7 +475,7 @@ function pm_drush_command() {
       'pipe' => 'Returns a list of the names of the extensions (modules and themes) contained in the downloaded projects.',
     ),
     'bootstrap' => DRUSH_BOOTSTRAP_MAX,
-    'aliases' => array('dl'),
+    'aliases' => array('dl', 'pm:download'),
     'engines' => array(
       'version_control',
       'package_handler',
@@ -1759,9 +1760,9 @@ function pm_drush_engine_package_handler() {
       ),
     ),
     'git_drupalorg' => array(
-      'description' => 'Use git.drupal.org to checkout and update projects.',
+      'description' => 'Use git.drupalcode.org to checkout and update projects.',
       'options' => array(
-        'gitusername' => 'Your git username as shown on user/[uid]/edit/git. Typically, this is set this in drushrc.php. Omitting this prevents users from pushing changes back to git.drupal.org.',
+        'gitusername' => 'Your git username as shown on user/[uid]/edit/git. Typically, this is set this in drushrc.php. Omitting this prevents users from pushing changes back to git.drupalcode.org.',
         'gitsubmodule' => 'Use git submodules for checking out new projects. Existing git checkouts are unaffected, and will continue to (not) use submodules regardless of this setting.',
         'gitcheckoutparams' => 'Add options to the `git checkout` command.',
         'gitcloneparams' => 'Add options to the `git clone` command.',

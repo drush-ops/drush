@@ -27,5 +27,5 @@ projects[os_lightbox][download][revision] = "8d60090f2"
 ; Test a refspec fetch.
 projects[storypal][type] = module
 projects[storypal][download][type] = git
-projects[storypal][download][url] = http://git.drupal.org/project/storypal.git
+projects[storypal][download][url] = https://git.drupal.org/project/storypal.git
 projects[storypal][download][refspec] = refs/tags/7.x-1.0

@@ -16,7 +16,7 @@ use Drush\Log\LogLevel;
 function init_drush_command() {
   $items['core-init'] = array(
     'description' => 'Enrich the bash startup file with completion and aliases. Copy .drushrc file to ~/.drush',
-    'aliases' => array('init'),
+    'aliases' => array('init', 'core:init'),
     'bootstrap' => DRUSH_BOOTSTRAP_NONE,
     'package' => 'core',
     'global-options' => array('editor', 'bg'),

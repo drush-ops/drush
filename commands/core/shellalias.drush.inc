@@ -39,7 +39,7 @@ function shellalias_drush_command() {
       'simplify-single' => TRUE,
       'output-data-type' => 'format-list',
     ),
-    'aliases' => array('sha'),
+    'aliases' => array('sha', 'shell:alias'),
     'examples' => array(
       'drush shell-alias' => 'List all alias records known to drush.',
       'drush shell-alias pull' => 'Print the value of the shell alias \'pull\'.',

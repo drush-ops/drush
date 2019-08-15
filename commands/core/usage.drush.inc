@@ -25,7 +25,7 @@ function usage_drush_command() {
       'drush usage-show' => 'Show cached usage statistics.',
       '$options[\'drush_usage_log\']  = TRUE;' => 'Specify in a .drushrc.php file that usage information should be logged locally in a usage statistics file.',
     ),
-    'aliases' => array('ushow'),
+    'aliases' => array('ushow', 'usage:show'),
   );
   $items['usage-send'] = array(
     'bootstrap' => DRUSH_BOOTSTRAP_NONE,
@@ -36,7 +36,7 @@ function usage_drush_command() {
       '$options[\'drush_usage_send\']  = TRUE;' => 'Specify in a .drushrc.php file that usage information should be sent.',
       '$options[\'drush_usage_size\']  = 10240;' => 'Specify the frequency (file size) that usage information should be sent.',
     ),
-    'aliases' => array('usend'),
+    'aliases' => array('usend', 'usage:send'),
   );
   return $items;
 }

@@ -84,11 +84,11 @@ class makeConvertCase extends CommandUnishTestCase {
           'core = 7.x',
           'api = 2',
           // Ensure Drupal core tag is set correctly.
-          'projects[drupal][download][tag] = "7.43"',
+          'projects[drupal][download][tag] = "7.67"',
           'projects[features][download][type] = "git"',
-          'projects[features][download][url] = "https://git.drupal.org/project/features"',
-          'projects[features][download][tag] = "7.x-1.0-beta4"',
-          'projects[features][patch][0] = "http://drupal.org/files/issues/features-drush-backend-invoke-25.patch"'),
+          'projects[features][download][url] = "https://git.drupalcode.org/project/features.git"',
+          'projects[features][download][tag] = "1.x-0.0-beta4"',
+          'projects[features][patch][0] = "https://drupal.org/files/issues/features-drush-backend-invoke-25.patch"'),
       ),
       array(
         'composer.lock',
@@ -97,11 +97,11 @@ class makeConvertCase extends CommandUnishTestCase {
           'core: 7.x',
           'api: 2',
           // Ensure Drupal core tag is set correctly.
-          "tag: '7.43'",
+          "tag: '7.67'",
           'features:',
-          'tag: 7.x-1.0-beta4',
+          'tag: 1.x-0.0-beta4',
           'patch:',
-          "- 'http://drupal.org/files/issues/features-drush-backend-invoke-25.patch'",
+          "- 'https://drupal.org/files/issues/features-drush-backend-invoke-25.patch'",
         ),
       ),
     );

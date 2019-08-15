@@ -252,8 +252,8 @@ function make_download_git($name, $type, $download, $download_location) {
   $tmp_path = make_tmp();
   $wc = _get_working_copy_option($download);
   $checkout_after_clone = TRUE;
-  // If no download URL specified, assume anonymous clone from git.drupal.org.
-  $download['url'] = isset($download['url']) ? $download['url'] : "http://git.drupal.org/project/$name.git";
+  // If no download URL specified, assume anonymous clone from git.drupalcode.org.
+  $download['url'] = isset($download['url']) ? $download['url'] : "https://git.drupalcode.org/project/$name.git";
   // If no working-copy download URL specified, assume it is the same.
   $download['wc_url'] = isset($download['wc_url']) ? $download['wc_url'] : $download['url'];
 

@@ -38,6 +38,9 @@ class Logger extends AbstractLogger {
       if (!isset($entry['memory'])) {
         $entry['memory'] = memory_get_usage();
       }
+      if (!isset($entry['timestamp'])) {
+        $entry['timestamp'] = microtime(TRUE);
+      }
 
       // Drush\Log\Logger should take over all of the responsibilities
       // of drush_log, including caching the log messages and sending

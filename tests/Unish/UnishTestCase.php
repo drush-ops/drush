@@ -347,6 +347,11 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
     }
 
     // Download Drupal if not already present.
+    if (!file_exists($root) && (substr($version_string, 0, 1) == 6)) {
+      if (!$this->downloadDrupal6($version_string, $root)) {
+        $this->markTestSkipped("Could not download d6lts.");
+      }
+    }
     if (!file_exists($root)) {
       $options += array(
         'destination' => dirname($root),
@@ -372,11 +377,54 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
       $this->drush('site-install', array($profile), $options);
       // Give us our write perms back.
       chmod($site, 0777);
+      chmod("$site/settings.php", 0777);
     }
     else {
       @mkdir($site);
       touch("$site/settings.php");
     }
+  }
+
+  // pm-download cannot download from d6lts, so we will rough in our own download function
+  function downloadDrupal6($drupal_6_test_version, $root) {
+    if (($drupal_6_test_version == '6') || ($drupal_6_test_version == '6.x')) {
+      $drupal_6_test_version = '6.46';
+    }
+    return $this->downloadFromGitHub('d6lts/drupal', $drupal_6_test_version, $root, "drupal-$drupal_6_test_version");
+  }
+
+  function downloadFromGitHub($project, $version, $target, $rootDirToRemove = '') {
+    $url = "https://github.com/{$project}/archive/{$version}.zip";
+    $tarPath = dirname($target) . '/' . basename($url);
+    if (!$this->cachedDownload($url, $tarPath)) {
+      return false;
+    }
+    $zipDir = $target;
+    if (!empty($rootDirToRemove)) {
+      $zipDir = dirname($zipDir);
+    }
+    passthru("unzip -od $zipDir $tarPath >/dev/null 2>&1", $status);
+    if ($status != 0) {
+      return false;
+    }
+    if (!empty($rootDirToRemove)) {
+      rename("$zipDir/$rootDirToRemove", $zipDir . '/' . basename($target));
+    }
+    return file_exists($target);
+  }
+
+  function cachedDownload($url, $target) {
+    $dlCacheDir = $this->directory_cache('dl');
+    @mkdir($dlCacheDir);
+    $cacheFile = $dlCacheDir . '/' . basename($target);
+    if (!file_exists($cacheFile)) {
+        passthru("curl -L --output $cacheFile $url >/dev/null 2>&1", $status);
+        if ($status != 0) {
+          return false;
+        }
+    }
+    copy($cacheFile, $target);
+    return file_exists($target);
   }
 
   function writeSiteAlias($name, $root, $uri) {

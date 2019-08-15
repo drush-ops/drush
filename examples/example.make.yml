@@ -40,7 +40,7 @@ api: 2
 #   drupal:
 #     type: "core"
 #     download:
-#       url: "http://git.drupal.org/project/drupal.git"
+#       url: "https://git.drupalcode.org/project/drupal.git"
 
 projects:
   drupal:
@@ -80,7 +80,7 @@ projects:
     type: "module"
     download:
       type: "git" # Note, 'git' is the default, no need to specify.
-      url: "http://git.drupal.org/project/views.git"
+      url: "https://git.drupalcode.org/project/views.git"
       revision: "7.x-3.x"
 
   # For projects on drupal.org, some shorthand is available. If any

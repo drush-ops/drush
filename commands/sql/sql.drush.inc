@@ -5,6 +5,8 @@
  * Drush sql commands
  */
 
+use Drush\Log\LogLevel;
+
 /**
  * Implementation of hook_drush_help().
  */
@@ -52,6 +54,7 @@ function sql_drush_command() {
       ),
     ) + $options + $db_url,
     'topics' => array('docs-policy'),
+    'aliases' => array('sql:drop'),
   );
   $items['sql-conf'] = array(
     'description' => 'Print database connection details using print_r().',
@@ -66,6 +69,7 @@ function sql_drush_command() {
       'pipe-format' => 'var_export',
       'private-fields' => 'password',
     ),
+    'aliases' => array('sql:conf'),
   );
   $items['sql-connect'] = array(
     'description' => 'A string for connecting to the DB.',
@@ -80,6 +84,7 @@ function sql_drush_command() {
       '`drush sql-connect` < example.sql' => 'Bash: Import SQL statements from a file into the current database.',
       'eval (drush sql-connect) < example.sql' => 'Fish: Import SQL statements from a file into the current database.',
     ),
+    'aliases' => array('sql:connect'),
   );
   $items['sql-create'] = array(
     'description' => 'Create a database.',
@@ -94,6 +99,7 @@ function sql_drush_command() {
       'db-su' => 'Account to use when creating a new database. Optional.',
       'db-su-pw' => 'Password for the "db-su" account. Optional.',
     ) + $options + $db_url,
+    'aliases' => array('sql:create'),
   );
   $items['sql-dump'] = array(
     'description' => 'Exports the Drupal DB as SQL using mysqldump or equivalent.',
@@ -115,6 +121,7 @@ function sql_drush_command() {
       'gzip' => 'Compress the dump using the gzip program which must be in your $PATH.',
       'extra' => 'Add custom options to the dump command.',
     ) + $options + $db_url,
+    'aliases' => array('sql:dump'),
   );
   $items['sql-query'] = array(
     'bootstrap' => DRUSH_BOOTSTRAP_NONE,
@@ -144,14 +151,14 @@ function sql_drush_command() {
         'hidden' => TRUE, // Hide since this is only used with --backend calls.
       )
     ) + $options + $db_url,
-    'aliases' => array('sqlq'),
+    'aliases' => array('sqlq', 'sql:query'),
   );
   $items['sql-cli'] = array(
     'description' => "Open a SQL command-line interface using Drupal's credentials.",
     'bootstrap' => DRUSH_BOOTSTRAP_NONE,
     // 'options' => $options + $db_url,
     'allow-additional-options' => array('sql-connect'),
-    'aliases' => array('sqlc'),
+    'aliases' => array('sqlc', 'sql:cli'),
     'examples' => array(
       'drush sql-cli' => "Open a SQL command-line interface using Drupal's credentials.",
       'drush sql-cli --extra=-A' => "Open a SQL CLI and skip reading table information.",
@@ -240,7 +247,11 @@ function drush_sql_create() {
     }
   }
 
-  return $sql->createdb(TRUE);
+  $result = $sql->createdb(TRUE);
+  if (!$result) {
+    drush_set_error('DRUSH_SQL_CREATE_ERROR', dt('SQL create database error occurred.'));
+  }
+  return $result;
 }
 
 
@@ -520,7 +531,28 @@ function drush_sql_get_class($db_spec = NULL) {
   // Try a few times to quickly get $db_spec.
   if (!empty($db_spec)) {
     if (!empty($db_spec['driver'])) {
-      return drush_get_class(array('Drush\Sql\Sql', 'Drupal\Driver\Database\\' .  $db_spec['driver'] . '\Drush'), array($db_spec), array($db_spec['driver']));
+      $class_name = [
+        'Drush\Sql\Sql',
+        'Drupal\Driver\Database\\' . $db_spec['driver'] . '\Drush',
+      ];
+      try {
+        $class = drush_get_class($class_name, [$db_spec], [$db_spec['driver']]);
+        return $class;
+      }
+      catch (ArgumentCountError $e) {
+        /** @var \Drush\Log\Logger $logger */
+        $logger = drush_get_context('DRUSH_LOGGER');
+        $logger->error(dt('Could not load SQL class. There is a mismatch between your Drupal root and your PHP autoloading.'));
+        $logger->error(dt('This can happen if you mix Drupal 8 and Drupal 7.'));
+        $logger->error(dt('Please check that the location of Drush matches the Drupal core version you want Drush to talk to.'));
+        if (drush_get_context('DRUSH_DEBUG')) {
+          $message = sprintf(
+            dt('drush_sql_get_class threw a %s exception: %s'),
+            get_class($e),
+            $e->getMessage());
+          $logger->log(LogLevel::DEBUG, $message);
+        }
+      }
     }
   }
   elseif ($url = drush_get_option('db-url')) {

@@ -87,7 +87,7 @@ function core_drush_command() {
   );
   $items['core-cron'] = array(
     'description' => 'Run all cron hooks in all active modules for specified site.',
-    'aliases' => array('cron'),
+    'aliases' => array('cron', 'core:cron'),
     'topics' => array('docs-cron'),
   );
   $items['updatedb'] = array(
@@ -103,13 +103,13 @@ function core_drush_command() {
   );
   $items['entity-updates'] = array(
     'description' => 'Apply pending entity schema updates.',
-    'aliases' => array('entup'),
+    'aliases' => array('entup', 'entity:updates'),
     'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_FULL,
     'core' => array('8+'),
   );
   $items['twig-compile'] = array(
     'description' => 'Compile all Twig template(s).',
-    'aliases' => array('twigc'),
+    'aliases' => array('twigc', 'twig:compile'),
     'core' => array('8+'),
   );
   $items['updatedb-status'] = array(
@@ -121,7 +121,7 @@ function core_drush_command() {
       'fields-default' => array('module', 'update_id', 'description'),
       'output-data-type' => 'format-table',
     ),
-    'aliases' => array('updbst'),
+    'aliases' => array('updbst', 'updatedb:status'),
   );
   $items['core-config'] = array(
     'description' => 'Edit drushrc, site alias, and Drupal settings.php files.',
@@ -138,12 +138,12 @@ function core_drush_command() {
       'drush core-config sett' => 'Edit settings.php for the current Drupal site.',
       'drush core-config --choice=2' => 'Edit the second file in the choice list.',
     ),
-    'aliases' => array('conf', 'config'),
+    'aliases' => array('conf', 'config', 'core:config'),
   );
   $items['core-status'] = array(
     'description' => 'Provides a birds-eye view of the current Drupal installation, if any.',
     'bootstrap' => DRUSH_BOOTSTRAP_MAX,
-    'aliases' => array('status', 'st'),
+    'aliases' => array('status', 'st', 'core:status'),
     'examples' => array(
       'drush core-status version' => 'Show all status lines that contain version information.',
       'drush core-status --pipe' => 'A list key=value items separated by line breaks.',
@@ -178,7 +178,7 @@ function core_drush_command() {
 
   $items['core-requirements'] = array(
     'description' => 'Provides information about things that may be wrong in your Drupal installation, if any.',
-    'aliases' => array('status-report','rq'),
+    'aliases' => array('status-report','rq', 'core:requirements'),
     'examples' => array(
       'drush core-requirements' => 'Show all status lines from the Status Report admin page.',
       'drush core-requirements --severity=2' => 'Show only the red lines from the Status Report admin page.',
@@ -222,7 +222,7 @@ function core_drush_command() {
     'required-arguments' => TRUE,
     'allow-additional-options' => TRUE,
     'bootstrap' => DRUSH_BOOTSTRAP_MAX,
-    'aliases' => array('eval', 'ev'),
+    'aliases' => array('eval', 'ev', 'php:eval'),
     'outputformat' => array(
       'default' => 'var_export',
     ),
@@ -247,7 +247,7 @@ function core_drush_command() {
     ),
     'allow-additional-options' => TRUE,
     'bootstrap' => DRUSH_BOOTSTRAP_MAX,
-    'aliases' => array('scr'),
+    'aliases' => array('scr', 'php:script'),
     'topics' => array('docs-examplescript', 'docs-scripts'),
   );
   $items['core-execute'] = array(
@@ -266,7 +266,7 @@ function core_drush_command() {
     'examples' => array(
       'drush core-execute git pull origin rebase' => 'Retrieve latest code from git',
     ),
-    'aliases' => array('exec', 'execute'),
+    'aliases' => array('exec', 'execute', 'core:execute'),
     'topics' => array('docs-aliases'),
   );
   $items['core-rsync'] = array(
@@ -296,7 +296,7 @@ function core_drush_command() {
       'drush rsync ./ @stage:%files/img' => 'Rsync all files in the current directory to the \'img\' directory in the file storage folder on the Drush alias stage.',
       'drush -s rsync @dev @stage --exclude=*.sql --delete' => "Simulate Rsync Drupal root from the Drush alias dev to the alias stage (one of which must be local), excluding all files that match the filter '*.sql' and delete all files on the destination that are no longer on the source.",
     ),
-    'aliases' => array('rsync'),
+    'aliases' => array('rsync', 'core:rsync'),
     'topics' => array('docs-aliases'),
   );
   $items['drupal-directory'] = array(
@@ -315,7 +315,7 @@ function core_drush_command() {
       'drush dd @alias:%files' => 'Print the path to the files directory on the site @alias.',
       'edit `drush dd devel`/devel.module' => "Open devel module in your editor (customize 'edit' for your editor)",
     ),
-    'aliases' => array('dd'),
+    'aliases' => array('dd', 'drupal:directory'),
     'bootstrap' => DRUSH_BOOTSTRAP_NONE,
   );
 
@@ -327,6 +327,7 @@ function core_drush_command() {
     ),
     'required-arguments' => TRUE,
     'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_LOGIN,
+    'aliases' => array('batch:process'),
   );
 
   $items['updatedb-batch-process'] = array(
@@ -339,6 +340,7 @@ function core_drush_command() {
     // Drupal 7 needs DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION, while Drupal 8 needs _FULL.
     // Therefore we bootstrap to _FULL in commands/core/drupal/update.inc.
     'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION,
+    'aliases' => array('updatedb:batch-process'),
   );
   $items['core-global-options'] = array(
     'description' => 'All global options',
@@ -351,11 +353,12 @@ function core_drush_command() {
       'field-labels' => array('label' => 'Label', 'description' => 'Description'),
       'output-data-type' => 'format-table',
     ),
+    'aliases' => array('core:global-options'),
   );
   $items['core-quick-drupal'] = array(
     'description' => 'Download, install, serve and login to Drupal with minimal configuration and dependencies.',
     'bootstrap' => DRUSH_BOOTSTRAP_NONE,
-    'aliases' => array('qd', 'cutie'),
+    'aliases' => array('qd', 'cutie', 'core:quick:drupal'),
     'arguments' => array(
       'site' => 'Short name for the site to be created - used as a directory name and as sqlite file name. Optional - if omitted timestamped "quick-drupal" directory will be used instead.',
       'projects' => 'A list of projects to download into the new site. If projects contain extensions (modules or themes) with the same name they will be enabled by default. See --enable option to control this behaviour further.',

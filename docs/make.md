@@ -1,6 +1,8 @@
 
 Drush make
 ----------
+**Drush make is no longer maintained ([#3946](https://github.com/drush-ops/drush/issues/3946#issuecomment-467861007)), use [drupal-composer/drupal-project](https://github.com/drupal-composer/drupal-project) template for Drupal projects!**
+
 Drush make is an extension to drush that can create a ready-to-use drupal site,
 pulling sources from various locations. It does this by parsing a flat text file
 (similar to a drupal `.info` file) and downloading the sources it describes. In
@@ -484,7 +486,7 @@ Properties in the includer takes precedence over the includee.
         type: "module"
         download:
           type: "git"
-          url: "http://git.drupal.org/project/views.git"
+          url: "https://git.drupalcode.org/project/views.git"
 
 A project or library entry of an included makefile can be removed entirely by
 setting the corresponding key to NULL:

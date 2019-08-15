@@ -36,7 +36,7 @@ api = 2
 ; Git clone of Drupal 7.x. Requires the `core` property to be set to 7.x.
 ; projects[drupal][type] = "core"
 ; projects[drupal][download][type] = git
-; projects[drupal][download][url] = http://git.drupal.org/project/drupal.git
+; projects[drupal][download][url] = https://git.drupalcode.org/project/drupal.git
 
 projects[] = drupal
 
@@ -69,7 +69,7 @@ projects[ctools][version] = 1.3
 
 projects[data][type] = module
 projects[data][download][type] = git
-projects[data][download][url] = http://git.drupal.org/project/views.git
+projects[data][download][url] = https://git.drupalcode.org/project/views.git
 projects[data][download][revision] = DRUPAL-6--3
 
 ; For projects on drupal.org, some shorthand is available. If any

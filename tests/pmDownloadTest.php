@@ -68,7 +68,7 @@ class pmDownloadCase extends CommandUnishTestCase {
     ) + $devel_options;
     $this->drush('pm-download', array('devel'), $options);
     $this->assertFileExists(UNISH_SANDBOX . '/' . $destination . '/devel/README.txt');
-}
+  }
 
   public function testSelect() {
     $options = array(

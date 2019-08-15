@@ -48,11 +48,11 @@ function package_handler_validate() {
  */
 function package_handler_download_project(&$request, $release) {
   if ($username = drush_get_option('gitusername')) {
-    // Uses SSH, which enables pushing changes back to git.drupal.org.
-    $repository = $username . '@git.drupal.org:project/' . $request['name'] . '.git';
+    // Uses SSH, which enables pushing changes back to git.drupalcode.org.
+    $repository = 'git@git.drupalcode.org:project/' . $request['name'] . '.git';
   }
   else {
-    $repository = 'git://git.drupal.org/project/' . $request['name'] . '.git';
+    $repository = 'https://git.drupalcode.org/project/' . $request['name'] . '.git';
   }
   $request['repository'] = $repository;
   $tag = $release['tag'];
@@ -99,13 +99,13 @@ function package_handler_download_project(&$request, $release) {
   $command .= ' ' . drush_escapeshellarg($repository);
   $command .= ' ' . drush_escapeshellarg($clone_path);
   if (!drush_shell_exec($command)) {
-    return drush_set_error('DRUSH_PM_GIT_CHECKOUT_PROBLEMS', dt('Unable to clone project !name from git.drupal.org.', array('!name' => $request['name'])));
+    return drush_set_error('DRUSH_PM_GIT_CHECKOUT_PROBLEMS', dt('Unable to clone project !name from git.drupalcode.org.', array('!name' => $request['name'])));
   }
 
   // Check if the 'tag' from the release feed is a tag or a branch.
   // If the tag exists, git will return it
   if (!drush_shell_cd_and_exec($clone_path, 'git tag -l ' . drush_escapeshellarg($tag))) {
-    return drush_set_error('DRUSH_PM_GIT_CHECKOUT_PROBLEMS', dt('Unable to clone project !name from git.drupal.org.', array('!name' => $request['name'])));
+    return drush_set_error('DRUSH_PM_GIT_CHECKOUT_PROBLEMS', dt('Unable to clone project !name from git.drupalcode.org.', array('!name' => $request['name'])));
   }
   $output = drush_shell_exec_output();
 
@@ -115,14 +115,14 @@ function package_handler_download_project(&$request, $release) {
     $command  = 'git checkout ' . drush_get_option('gitcheckoutparams');
     $command .= ' ' . drush_escapeshellarg($tag);
     if (!drush_shell_cd_and_exec($clone_path, $command)) {
-      return drush_set_error('DRUSH_PM_UNABLE_CHECKOUT', 'Unable to retrieve ' . $request['name'] . ' from git.drupal.org.');
+      return drush_set_error('DRUSH_PM_UNABLE_CHECKOUT', 'Unable to retrieve ' . $request['name'] . ' from git.drupalcode.org.');
     }
   }
   else {
     // Else, we want to checkout a branch.
     // First check if we are not already in the correct branch.
     if (!drush_shell_cd_and_exec($clone_path, 'git symbolic-ref HEAD')) {
-      return drush_set_error('DRUSH_PM_UNABLE_CHECKOUT', 'Unable to retrieve ' . $request['name'] . ' from git.drupal.org.');
+      return drush_set_error('DRUSH_PM_UNABLE_CHECKOUT', 'Unable to retrieve ' . $request['name'] . ' from git.drupalcode.org.');
     }
     $output = drush_shell_exec_output();
     $current_branch = preg_replace('@^refs/heads/@', '', $output[0]);
@@ -133,7 +133,7 @@ function package_handler_download_project(&$request, $release) {
       $command .= ' ' . drush_get_option('gitcheckoutparams');
       $command .= ' --track ' . drush_escapeshellarg('origin/' . $tag) . ' -b ' . drush_escapeshellarg($tag);
       if (!drush_shell_cd_and_exec($clone_path, $command)) {
-        return drush_set_error('DRUSH_PM_UNABLE_CHECKOUT', 'Unable to retrieve ' . $request['name'] . ' from git.drupal.org.');
+        return drush_set_error('DRUSH_PM_UNABLE_CHECKOUT', 'Unable to retrieve ' . $request['name'] . ' from git.drupalcode.org.');
       }
     }
   }
@@ -169,7 +169,7 @@ function package_handler_update_project($request, $release) {
   }
 
   if (!drush_shell_cd_and_exec($request['full_project_path'], implode(' ', $commands))) {
-    return drush_set_error('DRUSH_PM_UNABLE_CHECKOUT', 'Unable to update ' . $request['name'] . ' from git.drupal.org.');
+    return drush_set_error('DRUSH_PM_UNABLE_CHECKOUT', 'Unable to update ' . $request['name'] . ' from git.drupalcode.org.');
   }
 
   return TRUE;

@@ -39,7 +39,7 @@ function variable_drush_command() {
         'format' => 'var_export',
       ),
     ),
-    'aliases' => array('vget'),
+    'aliases' => array('vget', 'variable:get'),
   );
   $items['variable-set'] = array(
     'description' => "Set a variable.",
@@ -64,7 +64,7 @@ function variable_drush_command() {
       'drush vset pr TRUE' => 'Choose from a list of variables beginning with "pr" to set to (bool)true.',
       'php -r "print json_encode(array(\'drupal\', \'simpletest\'));"  | drush vset --format=json project_dependency_excluded_dependencies -'=> 'Set a variable to a complex value (e.g. array)',
     ),
-    'aliases' => array('vset'),
+    'aliases' => array('vset', 'variable:set'),
   );
   $items['variable-delete'] = array(
     'core' => array(6,7),
@@ -82,7 +82,7 @@ function variable_drush_command() {
       'drush vdel u' => 'Choose from a list of variables beginning with "u" to delete.',
       'drush vdel -y --exact maintenance_mode' => 'Bring the site back online, skipping confirmation. Variable is rewritten to site_offline for Drupal 6.',
     ),
-    'aliases' => array('vdel'),
+    'aliases' => array('vdel', 'variable:delete'),
   );
 
   return $items;

@@ -42,7 +42,7 @@ function user_drush_command() {
 
   $items['user-information'] = array(
     'description' => 'Print information about the specified user(s).',
-    'aliases' => array('uinf'),
+    'aliases' => array('uinf', 'user:information'),
     'examples' => array(
       'drush user-information 2,3,someguy,somegal,billgates@microsoft.com' =>
         'Display information about the listed users.',
@@ -87,7 +87,7 @@ function user_drush_command() {
   );
   $items['user-block'] = array(
     'description' => 'Block the specified user(s).',
-    'aliases' => array('ublk'),
+    'aliases' => array('ublk', 'user:block'),
     'arguments' => array(
       'users' => 'A comma delimited list of uids, user names, or email addresses.',
     ),
@@ -99,7 +99,7 @@ function user_drush_command() {
   );
   $items['user-unblock'] = array(
     'description' => 'Unblock the specified user(s).',
-    'aliases' => array('uublk'),
+    'aliases' => array('uublk', 'user:unblock'),
     'arguments' => array(
       'users' => 'A comma delimited list of uids, user names, or email addresses.',
     ),
@@ -111,7 +111,7 @@ function user_drush_command() {
   );
   $items['user-add-role'] = array(
     'description' => 'Add a role to the specified user accounts.',
-    'aliases' => array('urol'),
+    'aliases' => array('urol', 'user:add:role'),
     'arguments' => array(
       'role' => 'The name of the role to add',
       'users' => '(optional) A comma delimited list of uids, user names, or email addresses.',
@@ -125,7 +125,7 @@ function user_drush_command() {
   );
   $items['user-remove-role'] = array(
     'description' => 'Remove a role from the specified user accounts.',
-    'aliases' => array('urrol'),
+    'aliases' => array('urrol', 'user:remove:role'),
     'arguments' => array(
       'role' => 'The name of the role to remove',
       'users' => '(optional) A comma delimited list of uids, user names, or email addresses.',
@@ -139,7 +139,7 @@ function user_drush_command() {
   );
   $items['user-create'] = array(
     'description' => 'Create a user account with the specified name.',
-    'aliases' => array('ucrt'),
+    'aliases' => array('ucrt', 'user:create'),
     'arguments' => array(
       'name' => 'The name of the account to add'
     ),
@@ -156,7 +156,7 @@ function user_drush_command() {
   );
   $items['user-cancel'] = array(
     'description' => 'Cancel a user account with the specified name.',
-    'aliases' => array('ucan'),
+    'aliases' => array('ucan', 'user:cancel'),
     'arguments' => array(
       'name' => 'The name of the account to cancel',
     ),
@@ -171,7 +171,7 @@ function user_drush_command() {
   );
   $items['user-password'] = array(
     'description' => '(Re)Set the password for the user account with the specified name.',
-    'aliases' => array('upwd'),
+    'aliases' => array('upwd', 'user:password'),
     'arguments' => array(
       'name' => 'The name of the account to modify.'
     ),
@@ -190,7 +190,7 @@ function user_drush_command() {
   );
   $items['user-login'] = array(
     'description' => 'Display a one time login link for the given user account (defaults to uid 1).',
-    'aliases' => array('uli'),
+    'aliases' => array('uli', 'user:login'),
     'bootstrap' => DRUSH_BOOTSTRAP_NONE,
     'handle-remote-commands' => TRUE,
     'arguments' => array(
