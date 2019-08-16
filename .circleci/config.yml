@@ -43,7 +43,7 @@ jobs:
       - checkout
       - run: git config --global user.email "nobody@drush.org"
       - run: git config --global user.name "Drush Merge Test Bot"
-      - run: git merge -q -m 'Merge check' origin/master
+      - run: git merge -q -m 'Merge check' origin/9.x
 
   # PHP 7.1 test:
   #   Checks the most common configuration.
