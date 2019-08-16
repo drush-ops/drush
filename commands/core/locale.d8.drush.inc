@@ -54,15 +54,12 @@ function locale_drush_command() {
  */
 function drush_locale_check() {
   // Prepare the projects array.
-  $projects = drush_get_option('projects', NULL);
+  $projects = drush_get_option('projects', []);
   if (!empty($projects)) {
     $projects = _convert_csv_to_array(',', $projects);
 
     // Remove duplicate projects.
     $projects = array_unique($projects);
-  }
-  else {
-    $projects = [];
   }
 
   \Drupal::moduleHandler()->loadInclude('locale', 'inc', 'locale.compare');
