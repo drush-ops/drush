@@ -9,6 +9,7 @@ use Drupal\Core\Language\LanguageManagerInterface;
 use Drupal\Core\State\StateInterface;
 use Drupal\language\Entity\ConfigurableLanguage;
 use Drush\Commands\DrushCommands;
+use Drush\Utils\StringUtils;
 
 class LocaleCommands extends DrushCommands
 {
@@ -66,17 +67,26 @@ class LocaleCommands extends DrushCommands
      *
      * @command locale:check
      * @aliases locale-check
+     * @option projects A comma-separated list of projects to update. If omitted, all projects will be updated.
      * @validate-module-enabled locale
      */
-    public function check()
+    public function check($options = ['projects' => ''])
     {
         $this->getModuleHandler()->loadInclude('locale', 'inc', 'locale.compare');
+
+        $projects = [];
+        if ($passed_projects = $options['projects']) {
+            $projects = StringUtils::csvToArray($passed_projects);
+        }
+
+        // Remove duplicate projects.
+        $projects = array_unique($projects);
 
         // Check translation status of all translatable project in all languages.
         // First we clear the cached list of projects. Although not strictly
         // necessary, this is helpful in case the project list is out of sync.
         locale_translation_flush_projects();
-        locale_translation_check_projects();
+        locale_translation_check_projects($projects);
 
         // Execute a batch if required. A batch is only used when remote files
         // are checked.
