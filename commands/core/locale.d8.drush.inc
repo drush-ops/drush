@@ -25,11 +25,11 @@ function locale_drush_command() {
     'description' => 'Checks for available translation updates.',
     'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_FULL,
     'options' => [
-      'projects' => 'A comma separated and no space list of interface translation projects language to update. If omitted, all the installed projects will be updated.',
+      'projects' => 'A comma delimited list of projects to update. If omitted, all projects will be updated.',
     ],
     'examples' => [
-      'drush locale-check' => 'Language update for all installed interface translation projects.',
-      'drush locale-check --projects=custom_module,paragraphs' => 'Language update for custom_module and paragraphs.',
+      'drush locale-check' => 'Checks all projects.',
+      'drush locale-check --projects=custom_module,paragraphs' => 'Checks the custom_module and paragraphs projects.',
     ],
   ];
   $items['locale-update'] = [
@@ -56,7 +56,10 @@ function drush_locale_check() {
   // Prepare the projects array.
   $projects = drush_get_option('projects', NULL);
   if (!empty($projects)) {
-    $projects = array_filter(explode(',', $projects));
+    $projects = _convert_csv_to_array(',', $projects);
+
+    // Remove duplicate projects.
+    $projects = array_unique($projects);
   }
   else {
     $projects = [];
