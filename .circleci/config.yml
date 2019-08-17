@@ -41,9 +41,7 @@ jobs:
       - image: wodby/php:7.1
     steps:
       - checkout
-      - run: git config --global user.email "nobody@drush.org"
-      - run: git config --global user.name "Drush Merge Test Bot"
-      - run: git merge -q -m 'Merge check' origin/9.x
+      - run: $HOME/drush/.circleci/mergable.sh
 
   # PHP 7.1 test:
   #   Checks the most common configuration.
