@@ -38,7 +38,7 @@ jobs:
   check_mergable:
     <<: *defaults
     docker:
-      - image: wodby/php:7.1
+      - image: circleci/buildpack-deps:buster
     steps:
       - checkout
       - run: $HOME/drush/.circleci/mergable.sh
