@@ -1,8 +1,13 @@
 set -e
 
+# No need to check for mergability on commits that are already merged.
+if [ "$CIRCLE_BRANCH" == "master" ] || [ "$CIRCLE_BRANCH" == "9.x" ] ; then
+	exit 0
+fi
+
 # We cannot continue unless we have a pull request.
 if [ -z "$CIRCLE_PULL_REQUEST" ] ; then
-  echo "No CIRCLE_PULL_REQUEST defined; please create a pull request."
+  echo "No CIRCLE_PULL_REQUEST defined; please create a pull request to run the tests."
   exit 1
 fi
 
