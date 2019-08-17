@@ -17,7 +17,7 @@ PR_NUMBER=$(echo $CIRCLE_PULL_REQUEST | sed -e 's#.*/pull/##')
 echo curl https://api.github.com/repos/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/pulls/$PR_NUMBER
 
 # Determine which branch this PR is set to merge into
-BASE=$(curl https://api.github.com/repos/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/pulls/$PR_NUMBER 2>/dev/null | jq .base.ref)
+BASE=$(curl https://api.github.com/repos/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/pulls/$PR_NUMBER 2>/dev/null | jq -r .base.ref)
 echo "Check to see if this PR can still merge into origin/$BASE"
 
 # Test to see if it is mergable
