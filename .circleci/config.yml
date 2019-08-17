@@ -38,12 +38,10 @@ jobs:
   check_mergable:
     <<: *defaults
     docker:
-      - image: wodby/php:7.1
+      - image: circleci/buildpack-deps:buster
     steps:
       - checkout
-      - run: git config --global user.email "nobody@drush.org"
-      - run: git config --global user.name "Drush Merge Test Bot"
-      - run: git merge -q -m 'Merge check' origin/master
+      - run: $HOME/drush/.circleci/mergable.sh
 
   # PHP 7.1 test:
   #   Checks the most common configuration.
