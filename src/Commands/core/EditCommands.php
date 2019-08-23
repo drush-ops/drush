@@ -132,7 +132,7 @@ class EditCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
         return $ini_files;
     }
 
-    public static function bashFiles()
+    public function bashFiles()
     {
         $bashFiles = [];
         $home = $this->getConfig()->home();
