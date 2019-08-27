@@ -33,7 +33,7 @@ class MigrationGenerator extends BaseGenerator
 
         $this->addFile()
             ->path('src/Plugin/migrate/source/{class}.php')
-            ->template('migration.twig');
+            ->template('migration.php.twig');
 
         $this->addFile()
             ->path('config/install/migrate_plus.migration.{plugin_id}.yml')

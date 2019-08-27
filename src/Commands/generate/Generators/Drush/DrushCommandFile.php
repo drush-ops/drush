@@ -48,7 +48,7 @@ class DrushCommandFile extends BaseGenerator
 
         $this->addFile()
             ->path('src/Commands/{class}.php')
-            ->template('drush-command-file.twig');
+            ->template('drush-command-file.php.twig');
 
         $json = $this->getComposerJson($vars);
         $content = json_encode($json, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
@@ -59,7 +59,7 @@ class DrushCommandFile extends BaseGenerator
 
         $this->addFile()
             ->path('drush.services.yml')
-            ->template('drush.services.twig');
+            ->template('drush.services.yml.twig');
     }
 
     protected function getComposerJson(array $vars)
