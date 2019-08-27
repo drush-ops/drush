@@ -36,7 +36,7 @@ class DrushAliasFile extends BaseGenerator
         }
 
         $this->addFile()
-            ->path('../drush/{prefix}.site.yml')
-            ->template('drush-alias-file.twig');
+            ->path('drush/{prefix}.site.yml')
+            ->template('drush-alias-file.yml.twig');
     }
 }
