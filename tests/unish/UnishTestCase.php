@@ -15,7 +15,7 @@ abstract class UnishTestCase extends TestCase
     const EXIT_SUCCESS  = 0;
     const EXIT_ERROR = 1;
     const UNISH_EXITCODE_USER_ABORT = 75; // Same as DRUSH_EXITCODE_USER_ABORT
-    const INTEGRATION_TEST_ENV = 'default';
+    const INTEGRATION_TEST_ENV = 'integration';
 
     protected $processManager;
 
@@ -159,7 +159,7 @@ abstract class UnishTestCase extends TestCase
                     self::recursiveDeleteDirContents($target);
                 }
             }
-            foreach (['sites/dev', 'sites/stage', 'sites/prod'] as $dir) {
+            foreach (['sites/integration', 'sites/dev', 'sites/stage', 'sites/prod'] as $dir) {
                 $target = Path::join(self::webroot(), $dir);
                 if (file_exists($target)) {
                     self::recursiveDelete($target);
