@@ -15,6 +15,8 @@ test_71_steps: &test71steps
     - run: composer install
     - run: $HOME/drush/.circleci/patch.sh 8.7.x
     - run: composer lint
+    - run: composer unit
+    - run: composer integration
     - run: composer functional
 
 version: 2.1
@@ -99,6 +101,8 @@ jobs:
       - run: composer update --no-scripts
       - run: composer install
       - run: composer lint
+      - run: composer unit
+      - run: composer integration
       - run: composer functional
 
 workflows:
