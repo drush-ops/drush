@@ -130,7 +130,6 @@ workflows:
              branches:
                only:
                  - master
-                 - drupal-8-8
     jobs:
       - test_72_highest
       - test_71_sqlite
