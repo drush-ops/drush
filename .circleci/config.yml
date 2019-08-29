@@ -125,7 +125,7 @@ workflows:
     triggers:
        - schedule:
            # Uses UTC timezone.
-           cron: "38 11 * * *"
+           cron: "49 11 * * *"
            filters:
              branches:
                only:
