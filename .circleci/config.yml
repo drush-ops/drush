@@ -93,8 +93,8 @@ jobs:
       - checkout
       - run: cp .docker/zz-php.ini /usr/local/etc/php/conf.d/
       - run: composer remove --dev webflo/drupal-core-strict --no-update
-      - run: composer require --dev drupal/core:8.7.x-dev --no-update
-      - run: composer require --dev webflo/drupal-core-require-dev:8.7.x-dev --no-update
+      - run: composer require --dev drupal/core:8.8.x-dev --no-update
+      - run: composer require --dev webflo/drupal-core-require-dev:8.8.x-dev --no-update
       - run: composer config platform.php 7.2
       - run: composer update --no-scripts
       - run: composer install
@@ -125,7 +125,7 @@ workflows:
     triggers:
        - schedule:
            # Uses UTC timezone.
-           cron: "33 0 * * *"
+           cron: "49 11 * * *"
            filters:
              branches:
                only:
