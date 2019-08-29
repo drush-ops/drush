@@ -125,11 +125,12 @@ workflows:
     triggers:
        - schedule:
            # Uses UTC timezone.
-           cron: "33 11 * * *"
+           cron: "38 11 * * *"
            filters:
              branches:
                only:
                  - master
+                 - drupal-8-8
     jobs:
       - test_72_highest
       - test_71_sqlite
