@@ -7,8 +7,8 @@ fi
 
 # We cannot continue unless we have a pull request.
 if [ -z "$CIRCLE_PULL_REQUEST" ] ; then
-  echo "No CIRCLE_PULL_REQUEST defined; please create a pull request to run the tests."
-  exit 1
+  echo "No CIRCLE_PULL_REQUEST found - skipping merge test."
+  exit 0
 fi
 
 # Set up a git user
