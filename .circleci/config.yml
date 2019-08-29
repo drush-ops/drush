@@ -12,7 +12,7 @@ test_71_steps: &test71steps
   steps:
     - checkout
     - run: cp .docker/zz-php.ini /usr/local/etc/php/conf.d/
-    - run: composer install
+    - run: composer install -n
     - run: $HOME/drush/.circleci/patch.sh 8.7.x
     - run: composer lint
     - run: composer unit
@@ -31,7 +31,7 @@ jobs:
     steps:
       - checkout
       - run: cp .docker/zz-php.ini /usr/local/etc/php/conf.d/
-      - run: composer install
+      - run: composer install -n
       - run: composer cs
 
   # Mergeable test:
@@ -99,7 +99,7 @@ jobs:
       - run: composer require --dev webflo/drupal-core-require-dev:8.8.x-dev --no-update
       - run: composer config platform.php 7.2
       - run: composer update --no-scripts
-      - run: composer install
+      - run: composer install -n
       - run: composer lint
       - run: composer unit
       - run: composer integration
