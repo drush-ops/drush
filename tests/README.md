@@ -1,8 +1,5 @@
 Drush's test suite (aka Unish) is based on [PHPUnit](http://www.phpunit.de). In order to maintain
-high quality, our tests are run on every push. 
-
-- Functional tests at [CircleCi](https://circleci.com/gh/drush-ops/drush) 
-- Unit and integration tests at [Travis](https://travis-ci.org/drush-ops/drush)
+high quality, our tests are run on every push. See [CircleCi](https://circleci.com/gh/drush-ops/drush).
 
 Usage
 --------
