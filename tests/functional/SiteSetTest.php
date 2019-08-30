@@ -31,12 +31,12 @@ class SiteSetCommandCase extends CommandUnishTestCase
         // Test setting the site to the special @none alias.
         $this->drush('site:set', ['@none']);
         $output = $this->getErrorOutput();
-        $this->assertEquals('[success] Site unset.', $output);
+        $this->assertContains('[success] Site unset.', $output);
 
         // Alternative to '@none'.
         $this->drush('site:set', ['']);
         $output = $this->getErrorOutput();
-        $this->assertEquals('[success] Site unset.', $output);
+        $this->assertContains('[success] Site unset.', $output);
 
         // @todo Fix this toggling.
         $this->markTestSkipped('Inexplicably fails on TravisCI but not locally.');
@@ -44,9 +44,9 @@ class SiteSetCommandCase extends CommandUnishTestCase
         // Toggle between the previous set alias and back again.
         $this->drush('site:set', ['-']);
         $output = $this->getErrorOutput();
-        $this->assertEquals('[success] Site set to ' . $site_aliases[0], $output);
+        $this->assertContains('[success] Site set to ' . $site_aliases[0], $output);
         $this->drush('site:set', ['-']);
         $output = $this->getErrorOutput();
-        $this->assertEquals('[success] Site set to ' . $site_aliases[1], $output);
+        $this->assertContains('[success] Site set to ' . $site_aliases[1], $output);
     }
 }
