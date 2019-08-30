@@ -17,7 +17,7 @@ test_71_steps: &test71steps
     - run: composer lint
     - run: composer unit
     - run: composer functional
-    # @todo was getting missing failure when this comes before functional. See https://circleci.com/gh/drush-ops/drush/8828.
+    # @todo was getting missing key_value table failure when this comes before functional. See https://circleci.com/gh/drush-ops/drush/8828.
     - run: composer integration
 
 version: 2.1

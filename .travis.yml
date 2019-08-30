@@ -18,7 +18,7 @@ env:
     # GitHub deploy
     - secure: VfYokT2CchfuBRJp9/gSwfVGPfsVfkZdDVEuNWEqxww3z4vq+5aLKqoCtPL54E5EIMjhyCE3GVo+biG35Gab1KOVgUs8zD1hAUWA1FPKfMFhoPDfI3ZJC2rX2T1iWK4ZR90pBtcPzS+2OObzTYz8go0PfeSTT6eq69Na1KcNLaE=
 
-after_success:
+script:
   # Publish updated API documentation on every push to the master branch
   - git config --global user.email $GITHUB_USER_EMAIL
   - git config --global user.name "Drush Documentation Bot"
