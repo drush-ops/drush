@@ -121,6 +121,7 @@ class PreflightArgs extends Config implements PreflightArgsInterface
             self::SIMULATE =>       \Robo\Config\Config::SIMULATE,
             self::BACKEND =>        self::BACKEND,
             self::LOCAL =>          self::DRUSH_RUNTIME_CONTEXT_NAMESPACE . '.' . self::LOCAL,
+            self::URI =>          self::DRUSH_RUNTIME_CONTEXT_NAMESPACE . '.' . self::URI,
         ];
     }
 
