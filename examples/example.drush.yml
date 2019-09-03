@@ -32,7 +32,7 @@
 
 # Environment variables
 #
-# Your Drush config file may reference environment variables using a syntax like ${env.home}.
+# Your Drush config file may reference environment variables using a syntax like ${env.HOME}.
 # For example see the drush.paths examples below.
 #
 # An alternative way to populate Drush configuration is to define environment variables that
@@ -46,7 +46,7 @@ drush:
     # Specify config files to load.
     config:
       # Load any personal config files. Is silently skipped if not found. Filename must be drush.yml
-      - ${env.home}/.drush/config/drush.yml
+      - ${env.HOME}/.drush/config/drush.yml
 
 
     # Specify folders to search for Drush command files.  These locations
@@ -63,7 +63,7 @@ drush:
     #  include:
     #    'Commands/example_drush_extension': '${env.PWD}'
     include:
-      - '${env.home}/.drush/commands'
+      - '${env.HOME}/.drush/commands'
       - /usr/share/drush/commands
 
     # Specify the folders to search for Drush alias files (*.site.yml). These
@@ -74,7 +74,7 @@ drush:
     # Drush 8 and earlier did a deep search in ~/.drush and /etc/drush when
     # loading alias files.
     alias-path:
-      - '${env.home}/.drush/sites'
+      - '${env.HOME}/.drush/sites'
       - /etc/drush/sites
 
     # Specify a folder where Drush should store its file based caches. If unspecified, defaults to $HOME/.drush.

@@ -78,7 +78,7 @@
 # drush:
 #   paths:
 #     alias-path:
-#       - '${env.home}/.drush/sites'
+#       - '${env.HOME}/.drush/sites'
 #       - /etc/drush/sites
 # @endcode
 #
@@ -201,7 +201,7 @@
 # drush:
 #   paths:
 #     alias-path:
-#       - '${env.home}/.drush/sites/provider-name'
+#       - '${env.HOME}/.drush/sites/provider-name'
 # @endcode
 #
 # Site aliases stored in this directory may then be referenced by its
