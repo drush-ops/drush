@@ -28,7 +28,7 @@ For example:
 
         $ helloworld.script @dev a b c
 
-If the first argument is a valid site alias, drush will remove it from the arument list and bootstrap that site, then run your script. The script itself will not see @dev on its argument list. If you do not want drush to remove the first site alias from your scripts argument list (e.g. if your script wishes to syncronise two sites, specified by the first two arguments, and does not want to bootstrap either of those two sites), then fully specify the drush command (php-script) and options to use, as shown above. By default, if the drush command is not specified, drush will provide the following default line:
+If the first argument is a valid site alias, drush will remove it from the argument list and bootstrap that site, then run your script. The script itself will not see @dev on its argument list. If you do not want drush to remove the first site alias from your scripts argument list (e.g. if your script wishes to syncronise two sites, specified by the first two arguments, and does not want to bootstrap either of those two sites), then fully specify the drush command (php-script) and options to use, as shown above. By default, if the drush command is not specified, drush will provide the following default line:
 
         #!/full/path/to/drush php-script --bootstrap-to-first-arg
 
