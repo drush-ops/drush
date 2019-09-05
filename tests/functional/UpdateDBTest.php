@@ -231,7 +231,7 @@ YAML_FRAGMENT;
         // Assert that the updates were run correctly.
         $this->drush('updatedb:status');
         $err = $this->getErrorOutput();
-        $this->assertEquals('[success] No database updates required.', $err);
+        $this->assertContains('[success] No database updates required.', $err);
     }
 
     /**
@@ -263,6 +263,101 @@ YAML_FRAGMENT;
         $this->assertContains('Update started: woot_update_8104', $this->getErrorOutput());
         $this->assertContains('Finished performing updates.', $this->getErrorOutput());
         $this->assertNotContains('Failed', $this->getErrorOutput());
+    }
+
+    /**
+     * Tests the output on batch update.
+     */
+    public function testBatchUpdateLogMessages()
+    {
+        $options = [
+            'yes' => null,
+        ];
+        $this->setUpDrupal(1, true);
+        $this->setupModulesForTests(['woot'], Path::join(__DIR__, 'resources/modules/d8'));
+        $this->drush('pm:enable', ['woot'], $options);
+
+        // Force re-run of woot_update_8105().
+        $this->drush('php:eval', ['drupal_set_installed_schema_version("woot", 8104)'], $options);
+        // Force re-run of woot_post_update_batch().
+        $this->forcePostUpdate('woot_post_update_batch', $options);
+
+        // Run updates.
+        $this->drush('updatedb', [], $options);
+
+        $expected_update_output = <<<UPDATE
+>  [notice] Update started: woot_update_8105
+>  [notice] Iteration 1.
+>  [notice] Iteration 2.
+>  [notice] Finished at 3.
+>  [notice] Update completed: woot_update_8105
+UPDATE;
+        $expected_post_update_output = <<<POST_UPDATE
+>  [notice] Update started: woot_post_update_batch
+>  [notice] Iteration 1.
+>  [notice] Iteration 2.
+>  [notice] Finished at 3.
+>  [notice] Update completed: woot_post_update_batch
+POST_UPDATE;
+
+        // On Windows systems the new line delimiter is a CR+LF (\r\n) sequence
+        // instead of LF (\n) as it is on *nix systems.
+        $actual_output = str_replace("\r\n", "\n", $this->getErrorOutputRaw());
+
+        $this->assertContains($expected_update_output, $actual_output);
+        $this->assertContains($expected_post_update_output, $actual_output);
+    }
+
+    /**
+     * Tests installing modules with entity type definitions via update hooks.
+     */
+    public function testEnableModuleViaUpdate()
+    {
+        $options = [
+            'yes' => null,
+        ];
+        $this->setUpDrupal(1, true);
+        $this->setupModulesForTests(['woot'], Path::join(__DIR__, 'resources/modules/d8'));
+        $this->drush('pm:enable', ['woot'], $options);
+
+        // Force re-run of woot_update_8106().
+        $this->drush('php:eval', ['drupal_set_installed_schema_version("woot", 8105)'], $options);
+
+        // Run updates.
+        $this->drush('updatedb', [], $options);
+
+        // Check that the post-update function returns the new entity type ID.
+        $this->assertContains('[notice] taxonomy_term', $this->getErrorOutputRaw());
+
+        // Check that the new entity type is installed.
+        $this->drush('php:eval', ['woot_get_taxonomy_term_entity_type_id();']);
+        $this->assertContains('taxonomy_term', $this->getOutputRaw());
+    }
+
+    /**
+     * Tests installing modules with entity type definitions via post-update hooks.
+     */
+    public function testEnableModuleViaPostUpdate()
+    {
+        $options = [
+            'yes' => null,
+        ];
+        $this->setUpDrupal(1, true);
+        $this->setupModulesForTests(['woot'], Path::join(__DIR__, 'resources/modules/d8'));
+        $this->drush('pm:enable', ['woot'], $options);
+
+        // Force re-run of woot_post_update_install_taxonomy().
+        $this->forcePostUpdate('woot_post_update_install_taxonomy', $options);
+
+        // Run updates.
+        $this->drush('updatedb', [], $options);
+
+        // Check that the post-update function returns the new entity type ID.
+        $this->assertContains('[notice] taxonomy_term', $this->getErrorOutputRaw());
+
+        // Check that the new entity type is installed.
+        $this->drush('php:eval', ['woot_get_taxonomy_term_entity_type_id();']);
+        $this->assertContains('taxonomy_term', $this->getOutputRaw());
     }
 
     public function tearDown()

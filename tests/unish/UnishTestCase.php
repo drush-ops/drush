@@ -42,8 +42,6 @@ abstract class UnishTestCase extends TestCase
 
     private static $usergroup = null;
 
-    private static $backendOutputDelimiter = 'DRUSH_BACKEND_OUTPUT_START>>>%s<<<DRUSH_BACKEND_OUTPUT_END';
-
     public function __construct($name = null, array $data = [], $dataName = '')
     {
         parent::__construct($name, $data, $dataName);
@@ -187,14 +185,6 @@ abstract class UnishTestCase extends TestCase
     }
 
     /**
-     * @return string
-     */
-    public static function getBackendOutputDelimiter()
-    {
-        return self::$backendOutputDelimiter;
-    }
-
-    /**
      * We used to assure that each class starts with an empty sandbox directory and
      * a clean environment except for the SUT. History: http://drupal.org/node/1103568.
      */
@@ -270,11 +260,6 @@ abstract class UnishTestCase extends TestCase
     public static function isWindows()
     {
         return strtoupper(substr(PHP_OS, 0, 3)) == "WIN";
-    }
-
-    public static function getTarExecutable()
-    {
-        return self::isWindows() ? "bsdtar.exe" : "tar";
     }
 
     /**

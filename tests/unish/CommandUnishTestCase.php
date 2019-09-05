@@ -70,7 +70,7 @@ abstract class CommandUnishTestCase extends UnishTestCase
     public function drush($command, array $args = [], array $options = [], $site_specification = null, $cd = null, $expected_return = self::EXIT_SUCCESS, $suffix = null, $env = [])
     {
         // cd is added for the benefit of siteSshTest which tests a strict command.
-        $global_option_list = ['simulate', 'root', 'uri', 'include', 'config', 'alias-path', 'ssh-options', 'backend', 'cd'];
+        $global_option_list = ['simulate', 'root', 'uri', 'include', 'config', 'alias-path', 'ssh-options', 'cd'];
         $options += ['uri' => 'dev']; // Default value.
         $hide_stderr = false;
         $cmd[] = self::getDrush();
@@ -79,10 +79,6 @@ abstract class CommandUnishTestCase extends UnishTestCase
         foreach ($options as $key => $value) {
             if (in_array($key, $global_option_list)) {
                 unset($options[$key]);
-                if ($key == 'backend') {
-                    $hide_stderr = true;
-                    $value = null;
-                }
                 if ($key == 'uri' && $value == 'OMIT') {
                     continue;
                 }
@@ -147,56 +143,6 @@ abstract class CommandUnishTestCase extends UnishTestCase
         }
 
         return $return;
-    }
-
-    /**
-     * A slightly less functional copy of drush_backend_parse_output().
-     */
-    public function parseBackendOutput($string)
-    {
-        $regex = sprintf(self::getBackendOutputDelimiter(), '(.*)');
-        preg_match("/$regex/s", $string, $match);
-        if (isset($match[1])) {
-            // we have our JSON encoded string
-            $output = $match[1];
-            // remove the match we just made and any non printing characters
-            $string = trim(str_replace(sprintf(self::getBackendOutputDelimiter(), $match[1]), '', $string));
-        }
-
-        if (!empty($output)) {
-            $data = json_decode($output, true);
-            if (is_array($data)) {
-                return $data;
-            }
-        }
-        return $string;
-    }
-
-    /**
-     * Ensure that an expected log message appears in the Drush log.
-     *
-     *     $this->drush('command', array(), array('backend' => NULL));
-     *     $parsed = $this->parse_backend_output($this->getOutput());
-     *     $this->assertLogHasMessage($parsed['log'], "Expected message", 'debug')
-     *
-     * @param $log Parsed log entries from backend invoke
-     * @param $message The expected message that must be contained in
-     *   some log entry's 'message' field.  Substrings will match.
-     * @param $logType The type of log message to look for; all other
-     *   types are ignored. If FALSE (the default), then all log types
-     *   will be searched.
-     */
-    public function assertLogHasMessage($log, $message, $logType = false)
-    {
-        foreach ($log as $entry) {
-            if (!$logType || ($entry['type'] == $logType)) {
-                $logMessage = $this->getLogMessage($entry);
-                if (strpos($logMessage, $message) !== false) {
-                    return true;
-                }
-            }
-        }
-        $this->fail("Could not find expected message in log: " . $message);
     }
 
     protected function getLogMessage($entry)

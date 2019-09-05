@@ -145,7 +145,6 @@ class DependencyInjection
         $hookManager->addInitializeHook($container->get('redispatch.hook'));
         $hookManager->addInitializeHook($container->get('bootstrap.hook'));
         $hookManager->addPreValidator($container->get('tildeExpansion.hook'));
-        $hookManager->addOutputExtractor(new \Drush\Backend\BackendResultSetter());
 
         // Install our command cache into the command factory
         // TODO: Create class-based implementation of our cache management functions.

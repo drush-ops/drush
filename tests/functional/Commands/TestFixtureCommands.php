@@ -53,7 +53,7 @@ class TestFixtureCommands extends DrushCommands implements AutoloaderAwareInterf
    */
     public function drushUnitBatch()
     {
-        // Reduce php memory/time limits to test backend respawn.
+        // Reduce php memory/time limits to test respawn.
         // TODO.
 
         $operations[] = ['\Unish\Batch\UnitBatchOperations::operate', []];

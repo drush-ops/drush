@@ -6,10 +6,12 @@ use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
 use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
+use Drush\Exec\ExecTrait;
 
 class EditCommands extends DrushCommands implements SiteAliasManagerAwareInterface
 {
     use SiteAliasManagerAwareTrait;
+    use ExecTrait;
 
     /**
      * Edit drushrc, site alias, and Drupal settings.php files.
@@ -45,7 +47,7 @@ class EditCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
             }
         }
 
-        $editor = drush_get_editor();
+        $editor = self::getEditor();
         if (count($all) == 1) {
             $filepath = current($all);
         } else {
@@ -132,7 +134,7 @@ class EditCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
         return $ini_files;
     }
 
-    public static function bashFiles()
+    public function bashFiles()
     {
         $bashFiles = [];
         $home = $this->getConfig()->home();

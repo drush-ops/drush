@@ -89,8 +89,8 @@ class ConfigCommands extends DrushCommands implements StdinAwareInterface
      * @option input-format Format to parse the object. Use "string" for string (default), and "yaml" for YAML.
      * @option value The value to assign to the config key (if any).
      * @hidden-options value
-     * @usage drush config:set system.site page.front node
-     *   Sets system.site:page.front to "node".
+     * @usage drush config:set system.site page.front '/path/to/page'
+     *   Sets the given URL path as value for the config item with key "page.front" of "system.site" config object.
      * @aliases cset,config-set
      */
     public function set($config_name, $key, $value = null, $options = ['input-format' => 'string', 'value' => self::REQ])
@@ -168,9 +168,9 @@ class ConfigCommands extends DrushCommands implements StdinAwareInterface
         $temp_storage = new FileStorage($temp_dir);
         $temp_storage->write($config_name, $contents);
 
-        // Note that `drush_get_editor` returns a string that contains a
+        // Note that `getEditor()` returns a string that contains a
         // %s placeholder for the config file path.
-        $exec = drush_get_editor();
+        $exec = self::getEditor();
         $cmd = sprintf($exec, Escape::shellArg($temp_storage->getFilePath($config_name)));
         $process = $this->processManager()->shell($cmd);
         $process->setTty(true);
@@ -194,7 +194,7 @@ class ConfigCommands extends DrushCommands implements StdinAwareInterface
      * @param $key A config key to clear, for example "page.front".
      * @usage drush config:delete system.site
      *   Delete the the system.site config object.
-     * @usage drush config:delete system.site page.front node
+     * @usage drush config:delete system.site page.front
      *   Delete the 'page.front' key from the system.site object.
      * @aliases cdel,config-delete
      */

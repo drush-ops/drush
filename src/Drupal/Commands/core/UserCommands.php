@@ -159,7 +159,7 @@ class UserCommands extends DrushCommands
      * @param string $role The name of the role to add.
      * @param string $names A comma delimited list of user names.
      * @aliases urol,user-add-role
-     * @usage drush user:add-role "power user" user3
+     * @usage drush user-add-role "power user" user3
      *   Add the "power user" role to user3
      */
     public function addRole($role, $names)
@@ -234,7 +234,6 @@ class UserCommands extends DrushCommands
         if (!$this->getConfig()->simulate()) {
             if ($account = User::create($new_user)) {
                 $account->save();
-                drush_backend_set_result($this->infoArray($account));
                 $this->logger()->success(dt('Created a new user with uid !uid', ['!uid' => $account->id()]));
             } else {
                 return new CommandError("Could not create a new user account with the name " . $name . ".");

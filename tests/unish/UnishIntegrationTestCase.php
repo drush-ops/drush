@@ -61,6 +61,8 @@ abstract class UnishIntegrationTestCase extends UnishTestCase
      * @param int $expected_return
      *   The expected exit code. Usually self::EXIT_ERROR or self::EXIT_SUCCESS.
      * @param string|bool $stdin
+     *   A string that will be written to a tmp file. Note that the command you
+     *   are testing must implement StdinAwareInterface.
      * @return integer
      *   An exit code.
      */
@@ -96,10 +98,6 @@ abstract class UnishIntegrationTestCase extends UnishTestCase
         $this->stdout = $output->fetch();
         $this->stderr = $output->getErrorOutput()->fetch();
 
-        // Empty Drush's legacy context system
-        $cache = &drush_get_context();
-        $cache = [];
-
         return $return;
     }
 
@@ -112,7 +110,7 @@ abstract class UnishIntegrationTestCase extends UnishTestCase
 
     protected function buildCommandLine($command, $args, $options)
     {
-        $global_option_list = ['simulate', 'root', 'uri', 'include', 'config', 'alias-path', 'ssh-options', 'backend', 'cd'];
+        $global_option_list = ['simulate', 'root', 'uri', 'include', 'config', 'alias-path', 'ssh-options', 'cd'];
         $options += ['root' => $this->webroot(), 'uri' => self::INTEGRATION_TEST_ENV]; // Default value.
         $cmd = [self::getDrush()];
 

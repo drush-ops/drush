@@ -15,13 +15,6 @@ use Webmozart\PathUtil\Path;
  */
 
 /**
- * Behavior for drush_copy_dir() when destinations exist.
- */
-define('FILE_EXISTS_ABORT', 0);
-define('FILE_EXISTS_OVERWRITE', 1);
-define('FILE_EXISTS_MERGE', 2);
-
-/**
  * Deletes the specified file or directory and everything inside it.
  *
  * Usually respects read-only files and folders. To do a forced delete use
@@ -100,100 +93,6 @@ function drush_delete_dir_contents($dir, $force = FALSE) {
 }
 
 /**
- * Copy $src to $dest.
- *
- * @param $src
- *   The directory to copy.
- * @param $dest
- *   The destination to copy the source to, including the new name of
- *   the directory.  To copy directory "a" from "/b" to "/c", then
- *   $src = "/b/a" and $dest = "/c/a".  To copy "a" to "/c" and rename
- *   it to "d", then $dest = "/c/d".
- * @param $overwrite
- *   Action to take if destination already exists.
- *     - FILE_EXISTS_OVERWRITE - completely removes existing directory.
- *     - FILE_EXISTS_ABORT - aborts the operation.
- *     - FILE_EXISTS_MERGE - Leaves existing files and directories in place.
- * @return
- *   TRUE on success, FALSE on failure.
- *
- * @deprecated Use \Symfony\Component\Filesystem\Filesystem::copy.
- */
-function drush_copy_dir($src, $dest, $overwrite = FILE_EXISTS_ABORT) {
-  // Preflight based on $overwrite if $dest exists.
-  if (file_exists($dest)) {
-    if ($overwrite === FILE_EXISTS_OVERWRITE) {
-      drush_op('drush_delete_dir', $dest, TRUE);
-    }
-    elseif ($overwrite === FILE_EXISTS_ABORT) {
-      return drush_set_error('DRUSH_DESTINATION_EXISTS', dt('Destination directory !dest already exists.', array('!dest' => $dest)));
-    }
-    elseif ($overwrite === FILE_EXISTS_MERGE) {
-      // $overwrite flag may indicate we should merge instead.
-      drush_log(dt('Merging existing !dest directory', array('!dest' => $dest)));
-    }
-  }
-  // $src readable?
-  if (!is_readable($src)) {
-    return drush_set_error('DRUSH_SOURCE_NOT_EXISTS', dt('Source directory !src is not readable or does not exist.', array('!src' => $src)));
-  }
-  // $dest writable?
-  if (!is_writable(dirname($dest))) {
-    return drush_set_error('DRUSH_DESTINATION_NOT_WRITABLE', dt('Destination directory !dest is not writable.', array('!dest' => dirname($dest))));
-  }
-  // Try to do a recursive copy.
-  if (@_drush_recursive_copy($src, $dest)) {
-    return TRUE;
-  }
-
-  return drush_set_error('DRUSH_COPY_DIR_FAILURE', dt('Unable to copy !src to !dest.', array('!src' => $src, '!dest' => $dest)));
-}
-
-/**
- * Internal function called by drush_copy_dir; do not use directly.
- */
-function _drush_recursive_copy($src, $dest) {
-  // all subdirectories and contents:
-  if(is_dir($src)) {
-    if (!mkdir($dest)) {
-      return FALSE;
-    }
-    $dir_handle = opendir($src);
-    while($file = readdir($dir_handle)) {
-      if ($file != "." && $file != "..") {
-        if (_drush_recursive_copy("$src/$file", "$dest/$file") !== TRUE) {
-          return FALSE;
-        }
-      }
-    }
-    closedir($dir_handle);
-  }
-  elseif (is_link($src)) {
-    symlink(readlink($src), $dest);
-  }
-  elseif (!copy($src, $dest)) {
-    return FALSE;
-  }
-
-  // Preserve file modification time.
-  // https://github.com/drush-ops/drush/pull/1146
-  touch($dest, filemtime($src));
-
-  // Preserve execute permission.
-  if (!is_link($src) && (!function_exists('drush_is_windows') || !drush_is_windows())) {
-    // Get execute bits of $src.
-    $execperms = fileperms($src) & 0111;
-    // Apply execute permissions if any.
-    if ($execperms > 0) {
-      $perms = fileperms($dest) | $execperms;
-      chmod($dest, $perms);
-    }
-  }
-
-  return TRUE;
-}
-
-/**
  * Recursively create a directory tree.
  *
  * @param path
@@ -206,27 +105,6 @@ function drush_mkdir($path) {
   $fs = new Filesystem();
   $fs->mkdir($path);
   return true;
-}
-
-/*
- * Determine if program exists on user's PATH.
- *
- * @return bool|null
- *
- * @deprecated
- *   See \Drush\Exec\ExecTrait::programExists.
- */
-function drush_program_exists($program) {
-  if (drush_has_bash()) {
-    $bucket = drush_bit_bucket();
-
-    // Remove environment variables (eg. PGPASSFILE=) before testing program.
-    $program = preg_replace('#^([A-Z0-9]+=.+? )+#', '', $program);
-
-    // Don't use drush_op_system() since we don't want output during tests.
-    system("command -v $program > $bucket 2>&1", $result_code);
-    return $result_code === 0 ? TRUE : FALSE;
-  }
 }
 
 /**

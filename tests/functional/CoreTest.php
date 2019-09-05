@@ -76,6 +76,45 @@ class CoreCase extends CommandUnishTestCase
         }
     }
 
+    public function testOptionsUriRequestUrl()
+    {
+        // Test whether a URI in a config file resolves correctly, and test
+        // various URI values for their expected Site URI and path.
+        $drush_config_file = Path::join($this->webrootSlashDrush(), 'drush.yml');
+        $command_options = [
+        'uri' => 'OMIT', // A special value which causes --uri to not be specified.
+        ];
+        foreach ([
+                   'test.uri' => 'http://test.uri',
+                   'test.uri/' => 'http://test.uri',
+                   'test.uri/subpath' => 'http://test.uri/subpath',
+                   'test.uri/subpath/' => 'http://test.uri/subpath',
+                   'http://test.uri' => 'http://test.uri',
+                   'http://test.uri/' => 'http://test.uri',
+                   'http://test.uri/subpath' => 'http://test.uri/subpath',
+                   'http://test.uri/subpath/' => 'http://test.uri/subpath',
+                   'https://test.uri' => 'https://test.uri',
+                   'https://test.uri/' => 'https://test.uri',
+                   'https://test.uri/subpath' => 'https://test.uri/subpath',
+                   'https://test.uri/subpath/' => 'https://test.uri/subpath',
+                 ] as $test_uri => $expected) {
+            // Put a yml file in the drush folder.
+            $config_options = [
+              'options' => [
+                'uri' => $test_uri,
+              ],
+            ];
+            file_put_contents($drush_config_file, Yaml::dump($config_options, PHP_INT_MAX, 2));
+            $this->drush('unit-eval', ["return Drupal::request()->getScheme() . '://' . Drupal::request()->getHost() . Drupal::request()->getBaseUrl();"], $command_options);
+            unlink($drush_config_file);
+            $output = $this->getOutputRaw();
+            // Include the test URI, for some context in errors.
+            $i=10;
+            $this->assertEquals([$test_uri => $expected], [$test_uri => trim($output)]);
+        }
+    }
+
+
     public function testRecursiveConfigLoading()
     {
         // Put a yml file in the drush folder.

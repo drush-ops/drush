@@ -78,7 +78,7 @@
 # drush:
 #   paths:
 #     alias-path:
-#       - '${env.home}/.drush/sites'
+#       - '${env.HOME}/.drush/sites'
 #       - /etc/drush/sites
 # @endcode
 #
@@ -194,14 +194,14 @@
 # There are a number of service providers that manage Drupal sites as a
 # service. Drush allows service providers to create collections of site alias
 # files to reference all of the sites available to a single user. In order
-# to so this, a new location must be defined in your Drush configuration
+# to do this, a new location must be defined in your Drush configuration
 # file:
 #
 # @code
 # drush:
 #   paths:
 #     alias-path:
-#       - '${env.home}/.drush/sites/provider-name'
+#       - '${env.HOME}/.drush/sites/provider-name'
 # @endcode
 #
 # Site aliases stored in this directory may then be referenced by its
@@ -221,6 +221,35 @@
 #
 # Add the option `--format=list` to show only the names of each site and
 # environment without also showing the values in each alias record.
+
+# Wildcard Aliases for Service Providers
+#
+# Some service providers that manage Drupal sites allow customers to create
+# multiple "environments" for a site. It is common for these providers to
+# also have a feature to automatically create Drush aliases for all of a
+# user's sites. Rather than write one record for every environment in that
+# site, it is also possible to write a single "wildcard" alias that represents
+# all possible environments. This is possible if the contents of each
+# environment alias are identical save for the name of the environment in
+# one or more values. The variable `${env-name}` will be substituted with the
+# environment name wherever it appears.
+#
+# Example wildcard record:
+#
+# @code
+# # File: remote-example.site.yml
+# '*':
+#   host: ${env-name}.server.domain.com
+#   user: www-admin
+#   root: /path/to/${env-name}
+#   uri: http://${env-name}.remote-example.com
+# @endcode
+#
+# With a wildcard record, any environment name may be used, and will always
+# match. This is not desirable in instances where the specified environment
+# does not exist (e.g. if the user made a typo). An alias alter hook in a
+# policy file may be used to catch these mistakes and report an error.
+# @see SiteAliasAlterCommands for an example on how to do this.
 
 # Developer Information
 #

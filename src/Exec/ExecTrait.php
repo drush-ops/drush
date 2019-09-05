@@ -98,4 +98,10 @@ trait ExecTrait
         }
         return $process->isSuccessful();
     }
+
+    public static function getEditor()
+    {
+        // See http://drupal.org/node/1740294
+        return '${VISUAL-${EDITOR-vi}} %s';
+    }
 }

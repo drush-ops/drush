@@ -12,10 +12,13 @@ test_71_steps: &test71steps
   steps:
     - checkout
     - run: cp .docker/zz-php.ini /usr/local/etc/php/conf.d/
-    - run: composer install
+    - run: composer install -n
     - run: $HOME/drush/.circleci/patch.sh 8.7.x
     - run: composer lint
+    - run: composer unit
     - run: composer functional
+    # @todo was getting missing key_value table failure when this comes before functional. See https://circleci.com/gh/drush-ops/drush/8828.
+    - run: composer integration
 
 version: 2.1
 jobs:
@@ -29,7 +32,7 @@ jobs:
     steps:
       - checkout
       - run: cp .docker/zz-php.ini /usr/local/etc/php/conf.d/
-      - run: composer install
+      - run: composer install -n
       - run: composer cs
 
   # Mergeable test:
@@ -38,12 +41,10 @@ jobs:
   check_mergable:
     <<: *defaults
     docker:
-      - image: wodby/php:7.1
+      - image: circleci/buildpack-deps:buster
     steps:
       - checkout
-      - run: git config --global user.email "nobody@drush.org"
-      - run: git config --global user.name "Drush Merge Test Bot"
-      - run: git merge -q -m 'Merge check' origin/master
+      - run: $HOME/drush/.circleci/mergable.sh
 
   # PHP 7.1 test:
   #   Checks the most common configuration.
@@ -95,32 +96,14 @@ jobs:
       - checkout
       - run: cp .docker/zz-php.ini /usr/local/etc/php/conf.d/
       - run: composer remove --dev webflo/drupal-core-strict --no-update
-      - run: composer require --dev drupal/core:8.7.x-dev --no-update
+      - run: composer require --dev drupal/core:8.8.x-dev --no-update
+      - run: composer require --dev webflo/drupal-core-require-dev:8.8.x-dev --no-update
       - run: composer config platform.php 7.2
-      - run: composer update
+      - run: composer update --no-scripts
+      - run: composer install -n
       - run: composer lint
-      - run: composer functional
-
-  # PHP 5.6 test with LOWEST dependencies:
-  #   Determines whether any code introduced in this branch uses language
-  #   features not available in PHP 5.6, or whether there are any API calls
-  #   to dependency features not available in the lowest version listed
-  #   for a dependency in our composer.json file.
-  test_56_lowest:
-    <<: *defaults
-    docker:
-      - image: wodby/php:5.6
-        environment:
-          - MYSQL_HOST=127.0.0.1
-          - UNISH_DB_URL=mysql://root:@127.0.0.1
-          - COMPOSER_MEMORY_LIMIT=-1
-      - image: circleci/mysql:5.7.24
-    steps:
-      - checkout
-      - run: cp .docker/zz-php.ini /usr/local/etc/php/conf.d/
-      - run: .scenarios.lock/install php5 lowest
-      - run: $HOME/drush/.circleci/patch.sh
-      - run: composer lint
+      - run: composer unit
+      - run: composer integration
       - run: composer functional
 
 workflows:
@@ -140,9 +123,6 @@ workflows:
           requires:
             - check_mergable
             - code_style
-      - test_56_lowest:
-          requires:
-            - check_mergable
   # Drush nightly scheduled jobs:
   #   - Run the HIGHEST tests.
   #   - Run functional tests under Sqlite and Postgres.
@@ -150,7 +130,7 @@ workflows:
     triggers:
        - schedule:
            # Uses UTC timezone.
-           cron: "33 0 * * *"
+           cron: "49 11 * * *"
            filters:
              branches:
                only:
