@@ -8,6 +8,11 @@ defaults: &defaults
     PHPUNIT_ARGS: ""
     PHP_SENDMAIL_PATH: /dev/null
 
+requires: &requires
+  requires:
+    - check_mergable
+    - code_style
+
 test_71_steps: &test71steps
   steps:
     - checkout
@@ -103,8 +108,8 @@ jobs:
       - run: composer install -n
       - run: composer lint
       - run: composer unit
-      - run: composer integration
       - run: composer functional
+      - run: composer integration
 
 workflows:
   version: 2
@@ -120,22 +125,10 @@ workflows:
       - code_style
       - check_mergable
       - test_71_mysql:
-          requires:
-            - check_mergable
-            - code_style
-  # Drush nightly scheduled jobs:
-  #   - Run the HIGHEST tests.
-  #   - Run functional tests under Sqlite and Postgres.
-  scheduled:
-    triggers:
-       - schedule:
-           # Uses UTC timezone.
-           cron: "49 11 * * *"
-           filters:
-             branches:
-               only:
-                 - master
-    jobs:
-      - test_72_highest
-      - test_71_sqlite
-      - test_71_postgres
+          <<: *requires
+      - test_72_highest:
+          <<: *requires
+      - test_71_sqlite:
+          <<: *requires
+      - test_71_postgres:
+          <<: *requires
