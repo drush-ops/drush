@@ -103,8 +103,8 @@ jobs:
       - run: composer install -n
       - run: composer lint
       - run: composer unit
-      - run: composer integration
       - run: composer functional
+      - run: composer integration
 
 workflows:
   version: 2
@@ -130,7 +130,7 @@ workflows:
     triggers:
        - schedule:
            # Uses UTC timezone.
-           cron: "9 13 * * *"
+           cron: "9 36 * * *"
            filters:
              branches:
                only:
