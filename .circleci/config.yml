@@ -130,11 +130,12 @@ workflows:
     triggers:
        - schedule:
            # Uses UTC timezone.
-           cron: "28 12 * * *"
+           cron: "31 12 * * *"
            filters:
              branches:
                only:
                  - master
+                 - db-compat
     jobs:
       - test_72_highest
       - test_71_sqlite
