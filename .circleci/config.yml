@@ -9,8 +9,9 @@ defaults: &defaults
     PHP_SENDMAIL_PATH: /dev/null
 
 requires: &requires
-  - check_mergable
-  - code_style
+  requires:
+    - check_mergable
+    - code_style
 
 test_71_steps: &test71steps
   steps:
