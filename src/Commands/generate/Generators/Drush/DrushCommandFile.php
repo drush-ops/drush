@@ -76,9 +76,9 @@ class DrushCommandFile extends BaseGenerator
             $composer_json_data['name'] = 'org/' . $vars['machine_name'];
         }
 
-        // Add an entry for the drush services file.
+        // Add an entry for the Drush services file.
         $composer_json_data['extra']['drush']['services'] = [
-            'drush.services.yml' => '^9',
+            'drush.services.yml' => '^10',
         ];
 
         return $composer_json_data;
