@@ -35,6 +35,8 @@ class EntityCommands extends DrushCommands
      *   Delete all shortcut entities.
      * @usage drush entity:delete node 22,24
      *   Delete nodes 22 and 24.
+     * @usage drush entity:delete node --exclude=9,14,81
+     *   Delete all nodes except node 9, 14 and 81.
      * @usage drush entity:delete user
      *   Delete all users except uid=1.
      *
@@ -42,7 +44,7 @@ class EntityCommands extends DrushCommands
      * @aliases edel,entity-delete
      * @throws \Exception
      */
-    public function delete($entity_type, $ids = null, $options = ['bundle' => self::REQ])
+    public function delete($entity_type, $ids = null, $options = ['bundle' => self::REQ, 'exclude' => self::REQ])
     {
         $storage = $this->entityTypeManager->getStorage($entity_type);
         if ($ids = StringUtils::csvToArray($ids)) {
@@ -58,6 +60,13 @@ class EntityCommands extends DrushCommands
         if ($entity_type == 'user') {
             unset($entities[1]);
             unset($entities[0]);
+        }
+
+        // Don't delete excluded entities.
+        if ($exclude = StringUtils::csvToArray($options['exclude'])) {
+            foreach ($exclude as $id) {
+                unset($entities[$id]);
+            }
         }
 
         if (empty($entities)) {
