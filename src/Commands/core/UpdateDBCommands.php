@@ -442,11 +442,11 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
         }
 
         if ($options['maintenance-mode']) {
-          $original_maint_mode = \Drupal::service('state')->get('system.maintenance_mode');
-          if (!$original_maint_mode) {
-              \Drupal::service('state')->set('system.maintenance_mode', true);
-              $operations[] = ['\Drush\Commands\core\UpdateDBCommands::restoreMaintMode', [false]];
-          }
+            $original_maint_mode = \Drupal::service('state')->get('system.maintenance_mode');
+            if (!$original_maint_mode) {
+                \Drupal::service('state')->set('system.maintenance_mode', true);
+                $operations[] = ['\Drush\Commands\core\UpdateDBCommands::restoreMaintMode', [false]];
+            }
         }
 
         $batch['operations'] = $operations;
