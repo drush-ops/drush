@@ -27,13 +27,14 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
      *
      * @command updatedb
      * @option cache-clear Clear caches upon completion.
+     * @option maintenance-mode Switch site into maintenance mode during updates.
      * @option entity-updates Run automatic entity schema updates at the end of any update hooks. Not supported in Drupal >= 8.7.0.
      * @option post-updates Run post updates after hook_update_n and entity updates.
      * @bootstrap full
      * @kernel update
      * @aliases updb
      */
-    public function updatedb($options = ['cache-clear' => true, 'entity-updates' => false, 'post-updates' => true])
+    public function updatedb($options = ['cache-clear' => true, 'maintenance-mode' => true, 'entity-updates' => false, 'post-updates' => true])
     {
         $this->cache_clear = $options['cache-clear'];
         require_once DRUPAL_ROOT . '/core/includes/install.inc';
@@ -187,15 +188,17 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
      *   The update number to run.
      * @param array $dependency_map
      *   The update dependency map.
+     * @param array $options
+     *   The update options.
      * @param DrushBatchContext $context
      *   The batch context object.
      */
-    public static function updateDoOne($module, $number, array $dependency_map, DrushBatchContext $context)
+    public static function updateDoOne($module, $number, array $dependency_map, array $options, DrushBatchContext $context)
     {
         $function = $module . '_update_' . $number;
 
         // Disable config entity overrides.
-        if (!defined('MAINTENANCE_MODE')) {
+        if ($options['maintenance-mode'] && !defined('MAINTENANCE_MODE')) {
             define('MAINTENANCE_MODE', 'update');
         }
 
@@ -281,15 +284,17 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
      *
      * @param string $function
      *   The post-update function to execute.
+     * @param array $options
+     *   The update options.
      * @param DrushBatchContext $context
      *   The batch context object.
      */
-    public static function updateDoOnePostUpdate($function, DrushBatchContext $context)
+    public static function updateDoOnePostUpdate($function, array $options, DrushBatchContext $context)
     {
         $ret = [];
 
         // Disable config entity overrides.
-        if (!defined('MAINTENANCE_MODE')) {
+        if ($options['maintenance-mode'] && !defined('MAINTENANCE_MODE')) {
             define('MAINTENANCE_MODE', 'update');
         }
 
@@ -408,7 +413,7 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
                 }
                 // Add this update function to the batch.
                 $function = $update['module'] . '_update_' . $update['number'];
-                $operations[] = ['\Drush\Commands\core\UpdateDBCommands::updateDoOne', [$update['module'], $update['number'], $dependency_map[$function]]];
+                $operations[] = ['\Drush\Commands\core\UpdateDBCommands::updateDoOne', [$update['module'], $update['number'], $dependency_map[$function], $options]];
             }
         }
 
@@ -431,15 +436,17 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
                     $operations[] = ['\Drush\Commands\core\UpdateDBCommands::cacheRebuild', []];
                 }
                 foreach ($post_updates as $function) {
-                    $operations[] = ['\Drush\Commands\core\UpdateDBCommands::updateDoOnePostUpdate', [$function]];
+                    $operations[] = ['\Drush\Commands\core\UpdateDBCommands::updateDoOnePostUpdate', [$function, $options]];
                 }
             }
         }
 
-        $original_maint_mode = \Drupal::service('state')->get('system.maintenance_mode');
-        if (!$original_maint_mode) {
-            \Drupal::service('state')->set('system.maintenance_mode', true);
-            $operations[] = ['\Drush\Commands\core\UpdateDBCommands::restoreMaintMode', [false]];
+        if ($options['maintenance-mode']) {
+          $original_maint_mode = \Drupal::service('state')->get('system.maintenance_mode');
+          if (!$original_maint_mode) {
+              \Drupal::service('state')->set('system.maintenance_mode', true);
+              $operations[] = ['\Drush\Commands\core\UpdateDBCommands::restoreMaintMode', [false]];
+          }
         }
 
         $batch['operations'] = $operations;
