@@ -185,7 +185,7 @@
 #   paths:
 #     drush-script: '/path/to/drush'
 #   env-vars:
-#     PATH: /bin:/usr/bin:${env.HOME}/.composer/vendor/bin
+#     PATH: /bin:/usr/bin:/home/www-admin/.composer/vendor/bin
 #     DRUPAL_ENV: live
 #   command:
 #     site:
