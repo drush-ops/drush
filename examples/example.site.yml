@@ -126,8 +126,8 @@
 # file. For example, ${env.PROJECT_SSH_USER} will be replaced by the value
 # of the PROJECT_SSH_USER environment value.
 #
-# SSH site aliases may no longer _set_ environment variables.
-# This is a planned feature.
+# SSH site aliases may set environment variables via the 'env-vars' key.
+# See below.
 
 # Additional Site Alias Options
 #
@@ -168,6 +168,8 @@
 #     - `drush sql-sync @live @stage`
 #   NOTE: Setting boolean options broke with Symfony 3. This will be fixed
 #     in a future release. See: https://github.com/drush-ops/drush/issues/2956
+# - 'env-vars': An array of key / value pairs that will be set as environment
+#   variables.
 #
 # Complex example:
 #
@@ -182,6 +184,9 @@
 #     options: '-p 100'
 #   paths:
 #     drush-script: '/path/to/drush'
+#   env-vars:
+#     PATH: /bin:/usr/bin:/home/www-admin/.composer/vendor/bin
+#     DRUPAL_ENV: live
 #   command:
 #     site:
 #       install:
