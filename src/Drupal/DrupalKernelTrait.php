@@ -193,8 +193,10 @@ trait DrupalKernelTrait
                 return $dir . '/' . $serviceYmlPath;
             }
         }
-        Drush::logger()->warning(dt('{module} commands not loaded because its constraint ({constraints}) is incompatible with Drush {version}. Broaden the constraint in {composer} (see \'extra\drush\services\' section) to make the commands loadable.', ['module' => $module, 'composer' => $dir . '/composer.json', 'constraints' => implode(',', $services), 'version' => $version]));
-        return false;
+
+        // Regardless, we still return a services file.
+        Drush::logger()->info(dt('{module} commands loaded even though its constraint ({constraints}) is incompatible with Drush {version}. Broaden the constraint in {composer} (see \'extra\drush\services\' section) to remove this message.', ['module' => $module, 'composer' => $dir . '/composer.json', 'constraints' => implode(',', $services), 'version' => $version]));
+        return $dir . '/' . $serviceYmlPath;
     }
 
     /**
