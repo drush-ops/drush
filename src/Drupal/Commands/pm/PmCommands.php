@@ -170,7 +170,7 @@ class PmCommands extends DrushCommands
             $extension->info += ['package' => ''];
 
             // Filter out test modules/themes.
-            if (strpos($extension->getPath(), 'tests')) {
+            if (strpos($extension->getPath(), DIRECTORY_SEPARATOR . 'tests' . DIRECTORY_SEPARATOR)) {
                 continue;
             }
 
