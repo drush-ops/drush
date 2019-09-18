@@ -26,7 +26,7 @@ Drupal Compatibility
     <th rowspan="2"> Drush Version </th> 
     <th rowspan="2"> Drush Branch </th>
     <th rowspan="2"> PHP </th>
-    <th colspan="4"> Drupal versions </th>
+    <th colspan="5"> Drupal versions </th>
   </tr>
     <th>6</th> <th>7</th> <th>-8.3</th> <th>8.4+</th> <th>9</th>
   </tr>
