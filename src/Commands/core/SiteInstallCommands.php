@@ -5,6 +5,7 @@ use Composer\Semver\Comparator;
 use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\SiteProcess\ProcessBase;
 use Drupal\Component\FileCache\FileCacheFactory;
+use Drupal\Core\Installer\Exception\AlreadyInstalledException;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Drush\Exceptions\UserAbortException;
@@ -142,7 +143,15 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
         require_once DRUSH_DRUPAL_CORE . '/includes/install.core.inc';
         // This can lead to an exit() in Drupal. See install_display_output() (e.g. config validation failure).
         // @todo Get Drupal to not call that function when on the CLI.
-        drush_op('install_drupal', $class_loader, $settings);
+        try {
+            drush_op('install_drupal', $class_loader, $settings);
+        } catch (AlreadyInstalledException $e) {
+            if (!$this->programExists($sql->command())) {
+                throw new \Exception(dt('Drush was unable to drop all tables because `@program` was not found, and therefore Drupal threw an AlreadyInstalledException. Ensure `@program` is available in your PATH.', ['@program' => $sql->command()]));
+            }
+            throw $e;
+        }
+
         if (empty($options['account-pass'])) {
             $this->logger()->success(dt('Installation complete.  User name: @name  User password: @pass', ['@name' => $options['account-name'], '@pass' => $account_pass]));
         } else {
