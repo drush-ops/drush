@@ -5,6 +5,8 @@ namespace Drush\Drupal;
 use Drush\Log\LogLevel;
 use Drupal\Core\DependencyInjection\ServiceModifierInterface;
 use Drupal\Core\DependencyInjection\ContainerBuilder;
+use Drupal\Core\Update\UpdateCompilerPass;
+use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 
 class DrushServiceModifier implements ServiceModifierInterface
 {
@@ -13,6 +15,12 @@ class DrushServiceModifier implements ServiceModifierInterface
      */
     public function alter(ContainerBuilder $container) {
         drush_log(dt("service modifier alter"), LogLevel::DEBUG);
+        
+        // UpdateCompilerPass is available since Drupal 8.7.5
+        if (class_exists(UpdateCompilerPass::class)) {
+            $container->addCompilerPass(new UpdateCompilerPass(), PassConfig::TYPE_REMOVE, 128);
+        }
+        
         // http://symfony.com/doc/2.7/components/dependency_injection/tags.html#register-the-pass-with-the-container
         $container->register('drush.service.consolecommands', 'Drush\Command\ServiceCommandlist');
         $container->addCompilerPass(new FindCommandsCompilerPass('drush.service.consolecommands', 'drush.command'));
