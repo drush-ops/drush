@@ -35,7 +35,7 @@ class EnDisUnListInfoCase extends CommandUnishTestCase
         // TODO: Replace once Drupal 8.7 is no longer supported.
         $active_theme = 'stark';
         if (Comparator::lessThan($drupal_version, '8.8')) {
-          $active_theme = 'classy';
+            $active_theme = 'classy';
         }
         $this->assertContains($active_theme, $out, 'Themes are in the pm-list');
 
