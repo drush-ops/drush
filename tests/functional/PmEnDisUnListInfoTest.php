@@ -8,6 +8,7 @@
 namespace Unish;
 
 use Composer\Semver\Comparator;
+use Drush\Drush;
 
 /**
  *  @group slow
