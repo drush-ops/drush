@@ -31,6 +31,9 @@ class EnDisUnListInfoCase extends CommandUnishTestCase
         $out = $this->getOutput();
         $this->assertContains('devel', $out);
 
+        $this->drush('core:status', [], ['field' => 'drupal-version']);
+        $drupal_version = $this->getOutputRaw();
+
         // Test the testing install profile theme is installed.
         // Since Drupal 8.8, stark is the default testing theme.
         // https://www.drupal.org/node/3083055.
