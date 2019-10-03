@@ -33,6 +33,11 @@ class ConfigCommands extends DrushCommands implements StdinAwareInterface
     protected $configFactory;
 
     /**
+     * @var StorageInterface
+     */
+    protected $configStorageExport;
+
+    /**
      * @return ConfigFactoryInterface
      */
     public function getConfigFactory()
@@ -44,11 +49,32 @@ class ConfigCommands extends DrushCommands implements StdinAwareInterface
     /**
      * ConfigCommands constructor.
      * @param ConfigFactoryInterface $configFactory
+     * @param \Drupal\Core\Config\StorageInterface $configStorage
      */
-    public function __construct($configFactory)
+    public function __construct($configFactory, StorageInterface $configStorage)
     {
         parent::__construct();
         $this->configFactory = $configFactory;
+        $this->configStorage = $configStorage;
+    }
+
+    /**
+     * @param \Drupal\Core\Config\StorageInterface $exportStorage
+     */
+    public function setExportStorage(StorageInterface $exportStorage)
+    {
+        $this->configStorageExport = $exportStorage;
+    }
+
+    /**
+     * @return StorageInterface
+     */
+    public function getConfigStorageExport()
+    {
+        if (isset($this->configStorageExport)) {
+            return $this->configStorageExport;
+        }
+        return $this->configStorage;
     }
 
     /**
@@ -333,7 +359,7 @@ class ConfigCommands extends DrushCommands implements StdinAwareInterface
     public function getChanges($target_storage)
     {
         /** @var StorageInterface $active_storage */
-        $active_storage = \Drupal::service('config.storage');
+        $active_storage = $this->getConfigStorageExport();
 
         $config_comparer = new StorageComparer($active_storage, $target_storage, \Drupal::service('config.manager'));
 
