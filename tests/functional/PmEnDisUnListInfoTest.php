@@ -7,6 +7,8 @@
 
 namespace Unish;
 
+use Composer\Semver\Comparator;
+
 /**
  *  @group slow
  *  @group pm
