@@ -29,7 +29,7 @@ class EnDisUnListInfoCase extends CommandUnishTestCase
         $out = $this->getOutput();
         $this->assertContains('devel', $out);
         // Test the testing install profile theme is installed.;
-        $this->assertContains('classy', $out, 'Themes are in the pm-list');
+        $this->assertContains('stark', $out, 'Themes are in the pm-list');
 
         // Test cache was cleared after enabling a module.
         $table = 'router';
