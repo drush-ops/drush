@@ -78,7 +78,7 @@ class SqlPgsql extends SqlBase
         return $this->paramsToOptions($parameters);
     }
 
-    public function createdbSql($dbname, $quoted = false)
+    public function createdbSql($dbname, $quoted = true)
     {
         if ($quoted) {
             $dbname = '"' . $dbname . '"';

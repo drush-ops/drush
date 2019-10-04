@@ -31,9 +31,9 @@ class SqlSqlite extends SqlBase
      *
      * @param boolean $quoted
      *   Quote the database name. Mysql uses backticks to quote which can cause problems
-     *   in a Windows shell. Set TRUE if the CREATE is not running on the bash command line.
+     *   in a Windows shell. Set FALSE if the CREATE is running on the bash command line.
      */
-    public function createdb($quoted = false)
+    public function createdb($quoted = true)
     {
         $file = $this->getDbSpec()['database'];
         if (file_exists($file)) {

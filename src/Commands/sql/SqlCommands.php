@@ -86,7 +86,7 @@ class SqlCommands extends DrushCommands implements StdinAwareInterface
      *   Create the database as specified in the db-url option.
      * @bootstrap max configuration
      */
-    public function create($options = ['db-su' => self::REQ, 'db-su-pw' => self::REQ])
+    public function create($options = ['db-su' => self::REQ, 'db-su-pw' => self::REQ, 'quoted' => true])
     {
         $sql = SqlBase::create($options);
         $db_spec = $sql->getDbSpec();
@@ -100,7 +100,7 @@ class SqlCommands extends DrushCommands implements StdinAwareInterface
             throw new UserAbortException();
         }
 
-        if (!$sql->createdb(true)) {
+        if (!$sql->createdb($sql->getOption('quoted'))) {
             throw new \Exception('Unable to create database. Rerun with --debug to see any error message.');
         }
     }
