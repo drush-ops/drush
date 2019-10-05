@@ -2,7 +2,6 @@
 namespace Drush\Commands;
 
 use Drush\Drush;
-use Drush\Style\DrushStyle;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
@@ -28,9 +27,7 @@ abstract class DrushCommands implements IOAwareInterface, LoggerAwareInterface, 
 
     use LoggerAwareTrait;
     use ConfigAwareTrait;
-    use IO {
-        io as roboIo;
-    }
+    use IO;
 
     public function __construct()
     {
@@ -44,18 +41,6 @@ abstract class DrushCommands implements IOAwareInterface, LoggerAwareInterface, 
     protected function logger()
     {
         return $this->logger;
-    }
-
-    /**
-     * Override Robo's IO function with our custom style.
-     */
-    protected function io()
-    {
-        if (!$this->io) {
-            // Specify our own Style class when needed.
-            $this->io = new DrushStyle($this->input(), $this->output());
-        }
-        return $this->io;
     }
 
     /**

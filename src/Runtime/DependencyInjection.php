@@ -139,6 +139,10 @@ class DependencyInjection
 
     protected function alterServicesForDrush(ContainerInterface $container, Application $application)
     {
+        // Use 'DrushStyle' instead of SymfonyStyle
+        $ioStorage = $container->get('ioStorage');
+        $ioStorage->setStyleClass(\Drush\Style\DrushStyle::class);
+
         // Add our own callback to the hook manager
         $hookManager = $container->get('hookManager');
         $hookManager->addCommandEvent(new GlobalOptionsEventListener());
