@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "7a700537372e0b9b22bc511fec8b871a",
+    "content-hash": "e6986b8795224a90dff9df3559dfc142",
     "packages": [
         {
             "name": "chi-teck/drupal-code-generator",
@@ -550,16 +550,16 @@
         },
         {
             "name": "consolidation/robo",
-            "version": "dev-master",
+            "version": "2.0.0-alpha3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/consolidation/Robo.git",
-                "reference": "cf65879a969119251ccf193d5bab480df2995895"
+                "reference": "36ec0ae4eaab9cbc408a62e49124f0c8e638b372"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/consolidation/Robo/zipball/cf65879a969119251ccf193d5bab480df2995895",
-                "reference": "cf65879a969119251ccf193d5bab480df2995895",
+                "url": "https://api.github.com/repos/consolidation/Robo/zipball/36ec0ae4eaab9cbc408a62e49124f0c8e638b372",
+                "reference": "36ec0ae4eaab9cbc408a62e49124f0c8e638b372",
                 "shasum": ""
             },
             "require": {
@@ -638,7 +638,7 @@
                 }
             ],
             "description": "Modern task runner",
-            "time": "2019-09-13T20:58:15+00:00"
+            "time": "2019-10-05T22:53:27+00:00"
         },
         {
             "name": "consolidation/self-update",
@@ -7869,7 +7869,6 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
-        "consolidation/robo": 20,
         "consolidation/site-alias": 0,
         "lox/xhprof": 20,
         "webflo/drupal-core-strict": 20,
