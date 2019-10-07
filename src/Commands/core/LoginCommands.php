@@ -73,16 +73,17 @@ class LoginCommands extends DrushCommands implements SiteAliasManagerAwareInterf
             }
 
             $timestamp = \Drupal::time()->getRequestTime();
-            $link = Url::fromRoute('user.reset.login',
-              [
-                'uid' => $account->id(),
-                'timestamp' => $timestamp,
-                'hash' => user_pass_rehash($account, $timestamp),
-              ],
-              [
-                'absolute' => TRUE,
-                'language' => \Drupal::languageManager()->getCurrentLanguage(),
-              ]
+            $link = Url::fromRoute(
+                'user.reset.login',
+                [
+                  'uid' => $account->id(),
+                  'timestamp' => $timestamp,
+                  'hash' => user_pass_rehash($account, $timestamp),
+                ],
+                [
+                  'absolute' => true,
+                  'language' => \Drupal::languageManager()->getCurrentLanguage(),
+                ]
             )->toString();
 
 
