@@ -2,7 +2,9 @@
 services:
   config.commands:
     class: \Drush\Drupal\Commands\config\ConfigCommands
-    arguments: ['@config.factory']
+    arguments: ['@config.factory', '@config.storage']
+    calls:
+      - [setExportStorage, ['@?config.storage.export']]
     tags:
       -  { name: drush.command }
   config.export.commands:

@@ -18,12 +18,16 @@ class SqlMysql extends SqlBase
     {
         $dbSpec = $this->getDbSpec();
         if ($hide_password) {
+            // Default to unix socket if configured.
+            $unixSocket = !empty($dbSpec['unix_socket']) ? 'socket="' . $dbSpec['unix_socket'] . '"' : '';
+
             // EMPTY password is not the same as NO password, and is valid.
             $contents = <<<EOT
 #This file was written by Drush's Sqlmysql.php.
 [client]
 user="{$dbSpec['username']}"
 password="{$dbSpec['password']}"
+{$unixSocket}
 EOT;
 
             $file = drush_save_data_to_temp_file($contents);
