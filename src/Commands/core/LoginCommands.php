@@ -7,6 +7,7 @@ use Drush\Drush;
 use Drush\Exec\ExecTrait;
 use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
 use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
+use Drupal\Core\Url;
 
 class LoginCommands extends DrushCommands implements SiteAliasManagerAwareInterface
 {
@@ -71,7 +72,20 @@ class LoginCommands extends DrushCommands implements SiteAliasManagerAwareInterf
                 $account = User::load(1);
             }
 
-            $link = user_pass_reset_url($account). '/login';
+            $timestamp = \Drupal::time()->getRequestTime();
+            $link = Url::fromRoute('user.reset.login',
+              [
+                'uid' => $account->id(),
+                'timestamp' => $timestamp,
+                'hash' => user_pass_rehash($account, $timestamp),
+              ],
+              [
+                'absolute' => TRUE,
+                'language' => \Drupal::languageManager()->getCurrentLanguage(),
+              ]
+            )->toString();
+
+
             if ($path) {
                 $link .= '?destination=' . $path;
             }
