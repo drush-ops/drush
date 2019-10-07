@@ -82,7 +82,7 @@ class LoginCommands extends DrushCommands implements SiteAliasManagerAwareInterf
                 ],
                 [
                   'absolute' => true,
-                  'language' => \Drupal::languageManager()->getCurrentLanguage(),
+                  'language' => \Drupal::languageManager()->getLanguage($account->getPreferredLangcode()),
                 ]
             )->toString();
 
