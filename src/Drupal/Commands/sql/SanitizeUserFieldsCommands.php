@@ -68,7 +68,7 @@ class SanitizeUserFieldsCommands extends DrushCommands implements SanitizePlugin
             $table = 'user__' . $key;
             $query = $conn->update($table);
 
-            if (!empty($whitelist_uids)) {
+            if (!empty($whitelist_uids) && !empty($whitelist_uids[0])) {
                 $query->condition('entity_id', $whitelist_uids, 'NOT IN');
             }
 

@@ -39,7 +39,7 @@ class SanitizeUserTableCommands extends DrushCommands implements SanitizePluginI
         $messages = [];
 
         // Prevent whitelisted accounts sanitization
-        if (!empty($whitelist_uids)) {
+        if (!empty($whitelist_uids && !empty($whitelist_uids[0]))) {
             $query->condition('uid', $whitelist_uids, 'NOT IN');
         }
 
