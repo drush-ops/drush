@@ -14,14 +14,16 @@ class SanitizeCommands extends DrushCommands implements CustomEventAwareInterfac
     protected $database;
     use CustomEventAwareTrait;
 
-    public function __construct($database) {
-       $this->database = $database;
+    public function __construct($database)
+    {
+        $this->database = $database;
     }
 
     /**
      * @return mixed
      */
-    public function getDatabase() {
+    public function getDatabase()
+    {
         return $this->database;
     }
 
@@ -41,7 +43,7 @@ class SanitizeCommands extends DrushCommands implements CustomEventAwareInterfac
      * @usage drush sql:sanitize --whitelist-fields=field_biography,field_phone_number
      *   Sanitizes database but exempts two user fields from modification.
      * @usage drush sql:sanitize --whitelist-uids=4,5
-     *   Sanitizes database but exempts two user accounts from modification based on uids.
+     *   Sanitizes database but exempts two user accounts from modification based on their uids.
      * @usage drush sql:sanitize --whitelist-mails=user1@example.org, *@mycompany.org
      *   Sanitizes database but exempts user accounts from modification based on account mail.
      *   You can use * as a wildcard to target every mail account on domain.
@@ -73,7 +75,8 @@ class SanitizeCommands extends DrushCommands implements CustomEventAwareInterfac
 
     /**
      * @hook option sql-sanitize
-     * @option whitelist-uids A comma delimited list of uids corresponding to the user accounts exempt from sanitization.
+     * @option whitelist-uids A comma delimited list of uids corresponding to the user accounts exempt from
+     *     sanitization.
      * @option whitelist-mails
      *   A comma delimited list of mails corresponding to the user accounts exempt from sanitization.
      *   wildcard can be used to target all mail accounts on a domain.
@@ -87,14 +90,12 @@ class SanitizeCommands extends DrushCommands implements CustomEventAwareInterfac
      *
      * @hook pre-command sql-sanitize
      */
-    public function handleMilWhitelist(CommandData $commandData) {
+    public function handleMilWhitelist(CommandData $commandData)
+    {
         $input = $commandData->input();
         $whitelist_mails = StringUtils::csvToArray($input->getOption('whitelist-mails'));
-        var_dump($input->getOption('whitelist-mails'));
         $whitelist_uids = StringUtils::csvToArray($input->getOption('whitelist-uids'));
         $uids_mail_list = $this->uidsByMails($this->handleMailWildcard($whitelist_mails));
-//                var_dump($uids_mail_list);
-//                var_dump($whitelist_uids);
         $input->setOption('whitelist-uids', implode(",", array_merge($whitelist_uids, $uids_mail_list)));
     }
 
@@ -105,7 +106,8 @@ class SanitizeCommands extends DrushCommands implements CustomEventAwareInterfac
      *
      * @return array
      */
-    private function uidsByMails($mail_list) {
+    private function uidsByMails($mail_list)
+    {
         //print_r($mail_list);
         if (empty($mail_list)) {
             return [];
@@ -125,14 +127,15 @@ class SanitizeCommands extends DrushCommands implements CustomEventAwareInterfac
      *
      * @return mixed
      */
-    private function handleMailWildcard($mail_list) {
+    private function handleMailWildcard($mail_list)
+    {
         foreach ($mail_list as $key => $mail) {
             $mail_parts = explode('@', $mail);
-            if ($mail_parts[0] === '*') {
+            if ($mail_parts[0]==='*') {
                 $conn = $this->getDatabase();
                 $result = $conn->select('users_field_data', 'ufd')
                     ->fields('ufd', ['mail'])
-                    ->condition('mail', "%@" . $mail_parts[1], "LIKE")
+                    ->condition('mail', '%@' . $mail_parts[1], 'LIKE')
                     ->execute()
                     ->fetchCol(0);
 
