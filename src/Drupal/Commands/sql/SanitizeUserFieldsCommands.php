@@ -66,8 +66,11 @@ class SanitizeUserFieldsCommands extends DrushCommands implements SanitizePlugin
             $query = $conn->update($table);
             $name = $def->getName();
             $field_type_class = \Drupal::service('plugin.manager.field.field_type')->getPluginClass($def->getType());
-            $value_array = $field_type_class::generateSampleValue($def);
-            $value = $value_array['value'];
+            $supported_field_types = ['email', 'string', 'string_long', 'telephone', 'text', 'text_long', 'text_with_summary'];
+            if (in_array($def->getType(), $supported_field_types)) {
+                $value_array = $field_type_class::generateSampleValue($def);
+                $value = $value_array['value'];
+            }
             switch ($def->getType()) {
                 case 'email':
                     $query->fields([$name . '_value' => $value]);
