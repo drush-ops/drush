@@ -82,14 +82,10 @@ class LoginCommands extends DrushCommands implements SiteAliasManagerAwareInterf
                 ],
                 [
                   'absolute' => true,
+                  'query' => $path ? ['destination' => $path] : [],
                   'language' => \Drupal::languageManager()->getLanguage($account->getPreferredLangcode()),
                 ]
             )->toString();
-
-
-            if ($path) {
-                $link .= '?destination=' . $path;
-            }
         }
         $port = $options['redirect-port'];
         $this->startBrowser($link, false, $port, $options['browser']);
