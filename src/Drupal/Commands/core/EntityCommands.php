@@ -29,6 +29,7 @@ class EntityCommands extends DrushCommands
      * @param array $options
      *
      * @option bundle Restrict deletion to the specified bundle. Ignored when ids is specified.
+     * @option exclude Exclude certain entities from deletion. Ignored when ids is specified.
      * @usage drush entity:delete node --bundle=article
      *   Delete all article entities.
      * @usage drush entity:delete shortcut
@@ -49,9 +50,18 @@ class EntityCommands extends DrushCommands
         $storage = $this->entityTypeManager->getStorage($entity_type);
         if ($ids = StringUtils::csvToArray($ids)) {
             $entities = $storage->loadMultiple($ids);
-        } elseif ($bundle = $options['bundle']) {
-            $bundleKey = $this->entityTypeManager->getDefinition($entity_type)->getKey('bundle');
-            $entities = $storage->loadByProperties([$bundleKey => $bundle]);
+        } elseif ($options['bundle'] || $options['exclude']) {
+            $query = $storage->getQuery();
+            if ($exclude = StringUtils::csvToArray($options['exclude'])) {
+                $bundleId = $this->entityTypeManager->getDefinition($entity_type)->getKey('id');
+                $query = $query->condition($bundleId, $exclude, 'NOT IN');
+            }
+            if ($bundle = $options['bundle']) {
+                $bundleKey = $this->entityTypeManager->getDefinition($entity_type)->getKey('bundle');
+                $query = $query->condition($bundleKey, $bundle);
+            }
+            $result = $query->execute();
+            $entities = $storage->loadMultiple($result);
         } else {
             $entities = $storage->loadMultiple();
         }
@@ -60,13 +70,6 @@ class EntityCommands extends DrushCommands
         if ($entity_type == 'user') {
             unset($entities[1]);
             unset($entities[0]);
-        }
-
-        // Don't delete excluded entities.
-        if ($exclude = StringUtils::csvToArray($options['exclude'])) {
-            foreach ($exclude as $id) {
-                unset($entities[$id]);
-            }
         }
 
         if (empty($entities)) {
