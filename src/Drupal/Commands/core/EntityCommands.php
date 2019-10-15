@@ -53,8 +53,8 @@ class EntityCommands extends DrushCommands
         } elseif ($options['bundle'] || $options['exclude']) {
             $query = $storage->getQuery();
             if ($exclude = StringUtils::csvToArray($options['exclude'])) {
-                $bundleId = $this->entityTypeManager->getDefinition($entity_type)->getKey('id');
-                $query = $query->condition($bundleId, $exclude, 'NOT IN');
+                $idKey = $this->entityTypeManager->getDefinition($entity_type)->getKey('id');
+                $query = $query->condition($idKey, $exclude, 'NOT IN');
             }
             if ($bundle = $options['bundle']) {
                 $bundleKey = $this->entityTypeManager->getDefinition($entity_type)->getKey('bundle');
