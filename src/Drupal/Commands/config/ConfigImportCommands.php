@@ -290,30 +290,4 @@ class ConfigImportCommands extends DrushCommands
             }
         }
     }
-
-    /**
-     * @hook validate config-import
-     * @param \Consolidation\AnnotatedCommand\CommandData $commandData
-     * @return \Consolidation\AnnotatedCommand\CommandError|null
-     */
-    public function validate(CommandData $commandData)
-    {
-        $msgs = [];
-        if ($commandData->input()->getOption('partial') && !$this->getModuleHandler()->moduleExists('config')) {
-            $msgs[] = 'Enable the config module in order to use the --partial option.';
-        }
-
-        if ($source = $commandData->input()->getOption('source')) {
-            if (!file_exists($source)) {
-                $msgs[] = 'The source directory does not exist.';
-            }
-            if (!is_dir($source)) {
-                $msgs[] = 'The source is not a directory.';
-            }
-        }
-
-        if ($msgs) {
-            return new CommandError(implode(' ', $msgs));
-        }
-    }
 }
