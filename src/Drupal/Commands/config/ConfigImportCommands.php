@@ -177,14 +177,10 @@ class ConfigImportCommands extends DrushCommands
     /**
      * Import config from a config directory.
      *
-     * @command config:import
-     * @param $label A config directory label (i.e. a key in \$config_directories array in settings.php).
-     * @interact-config-label
-     * @option diff Show preview as a diff.
-     * @option preview Deprecated. Format for displaying proposed changes. Recognized values: list, diff.
-     * @option source An arbitrary directory that holds the configuration files. An alternative to label argument
-     * @option partial Allows for partial config imports from the source directory. Only updates and new configs will be processed with this flag (missing configs will not be deleted).
-     * @aliases cim,config-import
+     * This command is invoked through a wrapper command because it requires to
+     * be bootstrapped using the UpdateKernel.
+     *
+     * @see \Drush\Commands\config\ConfigImportCommands::import()
      */
     public function import($label = null, $options = ['preview' => 'list', 'source' => self::REQ, 'partial' => false, 'diff' => false])
     {
@@ -292,32 +288,6 @@ class ConfigImportCommands extends DrushCommands
                 watchdog_exception('config_import', $e);
                 throw new \Exception($message);
             }
-        }
-    }
-
-    /**
-     * @hook validate config-import
-     * @param \Consolidation\AnnotatedCommand\CommandData $commandData
-     * @return \Consolidation\AnnotatedCommand\CommandError|null
-     */
-    public function validate(CommandData $commandData)
-    {
-        $msgs = [];
-        if ($commandData->input()->getOption('partial') && !$this->getModuleHandler()->moduleExists('config')) {
-            $msgs[] = 'Enable the config module in order to use the --partial option.';
-        }
-
-        if ($source = $commandData->input()->getOption('source')) {
-            if (!file_exists($source)) {
-                $msgs[] = 'The source directory does not exist.';
-            }
-            if (!is_dir($source)) {
-                $msgs[] = 'The source is not a directory.';
-            }
-        }
-
-        if ($msgs) {
-            return new CommandError(implode(' ', $msgs));
         }
     }
 }
