@@ -3,6 +3,8 @@
 namespace Unish;
 
 use Composer\Semver\Comparator;
+use Drupal\Core\Serialization\Yaml;
+use Webmozart\PathUtil\Path;
 
 /**
  * Tests for Configuration Management commands for D8+.
@@ -11,6 +13,7 @@ use Composer\Semver\Comparator;
  */
 class ConfigCase extends CommandUnishTestCase
 {
+    use TestModuleHelperTrait;
 
     public function setUp()
     {
@@ -31,10 +34,7 @@ class ConfigCase extends CommandUnishTestCase
 
     public function testConfigExportImportStatusExistingConfig()
     {
-        // Get path to sync dir.
-        $this->drush('core:status', [], ['format' => 'json', 'fields' => 'config-sync']);
-        $sync = $this->webroot() . '/' . $this->getOutputFromJSON('config-sync');
-        $system_site_yml = $sync . '/system.site.yml';
+        $system_site_yml = $this->getConfigSyncDir() . '/system.site.yml';
 
         // Test export.
         $this->drush('config-export');
@@ -82,5 +82,53 @@ class ConfigCase extends CommandUnishTestCase
             $page = $this->getOutputFromJSON('system.site:page');
             $this->assertContains('unish existing', $page['front'], 'Existing config was successfully imported during site:install.');
         }
+    }
+
+    public function testConfigImport()
+    {
+        $options = [
+            'include' => __DIR__,
+        ];
+        $this->setupModulesForTests(['woot'], Path::join(__DIR__, 'resources/modules/d8'));
+        $this->drush('pm-enable', ['woot'], $options);
+
+        // Export the configuration.
+        $this->drush('config:export');
+
+        $root = $this->webroot();
+
+        // Introduce a new service in the Woot module that depends on a service
+        // in the Devel module (which is not yet enabled).
+        $filename = Path::join($root, 'modules/unish/woot/woot.services.yml');
+        $serviceDefinition = <<<YAML_FRAGMENT
+  woot.depending_service:
+    class: Drupal\woot\DependingService
+    arguments: ['@devel.dumper']
+YAML_FRAGMENT;
+        file_put_contents($filename, $serviceDefinition, FILE_APPEND);
+
+        $filename = Path::join($root, 'modules/unish/woot/woot.info.yml');
+        $moduleDependency = <<<YAML_FRAGMENT
+dependencies:
+  - devel
+YAML_FRAGMENT;
+        file_put_contents($filename, $moduleDependency, FILE_APPEND);
+
+        // Add the 'devel' module in core.extension.yml.
+        $extensionFile = $this->getConfigSyncDir() . '/core.extension.yml';
+        $this->assertFileExists($extensionFile);
+        $extension = Yaml::decode(file_get_contents($extensionFile));
+        $extension['module']['devel'] = 0;
+        require_once $root . "/core/includes/module.inc";
+        $extension['module'] = module_config_sort($extension['module']);
+        file_put_contents($extensionFile, Yaml::encode($extension));
+
+        $this->drush('config:import');
+    }
+
+    protected function getConfigSyncDir()
+    {
+        $this->drush('core:status', [], ['format' => 'json', 'fields' => 'config-sync']);
+        return $this->webroot().'/'.$this->getOutputFromJSON('config-sync');
     }
 }
