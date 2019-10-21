@@ -1,0 +1,5 @@
+name: Drush empty theme
+description: 'Drush empty theme'
+core_version_requirement: ^8.8 || ^9.0
+core: 8.x
+type: theme

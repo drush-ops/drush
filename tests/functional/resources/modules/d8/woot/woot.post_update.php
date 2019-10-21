@@ -21,9 +21,9 @@ function woot_post_update_failing()
 /**
  * Install the Devel module.
  */
-function woot_post_update_install_devel()
+function woot_post_update_install_drush_empty_module()
 {
-    \Drupal::service('module_installer')->install(['devel']);
+    \Drupal::service('module_installer')->install(['drush_empty_module']);
 }
 
 /**

@@ -103,22 +103,22 @@ class ConfigCase extends CommandUnishTestCase
         $serviceDefinition = <<<YAML_FRAGMENT
   woot.depending_service:
     class: Drupal\woot\DependingService
-    arguments: ['@devel.dumper']
+    arguments: ['@drush_empty_module.service']
 YAML_FRAGMENT;
         file_put_contents($filename, $serviceDefinition, FILE_APPEND);
 
         $filename = Path::join($root, 'modules/unish/woot/woot.info.yml');
         $moduleDependency = <<<YAML_FRAGMENT
 dependencies:
-  - devel
+  - drush_empty_module
 YAML_FRAGMENT;
         file_put_contents($filename, $moduleDependency, FILE_APPEND);
 
-        // Add the 'devel' module in core.extension.yml.
+        // Add the 'drush_empty_module' module in core.extension.yml.
         $extensionFile = $this->getConfigSyncDir() . '/core.extension.yml';
         $this->assertFileExists($extensionFile);
         $extension = Yaml::decode(file_get_contents($extensionFile));
-        $extension['module']['devel'] = 0;
+        $extension['module']['drush_empty_module'] = 0;
         require_once $root . "/core/includes/module.inc";
         $extension['module'] = module_config_sort($extension['module']);
         file_put_contents($extensionFile, Yaml::encode($extension));

@@ -17,7 +17,7 @@ class UpdateDBTest extends CommandUnishTestCase
     public function testUpdateDBStatus()
     {
         $this->setUpDrupal(1, true);
-        $this->drush('pm:enable', ['devel']);
+        $this->drush('pm:enable', ['drush_empty_module']);
         $this->drush('updatedb:status');
         $err = $this->getErrorOutput();
         $this->assertContains('[success] No database updates required.', $err);
@@ -27,8 +27,8 @@ class UpdateDBTest extends CommandUnishTestCase
 
         // Assert that pending hook_update_n appears
         $this->drush('updatedb:status', [], ['format' => 'json']);
-        $out = $this->getOutputFromJSON('devel_update_8002');
-        $this->assertContains('Add enforced dependencies to system.menu.devel', trim($out['description']));
+        $out = $this->getOutputFromJSON('drush_empty_module_update_8001');
+        $this->assertContains('Fake update hook', trim($out['description']));
 
         // Run hook_update_n
         $this->drush('updatedb', []);
@@ -39,10 +39,10 @@ class UpdateDBTest extends CommandUnishTestCase
         $this->assertContains('[success] No database updates required.', $err);
 
         // Assure that a pending post-update is reported.
-        $this->pathPostUpdate = Path::join($this->webroot(), 'modules/unish/devel/devel.post_update.php');
-        copy(__DIR__ . '/resources/devel.post_update.php', $this->pathPostUpdate);
+        $this->pathPostUpdate = Path::join($this->webroot(), 'modules/unish/drush_empty_module/drush_empty_module.post_update.php');
+        copy(__DIR__ . '/resources/drush_empty_module.post_update.php', $this->pathPostUpdate);
         $this->drush('updatedb:status', [], ['format' => 'json']);
-        $out = $this->getOutputFromJSON('devel-post-null_op');
+        $out = $this->getOutputFromJSON('drush_empty_module-post-null_op');
         $this->assertContains('This is a test of the emergency broadcast system.', trim($out['description']));
     }
 
@@ -200,8 +200,8 @@ class UpdateDBTest extends CommandUnishTestCase
         $this->setupModulesForTests(['woot'], Path::join(__DIR__, 'resources/modules/d8'));
         $this->drush('pm-enable', ['woot'], $options);
 
-        // Force re-run of the post-update woot_post_update_install_devel().
-        $this->forcePostUpdate('woot_post_update_install_devel', $options);
+        // Force re-run of the post-update woot_post_update_install_drush_empty_module().
+        $this->forcePostUpdate('woot_post_update_install_drush_empty_module', $options);
 
         // Force a flush of the dependency injection container, so that we can
         // test that the container can be correctly rebuilt even if new services
@@ -214,14 +214,14 @@ class UpdateDBTest extends CommandUnishTestCase
         $serviceDefinition = <<<YAML_FRAGMENT
   woot.depending_service:
     class: Drupal\woot\DependingService
-    arguments: ['@devel.dumper']
+    arguments: ['@drush_empty_module.service']
 YAML_FRAGMENT;
         file_put_contents($filename, $serviceDefinition, FILE_APPEND);
 
         $filename = Path::join($root, 'modules/unish/woot/woot.info.yml');
         $moduleDependency = <<<YAML_FRAGMENT
 dependencies:
-  - devel
+  - drush_empty_module
 YAML_FRAGMENT;
         file_put_contents($filename, $moduleDependency, FILE_APPEND);
 
