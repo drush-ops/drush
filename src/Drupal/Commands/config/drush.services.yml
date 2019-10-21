@@ -16,7 +16,18 @@ services:
       -  { name: drush.command }
   config.import.commands:
     class: \Drush\Drupal\Commands\config\ConfigImportCommands
-    arguments: ['@config.manager', '@config.storage', '@config.storage.sync', '@module_handler', '@event_dispatcher', '@lock', '@config.typed', '@module_installer', '@theme_handler', '@string_translation']
+    arguments:
+      - '@config.manager'
+      - '@config.storage'
+      - '@config.storage.sync'
+      - '@cache.config'
+      - '@module_handler'
+      - '@event_dispatcher'
+      - '@lock'
+      - '@config.typed'
+      - '@module_installer'
+      - '@theme_handler'
+      - '@string_translation'
     calls:
       - [setImportTransformer, ['@?config.import_transformer']]
     tags:
