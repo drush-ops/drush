@@ -4,7 +4,9 @@ namespace Drush\Drupal\Commands\config;
 use Consolidation\AnnotatedCommand\CommandError;
 use Consolidation\AnnotatedCommand\CommandData;
 use Drupal\config\StorageReplaceDataWrapper;
+use Drupal\Core\Cache\CacheBackendInterface;
 use Drupal\Core\Config\ConfigManagerInterface;
+use Drupal\Core\Config\StorageCacheInterface;
 use Drupal\Core\Config\StorageComparer;
 use Drupal\Core\Config\ConfigImporter;
 use Drupal\Core\Config\ConfigException;
@@ -32,6 +34,8 @@ class ConfigImportCommands extends DrushCommands
     protected $configStorage;
 
     protected $configStorageSync;
+
+    protected $configCache;
 
     protected $eventDispatcher;
 
@@ -76,6 +80,17 @@ class ConfigImportCommands extends DrushCommands
         return $this->configStorageSync;
     }
 
+    /**
+     * @return \Drupal\Core\Cache\CacheBackendInterface
+     */
+    public function getConfigCache()
+    {
+        return $this->configCache;
+    }
+
+    /**
+     * @return \Drupal\Core\Extension\ModuleHandlerInterface
+     */
     public function getModuleHandler()
     {
         return $this->moduleHandler;
@@ -159,12 +174,24 @@ class ConfigImportCommands extends DrushCommands
      * @param StorageInterface $configStorage
      * @param StorageInterface $configStorageSync
      */
-    public function __construct(ConfigManagerInterface $configManager, StorageInterface $configStorage, StorageInterface $configStorageSync, ModuleHandlerInterface $moduleHandler, EventDispatcherInterface $eventDispatcher, LockBackendInterface $lock, TypedConfigManagerInterface $configTyped, ModuleInstallerInterface $moduleInstaller, ThemeHandlerInterface $themeHandler, TranslationInterface $stringTranslation)
-    {
+    public function __construct(
+        ConfigManagerInterface $configManager,
+        StorageInterface $configStorage,
+        StorageInterface $configStorageSync,
+        CacheBackendInterface $configCache,
+        ModuleHandlerInterface $moduleHandler,
+        EventDispatcherInterface $eventDispatcher,
+        LockBackendInterface $lock,
+        TypedConfigManagerInterface $configTyped,
+        ModuleInstallerInterface $moduleInstaller,
+        ThemeHandlerInterface $themeHandler,
+        TranslationInterface $stringTranslation
+    ) {
         parent::__construct();
         $this->configManager = $configManager;
         $this->configStorage = $configStorage;
         $this->configStorageSync = $configStorageSync;
+        $this->configCache = $configCache;
         $this->moduleHandler = $moduleHandler;
         $this->eventDispatcher = $eventDispatcher;
         $this->lock = $lock;
@@ -270,6 +297,8 @@ class ConfigImportCommands extends DrushCommands
                             }
                         } while ($context['finished'] < 1);
                     }
+                    // Clear the cache of the active config storage.
+                    $this->getConfigCache()->deleteAll();
                 }
                 if ($config_importer->getErrors()) {
                     throw new ConfigException('Errors occurred during import');
