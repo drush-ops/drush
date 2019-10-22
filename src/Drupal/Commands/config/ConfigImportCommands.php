@@ -231,10 +231,11 @@ class ConfigImportCommands extends DrushCommands
                 $replacement_storage->replaceData($name, $data);
             }
             $source_storage = $replacement_storage;
-        }
-
-        // Use the import transformer if it is available.
-        if ($this->hasImportTransformer()) {
+        } elseif ($this->hasImportTransformer()) {
+            // Use the import transformer if it is available. (Drupal ^8.8)
+            // Drupal core does not apply transformations for single imports.
+            // And in addition the StorageReplaceDataWrapper is not compatible
+            // with StorageCopyTrait::replaceStorageContents.
             $source_storage = $this->getImportTransformer()->transform($source_storage);
         }
 
