@@ -35,7 +35,7 @@ class ConfigImportCommands extends DrushCommands
      * @option diff Show preview as a diff.
      * @option preview Deprecated. Format for displaying proposed changes. Recognized values: list, diff.
      * @option source An arbitrary directory that holds the configuration files. An alternative to label argument
-     * @option partial Allows for partial config imports from the source directory. Only updates and new configs will be processed with this flag (missing configs will not be deleted).
+     * @option partial Allows for partial config imports from the source directory. Only updates and new configs will be processed with this flag (missing configs will not be deleted). No config transformation happens.
      * @aliases cim,config-import
      * @kernel update
      * @bootstrap full
