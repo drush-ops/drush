@@ -5,6 +5,7 @@ use Composer\Semver\Comparator;
 use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\SiteProcess\ProcessBase;
 use Drupal\Component\FileCache\FileCacheFactory;
+use Drupal\Core\Database\Database;
 use Drupal\Core\Installer\Exception\AlreadyInstalledException;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
@@ -266,6 +267,11 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
             // Get AnnotationData. @todo Find a better way.
             $annotationData = Drush::getApplication()->find('site:install')->getAnnotationData();
             Drush::bootstrapManager()->bootstrapMax(DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION, $annotationData);
+
+            // We may have bootstrapped with /default/settings.php instead of the sites-subdir one. Remove connection, and let it be re-read later.
+            // See https://github.com/drush-ops/drush/issues/3903.
+            Database::removeConnection('default');
+
             $sql = SqlBase::create($commandData->input()->getOptions());
         } catch (\Exception $e) {
             // Ask questions to get our data.

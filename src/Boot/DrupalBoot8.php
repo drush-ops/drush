@@ -101,6 +101,15 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
         }
     }
 
+    /**
+     * Beware, this function currently starts booting Drupal.
+     *
+     * See https://github.com/drush-ops/drush/issues/3903.
+     * @param bool $require_settings
+     * @param bool $reset
+     *
+     * @return string|void
+     */
     public function confPath($require_settings = true, $reset = false)
     {
 
@@ -162,6 +171,7 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
      */
     public function bootstrapDoDrupalSite(BootstrapManager $manager)
     {
+        // Note: this reports the'default' during site:install even if we eventually install to a different multisite.
         $this->logger->log(LogLevel::BOOTSTRAP, dt("Initialized Drupal site !site at !site_root", ['!site' => $this->getRequest()->getHttpHost(), '!site_root' => $this->confPath()]));
     }
 
