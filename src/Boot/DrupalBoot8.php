@@ -102,7 +102,7 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
     }
 
     /**
-     * Beware, this function currently starts booting Drupal.
+     * Beware, this function populates Database::Connection info.
      *
      * See https://github.com/drush-ops/drush/issues/3903.
      * @param bool $require_settings
