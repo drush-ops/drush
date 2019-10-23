@@ -98,15 +98,18 @@ class EditCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
                 $aliases_header = ['aliases' => '-- Aliases --'];
             }
         }
-        if ($site_root = Drush::bootstrap()->confPath()) {
+
+        if (Drush::bootstrapManager()->hasBootstrapped(DRUSH_BOOTSTRAP_DRUPAL_FULL)) {
+            $site_root = \Drupal::service('kernel')->getSitePath();
             $path = realpath($site_root . '/settings.php');
             $drupal[$path] = $path;
             if (file_exists($site_root . '/settings.local.php')) {
                 $path = realpath($site_root . '/settings.local.php');
                 $drupal[$path] = $path;
             }
-            $path = realpath(DRUPAL_ROOT . '/.htaccess');
-            $drupal[$path] = $path;
+            if ($path = realpath(DRUPAL_ROOT . '/.htaccess')) {
+                $drupal[$path] = $path;
+            }
             if ($headers) {
                 $drupal_header = ['drupal' => '-- Drupal --'];
             }
