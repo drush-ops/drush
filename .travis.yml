@@ -30,9 +30,17 @@ env:
 
 matrix:
   include:
+    # D9.0.x
+    - php: 7.2
+      env: 'UNISH_DRUPAL_MAJOR_VERSION=9 UNISH_DRUPAL_MINOR_VERSION=0.x-dev'
+
+    # D8.8.x
+    - php: 7.2
+      env: 'UNISH_DRUPAL_MAJOR_VERSION=8 UNISH_DRUPAL_MINOR_VERSION=8.0-alpha1'
+
     # D8.7.x
     - php: 7.0
-      env: 'UNISH_DRUPAL_MAJOR_VERSION=8 UNISH_DRUPAL_MINOR_VERSION=7.3'
+      env: 'UNISH_DRUPAL_MAJOR_VERSION=8 UNISH_DRUPAL_MINOR_VERSION=7.8'
 
     # D8.6.x
     - php: 7.0

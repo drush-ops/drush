@@ -10,6 +10,10 @@ use Drush\Drupal\DrushServiceModifier;
 
 use Drush\Log\LogLevel;
 
+/**
+ * Drupal 8 and Drupal 9 are so similar at the moment that we will use
+ * the same bootstrap class for each.
+ */
 class DrupalBoot8 extends DrupalBoot {
 
   /**

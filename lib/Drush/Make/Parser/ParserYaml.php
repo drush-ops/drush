@@ -7,7 +7,7 @@
 
 namespace Drush\Make\Parser;
 
-use Symfony\Component\Yaml\Yaml;
+use Drush\Internal\Symfony\Yaml\Yaml;
 
 class ParserYaml implements ParserInterface {
 

@@ -1,6 +1,6 @@
 <?php
 
-use Symfony\Component\Yaml\Dumper;
+use Drush\Internal\Symfony\Yaml\Dumper;
 
 /**
  * Output formatter 'yaml'

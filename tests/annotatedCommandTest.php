@@ -46,7 +46,7 @@ class annotatedCommandCase extends CommandUnishTestCase {
 
     // These are not good asserts, but for the purposes of isolation....
     $targetDir = $root . DIRECTORY_SEPARATOR . $this->drupalSitewideDirectory() . '/modules/woot';
-    if (UNISH_DRUPAL_MAJOR_VERSION == 8) {
+    if (UNISH_DRUPAL_MAJOR_VERSION >= 8) {
         $commandFile = $targetDir . "/src/Commands/WootCommands.php";
     } else {
         $commandFile = $targetDir . "/Commands/WootCommands.php";
@@ -181,7 +181,8 @@ EOT;
   }
 
   public function setupModulesForTests($root) {
-    $wootModule = __DIR__ . '/resources/modules/d' . UNISH_DRUPAL_MAJOR_VERSION . '/woot';
+    $wootMajor = UNISH_DRUPAL_MAJOR_VERSION == '9' ? '8' : UNISH_DRUPAL_MAJOR_VERSION;
+    $wootModule = __DIR__ . '/resources/modules/d' . $wootMajor . '/woot';
     $targetDir = $root . DIRECTORY_SEPARATOR . $this->drupalSitewideDirectory() . '/modules/woot';
     $this->mkdir($targetDir);
     $this->recursive_copy($wootModule, $targetDir);

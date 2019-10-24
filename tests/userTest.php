@@ -73,6 +73,7 @@ class userCase extends CommandUnishTestCase {
         $eval = "return user_authenticate('$name', '$newpass')";
         break;
       case 8:
+      case 9:
         $eval = "return \\Drupal::service('user.auth')->authenticate('$name', '$newpass');";
         break;
     }
@@ -127,7 +128,7 @@ class userCase extends CommandUnishTestCase {
   function testUserCancel() {
     // create content
     // @todo Creation of node types and content has changed in D8.
-    if (UNISH_DRUPAL_MAJOR_VERSION == 8) {
+    if (UNISH_DRUPAL_MAJOR_VERSION >= 8) {
       $this->markTestSkipped("@todo Creation of node types and content has changed in D8.");
     }
     if (UNISH_DRUPAL_MAJOR_VERSION >= 7) {

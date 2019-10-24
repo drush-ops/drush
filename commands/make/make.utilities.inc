@@ -679,7 +679,7 @@ function _make_determine_format($data) {
       return $parsed;
     }
   }
-  catch (\Symfony\Component\Yaml\Exception\ParseException $e) {
+  catch (\Drush\Internal\Symfony\Yaml\Exception\ParseException $e) {
     // Note that an exception was thrown, and display after .ini parsing.
     $yaml_parse_exception = $e;
   }

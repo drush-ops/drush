@@ -32,7 +32,7 @@ function unish_init() {
   }
   define('UNISH_DRUPAL_MAJOR_VERSION', $unish_drupal_major);
   $unish_drupal_minor = '';
-  if ($unish_drupal_major == 8) {
+  if ($unish_drupal_major >= 8) {
     if (getenv('UNISH_DRUPAL_MINOR_VERSION')) {
       $unish_drupal_minor = '.' . getenv('UNISH_DRUPAL_MINOR_VERSION');
     }

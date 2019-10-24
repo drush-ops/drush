@@ -776,6 +776,14 @@ function drush_extension_get_path($info) {
  * @return FALSE if the extension is compatible.
  */
 function drush_extension_check_incompatibility($file) {
+  // TODO: what is the right way to detect core modules?
+  if (isset($file->info['package']) && ($file->info['package'] == 'Core')) {
+    return FALSE;
+  }
+  // TODO: validate core_version_requirement
+  if (isset($file->info['core_version_requirement'])) {
+    return FALSE;
+  }
   if (!isset($file->info['core']) || $file->info['core'] != drush_get_drupal_core_compatibility()) {
     return 'Drupal';
   }

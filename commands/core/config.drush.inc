@@ -14,7 +14,7 @@ use Drupal\Core\Config\FileStorage;
 use Drupal\Component\Utility\NestedArray;
 use Drush\Config\StorageWrapper;
 use Drush\Config\CoreExtensionFilter;
-use Symfony\Component\Yaml\Parser;
+use Drush\Internal\Symfony\Yaml\Parser;
 
 /**
  * Implementation of hook_drush_help().
