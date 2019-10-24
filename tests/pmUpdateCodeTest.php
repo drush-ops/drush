@@ -71,7 +71,7 @@ class pmUpdateCode extends CommandUnishTestCase {
     if (UNISH_DRUPAL_MAJOR_VERSION < 7) {
       $this->markTestSkipped("pm-update does not work once Drupal core reaches EOL.");
     }
-    $extension = UNISH_DRUPAL_MAJOR_VERSION == 8 ? '.info.yml' : '.info';
+    $extension = UNISH_DRUPAL_MAJOR_VERSION >= 8 ? '.info.yml' : '.info';
     $first = $this->modules[1];
     $second = $this->modules[2];
 

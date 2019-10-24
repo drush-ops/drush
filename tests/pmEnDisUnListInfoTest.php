@@ -71,8 +71,21 @@ class EnDisUnListInfoCase extends CommandUnishTestCase {
     }
 
     // Test the testing install profile theme is installed.
-    $themeToCheck = UNISH_DRUPAL_MAJOR_VERSION >= 8 ? 'classy' : (UNISH_DRUPAL_MAJOR_VERSION == 7 ? 'bartik' : 'garland');
-    $this->assertTrue(in_array($themeToCheck, $list), 'Themes are in the pm-list');
+    $themeToCheck = 'garland';
+    if (UNISH_DRUPAL_MAJOR_VERSION >= 7) {
+      $themeToCheck = 'bartik';
+    }
+    if (UNISH_DRUPAL_MAJOR_VERSION >= 8) {
+      $themeToCheck = 'classy';
+      // UNISH_DRUPAL_MINOR_VERSION is something like ".8.0-alpha1".
+      if (UNISH_DRUPAL_MINOR_VERSION[1] >= 8) {
+        $themeToCheck = 'stark';
+      }
+    }
+    if (UNISH_DRUPAL_MAJOR_VERSION >= 9) {
+      $themeToCheck = 'stark';
+    }
+    $this->assertContains($themeToCheck, $list, 'Themes are in the pm-list');
 
     // Test cache was cleared after enabling a module.
     $table = UNISH_DRUPAL_MAJOR_VERSION >= 8 ? 'router' : 'menu_router';
