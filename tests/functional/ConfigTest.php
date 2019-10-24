@@ -63,18 +63,18 @@ class ConfigCase extends CommandUnishTestCase
         $this->drush('core:status', [], ['field' => 'drupal-version']);
         $drupal_version = $this->getOutputRaw();
         if (Comparator::greaterThanOrEqualTo($drupal_version, '8.6')) {
-          $contents = file_get_contents($system_site_yml);
-          $contents = preg_replace('/front: .*/', 'front: unish existing', $contents);
-          file_put_contents($system_site_yml, $contents);
-          $this->installDrupal('dev', true, ['existing-config' => true], false);
-          $this->drush('config-get', ['system.site', 'page'], ['format' => 'json']);
-          $page = $this->getOutputFromJSON('system.site:page');
-          $this->assertContains('unish existing', $page['front'], 'Existing config was successfully imported during site:install.');
+            $contents = file_get_contents($system_site_yml);
+            $contents = preg_replace('/front: .*/', 'front: unish existing', $contents);
+            file_put_contents($system_site_yml, $contents);
+            $this->installDrupal('dev', true, ['existing-config' => true], false);
+            $this->drush('config-get', ['system.site', 'page'], ['format' => 'json']);
+            $page = $this->getOutputFromJSON('system.site:page');
+            $this->assertContains('unish existing', $page['front'], 'Existing config was successfully imported during site:install.');
         }
 
         // Similar, but this time via --partial option.
         if (version_compare('8.8.0', \Drupal::VERSION, '>=')) {
-          $this->markTestSkipped('Partial config import not yet working on 8.8.0');
+            $this->markTestSkipped('Partial config import not yet working on 8.8.0');
         }
         $contents = file_get_contents($system_site_yml);
         $contents = preg_replace('/front: .*/', 'front: unish partial', $contents);
