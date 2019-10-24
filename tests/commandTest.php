@@ -82,6 +82,10 @@ class commandCase extends CommandUnishTestCase {
    * Assert that commands in disabled/uninstalled modules throw an error.
    */
   public function testDisabledModule() {
+    // TODO: enable test when devel available for Drupal 9
+    if (UNISH_DRUPAL_MAJOR_VERSION >= 9) {
+      $this->markTestSkipped('Drupal 9 version of devel not available yet.');
+    }
     $sites = $this->setUpDrupal(1, TRUE);
     $uri = key($sites);
     $root = $this->webroot();

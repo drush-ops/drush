@@ -14,6 +14,10 @@ namespace Unish;
 class EnDisUnListInfoCase extends CommandUnishTestCase {
 
   public function testEnDisUnList() {
+    // TODO: enable test when devel available for Drupal 9
+    if (UNISH_DRUPAL_MAJOR_VERSION >= 9) {
+      $this->markTestSkipped('Drupal 9 version of devel not available yet.');
+    }
     $sites = $this->setUpDrupal(1, TRUE);
     $options_no_pipe = array(
       'yes' => NULL,
