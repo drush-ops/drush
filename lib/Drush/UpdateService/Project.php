@@ -93,7 +93,11 @@ class Project {
    */
   public static function buildFetchUrl(array $request) {
     $status_url = isset($request['status url']) ? $request['status url'] : ReleaseInfo::DEFAULT_URL;
-    return $status_url . '/' . $request['name'] . '/' . $request['drupal_version'];
+    $drupal_version = $request['drupal_version'];
+    if ($drupal_version == '9.x') {
+      $drupal_version = 'all';
+    }
+    return $status_url . '/' . $request['name'] . '/' . $drupal_version;
   }
 
   /**
