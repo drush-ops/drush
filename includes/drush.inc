@@ -1844,7 +1844,7 @@ function drush_value_format($value, $format) {
       break;
 
     case 'yaml':
-      $value = \Symfony\Component\Yaml\Yaml::parse($value, FALSE, TRUE);
+      $value = \Drush\Internal\Symfony\Yaml\Yaml::parse($value, FALSE, TRUE);
       break;
   }
   return $value;

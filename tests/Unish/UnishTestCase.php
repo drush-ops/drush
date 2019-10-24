@@ -269,7 +269,9 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
   }
 
   function setUpDrupal($num_sites = 1, $install = FALSE, $version_string = NULL, $profile = NULL) {
+    $version_type = 'requested';
     if (!$version_string) {
+      $version_type = 'default';
       $version_string = $this->defaultInstallationVersion();
     }
     $sites_subdirs_all = array('dev', 'stage', 'prod', 'retired', 'elderly', 'dead', 'dust');
@@ -317,7 +319,7 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
     );
     $this->drush('core-status', array('Drupal version'), $options);
     $header = "\nTesting on ";
-    fwrite(STDERR, $header . $this->getOutput() . "\n\n");
+    fwrite(STDERR, $header . $this->getOutput() . " given $version_type version $version_string\n\n");
 
     // Stash details about each site.
     foreach ($sites_subdirs as $subdir) {

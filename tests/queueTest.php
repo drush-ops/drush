@@ -104,7 +104,8 @@ class QueueCase extends CommandUnishTestCase {
    *   The path to the root directory of Drupal.
    */
   public function setupModulesForTests($root) {
-    $wootModule = __DIR__ . '/resources/modules/d' . UNISH_DRUPAL_MAJOR_VERSION . '/woot';
+    $wootMajor = UNISH_DRUPAL_MAJOR_VERSION == '9' ? '8' : UNISH_DRUPAL_MAJOR_VERSION;
+    $wootModule = __DIR__ . '/resources/modules/d' . $wootMajor . '/woot';
     $modulesDir = "$root/sites/all/modules";
     $this->mkdir($modulesDir);
     \symlink($wootModule, "$modulesDir/woot");
