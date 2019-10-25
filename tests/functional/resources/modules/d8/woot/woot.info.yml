@@ -2,4 +2,5 @@ name: Woot
 type: module
 description: Woot Mightily.
 core: 8.x
+core_version_requirement: ^8 || ^9
 package: Other
