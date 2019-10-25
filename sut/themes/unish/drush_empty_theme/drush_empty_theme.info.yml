@@ -1,0 +1,4 @@
+name: Drush empty theme
+description: 'Drush empty theme'
+core: 8.x
+type: theme

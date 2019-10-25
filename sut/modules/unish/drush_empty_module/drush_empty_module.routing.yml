@@ -1,0 +1,7 @@
+drush_empty_module.admin_settings:
+  path: '/admin/config/development/drush_empty_module'
+  defaults:
+    _controller: '\Drupal\drush_empty_module\MuchControllerManyWow::sparkles'
+    _title: 'Sparkles'
+  requirements:
+    _permission: 'administer site configuration'
