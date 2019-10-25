@@ -128,7 +128,7 @@ jobs:
       - run: composer remove --dev webflo/drupal-core-require-dev --no-update
       - run: composer remove --dev drupal/alinks --no-update
       - run: composer require --dev drupal/core:9.0.x-dev --no-update
-      - run: composer config platform.php 7.2
+      - run: composer config platform.php 7.2.3
       - run: composer update --no-scripts
       - run: composer install -n
       - run: composer lint
