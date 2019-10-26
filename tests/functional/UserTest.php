@@ -115,6 +115,12 @@ class UserCase extends CommandUnishTestCase
 
     public function testUserCancel()
     {
+        // TODO: re-enable this test once the Drupal Code Generator is
+        // compatible with Drupal 9.
+        if (version_compare('9.0.0', \Drupal::VERSION, '>=')) {
+            $this->markTestSkipped('Drupal Code Generator not working on Drupal 9 yet.');
+        }
+
         // Create a content entity type and enable its module.
         $answers = [
             'name' => 'UnishArticle',
