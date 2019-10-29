@@ -17,7 +17,7 @@ class SecurityUpdatesTest extends UnishIntegrationTestCase
     {
         // TODO: re-enable this test once the pm:security command is
         // compatible with Drupal 9.
-        if (version_compare('9.0.0', \Drupal::VERSION, '>=')) {
+        if (version_compare(\Drupal::VERSION, '9.0.0', '>=')) {
             $this->markTestSkipped('pm:security not working on Drupal 9 yet.');
         }
 
