@@ -53,6 +53,7 @@
   "require-dev": {
     "composer/installers": "^1.2",
     "cweagans/composer-patches": "~1.0",
+    "drupal/alinks": "1.0.0",
     "g1a/composer-test-scenarios": "^3",
     "lox/xhprof": "dev-master",
     "phpunit/phpunit": "^4.8.36 || ^6.1",
