@@ -443,13 +443,13 @@ EOT;
     {
         return
             array_flip(
-            array_map(
-                function ($item) {
+                array_map(
+                    function ($item) {
                         return ltrim($item, '%');
-                },
-                array_flip($data)
-            )
-        );
+                    },
+                    array_flip($data)
+                )
+            );
     }
 
     protected function convertSingleFileAlias($aliasName, $env, $data, $dir = '')

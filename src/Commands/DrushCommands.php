@@ -37,16 +37,6 @@ abstract class DrushCommands implements IOAwareInterface, LoggerAwareInterface, 
     }
 
     /**
-     * Returns a logger object.
-     *
-     * @return LoggerInterface
-     */
-    protected function logger()
-    {
-        return $this->logger;
-    }
-
-    /**
      * Override Robo's IO function with our custom style.
      */
     protected function io()
@@ -56,6 +46,16 @@ abstract class DrushCommands implements IOAwareInterface, LoggerAwareInterface, 
             $this->io = new DrushStyle($this->input(), $this->output());
         }
         return $this->io;
+    }
+
+    /**
+     * Returns a logger object.
+     *
+     * @return LoggerInterface
+     */
+    protected function logger()
+    {
+        return $this->logger;
     }
 
     /**
