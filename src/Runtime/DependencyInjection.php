@@ -3,6 +3,7 @@ namespace Drush\Runtime;
 
 use Drush\Command\GlobalOptionsEventListener;
 use Drush\Drush;
+use Drush\Symfony\DrushStyleInjector;
 use Drush\Cache\CommandCache;
 use DrupalFinder\DrupalFinder;
 use Symfony\Component\Console\Input\InputInterface;
@@ -139,6 +140,9 @@ class DependencyInjection
 
     protected function alterServicesForDrush(ContainerInterface $container, Application $application)
     {
+        $paramInjection = $container->get('parameterInjection');
+        $paramInjection->register('Symfony\Component\Console\Style\SymfonyStyle', new DrushStyleInjector());
+
         // Add our own callback to the hook manager
         $hookManager = $container->get('hookManager');
         $hookManager->addCommandEvent(new GlobalOptionsEventListener());
