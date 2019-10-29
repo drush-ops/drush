@@ -34,11 +34,9 @@
     "ext-dom": "*",
     "chi-teck/drupal-code-generator": "^1.28.1",
     "composer/semver": "^1.4",
-    "consolidation/annotated-command": "^2.12",
     "consolidation/config": "^1.2",
     "consolidation/filter-via-dot-access-data": "^1",
-    "consolidation/output-formatters": "^3.3.1",
-    "consolidation/robo": "^1.4.6",
+    "consolidation/robo": "dev-master",
     "consolidation/site-alias": "^3.0.0@stable",
     "consolidation/site-process": "^2.1 || ^4",
     "grasmash/yaml-expander": "^1.1.1",
@@ -61,8 +59,8 @@
     "phpunit/phpunit": "^4.8.36 || ^6.1",
     "squizlabs/php_codesniffer": "^2.7 || ^3",
     "vlucas/phpdotenv": "^2.4",
-    "webflo/drupal-core-require-dev": "8.7.x-dev",
-    "webflo/drupal-core-strict": "8.7.x-dev"
+    "drupal/dev-dependencies": "9.0.x-dev",
+    "drupal/core-recommended": "9.0.x-dev"
   },
   "autoload": {
     "psr-4": {
@@ -82,7 +80,7 @@
     "sort-packages": true,
     "process-timeout": 9600,
     "platform": {
-      "php": "7.1.3"
+      "php": "7.2.9"
     }
   },
   "scripts": {

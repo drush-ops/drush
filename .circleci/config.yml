@@ -151,11 +151,11 @@ workflows:
       - check_mergable
       - test_71_mysql:
           <<: *requires
-      - test_72_drupal88:
-          <<: *requires
-      - test_72_drupal90:
-          <<: *requires
-      - test_71_sqlite:
-          <<: *requires
-      - test_71_postgres:
-          <<: *requires
+#      - test_72_drupal88:
+#          <<: *requires
+#      - test_72_drupal90:
+#          <<: *requires
+#      - test_71_sqlite:
+#          <<: *requires
+#      - test_71_postgres:
+#          <<: *requires
