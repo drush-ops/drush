@@ -15,12 +15,7 @@ class SecurityUpdatesTest extends UnishIntegrationTestCase
    */
     public function testInsecurePackage()
     {
-        // TODO: re-enable this test once the pm:security command is
-        // compatible with Drupal 9.
-        if ($this->isDrupalGreaterThanOrEqualTo('9')) {
-            $this->markTestSkipped('pm:security not working on Drupal 9 yet.');
-        }
-
+        // @todo This passes on Drupal because drupal/alinks has a security release for 8 and we don't actually install that module on our d9 tests.
         $this->drush('pm:security', [], ['format' => 'json'], self::EXIT_ERROR);
         $this->assertContains('One or more of your dependencies has an outstanding security update.', $this->getErrorOutput());
         $this->assertContains('Try running: composer require drupal/alinks', $this->getErrorOutput());
