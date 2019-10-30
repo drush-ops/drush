@@ -2,6 +2,7 @@
 
 namespace Unish;
 
+use Composer\Semver\Comparator;
 use Consolidation\SiteAlias\SiteAlias;
 use Consolidation\SiteProcess\SiteProcess;
 use PHPUnit\Framework\TestCase;
@@ -585,6 +586,17 @@ EOT;
             self::$sites[$key] = $data;
         }
         return self::$sites;
+    }
+
+    /**
+     * Test if current Drupal is >= a target version.
+     *
+     * @param string $version2
+     * @return bool
+     */
+    public function isDrupalGreaterThanOrEqualTo($version2)
+    {
+        return Comparator::greaterThanOrEqualTo(\Drupal::VERSION, $version2);
     }
 
     public function aliasFileData($sites_subdirs)
