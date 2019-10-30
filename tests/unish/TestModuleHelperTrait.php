@@ -29,7 +29,7 @@ trait TestModuleHelperTrait
 
             // If we are copying a module out of the `core` directory, it
             // might not have the necessary 'core_version_requirement' entry.
-            if (version_compare('9.0.0', \Drupal::VERSION, '>=')) {
+            if ($this->isDrupalGreaterThanOrEqualTo('9')) {
                 $info_path = $targetDir . "/$module.info.yml";
                 $module_info = file_get_contents($info_path);
                 if (strpos($module_info, 'core_version_requirement') === false) {
