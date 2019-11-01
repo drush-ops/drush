@@ -270,7 +270,7 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
 
             // See https://github.com/drush-ops/drush/issues/3903.
             // We may have bootstrapped with /default/settings.php instead of the sites-subdir one.
-            if ($sites_subdir && "sites/$sites_subdir" !== $bootstrapManager->bootstrap()->confpath(TRUE)) {
+            if ($sites_subdir && "sites/$sites_subdir" !== $bootstrapManager->bootstrap()->confpath(true)) {
                 Database::removeConnection('default');
             }
 
