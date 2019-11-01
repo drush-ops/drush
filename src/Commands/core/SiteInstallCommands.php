@@ -248,6 +248,7 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
      */
     public function validate(CommandData $commandData)
     {
+        $bootstrapManager = Drush::bootstrapManager();
         if ($sites_subdir = $commandData->input()->getOption('sites-subdir')) {
             $lower = strtolower($sites_subdir);
             if ($sites_subdir != $lower) {
@@ -255,7 +256,6 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
                 $commandData->input()->setOption('sites-subdir', $lower);
             }
             // Make sure that we will bootstrap to the 'sites-subdir' site.
-            $bootstrapManager = Drush::bootstrapManager();
             $bootstrapManager->setUri('http://' . $sites_subdir);
         }
 
@@ -264,13 +264,15 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
         }
 
         try {
-            // Get AnnotationData. @todo Find a better way.
+            // Try to get any already configured database information.
             $annotationData = Drush::getApplication()->find('site:install')->getAnnotationData();
-            Drush::bootstrapManager()->bootstrapMax(DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION, $annotationData);
+            $bootstrapManager->bootstrapMax(DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION, $annotationData);
 
-            // We may have bootstrapped with /default/settings.php instead of the sites-subdir one. Remove connection, and let it be re-read later.
             // See https://github.com/drush-ops/drush/issues/3903.
-            Database::removeConnection('default');
+            // We may have bootstrapped with /default/settings.php instead of the sites-subdir one.
+            if ($sites_subdir && "sites/$sites_subdir" !== $bootstrapManager->bootstrap()->confpath(TRUE)) {
+                Database::removeConnection('default');
+            }
 
             $sql = SqlBase::create($commandData->input()->getOptions());
         } catch (\Exception $e) {
