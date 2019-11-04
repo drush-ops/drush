@@ -111,7 +111,6 @@ function drush_get_global_options($brief = FALSE) {
     $options['include']             = ['short-form' => 'i', 'short-has-arg' => TRUE, 'context' => 'DRUSH_INCLUDE', 'never-post' => TRUE, 'propagate-cli-value' => TRUE, 'merge-pathlist' => TRUE, 'description' => "A list of additional directory paths to search for Drush commands. Commandfiles should be placed in a subfolder called 'Commands'.", 'example-value' => '/path/dir'];
     $options['exclude']             = ['propagate-cli-value' => TRUE, 'never-post' => TRUE, 'merge-pathlist' => TRUE, 'description' => "A list of files and directory paths to exclude from consideration when searching for drush commandfiles.", 'example-value' => '/path/dir'];
     $options['config']              = ['short-form' => 'c', 'short-has-arg' => TRUE, 'context' => 'DRUSH_CONFIG', 'never-post' => TRUE, 'propagate-cli-value' => TRUE, 'merge-pathlist' => TRUE, 'description' => "Specify an additional config file to load. See example.drush.yml", 'example-value' => '/path/file'];
-    $options['backend']             = ['short-form' => 'b', 'never-propagate' => TRUE, 'description' => "Hide all output and return structured data."];
     $options['choice']              = ['description' => "Provide an answer to a multiple-choice prompt.", 'example-value' => 'number'];
     $options['search-depth']        = ['description' => "Control the depth that drush will search for alias files.", 'example-value' => 'number'];
     $options['ignored-modules']     = ['description' => "Exclude some modules from consideration when searching for drush command files.", 'example-value' => 'token,views'];
@@ -120,7 +119,6 @@ function drush_get_global_options($brief = FALSE) {
     $options['show-invoke']         = ['description' => "Show all function names which could have been called for the current command. See drush_invoke()."];
     $options['cache-default-class'] = ['description' => "A cache backend class that implements CacheInterface. Defaults to JSONCache.", 'example-value' => 'JSONCache'];
     $options['cache-class-<bin>']   = ['description' => "A cache backend class that implements CacheInterface to use for a specific cache bin.", 'example-value' => 'className'];
-    $options['early']               = ['description' => "Include a file (with relative or full path) and call the drush_early_hook() function (where 'hook' is the filename)"];
     $options['alias-path']          = ['context' => 'ALIAS_PATH', 'local-context-only' => TRUE, 'merge-pathlist' => TRUE, 'propagate-cli-value' => TRUE, 'description' => "Specifies the list of paths where drush will search for alias files.", 'example-value' => '/path/alias1:/path/alias2'];
     $options['confirm-rollback']    = ['description' => 'Wait for confirmation before doing a rollback when something goes wrong.'];
     $options['php-options']         = ['hidden' => TRUE, 'description' => "Options to pass to `php` when running drush.  Only effective when specified in a site alias definition.", 'never-propagate' => TRUE, 'example-value' => '-d error_reporting="E_ALL"'];
@@ -128,15 +126,10 @@ function drush_get_global_options($brief = FALSE) {
     $options['remote-host']         = ['hidden' => TRUE, 'description' => 'Remote site to execute drush command on. Managed by site alias.', 'example-value' => 'http://example.com'];
     $options['remote-user']         = ['hidden' => TRUE, 'description' => 'User account to use with a remote drush command. Managed by site alias.', 'example-value' => 'www-data'];
     $options['remote-os']           = ['hidden' => TRUE, 'description' => 'The operating system used on the remote host. Managed by site alias.', 'example-value' => 'linux'];
-    $options['site-list']           = ['hidden' => TRUE, 'description' => 'List of sites to run commands on. Managed by site alias.', 'example-value' => '@site1,@site2'];
-    $options['reserve-margin']      = ['hidden' => TRUE, 'description' => 'Remove columns from formatted opions. Managed by multi-site command handling.', 'example-value' => 'number'];
     $options['strict']              = ['propagate' => TRUE, 'description' => 'Return an error on unrecognized options. --strict=0: Allow unrecognized options.'];
     $options['command-specific']    = ['hidden' => TRUE, 'merge-associative' => TRUE, 'description' => 'Command-specific options.'];
-    $options['site-aliases']        = ['hidden' => TRUE, 'merge-associative' => TRUE, 'description' => 'List of site aliases.'];
-    $options['shell-aliases']       = ['hidden' => TRUE, 'merge' => TRUE, 'never-propagate' => TRUE, 'description' => 'List of shell aliases.'];
     $options['path-aliases']        = ['hidden' => TRUE, 'never-propagate' => TRUE, 'description' => 'Path aliases from site alias.'];
     $options['ssh-options']         = ['never-propagate' => TRUE, 'description' => 'A string of extra options that will be passed to the ssh command', 'example-value' => '-p 100'];
-    $options['drush-coverage']      = ['hidden' => TRUE, 'never-post' => TRUE, 'propagate-cli-value' => TRUE, 'description' => 'File to save code coverage data into.'];
     $options['local']               = ['propagate' => TRUE, 'description' => 'Don\'t look in global locations for commandfiles, config, and site aliases'];
   }
   return $options;

@@ -121,7 +121,6 @@ class PreflightArgs extends Config implements PreflightArgsInterface
     {
         return [
             self::SIMULATE =>       \Robo\Config\Config::SIMULATE,
-            self::BACKEND =>        self::BACKEND,
             self::LOCAL =>          self::DRUSH_RUNTIME_CONTEXT_NAMESPACE . '.' . self::LOCAL,
         ];
     }
@@ -425,29 +424,6 @@ class PreflightArgs extends Config implements PreflightArgsInterface
     public function setSimulate($simulate)
     {
         return $this->set(self::SIMULATE, $simulate);
-    }
-
-    /**
-     * Determine whether Drush was placed in simulated mode.
-     */
-    public function isBackend()
-    {
-        return $this->get(self::BACKEND);
-    }
-
-    /**
-     * Set backend mode
-     *
-     * @param bool $backend
-     */
-    public function setBackend($backend)
-    {
-        if ($backend == 'json') {
-            // Remap to --format. See \Drush\Commands\sql\SqlSyncCommands::dump.
-            $this->addArg('--format=json');
-        } else {
-            return $this->set(self::BACKEND, true);
-        }
     }
 
     /**
