@@ -497,7 +497,7 @@ class PreflightArgs extends Config implements PreflightArgsInterface
     {
         // In strict mode (the default), create an ArgvInput. When
         // strict mode is disabled, create a more forgiving input object.
-        if ($this->isStrict() && !$this->isBackend()) {
+        if ($this->isStrict()) {
             return new DrushArgvInput($this->args());
         }
 
@@ -511,7 +511,7 @@ class PreflightArgs extends Config implements PreflightArgsInterface
     }
 
     /**
-     * Read options fron STDIN during POST requests.
+     * Read options from STDIN during POST requests.
      *
      * This function will read any text from the STDIN pipe,
      * and attempts to generate an associative array if valid
@@ -522,12 +522,6 @@ class PreflightArgs extends Config implements PreflightArgsInterface
      */
     protected function readStdinOptions()
     {
-        // If we move this method to a backend manager, then testing for
-        // backend mode will be the responsibility of the caller.
-        if (!$this->isBackend()) {
-            return [];
-        }
-
         $fp = fopen('php://stdin', 'r');
         // Windows workaround: we cannot count on stream_get_contents to
         // return if STDIN is reading from the keyboard.  We will therefore
