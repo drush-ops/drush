@@ -93,7 +93,6 @@ class PreflightArgs extends Config implements PreflightArgsInterface
             '--local' => 'setLocal',
             '--simulate' => 'setSimulate',
             '-s' => 'setSimulate',
-            '--backend=' => 'setBackend',
             '--drush-coverage=' => 'setCoverageFile',
             '--strict=' => 'setStrict',
             '--help' => 'adjustHelpOption',
