@@ -975,6 +975,7 @@ function drush_file_is_tarball($path) {
   $supported = array(
     'application/x-bzip2',
     'application/x-gzip',
+    'application/gzip',
     'application/x-tar',
     'application/x-zip',
     'application/zip',
