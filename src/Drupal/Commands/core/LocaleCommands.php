@@ -213,6 +213,87 @@ class LocaleCommands extends DrushCommands
     }
 
     /**
+     * Import multiple translations from the defined directory.
+     *
+     * @command locale:import:all
+     * @validate-module-enabled locale
+     * @param $directory Path to directory with .po files to import.
+     * @option type The type of translations to be imported, defaults to 'not-customized'. Options:
+     *   - customized: Treat imported strings as custom translations.
+     *   - not-customized: Treat imported strings as not-custom translations.
+     * @option override Whether and how imported strings will override existing translations. Defaults to the Import behavior configurred in the admin interface. Options:
+     *  - none: Don't overwrite existing translations. Only append new translations.
+     *  - customized: Only override existing customized translations.
+     *  - not-customized: Only override non-customized translations, customized translations are kept.
+     *  - all: Override any existing translation.
+     * @usage drush locale-import-all /var/www/translations
+     *   Import all custom translations from the defined directory.
+     * @usage drush locale-import-all /var/www/translations --type=custom --override=all
+     *   Import all custom translations from the defined directory and override any existing translation.
+     * @aliases locale-import-all
+     * @throws \Exception
+     */
+    public function importAll($directory, $options = ['type' => self::OPT, 'override' => self::OPT])
+    {
+        if (!is_dir($directory)) {
+            throw new \Exception('The destination directory does not exist.');
+        }
+
+        // Look for .po files in defined directory
+        $poFiles = glob($directory . DIRECTORY_SEPARATOR . '*.po');
+        if (empty($poFiles)) {
+            throw new \Exception('Translation files not found in the destination directory.');
+        }
+
+        $this->getModuleHandler()->loadInclude('locale', 'translation.inc');
+        $this->getModuleHandler()->loadInclude('locale', 'bulk.inc');
+
+        $translationOptions = _locale_translation_default_update_options();
+        $translationOptions['customized'] = $this->convertCustomizedType($options['type']);
+        $override = $this->convertOverrideOption($options['override']);
+        if ($override) {
+            $translationOptions['overwrite_options'] = $override;
+        }
+        $langcodes_to_import = [];
+        $files = [];
+        foreach ($poFiles as $file) {
+            // Ensure we have the file intended for upload.
+            if (file_exists($file)) {
+                $poFile = (object) [
+                    'filename' => basename($file),
+                    'uri' => $file,
+                ];
+                $poFile = locale_translate_file_attach_properties($poFile, $translationOptions);
+                if ($poFile->langcode == LanguageInterface::LANGCODE_NOT_SPECIFIED) {
+                    $this->logger->warning(dt('Can not autodetect language of file @file', [
+                       '@file' => $file,
+                    ]));
+                    continue;
+                }
+                if (!$this->getLanguageManager()->getLanguage($poFile->langcode)) {
+                    $this->logger->warning(dt('Language @language not exists for file @file', [
+                        '@language' => $poFile->langcode,
+                        '@file' => $file,
+                    ]));
+                    continue;
+                }
+                // Import translation file if language exists.
+                $langcodes_to_import[$poFile->langcode] = $poFile->langcode;
+                $files[$poFile->uri] = $poFile;
+            }
+        }
+
+        // Set a batch to download and import translations.
+        $batch = locale_translate_batch_build($files, $translationOptions);
+        batch_set($batch);
+        if ($batch = locale_config_batch_update_components($translationOptions, $langcodes_to_import)) {
+            batch_set($batch);
+        }
+
+        drush_backend_batch_process();
+    }
+
+    /**
      * Converts input of translation type.
      *
      * @param $type
