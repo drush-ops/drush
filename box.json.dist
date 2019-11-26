@@ -2,7 +2,7 @@
   "alias": "drush.phar",
   "chmod": "0755",
   "compactors": [],
-  "directories": ["commands", "docs", "examples", "includes", "lib", "misc"],
+  "directories": ["commands", "docs", "examples", "includes", "lib", "src", "misc"],
   "files": ["drush.api.php", "drush.complete.sh", "drush.info", "drush.launcher", "drush.php", "drush_logo-black.png", "README.md"],
   "finder": [
     {
