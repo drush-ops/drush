@@ -82,7 +82,7 @@
   },
   "extra": {
     "branch-alias": {
-        "dev-master": "8.0.x-dev"
+        "dev-master": "8.3.x-dev"
     }
   }
 }
