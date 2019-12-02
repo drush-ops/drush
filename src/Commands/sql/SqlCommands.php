@@ -77,6 +77,7 @@ class SqlCommands extends DrushCommands implements StdinAwareInterface
      * @aliases sql-create
      * @option db-su Account to use when creating a new database.
      * @option db-su-pw Password for the db-su account.
+     * @option quoted Whether to quote the database name.
      * @optionset_sql
      * @usage drush sql:create
      *   Create the database for the current site.
@@ -84,9 +85,11 @@ class SqlCommands extends DrushCommands implements StdinAwareInterface
      *   Create the database as specified for @site.test.
      * @usage drush sql:create --db-su=root --db-su-pw=rootpassword --db-url="mysql://drupal_db_user:drupal_db_password@127.0.0.1/drupal_db"
      *   Create the database as specified in the db-url option.
+     * @usage drush sql:create --quoted=0
+     *   Create the database in a Windows environment that has problems with backticks.
      * @bootstrap max configuration
      */
-    public function create($options = ['db-su' => self::REQ, 'db-su-pw' => self::REQ])
+    public function create($options = ['db-su' => self::REQ, 'db-su-pw' => self::REQ, 'quoted' => true])
     {
         $sql = SqlBase::create($options);
         $db_spec = $sql->getDbSpec();
@@ -100,7 +103,7 @@ class SqlCommands extends DrushCommands implements StdinAwareInterface
             throw new UserAbortException();
         }
 
-        if (!$sql->createdb(true)) {
+        if (!$sql->createdb($sql->getOption('quoted'))) {
             throw new \Exception('Unable to create database. Rerun with --debug to see any error message.');
         }
     }

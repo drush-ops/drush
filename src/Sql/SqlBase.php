@@ -86,6 +86,7 @@ class SqlBase implements ConfigAwareInterface
             'db-url' => null,
             'databases' => null,
             'db-prefix' => null,
+            'quoted' => true,
         ];
         $database = $options['database'];
         $target = $options['target'];
@@ -424,10 +425,10 @@ class SqlBase implements ConfigAwareInterface
      *   The database name.
      * @param boolean $quoted
      *   Quote the database name. Mysql uses backticks to quote which can cause problems
-     *   in a Windows shell. Set TRUE if the CREATE is not running on the bash command line.
+     *   in a Windows shell. Set FALSE if the CREATE is running on the bash command line.
      * @return string
      */
-    public function createdbSql($dbname, $quoted = false)
+    public function createdbSql($dbname, $quoted = true)
     {
     }
 
@@ -436,11 +437,11 @@ class SqlBase implements ConfigAwareInterface
      *
      * @param boolean $quoted
      *   Quote the database name. Mysql uses backticks to quote which can cause problems
-     *   in a Windows shell. Set TRUE if the CREATE is not running on the bash command line.
+     *   in a Windows shell. Set FALSE if the CREATE is running on the bash command line.
      * @return boolean
      *   True if successful, FALSE otherwise.
      */
-    public function createdb($quoted = false)
+    public function createdb($quoted = true)
     {
         $dbname = $this->getDbSpec()['database'];
         $sql = $this->createdbSql($dbname, $quoted);
@@ -455,12 +456,12 @@ class SqlBase implements ConfigAwareInterface
      * return boolean
      *   TRUE or FALSE depending on success.
      */
-    public function dropOrCreate()
+    public function dropOrCreate($quoted = true)
     {
         if ($this->dbExists()) {
             return $this->drop($this->listTables());
         } else {
-            return $this->createdb();
+            return $this->createdb($quoted);
         }
     }
 

@@ -89,7 +89,7 @@ EOT;
         return '--silent';
     }
 
-    public function createdbSql($dbname, $quoted = false)
+    public function createdbSql($dbname, $quoted = true)
     {
         $dbSpec = $this->getDbSpec();
         if ($quoted) {
