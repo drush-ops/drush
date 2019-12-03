@@ -65,7 +65,7 @@ class CacheCommands extends DrushCommands implements CustomEventAwareInterface, 
      * @param string $tags A comma delimited list of cache tags to clear.
      * @aliases ct
      * @bootstrap full
-     * @usage drush cache:tag node-12,user-4
+     * @usage drush cache:tag node:12,user:4
      *   Purge content associated with two cache tags.
      */
     public function tags($tags)
