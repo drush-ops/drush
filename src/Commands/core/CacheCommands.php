@@ -72,7 +72,7 @@ class CacheCommands extends DrushCommands implements CustomEventAwareInterface, 
     {
         $tags = StringUtils::csvToArray($tags);
         Cache::invalidateTags($tags);
-        $this->logger()->success(dt("Tnvalidated tag(s): '!list'.", ['!list' => implode(' ', $tags)]));
+        $this->logger()->success(dt("Invalidated tag(s): '!list'.", ['!list' => implode(' ', $tags)]));
     }
 
     /**
