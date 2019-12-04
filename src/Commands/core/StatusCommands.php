@@ -224,7 +224,7 @@ class StatusCommands extends DrushCommands implements SiteAliasManagerAwareInter
 
                 if ($boot_manager->hasBootstrapped(DRUSH_BOOTSTRAP_DRUPAL_FULL)) {
                     $paths['%files'] = PublicStream::basePath();
-                    $paths['%temp'] = \file_directory_temp();
+                    $paths['%temp'] = drush_file_directory_temp();
                     if ($private_path = PrivateStream::basePath()) {
                         $paths['%private'] = $private_path;
                     }
