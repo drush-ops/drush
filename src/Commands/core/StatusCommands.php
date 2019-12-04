@@ -212,6 +212,11 @@ class StatusCommands extends DrushCommands implements SiteAliasManagerAwareInter
                 }
                 if ($boot_manager->hasBootstrapped(DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION)) {
                     try {
+                        // @todo Temporary Drupal 9 compat.
+                        if (drush_drupal_major_version() >= 9) {
+                            $GLOBALS['config_directories']['sync'] = 'UNUSED';
+                        }
+
                         if (isset($GLOBALS['config_directories'])) {
                             foreach ($GLOBALS['config_directories'] as $label => $unused) {
                                 $paths["%config-$label"] = drush_config_get_config_directory($label);
