@@ -348,7 +348,7 @@ class ConfigCommands extends DrushCommands implements StdinAwareInterface
             }
         } else {
             // If a directory isn't specified, use the label argument or default sync directory.
-            $return = \config_get_config_directory($label ?: CONFIG_SYNC_DIRECTORY);
+            $return = \drush_config_get_config_directory($label ?: CONFIG_SYNC_DIRECTORY);
         }
         return Path::canonicalize($return);
     }
@@ -377,7 +377,7 @@ class ConfigCommands extends DrushCommands implements StdinAwareInterface
      */
     public function getStorage($directory)
     {
-        if ($directory == Path::canonicalize(\config_get_config_directory(CONFIG_SYNC_DIRECTORY))) {
+        if ($directory == Path::canonicalize(\drush_config_get_config_directory(CONFIG_SYNC_DIRECTORY))) {
             return \Drupal::service('config.storage.sync');
         } else {
             return new FileStorage($directory);

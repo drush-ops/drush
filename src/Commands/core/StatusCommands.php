@@ -214,7 +214,7 @@ class StatusCommands extends DrushCommands implements SiteAliasManagerAwareInter
                     try {
                         if (isset($GLOBALS['config_directories'])) {
                             foreach ($GLOBALS['config_directories'] as $label => $unused) {
-                                $paths["%config-$label"] = config_get_config_directory($label);
+                                $paths["%config-$label"] = drush_config_get_config_directory($label);
                             }
                         }
                     } catch (\Exception $e) {

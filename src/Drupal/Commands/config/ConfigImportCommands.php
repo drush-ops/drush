@@ -216,7 +216,7 @@ class ConfigImportCommands extends DrushCommands
         $source_storage_dir = ConfigCommands::getDirectory($label, $options['source']);
 
         // Prepare the configuration storage for the import.
-        if ($source_storage_dir == Path::canonicalize(\config_get_config_directory(CONFIG_SYNC_DIRECTORY))) {
+        if ($source_storage_dir == Path::canonicalize(\drush_config_get_config_directory(CONFIG_SYNC_DIRECTORY))) {
             $source_storage = $this->getConfigStorageSync();
         } else {
             $source_storage = new FileStorage($source_storage_dir);
