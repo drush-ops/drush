@@ -14,6 +14,17 @@ class UserCommands extends DrushCommands
 {
 
     /**
+     * @var \Drupal\Core\Datetime\DateFormatterInterface
+     */
+    protected $dateFormatter;
+
+    public function __construct($dateFormatter)
+    {
+        $this->dateFormatter = $dateFormatter;
+    }
+
+
+    /**
      * Print information about the specified user(s).
      *
      * @command user:information
@@ -331,11 +342,11 @@ class UserCommands extends DrushCommands
             'pass' => $account->getPassword(),
             'mail' => $account->getEmail(),
             'user_created' => $account->getCreatedTime(),
-            'created' => format_date($account->getCreatedTime()),
+            'created' => $this->dateFormatter->format($account->getCreatedTime()),
             'user_access' => $account->getLastAccessedTime(),
-            'access' => format_date($account->getLastAccessedTime()),
+            'access' => $this->dateFormatter->format($account->getLastAccessedTime()),
             'user_login' => $account->getLastLoginTime(),
-            'login' => format_date($account->getLastLoginTime()),
+            'login' => $this->dateFormatter->format($account->getLastLoginTime()),
             'user_status' => $account->get('status')->value,
             'status' => $account->isActive() ? 'active' : 'blocked',
             'timezone' => $account->getTimeZone(),
