@@ -144,7 +144,7 @@ class UserCase extends CommandUnishTestCase
         // Create one unish_article owned by our example user.
         $this->drush('php-script', ['create_unish_articles'], ['script-path' => Path::join(__DIR__, 'resources')]);
         // Verify that content entity exists.
-        $code = "echo Drupal\unish_article\Entity\UnishArticle::load(1)->id()";
+        $code = "echo \\Drupal::entityManager()->getStorage('unish_article')->load(1)->id()";
         $this->drush('php-eval', [$code]);
         $this->assertEquals(1, $this->getOutput());
 
