@@ -212,9 +212,14 @@ class StatusCommands extends DrushCommands implements SiteAliasManagerAwareInter
                 }
                 if ($boot_manager->hasBootstrapped(DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION)) {
                     try {
+                        // @todo Temporary Drupal 9 compat.
+                        if (drush_drupal_major_version() >= 9) {
+                            $GLOBALS['config_directories']['sync'] = 'UNUSED';
+                        }
+
                         if (isset($GLOBALS['config_directories'])) {
                             foreach ($GLOBALS['config_directories'] as $label => $unused) {
-                                $paths["%config-$label"] = config_get_config_directory($label);
+                                $paths["%config-$label"] = drush_config_get_config_directory($label);
                             }
                         }
                     } catch (\Exception $e) {
@@ -224,7 +229,7 @@ class StatusCommands extends DrushCommands implements SiteAliasManagerAwareInter
 
                 if ($boot_manager->hasBootstrapped(DRUSH_BOOTSTRAP_DRUPAL_FULL)) {
                     $paths['%files'] = PublicStream::basePath();
-                    $paths['%temp'] = \file_directory_temp();
+                    $paths['%temp'] = drush_file_directory_temp();
                     if ($private_path = PrivateStream::basePath()) {
                         $paths['%private'] = $private_path;
                     }
