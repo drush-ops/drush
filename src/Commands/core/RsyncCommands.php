@@ -63,7 +63,7 @@ class RsyncCommands extends DrushCommands implements SiteAliasManagerAwareInterf
         // Prompt for confirmation. This is destructive.
         if (!$this->getConfig()->simulate()) {
             $replacements = ['!source' => $this->sourceEvaluatedPath->fullyQualifiedPathPreservingTrailingSlash(), '!target' => $this->targetEvaluatedPath->fullyQualifiedPath()];
-            if (!$this->io()->confirm(dt("Replace files in !target with !source?", $replacements))) {
+            if (!$this->io()->confirm(dt("Copy new and override existing files at !target. The source is !source?", $replacements))) {
                 throw new UserAbortException();
             }
         }
