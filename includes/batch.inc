@@ -176,7 +176,8 @@ function _drush_backend_batch_process($command = 'batch-process', $args, $option
 function _drush_batch_command($id) {
   $batch =& batch_get();
 
-  $data = Database::getConnection()->select('batch')
+  $data = Database::getConnection()->select('batch', 'b')
+    ->fields('b', ['batch'])
     ->condition('bid', $id)
     ->execute()
     ->fetchField();
