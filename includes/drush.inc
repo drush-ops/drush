@@ -60,11 +60,13 @@ function _convert_csv_to_array($args) {
  * @param string $type
  *   A constant from \Drush\Log\LogLevel.
  *
+ * @param array $error
+ *
  * @deprecated
  *   Use this->logger()->warning('message') (for example) from an Annotated command method.
  */
-function drush_log($message, $type = LogLevel::INFO) {
-    Drush::logger()->log($type, $message);
+function drush_log($message, $type = LogLevel::INFO, $error = []) {
+    Drush::logger()->log($type, $message, $error);
 }
 
 /**
