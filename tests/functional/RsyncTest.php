@@ -80,7 +80,7 @@ class RsyncTest extends CommandUnishTestCase
         // Test an actual rsync between our two fixture sites. Note that
         // these sites share the same web root.
         $this->drush('rsync', ["$source_alias:%files/a/", "$target_alias:%files/b"], $options, null, null, self::EXIT_SUCCESS, '2>&1');
-        $this->assertContains('Replace files in ', $this->getOutput());
+        $this->assertContains('Copy new and override existing files at ', $this->getOutput());
 
         // Test to see if our fixture file now exists at $target
         $this->assertFileExists($target_file);
