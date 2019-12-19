@@ -284,7 +284,7 @@ class PmCommands extends DrushCommands
 
         // Add dependent modules to the list. The new modules will be processed as
         // the while loop continues.
-        $profile = drupal_get_profile();
+        $profile = drush_drupal_get_profile();
         foreach (array_keys($module_list) as $module) {
             foreach (array_keys($module_data[$module]->required_by) as $dependent) {
                 if (!isset($module_data[$dependent])) {

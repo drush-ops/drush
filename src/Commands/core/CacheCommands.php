@@ -59,6 +59,23 @@ class CacheCommands extends DrushCommands implements CustomEventAwareInterface, 
     }
 
     /**
+     * Invalidate by cache tags.
+     *
+     * @command cache:tags
+     * @param string $tags A comma delimited list of cache tags to clear.
+     * @aliases ct
+     * @bootstrap full
+     * @usage drush cache:tag node:12,user:4
+     *   Purge content associated with two cache tags.
+     */
+    public function tags($tags)
+    {
+        $tags = StringUtils::csvToArray($tags);
+        Cache::invalidateTags($tags);
+        $this->logger()->success(dt("Invalidated tag(s): !list.", ['!list' => implode(' ', $tags)]));
+    }
+
+    /**
      * Clear a specific cache, or all Drupal caches.
      *
      * @command cache:clear

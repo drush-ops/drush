@@ -24,7 +24,7 @@ class SanitizeUserTableCommands extends DrushCommands implements SanitizePluginI
     }
 
     /**
-     * Sanitize usernames and passwords. This also an example of how to write a
+     * Sanitize emails and passwords. This also an example of how to write a
      * database sanitizer for sql-sync.
      *
      * @hook post-command sql-sanitize

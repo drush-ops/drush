@@ -87,9 +87,9 @@ jobs:
           POSTGRES_USER: unish
     <<: *test71steps
 
-  # PHP 7.2 test with HIGHEST dependencies:
+  # PHP 7.2 test with Drupal 8.8.x
   #   Determines whether a newer version of a dependency has broken Drush.
-  test_72_highest:
+  test_72_drupal88:
     <<: *defaults
     docker:
       - image: wodby/php:7.2
@@ -104,6 +104,30 @@ jobs:
       - run: composer require --dev drupal/core:8.8.x-dev --no-update
       - run: composer require --dev webflo/drupal-core-require-dev:8.8.x-dev --no-update
       - run: composer config platform.php 7.2
+      - run: composer update --no-scripts
+      - run: composer install -n
+      - run: composer lint
+      - run: composer unit
+      - run: composer functional
+      - run: composer integration
+
+  # PHP 7.2 test with HIGHEST dependencies:
+  #   Determines whether a newer version of a dependency has broken Drush.
+  test_72_drupal90:
+    <<: *defaults
+    docker:
+      - image: wodby/php:7.2
+        environment:
+          - MYSQL_HOST=127.0.0.1
+          - UNISH_DB_URL=mysql://root:@127.0.0.1
+      - image: circleci/mysql:5.7.24
+    steps:
+      - checkout
+      - run: cp .docker/zz-php.ini /usr/local/etc/php/conf.d/
+      - run: composer remove --dev webflo/drupal-core-strict --no-update
+      - run: composer remove --dev webflo/drupal-core-require-dev --no-update
+      - run: composer require --dev drupal/core:9.0.x-dev --no-update
+      - run: composer config platform.php 7.2.3
       - run: composer update --no-scripts
       - run: composer install -n
       - run: composer lint
@@ -126,7 +150,9 @@ workflows:
       - check_mergable
       - test_71_mysql:
           <<: *requires
-      - test_72_highest:
+      - test_72_drupal88:
+          <<: *requires
+      - test_72_drupal90:
           <<: *requires
       - test_71_sqlite:
           <<: *requires

@@ -16,7 +16,7 @@ services:
       -  { name: drush.command }
   sanitize.userfields.commands:
     class: \Drush\Drupal\Commands\sql\SanitizeUserFieldsCommands
-    arguments: ['@database', '@entity.manager', '@entity_type.manager']
+    arguments: ['@database', '@entity_field.manager', '@entity_type.manager']
     tags:
       -  { name: drush.command }
   sanitize.usertable.commands:

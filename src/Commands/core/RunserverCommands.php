@@ -67,7 +67,7 @@ class RunserverCommands extends DrushCommands
         _drush_delete_registered_files();
 
         $link = Url::fromUserInput('/' . $path, ['absolute' => true])->toString();
-        $this->logger()->notice(dt('HTTP server listening on !addr, port !port (see http://!hostname:!port/!path), serving site, !site', ['!addr' => $addr, '!hostname' => $hostname, '!port' => $uri['port'], '!path' => $path, '!site' => Drush::bootstrap()->confPath()]));
+        $this->logger()->notice(dt('HTTP server listening on !addr, port !port (see http://!hostname:!port/!path), serving site, !site', ['!addr' => $addr, '!hostname' => $hostname, '!port' => $uri['port'], '!path' => $path, '!site' => \Drupal::service('kernel')->getSitePath()]));
         // Start php built-in server.
         if (!empty($path)) {
             // Start a browser if desired. Include a 2 second delay to allow the server to come up.

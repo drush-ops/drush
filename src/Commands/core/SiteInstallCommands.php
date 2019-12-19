@@ -5,6 +5,7 @@ use Composer\Semver\Comparator;
 use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\SiteProcess\ProcessBase;
 use Drupal\Component\FileCache\FileCacheFactory;
+use Drupal\Core\Database\Database;
 use Drupal\Core\Installer\Exception\AlreadyInstalledException;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
@@ -86,7 +87,7 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
 
         // Was giving error during validate() so its here for now.
         if ($options['existing-config']) {
-            $existing_config_dir = config_get_config_directory(CONFIG_SYNC_DIRECTORY);
+            $existing_config_dir = drush_config_get_config_directory(CONFIG_SYNC_DIRECTORY);
             if (!is_dir($existing_config_dir)) {
                 throw new \Exception(dt('Existing config directory @dir not found', ['@dir' => $existing_config_dir]));
             }
@@ -172,7 +173,7 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
         // @todo Arguably Drupal core [$boot->getKernel()->getInstallProfile()] could do this - https://github.com/drupal/drupal/blob/8.6.x/core/lib/Drupal/Core/DrupalKernel.php#L1606 reads from DB storage but not file storage.
         if (empty($profile) && $options['existing-config']) {
             FileCacheFactory::setConfiguration([FileCacheFactory::DISABLE_CACHE => true]);
-            $source_storage = new FileStorage(config_get_config_directory(CONFIG_SYNC_DIRECTORY));
+            $source_storage = new FileStorage(drush_config_get_config_directory(CONFIG_SYNC_DIRECTORY));
             if (!$source_storage->exists('core.extension')) {
                 throw new \Exception('Existing configuration directory not found or does not contain a core.extension.yml file.".');
             }
@@ -247,6 +248,7 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
      */
     public function validate(CommandData $commandData)
     {
+        $bootstrapManager = Drush::bootstrapManager();
         if ($sites_subdir = $commandData->input()->getOption('sites-subdir')) {
             $lower = strtolower($sites_subdir);
             if ($sites_subdir != $lower) {
@@ -254,7 +256,6 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
                 $commandData->input()->setOption('sites-subdir', $lower);
             }
             // Make sure that we will bootstrap to the 'sites-subdir' site.
-            $bootstrapManager = Drush::bootstrapManager();
             $bootstrapManager->setUri('http://' . $sites_subdir);
         }
 
@@ -263,9 +264,16 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
         }
 
         try {
-            // Get AnnotationData. @todo Find a better way.
+            // Try to get any already configured database information.
             $annotationData = Drush::getApplication()->find('site:install')->getAnnotationData();
-            Drush::bootstrapManager()->bootstrapMax(DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION, $annotationData);
+            $bootstrapManager->bootstrapMax(DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION, $annotationData);
+
+            // See https://github.com/drush-ops/drush/issues/3903.
+            // We may have bootstrapped with /default/settings.php instead of the sites-subdir one.
+            if ($sites_subdir && "sites/$sites_subdir" !== $bootstrapManager->bootstrap()->confpath(true)) {
+                Database::removeConnection('default');
+            }
+
             $sql = SqlBase::create($commandData->input()->getOptions());
         } catch (\Exception $e) {
             // Ask questions to get our data.
@@ -373,7 +381,7 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
         $bootstrapManager->doBootstrap(DRUSH_BOOTSTRAP_DRUPAL_SITE);
 
         if ($program_exists && !$sql->dropOrCreate()) {
-            throw new \Exception(dt('Failed to drop or create the database: @error', ['@error' => $sql->getProcess()->getOutput()]));
+            throw new \Exception(dt('Failed to drop or create the database: @error', ['@error' => $sql->getProcess()->getErrorOutput()]));
         }
     }
 

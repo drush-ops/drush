@@ -54,6 +54,22 @@ function _convert_csv_to_array($args) {
 }
 
 /**
+ * Log a message.
+ *
+ * @param $message
+ * @param string $type
+ *   A constant from \Drush\Log\LogLevel.
+ *
+ * @param array $error
+ *
+ * @deprecated
+ *   Use this->logger()->warning('message') (for example) from an Annotated command method.
+ */
+function drush_log($message, $type = LogLevel::INFO, $error = []) {
+    Drush::logger()->log($type, $message, $error);
+}
+
+/**
  * Get the available global options. Used by list/help commands. All other users
  * should pull options from $application.
  *
@@ -111,7 +127,7 @@ function drush_get_global_options($brief = FALSE) {
     $options['include']             = ['short-form' => 'i', 'short-has-arg' => TRUE, 'context' => 'DRUSH_INCLUDE', 'never-post' => TRUE, 'propagate-cli-value' => TRUE, 'merge-pathlist' => TRUE, 'description' => "A list of additional directory paths to search for Drush commands. Commandfiles should be placed in a subfolder called 'Commands'.", 'example-value' => '/path/dir'];
     $options['exclude']             = ['propagate-cli-value' => TRUE, 'never-post' => TRUE, 'merge-pathlist' => TRUE, 'description' => "A list of files and directory paths to exclude from consideration when searching for drush commandfiles.", 'example-value' => '/path/dir'];
     $options['config']              = ['short-form' => 'c', 'short-has-arg' => TRUE, 'context' => 'DRUSH_CONFIG', 'never-post' => TRUE, 'propagate-cli-value' => TRUE, 'merge-pathlist' => TRUE, 'description' => "Specify an additional config file to load. See example.drush.yml", 'example-value' => '/path/file'];
-    $options['backend']             = ['short-form' => 'b', 'never-propagate' => TRUE, 'description' => "Hide all output and return structured data."];
+    $options['backend']             = ['hidden' => TRUE, 'short-form' => 'b', 'never-propagate' => TRUE, 'description' => "Hide all output and return structured data."];
     $options['choice']              = ['description' => "Provide an answer to a multiple-choice prompt.", 'example-value' => 'number'];
     $options['search-depth']        = ['description' => "Control the depth that drush will search for alias files.", 'example-value' => 'number'];
     $options['ignored-modules']     = ['description' => "Exclude some modules from consideration when searching for drush command files.", 'example-value' => 'token,views'];
@@ -128,15 +144,10 @@ function drush_get_global_options($brief = FALSE) {
     $options['remote-host']         = ['hidden' => TRUE, 'description' => 'Remote site to execute drush command on. Managed by site alias.', 'example-value' => 'http://example.com'];
     $options['remote-user']         = ['hidden' => TRUE, 'description' => 'User account to use with a remote drush command. Managed by site alias.', 'example-value' => 'www-data'];
     $options['remote-os']           = ['hidden' => TRUE, 'description' => 'The operating system used on the remote host. Managed by site alias.', 'example-value' => 'linux'];
-    $options['site-list']           = ['hidden' => TRUE, 'description' => 'List of sites to run commands on. Managed by site alias.', 'example-value' => '@site1,@site2'];
-    $options['reserve-margin']      = ['hidden' => TRUE, 'description' => 'Remove columns from formatted opions. Managed by multi-site command handling.', 'example-value' => 'number'];
     $options['strict']              = ['propagate' => TRUE, 'description' => 'Return an error on unrecognized options. --strict=0: Allow unrecognized options.'];
     $options['command-specific']    = ['hidden' => TRUE, 'merge-associative' => TRUE, 'description' => 'Command-specific options.'];
-    $options['site-aliases']        = ['hidden' => TRUE, 'merge-associative' => TRUE, 'description' => 'List of site aliases.'];
-    $options['shell-aliases']       = ['hidden' => TRUE, 'merge' => TRUE, 'never-propagate' => TRUE, 'description' => 'List of shell aliases.'];
     $options['path-aliases']        = ['hidden' => TRUE, 'never-propagate' => TRUE, 'description' => 'Path aliases from site alias.'];
     $options['ssh-options']         = ['never-propagate' => TRUE, 'description' => 'A string of extra options that will be passed to the ssh command', 'example-value' => '-p 100'];
-    $options['drush-coverage']      = ['hidden' => TRUE, 'never-post' => TRUE, 'propagate-cli-value' => TRUE, 'description' => 'File to save code coverage data into.'];
     $options['local']               = ['propagate' => TRUE, 'description' => 'Don\'t look in global locations for commandfiles, config, and site aliases'];
   }
   return $options;
@@ -216,7 +227,7 @@ function drush_call_user_func_array($function, $args = []) {
 function drush_memory_limit() {
   $value = trim(ini_get('memory_limit'));
   $last = strtolower($value[strlen($value)-1]);
-  $size = (int) substr($value, 0, -1);
+  $size = (int) rtrim($value, 'GgMmKk');
   switch ($last) {
     case 'g':
       $size *= DRUSH_KILOBYTE;
