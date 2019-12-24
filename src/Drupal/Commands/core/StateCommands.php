@@ -53,7 +53,7 @@ class StateCommands extends DrushCommands implements StdinAwareInterface
      *
      * @param string $key The state key, for example: system.cron_last.
      * @param mixed $value The value to assign to the state key. Use '-' to read from STDIN.
-     * @option input-format Type for the value. Defaults to 'auto'. Other recognized values: string, integer float, boolean, json, yaml.
+     * @option input-format Type for the value. Defaults to 'auto'. Other recognized values: string, integer, float, boolean, json, yaml.
      * @option value For internal use only.
      * @hidden-options value
      * @usage drush sset system.maintenance_mode 1 --input-format=integer
