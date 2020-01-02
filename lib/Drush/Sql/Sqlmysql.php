@@ -93,8 +93,10 @@ EOT;
       // - If the database is on a remote server, create a wilcard user with %.
       //   We can't easily know what IP adderss or hostname would represent our server.
       $domain = ($this->db_spec['host'] == 'localhost') ? 'localhost' : '%';
-      $sql[] = sprintf('GRANT ALL PRIVILEGES ON %s.* TO \'%s\'@\'%s\'', $dbname, $this->db_spec['username'], $domain);
-      $sql[] = sprintf("IDENTIFIED BY '%s';", $this->db_spec['password']);
+      $user = sprintf("'%s'@'%s'", $this->db_spec['username'], $domain);
+      $sql[] = sprintf("DROP USER IF EXISTS %s;", $user);
+      $sql[] = sprintf("CREATE USER %s IDENTIFIED WITH mysql_native_password BY '%s';", $user, $this->db_spec['password']);
+      $sql[] = sprintf('GRANT ALL PRIVILEGES ON %s.* TO %s;', $dbname, $user);
       $sql[] = 'FLUSH PRIVILEGES;';
     }
     return implode(' ', $sql);
