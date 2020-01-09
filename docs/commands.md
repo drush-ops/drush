@@ -109,3 +109,9 @@ With this configuration in place, global commands may be placed as described in 
     1.  ../drush, /drush or /sites/all/drush. These paths are relative to Drupal root.
 
 It is recommended that you avoid global Drush commands, and favor site-wide commandfiles instead. If you really need a command or commands that are not part of any Drupal site, consider making a stand-alone script or custom .phar instead. See [ahoy](https://github.com/ahoy-cli/ahoy), [Robo](https://github.com/consolidation/robo) and [g1a/starter](https://github.com/g1a/starter) as potential starting points.
+
+Composer packaged commands
+==============================
+
+##### Symlinked packages
+While it is good practice to make your custom commands into a Composer package, please beware that symlinked packages (by using the composer repository type [Path](https://getcomposer.org/doc/05-repositories.md#path)) will **not** be discovered by Drush. When in development, it is recommended to [specify your package's](https://github.com/drush-ops/drush/blob/master/examples/example.drush.yml#L52-L67) path in your `drush.yml` to have quick access to your commands.
