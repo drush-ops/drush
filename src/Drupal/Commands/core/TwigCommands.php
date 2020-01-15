@@ -125,8 +125,8 @@ class TwigCommands extends DrushCommands
         ->in($searchpaths);
         foreach ($files as $file) {
             $relative = Path::makeRelative($file->getRealPath(), Drush::bootstrapManager()->getRoot());
-            // @todo Dynamically disable twig debugging since there is no good info there anyway.
-            twig_render_template($relative, ['theme_hook_original' => '']);
+            // Loading the template ensures the compiled template is cached.
+            \Drupal::service('twig')->loadTemplate($relative);
             $this->logger()->success(dt('Compiled twig template !path', ['!path' => $relative]));
         }
     }
