@@ -149,7 +149,7 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
         try {
             drush_op('install_drupal', $class_loader, $settings);
         } catch (AlreadyInstalledException $e) {
-            if (!$this->programExists($sql->command())) {
+            if ($sql && !$this->programExists($sql->command())) {
                 throw new \Exception(dt('Drush was unable to drop all tables because `@program` was not found, and therefore Drupal threw an AlreadyInstalledException. Ensure `@program` is available in your PATH.', ['@program' => $sql->command()]));
             }
             throw $e;
