@@ -345,7 +345,7 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
         }
 
         $program = $sql ? $sql->command() : 'UNKNOWN';
-        $program_exists = $this->programExists($sql->command());
+        $program_exists = $this->programExists($program);
         if (!$program_exists) {
             $msg[] = dt('Program @program not found. Proceed if you have already created or emptied the Drupal database.', ['@program' => $program]);
         } elseif ($sql->dbExists()) {
