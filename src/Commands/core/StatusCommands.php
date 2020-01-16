@@ -99,18 +99,19 @@ class StatusCommands extends DrushCommands implements SiteAliasManagerAwareInter
             if ($boot_manager->hasBootstrapped(DRUSH_BOOTSTRAP_DRUPAL_SITE)) {
                 $status_table['uri'] = $boot_manager->getUri();
                 try {
-                    $sql = SqlBase::create($options);
-                    $db_spec = $sql->getDbSpec();
-                    $status_table['db-driver'] = $db_spec['driver'];
-                    if (!empty($db_spec['unix_socket'])) {
-                        $status_table['db-socket'] = $db_spec['unix_socket'];
-                    } elseif (isset($db_spec['host'])) {
-                        $status_table['db-hostname'] = $db_spec['host'];
+                    if ($sql = SqlBase::create($options)) {
+                        $db_spec = $sql->getDbSpec();
+                        $status_table['db-driver'] = $db_spec['driver'];
+                        if (!empty($db_spec['unix_socket'])) {
+                            $status_table['db-socket'] = $db_spec['unix_socket'];
+                        } elseif (isset($db_spec['host'])) {
+                            $status_table['db-hostname'] = $db_spec['host'];
+                        }
+                        $status_table['db-username'] = isset($db_spec['username']) ? $db_spec['username'] : null;
+                        $status_table['db-password'] = isset($db_spec['password']) ? $db_spec['password'] : null;
+                        $status_table['db-name'] = isset($db_spec['database']) ? $db_spec['database'] : null;
+                        $status_table['db-port'] = isset($db_spec['port']) ? $db_spec['port'] : null;
                     }
-                    $status_table['db-username'] = isset($db_spec['username']) ? $db_spec['username'] : null;
-                    $status_table['db-password'] = isset($db_spec['password']) ? $db_spec['password'] : null;
-                    $status_table['db-name'] = isset($db_spec['database']) ? $db_spec['database'] : null;
-                    $status_table['db-port'] = isset($db_spec['port']) ? $db_spec['port'] : null;
                     if ($boot_manager->hasBootstrapped(DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION)) {
                         if (method_exists('Drupal', 'installProfile')) {
                             $status_table['install-profile'] = \Drupal::installProfile();
