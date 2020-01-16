@@ -24,9 +24,8 @@ class SqlCliTest extends UnishIntegrationTestCase
             $this->markTestSkipped('sql:cli stdin tests do not work on Windows.');
         }
 
-        $stdin = file_get_contents(Path::join(__DIR__, 'resources/sqlcli.sql'));
-        // Ensure SQL dumps can be imported via sql:cli.
-        $this->drush('sql:cli', [], [], null, $stdin);
+        // @todo Ensure SQL dumps can be imported via sql:cli via stdin.
+        $this->drush('sql:query', [], ['file' => Path::join(__DIR__, 'resources/sqlcli.sql')], self::EXIT_SUCCESS);
         $sql = SqlBase::create();
         $tables = $sql->listTables();
         $this->assertContains('sqlcli', $tables);
