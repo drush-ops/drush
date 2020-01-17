@@ -289,7 +289,7 @@ class UserCommands extends DrushCommands
             foreach ($names as $name) {
                 if ($account = user_load_by_name($name)) {
                     if ($options['delete-content']) {
-                        $this->logger()->warning(dt('All content created by !name will be deleted.', ['!name' => $account->getUsername()]));
+                        $this->logger()->warning(dt('All content created by !name will be deleted.', ['!name' => $account->getAccountName()]));
                     }
                     if ($this->io()->confirm('Cancel user account?: ')) {
                         $method = $options['delete-content'] ? 'user_cancel_delete' : 'user_cancel_block';
@@ -338,7 +338,7 @@ class UserCommands extends DrushCommands
     {
         return [
             'uid' => $account->id(),
-            'name' => $account->getUsername(),
+            'name' => $account->getAccountName(),
             'pass' => $account->getPassword(),
             'mail' => $account->getEmail(),
             'user_created' => $account->getCreatedTime(),
