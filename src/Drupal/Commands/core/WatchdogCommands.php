@@ -5,6 +5,7 @@ use Consolidation\OutputFormatters\StructuredData\PropertyList;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Drupal\Core\Database\Database;
 use Drupal\Core\Logger\RfcLogLevel;
+use Drupal\user\Entity\User;
 use Drush\Commands\DrushCommands;
 use Drupal\Component\Utility\Unicode;
 use Drupal\Component\Utility\Html;
@@ -305,7 +306,7 @@ class WatchdogCommands extends DrushCommands
                 unset($result->referer);
             }
             // Username.
-            if ($account = user_load($result->uid)) {
+            if ($account = User::load($result->uid)) {
                 $result->username = $account->name;
             } else {
                 $result->username = dt('Anonymous');
