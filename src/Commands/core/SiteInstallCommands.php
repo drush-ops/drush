@@ -381,7 +381,7 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
         $bootstrapManager->doBootstrap(DRUSH_BOOTSTRAP_DRUPAL_SITE);
 
         if ($program_exists && !$sql->dropOrCreate()) {
-            throw new \Exception(dt('Failed to drop or create the database: @error', ['@error' => $sql->getProcess()->getErrorOutput()]));
+            $this->logger()->warning(dt('Failed to drop or create the database. Do it yourself before installing: @error', ['@error' => $sql->getProcess()->getErrorOutput()]));
         }
     }
 
