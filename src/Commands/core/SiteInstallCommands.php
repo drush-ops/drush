@@ -80,9 +80,6 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
         $class_loader = Drush::service('loader');
         $profile = $this->determineProfile($profile, $options, $class_loader);
 
-        $sql = SqlBase::create($options);
-        $db_spec = $sql->getDbSpec();
-
         $account_pass = $options['account-pass'] ?: StringUtils::generatePassword();
 
         // Was giving error during validate() so its here for now.
@@ -101,11 +98,6 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
                 'existing_config' => $options['existing-config'],
             ],
             'forms' => [
-                'install_settings_form' => [
-                    'driver' => $db_spec['driver'],
-                    $db_spec['driver'] => $db_spec,
-                    'op' => dt('Save and continue'),
-                ],
                 'install_configure_form' => [
                     'site_name' => $options['site-name'],
                     'site_mail' => $options['site-mail'],
@@ -125,6 +117,16 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
             ],
             'config_install_path' => $options['config-dir'],
         ];
+
+        $sql = SqlBase::create($options);
+        if ($sql) {
+            $db_spec = $sql->getDbSpec();
+            $settings['forms']['install_settings_form'] = [
+                'driver' => $db_spec['driver'],
+                $db_spec['driver'] => $db_spec,
+                'op' => dt('Save and continue'),
+            ];
+        }
 
         // Merge in the additional options.
         foreach ($form_options as $key => $value) {
@@ -147,7 +149,7 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
         try {
             drush_op('install_drupal', $class_loader, $settings);
         } catch (AlreadyInstalledException $e) {
-            if (!$this->programExists($sql->command())) {
+            if ($sql && !$this->programExists($sql->command())) {
                 throw new \Exception(dt('Drush was unable to drop all tables because `@program` was not found, and therefore Drupal threw an AlreadyInstalledException. Ensure `@program` is available in your PATH.', ['@program' => $sql->command()]));
             }
             throw $e;
@@ -305,8 +307,10 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
      */
     public function pre(CommandData $commandData)
     {
-        $sql = SqlBase::create($commandData->input()->getOptions());
-        $db_spec = $sql->getDbSpec();
+        $db_spec = [];
+        if ($sql = SqlBase::create($commandData->input()->getOptions())) {
+            $db_spec = $sql->getDbSpec();
+        }
 
         // This command is 'bootstrap root', so we should always have a
         // Drupal root. If we do not, $aliasRecord->root will throw.
@@ -340,9 +344,10 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
             $msg[] = dt('create a @sitesfile file', ['@sitesfile' => $sitesfile]);
         }
 
-        $program_exists = $this->programExists($sql->command());
+        $program = $sql ? $sql->command() : 'UNKNOWN';
+        $program_exists = $this->programExists($program);
         if (!$program_exists) {
-            $msg[] = dt('Program @program not found. Proceed if you have already created or emptied the Drupal database.', ['@program' => $sql->command()]);
+            $msg[] = dt('Program @program not found. Proceed if you have already created or emptied the Drupal database.', ['@program' => $program]);
         } elseif ($sql->dbExists()) {
             $msg[] = dt("DROP all tables in your '@db' database.", ['@db' => $db_spec['database']]);
         } else {
