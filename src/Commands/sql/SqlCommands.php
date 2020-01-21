@@ -123,7 +123,7 @@ class SqlCommands extends DrushCommands implements StdinAwareInterface
         }
         $tables = $sql->listTables();
         if (!$sql->drop($tables)) {
-            throw new \Exception('Unable to drop database. Rerun with --debug to see any error message.');
+            throw new \Exception('Unable to drop all tables. Rerun with --debug to see any error message.');
         }
     }
 
