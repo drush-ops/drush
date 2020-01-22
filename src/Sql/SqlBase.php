@@ -475,10 +475,6 @@ class SqlBase implements ConfigAwareInterface
     {
     }
 
-    public function delete()
-    {
-    }
-
     /**
      * Build a fragment connection parameters.
      *
