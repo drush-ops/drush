@@ -331,8 +331,8 @@ class SqlBase implements ConfigAwareInterface
 
         $parts = [
             $this->command(),
-            $this->silent(), // This removes column header and various helpful things in mysql.
             $this->creds(),
+            $this->silent(), // This removes column header and various helpful things in mysql.
             $this->getOption('extra', $this->queryExtra),
             $this->queryFile,
             Escape::shellArg($input_file),
