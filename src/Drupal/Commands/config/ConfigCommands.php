@@ -449,14 +449,17 @@ class ConfigCommands extends DrushCommands implements StdinAwareInterface
      */
     public function interactConfigLabel(InputInterface $input, ConsoleOutputInterface $output)
     {
+        if (drush_drupal_major_version() >= 9) {
+            // Nothing to do.
+            return;
+        }
+
         global $config_directories;
 
         $option_name = $input->hasOption('destination') ? 'destination' : 'source';
         if (empty($input->getArgument('label') && empty($input->getOption($option_name)))) {
             $choices = drush_map_assoc(array_keys($config_directories));
-            if (drush_drupal_major_version() == 8) {
-                unset($choices[CONFIG_ACTIVE_DIRECTORY]);
-            }
+            unset($choices[CONFIG_ACTIVE_DIRECTORY]);
             if (count($choices) >= 2) {
                 $label = $this->io()->choice('Choose a '. $option_name, $choices);
                 $input->setArgument('label', $label);
