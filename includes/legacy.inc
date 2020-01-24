@@ -27,15 +27,14 @@ function drush_file_directory_temp()
  * settings.php.
  *
  * @param string $type
- *   The type of config directory to return. Drupal core provides the
- *   CONFIG_SYNC_DIRECTORY constant to access the sync directory.
+ *   The type of config directory to return.
  *
  * @return string
  *   The configuration directory path.
  *
  * @throws \Exception
  */
-function drush_config_get_config_directory($type) {
+function drush_config_get_config_directory($type = 'sync') {
     if (drush_drupal_major_version() >= 9) {
         return Settings::get('config_sync_directory');
     }

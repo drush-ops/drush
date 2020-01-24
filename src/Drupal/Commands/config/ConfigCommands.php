@@ -348,7 +348,7 @@ class ConfigCommands extends DrushCommands implements StdinAwareInterface
             }
         } else {
             // If a directory isn't specified, use the label argument or default sync directory.
-            $return = \drush_config_get_config_directory($label ?: CONFIG_SYNC_DIRECTORY);
+            $return = \drush_config_get_config_directory($label ?: 'sync');
         }
         return Path::canonicalize($return);
     }
@@ -377,7 +377,7 @@ class ConfigCommands extends DrushCommands implements StdinAwareInterface
      */
     public function getStorage($directory)
     {
-        if ($directory == Path::canonicalize(\drush_config_get_config_directory(CONFIG_SYNC_DIRECTORY))) {
+        if ($directory == Path::canonicalize(\drush_config_get_config_directory())) {
             return \Drupal::service('config.storage.sync');
         } else {
             return new FileStorage($directory);
@@ -454,7 +454,9 @@ class ConfigCommands extends DrushCommands implements StdinAwareInterface
         $option_name = $input->hasOption('destination') ? 'destination' : 'source';
         if (empty($input->getArgument('label') && empty($input->getOption($option_name)))) {
             $choices = drush_map_assoc(array_keys($config_directories));
-            unset($choices[CONFIG_ACTIVE_DIRECTORY]);
+            if (drush_drupal_major_version() == 8) {
+                unset($choices[CONFIG_ACTIVE_DIRECTORY]);
+            }
             if (count($choices) >= 2) {
                 $label = $this->io()->choice('Choose a '. $option_name, $choices);
                 $input->setArgument('label', $label);

@@ -123,7 +123,7 @@ class ConfigExportCommands extends DrushCommands
     public function doExport($options, $destination_dir)
     {
         // Prepare the configuration storage for the export.
-        if ($destination_dir ==  Path::canonicalize(\drush_config_get_config_directory(CONFIG_SYNC_DIRECTORY))) {
+        if ($destination_dir ==  Path::canonicalize(\drush_config_get_config_directory())) {
             $target_storage = $this->getConfigStorageSync();
         } else {
             $target_storage = new FileStorage($destination_dir);

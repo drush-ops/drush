@@ -84,7 +84,7 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
 
         // Was giving error during validate() so its here for now.
         if ($options['existing-config']) {
-            $existing_config_dir = drush_config_get_config_directory(CONFIG_SYNC_DIRECTORY);
+            $existing_config_dir = drush_config_get_config_directory();
             if (!is_dir($existing_config_dir)) {
                 throw new \Exception(dt('Existing config directory @dir not found', ['@dir' => $existing_config_dir]));
             }
@@ -175,7 +175,7 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
         // @todo Arguably Drupal core [$boot->getKernel()->getInstallProfile()] could do this - https://github.com/drupal/drupal/blob/8.6.x/core/lib/Drupal/Core/DrupalKernel.php#L1606 reads from DB storage but not file storage.
         if (empty($profile) && $options['existing-config']) {
             FileCacheFactory::setConfiguration([FileCacheFactory::DISABLE_CACHE => true]);
-            $source_storage = new FileStorage(drush_config_get_config_directory(CONFIG_SYNC_DIRECTORY));
+            $source_storage = new FileStorage(drush_config_get_config_directory());
             if (!$source_storage->exists('core.extension')) {
                 throw new \Exception('Existing configuration directory not found or does not contain a core.extension.yml file.".');
             }
