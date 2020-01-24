@@ -6,7 +6,7 @@
 
 Install a site-local Drush and Drush Launcher.
 -----------------
-1. It is recommended that Drupal sites be [built using Composer, with Drush listed as a dependency](https://github.com/drupal-composer/drupal-project). That project already includes Drush in its composer.json. If your Composer project doesn't yet depend on Drush, run `composer require drush/drush` to add it. After this step, you may call Drush via `vendor/bin/drush`.
+1. It is required that Drupal sites be built using Composer, with Drush listed as a dependency. Popular starter templates for that include [drupal-project](https://github.com/drupal-composer/drupal-project) (Drush is included) and [recommended-project](https://www.drupal.org/docs/develop/using-composer/using-composer-to-install-drupal-and-manage-dependencies) (Drush must be added). If your Composer project doesn't yet depend on Drush, run `composer require drush/drush` to add it. After this step, you may call Drush via `vendor/bin/drush`.
 1. Optional. To be able to call `drush` from anywhere, install the [Drush Launcher](https://github.com/drush-ops/drush-launcher). That is a small program which listens on your $PATH and hands control to a site-local Drush that is in the /vendor directory of your Composer project.
 
 See [Usage](http://docs.drush.org/en/master/usage/) for details on using Drush.
