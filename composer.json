@@ -51,16 +51,15 @@
     "webmozart/path-util": "^2.1.0"
   },
   "require-dev": {
-    "composer/installers": "^1.2",
+    "composer/installers": "^1.7",
     "cweagans/composer-patches": "~1.0",
+    "drupal/core-recommended": "^8.8",
     "drupal/alinks": "1.0.0",
     "g1a/composer-test-scenarios": "^3",
     "lox/xhprof": "dev-master",
     "phpunit/phpunit": "^4.8.36 || ^6.1",
     "squizlabs/php_codesniffer": "^2.7 || ^3",
-    "vlucas/phpdotenv": "^2.4",
-    "webflo/drupal-core-strict": "8.7.x-dev",
-    "webflo/drupal-core-require-dev": "8.7.x-dev"
+    "vlucas/phpdotenv": "^2.4"
   },
   "autoload": {
     "psr-4": {
