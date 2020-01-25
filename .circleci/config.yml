@@ -87,9 +87,9 @@ jobs:
           POSTGRES_USER: unish
     <<: *test71steps
 
-  # PHP 7.2 test with Drupal 8.8.x
+  # PHP 7.2 test with Drupal 8.9.x
   #   Determines whether a newer version of a dependency has broken Drush.
-  test_72_drupal88:
+  test_72_drupal89:
     <<: *defaults
     docker:
       - image: wodby/php:7.2
@@ -146,7 +146,7 @@ workflows:
       - check_mergable
       - test_71_mysql:
           <<: *requires
-      - test_72_drupal88:
+      - test_72_drupal89:
           <<: *requires
       - test_73_drupal90:
           <<: *requires
