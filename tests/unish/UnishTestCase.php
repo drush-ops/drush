@@ -691,7 +691,8 @@ EOT;
             'db-url' => $this->dbUrl($uri),
             'sites-subdir' => $uri,
             'yes' => true,
-            'quiet' => true,
+            // quiet suppresses error reporting as well.
+            // 'quiet' => true,
         ];
         if ($level = $this->logLevel()) {
             $options[$level] = true;
