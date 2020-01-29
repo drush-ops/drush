@@ -91,6 +91,9 @@ jobs:
   #   Determines whether a newer version of a dependency has broken Drush.
   test_72_drupal89:
     <<: *defaults
+    # override for just this image.
+    environment:
+      SYMFONY_DEPRECATIONS_HELPER: enabled
     docker:
       - image: wodby/php:7.2
         environment:
