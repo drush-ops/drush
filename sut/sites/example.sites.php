@@ -53,3 +53,6 @@
  * @see \Drupal\Core\DrupalKernel::getSitePath()
  * @see https://www.drupal.org/documentation/install/multi-site
  */
+// The following are used by functional tests, at least testOptionsUri():
+$sites["test.uri"] = "dev";
+$sites["test.uri.subpath"] = "stage";

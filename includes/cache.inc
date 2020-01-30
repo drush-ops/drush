@@ -169,35 +169,3 @@ function drush_cache_get_bins() {
   return $drush;
   // return array_merge(drush_command_invoke_all('drush_flush_caches'), $drush);
 }
-
-/**
- * Create a cache id from a given prefix, contexts, and additional parameters.
- *
- * @param prefix
- *   A human readable cid prefix that will not be hashed.
- * @param contexts
- *   Array of drush contexts that will be used to build a unique hash.
- * @param params
- *   Array of any addition parameters to be hashed.
- *
- * @return
- *   A cache id string.
- *
- * @deprecated
- */
-function drush_get_cid($prefix, $contexts = [], $params = []) {
-  $cid = [];
-
-  foreach ($contexts as $context) {
-    $c = drush_get_context($context);
-    if (!empty($c)) {
-      $cid[] = is_scalar($c) ? $c : serialize($c);
-    }
-  }
-
-  foreach ($params as $param) {
-    $cid[] = $param;
-  }
-
-  return Drush::getVersion() . '-' . $prefix . '-' . md5(implode("", $cid));
-}

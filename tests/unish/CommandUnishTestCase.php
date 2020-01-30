@@ -5,11 +5,12 @@ namespace Unish;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\Exception\ProcessTimedOutException;
 use PHPUnit\Framework\TestResult;
-use Unish\Utils\OutputUtilsTrait;
+use Drush\TestTraits\OutputUtilsTrait;
+use Drush\TestTraits\CliTestTrait;
 
 abstract class CommandUnishTestCase extends UnishTestCase
 {
-    use OutputUtilsTrait;
+    use CliTestTrait;
 
     /**
      * Code coverage data collected during a single test.
@@ -17,38 +18,6 @@ abstract class CommandUnishTestCase extends UnishTestCase
      * @var array
      */
     protected $coverage_data = [];
-
-    /**
-     * Default timeout for commands.
-     *
-     * @var int
-     */
-    private $defaultTimeout = 60;
-
-    /**
-     * Timeout for command.
-     *
-     * Reset to $defaultTimeout after executing a command.
-     *
-     * @var int
-     */
-    protected $timeout = 60;
-
-    /**
-     * Default idle timeout for commands.
-     *
-     * @var int
-     */
-    private $defaultIdleTimeout = 15;
-
-    /**
-     * Idle timeouts for commands.
-     *
-     * Reset to $defaultIdleTimeout after executing a command.
-     *
-     * @var int
-     */
-    protected $idleTimeout = 15;
 
     /**
      * Accessor for the last output, non-trimmed.
@@ -77,54 +46,6 @@ abstract class CommandUnishTestCase extends UnishTestCase
     }
 
     /**
-     * Actually runs the command.
-     *
-     * @param string $command
-     *   The actual command line to run.
-     * @param integer $expected_return
-     *   The return code to expect
-     * @param sting cd
-     *   The directory to run the command in.
-     * @param array $env
-     *  Extra environment variables.
-     * @param string $input
-     *   A string representing the STDIN that is piped to the command.
-     * @return integer
-     *   Exit code. Usually self::EXIT_ERROR or self::EXIT_SUCCESS.
-     */
-    public function execute($command, $expected_return = self::EXIT_SUCCESS, $cd = null, $env = null, $input = null)
-    {
-        $this->tick();
-        $this->log("Executing: $command", 'verbose');
-
-        try {
-            // Process uses a default timeout of 60 seconds, set it to 0 (none).
-            $this->process = new Process($command, $cd, $env, $input, 0);
-            $this->process->inheritEnvironmentVariables(true);
-            if (!getenv('UNISH_NO_TIMEOUTS')) {
-                $this->process->setTimeout($this->timeout)
-                ->setIdleTimeout($this->idleTimeout);
-            }
-            $return = $this->process->run();
-            if ($expected_return !== $return) {
-                $message = 'Unexpected exit code ' . $return . ' (expected ' . $expected_return . ") for command:\n" .  $command;
-                throw new UnishProcessFailedException($message . $this->buildProcessMessage());
-            }
-            // Reset timeouts to default.
-            $this->timeout = $this->defaultTimeout;
-            $this->idleTimeout = $this->defaultIdleTimeout;
-            return $return;
-        } catch (ProcessTimedOutException $e) {
-            if ($e->isGeneralTimeout()) {
-                $message = 'Command runtime exceeded ' . $this->timeout . " seconds:\n" .  $command;
-            } else {
-                $message = 'Command had no output for ' . $this->idleTimeout . " seconds:\n" .  $command;
-            }
-            throw new UnishProcessFailedException($message . $this->buildProcessMessage());
-        }
-    }
-
-    /**
      * Invoke drush in via execute().
      *
      * @param command
@@ -149,7 +70,7 @@ abstract class CommandUnishTestCase extends UnishTestCase
     public function drush($command, array $args = [], array $options = [], $site_specification = null, $cd = null, $expected_return = self::EXIT_SUCCESS, $suffix = null, $env = [])
     {
         // cd is added for the benefit of siteSshTest which tests a strict command.
-        $global_option_list = ['simulate', 'root', 'uri', 'include', 'config', 'alias-path', 'ssh-options', 'backend', 'cd'];
+        $global_option_list = ['simulate', 'root', 'uri', 'include', 'config', 'alias-path', 'ssh-options', 'cd'];
         $options += ['uri' => 'dev']; // Default value.
         $hide_stderr = false;
         $cmd[] = self::getDrush();
@@ -158,10 +79,6 @@ abstract class CommandUnishTestCase extends UnishTestCase
         foreach ($options as $key => $value) {
             if (in_array($key, $global_option_list)) {
                 unset($options[$key]);
-                if ($key == 'backend') {
-                    $hide_stderr = true;
-                    $value = null;
-                }
                 if ($key == 'uri' && $value == 'OMIT') {
                     continue;
                 }
@@ -228,56 +145,6 @@ abstract class CommandUnishTestCase extends UnishTestCase
         return $return;
     }
 
-    /**
-     * A slightly less functional copy of drush_backend_parse_output().
-     */
-    public function parseBackendOutput($string)
-    {
-        $regex = sprintf(self::getBackendOutputDelimiter(), '(.*)');
-        preg_match("/$regex/s", $string, $match);
-        if (isset($match[1])) {
-            // we have our JSON encoded string
-            $output = $match[1];
-            // remove the match we just made and any non printing characters
-            $string = trim(str_replace(sprintf(self::getBackendOutputDelimiter(), $match[1]), '', $string));
-        }
-
-        if (!empty($output)) {
-            $data = json_decode($output, true);
-            if (is_array($data)) {
-                return $data;
-            }
-        }
-        return $string;
-    }
-
-    /**
-     * Ensure that an expected log message appears in the Drush log.
-     *
-     *     $this->drush('command', array(), array('backend' => NULL));
-     *     $parsed = $this->parse_backend_output($this->getOutput());
-     *     $this->assertLogHasMessage($parsed['log'], "Expected message", 'debug')
-     *
-     * @param $log Parsed log entries from backend invoke
-     * @param $message The expected message that must be contained in
-     *   some log entry's 'message' field.  Substrings will match.
-     * @param $logType The type of log message to look for; all other
-     *   types are ignored. If FALSE (the default), then all log types
-     *   will be searched.
-     */
-    public function assertLogHasMessage($log, $message, $logType = false)
-    {
-        foreach ($log as $entry) {
-            if (!$logType || ($entry['type'] == $logType)) {
-                $logMessage = $this->getLogMessage($entry);
-                if (strpos($logMessage, $message) !== false) {
-                    return true;
-                }
-            }
-        }
-        $this->fail("Could not find expected message in log: " . $message);
-    }
-
     protected function getLogMessage($entry)
     {
         return $this->interpolate($entry['message'], $entry);
@@ -294,18 +161,6 @@ abstract class CommandUnishTestCase extends UnishTestCase
         }
         // interpolate replacement values into the message and return
         return strtr($message, $replace);
-    }
-
-    public function drushMajorVersion()
-    {
-        static $major;
-
-        if (!isset($major)) {
-            $this->drush('version', [], ['field' => 'drush-version']);
-            $version = trim($this->getOutput());
-            list($major) = explode('.', $version);
-        }
-        return (int)$major;
     }
 
     protected function assertOutputEquals($expected, $filter = '')
@@ -336,5 +191,17 @@ abstract class CommandUnishTestCase extends UnishTestCase
             $output = preg_replace($filter, '', $output);
         }
         $this->assertEquals($expected, $output);
+    }
+
+    public function pathsToSimplify()
+    {
+        $basedir = dirname(dirname(__DIR__));
+
+        return [
+
+            self::getSandbox() => '__SANDBOX__',
+            $basedir => '__DIR__',
+
+        ];
     }
 }

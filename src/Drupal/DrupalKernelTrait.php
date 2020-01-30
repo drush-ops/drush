@@ -145,7 +145,7 @@ trait DrupalKernelTrait
         if (!file_exists($result)) {
             return;
         }
-        Drush::logger()->debug(dt("!module should have an extra.drush.services section in its composer.json. See http://docs.drush.org/en/master/commands/#specifying-the-services-file.", ['!module' => $module]));
+        Drush::logger()->info(dt("!module should have an extra.drush.services section in its composer.json. See http://docs.drush.org/en/master/commands/#specifying-the-services-file.", ['!module' => $module]));
         return $result;
     }
 
@@ -186,15 +186,17 @@ trait DrupalKernelTrait
     protected function findAppropriateServicesFile($module, $services, $dir)
     {
         $version = Drush::getVersion();
+        $version = preg_replace('#-dev.*#', '', $version);
         foreach ($services as $serviceYmlPath => $versionConstraint) {
-            $version = preg_replace('#-dev.*#', '', $version);
             if (Semver::satisfies($version, $versionConstraint)) {
                 Drush::logger()->debug(dt('Found {services} for {module} Drush commands', ['module' => $module, 'services' => $serviceYmlPath]));
                 return $dir . '/' . $serviceYmlPath;
             }
         }
-        Drush::logger()->debug(dt('{module} has Drush commands, but none of {constraints} match the current Drush version "{version}"', ['module' => $module, 'constraints' => implode(',', $services), 'version' => $version]));
-        return false;
+
+        // Regardless, we still return a services file.
+        Drush::logger()->debug(dt('{module} commands loaded even though its constraint ({constraints}) is incompatible with Drush {version}. Broaden the constraint in {composer} (see \'extra\drush\services\' section) to remove this message.', ['module' => $module, 'composer' => $dir . '/composer.json', 'constraints' => implode(',', $services), 'version' => $version]));
+        return $dir . '/' . $serviceYmlPath;
     }
 
     /**

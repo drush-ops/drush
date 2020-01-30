@@ -9,7 +9,7 @@ namespace Unish;
  * @group commands
  * @group slow
  */
-class RsyncCase extends CommandUnishTestCase
+class RsyncTest extends CommandUnishTestCase
 {
 
     public function setUp()
@@ -29,26 +29,12 @@ class RsyncCase extends CommandUnishTestCase
     public function testRsyncSimulated()
     {
         $options = [
+            'uri' => 'OMIT',
             'simulate' => null,
             'alias-path' => __DIR__ . '/resources/alias-fixtures',
         ];
 
-        // Test simulated simple rsync with two local sites
-        $this->drush('rsync', ['@example.stage', '@example.dev'], $options, null, null, self::EXIT_SUCCESS, '2>&1');
-        $expected = "[notice] Simulating: rsync -e 'ssh ' -akz /path/to/stage /path/to/dev";
-        $this->assertOutputEquals($expected);
-
-        // Test simulated rsync with relative paths
-        $this->drush('rsync', ['@example.dev:files', '@example.stage:files'], $options, null, null, self::EXIT_SUCCESS, '2>&1');
-        $expected = "[notice] Simulating: rsync -e 'ssh ' -akz /path/to/dev/files /path/to/stage/files";
-        $this->assertOutputEquals($expected);
-
-        // Test simulated rsync on local machine with a remote target
-        $this->drush('rsync', ['@example.dev:files', '@example.live:files'], $options, null, null, self::EXIT_SUCCESS, '2>&1');
-        $expected = "[notice] Simulating: rsync -e 'ssh -o PasswordAuthentication=example' -akz /path/to/dev/files www-admin@service-provider.com:/path/on/service-provider/files";
-        $this->assertOutputEquals($expected);
-
-        // Test simulated backend invoke.
+        // Test simulated remote invoke.
         // Note that command-specific options are not processed for remote
         // targets. The aliases are not interpreted at all until they recache
         // the remote side, at which point they will be evaluated & any needed
@@ -94,7 +80,7 @@ class RsyncCase extends CommandUnishTestCase
         // Test an actual rsync between our two fixture sites. Note that
         // these sites share the same web root.
         $this->drush('rsync', ["$source_alias:%files/a/", "$target_alias:%files/b"], $options, null, null, self::EXIT_SUCCESS, '2>&1');
-        $this->assertContains('Replace files in ', $this->getOutput());
+        $this->assertContains('Copy new and override existing files at ', $this->getOutput());
 
         // Test to see if our fixture file now exists at $target
         $this->assertFileExists($target_file);
@@ -111,6 +97,6 @@ class RsyncCase extends CommandUnishTestCase
         $site = current($this->getAliases());
         $options['simulate'] = null;
         $this->drush('core:rsync', ["$site:%files", "/tmp"], $options, null, null, self::EXIT_SUCCESS, '2>&1;');
-        $this->assertContains('[notice] Simulating: rsync -e \'ssh \' -akz __SUT__/sut/sites/dev/files/ /tmp', $this->getSimplifiedOutput());
+        $this->assertContains('[notice] Simulating: rsync -e \'ssh \' -akz __DIR__/sut/sites/dev/files/ /tmp', $this->getSimplifiedOutput());
     }
 }

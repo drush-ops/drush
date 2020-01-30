@@ -45,5 +45,6 @@ echo "Commit new API docs."
 # Commit any changes to the documentation
 cd "$API_BUILD_DIR"
 git add -A api
-git commit -m "Update API documentation from Travis build $TRAVIS_BUILD_NUMBER, '$TRAVIS_COMMIT'."
+# Sometimes there is nothing to commit so ignore return value.
+git commit -m "Update API documentation from Travis build $TRAVIS_BUILD_NUMBER, '$TRAVIS_COMMIT'." || true
 git push

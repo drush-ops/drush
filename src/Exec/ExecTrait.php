@@ -91,10 +91,17 @@ trait ExecTrait
     {
         $command = Escape::isWindows() ? "where $program" : "command -v $program";
         $process = Drush::shell($command);
+        $process->setSimulated(false);
         $process->run();
         if (!$process->isSuccessful()) {
             Drush::logger()->debug($process->getErrorOutput());
         }
         return $process->isSuccessful();
+    }
+
+    public static function getEditor()
+    {
+        // See http://drupal.org/node/1740294
+        return '${VISUAL-${EDITOR-vi}} %s';
     }
 }

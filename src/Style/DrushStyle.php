@@ -14,8 +14,8 @@ class DrushStyle extends SymfonyStyle
         if (Drush::affirmative()) {
             $this->comment($question . ': yes.');
             return true;
-        } // Automatically cancel confirmations if the --no argument was supplied.
-        elseif (Drush::negative()) {
+        } elseif (Drush::negative()) {
+            // Automatically cancel confirmations if the --no argument was supplied.
             $this->warning($question . ': no.');
             return false;
         }

@@ -11,7 +11,7 @@ use PHPUnit\Framework\TestResult;
 use Symfony\Component\Process\Exception\ProcessTimedOutException;
 use Symfony\Component\Process\Process;
 use Unish\Controllers\RuntimeController;
-use Unish\Utils\OutputUtilsTrait;
+use Drush\TestTraits\OutputUtilsTrait;
 use Webmozart\PathUtil\Path;
 
 /**
@@ -61,6 +61,8 @@ abstract class UnishIntegrationTestCase extends UnishTestCase
      * @param int $expected_return
      *   The expected exit code. Usually self::EXIT_ERROR or self::EXIT_SUCCESS.
      * @param string|bool $stdin
+     *   A string that will be written to a tmp file. Note that the command you
+     *   are testing must implement StdinAwareInterface.
      * @return integer
      *   An exit code.
      */
@@ -96,10 +98,6 @@ abstract class UnishIntegrationTestCase extends UnishTestCase
         $this->stdout = $output->fetch();
         $this->stderr = $output->getErrorOutput()->fetch();
 
-        // Empty Drush's legacy context system
-        $cache = &drush_get_context();
-        $cache = [];
-
         return $return;
     }
 
@@ -112,7 +110,7 @@ abstract class UnishIntegrationTestCase extends UnishTestCase
 
     protected function buildCommandLine($command, $args, $options)
     {
-        $global_option_list = ['simulate', 'root', 'uri', 'include', 'config', 'alias-path', 'ssh-options', 'backend', 'cd'];
+        $global_option_list = ['simulate', 'root', 'uri', 'include', 'config', 'alias-path', 'ssh-options', 'cd'];
         $options += ['root' => $this->webroot(), 'uri' => self::INTEGRATION_TEST_ENV]; // Default value.
         $cmd = [self::getDrush()];
 
@@ -185,5 +183,26 @@ abstract class UnishIntegrationTestCase extends UnishTestCase
             $output = preg_replace($filter, '', $output);
         }
         $this->assertEquals($expected, $output);
+    }
+
+    /**
+     * Checks that the error output contains the expected output.
+     *
+     * This matches against a simplified version of the actual output that has
+     * absolute paths and duplicate whitespace removed, to avoid false negatives
+     * on minor differences.
+     *
+     * @param string $expected
+     *   The expected output.
+     * @param string $filter
+     *   Optional regular expression that should be ignored in the error output.
+     */
+    protected function assertErrorOutputContains($expected, $filter = '')
+    {
+        $output = $this->getSimplifiedErrorOutput();
+        if (!empty($filter)) {
+            $output = preg_replace($filter, '', $output);
+        }
+        $this->assertContains($expected, $output);
     }
 }

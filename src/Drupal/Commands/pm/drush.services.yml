@@ -1,7 +1,7 @@
 services:
   pm.commands:
     class: \Drush\Drupal\Commands\pm\PmCommands
-    arguments: ['@config.factory', '@module_installer', '@theme_handler']
+    arguments: ['@config.factory', '@module_installer', '@theme_handler', '@extension.list.module']
     tags:
       -  { name: drush.command }
   theme.commands:

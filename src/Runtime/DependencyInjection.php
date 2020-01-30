@@ -3,6 +3,7 @@ namespace Drush\Runtime;
 
 use Drush\Command\GlobalOptionsEventListener;
 use Drush\Drush;
+use Drush\Symfony\DrushStyleInjector;
 use Drush\Cache\CommandCache;
 use DrupalFinder\DrupalFinder;
 use Symfony\Component\Console\Input\InputInterface;
@@ -15,6 +16,7 @@ use Consolidation\SiteAlias\SiteAliasManager;
 use Drush\Command\DrushCommandInfoAlterer;
 use Consolidation\Config\Util\ConfigOverlay;
 use Drush\Config\DrushConfig;
+use Drush\SiteAlias\ProcessManager;
 
 /**
  * Prepare our Dependency Injection Container
@@ -109,13 +111,9 @@ class DependencyInjection
         $container->share('bootstrap.hook', 'Drush\Boot\BootstrapHook')
           ->withArgument('bootstrap.manager');
         $container->share('tildeExpansion.hook', 'Drush\Runtime\TildeExpansionHook');
-        $container->share('ssh.transport', \Consolidation\SiteProcess\Factory\SshTransportFactory::class);
-        $container->share('docker-compose.transport', \Consolidation\SiteProcess\Factory\DockerComposeTransportFactory::class);
-        $container->share('process.manager', 'Drush\SiteAlias\ProcessManager')
+        $container->share('process.manager', ProcessManager::class)
             ->withMethodCall('setConfig', ['config'])
-            ->withMethodCall('setConfigRuntime', ['config.runtime'])
-            ->withMethodCall('add', ['ssh.transport'])
-            ->withMethodCall('add', ['docker-compose.transport']);
+            ->withMethodCall('setConfigRuntime', ['config.runtime']);
         $container->share('redispatch.hook', 'Drush\Runtime\RedispatchHook')
             ->withArgument('process.manager');
 
@@ -142,13 +140,15 @@ class DependencyInjection
 
     protected function alterServicesForDrush(ContainerInterface $container, Application $application)
     {
+        $paramInjection = $container->get('parameterInjection');
+        $paramInjection->register('Symfony\Component\Console\Style\SymfonyStyle', new DrushStyleInjector());
+
         // Add our own callback to the hook manager
         $hookManager = $container->get('hookManager');
         $hookManager->addCommandEvent(new GlobalOptionsEventListener());
         $hookManager->addInitializeHook($container->get('redispatch.hook'));
         $hookManager->addInitializeHook($container->get('bootstrap.hook'));
         $hookManager->addPreValidator($container->get('tildeExpansion.hook'));
-        $hookManager->addOutputExtractor(new \Drush\Backend\BackendResultSetter());
 
         // Install our command cache into the command factory
         // TODO: Create class-based implementation of our cache management functions.
@@ -162,6 +162,8 @@ class DependencyInjection
 
         $commandProcessor = $container->get('commandProcessor');
         $commandProcessor->setPassExceptions(true);
+
+        ProcessManager::addTransports($container->get('process.manager'));
     }
 
     protected function injectApplicationServices(ContainerInterface $container, Application $application)

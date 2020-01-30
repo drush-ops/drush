@@ -5,6 +5,7 @@ use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Extension\MissingDependencyException;
+use Drupal\Core\Extension\ModuleExtensionList;
 use Drupal\Core\Extension\ModuleInstallerInterface;
 use Drupal\Core\Extension\ThemeHandlerInterface;
 use Drush\Commands\DrushCommands;
@@ -21,12 +22,15 @@ class PmCommands extends DrushCommands
 
     protected $themeHandler;
 
-    public function __construct(ConfigFactoryInterface $configFactory, ModuleInstallerInterface $moduleInstaller, ThemeHandlerInterface $themeHandler)
+    protected $extensionListModule;
+
+    public function __construct(ConfigFactoryInterface $configFactory, ModuleInstallerInterface $moduleInstaller, ThemeHandlerInterface $themeHandler, ModuleExtensionList $extensionListModule)
     {
         parent::__construct();
         $this->configFactory = $configFactory;
         $this->moduleInstaller = $moduleInstaller;
         $this->themeHandler = $themeHandler;
+        $this->extensionListModule = $extensionListModule;
     }
 
     /**
@@ -51,6 +55,14 @@ class PmCommands extends DrushCommands
     public function getThemeHandler()
     {
         return $this->themeHandler;
+    }
+
+    /**
+     * @return \Drupal\Core\Extension\ModuleExtensionList
+     */
+    public function getExtensionListModule()
+    {
+        return $this->extensionListModule;
     }
 
     /**
@@ -156,8 +168,8 @@ class PmCommands extends DrushCommands
     public function pmList($options = ['format' => 'table', 'type' => 'module,theme', 'status' => 'enabled,disabled', 'package' => self::REQ, 'core' => false, 'no-core' => false])
     {
         $rows = [];
-        // @todo Update this and other usages once Drupal 8.5 is unsupported by Drush https://www.drupal.org/node/2709919.
-        $modules = \system_rebuild_module_data();
+
+        $modules = $this->getExtensionListModule()->getList();
         $themes = $this->getThemeHandler()->rebuildThemeData();
         $both = array_merge($modules, $themes);
 
@@ -240,7 +252,7 @@ class PmCommands extends DrushCommands
 
     public function addInstallDependencies($modules)
     {
-        $module_data = system_rebuild_module_data();
+        $module_data = $this->getExtensionListModule()->reset()->getList();
         $module_list  = array_combine($modules, $modules);
         if ($missing_modules = array_diff_key($module_list, $module_data)) {
             // One or more of the given modules doesn't exist.
@@ -274,7 +286,7 @@ class PmCommands extends DrushCommands
     public function addUninstallDependencies($modules)
     {
         // Get all module data so we can find dependencies and sort.
-        $module_data = system_rebuild_module_data();
+        $module_data = $this->getExtensionListModule()->reset()->getList();
         $module_list = array_combine($modules, $modules);
         if ($diff = array_diff_key($module_list, $module_data)) {
             throw new \Exception(dt('A specified extension does not exist: !diff', ['!diff' => implode(',', $diff)]));
@@ -284,7 +296,7 @@ class PmCommands extends DrushCommands
 
         // Add dependent modules to the list. The new modules will be processed as
         // the while loop continues.
-        $profile = drupal_get_profile();
+        $profile = drush_drupal_get_profile();
         foreach (array_keys($module_list) as $module) {
             foreach (array_keys($module_data[$module]->required_by) as $dependent) {
                 if (!isset($module_data[$dependent])) {

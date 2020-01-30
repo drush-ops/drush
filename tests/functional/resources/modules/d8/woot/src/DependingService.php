@@ -2,7 +2,7 @@
 
 namespace Drupal\woot;
 
-use Drupal\devel\DevelDumperManagerInterface;
+use Drupal\drush_empty_module\MuchServiceManyWow;
 
 /**
  * Test service that depends on another service.
@@ -23,12 +23,12 @@ class DependingService
 {
 
     /**
-     * @var \Drupal\devel\DevelDumperManagerInterface
+     * @var \Drupal\drush_empty_module\MuchServiceManyWow
      */
-    protected $develDumperManager;
+    protected $muchServiceManyWow;
 
-    public function __construct(DevelDumperManagerInterface $develDumperManager)
+    public function __construct(MuchServiceManyWow $muchServiceManyWow)
     {
-        $this->develDumperManager = $develDumperManager;
+        $this->muchServiceManyWow = $muchServiceManyWow;
     }
 }

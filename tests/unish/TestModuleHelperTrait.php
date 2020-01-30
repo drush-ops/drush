@@ -26,6 +26,17 @@ trait TestModuleHelperTrait
             $targetDir = Path::join($webRoot, "modules/unish/$module");
             $fileSystem->mkdir($targetDir);
             $this->recursiveCopy($sourceDir, $targetDir);
+
+            // If we are copying a module out of the `core` directory, it
+            // might not have the necessary 'core_version_requirement' entry.
+            if ($this->isDrupalGreaterThanOrEqualTo('9')) {
+                $info_path = $targetDir . "/$module.info.yml";
+                $module_info = file_get_contents($info_path);
+                if (strpos($module_info, 'core_version_requirement') === false) {
+                    $module_info = "core_version_requirement: ^8 || ^9\n$module_info";
+                    file_put_contents($info_path, $module_info);
+                }
+            }
         }
     }
 }

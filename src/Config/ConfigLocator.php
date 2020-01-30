@@ -399,12 +399,18 @@ class ConfigLocator
     {
         // In addition to the paths passed in to us (from --alias-paths
         // commandline options), add some site-local locations.
-        $base_dirs = array_filter(array_merge($this->siteRoots, [$this->composerRoot]));
+        $siteroot_parents = array_map(
+            function ($dir) {
+                return dirname($dir);
+            },
+            $this->siteRoots
+        );
+        $base_dirs = array_filter(array_merge($this->siteRoots, $siteroot_parents, [$this->composerRoot]));
         $site_local_paths = array_map(
             function ($item) {
                 return Path::join($item, '/drush/sites');
             },
-            $base_dirs
+            array_unique($base_dirs)
         );
         $paths = array_merge($paths, $site_local_paths);
 

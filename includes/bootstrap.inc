@@ -86,38 +86,3 @@ define('DRUSH_BOOTSTRAP_DRUPAL_DATABASE', 4);
  */
 define('DRUSH_BOOTSTRAP_DRUPAL_FULL', 5);
 
-
-
-/**
- * Helper function to store any context settings that are being validated.
- *
- * @deprecated
- *   No longer used in Drush core.
- */
-function drush_bootstrap_value($context, $value = null) {
-  $values =& drush_get_context('DRUSH_BOOTSTRAP_VALUES', []);
-
-  if (isset($value)) {
-    $values[$context] = $value;
-  }
-
-  if (array_key_exists($context, $values)) {
-    return $values[$context];
-  }
-
-  return null;
-}
-
-/**
- * Helper function to collect any errors that occur during the bootstrap process.
- * Always returns FALSE, for convenience.
- *
- * @deprecated
- *   No longer used in Drush core.
- */
-function drush_bootstrap_error($code, $message = null) {
-  $errors = drush_get_context('DRUSH_BOOTSTRAP_ERRORS');
-  $errors[$code] = $message;
-  drush_set_context('DRUSH_BOOTSTRAP_ERRORS', $errors);
-  return FALSE;
-}

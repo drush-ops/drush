@@ -21,9 +21,9 @@ function woot_post_update_failing()
 /**
  * Install the Devel module.
  */
-function woot_post_update_install_devel()
+function woot_post_update_install_drush_empty_module()
 {
-    \Drupal::service('module_installer')->install(['devel']);
+    \Drupal::service('module_installer')->install(['drush_empty_module']);
 }
 
 /**
@@ -39,4 +39,21 @@ function woot_post_update_render()
         '#items' => ['a', 'b'],
     ];
     \Drupal::service('renderer')->renderPlain($render_array);
+}
+
+/**
+ * Batch post update.
+ */
+function woot_post_update_batch(array &$sandbox)
+{
+    return woot_update_8105($sandbox);
+}
+
+/**
+ * Install taxonomy.module
+ */
+function woot_post_update_install_taxonomy()
+{
+    \Drupal::service('module_installer')->install(['taxonomy']);
+    return \Drupal::entityTypeManager()->getDefinition('taxonomy_term')->id();
 }

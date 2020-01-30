@@ -2,6 +2,7 @@
 namespace Drush\Commands\core;
 
 use Consolidation\Log\ConsoleLogLevel;
+use DrushBatchContext;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Consolidation\OutputFormatters\StructuredData\UnstructuredListData;
 use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
@@ -26,7 +27,7 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
      *
      * @command updatedb
      * @option cache-clear Clear caches upon completion.
-     * @option entity-updates Run automatic entity schema updates at the end of any update hooks.
+     * @option entity-updates Run automatic entity schema updates at the end of any update hooks. Not supported in Drupal >= 8.7.0.
      * @option post-updates Run post updates after hook_update_n and entity updates.
      * @bootstrap full
      * @kernel update
@@ -38,6 +39,11 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
         require_once DRUPAL_ROOT . '/core/includes/install.inc';
         require_once DRUPAL_ROOT . '/core/includes/update.inc';
         drupal_load_updates();
+
+        if ($options['entity-updates'] && version_compare(drush_drupal_version(), '8.7.0', '>=')) {
+            $this->logger()->warning(dt('Drupal removed its automatic entity-updates API in 8.7. See https://www.drupal.org/node/3034742.'));
+            $options['entity-updates'] = false;
+        }
 
         // Disables extensions that have a lower Drupal core major version, or too high of a PHP requirement.
         // Those are rare, and this function does a full rebuild. So commenting it out for now.
@@ -98,12 +104,18 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
             throw new \Exception(dt('entity-updates command does not support --simulate option.'));
         }
 
+        // @todo - Do same check for updatedb as well.
+        if (version_compare(drush_drupal_version(), '8.7.0', '>=')) {
+            throw new \Exception(dt('Drupal removed its automatic entity-updates API in 8.7. See https://www.drupal.org/node/3034742.'));
+        }
+
         if ($this->entityUpdatesMain() === false) {
             throw new \Exception('Entity updates not run.');
         }
 
         if ($options['cache-clear']) {
-            drush_drupal_cache_clear_all();
+            $process = Drush::drush(Drush::aliasManager()->getSelf(), 'cache-rebuild');
+            $process->mustrun();
         }
 
         $this->logger()->success(dt('Finished performing updates.'));
@@ -169,14 +181,16 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
      *
      * This method is static since since it is called by _drush_batch_worker().
      *
-     * @param $module
+     * @param string $module
      *   The module whose update will be run.
-     * @param $number
+     * @param int $number
      *   The update number to run.
-     * @param $context
-     *   The batch context array
+     * @param array $dependency_map
+     *   The update dependency map.
+     * @param DrushBatchContext $context
+     *   The batch context object.
      */
-    public static function updateDoOne($module, $number, $dependency_map, &$context)
+    public static function updateDoOne($module, $number, array $dependency_map, DrushBatchContext $context)
     {
         $function = $module . '_update_' . $number;
 
@@ -202,9 +216,13 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
                     Database::startLog($function);
                 }
 
-                Drush::logger()->notice("Update started: $function");
+                if (empty($context['results'][$module][$number]['type'])) {
+                    Drush::logger()->notice("Update started: $function");
+                }
+
                 $ret['results']['query'] = $function($context['sandbox']);
                 $ret['results']['success'] = true;
+                $ret['type'] = 'update';
             } catch (\Throwable $e) {
                 // PHP 7 introduces Throwable, which covers both Error and Exception throwables.
                 $ret['#abort'] = ['success' => false, 'query' => $e->getMessage()];
@@ -263,10 +281,10 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
      *
      * @param string $function
      *   The post-update function to execute.
-     * @param array $context
-     *   The batch context.
+     * @param DrushBatchContext $context
+     *   The batch context object.
      */
-    public static function updateDoOnePostUpdate($function, &$context)
+    public static function updateDoOnePostUpdate($function, DrushBatchContext $context)
     {
         $ret = [];
 
@@ -284,10 +302,13 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
         list($module, $name) = explode('_post_update_', $function, 2);
         module_load_include('php', $module, $module . '.post_update');
         if (function_exists($function)) {
-            Drush::logger()->notice("Update started: $function");
+            if (empty($context['results'][$module][$name]['type'])) {
+                Drush::logger()->notice("Update started: $function");
+            }
             try {
                 $ret['results']['query'] = $function($context['sandbox']);
                 $ret['results']['success'] = true;
+                $ret['type'] = 'post_update';
 
                 if (!isset($context['sandbox']['#finished']) || (isset($context['sandbox']['#finished']) && $context['sandbox']['#finished'] >= 1)) {
                     \Drupal::service('update.post_update_registry')->registerInvokedUpdates([$function]);
@@ -328,7 +349,7 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
             // Setting this value will output an error message.
             // @see \DrushBatchContext::offsetSet()
             $context['error_message'] = "Update failed: $function";
-        } else {
+        } elseif ($context['finished'] == 1 && empty($ret['#abort'])) {
             // Setting this value will output a success message.
             // @see \DrushBatchContext::offsetSet()
             $context['message'] = "Update completed: $function";
@@ -342,12 +363,16 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
      * @param array $results
      * @param array $operations
      */
-    public static function updateFinished($success, $results, $operations)
+    public function updateFinished($success, $results, $operations)
     {
-        // No code needed but the batch result bookkeeping fails without a finished callback.
-        $noop = 1;
+        if ($this->cache_clear) {
+            // Flush all caches at the end of the batch operation. When Drupal
+            // core performs database updates it also clears the cache at the
+            // end. This ensures that we are compatible with updates that rely
+            // on this behavior.
+            drupal_flush_all_caches();
+        }
     }
-
 
     /**
      * Start the database update batch process.
@@ -422,7 +447,7 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
             'title' => 'Updating',
             'init_message' => 'Starting updates',
             'error_message' => 'An unrecoverable error has occurred. You can find the error message below. It is advised to copy it to the clipboard for reference.',
-            'finished' => '\Drush\Commands\core\UpdateDBCommands::updateFinished',
+            'finished' => [$this, 'updateFinished'],
             'file' => 'core/includes/update.inc',
         ];
         batch_set($batch);
@@ -493,7 +518,6 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
      * explicitly rebuilding the container as the container is rebuilt on the next
      * HTTP request of the batch.
      *
-     * @see drush_drupal_cache_clear_all()
      * @see \Drupal\system\Controller\DbUpdateController::triggerBatch()
      */
     public static function cacheRebuild()

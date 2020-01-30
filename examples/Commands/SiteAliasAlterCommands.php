@@ -14,14 +14,14 @@ class SiteAliasAlterCommands extends DrushCommands implements SiteAliasManagerAw
 
     use SiteAliasManagerAwareTrait;
 
-  /**
-   * A few example alterations to site aliases.
-   *
-   * @hook pre-init *
-   *
-   * @param \Symfony\Component\Console\Input\InputInterface $input
-   * @param \Consolidation\AnnotatedCommand\AnnotationData $annotationData
-   */
+    /**
+     * A few example alterations to site aliases.
+     *
+     * @hook pre-init *
+     *
+     * @param \Symfony\Component\Console\Input\InputInterface $input
+     * @param \Consolidation\AnnotatedCommand\AnnotationData $annotationData
+     */
     public function alter(InputInterface $input, AnnotationData $annotationData)
     {
         $self = $this->siteAliasManager()->getSelf();
@@ -34,6 +34,19 @@ class SiteAliasAlterCommands extends DrushCommands implements SiteAliasManagerAw
 
             // Change the SSH user.
             $input->setOption('remote-user', 'mw2');
+
+            // Test to see if specific environment really exists in wildcard
+            // aliases, but only if the target is a specific host.
+            $host = $self->get('host');
+            if (preg_match('#\.myserver.com$#', $host)) {
+                $ip = gethostbyname($host);
+                // If the return value of gethostbyname equals its input parameter,
+                // that indicates failure.
+                if ($host == $ip) {
+                    $aliasName = $self->name();
+                    throw new \Exception("The alias $aliasName refers to an environment that does not exist.");
+                }
+            }
         }
     }
 }

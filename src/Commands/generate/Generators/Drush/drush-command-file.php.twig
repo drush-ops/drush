@@ -21,8 +21,8 @@ use Drush\Commands\DrushCommands;
 class {{ class }} extends DrushCommands {
 
 {% if source %}
-{% include 'ported-methods.twig' %}
+{% include 'ported-methods.php.twig' %}
 {% else %}
-{% include 'default-methods.twig' %}
+{% include 'default-methods.php.twig' %}
 {% endif %}
 }
