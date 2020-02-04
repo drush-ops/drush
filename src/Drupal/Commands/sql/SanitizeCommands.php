@@ -107,7 +107,7 @@ class SanitizeCommands extends DrushCommands implements CustomEventAwareInterfac
         }
 
         $query = $this->userStorage->getQuery();
-        $query->condition('mail',$mail_list,'IN');
+        $query->condition('mail', $mail_list, 'IN');
         return array_values($query->execute());
     }
 
@@ -126,7 +126,7 @@ class SanitizeCommands extends DrushCommands implements CustomEventAwareInterfac
                 $result = [];
                 $query = $this->userStorage->getQuery();
                 $query->condition('mail', '@' . $mail_parts[1], 'ENDS_WITH');
-                foreach(array_values($query->execute()) as $uid) {
+                foreach (array_values($query->execute()) as $uid) {
                     $result[] = $this->userStorage->load($uid)->get('mail')->value;
                 }
 
