@@ -11,20 +11,13 @@ use Drush\Utils\StringUtils;
 
 class SanitizeCommands extends DrushCommands implements CustomEventAwareInterface
 {
-    protected $database;
+    protected $entityTypeManager;
+
     use CustomEventAwareTrait;
 
-    public function __construct($database)
+    public function __construct($entityTypeManager)
     {
-        $this->database = $database;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getDatabase()
-    {
-        return $this->database;
+        $this->userStorage = $entityTypeManager->getStorage('user');
     }
 
     /**
@@ -75,11 +68,12 @@ class SanitizeCommands extends DrushCommands implements CustomEventAwareInterfac
 
     /**
      * @hook option sql-sanitize
-     * @option whitelist-uids A comma delimited list of uids corresponding to the user accounts exempt from
-     *     sanitization.
+     * @option whitelist-uids
+     *   A comma delimited list of uids corresponding to the user accounts exempt from
+     *   sanitization.
      * @option whitelist-mails
      *   A comma delimited list of mails corresponding to the user accounts exempt from sanitization.
-     *   wildcard can be used to target all mail accounts on a domain.
+     *   Wildcard can be used to target all mail accounts on a domain.
      */
     public function options($options = ['whitelist-uids' => '', 'whitelist-mails' => ''])
     {
@@ -90,7 +84,7 @@ class SanitizeCommands extends DrushCommands implements CustomEventAwareInterfac
      *
      * @hook pre-command sql-sanitize
      */
-    public function handleMilWhitelist(CommandData $commandData)
+    public function handleMailWhitelist(CommandData $commandData)
     {
         $input = $commandData->input();
         $whitelist_mails = StringUtils::csvToArray($input->getOption('whitelist-mails'));
@@ -108,16 +102,13 @@ class SanitizeCommands extends DrushCommands implements CustomEventAwareInterfac
      */
     private function uidsByMails($mail_list)
     {
-        //print_r($mail_list);
         if (empty($mail_list)) {
             return [];
         }
-        $conn = $this->getDatabase();
-        return $conn->select('users_field_data', 'ufd')
-            ->fields('ufd', ['uid'])
-            ->condition('mail', $mail_list, 'IN')
-            ->execute()
-            ->fetchCol(0);
+
+        $query = $this->userStorage->getQuery();
+        $query->condition('mail',$mail_list,'IN');
+        return array_values($query->execute());
     }
 
     /**
@@ -132,12 +123,12 @@ class SanitizeCommands extends DrushCommands implements CustomEventAwareInterfac
         foreach ($mail_list as $key => $mail) {
             $mail_parts = explode('@', $mail);
             if ($mail_parts[0]==='*') {
-                $conn = $this->getDatabase();
-                $result = $conn->select('users_field_data', 'ufd')
-                    ->fields('ufd', ['mail'])
-                    ->condition('mail', '%@' . $mail_parts[1], 'LIKE')
-                    ->execute()
-                    ->fetchCol(0);
+                $result = [];
+                $query = $this->userStorage->getQuery();
+                $query->condition('mail', '@' . $mail_parts[1], 'ENDS_WITH');
+                foreach(array_values($query->execute()) as $uid) {
+                    $result[] = $this->userStorage->load($uid)->get('mail')->value;
+                }
 
                 unset($mail_list[$key]);
                 if (!empty($result)) {

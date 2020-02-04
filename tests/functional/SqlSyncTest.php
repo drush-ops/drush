@@ -133,9 +133,9 @@ class SqlSyncTest extends CommandUnishTestCase
 
         // Copy stage to dev, and then sql:sanitize.
         $sync_options = [
-                'yes' => null,
+                'yes' => NULL,
                 'uri' => 'OMIT',
-            // Test wildcards expansion from within sql-sync. Also avoid D8 persistent entity cache.
+                // Test wildcards expansion from within sql-sync. Also avoid D8 persistent entity cache.
                 'structure-tables-list' => 'cache,cache*',
         ];
         $this->drush('sql-sync', ['@sut.stage', '@sut.dev'], $sync_options);
