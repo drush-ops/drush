@@ -39,7 +39,7 @@ Drupal Compatibility
     <td> Drush 9 </td>
     <td> 9.x </td>
     <td> 5.6+ </td>
-    <td></td> <td></td> <td></td> <td>✅</td> <td></td>
+    <td></td> <td></td> <td></td> <td>✓</td> <td></td>
   </tr>
   <tr>
     <td> Drush 8 </td>
