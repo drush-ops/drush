@@ -331,7 +331,7 @@ class SqlBase implements ConfigAwareInterface
 
         $parts = [
             $this->command(),
-            $this->creds(),
+            $this->creds(!$this->getOption('show-passwords')),
             $this->silent(), // This removes column header and various helpful things in mysql.
             $this->getOption('extra', $this->queryExtra),
             $this->queryFile,
