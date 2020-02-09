@@ -272,6 +272,4 @@ class SqlCommands extends DrushCommands implements StdinAwareInterface
             return false;
         }
     }
-
-
 }
