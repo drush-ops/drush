@@ -43,7 +43,7 @@ class OptionsCommands
      * @option target The name of a target within the specified database connection. Defaults to default
      * @option show-passwords Show password on the CLI. Useful for debugging.
      */
-    public function optionsetSql($options = ['database' => 'default', 'target' => 'default', 'db-url' => self::REQ, 'show-passwords' => FALSE])
+    public function optionsetSql($options = ['database' => 'default', 'target' => 'default', 'db-url' => self::REQ, 'show-passwords' => false])
     {
     }
 
