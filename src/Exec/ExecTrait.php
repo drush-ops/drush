@@ -56,7 +56,7 @@ trait ExecTrait
                     $browser = 'xdg-open';
                 } else if (self::programExists('open')) {
                     $browser = 'open';
-                } else if (!drush_has_bash()) {
+                } else if (self::programExists('start')) {
                     $browser = 'start';
                 } else {
                     // Can't find a valid browser.
