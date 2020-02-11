@@ -93,6 +93,7 @@ class FsUtils
         $supported = [
             'application/x-bzip2',
             'application/x-gzip',
+            'application/gzip',
             'application/x-tar',
             'application/x-zip',
             'application/zip',
