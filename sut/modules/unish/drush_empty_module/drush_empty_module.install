@@ -1,0 +1,13 @@
+<?php
+
+/**
+ * @file
+ * Provides install and update functions for drush_empty_module.
+ */
+
+/**
+ * Fake update hook.
+ */
+function drush_empty_module_update_8001() {
+  return 'The update ran';
+}

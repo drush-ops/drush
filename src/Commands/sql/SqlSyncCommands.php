@@ -37,8 +37,6 @@ class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwareInte
      *   Copy the database from the local site to the site with the alias 'target'.
      * @usage drush sql:sync #prod #dev
      *   Copy the database from the site in /sites/prod to the site in /sites/dev (multisite installation).
-     * @usage drush sql:sync @source @self --database=foo --strict=0
-     *   Copy a secondary database whose $databases key is named 'foo'. Additional options to sql:dump may also be passed.
      * @topics docs:aliases,docs:policy,docs:configuration,docs:example-sync-via-http
      * @throws \Exception
      */
@@ -115,7 +113,7 @@ class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwareInte
             return 'simulated_db';
         }
 
-        $process = $this->processManager()->drush($record, 'core-status', ['db-name'], ['format' => 'json']);
+        $process = $this->processManager()->drush($record, 'core-status', [], ['fields' => 'db-name', 'format' => 'json']);
         $process->setSimulated(false);
         $process->mustRun();
         $data = $process->getOutputAsJson();
@@ -144,9 +142,7 @@ class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwareInte
         ];
         if (!$options['no-dump']) {
             $this->logger()->notice(dt('Starting to dump database on source.'));
-            // Set --backend=json. Drush 9.6+ changes that to --format=json. See \Drush\Preflight\PreflightArgs::setBackend.
-            // Drush 9.5- handles this as --backend.
-            $process = $this->processManager()->drush($sourceRecord, 'sql-dump', [], $dump_options + ['backend' => 'json']);
+            $process = $this->processManager()->drush($sourceRecord, 'sql-dump', [], $dump_options + ['format' => 'json']);
             $process->mustRun();
 
             if ($this->getConfig()->simulate()) {
@@ -221,7 +217,7 @@ class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwareInte
                 $runner = $targetRecord;
             }
             $this->logger()->notice(dt('Copying dump file from source to target.'));
-            $process = $this->processManager()->drush($runner, 'core-rsync', [$sourceRecord->name() . ":$source_dump_path", $targetRecord->name() . ":$target_dump_path"], [], $double_dash_options);
+            $process = $this->processManager()->drush($runner, 'core-rsync', [$sourceRecord->name() . ":$source_dump_path", $targetRecord->name() . ":$target_dump_path"], ['yes' => true], $double_dash_options);
             $process->mustRun($process->showRealtime());
         }
         return $target_dump_path;

@@ -1,55 +1,41 @@
 COMMANDS
 ------------
-pm-enable: GOOD. testEnDisUnList().
-pm-uninstall: GOOD. testEnDisUnList().
-pm-list: GOOD. testEnDisUnList().
+pm:enable: GOOD. testEnDisUnList().
+pm:uninstall: GOOD. testEnDisUnList().
+pm:list: GOOD. testEnDisUnList().
+pm:security: GOOD.
 
-sql-cli:
-sql-connect:
-sql-query: FAIR. Implicit by site-install, sql-sync
-sql-dump: GOOD. tested by sqlDumpTest.
-sql-sync: GOOD. testLocalSqlSync().
-sql-drop: FAIR. Implicit by site-install
-sql-sanitize and plugins: FAIR. Implicit by testLocalSqlSync()
+sql:cli: GOOD
+sql:connect: GOOD
+sql:query: FAIR. Implicit by site:install, sql:sync
+sql:dump: GOOD. tested by sqlDumpTest.
+sql:sync: GOOD. testLocalSqlSync().
+sql:drop: FAIR. Implicit by site:install
+sql:sanitize and plugins: FAIR. Implicit by testLocalSqlSync()
 
 
-updatedb: NONE. Used to be implicitly tested by siteUpgradeTest.
-entity-update. NONE
+updatedb: GOOD. Used to be implicitly tested by siteUpgradeTest.
 help
 version: GOOD. Implicit by testStandaloneScript()
-php-eval: GOOD. Implicitly tested by many tests (e.g. completeTest).
-php-script: GOOD.
-drupal-directory: GOOD
-cache-get: GOOD
-cache-set: GOOD
-cache-clear: GOOD
-core-config: NONE
-core-cron
-core-status: FAIR: Implicit test by contextTest.
+php:eval: GOOD. Implicitly tested by many tests.
+php:script: GOOD.
+drupal:directory: GOOD
+cache:get: GOOD
+cache:set: GOOD
+cache:clear: GOOD
+core:config: NONE
+core:cron
+core:status: FAIR: Implicitly tested
 docs
-core-rsync: GOOD
+core:rsync: GOOD
 generate: GOOD. See annotatedCommandCase and userCase
 image: GOOD
-queue-*: GOOD
+queue: GOOD
 runserver
-shellalias: GOOD
-  need test: shell alias with site alias
-site-install: FAIR. Implicit test by setUpDrupal().
-site-alias: NONE
+site:install: GOOD
+site:alias: implicit
 state: NONE
 ssh: GOOD
 topic
-watchdog-*: GOOD
-user-*: GOOD.
-
-/src
-------------
-backend: GOOD
-  need test: --pipe with remote alias and --pipe with list of aliases
-batch: GOOD
-bootstrap:
-command: FAIR
-environment
-sitealias. FAIR. Explicit test for alias lists. Single aliases implicitly tested by contextTest.  Option propagation tested by backendTest.  Option recovery for @self alias tested by sqlDumpTest.
-exec: GOOD: Implicitly tested all over.
-filesystem: Implicit.
+watchdog:*: GOOD
+user:*: GOOD.

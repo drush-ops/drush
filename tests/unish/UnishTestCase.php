@@ -2,6 +2,7 @@
 
 namespace Unish;
 
+use Composer\Semver\Comparator;
 use Consolidation\SiteAlias\SiteAlias;
 use Consolidation\SiteProcess\SiteProcess;
 use PHPUnit\Framework\TestCase;
@@ -41,8 +42,6 @@ abstract class UnishTestCase extends TestCase
     private static $db_url;
 
     private static $usergroup = null;
-
-    private static $backendOutputDelimiter = 'DRUSH_BACKEND_OUTPUT_START>>>%s<<<DRUSH_BACKEND_OUTPUT_END';
 
     public function __construct($name = null, array $data = [], $dataName = '')
     {
@@ -187,14 +186,6 @@ abstract class UnishTestCase extends TestCase
     }
 
     /**
-     * @return string
-     */
-    public static function getBackendOutputDelimiter()
-    {
-        return self::$backendOutputDelimiter;
-    }
-
-    /**
      * We used to assure that each class starts with an empty sandbox directory and
      * a clean environment except for the SUT. History: http://drupal.org/node/1103568.
      */
@@ -270,11 +261,6 @@ abstract class UnishTestCase extends TestCase
     public static function isWindows()
     {
         return strtoupper(substr(PHP_OS, 0, 3)) == "WIN";
-    }
-
-    public static function getTarExecutable()
-    {
-        return self::isWindows() ? "bsdtar.exe" : "tar";
     }
 
     /**
@@ -602,6 +588,17 @@ EOT;
         return self::$sites;
     }
 
+    /**
+     * Test if current Drupal is >= a target version.
+     *
+     * @param string $version2
+     * @return bool
+     */
+    public function isDrupalGreaterThanOrEqualTo($version2)
+    {
+        return Comparator::greaterThanOrEqualTo(\Drupal::VERSION, $version2);
+    }
+
     public function aliasFileData($sites_subdirs)
     {
         $root = $this->webroot();
@@ -694,7 +691,8 @@ EOT;
             'db-url' => $this->dbUrl($uri),
             'sites-subdir' => $uri,
             'yes' => true,
-            'quiet' => true,
+            // quiet suppresses error reporting as well.
+            // 'quiet' => true,
         ];
         if ($level = $this->logLevel()) {
             $options[$level] = true;

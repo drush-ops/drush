@@ -14,6 +14,17 @@ class UserCommands extends DrushCommands
 {
 
     /**
+     * @var \Drupal\Core\Datetime\DateFormatterInterface
+     */
+    protected $dateFormatter;
+
+    public function __construct($dateFormatter)
+    {
+        $this->dateFormatter = $dateFormatter;
+    }
+
+
+    /**
      * Print information about the specified user(s).
      *
      * @command user:information
@@ -159,7 +170,7 @@ class UserCommands extends DrushCommands
      * @param string $role The name of the role to add.
      * @param string $names A comma delimited list of user names.
      * @aliases urol,user-add-role
-     * @usage drush user:add-role "power user" user3
+     * @usage drush user-add-role "power user" user3
      *   Add the "power user" role to user3
      */
     public function addRole($role, $names)
@@ -234,7 +245,6 @@ class UserCommands extends DrushCommands
         if (!$this->getConfig()->simulate()) {
             if ($account = User::create($new_user)) {
                 $account->save();
-                drush_backend_set_result($this->infoArray($account));
                 $this->logger()->success(dt('Created a new user with uid !uid', ['!uid' => $account->id()]));
             } else {
                 return new CommandError("Could not create a new user account with the name " . $name . ".");
@@ -279,7 +289,7 @@ class UserCommands extends DrushCommands
             foreach ($names as $name) {
                 if ($account = user_load_by_name($name)) {
                     if ($options['delete-content']) {
-                        $this->logger()->warning(dt('All content created by !name will be deleted.', ['!name' => $account->getUsername()]));
+                        $this->logger()->warning(dt('All content created by !name will be deleted.', ['!name' => $account->getAccountName()]));
                     }
                     if ($this->io()->confirm('Cancel user account?: ')) {
                         $method = $options['delete-content'] ? 'user_cancel_delete' : 'user_cancel_block';
@@ -328,15 +338,15 @@ class UserCommands extends DrushCommands
     {
         return [
             'uid' => $account->id(),
-            'name' => $account->getUsername(),
+            'name' => $account->getAccountName(),
             'pass' => $account->getPassword(),
             'mail' => $account->getEmail(),
             'user_created' => $account->getCreatedTime(),
-            'created' => format_date($account->getCreatedTime()),
+            'created' => $this->dateFormatter->format($account->getCreatedTime()),
             'user_access' => $account->getLastAccessedTime(),
-            'access' => format_date($account->getLastAccessedTime()),
+            'access' => $this->dateFormatter->format($account->getLastAccessedTime()),
             'user_login' => $account->getLastLoginTime(),
-            'login' => format_date($account->getLastLoginTime()),
+            'login' => $this->dateFormatter->format($account->getLastLoginTime()),
             'user_status' => $account->get('status')->value,
             'status' => $account->isActive() ? 'active' : 'blocked',
             'timezone' => $account->getTimeZone(),

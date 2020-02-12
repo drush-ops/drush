@@ -101,6 +101,15 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
         }
     }
 
+    /**
+     * Beware, this function populates Database::Connection info.
+     *
+     * See https://github.com/drush-ops/drush/issues/3903.
+     * @param bool $require_settings
+     * @param bool $reset
+     *
+     * @return string|void
+     */
     public function confPath($require_settings = true, $reset = false)
     {
 
@@ -116,7 +125,7 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
     public function addLogger()
     {
         // Provide a logger which sends
-        // output to drush_log(). This should catch every message logged through every
+        // output to log(). This should catch every message logged through every
         // channel.
         $container = \Drupal::getContainer();
         $parser = $container->get('logger.log_message_parser');
@@ -137,19 +146,21 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
 
         // Normalize URI.
         $uri = rtrim($this->uri, '/') . '/';
+
         $parsed_url = parse_url($uri);
 
         // Account for users who omit the http:// prefix.
         if (empty($parsed_url['scheme'])) {
             $this->uri = 'http://' . $this->uri;
-            $parsed_url = parse_url('http://' . $uri);
+            $uri = 'http://' . $uri;
+            $parsed_url = parse_url($uri);
         }
 
         $server = [
             'SCRIPT_FILENAME' => getcwd() . '/index.php',
             'SCRIPT_NAME' => isset($parsed_url['path']) ? $parsed_url['path'] . 'index.php' : '/index.php',
         ];
-        $request = Request::create($this->uri, 'GET', [], [], [], $server);
+        $request = Request::create($uri, 'GET', [], [], [], $server);
         $this->setRequest($request);
         return true;
     }
@@ -160,6 +171,7 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
      */
     public function bootstrapDoDrupalSite(BootstrapManager $manager)
     {
+        // Note: this reports the'default' during site:install even if we eventually install to a different multisite.
         $this->logger->log(LogLevel::BOOTSTRAP, dt("Initialized Drupal site !site at !site_root", ['!site' => $this->getRequest()->getHttpHost(), '!site_root' => $this->confPath()]));
     }
 
@@ -187,7 +199,8 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
         try {
             // @todo Log queries in addition to logging failure messages?
             $connection = Database::getConnection();
-            $connection->query('SELECT 1;');
+            $connection_options = $connection->getConnectionOptions();
+            $connection->open($connection_options);
         } catch (\Exception $e) {
             $this->logger->log(LogLevel::BOOTSTRAP, 'Unable to connect to database. More information may be available by running `drush status`. This may occur when Drush is trying to bootstrap a site that has not been installed or does not have a configured database. In this case you can select another site with a working database setup by specifying the URI to use with the --uri parameter on the command line. See `drush topic docs-aliases` for details.');
             return false;
@@ -235,11 +248,11 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
     {
         $this->logger->debug(dt('Start bootstrap of the Drupal Kernel.'));
         $this->kernel->boot();
-        $this->kernel->prepareLegacyRequest($this->getRequest());
+        $this->addLogger();
+        $this->kernel->preHandle($this->getRequest());
         $this->logger->debug(dt('Finished bootstrap of the Drupal Kernel.'));
 
         parent::bootstrapDrupalFull($manager);
-        $this->addLogger();
         $this->addDrupalModuleDrushCommands($manager);
     }
 

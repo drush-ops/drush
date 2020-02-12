@@ -1,8 +1,8 @@
-# Mock Dutch translation of Devel
+# Mock Dutch translation of Drush Empty Module
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Devel\n"
+"Project-Id-Version: Drush Empty Module\n"
 "POT-Creation-Date: 2016-12-18 21:58+0000\n"
 "PO-Revision-Date: YYYY-mm-DD HH:MM+ZZZZ\n"
 "Language-Team: Dutch\n"
@@ -11,5 +11,5 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n!=1);\n"
 
-msgid "Devel"
-msgstr "NL Devel"
+msgid "Drush Empty Module"
+msgstr "NL Drush Empty Module"

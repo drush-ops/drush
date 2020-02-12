@@ -1,0 +1,3 @@
+services:
+  drush_empty_module.service:
+    class: Drupal\drush_empty_module\MuchServiceManyWow

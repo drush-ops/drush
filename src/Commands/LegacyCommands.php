@@ -17,7 +17,7 @@ class LegacyCommands extends DrushCommands
     }
 
     /**
-     * The pm-info command was deprecated. Please see `drush pm:list` and `composer show`
+     * The pm-info command was removed. Please see `drush pm:list` and `composer show`
      *
      * @command pm:info
      * @aliases pmi,pm-info
@@ -29,7 +29,7 @@ class LegacyCommands extends DrushCommands
     }
 
     /**
-     * The pm-projectinfo command was deprecated. Please see `drush pm:list` and `composer show`
+     * The pm-projectinfo command was removed. Please see `drush pm:list` and `composer show`
      *
      * @command pm:projectinfo
      * @allow-additional-options
@@ -42,7 +42,7 @@ class LegacyCommands extends DrushCommands
     }
 
     /**
-     * The pm-refresh command was deprecated. It is no longer useful.
+     * The pm-refresh command was removed. It is no longer useful.
      *
      * @command pm:refresh
      * @aliases rf,pm-refresh
@@ -54,7 +54,7 @@ class LegacyCommands extends DrushCommands
     }
 
     /**
-     * The pm-updatestatus command was deprecated. Please see `composer show`
+     * The pm-updatestatus command was removed. Please see `composer show`
      * and `composer update --dry-run`. For security release notification,
      * see `drush pm:security`.
      *
@@ -68,7 +68,7 @@ class LegacyCommands extends DrushCommands
     }
 
     /**
-     * The pm-updatecode command was deprecated. Please see
+     * The pm-updatecode command was removed. Please see
      * `composer update --dry-run` and `composer update`.
      * For security release notification, see `drush pm:security`.
      *
@@ -82,7 +82,7 @@ class LegacyCommands extends DrushCommands
     }
 
     /**
-     * The pm-releasenotes command was deprecated. No replacement available.
+     * The pm-releasenotes command was removed. No replacement available.
      *
      * @command pm:releasenotes
      * @aliases rln,pm-releasenotes
@@ -94,7 +94,7 @@ class LegacyCommands extends DrushCommands
     }
 
     /**
-     * The pm-releases command was deprecated. Please see `composer show <packagename>`
+     * The pm-releases command was removed. Please see `composer show <packagename>`
      *
      * @command pm:releases
      * @aliases rl,pm-releases
@@ -118,7 +118,7 @@ class LegacyCommands extends DrushCommands
     }
 
     /**
-     * dl has been deprecated. Please build your site using Composer. Add new projects with composer require drupal/[project-name]. Use https://www.drupal.org/project/composer_generate to build a composer.json which represents the enabled modules on your site.
+     * dl has been removed. Please build your site using Composer. Add new projects with composer require drupal/[project-name]. Use https://www.drupal.org/project/composer_generate to build a composer.json which represents the enabled modules on your site.
      *
      * @command pm:download
      * @aliases dl,pm-download
@@ -130,7 +130,7 @@ class LegacyCommands extends DrushCommands
     }
 
     /**
-     * field-create has been deprecated. Please try `generate field` command.
+     * field-create has been removed. Please try `generate field` command.
      *
      * @command field:create
      * @aliases field-create
@@ -142,7 +142,7 @@ class LegacyCommands extends DrushCommands
     }
 
     /**
-     * core:execute has been deprecated. Please try `site:ssh` command.
+     * core:execute has been removed. Please try `site:ssh` command.
      *
      * @command core:execute
      * @aliases core-execute

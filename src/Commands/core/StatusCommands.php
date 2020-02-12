@@ -99,18 +99,19 @@ class StatusCommands extends DrushCommands implements SiteAliasManagerAwareInter
             if ($boot_manager->hasBootstrapped(DRUSH_BOOTSTRAP_DRUPAL_SITE)) {
                 $status_table['uri'] = $boot_manager->getUri();
                 try {
-                    $sql = SqlBase::create($options);
-                    $db_spec = $sql->getDbSpec();
-                    $status_table['db-driver'] = $db_spec['driver'];
-                    if (!empty($db_spec['unix_socket'])) {
-                        $status_table['db-socket'] = $db_spec['unix_socket'];
-                    } elseif (isset($db_spec['host'])) {
-                        $status_table['db-hostname'] = $db_spec['host'];
+                    if ($sql = SqlBase::create($options)) {
+                        $db_spec = $sql->getDbSpec();
+                        $status_table['db-driver'] = $db_spec['driver'];
+                        if (!empty($db_spec['unix_socket'])) {
+                            $status_table['db-socket'] = $db_spec['unix_socket'];
+                        } elseif (isset($db_spec['host'])) {
+                            $status_table['db-hostname'] = $db_spec['host'];
+                        }
+                        $status_table['db-username'] = isset($db_spec['username']) ? $db_spec['username'] : null;
+                        $status_table['db-password'] = isset($db_spec['password']) ? $db_spec['password'] : null;
+                        $status_table['db-name'] = isset($db_spec['database']) ? $db_spec['database'] : null;
+                        $status_table['db-port'] = isset($db_spec['port']) ? $db_spec['port'] : null;
                     }
-                    $status_table['db-username'] = isset($db_spec['username']) ? $db_spec['username'] : null;
-                    $status_table['db-password'] = isset($db_spec['password']) ? $db_spec['password'] : null;
-                    $status_table['db-name'] = isset($db_spec['database']) ? $db_spec['database'] : null;
-                    $status_table['db-port'] = isset($db_spec['port']) ? $db_spec['port'] : null;
                     if ($boot_manager->hasBootstrapped(DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION)) {
                         if (method_exists('Drupal', 'installProfile')) {
                             $status_table['install-profile'] = \Drupal::installProfile();
@@ -212,9 +213,14 @@ class StatusCommands extends DrushCommands implements SiteAliasManagerAwareInter
                 }
                 if ($boot_manager->hasBootstrapped(DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION)) {
                     try {
+                        // @todo Temporary Drupal 9 compat.
+                        if (drush_drupal_major_version() >= 9) {
+                            $GLOBALS['config_directories']['sync'] = 'UNUSED';
+                        }
+
                         if (isset($GLOBALS['config_directories'])) {
                             foreach ($GLOBALS['config_directories'] as $label => $unused) {
-                                $paths["%config-$label"] = config_get_config_directory($label);
+                                $paths["%config-$label"] = drush_config_get_config_directory($label);
                             }
                         }
                     } catch (\Exception $e) {
@@ -224,7 +230,7 @@ class StatusCommands extends DrushCommands implements SiteAliasManagerAwareInter
 
                 if ($boot_manager->hasBootstrapped(DRUSH_BOOTSTRAP_DRUPAL_FULL)) {
                     $paths['%files'] = PublicStream::basePath();
-                    $paths['%temp'] = file_directory_temp();
+                    $paths['%temp'] = drush_file_directory_temp();
                     if ($private_path = PrivateStream::basePath()) {
                         $paths['%private'] = $private_path;
                     }

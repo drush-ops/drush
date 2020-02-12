@@ -18,12 +18,16 @@ class SqlMysql extends SqlBase
     {
         $dbSpec = $this->getDbSpec();
         if ($hide_password) {
+            // Default to unix socket if configured.
+            $unixSocket = !empty($dbSpec['unix_socket']) ? 'socket="' . $dbSpec['unix_socket'] . '"' : '';
+
             // EMPTY password is not the same as NO password, and is valid.
             $contents = <<<EOT
 #This file was written by Drush's Sqlmysql.php.
 [client]
 user="{$dbSpec['username']}"
 password="{$dbSpec['password']}"
+{$unixSocket}
 EOT;
 
             $file = drush_save_data_to_temp_file($contents);
@@ -93,15 +97,17 @@ EOT;
         }
         $sql[] = sprintf('DROP DATABASE IF EXISTS %s;', $dbname);
         $sql[] = sprintf('CREATE DATABASE %s /*!40100 DEFAULT CHARACTER SET utf8 */;', $dbname);
-        $db_superuser = $this->getConfig()->get('sql.db-su');
+        $db_superuser = $this->getOption('db-su');
         if (isset($db_superuser)) {
             // - For a localhost database, create a localhost user.  This is important for security.
             //   localhost is special and only allows local Unix socket file connections.
             // - If the database is on a remote server, create a wildcard user with %.
             //   We can't easily know what IP address or hostname would represent our server.
             $domain = ($dbSpec['host'] == 'localhost') ? 'localhost' : '%';
-            $sql[] = sprintf('GRANT ALL PRIVILEGES ON %s.* TO \'%s\'@\'%s\'', $dbname, $dbSpec['username'], $domain);
-            $sql[] = sprintf("IDENTIFIED BY '%s';", $dbSpec['password']);
+            $user = sprintf("'%s'@'%s'", $dbSpec['username'], $domain);
+            $sql[] = sprintf("DROP USER IF EXISTS %s;", $user);
+            $sql[] = sprintf("CREATE USER %s IDENTIFIED WITH mysql_native_password BY '%s';", $user, $dbSpec['password']);
+            $sql[] = sprintf('GRANT ALL PRIVILEGES ON %s.* TO %s;', $dbname, $user);
             $sql[] = 'FLUSH PRIVILEGES;';
         }
         return implode(' ', $sql);

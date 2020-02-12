@@ -31,3 +31,14 @@ function woot_theme() {
 
   return $theme;
 }
+
+/**
+ * Prints the entity type ID of the taxonomy term entity type.
+ *
+ * @see \Unish\UpdateDBTest::testEnableModuleViaUpdate()
+ * @see \Unish\UpdateDBTest::testEnableModuleViaPostUpdate()
+ */
+function woot_get_taxonomy_term_entity_type_id()
+{
+    print \Drupal::entityTypeManager()->getDefinition("taxonomy_term")->id();
+}

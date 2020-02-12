@@ -111,10 +111,12 @@ class SqlBase implements ConfigAwareInterface
     {
         $driver = $db_spec['driver'];
         $class_name = 'Drush\Sql\Sql'. ucfirst($driver);
-        $instance = new $class_name($db_spec, $options);
-        // Inject config
-        $instance->setConfig(Drush::config());
-        return $instance;
+        if (class_exists($class_name)) {
+            $instance = new $class_name($db_spec, $options);
+            // Inject config
+            $instance->setConfig(Drush::config());
+            return $instance;
+        }
     }
 
     /*
@@ -307,7 +309,7 @@ class SqlBase implements ConfigAwareInterface
     public function alwaysQuery($query, $input_file = null, $result_file = '')
     {
         $input_file_original = $input_file;
-        if ($input_file && drush_file_is_tarball($input_file)) {
+        if ($input_file && FsUtils::isTarball($input_file)) {
             $process = Drush::process(['gzip', '-df', $input_file]);
             $process->setSimulated(false);
             $process->run();
@@ -329,7 +331,7 @@ class SqlBase implements ConfigAwareInterface
 
         $parts = [
             $this->command(),
-            $this->creds(),
+            $this->creds(!$this->getOption('show-passwords')),
             $this->silent(), // This removes column header and various helpful things in mysql.
             $this->getOption('extra', $this->queryExtra),
             $this->queryFile,
@@ -473,10 +475,6 @@ class SqlBase implements ConfigAwareInterface
     {
     }
 
-    public function delete()
-    {
-    }
-
     /**
      * Build a fragment connection parameters.
      *
@@ -520,7 +518,7 @@ class SqlBase implements ConfigAwareInterface
         $parameter_strings = [];
         foreach ($parameters as $key => $value) {
             // Only escape the values, not the keys or the rest of the string.
-            $value = drush_escapeshellarg($value);
+            $value = Escape::shellArg($value);
             $parameter_strings[] = "--$key=$value";
         }
 
