@@ -199,7 +199,8 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
         try {
             // @todo Log queries in addition to logging failure messages?
             $connection = Database::getConnection();
-            $connection->query('SELECT 1;');
+            $connection_options = $connection->getConnectionOptions();
+            $connection->open($connection_options);
         } catch (\Exception $e) {
             $this->logger->log(LogLevel::BOOTSTRAP, 'Unable to connect to database. More information may be available by running `drush status`. This may occur when Drush is trying to bootstrap a site that has not been installed or does not have a configured database. In this case you can select another site with a working database setup by specifying the URI to use with the --uri parameter on the command line. See `drush topic docs-aliases` for details.');
             return false;
@@ -247,11 +248,11 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
     {
         $this->logger->debug(dt('Start bootstrap of the Drupal Kernel.'));
         $this->kernel->boot();
+        $this->addLogger();
         $this->kernel->preHandle($this->getRequest());
         $this->logger->debug(dt('Finished bootstrap of the Drupal Kernel.'));
 
         parent::bootstrapDrupalFull($manager);
-        $this->addLogger();
         $this->addDrupalModuleDrushCommands($manager);
     }
 

@@ -46,7 +46,7 @@ class RedispatchToSiteLocal
         }
 
         // Redispatch!
-        $command = $siteLocalDrush;
+        $command = escapeshellarg($siteLocalDrush);
         $preflightLog->log(dt('Redispatch to site-local Drush: !cmd.', ['!cmd' => $command]));
         array_shift($argv);
         $args = array_map(

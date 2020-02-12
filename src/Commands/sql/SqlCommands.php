@@ -25,7 +25,6 @@ class SqlCommands extends DrushCommands implements StdinAwareInterface
      * @command sql:conf
      * @aliases sql-conf
      * @option all Show all database connections, instead of just one.
-     * @option show-passwords Show database password.
      * @optionset_sql
      * @bootstrap max configuration
      * @hidden
@@ -123,7 +122,7 @@ class SqlCommands extends DrushCommands implements StdinAwareInterface
         }
         $tables = $sql->listTables();
         if (!$sql->drop($tables)) {
-            throw new \Exception('Unable to drop database. Rerun with --debug to see any error message.');
+            throw new \Exception('Unable to drop all tables. Rerun with --debug to see any error message.');
         }
     }
 

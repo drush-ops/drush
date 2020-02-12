@@ -10,6 +10,7 @@ Creating a new Drush command or porting a legacy command is easy. Follow the ste
 1. Drush will then report that it created a commandfile, a drush.services.yml file and a composer.json file. Edit those files as needed.
 1. Use the classes for the core Drush commands at [/src/Drupal/Commands](https://github.com/drush-ops/drush/tree/master/src/Drupal/Commands) as inspiration and documentation.
 1. See the [dependency injection docs](dependency-injection.md) for interfaces you can implement to gain access to Drush config, Drupal site aliases, etc.
+1. Write PHPUnit tests based on [Drush Test Traits](https://github.com/drush-ops/drush/tree/master/tests#drush-test-traits).
 1. Once your two files are ready, run `drush cr` to get your command recognized by the Drupal container.
 
 Specifying the Services File
@@ -108,3 +109,9 @@ With this configuration in place, global commands may be placed as described in 
     1.  ../drush, /drush or /sites/all/drush. These paths are relative to Drupal root.
 
 It is recommended that you avoid global Drush commands, and favor site-wide commandfiles instead. If you really need a command or commands that are not part of any Drupal site, consider making a stand-alone script or custom .phar instead. See [ahoy](https://github.com/ahoy-cli/ahoy), [Robo](https://github.com/consolidation/robo) and [g1a/starter](https://github.com/g1a/starter) as potential starting points.
+
+Composer packaged commands
+==============================
+
+##### Symlinked packages
+While it is good practice to make your custom commands into a Composer package, please beware that symlinked packages (by using the composer repository type [Path](https://getcomposer.org/doc/05-repositories.md#path)) will **not** be discovered by Drush. When in development, it is recommended to [specify your package's](https://github.com/drush-ops/drush/blob/master/examples/example.drush.yml#L52-L67) path in your `drush.yml` to have quick access to your commands.

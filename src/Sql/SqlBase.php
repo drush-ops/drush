@@ -111,10 +111,12 @@ class SqlBase implements ConfigAwareInterface
     {
         $driver = $db_spec['driver'];
         $class_name = 'Drush\Sql\Sql'. ucfirst($driver);
-        $instance = new $class_name($db_spec, $options);
-        // Inject config
-        $instance->setConfig(Drush::config());
-        return $instance;
+        if (class_exists($class_name)) {
+            $instance = new $class_name($db_spec, $options);
+            // Inject config
+            $instance->setConfig(Drush::config());
+            return $instance;
+        }
     }
 
     /*
@@ -329,7 +331,7 @@ class SqlBase implements ConfigAwareInterface
 
         $parts = [
             $this->command(),
-            $this->creds(),
+            $this->creds(!$this->getOption('show-passwords')),
             $this->silent(), // This removes column header and various helpful things in mysql.
             $this->getOption('extra', $this->queryExtra),
             $this->queryFile,
@@ -470,10 +472,6 @@ class SqlBase implements ConfigAwareInterface
      * @return bool
      */
     public function dbExists()
-    {
-    }
-
-    public function delete()
     {
     }
 
