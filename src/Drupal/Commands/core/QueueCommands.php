@@ -56,13 +56,15 @@ class QueueCommands extends DrushCommands
      * @aliases queue-run
      * @param string $name The name of the queue to run, as defined in either hook_queue_info or hook_cron_queue_info.
      * @validate-queue name
-     * @option time-limit The maximum number of seconds allowed to run the queue
-     * @option items-limit The maximum number of items allowed to run the queue
+     * @option time-limit The maximum number of seconds allowed to run the queue.
+     * @option items-limit The maximum number of items allowed to run the queue.
+     * @option lease-time The maximum number of seconds that an item remains claimed. By default, this is one hour.
      */
-    public function run($name, $options = ['time-limit' => self::REQ, 'items-limit' => self::OPT])
+    public function run($name, $options = ['time-limit' => self::REQ, 'items-limit' => self::OPT, 'lease-time' => self::OPT])
     {
         $time_limit = (int) $options['time-limit'];
         $items_limit = (int) $options['items-limit'];
+        $lease_time = (int) $options['lease-time'] ?: 3600;
         $start = microtime(true);
         $worker = $this->getWorkerManager()->createInstance($name);
         $end = time() + $time_limit;
@@ -70,7 +72,7 @@ class QueueCommands extends DrushCommands
         $count = 0;
         $remaining = $time_limit;
 
-        while ((!$time_limit || $remaining > 0) && (!$items_limit || $count < $items_limit) && ($item = $queue->claimItem($remaining))) {
+        while ((!$time_limit || $remaining > 0) && (!$items_limit || $count < $items_limit) && ($item = $queue->claimItem($lease_time))) {
             try {
                 $this->logger()->info(dt('Processing item @id from @name queue.', ['@name' => $name, '@id' => $item->item_id]));
                 $worker->processItem($item->data);
