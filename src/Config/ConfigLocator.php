@@ -280,7 +280,7 @@ class ConfigLocator
         // Remember that we've seen this location.
         $this->siteRoots[] = $siteRoot;
 
-        $this->addConfigPaths(self::DRUPAL_CONTEXT, [ dirname($siteRoot) . '/drush', "$siteRoot/drush", "$siteRoot/sites/all/drush" ]);
+        $this->addConfigPaths(self::DRUPAL_CONTEXT, [ dirname($siteRoot) . '/drush', "$siteRoot/drush", "$siteRoot/sites/all/drush", "$siteRoot/sites/default" ]);
         return $this;
     }
 
@@ -486,7 +486,7 @@ class ConfigLocator
      */
     protected function getSiteCommandFilePaths($root)
     {
-        $directories = ["$root/drush", dirname($root) . '/drush', "$root/sites/all/drush"];
+        $directories = ["$root/drush", dirname($root) . '/drush', "$root/sites/all/drush", "$root/sites/default"];
 
         return array_filter($directories, 'is_dir');
     }
