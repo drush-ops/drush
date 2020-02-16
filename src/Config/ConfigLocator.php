@@ -486,7 +486,7 @@ class ConfigLocator
      */
     protected function getSiteCommandFilePaths($root)
     {
-        $directories = ["$root/drush", dirname($root) . '/drush', "$root/sites/all/drush", "$root/sites/default"];
+        $directories = ["$root/drush", dirname($root) . '/drush', "$root/sites/all/drush"];
 
         return array_filter($directories, 'is_dir');
     }
