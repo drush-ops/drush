@@ -1,18 +1,16 @@
 <?php
 namespace Drush\Drupal\Commands\config;
 
-use Consolidation\AnnotatedCommand\CommandError;
-use Consolidation\AnnotatedCommand\CommandData;
 use Drupal\config\StorageReplaceDataWrapper;
 use Drupal\Core\Cache\CacheBackendInterface;
 use Drupal\Core\Config\ConfigManagerInterface;
-use Drupal\Core\Config\StorageCacheInterface;
 use Drupal\Core\Config\StorageComparer;
 use Drupal\Core\Config\ConfigImporter;
 use Drupal\Core\Config\ConfigException;
 use Drupal\Core\Config\FileStorage;
 use Drupal\Core\Config\StorageInterface;
 use Drupal\Core\Config\TypedConfigManagerInterface;
+use Drupal\Core\Extension\ModuleExtensionList;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Extension\ModuleInstallerInterface;
 use Drupal\Core\Extension\ThemeHandlerInterface;
@@ -55,6 +53,13 @@ class ConfigImportCommands extends DrushCommands
      * @var \Drupal\Core\Extension\ModuleHandlerInterface
      */
     protected $moduleHandler;
+
+    /**
+     * The module extension list.
+     *
+     * @var \Drupal\Core\Extension\ModuleExtensionList
+     */
+    protected $moduleExtensionList;
 
     /**
      * @return ConfigManagerInterface
@@ -168,11 +173,27 @@ class ConfigImportCommands extends DrushCommands
         return $this->importStorageTransformer;
     }
 
+    /**
+     * @return \Drupal\Core\Extension\ModuleExtensionList
+     */
+    public function getModuleExtensionList(): \Drupal\Core\Extension\ModuleExtensionList
+    {
+        return $this->moduleExtensionList;
+    }
 
     /**
      * @param ConfigManagerInterface $configManager
      * @param StorageInterface $configStorage
      * @param StorageInterface $configStorageSync
+     * @param \Drupal\Core\Cache\CacheBackendInterface $configCache
+     * @param \Drupal\Core\Extension\ModuleHandlerInterface $moduleHandler
+     * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface $eventDispatcher
+     * @param \Drupal\Core\Lock\LockBackendInterface $lock
+     * @param \Drupal\Core\Config\TypedConfigManagerInterface $configTyped
+     * @param \Drupal\Core\Extension\ModuleInstallerInterface $moduleInstaller
+     * @param \Drupal\Core\Extension\ThemeHandlerInterface $themeHandler
+     * @param \Drupal\Core\StringTranslation\TranslationInterface $stringTranslation
+     * @param \Drupal\Core\Extension\ModuleExtensionList $moduleExtensionList
      */
     public function __construct(
         ConfigManagerInterface $configManager,
@@ -185,7 +206,8 @@ class ConfigImportCommands extends DrushCommands
         TypedConfigManagerInterface $configTyped,
         ModuleInstallerInterface $moduleInstaller,
         ThemeHandlerInterface $themeHandler,
-        TranslationInterface $stringTranslation
+        TranslationInterface $stringTranslation,
+        ModuleExtensionList $moduleExtensionList
     ) {
         parent::__construct();
         $this->configManager = $configManager;
@@ -199,6 +221,7 @@ class ConfigImportCommands extends DrushCommands
         $this->moduleInstaller = $moduleInstaller;
         $this->themeHandler = $themeHandler;
         $this->stringTranslation = $stringTranslation;
+        $this->moduleExtensionList = $moduleExtensionList;
     }
 
     /**
@@ -279,7 +302,8 @@ class ConfigImportCommands extends DrushCommands
             $this->getModuleHandler(),
             $this->getModuleInstaller(),
             $this->getThemeHandler(),
-            $this->getStringTranslation()
+            $this->getStringTranslation(),
+            $this->getModuleExtensionList()
         );
         if ($config_importer->alreadyImporting()) {
             $this->logger()->warning('Another request may be synchronizing configuration already.');
