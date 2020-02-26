@@ -172,7 +172,7 @@ class LocaleCommands extends DrushCommands
      *  - all: Override any existing translation.
      * @usage drush locale-import nl drupal-8.4.2.nl.po
      *   Import the Dutch drupal core translation.
-     * @usage drush locale-import nl custom-translations.po --type=custom --override=all
+     * @usage drush locale-import nl custom-translations.po --type=customized --override=all
      *   Import customized Dutch translations and override any existing translation.
      * @aliases locale-import
      * @throws \Exception
