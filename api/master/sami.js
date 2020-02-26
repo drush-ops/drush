@@ -1253,6 +1253,7 @@ window.projectVersion = 'master';
                     {"type": "Method", "fromName": "Drush\\Sql\\SqlBase", "fromLink": "Drush/Sql/SqlBase.html", "link": "Drush/Sql/SqlBase.html#method_getOption", "name": "Drush\\Sql\\SqlBase::getOption", "doc": "&quot;&quot;"},
                     {"type": "Method", "fromName": "Drush\\Sql\\SqlBase", "fromLink": "Drush/Sql/SqlBase.html", "link": "Drush/Sql/SqlBase.html#method_db_spec", "name": "Drush\\Sql\\SqlBase::db_spec", "doc": "&quot;&quot;"},
                     {"type": "Method", "fromName": "Drush\\Sql\\SqlBase", "fromLink": "Drush/Sql/SqlBase.html", "link": "Drush/Sql/SqlBase.html#method_dbSpecFromDbUrl", "name": "Drush\\Sql\\SqlBase::dbSpecFromDbUrl", "doc": "&quot;Convert from an old-style database URL to an array of database settings.&quot;"},
+                    {"type": "Method", "fromName": "Drush\\Sql\\SqlBase", "fromLink": "Drush/Sql/SqlBase.html", "link": "Drush/Sql/SqlBase.html#method_alwaysQueryCommand", "name": "Drush\\Sql\\SqlBase::alwaysQueryCommand", "doc": "&quot;Start building the command to run a query.&quot;"},
             
             {"type": "Class", "fromName": "Drush\\Sql", "fromLink": "Drush/Sql.html", "link": "Drush/Sql/SqlException.html", "name": "Drush\\Sql\\SqlException", "doc": "&quot;&quot;"},
                     
