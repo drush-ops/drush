@@ -88,27 +88,7 @@ class PmCommands extends DrushCommands
             }
         }
 
-        // Run requirements checks on each module.
-        // @see \drupal_check_module()
-        require_once DRUSH_DRUPAL_CORE . '/includes/install.inc';
-        foreach ($todo as $module) {
-            module_load_install($module);
-            $requirements = \Drupal::moduleHandler()->invoke($module, 'requirements', ['install']);
-            if (is_array($requirements) && drupal_requirements_severity($requirements) == REQUIREMENT_ERROR) {
-                $reasons = [];
-                // Print any error messages
-                foreach ($requirements as $requirement) {
-                    if (isset($requirement['severity']) && $requirement['severity'] == REQUIREMENT_ERROR) {
-                        $message = $requirement['description'];
-                        if (isset($requirement['value']) && $requirement['value']) {
-                            $message = dt('@requirements_message (Currently using @item version @version)', ['@requirements_message' => $requirement['description'], '@item' => $requirement['title'], '@version' => $requirement['value']]);
-                        }
-                        $reasons[$module] = "$module: " . (string) $message;
-                    }
-                }
-                throw new \Exception(implode("/n", $reasons));
-            }
-        }
+        $this->validateInstallModules($todo);
 
         if (!$this->getModuleInstaller()->install($modules, true)) {
             throw new \Exception('Unable to install modules.');
@@ -304,6 +284,31 @@ class PmCommands extends DrushCommands
         // Remove already installed modules.
         $todo = array_diff_key($module_list, $installed_modules);
         return $todo;
+    }
+
+    public function validateInstallModules(array $modules)
+    {
+        // Run requirements checks on each module.
+        // @see \drupal_check_module()
+        require_once DRUSH_DRUPAL_CORE . '/includes/install.inc';
+        foreach ($modules as $module) {
+            module_load_install($module);
+            $requirements = \Drupal::moduleHandler()->invoke($module, 'requirements', ['install']);
+            if (is_array($requirements) && drupal_requirements_severity($requirements) == REQUIREMENT_ERROR) {
+                $reasons = [];
+                // Print any error messages
+                foreach ($requirements as $requirement) {
+                    if (isset($requirement['severity']) && $requirement['severity'] == REQUIREMENT_ERROR) {
+                        $message = $requirement['description'];
+                        if (isset($requirement['value']) && $requirement['value']) {
+                            $message = dt('@requirements_message (Currently using @item version @version)', ['@requirements_message' => $requirement['description'], '@item' => $requirement['title'], '@version' => $requirement['value']]);
+                        }
+                        $reasons[$module] = "$module: " . (string) $message;
+                    }
+                }
+                throw new \Exception(implode("/n", $reasons));
+            }
+        }
     }
 
     public function addUninstallDependencies($modules)
