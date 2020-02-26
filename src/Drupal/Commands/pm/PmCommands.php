@@ -297,16 +297,16 @@ class PmCommands extends DrushCommands
             if (is_array($requirements) && drupal_requirements_severity($requirements) == REQUIREMENT_ERROR) {
                 $reasons = [];
                 // Print any error messages
-                foreach ($requirements as $requirement) {
+                foreach ($requirements as $id => $requirement) {
                     if (isset($requirement['severity']) && $requirement['severity'] == REQUIREMENT_ERROR) {
                         $message = $requirement['description'];
                         if (isset($requirement['value']) && $requirement['value']) {
                             $message = dt('@requirements_message (Currently using @item version @version)', ['@requirements_message' => $requirement['description'], '@item' => $requirement['title'], '@version' => $requirement['value']]);
                         }
-                        $reasons[$module] = "$module: " . (string) $message;
+                        $reasons[$id] = "$module: " . (string) $message;
                     }
                 }
-                throw new \Exception(implode("/n", $reasons));
+                throw new \Exception(implode("\n", $reasons));
             }
         }
     }
