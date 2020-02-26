@@ -71,6 +71,7 @@ class PmCommands extends DrushCommands
      * @command pm:enable
      * @param $modules A comma delimited list of modules.
      * @aliases en,pm-enable
+     * @bootstrap full
      */
     public function enable(array $modules)
     {
@@ -84,6 +85,28 @@ class PmCommands extends DrushCommands
             $this->output()->writeln(dt('The following module(s) will be enabled: !list', $todo_str));
             if (!$this->io()->confirm(dt('Do you want to continue?'))) {
                 throw new UserAbortException();
+            }
+        }
+
+        // Run requirements checks on each module.
+        // @see \drupal_check_module()
+        require_once DRUSH_DRUPAL_CORE . '/includes/install.inc';
+        foreach ($todo as $module) {
+            module_load_install($module);
+            $requirements = \Drupal::moduleHandler()->invoke($module, 'requirements', ['install']);
+            if (is_array($requirements) && drupal_requirements_severity($requirements) == REQUIREMENT_ERROR) {
+                $reasons = [];
+                // Print any error messages
+                foreach ($requirements as $requirement) {
+                    if (isset($requirement['severity']) && $requirement['severity'] == REQUIREMENT_ERROR) {
+                        $message = $requirement['description'];
+                        if (isset($requirement['value']) && $requirement['value']) {
+                            $message = dt('@requirements_message (Currently using @item version @version)', ['@requirements_message' => $requirement['description'], '@item' => $requirement['title'], '@version' => $requirement['value']]);
+                        }
+                        $reasons[$module] = "$module: " . (string) $message;
+                    }
+                }
+                throw new \Exception(implode("/n", $reasons));
             }
         }
 
