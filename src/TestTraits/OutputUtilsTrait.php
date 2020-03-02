@@ -154,7 +154,7 @@ trait OutputUtilsTrait
     {
         $output = $this->getOutput();
         $json = json_decode($output, true);
-        if (!$json) {
+        if ($json === NULL) {
             throw new \Exception("No json output received.\n\nOutput:\n\n$output\n\nStderr:\n\n" . $this->getErrorOutput());
         }
         if (isset($key)) {
