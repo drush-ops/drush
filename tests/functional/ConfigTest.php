@@ -55,9 +55,20 @@ class ConfigCase extends CommandUnishTestCase
         $page = $this->getOutputFromJSON('system.site:page');
         $this->assertContains('unish', $page['front'], 'Config was successfully imported.');
 
-        // Test status of identical configuration.
-        $this->drush('config:status', [], ['format' => 'list']);
-        $this->assertEquals('', $this->getOutput(), 'config:status correctly reports identical config.');
+        // Test status of identical configuration, in different formatters.
+        $expected_output = [
+            'list' => '',
+            'table' => '',
+            'json' => '[]',
+            'xml' => <<<XML
+<?xml version="1.0" encoding="UTF-8"?>
+<document/>
+XML
+        ];
+        foreach ($expected_output as $formatter => $output) {
+            $this->drush('config:status', [], ['format' => $formatter]);
+            $this->assertEquals($output, $this->getOutput(), 'config:status correctly reports identical config.');
+        }
 
         // Test the --existing-config option for site:install.
         $this->drush('core:status', [], ['field' => 'drupal-version']);
