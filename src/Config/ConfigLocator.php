@@ -106,7 +106,7 @@ class ConfigLocator
         }
         $this->config->addPlaceholder(self::USER_CONTEXT);
         $this->config->addPlaceholder(self::DRUPAL_CONTEXT);
-        $this->config->addPlaceholder(self::SITE_CONTEXT); // not implemented yet (multisite)
+        $this->config->addPlaceholder(self::SITE_CONTEXT);
         $this->config->addPlaceholder(self::ALIAS_CONTEXT);
         $this->config->addPlaceholder(self::PREFLIGHT_CONTEXT);
         $this->config->addPlaceholder(self::ENVIRONMENT_CONTEXT);
@@ -281,6 +281,19 @@ class ConfigLocator
         $this->siteRoots[] = $siteRoot;
 
         $this->addConfigPaths(self::DRUPAL_CONTEXT, [ dirname($siteRoot) . '/drush', "$siteRoot/drush", "$siteRoot/sites/all/drush" ]);
+        return $this;
+    }
+
+    /**
+     * Add site-specific configuration files.
+     *
+     * @param $siteRoot The Drupal root.
+     * @param $uri The site URI.
+     * @return $this
+     */
+    public function addSiteConfig($siteRoot, $uri)
+    {
+        $this->addConfigPaths(self::SITE_CONTEXT, [ "$siteRoot/sites/$uri", "$siteRoot/sites/$uri/drush" ]);
         return $this;
     }
 
