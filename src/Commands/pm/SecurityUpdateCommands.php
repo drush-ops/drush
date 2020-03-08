@@ -27,8 +27,7 @@ class SecurityUpdateCommands extends DrushCommands
         $composer_root = Drush::bootstrapManager()->getComposerRoot();
         $composer_lock_file_name = getenv('COMPOSER') ? str_replace('.json', '', getenv('COMPOSER')) : 'composer';
         $composer_lock_file_name .= '.lock';
-        $composer_lock_file_path = Path::join($composer_root,
-            $composer_lock_file_name);
+        $composer_lock_file_path = Path::join($composer_root, $composer_lock_file_name);
         if (!file_exists($composer_lock_file_path)) {
             throw new Exception("Cannot find $composer_lock_file_path!");
         }
@@ -135,10 +134,8 @@ class SecurityUpdateCommands extends DrushCommands
      *
      * @return array
      */
-    protected function calculateSecurityUpdates(
-        $composer_lock_data,
-        $security_advisories_composer_json
-    ) {
+    protected function calculateSecurityUpdates($composer_lock_data, $security_advisories_composer_json)
+    {
         $updates = [];
         $both = array_merge($composer_lock_data['packages-dev'], $composer_lock_data['packages']);
         $conflict = $security_advisories_composer_json['conflict'];
