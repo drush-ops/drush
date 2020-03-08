@@ -25,8 +25,7 @@ class SecurityUpdateCommands extends DrushCommands
     public static function composerLockPath(): string
     {
         $composer_root = Drush::bootstrapManager()->getComposerRoot();
-        $composer_lock_file_name = getenv('COMPOSER') ? str_replace('.json', '',
-            getenv('COMPOSER')) : 'composer';
+        $composer_lock_file_name = getenv('COMPOSER') ? str_replace('.json', '', getenv('COMPOSER')) : 'composer';
         $composer_lock_file_name .= '.lock';
         $composer_lock_file_path = Path::join($composer_root,
             $composer_lock_file_name);
@@ -62,15 +61,12 @@ class SecurityUpdateCommands extends DrushCommands
     {
         $security_advisories_composer_json = $this->fetchAdvisoryComposerJson();
         $composer_lock_data = $this->loadSiteComposerLock();
-        $updates = $this->calculateSecurityUpdates($composer_lock_data,
-            $security_advisories_composer_json);
+        $updates = $this->calculateSecurityUpdates($composer_lock_data, $security_advisories_composer_json);
         if ($updates) {
             $this->suggestComposerCommand($updates);
-            return CommandResult::dataWithExitCode(new RowsOfFields($updates),
-                self::EXIT_FAILURE);
+            return CommandResult::dataWithExitCode(new RowsOfFields($updates), self::EXIT_FAILURE);
         } else {
-            $this->logger()
-                ->success("<info>There are no outstanding security updates for Drupal projects.</info>");
+            $this->logger()->success("<info>There are no outstanding security updates for Drupal projects.</info>");
         }
     }
 
@@ -84,12 +80,9 @@ class SecurityUpdateCommands extends DrushCommands
             $suggested_command .= $package['name'] . ' ';
         }
         $suggested_command .= '--update-with-dependencies';
-        $this->logger()
-            ->warning('One or more of your dependencies has an outstanding security update.');
-        $this->logger()
-            ->notice("Try running: <comment>$suggested_command</comment>");
-        $this->logger()
-            ->notice("If that fails due to a conflict then you must update one or more root dependencies.");
+        $this->logger()->warning('One or more of your dependencies has an outstanding security update.');
+        $this->logger()->notice("Try running: <comment>$suggested_command</comment>");
+        $this->logger()->notice("If that fails due to a conflict then you must update one or more root dependencies.");
     }
 
     /**
@@ -147,13 +140,11 @@ class SecurityUpdateCommands extends DrushCommands
         $security_advisories_composer_json
     ) {
         $updates = [];
-        $both = array_merge($composer_lock_data['packages-dev'],
-            $composer_lock_data['packages']);
+        $both = array_merge($composer_lock_data['packages-dev'], $composer_lock_data['packages']);
         $conflict = $security_advisories_composer_json['conflict'];
         foreach ($both as $package) {
             $name = $package['name'];
-            if (!empty($conflict[$name]) && Semver::satisfies($package['version'],
-                    $security_advisories_composer_json['conflict'][$name])) {
+            if (!empty($conflict[$name]) && Semver::satisfies($package['version'], $security_advisories_composer_json['conflict'][$name])) {
                 $updates[$name] = [
                     'name' => $name,
                     'version' => $package['version'],
@@ -190,10 +181,8 @@ class SecurityUpdateCommands extends DrushCommands
         $out = $process->getOutput();
         if ($packages = json_decode($out, true)) {
             $suggested_command = "composer why " . key($packages);
-            $this->logger()
-                ->warning('One or more of your dependencies has an outstanding security update.');
-            $this->logger()
-                ->notice("Try running: <comment>$suggested_command</comment> to learn what  module requires the package.");
+            $this->logger()->warning('One or more of your dependencies has an outstanding security update.');
+            $this->logger()->notice("Try running: <comment>$suggested_command</comment> to learn what  module requires the package.");
             return CommandResult::dataWithExitCode(new UnstructuredData($packages), self::EXIT_FAILURE);
         }
     }
