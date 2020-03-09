@@ -285,19 +285,6 @@ class ConfigLocator
     }
 
     /**
-     * Add site-specific configuration files.
-     *
-     * @param $siteRoot The Drupal root.
-     * @param $uri The site URI.
-     * @return $this
-     */
-    public function addSiteConfig($siteRoot, $uri)
-    {
-        $this->addConfigPaths(self::SITE_CONTEXT, [ "$siteRoot/sites/$uri", "$siteRoot/sites/$uri/drush" ]);
-        return $this;
-    }
-
-    /**
      * Add any configuration file found at any of the provided paths. Both the
      * provided location, and the directory `config` inside each provided location
      * is searched for a drush.yml file.

@@ -256,11 +256,6 @@ class Preflight
             $this->aliasManager->setSelf($selfSiteAlias);
             $this->configLocator->addAliasConfig($selfSiteAlias->exportConfig());
 
-            // Add any site-specific configuration files if URI is set.
-            if ($uri = $selfSiteAlias->uri()) {
-                $this->configLocator->addSiteConfig($root, $uri);
-            }
-
             // Process the selected alias. This might change the selected site,
             // so we will add new site-wide config location for the new root.
             $root = $this->setSelectedSite($selfSiteAlias->localRoot(), false, $root);
