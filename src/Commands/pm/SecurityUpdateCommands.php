@@ -80,7 +80,7 @@ class SecurityUpdateCommands extends DrushCommands
         }
         $suggested_command .= '--update-with-dependencies';
         $this->logger()->warning('One or more of your dependencies has an outstanding security update.');
-        $this->logger()->notice("Try running: <comment>$suggested_command</comment>");
+        $this->logger()->notice("Try running <comment>$suggested_command</comment>");
         $this->logger()->notice("If that fails due to a conflict then you must update one or more root dependencies.");
     }
 
@@ -179,7 +179,7 @@ class SecurityUpdateCommands extends DrushCommands
         if ($packages = json_decode($out, true)) {
             $suggested_command = "composer why " . key($packages);
             $this->logger()->warning('One or more of your dependencies has an outstanding security update.');
-            $this->logger()->notice("Try running: <comment>$suggested_command</comment> to learn what  module requires the package.");
+            $this->logger()->notice("Run <comment>$suggested_command</comment> to learn what  module requires the package.");
             return CommandResult::dataWithExitCode(new UnstructuredData($packages), self::EXIT_FAILURE);
         }
     }
