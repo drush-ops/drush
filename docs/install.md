@@ -25,7 +25,6 @@ Drupal Compatibility
     <th rowspan="2"> Drush Version </th> 
     <th rowspan="2"> Drush Branch </th>
     <th rowspan="2"> PHP </th>
-    <th rowspan="2"> Release </th>
     <th rowspan="2"> EOL </th>
     <th colspan="5"> Drupal versions </th>
   </tr>
@@ -35,7 +34,7 @@ Drupal Compatibility
     <td> Drush 10 </td>
     <td> master </td>
     <td> 7.1+ </td>
-    <td> Oct 2019 </td>
+    <!-- Released Oct 2019 -->
     <td> <i>tbd</i> </td>
     <td></td> <td></td> <td></td> <td>✅</td> <td><b>✅</b></td>
   </tr>
@@ -43,7 +42,7 @@ Drupal Compatibility
     <td> Drush 9 </td>
     <td> 9.x </td>
     <td> 5.6+ </td>
-    <td> Jan 2018 </td>
+    <!-- Released Jan 2018 -->
     <td> <i>May 2020</i> </td>
     <td></td> <td></td> <td></td> <td>✅</td> <td></td>
   </tr>
@@ -51,7 +50,7 @@ Drupal Compatibility
     <td> Drush 8 </td>
     <td> 8.x </td>
     <td> 5.4.5+ </td>
-    <td> Nov 2015 </td>
+    <!-- Released Nov 2015 -->
     <td> ❶ </td>
     <td>✅</td> <td>✅</td> <td>✅</td> <td><b>⚠️</b></td> <td></td>
   </tr>
@@ -59,7 +58,7 @@ Drupal Compatibility
     <td> Drush 7 </td>
     <td> 7.x </td>
     <td> 5.3.0+ </td>
-    <td> May 2015 </td>
+    <!-- Released May 2015 -->
     <td> Jul 2017 </td>
     <td>✓</td> <td>✓</td> <td></td> <td></td> <td></td>
   </tr>
@@ -67,7 +66,7 @@ Drupal Compatibility
     <td> Drush 6 </td>
     <td> 6.x </td>
     <td> 5.3.0+ </td>
-    <td> Aug 2013 </td>
+    <!-- Released Aug 2013 -->
     <td> Dec 2015 </td>
     <td>✓</td> <td>✓</td> <td></td> <td></td> <td></td>
   </tr>
@@ -75,7 +74,7 @@ Drupal Compatibility
     <td> Drush 5 </td>
     <td> 5.x </td>
     <td> 5.2.0+ </td>
-    <td> March 2012 </td>
+    <!-- Released March 2012 -->
     <td> May 2015 </td>
     <td>✓</td> <td>✓</td> <td></td> <td></td> <td></td>
   </tr>
