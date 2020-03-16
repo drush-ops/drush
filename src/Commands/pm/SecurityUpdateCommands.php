@@ -80,7 +80,7 @@ class SecurityUpdateCommands extends DrushCommands
         }
         $suggested_command .= '--update-with-dependencies';
         $this->logger()->warning('One or more of your dependencies has an outstanding security update.');
-        $this->logger()->notice("Try running <comment>$suggested_command</comment>");
+        $this->logger()->notice("Try running: <comment>$suggested_command</comment>");
         $this->logger()->notice("If that fails due to a conflict then you must update one or more root dependencies.");
     }
 
