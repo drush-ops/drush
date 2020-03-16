@@ -35,7 +35,7 @@ Drupal Compatibility
     <td> master </td>
     <td> 7.1+ </td>
     <!-- Released Oct 2019 -->
-    <td> <i>tbd</i> </td>
+    <td> <i>TBD</i> </td>
     <td></td> <td></td> <td></td> <td>✅</td> <td><b>✅</b></td>
   </tr>
   <tr>
