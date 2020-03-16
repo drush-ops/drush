@@ -231,6 +231,16 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
+                    static&nbsp;string
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_composerLockPath">composerLockPath</a>()
+        
+                                            <p>Return path to composer.lock</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
                     <abbr title="Consolidation\OutputFormatters\StructuredData\RowsOfFields">RowsOfFields</abbr>
                 </div>
                 <div class="col-md-8 type">
@@ -277,6 +287,16 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                     <a href="#method_calculateSecurityUpdates">calculateSecurityUpdates</a>(array $composer_lock_data, array $security_advisories_composer_json)
         
                                             <p>Return  available security updates.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    <abbr title="Consolidation\OutputFormatters\StructuredData\UnstructuredData">UnstructuredData</abbr>
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_securityPhp">securityPhp</a>(array $options = [&#039;format&#039; =&gt; &#039;yaml&#039;])
+        
+                                            <p>Check non-Drupal PHP packages for pending security updates.</p>                </div>
                 <div class="col-md-2"></div>
             </div>
             </div>
@@ -429,8 +449,47 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
 
             </div>
                     <div class="method-item">
+                    <h3 id="method_composerLockPath">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/pm/SecurityUpdateCommands.php#L25">line 25</a></div>
+        <code>        static            string
+    <strong>composerLockPath</strong>()
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Return path to composer.lock</p>                                                </div>
+                <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+                            <h4>Exceptions</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><a target="_blank" href="http://php.net/Exception">Exception</a></td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
                     <h3 id="method_security">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/pm/SecurityUpdateCommands.php#L39">line 39</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/pm/SecurityUpdateCommands.php#L59">line 59</a></div>
         <code>                    <abbr title="Consolidation\OutputFormatters\StructuredData\RowsOfFields">RowsOfFields</abbr>
     <strong>security</strong>()
         </code>
@@ -481,7 +540,7 @@ are available.</p>                            </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_suggestComposerCommand">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/pm/SecurityUpdateCommands.php#L55">line 55</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/pm/SecurityUpdateCommands.php#L75">line 75</a></div>
         <code>                    
     <strong>suggestComposerCommand</strong>($updates)
         </code>
@@ -512,7 +571,7 @@ are available.</p>                            </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_fetchAdvisoryComposerJson">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/pm/SecurityUpdateCommands.php#L74">line 74</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/pm/SecurityUpdateCommands.php#L94">line 94</a></div>
         <code>            protected        mixed
     <strong>fetchAdvisoryComposerJson</strong>()
         </code>
@@ -551,7 +610,7 @@ are available.</p>                            </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_loadSiteComposerLock">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/pm/SecurityUpdateCommands.php#L96">line 96</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/pm/SecurityUpdateCommands.php#L116">line 116</a></div>
         <code>            protected        array
     <strong>loadSiteComposerLock</strong>()
         </code>
@@ -590,7 +649,7 @@ are available.</p>                            </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_calculateSecurityUpdates">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/pm/SecurityUpdateCommands.php#L130">line 130</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/pm/SecurityUpdateCommands.php#L137">line 137</a></div>
         <code>            protected        array
     <strong>calculateSecurityUpdates</strong>(array $composer_lock_data, array $security_advisories_composer_json)
         </code>
@@ -628,6 +687,56 @@ are available.</p>                            </div>
     </table>
 
             
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_securityPhp">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/pm/SecurityUpdateCommands.php#L171">line 171</a></div>
+        <code>                    <abbr title="Consolidation\OutputFormatters\StructuredData\UnstructuredData">UnstructuredData</abbr>
+    <strong>securityPhp</strong>(array $options = [&#039;format&#039; =&gt; &#039;yaml&#039;])
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Check non-Drupal PHP packages for pending security updates.</p>                    <p>Thanks to https://github.com/FriendsOfPHP/security-advisories and Symfony
+for providing this service.</p>                            </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>array</td>
+                <td>$options</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><abbr title="Consolidation\OutputFormatters\StructuredData\UnstructuredData">UnstructuredData</abbr></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+                            <h4>Exceptions</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><a target="_blank" href="http://php.net/Exception">Exception</a></td>
+                <td></td>
+            </tr>
+            </table>
+
             
                     </div>
     </div>
