@@ -1,5 +1,4 @@
 {
   "name": "",
-  "description": "This extension provides commands for Drush.",
-  "type": "drupal-drush",
+  "type": "drupal-drush"
 }
