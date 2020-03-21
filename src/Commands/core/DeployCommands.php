@@ -28,7 +28,7 @@ class DeployCommands extends DrushCommands implements SiteAliasManagerAwareInter
         $redispatchOptions = Drush::redispatchOptions();
 
         $this->logger()->notice("Database updates start.");
-        $options = ['no-cache-clear' => TRUE];
+        $options = ['no-cache-clear' => true];
         $process = $this->processManager()->drush($self, 'updatedb', [], $options + $redispatchOptions);
         $process->mustRun($process->showRealtime());
         $this->logger()->success("Database updates complete.");
