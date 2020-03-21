@@ -22,6 +22,4 @@ class DeployTest extends UnishIntegrationTestCase
             $this->assertContains($expected, $this->getErrorOutput());
         }
     }
-
-
 }
