@@ -11,7 +11,6 @@ use Drush\Sql\SqlBase;
 use Webmozart\PathUtil\Path;
 
 /**
- * @group slow
  * @group commands
  * @group sql
  */
