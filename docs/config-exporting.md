@@ -27,11 +27,7 @@ $config['system.site']['name'] = 'Local Install of Awesome Widgets, Inc.';
 Note that the configuration override system is a Drupal feature, not
 a Drush feature. It should be the preferred method for changing
 configuration values on a per-environment basis; however, it does not
-work for some things, such as enabling and disabling modules.  For
-configuration changes not handled by the configuration override system,
-you can use Drush configuration filters.
+work for some things, such as enabling and disabling modules.
 
-## Ignoring Development Modules
-
-Use the [Config Split](https://www.drupal.org/project/config_split) module to
-split off development configuration in a dedicated config directory.
+See [Config Split](https://www.drupal.org/project/config_split) for advanced 
+variation by environment.
