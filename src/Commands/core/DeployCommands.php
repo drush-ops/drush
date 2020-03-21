@@ -11,14 +11,14 @@ class DeployCommands extends DrushCommands implements SiteAliasManagerAwareInter
     use SiteAliasManagerAwareTrait;
 
     /**
-     * Run several update related commands after performing a code deployment.
+     * Run several commands after performing a code deployment.
      *
      * @command deploy
      *
      * @usage drush deploy -v -y
      *   Run updates with verbose logging and accept all prompts.
      *
-     * @todo Add a topic. Add a test.
+     * @topics docs:deploy
      *
      * @throws \Exception
      */
