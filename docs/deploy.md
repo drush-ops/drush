@@ -7,8 +7,7 @@ performs the following:
 ```
 drush updatedb
 drush config:import
-drush deploy:hook
-drush cache:rebuild
+drush cache:rebuilddrush deploy:hook
 ```
 
 # Authoring update functions

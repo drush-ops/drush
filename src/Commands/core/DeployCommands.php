@@ -37,15 +37,15 @@ class DeployCommands extends DrushCommands implements SiteAliasManagerAwareInter
         $process = $manager->drush($self, 'config:import', [], $redispatchOptions);
         $process->mustRun($process->showRealtime());
 
-        $this->logger()->success("Deploy hook start.");
-        $process = $manager->drush($self, 'deploy:hook', [], $redispatchOptions);
-        // $process->mustRun($process->showRealtime());
-
         // It is possible that no updates were pending and thus no caches cleared yet.
         $this->logger()->success("Cache rebuild start.");
         $process = $manager->drush($self, 'cache:rebuild', [], $redispatchOptions);
         // To avoid occasional rmdir errors, disable Drush cache for this request.
         $process->setEnv(['DRUSH_PATHS_CACHE_DIRECTORY ' => file_exists('/dev/null') ? '/dev/null' : 'nul']);
         $process->mustRun($process->showRealtime());
+
+        $this->logger()->success("Deploy hook start.");
+        $process = $manager->drush($self, 'deploy:hook', [], $redispatchOptions);
+        // $process->mustRun($process->showRealtime());
     }
 }
