@@ -132,7 +132,7 @@ function _drush_pm_info_theme($info) {
   $data['core'] = $info->info['core'];
   $data['php'] = $info->info['php'];
   $data['engine'] = $info->info['engine'];
-  $data['base_theme'] = isset($info->base_themes) ? implode($info->base_themes, ', ') : '';
+  $data['base_theme'] = isset($info->base_themes) ? implode(', ', $info->base_themes) : '';
   $regions = $info->info['regions'];
   $data['regions'] = $regions;
   $features = $info->info['features'];
