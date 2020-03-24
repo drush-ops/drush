@@ -172,8 +172,8 @@ function drush_sitealias_resolve_sitespecs($site_specifications, $alias_path_con
 function drush_sitealias_valid_alias_format($alias) {
   return ( (strpos($alias, ',') !== false) ||
     ((strpos($alias, '@') === FALSE ? 0 : 1) + (strpos($alias, '/') === FALSE ? 0 : 1) + (strpos($alias, '#') === FALSE ? 0 : 1) >= 2) ||
-    ($alias{0} == '#') ||
-    ($alias{0} == '@')
+    ($alias[0] == '#') ||
+    ($alias[0] == '@')
   );
 }
 
