@@ -61,9 +61,9 @@ install:
   # - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
 
 test_script:
-  - vendor/bin/phpunit --colors=always --configuration tests --testsuite --debug functional
-  - vendor/bin/phpunit --colors=always --configuration tests --testsuite --debug integration
-  - vendor/bin/phpunit --colors=always --configuration tests --testsuite --debug unit
+  - vendor/bin/phpunit --colors=always --configuration tests --testsuite functional --debug
+  - vendor/bin/phpunit --colors=always --configuration tests --testsuite integration --debug
+  - vendor/bin/phpunit --colors=always --configuration tests --testsuite unit --debug
 
 on_finish:
   # Uncomment this and above line to enable RDP into build machine https://www.appveyor.com/docs/how-to/rdp-to-build-worker/
