@@ -21,5 +21,6 @@ class DeployTest extends UnishIntegrationTestCase
         foreach ($expecteds as $expected) {
             $this->assertContains($expected, $this->getErrorOutput());
         }
+        $this->assertContains('ss', 'ww');
     }
 }
