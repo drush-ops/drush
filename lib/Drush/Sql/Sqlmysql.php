@@ -95,7 +95,8 @@ EOT;
       $domain = ($this->db_spec['host'] == 'localhost') ? 'localhost' : '%';
       $user = sprintf("'%s'@'%s'", $this->db_spec['username'], $domain);
       $sql[] = sprintf("DROP USER IF EXISTS %s;", $user);
-      $sql[] = sprintf("CREATE USER %s IDENTIFIED WITH mysql_native_password BY '%s';", $user, $this->db_spec['password']);
+      $sql[] = sprintf("CREATE USER %s IDENTIFIED WITH mysql_native_password;", $user);
+      $sql[] = sprintf("SET PASSWORD FOR %s = PASSWORD('%s');", $user, $this->db_spec['password']);
       $sql[] = sprintf('GRANT ALL PRIVILEGES ON %s.* TO %s;', $dbname, $user);
       $sql[] = 'FLUSH PRIVILEGES;';
     }
