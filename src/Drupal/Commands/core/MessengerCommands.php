@@ -13,12 +13,9 @@ class MessengerCommands extends DrushCommands
     /**
      * @inheritDoc
      */
-    public function __construct()
+    public function __construct(MessengerInterface $messenger)
     {
-        if (\Drupal::hasService('messenger')) {
-            // Inject this once Drupal 8.4 becomes unsupported.
-            $this->messenger = \Drupal::messenger();
-        }
+        $this->messenger = $messenger;
     }
 
     /**
