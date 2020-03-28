@@ -317,11 +317,18 @@ class ConfigCommands extends DrushCommands implements StdinAwareInterface, SiteA
             ];
         }
 
-        if ($rows) {
-            return new RowsOfFields($rows);
-        } else {
+        if (!$rows) {
             $this->logger()->notice(dt('No differences between DB and sync directory.'));
+
+            // Suppress output if there are no differences and we are using the
+            // human readable "table" formatter so that we not uselessly output
+            // empty table headers.
+            if ($options['format'] === 'table') {
+                return null;
+            }
         }
+
+        return new RowsOfFields($rows);
     }
 
     /**
