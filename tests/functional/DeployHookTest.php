@@ -54,19 +54,5 @@ class DeployHookTest extends CommandUnishTestCase
         $this->drush('deploy:hook', [], [], null, null, self::EXIT_SUCCESS);
         $this->assertContains('[success] No pending deploy hooks.', $this->getErrorOutput());
         $this->assertNotContains('Finished performing deploy hooks.', $this->getErrorOutput());
-
-        // Resetting a deploy hook.
-        $this->drush('deploy:hook-reset', ['woot_deploy_a'], [], null, null, self::EXIT_SUCCESS);
-        $this->assertContains('[success] Deploy hook woot_deploy_a reset.', $this->getErrorOutput());
-
-        // Resetting the deploy hook which is already reset.
-        $this->drush('deploy:hook-reset', ['woot_deploy_a'], [], null, null, self::EXIT_SUCCESS);
-        $this->assertContains('[warning] Deploy hook woot_deploy_a has not run yet.', $this->getErrorOutput());
-
-        // Check the status.
-        $this->drush('deploy:hook-info', [], [], null, null, self::EXIT_SUCCESS);
-        $this->assertContains('woot     a      Successful deploy hook.', $this->getOutput());
-        $this->assertNotContains('Successful batched deploy hook', $this->getOutput());
-        $this->assertNotContains('Failing deploy hook', $this->getOutput());
     }
 }

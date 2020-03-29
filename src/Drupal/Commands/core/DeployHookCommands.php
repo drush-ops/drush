@@ -151,35 +151,4 @@ class DeployHookCommands extends DrushCommands implements SiteAliasManagerAwareI
         $this->logger()->log($level, dt('Finished performing deploy hooks.'));
         return $success ? self::EXIT_SUCCESS : self::EXIT_FAILURE;
     }
-
-    /**
-     * Marks a deploy update hook as not having run.
-     *
-     * During development one often wants to re-run the hook, so this helps
-     * resetting it so that it can be run again.
-     *
-     * @usage deploy:hook-reset mymodule_deploy_runagain
-     *   Unregisters that a deploy hook has run so that it runs again.
-     *
-     * @param string $hook
-     *   The hook name to reset.
-     *
-     * @command deploy:hook-reset
-     */
-    public function reset(string $hook)
-    {
-        // We set the values directly in the key value store that is shared
-        // with the registry. This avoids adding methods to the anonymous class.
-        $executed_hooks = $this->keyValue->get('existing_updates', []);
-        $new_hooks = array_diff($executed_hooks, [$hook]);
-        $this->keyValue->set('existing_updates', $new_hooks);
-
-        if ($executed_hooks == $new_hooks) {
-            $this->logger()->warning(dt('Deploy hook %hook has not run yet.', ['%hook' => $hook]));
-            return self::EXIT_SUCCESS;
-        }
-
-        $this->logger()->success(dt('Deploy hook %hook reset.', ['%hook' => $hook]));
-        return self::EXIT_SUCCESS;
-    }
 }
