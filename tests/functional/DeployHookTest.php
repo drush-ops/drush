@@ -23,7 +23,7 @@ class DeployHookTest extends CommandUnishTestCase
         $this->drush('pm-enable', ['woot'], $options);
 
         // Run deploy hooks.
-        $this->drush('deploy:hook', [], [], null, null, self::EXIT_ERROR);
+        $this->drush('deploy:hook', [], $options, null, null, self::EXIT_ERROR);
 
         $this->assertContains('woot     a         Successful deploy hook.', $this->getOutput());
         $this->assertContains('woot     batch     Successful batched deploy hook.', $this->getOutput());
@@ -43,7 +43,7 @@ class DeployHookTest extends CommandUnishTestCase
         $this->drush('state:set', ['woot_deploy_pass', 'true'], [], null, null, self::EXIT_SUCCESS);
 
         // Run deploy hooks again.
-        $this->drush('deploy:hook', [], [], null, null, self::EXIT_SUCCESS);
+        $this->drush('deploy:hook', [], $options, null, null, self::EXIT_SUCCESS);
 
         $this->assertContains('woot     failing   Failing deploy hook.', $this->getOutput());
         $this->assertContains('[notice] Deploy hook started: woot_deploy_failing', $this->getErrorOutput());

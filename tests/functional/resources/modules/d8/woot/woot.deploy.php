@@ -2,6 +2,7 @@
 
 /**
  * Successful deploy hook.
+ * Implements HOOK_deploy_NAME().
  */
 function woot_deploy_a()
 {
@@ -12,15 +13,21 @@ function woot_deploy_a()
 
 /**
  * Successful batched deploy hook.
+ * Implements HOOK_deploy_NAME().
  */
 function woot_deploy_batch(array &$sandbox)
 {
-    module_load_install('woot');
-    return woot_update_8105($sandbox);
+    $sandbox['current'] = isset($sandbox['current']) ? ++$sandbox['current'] : 1;
+    $sandbox['#finished'] = (int) $sandbox['current'] === 3;
+    if ($sandbox['#finished']) {
+        return "Finished at {$sandbox['current']}.";
+    }
+    return "Iteration {$sandbox['current']}.";
 }
 
 /**
  * Failing deploy hook.
+ * Implements HOOK_deploy_NAME().
  */
 function woot_deploy_failing()
 {
