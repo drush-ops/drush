@@ -1,8 +1,14 @@
 <?php
 
 /**
+ * This is a NAME.deploy.php file. It contains "deploy" functions. These are
+ * one-time functions that run *after* config is imported during a deployment.
+ * These are a higher level alternative to hook_update_n and hook_post_update_NAME
+ * functions. Also, the `drush deploy` command runs those before config:import.
+ */
+
+/**
  * Successful deploy hook.
- * Implements HOOK_deploy_NAME().
  */
 function woot_deploy_a()
 {
@@ -13,7 +19,6 @@ function woot_deploy_a()
 
 /**
  * Successful batched deploy hook.
- * Implements HOOK_deploy_NAME().
  */
 function woot_deploy_batch(array &$sandbox)
 {
@@ -27,7 +32,6 @@ function woot_deploy_batch(array &$sandbox)
 
 /**
  * Failing deploy hook.
- * Implements HOOK_deploy_NAME().
  */
 function woot_deploy_failing()
 {
