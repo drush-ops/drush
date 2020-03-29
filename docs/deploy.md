@@ -7,7 +7,8 @@ performs the following:
 ```
 drush updatedb
 drush config:import
-drush cache:rebuilddrush deploy:hook
+drush cache:rebuild
+drush deploy:hook
 ```
 
 # Authoring update functions
@@ -15,9 +16,9 @@ Below are the 3 types of update functions run by this command. Choose the most a
 
 | Function | Purpose |
 | --- | --- |
-| [hook_update_n()](https://api.drupal.org/api/drupal/core!lib!Drupal!Core!Extension!module.api.php/function/hook_update_N) | Low level changes. Drupal API not allowed. |
-| [hook_post_update_NAME()](https://api.drupal.org/api/drupal/core!lib!Drupal!Core!Extension!module.api.php/function/hook_post_update_NAME) | Drupal API allowed. |
-| hook_deploy() | Runs after config is imported. Drupal API allowed. | 
+| [HOOK_update_n()](https://api.drupal.org/api/drupal/core!lib!Drupal!Core!Extension!module.api.php/function/hook_update_N) | Low level changes. Drupal API not allowed. |
+| [HOOK_post_update_NAME()](https://api.drupal.org/api/drupal/core!lib!Drupal!Core!Extension!module.api.php/function/hook_post_update_NAME) | Drupal API allowed. |
+| [HOOK_deploy_NAME()](https://github.com/drush-ops/drush/blob/master/tests/functional/resources/modules/d8/woot/woot.deploy.php) | Runs after config is imported. Drupal API allowed. | 
 
 ## Configuration
 

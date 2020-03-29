@@ -48,6 +48,6 @@ class DeployCommands extends DrushCommands implements SiteAliasManagerAwareInter
 
         $this->logger()->success("Deploy hook start.");
         $process = $manager->drush($self, 'deploy:hook', [], $redispatchOptions);
-        // $process->mustRun($process->showRealtime());
+        $process->mustRun($process->showRealtime());
     }
 }
