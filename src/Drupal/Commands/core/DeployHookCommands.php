@@ -156,7 +156,7 @@ class DeployHookCommands extends DrushCommands implements SiteAliasManagerAwareI
      * Marks a deploy update hook as not having run.
      *
      * During development one often wants to re-run the hook, so this helps
-     * re-setting it so that it can be run again.
+     * resetting it so that it can be run again.
      *
      * @usage deploy:hook-reset mymodule_deploy_runagain
      *   Unregisters that a deploy hook has run so that it runs again.
