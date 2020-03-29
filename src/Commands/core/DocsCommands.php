@@ -194,4 +194,17 @@ class DocsCommands extends DrushCommands
     {
         self::printFile(DRUSH_BASE_PATH. '/examples/Commands/PolicyCommands.php');
     }
+
+    /**
+     * Deploy command for Drupal.
+     *
+     * @command docs:deploy
+     * @aliases docs-deploy
+     * @hidden
+     * @topic
+     */
+    public function deploy()
+    {
+        self::printFile(DRUSH_BASE_PATH. '/docs/deploy.md');
+    }
 }

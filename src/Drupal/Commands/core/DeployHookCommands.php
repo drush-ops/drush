@@ -71,6 +71,7 @@ class DeployHookCommands extends DrushCommands implements SiteAliasManagerAwareI
      * @default-fields module,hook,description
      *
      * @command deploy:hook-status
+     * @topics docs:deploy
      *
      * @filter-default-field hook
      * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
@@ -101,6 +102,7 @@ class DeployHookCommands extends DrushCommands implements SiteAliasManagerAwareI
      *   Run pending deploy hooks.
      *
      * @command deploy:hook
+     * @topics docs:deploy
      */
     public function run()
     {
