@@ -61,7 +61,7 @@ class DeployHookCommands extends DrushCommands implements SiteAliasManagerAwareI
     /**
      * Prints information about pending deploy update hooks.
      *
-     * @usage deploy:hook-info
+     * @usage deploy:hook-status
      *   Prints information about pending deploy hooks.
      *
      * @field-labels
@@ -70,12 +70,12 @@ class DeployHookCommands extends DrushCommands implements SiteAliasManagerAwareI
      *   description: Description
      * @default-fields module,hook,description
      *
-     * @command deploy:hook-info
+     * @command deploy:hook-status
      *
      * @filter-default-field hook
      * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
      */
-    public function info()
+    public function status()
     {
         $updates = $this->registry->getPendingUpdateInformation();
         $rows = [];
@@ -111,7 +111,7 @@ class DeployHookCommands extends DrushCommands implements SiteAliasManagerAwareI
             return self::EXIT_SUCCESS;
         }
 
-        $process = $this->processManager()->drush($this->siteAliasManager()->getSelf(), 'deploy:hook-info');
+        $process = $this->processManager()->drush($this->siteAliasManager()->getSelf(), 'deploy:hook-status');
         $process->mustRun();
         $this->output()->writeln($process->getOutput());
 
