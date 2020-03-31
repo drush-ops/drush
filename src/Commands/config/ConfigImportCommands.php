@@ -37,7 +37,6 @@ class ConfigImportCommands extends DrushCommands
      * @option source An arbitrary directory that holds the configuration files. An alternative to label argument
      * @option partial Allows for partial config imports from the source directory. Only updates and new configs will be processed with this flag (missing configs will not be deleted). No config transformation happens.
      * @aliases cim,config-import
-     * @kernel update
      * @bootstrap full
      */
     public function import($label = null, $options = ['preview' => 'list', 'source' => self::REQ, 'partial' => false, 'diff' => false])

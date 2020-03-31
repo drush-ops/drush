@@ -35,8 +35,10 @@ class ConfigSubscriber extends ConfigImportValidateEventSubscriberBase
    */
     public function onConfigImporterValidate(ConfigImporterEvent $event)
     {
-        // Always log an error.
-        $importer = $event->getConfigImporter();
-        $importer->logError($this->t('woot config error'));
+        // Always log an error, except when there has been a state key set that explicitly disables this functionality.
+        if (!\Drupal::state()->get('woot.shoud_not_fail_on_cim')) {
+            $importer = $event->getConfigImporter();
+            $importer->logError($this->t('woot config error'));
+        }
     }
 }
