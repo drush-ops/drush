@@ -138,6 +138,10 @@ YAML_FRAGMENT;
         file_put_contents($extensionFile, Yaml::encode($extension));
 
         $this->drush('config:import');
+
+        // We make sure that the service inside the newly enabled module exists now. A fatal
+        // error will be thrown by Drupal if the service does not exist.
+        $this->drush('php:eval', ['Drupal::service("drush_empty_module.service");']);
     }
 
     protected function getConfigSyncDir()
