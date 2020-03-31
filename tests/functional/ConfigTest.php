@@ -137,7 +137,17 @@ YAML_FRAGMENT;
         $extension['module'] = module_config_sort($extension['module']);
         file_put_contents($extensionFile, Yaml::encode($extension));
 
+        // When importing config, the 'woot' module should warn about a validation error.
+        $this->drush('config:import', [], [], null, null, CommandUnishTestCase::EXIT_ERROR);
+        $this->assertContains("woot config error", $this->getErrorOutput(), 'Woot returned an expected config validation error.');
+
+        // Now we disable the error, and retry the config import.
+        $this->drush('state:set', ['woot.shoud_not_fail_on_cim', 'true']);
         $this->drush('config:import');
+
+        // We make sure that the service inside the newly enabled module exists now. A fatal
+        // error will be thrown by Drupal if the service does not exist.
+        $this->drush('php:eval', ['Drupal::service("drush_empty_module.service");']);
     }
 
     protected function getConfigSyncDir()
