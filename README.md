@@ -44,3 +44,5 @@ Credits
   the folks listed at https://github.com/orgs/drush-ops/people.
 
 ![Drush Logo](drush_logo-black.png)
+
+Test Trevis CI on 8.x
