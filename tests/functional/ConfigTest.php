@@ -145,9 +145,9 @@ YAML_FRAGMENT;
         $this->drush('state:set', ['woot.shoud_not_fail_on_cim', 'true']);
         $this->drush('config:import');
 
-        // We make sure that the service inside the newly enabled module exists now.
-        $this->drush('php:eval', ['var_dump(\Drupal::hasService("drush_empty_module.service"));']);
-        $this->assertOutputEquals('bool(true)');
+        // We make sure that the service inside the newly enabled module exists now. A fatal
+        // error will be thrown by Drupal if the service does not exist.
+        $this->drush('php:eval', ['Drupal::service("drush_empty_module.service");']);
     }
 
     protected function getConfigSyncDir()
