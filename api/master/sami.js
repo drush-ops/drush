@@ -332,6 +332,7 @@ window.projectVersion = 'master';
             
             {"type": "Class", "fromName": "Drush\\Commands\\core", "fromLink": "Drush/Commands/core.html", "link": "Drush/Commands/core/DeployCommands.html", "name": "Drush\\Commands\\core\\DeployCommands", "doc": "&quot;&quot;"},
                                                         {"type": "Method", "fromName": "Drush\\Commands\\core\\DeployCommands", "fromLink": "Drush/Commands/core/DeployCommands.html", "link": "Drush/Commands/core/DeployCommands.html#method_deploy", "name": "Drush\\Commands\\core\\DeployCommands::deploy", "doc": "&quot;Run several commands after performing a code deployment.&quot;"},
+                    {"type": "Method", "fromName": "Drush\\Commands\\core\\DeployCommands", "fromLink": "Drush/Commands/core/DeployCommands.html", "link": "Drush/Commands/core/DeployCommands.html#method_cacheRebuild", "name": "Drush\\Commands\\core\\DeployCommands::cacheRebuild", "doc": "&quot;&quot;"},
             
             {"type": "Class", "fromName": "Drush\\Commands\\core", "fromLink": "Drush/Commands/core.html", "link": "Drush/Commands/core/DocsCommands.html", "name": "Drush\\Commands\\core\\DocsCommands", "doc": "&quot;Topic commands.&quot;"},
                                                         {"type": "Method", "fromName": "Drush\\Commands\\core\\DocsCommands", "fromLink": "Drush/Commands/core/DocsCommands.html", "link": "Drush/Commands/core/DocsCommands.html#method_readme", "name": "Drush\\Commands\\core\\DocsCommands::readme", "doc": "&quot;README.md&quot;"},
