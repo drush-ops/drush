@@ -147,8 +147,8 @@ trait OutputUtilsTrait
      * @param string $key
      *   Optionally return only a top level element from the json object.
      *
-     * @return object
-     *   Decoded object.
+     * @return array
+     *   Decoded array.
      */
     public function getOutputFromJSON($key = null)
     {

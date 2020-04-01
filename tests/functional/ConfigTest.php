@@ -144,6 +144,12 @@ YAML_FRAGMENT;
         // Now we disable the error, and retry the config import.
         $this->drush('state:set', ['woot.shoud_not_fail_on_cim', 'true']);
         $this->drush('config:import');
+        $this->drush('php:eval', ["return \Drupal::getContainer()->getParameter('container.modules')"], ['format' => 'json']);
+
+        // Assure that new modules are fully enabled.
+        $out = $this->getOutputFromJSON();
+        $this->assertArrayHasKey('woot', $out);
+        $this->assertArrayHasKey('drush_empty_module', $out);
 
         // We make sure that the service inside the newly enabled module exists now. A fatal
         // error will be thrown by Drupal if the service does not exist.
