@@ -5,7 +5,8 @@ deployment script updates the codebase for the target site and then this command
 performs the following:
 
 ```
-drush updatedb
+drush updatedb --no-cache-clear
+drush cache:rebuild
 drush config:import
 drush cache:rebuild
 drush deploy:hook
