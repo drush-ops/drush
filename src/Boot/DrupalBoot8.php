@@ -5,6 +5,7 @@ namespace Drush\Boot;
 use Consolidation\AnnotatedCommand\AnnotationData;
 use Drupal\Core\Database\Database;
 use Drupal\Core\DrupalKernel;
+use Drush\Drupal\DrushLoggerServiceProvider;
 use Drush\Drupal\DrushServiceModifier;
 use Drush\Drush;
 use Drush\Log\DrushLog;
@@ -122,19 +123,6 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
         return $site_path;
     }
 
-    public function addLogger()
-    {
-        // Provide a logger which sends
-        // output to log(). This should catch every message logged through every
-        // channel.
-        $container = \Drupal::getContainer();
-        $parser = $container->get('logger.log_message_parser');
-
-        $drushLogger = Drush::logger();
-        $this->drupalLoggerAdapter = new DrushLog($parser, $drushLogger);
-        $container->get('logger.factory')->addLogger($this->drupalLoggerAdapter);
-    }
-
     public function bootstrapDrupalCore(BootstrapManager $manager, $drupal_root)
     {
         return Path::join($drupal_root, 'core');
@@ -220,6 +208,9 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
 
     public function bootstrapDrupalConfiguration(BootstrapManager $manager, AnnotationData $annotationData = null)
     {
+        // Coax \Drupal\Core\DrupalKernel::discoverServiceProviders to add our logger.
+        $GLOBALS['conf']['container_service_providers'][] = DrushLoggerServiceProvider::class;
+
         // Default to the standard kernel.
         $kernel = Kernels::DRUPAL;
         if (!empty($annotationData)) {
@@ -248,7 +239,6 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
     {
         $this->logger->debug(dt('Start bootstrap of the Drupal Kernel.'));
         $this->kernel->boot();
-        $this->addLogger();
         $this->kernel->preHandle($this->getRequest());
         $this->logger->debug(dt('Finished bootstrap of the Drupal Kernel.'));
 
