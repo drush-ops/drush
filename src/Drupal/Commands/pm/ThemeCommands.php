@@ -55,8 +55,5 @@ class ThemeCommands extends DrushCommands
             throw new \Exception('Unable to uninstall themes.');
         }
         $this->logger()->success(dt('Successfully uninstalled theme: !list', ['!list' => implode(', ', $themes)]));
-        // Our logger got blown away during the container rebuild above.
-        $boot = Drush::bootstrapManager()->bootstrap();
-        $boot->addLogger();
     }
 }
