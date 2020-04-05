@@ -3,7 +3,6 @@ namespace Drush\Commands\core;
 
 use Composer\Semver\Comparator;
 use Consolidation\AnnotatedCommand\CommandData;
-use Consolidation\SiteProcess\ProcessBase;
 use Drupal\Component\FileCache\FileCacheFactory;
 use Drupal\Core\Database\Database;
 use Drupal\Core\Installer\Exception\AlreadyInstalledException;
