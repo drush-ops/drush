@@ -139,7 +139,7 @@ but we can't help that here -- we just need to convert back.</p>                
                     
                 </div>
                 <div class="col-md-8 type">
-                    <a href="#method___construct">__construct</a>(<abbr title="Drupal\Core\Logger\LogMessageParserInterface">LogMessageParserInterface</abbr> $parser, <abbr title="Psr\Log\LoggerInterface">LoggerInterface</abbr> $logger)
+                    <a href="#method___construct">__construct</a>(<abbr title="Drupal\Core\Logger\LogMessageParserInterface">LogMessageParserInterface</abbr> $parser)
         
                                             <p>Constructs a DrushLog object.</p>                </div>
                 <div class="col-md-2"></div>
@@ -162,9 +162,9 @@ but we can't help that here -- we just need to convert back.</p>                
             <div id="method-details">
                     <div class="method-item">
                     <h3 id="method___construct">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Log/DrushLog.php#L52">line 52</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Log/DrushLog.php#L53">line 53</a></div>
         <code>                    
-    <strong>__construct</strong>(<abbr title="Drupal\Core\Logger\LogMessageParserInterface">LogMessageParserInterface</abbr> $parser, <abbr title="Psr\Log\LoggerInterface">LoggerInterface</abbr> $logger)
+    <strong>__construct</strong>(<abbr title="Drupal\Core\Logger\LogMessageParserInterface">LogMessageParserInterface</abbr> $parser)
         </code>
     </h3>
     <div class="details">
@@ -180,12 +180,7 @@ but we can't help that here -- we just need to convert back.</p>                
                     <tr>
                 <td><abbr title="Drupal\Core\Logger\LogMessageParserInterface">LogMessageParserInterface</abbr></td>
                 <td>$parser</td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td><abbr title="Psr\Log\LoggerInterface">LoggerInterface</abbr></td>
-                <td>$logger</td>
-                <td></td>
+                <td>The parser to use when extracting message variables.</td>
             </tr>
             </table>
 
@@ -198,7 +193,7 @@ but we can't help that here -- we just need to convert back.</p>                
             </div>
                     <div class="method-item">
                     <h3 id="method_log">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Log/DrushLog.php#L61">line 61</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Log/DrushLog.php#L62">line 62</a></div>
         <code>                    
     <strong>log</strong>($level, $message, array $context = [])
         </code>
