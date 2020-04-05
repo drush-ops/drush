@@ -14,7 +14,7 @@ class DrushLoggerServiceProvider implements ServiceProviderInterface
      */
     public function register(ContainerBuilder $container)
     {
-        $container->register('logger.drupaltodrush', LoggerDrupalToDrush::class)
+        $container->register('logger.drupaltodrush', \Drush\Log\DrushLog::class)
             ->addArgument(new Reference('logger.log_message_parser'))
             ->addTag('logger');
     }
