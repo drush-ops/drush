@@ -53,7 +53,6 @@ class DrushLog implements LoggerInterface, LoggerAwareInterface
     public function __construct(LogMessageParserInterface $parser)
     {
         $this->parser = $parser;
-        $this->logger = Drush::logger();
     }
 
     /**
@@ -61,6 +60,11 @@ class DrushLog implements LoggerInterface, LoggerAwareInterface
      */
     public function log($level, $message, array $context = [])
     {
+        // Only log during Drush requests, not web requests.
+        if (!\Robo\Robo::hasContainer()) {
+            return;
+        }
+
         // Translate the RFC logging levels into their Drush counterparts, more or
         // less.
         // @todo ALERT, CRITICAL and EMERGENCY are considered show-stopping errors,
@@ -107,6 +111,6 @@ class DrushLog implements LoggerInterface, LoggerAwareInterface
 
         $message = empty($message_placeholders) ? $message : strtr($message, $message_placeholders);
 
-        $this->logger->log($error_type, $message, $context);
+        Drush::logger()->log($error_type, $message, $context);
     }
 }
