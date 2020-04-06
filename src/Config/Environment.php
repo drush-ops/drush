@@ -34,10 +34,10 @@ class Environment
     public function __construct($homeDir, $cwd, $autoloadFile)
     {
         $this->homeDir = $homeDir;
-        $this->originalCwd = Path::canonicalize($cwd);
+        $this->originalCwd = Path::canonicalize(FsUtils::realpath($cwd));
         $this->etcPrefix = '';
         $this->sharePrefix = '';
-        $this->drushBasePath = dirname(dirname(__DIR__));
+        $this->drushBasePath = Path::canonicalize(dirname(dirname(__DIR__)));
         $this->vendorDir = FsUtils::realpath(dirname($autoloadFile));
     }
 
@@ -395,7 +395,7 @@ class Environment
         if ($override) {
             return $override;
         }
-        return static::isWindows() ? getenv('ALLUSERSPROFILE') . '/Drush' : $defaultPrefix;
+        return static::isWindows() ? Path::join(getenv('ALLUSERSPROFILE'), 'Drush') : $defaultPrefix;
     }
 
     /**
@@ -461,7 +461,7 @@ class Environment
             $columns = $matches[1];
         }
 
-        // If stty fails and Drush us running on Windows are we trying with mode con.
+        // If stty fails and Drush is running on Windows are we trying with mode con.
         if (($columns_status || !$matched) && static::isWindows()) {
             $columns_output = [];
             exec('mode con', $columns_output, $columns_status);

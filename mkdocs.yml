@@ -16,6 +16,7 @@ pages:
   - Drupal configuration: config-exporting.md
   - Output Formats, Fields & Filters: output-formats-filters.md
   - REPL (a custom shell for Drupal): repl.md
+  - Deploy: deploy.md
 - Writing commands/generators:
   - Command Authoring: commands.md
   - Hooks: hooks.md

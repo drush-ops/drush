@@ -27,13 +27,13 @@ class UserCase extends CommandUnishTestCase
         $this->drush('user-information', [self::NAME], ['format' => 'json']);
         $uid = 2;
         $output = $this->getOutputFromJSON($uid);
-        $this->assertEquals(0, $output->user_status, 'User is blocked.');
+        $this->assertEquals(0, $output['user_status'], 'User is blocked.');
 
         // user-unblock
         $this->drush('user-unblock', [self::NAME]);
         $this->drush('user-information', [self::NAME], ['format' => 'json']);
         $output = $this->getOutputFromJSON($uid);
-        $this->assertEquals(1, $output->user_status, 'User is unblocked.');
+        $this->assertEquals(1, $output['user_status'], 'User is unblocked.');
     }
 
     public function testUserRole()
@@ -45,23 +45,23 @@ class UserCase extends CommandUnishTestCase
         $uid = 2;
         $output = $this->getOutputFromJSON($uid);
         $expected = ['authenticated', 'test role'];
-        $this->assertEquals($expected, array_values((array)$output->roles), 'User has test role.');
+        $this->assertEquals($expected, array_values($output['roles']), 'User has test role.');
 
         // user-remove-role
         $this->drush('user-remove-role', ['test role', self::NAME]);
         $this->drush('user-information', [self::NAME], ['format' => 'json']);
         $output = $this->getOutputFromJSON($uid);
         $expected = ['authenticated'];
-        $this->assertEquals($expected, array_values((array)$output->roles), 'User removed test role.');
+        $this->assertEquals($expected, array_values($output['roles']), 'User removed test role.');
     }
 
     public function testUserPassword()
     {
         $newpass = 'newpass';
         $name = self::NAME;
-        $this->drush('user-password', [self::NAME, $newpass]);
-        $eval = "return \\Drupal::service('user.auth')->authenticate('$name', '$newpass');";
-        $this->drush('php-eval', [$eval]);
+        $this->drush('user:password', [self::NAME, $newpass]);
+        $eval = "return Drupal::service(\"user.auth\")->authenticate(\"$name\", \"$newpass\");";
+        $this->drush('php:eval', [$eval]);
         $output = $this->getOutput();
         $this->assertEquals("2", $output, 'User can login with new password.');
     }
@@ -98,6 +98,19 @@ class UserCase extends CommandUnishTestCase
         $this->assertContains('/user/reset/' . $uid, $url['path'], 'Login with uid option returned a valid reset URL');
         $query = $url['query'];
         $this->assertEquals('destination=node/add', $query, 'Login included destination path in URL');
+        // Test specific user by uid.
+        $uid = 2;
+        $this->drush('user-login', [], $user_login_options + ['uid' => $uid]);
+        $output = $this->getOutput();
+        $url = parse_url($output);
+        $this->assertContains('/user/reset/' . $uid, $url['path'], 'Login with uid option returned a valid reset URL');
+        // Test specific user by mail.
+        $uid = 2;
+        $mail = 'example@example.com';
+        $this->drush('user-login', [], $user_login_options + ['mail' => $mail]);
+        $output = $this->getOutput();
+        $url = parse_url($output);
+        $this->assertContains('/user/reset/' . $uid, $url['path'], 'Login with mail option returned a valid reset URL');
     }
 
     public function testUserCancel()
@@ -125,13 +138,13 @@ class UserCase extends CommandUnishTestCase
             'description_base_field' => 'no',
             'rest_configuration' => 'no',
         ];
-        $answers = json_encode($answers);
+        $answers = json_encode($answers, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_NUMERIC_CHECK);
         $this->drush('generate', ['content-entity'], ['answers' => $answers, 'directory' => Path::join(self::webroot(), 'modules/contrib')], null, null, self::EXIT_SUCCESS, null, ['SHELL_INTERACTIVE' => 1]);
         $this->drush('pm-enable', ['text,unish_article']);
         // Create one unish_article owned by our example user.
         $this->drush('php-script', ['create_unish_articles'], ['script-path' => Path::join(__DIR__, 'resources')]);
         // Verify that content entity exists.
-        $code = "echo entity_load('unish_article', 1)->id()";
+        $code = "echo Drupal::entityTypeManager()->getStorage('unish_article')->load(1)->id()";
         $this->drush('php-eval', [$code]);
         $this->assertEquals(1, $this->getOutput());
 
@@ -152,10 +165,10 @@ class UserCase extends CommandUnishTestCase
         $this->drush('user-information', [self::NAME], ['format' => 'json']);
         $uid = 2;
         $output = $this->getOutputFromJSON($uid);
-        $this->assertEquals('example@example.com', $output->mail);
-        $this->assertEquals(self::NAME, $output->name);
-        $this->assertEquals(1, $output->user_status, 'Newly created user is Active.');
+        $this->assertEquals('example@example.com', $output['mail']);
+        $this->assertEquals(self::NAME, $output['name']);
+        $this->assertEquals(1, $output['user_status'], 'Newly created user is Active.');
         $expected = ['authenticated'];
-        $this->assertEquals($expected, array_values((array)$output->roles), 'Newly created user has one role.');
+        $this->assertEquals($expected, array_values($output['roles']), 'Newly created user has one role.');
     }
 }

@@ -24,6 +24,7 @@
  * implementations.
  */
 
+use Drupal\Core\Database\Database;
 use Drush\Drush;
 use Drush\Log\LogLevel;
 
@@ -52,12 +53,13 @@ class DrushBatchContext extends ArrayObject {
  * Process a Drupal batch by spawning multiple Drush processes.
  *
  * This function will include the correct batch engine for the current
- * major version of Drupal, and will make use of the site-process
- * library to spawn multiple worker threads to handle the processing of
- * the current batch.
+ * major version of Drupal, and will make use of the drush_backend_invoke
+ * system to spawn multiple worker threads to handle the processing of
+ * the current batch, while keeping track of available memory.
  *
  * The batch system will process as many batch sets as possible until
- * the entire batch has been completed.
+ * the entire batch has been completed or 60% of the available memory
+ * has been used.
  *
  * This function is a drop in replacement for the existing batch_process()
  * function of Drupal.
@@ -129,7 +131,7 @@ function _drush_backend_batch_process($command = 'batch-process', $args, $option
 
     // Assign an arbitrary id: don't rely on a serial column in the 'batch'
     // table, since non-progressive batches skip database storage completely.
-    $batch['id'] = db_next_id();
+    $batch['id'] = \Drupal::database()->nextId();
     $args[] = $batch['id'];
 
     $batch['progressive'] = TRUE;
@@ -148,7 +150,7 @@ function _drush_backend_batch_process($command = 'batch-process', $args, $option
 
     while (!$finished) {
       $process = Drush::drush(Drush::aliasManager()->getSelf(), $command, $args);
-      // Suppress printing stdout since we return a JSON array to the caller there.
+      // Suppress printing stdout since a JSON array is returned to us here.
       $process->run($process->showRealtime()->hideStdout());
       $result = $process->getOutputAsJson();
       $finished = !$process->isSuccessful() || (isset($result['drush_batch_process_finished']) && $result['drush_batch_process_finished'] === TRUE);
@@ -174,9 +176,11 @@ function _drush_backend_batch_process($command = 'batch-process', $args, $option
 function _drush_batch_command($id) {
   $batch =& batch_get();
 
-  $data = db_query("SELECT batch FROM {batch} WHERE bid = :bid", [
-    ':bid' => $id
-  ])->fetchField();
+  $data = Database::getConnection()->select('batch', 'b')
+    ->fields('b', ['batch'])
+    ->condition('bid', $id)
+    ->execute()
+    ->fetchField();
 
   if ($data) {
     $batch = unserialize($data);
@@ -195,6 +199,9 @@ function _drush_batch_command($id) {
   if (_drush_batch_worker()) {
     return _drush_batch_finished();
   }
+  else {
+    return ['drush_batch_process_finished' => FALSE];
+  }
 }
 
 
@@ -202,7 +209,7 @@ function _drush_batch_command($id) {
  * Process batch operations
  *
  * Using the current $batch process each of the operations until the batch
- * has been completed or half of the available memory for the process has been
+ * has been completed or 60% of the available memory for the process has been
  * reached.
  */
 function _drush_batch_worker() {
@@ -278,6 +285,15 @@ function _drush_batch_worker() {
     // At this point, either $current_set contains operations that need to be
     // processed or all sets have been completed.
     $queue = _batch_queue($current_set);
+
+    // If we are in progressive mode, break processing after 60% of memory usage
+    // is reached.
+    if (drush_memory_limit() > 0 && (memory_get_usage() * 1.6) >= drush_memory_limit()) {
+      Drush::logger()->notice(dt("Batch process has consumed in excess of 60% of available memory. Starting new thread"));
+      // Record elapsed wall clock time.
+      $current_set['elapsed'] = round((microtime(TRUE) - $current_set['start']) * 1000, 2);
+      break;
+    }
   }
 
   // Reporting 100% progress will cause the whole batch to be considered
@@ -353,16 +369,8 @@ function _drush_batch_finished() {
  */
 function _drush_batch_shutdown() {
   if ($batch = batch_get()) {
-    if (drush_drupal_major_version() >= 8) {
       /** @var \Drupal\Core\Batch\BatchStorage $batch_storage */
       $batch_storage = \Drupal::service('batch.storage');
       $batch_storage->update($batch);
-    }
-    else {
-      db_update('batch')
-        ->fields(['batch' => serialize($batch)])
-        ->condition('bid', $batch['id'])
-        ->execute();
-    }
   }
 }

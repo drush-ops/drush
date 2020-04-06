@@ -5,6 +5,7 @@ namespace Drush\Commands\generate\Helper;
 use Consolidation\SiteProcess\Util\Escape;
 use DrupalCodeGenerator\Helper\OutputHandler as BaseOutputHandler;
 use Drush\Drush;
+use Drush\Exec\ExecTrait;
 use Symfony\Component\Console\Output\OutputInterface;
 use Webmozart\PathUtil\Path;
 
@@ -13,6 +14,7 @@ use Webmozart\PathUtil\Path;
  */
 class OutputHandler extends BaseOutputHandler
 {
+    use ExecTrait;
 
     /**
      * {@inheritdoc}
@@ -29,7 +31,7 @@ class OutputHandler extends BaseOutputHandler
         }
 
         if (defined('DRUPAL_ROOT') && $dumped_files) {
-            $exec = drush_get_editor();
+            $exec = self::getEditor();
             $exec = str_replace('%s', Escape::shellArg(Path::makeAbsolute($dumped_files[0], DRUPAL_ROOT)), $exec);
             $process = Drush::shell($exec);
             // Use start() in order to get an async fork.

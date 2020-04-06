@@ -17,7 +17,7 @@ class RedispatchTest extends CommandUnishTestCase
      */
     public function testDispatchUsingAlias()
     {
-        $options = ['alias-path' => Path::join(__DIR__, 'resources/alias-fixtures'), 'simulate' => null];
+        $options = ['uri' => 'OMIT', 'alias-path' => Path::join(__DIR__, 'resources/alias-fixtures'), 'simulate' => null];
         $this->drush('status', [], $options, '@example.live');
         $this->assertContains("[notice] Simulating: ssh -o PasswordAuthentication=example www-admin@service-provider.com '/example/path/to/drush --no-interaction status --uri=https://example.com --root=/path/on/service-provider'", $this->getSimplifiedErrorOutput());
     }

@@ -97,8 +97,8 @@ class ViewsCommands extends DrushCommands
             // Convert boolean values into a string to print.
             if (is_bool($value)) {
                 $value = $value ? 'TRUE' : 'FALSE';
-            } // Wrap string values in quotes.
-            elseif (is_string($value)) {
+            } elseif (is_string($value)) {
+                // Wrap string values in quotes.
                 $value = "\"$value\"";
             }
             $this->logger()->success(dt('!setting set to !value', [
@@ -247,7 +247,6 @@ class ViewsCommands extends DrushCommands
             $this->logger()->success(dt('No results returned for this View.'));
             return null;
         } elseif ($options['count']) {
-            drush_backend_set_result(count($view->result));
             $this->io()->writeln(count($view->result));
             return null;
         } else {

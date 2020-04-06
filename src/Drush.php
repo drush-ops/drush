@@ -6,11 +6,10 @@
  */
 namespace Drush;
 
-use Consolidation\SiteAlias\AliasRecord;
+use Consolidation\SiteAlias\SiteAliasInterface;
 use Consolidation\SiteAlias\SiteAliasManager;
 use Consolidation\SiteProcess\ProcessBase;
 use Consolidation\SiteProcess\SiteProcess;
-use Drush\Style\DrushStyle;
 use League\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Application;
@@ -40,14 +39,6 @@ use Symfony\Component\Process\Process;
  * than a few non-reusable lines, it is recommended to instantiate an object
  * implementing the actual logic.
  *
- * @code
- *   // Legacy procedural code.
- *   $object = drush_get_context('DRUSH_CLASS_LABEL');
- *
- * Better:
- *   $object = Drush::service('label');
- *
- * @endcode
  */
 class Drush
 {
@@ -147,7 +138,6 @@ class Drush
     public static function getContainer()
     {
         if (!\Robo\Robo::hasContainer()) {
-            debug_print_backtrace();
             throw new \RuntimeException('Drush::$container is not initialized yet. \Drush::setContainer() must be called with a real container.');
         }
         return \Robo\Robo::getContainer();
@@ -234,7 +224,7 @@ class Drush
      *
      * @return LoggerInterface
      *
-     * @deprecated Use injected logger instead. @see Drush::drush()
+     * @deprecated Use injected logger instead.
      */
     public static function logger()
     {
@@ -246,7 +236,7 @@ class Drush
      *
      * @return \Drush\Config\DrushConfig
      *
-     * @deprecated Use injected configuration instead. @see Drush::drush()
+     * @deprecated Use injected configuration instead.
      */
     public static function config()
     {
@@ -261,6 +251,16 @@ class Drush
     public static function aliasManager()
     {
         return self::service('site.alias.manager');
+    }
+
+    /**
+     * @return ProcessManager
+     *
+     * @deprecated Use injected process manager instead. @see Drush::drush()
+     */
+    public static function processManager()
+    {
+        return self::service('process.manager');
     }
 
     /**
@@ -335,17 +335,16 @@ class Drush
      * Clients that are using Drush::drush(), and need a reference to the alias
      * manager may use Drush::aliasManager().
      *
-     * @param AliasRecord $siteAlias
+     * @param SiteAliasInterface $siteAlias
      * @param string $command
      * @param array $args
      * @param array $options
      * @param array $options_double_dash
      * @return SiteProcess
      */
-    public static function drush(AliasRecord $siteAlias, $command, $args = [], $options = [], $options_double_dash = [])
+    public static function drush(SiteAliasInterface $siteAlias, $command, $args = [], $options = [], $options_double_dash = [])
     {
-        $processManager = self::service('process.manager');
-        return $processManager->drush($siteAlias, $command, $args, $options, $options_double_dash);
+        return self::processManager()->drush($siteAlias, $command, $args, $options, $options_double_dash);
     }
 
     /**
@@ -354,16 +353,15 @@ class Drush
      * Use Drush::drush() instead of this method when calling Drush.
      * Tip: Consider using injected process manager instead of this method. @see \Drush\Drush::drush().
      *
-     * @param AliasRecord $siteAlias
+     * @param SiteAliasInterface $siteAlias
      * @param array $args
      * @param array $options
      * @param array $options_double_dash
      * @return ProcessBase
      */
-    public static function siteProcess(AliasRecord $siteAlias, $args = [], $options = [], $options_double_dash = [])
+    public static function siteProcess(SiteAliasInterface $siteAlias, $args = [], $options = [], $options_double_dash = [])
     {
-        $processManager = self::service('process.manager');
-        return $processManager->siteProcess($siteAlias, $args, $options, $options_double_dash);
+        return self::processManager()->siteProcess($siteAlias, $args, $options, $options_double_dash);
     }
 
     /**
@@ -386,8 +384,7 @@ class Drush
      */
     public static function process($commandline, $cwd = null, array $env = null, $input = null, $timeout = 60)
     {
-        $processManager = self::service('process.manager');
-        return $processManager->process($commandline, $cwd, $env, $input, $timeout);
+        return self::processManager()->process($commandline, $cwd, $env, $input, $timeout);
     }
 
     /**
@@ -402,20 +399,9 @@ class Drush
      * @param int|float|null $timeout The timeout in seconds or null to disable
      * @return Process
      */
-    public function shell($command, $cwd = null, array $env = null, $input = null, $timeout = 60)
+    public static function shell($command, $cwd = null, array $env = null, $input = null, $timeout = 60)
     {
-        $processManager = self::service('process.manager');
-        return $processManager->shell($command, $cwd, $env, $input, $timeout);
-    }
-
-    /**
-     * Return the path to this Drush.
-     *
-     * @deprecated Inject configuration and use $this->getConfig()->drushScript().
-     */
-    public static function drushScript()
-    {
-        return \Drush\Drush::config()->drushScript();
+        return self::processManager()->shell($command, $cwd, $env, $input, $timeout);
     }
 
     /**
@@ -429,16 +415,6 @@ class Drush
     }
 
     /**
-     * Return 'true' if we are in backend mode
-     *
-     * @deprecated Inject configuration and use $this->getConfig()->backend().
-     */
-    public static function backend()
-    {
-        return \Drush\Drush::config()->backend();
-    }
-
-    /**
      * Return 'true' if we are in affirmative mode
      */
     public static function affirmative()
@@ -446,7 +422,7 @@ class Drush
         if (!self::hasService('input')) {
             throw new \Exception('No input service available.');
         }
-        return Drush::input()->getOption('yes') || (Drush::backend() && !Drush::negative());
+        return Drush::input()->getOption('yes');
     }
 
     /**

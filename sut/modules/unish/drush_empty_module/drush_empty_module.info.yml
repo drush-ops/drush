@@ -1,0 +1,7 @@
+name: Drush empty module
+description: 'Drush empty module'
+core: 8.x
+core_version_requirement: ^8 || ^9
+type: module
+# Require for the sake of tests - simulate what packaging would do.
+project: drush_empty_module

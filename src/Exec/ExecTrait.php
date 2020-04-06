@@ -2,6 +2,7 @@
 namespace Drush\Exec;
 
 use Consolidation\SiteProcess\Util\Shell;
+use Consolidation\SiteProcess\Util\Escape;
 use Drush\Drush;
 
 trait ExecTrait
@@ -55,7 +56,7 @@ trait ExecTrait
                     $browser = 'xdg-open';
                 } else if (self::programExists('open')) {
                     $browser = 'open';
-                } else if (!drush_has_bash()) {
+                } else if (self::programExists('start')) {
                     $browser = 'start';
                 } else {
                     // Can't find a valid browser.
@@ -88,8 +89,19 @@ trait ExecTrait
      */
     public static function programExists($program)
     {
-        $process = Drush::shell("command -v $program");
+        $command = Escape::isWindows() ? "where $program" : "command -v $program";
+        $process = Drush::shell($command);
+        $process->setSimulated(false);
         $process->run();
+        if (!$process->isSuccessful()) {
+            Drush::logger()->debug($process->getErrorOutput());
+        }
         return $process->isSuccessful();
+    }
+
+    public static function getEditor()
+    {
+        // See http://drupal.org/node/1740294
+        return '${VISUAL-${EDITOR-vi}} %s';
     }
 }

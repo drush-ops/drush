@@ -30,6 +30,11 @@ class ConfigExportCommands extends DrushCommands
     protected $configStorageSync;
 
     /**
+     * @var StorageInterface
+     */
+    protected $configStorageExport;
+
+    /**
      * @return ConfigManagerInterface
      */
     public function getConfigManager()
@@ -38,11 +43,31 @@ class ConfigExportCommands extends DrushCommands
     }
 
     /**
+     * @param \Drupal\Core\Config\StorageInterface $exportStorage
+     */
+    public function setExportStorage(StorageInterface $exportStorage)
+    {
+        $this->configStorageExport = $exportStorage;
+    }
+
+    /**
+     * @return StorageInterface
+     */
+    public function getConfigStorageExport()
+    {
+        if (isset($this->configStorageExport)) {
+            return $this->configStorageExport;
+        }
+        return $this->configStorage;
+    }
+
+    /**
      * @return StorageInterface
      */
     public function getConfigStorage()
     {
-        return $this->configStorage;
+        // @todo: deprecate this method.
+        return $this->getConfigStorageExport();
     }
 
     /**
@@ -52,7 +77,6 @@ class ConfigExportCommands extends DrushCommands
     {
         return $this->configStorageSync;
     }
-
 
     /**
      * @param ConfigManagerInterface $configManager
@@ -99,7 +123,7 @@ class ConfigExportCommands extends DrushCommands
     public function doExport($options, $destination_dir)
     {
         // Prepare the configuration storage for the export.
-        if ($destination_dir ==  Path::canonicalize(\config_get_config_directory(CONFIG_SYNC_DIRECTORY))) {
+        if ($destination_dir ==  Path::canonicalize(\drush_config_get_config_directory())) {
             $target_storage = $this->getConfigStorageSync();
         } else {
             $target_storage = new FileStorage($destination_dir);
@@ -107,7 +131,7 @@ class ConfigExportCommands extends DrushCommands
 
         if (count(glob($destination_dir . '/*')) > 0) {
             // Retrieve a list of differences between the active and target configuration (if any).
-            $config_comparer = new StorageComparer($this->getConfigStorage(), $target_storage, $this->getConfigManager());
+            $config_comparer = new StorageComparer($this->getConfigStorageExport(), $target_storage, $this->getConfigManager());
             if (!$config_comparer->createChangelist()->hasChanges()) {
                 $this->logger()->notice(dt('The active configuration is identical to the configuration in the export directory (!target).', ['!target' => $destination_dir]));
                 return;
@@ -115,7 +139,7 @@ class ConfigExportCommands extends DrushCommands
             $preamble = "Differences of the active config to the export directory:\n";
 
             if ($options['diff']) {
-                $diff = ConfigCommands::getDiff($target_storage, $this->getConfigStorage(), $this->output());
+                $diff = ConfigCommands::getDiff($target_storage, $this->getConfigStorageExport(), $this->output());
                 $this->logger()->notice($preamble . $diff);
             } else {
                 $change_list = [];
@@ -146,10 +170,9 @@ class ConfigExportCommands extends DrushCommands
         }
 
         // Write all .yml files.
-        ConfigCommands::copyConfig($this->getConfigStorage(), $target_storage);
+        ConfigCommands::copyConfig($this->getConfigStorageExport(), $target_storage);
 
         $this->logger()->success(dt('Configuration successfully exported to !target.', ['!target' => $destination_dir]));
-        drush_backend_set_result($destination_dir);
         return isset($preview) ? $preview : 'No existing configuration to diff against.';
     }
 

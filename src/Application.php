@@ -153,16 +153,16 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
         if (!$this->bootstrapManager || !$this->aliasManager) {
             return;
         }
-        $selfAliasRecord = $this->aliasManager->getSelf();
-        if (!$selfAliasRecord->hasRoot() && !$this->bootstrapManager()->drupalFinder()->getDrupalRoot()) {
+        $selfSiteAlias = $this->aliasManager->getSelf();
+        if (!$selfSiteAlias->hasRoot() && !$this->bootstrapManager()->drupalFinder()->getDrupalRoot()) {
             return;
         }
-        $uri = $selfAliasRecord->uri();
+        $uri = $selfSiteAlias->uri();
 
         if (empty($uri)) {
             $uri = $this->selectUri($cwd);
-            $selfAliasRecord->setUri($uri);
-            $this->aliasManager->setSelf($selfAliasRecord);
+            $selfSiteAlias->setUri($uri);
+            $this->aliasManager->setSelf($selfSiteAlias);
         }
         // Update the uri in the bootstrap manager
         $this->bootstrapManager->setUri($uri);
@@ -223,7 +223,7 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
 
             $this->logger->log(LogLevel::DEBUG, 'Bootstrap further to find {command}', ['command' => $name]);
             $this->bootstrapManager->bootstrapMax();
-            $this->logger->log(LogLevel::DEBUG, 'Done with bootstrap max in Application::find(): trying to find {command} again.', ['command' => $name]);
+            $this->logger->log(LogLevel::DEBUG, 'Done with bootstrap max in Application::bootstrapAndFind(): trying to find {command} again.', ['command' => $name]);
 
             if (!$this->bootstrapManager()->hasBootstrapped(DRUSH_BOOTSTRAP_DRUPAL_ROOT)) {
                 // Unable to progress in the bootstrap. Give friendly error message.
@@ -318,6 +318,7 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
         $discovery = $this->commandDiscovery();
         $commandClasses = $discovery->discover($commandfileSearchpath, '\Drush');
         $commandClasses[] = \Consolidation\Filter\Hooks\FilterHooks::class;
+        $commandClasses = array_merge($this->commandsFromConfiguration(), $commandClasses);
 
         $this->loadCommandClasses($commandClasses);
 
@@ -330,6 +331,23 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
         // it without creating a Runner object that we would not otherwise need.
         $runner = new \Robo\Runner();
         $runner->registerCommandClasses($this, $commandClasses);
+    }
+
+    protected function commandsFromConfiguration()
+    {
+        $commandList = [];
+
+        foreach ($this->config->get('drush.commands', []) as $key => $value) {
+            $classname = $key;
+            $path = $value;
+            if (is_numeric($key)) {
+                $classname = $value;
+                $commandList[] = $classname;
+            } else {
+                $commandList[$path] = $classname;
+            }
+        }
+        return $commandList;
     }
 
     /**
@@ -354,7 +372,6 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
         $discovery
             ->setIncludeFilesAtBase(true)
             ->setSearchDepth(3)
-            ->followLinks($this->getConfig()->get('drush.command-follow-symlinks'))
             ->ignoreNamespacePart('contrib', 'Commands')
             ->ignoreNamespacePart('custom', 'Commands')
             ->ignoreNamespacePart('src')

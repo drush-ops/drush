@@ -5,7 +5,7 @@ namespace Unish;
 /**
  * Cache command testing.
  *
- * @group base
+ * @group commands
  */
 class CacheCommandCase extends UnishIntegrationTestCase
 {
@@ -38,6 +38,6 @@ class CacheCommandCase extends UnishIntegrationTestCase
 
         $this->drush('cache-get', ['my_cache_id'], ['format' => 'json']);
         $data = $this->getOutputFromJSON('data');
-        $this->assertEquals((object)$expected, $data);
+        $this->assertEquals($expected, $data);
     }
 }

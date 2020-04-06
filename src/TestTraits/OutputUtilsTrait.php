@@ -1,16 +1,34 @@
 <?php
-namespace Unish\Utils;
-
-use Symfony\Component\Process\Process;
-use Symfony\Component\Process\Exception\ProcessTimedOutException;
-use PHPUnit\Framework\TestResult;
+namespace Drush\TestTraits;
 
 /**
  * OutputUtilsTrait provides some useful utility methods for test classes
  * that define `getOutputRaw()` and `getErrorOutputRaw()` methods.
+ *
+ * This trait is used by CliTestTrait and DrushTestTrait.
  */
 trait OutputUtilsTrait
 {
+    /**
+     * Accessor for the last output, non-trimmed.
+     *
+     * @return string
+     *   Raw output as text.
+     *
+     * @access public
+     */
+    abstract public function getOutputRaw();
+
+    /**
+     * Accessor for the last stderr output, non-trimmed.
+     *
+     * @return string
+     *   Raw stderr as text.
+     *
+     * @access public
+     */
+    abstract public function getErrorOutputRaw();
+
     /**
      * Get command output and simplify away things like full paths and extra
      * whitespace.
@@ -57,12 +75,18 @@ trait OutputUtilsTrait
         // Debug flags may be added to command strings if we are in debug mode. Take those out so that tests in phpunit --debug mode work
         $output = preg_replace('# --debug #', ' ', $output);
         $output = preg_replace('# --verbose #', ' ', $output);
-        // Get rid of any full paths in the output
-        $output = preg_replace('#' . dirname(dirname(__DIR__)) . '/[^/]*#', '__DIR__', $output);
-        $output = str_replace(self::getSandbox(), '__SANDBOX__', $output);
-        $output = str_replace(self::getSut(), '__SUT__', $output);
+        $output = preg_replace('# -vvv #', ' ', $output);
+
+        foreach ($this->pathsToSimplify() as $path => $simplification) {
+            $output = str_replace($path, $simplification, $output);
+        }
 
         return $output;
+    }
+
+    public function pathsToSimplify()
+    {
+        return [];
     }
 
     /**
@@ -123,39 +147,19 @@ trait OutputUtilsTrait
      * @param string $key
      *   Optionally return only a top level element from the json object.
      *
-     * @return object
-     *   Decoded object.
+     * @return array
+     *   Decoded array.
      */
     public function getOutputFromJSON($key = null)
     {
         $output = $this->getOutput();
-        $json = json_decode($output);
-        if (!$json) {
+        $json = json_decode($output, true);
+        if (json_last_error() !== JSON_ERROR_NONE) {
             throw new \Exception("No json output received.\n\nOutput:\n\n$output\n\nStderr:\n\n" . $this->getErrorOutput());
         }
         if (isset($key)) {
-            $json = $json->{$key}; // http://stackoverflow.com/questions/2925044/hyphens-in-keys-of-object
+            $json = $json[$key];
         }
         return $json;
     }
-
-    /**
-     * Accessor for the last output, non-trimmed.
-     *
-     * @return string
-     *   Raw output as text.
-     *
-     * @access public
-     */
-    public abstract function getOutputRaw();
-
-    /**
-     * Accessor for the last stderr output, non-trimmed.
-     *
-     * @return string
-     *   Raw stderr as text.
-     *
-     * @access public
-     */
-    public abstract function getErrorOutputRaw();
 }

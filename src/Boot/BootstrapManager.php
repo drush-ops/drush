@@ -188,7 +188,7 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
                 return $candidate;
             }
         }
-        return null;
+        return new EmptyBoot();
     }
 
     /**
@@ -346,9 +346,9 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
         $phases = $this->bootstrapPhases(true);
         static $result_cache = [];
 
-        if (!array_key_exists($phase, $result_cache)) {
-            $validated_phase = -1;
-            foreach ($phases as $phase_index => $current_phase) {
+        $validated_phase = -1;
+        foreach ($phases as $phase_index => $current_phase) {
+            if (!array_key_exists($phase_index, $result_cache)) {
                 if ($phase_index > $phase) {
                     break;
                 }

@@ -2,7 +2,8 @@
 
 namespace Unish;
 
-use Consolidation\SiteAlias\AliasRecord;
+use Composer\Semver\Comparator;
+use Consolidation\SiteAlias\SiteAlias;
 use Consolidation\SiteProcess\SiteProcess;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Yaml\Yaml;
@@ -42,8 +43,6 @@ abstract class UnishTestCase extends TestCase
 
     private static $usergroup = null;
 
-    private static $backendOutputDelimiter = 'DRUSH_BACKEND_OUTPUT_START>>>%s<<<DRUSH_BACKEND_OUTPUT_END';
-
     public function __construct($name = null, array $data = [], $dataName = '')
     {
         parent::__construct($name, $data, $dataName);
@@ -57,7 +56,7 @@ abstract class UnishTestCase extends TestCase
         self::mkdir($unish_sandbox);
         $unish_cache = Path::join($unish_sandbox, 'cache');
 
-        self::$drush = self::getComposerRoot() . '/drush';
+        self::$drush = Path::join(self::getComposerRoot(), 'drush');
 
         self::$sandbox = $unish_sandbox;
         self::$usergroup = isset($GLOBALS['UNISH_USERGROUP']) ? $GLOBALS['UNISH_USERGROUP'] : null;
@@ -124,7 +123,7 @@ abstract class UnishTestCase extends TestCase
 
     public static function getComposerRoot()
     {
-        return dirname(dirname(__DIR__));
+        return Path::canonicalize(dirname(dirname(__DIR__)));
     }
 
     /**
@@ -184,14 +183,6 @@ abstract class UnishTestCase extends TestCase
     public static function getUserGroup()
     {
         return self::$usergroup;
-    }
-
-    /**
-     * @return string
-     */
-    public static function getBackendOutputDelimiter()
-    {
-        return self::$backendOutputDelimiter;
     }
 
     /**
@@ -272,11 +263,6 @@ abstract class UnishTestCase extends TestCase
         return strtoupper(substr(PHP_OS, 0, 3)) == "WIN";
     }
 
-    public static function getTarExecutable()
-    {
-        return self::isWindows() ? "bsdtar.exe" : "tar";
-    }
-
     /**
      * Print out a tick mark.
      *
@@ -327,7 +313,7 @@ abstract class UnishTestCase extends TestCase
         $arg = preg_replace('/"/', '""', $arg);
 
         // Double up percents.
-        $arg = preg_replace('/%/', '%%', $arg);
+        // $arg = preg_replace('/%/', '%%', $arg);
 
         // Add surrounding quotes.
         $arg = '"' . $arg . '"';
@@ -602,6 +588,17 @@ EOT;
         return self::$sites;
     }
 
+    /**
+     * Test if current Drupal is >= a target version.
+     *
+     * @param string $version2
+     * @return bool
+     */
+    public function isDrupalGreaterThanOrEqualTo($version2)
+    {
+        return Comparator::greaterThanOrEqualTo(\Drupal::VERSION, $version2);
+    }
+
     public function aliasFileData($sites_subdirs)
     {
         $root = $this->webroot();
@@ -619,7 +616,7 @@ EOT;
 
     protected function sutAlias($uri = self::INTEGRATION_TEST_ENV)
     {
-        return new AliasRecord(['root' => $this->webroot(), 'uri' => $uri], "@sut.$uri");
+        return new SiteAlias(['root' => $this->webroot(), 'uri' => $uri], "@sut.$uri");
     }
 
     /**
@@ -694,7 +691,8 @@ EOT;
             'db-url' => $this->dbUrl($uri),
             'sites-subdir' => $uri,
             'yes' => true,
-            'quiet' => true,
+            // quiet suppresses error reporting as well.
+            // 'quiet' => true,
         ];
         if ($level = $this->logLevel()) {
             $options[$level] = true;

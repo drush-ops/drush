@@ -2,6 +2,8 @@
 
 namespace Unish;
 
+use Webmozart\PathUtil\Path;
+
 /**
  * Tests for sql-dump commands.
  *
@@ -23,7 +25,7 @@ class SqlDumpTest extends CommandUnishTestCase
         }
 
         $this->setUpDrupal(1, true);
-        $full_dump_file_path = self::getSandbox() . DIRECTORY_SEPARATOR . 'full_db.sql';
+        $full_dump_file_path = Path::join(self::getSandbox(), 'full_db.sql');
 
         $options = [
             'result-file' => $full_dump_file_path,

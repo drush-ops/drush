@@ -23,7 +23,6 @@ class OptionsCommands
     /**
      * @hook option @optionset_get_editor
      * @option editor A string of bash which launches user's preferred text editor. Defaults to ${VISUAL-${EDITOR-vi}}.
-     * @option bg Run editor in the background. Does not work with editors such as `vi` that run in the terminal.
      */
     public function optionsetGetEditor($options = ['editor' => '', 'bg' => false])
     {
@@ -42,8 +41,9 @@ class OptionsCommands
      * @option database The DB connection key if using multiple connections in settings.php.
      * @option db-url A Drupal 6 style database URL.
      * @option target The name of a target within the specified database connection. Defaults to default
+     * @option show-passwords Show password on the CLI. Useful for debugging.
      */
-    public function optionsetSql($options = ['database' => 'default', 'target' => 'default', 'db-url' => self::REQ])
+    public function optionsetSql($options = ['database' => 'default', 'target' => 'default', 'db-url' => self::REQ, 'show-passwords' => false])
     {
     }
 

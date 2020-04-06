@@ -3,6 +3,8 @@
 namespace Unish;
 
 use Composer\Semver\Comparator;
+use Drupal\Core\Serialization\Yaml;
+use Webmozart\PathUtil\Path;
 
 /**
  * Tests for Configuration Management commands for D8+.
@@ -11,6 +13,7 @@ use Composer\Semver\Comparator;
  */
 class ConfigCase extends CommandUnishTestCase
 {
+    use TestModuleHelperTrait;
 
     public function setUp()
     {
@@ -31,10 +34,7 @@ class ConfigCase extends CommandUnishTestCase
 
     public function testConfigExportImportStatusExistingConfig()
     {
-        // Get path to sync dir.
-        $this->drush('core:status', [], ['format' => 'json', 'fields' => 'config-sync']);
-        $sync = $this->webroot() . '/' . $this->getOutputFromJSON('config-sync');
-        $system_site_yml = $sync . '/system.site.yml';
+        $system_site_yml = $this->getConfigSyncDir() . '/system.site.yml';
 
         // Test export.
         $this->drush('config-export');
@@ -53,25 +53,25 @@ class ConfigCase extends CommandUnishTestCase
         $this->drush('config-import');
         $this->drush('config-get', ['system.site', 'page'], ['format' => 'json']);
         $page = $this->getOutputFromJSON('system.site:page');
-        $this->assertContains('unish', $page->front, 'Config was successfully imported.');
+        $this->assertContains('unish', $page['front'], 'Config was successfully imported.');
 
-        // Test status of identical configuration.
-        $this->drush('config:status', [], ['format' => 'list']);
-        $this->assertEquals('', $this->getOutput(), 'config:status correctly reports identical config.');
-
-        // Similar, but this time via --partial option.
-        $contents = file_get_contents($system_site_yml);
-        $contents = preg_replace('/front: .*/', 'front: unish partial', $contents);
-        $partial_path = self::getSandbox() . '/partial';
-        $this->mkdir($partial_path);
-        $contents = file_put_contents($partial_path. '/system.site.yml', $contents);
-        $this->drush('config-import', [], ['partial' => null, 'source' => $partial_path]);
-        $this->drush('config-get', ['system.site', 'page'], ['format' => 'json']);
-        $page = $this->getOutputFromJSON('system.site:page');
-        $this->assertContains('unish partial', $page->front, '--partial was successfully imported.');
+        // Test status of identical configuration, in different formatters.
+        $expected_output = [
+            'list' => '',
+            'table' => '',
+            'json' => '[]',
+            'xml' => <<<XML
+<?xml version="1.0" encoding="UTF-8"?>
+<document/>
+XML
+        ];
+        foreach ($expected_output as $formatter => $output) {
+            $this->drush('config:status', [], ['format' => $formatter]);
+            $this->assertEquals($output, $this->getOutput(), 'config:status correctly reports identical config.');
+        }
 
         // Test the --existing-config option for site:install.
-        $this->drush('core:status', ['drupal-version'], ['format' => 'string']);
+        $this->drush('core:status', [], ['field' => 'drupal-version']);
         $drupal_version = $this->getOutputRaw();
         if (Comparator::greaterThanOrEqualTo($drupal_version, '8.6')) {
             $contents = file_get_contents($system_site_yml);
@@ -80,7 +80,85 @@ class ConfigCase extends CommandUnishTestCase
             $this->installDrupal('dev', true, ['existing-config' => true], false);
             $this->drush('config-get', ['system.site', 'page'], ['format' => 'json']);
             $page = $this->getOutputFromJSON('system.site:page');
-            $this->assertContains('unish existing', $page->front, 'Existing config was successfully imported during site:install.');
+            $this->assertContains('unish existing', $page['front'], 'Existing config was successfully imported during site:install.');
         }
+
+        // Similar, but this time via --partial option.
+        if ($this->isDrupalGreaterThanOrEqualTo('8.8.0')) {
+            $this->markTestSkipped('Partial config import not yet working on 8.8.0');
+        }
+        $contents = file_get_contents($system_site_yml);
+        $contents = preg_replace('/front: .*/', 'front: unish partial', $contents);
+        $partial_path = self::getSandbox() . '/partial';
+        $this->mkdir($partial_path);
+        $contents = file_put_contents($partial_path. '/system.site.yml', $contents);
+        $this->drush('config-import', [], ['partial' => null, 'source' => $partial_path]);
+        $this->drush('config-get', ['system.site', 'page'], ['format' => 'json']);
+        $page = $this->getOutputFromJSON('system.site:page');
+        $this->assertContains('unish partial', $page['front'], '--partial was successfully imported.');
+    }
+
+    public function testConfigImport()
+    {
+        $options = [
+            'include' => __DIR__,
+        ];
+        $this->setupModulesForTests(['woot'], Path::join(__DIR__, 'resources/modules/d8'));
+        $this->drush('pm-enable', ['woot'], $options);
+
+        // Export the configuration.
+        $this->drush('config:export');
+
+        $root = $this->webroot();
+
+        // Introduce a new service in the Woot module that depends on a service
+        // in the Devel module (which is not yet enabled).
+        $filename = Path::join($root, 'modules/unish/woot/woot.services.yml');
+        $serviceDefinition = <<<YAML_FRAGMENT
+  woot.depending_service:
+    class: Drupal\woot\DependingService
+    arguments: ['@drush_empty_module.service']
+YAML_FRAGMENT;
+        file_put_contents($filename, $serviceDefinition, FILE_APPEND);
+
+        $filename = Path::join($root, 'modules/unish/woot/woot.info.yml');
+        $moduleDependency = <<<YAML_FRAGMENT
+dependencies:
+  - drush_empty_module
+YAML_FRAGMENT;
+        file_put_contents($filename, $moduleDependency, FILE_APPEND);
+
+        // Add the 'drush_empty_module' module in core.extension.yml.
+        $extensionFile = $this->getConfigSyncDir() . '/core.extension.yml';
+        $this->assertFileExists($extensionFile);
+        $extension = Yaml::decode(file_get_contents($extensionFile));
+        $extension['module']['drush_empty_module'] = 0;
+        require_once $root . "/core/includes/module.inc";
+        $extension['module'] = module_config_sort($extension['module']);
+        file_put_contents($extensionFile, Yaml::encode($extension));
+
+        // When importing config, the 'woot' module should warn about a validation error.
+        $this->drush('config:import', [], [], null, null, CommandUnishTestCase::EXIT_ERROR);
+        $this->assertContains("woot config error", $this->getErrorOutput(), 'Woot returned an expected config validation error.');
+
+        // Now we disable the error, and retry the config import.
+        $this->drush('state:set', ['woot.shoud_not_fail_on_cim', 'true']);
+        $this->drush('config:import');
+        $this->drush('php:eval', ["return Drupal::getContainer()->getParameter('container.modules')"], ['format' => 'json']);
+
+        // Assure that new modules are fully enabled.
+        $out = $this->getOutputFromJSON();
+        $this->assertArrayHasKey('woot', $out);
+        $this->assertArrayHasKey('drush_empty_module', $out);
+
+        // We make sure that the service inside the newly enabled module exists now. A fatal
+        // error will be thrown by Drupal if the service does not exist.
+        $this->drush('php:eval', ['Drupal::service("drush_empty_module.service");']);
+    }
+
+    protected function getConfigSyncDir()
+    {
+        $this->drush('core:status', [], ['format' => 'json', 'fields' => 'config-sync']);
+        return $this->webroot().'/'.$this->getOutputFromJSON('config-sync');
     }
 }

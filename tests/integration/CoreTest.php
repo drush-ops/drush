@@ -37,8 +37,8 @@ class CoreTest extends UnishIntegrationTestCase
         'settings.php' => -1,
         ];
         foreach ($expected as $key => $value) {
-            if (isset($loaded->$key)) {
-                $this->assertEquals("{$key}={$value}", "{$key}=" . $loaded->$key->sid);
+            if (isset($loaded[$key])) {
+                $this->assertEquals("{$key}={$value}", "{$key}=" . $loaded[$key]['sid']);
             }
         }
     }
@@ -48,6 +48,10 @@ class CoreTest extends UnishIntegrationTestCase
         $root = $this->webroot();
         $sitewide = $this->drupalSitewideDirectory();
 
+        if ($this->isWindows()) {
+            $this->markTestSkipped('Windows escpaping woes.');
+        }
+
         $this->drush('drupal-directory', ['%files']);
         $output = $this->getOutput();
         $this->assertEquals(Path::join($root, '/sites/default/files'), $output);
@@ -56,15 +60,15 @@ class CoreTest extends UnishIntegrationTestCase
         $output = $this->getOutput();
         $this->assertEquals(Path::join($root, $sitewide . '/modules'), $output);
 
-        $this->drush('pm-enable', ['devel']);
-        $this->drush('theme-enable', ['empty_theme']);
+        $this->drush('pm-enable', ['drush_empty_module']);
+        $this->drush('theme-enable', ['drush_empty_theme']);
 
-        $this->drush('drupal-directory', ['devel']);
+        $this->drush('drupal-directory', ['drush_empty_module']);
         $output = $this->getOutput();
-        $this->assertEquals(Path::join($root, '/modules/unish/devel'), $output);
+        $this->assertEquals(Path::join($root, '/modules/unish/drush_empty_module'), $output);
 
-        $this->drush('drupal-directory', ['empty_theme']);
+        $this->drush('drupal-directory', ['drush_empty_theme']);
         $output = $this->getOutput();
-        $this->assertEquals(Path::join($root, '/themes/unish/empty_theme'), $output);
+        $this->assertEquals(Path::join($root, '/themes/unish/drush_empty_theme'), $output);
     }
 }

@@ -17,18 +17,18 @@ class UpdateDBTest extends CommandUnishTestCase
     public function testUpdateDBStatus()
     {
         $this->setUpDrupal(1, true);
-        $this->drush('pm:enable', ['devel']);
+        $this->drush('pm:enable', ['drush_empty_module']);
         $this->drush('updatedb:status');
         $err = $this->getErrorOutput();
-        $this->assertEquals('[success] No database updates required.', $err);
+        $this->assertContains('[success] No database updates required.', $err);
 
         // Force a pending update.
         $this->drush('php-script', ['updatedb_script'], ['script-path' => __DIR__ . '/resources']);
 
         // Assert that pending hook_update_n appears
         $this->drush('updatedb:status', [], ['format' => 'json']);
-        $out = $this->getOutputFromJSON('devel_update_8002');
-        $this->assertEquals('Add enforced dependencies to system.menu.devel', trim($out->description));
+        $out = $this->getOutputFromJSON('drush_empty_module_update_8001');
+        $this->assertContains('Fake update hook', trim($out['description']));
 
         // Run hook_update_n
         $this->drush('updatedb', []);
@@ -36,14 +36,14 @@ class UpdateDBTest extends CommandUnishTestCase
         // Assert that we ran hook_update_n properly
         $this->drush('updatedb:status');
         $err = $this->getErrorOutput();
-        $this->assertEquals('[success] No database updates required.', $err);
+        $this->assertContains('[success] No database updates required.', $err);
 
         // Assure that a pending post-update is reported.
-        $this->pathPostUpdate = Path::join($this->webroot(), 'modules/unish/devel/devel.post_update.php');
-        copy(__DIR__ . '/resources/devel.post_update.php', $this->pathPostUpdate);
+        $this->pathPostUpdate = Path::join($this->webroot(), 'modules/unish/drush_empty_module/drush_empty_module.post_update.php');
+        copy(__DIR__ . '/resources/drush_empty_module.post_update.php', $this->pathPostUpdate);
         $this->drush('updatedb:status', [], ['format' => 'json']);
-        $out = $this->getOutputFromJSON('devel-post-null_op');
-        $this->assertEquals('This is a test of the emergency broadcast system.', trim($out->description));
+        $out = $this->getOutputFromJSON('drush_empty_module-post-null_op');
+        $this->assertContains('This is a test of the emergency broadcast system.', trim($out['description']));
     }
 
     /**
@@ -78,8 +78,12 @@ class UpdateDBTest extends CommandUnishTestCase
         // Run updates.
         $this->drush('updatedb', [], $options, null, null, self::EXIT_ERROR);
 
-        $this->assertContains($this->simplifyOutput($expected_status_report), $this->getSimplifiedOutput());
-        $this->assertEquals($expected_update_log_output, $this->getSimplifiedErrorOutput());
+        foreach ($expected_status_report as $needle) {
+            $this->assertContains($needle, $this->getOutput());
+        }
+        foreach ($expected_update_log_output as $needle) {
+            $this->assertContains($needle, $this->getErrorOutput());
+        }
     }
 
     /**
@@ -95,32 +99,17 @@ class UpdateDBTest extends CommandUnishTestCase
                 8100,
                 // The expected status report that will be output before the
                 // test is initiated.
-                <<<LOG
- -------- ----------- --------------- -----------------------
-  Module   Update ID   Type            Description
- -------- ----------- --------------- -----------------------
-  woot     8101        hook_update_n   Good update.
-  woot     8102        hook_update_n   Failing update.
-  woot     8103        hook_update_n   Failing update 2.
-  woot     8104        hook_update_n   Another good update.
-  woot     failing     post-update     Failing post-update.
- -------- ----------- --------------- -----------------------
-
- // Do you wish to run the specified pending updates?: yes.
-LOG
-                ,
-                // The expected output being logged during the update.
-                <<<LOG
-> [notice] Update started: woot_update_8101
-> [notice] This is the update message from woot_update_8101
-> [notice] Update completed: woot_update_8101
-> [notice] Update started: woot_update_8102
-> [error] This is the exception message thrown in woot_update_8102
-> [error] Update failed: woot_update_8102
-[error] Update aborted by: woot_update_8102
-[error] Finished performing updates.
-LOG
-                ,
+                [
+                    'woot     8104        hook_update_n   Another good update.',
+                    'woot     failing     post-update     Failing post-update.',
+                ],
+                [
+                    '[notice] Update started: woot_update_8101',
+                    'This is the exception message thrown in woot_update_8102',
+                    'Update failed: woot_update_8102',
+                    'Update aborted by: woot_update_8102',
+                    'Finished performing updates.',
+                ],
             ],
             [
                 // The last successfully completed update. This means that the
@@ -129,27 +118,18 @@ LOG
                 8102,
                 // The expected status report that will be output before the
                 // test is initiated.
-                <<<LOG
- -------- ----------- --------------- -----------------------
-  Module   Update ID   Type            Description
- -------- ----------- --------------- -----------------------
-  woot     8103        hook_update_n   Failing update 2.
-  woot     8104        hook_update_n   Another good update.
-  woot     failing     post-update     Failing post-update.
- -------- ----------- --------------- -----------------------
-
- // Do you wish to run the specified pending updates?: yes.
-LOG
-                ,
-                // The expected output being logged during the update.
-                <<<LOG
-> [notice] Update started: woot_update_8103
-> [error] Call to undefined function non_existing_function()
-> [error] Update failed: woot_update_8103
-[error] Update aborted by: woot_update_8103
-[error] Finished performing updates.
-LOG
-                ,
+                [
+                    'woot     8103        hook_update_n   Failing update 2.',
+                    'woot     8104        hook_update_n   Another good update.',
+                    'woot     failing     post-update     Failing post-update.',
+                ],
+                [
+                    'Update started: woot_update_8103',
+                    'Call to undefined function non_existing_function()',
+                    'Update failed: woot_update_8103',
+                    'Update aborted by: woot_update_8103',
+                    'Finished performing updates.',
+                ],
             ],
         ];
     }
@@ -159,6 +139,10 @@ LOG
      */
     public function testFailedPostUpdate()
     {
+        if ($this->isWindows()) {
+            $this->markTestSkipped('See https://github.com/consolidation/site-process/pull/27');
+        }
+
         $this->setUpDrupal(1, true);
         $options = [
             'yes' => null,
@@ -175,33 +159,12 @@ LOG
 
         // Run updates.
         $this->drush('updatedb', [], $options, null, null, self::EXIT_ERROR);
-
-        $expected_output = <<<LOG
- -------- ----------- --------------- -------------------------
-  Module   Update ID    Type            Description
- -------- ----------- --------------- -------------------------
-  woot     8104         hook_update_n   Another good update.
-  woot     a            post-update     Successful post-update.
-  woot     failing      post-update     Failing post-update.
- -------- ----------- --------------- -------------------------
-
- // Do you wish to run the specified pending updates?: yes.
-LOG;
-        $this->assertContains($this->simplifyOutput($expected_output), $this->getSimplifiedOutput());
-
-        $expected_error_output =
-        '> [notice] Update started: woot_update_8104
-> [notice] This is the update message from woot_update_8104
-> [notice] Update completed: woot_update_8104
-> [notice] Update started: woot_post_update_a
-> [notice] This is the update message from woot_post_update_a
-> [notice] Update completed: woot_post_update_a
-> [notice] Update started: woot_post_update_failing
-> [error] This is the exception message thrown in woot_post_update_failing
-> [error] Update failed: woot_post_update_failing
-[error] Update aborted by: woot_post_update_failing
-[error] Finished performing updates.';
-        $this->assertEquals($expected_error_output, $this->getSimplifiedErrorOutput());
+        $this->assertContains('woot     a           post-update     Successful post-update.', $this->getOutput());
+        $this->assertContains('woot     failing     post-update     Failing post-update.', $this->getOutput());
+        $this->assertContains('This is the exception message thrown in woot_post_update_failing', $this->getErrorOutput());
+        $this->assertContains('Update failed: woot_post_update_failing', $this->getErrorOutput());
+        $this->assertContains('Update aborted by: woot_post_update_failing', $this->getErrorOutput());
+        $this->assertContains('Finished performing updates.', $this->getErrorOutput());
     }
 
     /**
@@ -237,8 +200,8 @@ LOG;
         $this->setupModulesForTests(['woot'], Path::join(__DIR__, 'resources/modules/d8'));
         $this->drush('pm-enable', ['woot'], $options);
 
-        // Force re-run of the post-update woot_post_update_install_devel().
-        $this->forcePostUpdate('woot_post_update_install_devel', $options);
+        // Force re-run of the post-update woot_post_update_install_drush_empty_module().
+        $this->forcePostUpdate('woot_post_update_install_drush_empty_module', $options);
 
         // Force a flush of the dependency injection container, so that we can
         // test that the container can be correctly rebuilt even if new services
@@ -251,14 +214,14 @@ LOG;
         $serviceDefinition = <<<YAML_FRAGMENT
   woot.depending_service:
     class: Drupal\woot\DependingService
-    arguments: ['@devel.dumper']
+    arguments: ['@drush_empty_module.service']
 YAML_FRAGMENT;
         file_put_contents($filename, $serviceDefinition, FILE_APPEND);
 
         $filename = Path::join($root, 'modules/unish/woot/woot.info.yml');
         $moduleDependency = <<<YAML_FRAGMENT
 dependencies:
-  - devel
+  - drush_empty_module
 YAML_FRAGMENT;
         file_put_contents($filename, $moduleDependency, FILE_APPEND);
 
@@ -268,7 +231,7 @@ YAML_FRAGMENT;
         // Assert that the updates were run correctly.
         $this->drush('updatedb:status');
         $err = $this->getErrorOutput();
-        $this->assertEquals('[success] No database updates required.', $err);
+        $this->assertContains('[success] No database updates required.', $err);
     }
 
     /**
@@ -292,33 +255,109 @@ YAML_FRAGMENT;
 
         // Run updates.
         $this->drush('updatedb', [], $options);
+        // Check output.
+        $this->assertContains('woot 8104 hook_update_n Another good update.', $this->getSimplifiedOutput());
+        $this->assertContains('woot a post-update Successful post-update.', $this->getSimplifiedOutput());
+        $this->assertContains('woot render post-update Renders some content.', $this->getSimplifiedOutput());
+        // Check error output.
+        $this->assertContains('Update started: woot_update_8104', $this->getErrorOutput());
+        $this->assertContains('Finished performing updates.', $this->getErrorOutput());
+        $this->assertNotContains('Failed', $this->getErrorOutput());
+    }
 
-        $expected_output = <<<LOG
- -------- ----------- --------------- -------------------------
-  Module   Update ID    Type            Description
- -------- ----------- --------------- -------------------------
-  woot     8104         hook_update_n   Another good update.
-  woot     a            post-update     Successful post-update.
-  woot     render       post-update     Renders some content.
- -------- ----------- --------------- -------------------------
+    /**
+     * Tests the output on batch update.
+     */
+    public function testBatchUpdateLogMessages()
+    {
+        $options = [
+            'yes' => null,
+        ];
+        $this->setUpDrupal(1, true);
+        $this->setupModulesForTests(['woot'], Path::join(__DIR__, 'resources/modules/d8'));
+        $this->drush('pm:enable', ['woot'], $options);
 
- // Do you wish to run the specified pending updates?: yes.
-LOG;
-        $this->assertContains($this->simplifyOutput($expected_output), $this->getSimplifiedOutput());
+        // Force re-run of woot_update_8105().
+        $this->drush('php:eval', ['drupal_set_installed_schema_version("woot", 8104)'], $options);
+        // Force re-run of woot_post_update_batch().
+        $this->forcePostUpdate('woot_post_update_batch', $options);
 
-        $expected_error_output = <<<LOG
-> [notice] Update started: woot_update_8104
-> [notice] This is the update message from woot_update_8104
-> [notice] Update completed: woot_update_8104
-> [notice] Update started: woot_post_update_a
-> [notice] This is the update message from woot_post_update_a
-> [notice] Update completed: woot_post_update_a
-> [notice] Update started: woot_post_update_render
-> [notice] Update completed: woot_post_update_render
-[success] Finished performing updates.
-LOG;
+        // Run updates.
+        $this->drush('updatedb', [], $options);
 
-        $this->assertEquals($expected_error_output, $this->getSimplifiedErrorOutput());
+        $expected_update_output = <<<UPDATE
+>  [notice] Update started: woot_update_8105
+>  [notice] Iteration 1.
+>  [notice] Iteration 2.
+>  [notice] Finished at 3.
+>  [notice] Update completed: woot_update_8105
+UPDATE;
+        $expected_post_update_output = <<<POST_UPDATE
+>  [notice] Update started: woot_post_update_batch
+>  [notice] Iteration 1.
+>  [notice] Iteration 2.
+>  [notice] Finished at 3.
+>  [notice] Update completed: woot_post_update_batch
+POST_UPDATE;
+
+        // On Windows systems the new line delimiter is a CR+LF (\r\n) sequence
+        // instead of LF (\n) as it is on *nix systems.
+        $actual_output = str_replace("\r\n", "\n", $this->getErrorOutputRaw());
+
+        $this->assertContains($expected_update_output, $actual_output);
+        $this->assertContains($expected_post_update_output, $actual_output);
+    }
+
+    /**
+     * Tests installing modules with entity type definitions via update hooks.
+     */
+    public function testEnableModuleViaUpdate()
+    {
+        $options = [
+            'yes' => null,
+        ];
+        $this->setUpDrupal(1, true);
+        $this->setupModulesForTests(['woot'], Path::join(__DIR__, 'resources/modules/d8'));
+        $this->drush('pm:enable', ['woot'], $options);
+
+        // Force re-run of woot_update_8106().
+        $this->drush('php:eval', ['drupal_set_installed_schema_version("woot", 8105)'], $options);
+
+        // Run updates.
+        $this->drush('updatedb', [], $options);
+
+        // Check that the post-update function returns the new entity type ID.
+        $this->assertContains('[notice] taxonomy_term', $this->getErrorOutputRaw());
+
+        // Check that the new entity type is installed.
+        $this->drush('php:eval', ['woot_get_taxonomy_term_entity_type_id();']);
+        $this->assertContains('taxonomy_term', $this->getOutputRaw());
+    }
+
+    /**
+     * Tests installing modules with entity type definitions via post-update hooks.
+     */
+    public function testEnableModuleViaPostUpdate()
+    {
+        $options = [
+            'yes' => null,
+        ];
+        $this->setUpDrupal(1, true);
+        $this->setupModulesForTests(['woot'], Path::join(__DIR__, 'resources/modules/d8'));
+        $this->drush('pm:enable', ['woot'], $options);
+
+        // Force re-run of woot_post_update_install_taxonomy().
+        $this->forcePostUpdate('woot_post_update_install_taxonomy', $options);
+
+        // Run updates.
+        $this->drush('updatedb', [], $options);
+
+        // Check that the post-update function returns the new entity type ID.
+        $this->assertContains('[notice] taxonomy_term', $this->getErrorOutputRaw());
+
+        // Check that the new entity type is installed.
+        $this->drush('php:eval', ['woot_get_taxonomy_term_entity_type_id();']);
+        $this->assertContains('taxonomy_term', $this->getOutputRaw());
     }
 
     public function tearDown()

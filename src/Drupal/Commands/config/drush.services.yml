@@ -2,16 +2,34 @@
 services:
   config.commands:
     class: \Drush\Drupal\Commands\config\ConfigCommands
-    arguments: ['@config.factory']
+    arguments: ['@config.factory', '@config.storage']
+    calls:
+      - [setExportStorage, ['@?config.storage.export']]
     tags:
       -  { name: drush.command }
   config.export.commands:
     class: \Drush\Drupal\Commands\config\ConfigExportCommands
     arguments: ['@config.manager', '@config.storage', '@config.storage.sync']
+    calls:
+      - [setExportStorage, ['@?config.storage.export']]
     tags:
       -  { name: drush.command }
   config.import.commands:
     class: \Drush\Drupal\Commands\config\ConfigImportCommands
-    arguments: ['@config.manager', '@config.storage', '@config.storage.sync', '@module_handler', '@event_dispatcher', '@lock', '@config.typed', '@module_installer', '@theme_handler', '@string_translation']
+    arguments:
+      - '@config.manager'
+      - '@config.storage'
+      - '@config.storage.sync'
+      - '@cache.config'
+      - '@module_handler'
+      - '@event_dispatcher'
+      - '@lock'
+      - '@config.typed'
+      - '@module_installer'
+      - '@theme_handler'
+      - '@string_translation'
+      - '@extension.list.module'
+    calls:
+      - [setImportTransformer, ['@?config.import_transformer']]
     tags:
       -  { name: drush.command }

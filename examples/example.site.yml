@@ -54,8 +54,9 @@
 #   operations, such as whether or not rsync parameters are for local or
 #   remote machines, and so on.
 # - 'user': The username to log in as when using ssh or rsync. If each user
-#    has to use own username, omit this item and instead specify that user in
-#    each user's ~/.ssh/config file.
+#    has to use own username, you can create an environment variable which holds
+#    the value, and reference via ${env.PROJECT_SSH_USER} (for example). Or you may
+#    omit the `user:` item and specify a user in the `~/.ssh/config` file.
 # - 'root': The Drupal root; must not be specified as a relative path.
 # - 'uri': The value of --uri should always be the same as
 #   when the site is being accessed from a web browser (e.g. http://example.com)
@@ -77,7 +78,7 @@
 # drush:
 #   paths:
 #     alias-path:
-#       - '${env.home}/.drush/sites'
+#       - '${env.HOME}/.drush/sites'
 #       - /etc/drush/sites
 # @endcode
 #
@@ -121,8 +122,12 @@
 
 # Environment variables:
 #
-# SSH environments may no longer possible set environment variables from within an alias.
-# This is a planned feature.
+# Site aliases may reference environment variables, just like any Drush config
+# file. For example, ${env.PROJECT_SSH_USER} will be replaced by the value
+# of the PROJECT_SSH_USER environment value.
+#
+# SSH site aliases may set environment variables via the 'env-vars' key.
+# See below.
 
 # Additional Site Alias Options
 #
@@ -163,6 +168,8 @@
 #     - `drush sql-sync @live @stage`
 #   NOTE: Setting boolean options broke with Symfony 3. This will be fixed
 #     in a future release. See: https://github.com/drush-ops/drush/issues/2956
+# - 'env-vars': An array of key / value pairs that will be set as environment
+#   variables.
 #
 # Complex example:
 #
@@ -177,6 +184,9 @@
 #     options: '-p 100'
 #   paths:
 #     drush-script: '/path/to/drush'
+#   env-vars:
+#     PATH: /bin:/usr/bin:/home/www-admin/.composer/vendor/bin
+#     DRUPAL_ENV: live
 #   command:
 #     site:
 #       install:
@@ -189,14 +199,14 @@
 # There are a number of service providers that manage Drupal sites as a
 # service. Drush allows service providers to create collections of site alias
 # files to reference all of the sites available to a single user. In order
-# to so this, a new location must be defined in your Drush configuration
+# to do this, a new location must be defined in your Drush configuration
 # file:
 #
 # @code
 # drush:
 #   paths:
 #     alias-path:
-#       - '${env.home}/.drush/sites/provider-name'
+#       - '${env.HOME}/.drush/sites/provider-name'
 # @endcode
 #
 # Site aliases stored in this directory may then be referenced by its
@@ -216,6 +226,35 @@
 #
 # Add the option `--format=list` to show only the names of each site and
 # environment without also showing the values in each alias record.
+
+# Wildcard Aliases for Service Providers
+#
+# Some service providers that manage Drupal sites allow customers to create
+# multiple "environments" for a site. It is common for these providers to
+# also have a feature to automatically create Drush aliases for all of a
+# user's sites. Rather than write one record for every environment in that
+# site, it is also possible to write a single "wildcard" alias that represents
+# all possible environments. This is possible if the contents of each
+# environment alias are identical save for the name of the environment in
+# one or more values. The variable `${env-name}` will be substituted with the
+# environment name wherever it appears.
+#
+# Example wildcard record:
+#
+# @code
+# # File: remote-example.site.yml
+# '*':
+#   host: ${env-name}.server.domain.com
+#   user: www-admin
+#   root: /path/to/${env-name}
+#   uri: http://${env-name}.remote-example.com
+# @endcode
+#
+# With a wildcard record, any environment name may be used, and will always
+# match. This is not desirable in instances where the specified environment
+# does not exist (e.g. if the user made a typo). An alias alter hook in a
+# policy file may be used to catch these mistakes and report an error.
+# @see SiteAliasAlterCommands for an example on how to do this.
 
 # Developer Information
 #

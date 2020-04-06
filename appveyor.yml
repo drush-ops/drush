@@ -1,0 +1,77 @@
+build: false
+shallow_clone: false
+platform: 'x86'
+clone_folder: C:\projects\work
+branches:
+  only:
+    - master
+
+  ## Cache composer bits
+cache:
+  - '%LOCALAPPDATA%\Composer\files -> composer.lock'
+
+services:
+  - mysql
+
+init:
+  #https://github.com/composer/composer/blob/master/appveyor.yml
+  #- SET ANSICON=121x90 (121x90)
+
+# Inspired by https://github.com/Codeception/base/blob/master/appveyor.yml and https://github.com/phpmd/phpmd/blob/master/appveyor.yml
+install:
+  - ps: Set-Service wuauserv -StartupType Manual
+  - cinst -y curl
+  - SET PATH=C:\Program Files\curl;%PATH%
+  #which is only needed by the test suite.
+  - cinst -y which
+  - SET PATH=C:\Program Files\which;%PATH%
+  - git clone -q https://github.com/acquia/DevDesktopCommon.git #For tar, cksum, ...
+  - SET PATH=%APPVEYOR_BUILD_FOLDER%/DevDesktopCommon/bintools-win/msys/bin;%PATH%
+  - SET PATH=C:\Program Files\MySql\MySQL Server 5.7\bin\;%PATH%
+  - choco search php --exact --all-versions -r
+  #Install PHP per https://blog.wyrihaximus.net/2016/11/running-php-unit-tests-on-windows-using-appveyor-and-chocolatey/
+  - ps: appveyor-retry cinst --limit-output --ignore-checksums -y php --version 7.3.7
+  - cd c:\tools\php73
+  - copy php.ini-production php.ini
+
+  - echo extension_dir=ext >> php.ini
+  - echo extension=php_openssl.dll >> php.ini
+  - echo date.timezone="UTC" >> php.ini
+  - echo variables_order="EGPCS" >> php.ini #May be unneeded.
+  - echo mbstring.http_input=pass >> php.ini
+  - echo mbstring.http_output=pass >> php.ini
+  - echo sendmail_path=nul >> php.ini
+  - echo extension=php_mbstring.dll >> php.ini
+  - echo extension=php_curl.dll >> php.ini
+  - echo extension=php_pdo_mysql.dll >> php.ini
+  - echo extension=php_pdo_pgsql.dll >> php.ini
+  - echo extension=php_pdo_sqlite.dll >> php.ini
+  - echo extension=php_pgsql.dll >> php.ini
+  - echo extension=php_gd2.dll >> php.ini
+  - echo extension=php_fileinfo.dll >> php.ini
+  - SET PATH=C:\tools\php73;%PATH%
+  #Install Composer
+  - cd %APPVEYOR_BUILD_FOLDER%
+  #- appveyor DownloadFile https://getcomposer.org/composer.phar
+  - php -r "readfile('http://getcomposer.org/installer');" | php
+  #Install dependencies via Composer
+  - php composer.phar install --prefer-dist -n
+  - SET PATH=%APPVEYOR_BUILD_FOLDER%;%APPVEYOR_BUILD_FOLDER%/vendor/bin;%PATH%
+  # Uncomment this and on_finish line below to enable RDP into build machine https://www.appveyor.com/docs/how-to/rdp-to-build-worker/
+  # - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
+
+test_script:
+  - vendor/bin/phpunit --colors=always --configuration tests --testsuite functional --debug
+  - vendor/bin/phpunit --colors=always --configuration tests --testsuite integration --debug
+  - vendor/bin/phpunit --colors=always --configuration tests --testsuite unit --debug
+
+on_finish:
+  # Uncomment this and above line to enable RDP into build machine https://www.appveyor.com/docs/how-to/rdp-to-build-worker/
+  # - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
+
+# environment variables
+environment:
+  global:
+#    php_ver_target: 7.3
+    UNISH_DB_URL: "mysql://root:Password12!@localhost"
+    APPVEYOR_RDP_PASSWORD: un1sh@Windows

@@ -3,6 +3,7 @@ namespace Drush\Runtime;
 
 use Drush\Command\GlobalOptionsEventListener;
 use Drush\Drush;
+use Drush\Symfony\DrushStyleInjector;
 use Drush\Cache\CommandCache;
 use DrupalFinder\DrupalFinder;
 use Symfony\Component\Console\Input\InputInterface;
@@ -13,6 +14,9 @@ use Composer\Autoload\ClassLoader;
 use League\Container\ContainerInterface;
 use Consolidation\SiteAlias\SiteAliasManager;
 use Drush\Command\DrushCommandInfoAlterer;
+use Consolidation\Config\Util\ConfigOverlay;
+use Drush\Config\DrushConfig;
+use Drush\SiteAlias\ProcessManager;
 
 /**
  * Prepare our Dependency Injection Container
@@ -52,7 +56,7 @@ class DependencyInjection
         \Robo\Robo::configureContainer($container, $application, $config, $input, $output);
         $container->add('container', $container);
 
-        $this->addDrushServices($container, $loader, $drupalFinder, $aliasManager);
+        $this->addDrushServices($container, $loader, $drupalFinder, $aliasManager, $config);
 
         // Store the container in the \Drush object
         Drush::setContainer($container);
@@ -77,7 +81,7 @@ class DependencyInjection
         }
     }
 
-    protected function addDrushServices(ContainerInterface $container, ClassLoader $loader, DrupalFinder $drupalFinder, SiteAliasManager $aliasManager)
+    protected function addDrushServices(ContainerInterface $container, ClassLoader $loader, DrupalFinder $drupalFinder, SiteAliasManager $aliasManager, DrushConfig $config)
     {
         // Override Robo's logger with our own
         $container->share('logger', 'Drush\Log\Logger')
@@ -86,6 +90,10 @@ class DependencyInjection
 
         $container->share('loader', $loader);
         $container->share('site.alias.manager', $aliasManager);
+
+        // Fetch the runtime config, where -D et. al. are stored, and
+        // add a reference to it to the container.
+        $container->share('config.runtime', $config->getContext(ConfigOverlay::PROCESS_CONTEXT));
 
         // Override Robo's formatter manager with our own
         // @todo not sure that we'll use this. Maybe remove it.
@@ -103,11 +111,9 @@ class DependencyInjection
         $container->share('bootstrap.hook', 'Drush\Boot\BootstrapHook')
           ->withArgument('bootstrap.manager');
         $container->share('tildeExpansion.hook', 'Drush\Runtime\TildeExpansionHook');
-        $container->share('ssh.transport', \Consolidation\SiteProcess\Factory\SshTransportFactory::class);
-        $container->share('docker-compose.transport', \Consolidation\SiteProcess\Factory\DockerComposeTransportFactory::class);
-        $container->share('process.manager', 'Drush\SiteAlias\ProcessManager')
-            ->withMethodCall('add', ['ssh.transport'])
-            ->withMethodCall('add', ['docker-compose.transport']);
+        $container->share('process.manager', ProcessManager::class)
+            ->withMethodCall('setConfig', ['config'])
+            ->withMethodCall('setConfigRuntime', ['config.runtime']);
         $container->share('redispatch.hook', 'Drush\Runtime\RedispatchHook')
             ->withArgument('process.manager');
 
@@ -134,13 +140,15 @@ class DependencyInjection
 
     protected function alterServicesForDrush(ContainerInterface $container, Application $application)
     {
+        $paramInjection = $container->get('parameterInjection');
+        $paramInjection->register('Symfony\Component\Console\Style\SymfonyStyle', new DrushStyleInjector());
+
         // Add our own callback to the hook manager
         $hookManager = $container->get('hookManager');
         $hookManager->addCommandEvent(new GlobalOptionsEventListener());
         $hookManager->addInitializeHook($container->get('redispatch.hook'));
         $hookManager->addInitializeHook($container->get('bootstrap.hook'));
         $hookManager->addPreValidator($container->get('tildeExpansion.hook'));
-        $hookManager->addOutputExtractor(new \Drush\Backend\BackendResultSetter());
 
         // Install our command cache into the command factory
         // TODO: Create class-based implementation of our cache management functions.
@@ -154,6 +162,8 @@ class DependencyInjection
 
         $commandProcessor = $container->get('commandProcessor');
         $commandProcessor->setPassExceptions(true);
+
+        ProcessManager::addTransports($container->get('process.manager'));
     }
 
     protected function injectApplicationServices(ContainerInterface $container, Application $application)
