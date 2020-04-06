@@ -41,7 +41,7 @@ class LocaleTest extends CommandUnishTestCase
         $this->drush('locale:export', ['nl'], ['types' => 'customized']);
 
         // Export untranslated strings.
-        $this->drush('sql:query', ["INSERT locales_source SET source = 'Something untranslated'"]);
+        $this->drush('sql:query', ["INSERT INTO locales_source (source) VALUES ('Something untranslated')"]);
         $this->drush('locale:export', ['nl'], ['types' => 'not-translated']);
 
         // Export all.
