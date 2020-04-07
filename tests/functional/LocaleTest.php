@@ -19,7 +19,9 @@ class LocaleTest extends CommandUnishTestCase
 
     public function setUp()
     {
-        $this->setUpDrupal(1, true);
+        if (!$this->getSites()) {
+            $this->setUpDrupal(1, true);
+        }
         $this->drush('pm:enable', ['language', 'locale']);
         $this->drush('language:add', ['nl'], ['skip-translations' => null]);
 
@@ -27,6 +29,12 @@ class LocaleTest extends CommandUnishTestCase
 
         $this->drush('locale:import', ['nl', $this->sourceFile]);
         $this->assertTranslation('Drush Empty Module', 'NL Drush Empty Module', 'nl', 0);
+    }
+
+    public function tearDown()
+    {
+        // Disable the locale module to make sure the database tables of locale module are emptied between tests.
+        $this->drush('pm:uninstall', ['language', 'locale']);
     }
 
     public function testLocaleExport()
