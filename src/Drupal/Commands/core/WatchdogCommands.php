@@ -34,7 +34,7 @@ class WatchdogCommands extends DrushCommands
      *   Show a listing of most recent 10 messages with a severity of notice.
      * @usage drush watchdog:show --type=php
      *   Show a listing of most recent 10 messages of type php
-     * @usage  while sleep 2; drush watchdog:show; done
+     * @usage  while sleep 2; do drush watchdog:show; done
      *   Every 2 seconds, show the most recent 10 messages.
      * @aliases wd-show,ws,watchdog-show
      * @validate-module-enabled dblog
