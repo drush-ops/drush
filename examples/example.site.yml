@@ -291,3 +291,17 @@
 #   uri: https://dev.example.com
 # @endcode
 
+# Example of rsync with exclude-paths
+#
+# @code
+# dev:
+#   root: /path/to/docroot
+#   uri: https://dev.example.com
+#   command:
+#     core:
+#       rsync:
+#         options:
+#           mode: rlptz
+#           exclude-paths: 'css:imagecache:ctools:js:tmp:php:styles:'
+# @endcode
+
