@@ -333,6 +333,26 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                     
                 </div>
                 <div class="col-md-8 type">
+                    <a href="#method_export">export</a>($langcode = null, $options = [&#039;template&#039; =&gt; false, &#039;types&#039; =&gt; self::OPT])
+        
+                                            <p>Exports to a gettext translation file.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_exportValidate">exportValidate</a>(<abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr> $commandData)
+        
+                                            <p>Assure that required options are set.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8 type">
                     <a href="#method_import">import</a>($langcode, $file, $options = [&#039;type&#039; =&gt; self::OPT, &#039;override&#039; =&gt; self::OPT])
         
                                             <p>Imports to a gettext translation file.</p>                </div>
@@ -388,7 +408,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </div>
                     <div class="method-item">
                     <h3 id="method___construct">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/Commands/core/LocaleCommands.php#L56">line 56</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/Commands/core/LocaleCommands.php#L61">line 61</a></div>
         <code>                    
     <strong>__construct</strong>(<abbr title="Drupal\Core\Language\LanguageManagerInterface">LanguageManagerInterface</abbr> $languageManager, <abbr title="Drupal\Core\Config\ConfigFactoryInterface">ConfigFactoryInterface</abbr> $configFactory, <abbr title="Drupal\Core\Extension\ModuleHandlerInterface">ModuleHandlerInterface</abbr> $moduleHandler, <abbr title="Drupal\Core\State\StateInterface">StateInterface</abbr> $state)
         </code>
@@ -514,7 +534,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </div>
                     <div class="method-item">
                     <h3 id="method_getLanguageManager">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/Commands/core/LocaleCommands.php#L27">line 27</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/Commands/core/LocaleCommands.php#L32">line 32</a></div>
         <code>            protected        <abbr title="Drupal\Core\Language\LanguageManagerInterface">LanguageManagerInterface</abbr>
     <strong>getLanguageManager</strong>()
         </code>
@@ -542,7 +562,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </div>
                     <div class="method-item">
                     <h3 id="method_getConfigFactory">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/Commands/core/LocaleCommands.php#L35">line 35</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/Commands/core/LocaleCommands.php#L40">line 40</a></div>
         <code>            protected        <abbr title="Drupal\Core\Config\ConfigFactoryInterface">ConfigFactoryInterface</abbr>
     <strong>getConfigFactory</strong>()
         </code>
@@ -570,7 +590,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </div>
                     <div class="method-item">
                     <h3 id="method_getModuleHandler">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/Commands/core/LocaleCommands.php#L43">line 43</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/Commands/core/LocaleCommands.php#L48">line 48</a></div>
         <code>                    <abbr title="Drupal\Core\Extension\ModuleHandlerInterface">ModuleHandlerInterface</abbr>
     <strong>getModuleHandler</strong>()
         </code>
@@ -598,7 +618,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </div>
                     <div class="method-item">
                     <h3 id="method_getState">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/Commands/core/LocaleCommands.php#L51">line 51</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/Commands/core/LocaleCommands.php#L56">line 56</a></div>
         <code>                    mixed
     <strong>getState</strong>()
         </code>
@@ -626,7 +646,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </div>
                     <div class="method-item">
                     <h3 id="method_check">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/Commands/core/LocaleCommands.php#L71">line 71</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/Commands/core/LocaleCommands.php#L76">line 76</a></div>
         <code>                    
     <strong>check</strong>()
         </code>
@@ -647,7 +667,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </div>
                     <div class="method-item">
                     <h3 id="method_update">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/Commands/core/LocaleCommands.php#L103">line 103</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/Commands/core/LocaleCommands.php#L108">line 108</a></div>
         <code>                    
     <strong>update</strong>($options = [&#039;langcodes&#039; =&gt; self::REQ])
         </code>
@@ -700,8 +720,84 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
 
             </div>
                     <div class="method-item">
+                    <h3 id="method_export">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/Commands/core/LocaleCommands.php#L183">line 183</a></div>
+        <code>                    
+    <strong>export</strong>($langcode = null, $options = [&#039;template&#039; =&gt; false, &#039;types&#039; =&gt; self::OPT])
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Exports to a gettext translation file.</p>                    <p>See Drupal Core: \Drupal\locale\Form\ExportForm::submitForm</p>                            </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$langcode</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$options</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+                            <h4>Exceptions</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><a target="_blank" href="http://php.net/Exception">Exception</a></td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_exportValidate">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/Commands/core/LocaleCommands.php#L205">line 205</a></div>
+        <code>                    
+    <strong>exportValidate</strong>(<abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr> $commandData)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Assure that required options are set.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr></td>
+                <td>$commandData</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
                     <h3 id="method_import">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/Commands/core/LocaleCommands.php#L180">line 180</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/Commands/core/LocaleCommands.php#L241">line 241</a></div>
         <code>                    
     <strong>import</strong>($langcode, $file, $options = [&#039;type&#039; =&gt; self::OPT, &#039;override&#039; =&gt; self::OPT])
         </code>
