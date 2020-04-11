@@ -36,7 +36,7 @@ class GenerateCommands extends DrushCommands
      * @param string $generator A generator name. Omit to pick from available Generators.
      * @option answer Answer to generator question.
      * @option dry-run Output the generated code but not save it to file system.
-     * @option directory Absolute path to a base directory for file writing.
+     * @option destination Absolute path to a base directory for file writing.
      * @usage drush generate
      *  Pick from available generators and then run it.
      * @usage drush generate controller
@@ -48,7 +48,7 @@ class GenerateCommands extends DrushCommands
      *
      * @return int
      */
-    public function generate($generator = '', $options = ['answer' => [], 'directory' => self::REQ, 'dry-run' => FALSE])
+    public function generate($generator = '', $options = ['answer' => [], 'destination' => self::REQ, 'dry-run' => FALSE])
     {
         // Disallow default Symfony console commands.
         if ($generator == 'help' || $generator == 'list') {
@@ -65,6 +65,9 @@ class GenerateCommands extends DrushCommands
         $argv = ['dcg' , $generator];
         foreach ($options['answer'] as $answer) {
             $argv[] = '--answer='. $answer;
+        }
+        if ($options['destination']) {
+            $argv[] = '--destination=' . $options['destination'];
         }
         if ($options['ansi']) {
             $argv[] = '--ansi';
@@ -99,7 +102,7 @@ class GenerateCommands extends DrushCommands
         $application->setHelperSet($helper_set);
 
         $generator_factory = new GeneratorFactory(new Filesystem());
-        // @todo Filter out DCG generators that does not make sense for Drush.
+        // @todo Filter out DCG generators that do not make sense for Drush.
         $dcg_generators = $generator_factory->getGenerators([Application::ROOT . '/src/Command']);
         $drush_generators = $generator_factory->getGenerators([__DIR__ . '/Generators'], '\Drush\Commands\generate\Generators');
         // @todo Implement generator discovery for this.
