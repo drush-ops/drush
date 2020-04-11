@@ -63,6 +63,7 @@ class GenerateCommands extends DrushCommands
 
         // Create an isolated input.
         $argv = ['dcg' , $generator];
+        // @todo Support short option ('-a') for answers.
         foreach ($options['answer'] as $answer) {
             $argv[] = '--answer='. $answer;
         }
@@ -90,9 +91,16 @@ class GenerateCommands extends DrushCommands
         $application = new Application('Drupal Code Generator', Drush::getVersion());
         $application->setAutoExit(false);
 
+        $replace = null;
+        if (Drush::affirmative()) {
+            $replace = true;
+        } elseif (Drush::negative()) {
+            $replace = false;
+        }
+
         $helper_set = new HelperSet([
             new QuestionHelper(),
-            new Dumper(new Filesystem()),
+            new Dumper(new Filesystem(), $replace),
             new Renderer(new TwigEnvironment(new FilesystemLoader())),
             new ResultPrinter(TRUE),
             new LoggerFactory(),
