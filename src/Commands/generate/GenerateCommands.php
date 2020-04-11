@@ -91,7 +91,7 @@ class GenerateCommands extends DrushCommands
             new QuestionHelper(),
             new Dumper(new Filesystem()),
             new Renderer(new TwigEnvironment(new FilesystemLoader())),
-            new ResultPrinter(),
+            new ResultPrinter(TRUE),
             new LoggerFactory(),
             new DrupalContext(\Drupal::getContainer())
         ]);
