@@ -2,7 +2,7 @@
 
 namespace Drush\Commands\generate\Generators\Drush;
 
-use DrupalCodeGenerator\Command\BaseGenerator;
+use DrupalCodeGenerator\Command\ModuleGenerator;
 use DrupalCodeGenerator\Utils;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -11,7 +11,7 @@ use Symfony\Component\Console\Question\Question;
 /**
  * Implements drush-command-file command.
  */
-class DrushCommandFile extends BaseGenerator
+class DrushCommandFile extends ModuleGenerator
 {
 
     protected $name = 'drush-command-file';
@@ -22,19 +22,19 @@ class DrushCommandFile extends BaseGenerator
     /**
      * {@inheritdoc}
      */
-    protected function interact(InputInterface $input, OutputInterface $output)
+    protected function generate(): void
     {
-        $questions = Utils::defaultQuestions();
-        $questions['source'] = new Question('Absolute path to legacy Drush command file (optional - for porting)');
-        $questions['source']->setValidator(function ($path) {
+        $vars = &$this->collectDefault();
+
+        $validator = function ($path): string {
             if ($path && !is_file($path)) {
                 throw new \UnexpectedValueException(sprintf('Could not open file "%s".', $path));
             }
             return $path;
-        });
+        };
+        $vars['source'] = $this->ask('Absolute path to legacy Drush command file (optional - for porting)', NULL, $validator);
+        $vars['class'] = '{machine_name|camelize}Commands';
 
-        $vars = &$this->collectVars($input, $output, $questions);
-        $vars['class'] = Utils::camelize($vars['machine_name'] . 'Commands');
         if ($vars['source']) {
             require_once $vars['source'];
             $filename = str_replace(['.drush.inc', '.drush8.inc'], '', basename($vars['source']));
@@ -46,20 +46,15 @@ class DrushCommandFile extends BaseGenerator
             $vars['commands'] = $this->adjustCommands($commands);
         }
 
-        $this->addFile()
-            ->path('src/Commands/{class}.php')
-            ->template('drush-command-file.php.twig');
+        $this->addFile('src/Commands/{class}.php','drush-command-file.php');
 
         $json = $this->getComposerJson($vars);
         $content = json_encode($json, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
-        $this->addFile()
-            ->path('composer.json')
+        $this->addFile('composer.json')
             ->content($content)
-            ->action('replace');
+            ->replaceIfExists();
 
-        $this->addFile()
-            ->path('drush.services.yml')
-            ->template('drush.services.yml.twig');
+        $this->addFile('drush.services.yml', 'drush.services.yml');
     }
 
     protected function getComposerJson(array $vars)
