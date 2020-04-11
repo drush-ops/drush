@@ -2,7 +2,6 @@
 
 namespace Drush\Commands\generate;
 
-use Consolidation\SiteProcess\Util\Escape;
 use DrupalCodeGenerator\Application;
 use DrupalCodeGenerator\Command\Navigation;
 use DrupalCodeGenerator\GeneratorFactory;
@@ -58,6 +57,7 @@ class GenerateCommands extends DrushCommands
 
         $application = $this->createApplication();
 
+        // @todo Use list command instead?
         $application->add(new Navigation());
         $application->setDefaultCommand('navigation');
 
@@ -101,9 +101,8 @@ class GenerateCommands extends DrushCommands
         $generator_factory = new GeneratorFactory(new Filesystem());
         // @todo Filter out DCG generators that does not make sense for Drush.
         $dcg_generators = $generator_factory->getGenerators([Application::ROOT . '/src/Command']);
-
-        // @todo Implement generator discovery.
         $drush_generators = $generator_factory->getGenerators([__DIR__ . '/Generators'], '\Drush\Commands\generate\Generators');
+        // @todo Implement generator discovery for this.
         $global_generators = [];
         $module_generators = [];
         $theme_generators = [];
