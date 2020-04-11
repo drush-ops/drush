@@ -103,7 +103,7 @@ class GenerateCommands extends DrushCommands
         $dcg_generators = $generator_factory->getGenerators([Application::ROOT . '/src/Command']);
 
         // @todo Implement generator discovery.
-        $drush_generators = [];
+        $drush_generators = $generator_factory->getGenerators([__DIR__ . '/Generators'], '\Drush\Commands\generate\Generators');
         $global_generators = [];
         $module_generators = [];
         $theme_generators = [];
