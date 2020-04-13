@@ -138,7 +138,6 @@ class Drush
     public static function getContainer()
     {
         if (!\Robo\Robo::hasContainer()) {
-            debug_print_backtrace();
             throw new \RuntimeException('Drush::$container is not initialized yet. \Drush::setContainer() must be called with a real container.');
         }
         return \Robo\Robo::getContainer();

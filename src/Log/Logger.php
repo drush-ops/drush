@@ -68,7 +68,7 @@ class Logger extends RoboLogger
             $message .= $suffix;
         }
 
-      // Robo-styled output
+      // consolidation/log handles formatting and verbosity level check.
         parent::log($level, $message, $context);
     }
 

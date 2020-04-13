@@ -30,7 +30,7 @@ install:
   - SET PATH=C:\Program Files\MySql\MySQL Server 5.7\bin\;%PATH%
   - choco search php --exact --all-versions -r
   #Install PHP per https://blog.wyrihaximus.net/2016/11/running-php-unit-tests-on-windows-using-appveyor-and-chocolatey/
-  - ps: appveyor-retry cinst --ignore-checksums -y php --version 7.3.7
+  - ps: appveyor-retry cinst --limit-output --ignore-checksums -y php --version 7.3.7
   - cd c:\tools\php73
   - copy php.ini-production php.ini
 

@@ -3,7 +3,6 @@ namespace Drush\Commands\core;
 
 use Composer\Semver\Comparator;
 use Consolidation\AnnotatedCommand\CommandData;
-use Consolidation\SiteProcess\ProcessBase;
 use Drupal\Component\FileCache\FileCacheFactory;
 use Drupal\Core\Database\Database;
 use Drupal\Core\Installer\Exception\AlreadyInstalledException;
@@ -147,7 +146,7 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
         // This can lead to an exit() in Drupal. See install_display_output() (e.g. config validation failure).
         // @todo Get Drupal to not call that function when on the CLI.
         try {
-            drush_op('install_drupal', $class_loader, $settings);
+            drush_op('install_drupal', $class_loader, $settings, [$this, 'taskCallback']);
         } catch (AlreadyInstalledException $e) {
             if ($sql && !$this->programExists($sql->command())) {
                 throw new \Exception(dt('Drush was unable to drop all tables because `@program` was not found, and therefore Drupal threw an AlreadyInstalledException. Ensure `@program` is available in your PATH.', ['@program' => $sql->command()]));
@@ -161,6 +160,12 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
             $this->logger()->success(dt('Installation complete.'));
         }
     }
+
+    public function taskCallback($install_state)
+    {
+        $this->logger()->notice('Performed install task: {task}', ['task' => $install_state['active_task']]);
+    }
+
 
     protected function determineProfile($profile, $options, $class_loader)
     {

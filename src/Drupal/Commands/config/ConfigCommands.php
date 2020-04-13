@@ -6,6 +6,7 @@ use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\AnnotatedCommand\Input\StdinAwareInterface;
 use Consolidation\AnnotatedCommand\Input\StdinAwareTrait;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
+use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
 use Consolidation\SiteProcess\Util\Escape;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Config\FileStorage;
@@ -14,6 +15,7 @@ use Drupal\Core\Config\StorageInterface;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Drush\Exec\ExecTrait;
+use Drush\SiteAlias\SiteAliasManagerAwareInterface;
 use Drush\Utils\FsUtils;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
@@ -22,10 +24,11 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Yaml\Parser;
 use Webmozart\PathUtil\Path;
 
-class ConfigCommands extends DrushCommands implements StdinAwareInterface
+class ConfigCommands extends DrushCommands implements StdinAwareInterface, SiteAliasManagerAwareInterface
 {
     use StdinAwareTrait;
     use ExecTrait;
+    use SiteAliasManagerAwareTrait;
 
     /**
      * @var ConfigFactoryInterface
@@ -204,8 +207,9 @@ class ConfigCommands extends DrushCommands implements StdinAwareInterface
 
         // Perform import operation if user did not immediately exit editor.
         if (!$options['bg']) {
-            $redispatch_options = Drush::redispatchOptions()   + ['partial' => true, 'source' => $temp_dir];
-            $process = $this->processManager()->drush(Drush::aliasManager()->getSelf(), 'config-import', [], $redispatch_options);
+            $redispatch_options = Drush::redispatchOptions() + ['strict' => 0, 'partial' => true, 'source' => $temp_dir];
+            $self = $this->siteAliasManager()->getSelf();
+            $process = $this->processManager()->drush($self, 'config-import', [], $redispatch_options);
             $process->mustRun($process->showRealtime());
         }
     }
@@ -313,11 +317,18 @@ class ConfigCommands extends DrushCommands implements StdinAwareInterface
             ];
         }
 
-        if ($rows) {
-            return new RowsOfFields($rows);
-        } else {
+        if (!$rows) {
             $this->logger()->notice(dt('No differences between DB and sync directory.'));
+
+            // Suppress output if there are no differences and we are using the
+            // human readable "table" formatter so that we not uselessly output
+            // empty table headers.
+            if ($options['format'] === 'table') {
+                return null;
+            }
         }
+
+        return new RowsOfFields($rows);
     }
 
     /**

@@ -94,9 +94,6 @@ class PmCommands extends DrushCommands
             drush_backend_batch_process();
         }
         $this->logger()->success(dt('Successfully enabled: !list', $todo_str));
-        // Our logger got blown away during the container rebuild above.
-        $boot = Drush::bootstrapManager()->bootstrap();
-        $boot->addLogger();
     }
 
     /**
@@ -120,9 +117,6 @@ class PmCommands extends DrushCommands
             throw new \Exception('Unable to uninstall modules.');
         }
         $this->logger()->success(dt('Successfully uninstalled: !list', ['!list' => implode(', ', $list)]));
-        // Our logger got blown away during the container rebuild above.
-        $boot = Drush::bootstrapManager()->bootstrap();
-        $boot->addLogger();
     }
 
     /**
