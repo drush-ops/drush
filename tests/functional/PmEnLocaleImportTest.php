@@ -40,6 +40,16 @@ class PmEnLocaleImportCase extends CommandUnishTestCase
 
         $this->drush('language-add', ['nl']);
 
+        // Enable without importing translations.
+        $this->drush('pm-enable', ['drush_empty_module'], ['skip-translations' => true]);
+        $this->drush('watchdog-show');
+        $this->assertNotContains('Translations imported:', $this->getSimplifiedOutput());
+
+        // Uninstall module and restore the translation file that gets removed during uninstall.
+        $this->drush('pm-uninstall', ['drush_empty_module']);
+        copy($source, $translationDir . '/drush_empty_module.nl.po');
+
+        // Enable with importing translations.
         $this->drush('pm-enable', ['drush_empty_module']);
         $this->drush('watchdog-show');
         $this->assertContains('Translations imported:', $this->getSimplifiedOutput());
