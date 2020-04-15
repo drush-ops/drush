@@ -31,8 +31,7 @@ class DrushAliasFile extends Generator
             $vars['user'] = $this->ask('Remote user', Drush::config()->user());
         }
 
-        $this->addFile('drush/{prefix}.site.yml')
-            ->template('drush-alias-file.yml');
+        $this->addFile('drush/{prefix}.site.yml', 'drush-alias-file.yml');
     }
 
 }
