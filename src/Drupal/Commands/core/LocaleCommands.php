@@ -122,17 +122,12 @@ class LocaleCommands extends DrushCommands
 
         if ($passed_langcodes = $options['langcodes']) {
             $langcodes = array_intersect($langcodes, explode(',', $passed_langcodes));
-            // @todo Not selecting any language code in the user interface results in
-            //   all translations being updated, so we mimick that behavior here.
         }
 
         // Deduplicate the list of langcodes since each project may have added the
         // same language several times.
         $langcodes = array_unique($langcodes);
 
-        // @todo Restricting by projects is not possible in the user interface and is
-        //   broken when attempting to do it in a hook_form_alter() implementation so
-        //   we do not allow for it here either.
         $projects = [];
 
         // Set the translation import options. This determines if existing
@@ -143,7 +138,7 @@ class LocaleCommands extends DrushCommands
         // translation updates. If the status is expired we clear it an run a batch to
         // update the status and then fetch the translation updates.
         $last_checked = $this->getState()->get('locale.translation_last_checked');
-        if ($last_checked < REQUEST_TIME - LOCALE_TRANSLATION_STATUS_TTL) {
+        if ($last_checked < time() - LOCALE_TRANSLATION_STATUS_TTL) {
             locale_translation_clear_status();
             $batch = locale_translation_batch_update_build([], $langcodes, $translationOptions);
             batch_set($batch);
