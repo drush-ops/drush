@@ -75,7 +75,7 @@ function drush_core_rsync($source, $destination, $additional_options = array()) 
   // Get all of the args and options that appear after the command name.
   $original_args = drush_get_original_cli_args_and_options();
   foreach ($original_args as $original_option) {
-    if ($original_option{0} == '-') {
+    if ($original_option[0] == '-') {
       $options .= ' ' . $original_option;
     }
   }

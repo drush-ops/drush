@@ -207,7 +207,7 @@ function _drush_generate_custom_project($name, $extension, $version_options) {
             drush_shell_cd_and_exec($repo_root, 'git branch');
             $output = drush_shell_exec_output();
             foreach ($output as $line) {
-              if ($line{0} == '*') {
+              if ($line[0] == '*') {
                 $branch = substr($line, 2);
                 if ($branch != "master") {
                   $project['download][branch'] = $branch;
