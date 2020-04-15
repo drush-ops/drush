@@ -63,6 +63,7 @@ class GenerateCommands extends DrushCommands
 
         // Create an isolated input.
         $argv = ['dcg' , $generator];
+        $argv[] = '--full-path';
         // @todo Support short option ('-a') for answers.
         foreach ($options['answer'] as $answer) {
             $argv[] = '--answer='. $answer;
@@ -102,7 +103,7 @@ class GenerateCommands extends DrushCommands
             new QuestionHelper(),
             new Dumper(new Filesystem(), $replace),
             new Renderer(new TwigEnvironment(new FilesystemLoader())),
-            new ResultPrinter(TRUE),
+            new ResultPrinter(),
             new LoggerFactory(),
             new DrupalContext(\Drupal::getContainer())
         ]);
