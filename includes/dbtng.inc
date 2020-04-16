@@ -85,8 +85,8 @@ function drush_db_select($table, $fields = '*', $where = NULL, $args = NULL, $st
         $fields = array($fields);
       }
     }
-    $query = db_select($table, $table)
-      ->fields($table, $fields);
+    $query = db_select($table, 't')
+      ->fields('t', $fields);
     if (!empty($where)) {
       $query = $query->where($where, $args);
     }
