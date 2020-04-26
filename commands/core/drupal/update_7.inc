@@ -167,8 +167,8 @@ function update_main_prepare() {
 
   // Load module basics.
   include_once $core . '/includes/module.inc';
-  $module_list['system']['filename'] = 'modules/system/system.module';
-  module_list(TRUE, FALSE, FALSE, $module_list);
+  $GLOBALS['module_list']['system']['filename'] = 'modules/system/system.module';
+  module_list(TRUE, FALSE, FALSE, $GLOBALS['module_list']);
   drupal_load('module', 'system');
 
   // Reset the module_implements() cache so that any new hook implementations
