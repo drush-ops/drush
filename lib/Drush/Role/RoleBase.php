@@ -31,7 +31,7 @@ abstract class RoleBase {
   public function __construct($rid = DRUPAL_ANONYMOUS_RID) {
     $this->roles = user_roles();
     if (!is_numeric($rid)) {
-      $role_name = $rid;
+      $role_name = t($rid);
       if (in_array($role_name, $this->roles)) {
         $rid = array_search($role_name, $this->roles);
       }
