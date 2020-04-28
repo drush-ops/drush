@@ -74,6 +74,8 @@ If you still prefer using site-wide commandfiles, here are some examples of vali
     - Filename: $PROJECT_ROOT/drush/Commands/contrib/dev_modules/ExampleCommands.php
     - Namespace: Drush\Commands\dev_modules
 
+Note: Make sure you do _not_ include `src` in the path to your command. Your command may not be discovered and have additional problems.
+
 Installing commands as part of a Composer project requires that the project's type be `drupal-drush`, and that the `installer-paths` in the Drupal site's composer.json file contains `"drush/Commands/contrib/{$name}": ["type:drupal-drush"]`. It is also possible to commit projects with a similar layout using a directory named `custom` in place of `contrib`; if this is done, then the directory `custom` will not be considered to be part of the commandfile's namespace.
 
 If a site-wide commandfile is added via a Composer package, then it may declare any dependencies that it may need in its composer.json file. Site-wide commandfiles that are committed directly to a site's repository only have access to the dependencies already available in the site. Site-wide commandfiles should declare their Drush version compatibility via a `conflict` directive. For example, a Composer-managed site-wide command that works with both Drush 8 and Drush 9 might contain something similar to the following in its composer.json file:
