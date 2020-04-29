@@ -94,7 +94,6 @@ trait CliTestTrait
         try {
             // Process uses a default timeout of 60 seconds, set it to 0 (none).
             $this->process = new Process($command, $cd, $env, $input, 0);
-            $this->process->inheritEnvironmentVariables(true);
             if ($this->timeout) {
                 $this->process->setTimeout($this->timeout)
                 ->setIdleTimeout($this->idleTimeout);
