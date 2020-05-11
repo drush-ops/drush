@@ -150,6 +150,11 @@ class ProcessManager extends ConsolidationProcessManager
     {
         $process->setSimulated(Drush::simulate());
         $process->setVerbose(Drush::verbose());
+        // Handle BC method of making env variables inherited. The default in
+        // later versions is always inherit and this method disappears.
+        if (method_exists($process, 'inheritEnvironmentVariables')) {
+            $process->inheritEnvironmentVariables();
+        }
         $process->setLogger(Drush::logger());
         $process->setRealtimeOutput(new DrushStyle(Drush::input(), Drush::output()));
         $process->setTimeout(Drush::getTimeout());
