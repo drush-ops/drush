@@ -8,5 +8,5 @@ projects:
     download:
       url: 'https://git.drupalcode.org/project/atom.git'
       type: git
-      branch: 7.x-1.x
-      revision: a9e05aa6e6c45641a0b56dbeb55ede35f51ae3e1
+      branch: 8.x-1.x
+      revision: eef5044d467380991080cc6e6060de3b99832c27
