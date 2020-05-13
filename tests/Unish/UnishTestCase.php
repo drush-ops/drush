@@ -308,7 +308,8 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
     }
     // Write an empty sites.php if we are on D7+. Needed for multi-site on D8 and
     // used on D7 in \Unish\saCase::testBackendHonorsAliasOverride.
-    if ($major_version >= 7 && !file_exists($root . '/sites/sites.php')) {
+    // Skip if there is no example.sites.php, e.g. in Drupal 9.
+    if ($major_version >= 7 && !file_exists($root . '/sites/sites.php') && file_exists($root . '/sites/example.sites.php')) {
       copy($root . '/sites/example.sites.php', $root . '/sites/sites.php');
     }
 
