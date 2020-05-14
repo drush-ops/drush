@@ -282,6 +282,8 @@ EOD;
     'uri' => 'default',
   );
 EOD;
+    @mkdir($root . "/sites");
+    @mkdir($root . "/sites/all");
     @mkdir($root . "/sites/all/drush");
     @mkdir($root . "/sites/all/drush/site-aliases");
     file_put_contents($root . "/sites/all/drush/site-aliases/sitefolder.aliases.drushrc.php", $aliasContents);
