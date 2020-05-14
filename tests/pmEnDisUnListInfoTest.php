@@ -80,10 +80,11 @@ class EnDisUnListInfoCase extends CommandUnishTestCase {
       $themeToCheck = 'bartik';
     }
     if (UNISH_DRUPAL_MAJOR_VERSION >= 8) {
-      $themeToCheck = 'classy';
+      $themeToCheck = 'stark';
       // UNISH_DRUPAL_MINOR_VERSION is something like ".8.0-alpha1".
-      if (UNISH_DRUPAL_MINOR_VERSION[1] >= 8) {
-        $themeToCheck = 'stark';
+      if (UNISH_DRUPAL_MINOR_VERSION[1] <= 8) {
+        $themeToCheck = 'classy';
+        $this->markTestSkipped('Project "panels", used in this test, no longer works with earlier versions of Drupal 8.');
       }
     }
     if (UNISH_DRUPAL_MAJOR_VERSION >= 9) {
