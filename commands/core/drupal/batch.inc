@@ -4,6 +4,7 @@
  *   Drupal 8 and 9 engine for the Batch API
  */
 
+use Drupal\Core\Database\Database;
 use Drush\Log\LogLevel;
 
 /**
