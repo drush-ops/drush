@@ -120,6 +120,9 @@ abstract class UserSingleBase {
    * @return string
    */
   public function getUsername() {
+    if (method_exists($this->account, 'getAccountName')) {
+      return $this->account->getAccountName();
+    }
     return $this->account->getUsername();
   }
 
