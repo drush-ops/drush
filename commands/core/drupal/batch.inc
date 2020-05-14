@@ -58,7 +58,6 @@ function _drush_backend_batch_process($command = 'batch-process', $args, $option
   }
 }
 
-
 /**
  * Initialize the batch command and call the worker function.
  *
@@ -67,12 +66,18 @@ function _drush_backend_batch_process($command = 'batch-process', $args, $option
  *
  * @param id
  *   The batch id of the batch being processed.
+ *
+ * @return bool|array
+ *   A results array.
  */
 function _drush_batch_command($id) {
   $batch =& batch_get();
 
-  $data = db_query("SELECT batch FROM {batch} WHERE bid = :bid", array(
-    ':bid' => $id))->fetchField();
+  $data = Database::getConnection()->select('batch', 'b')
+    ->fields('b', ['batch'])
+    ->condition('bid', $id)
+    ->execute()
+    ->fetchField();
 
   if ($data) {
     $batch = unserialize($data);
@@ -89,10 +94,12 @@ function _drush_batch_command($id) {
   register_shutdown_function('_drush_batch_shutdown');
 
   if (_drush_batch_worker()) {
-    _drush_batch_finished();
+    return _drush_batch_finished();
+  }
+  else {
+    return ['drush_batch_process_finished' => FALSE];
   }
 }
-
 
 /**
  * Process batch operations
