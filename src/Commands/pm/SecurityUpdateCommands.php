@@ -177,7 +177,7 @@ class SecurityUpdateCommands extends DrushCommands
         $process->mustRun();
         $out = $process->getOutput();
         if ($packages = json_decode($out, true)) {
-            $suggested_command = "composer why " . key($packages);
+            $suggested_command = "composer why " . implode(' && composer why ', array_keys($packages));
             $this->logger()->warning('One or more of your dependencies has an outstanding security update.');
             $this->logger()->notice("Run <comment>$suggested_command</comment> to learn what module requires the package.");
             return CommandResult::dataWithExitCode(new UnstructuredData($packages), self::EXIT_FAILURE);

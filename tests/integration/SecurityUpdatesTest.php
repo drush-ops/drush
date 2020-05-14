@@ -32,7 +32,7 @@ class SecurityUpdatesTest extends UnishIntegrationTestCase
     {
         $this->drush('pm:security-php', [], ['format' => 'json'], self::EXIT_ERROR);
         $this->assertContains('One or more of your dependencies has an outstanding security update.', $this->getErrorOutput());
-        $this->assertContains('Run composer why david-garcia/phpwhois to learn what module requires the package.', $this->getErrorOutput());
+        $this->assertContains('Run composer why david-garcia/phpwhois', $this->getErrorOutput());
         $security_advisories = $this->getOutputFromJSON();
         $this->arrayHasKey('david-garcia/phpwhois', $security_advisories);
     }
