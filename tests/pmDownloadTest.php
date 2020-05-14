@@ -18,7 +18,7 @@ class pmDownloadCase extends CommandUnishTestCase {
   // @todo Test pure drush commandfile projects. They get special destination.
   public function testDestination() {
     // TODO: enable test when devel available for Drupal 9
-    if (version_compare(UNISH_DRUPAL_MAJOR_VERSION . UNISH_DRUPAL_MINOR_VERSION, '8.9.0-dev', '>=')) {
+    if (version_compare(UNISH_DRUPAL_MAJOR_VERSION . str_replace('.x-dev', '.0-dev', UNISH_DRUPAL_MINOR_VERSION), '8.9.0-dev', '>=')) {
       $this->markTestSkipped('Drupal 8.9 / 9.0 version of devel not available yet.');
     }
     // Setup two Drupal sites. Skip install for speed.
