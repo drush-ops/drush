@@ -138,6 +138,16 @@ function _drush_log_update_sql($ret) {
   }
 }
 
+function drush_drupal_get_profile() {
+    if (method_exists('Drupal', 'installProfile')) {
+      return \Drupal::installProfile();
+    }
+    if (function_exists('drupal_get_profile')) {
+      return \drupal_get_profile();
+    }
+    return variable_get('install_profile', '');
+}
+
 function drush_find_profiles($drupal_root , $key = 'name') {
   return drush_scan_directory($drupal_root . '/profiles', "/.*\.profile$/", array('.', '..', 'CVS', 'tests'), 0, 2, $key);
 }

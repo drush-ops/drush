@@ -50,7 +50,11 @@ class DrupalBoot8 extends DrupalBoot {
   }
 
   function get_profile() {
-    return drupal_get_profile();
+    // Favor Drupal::installProfile() if it exists.
+    if (method_exists('Drupal', 'installProfile')) {
+      return \Drupal::installProfile();
+    }
+    return \drupal_get_profile();
   }
 
   function conf_path($require_settings = TRUE, $reset = FALSE, Request $request = NULL) {
