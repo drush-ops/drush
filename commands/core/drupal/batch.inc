@@ -37,7 +37,9 @@ function _drush_backend_batch_process($command = 'batch-process', $args, $option
 
     // Assign an arbitrary id: don't rely on a serial column in the 'batch'
     // table, since non-progressive batches skip database storage completely.
-    $batch['id'] = db_next_id();
+    $batch['id'] = function_exists('db_next_id') ?
+      \db_next_id() :
+      \Drupal::database()->nextId();
     $args[] = $batch['id'];
 
     $batch['progressive'] = TRUE;
