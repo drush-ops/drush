@@ -22,7 +22,9 @@ use Drupal\Core\Logger\RfcLogLevel;
  *   An array containing module info for all available modules.
  */
 function drush_get_modules($include_hidden = TRUE) {
-  $modules = system_rebuild_module_data();
+  $modules = function_exists('system_rebuild_module_data') ?
+    \system_rebuild_module_data() :
+    \Drupal::service('extension.list.module')->getList();
 
   foreach ($modules as $key => $module) {
     if ((!$include_hidden) && (!empty($module->info['hidden']))) {
