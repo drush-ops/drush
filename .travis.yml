@@ -54,6 +54,18 @@ matrix:
     - php: 7.0
       env: 'UNISH_DRUPAL_MAJOR_VERSION=8 UNISH_DRUPAL_MINOR_VERSION=5.15'
 
+    # D8.4.x
+    - php: 7.0
+      env: 'UNISH_DRUPAL_MAJOR_VERSION=8 UNISH_DRUPAL_MINOR_VERSION=4.8 PHPUNIT_ARGS=--group=commands'
+
+    # D8.3.x
+    - php: 7.0
+      env: 'UNISH_DRUPAL_MAJOR_VERSION=8 UNISH_DRUPAL_MINOR_VERSION=3.9 PHPUNIT_ARGS=--group=commands'
+
+    # D8.2.x
+    - php: 7.0
+      env: 'UNISH_DRUPAL_MAJOR_VERSION=8 UNISH_DRUPAL_MINOR_VERSION=2.8 PHPUNIT_ARGS=--group=commands'
+
     # D7
     - php: 7.0
       env: 'UNISH_DRUPAL_MAJOR_VERSION=7'
