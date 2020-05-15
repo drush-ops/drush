@@ -127,10 +127,6 @@ class userCase extends CommandUnishTestCase {
 
   function testUserCancel() {
     // create content
-    // @todo Creation of node types and content has changed in D8.
-    if (UNISH_DRUPAL_MAJOR_VERSION >= 8) {
-      $this->markTestSkipped("@todo Creation of node types and content has changed in D8. Started to fix this");
-    }
     if (UNISH_DRUPAL_MAJOR_VERSION >= 7) {
       // create_node_types script does not work for D6
       $this->drush('php-script', array('create_node_types'), $this->options() + array('script-path' => dirname(__FILE__) . '/resources'));
