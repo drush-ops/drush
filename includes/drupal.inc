@@ -6,6 +6,7 @@
  */
 
 use Drush\Log\LogLevel;
+use Drupal\Core\Site\Settings;
 
 /**
  * Loads the Drupal autoloader and returns the instance.
