@@ -86,12 +86,6 @@ before_install:
   - echo 'mbstring.http_input = pass' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
   - echo 'mbstring.http_output = pass' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
   - travis_retry composer selfupdate
-  - |
-    if [ $UNISH_DRUPAL_MAJOR_VERSION == '9' ] ; then 
-      composer config --unset platform.php
-      composer -n remove --dev 'symfony/*' --no-update
-      composer -n require --dev phpunit/phpunit:^6 --no-update
-    fi
 
 install: travis_retry composer install --no-interaction
 
