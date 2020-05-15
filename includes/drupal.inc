@@ -98,7 +98,10 @@ function drush_format_date($timestamp, $type = 'medium', $format = '', $timezone
  */
 function drush_config_get_config_directory($type = 'sync') {
     if (drush_drupal_major_version() >= 9) {
-        return Settings::get('config_sync_directory', FALSE);
+      if ($type != 'sync') {
+        return '';
+      }
+      return Settings::get('config_sync_directory', FALSE);
     }
     return config_get_config_directory($type);
 }

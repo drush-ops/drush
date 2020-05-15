@@ -47,7 +47,9 @@ class ConfigCase extends CommandUnishTestCase {
     $options = $this->options();
     // Get path to sync dir.
     $this->drush('core-status', array('config-sync'), $options + array('format' => 'json'));
-    $sync = $this->webroot() . '/' . $this->getOutputFromJSON('config-sync');
+    $sync_relative_path = $this->getOutputFromJSON('config-sync');
+    $this->assertNotEmpty($sync_relative_path);
+    $sync = $this->webroot() . '/' . $sync_relative_path;
     $system_site_yml = $sync . '/system.site.yml';
     $core_extension_yml = $sync . '/core.extension.yml';
 
