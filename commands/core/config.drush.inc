@@ -610,7 +610,7 @@ function drush_config_import($source = NULL) {
     elseif (!isset($source)) {
       $source = CONFIG_SYNC_DIRECTORY;
     }
-    $source_dir = config_get_config_directory($source);
+    $source_dir = drush_config_get_config_directory($source);
   }
 
   if ($source == CONFIG_SYNC_DIRECTORY) {
