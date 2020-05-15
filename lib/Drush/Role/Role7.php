@@ -3,6 +3,10 @@
 namespace Drush\Role;
 
 class Role7 extends RoleBase {
+  public function anonymousRole() {
+    return DRUPAL_ANONYMOUS_RID;
+  }
+
   public function getPerms() {
     $perms = user_role_permissions(array($this->rid => $this->name));
     return array_keys($perms[$this->rid]);

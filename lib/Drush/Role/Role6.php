@@ -5,6 +5,10 @@ namespace Drush\Role;
 class Role6 extends RoleBase {
   public $perms = array();
 
+  public function anonymousRole() {
+    return DRUPAL_ANONYMOUS_RID;
+  }
+
   public function getPerms() {
     if (empty($this->perms)) {
       $perms = db_result(db_query("SELECT perm FROM {permission} pm LEFT JOIN {role} r ON r.rid = pm.rid WHERE r.rid = '%d'", $this->rid));
