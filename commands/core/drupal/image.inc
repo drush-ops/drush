@@ -11,11 +11,11 @@ use Drush\Log\LogLevel;
  */
 
 function drush_image_styles() {
-  return \Drupal::entityManager()->getStorage('image_style')->loadMultiple();
+  return \Drupal::entityTypeManager()->getStorage('image_style')->loadMultiple();
 }
 
 function drush_image_style_load($style_name) {
-  return \Drupal::entityManager()->getStorage('image_style')->load($style_name);
+  return \Drupal::entityTypeManager()->getStorage('image_style')->load($style_name);
 }
 
 function drush_image_flush_single($style_name) {
