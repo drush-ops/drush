@@ -422,7 +422,7 @@ function drush_config_export($destination = NULL) {
     elseif (!isset($destination)) {
       $destination = CONFIG_SYNC_DIRECTORY;
     }
-    $destination_dir = config_get_config_directory($destination);
+    $destination_dir = drush_config_get_config_directory($destination);
   }
 
   // Prepare a new branch, if applicable
