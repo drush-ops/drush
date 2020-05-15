@@ -11,6 +11,10 @@ use \Drupal\Component\Version\Constraint;
 
 include __DIR__ . '/environment_common.inc';
 
+function drush_user_load($uid) {
+  return Drupal\user\Entity\User::load($uid);
+}
+
 /**
  * Return dependencies and its status for modules.
  *

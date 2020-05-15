@@ -9,6 +9,10 @@
 
 include __DIR__ . '/environment_common.inc';
 
+function drush_user_load($uid) {
+  return user_load($uid);
+}
+
 /**
  * Return dependencies and its status for modules.
  *

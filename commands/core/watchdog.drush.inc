@@ -269,7 +269,7 @@ function core_watchdog_format_result($result, $extended = FALSE) {
       unset($result->referer);
     }
     // Username.
-    if ($account = user_load($result->uid)) {
+    if ($account = drush_user_load($result->uid)) {
       $result->username = $account->name;
     }
     else {
