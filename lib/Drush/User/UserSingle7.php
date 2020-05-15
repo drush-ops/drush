@@ -26,7 +26,7 @@ class UserSingle7 extends UserSingleBase {
     unset($userinfo['block']);
     unset($userinfo['form_build_id']);
     foreach (array('created', 'access', 'login') as $key) {
-      $userinfo['user_' . $key] = format_date($userinfo[$key]);
+      $userinfo['user_' . $key] = drush_format_date($userinfo[$key]);
     }
     $userinfo['user_status'] = $userinfo['status'] ? 'active' : 'blocked';
     return $userinfo;

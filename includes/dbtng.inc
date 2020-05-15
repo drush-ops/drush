@@ -5,6 +5,8 @@
  * Wrappers to abstract database operations from Drupal version.
  */
 
+use Drupal\Core\Database\Database;
+
 /**
  * @defgroup dbfunctions Database convenience functions.
  * @{
@@ -85,8 +87,10 @@ function drush_db_select($table, $fields = '*', $where = NULL, $args = NULL, $st
         $fields = array($fields);
       }
     }
-    $query = db_select($table, 't')
-      ->fields('t', $fields);
+    $query = (drush_drupal_major_version() >= 9) ?
+      Database::getConnection()->select($table, 't') :
+      db_select($table, 't');
+    $query->fields('t', $fields);
     if (!empty($where)) {
       $query = $query->where($where, $args);
     }

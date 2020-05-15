@@ -71,6 +71,18 @@ function drush_drupal_major_version($drupal_root = NULL) {
 }
 
 /**
+ * b/c layer for format_date
+ */
+function drush_format_date($timestamp, $type = 'medium', $format = '', $timezone = NULL, $langcode = NULL) {
+  if (drush_drupal_major_version() >= 9) {
+    return \Drupal::service('date.formatter')
+      ->format($timestamp, $type, $format, $timezone, $langcode);
+  }
+  return format_date($timestamp, $type, $format, $timezone, $langcode);
+}
+
+
+/**
  * Log Drupal watchdog() calls.
  *
  * A sneaky implementation of hook_watchdog(), for D6/D7.
