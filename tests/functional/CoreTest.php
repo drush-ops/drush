@@ -171,4 +171,22 @@ class CoreCase extends CommandUnishTestCase
         $this->assertContains($b_drush_config_file, $output['drush-conf'], "Loaded drush config files are: " . $drush_conf_as_string);
         $this->assertEquals($test_uri, $output['uri']);
     }
+
+    public function testSiteSpecificConfigLoading()
+    {
+        $drush_config_file = Path::join($this->webroot(), '/sites/dev/drush.yml');
+
+        $drush_config_yml = [
+            'drush' => [
+                'paths' => [
+                    'cache-directory' => '/foo/bar'
+                ]
+            ]
+        ];
+
+        file_put_contents($drush_config_file, Yaml::dump($drush_config_yml, PHP_INT_MAX, 2));
+        $this->drush('core-status', [], ['field' => 'drush-cache-directory']);
+        $output = $this->getOutput();
+        $this->assertEquals('/foo/bar', $output);
+    }
 }
