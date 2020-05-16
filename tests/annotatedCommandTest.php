@@ -43,7 +43,6 @@ class annotatedCommandCase extends CommandUnishTestCase {
 
     // Copy the 'woot' module over to the Drupal site we just set up.
     $wootModuleDir = $this->setupModulesForTests($root);
-    $this->drush('cr', [], $options);
 
     // These are not good asserts, but for the purposes of isolation....
     $targetDir = $root . DIRECTORY_SEPARATOR . $this->drupalSitewideDirectory() . '/modules/woot';

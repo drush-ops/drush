@@ -978,6 +978,11 @@ function drush_pm_enable_find_project_from_extension($extension) {
  * Validate callback. Determine the modules and themes that the user would like enabled.
  */
 function drush_pm_enable_validate() {
+  // Rebuild the cache if needed (Drupal 9 requirement)
+  if (drush_drupal_major_version() >= 9) {
+    drupal_flush_all_caches();
+  }
+
   $args = pm_parse_arguments(func_get_args());
 
   $extension_info = drush_get_extensions();

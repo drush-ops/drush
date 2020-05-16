@@ -35,7 +35,6 @@ class EnDisUnListInfoCase extends CommandUnishTestCase {
 
     // Test pm-download downloads a module and pm-list lists it.
     $this->drush('pm-download', array($moduleToTest), $options);
-    $this->drush('cr', [], $options);
     $this->drush('pm-list', array(), $options + array('no-core' => NULL, 'status' => 'disabled,not installed'));
     $out = $this->getOutput();
     $list = $this->getOutputAsList();
