@@ -852,6 +852,11 @@ function _drush_pm_find_common_path($project_type, $extensions) {
  * Command callback. Show a list of extensions with type and status.
  */
 function drush_pm_list() {
+  // Rebuild the cache if needed (Drupal 9 requirement)
+  if (drush_drupal_major_version() >= 9) {
+    drupal_flush_all_caches();
+  }
+
   //--package
   $package_filter = array();
   $package = strtolower(drush_get_option('package'));
