@@ -50,7 +50,11 @@ class DrupalBoot8 extends DrupalBoot {
   }
 
   function get_profile() {
-    return drupal_get_profile();
+    // Favor Drupal::installProfile() if it exists.
+    if (method_exists('Drupal', 'installProfile')) {
+      return \Drupal::installProfile();
+    }
+    return \drupal_get_profile();
   }
 
   function conf_path($require_settings = TRUE, $reset = FALSE, Request $request = NULL) {
@@ -148,7 +152,12 @@ class DrupalBoot8 extends DrupalBoot {
       ob_start();
     }
     $this->kernel->boot();
-    $this->kernel->prepareLegacyRequest($this->request);
+    if (method_exists($this->kernel, 'preHandle')) {
+      $this->kernel->preHandle($this->request);
+    }
+    else {
+      $this->kernel->prepareLegacyRequest($this->request);
+    }
     if (!drush_get_context('DRUSH_QUIET', FALSE)) {
       ob_end_clean();
     }

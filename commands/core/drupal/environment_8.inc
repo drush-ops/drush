@@ -1,18 +1,16 @@
 <?php
 /**
  * @file
- *   Specific functions for a drupal 9+ environment.
+ *   Specific functions for a drupal 8+ environment.
  *   drush_include_engine() magically includes either this file
  *   or environment_X.inc depending on which version of drupal Drush
  *   is called from.
  */
 
-use \Drupal\Component\Version\Constraint;
-
 include __DIR__ . '/environment_common.inc';
 
 function drush_user_load($uid) {
-  return Drupal\user\Entity\User::load($uid);
+  return user_load($uid);
 }
 
 /**
@@ -41,10 +39,11 @@ function drush_check_module_dependencies($modules, $module_info) {
       foreach ($dependencies as $dependency_name => $v) {
         $current_version = $module_info[$dependency_name]->info['version'];
         $current_version = str_replace(drush_get_drupal_core_compatibility() . '-', '', $current_version);
-        if (!$v->isCompatible($current_version)) {
+        $incompatibility = drupal_check_incompatibility($v, $current_version);
+        if (isset($incompatibility)) {
           $status[$key]['error'] = array(
             'code' => 'DRUSH_PM_ENABLE_DEPENDENCY_VERSION_MISMATCH',
-            'message' => dt('Module !module cannot be enabled because it depends on !dependency !required_version but !current_version is available', array('!module' => $module, '!dependency' => $dependency_name, '!required_version' => $v->getConstraintString(), '!current_version' => $current_version))
+            'message' => dt('Module !module cannot be enabled because it depends on !dependency !required_version but !current_version is available', array('!module' => $module, '!dependency' => $dependency_name, '!required_version' => $incompatibility, '!current_version' => $current_version))
           );
         }
       }

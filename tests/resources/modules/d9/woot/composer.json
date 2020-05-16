@@ -1,0 +1,14 @@
+{
+  "name": "drupal/woot",
+  "type": "drupal-module",
+  "description": "Woot Mightily.",
+  "keywords": ["Drupal"],
+  "license": "GPL-2.0+",
+  "homepage": "http://drupal.org/project/woot",
+  "minimum-stability": "dev",
+  "support": {
+    "issues": "http://drupal.org/project/issues/woot",
+    "source": "http://cgit.drupalcode.org/woot"
+  },
+  "require": { }
+}

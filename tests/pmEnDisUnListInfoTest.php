@@ -14,9 +14,11 @@ namespace Unish;
 class EnDisUnListInfoCase extends CommandUnishTestCase {
 
   public function testEnDisUnList() {
-    // TODO: enable test when devel available for Drupal 9
+    $moduleToTest = 'devel';
+    $expectedTitle = 'Devel';
     if (UNISH_DRUPAL_MAJOR_VERSION >= 9) {
-      $this->markTestSkipped('Drupal 9 version of devel not available yet.');
+      $moduleToTest = 'token';
+      $expectedTitle = 'Token';
     }
     $sites = $this->setUpDrupal(1, TRUE);
     $options_no_pipe = array(
@@ -32,30 +34,32 @@ class EnDisUnListInfoCase extends CommandUnishTestCase {
     );
 
     // Test pm-download downloads a module and pm-list lists it.
-    $this->drush('pm-download', array('devel'), $options);
+    $this->drush('pm-download', array($moduleToTest), $options);
     $this->drush('pm-list', array(), $options + array('no-core' => NULL, 'status' => 'disabled,not installed'));
     $out = $this->getOutput();
     $list = $this->getOutputAsList();
-    $this->assertTrue(in_array('devel', $list));
+    $this->assertTrue(in_array($moduleToTest, $list));
 
     // Test pm-enable enables a module and shows the permissions it provides.
-    $this->drush('pm-enable', array('devel'), $options_no_pipe);
+    $this->drush('pm-enable', array($moduleToTest), $options_no_pipe);
     $output = $this->getOutput();
-    $this->assertContains('access devel information', $output);
+    if ($moduleToTest == 'devel') {
+      $this->assertContains('access devel information', $output);
+    }
 
     // Test pm-list shows the module as enabled.
     $this->drush('pm-list', array(), $options + array('status' => 'enabled'));
     $list = $this->getOutputAsList();
-    $this->assertTrue(in_array('devel', $list));
+    $this->assertTrue(in_array($moduleToTest, $list));
 
     // Test pm-info shows some module info.
-    $this->drush('pm-info', array('devel'), $options);
-    $output = $this->getOutputFromJSON('devel');
+    $this->drush('pm-info', array($moduleToTest), $options);
+    $output = $this->getOutputFromJSON($moduleToTest);
     $expected = array(
-      'extension' => 'devel',
-      'project' => 'devel',
+      'extension' => $moduleToTest,
+      'project' => $moduleToTest,
       'type' => 'module',
-      'title' => 'Devel',
+      'title' => $expectedTitle,
       'status' => 'enabled',
     );
     foreach ($expected as $key => $value) {
@@ -63,10 +67,10 @@ class EnDisUnListInfoCase extends CommandUnishTestCase {
     }
 
     // Test pm-projectinfo shows some project info.
-    $this->drush('pm-projectinfo', array('devel'), $options);
-    $output = $this->getOutputFromJSON('devel');
+    $this->drush('pm-projectinfo', array($moduleToTest), $options);
+    $output = $this->getOutputFromJSON($moduleToTest);
     $expected = array(
-      'label' => 'Devel (devel)',
+      'label' => "$expectedTitle ($moduleToTest)",
       'type' => 'module',
       'status' => '1',
     );
@@ -80,10 +84,11 @@ class EnDisUnListInfoCase extends CommandUnishTestCase {
       $themeToCheck = 'bartik';
     }
     if (UNISH_DRUPAL_MAJOR_VERSION >= 8) {
-      $themeToCheck = 'classy';
+      $themeToCheck = 'stark';
       // UNISH_DRUPAL_MINOR_VERSION is something like ".8.0-alpha1".
-      if (UNISH_DRUPAL_MINOR_VERSION[1] >= 8) {
-        $themeToCheck = 'stark';
+      if (UNISH_DRUPAL_MINOR_VERSION[1] <= 8) {
+        $themeToCheck = 'classy';
+        $this->markTestSkipped('Project "panels", used in this test, no longer works with earlier versions of Drupal 8.');
       }
     }
     if (UNISH_DRUPAL_MAJOR_VERSION >= 9) {
@@ -101,21 +106,21 @@ class EnDisUnListInfoCase extends CommandUnishTestCase {
     // Test pm-list filtering.
     $this->drush('pm-list', array(), $options + array('package' => 'Core'));
     $list = $this->getOutputAsList();
-    $this->assertFalse(in_array('devel', $list), 'Devel is not part of core package');
+    $this->assertFalse(in_array($moduleToTest, $list), 'Module to test is not part of core package');
 
     // Test module disabling.
     if (UNISH_DRUPAL_MAJOR_VERSION <= 7) {
-      $this->drush('pm-disable', array('devel'), $options);
+      $this->drush('pm-disable', array($moduleToTest), $options);
       $this->drush('pm-list', array(), $options + array('status' => 'disabled'));
       $list = $this->getOutputAsList();
-      $this->assertTrue(in_array('devel', $list));
+      $this->assertTrue(in_array($moduleToTest, $list));
     }
 
     // Test module uninstall.
-    $this->drush('pm-uninstall', array('devel'), $options);
+    $this->drush('pm-uninstall', array($moduleToTest), $options);
     $this->drush('pm-list', array(), $options + array('status' => 'not installed', 'type' => 'module'));
     $list = $this->getOutputAsList();
-    $this->assertTrue(in_array('devel', $list));
+    $this->assertTrue(in_array($moduleToTest, $list));
 
     // Test pm-enable is able to download dependencies.
     // @todo pathauto has no usable D8 release yet.

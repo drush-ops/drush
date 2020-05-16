@@ -223,6 +223,7 @@ EOD;
     $sites = $this->setUpDrupal(1, TRUE);
     $name = key($sites);
     $sites_php = "\n\$sites['example.com'] = '$name';";
+    @mkdir($sites[$name]['root'] . '/sites');
     file_put_contents($sites[$name]['root'] . '/sites/sites.php', $sites_php, FILE_APPEND);
     $this->drush('pm-updatecode', array(), array('uri' => 'http://example.com', 'no' => NULL, 'no-core' => NULL, 'verbose' => NULL), '@' . $name);
     $this->assertContains('--uri=http://example.com', $this->getErrorOutput());
@@ -281,6 +282,8 @@ EOD;
     'uri' => 'default',
   );
 EOD;
+    @mkdir($root . "/sites");
+    @mkdir($root . "/sites/all");
     @mkdir($root . "/sites/all/drush");
     @mkdir($root . "/sites/all/drush/site-aliases");
     file_put_contents($root . "/sites/all/drush/site-aliases/sitefolder.aliases.drushrc.php", $aliasContents);

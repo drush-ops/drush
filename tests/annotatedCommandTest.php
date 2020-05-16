@@ -31,7 +31,7 @@ class annotatedCommandCase extends CommandUnishTestCase {
     $this->assertEquals('baz', $output);
   }
 
-  public function testExecute() {
+  public function testExecuteWoot() {
     $sites = $this->setUpDrupal(1, TRUE);
     $uri = key($sites);
     $root = $this->webroot();
@@ -42,7 +42,7 @@ class annotatedCommandCase extends CommandUnishTestCase {
     );
 
     // Copy the 'woot' module over to the Drupal site we just set up.
-    $this->setupModulesForTests($root);
+    $wootModuleDir = $this->setupModulesForTests($root);
 
     // These are not good asserts, but for the purposes of isolation....
     $targetDir = $root . DIRECTORY_SEPARATOR . $this->drupalSitewideDirectory() . '/modules/woot';
@@ -181,10 +181,11 @@ EOT;
   }
 
   public function setupModulesForTests($root) {
-    $wootMajor = UNISH_DRUPAL_MAJOR_VERSION == '9' ? '8' : UNISH_DRUPAL_MAJOR_VERSION;
+    $wootMajor = UNISH_DRUPAL_MAJOR_VERSION;
     $wootModule = __DIR__ . '/resources/modules/d' . $wootMajor . '/woot';
     $targetDir = $root . DIRECTORY_SEPARATOR . $this->drupalSitewideDirectory() . '/modules/woot';
     $this->mkdir($targetDir);
     $this->recursive_copy($wootModule, $targetDir);
+    return $targetDir;
   }
 }

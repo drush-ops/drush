@@ -5,6 +5,8 @@
  * Wrappers to abstract database operations from Drupal version.
  */
 
+use Drupal\Core\Database\Database;
+
 /**
  * @defgroup dbfunctions Database convenience functions.
  * @{
@@ -85,8 +87,10 @@ function drush_db_select($table, $fields = '*', $where = NULL, $args = NULL, $st
         $fields = array($fields);
       }
     }
-    $query = db_select($table, 't')
-      ->fields('t', $fields);
+    $query = (drush_drupal_major_version() >= 9) ?
+      Database::getConnection()->select($table, 't') :
+      db_select($table, 't');
+    $query->fields('t', $fields);
     if (!empty($where)) {
       $query = $query->where($where, $args);
     }
@@ -141,14 +145,19 @@ function drush_db_select($table, $fields = '*', $where = NULL, $args = NULL, $st
  *   Affected rows (except on D7+mysql without a WHERE clause - returns TRUE) or FALSE.
  */
 function drush_db_delete($table, $where = NULL, $args = NULL) {
-  if (drush_drupal_major_version() >= 7) {
+  if (drush_drupal_major_version() >= 9) {
+    if (!empty($where)) {
+      $query = Database::getConnection()->delete($table)->where($where, $args);
+      return $query->execute();
+    }
+    return Database::getConnection()->truncate($table)->execute();
+  }
+  elseif (drush_drupal_major_version() >= 7) {
     if (!empty($where)) {
       $query = db_delete($table)->where($where, $args);
       return $query->execute();
     }
-    else {
-      return db_truncate($table)->execute();
-    }
+    return db_truncate($table)->execute();
   }
   else {
     $query = "DELETE FROM {{$table}}";

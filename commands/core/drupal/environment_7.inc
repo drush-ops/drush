@@ -7,6 +7,10 @@
  *   is called from.
  */
 
+function drush_user_load($uid) {
+  return user_load($uid);
+}
+
 /**
  * Get complete information for all available modules.
  *

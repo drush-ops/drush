@@ -23,11 +23,11 @@ abstract class UserSingleBase {
       'password' => $this->account->getPassword(),
       'mail' => $this->account->getEmail(),
       'user_created' => $this->account->getCreatedTime(),
-      'created' => format_date($this->account->getCreatedTime()),
+      'created' => drush_format_date($this->account->getCreatedTime()),
       'user_access' => $this->account->getLastAccessedTime(),
-      'access' => format_date($this->account->getLastAccessedTime()),
+      'access' => drush_format_date($this->account->getLastAccessedTime()),
       'user_login' => $this->account->getLastLoginTime(),
-      'login' => format_date($this->account->getLastLoginTime()),
+      'login' => drush_format_date($this->account->getLastLoginTime()),
       'user_status' => $this->account->get('status')->value,
       'status' => $this->account->isActive() ? 'active' : 'blocked',
       'timezone' => $this->account->getTimeZone(),
@@ -120,6 +120,9 @@ abstract class UserSingleBase {
    * @return string
    */
   public function getUsername() {
+    if (method_exists($this->account, 'getAccountName')) {
+      return $this->account->getAccountName();
+    }
     return $this->account->getUsername();
   }
 

@@ -28,7 +28,10 @@ abstract class RoleBase {
    * This constructor will allow the role to be selected either
    * via the role id or via the role name.
    */
-  public function __construct($rid = DRUPAL_ANONYMOUS_RID) {
+  public function __construct($rid = NULL) {
+    if ($rid === NULL) {
+      $rid = $this->anonymousRole();
+    }
     $this->roles = user_roles();
     if (!is_numeric($rid)) {
       $role_name = $rid;
@@ -46,6 +49,8 @@ abstract class RoleBase {
       throw new RoleException(dt('Could not find the role: !role', array('!role' => $rid)));
     }
   }
+
+  abstract public function anonymousRole();
 
   /*
    * Get all perms for a given Role.

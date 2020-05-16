@@ -45,7 +45,7 @@ function drush_pm_updatecode() {
     return drush_set_error('pm-updatestatus failed.');
   }
   $last = $update_status->lastCheck();
-  drush_print(dt('Update information last refreshed: ') . ($last  ? format_date($last) : dt('Never')));
+  drush_print(dt('Update information last refreshed: ') . ($last  ? drush_format_date($last) : dt('Never')));
   drush_print($values['output']);
 
   $update_info = $values['object'];

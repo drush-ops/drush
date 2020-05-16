@@ -21,7 +21,7 @@ abstract class UserVersion {
    * @return mixed
    */
   public function load_by_uid($uid) {
-    return user_load($uid);
+    return drush_user_load($uid);
   }
 
   /**

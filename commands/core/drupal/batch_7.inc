@@ -1,10 +1,9 @@
 <?php
 /**
  * @file
- *   Drupal 8 and 9 engine for the Batch API
+ *   Drupal 7 engine for the Batch API
  */
 
-use Drupal\Core\Database\Database;
 use Drush\Log\LogLevel;
 
 /**
@@ -29,11 +28,11 @@ function _drush_backend_batch_process($command = 'batch-process', $args, $option
     // The batch is now completely built. Allow other modules to make changes
     // to the batch so that it is easier to reuse batch processes in other
     // enviroments.
-    \Drupal::moduleHandler()->alter('batch', $batch);
+    drupal_alter('batch', $batch);
 
     // Assign an arbitrary id: don't rely on a serial column in the 'batch'
     // table, since non-progressive batches skip database storage completely.
-    $batch['id'] = \Drupal::database()->nextId();
+    $batch['id'] = db_next_id();
     $args[] = $batch['id'];
 
     $batch['progressive'] = TRUE;
@@ -46,10 +45,18 @@ function _drush_backend_batch_process($command = 'batch-process', $args, $option
 
     drush_include_engine('drupal', 'environment');
     // Store the batch.
-    /** @var \Drupal\Core\Batch\BatchStorage $batch_storage */
-    $batch_storage = \Drupal::service('batch.storage');
-    $batch_storage->create($batch);
+    db_insert('batch')
+      ->fields(array(
+        'bid' => $batch['id'],
+        'timestamp' => REQUEST_TIME,
+        'token' => drush_get_token($batch['id']),
+        'batch' => serialize($batch),
+      ))
+      ->execute();
     $finished = FALSE;
+
+    // Not used in D8+ and possibly earlier.
+    global $user;
 
     while (!$finished) {
       $data = drush_invoke_process('@self', $command, $args, array('user' => drush_user_get_class()->getCurrentUserAsSingle()->id()));
@@ -59,6 +66,7 @@ function _drush_backend_batch_process($command = 'batch-process', $args, $option
   }
 }
 
+
 /**
  * Initialize the batch command and call the worker function.
  *
@@ -67,18 +75,12 @@ function _drush_backend_batch_process($command = 'batch-process', $args, $option
  *
  * @param id
  *   The batch id of the batch being processed.
- *
- * @return bool|array
- *   A results array.
  */
 function _drush_batch_command($id) {
   $batch =& batch_get();
 
-  $data = Database::getConnection()->select('batch', 'b')
-    ->fields('b', ['batch'])
-    ->condition('bid', $id)
-    ->execute()
-    ->fetchField();
+  $data = db_query("SELECT batch FROM {batch} WHERE bid = :bid", array(
+    ':bid' => $id))->fetchField();
 
   if ($data) {
     $batch = unserialize($data);
@@ -95,12 +97,10 @@ function _drush_batch_command($id) {
   register_shutdown_function('_drush_batch_shutdown');
 
   if (_drush_batch_worker()) {
-    return _drush_batch_finished();
-  }
-  else {
-    return ['drush_batch_process_finished' => FALSE];
+    _drush_batch_finished();
   }
 }
+
 
 /**
  * Process batch operations
@@ -230,16 +230,16 @@ function _drush_batch_finished() {
         $queue = _batch_queue($batch_set);
         $operations = $queue->getAllItems();
         $elapsed = $batch_set['elapsed'] / 1000;
-        $elapsed = \Drupal::service('date.formatter')->formatInterval($elapsed);
+        $elapsed = format_interval($elapsed);
         call_user_func_array($batch_set['finished'], [$batch_set['success'], $batch_set['results'], $operations, $elapsed]);
       }
     }
   }
 
   // Clean up the batch table and unset the static $batch variable.
-  /** @var \Drupal\Core\Batch\BatchStorage $batch_storage */
-  $batch_storage = \Drupal::service('batch.storage');
-  $batch_storage->delete($batch['id']);
+  db_delete('batch')
+    ->condition('bid', $batch['id'])
+    ->execute();
 
   foreach ($batch['sets'] as $batch_set) {
     if ($queue = _batch_queue($batch_set)) {
@@ -256,9 +256,10 @@ function _drush_batch_finished() {
  * or clear the table if the batch is finished.
  */
 function _drush_batch_shutdown() {
- if ($batch = batch_get()) {
-    /** @var \Drupal\Core\Batch\BatchStorage $batch_storage */
-    $batch_storage = \Drupal::service('batch.storage');
-    $batch_storage->update($batch);
+  if ($batch = batch_get()) {
+    db_update('batch')
+       ->fields(array('batch' => serialize($batch)))
+       ->condition('bid', $batch['id'])
+       ->execute();
   }
 }

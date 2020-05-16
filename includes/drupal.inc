@@ -6,6 +6,7 @@
  */
 
 use Drush\Log\LogLevel;
+use Drupal\Core\Site\Settings;
 
 /**
  * Loads the Drupal autoloader and returns the instance.
@@ -68,6 +69,41 @@ function drush_drupal_major_version($drupal_root = NULL) {
     }
   }
   return $major_version;
+}
+
+/**
+ * b/c layer for format_date
+ */
+function drush_format_date($timestamp, $type = 'medium', $format = '', $timezone = NULL, $langcode = NULL) {
+  if (drush_drupal_major_version() >= 9) {
+    return \Drupal::service('date.formatter')
+      ->format($timestamp, $type, $format, $timezone, $langcode);
+  }
+  return format_date($timestamp, $type, $format, $timezone, $langcode);
+}
+
+/**
+ * Returns the path of a configuration directory.
+ *
+ * Configuration directories are configured using $config_directories in
+ * settings.php.
+ *
+ * @param string $type
+ *   The type of config directory to return.
+ *
+ * @return string
+ *   The configuration directory path.
+ *
+ * @throws \Exception
+ */
+function drush_config_get_config_directory($type = 'sync') {
+    if (drush_drupal_major_version() >= 9) {
+      if ($type != 'sync') {
+        return '';
+      }
+      return Settings::get('config_sync_directory', FALSE);
+    }
+    return config_get_config_directory($type);
 }
 
 /**
@@ -136,6 +172,16 @@ function _drush_log_update_sql($ret) {
       }
     }
   }
+}
+
+function drush_drupal_get_profile() {
+    if (method_exists('Drupal', 'installProfile')) {
+      return \Drupal::installProfile();
+    }
+    if (function_exists('drupal_get_profile')) {
+      return \drupal_get_profile();
+    }
+    return variable_get('install_profile', '');
 }
 
 function drush_find_profiles($drupal_root , $key = 'name') {

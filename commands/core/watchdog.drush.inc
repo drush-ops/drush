@@ -245,7 +245,7 @@ function core_watchdog_format_result($result, $extended = FALSE) {
   $result->severity = $severities[$result->severity];
 
   // Date.
-  $result->date = format_date($result->timestamp, 'custom', 'd/M H:i');
+  $result->date = drush_format_date($result->timestamp, 'custom', 'd/M H:i');
   unset($result->timestamp);
 
   // Message.
@@ -269,7 +269,7 @@ function core_watchdog_format_result($result, $extended = FALSE) {
       unset($result->referer);
     }
     // Username.
-    if ($account = user_load($result->uid)) {
+    if ($account = drush_user_load($result->uid)) {
       $result->username = $account->name;
     }
     else {
