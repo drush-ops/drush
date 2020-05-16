@@ -178,8 +178,7 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
             Drush::config()->set('runtime.config.paths', array_merge($presetConfig, [$siteConfig]));
 
             $this->logger->debug(dt("Loaded Drush config file at !file.", ['!file' => $siteConfig]));
-        }
-        else {
+        } else {
             $this->logger->debug(dt("Could not find a Drush config file at !file.", ['!file' => $siteConfig]));
         }
 
