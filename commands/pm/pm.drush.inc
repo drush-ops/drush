@@ -1586,6 +1586,10 @@ function pm_parse_version($version, $is_core = FALSE) {
 
   // If no major version, we have no version at all. Pick a default.
   $drupal_version_default = drush_drupal_major_version();
+  // Make 9 act like 8, because release_xml is weird.
+  if ($drupal_version_default == 9) {
+    $drupal_version_default = 8;
+  }
   if ($core_parts['major'] == '') {
     $core_parts['major'] = ($drupal_version_default) ? $drupal_version_default : drush_get_option('default-major', 8);
   }
