@@ -3,9 +3,11 @@
 namespace Drush\Boot;
 
 use Consolidation\AnnotatedCommand\AnnotationData;
+use Consolidation\Config\Loader\ConfigProcessor;
 use Drupal\Core\Database\Database;
 use Drupal\Core\DrupalKernel;
 use Drush\Config\ConfigLocator;
+use Drush\Config\Loader\YamlConfigLoader;
 use Drush\Drupal\DrushLoggerServiceProvider;
 use Drush\Drupal\DrushServiceModifier;
 use Drush\Drush;
@@ -159,13 +161,30 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
      */
     public function bootstrapDoDrupalSite(BootstrapManager $manager)
     {
-        $locator = new ConfigLocator();
-        $locator = $locator->addConfigPaths(ConfigLocator::SITE_CONTEXT, [$this->confPath(), $this->confPath() . '/drush']);
-        $siteConfig = $locator->configFilePaths();
-        $presetConfig = Drush::config()->get('runtime.config.paths');
-        Drush::config()->set('runtime.config.paths', array_merge($presetConfig, $siteConfig));
+        $siteConfig = $this->confPath() . '/drush.yml';
 
-        // Note: this reports the'default' during site:install even if we eventually install to a different multisite.
+        if (file_exists($siteConfig)) {
+            $loader = new YamlConfigLoader();
+            $processor = new ConfigProcessor();
+
+            $reference = Drush::config()->export();
+            $context = Drush::config()->getContext(ConfigLocator::SITE_CONTEXT);
+            $processor->add($context->export());
+            $processor->extend($loader->load($siteConfig));
+            $context->import($processor->export($reference));
+            Drush::config()->addContext(ConfigLocator::SITE_CONTEXT, $context);
+
+            $presetConfig = Drush::config()->get('runtime.config.paths');
+            Drush::config()->set('runtime.config.paths', array_merge($presetConfig, [$siteConfig]));
+
+            $this->logger->debug(dt("Loaded Drush config file at !file.", ['!file' => $siteConfig]));
+        }
+        else {
+            $this->logger->debug(dt("Could not find a Drush config file at !file.", ['!file' => $siteConfig]));
+        }
+
+
+        // Note: this reports the 'default' site during site:install even if we eventually install to a different multisite.
         $this->logger->log(LogLevel::BOOTSTRAP, dt("Initialized Drupal site !site at !site_root", ['!site' => $this->getRequest()->getHttpHost(), '!site_root' => $this->confPath()]));
     }
 
