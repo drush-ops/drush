@@ -1,0 +1,8 @@
+
+woot.woot_controller_woot:
+  path: '/woot'
+  defaults:
+    _controller: '\Drupal\woot\Controller\WootController::woot'
+    _title: 'Woot'
+  requirements:
+    _permission: 'access content'

@@ -1,0 +1,5 @@
+name: Woot
+type: module
+description: Woot Mightily.
+core_version_requirement: ^8.8 || ^9
+package: Other
