@@ -6,7 +6,7 @@ use Symfony\Component\Yaml\Yaml;
 use Webmozart\PathUtil\Path;
 
 /**
- * @group base
+ * @group commands
  */
 class SiteAliasConvertTest extends UnishIntegrationTestCase
 {

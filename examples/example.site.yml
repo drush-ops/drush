@@ -291,3 +291,25 @@
 #   uri: https://dev.example.com
 # @endcode
 
+# Example of rsync with exclude-paths
+#
+# Note that most options typically passed to rsync via `drush rsync` are
+# "passthrough options", which is to say they appear after the `--` separator
+# on the command line. Passthrough options are actually arguments, and
+# it is not possible to set default arguments in an alias record. The
+# `drush rsync` command does support two options, `--mode` and `--exclude-paths`,
+# which are interpreted directly by Drush. Default values for these options
+# may be specified in an alias record, as shown below.
+#
+# @code
+# dev:
+#   root: /path/to/docroot
+#   uri: https://dev.example.com
+#   command:
+#     core:
+#       rsync:
+#         options:
+#           mode: rlptz
+#           exclude-paths: 'css:imagecache:ctools:js:tmp:php:styles'
+# @endcode
+

@@ -161,7 +161,7 @@ class RsyncCommands extends DrushCommands implements SiteAliasManagerAwareInterf
     public function validate(CommandData $commandData)
     {
         if ($this->sourceEvaluatedPath->isRemote() && $this->targetEvaluatedPath->isRemote()) {
-            $msg = dt("Cannot specify two remote aliases. Instead, use one of the following alternate options:\n\n    `drush {source} rsync @self {target}`\n    `drush {source} rsync @self {fulltarget}\n\nUse the second form if the site alias definitions are not available at {source}.", ['source' => $source, 'target' => $target, 'fulltarget' => $this->targetEvaluatedPath->fullyQualifiedPath()]);
+            $msg = dt("Cannot specify two remote aliases. Instead, use one of the following alternate options:\n\n    `drush {source} rsync @self {target}`\n    `drush {source} rsync @self {fulltarget}\n\nUse the second form if the site alias definitions are not available at {source}.", ['source' => $this->sourceEvaluatedPath->getSiteAlias()->name(), 'target' => $this->targetEvaluatedPath->getSiteAlias()->name(), 'fulltarget' => $this->targetEvaluatedPath->fullyQualifiedPath()]);
             throw new \Exception($msg);
         }
     }

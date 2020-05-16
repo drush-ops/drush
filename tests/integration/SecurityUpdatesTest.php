@@ -11,9 +11,9 @@ class SecurityUpdatesTest extends UnishIntegrationTestCase
 {
 
   /**
-   * Test that insecure packages are correctly identified.
+   * Test that insecure Drupal packages are correctly identified.
    */
-    public function testInsecurePackage()
+    public function testInsecureDrupalPackage()
     {
         // @todo This passes on Drupal because drupal/alinks has a security release for 8 and we don't actually install that module on our d9 tests.
         $this->drush('pm:security', [], ['format' => 'json'], self::EXIT_ERROR);
@@ -23,5 +23,17 @@ class SecurityUpdatesTest extends UnishIntegrationTestCase
         $this->arrayHasKey('drupal/alinks', $security_advisories);
         $this->assertEquals('drupal/alinks', $security_advisories["drupal/alinks"]['name']);
         $this->assertEquals('1.0.0', $security_advisories["drupal/alinks"]['version']);
+    }
+
+    /**
+     * Test that insecure PHP packages are correctly identified.
+     */
+    public function testInsecurePhpPackage()
+    {
+        $this->drush('pm:security-php', [], ['format' => 'json'], self::EXIT_ERROR);
+        $this->assertContains('One or more of your dependencies has an outstanding security update.', $this->getErrorOutput());
+        $this->assertContains('Run composer why david-garcia/phpwhois', $this->getErrorOutput());
+        $security_advisories = $this->getOutputFromJSON();
+        $this->arrayHasKey('david-garcia/phpwhois', $security_advisories);
     }
 }

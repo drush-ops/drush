@@ -93,10 +93,9 @@ abstract class UnishIntegrationTestCase extends UnishTestCase
         chdir($this->webroot());
         $this->log("Executing: " . implode(' ', $cmd), 'verbose');
         $return = $application->run($input, $output);
-        $this->assertEquals($expected_return, $return, "Command failed: \n\n" . $this->getErrorOutput());
-
         $this->stdout = $output->fetch();
         $this->stderr = $output->getErrorOutput()->fetch();
+        $this->assertEquals($expected_return, $return, "Command failed: \n\n" . $this->getErrorOutput());
 
         return $return;
     }

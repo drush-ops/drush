@@ -114,7 +114,7 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
         }
 
         if ($options['cache-clear']) {
-            $process = Drush::drush(Drush::aliasManager()->getSelf(), 'cache-rebuild');
+            $process = $this->processManager()->drush($this->siteAliasManager()->getSelf(), 'cache-rebuild');
             $process->mustrun();
         }
 

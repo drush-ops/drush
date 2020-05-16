@@ -18,7 +18,6 @@ test_71_steps: &test71steps
     - checkout
     - run: cp .docker/zz-php.ini /usr/local/etc/php/conf.d/
     - run: composer install -n
-    - run: $HOME/drush/.circleci/patch.sh 8.7.x
     - run: composer lint
     - run: composer unit
     - run: composer functional
@@ -63,7 +62,6 @@ jobs:
       - image: circleci/mysql:5.7.24
     <<: *test71steps
 
-  # See scheduled workflow
   test_71_sqlite:
     <<: *defaults
     docker:
@@ -73,7 +71,6 @@ jobs:
           - UNISH_DB_URL=sqlite://sut/sites/dev/files/.ht.sqlite
     <<: *test71steps
 
-  # See scheduled workflow
   test_71_postgres:
     <<: *defaults
     docker:
@@ -142,7 +139,7 @@ workflows:
   #   - If code style check fails, then run only the LOWEST test and skip
   #     all of the others.
   #   - If both the code style and mergeable checks pass, then run the
-  #     standard and LOWEST tests.
+  #     standard suites.
   drush:
     jobs:
       - code_style
