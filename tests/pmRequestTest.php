@@ -17,6 +17,10 @@ class pmRequestCase extends CommandUnishTestCase {
     $root = $this->webroot();
 
     $drupal_version = UNISH_DRUPAL_MAJOR_VERSION;
+    // We expect this oddity: that Drupal 9 is treated like 8 in release_xml
+    if ($drupal_version == 9) {
+      $drupal_version = 8;
+    }
 
     // Common options for below commands.
     $options = array(
