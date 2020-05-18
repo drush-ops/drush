@@ -185,8 +185,14 @@ class CoreCase extends CommandUnishTestCase
         ];
 
         file_put_contents($drush_config_file, Yaml::dump($drush_config_yml, PHP_INT_MAX, 2));
-        $this->drush('core-status', [], ['field' => 'drush-cache-directory']);
-        $output = $this->getOutput();
-        $this->assertEquals('/foo/bar', $output);
+
+        $this->drush('core-status', [], ['format' => 'json']);
+        $output = $this->getOutputFromJSON();
+        $loaded = array_flip($output['drush-conf']);
+        $this->assertArrayHasKey('sites/dev/drush.yml', $loaded);
+
+//        $this->drush('core-status', [], ['field' => 'drush-cache-directory']);
+//        $output = $this->getOutput();
+//        $this->assertEquals('/foo/bar', $output);
     }
 }
