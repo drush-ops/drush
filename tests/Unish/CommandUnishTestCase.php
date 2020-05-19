@@ -4,6 +4,7 @@ namespace Unish;
 
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\Exception\ProcessTimedOutException;
+use PHPUnit\Framework\TestResult;
 
 abstract class CommandUnishTestCase extends UnishTestCase {
 
@@ -328,7 +329,7 @@ abstract class CommandUnishTestCase extends UnishTestCase {
    * @return PHPUnit_Framework_TestResult
    * @throws PHPUnit_Framework_Exception
    */
-  public function run(\PHPUnit_Framework_TestResult $result = NULL) {
+  public function run(TestResult $result = NULL) {
     $result = parent::run($result);
     $data = array();
     foreach ($this->coverage_data as $merge_data) {

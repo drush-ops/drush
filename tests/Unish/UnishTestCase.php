@@ -1,8 +1,9 @@
 <?php
 
 namespace Unish;
+use PHPUnit\Framework\TestCase;
 
-abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
+abstract class UnishTestCase extends TestCase {
 
   /**
    * A list of Drupal sites that have been recently installed. They key is the
