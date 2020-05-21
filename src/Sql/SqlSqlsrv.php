@@ -22,7 +22,7 @@ class SqlSqlsrv extends SqlBase
     public function getEnv()
     {
         $dbSpec = $this->getDbSpec();
-        // user environment variable SQLCMDPASSWORD 
+        // user environment variable SQLCMDPASSWORD
         $env = array (
             'SQLCMDPASSWORD' => "{$dbSpec['password']}"
         );
@@ -152,6 +152,6 @@ class SqlSqlsrv extends SqlBase
 
     public function dumpCmd($table_selection)
     {
-        throw new SqlException('SQL Server doesn\'t support dump directly via sqlcmd. However, you can use SQL Management Studio to generate database scripts.');        
+        throw new SqlException('SQL Server doesn\'t support dump directly via sqlcmd. However, you can use SQL Management Studio to generate database scripts.');
     }
 }
