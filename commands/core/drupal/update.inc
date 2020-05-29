@@ -133,7 +133,11 @@ function update_main() {
   require_once DRUPAL_ROOT . '/core/includes/install.inc';
   require_once DRUPAL_ROOT . '/core/includes/update.inc';
   drupal_load_updates();
-  update_fix_compatibility();
+
+  // Disables extensions that have a lower Drupal core major version, or too high of a PHP requirement.
+  // Those are rare, and this function does a full rebuild. So commenting it out as in Drush 10.
+  // n.b. This function does not exist in Drupal 9. See https://www.drupal.org/node/3026100
+  // update_fix_compatibility();
 
   // Check requirements before updating.
   if (!drush_update_check_requirements()) {
