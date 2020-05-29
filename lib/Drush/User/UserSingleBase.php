@@ -88,7 +88,7 @@ abstract class UserSingleBase {
       // I got the following technique here: http://drupal.org/node/638712
       $batch =& batch_get();
       $batch['progressive'] = FALSE;
-      batch_process();
+      drush_backend_batch_process();
   }
 
   /**
