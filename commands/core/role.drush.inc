@@ -3,6 +3,9 @@
 use Drush\Log\LogLevel;
 use Drush\Role\RoleBase;
 
+// Internal, do not use
+define('DRUSH_ANONYMOUS_RID', -9999);
+
 /**
  * Implementation of hook_drush_help().
  */
@@ -270,8 +273,20 @@ function drush_role_perm($action, $rid, $permission = NULL) {
  *
  * @see drush_get_class().
  */
-function drush_role_get_class($role_name = DRUPAL_ANONYMOUS_RID) {
-  return drush_get_class('Drush\Role\Role', func_get_args());
+function drush_role_get_class($role_name = DRUSH_ANONYMOUS_RID) {
+  $args = func_get_args();
+  // We cannot change our function default value based on the Drupal major
+  // version, so we have this workaround. We could do this better with an
+  // engine (only include the file for the right version, but not going to
+  // introduce that just for this.)
+  if ($role_name == DRUSH_ANONYMOUS_RID) {
+    if (drush_drupal_major_version() >= 8) {
+      $args[0] = \Drupal\user\RoleInterface::ANONYMOUS_ID;
+    } else {
+      $args[0] = DRUPAL_ANONYMOUS_RID;
+    }
+  }
+  return drush_get_class('Drush\Role\Role', $args);
 }
 
 /**

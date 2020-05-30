@@ -277,7 +277,7 @@ function drush_theme_disable($themes) {
  * @see \Drupal\Core\Extension\ThemeHandlerInterface::uninstall()
  */
 function drush_theme_uninstall($themes) {
-  \Drupal::service('theme_handler')->uninstall($themes);
+  \Drupal::service('theme_installer')->uninstall($themes);
   // Our logger got blown away during the container rebuild above.
   $boot = drush_select_bootstrap_class();
   $boot->add_logger();

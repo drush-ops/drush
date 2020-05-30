@@ -55,8 +55,7 @@
     "symfony/finder": "~2.7",
     "symfony/yaml": "~2.3",
     "phpunit/phpunit": "4.*",
-    "symfony/process": "2.7.*",
-    "symfony/var-dumper": "2.8.*"
+    "symfony/process": "2.7.*"
   },
   "suggest": {
       "ext-pcntl": "*",
