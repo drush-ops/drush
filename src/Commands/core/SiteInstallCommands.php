@@ -361,8 +361,8 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
         }
 
         if ($msg) {
-          $this->io()->text(dt('You are about to:'));
-          $this->io()->listing($msg);
+            $this->io()->text(dt('You are about to:'));
+            $this->io()->listing($msg);
         }
 
 
