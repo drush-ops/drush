@@ -342,24 +342,31 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
         $default = realpath(Path::join($root, 'sites/default'));
         $sitesfile_write = realpath($confPath) != $default && !file_exists($sitesfile);
 
+        $msg = [];
         if (!file_exists($settingsfile)) {
-            $msg[] = dt('create a @settingsfile file', ['@settingsfile' => $settingsfile]);
+            $msg[] = dt('Create a @settingsfile file', ['@settingsfile' => $settingsfile]);
         }
         if ($sitesfile_write) {
-            $msg[] = dt('create a @sitesfile file', ['@sitesfile' => $sitesfile]);
+            $msg[] = dt('Create a @sitesfile file', ['@sitesfile' => $sitesfile]);
         }
 
         $program = $sql ? $sql->command() : 'UNKNOWN';
         $program_exists = $this->programExists($program);
         if (!$program_exists) {
-            $msg[] = dt('Program @program not found. Proceed if you have already created or emptied the Drupal database.', ['@program' => $program]);
+            $this->logger()->warning(dt('Program @program not found. Proceed if you have already created or emptied the Drupal database.', ['@program' => $program]));
         } elseif ($sql->dbExists()) {
             $msg[] = dt("DROP all tables in your '@db' database.", ['@db' => $db_spec['database']]);
         } else {
             $msg[] = dt("CREATE the '@db' database.", ['@db' => $db_spec['database']]);
         }
 
-        if (!$this->io()->confirm(dt('You are about to ') . implode(dt(' and '), $msg) . ' Do you want to continue?')) {
+        if ($msg) {
+          $this->io()->text(dt('You are about to:'));
+          $this->io()->listing($msg);
+        }
+
+
+        if (!$this->io()->confirm(dt('Do you want to continue?'))) {
             throw new UserAbortException();
         }
 
