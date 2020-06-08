@@ -138,6 +138,17 @@
 # $options['alias-path'] = array('/path/to/aliases','/path2/to/more/aliases');
 
 /**
+ * Specify the max depth to search in the alias paths. (Default: TRUE)
+ * When TRUE, the directory scan will recurse the entire tree
+ * starting at the provided directory.  When FALSE, only files
+ * in the provided directory are returned.  Integer values
+ * limit the depth of the traversal, with zero being treated
+ * identically to FALSE, and 1 limiting the traversal to the
+ * provided directory and its immediate children only, and so on.
+ */
+# $options['alias-search-depth'] = TRUE;
+
+/**
  * Specify the filename and path where 'sql-dump' should store backups of
  * database dumps.  The default is to dump to STDOUT, however if this option is
  * set in a drushrc.php file, the default behaviour can be achieved by
