@@ -5,6 +5,7 @@ use Composer\Semver\Semver;
 use Consolidation\AnnotatedCommand\CommandResult;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Consolidation\OutputFormatters\StructuredData\UnstructuredData;
+use Drupal\Core\Site\Settings;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Exception;
@@ -85,6 +86,40 @@ class SecurityUpdateCommands extends DrushCommands
     }
 
     /**
+     * Return file_get_contents context if proxy is detected.
+     *
+     * Drupal settings override ENV ones.
+     *
+     * @return resource
+     *  A stream context resource.
+     */
+    protected function getProxySettings()
+    {
+        $settings = Settings::get('http_client_config');
+        // Check for env defined proxy then look at drupal settings one.
+        $http_proxy = getenv('http_proxy') ?: null;
+        $https_proxy = getenv('https_proxy') ?: null;
+
+        $http_proxy = !empty($settings['proxy']['http']) ? $settings['proxy']['http'] : $http_proxy;
+        $https_proxy = !empty($settings['proxy']['https']) ? $settings['proxy']['https'] : $https_proxy;
+
+        $aContext = [];
+        if (!empty($http_proxy)) {
+            $aContext['http'] = [
+                'proxy' => $http_proxy,
+                'request_fulluri' => true,
+            ];
+        }
+        if (!empty($https_proxy)) {
+            $aContext['https'] = [
+                'proxy' => $https_proxy,
+                'request_fulluri' => true,
+            ];
+        }
+        return stream_context_create($aContext);
+    }
+
+    /**
      * Fetches the generated composer.json from drupal-security-advisories.
      *
      * @return mixed
@@ -95,24 +130,8 @@ class SecurityUpdateCommands extends DrushCommands
     {
         try {
             // Detects proxy settings.
-            $http_client_config = \Drupal\Core\Site\Settings::get('http_client_config');
-            $cxContext = null;
-            if (!empty($http_client_config['proxy'])) {
-                $aContext = [];
-                if (!empty($http_client_config['proxy']['http'])) {
-                    $aContext['http'] = [
-                        'proxy' => $http_client_config['proxy']['http'],
-                        'request_fulluri' => true,
-                    ];
-                }
-                if (!empty($http_client_config['proxy']['https'])) {
-                    $aContext['https'] = [
-                        'proxy' => $http_client_config['proxy']['https'],
-                        'request_fulluri' => true,
-                    ];
-                }
-                $cxContext = stream_context_create($aContext);
-            }
+            $cxContext = $this->getProxySettings();
+
             // We use the v2 branch for now, as per https://github.com/drupal-composer/drupal-security-advisories/pull/11.
             $response_body = file_get_contents('https://raw.githubusercontent.com/drupal-composer/drupal-security-advisories/8.x-v2/composer.json', false, $cxContext);
             if ($response_body === false) {
