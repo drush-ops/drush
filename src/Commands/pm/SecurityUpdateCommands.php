@@ -44,7 +44,7 @@ class SecurityUpdateCommands extends DrushCommands
      *
      * @command pm:security
      * @aliases sec,pm-security
-     * @bootstrap none
+     * @bootstrap configuration
      * @table-style default
      * @field-labels
      *   name: Name
@@ -94,8 +94,27 @@ class SecurityUpdateCommands extends DrushCommands
     protected function fetchAdvisoryComposerJson()
     {
         try {
+            // Detects proxy settings.
+            $http_client_config = \Drupal\Core\Site\Settings::get('http_client_config');
+            $cxContext = null;
+            if (!empty($http_client_config['proxy'])) {
+                $aContext = [];
+                if (!empty($http_client_config['proxy']['http'])) {
+                    $aContext['http'] = [
+                        'proxy' => $http_client_config['proxy']['http'],
+                        'request_fulluri' => true,
+                    ];
+                }
+                if (!empty($http_client_config['proxy']['https'])) {
+                    $aContext['https'] = [
+                        'proxy' => $http_client_config['proxy']['https'],
+                        'request_fulluri' => true,
+                    ];
+                }
+                $cxContext = stream_context_create($aContext);
+            }
             // We use the v2 branch for now, as per https://github.com/drupal-composer/drupal-security-advisories/pull/11.
-            $response_body = file_get_contents('https://raw.githubusercontent.com/drupal-composer/drupal-security-advisories/8.x-v2/composer.json');
+            $response_body = file_get_contents('https://raw.githubusercontent.com/drupal-composer/drupal-security-advisories/8.x-v2/composer.json', false, $cxContext);
             if ($response_body === false) {
                 throw new Exception("Unable to fetch drupal-security-advisories information.");
             }
