@@ -36,7 +36,7 @@
     "composer/semver": "^1.4",
     "consolidation/config": "^1.2",
     "consolidation/filter-via-dot-access-data": "^1",
-    "consolidation/robo": "^1 || ^2",
+    "consolidation/robo": "^1.4.11 || ^2",
     "consolidation/site-alias": "^3.0.0@stable",
     "consolidation/site-process": "^2.1 || ^4",
     "grasmash/yaml-expander": "^1.1.1",
