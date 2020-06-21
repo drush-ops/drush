@@ -24,6 +24,9 @@ class SqlMysql extends SqlBase
             // EMPTY password is not the same as NO password, and is valid.
             $contents = <<<EOT
 #This file was written by Drush's Sqlmysql.php.
+[mysqldump]
+column-statistics=0
+
 [client]
 user="{$dbSpec['username']}"
 password="{$dbSpec['password']}"
