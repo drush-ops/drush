@@ -17,7 +17,7 @@ class SecurityUpdatesTest extends UnishIntegrationTestCase
     {
         // Remove this once we have a project that version that is both D9 compatible is insecure. alinks is not that yet.
         if ($this->isDrupalGreaterThanOrEqualTo('9.0.0')) {
-          $this->markTestSkipped('No modules have had a security release since they became D9 compatible.');
+            $this->markTestSkipped('No modules have had a security release since they became D9 compatible.');
         }
 
         $this->drush('pm:security', [], ['format' => 'json'], self::EXIT_ERROR);
