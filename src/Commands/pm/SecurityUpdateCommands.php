@@ -45,7 +45,7 @@ class SecurityUpdateCommands extends DrushCommands
      *
      * @command pm:security
      * @aliases sec,pm-security
-     * @bootstrap configuration
+     * @bootstrap max
      * @table-style default
      * @field-labels
      *   name: Name
