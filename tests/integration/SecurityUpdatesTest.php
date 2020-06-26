@@ -15,10 +15,11 @@ class SecurityUpdatesTest extends UnishIntegrationTestCase
    */
     public function testInsecureDrupalPackage()
     {
-        list($expected_package, $expected_version) = $this->isDrupalGreaterThanOrEqualTo('9.0.0') ? ['drupal/semver_example', '2.1.0'] : ['drupal/alinks', '1.0.0'];
+        list($expected_package, $expected_version) = $this->isDrupalGreaterThanOrEqualTo('9.0.0') ? ['drupal/semver_example', '2.2.0'] : ['drupal/alinks', '1.0.0'];
         $this->drush('pm:security', [], ['format' => 'json'], self::EXIT_ERROR);
         $this->assertContains('One or more of your dependencies has an outstanding security update.', $this->getErrorOutput());
         $this->assertContains("Try running: composer require $expected_package", $this->getErrorOutput());
+        $this->assertContains("Try running: composer require drupal/core", $this->getErrorOutput());
         $security_advisories = $this->getOutputFromJSON();
         $this->arrayHasKey($expected_package, $security_advisories);
         $this->assertEquals($expected_package, $security_advisories[$expected_package]['name']);
