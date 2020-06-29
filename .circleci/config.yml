@@ -122,6 +122,8 @@ jobs:
     steps:
       - checkout
       - run: cp .docker/zz-php.ini /usr/local/etc/php/conf.d/
+      # We test with 9.0.0 so that \Unish\SecurityUpdatesTest can find an insecure drupal/core.
+      # Remove that assertion once testing with 9.0.0 becomes stale.
       - run: composer require --dev drupal/core-recommended:9.0.0 --no-update
       # Replace alinks with semver for D9.
       - run: composer remove --dev drupal/alinks --no-update
