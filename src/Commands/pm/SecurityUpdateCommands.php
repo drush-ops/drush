@@ -182,6 +182,6 @@ class SecurityUpdateCommands extends DrushCommands
             $this->logger()->notice("Run <comment>$suggested_command</comment> to learn what module requires the package.");
             return CommandResult::dataWithExitCode(new UnstructuredData($packages), self::EXIT_FAILURE);
         }
-        $this->logger()->success("<info>There are no outstanding security updates for your dependencies.</info>");
+        $this->logger()->success("There are no outstanding security updates for your dependencies.");
     }
 }
