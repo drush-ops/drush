@@ -125,7 +125,7 @@ class SecurityUpdateCommands extends DrushCommands
     }
 
     /**
-     * Return  available security updates.
+     * Return available security updates.
      *
      * @param array $composer_lock_data
      *   The contents of the local Drupal application's composer.lock file.
