@@ -147,7 +147,10 @@ EOT;
         // The ordered-dump option is only supported by MySQL for now.
         $ordered_dump = $this->getOption('ordered-dump');
 
-        $exec = 'mysqldump ';
+        $executable = $this->getOption('executable') ?? 'mysqldump';
+
+        $exec = "{$executable} ";
+
         // mysqldump wants 'databasename' instead of 'database=databasename' for no good reason.
         $only_db_name = str_replace('--database=', ' ', $this->creds());
         $exec .= $only_db_name;
@@ -178,7 +181,7 @@ EOT;
 
             // Run mysqldump again and append output if we need some structure only tables.
             if (!empty($structure_tables)) {
-                $exec .= " && mysqldump " . $only_db_name . " --no-data $extra " . implode(' ', $structure_tables);
+                $exec .= " && {$executable} " . $only_db_name . " --no-data $extra " . implode(' ', $structure_tables);
                 $parens = true;
             }
         }

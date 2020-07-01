@@ -218,6 +218,7 @@ class SqlCommands extends DrushCommands implements StdinAwareInterface
      * @option gzip Compress the dump using the gzip program which must be in your $PATH.
      * @option extra Add custom arguments/options when connecting to database (used internally to list tables).
      * @option extra-dump Add custom arguments/options to the dumping of the database (e.g. mysqldump command).
+     * @option executable The database executable to use.
      * @usage drush sql:dump --result-file=../18.sql
      *   Save SQL dump to the directory above Drupal root.
      * @usage drush sql:dump --skip-tables-key=common
@@ -234,7 +235,7 @@ class SqlCommands extends DrushCommands implements StdinAwareInterface
      * @notes
      *   createdb is used by sql-sync, since including the DROP TABLE statements interfere with the import when the database is created.
      */
-    public function dump($options = ['result-file' => self::REQ, 'create-db' => false, 'data-only' => false, 'ordered-dump' => false, 'gzip' => false, 'extra' => self::REQ, 'extra-dump' => self::REQ, 'format' => 'null'])
+    public function dump($options = ['result-file' => self::REQ, 'create-db' => false, 'data-only' => false, 'ordered-dump' => false, 'gzip' => false, 'extra' => self::REQ, 'extra-dump' => self::REQ, 'format' => 'null', 'executable' => self::REQ])
     {
         $sql = SqlBase::create($options);
         $return = $sql->dump();
