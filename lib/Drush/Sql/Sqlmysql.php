@@ -111,15 +111,17 @@ EOT;
     return $return;
   }
 
-  public function listTables() {
+  public function listTables($quoted = TRUE) {
     $current = drush_get_context('DRUSH_SIMULATE');
     drush_set_context('DRUSH_SIMULATE', FALSE);
     $return = $this->query('SHOW TABLES;');
     $tables = drush_shell_exec_output();
-    // Wrap table names in backticks to prevent errors in MySQL 8 when table
-    // names are reserved words, for e.g. `system` in Drupal 7.
-    foreach ($tables as &$table) {
-      $table = "`$table`";
+    if ($quoted) {
+      // Wrap table names in backticks to prevent errors in MySQL 8 when table
+      // names are reserved words, for e.g. `system` in Drupal 7.
+      foreach ($tables as &$table) {
+        $table = "`$table`";
+      }
     }
     drush_set_context('DRUSH_SIMULATE', $current);
     return $tables;
