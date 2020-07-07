@@ -273,7 +273,7 @@ class SqlBase {
    */
   public function drop_or_create() {
     if ($this->db_exists()) {
-      return $this->drop($this->listTables());
+      return $this->drop($this->listTables(TRUE));
     }
     else {
       return $this->createdb();
@@ -319,7 +319,7 @@ class SqlBase {
   public function get_expanded_table_selection() {
     $table_selection = drush_sql_get_table_selection();
     // Get the existing table names in the specified database.
-    $db_tables = $this->listTables(FALSE);
+    $db_tables = $this->listTables();
     if (isset($table_selection['skip'])) {
       $table_selection['skip'] = _drush_sql_expand_and_filter_tables($table_selection['skip'], $db_tables);
     }

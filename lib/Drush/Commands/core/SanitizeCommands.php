@@ -118,7 +118,7 @@ class SanitizeCommands {
   public function sanitizeUserFields() {
     /** @var SqlBase $sql_class */
     $sql_class = drush_sql_get_class();
-    $tables = $sql_class->listTables(FALSE);
+    $tables = $sql_class->listTables();
     $whitelist_fields = (array) explode(',', drush_get_option('whitelist-fields'));
 
     foreach ($tables as $table) {

@@ -111,7 +111,7 @@ EOT;
     return $return;
   }
 
-  public function listTables($quoted = TRUE) {
+  public function listTables($quoted = FALSE) {
     $current = drush_get_context('DRUSH_SIMULATE');
     drush_set_context('DRUSH_SIMULATE', FALSE);
     $return = $this->query('SHOW TABLES;');

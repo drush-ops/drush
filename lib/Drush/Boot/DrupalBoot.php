@@ -497,7 +497,7 @@ abstract class DrupalBoot extends BaseBoot {
       if (!is_array($prefix)) {
         $prefix = array('default' => $prefix);
       }
-      $tables = $sql->listTables(FALSE);
+      $tables = $sql->listTables();
       foreach ((array)$required_tables as $required_table) {
         $prefix_key = array_key_exists($required_table, $prefix) ? $required_table : 'default';
         if (!in_array($prefix[$prefix_key] . $required_table, $tables)) {
