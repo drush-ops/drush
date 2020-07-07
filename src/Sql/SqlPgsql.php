@@ -111,7 +111,7 @@ class SqlPgsql extends SqlBase
         return $query;
     }
 
-    public function listTables()
+    public function listTables($quoted = false)
     {
         $return = $this->alwaysQuery(PSQL_SHOW_TABLES);
         $tables = explode(PHP_EOL, trim($this->getProcess()->getOutput()));

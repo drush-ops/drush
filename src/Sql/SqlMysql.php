@@ -123,12 +123,19 @@ EOT;
         return $this->alwaysQuery("SELECT 1;");
     }
 
-    public function listTables()
+    public function listTables($quoted = false)
     {
         $tables = [];
         $this->alwaysQuery('SHOW TABLES;');
         if ($out = trim($this->getProcess()->getOutput())) {
             $tables = explode(PHP_EOL, $out);
+        }
+        if ($quoted) {
+            // Wrap table names in backticks to prevent errors in MySQL 8 when
+            // table names are reserved words, for e.g. `system`.
+            foreach ($tables as &$table) {
+                $table = "`$table`";
+            }
         }
         return $tables;
     }
