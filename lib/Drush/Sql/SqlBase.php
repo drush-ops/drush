@@ -335,10 +335,12 @@ class SqlBase {
   /**
    * Extract the name of all existing tables in the given database.
    *
+   * @param bool $quoted
+   *  If TRUE, each table name should be appropriately quoted for the RDMS.
    * @return array
    *   An array of table names which exist in the current database.
    */
-  public function listTables() {}
+  public function listTables($quoted = FALSE) {}
 
   /*
    * Helper method to turn associative array into options with values.
