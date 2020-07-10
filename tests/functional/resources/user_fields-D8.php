@@ -15,7 +15,7 @@ create_field('field_user_text_with_summary', 'text_with_summary', 'user', 'user'
 
 // Create a user.
 $values = [
-  'field_user_email' => 'joe.user.alt@myhome.com',
+  'field_user_email' => $extra[1],
   'field_user_string' => 'Private info',
   'field_user_string_long' => 'Really private info',
   'field_user_telephone' => '4104442222',
@@ -37,7 +37,7 @@ foreach ($values as $field_name => $value) {
 $return = $user->save();
 
 /**
- * Create a field on an entity.
+ * Create a field on an entity if that field doesn't already exist.
  *
  * @param string $field_name
  *   The name of the field.
@@ -50,16 +50,25 @@ $return = $user->save();
  */
 function create_field($field_name, $field_type, $entity_type, $bundle)
 {
-    $field_storage = FieldStorageConfig::create([
-    'field_name' => $field_name,
-    'entity_type' => $entity_type,
-    'type' => $field_type,
-    ]);
-    $field_storage->save();
-    FieldConfig::create([
-    'field_storage' => $field_storage,
-    'bundle' => $bundle,
-    'label' => $field_name,
-    'settings' => [],
-    ])->save();
+    if (!bundle_has_field($field_name, $bundle, $entity_type)) {
+        $field_storage = FieldStorageConfig::create([
+        'field_name' => $field_name,
+        'entity_type' => $entity_type,
+        'type' => $field_type,
+        ]);
+        $field_storage->save();
+        FieldConfig::create([
+        'field_storage' => $field_storage,
+        'bundle' => $bundle,
+        'label' => $field_name,
+        'settings' => [],
+        ])->save();
+    }
+}
+
+function bundle_has_field($field_name, $bundle, $entity_type)
+{
+    $all_bundle_fields = \Drupal::service('entity_field.manager')
+    ->getFieldDefinitions($entity_type, $bundle);
+    return isset($all_bundle_fields[$field_name]);
 }

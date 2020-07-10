@@ -4,6 +4,7 @@ namespace Drush\Drupal\Commands\sql;
 use Consolidation\AnnotatedCommand\CommandData;
 use Drush\Commands\DrushCommands;
 use Symfony\Component\Console\Input\InputInterface;
+use Drush\Utils\StringUtils;
 
 /**
  * This class is a good example of how to build a sql-sanitize plugin.
@@ -52,6 +53,7 @@ class SanitizeUserFieldsCommands extends DrushCommands implements SanitizePlugin
         $conn = $this->getDatabase();
         $field_definitions = $this->getEntityFieldManager()->getFieldDefinitions('user', 'user');
         $field_storage = $this->getEntityFieldManager()->getFieldStorageDefinitions('user');
+        $whitelist_uids = !is_null($options['whitelist-uids']) ? explode(',', $options['whitelist-uids']) : [];
         foreach (explode(',', $options['whitelist-fields']) as $key) {
             unset($field_definitions[$key], $field_storage[$key]);
         }
@@ -64,6 +66,11 @@ class SanitizeUserFieldsCommands extends DrushCommands implements SanitizePlugin
 
             $table = 'user__' . $key;
             $query = $conn->update($table);
+
+            if (!empty($whitelist_uids) && !empty($whitelist_uids[0])) {
+                $query->condition('entity_id', $whitelist_uids, 'NOT IN');
+            }
+
             $name = $def->getName();
             $field_type_class = \Drupal::service('plugin.manager.field.field_type')->getPluginClass($def->getType());
             $supported_field_types = ['email', 'string', 'string_long', 'telephone', 'text', 'text_long', 'text_with_summary'];

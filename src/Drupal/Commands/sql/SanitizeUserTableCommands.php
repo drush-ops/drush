@@ -34,8 +34,14 @@ class SanitizeUserTableCommands extends DrushCommands implements SanitizePluginI
     public function sanitize($result, CommandData $commandData)
     {
         $options = $commandData->options();
+        $whitelist_uids = !is_null($options['whitelist-uids']) ? explode(',', $options['whitelist-uids']) : [];
         $query = $this->database->update('users_field_data')->condition('uid', 0, '>');
         $messages = [];
+
+        // Prevent whitelisted accounts sanitization
+        if (!empty($whitelist_uids && !empty($whitelist_uids[0]))) {
+            $query->condition('uid', $whitelist_uids, 'NOT IN');
+        }
 
         // Sanitize passwords.
         if ($this->isEnabled($options['sanitize-password'])) {
