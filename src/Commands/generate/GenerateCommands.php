@@ -6,7 +6,6 @@ use Consolidation\SiteProcess\Util\Escape;
 use DrupalCodeGenerator\GeneratorDiscovery;
 use DrupalCodeGenerator\Helper\Dumper;
 use DrupalCodeGenerator\Helper\Renderer;
-use DrupalCodeGenerator\TwigEnvironment;
 use Drush\Commands\DrushCommands;
 use Drush\Commands\generate\Helper\InputHandler;
 use Drush\Commands\generate\Helper\OutputHandler;
@@ -102,7 +101,7 @@ class GenerateCommands extends DrushCommands
         $helperSet->set($dumper);
 
         $twig_loader = new \Twig_Loader_Filesystem();
-        $renderer = new Renderer(new TwigEnvironment($twig_loader));
+        $renderer = new Renderer(\dcg_get_twig_environment($twig_loader));
         $helperSet->set($renderer);
 
         $helperSet->set(new InputHandler());
