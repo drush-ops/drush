@@ -77,11 +77,6 @@ class SqlSqlite extends SqlBase
         return $tables;
     }
 
-    public function listTablesQuoted()
-    {
-        return $this->listTables();
-    }
-
     public function drop($tables)
     {
         $return = true;

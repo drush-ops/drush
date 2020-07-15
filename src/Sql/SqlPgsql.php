@@ -118,11 +118,6 @@ class SqlPgsql extends SqlBase
         return array_filter($tables);
     }
 
-    public function listTablesQuoted()
-    {
-        return $this->listTables();
-    }
-
     public function dumpCmd($table_selection)
     {
         $parens = false;
