@@ -508,6 +508,7 @@ class SqlBase implements ConfigAwareInterface
      */
     public function listTablesQuoted()
     {
+        return $this->listTables();
     }
 
     /*
