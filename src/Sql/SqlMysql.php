@@ -123,12 +123,21 @@ EOT;
         return $this->alwaysQuery("SELECT 1;");
     }
 
-    public function listTables()
+    public function listTables($quoted = false)
     {
         $tables = [];
         $this->alwaysQuery('SHOW TABLES;');
         if ($out = trim($this->getProcess()->getOutput())) {
             $tables = explode(PHP_EOL, $out);
+        }
+        return $tables;
+    }
+
+    public function listTablesQuoted()
+    {
+        $tables = $this->listTables();
+        foreach ($tables as &$table) {
+            $table = "`$table`";
         }
         return $tables;
     }

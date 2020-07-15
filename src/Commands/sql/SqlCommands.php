@@ -120,7 +120,7 @@ class SqlCommands extends DrushCommands implements StdinAwareInterface
         if (!$this->io()->confirm(dt('Do you really want to drop all tables in the database !db?', ['!db' => $db_spec['database']]))) {
             throw new UserAbortException();
         }
-        $tables = $sql->listTables();
+        $tables = $sql->listTablesQuoted();
         if (!$sql->drop($tables)) {
             throw new \Exception('Unable to drop all tables. Rerun with --debug to see any error message.');
         }
