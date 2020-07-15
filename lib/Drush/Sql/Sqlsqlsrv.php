@@ -38,7 +38,7 @@ class Sqlsqlsrv extends SqlBase {
     return $output[0] == 1;
   }
 
-  public function listTables($quoted = FALSE) {
+  public function listTables() {
     $return = $this->query('SELECT TABLE_NAME FROM information_schema.tables');
     $tables = drush_shell_exec_output();
     if (!empty($tables)) {

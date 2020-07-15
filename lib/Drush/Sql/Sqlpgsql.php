@@ -95,7 +95,7 @@ class Sqlpgsql extends SqlBase {
     return $query;
   }
 
-  public function listTables($quoted = FALSE) {
+  public function listTables() {
     $return = $this->query(PSQL_SHOW_TABLES);
     $tables = drush_shell_exec_output();
     if (!empty($tables)) {

@@ -51,7 +51,7 @@ class Sqlsqlite extends SqlBase {
     return file_exists($this->db_spec['database']);
   }
 
-  public function listTables($quoted = FALSE) {
+  public function listTables() {
     $return = $this->query('.tables');
     $tables_raw = drush_shell_exec_output();
     // SQLite's '.tables' command always outputs the table names in a column

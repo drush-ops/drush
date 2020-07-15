@@ -59,7 +59,7 @@ class Sqloracle extends SqlBase {
     return "${sqlp_settings}${query};\nexit;\n";
   }
 
-  public function listTables($quoted = FALSE) {
+  public function listTables() {
     $return = $this->query("SELECT TABLE_NAME FROM USER_TABLES WHERE TABLE_NAME NOT IN ('BLOBS','LONG_IDENTIFIERS')");
     $tables = drush_shell_exec_output();
     if (!empty($tables)) {
