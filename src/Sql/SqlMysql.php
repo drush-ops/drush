@@ -140,7 +140,6 @@ EOT;
             $table = "`$table`";
         }
         return $tables;
-        return $tables;
     }
 
     public function dumpCmd($table_selection)
