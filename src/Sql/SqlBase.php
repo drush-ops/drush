@@ -453,7 +453,7 @@ class SqlBase implements ConfigAwareInterface
     public function dropOrCreate()
     {
         if ($this->dbExists()) {
-            return $this->drop($this->listTables(true));
+            return $this->drop($this->listTablesQuoted());
         } else {
             return $this->createdb();
         }
@@ -492,12 +492,21 @@ class SqlBase implements ConfigAwareInterface
     /**
      * Extract the name of all existing tables in the given database.
      *
-     * @param bool $quoted
-     *  If TRUE, each table name should be appropriately quoted for the RDMS.
      * @return array|null
      *   An array of table names which exist in the current database.
      */
-    public function listTables($quoted = false)
+    public function listTables()
+    {
+    }
+
+    /**
+     * Extract the name of all existing tables in the given database.
+     *
+     * @return array|null
+     *   An array of table names which exist in the current database,
+     *   appropriately quoted for the RDMS.
+     */
+    public function listTablesQuoted()
     {
     }
 

@@ -130,13 +130,16 @@ EOT;
         if ($out = trim($this->getProcess()->getOutput())) {
             $tables = explode(PHP_EOL, $out);
         }
-        if ($quoted) {
-            // Wrap table names in backticks to prevent errors in MySQL 8 when
-            // table names are reserved words, for e.g. `system`.
-            foreach ($tables as &$table) {
-                $table = "`$table`";
-            }
+        return $tables;
+    }
+
+    public function listTablesQuoted()
+    {
+        $tables = $this->listTables();
+        foreach ($tables as &$table) {
+            $table = "`$table`";
         }
+        return $tables;
         return $tables;
     }
 

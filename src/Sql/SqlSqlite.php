@@ -55,7 +55,7 @@ class SqlSqlite extends SqlBase
         return file_exists($this->getDbSpec()['database']);
     }
 
-    public function listTables($quoted = false)
+    public function listTables()
     {
         $return = $this->alwaysQuery('.tables');
         $tables_raw = explode(PHP_EOL, trim($this->getProcess()->getOutput()));
@@ -75,6 +75,11 @@ class SqlSqlite extends SqlBase
             }
         }
         return $tables;
+    }
+
+    public function listTablesQuoted()
+    {
+        return $this->listTables();
     }
 
     public function drop($tables)
