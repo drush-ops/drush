@@ -530,7 +530,17 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                     array|null
                 </div>
                 <div class="col-md-8 type">
-                    <a href="#method_listTables">listTables</a>()
+                    <a href="#method_listTables">listTables</a>($quoted = false)
+        
+                                            <p>Extract the name of all existing tables in the given database.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    array|null
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_listTablesQuoted">listTablesQuoted</a>()
         
                                             <p>Extract the name of all existing tables in the given database.</p>                </div>
                 <div class="col-md-2"></div>
@@ -1321,7 +1331,7 @@ in 'bash -c', since pipefail is a bash feature.</td>
             </div>
                     <div class="method-item">
                     <h3 id="method_dumpCmd">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Sql/SqlMysql.php#L136">line 136</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Sql/SqlMysql.php#L145">line 145</a></div>
         <code>                    
     <strong>dumpCmd</strong>($table_selection)
         </code>
@@ -1836,7 +1846,7 @@ provide a $result_file whose value can be drush_bit_bucket().</p>               
                     <h3 id="method_listTables">
         <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Sql/SqlMysql.php#L126">line 126</a></div>
         <code>                    array|null
-    <strong>listTables</strong>()
+    <strong>listTables</strong>($quoted = false)
         </code>
     </h3>
     <div class="details">
@@ -1846,6 +1856,16 @@ provide a $result_file whose value can be drush_bit_bucket().</p>               
                     <div class="method-description">
                                     <p>Extract the name of all existing tables in the given database.</p>                                                </div>
                 <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$quoted</td>
+                <td></td>
+            </tr>
+            </table>
+
             
                             <h4>Return Value</h4>
 
@@ -1863,8 +1883,39 @@ provide a $result_file whose value can be drush_bit_bucket().</p>               
 
             </div>
                     <div class="method-item">
+                    <h3 id="method_listTablesQuoted">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Sql/SqlMysql.php#L136">line 136</a></div>
+        <code>                    array|null
+    <strong>listTablesQuoted</strong>()
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Extract the name of all existing tables in the given database.</p>                                                </div>
+                <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>array|null</td>
+            <td>An array of table names which exist in the current database,
+  appropriately quoted for the RDMS.</td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
                     <h3 id="method_paramsToOptions">
-        <div class="location">in <a href="../../Drush/Sql/SqlBase.html#method_paramsToOptions"><abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/Sql/SqlBase.php#L508">line 508</a></div>
+        <div class="location">in <a href="../../Drush/Sql/SqlBase.html#method_paramsToOptions"><abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/Sql/SqlBase.php#L520">line 520</a></div>
         <code>                    
     <strong>paramsToOptions</strong>($parameters)
         </code>
@@ -1893,7 +1944,7 @@ provide a $result_file whose value can be drush_bit_bucket().</p>               
             </div>
                     <div class="method-item">
                     <h3 id="method_su">
-        <div class="location">in <a href="../../Drush/Sql/SqlBase.html#method_su"><abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/Sql/SqlBase.php#L530">line 530</a></div>
+        <div class="location">in <a href="../../Drush/Sql/SqlBase.html#method_su"><abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/Sql/SqlBase.php#L542">line 542</a></div>
         <code>                    null
     <strong>su</strong>()
         </code>
@@ -1924,7 +1975,7 @@ specified site alias record.</p>                            </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_getOptions">
-        <div class="location">in <a href="../../Drush/Sql/SqlBase.html#method_getOptions"><abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/Sql/SqlBase.php#L553">line 553</a></div>
+        <div class="location">in <a href="../../Drush/Sql/SqlBase.html#method_getOptions"><abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/Sql/SqlBase.php#L565">line 565</a></div>
         <code>                    array
     <strong>getOptions</strong>()
         </code>
@@ -1952,7 +2003,7 @@ specified site alias record.</p>                            </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_getOption">
-        <div class="location">in <a href="../../Drush/Sql/SqlBase.html#method_getOption"><abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/Sql/SqlBase.php#L558">line 558</a></div>
+        <div class="location">in <a href="../../Drush/Sql/SqlBase.html#method_getOption"><abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/Sql/SqlBase.php#L570">line 570</a></div>
         <code>                    
     <strong>getOption</strong>($name, $default = null)
         </code>
@@ -1986,7 +2037,7 @@ specified site alias record.</p>                            </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_db_spec">
-        <div class="location">in <a href="../../Drush/Sql/SqlBase.html#method_db_spec"><abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/Sql/SqlBase.php#L567">line 567</a></div>
+        <div class="location">in <a href="../../Drush/Sql/SqlBase.html#method_db_spec"><abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/Sql/SqlBase.php#L579">line 579</a></div>
         <code>                    
     <strong>db_spec</strong>()
         <small><sup><span class="label label-danger">deprecated</span></sup></small></code>
@@ -2012,7 +2063,7 @@ specified site alias record.</p>                            </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_dbSpecFromDbUrl">
-        <div class="location">in <a href="../../Drush/Sql/SqlBase.html#method_dbSpecFromDbUrl"><abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/Sql/SqlBase.php#L581">line 581</a></div>
+        <div class="location">in <a href="../../Drush/Sql/SqlBase.html#method_dbSpecFromDbUrl"><abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/Sql/SqlBase.php#L593">line 593</a></div>
         <code>        static            array
     <strong>dbSpecFromDbUrl</strong>(<abbr title="Drush\Sql\db_url">db_url</abbr> $db_url)
         </code>
@@ -2053,7 +2104,7 @@ specified site alias record.</p>                            </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_alwaysQueryCommand">
-        <div class="location">in <a href="../../Drush/Sql/SqlBase.html#method_alwaysQueryCommand"><abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/Sql/SqlBase.php#L631">line 631</a></div>
+        <div class="location">in <a href="../../Drush/Sql/SqlBase.html#method_alwaysQueryCommand"><abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/Sql/SqlBase.php#L643">line 643</a></div>
         <code>                    array
     <strong>alwaysQueryCommand</strong>($input_file)
         </code>
