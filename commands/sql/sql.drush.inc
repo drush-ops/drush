@@ -445,7 +445,7 @@ function drush_sql_drop() {
   if (!drush_confirm(dt('Do you really want to drop all tables in the database !db?', array('!db' => $db_spec['database'])))) {
     return drush_user_abort();
   }
-  $tables = $sql->listTables();
+  $tables = $sql->listTablesQuoted();
   return $sql->drop($tables);
 }
 

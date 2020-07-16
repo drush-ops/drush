@@ -120,6 +120,14 @@ EOT;
     return $tables;
   }
 
+  public function listTablesQuoted() {
+    $tables = $this->listTables();
+    foreach ($tables as &$table) {
+      $table = "`$table`";
+    }
+    return $tables;
+  }
+
   public function dumpCmd($table_selection) {
     $parens = FALSE;
     $skip_tables = $table_selection['skip'];

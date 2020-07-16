@@ -273,7 +273,7 @@ class SqlBase {
    */
   public function drop_or_create() {
     if ($this->db_exists()) {
-      return $this->drop($this->listTables());
+      return $this->drop($this->listTablesQuoted());
     }
     else {
       return $this->createdb();
@@ -339,6 +339,17 @@ class SqlBase {
    *   An array of table names which exist in the current database.
    */
   public function listTables() {}
+
+  /**
+   * Extract the name of all existing tables in the given database.
+   *
+   * @return array
+   *   An array of table names which exist in the current database,
+   *   appropriately quoted for the RDMS.
+   */
+  public function listTablesQuoted() {
+    return $this->listTables();
+  }
 
   /*
    * Helper method to turn associative array into options with values.
