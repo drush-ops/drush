@@ -119,6 +119,9 @@ class Project {
     if (drush_drupal_major_version() >= 8) {
       $drupal_version = 'current';
     }
+    if ($drupal_version == '9.x') {
+      $drupal_version = 'all';
+    }
     return $status_url . '/' . $request['name'] . '/' . $drupal_version;
   }
 
