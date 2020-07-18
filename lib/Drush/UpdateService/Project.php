@@ -242,6 +242,12 @@ class Project {
           $item['variant'] = (string) $file->variant;
         }
         $release_info['files'][] = $item;
+
+        // Copy the mdhash from the matching download file into the
+        // root of the release object (make /current structure like /8.x)
+        if ($item['download_link'] == $release_info['download_link'] && !isset($release_info['mdhash'])) {
+          $release_info['mdhash'] = $item['mdhash'];
+        }
       }
 
       // '/current' does not include version_major et.al.; put them back if missing.
