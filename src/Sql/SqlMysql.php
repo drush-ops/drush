@@ -123,7 +123,7 @@ EOT;
         return $this->alwaysQuery("SELECT 1;");
     }
 
-    public function listTables($quoted = false)
+    public function listTables()
     {
         $tables = [];
         $this->alwaysQuery('SHOW TABLES;');
