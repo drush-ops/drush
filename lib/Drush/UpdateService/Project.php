@@ -67,6 +67,11 @@ class Project {
   }
 
   protected function versionIsCompatible($version, $info) {
+    // If there is no "core_compatibility" field then assume this version
+    // is only compatible with Drupal 8.
+    if (!isset($info['core_compatibility'])) {
+      return drush_drupal_major_version() == 8;
+    }
     if (preg_match('#^[0-9]*\.x$#', $info['core_compatibility'])) {
       return $info['core_compatibility'] == drush_drupal_major_version() . '.x';
     }
