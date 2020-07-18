@@ -3,6 +3,8 @@
 namespace Drush\UpdateService;
 
 use Drush\Log\LogLevel;
+use Symfony\Component\Yaml\Yaml;
+use Composer\Semver\Semver;
 
 /**
  * Representation of a project's release info from the update service.
@@ -49,11 +51,42 @@ class Project {
       }
     }
 
+    if (drush_drupal_major_version() >= 8) {
+      foreach ($this->parsed['releases'] as $version => $info) {
+        if (!$this->versionIsCompatible($version, $info)) {
+          unset($this->parsed['releases'][$version]);
+        }
+      }
+    }
+
     $this->project_status = $project_status;
     $this->error = $error;
     if ($error) {
       drush_set_error('DRUSH_RELEASE_INFO_ERROR', $error);
     }
+  }
+
+  protected function versionIsCompatible($version, $info) {
+    // Any 7.x-n.n and earlier release is automatically not compatible
+    // with Drupal 8 or Drupal 9
+    if (preg_match('#^[1-7]\.x#', $version)) {
+      return false;
+    }
+    $url_version = preg_replace('#\.x-dev#', '.x', $version);
+    // For any other relase, we must load the info.yml file and parse it.
+    $url = 'https://git.drupalcode.org/project/responsive_menu/-/raw/' . $url_version . '/' . $this->parsed['short_name'] . '.info.yml';
+    $path = drush_download_file($url);
+    $contents = file_get_contents($path);
+    $data = Yaml::parse($contents);
+    // If there is no 'core_version_requirement' tag then use deprecated 'core' tag
+    if (isset($data['core_version_requirement'])) {
+      return Semver::satisfies(drush_drupal_version(), $data['core_version_requirement']);
+    }
+    if (isset($data['core'])) {
+      return $data['core'] == drush_drupal_major_version() . '.x';
+    }
+    // Shouldn't ever be core-less, but here's a fallback check should it happen.
+    return (drush_drupal_major_version() == 8);
   }
 
   /**
@@ -94,7 +127,7 @@ class Project {
   public static function buildFetchUrl(array $request) {
     $status_url = isset($request['status url']) ? $request['status url'] : ReleaseInfo::DEFAULT_URL;
     $drupal_version = $request['drupal_version'];
-    if ($drupal_version == '9.x') {
+    if (drush_drupal_major_version() >= 8) {
       $drupal_version = 'all';
     }
     return $status_url . '/' . $request['name'] . '/' . $drupal_version;
