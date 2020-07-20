@@ -205,7 +205,7 @@ class CliCommands extends DrushCommands
     /**
      * Returns a list of PHP keywords.
      *
-     * This will act as a blacklist for command and alias names.
+     * This will act as a blocklist for command and alias names.
      *
      * @return array
      */
