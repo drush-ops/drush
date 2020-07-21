@@ -240,7 +240,7 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
             $ret['#abort'] = ['success' => false];
             Drush::logger()->warning(dt('Update function @function not found in file @filename', [
                 '@function' => $function,
-                '@filename' => "$module.install.php",
+                '@filename' => "$module.install",
             ]));
         }
 
