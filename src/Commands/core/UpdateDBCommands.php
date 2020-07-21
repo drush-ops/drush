@@ -238,7 +238,10 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
             }
         } else {
             $ret['#abort'] = ['success' => false];
-            Drush::logger()->warning(dt('Update function @function not found', ['@function' => $function]));
+            Drush::logger()->warning(dt('Update function @function not found in file @filename', [
+                '@function' => $function,
+                '@filename' => "$module.install",
+            ]));
         }
 
         if (isset($context['sandbox']['#finished'])) {
@@ -300,7 +303,8 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
         }
 
         list($module, $name) = explode('_post_update_', $function, 2);
-        module_load_include('php', $module, $module . '.post_update');
+        $filename = $module . '.post_update';
+        \Drupal::moduleHandler()->loadInclude($module, 'php', $filename);
         if (function_exists($function)) {
             if (empty($context['results'][$module][$name]['type'])) {
                 Drush::logger()->notice("Update started: $function");
@@ -327,8 +331,14 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
                     'query' => t('%type: @message in %function (line %line of %file).', $variables),
                 ];
             }
+        } else {
+            $ret['#abort'] = ['success' => false];
+            Drush::logger()->warning(dt('Post update function @function not found in file @filename', [
+                '@function' => $function,
+                '@filename' => "$filename.php",
+            ]));
         }
-
+        
         if (isset($context['sandbox']['#finished'])) {
             $context['finished'] = $context['sandbox']['#finished'];
             unset($context['sandbox']['#finished']);
