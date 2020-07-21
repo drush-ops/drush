@@ -303,7 +303,7 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
         }
 
         list($module, $name) = explode('_post_update_', $function, 2);
-        $filename = $module . '.post_update';    
+        $filename = $module . '.post_update';
         \Drupal::moduleHandler()->loadInclude($module, 'php', $filename);
         if (function_exists($function)) {
             if (empty($context['results'][$module][$name]['type'])) {
@@ -331,8 +331,7 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
                     'query' => t('%type: @message in %function (line %line of %file).', $variables),
                 ];
             }
-        }
-        else {
+        } else {
             $ret['#abort'] = ['success' => false];
             Drush::logger()->warning(dt('Post update function @function not found in file @filename', [
                 '@function' => $function,
