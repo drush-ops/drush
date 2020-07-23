@@ -1,0 +1,32 @@
+name: Build Commands Documentation using MkDocs
+
+# Controls when the action will run. Triggers the workflow on push or pull request
+# events but only for the master branch
+on:
+  push:
+    branches: [master]
+#  pull_request:
+#    branches: [master]
+
+jobs:
+  build:
+    name: Build and Deploy Commands Documentation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Master
+        uses: actions/checkout@v2
+
+      - name: Set up Python 3.7
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install mkdocs
+
+      - name: Deploy
+        run: |
+          git pull
+          mkdocs gh-deploy -v --site-dir commands/10.x
