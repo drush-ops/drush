@@ -13,7 +13,8 @@ use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Yaml\Yaml;
 use Webmozart\PathUtil\Path;
 
-class MkCommands extends DrushCommands implements SiteAliasManagerAwareInterface {
+class MkCommands extends DrushCommands implements SiteAliasManagerAwareInterface
+{
 
     use SiteAliasManagerAwareTrait;
 
@@ -103,7 +104,8 @@ class MkCommands extends DrushCommands implements SiteAliasManagerAwareInterface
      * @param $nav
      * @param $dest
      */
-    protected function writeyml($nav, $dest): void {
+    protected function writeyml($nav, $dest)
+    {
         // Write yml file.
         $mkdocs = [
             'site_name' => 'Drush Commands',
@@ -137,7 +139,8 @@ class MkCommands extends DrushCommands implements SiteAliasManagerAwareInterface
      *
      * @param $destination
      */
-    protected function prepare($destination) {
+    protected function prepare($destination)
+    {
         $fs = new Filesystem();
         $dest = $destination;
         if ($fs->exists($dest)) {
@@ -174,5 +177,4 @@ class MkCommands extends DrushCommands implements SiteAliasManagerAwareInterface
         }
         return $return;
     }
-
 }
