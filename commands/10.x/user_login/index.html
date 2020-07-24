@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <meta name="author" content="Moshe Weitzman">
+  <link rel="canonical" href="http://commands.drush.org/user_login/">
+  <link rel="shortcut icon" href="../img/favicon.ico">
+  <title>user:login - Drush Commands</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700" />
+
+  <link rel="stylesheet" href="../css/theme.css" />
+  <link rel="stylesheet" href="../css/theme_extra.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" />
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "user:login";
+    var mkdocs_page_input_path = "user_login.md";
+    var mkdocs_page_url = "/user_login/";
+  </script>
+  
+  <script src="../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../js/modernizr-2.8.3.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+        <a href=".." class="icon icon-home"> Drush Commands</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+                <p class="caption"><span class="caption-text">_global</span></p>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../browse/">browse</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../deploy/">deploy</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../drupal_directory/">drupal:directory</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../generate/">generate</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../help/">help</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../jn_get/">jn:get</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../list/">list</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../runserver/">runserver</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../updatedb/">updatedb</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../updatedb_status/">updatedb:status</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../version/">version</a>
+                    </li>
+                </ul>
+                <p class="caption"><span class="caption-text">cache</span></p>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../cache_clear/">cache:clear</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../cache_get/">cache:get</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../cache_rebuild/">cache:rebuild</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../cache_set/">cache:set</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../cache_tags/">cache:tags</a>
+                    </li>
+                </ul>
+                <p class="caption"><span class="caption-text">config</span></p>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../config_delete/">config:delete</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../config_edit/">config:edit</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../config_export/">config:export</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../config_get/">config:get</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../config_import/">config:import</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../config_pull/">config:pull</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../config_set/">config:set</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../config_status/">config:status</a>
+                    </li>
+                </ul>
+                <p class="caption"><span class="caption-text">core</span></p>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../core_cron/">core:cron</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../core_edit/">core:edit</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../core_init/">core:init</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../core_requirements/">core:requirements</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../core_rsync/">core:rsync</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../core_status/">core:status</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../core_topic/">core:topic</a>
+                    </li>
+                </ul>
+                <p class="caption"><span class="caption-text">deploy</span></p>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../deploy_hook/">deploy:hook</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../deploy_hook-status/">deploy:hook-status</a>
+                    </li>
+                </ul>
+                <p class="caption"><span class="caption-text">entity</span></p>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../entity_delete/">entity:delete</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../entity_updates/">entity:updates</a>
+                    </li>
+                </ul>
+                <p class="caption"><span class="caption-text">image</span></p>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../image_derive/">image:derive</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../image_flush/">image:flush</a>
+                    </li>
+                </ul>
+                <p class="caption"><span class="caption-text">locale</span></p>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../locale_check/">locale:check</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../locale_export/">locale:export</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../locale_import/">locale:import</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../locale_update/">locale:update</a>
+                    </li>
+                </ul>
+                <p class="caption"><span class="caption-text">php</span></p>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../php_cli/">php:cli</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../php_eval/">php:eval</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../php_script/">php:script</a>
+                    </li>
+                </ul>
+                <p class="caption"><span class="caption-text">pm</span></p>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../pm_enable/">pm:enable</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../pm_list/">pm:list</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../pm_security/">pm:security</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../pm_uninstall/">pm:uninstall</a>
+                    </li>
+                </ul>
+                <p class="caption"><span class="caption-text">queue</span></p>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../queue_delete/">queue:delete</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../queue_list/">queue:list</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../queue_run/">queue:run</a>
+                    </li>
+                </ul>
+                <p class="caption"><span class="caption-text">role</span></p>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../role_create/">role:create</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../role_delete/">role:delete</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../role_list/">role:list</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../role_perm_add/">role:perm:add</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../role_perm_remove/">role:perm:remove</a>
+                    </li>
+                </ul>
+                <p class="caption"><span class="caption-text">site</span></p>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../site_alias/">site:alias</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../site_alias-convert/">site:alias-convert</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../site_install/">site:install</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../site_set/">site:set</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../site_ssh/">site:ssh</a>
+                    </li>
+                </ul>
+                <p class="caption"><span class="caption-text">sql</span></p>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../sql_cli/">sql:cli</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../sql_connect/">sql:connect</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../sql_create/">sql:create</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../sql_drop/">sql:drop</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../sql_dump/">sql:dump</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../sql_query/">sql:query</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../sql_sanitize/">sql:sanitize</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../sql_sync/">sql:sync</a>
+                    </li>
+                </ul>
+                <p class="caption"><span class="caption-text">state</span></p>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../state_delete/">state:delete</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../state_get/">state:get</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../state_set/">state:set</a>
+                    </li>
+                </ul>
+                <p class="caption"><span class="caption-text">theme</span></p>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../theme_enable/">theme:enable</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../theme_uninstall/">theme:uninstall</a>
+                    </li>
+                </ul>
+                <p class="caption"><span class="caption-text">twig</span></p>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../twig_compile/">twig:compile</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../twig_unused/">twig:unused</a>
+                    </li>
+                </ul>
+                <p class="caption"><span class="caption-text">user</span></p>
+                <ul class="current">
+                    <li class="toctree-l1"><a class="reference internal" href="../user_block/">user:block</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../user_cancel/">user:cancel</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../user_create/">user:create</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../user_information/">user:information</a>
+                    </li>
+                    <li class="toctree-l1 current"><a class="reference internal current" href="./">user:login</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../user_password/">user:password</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../user_role_add/">user:role:add</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../user_role_remove/">user:role:remove</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../user_unblock/">user:unblock</a>
+                    </li>
+                </ul>
+                <p class="caption"><span class="caption-text">views</span></p>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../views_analyze/">views:analyze</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../views_dev/">views:dev</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../views_disable/">views:disable</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../views_enable/">views:enable</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../views_execute/">views:execute</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../views_list/">views:list</a>
+                    </li>
+                </ul>
+                <p class="caption"><span class="caption-text">watchdog</span></p>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../watchdog_delete/">watchdog:delete</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../watchdog_list/">watchdog:list</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../watchdog_show/">watchdog:show</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../watchdog_show-one/">watchdog:show-one</a>
+                    </li>
+                </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="..">Drush Commands</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="..">Docs</a> &raquo;</li>
+    
+      
+        
+          <li>user &raquo;</li>
+        
+      
+    
+    <li>user:login</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h1>user:login</h1>
+<p>Display a one time login link for user ID 1, or another user.</p>
+<h4>Examples</h4>
+<ul>
+<li><code>drush user:login</code>. Open default web browser and browse to homepage, logged in as uid=1.</li>
+<li><code>drush user:login --name=ryan node/add/blog</code>. Open default web browser (if configured or detected) for a one-time login link for username ryan that redirects to node/add/blog.</li>
+<li><code>drush user:login --uid=123</code>. Open default web browser and login as user with uid "123".</li>
+<li><code>drush user:login --mail=foo@bar.com</code>. Open default web browser and login as user with mail "foo@bar.com".</li>
+<li><code>drush user:login --browser=firefox --name=$(drush user:information --mail="drush@example.org" --fields=name --format=string)</code>. Open firefox web browser, and login as the user with the e-mail address drush@example.org.</li>
+</ul>
+<h4>Arguments</h4>
+<ul>
+<li><strong>path</strong>. Optional path to redirect to after logging in.</li>
+</ul>
+<h4>Options</h4>
+<div class="admonition note">
+<p class="admonition-title">Tip</p>
+<p>An option value without square brackets is mandatory. Any default value is listed at description end.</p>
+</div>
+<ul>
+<li><strong> --name[=NAME]</strong>. A user name to log in as.</li>
+<li><strong> --uid[=UID]</strong>. A uid to log in as.</li>
+<li><strong> --mail[=MAIL]</strong>. A user mail address to log in as.</li>
+<li><strong> --browser[=BROWSER]</strong>. Optional value denotes which browser to use (defaults to operating system default). Use --no-browser to suppress opening a browser. [default: "1"]</li>
+<li><strong> --redirect-port=REDIRECT-PORT</strong>. A custom port for redirecting to (e.g., when running within a Vagrant environment)</li>
+<li><strong> --no-browser</strong>. Negate --browser option.</li>
+</ul>
+<h4>Aliases</h4>
+<ul>
+<li>uli</li>
+<li>user-login</li>
+</ul>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../user_password/" class="btn btn-neutral float-right" title="user:password">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../user_information/" class="btn btn-neutral" title="user:information"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+          <a href="https://github.com/drush-ops/drush" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
+      
+      
+        <span><a href="../user_information/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../user_password/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+    <script>var base_url = '..';</script>
+    <script src="../js/theme.js" defer></script>
+      <script src="../search/main.js" defer></script>
+    <script defer>
+        window.onload = function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        };
+    </script>
+
+</body>
+</html>
