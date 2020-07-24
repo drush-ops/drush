@@ -78,6 +78,7 @@ jobs:
         # We have Sami parse errors so ignore return value: https://stackoverflow.com/questions/35452147/allow-non-zero-return-codes-in-travis-ci-yml
         run: |
           rm -rf gh-pages/api
+          git branch -v
           composer -v api || true
 
       - name: Commit API to gh-pages

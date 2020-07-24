@@ -21,8 +21,8 @@ $iterator = Finder::create()
 $versions = GitVersionCollection::create($dir)
   // ->addFromTags('8.*')
  //  ->add('8.x', '8.x branch')
-  ->add('no-travis', 'no-travis branch')
-  ->add('master', 'Master branch')
+ // Sami actively checks out each ref listed here.
+  ->add('no-travis', 'Master branch')
 ;
 
 return new Sami($iterator, array(
