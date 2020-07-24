@@ -54,7 +54,7 @@ jobs:
         run: composer mk:docs
 
       - name: Mkdocs build
-        run: cd build-commands && mkdocs build -v --site-dir ../gh-pages/commands/10.x
+        run: cd build-commands && mkdocs build --site-dir ../gh-pages/commands/10.x
 
       - name: Commit Commands to gh-pages
         run: |
@@ -78,8 +78,7 @@ jobs:
         # We have Sami parse errors so ignore return value: https://stackoverflow.com/questions/35452147/allow-non-zero-return-codes-in-travis-ci-yml
         run: |
           rm -rf gh-pages/api
-          git branch -v
-          composer -v api || true
+          composer api || true
 
       - name: Commit API to gh-pages
         run: |
@@ -96,5 +95,5 @@ jobs:
             git commit -m "[CI] Build API static site"
           fi
 
-#      - name: Git Push
-#        run: cd gh-pages && git push
+      - name: Git Push
+        run: cd gh-pages && git push
