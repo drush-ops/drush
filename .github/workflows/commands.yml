@@ -26,10 +26,10 @@ jobs:
           coverage: none
 
       - name: Install Composer dependencies
-        run: composer install --prefer-dist --no-interaction --no-suggest
+        run: cd code && composer install --prefer-dist --no-interaction --no-suggest
 
       - name: Install Drupal
-        run: composer sut:si
+        run: cd code && composer sut:si
         env:
           UNISH_DB_URL: sqlite://sites/default/files/.ht.sqlite
 
@@ -37,7 +37,7 @@ jobs:
         run: cd code && vendor/bin/drush --uri=dev st
 
       - name: Drush mk:docs
-        run: composer mk:docs
+        run: cd code && composer mk:docs
 
 #      - name: Set up Python 3.7
 #        uses: actions/setup-python@v2
@@ -53,4 +53,4 @@ jobs:
         run: |
           env
           which mkdocs
-          code/build-commands && mkdocs gh-deploy -v --site-dir commands/10.x
+          cd code/build-commands && mkdocs gh-deploy -v --site-dir commands/10.x
