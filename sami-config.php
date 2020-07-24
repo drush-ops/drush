@@ -18,16 +18,16 @@ $iterator = Finder::create()
 ;
 
 // generate documentation for all v2.0.* tags, the 2.0 branch, and the master one
-$versions = GitVersionCollection::create($dir)
-  // ->addFromTags('8.*')
- //  ->add('8.x', '8.x branch')
- // Sami actively checks out each ref listed here.
-  ->add('no-travis', 'Master branch')
-;
+// $versions = GitVersionCollection::create($dir)
+//   ->addFromTags('8.*')
+//   ->add('8.x', '8.x branch')
+// Sami actively checks out each ref listed here.
+//   ->add('no-travis', 'Master branch')
+//;
 
 return new Sami($iterator, array(
   // 'theme'                => 'symfony',
-  'versions'             => $versions,
+  //'versions'             => $versions,
   'title'                => 'Drush API',
   'build_dir'            => __DIR__.'/gh-pages/api/%version%',
   'cache_dir'            => __DIR__.'/.sami-cache/%version%',
