@@ -49,4 +49,6 @@ jobs:
 
       - name: Mkdocs gh-deploy
         run: |
+          pwd
+          ls
           cd build-commands && /home/runner/.local/bin/mkdocs gh-deploy -v --site-dir commands/10.x
