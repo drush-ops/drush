@@ -51,6 +51,4 @@ jobs:
 
       - name: Mkdocs gh-deploy
         run: |
-          env
-          which mkdocs
-          cd code/build-commands && mkdocs gh-deploy -v --site-dir commands/10.x
+          cd code/build-commands && /home/runner/.local/bin/mkdocs gh-deploy -v --site-dir commands/10.x
