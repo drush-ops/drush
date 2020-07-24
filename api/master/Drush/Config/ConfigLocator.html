@@ -1,0 +1,1492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="robots" content="index, follow, all" />
+    <title>Drush\Config\ConfigLocator | Drush API</title>
+
+            <link rel="stylesheet" type="text/css" href="../../css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="../../css/bootstrap-theme.min.css">
+        <link rel="stylesheet" type="text/css" href="../../css/sami.css">
+        <script src="../../js/jquery-1.11.1.min.js"></script>
+        <script src="../../js/bootstrap.min.js"></script>
+        <script src="../../js/typeahead.min.js"></script>
+        <script src="../../sami.js"></script>
+        <meta name="MobileOptimized" content="width">
+        <meta name="HandheldFriendly" content="true">
+        <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+    
+    
+    </head>
+
+    <body id="class" data-name="class:Drush_Config_ConfigLocator" data-root-path="../../">
+            <div id="content">
+        <div id="left-column">
+                <div id="control-panel">
+                <script>
+            $('option[data-version="'+window.projectVersion+'"]').prop('selected', true);
+        </script>
+        <form id="search-form" action="../../search.html" method="GET">
+            <span class="glyphicon glyphicon-search"></span>
+            <input name="search"
+                   class="typeahead form-control"
+                   type="search"
+                   placeholder="Search">
+        </form>
+    </div>
+
+                <div id="api-tree"></div>
+
+        </div>
+        <div id="right-column">
+                <nav id="site-nav" class="navbar navbar-default" role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-elements">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="../../index.html">Drush API</a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar-elements">
+                <ul class="nav navbar-nav">
+                    <li><a href="../../classes.html">Classes</a></li>
+                                            <li><a href="../../namespaces.html">Namespaces</a></li>
+                                        <li><a href="../../interfaces.html">Interfaces</a></li>
+                    <li><a href="../../traits.html">Traits</a></li>
+                    <li><a href="../../doc-index.html">Index</a></li>
+                    <li><a href="../../search.html">Search</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+                        <div class="namespace-breadcrumbs">
+            <ol class="breadcrumb">
+                <li><span class="label label-default">class</span></li>
+                        <li><a href="../../Drush.html">Drush</a></li><li class="backslash">\</li><li><a href="../../Drush/Config.html">Config</a></li><li class="backslash">\</li><li>ConfigLocator</li>
+            </ol>
+        </div>
+                <div id="page-content">
+                
+    <div class="page-header">
+        <h1>
+            ConfigLocator
+                
+        </h1>
+    </div>
+
+    <p>    class
+    <strong>ConfigLocator</strong>        (<a href="https://github.com/drush-ops/drush/blob/master/src/Config/ConfigLocator.php">View source</a>)
+</p>
+
+        
+    
+
+            <div class="description">
+            <p>Locate Drush configuration files and load them into the configuration
+instance.</p>            <p>This class knows how to find all of the global and site-local
+configuration files for Drush, as long as it is provided with
+the necessary base directories:</p>
+
+<ul>
+<li>The user's home directory</li>
+<li>The values provided for --config and --alias-path</li>
+<li>The Drupal root</li>
+</ul>
+
+<p>There are two operating modes that are supported:</p>
+
+<ul>
+<li>Normal: All config locations are used.</li>
+<li>Local:  The global locations are omitted.</li>
+</ul>
+
+<p>The mode is set via the <code>setLocal()</code> method.</p>                    </div>
+    
+    
+            <h2>Constants</h2>
+
+            <table class="table table-condensed">
+                    <tr>
+                <td>ENVIRONMENT_CONTEXT</td>
+                <td class="last">
+                    <p><em></em></p>
+                    <p></p>
+                </td>
+            </tr>
+                    <tr>
+                <td>PREFLIGHT_CONTEXT</td>
+                <td class="last">
+                    <p><em></em></p>
+                    <p></p>
+                </td>
+            </tr>
+                    <tr>
+                <td>ALIAS_CONTEXT</td>
+                <td class="last">
+                    <p><em></em></p>
+                    <p></p>
+                </td>
+            </tr>
+                    <tr>
+                <td>SITE_CONTEXT</td>
+                <td class="last">
+                    <p><em></em></p>
+                    <p></p>
+                </td>
+            </tr>
+                    <tr>
+                <td>DRUPAL_CONTEXT</td>
+                <td class="last">
+                    <p><em></em></p>
+                    <p></p>
+                </td>
+            </tr>
+                    <tr>
+                <td>USER_CONTEXT</td>
+                <td class="last">
+                    <p><em></em></p>
+                    <p></p>
+                </td>
+            </tr>
+                    <tr>
+                <td>ENV_CONTEXT</td>
+                <td class="last">
+                    <p><em></em></p>
+                    <p></p>
+                </td>
+            </tr>
+                    <tr>
+                <td>DRUSH_CONTEXT</td>
+                <td class="last">
+                    <p><em></em></p>
+                    <p></p>
+                </td>
+            </tr>
+            </table>
+
+    
+            <h2>Properties</h2>
+
+            <table class="table table-condensed">
+                    <tr>
+                <td class="type" id="property_config">
+                                        protected                                        <abbr title="Robo\Config">Config</abbr>
+                </td>
+                <td>$config</td>
+                <td class="last"></td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_isLocal">
+                                        protected                                        
+                </td>
+                <td>$isLocal</td>
+                <td class="last"></td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_sources">
+                                        protected                                        
+                </td>
+                <td>$sources</td>
+                <td class="last"></td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_siteRoots">
+                                        protected                                        
+                </td>
+                <td>$siteRoots</td>
+                <td class="last"></td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_composerRoot">
+                                        protected                                        
+                </td>
+                <td>$composerRoot</td>
+                <td class="last"></td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_configFilePaths">
+                                        protected                                        
+                </td>
+                <td>$configFilePaths</td>
+                <td class="last"></td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_configFileVariant">
+                                        protected                                        
+                </td>
+                <td>$configFileVariant</td>
+                <td class="last"></td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_processedConfigPaths">
+                                        protected                                        
+                </td>
+                <td>$processedConfigPaths</td>
+                <td class="last"></td>
+                <td></td>
+            </tr>
+            </table>
+
+    
+            <h2>Methods</h2>
+
+            <div class="container-fluid underlined">
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method___construct">__construct</a>($envPrefix = &#039;&#039;, $configFileVariant = &#039;&#039;)
+        
+                                            <p>ConfigLocator constructor</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_setLocal">setLocal</a>(bool $isLocal)
+        
+                                            <p>Put the config locator into 'local 'mode.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    $this
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_collectSources">collectSources</a>(bool $collect = true)
+        
+                                            <p>Keep track of the source that every config item originally came from.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    array
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_sources">sources</a>()
+        
+                                            <p>Return all of the sources for every configuration item. The key
+is the address of the configuration item, and the value is the
+configuration file it was loaded from. Note that this method will
+return just an empty array unless collectSources(true) is called
+prior to loading configuration files.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    string[]
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_configFilePaths">configFilePaths</a>()
+        
+                                            <p>Return a list of all configuration files that were loaded.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_addToSources">addToSources</a>(array $sources)
+        
+                                            <p>Accumulate the sources provided by the configuration loader.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    <abbr title="Drush\Config\Config">Config</abbr>
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_config">config</a>()
+        
+                                            <p>Return the configuration object. Create it and load it with
+all identified configuration if necessary.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    $this
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_addEnvironment">addEnvironment</a>(<a href="../../Drush/Config/Environment.html"><abbr title="Drush\Config\Environment">Environment</abbr></a> $environment)
+        
+                                            <p>Exports all of the information stored in the environment, and adds
+it to the configuration.  The Environment object itself is only
+available during preflight; the information exported here may be
+obtained by commands et. al. as needed.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    $this
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_addPreflightConfigFiles">addPreflightConfigFiles</a>($filepaths)
+        
+                                            <p>Add config paths defined in preflight configuration.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    $this
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_addAliasConfig">addAliasConfig</a>($aliasConfig)
+        
+                                            <p>Take any configuration from the active alias record, and add it
+to our configuratino.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    $this
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_addUserConfig">addUserConfig</a>($configPaths, $systemConfigPath, $userConfigDir)
+        
+                                            <p>Given the path provided via --config and the user's home directory,
+add all of the user configuration paths.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    $this
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_addDrushConfig">addDrushConfig</a>($drushProjectDir)
+        
+                                            <p>Add the Drush project directory as a configuration search location.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    $this
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_addSitewideConfig">addSitewideConfig</a>(<abbr title="Webmozart\PathUtil\Path">Path</abbr> $siteRoot)
+        
+                                            <p>Add any configuration files found around the Drupal root of the
+selected site.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    $this
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_addConfigPaths">addConfigPaths</a>(string $contextName, string[] $paths)
+        
+                                            <p>Add any configuration file found at any of the provided paths. Both the
+provided location, and the directory <code>config</code> inside each provided location
+is searched for a drush.yml file.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_addConfigFiles">addConfigFiles</a>(<abbr title="Consolidation\Config\Loader\ConfigProcessor">ConfigProcessor</abbr> $processor, <abbr title="Consolidation\Config\Loader\ConfigLoaderInterface">ConfigLoaderInterface</abbr> $loader, array $configFiles)
+        
+                                            <p>Adds $configFiles config files.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    string[]
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_identifyCandidates">identifyCandidates</a>(string[] $paths, string[] $candidates)
+        
+                                            <p>Given a list of paths, and candidates that might exist at each path,
+return all of the candidates that can be found. Candidates may be
+either directories or files.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    string[]
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_identifyCandidatesAtPath">identifyCandidatesAtPath</a>(string $path, string[] $candidates)
+        
+                                            <p>Search for all matching candidate locations at a single path.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    array
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_getSiteAliasPaths">getSiteAliasPaths</a>($paths, <a href="../../Drush/Config/Environment.html"><abbr title="Drush\Config\Environment">Environment</abbr></a> $environment)
+        
+                                            <p>Get the site aliases according to preflight arguments and environment.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    array
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_getCommandFilePaths">getCommandFilePaths</a>($commandPaths, $root)
+        
+                                            <p>Get the commandfile paths according to preflight arguments.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_getBuiltinCommandFilePaths">getBuiltinCommandFilePaths</a>()
+        
+                                            <p>Return all of the built-in commandfile locations</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_getIncludedCommandFilePaths">getIncludedCommandFilePaths</a>($commandPaths)
+        
+                                            <p>Return all of the commandfile locations specified via
+an 'include' option.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_getSiteCommandFilePaths">getSiteCommandFilePaths</a>($root)
+        
+                                            <p>Return all of the commandfile paths in any '$root/drush' or
+'dirname($root)/drush' directory that contains a composer.json
+file or a 'Commands' or 'src/Commands' directory.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_setComposerRoot">setComposerRoot</a>($selectedComposerRoot)
+        
+                                            <p>Sets the composer root.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_expandCandidates">expandCandidates</a>($candidates, $prefix)
+        
+                                            <p>Double the candidates, adding '$prefix' before each existing one.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    array
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_findConfigFiles">findConfigFiles</a>(array $paths, array $candidates)
+        
+                                            <p>Given an array of paths, separates files and directories.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+            </div>
+
+
+        <h2>Details</h2>
+
+            <div id="method-details">
+                    <div class="method-item">
+                    <h3 id="method___construct">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Config/ConfigLocator.php#L95">line 95</a></div>
+        <code>                    
+    <strong>__construct</strong>($envPrefix = &#039;&#039;, $configFileVariant = &#039;&#039;)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>ConfigLocator constructor</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$envPrefix</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$configFileVariant</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_setLocal">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Config/ConfigLocator.php#L124">line 124</a></div>
+        <code>                    
+    <strong>setLocal</strong>(bool $isLocal)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Put the config locator into 'local 'mode.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>bool</td>
+                <td>$isLocal</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_collectSources">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Config/ConfigLocator.php#L138">line 138</a></div>
+        <code>                    $this
+    <strong>collectSources</strong>(bool $collect = true)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Keep track of the source that every config item originally came from.</p>                    <p>Potentially useful in debugging.  If collectSources(true) is called,
+then the sources will be accumulated as config files are loaded. Otherwise,
+this information will not be saved.</p>                            </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>bool</td>
+                <td>$collect</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>$this</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_sources">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Config/ConfigLocator.php#L153">line 153</a></div>
+        <code>                    array
+    <strong>sources</strong>()
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Return all of the sources for every configuration item. The key
+is the address of the configuration item, and the value is the
+configuration file it was loaded from. Note that this method will
+return just an empty array unless collectSources(true) is called
+prior to loading configuration files.</p>                                                </div>
+                <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>array</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_configFilePaths">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Config/ConfigLocator.php#L163">line 163</a></div>
+        <code>                    string[]
+    <strong>configFilePaths</strong>()
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Return a list of all configuration files that were loaded.</p>                                                </div>
+                <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string[]</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_addToSources">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Config/ConfigLocator.php#L171">line 171</a></div>
+        <code>            protected        
+    <strong>addToSources</strong>(array $sources)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Accumulate the sources provided by the configuration loader.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>array</td>
+                <td>$sources</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_config">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Config/ConfigLocator.php#L185">line 185</a></div>
+        <code>                    <abbr title="Drush\Config\Config">Config</abbr>
+    <strong>config</strong>()
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Return the configuration object. Create it and load it with
+all identified configuration if necessary.</p>                                                </div>
+                <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><abbr title="Drush\Config\Config">Config</abbr></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_addEnvironment">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Config/ConfigLocator.php#L199">line 199</a></div>
+        <code>                    $this
+    <strong>addEnvironment</strong>(<a href="../../Drush/Config/Environment.html"><abbr title="Drush\Config\Environment">Environment</abbr></a> $environment)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Exports all of the information stored in the environment, and adds
+it to the configuration.  The Environment object itself is only
+available during preflight; the information exported here may be
+obtained by commands et. al. as needed.</p>                    <p>see Environment::exportConfigData()</p>                            </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><a href="../../Drush/Config/Environment.html"><abbr title="Drush\Config\Environment">Environment</abbr></a></td>
+                <td>$environment</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>$this</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_addPreflightConfigFiles">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Config/ConfigLocator.php#L211">line 211</a></div>
+        <code>                    $this
+    <strong>addPreflightConfigFiles</strong>($filepaths)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Add config paths defined in preflight configuration.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$filepaths</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>$this</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_addAliasConfig">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Config/ConfigLocator.php#L222">line 222</a></div>
+        <code>                    $this
+    <strong>addAliasConfig</strong>($aliasConfig)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Take any configuration from the active alias record, and add it
+to our configuratino.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$aliasConfig</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>$this</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_addUserConfig">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Config/ConfigLocator.php#L236">line 236</a></div>
+        <code>                    $this
+    <strong>addUserConfig</strong>($configPaths, $systemConfigPath, $userConfigDir)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Given the path provided via --config and the user's home directory,
+add all of the user configuration paths.</p>                    <p>In 'local' mode, only the --config location is used.</p>                            </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$configPaths</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$systemConfigPath</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$userConfigDir</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>$this</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_addDrushConfig">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Config/ConfigLocator.php#L252">line 252</a></div>
+        <code>                    $this
+    <strong>addDrushConfig</strong>($drushProjectDir)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Add the Drush project directory as a configuration search location.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$drushProjectDir</td>
+                <td>path to the drush project directory</td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>$this</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_addSitewideConfig">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Config/ConfigLocator.php#L267">line 267</a></div>
+        <code>                    $this
+    <strong>addSitewideConfig</strong>(<abbr title="Webmozart\PathUtil\Path">Path</abbr> $siteRoot)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Add any configuration files found around the Drupal root of the
+selected site.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Webmozart\PathUtil\Path">Path</abbr></td>
+                <td>$siteRoot</td>
+                <td>to the selected Drupal site</td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>$this</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_addConfigPaths">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Config/ConfigLocator.php#L296">line 296</a></div>
+        <code>                    $this
+    <strong>addConfigPaths</strong>(string $contextName, string[] $paths)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Add any configuration file found at any of the provided paths. Both the
+provided location, and the directory <code>config</code> inside each provided location
+is searched for a drush.yml file.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$contextName</td>
+                <td>Which context to put all configuration files in.</td>
+            </tr>
+                    <tr>
+                <td>string[]</td>
+                <td>$paths</td>
+                <td>List of paths to search for configuration.</td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>$this</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_addConfigFiles">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Config/ConfigLocator.php#L340">line 340</a></div>
+        <code>            protected        
+    <strong>addConfigFiles</strong>(<abbr title="Consolidation\Config\Loader\ConfigProcessor">ConfigProcessor</abbr> $processor, <abbr title="Consolidation\Config\Loader\ConfigLoaderInterface">ConfigLoaderInterface</abbr> $loader, array $configFiles)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Adds $configFiles config files.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Consolidation\Config\Loader\ConfigProcessor">ConfigProcessor</abbr></td>
+                <td>$processor</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><abbr title="Consolidation\Config\Loader\ConfigLoaderInterface">ConfigLoaderInterface</abbr></td>
+                <td>$loader</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>array</td>
+                <td>$configFiles</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_identifyCandidates">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Config/ConfigLocator.php#L357">line 357</a></div>
+        <code>            protected        string[]
+    <strong>identifyCandidates</strong>(string[] $paths, string[] $candidates)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Given a list of paths, and candidates that might exist at each path,
+return all of the candidates that can be found. Candidates may be
+either directories or files.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string[]</td>
+                <td>$paths</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>string[]</td>
+                <td>$candidates</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string[]</td>
+            <td>paths</td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_identifyCandidatesAtPath">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Config/ConfigLocator.php#L374">line 374</a></div>
+        <code>            protected        string[]
+    <strong>identifyCandidatesAtPath</strong>(string $path, string[] $candidates)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Search for all matching candidate locations at a single path.</p>                    <p>Candidate locations may be either directories or files.</p>                            </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$path</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>string[]</td>
+                <td>$candidates</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string[]</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getSiteAliasPaths">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Config/ConfigLocator.php#L398">line 398</a></div>
+        <code>                    array
+    <strong>getSiteAliasPaths</strong>($paths, <a href="../../Drush/Config/Environment.html"><abbr title="Drush\Config\Environment">Environment</abbr></a> $environment)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Get the site aliases according to preflight arguments and environment.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$paths</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><a href="../../Drush/Config/Environment.html"><abbr title="Drush\Config\Environment">Environment</abbr></a></td>
+                <td>$environment</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>array</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getCommandFilePaths">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Config/ConfigLocator.php#L427">line 427</a></div>
+        <code>                    array
+    <strong>getCommandFilePaths</strong>($commandPaths, $root)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Get the commandfile paths according to preflight arguments.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$commandPaths</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$root</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>array</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getBuiltinCommandFilePaths">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Config/ConfigLocator.php#L443">line 443</a></div>
+        <code>            protected        
+    <strong>getBuiltinCommandFilePaths</strong>()
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Return all of the built-in commandfile locations</p>                                                </div>
+                <div class="tags">
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getIncludedCommandFilePaths">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Config/ConfigLocator.php#L454">line 454</a></div>
+        <code>            protected        
+    <strong>getIncludedCommandFilePaths</strong>($commandPaths)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Return all of the commandfile locations specified via
+an 'include' option.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$commandPaths</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getSiteCommandFilePaths">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Config/ConfigLocator.php#L487">line 487</a></div>
+        <code>            protected        
+    <strong>getSiteCommandFilePaths</strong>($root)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Return all of the commandfile paths in any '$root/drush' or
+'dirname($root)/drush' directory that contains a composer.json
+file or a 'Commands' or 'src/Commands' directory.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$root</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_setComposerRoot">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Config/ConfigLocator.php#L499">line 499</a></div>
+        <code>                    
+    <strong>setComposerRoot</strong>($selectedComposerRoot)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Sets the composer root.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$selectedComposerRoot</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_expandCandidates">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Config/ConfigLocator.php#L511">line 511</a></div>
+        <code>                    
+    <strong>expandCandidates</strong>($candidates, $prefix)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Double the candidates, adding '$prefix' before each existing one.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$candidates</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$prefix</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_findConfigFiles">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Config/ConfigLocator.php#L535">line 535</a></div>
+        <code>            protected        array
+    <strong>findConfigFiles</strong>(array $paths, array $candidates)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Given an array of paths, separates files and directories.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>array</td>
+                <td>$paths</td>
+                <td>An array of config paths. These may be config files or paths to dirs
+  containing config files.</td>
+            </tr>
+                    <tr>
+                <td>array</td>
+                <td>$candidates</td>
+                <td>An array filenames that are considered config files.</td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>array</td>
+            <td>An array. The first row is an array of files, the second row is an
+  array of dirs.</td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+            </div>
+
+    
+            </div>
+                <div id="footer">
+        Generated by <a href="http://sami.sensiolabs.org/">Sami, the API Documentation Generator</a>.
+    </div>
+
+        </div>
+    </div>
+    </body>
+
+</html>

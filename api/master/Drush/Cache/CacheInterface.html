@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="robots" content="index, follow, all" />
+    <title>Drush\Cache\CacheInterface | Drush API</title>
+
+            <link rel="stylesheet" type="text/css" href="../../css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="../../css/bootstrap-theme.min.css">
+        <link rel="stylesheet" type="text/css" href="../../css/sami.css">
+        <script src="../../js/jquery-1.11.1.min.js"></script>
+        <script src="../../js/bootstrap.min.js"></script>
+        <script src="../../js/typeahead.min.js"></script>
+        <script src="../../sami.js"></script>
+        <meta name="MobileOptimized" content="width">
+        <meta name="HandheldFriendly" content="true">
+        <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+    
+    
+    </head>
+
+    <body id="class" data-name="class:Drush_Cache_CacheInterface" data-root-path="../../">
+            <div id="content">
+        <div id="left-column">
+                <div id="control-panel">
+                <script>
+            $('option[data-version="'+window.projectVersion+'"]').prop('selected', true);
+        </script>
+        <form id="search-form" action="../../search.html" method="GET">
+            <span class="glyphicon glyphicon-search"></span>
+            <input name="search"
+                   class="typeahead form-control"
+                   type="search"
+                   placeholder="Search">
+        </form>
+    </div>
+
+                <div id="api-tree"></div>
+
+        </div>
+        <div id="right-column">
+                <nav id="site-nav" class="navbar navbar-default" role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-elements">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="../../index.html">Drush API</a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar-elements">
+                <ul class="nav navbar-nav">
+                    <li><a href="../../classes.html">Classes</a></li>
+                                            <li><a href="../../namespaces.html">Namespaces</a></li>
+                                        <li><a href="../../interfaces.html">Interfaces</a></li>
+                    <li><a href="../../traits.html">Traits</a></li>
+                    <li><a href="../../doc-index.html">Index</a></li>
+                    <li><a href="../../search.html">Search</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+                        <div class="namespace-breadcrumbs">
+            <ol class="breadcrumb">
+                <li><span class="label label-default">interface</span></li>
+                        <li><a href="../../Drush.html">Drush</a></li><li class="backslash">\</li><li><a href="../../Drush/Cache.html">Cache</a></li><li class="backslash">\</li><li>CacheInterface</li>
+            </ol>
+        </div>
+                <div id="page-content">
+                
+    <div class="page-header">
+        <h1>
+            CacheInterface
+                <small><sup><span class="label label-danger">deprecated</span></sup></small>
+        </h1>
+    </div>
+
+    <p>    interface
+    <strong>CacheInterface</strong>        (<a href="https://github.com/drush-ops/drush/blob/master/src/Cache/CacheInterface.php">View source</a>)
+</p>
+
+        
+            <p>
+                <small><sup><span class="label label-danger">deprecated</span></sup></small>
+                            <tr>
+                    <td></td>
+                    <td></td>
+                </tr>
+                    </p>
+    
+
+            <div class="description">
+            <p>Interface for cache implementations.</p>            <p>All cache implementations have to implement this interface.
+JSONCache provides the default implementation, which can be
+consulted as an example.</p>
+
+<p>To make Drush use your implementation for a certain cache bin, you have to
+set a variable with the name of the cache bin as its key and the name of
+your class as its value. For example, if your implementation of
+CacheInterface was called MyCustomCache, the following line in
+drushrc.php would make Drush use it for the 'example' bin:</p>                    </div>
+    
+    
+    
+    
+            <h2>Methods</h2>
+
+            <div class="container-fluid underlined">
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method___construct">__construct</a>($bin)
+        
+                                            <p>Constructor.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    <abbr title="Drush\Cache\The">The</abbr>
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_get">get</a>(string $cid)
+        
+                                            <p>Return data from the persistent cache.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    <abbr title="Drush\Cache\An">An</abbr>
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_getMultiple">getMultiple</a>(array $cids)
+        
+                                            <p>Return data from the persistent cache when given an array of cache IDs.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_set">set</a>(string $cid, array $data, $expire = DRUSH_CACHE_PERMANENT)
+        
+                                            <p>Store data in the persistent cache.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_clear">clear</a>(string $cid = null, bool $wildcard = false)
+        
+                                            <p>Expire data from the cache. If called without arguments, expirable
+entries will be cleared from all known cache bins.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    TRUE
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_isEmpty">isEmpty</a>()
+        
+                                            <p>Check if a cache bin is empty.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+            </div>
+
+
+        <h2>Details</h2>
+
+            <div id="method-details">
+                    <div class="method-item">
+                    <h3 id="method___construct">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Cache/CacheInterface.php#L46">line 46</a></div>
+        <code>                    
+    <strong>__construct</strong>($bin)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Constructor.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$bin</td>
+                <td>The cache bin for which the object is created.</td>
+            </tr>
+            </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_get">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Cache/CacheInterface.php#L57">line 57</a></div>
+        <code>                    <abbr title="Drush\Cache\The">The</abbr>
+    <strong>get</strong>(string $cid)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Return data from the persistent cache.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$cid</td>
+                <td>The cache ID of the data to retrieve.</td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><abbr title="Drush\Cache\The">The</abbr></td>
+            <td>cache or FALSE on failure.</td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getMultiple">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Cache/CacheInterface.php#L70">line 70</a></div>
+        <code>                    <abbr title="Drush\Cache\An">An</abbr>
+    <strong>getMultiple</strong>(array $cids)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Return data from the persistent cache when given an array of cache IDs.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>array</td>
+                <td>$cids</td>
+                <td>An array of cache IDs for the data to retrieve. This is passed by
+  reference, and will have the IDs successfully returned from cache
+  removed.</td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><abbr title="Drush\Cache\An">An</abbr></td>
+            <td>array of the items successfully returned from cache indexed by cid.</td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_set">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Cache/CacheInterface.php#L88">line 88</a></div>
+        <code>                    
+    <strong>set</strong>(string $cid, array $data, $expire = DRUSH_CACHE_PERMANENT)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Store data in the persistent cache.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$cid</td>
+                <td>The cache ID of the data to store.</td>
+            </tr>
+                    <tr>
+                <td>array</td>
+                <td>$data</td>
+                <td>The data to store in the cache.</td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$expire</td>
+                <td>One of the following values:
+  - DRUSH_CACHE_PERMANENT: Indicates that the item should never be removed unless
+    explicitly told to using _drush_cache_clear_all() with a cache ID.
+  - DRUSH_CACHE_TEMPORARY: Indicates that the item should be removed at the next
+    general cache wipe.
+  - A Unix timestamp: Indicates that the item should be kept at least until
+    the given time, after which it behaves like CACHE_TEMPORARY.</td>
+            </tr>
+            </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_clear">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Cache/CacheInterface.php#L102">line 102</a></div>
+        <code>                    
+    <strong>clear</strong>(string $cid = null, bool $wildcard = false)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Expire data from the cache. If called without arguments, expirable
+entries will be cleared from all known cache bins.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$cid</td>
+                <td>If set, the cache ID to delete. Otherwise, all cache entries that can
+  expire are deleted.</td>
+            </tr>
+                    <tr>
+                <td>bool</td>
+                <td>$wildcard</td>
+                <td>If set to TRUE, the $cid is treated as a substring
+  to match rather than a complete ID. The match is a right hand
+  match. If '*' is given as $cid, the bin $bin will be emptied.</td>
+            </tr>
+            </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_isEmpty">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Cache/CacheInterface.php#L113">line 113</a></div>
+        <code>                    TRUE
+    <strong>isEmpty</strong>()
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Check if a cache bin is empty.</p>                    <p>A cache bin is considered empty if it does not contain any valid data for
+any cache ID.</p>                            </div>
+                <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>TRUE</td>
+            <td>if the cache bin specified is empty.</td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+            </div>
+
+    
+            </div>
+                <div id="footer">
+        Generated by <a href="http://sami.sensiolabs.org/">Sami, the API Documentation Generator</a>.
+    </div>
+
+        </div>
+    </div>
+    </body>
+
+</html>
