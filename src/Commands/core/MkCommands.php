@@ -95,7 +95,7 @@ class MkCommands extends DrushCommands implements SiteAliasManagerAwareInterface
                     }
                     $body .= "\n";
                 }
-                $body .= '!!! note Legend' . "\n" . <<<EOT
+                $body .= '!!! note "Legend"' . "\n" . <<<EOT
     - An argument or option with square brackets is optional.
     - Any default value is listed at end of arg/option description.
     - An ellipsis indicates that an argument accepts multiple values separated by a space.
