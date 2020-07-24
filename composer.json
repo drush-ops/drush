@@ -98,7 +98,7 @@
     ],
     "api": "PATH=$HOME/bin:$PATH sami.phar --ansi update sami-config.php",
     "sami-install": "mkdir -p $HOME/bin && curl --output $HOME/bin/sami.phar http://get.sensiolabs.org/sami.phar && chmod +x $HOME/bin/sami.phar",
-    "mk:docs": "./drush --uri=dev -v mk:docs --destination=../gh-pages/commands/10.x",
+    "mk:docs": "./drush --uri=dev -v mk:docs --destination=../build-commands",
     "sut": "./drush --uri=dev",
     "sut:si": "./drush --uri=dev site:install testing --sites-subdir=dev --db-url=${UNISH_DB_URL:-mysql://root:password@mariadb}/unish_dev -v",
     "phpunit": "php -d sendmail_path='true' vendor/bin/phpunit --colors=always --configuration tests",

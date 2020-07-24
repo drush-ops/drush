@@ -53,6 +53,9 @@ jobs:
       - name: Drush mk:docs
         run: composer mk:docs
 
+      - name: mkdocs build
+        run: cd build-commands && mkdocs build -v --site-dir gh-pages/commands/10.x
+
       - name: Commit and Push to gh-pages
         run: |
           cd gh-pages

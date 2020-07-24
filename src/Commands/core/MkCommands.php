@@ -117,10 +117,6 @@ class MkCommands extends DrushCommands implements SiteAliasManagerAwareInterface
             'theme' => [
                 'name' => 'readthedocs',
             ],
-            'extra' => [
-                // Not used
-                'version' => '1.0',
-            ],
             'site_url' => 'http://commands.drush.org',
             'markdown_extensions' => [
                 ['toc' => [
