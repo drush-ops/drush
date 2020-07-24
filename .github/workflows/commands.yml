@@ -31,13 +31,16 @@ jobs:
         env:
           UNISH_DB_URL: sqlite://sites/default/files/.ht.sqlite
 
+      - name: Drush status
+        run: vendor/bin/drush --uri=dev st
+
       - name: Drush mk:docs
         run: composer mk:docs
 
-      - name: Set up Python 3.7
-        uses: actions/setup-python@v2
-        with:
-          python-version: '3.x'
+#      - name: Set up Python 3.7
+#        uses: actions/setup-python@v2
+#        with:
+#          python-version: '3.x'
 
       - name: Install Python dependencies
         run: |
