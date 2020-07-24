@@ -45,6 +45,6 @@ jobs:
           pip install mkdocs
 
       - name: Mkdocs gh-deploy
-        working-directory: /tmp/build
+        working-directory: build-commands
         run: |
           mkdocs gh-deploy -v --site-dir commands/10.x
