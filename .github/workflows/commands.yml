@@ -13,7 +13,7 @@ jobs:
     name: Build and Deploy
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Master
+      - name: Checkout master
         uses: actions/checkout@v2
 
       - name: Checkout gh-pages branch
@@ -59,6 +59,8 @@ jobs:
 
           git config --local user.email "actions@github.com"
           git config --local user.name "GitHub Action"
+
+          git add -A .
 
           if git diff-index --quiet HEAD --; then
             echo "No changes..."
