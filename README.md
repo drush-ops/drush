@@ -6,7 +6,7 @@ Resources
 -----------
 * [Installing and Upgrading](http://docs.drush.org/en/master/install/) ([Drush 8](https://docs.drush.org/en/8.x/install/))
 * [General Documentation](http://docs.drush.org) ([Drush 8](https://docs.drush.org/en/8.x/install/))
-* [Commands](https://www.drush.org/commands/10.x/)
+* [Drush Commands](https://www.drush.org/commands/10.x/)
 * [API Documentation](http://www.drush.org/api/master/index.html)
 * [Drush packages available via Composer](https://packagist.org/search/?type=drupal-drush)
 * [A list of modules that include Drush integration](https://www.drupal.org/project/project_module?f[2]=im_vid_3%3A4654&solrsort=ds_project_latest_release+desc)
