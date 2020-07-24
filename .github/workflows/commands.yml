@@ -47,4 +47,6 @@ jobs:
       - name: Mkdocs gh-deploy
         working-directory: build-commands
         run: |
+          env
+          which mkdocs
           mkdocs gh-deploy -v --site-dir commands/10.x
