@@ -34,7 +34,7 @@ jobs:
           UNISH_DB_URL: sqlite://sites/default/files/.ht.sqlite
 
       - name: Drush status
-        run: cd code && vendor/bin/drush --uri=dev st
+        run: cd code && ./drush --uri=dev st
 
       - name: Drush mk:docs
         run: cd code && composer mk:docs
