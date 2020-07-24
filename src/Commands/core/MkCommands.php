@@ -91,7 +91,7 @@ class MkCommands extends DrushCommands implements SiteAliasManagerAwareInterface
                 }
                 file_put_contents(Path::join($options['destination'], 'docs', $filename), $body);
             }
-            $this->logger()->info(dt('Found :pages in :cat', [':pages' => count($pages), ':cat' => $category]));
+            $this->logger()->info('Found {pages} in {cat}', ['pages' => count($pages), 'cat' => $category]);
             $nav[] = [$category => $pages];
             unset($pages);
         }
