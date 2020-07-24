@@ -348,13 +348,6 @@ Run queries or call APIs to perform sanitizing</p>
 <li><code>drush sql:sanitize --allowlist-fields=field_biography,field_phone_number</code>. Sanitizes database but exempts two user fields from modification.</li>
 </ul>
 <h4>Options</h4>
-<div class="admonition note">
-<p class="admonition-title">Tip</p>
-<ul>
-<li>An option value without square brackets is mandatory.</li>
-<li>Any default value is listed at description end.</li>
-</ul>
-</div>
 <ul>
 <li><strong> --whitelist-fields[=WHITELIST-FIELDS]</strong>. Deprecated. Use allowlist-fields instead.</li>
 <li><strong> --allowlist-fields[=ALLOWLIST-FIELDS]</strong>. A comma delimited list of fields exempt from sanitization.</li>
@@ -366,6 +359,14 @@ Run queries or call APIs to perform sanitizing</p>
 <li>sqlsan</li>
 <li>sql-sanitize</li>
 </ul>
+<div class="admonition note legend">
+<p class="admonition-title">Note</p>
+<ul>
+<li>An argument or option with square brackets is optional.</li>
+<li>Any default value is listed at end of arg/option description.</li>
+<li>An ellipsis indicates that an argument accepts multiple values separated by a space.</li>
+</ul>
+</div>
               
             </div>
           </div>

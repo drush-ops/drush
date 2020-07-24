@@ -342,26 +342,12 @@
 <li><code>drush config:set system.site page.front '/path/to/page'</code>. Sets the given URL path as value for the config item with key "page.front" of "system.site" config object.</li>
 </ul>
 <h4>Arguments</h4>
-<div class="admonition note">
-<p class="admonition-title">Tip</p>
-<ul>
-<li>An argument name without square brackets is mandatory.</li>
-<li>An ellipsis indicates that an argument accepts multiple values separated by a space.</li>
-</ul>
-</div>
 <ul>
 <li><strong>--config_name</strong>. The config object name, for example "system.site".</li>
 <li><strong>--key</strong>. The config key, for example "page.front".</li>
 <li><strong>[--value]</strong>. The value to assign to the config key. Use '-' to read from STDIN.</li>
 </ul>
 <h4>Options</h4>
-<div class="admonition note">
-<p class="admonition-title">Tip</p>
-<ul>
-<li>An option value without square brackets is mandatory.</li>
-<li>Any default value is listed at description end.</li>
-</ul>
-</div>
 <ul>
 <li><strong> --input-format[=INPUT-FORMAT]</strong>. Format to parse the object. Use "string" for string (default), and "yaml" for YAML. [default: "string"]</li>
 <li><strong> --value=VALUE</strong>. The value to assign to the config key (if any).</li>
@@ -371,6 +357,14 @@
 <li>cset</li>
 <li>config-set</li>
 </ul>
+<div class="admonition note legend">
+<p class="admonition-title">Note</p>
+<ul>
+<li>An argument or option with square brackets is optional.</li>
+<li>Any default value is listed at end of arg/option description.</li>
+<li>An ellipsis indicates that an argument accepts multiple values separated by a space.</li>
+</ul>
+</div>
               
             </div>
           </div>

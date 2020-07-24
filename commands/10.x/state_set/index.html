@@ -344,25 +344,11 @@
 <li><code>php -r "print json_encode(array(\'drupal\', \'simpletest\'));"  | drush state-set --input-format=json foo.name -</code>. Set a key to a complex value (e.g. array)</li>
 </ul>
 <h4>Arguments</h4>
-<div class="admonition note">
-<p class="admonition-title">Tip</p>
-<ul>
-<li>An argument name without square brackets is mandatory.</li>
-<li>An ellipsis indicates that an argument accepts multiple values separated by a space.</li>
-</ul>
-</div>
 <ul>
 <li><strong>--key</strong>. The state key, for example: system.cron_last.</li>
 <li><strong>--value</strong>. The value to assign to the state key. Use '-' to read from STDIN.</li>
 </ul>
 <h4>Options</h4>
-<div class="admonition note">
-<p class="admonition-title">Tip</p>
-<ul>
-<li>An option value without square brackets is mandatory.</li>
-<li>Any default value is listed at description end.</li>
-</ul>
-</div>
 <ul>
 <li><strong> --input-format[=INPUT-FORMAT]</strong>. Type for the value. Defaults to 'auto'. Other recognized values: string, integer, float, boolean, json, yaml. [default: "auto"]</li>
 <li><strong> --value=VALUE</strong>. For internal use only.</li>
@@ -372,6 +358,14 @@
 <li>sset</li>
 <li>state-set</li>
 </ul>
+<div class="admonition note legend">
+<p class="admonition-title">Note</p>
+<ul>
+<li>An argument or option with square brackets is optional.</li>
+<li>Any default value is listed at end of arg/option description.</li>
+<li>An ellipsis indicates that an argument accepts multiple values separated by a space.</li>
+</ul>
+</div>
               
             </div>
           </div>

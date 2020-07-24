@@ -345,26 +345,12 @@
 <li><code>drush rsync @dev @stage --ssh-options="-o StrictHostKeyChecking=no" -- --delete</code>. Customize how rsync connects with remote host via SSH. rsync options like --delete are placed after a --.</li>
 </ul>
 <h4>Arguments</h4>
-<div class="admonition note">
-<p class="admonition-title">Tip</p>
-<ul>
-<li>An argument name without square brackets is mandatory.</li>
-<li>An ellipsis indicates that an argument accepts multiple values separated by a space.</li>
-</ul>
-</div>
 <ul>
 <li><strong>--source</strong>. A site alias and optional path. See rsync documentation and example.site.yml.</li>
 <li><strong>--target</strong>. A site alias and optional path. See rsync documentation and example.site.yml.',</li>
 <li><strong>[--extra]...</strong>. Additional parameters after the ssh statement.</li>
 </ul>
 <h4>Options</h4>
-<div class="admonition note">
-<p class="admonition-title">Tip</p>
-<ul>
-<li>An option value without square brackets is mandatory.</li>
-<li>Any default value is listed at description end.</li>
-</ul>
-</div>
 <ul>
 <li><strong> --exclude-paths=EXCLUDE-PATHS</strong>. List of paths to exclude, seperated by : (Unix-based systems) or ; (Windows).</li>
 <li><strong> --include-paths=INCLUDE-PATHS</strong>. List of paths to include, seperated by : (Unix-based systems) or ; (Windows).</li>
@@ -380,6 +366,14 @@
 <li>rsync</li>
 <li>core-rsync</li>
 </ul>
+<div class="admonition note legend">
+<p class="admonition-title">Note</p>
+<ul>
+<li>An argument or option with square brackets is optional.</li>
+<li>Any default value is listed at end of arg/option description.</li>
+<li>An ellipsis indicates that an argument accepts multiple values separated by a space.</li>
+</ul>
+</div>
               
             </div>
           </div>

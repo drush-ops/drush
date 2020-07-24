@@ -347,25 +347,11 @@
 <li><code>drush entity:delete user</code>. Delete all users except uid=1.</li>
 </ul>
 <h4>Arguments</h4>
-<div class="admonition note">
-<p class="admonition-title">Tip</p>
-<ul>
-<li>An argument name without square brackets is mandatory.</li>
-<li>An ellipsis indicates that an argument accepts multiple values separated by a space.</li>
-</ul>
-</div>
 <ul>
 <li><strong>--entity_type</strong>. An entity machine name.</li>
 <li><strong>[--ids]</strong>. A comma delimited list of Ids.</li>
 </ul>
 <h4>Options</h4>
-<div class="admonition note">
-<p class="admonition-title">Tip</p>
-<ul>
-<li>An option value without square brackets is mandatory.</li>
-<li>Any default value is listed at description end.</li>
-</ul>
-</div>
 <ul>
 <li><strong> --bundle=BUNDLE</strong>. Restrict deletion to the specified bundle. Ignored when ids is specified.</li>
 <li><strong> --exclude=EXCLUDE</strong>. Exclude certain entities from deletion. Ignored when ids is specified.</li>
@@ -375,6 +361,14 @@
 <li>edel</li>
 <li>entity-delete</li>
 </ul>
+<div class="admonition note legend">
+<p class="admonition-title">Note</p>
+<ul>
+<li>An argument or option with square brackets is optional.</li>
+<li>Any default value is listed at end of arg/option description.</li>
+<li>An ellipsis indicates that an argument accepts multiple values separated by a space.</li>
+</ul>
+</div>
               
             </div>
           </div>

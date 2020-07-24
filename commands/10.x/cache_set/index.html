@@ -338,13 +338,6 @@
                 <h1>cache:set</h1>
 <p>Cache an object expressed in JSON or var_export() format.</p>
 <h4>Arguments</h4>
-<div class="admonition note">
-<p class="admonition-title">Tip</p>
-<ul>
-<li>An argument name without square brackets is mandatory.</li>
-<li>An ellipsis indicates that an argument accepts multiple values separated by a space.</li>
-</ul>
-</div>
 <ul>
 <li><strong>--cid</strong>. The id of the object to set.</li>
 <li><strong>--data</strong>. The object to set in the cache. Use - to read the object from STDIN.</li>
@@ -353,13 +346,6 @@
 <li><strong>[--tags]</strong>. A comma delimited list of cache tags.</li>
 </ul>
 <h4>Options</h4>
-<div class="admonition note">
-<p class="admonition-title">Tip</p>
-<ul>
-<li>An option value without square brackets is mandatory.</li>
-<li>Any default value is listed at description end.</li>
-</ul>
-</div>
 <ul>
 <li><strong> --input-format[=INPUT-FORMAT]</strong>. The format of value. Use 'json' for complex values. [default: "string"]</li>
 <li><strong> --cache-get</strong>. If the object is the result a previous fetch from the cache, only store the value in the 'data' property of the object in the cache.</li>
@@ -369,6 +355,14 @@
 <li>cs</li>
 <li>cache-set</li>
 </ul>
+<div class="admonition note legend">
+<p class="admonition-title">Note</p>
+<ul>
+<li>An argument or option with square brackets is optional.</li>
+<li>Any default value is listed at end of arg/option description.</li>
+<li>An ellipsis indicates that an argument accepts multiple values separated by a space.</li>
+</ul>
+</div>
               
             </div>
           </div>

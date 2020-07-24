@@ -347,24 +347,10 @@
 <li><code>drush core:config --choice=2</code>. Edit the second file in the choice list.</li>
 </ul>
 <h4>Arguments</h4>
-<div class="admonition note">
-<p class="admonition-title">Tip</p>
-<ul>
-<li>An argument name without square brackets is mandatory.</li>
-<li>An ellipsis indicates that an argument accepts multiple values separated by a space.</li>
-</ul>
-</div>
 <ul>
 <li><strong>[--filter]</strong>. A substring for filtering the list of files. Omit this argument to choose from loaded files.</li>
 </ul>
 <h4>Options</h4>
-<div class="admonition note">
-<p class="admonition-title">Tip</p>
-<ul>
-<li>An option value without square brackets is mandatory.</li>
-<li>Any default value is listed at description end.</li>
-</ul>
-</div>
 <ul>
 <li><strong> --editor[=EDITOR]</strong>. A string of bash which launches user's preferred text editor. Defaults to ${VISUAL-${EDITOR-vi}}.</li>
 <li><strong> --bg</strong>. </li>
@@ -375,6 +361,14 @@
 <li>config</li>
 <li>core-edit</li>
 </ul>
+<div class="admonition note legend">
+<p class="admonition-title">Note</p>
+<ul>
+<li>An argument or option with square brackets is optional.</li>
+<li>Any default value is listed at end of arg/option description.</li>
+<li>An ellipsis indicates that an argument accepts multiple values separated by a space.</li>
+</ul>
+</div>
               
             </div>
           </div>

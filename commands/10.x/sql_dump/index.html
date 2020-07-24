@@ -344,13 +344,6 @@
 <li><code>drush sql:dump --extra-dump=--no-data</code>. Pass extra option to mysqldump command.</li>
 </ul>
 <h4>Options</h4>
-<div class="admonition note">
-<p class="admonition-title">Tip</p>
-<ul>
-<li>An option value without square brackets is mandatory.</li>
-<li>Any default value is listed at description end.</li>
-</ul>
-</div>
 <ul>
 <li><strong> --result-file=RESULT-FILE</strong>. Save to a file. The file should be relative to Drupal root. If --result-file is provided with the value 'auto', a date-based filename will be created under ~/drush-backups directory.</li>
 <li><strong> --create-db</strong>. Omit DROP TABLE statements. Used by Postgres and Oracle only.</li>
@@ -381,6 +374,14 @@
 <ul>
 <li>sql-dump</li>
 </ul>
+<div class="admonition note legend">
+<p class="admonition-title">Note</p>
+<ul>
+<li>An argument or option with square brackets is optional.</li>
+<li>Any default value is listed at end of arg/option description.</li>
+<li>An ellipsis indicates that an argument accepts multiple values separated by a space.</li>
+</ul>
+</div>
               
             </div>
           </div>

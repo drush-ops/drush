@@ -344,26 +344,12 @@
 <li><code>drush views:execute my_view page_1 3,foo</code>. Show the rendered HTML of my_view:page_1 where the first two contextual filter values are 3 and 'foo' respectively.</li>
 </ul>
 <h4>Arguments</h4>
-<div class="admonition note">
-<p class="admonition-title">Tip</p>
-<ul>
-<li>An argument name without square brackets is mandatory.</li>
-<li>An ellipsis indicates that an argument accepts multiple values separated by a space.</li>
-</ul>
-</div>
 <ul>
 <li><strong>--view_name</strong>. The name of the view to execute.</li>
 <li><strong>[--display]</strong>. The display ID to execute. If none specified, the default display will be used.</li>
 <li><strong>[--view_args]</strong>. A comma delimited list of values, corresponding to contextual filters.</li>
 </ul>
 <h4>Options</h4>
-<div class="admonition note">
-<p class="admonition-title">Tip</p>
-<ul>
-<li>An option value without square brackets is mandatory.</li>
-<li>Any default value is listed at description end.</li>
-</ul>
-</div>
 <ul>
 <li><strong> --count[=COUNT]</strong>. Display a count of the results instead of each row.</li>
 <li><strong> --show-admin-links</strong>. Show contextual admin links in the rendered markup.</li>
@@ -373,6 +359,14 @@
 <li>vex</li>
 <li>views-execute</li>
 </ul>
+<div class="admonition note legend">
+<p class="admonition-title">Note</p>
+<ul>
+<li>An argument or option with square brackets is optional.</li>
+<li>Any default value is listed at end of arg/option description.</li>
+<li>An ellipsis indicates that an argument accepts multiple values separated by a space.</li>
+</ul>
+</div>
               
             </div>
           </div>
