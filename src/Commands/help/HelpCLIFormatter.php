@@ -144,6 +144,6 @@ class HelpCLIFormatter implements FormatterInterface
 
     public static function isGlobalOption($name)
     {
-       return substr($name, 0, 6) == 'notify' || substr($name, 0, 3) == 'xh-' || substr($name, 0, 9) == 'druplicon';
+        return substr($name, 0, 6) == 'notify' || substr($name, 0, 3) == 'xh-' || substr($name, 0, 9) == 'druplicon';
     }
 }
