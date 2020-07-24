@@ -115,7 +115,7 @@ class HelpCLIFormatter implements FormatterInterface
         return $option['description'] . $defaults;
     }
 
-    public function formatArgumentName($argument)
+    public static function formatArgumentName($argument)
     {
         $element = $argument['name'];
         if (!$argument['is_required']) {
@@ -135,10 +135,15 @@ class HelpCLIFormatter implements FormatterInterface
     {
         if (array_key_exists('options', $data)) {
             foreach ($data['options'] as $key => $option) {
-                if (substr($option['name'], 0, 8) == '--notify' || substr($option['name'], 0, 5) == '--xh-' || substr($option['name'], 0, 11) == '--druplicon') {
+                if (self::isGlobalOption($key)) {
                     unset($data['options'][$key]);
                 }
             }
         }
+    }
+
+    public static function isGlobalOption($name)
+    {
+       return substr($name, 0, 6) == 'notify' || substr($name, 0, 3) == 'xh-' || substr($name, 0, 9) == 'druplicon';
     }
 }

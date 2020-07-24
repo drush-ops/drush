@@ -2,12 +2,14 @@
 
 namespace Drush\Commands\core;
 
+use Consolidation\AnnotatedCommand\AnnotatedCommand;
 use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
 use Drush\Commands\DrushCommands;
 use Drush\Commands\help\HelpCLIFormatter;
 use Drush\Commands\help\ListCommands;
 use Drush\Drush;
 use Drush\SiteAlias\SiteAliasManagerAwareInterface;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Yaml\Yaml;
@@ -41,6 +43,9 @@ class MkCommands extends DrushCommands implements SiteAliasManagerAwareInterface
         $pages = $nav = [];
         foreach ($namespaced as $category => $commands) {
             foreach ($commands as $command) {
+                if ($command instanceof AnnotatedCommand) {
+                    $command->optionsHook();
+                }
                 $name = $command->getName();
                 $filename = str_replace(':', '_', $name)  . '.md';
                 $pages[] = $filename;
@@ -60,18 +65,21 @@ class MkCommands extends DrushCommands implements SiteAliasManagerAwareInterface
                 }
                 if ($args = $command->getDefinition()->getArguments()) {
                     $body .= "#### Arguments\n\n";
+                    $body .= "!!! note \"Tip\"\n\n    - An argument name without square brackets is mandatory.\n    - An ellipsis indicates that an argument accepts multiple values separated by a space.\n\n";
                     foreach ($args as $arg) {
-                        $body .= '- **' . $arg->getName() . '**. ' . $arg->getDescription() . "\n";
+                        $arg_array = self::argToArray($arg);
+                        $body .= '- **' . HelpCLIFormatter::formatArgumentName($arg_array) . '**. ' . $arg->getDescription() . "\n";
                     }
                     $body .= "\n";
                 }
                 if ($opts = $command->getDefinition()->getOptions()) {
                     $body .= "#### Options\n\n";
-                    $body .= "!!! note \"Tip\"\n\n    An option value without square brackets is mandatory. Any default value is listed at description end.\n\n";
+                    $body .= "!!! note \"Tip\"\n\n    - An option value without square brackets is mandatory.\n    - Any default value is listed at description end.\n\n";
                     foreach ($opts as $opt) {
-                        // @todo more rich key and default value
-                        $opt_array = self::optionToArray($opt);
-                        $body .= '- **' . HelpCLIFormatter::formatOptionKeys($opt_array) . '**. ' . HelpCLIFormatter::formatOptionDescription($opt_array) . "\n";
+                        if (!HelpCLIFormatter::isGlobalOption($opt->getName())) {
+                            $opt_array = self::optionToArray($opt);
+                            $body .= '- **' . HelpCLIFormatter::formatOptionKeys($opt_array) . '**. ' . HelpCLIFormatter::formatOptionDescription($opt_array) . "\n";
+                        }
                     }
                     $body .= "\n";
                 }
@@ -151,6 +159,23 @@ class MkCommands extends DrushCommands implements SiteAliasManagerAwareInterface
         $fs->copy('../misc/favicon.ico', Path::join($favicon_dir, 'favicon.ico'));
         $fs->copy('../docs/index.md', Path::join($docs_dir, 'index.md'));
         // $fs->copy('../drush_logo-black.png', Path::join($docs_dir, 'logo.png'));
+    }
+
+    /**
+     * Build an array since thats what HelpCLIFormatter expects.
+     *
+     * @param \Symfony\Component\Console\Input\InputArgument $arg
+     *
+     * @return array
+     */
+    public static function argToArray(InputArgument $arg)
+    {
+        $return = [
+            'name' => '--' . $arg->getName(),
+            'is_array' => $arg->isArray(),
+            'is_required' => $arg->isRequired(),
+        ];
+        return $return;
     }
 
     /**
