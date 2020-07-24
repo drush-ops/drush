@@ -31,8 +31,8 @@ jobs:
         env:
           UNISH_DB_URL: sqlite://sites/default/files/.ht.sqlite
 
-      - name: Run drush mk:docs
-        run: ./drush -vvv mk:docs --destination=/tmp/build
+      - name: Drush mk:docs
+        run: composer mk:docs
 
       - name: Set up Python 3.7
         uses: actions/setup-python@v2
