@@ -342,14 +342,24 @@
 <li><code>drush cc bin entity,bootstrap</code>. Clear the entity and bootstrap cache bins.</li>
 </ul>
 <h4>Arguments</h4>
+<div class="admonition note">
+<p class="admonition-title">Tip</p>
 <ul>
-<li><strong>type</strong>. The particular cache to clear. Omit this argument to choose from available types.</li>
-<li><strong>args</strong>. Additional arguments as might be expected (e.g. bin name).</li>
+<li>An argument name without square brackets is mandatory.</li>
+<li>An ellipsis indicates that an argument accepts multiple values separated by a space.</li>
+</ul>
+</div>
+<ul>
+<li><strong>--type</strong>. The particular cache to clear. Omit this argument to choose from available types.</li>
+<li><strong>[--args]...</strong>. Additional arguments as might be expected (e.g. bin name).</li>
 </ul>
 <h4>Options</h4>
 <div class="admonition note">
 <p class="admonition-title">Tip</p>
-<p>An option value without square brackets is mandatory. Any default value is listed at description end.</p>
+<ul>
+<li>An option value without square brackets is mandatory.</li>
+<li>Any default value is listed at description end.</li>
+</ul>
 </div>
 <ul>
 <li><strong> --cache-clear[=CACHE-CLEAR]</strong>. Set to 0 to suppress normal cache clearing; the caller should then clear if needed. [default: "1"]</li>

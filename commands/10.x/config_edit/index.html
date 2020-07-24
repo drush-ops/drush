@@ -344,8 +344,27 @@
 <li><code>drush --bg config-edit image.style.large</code>. Return to shell prompt as soon as the editor window opens.</li>
 </ul>
 <h4>Arguments</h4>
+<div class="admonition note">
+<p class="admonition-title">Tip</p>
 <ul>
-<li><strong>config_name</strong>. The config object name, for example "system.site".</li>
+<li>An argument name without square brackets is mandatory.</li>
+<li>An ellipsis indicates that an argument accepts multiple values separated by a space.</li>
+</ul>
+</div>
+<ul>
+<li><strong>--config_name</strong>. The config object name, for example "system.site".</li>
+</ul>
+<h4>Options</h4>
+<div class="admonition note">
+<p class="admonition-title">Tip</p>
+<ul>
+<li>An option value without square brackets is mandatory.</li>
+<li>Any default value is listed at description end.</li>
+</ul>
+</div>
+<ul>
+<li><strong> --editor[=EDITOR]</strong>. A string of bash which launches user's preferred text editor. Defaults to ${VISUAL-${EDITOR-vi}}.</li>
+<li><strong> --bg</strong>. </li>
 </ul>
 <h4>Aliases</h4>
 <ul>

@@ -346,13 +346,23 @@
 <li><code>drush watchdog:delete --type=cron</code>. Delete all messages of type cron.</li>
 </ul>
 <h4>Arguments</h4>
+<div class="admonition note">
+<p class="admonition-title">Tip</p>
 <ul>
-<li><strong>substring</strong>. Delete all log records with this text in the messages.</li>
+<li>An argument name without square brackets is mandatory.</li>
+<li>An ellipsis indicates that an argument accepts multiple values separated by a space.</li>
+</ul>
+</div>
+<ul>
+<li><strong>[--substring]</strong>. Delete all log records with this text in the messages.</li>
 </ul>
 <h4>Options</h4>
 <div class="admonition note">
 <p class="admonition-title">Tip</p>
-<p>An option value without square brackets is mandatory. Any default value is listed at description end.</p>
+<ul>
+<li>An option value without square brackets is mandatory.</li>
+<li>Any default value is listed at description end.</li>
+</ul>
 </div>
 <ul>
 <li><strong> --severity=SEVERITY</strong>. Delete messages of a given severity level.</li>

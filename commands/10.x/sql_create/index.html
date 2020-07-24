@@ -346,11 +346,18 @@
 <h4>Options</h4>
 <div class="admonition note">
 <p class="admonition-title">Tip</p>
-<p>An option value without square brackets is mandatory. Any default value is listed at description end.</p>
+<ul>
+<li>An option value without square brackets is mandatory.</li>
+<li>Any default value is listed at description end.</li>
+</ul>
 </div>
 <ul>
 <li><strong> --db-su=DB-SU</strong>. Account to use when creating a new database.</li>
 <li><strong> --db-su-pw=DB-SU-PW</strong>. Password for the db-su account.</li>
+<li><strong> --database[=DATABASE]</strong>. The DB connection key if using multiple connections in settings.php. [default: "default"]</li>
+<li><strong> --target[=TARGET]</strong>. The name of a target within the specified database connection. Defaults to default [default: "default"]</li>
+<li><strong> --db-url=DB-URL</strong>. A Drupal 6 style database URL.</li>
+<li><strong> --show-passwords</strong>. Show password on the CLI. Useful for debugging.</li>
 </ul>
 <h4>Aliases</h4>
 <ul>

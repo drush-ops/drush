@@ -338,13 +338,23 @@
                 <h1>queue:run</h1>
 <p>Run a specific queue by name.</p>
 <h4>Arguments</h4>
+<div class="admonition note">
+<p class="admonition-title">Tip</p>
 <ul>
-<li><strong>name</strong>. The name of the queue to run, as defined in either hook_queue_info or hook_cron_queue_info.</li>
+<li>An argument name without square brackets is mandatory.</li>
+<li>An ellipsis indicates that an argument accepts multiple values separated by a space.</li>
+</ul>
+</div>
+<ul>
+<li><strong>--name</strong>. The name of the queue to run, as defined in either hook_queue_info or hook_cron_queue_info.</li>
 </ul>
 <h4>Options</h4>
 <div class="admonition note">
 <p class="admonition-title">Tip</p>
-<p>An option value without square brackets is mandatory. Any default value is listed at description end.</p>
+<ul>
+<li>An option value without square brackets is mandatory.</li>
+<li>Any default value is listed at description end.</li>
+</ul>
 </div>
 <ul>
 <li><strong> --time-limit=TIME-LIMIT</strong>. The maximum number of seconds allowed to run the queue</li>

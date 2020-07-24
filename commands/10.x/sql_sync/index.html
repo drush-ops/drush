@@ -344,14 +344,24 @@
 <li><code>drush sql:sync #prod #dev</code>. Copy the database from the site in /sites/prod to the site in /sites/dev (multisite installation).</li>
 </ul>
 <h4>Arguments</h4>
+<div class="admonition note">
+<p class="admonition-title">Tip</p>
 <ul>
-<li><strong>source</strong>. A site-alias or the name of a subdirectory within /sites whose database you want to copy from.</li>
-<li><strong>target</strong>. A site-alias or the name of a subdirectory within /sites whose database you want to replace.</li>
+<li>An argument name without square brackets is mandatory.</li>
+<li>An ellipsis indicates that an argument accepts multiple values separated by a space.</li>
+</ul>
+</div>
+<ul>
+<li><strong>--source</strong>. A site-alias or the name of a subdirectory within /sites whose database you want to copy from.</li>
+<li><strong>--target</strong>. A site-alias or the name of a subdirectory within /sites whose database you want to replace.</li>
 </ul>
 <h4>Options</h4>
 <div class="admonition note">
 <p class="admonition-title">Tip</p>
-<p>An option value without square brackets is mandatory. Any default value is listed at description end.</p>
+<ul>
+<li>An option value without square brackets is mandatory.</li>
+<li>Any default value is listed at description end.</li>
+</ul>
 </div>
 <ul>
 <li><strong> --no-dump</strong>. Do not dump the sql database; always use an existing dump file.</li>
@@ -363,6 +373,12 @@
 <li><strong> --target-dump=TARGET-DUMP</strong>. The path for storing the sql-dump on target machine.</li>
 <li><strong> --source-dump[=SOURCE-DUMP]</strong>. The path for retrieving the sql-dump on source machine.</li>
 <li><strong> --extra-dump[=EXTRA-DUMP]</strong>. Add custom arguments/options to the dumping of the database (e.g. mysqldump command).</li>
+<li><strong> --skip-tables-key=SKIP-TABLES-KEY</strong>. A key in the $skip_tables array. @see example.drush.yml</li>
+<li><strong> --structure-tables-key=STRUCTURE-TABLES-KEY</strong>. A key in the $structure_tables array. @see example.drush.yml</li>
+<li><strong> --tables-key=TABLES-KEY</strong>. A key in the $tables array.</li>
+<li><strong> --skip-tables-list=SKIP-TABLES-LIST</strong>. A comma-separated list of tables to exclude completely.</li>
+<li><strong> --structure-tables-list=STRUCTURE-TABLES-LIST</strong>. A comma-separated list of tables to include for structure, but not data.</li>
+<li><strong> --tables-list=TABLES-LIST</strong>. A comma-separated list of tables to transfer.</li>
 </ul>
 <h4>Topics</h4>
 <ul>

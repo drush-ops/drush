@@ -350,13 +350,23 @@ script via a variable called $extra.</p>
 <li><code>drush php:script foo -- apple --cider</code>. Run foo.php script with argument 'apple' and option 'cider'. Note the -- separator.</li>
 </ul>
 <h4>Arguments</h4>
+<div class="admonition note">
+<p class="admonition-title">Tip</p>
 <ul>
-<li><strong>extra</strong>. </li>
+<li>An argument name without square brackets is mandatory.</li>
+<li>An ellipsis indicates that an argument accepts multiple values separated by a space.</li>
+</ul>
+</div>
+<ul>
+<li><strong>[--extra]...</strong>. </li>
 </ul>
 <h4>Options</h4>
 <div class="admonition note">
 <p class="admonition-title">Tip</p>
-<p>An option value without square brackets is mandatory. Any default value is listed at description end.</p>
+<ul>
+<li>An option value without square brackets is mandatory.</li>
+<li>Any default value is listed at description end.</li>
+</ul>
 </div>
 <ul>
 <li><strong> --format[=FORMAT]</strong>.  [default: "var_export"]</li>

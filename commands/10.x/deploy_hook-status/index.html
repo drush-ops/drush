@@ -344,12 +344,16 @@
 <h4>Options</h4>
 <div class="admonition note">
 <p class="admonition-title">Tip</p>
-<p>An option value without square brackets is mandatory. Any default value is listed at description end.</p>
+<ul>
+<li>An option value without square brackets is mandatory.</li>
+<li>Any default value is listed at description end.</li>
+</ul>
 </div>
 <ul>
 <li><strong> --format=FORMAT</strong>. Format the result data. Available formats: csv,json,list,null,php,print-r,sections,string,table,tsv,var_dump,var_export,xml,yaml [default: "table"]</li>
 <li><strong> --fields=FIELDS</strong>. Available fields: Module (module), Hook (hook), Description (description) [default: "module,hook,description"]</li>
 <li><strong> --field=FIELD</strong>. Select just one field, and force format to 'string'.</li>
+<li><strong> --filter[=FILTER]</strong>. Filter output based on provided expression</li>
 </ul>
 <h4>Topics</h4>
 <ul>

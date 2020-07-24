@@ -338,17 +338,27 @@
                 <h1>cache:set</h1>
 <p>Cache an object expressed in JSON or var_export() format.</p>
 <h4>Arguments</h4>
+<div class="admonition note">
+<p class="admonition-title">Tip</p>
 <ul>
-<li><strong>cid</strong>. The id of the object to set.</li>
-<li><strong>data</strong>. The object to set in the cache. Use - to read the object from STDIN.</li>
-<li><strong>bin</strong>. The cache bin to store the object in.</li>
-<li><strong>expire</strong>. 'CACHE_PERMANENT', or a Unix timestamp.</li>
-<li><strong>tags</strong>. A comma delimited list of cache tags.</li>
+<li>An argument name without square brackets is mandatory.</li>
+<li>An ellipsis indicates that an argument accepts multiple values separated by a space.</li>
+</ul>
+</div>
+<ul>
+<li><strong>--cid</strong>. The id of the object to set.</li>
+<li><strong>--data</strong>. The object to set in the cache. Use - to read the object from STDIN.</li>
+<li><strong>[--bin]</strong>. The cache bin to store the object in.</li>
+<li><strong>[--expire]</strong>. 'CACHE_PERMANENT', or a Unix timestamp.</li>
+<li><strong>[--tags]</strong>. A comma delimited list of cache tags.</li>
 </ul>
 <h4>Options</h4>
 <div class="admonition note">
 <p class="admonition-title">Tip</p>
-<p>An option value without square brackets is mandatory. Any default value is listed at description end.</p>
+<ul>
+<li>An option value without square brackets is mandatory.</li>
+<li>Any default value is listed at description end.</li>
+</ul>
 </div>
 <ul>
 <li><strong> --input-format[=INPUT-FORMAT]</strong>. The format of value. Use 'json' for complex values. [default: "string"]</li>

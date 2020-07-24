@@ -345,13 +345,23 @@
 <li><code>drush browse --browser=firefox admin</code>. Open Firefox web browser to the path 'admin'.</li>
 </ul>
 <h4>Arguments</h4>
+<div class="admonition note">
+<p class="admonition-title">Tip</p>
 <ul>
-<li><strong>path</strong>. Path to open. If omitted, the site front page will be opened.</li>
+<li>An argument name without square brackets is mandatory.</li>
+<li>An ellipsis indicates that an argument accepts multiple values separated by a space.</li>
+</ul>
+</div>
+<ul>
+<li><strong>[--path]</strong>. Path to open. If omitted, the site front page will be opened.</li>
 </ul>
 <h4>Options</h4>
 <div class="admonition note">
 <p class="admonition-title">Tip</p>
-<p>An option value without square brackets is mandatory. Any default value is listed at description end.</p>
+<ul>
+<li>An option value without square brackets is mandatory.</li>
+<li>Any default value is listed at description end.</li>
+</ul>
 </div>
 <ul>
 <li><strong> --browser=BROWSER</strong>. Specify a particular browser (defaults to operating system default). Use --no-browser to suppress opening a browser.</li>

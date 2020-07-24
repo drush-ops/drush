@@ -347,6 +347,20 @@ Run queries or call APIs to perform sanitizing</p>
 <li><code>drush sql:sanitize --sanitize-password=no</code>. Sanitize database without modifying any passwords.</li>
 <li><code>drush sql:sanitize --allowlist-fields=field_biography,field_phone_number</code>. Sanitizes database but exempts two user fields from modification.</li>
 </ul>
+<h4>Options</h4>
+<div class="admonition note">
+<p class="admonition-title">Tip</p>
+<ul>
+<li>An option value without square brackets is mandatory.</li>
+<li>Any default value is listed at description end.</li>
+</ul>
+</div>
+<ul>
+<li><strong> --whitelist-fields[=WHITELIST-FIELDS]</strong>. Deprecated. Use allowlist-fields instead.</li>
+<li><strong> --allowlist-fields[=ALLOWLIST-FIELDS]</strong>. A comma delimited list of fields exempt from sanitization.</li>
+<li><strong> --sanitize-email[=SANITIZE-EMAIL]</strong>. The pattern for test email addresses in the sanitization operation, or "no" to keep email addresses unchanged. May contain replacement patterns %uid, %mail or %name. [default: "user+%uid@localhost.localdomain"]</li>
+<li><strong> --sanitize-password[=SANITIZE-PASSWORD]</strong>. By default, passwords are randomized. Specify 'no' to disable that. Specify any other value to set all passwords to that value.</li>
+</ul>
 <h4>Aliases</h4>
 <ul>
 <li>sqlsan</li>

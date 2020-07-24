@@ -347,13 +347,23 @@
 <li><code>drush si standard install_configure_form.enable_update_status_emails=NULL</code>. Disable email notification during install and later. If your server has no mail transfer agent, this gets rid of an error during install.</li>
 </ul>
 <h4>Arguments</h4>
+<div class="admonition note">
+<p class="admonition-title">Tip</p>
 <ul>
-<li><strong>profile</strong>. An install profile name. Defaults to 'standard' unless an install profile is marked as a distribution. Additional info for the install profile may also be provided with additional arguments. The key is in the form [form name].[parameter name]</li>
+<li>An argument name without square brackets is mandatory.</li>
+<li>An ellipsis indicates that an argument accepts multiple values separated by a space.</li>
+</ul>
+</div>
+<ul>
+<li><strong>[--profile]...</strong>. An install profile name. Defaults to 'standard' unless an install profile is marked as a distribution. Additional info for the install profile may also be provided with additional arguments. The key is in the form [form name].[parameter name]</li>
 </ul>
 <h4>Options</h4>
 <div class="admonition note">
 <p class="admonition-title">Tip</p>
-<p>An option value without square brackets is mandatory. Any default value is listed at description end.</p>
+<ul>
+<li>An option value without square brackets is mandatory.</li>
+<li>Any default value is listed at description end.</li>
+</ul>
 </div>
 <ul>
 <li><strong> --db-url=DB-URL</strong>. A Drupal 6 style database URL. Required for initial install, not re-install. If omitted and required, Drush prompts for this item.</li>

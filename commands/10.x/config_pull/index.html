@@ -344,14 +344,24 @@
 <li><code>drush config:pull @prod @self:../config/sync</code>. Export config to a custom directory. Relative paths are calculated from Drupal root.</li>
 </ul>
 <h4>Arguments</h4>
+<div class="admonition note">
+<p class="admonition-title">Tip</p>
 <ul>
-<li><strong>source</strong>. A site-alias or the name of a subdirectory within /sites whose config you want to copy from.</li>
-<li><strong>destination</strong>. A site-alias or the name of a subdirectory within /sites whose config you want to replace.</li>
+<li>An argument name without square brackets is mandatory.</li>
+<li>An ellipsis indicates that an argument accepts multiple values separated by a space.</li>
+</ul>
+</div>
+<ul>
+<li><strong>--source</strong>. A site-alias or the name of a subdirectory within /sites whose config you want to copy from.</li>
+<li><strong>--destination</strong>. A site-alias or the name of a subdirectory within /sites whose config you want to replace.</li>
 </ul>
 <h4>Options</h4>
 <div class="admonition note">
 <p class="admonition-title">Tip</p>
-<p>An option value without square brackets is mandatory. Any default value is listed at description end.</p>
+<ul>
+<li>An option value without square brackets is mandatory.</li>
+<li>Any default value is listed at description end.</li>
+</ul>
 </div>
 <ul>
 <li><strong> --safe</strong>. Validate that there are no git uncommitted changes before proceeding</li>
