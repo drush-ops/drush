@@ -28,7 +28,7 @@ return new Sami($iterator, array(
   // 'theme'                => 'symfony',
   'versions'             => $versions,
   'title'                => 'Drush API',
-  'build_dir'            => __DIR__.'/api/%version%',
+  'build_dir'            => __DIR__.'/gh-pages/api/%version%',
   'cache_dir'            => __DIR__.'/.sami-cache/%version%',
   'remote_repository'    => new GitHubRemoteRepository('drush-ops/drush', dirname($dir)),
   'default_opened_level' => 2,

@@ -1,16 +1,16 @@
-name: Build Commands Site
+name: Build static sites
 
 # Controls when the action will run. Triggers the workflow on push or pull request
 # events but only for the master branch
 on:
   push:
     branches: [master]
-#  pull_request:
-#    branches: [master]
+  pull_request:
+    branches: [master]
 
 jobs:
   build:
-    name: Build and Deploy
+    name: Build and Push
     runs-on: ubuntu-latest
     steps:
       - name: Checkout master
@@ -56,18 +56,44 @@ jobs:
       - name: Mkdocs build
         run: cd build-commands && mkdocs build -v --site-dir ../gh-pages/commands/10.x
 
-      - name: Commit and Push to gh-pages
+      - name: Commit Commands to gh-pages
         run: |
           cd gh-pages
 
           git config --local user.email "actions@github.com"
-          git config --local user.name "GitHub Action"
+          git config --local user.name "Drush Documentation Bot"
 
           git add -A .
 
           if git diff-index --quiet HEAD --; then
             echo "No changes..."
           else
-            git commit -m "[CI] build commands static site"
-            git push
+            git commit -m "[CI] Build Commands static site"
           fi
+
+      - name: Install Sami
+        run: composer sami-install
+
+      - name: Sami build
+        # We have Sami parse errors so ignore return value: https://stackoverflow.com/questions/35452147/allow-non-zero-return-codes-in-travis-ci-yml
+        run: |
+          rm -rf gh-pages/api
+          composer -v api || true
+
+      - name: Commit API to gh-pages
+        run: |
+          cd gh-pages
+
+          git config --local user.email "actions@github.com"
+          git config --local user.name "Drush Documentation Bot"
+
+          git add -A .
+
+          if git diff-index --quiet HEAD --; then
+            echo "No changes..."
+          else
+            git commit -m "[CI] Build API static site"
+          fi
+
+      - name: Git Push
+        run: cd gh-pages && git push
