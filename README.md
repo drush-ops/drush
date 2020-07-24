@@ -1,11 +1,12 @@
-Drush is a command line shell and Unix scripting interface for Drupal. Drush core ships with lots of useful commands for interacting with code like modules/themes/profiles. Similarly, it runs update.php, executes SQL queries and DB migrations, and misc utilities like run cron or clear cache. Developers love the `generate` command, which jump starts your coding project by writing ready-to-customize PHP and YML files. Drush can be extended by [3rd party commandfiles](https://www.drupal.org/project/project_module?f[2]=im_vid_3%3A4654).
+Drush is a command line shell and Unix scripting interface for Drupal. Drush core ships with lots of [useful commands](https://www.drush.org/commands/10.x/) for interacting with code like modules/themes/profiles. Similarly, it runs update.php, executes SQL queries and DB migrations, and misc utilities like run cron or clear cache. Developers love the `generate` command, which jump starts your coding project by writing ready-to-customize PHP and YML files. Drush can be extended by [3rd party commandfiles](https://www.drupal.org/project/project_module?f[2]=im_vid_3%3A4654).
 
 [![Latest Stable Version](https://poser.pugx.org/drush/drush/v/stable.png)](https://packagist.org/packages/drush/drush) [![Total Downloads](https://poser.pugx.org/drush/drush/downloads.png)](https://packagist.org/packages/drush/drush) [![License](https://poser.pugx.org/drush/drush/license.png)](https://packagist.org/packages/drush/drush) <a href="https://circleci.com/gh/drush-ops/drush"><img src="https://circleci.com/gh/drush-ops/drush.svg?style=shield"></a> [![Documentation Status](https://readthedocs.org/projects/drush/badge/?version=master)](https://readthedocs.org/projects/drush/?badge=master) [![Twitter](https://img.shields.io/badge/Twitter-%40DrushCli-blue.svg)](https://twitter.com/intent/user?screen_name=DrushCli)
 
 Resources
 -----------
-* [Installing (and Upgrading)](http://docs.drush.org/en/master/install/)
-* [General Documentation](http://docs.drush.org)
+* [Installing (and Upgrading)](http://docs.drush.org/en/master/install/) ([Drush 8](https://docs.drush.org/en/8.x/install/))
+* [General Documentation](http://docs.drush.org) ([Drush 8](https://docs.drush.org/en/8.x/install/))
+* [Commands](https://www.drush.org/commands/10.x/)
 * [API Documentation](http://www.drush.org/api/master/index.html)
 * [Drush packages available via Composer](https://packagist.org/search/?type=drupal-drush)
 * [A list of modules that include Drush integration](https://www.drupal.org/project/project_module?f[2]=im_vid_3%3A4654&solrsort=ds_project_latest_release+desc)

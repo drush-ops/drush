@@ -19,6 +19,7 @@ class FixtureCommands extends DrushCommands
      *
      * @command unit-eval
      * @bootstrap max
+     * @hidden
      */
     public function drushUnitEval($code)
     {
@@ -28,6 +29,7 @@ class FixtureCommands extends DrushCommands
     /**
      * Return options as function result.
      * @command unit-return-options
+     * @hidden
      */
     public function drushUnitReturnOptions($arg = '', $options = ['x' => 'y', 'data' => [], 'format' => 'yaml'])
     {
@@ -38,6 +40,7 @@ class FixtureCommands extends DrushCommands
     /**
      * Return original argv as function result.
      * @command unit-return-argv
+     * @hidden
      */
     public function drushUnitReturnArgv(array $args)
     {

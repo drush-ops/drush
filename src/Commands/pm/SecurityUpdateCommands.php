@@ -162,7 +162,7 @@ class SecurityUpdateCommands extends DrushCommands
      * @return UnstructuredData
      * @throws \Exception
      * @command pm:security-php
-     * @aliases sec-php,pm:security-php
+     * @aliases sec-php,pm-security-php
      * @bootstrap none
      *
      * @usage drush pm:security-php --format=json

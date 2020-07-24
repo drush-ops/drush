@@ -1,0 +1,73 @@
+name: Build Commands Site
+
+# Controls when the action will run. Triggers the workflow on push or pull request
+# events but only for the master branch
+on:
+  push:
+    branches: [master]
+#  pull_request:
+#    branches: [master]
+
+jobs:
+  build:
+    name: Build and Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout master
+        uses: actions/checkout@v2
+
+      - name: Checkout gh-pages branch
+        uses: actions/checkout@v2
+        with:
+          ref: gh-pages
+          path: gh-pages
+
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.8'
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install mkdocs
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 7.3
+          extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite
+          coverage: none
+
+      - name: Install Composer dependencies
+        run: composer install --prefer-dist --no-interaction --no-suggest
+
+      - name: Install Drupal
+        run: composer sut:si
+        env:
+          UNISH_DB_URL: sqlite://sites/default/files/.ht.sqlite
+
+      - name: Drush status
+        run: ./drush --uri=dev st
+
+      - name: Drush mk:docs
+        run: composer mk:docs
+
+      - name: Mkdocs build
+        run: cd build-commands && mkdocs build -v --site-dir ../gh-pages/commands/10.x
+
+      - name: Commit and Push to gh-pages
+        run: |
+          cd gh-pages
+
+          git config --local user.email "actions@github.com"
+          git config --local user.name "GitHub Action"
+
+          git add -A .
+
+          if git diff-index --quiet HEAD --; then
+            echo "No changes..."
+          else
+            git commit -m "[CI] build commands static site"
+            git push
+          fi
