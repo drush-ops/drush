@@ -10,13 +10,13 @@ Drush utilizes a powerful formatting and filtering system that provides the user
 Output Formats
 ==============
 
-The `--format` option may be used to select the data format used to print the output of a command. Most commands that produce informative output about some object or system can transform their data into different formats. For example, the Drush `version` command may be printed in a human-readable table (the default), or in a json array:
+The `--format` option may be used to select the data format used to print the output of a command. Most commands that produce informative output about some object or system can transform their data into different formats. For example, the [version command](https://www.drush.org/commands/10.x/version/) may be printed in a human-readable table (the default), or in a json array:
 ```
-$ drush9 version
- Drush version : 9.5.0
-$ drush9 version --format=json
+$ drush version
+ Drush version : 10.3.1
+$ drush version --format=json
 {
-    "drush-version": "9.5.0"
+    "drush-version": "10.3.1"
 }
 ```
 The available output formats are shown in the `help` for each command:
@@ -92,7 +92,7 @@ Output Filters
 
 A number of Drush commands that output tabular data support a `--filter` option that allows rows from the output to be selected with simple logic expressions.
 
-In its simplest form, the `--filter` option takes a string that indicates the value to filter by in the command's *default filter field*. For example, the `role:list` command's default filter field is `perms`; the output of the `role:list` command may be limited to only those roles that have a specified permission:
+In its simplest form, the `--filter` option takes a string that indicates the value to filter by in the command's *default filter field*. For example, the [role:list command](https://www.drush.org/commands/10.x/role_list/) specifies `perms` as its default filter; the output of the `role:list` command may be limited to only those roles that have a specified permission:
 ```
 $ drush role:list --filter='post comments'
 authenticated:
