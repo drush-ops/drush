@@ -15,6 +15,8 @@ jobs:
     steps:
       - name: Checkout Master
         uses: actions/checkout@v2
+        with:
+          path: code
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
@@ -32,6 +34,7 @@ jobs:
           UNISH_DB_URL: sqlite://sites/default/files/.ht.sqlite
 
       - name: Drush status
+        working-directory: main
         run: vendor/bin/drush --uri=dev st
 
       - name: Drush mk:docs
@@ -48,7 +51,7 @@ jobs:
           pip install mkdocs
 
       - name: Mkdocs gh-deploy
-        working-directory: build-commands
+        working-directory: main/build-commands
         run: |
           env
           which mkdocs
