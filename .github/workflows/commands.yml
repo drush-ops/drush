@@ -5,28 +5,46 @@ name: Build Commands Documentation using MkDocs
 on:
   push:
     branches: [master]
-#  pull_request:
-#    branches: [master]
+  pull_request:
+    branches: [master]
 
 jobs:
   build:
-    name: Build and Deploy Commands Documentation
+    name: Build and Deploy Commands Site
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Master
         uses: actions/checkout@v2
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 7.3
+          extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite
+          coverage: none
+
+      - name: Install Composer dependencies
+        run: composer install --prefer-dist --no-interaction --no-suggest
+
+      - name: Install Drupal
+        run: composer sut:si
+        env:
+          UNISH_DB_URL: sqlite://sites/default/files/.ht.sqlite
+
+      - name: Run drush mk:docs
+        run: ./drush mk:docs --destination=/tmp/build
 
       - name: Set up Python 3.7
         uses: actions/setup-python@v2
         with:
           python-version: '3.x'
 
-      - name: Install dependencies
+      - name: Install Python dependencies
         run: |
           python -m pip install --upgrade pip
           pip install mkdocs
 
-      - name: Deploy
-        run: |
-          git pull
-          mkdocs gh-deploy -v --site-dir commands/10.x
+#      - name: Mkdocs gh-deploy
+#        working-directory: /tmp/build
+#        run: |
+#          mkdocs gh-deploy -v --site-dir commands/10.x
