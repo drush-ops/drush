@@ -65,7 +65,6 @@ class MkCommands extends DrushCommands implements SiteAliasManagerAwareInterface
                 }
                 if ($args = $command->getDefinition()->getArguments()) {
                     $body .= "#### Arguments\n\n";
-                    $body .= "!!! note \"Tip\"\n\n    - An argument name without square brackets is mandatory.\n    - An ellipsis indicates that an argument accepts multiple values separated by a space.\n\n";
                     foreach ($args as $arg) {
                         $arg_array = self::argToArray($arg);
                         $body .= '- **' . HelpCLIFormatter::formatArgumentName($arg_array) . '**. ' . $arg->getDescription() . "\n";
@@ -74,7 +73,6 @@ class MkCommands extends DrushCommands implements SiteAliasManagerAwareInterface
                 }
                 if ($opts = $command->getDefinition()->getOptions()) {
                     $body .= "#### Options\n\n";
-                    $body .= "!!! note \"Tip\"\n\n    - An option value without square brackets is mandatory.\n    - Any default value is listed at description end.\n\n";
                     foreach ($opts as $opt) {
                         if (!HelpCLIFormatter::isGlobalOption($opt->getName())) {
                             $opt_array = self::optionToArray($opt);
@@ -97,6 +95,11 @@ class MkCommands extends DrushCommands implements SiteAliasManagerAwareInterface
                     }
                     $body .= "\n";
                 }
+                $body .= '!!! note Legend' . "\n" . <<<EOT
+    - An argument or option with square brackets is optional.
+    - Any default value is listed at end of arg/option description.
+    - An ellipsis indicates that an argument accepts multiple values separated by a space.
+EOT;
                 file_put_contents(Path::join($options['destination'], 'docs', $filename), $body);
             }
             $this->logger()->info('Found {pages} pages in {cat}', ['pages' => count($pages), 'cat' => $category]);
