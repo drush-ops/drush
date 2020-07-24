@@ -16,6 +16,12 @@ jobs:
       - name: Checkout Master
         uses: actions/checkout@v2
 
+      - name: Checkout gh-pages branch
+        uses: actions/checkout@v2
+        with:
+          ref: gh-pages
+          path: gh-pages
+
       - name: Set up Python 3.8
         uses: actions/setup-python@v2
         with:
@@ -47,6 +53,15 @@ jobs:
       - name: Drush mk:docs
         run: composer mk:docs
 
-      - name: Mkdocs gh-deploy
+      - name: Commit and Push to gh-pages
         run: |
-          cd build-commands && mkdocs gh-deploy -v --force --site-dir commands/10.x
+          git config --local user.email "actions@github.com"
+          git config --local user.name "GitHub Action"
+          git add -A .
+
+          if git diff-index --quiet HEAD --; then
+            echo "No changes..."
+          else
+            git commit -m "[CI] build commands static site"
+            git push
+          fi
