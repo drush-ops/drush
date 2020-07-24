@@ -21,7 +21,7 @@ class MkCommands extends DrushCommands implements SiteAliasManagerAwareInterface
     /**
      * Build an mkdocs site.
      *
-     * @option destination The target directory where files should be written.
+     * @option destination The target directory where files should be written. A relative path starts at Drupal root.
      *
      * @command mk:docs
      * @bootstrap max
@@ -91,7 +91,7 @@ class MkCommands extends DrushCommands implements SiteAliasManagerAwareInterface
                 }
                 file_put_contents(Path::join($options['destination'], 'docs', $filename), $body);
             }
-            $this->logger()->info(dt('Found :pages in :cat', ['pages' => count($pages), 'cat' => $category]));
+            $this->logger()->info(dt('Found :pages in :cat', [':pages' => count($pages), ':cat' => $category]));
             $nav[] = [$category => $pages];
             unset($pages);
         }

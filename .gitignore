@@ -4,6 +4,8 @@ box.phar
 drush.phar
 #The mkdocs output directory.
 site
+#The Commands site output directory.
+build-commands
 #The sami output directories
 api
 .sami-cache
