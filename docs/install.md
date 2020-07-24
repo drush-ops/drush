@@ -15,8 +15,7 @@ See [Usage](http://docs.drush.org/en/master/usage/) for details on using Drush.
 - Tip: To use a custom php.ini for Drush requests, [see this comment](https://github.com/drush-ops/drush/issues/3294#issuecomment-370201342). 
 
 !!! note
-
-    Drush 9+ cannot run commandfiles from Drush 8 and below (e.g. example.drush.inc). See our [guide on porting commandfiles](https://weitzman.github.io/blog/port-to-drush9). Also note that alias and config files use a new .yml format in Drush 9.
+    Drush 9+ cannot run commandfiles from Drush 8 and below (e.g. example.drush.inc). See our [guide on porting commandfiles](https://weitzman.github.io/blog/port-to-drush9). Also note that alias and config files use a new .yml format in Drush 9+.
 
 Drupal Compatibility
 -----------------

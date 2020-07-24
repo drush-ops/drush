@@ -1,15 +1,15 @@
 Usage
 -----------
 
-Drush can be run in your shell by typing "drush" from within your project root directory or anywhere within Drupal.
+Drush can be run in your shell by typing `drush` from within your project root directory or anywhere within Drupal.
 
     $ drush [options] <command> [argument1] [argument2]
 
-Use the 'help' command to get a list of available options and commands:
+Use the [help command](https://www.drush.org/commands/10.x/help/) to get a list of available options and commands:
 
-    $ drush help
+    $ drush help pm:list
 
-For even more documentation, use the 'topic' command:
+For even more documentation, use the [topic command](https://www.drush.org/commands/10.x/core_topic/):
 
     $ drush topic
 

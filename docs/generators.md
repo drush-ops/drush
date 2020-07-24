@@ -1,6 +1,6 @@
 Overview
 ==========================
-Generators jump start your coding by building all the boring boilerplate code for you. After running a `drush generate [foo]` command, you have a guide for where to insert your custom logic.
+Generators jump start your coding by building all the boring boilerplate code for you. After running the [generate command](https://www.drush.org/commands/10.x/generate/), you have a guide for where to insert your custom logic.
 
 Drush's generators reuse classes provided by the excellent [Drupal Code Generator](https://github.com/Chi-teck/drupal-code-generator) project. See its [Commands directory](https://github.com/Chi-teck/drupal-code-generator/tree/master/src/Command) for inspiration.
 
