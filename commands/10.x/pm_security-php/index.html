@@ -7,9 +7,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <meta name="author" content="Moshe Weitzman">
-  <link rel="canonical" href="http://commands.drush.org/php_script/">
+  <link rel="canonical" href="http://commands.drush.org/pm_security-php/">
   <link rel="shortcut icon" href="../img/favicon.ico">
-  <title>php:script - Drush Commands</title>
+  <title>pm:security-php - Drush Commands</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700" />
 
   <link rel="stylesheet" href="../css/theme.css" />
@@ -18,9 +18,9 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "php:script";
-    var mkdocs_page_input_path = "php_script.md";
-    var mkdocs_page_url = "/php_script/";
+    var mkdocs_page_name = "pm:security-php";
+    var mkdocs_page_input_path = "pm_security-php.md";
+    var mkdocs_page_url = "/pm_security-php/";
   </script>
   
   <script src="../js/jquery-2.1.1.min.js" defer></script>
@@ -154,23 +154,23 @@
                     </li>
                 </ul>
                 <p class="caption"><span class="caption-text">php</span></p>
-                <ul class="current">
+                <ul>
                     <li class="toctree-l1"><a class="reference internal" href="../php_cli/">php:cli</a>
                     </li>
                     <li class="toctree-l1"><a class="reference internal" href="../php_eval/">php:eval</a>
                     </li>
-                    <li class="toctree-l1 current"><a class="reference internal current" href="./">php:script</a>
+                    <li class="toctree-l1"><a class="reference internal" href="../php_script/">php:script</a>
                     </li>
                 </ul>
                 <p class="caption"><span class="caption-text">pm</span></p>
-                <ul>
+                <ul class="current">
                     <li class="toctree-l1"><a class="reference internal" href="../pm_enable/">pm:enable</a>
                     </li>
                     <li class="toctree-l1"><a class="reference internal" href="../pm_list/">pm:list</a>
                     </li>
                     <li class="toctree-l1"><a class="reference internal" href="../pm_security/">pm:security</a>
                     </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../pm_security-php/">pm:security-php</a>
+                    <li class="toctree-l1 current"><a class="reference internal current" href="./">pm:security-php</a>
                     </li>
                     <li class="toctree-l1"><a class="reference internal" href="../pm_uninstall/">pm:uninstall</a>
                     </li>
@@ -320,11 +320,11 @@
     
       
         
-          <li>php &raquo;</li>
+          <li>pm &raquo;</li>
         
       
     
-    <li>php:script</li>
+    <li>pm:security-php</li>
     <li class="wy-breadcrumbs-aside">
       
     </li>
@@ -335,23 +335,13 @@
           <div role="main">
             <div class="section">
               
-                <h1>php:script</h1>
-<p>Run php a script after a full Drupal bootstrap.</p>
-<p>A useful alternative to eval command when your php is lengthy or you
-can't be bothered to figure out bash quoting. If you plan to share a
-script with others, consider making a full Drush command instead, since
-that's more self-documenting.  Drush provides commandline options to the
-script via a variable called $extra.</p>
+                <h1>pm:security-php</h1>
+<p>Check non-Drupal PHP packages for pending security updates.</p>
+<p>Thanks to https://github.com/FriendsOfPHP/security-advisories and Symfony
+for providing this service.</p>
 <h4>Examples</h4>
 <ul>
-<li><code>drush php:script example --script-path=/path/to/scripts:/another/path</code>. Run a script named example.php from specified paths</li>
-<li><code>drush php:script -</code>. Run PHP code from standard input.</li>
-<li><code>drush php:script</code>. List all available scripts.</li>
-<li><code>drush php:script foo -- apple --cider</code>. Run foo.php script with argument 'apple' and option 'cider'. Note the -- separator.</li>
-</ul>
-<h4>Arguments</h4>
-<ul>
-<li><strong>extra</strong>. </li>
+<li><code>drush pm:security-php --format=json</code>. Get security data in JSON format.</li>
 </ul>
 <h4>Options</h4>
 <div class="admonition note">
@@ -359,13 +349,14 @@ script via a variable called $extra.</p>
 <p>An option value without square brackets is mandatory. Any default value is listed at description end.</p>
 </div>
 <ul>
-<li><strong> --format[=FORMAT]</strong>.  [default: "var_export"]</li>
-<li><strong> --script-path=SCRIPT-PATH</strong>. Additional paths to search for scripts, separated by : (Unix-based systems) or ; (Windows).</li>
+<li><strong> --format[=FORMAT]</strong>. Format the result data. Available formats: csv,json,list,null,php,print-r,tsv,var_dump,var_export,xml,yaml [default: "yaml"]</li>
+<li><strong> --fields=FIELDS</strong>. Limit output to only the listed elements. Name top-level elements by key, e.g. "--fields=name,date", or use dot notation to select a nested element, e.g. "--fields=a.b.c as example".</li>
+<li><strong> --field=FIELD</strong>. Select just one field, and force format to 'string'.</li>
 </ul>
 <h4>Aliases</h4>
 <ul>
-<li>scr</li>
-<li>php-script</li>
+<li>sec-php</li>
+<li>pm-security-php</li>
 </ul>
               
             </div>
@@ -374,10 +365,10 @@ script via a variable called $extra.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../pm_enable/" class="btn btn-neutral float-right" title="pm:enable">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../pm_uninstall/" class="btn btn-neutral float-right" title="pm:uninstall">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href="../php_eval/" class="btn btn-neutral" title="php:eval"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../pm_security/" class="btn btn-neutral" title="pm:security"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -405,10 +396,10 @@ script via a variable called $extra.</p>
           <a href="https://github.com/drush-ops/drush" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
       
       
-        <span><a href="../php_eval/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+        <span><a href="../pm_security/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
-        <span style="margin-left: 15px"><a href="../pm_enable/" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="../pm_uninstall/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>

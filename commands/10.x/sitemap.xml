@@ -188,6 +188,10 @@
      <lastmod>2020-07-24</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
+     <loc>http://commands.drush.org/pm_security-php/</loc>
+     <lastmod>2020-07-24</lastmod>
+     <changefreq>daily</changefreq>
+    </url><url>
      <loc>http://commands.drush.org/pm_uninstall/</loc>
      <lastmod>2020-07-24</lastmod>
      <changefreq>daily</changefreq>
