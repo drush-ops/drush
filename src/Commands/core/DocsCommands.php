@@ -2,6 +2,7 @@
 namespace Drush\Commands\core;
 
 use Drush\Commands\DrushCommands;
+use Webmozart\PathUtil\Path;
 
 /**
  * Topic commands.
@@ -18,11 +19,11 @@ class DocsCommands extends DrushCommands
      * @command docs:readme
      * @aliases docs-readme
      * @hidden
-     * @topic
+     * @topic ../../../README.md
      */
     public function readme()
     {
-        self::printFile(DRUSH_BASE_PATH. '/README.md');
+        self::printFile(Path::makeAbsolute('../../../README.md', __DIR__));
     }
 
     /**
