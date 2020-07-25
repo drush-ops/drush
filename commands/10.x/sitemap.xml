@@ -1,387 +1,387 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url>
      <loc>http://commands.drush.org/browse/</loc>
-     <lastmod>2020-07-24</lastmod>
+     <lastmod>2020-07-25</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://commands.drush.org/deploy/</loc>
-     <lastmod>2020-07-24</lastmod>
+     <lastmod>2020-07-25</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://commands.drush.org/drupal_directory/</loc>
-     <lastmod>2020-07-24</lastmod>
+     <lastmod>2020-07-25</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://commands.drush.org/generate/</loc>
-     <lastmod>2020-07-24</lastmod>
+     <lastmod>2020-07-25</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://commands.drush.org/help/</loc>
-     <lastmod>2020-07-24</lastmod>
+     <lastmod>2020-07-25</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://commands.drush.org/jn_get/</loc>
-     <lastmod>2020-07-24</lastmod>
+     <lastmod>2020-07-25</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://commands.drush.org/list/</loc>
-     <lastmod>2020-07-24</lastmod>
+     <lastmod>2020-07-25</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://commands.drush.org/runserver/</loc>
-     <lastmod>2020-07-24</lastmod>
+     <lastmod>2020-07-25</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://commands.drush.org/updatedb/</loc>
-     <lastmod>2020-07-24</lastmod>
+     <lastmod>2020-07-25</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://commands.drush.org/updatedb_status/</loc>
-     <lastmod>2020-07-24</lastmod>
+     <lastmod>2020-07-25</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://commands.drush.org/version/</loc>
-     <lastmod>2020-07-24</lastmod>
+     <lastmod>2020-07-25</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://commands.drush.org/cache_clear/</loc>
-     <lastmod>2020-07-24</lastmod>
+     <lastmod>2020-07-25</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://commands.drush.org/cache_get/</loc>
-     <lastmod>2020-07-24</lastmod>
+     <lastmod>2020-07-25</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://commands.drush.org/cache_rebuild/</loc>
-     <lastmod>2020-07-24</lastmod>
+     <lastmod>2020-07-25</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://commands.drush.org/cache_set/</loc>
-     <lastmod>2020-07-24</lastmod>
+     <lastmod>2020-07-25</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://commands.drush.org/cache_tags/</loc>
-     <lastmod>2020-07-24</lastmod>
+     <lastmod>2020-07-25</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://commands.drush.org/config_delete/</loc>
-     <lastmod>2020-07-24</lastmod>
+     <lastmod>2020-07-25</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://commands.drush.org/config_edit/</loc>
-     <lastmod>2020-07-24</lastmod>
+     <lastmod>2020-07-25</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://commands.drush.org/config_export/</loc>
-     <lastmod>2020-07-24</lastmod>
+     <lastmod>2020-07-25</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://commands.drush.org/config_get/</loc>
-     <lastmod>2020-07-24</lastmod>
+     <lastmod>2020-07-25</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://commands.drush.org/config_import/</loc>
-     <lastmod>2020-07-24</lastmod>
+     <lastmod>2020-07-25</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://commands.drush.org/config_pull/</loc>
-     <lastmod>2020-07-24</lastmod>
+     <lastmod>2020-07-25</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://commands.drush.org/config_set/</loc>
-     <lastmod>2020-07-24</lastmod>
+     <lastmod>2020-07-25</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://commands.drush.org/config_status/</loc>
-     <lastmod>2020-07-24</lastmod>
+     <lastmod>2020-07-25</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://commands.drush.org/core_cron/</loc>
-     <lastmod>2020-07-24</lastmod>
+     <lastmod>2020-07-25</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://commands.drush.org/core_edit/</loc>
-     <lastmod>2020-07-24</lastmod>
+     <lastmod>2020-07-25</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://commands.drush.org/core_init/</loc>
-     <lastmod>2020-07-24</lastmod>
+     <lastmod>2020-07-25</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://commands.drush.org/core_requirements/</loc>
-     <lastmod>2020-07-24</lastmod>
+     <lastmod>2020-07-25</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://commands.drush.org/core_rsync/</loc>
-     <lastmod>2020-07-24</lastmod>
+     <lastmod>2020-07-25</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://commands.drush.org/core_status/</loc>
-     <lastmod>2020-07-24</lastmod>
+     <lastmod>2020-07-25</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://commands.drush.org/core_topic/</loc>
-     <lastmod>2020-07-24</lastmod>
+     <lastmod>2020-07-25</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://commands.drush.org/deploy_hook/</loc>
-     <lastmod>2020-07-24</lastmod>
+     <lastmod>2020-07-25</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://commands.drush.org/deploy_hook-status/</loc>
-     <lastmod>2020-07-24</lastmod>
+     <lastmod>2020-07-25</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://commands.drush.org/entity_delete/</loc>
-     <lastmod>2020-07-24</lastmod>
+     <lastmod>2020-07-25</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://commands.drush.org/entity_updates/</loc>
-     <lastmod>2020-07-24</lastmod>
+     <lastmod>2020-07-25</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://commands.drush.org/image_derive/</loc>
-     <lastmod>2020-07-24</lastmod>
+     <lastmod>2020-07-25</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://commands.drush.org/image_flush/</loc>
-     <lastmod>2020-07-24</lastmod>
+     <lastmod>2020-07-25</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://commands.drush.org/locale_check/</loc>
-     <lastmod>2020-07-24</lastmod>
+     <lastmod>2020-07-25</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://commands.drush.org/locale_export/</loc>
-     <lastmod>2020-07-24</lastmod>
+     <lastmod>2020-07-25</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://commands.drush.org/locale_import/</loc>
-     <lastmod>2020-07-24</lastmod>
+     <lastmod>2020-07-25</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://commands.drush.org/locale_update/</loc>
-     <lastmod>2020-07-24</lastmod>
+     <lastmod>2020-07-25</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://commands.drush.org/php_cli/</loc>
-     <lastmod>2020-07-24</lastmod>
+     <lastmod>2020-07-25</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://commands.drush.org/php_eval/</loc>
-     <lastmod>2020-07-24</lastmod>
+     <lastmod>2020-07-25</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://commands.drush.org/php_script/</loc>
-     <lastmod>2020-07-24</lastmod>
+     <lastmod>2020-07-25</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://commands.drush.org/pm_enable/</loc>
-     <lastmod>2020-07-24</lastmod>
+     <lastmod>2020-07-25</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://commands.drush.org/pm_list/</loc>
-     <lastmod>2020-07-24</lastmod>
+     <lastmod>2020-07-25</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://commands.drush.org/pm_security/</loc>
-     <lastmod>2020-07-24</lastmod>
+     <lastmod>2020-07-25</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://commands.drush.org/pm_security-php/</loc>
-     <lastmod>2020-07-24</lastmod>
+     <lastmod>2020-07-25</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://commands.drush.org/pm_uninstall/</loc>
-     <lastmod>2020-07-24</lastmod>
+     <lastmod>2020-07-25</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://commands.drush.org/queue_delete/</loc>
-     <lastmod>2020-07-24</lastmod>
+     <lastmod>2020-07-25</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://commands.drush.org/queue_list/</loc>
-     <lastmod>2020-07-24</lastmod>
+     <lastmod>2020-07-25</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://commands.drush.org/queue_run/</loc>
-     <lastmod>2020-07-24</lastmod>
+     <lastmod>2020-07-25</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://commands.drush.org/role_create/</loc>
-     <lastmod>2020-07-24</lastmod>
+     <lastmod>2020-07-25</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://commands.drush.org/role_delete/</loc>
-     <lastmod>2020-07-24</lastmod>
+     <lastmod>2020-07-25</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://commands.drush.org/role_list/</loc>
-     <lastmod>2020-07-24</lastmod>
+     <lastmod>2020-07-25</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://commands.drush.org/role_perm_add/</loc>
-     <lastmod>2020-07-24</lastmod>
+     <lastmod>2020-07-25</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://commands.drush.org/role_perm_remove/</loc>
-     <lastmod>2020-07-24</lastmod>
+     <lastmod>2020-07-25</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://commands.drush.org/site_alias/</loc>
-     <lastmod>2020-07-24</lastmod>
+     <lastmod>2020-07-25</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://commands.drush.org/site_alias-convert/</loc>
-     <lastmod>2020-07-24</lastmod>
+     <lastmod>2020-07-25</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://commands.drush.org/site_install/</loc>
-     <lastmod>2020-07-24</lastmod>
+     <lastmod>2020-07-25</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://commands.drush.org/site_set/</loc>
-     <lastmod>2020-07-24</lastmod>
+     <lastmod>2020-07-25</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://commands.drush.org/site_ssh/</loc>
-     <lastmod>2020-07-24</lastmod>
+     <lastmod>2020-07-25</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://commands.drush.org/sql_cli/</loc>
-     <lastmod>2020-07-24</lastmod>
+     <lastmod>2020-07-25</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://commands.drush.org/sql_connect/</loc>
-     <lastmod>2020-07-24</lastmod>
+     <lastmod>2020-07-25</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://commands.drush.org/sql_create/</loc>
-     <lastmod>2020-07-24</lastmod>
+     <lastmod>2020-07-25</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://commands.drush.org/sql_drop/</loc>
-     <lastmod>2020-07-24</lastmod>
+     <lastmod>2020-07-25</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://commands.drush.org/sql_dump/</loc>
-     <lastmod>2020-07-24</lastmod>
+     <lastmod>2020-07-25</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://commands.drush.org/sql_query/</loc>
-     <lastmod>2020-07-24</lastmod>
+     <lastmod>2020-07-25</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://commands.drush.org/sql_sanitize/</loc>
-     <lastmod>2020-07-24</lastmod>
+     <lastmod>2020-07-25</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://commands.drush.org/sql_sync/</loc>
-     <lastmod>2020-07-24</lastmod>
+     <lastmod>2020-07-25</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://commands.drush.org/state_delete/</loc>
-     <lastmod>2020-07-24</lastmod>
+     <lastmod>2020-07-25</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://commands.drush.org/state_get/</loc>
-     <lastmod>2020-07-24</lastmod>
+     <lastmod>2020-07-25</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://commands.drush.org/state_set/</loc>
-     <lastmod>2020-07-24</lastmod>
+     <lastmod>2020-07-25</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://commands.drush.org/theme_enable/</loc>
-     <lastmod>2020-07-24</lastmod>
+     <lastmod>2020-07-25</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://commands.drush.org/theme_uninstall/</loc>
-     <lastmod>2020-07-24</lastmod>
+     <lastmod>2020-07-25</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://commands.drush.org/twig_compile/</loc>
-     <lastmod>2020-07-24</lastmod>
+     <lastmod>2020-07-25</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://commands.drush.org/twig_unused/</loc>
-     <lastmod>2020-07-24</lastmod>
+     <lastmod>2020-07-25</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://commands.drush.org/user_block/</loc>
-     <lastmod>2020-07-24</lastmod>
+     <lastmod>2020-07-25</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://commands.drush.org/user_cancel/</loc>
-     <lastmod>2020-07-24</lastmod>
+     <lastmod>2020-07-25</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://commands.drush.org/user_create/</loc>
-     <lastmod>2020-07-24</lastmod>
+     <lastmod>2020-07-25</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://commands.drush.org/user_information/</loc>
-     <lastmod>2020-07-24</lastmod>
+     <lastmod>2020-07-25</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://commands.drush.org/user_login/</loc>
-     <lastmod>2020-07-24</lastmod>
+     <lastmod>2020-07-25</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://commands.drush.org/user_password/</loc>
-     <lastmod>2020-07-24</lastmod>
+     <lastmod>2020-07-25</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://commands.drush.org/user_role_add/</loc>
-     <lastmod>2020-07-24</lastmod>
+     <lastmod>2020-07-25</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://commands.drush.org/user_role_remove/</loc>
-     <lastmod>2020-07-24</lastmod>
+     <lastmod>2020-07-25</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://commands.drush.org/user_unblock/</loc>
-     <lastmod>2020-07-24</lastmod>
+     <lastmod>2020-07-25</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://commands.drush.org/views_analyze/</loc>
-     <lastmod>2020-07-24</lastmod>
+     <lastmod>2020-07-25</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://commands.drush.org/views_dev/</loc>
-     <lastmod>2020-07-24</lastmod>
+     <lastmod>2020-07-25</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://commands.drush.org/views_disable/</loc>
-     <lastmod>2020-07-24</lastmod>
+     <lastmod>2020-07-25</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://commands.drush.org/views_enable/</loc>
-     <lastmod>2020-07-24</lastmod>
+     <lastmod>2020-07-25</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://commands.drush.org/views_execute/</loc>
-     <lastmod>2020-07-24</lastmod>
+     <lastmod>2020-07-25</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://commands.drush.org/views_list/</loc>
-     <lastmod>2020-07-24</lastmod>
+     <lastmod>2020-07-25</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://commands.drush.org/watchdog_delete/</loc>
-     <lastmod>2020-07-24</lastmod>
+     <lastmod>2020-07-25</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://commands.drush.org/watchdog_list/</loc>
-     <lastmod>2020-07-24</lastmod>
+     <lastmod>2020-07-25</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://commands.drush.org/watchdog_show/</loc>
-     <lastmod>2020-07-24</lastmod>
+     <lastmod>2020-07-25</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://commands.drush.org/watchdog_show-one/</loc>
-     <lastmod>2020-07-24</lastmod>
+     <lastmod>2020-07-25</lastmod>
      <changefreq>daily</changefreq>
     </url>
 </urlset>

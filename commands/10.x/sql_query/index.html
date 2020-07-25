@@ -341,7 +341,7 @@
 <ul>
 <li><code>drush sql:query "SELECT * FROM users WHERE uid=1"</code>. Browse user record. Table prefixes, if used, must be added to table names by hand.</li>
 <li><code>drush sql:query --db-prefix "SELECT * FROM {users}"</code>. Browse user record. Table prefixes are honored. Caution: All curly-braces will be stripped.</li>
-<li><code><code>drush sql-connect</code> &lt; example.sql</code>. Import sql statements from a file into the current database.</li>
+<li><code>$(drush sql-connect) &lt; example.sql</code>. Import sql statements from a file into the current database.</li>
 <li><code>drush sql:query --file=example.sql</code>. Alternate way to import sql statements from a file.</li>
 <li><code>drush @d8 ev "return db_query('SELECT * FROM users')-&gt;fetchAll()" --format=json</code>. Get data back in JSON format. See https://github.com/drush-ops/drush/issues/3071#issuecomment-347929777.</li>
 </ul>
