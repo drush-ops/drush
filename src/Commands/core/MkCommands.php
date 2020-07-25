@@ -83,8 +83,15 @@ class MkCommands extends DrushCommands implements SiteAliasManagerAwareInterface
                 }
                 if ($topics = $command->getTopics()) {
                     $body .= "#### Topics\n\n";
-                    foreach ($topics as $value) {
-                        $body .= "- `drush $value`\n";
+                    foreach ($topics as $name) {
+                        $value = "- `drush $name`";
+                        $annotationData = Drush::getApplication()->find($name)->getAnnotationData();
+                        if ($file = $annotationData->get('topic')) {
+                            $value = 'TBD';
+                        }
+                        else {
+                            $body .= "$value\n";
+                        }
                     }
                     $body .= "\n";
                 }
