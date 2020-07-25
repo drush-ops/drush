@@ -58,7 +58,7 @@ class SqlCommands extends DrushCommands implements StdinAwareInterface
      * @option extra Add custom options to the connect string (e.g. --extra=--skip-column-names)
      * @optionset_sql
      * @bootstrap max configuration
-     * @usage `drush sql-connect` < example.sql
+     * @usage $(drush sql-connect) < example.sql
      *   Bash: Import SQL statements from a file into the current database.
      * @usage eval (drush sql-connect) < example.sql
      *   Fish: Import SQL statements from a file into the current database.
@@ -171,7 +171,7 @@ class SqlCommands extends DrushCommands implements StdinAwareInterface
      *   Browse user record. Table prefixes, if used, must be added to table names by hand.
      * @usage drush sql:query --db-prefix "SELECT * FROM {users}"
      *   Browse user record. Table prefixes are honored.  Caution: All curly-braces will be stripped.
-     * @usage `drush sql-connect` < example.sql
+     * @usage $(drush sql-connect) < example.sql
      *   Import sql statements from a file into the current database.
      * @usage drush sql:query --file=example.sql
      *   Alternate way to import sql statements from a file.
