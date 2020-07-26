@@ -7,7 +7,7 @@ edit_uri: blob/master/docs/
 extra_css:
   - css/extra.readthedocs.css
 #include_search: true
-pages:
+nav:
 - Home: index.md
 - General:
   - Install: install.md
