@@ -50,7 +50,7 @@ class MkCommands extends DrushCommands implements SiteAliasManagerAwareInterface
                 $pages[] = $filename;
                 $body = "# $name\n\n";
                 if ($command->getDescription()) {
-                    $body .= $command->getDescription() ."\n\n";
+                    $body .= self::cliTextToMarkdown($command->getDescription()) ."\n\n";
                     if ($command->getHelp()) {
                         $body .= $command->getHelp(). "\n\n";
                     }
@@ -58,7 +58,7 @@ class MkCommands extends DrushCommands implements SiteAliasManagerAwareInterface
                 if ($examples = $command->getExampleUsages()) {
                     $body .= "#### Examples\n\n";
                     foreach ($examples as $key => $value) {
-                        $body .= '- <code>' . $key . '</code>. ' . $value . "\n";
+                        $body .= '- <code>' . $key . '</code>. ' . self::cliTextToMarkdown($value) . "\n";
                     }
                     $body .= "\n";
                 }
@@ -66,7 +66,7 @@ class MkCommands extends DrushCommands implements SiteAliasManagerAwareInterface
                     $body .= "#### Arguments\n\n";
                     foreach ($args as $arg) {
                         $arg_array = self::argToArray($arg);
-                        $body .= '- **' . HelpCLIFormatter::formatArgumentName($arg_array) . '**. ' . $arg->getDescription() . "\n";
+                        $body .= '- **' . HelpCLIFormatter::formatArgumentName($arg_array) . '**. ' . self::cliTextToMarkdown($arg->getDescription()) . "\n";
                     }
                     $body .= "\n";
                 }
@@ -75,7 +75,7 @@ class MkCommands extends DrushCommands implements SiteAliasManagerAwareInterface
                     foreach ($opts as $opt) {
                         if (!HelpCLIFormatter::isGlobalOption($opt->getName())) {
                             $opt_array = self::optionToArray($opt);
-                            $body .= '- **' . HelpCLIFormatter::formatOptionKeys($opt_array) . '**. ' . HelpCLIFormatter::formatOptionDescription($opt_array) . "\n";
+                            $body .= '- **' . HelpCLIFormatter::formatOptionKeys($opt_array) . '**. ' . self::cliTextToMarkdown(HelpCLIFormatter::formatOptionDescription($opt_array)) . "\n";
                         }
                     }
                     $body .= "\n";
@@ -94,7 +94,7 @@ class MkCommands extends DrushCommands implements SiteAliasManagerAwareInterface
                                     $rel_from_docs = str_replace('.md', '', Path::makeRelative($abs, $docs_path));
                                     $value = "- [$topic_description](https://docs.drush.org/en/master/$rel_from_docs) ($name)";
                                 } else {
-                                    $rel_from_root = str_replace('.md', '', Path::makeRelative($abs, DRUSH_BASE_PATH));
+                                    $rel_from_root = Path::makeRelative($abs, DRUSH_BASE_PATH);
                                     $value = "- [$topic_description](https://raw.githubusercontent.com/drush-ops/drush/master/$rel_from_root) ($name)";
                                 }
                             }
@@ -216,5 +216,17 @@ EOT;
             $return['defaults'] = (array)$opt->getDefault();
         }
         return $return;
+    }
+
+    /**
+     * Convert text like <info>foo</info> to *foo*.
+     *
+     * @param $text
+     *
+     * @return string
+     */
+    public static function cliTextToMarkdown($text)
+    {
+        return str_replace(['<info>', '</info>'], '*', $text);
     }
 }

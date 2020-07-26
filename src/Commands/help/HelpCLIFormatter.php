@@ -43,10 +43,9 @@ class HelpCLIFormatter implements FormatterInterface
             foreach ($data['arguments'] as $argument) {
                 $formatted = $this->formatArgumentName($argument);
                 $description = $argument['description'];
-                // @todo No argument default in Helpdocument
-                //        if ($argument['default']) {
-        //          $description .= ' [default: ' . $argument->getDefault() . ']';
-        //        }
+                if (isset($argument['defaults'])) {
+                    $description .= ' [default: <info>' . implode(',', $argument['defaults']) . '</info>]';
+                }
                 $rows[] = [' ' . $formatted, $description];
             }
             $formatterManager->write($output, 'table', new RowsOfFields($rows), $options);
@@ -111,7 +110,7 @@ class HelpCLIFormatter implements FormatterInterface
 
     public static function formatOptionDescription($option)
     {
-        $defaults = array_key_exists('defaults', $option) ? ' [default: "' . implode(' ', $option['defaults']) . '"]' : '';
+        $defaults = array_key_exists('defaults', $option) ? ' [default: <info>' . implode(' ', $option['defaults']) . '</info>]' : '';
         return $option['description'] . $defaults;
     }
 
