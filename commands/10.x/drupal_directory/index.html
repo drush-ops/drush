@@ -343,16 +343,15 @@
 <li><code>cd $(drush dd)</code>. Navigate to the root of your Drupal site</li>
 <li><code>cd $(drush dd files)</code>. Navigate to the files directory.</li>
 <li><code>drush dd @alias:%files</code>. Print the path to the files directory on the site @alias.</li>
-<li><code>edit $(drush dd devel)/devel.module</code>. Open devel module in your editor (customize 'edit' for your editor)</li>
+<li><code>edit $(drush dd devel)/devel.module</code>. Open devel module in your editor</li>
 </ul>
 <h4>Arguments</h4>
 <ul>
-<li><strong>[--target]</strong>. A module/theme name, or special names like root, files, private, or an alias : path alias string such as @alias:%files. Defaults to root.</li>
+<li><strong>[--target]</strong>. A module/theme name, or special names like root, files, private, or an <em>alias:path</em> string such as @alias:%files.</li>
 </ul>
 <h4>Options</h4>
 <ul>
 <li><strong> --local-only</strong>. Reject any target that specifies a remote site.</li>
-<li><strong> --component[=COMPONENT]</strong>. The portion of the evaluated path to return. Defaults to 'path'; 'name' returns the site alias of the target.</li>
 </ul>
 <h4>Aliases</h4>
 <ul>

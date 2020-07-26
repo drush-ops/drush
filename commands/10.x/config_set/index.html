@@ -339,17 +339,17 @@
 <p>Set config value directly. Does not perform a config import.</p>
 <h4>Examples</h4>
 <ul>
-<li><code>drush config:set system.site page.front '/path/to/page'</code>. Sets the given URL path as value for the config item with key "page.front" of "system.site" config object.</li>
+<li><code>drush config:set system.site page.front '/path/to/page'</code>. Sets the given URL path as value for the config item with key <em>page.front</em> of <em>system.site</em> config object.</li>
 </ul>
 <h4>Arguments</h4>
 <ul>
-<li><strong>--config_name</strong>. The config object name, for example "system.site".</li>
-<li><strong>--key</strong>. The config key, for example "page.front".</li>
-<li><strong>[--value]</strong>. The value to assign to the config key. Use '-' to read from STDIN.</li>
+<li><strong>--config_name</strong>. The config object name, for example <em>system.site</em>.</li>
+<li><strong>--key</strong>. The config key, for example <em>page.front</em>.</li>
+<li><strong>[--value]</strong>. The value to assign to the config key. Use <em>-</em> to read from STDIN.</li>
 </ul>
 <h4>Options</h4>
 <ul>
-<li><strong> --input-format[=INPUT-FORMAT]</strong>. Format to parse the object. Use "string" for string (default), and "yaml" for YAML. [default: "string"]</li>
+<li><strong> --input-format[=INPUT-FORMAT]</strong>. Format to parse the object. Recognized values: <em>string</em>, <em>yaml</em> [default: <em>string</em>]</li>
 <li><strong> --value=VALUE</strong>. The value to assign to the config key (if any).</li>
 </ul>
 <h4>Aliases</h4>

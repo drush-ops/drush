@@ -340,7 +340,7 @@
 <h4>Examples</h4>
 <ul>
 <li><code>drush config:pull @prod @stage</code>. Export config from @prod and transfer to @stage.</li>
-<li><code>drush config:pull @prod @self --label=vcs</code>. Export config from @prod and transfer to the 'vcs' config directory of current site.</li>
+<li><code>drush config:pull @prod @self --label=vcs</code>. Export config from @prod and transfer to the <em>vcs</em> config directory of current site.</li>
 <li><code>drush config:pull @prod @self:../config/sync</code>. Export config to a custom directory. Relative paths are calculated from Drupal root.</li>
 </ul>
 <h4>Arguments</h4>
@@ -351,9 +351,9 @@
 <h4>Options</h4>
 <ul>
 <li><strong> --safe</strong>. Validate that there are no git uncommitted changes before proceeding</li>
-<li><strong> --label[=LABEL]</strong>. A config directory label (i.e. a key in \$config_directories array in settings.php). Defaults to 'sync' [default: "sync"]</li>
-<li><strong> --runner[=RUNNER]</strong>. Where to run the rsync command; defaults to the local site. Can also be 'source' or 'destination'</li>
-<li><strong> --format[=FORMAT]</strong>. Format the result data. Available formats: csv,json,list,null,php,print-r,string,table,tsv,var_dump,var_export,xml,yaml [default: "null"]</li>
+<li><strong> --label[=LABEL]</strong>. A config directory label (i.e. a key in $config_directories array in settings.php). [default: <em>sync</em>]</li>
+<li><strong> --runner[=RUNNER]</strong>. Where to run the rsync command; defaults to the local site. Can also be <em>source</em> or <em>destination</em>.</li>
+<li><strong> --format[=FORMAT]</strong>. Format the result data. Available formats: csv,json,list,null,php,print-r,string,table,tsv,var_dump,var_export,xml,yaml [default: <em>null</em>]</li>
 <li><strong> --fields=FIELDS</strong>. Available fields: Path (path)</li>
 <li><strong> --field=FIELD</strong>. Select just one field, and force format to 'string'.</li>
 </ul>
