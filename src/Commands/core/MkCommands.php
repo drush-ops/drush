@@ -91,10 +91,10 @@ class MkCommands extends DrushCommands implements SiteAliasManagerAwareInterface
                             if (file_exists($abs)) {
                                 $docs_path = Path::join(DRUSH_BASE_PATH, 'docs');
                                 if (Path::isBasePath($docs_path, $abs)) {
-                                    $rel_from_docs = basename(Path::makeRelative($abs, $docs_path), '.md');
-                                    $value = "- [$topic_description](https://docs.drush/org/en/master/$rel_from_docs) ($name)";
+                                    $rel_from_docs = str_replace('.md', '', Path::makeRelative($abs, $docs_path));
+                                    $value = "- [$topic_description](https://docs.drush.org/en/master/$rel_from_docs) ($name)";
                                 } else {
-                                    $rel_from_root = basename(Path::makeRelative($abs, DRUSH_BASE_PATH), '.md');
+                                    $rel_from_root = str_replace('.md', '', Path::makeRelative($abs, DRUSH_BASE_PATH));
                                     $value = "- [$topic_description](https://raw.githubusercontent.com/drush-ops/drush/master/$rel_from_root) ($name)";
                                 }
                             }
