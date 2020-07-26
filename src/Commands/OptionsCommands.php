@@ -23,6 +23,7 @@ class OptionsCommands
     /**
      * @hook option @optionset_get_editor
      * @option editor A string of bash which launches user's preferred text editor. Defaults to <info>${VISUAL-${EDITOR-vi}}</info>.
+     * @option bg Launch editor in background process.
      */
     public function optionsetGetEditor($options = ['editor' => '', 'bg' => false])
     {

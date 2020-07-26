@@ -26,7 +26,7 @@ class WatchdogCommands extends DrushCommands
      * @option extended Return extended information about each message.
      * @usage  drush watchdog:show
      *   Show a listing of most recent 10 messages.
-     * @usage drush watchdog:show "cron run succesful"
+     * @usage drush watchdog:show "cron run successful"
      *   Show a listing of most recent 10 messages containing the string "cron run succesful".
      * @usage drush watchdog:show --count=46
      *   Show a listing of most recent 46 messages.

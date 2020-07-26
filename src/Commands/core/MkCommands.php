@@ -71,14 +71,16 @@ class MkCommands extends DrushCommands implements SiteAliasManagerAwareInterface
                     $body .= "\n";
                 }
                 if ($opts = $command->getDefinition()->getOptions()) {
-                    $body .= "#### Options\n\n";
+                    $body_opt = '';
                     foreach ($opts as $opt) {
                         if (!HelpCLIFormatter::isGlobalOption($opt->getName())) {
                             $opt_array = self::optionToArray($opt);
-                            $body .= '- **' . HelpCLIFormatter::formatOptionKeys($opt_array) . '**. ' . self::cliTextToMarkdown(HelpCLIFormatter::formatOptionDescription($opt_array)) . "\n";
+                            $body_opt .= '- **' . HelpCLIFormatter::formatOptionKeys($opt_array) . '**. ' . self::cliTextToMarkdown(HelpCLIFormatter::formatOptionDescription($opt_array)) . "\n";
                         }
                     }
-                    $body .= "\n";
+                    if ($body_opt) {
+                        $body .= "#### Options\n\n$body_opt\n";
+                    }
                 }
                 if ($topics = $command->getTopics()) {
                     $body .= "#### Topics\n\n";
@@ -147,7 +149,7 @@ EOT;
             'markdown_extensions' => [
                 ['toc' => [
                     'toc_depth' => 0,
-                    'permalink' => ,
+                    'permalink' => '',
                 ]],
                 ['admonition' => []],
             ],
