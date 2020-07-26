@@ -153,6 +153,7 @@ EOT;
                     'permalink' => '',
                 ]],
                 ['admonition' => []],
+                ['pymdownx.magiclink' => []],
             ],
             'nav' => $nav,
         ];
