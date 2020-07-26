@@ -1,0 +1,4 @@
+/*Remove right hand column*/
+.wy-nav-content {
+    max-width: unset;
+}
