@@ -340,7 +340,7 @@
 <h4>Examples</h4>
 <ul>
 <li><code>drush watchdog:show</code>. Show a listing of most recent 10 messages.</li>
-<li><code>drush watchdog:show "cron run succesful"</code>. Show a listing of most recent 10 messages containing the string "cron run succesful".</li>
+<li><code>drush watchdog:show "cron run successful"</code>. Show a listing of most recent 10 messages containing the string "cron run succesful".</li>
 <li><code>drush watchdog:show --count=46</code>. Show a listing of most recent 46 messages.</li>
 <li><code>drush watchdog:show --severity=Notice</code>. Show a listing of most recent 10 messages with a severity of notice.</li>
 <li><code>drush watchdog:show --type=php</code>. Show a listing of most recent 10 messages of type php</li>
@@ -353,7 +353,7 @@
 <h4>Options</h4>
 <ul>
 <li><strong> --format[=FORMAT]</strong>. Format the result data. Available formats: csv,json,list,null,php,print-r,sections,string,table,tsv,var_dump,var_export,xml,yaml [default: <em>table</em>]</li>
-<li><strong> --count[=COUNT]</strong>. The number of messages to show. Defaults to 10. [default: <em>10</em>]</li>
+<li><strong> --count[=COUNT]</strong>. The number of messages to show. [default: <em>10</em>]</li>
 <li><strong> --severity=SEVERITY</strong>. Restrict to messages of a given severity level.</li>
 <li><strong> --type=TYPE</strong>. Restrict to messages of a given type.</li>
 <li><strong> --extended</strong>. Return extended information about each message.</li>
@@ -363,7 +363,7 @@
 </ul>
 <h4>Topics</h4>
 <ul>
-<li><a href="https://docs.drush.org/en/master/output-formats-filters">Output formatters and filters: how to control the output produced by Drush commands</a> (docs:output-formats-filters)</li>
+<li><a href="https://docs.drush.org/en/master/output-formats-filters">Output formatters and filters: control the command output</a> (docs:output-formats-filters)</li>
 </ul>
 <h4>Aliases</h4>
 <ul>

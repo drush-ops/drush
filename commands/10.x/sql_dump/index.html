@@ -340,7 +340,7 @@
 <h4>Examples</h4>
 <ul>
 <li><code>drush sql:dump --result-file=../18.sql</code>. Save SQL dump to the directory above Drupal root.</li>
-<li><code>drush sql:dump --skip-tables-key=common</code>. Skip standard tables. @see example.drush.yml</li>
+<li><code>drush sql:dump --skip-tables-key=common</code>. Skip standard tables. See examples/example.drush.yml</li>
 <li><code>drush sql:dump --extra-dump=--no-data</code>. Pass extra option to mysqldump command.</li>
 </ul>
 <h4>Options</h4>
@@ -349,15 +349,15 @@
 <li><strong> --create-db</strong>. Omit DROP TABLE statements. Used by Postgres and Oracle only.</li>
 <li><strong> --data-only</strong>. Dump data without statements to create any of the schema.</li>
 <li><strong> --ordered-dump</strong>. Order by primary key and add line breaks for efficient diffs. Slows down the dump. Mysql only.</li>
-<li><strong> --gzip</strong>. Compress the dump using the gzip program which must be in your $PATH.</li>
+<li><strong> --gzip</strong>. Compress the dump using the gzip program which must be in your <em>$PATH</em>.</li>
 <li><strong> --extra=EXTRA</strong>. Add custom arguments/options when connecting to database (used internally to list tables).</li>
-<li><strong> --extra-dump=EXTRA-DUMP</strong>. Add custom arguments/options to the dumping of the database (e.g. mysqldump command).</li>
+<li><strong> --extra-dump=EXTRA-DUMP</strong>. Add custom arguments/options to the dumping of the database (e.g. <em>mysqldump</em> command).</li>
 <li><strong> --format[=FORMAT]</strong>. Format the result data. Available formats: csv,json,list,null,php,print-r,string,table,tsv,var_dump,var_export,xml,yaml [default: <em>null</em>]</li>
 <li><strong> --fields=FIELDS</strong>. Available fields: Path (path)</li>
 <li><strong> --field=FIELD</strong>. Select just one field, and force format to 'string'.</li>
 <li><strong> --database[=DATABASE]</strong>. The DB connection key if using multiple connections in settings.php. [default: <em>default</em>]</li>
 <li><strong> --target[=TARGET]</strong>. The name of a target within the specified database connection. [default: <em>default</em>]</li>
-<li><strong> --db-url=DB-URL</strong>. A Drupal 6 style database URL.</li>
+<li><strong> --db-url=DB-URL</strong>. A Drupal 6 style database URL. For example <em>mysql://root:pass@localhost:port/dbname</em></li>
 <li><strong> --show-passwords</strong>. Show password on the CLI. Useful for debugging.</li>
 <li><strong> --skip-tables-key=SKIP-TABLES-KEY</strong>. A key in the $skip_tables array. @see example.drush.yml</li>
 <li><strong> --structure-tables-key=STRUCTURE-TABLES-KEY</strong>. A key in the $structure_tables array. @see example.drush.yml</li>
@@ -368,7 +368,7 @@
 </ul>
 <h4>Topics</h4>
 <ul>
-<li><a href="https://docs.drush.org/en/master/output-formats-filters">Output formatters and filters: how to control the output produced by Drush commands</a> (docs:output-formats-filters)</li>
+<li><a href="https://docs.drush.org/en/master/output-formats-filters">Output formatters and filters: control the command output</a> (docs:output-formats-filters)</li>
 </ul>
 <h4>Aliases</h4>
 <ul>

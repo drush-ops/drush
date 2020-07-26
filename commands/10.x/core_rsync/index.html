@@ -340,14 +340,14 @@
 <h4>Examples</h4>
 <ul>
 <li><code>drush rsync @dev @stage</code>. Rsync Drupal root from Drush alias dev to the alias stage.</li>
-<li><code>drush rsync ./ @stage:%files/img</code>. Rsync all files in the current directory to the 'img' directory in the file storage folder on the Drush alias stage.</li>
+<li><code>drush rsync ./ @stage:%files/img</code>. Rsync all files in the current directory to the <em>img</em>directory in the file storage folder on the Drush alias stage.</li>
 <li><code>drush rsync @dev @stage -- --exclude=*.sql --delete</code>. Rsync Drupal root from the Drush alias dev to the alias stage, excluding all .sql files and delete all files on the destination that are no longer on the source.</li>
 <li><code>drush rsync @dev @stage --ssh-options="-o StrictHostKeyChecking=no" -- --delete</code>. Customize how rsync connects with remote host via SSH. rsync options like --delete are placed after a --.</li>
 </ul>
 <h4>Arguments</h4>
 <ul>
 <li><strong>--source</strong>. A site alias and optional path. See rsync documentation and example.site.yml.</li>
-<li><strong>--target</strong>. A site alias and optional path. See rsync documentation and example.site.yml.',</li>
+<li><strong>--target</strong>. A site alias and optional path. See rsync documentation and example.site.yml.</li>
 <li><strong>[--extra]...</strong>. Additional parameters after the ssh statement.</li>
 </ul>
 <h4>Options</h4>

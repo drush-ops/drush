@@ -348,24 +348,24 @@
 </ul>
 <h4>Arguments</h4>
 <ul>
-<li><strong>[--profile]...</strong>. An install profile name. Defaults to 'standard' unless an install profile is marked as a distribution. Additional info for the install profile may also be provided with additional arguments. The key is in the form [form name].[parameter name]</li>
+<li><strong>[--profile]...</strong>. An install profile name. Defaults to <em>standard</em> unless an install profile is marked as a distribution. Additional info for the install profile may also be provided with additional arguments. The key is in the form <em>[form name].[parameter name]</em></li>
 </ul>
 <h4>Options</h4>
 <ul>
 <li><strong> --db-url=DB-URL</strong>. A Drupal 6 style database URL. Required for initial install, not re-install. If omitted and required, Drush prompts for this item.</li>
 <li><strong> --db-prefix=DB-PREFIX</strong>. An optional table prefix to use for initial install.</li>
 <li><strong> --db-su=DB-SU</strong>. Account to use when creating a new database. Must have Grant permission (mysql only). Optional.</li>
-<li><strong> --db-su-pw=DB-SU-PW</strong>. Password for the "db-su" account. Optional.</li>
-<li><strong> --account-name[=ACCOUNT-NAME]</strong>. uid1 name. Defaults to admin [default: <em>admin</em>]</li>
-<li><strong> --account-mail[=ACCOUNT-MAIL]</strong>. uid1 email. Defaults to admin@example.com [default: <em>admin@example.com</em>]</li>
-<li><strong> --site-mail[=SITE-MAIL]</strong>. From: for system mailings. Defaults to admin@example.com [default: <em>admin@example.com</em>]</li>
+<li><strong> --db-su-pw=DB-SU-PW</strong>. Password for the <em>db-su</em> account. Optional.</li>
+<li><strong> --account-name[=ACCOUNT-NAME]</strong>. uid1 name. [default: <em>admin</em>]</li>
+<li><strong> --account-mail[=ACCOUNT-MAIL]</strong>. uid1 email. [default: <em>admin@example.com</em>]</li>
+<li><strong> --site-mail[=SITE-MAIL]</strong>. <em>From:</em> for system mailings. [default: <em>admin@example.com</em>]</li>
 <li><strong> --account-pass=ACCOUNT-PASS</strong>. uid1 pass. Defaults to a randomly generated password. If desired, set a fixed password in config.yml.</li>
 <li><strong> --locale[=LOCALE]</strong>. A short language code. Sets the default site language. Language files must already be present. [default: <em>en</em>]</li>
-<li><strong> --site-name[=SITE-NAME]</strong>. Defaults to Site-Install [default: <em>Drush Site-Install</em>]</li>
+<li><strong> --site-name[=SITE-NAME]</strong>.  [default: <em>Drush Site-Install</em>]</li>
 <li><strong> --site-pass=SITE-PASS</strong>. </li>
-<li><strong> --sites-subdir=SITES-SUBDIR</strong>. Name of directory under 'sites' which should be created.</li>
+<li><strong> --sites-subdir=SITES-SUBDIR</strong>. Name of directory under <em>sites</em> which should be created.</li>
 <li><strong> --config-dir=CONFIG-DIR</strong>. Deprecated - only use with Drupal 8.5-. A path pointing to a full set of configuration which should be installed during installation.</li>
-<li><strong> --existing-config</strong>. Configuration from "sync" directory should be imported during installation. Use with Drupal 8.6+.</li>
+<li><strong> --existing-config</strong>. Configuration from <em>sync</em> directory should be imported during installation. Use with Drupal 8.6+.</li>
 </ul>
 <h4>Aliases</h4>
 <ul>
