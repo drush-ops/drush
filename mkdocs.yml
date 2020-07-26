@@ -4,6 +4,8 @@ site_url: http://docs.drush.org
 repo_url: https://github.com/drush-ops/drush
 repo_name: GitHub
 edit_uri: blob/master/docs/
+extra_css:
+  - misc/extra.readthedocs.css
 #include_search: true
 pages:
 - Home: index.md

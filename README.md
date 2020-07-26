@@ -47,5 +47,5 @@ Credits
   the folks listed at https://github.com/orgs/drush-ops/people.
 * Thanks to [JetBrains](https://www.jetbrains.com) for [supporting this project and open source software](https://www.jetbrains.com/buy/opensource/).
 
-![Drush Logo](drush_logo-black.png)
-[![PhpStorm Logo](misc/icon_PhpStorm.png)](https://www.jetbrains.com/phpstorm/)
+![Drush Logo](img/drush_logo-black.png)
+[![PhpStorm Logo](img/icon_PhpStorm.png)](https://www.jetbrains.com/phpstorm/)

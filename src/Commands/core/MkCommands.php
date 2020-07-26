@@ -146,6 +146,7 @@ EOT;
                 'name' => 'readthedocs',
             ],
             'site_url' => 'http://commands.drush.org',
+            'extra_css' => ['css/extra.readthedocs.css'],
             'markdown_extensions' => [
                 ['toc' => [
                     'toc_depth' => 0,
@@ -174,11 +175,13 @@ EOT;
         $fs->mkdir($dest);
         $docs_dir = Path::join($dest, 'docs');
         $fs->mkdir($docs_dir);
-        $favicon_dir = Path::join($dest, 'docs', 'img');
-        $fs->mkdir($favicon_dir);
-        $fs->copy('../misc/favicon.ico', Path::join($favicon_dir, 'favicon.ico'));
+        $img_dir = Path::join($dest, 'docs', 'img');
+        $fs->mkdir($img_dir);
+        $fs->copy('../misc/favicon.ico', Path::join($img_dir, 'favicon.ico'));
+        $fs->copy('../drush_logo-black.png', Path::join($img_dir, 'drush_logo-black.png'));
+        $fs->copy('../misc/icon_PhpStorm.png', Path::join($img_dir, 'icon_PhpStorm.png'));
         $fs->copy('../docs/index.md', Path::join($docs_dir, 'index.md'));
-        // $fs->copy('../drush_logo-black.png', Path::join($docs_dir, 'logo.png'));
+        $fs->mirror('../docs/css', Path::join($docs_dir, 'css'));
     }
 
     /**
