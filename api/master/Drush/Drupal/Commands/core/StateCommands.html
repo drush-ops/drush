@@ -185,6 +185,14 @@
 
             <table class="table table-condensed">
                     <tr>
+                <td class="type" id="property_commandData">
+                                        protected                                        <abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr>
+                </td>
+                <td>$commandData</td>
+                <td class="last"></td>
+                <td><small>from&nbsp;<a href="../../../../Drush/Commands/DrushCommands.html#property_commandData"><abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a></small></td>
+            </tr>
+                    <tr>
                 <td class="type" id="property_state">
                                         protected                                        
                 </td>
@@ -255,9 +263,19 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                     
                 </div>
                 <div class="col-md-8 type">
+                    <a href="#method_preHook">preHook</a>(<abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr> $commandData)
+        
+                                            <p>Persist commandData for use in primary command callback. Used by 'topic' commands.</p>                </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../../../Drush/Commands/DrushCommands.html#method_preHook"><abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8 type">
                     <a href="#method_printFileTopic">printFileTopic</a>(<abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr> $commandData)
         
-                                            <p>Print the contents of a file. The path comes the @topic annotation.</p>                </div>
+                                            <p>Print the contents of a file. The path comes from the @topic annotation.</p>                </div>
                 <div class="col-md-2"><small>from&nbsp;<a href="../../../../Drush/Commands/DrushCommands.html#method_printFileTopic"><abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a></small></div>
             </div>
                     <div class="row">
@@ -391,7 +409,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </div>
                     <div class="method-item">
                     <h3 id="method_io">
-        <div class="location">in <a href="../../../../Drush/Commands/DrushCommands.html#method_io"><abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/DrushCommands.php#L44">line 44</a></div>
+        <div class="location">in <a href="../../../../Drush/Commands/DrushCommands.html#method_io"><abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/DrushCommands.php#L49">line 49</a></div>
         <code>            protected        
     <strong>io</strong>()
         </code>
@@ -412,7 +430,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </div>
                     <div class="method-item">
                     <h3 id="method_logger">
-        <div class="location">in <a href="../../../../Drush/Commands/DrushCommands.html#method_logger"><abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/DrushCommands.php#L58">line 58</a></div>
+        <div class="location">in <a href="../../../../Drush/Commands/DrushCommands.html#method_logger"><abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/DrushCommands.php#L63">line 63</a></div>
         <code>            protected        <abbr title="Psr\Log\LoggerInterface">LoggerInterface</abbr>
     <strong>logger</strong>()
         </code>
@@ -442,7 +460,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </div>
                     <div class="method-item">
                     <h3 id="method_printFile">
-        <div class="location">in <a href="../../../../Drush/Commands/DrushCommands.html#method_printFile"><abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/DrushCommands.php#L69">line 69</a></div>
+        <div class="location">in <a href="../../../../Drush/Commands/DrushCommands.html#method_printFile"><abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/DrushCommands.php#L74">line 74</a></div>
         <code>            protected        
     <strong>printFile</strong>(string $file)
         </code>
@@ -472,8 +490,39 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
 
             </div>
                     <div class="method-item">
+                    <h3 id="method_preHook">
+        <div class="location">in <a href="../../../../Drush/Commands/DrushCommands.html#method_preHook"><abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/DrushCommands.php#L105">line 105</a></div>
+        <code>                    
+    <strong>preHook</strong>(<abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr> $commandData)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Persist commandData for use in primary command callback. Used by 'topic' commands.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr></td>
+                <td>$commandData</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
                     <h3 id="method_printFileTopic">
-        <div class="location">in <a href="../../../../Drush/Commands/DrushCommands.html#method_printFileTopic"><abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/DrushCommands.php#L99">line 99</a></div>
+        <div class="location">in <a href="../../../../Drush/Commands/DrushCommands.html#method_printFileTopic"><abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/DrushCommands.php#L116">line 116</a></div>
         <code>            protected        
     <strong>printFileTopic</strong>(<abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr> $commandData)
         </code>
@@ -483,7 +532,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
     
 
                     <div class="method-description">
-                                    <p>Print the contents of a file. The path comes the @topic annotation.</p>                                                </div>
+                                    <p>Print the contents of a file. The path comes from the @topic annotation.</p>                                                </div>
                 <div class="tags">
                             <h4>Parameters</h4>
 
@@ -645,7 +694,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
                     <tr>
                 <td>string</td>
                 <td>$key</td>
-                <td>The state key, for example "system.cron_last".</td>
+                <td>The state key, for example <info>system.cron_last</info>.</td>
             </tr>
             </table>
 
