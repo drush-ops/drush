@@ -17,7 +17,6 @@ use Webmozart\PathUtil\Path;
 
 class MkCommands extends DrushCommands implements SiteAliasManagerAwareInterface
 {
-
     use SiteAliasManagerAwareTrait;
 
     /**
@@ -84,14 +83,23 @@ class MkCommands extends DrushCommands implements SiteAliasManagerAwareInterface
                 if ($topics = $command->getTopics()) {
                     $body .= "#### Topics\n\n";
                     foreach ($topics as $name) {
-                        $value = "- `drush $name`";
-                        $annotationData = Drush::getApplication()->find($name)->getAnnotationData();
-                        if ($file = $annotationData->get('topic')) {
-                            $value = 'TBD';
+                        $value = "- `drush $name`\n";
+                        $topic_command = Drush::getApplication()->find($name);
+                        $topic_description = $topic_command->getDescription();
+                        if ($docs_relative = $topic_command->getAnnotationData()->get('topic')) {
+                            $abs = Path::makeAbsolute($docs_relative, dirname($topic_command->getAnnotationData()->get('_path')));
+                            if (file_exists($abs)) {
+                                $docs_path = Path::join(DRUSH_BASE_PATH, 'docs');
+                                if (Path::isBasePath($docs_path, $abs)) {
+                                    $rel_from_docs = basename(Path::makeRelative($abs, $docs_path), '.md');
+                                    $value = "- [$topic_description](https://docs.drush/org/en/master/$rel_from_docs) ($name)";
+                                } else {
+                                    $rel_from_root = basename(Path::makeRelative($abs, DRUSH_BASE_PATH), '.md');
+                                    $value = "- [$topic_description](https://raw.githubusercontent.com/drush-ops/drush/master/$rel_from_root) ($name)";
+                                }
+                            }
                         }
-                        else {
-                            $body .= "$value\n";
-                        }
+                        $body .= "$value\n";
                     }
                     $body .= "\n";
                 }
