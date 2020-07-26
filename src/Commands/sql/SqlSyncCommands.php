@@ -24,9 +24,9 @@ class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwareInte
      * @optionset_table_selection
      * @option no-dump Do not dump the sql database; always use an existing dump file.
      * @option no-sync Do not rsync the database dump file from source to target.
-     * @option runner Where to run the rsync command; defaults to the local site. Can also be 'source' or 'target'.
+     * @option runner Where to run the rsync command; defaults to the local site. Can also be <info>source</info> or <info>target</info>.
      * @option create-db Create a new database before importing the database dump on the target machine.
-     * @option db-su Account to use when creating a new database (e.g. root).
+     * @option db-su Account to use when creating a new database (e.g. <info>root</info>).
      * @option db-su-pw Password for the db-su account.
      * @option source-dump The path for retrieving the sql-dump on source machine.
      * @option target-dump The path for storing the sql-dump on target machine.

@@ -52,7 +52,7 @@ class MkCommands extends DrushCommands implements SiteAliasManagerAwareInterface
                 if ($command->getDescription()) {
                     $body .= self::cliTextToMarkdown($command->getDescription()) ."\n\n";
                     if ($command->getHelp()) {
-                        $body .= $command->getHelp(). "\n\n";
+                        $body .= self::cliTextToMarkdown($command->getHelp()). "\n\n";
                     }
                 }
                 if ($examples = $command->getExampleUsages()) {
@@ -147,7 +147,7 @@ EOT;
             'markdown_extensions' => [
                 ['toc' => [
                     'toc_depth' => 0,
-                    'permalink' => true,
+                    'permalink' => ,
                 ]],
                 ['admonition' => []],
             ],
