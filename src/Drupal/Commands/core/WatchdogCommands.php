@@ -20,13 +20,13 @@ class WatchdogCommands extends DrushCommands
      *
      * @command watchdog:show
      * @param $substring A substring to look search in error messages.
-     * @option count The number of messages to show. Defaults to 10.
+     * @option count The number of messages to show.
      * @option severity Restrict to messages of a given severity level.
      * @option type Restrict to messages of a given type.
      * @option extended Return extended information about each message.
      * @usage  drush watchdog:show
      *   Show a listing of most recent 10 messages.
-     * @usage drush watchdog:show "cron run succesful"
+     * @usage drush watchdog:show "cron run successful"
      *   Show a listing of most recent 10 messages containing the string "cron run succesful".
      * @usage drush watchdog:show --count=46
      *   Show a listing of most recent 46 messages.
@@ -78,7 +78,7 @@ class WatchdogCommands extends DrushCommands
      *
      * @command watchdog:list
      * @param $substring A substring to look search in error messages.
-     * @option count The number of messages to show. Defaults to 10.
+     * @option count The number of messages to show.
      * @option extended Return extended information about each message.
      * @option severity Restrict to messages of a given severity level.
      * @option type Restrict to messages of a given type.

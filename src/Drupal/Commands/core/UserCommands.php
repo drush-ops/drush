@@ -313,7 +313,7 @@ class UserCommands extends DrushCommands
      * @param string $password The new password for the account.
      * @aliases upwd,user-password
      * @usage drush user:password someuser "correct horse battery staple"
-     *   Set the password for the username someuser. @see xkcd.com/936
+     *   Set the password for the username someuser. See https://xkcd.com/936
      */
     public function password($name, $password)
     {

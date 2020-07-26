@@ -53,7 +53,7 @@ class TwigCommands extends DrushCommands
   /**
      * Find potentially unused Twig templates.
      *
-     * Immediately before running this command, crawl your entire web site. Or
+     * Immediately before running this command, web crawl your entire web site. Or
      * use your Production PHPStorage dir for comparison.
      *
      * @param $searchpaths A comma delimited list of paths to recursively search

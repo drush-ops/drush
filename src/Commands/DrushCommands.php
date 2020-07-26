@@ -34,6 +34,11 @@ abstract class DrushCommands implements IOAwareInterface, LoggerAwareInterface, 
         io as roboIo;
     }
 
+    /**
+     * @var CommandData
+     */
+    protected $commandData;
+
     public function __construct()
     {
     }
@@ -91,7 +96,19 @@ abstract class DrushCommands implements IOAwareInterface, LoggerAwareInterface, 
     }
 
     /**
-     * Print the contents of a file. The path comes the @topic annotation.
+     * Persist commandData for use in primary command callback. Used by 'topic' commands.
+     *
+     * @hook pre-command *
+     *
+     * @param \Consolidation\AnnotatedCommand\CommandData $commandData
+     */
+    public function preHook(CommandData $commandData)
+    {
+        $this->commandData = $commandData;
+    }
+
+    /**
+     * Print the contents of a file. The path comes from the @topic annotation.
      *
      * @param CommandData $commandData
      *   Full path to a file.

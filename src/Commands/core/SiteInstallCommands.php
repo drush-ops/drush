@@ -26,20 +26,20 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
      * Install Drupal along with modules/themes/configuration/profile.
      *
      * @command site:install
-     * @param $profile An install profile name. Defaults to 'standard' unless an install profile is marked as a distribution. Additional info for the install profile may also be provided with additional arguments. The key is in the form [form name].[parameter name]
+     * @param $profile An install profile name. Defaults to <info>standard</info> unless an install profile is marked as a distribution. Additional info for the install profile may also be provided with additional arguments. The key is in the form <info>[form name].[parameter name]</info>
      * @option db-url A Drupal 6 style database URL. Required for initial install, not re-install. If omitted and required, Drush prompts for this item.
      * @option db-prefix An optional table prefix to use for initial install.
      * @option db-su Account to use when creating a new database. Must have Grant permission (mysql only). Optional.
-     * @option db-su-pw Password for the "db-su" account. Optional.
-     * @option account-name uid1 name. Defaults to admin
+     * @option db-su-pw Password for the <info>db-su</info> account. Optional.
+     * @option account-name uid1 name.
      * @option account-pass uid1 pass. Defaults to a randomly generated password. If desired, set a fixed password in config.yml.
-     * @option account-mail uid1 email. Defaults to admin@example.com
+     * @option account-mail uid1 email.
      * @option locale A short language code. Sets the default site language. Language files must already be present.
-     * @option site-name Defaults to Site-Install
-     * @option site-mail From: for system mailings. Defaults to admin@example.com
-     * @option sites-subdir Name of directory under 'sites' which should be created.
+     * @option site-name
+     * @option site-mail <info>From:</info> for system mailings.
+     * @option sites-subdir Name of directory under <info>sites</info> which should be created.
      * @option config-dir Deprecated - only use with Drupal 8.5-. A path pointing to a full set of configuration which should be installed during installation.
-     * @option existing-config Configuration from "sync" directory should be imported during installation. Use with Drupal 8.6+.
+     * @option existing-config Configuration from <info>sync</info> directory should be imported during installation. Use with Drupal 8.6+.
      * @usage drush si expert --locale=uk
      *   (Re)install using the expert install profile. Set default language to Ukrainian.
      * @usage drush si --db-url=mysql://root:pass@localhost:port/dbname

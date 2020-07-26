@@ -215,13 +215,13 @@ class SqlCommands extends DrushCommands implements StdinAwareInterface
      * @option create-db Omit DROP TABLE statements. Used by Postgres and Oracle only.
      * @option data-only Dump data without statements to create any of the schema.
      * @option ordered-dump Order by primary key and add line breaks for efficient diffs. Slows down the dump. Mysql only.
-     * @option gzip Compress the dump using the gzip program which must be in your $PATH.
+     * @option gzip Compress the dump using the gzip program which must be in your <info>$PATH</info>.
      * @option extra Add custom arguments/options when connecting to database (used internally to list tables).
-     * @option extra-dump Add custom arguments/options to the dumping of the database (e.g. mysqldump command).
+     * @option extra-dump Add custom arguments/options to the dumping of the database (e.g. <info>mysqldump</info> command).
      * @usage drush sql:dump --result-file=../18.sql
      *   Save SQL dump to the directory above Drupal root.
      * @usage drush sql:dump --skip-tables-key=common
-     *   Skip standard tables. @see example.drush.yml
+     *   Skip standard tables. See examples/example.drush.yml
      * @usage drush sql:dump --extra-dump=--no-data
      *   Pass extra option to mysqldump command.
      * @hidden-options create-db
@@ -232,7 +232,7 @@ class SqlCommands extends DrushCommands implements StdinAwareInterface
      * @return \Consolidation\OutputFormatters\StructuredData\PropertyList
      *
      * @notes
-     *   createdb is used by sql-sync, since including the DROP TABLE statements interfere with the import when the database is created.
+     *   --createdb is used by sql-sync, since including the DROP TABLE statements interferes with the import when the database is created.
      */
     public function dump($options = ['result-file' => self::REQ, 'create-db' => false, 'data-only' => false, 'ordered-dump' => false, 'gzip' => false, 'extra' => self::REQ, 'extra-dump' => self::REQ, 'format' => 'null'])
     {

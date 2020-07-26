@@ -3,7 +3,6 @@ namespace Drush\Commands\core;
 
 use Consolidation\AnnotatedCommand\CommandData;
 use Drush\Commands\DrushCommands;
-use Webmozart\PathUtil\Path;
 
 /**
  * Topic commands.
@@ -14,11 +13,6 @@ use Webmozart\PathUtil\Path;
  */
 class DocsCommands extends DrushCommands
 {
-    /**
-     * @var CommandData
-     */
-    protected $commandData;
-
     /**
      * README.md
      *
@@ -85,7 +79,7 @@ class DocsCommands extends DrushCommands
     }
 
     /**
-     * Output formatters and filters: how to control the output produced by Drush commands
+     * Output formatters and filters: control the command output
      *
      * @command docs:output-formats-filters
      * @aliases docs:output
@@ -213,15 +207,5 @@ class DocsCommands extends DrushCommands
     public function deploy()
     {
         self::printFileTopic($this->commandData);
-    }
-
-    /**
-     * @hook pre-command *
-     *
-     * @param \Consolidation\AnnotatedCommand\CommandData $commandData
-     */
-    public function pre(CommandData $commandData)
-    {
-        $this->commandData = $commandData;
     }
 }
