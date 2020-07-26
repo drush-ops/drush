@@ -7,7 +7,7 @@ edit_uri: blob/master/docs/
 extra_css:
   - css/extra.readthedocs.css
 #include_search: true
-nav:
+pages:
 - Home: index.md
 - General:
   - Install: install.md
@@ -33,5 +33,3 @@ markdown_extensions:
     - toc:
         permalink: 
     - admonition:
-    - pymdownx.magiclink:
-
