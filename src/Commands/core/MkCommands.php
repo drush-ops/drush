@@ -225,7 +225,8 @@ EOT;
      *
      * @return string
      */
-    public static function cliTextToMarkdown($text) {
+    public static function cliTextToMarkdown($text)
+    {
         return str_replace(['<info>', '</info>'], '*', $text);
     }
 }
