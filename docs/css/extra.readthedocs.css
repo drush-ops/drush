@@ -2,3 +2,7 @@
 .wy-nav-content {
     max-width: unset;
 }
+
+.rst-content div[role=navigation] {
+    display: none;
+}
