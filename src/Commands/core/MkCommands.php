@@ -203,19 +203,26 @@ EOT;
 
     /**
      * Build an array since that's what HelpCLIFormatter expects.
+     *
+     * @param \Symfony\Component\Console\Input\InputArgument $arg
+     *
+     * @return iterable
      */
     public static function argToArray(InputArgument $arg): iterable
     {
-        $return = [
+        return [
             'name' => '--' . $arg->getName(),
             'is_array' => $arg->isArray(),
             'is_required' => $arg->isRequired(),
         ];
-        return $return;
     }
 
     /**
      * Build an array since that's what HelpCLIFormatter expects.
+     *
+     * @param \Symfony\Component\Console\Input\InputOption $opt
+     *
+     * @return iterable
      */
     public static function optionToArray(InputOption $opt): iterable
     {

@@ -83,7 +83,7 @@ class HelpCLIFormatter implements FormatterInterface
     }
 
     /**
-     * @param array $option
+     * @param iterable $option
      * @return string
      */
     public static function formatOptionKeys($option)
