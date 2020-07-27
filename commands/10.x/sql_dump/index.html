@@ -222,6 +222,16 @@
                     <li class="toctree-l1"><a class="reference internal" href="../sql_drop/">sql:drop</a>
                     </li>
                     <li class="toctree-l1 current"><a class="reference internal current" href="./">sql:dump</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#examples">Examples</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#options">Options</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#topics">Topics</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#aliases">Aliases</a>
+    </li>
+    </ul>
                     </li>
                     <li class="toctree-l1"><a class="reference internal" href="../sql_query/">sql:query</a>
                     </li>
@@ -336,15 +346,15 @@
           <div role="main">
             <div class="section">
               
-                <h1>sql:dump</h1>
+                <h1 id="sqldump">sql:dump<a class="headerlink" href="#sqldump" title="Permanent link">&para;</a></h1>
 <p>Exports the Drupal DB as SQL using mysqldump or equivalent.</p>
-<h4>Examples</h4>
+<h4 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h4>
 <ul>
 <li><code>drush sql:dump --result-file=../18.sql</code>. Save SQL dump to the directory above Drupal root.</li>
 <li><code>drush sql:dump --skip-tables-key=common</code>. Skip standard tables. See examples/example.drush.yml</li>
 <li><code>drush sql:dump --extra-dump=--no-data</code>. Pass extra option to mysqldump command.</li>
 </ul>
-<h4>Options</h4>
+<h4 id="options">Options<a class="headerlink" href="#options" title="Permanent link">&para;</a></h4>
 <ul>
 <li><strong> --result-file=RESULT-FILE</strong>. Save to a file. The file should be relative to Drupal root. If --result-file is provided with the value 'auto', a date-based filename will be created under ~/drush-backups directory.</li>
 <li><strong> --create-db</strong>. Omit DROP TABLE statements. Used by Postgres and Oracle only.</li>
@@ -367,11 +377,11 @@
 <li><strong> --structure-tables-list=STRUCTURE-TABLES-LIST</strong>. A comma-separated list of tables to include for structure, but not data.</li>
 <li><strong> --tables-list=TABLES-LIST</strong>. A comma-separated list of tables to transfer.</li>
 </ul>
-<h4>Topics</h4>
+<h4 id="topics">Topics<a class="headerlink" href="#topics" title="Permanent link">&para;</a></h4>
 <ul>
 <li><a href="https://docs.drush.org/en/master/output-formats-filters">Output formatters and filters: control the command output</a> (docs:output-formats-filters)</li>
 </ul>
-<h4>Aliases</h4>
+<h4 id="aliases">Aliases<a class="headerlink" href="#aliases" title="Permanent link">&para;</a></h4>
 <ul>
 <li>sql-dump</li>
 </ul>

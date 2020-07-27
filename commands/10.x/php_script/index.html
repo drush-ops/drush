@@ -161,6 +161,16 @@
                     <li class="toctree-l1"><a class="reference internal" href="../php_eval/">php:eval</a>
                     </li>
                     <li class="toctree-l1 current"><a class="reference internal current" href="./">php:script</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#examples">Examples</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#arguments">Arguments</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#options">Options</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#aliases">Aliases</a>
+    </li>
+    </ul>
                     </li>
                 </ul>
                 <p class="caption"><span class="caption-text">pm</span></p>
@@ -336,30 +346,30 @@
           <div role="main">
             <div class="section">
               
-                <h1>php:script</h1>
+                <h1 id="phpscript">php:script<a class="headerlink" href="#phpscript" title="Permanent link">&para;</a></h1>
 <p>Run php a script after a full Drupal bootstrap.</p>
 <p>A useful alternative to eval command when your php is lengthy or you
 can't be bothered to figure out bash quoting. If you plan to share a
 script with others, consider making a full Drush command instead, since
 that's more self-documenting.  Drush provides commandline options to the
 script via a variable called <em>$extra</em>.</p>
-<h4>Examples</h4>
+<h4 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h4>
 <ul>
 <li><code>drush php:script example --script-path=/path/to/scripts:/another/path</code>. Run a script named example.php from specified paths</li>
 <li><code>drush php:script -</code>. Run PHP code from standard input.</li>
 <li><code>drush php:script</code>. List all available scripts.</li>
 <li><code>drush php:script foo -- apple --cider</code>. Run foo.php script with argument <em>apple</em> and option <em>cider</em>. Note the <em>--</em> separator.</li>
 </ul>
-<h4>Arguments</h4>
+<h4 id="arguments">Arguments<a class="headerlink" href="#arguments" title="Permanent link">&para;</a></h4>
 <ul>
 <li><strong>[--extra]...</strong>. </li>
 </ul>
-<h4>Options</h4>
+<h4 id="options">Options<a class="headerlink" href="#options" title="Permanent link">&para;</a></h4>
 <ul>
 <li><strong> --format[=FORMAT]</strong>.  [default: <em>var_export</em>]</li>
 <li><strong> --script-path=SCRIPT-PATH</strong>. Additional paths to search for scripts, separated by : (Unix-based systems) or ; (Windows).</li>
 </ul>
-<h4>Aliases</h4>
+<h4 id="aliases">Aliases<a class="headerlink" href="#aliases" title="Permanent link">&para;</a></h4>
 <ul>
 <li>scr</li>
 <li>php-script</li>

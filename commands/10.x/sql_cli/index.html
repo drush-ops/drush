@@ -214,6 +214,14 @@
                 <p class="caption"><span class="caption-text">sql</span></p>
                 <ul class="current">
                     <li class="toctree-l1 current"><a class="reference internal current" href="./">sql:cli</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#examples">Examples</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#options">Options</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#aliases">Aliases</a>
+    </li>
+    </ul>
                     </li>
                     <li class="toctree-l1"><a class="reference internal" href="../sql_connect/">sql:connect</a>
                     </li>
@@ -336,15 +344,15 @@
           <div role="main">
             <div class="section">
               
-                <h1>sql:cli</h1>
+                <h1 id="sqlcli">sql:cli<a class="headerlink" href="#sqlcli" title="Permanent link">&para;</a></h1>
 <p>Open a SQL command-line interface using Drupal's credentials.</p>
-<h4>Examples</h4>
+<h4 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h4>
 <ul>
 <li><code>drush sql:cli</code>. Open a SQL command-line interface using Drupal's credentials.</li>
 <li><code>drush sql:cli --extra=--progress-reports</code>. Open a SQL CLI and skip reading table information.</li>
 <li><code>drush sql:cli &lt; example.sql</code>. Import sql statements from a file into the current database.</li>
 </ul>
-<h4>Options</h4>
+<h4 id="options">Options<a class="headerlink" href="#options" title="Permanent link">&para;</a></h4>
 <ul>
 <li><strong> --extra=EXTRA</strong>. Add custom options to the connect string</li>
 <li><strong> --database[=DATABASE]</strong>. The DB connection key if using multiple connections in settings.php. [default: <em>default</em>]</li>
@@ -352,7 +360,7 @@
 <li><strong> --db-url=DB-URL</strong>. A Drupal 6 style database URL. For example <em>mysql://root:pass@localhost:port/dbname</em></li>
 <li><strong> --show-passwords</strong>. Show password on the CLI. Useful for debugging.</li>
 </ul>
-<h4>Aliases</h4>
+<h4 id="aliases">Aliases<a class="headerlink" href="#aliases" title="Permanent link">&para;</a></h4>
 <ul>
 <li>sqlc</li>
 <li>sql-cli</li>

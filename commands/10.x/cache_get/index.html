@@ -78,6 +78,18 @@
                     <li class="toctree-l1"><a class="reference internal" href="../cache_clear/">cache:clear</a>
                     </li>
                     <li class="toctree-l1 current"><a class="reference internal current" href="./">cache:get</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#examples">Examples</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#arguments">Arguments</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#options">Options</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#topics">Topics</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#aliases">Aliases</a>
+    </li>
+    </ul>
                     </li>
                     <li class="toctree-l1"><a class="reference internal" href="../cache_rebuild/">cache:rebuild</a>
                     </li>
@@ -336,29 +348,29 @@
           <div role="main">
             <div class="section">
               
-                <h1>cache:get</h1>
+                <h1 id="cacheget">cache:get<a class="headerlink" href="#cacheget" title="Permanent link">&para;</a></h1>
 <p>Fetch a cached object and display it.</p>
-<h4>Examples</h4>
+<h4 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h4>
 <ul>
 <li><code>drush cache:get hook_info bootstrap</code>. Display the data for the cache id "hook_info" from the "bootstrap" bin.</li>
 <li><code>drush cache:get update_available_releases update</code>. Display the data for the cache id "update_available_releases" from the "update" bin.</li>
 </ul>
-<h4>Arguments</h4>
+<h4 id="arguments">Arguments<a class="headerlink" href="#arguments" title="Permanent link">&para;</a></h4>
 <ul>
 <li><strong>--cid</strong>. The id of the object to fetch.</li>
 <li><strong>[--bin]</strong>. The cache bin to fetch from.</li>
 </ul>
-<h4>Options</h4>
+<h4 id="options">Options<a class="headerlink" href="#options" title="Permanent link">&para;</a></h4>
 <ul>
 <li><strong> --format[=FORMAT]</strong>. Format the result data. Available formats: csv,json,list,null,php,print-r,string,table,tsv,var_dump,var_export,xml,yaml [default: <em>json</em>]</li>
 <li><strong> --fields=FIELDS</strong>. Available fields: Cache ID (cid), Data (data), Created (created), Expire (expire), Tags (tags), Checksum (checksum), Valid (valid) [default: <em>cid,data,created,expire,tags</em>]</li>
 <li><strong> --field=FIELD</strong>. Select just one field, and force format to 'string'.</li>
 </ul>
-<h4>Topics</h4>
+<h4 id="topics">Topics<a class="headerlink" href="#topics" title="Permanent link">&para;</a></h4>
 <ul>
 <li><a href="https://docs.drush.org/en/master/output-formats-filters">Output formatters and filters: control the command output</a> (docs:output-formats-filters)</li>
 </ul>
-<h4>Aliases</h4>
+<h4 id="aliases">Aliases<a class="headerlink" href="#aliases" title="Permanent link">&para;</a></h4>
 <ul>
 <li>cg</li>
 <li>cache-get</li>

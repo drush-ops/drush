@@ -55,6 +55,16 @@
                     <li class="toctree-l1"><a class="reference internal" href="../deploy/">deploy</a>
                     </li>
                     <li class="toctree-l1 current"><a class="reference internal current" href="./">drupal:directory</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#examples">Examples</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#arguments">Arguments</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#options">Options</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#aliases">Aliases</a>
+    </li>
+    </ul>
                     </li>
                     <li class="toctree-l1"><a class="reference internal" href="../generate/">generate</a>
                     </li>
@@ -336,9 +346,9 @@
           <div role="main">
             <div class="section">
               
-                <h1>drupal:directory</h1>
+                <h1 id="drupaldirectory">drupal:directory<a class="headerlink" href="#drupaldirectory" title="Permanent link">&para;</a></h1>
 <p>Return the filesystem path for modules/themes and other key folders.</p>
-<h4>Examples</h4>
+<h4 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h4>
 <ul>
 <li><code>cd $(drush dd devel)</code>. Navigate into the devel module directory</li>
 <li><code>cd $(drush dd)</code>. Navigate to the root of your Drupal site</li>
@@ -346,15 +356,15 @@
 <li><code>drush dd @alias:%files</code>. Print the path to the files directory on the site @alias.</li>
 <li><code>edit $(drush dd devel)/devel.module</code>. Open devel module in your editor</li>
 </ul>
-<h4>Arguments</h4>
+<h4 id="arguments">Arguments<a class="headerlink" href="#arguments" title="Permanent link">&para;</a></h4>
 <ul>
 <li><strong>[--target]</strong>. A module/theme name, or special names like root, files, private, or an <em>alias:path</em> string such as @alias:%files.</li>
 </ul>
-<h4>Options</h4>
+<h4 id="options">Options<a class="headerlink" href="#options" title="Permanent link">&para;</a></h4>
 <ul>
 <li><strong> --local-only</strong>. Reject any target that specifies a remote site.</li>
 </ul>
-<h4>Aliases</h4>
+<h4 id="aliases">Aliases<a class="headerlink" href="#aliases" title="Permanent link">&para;</a></h4>
 <ul>
 <li>dd</li>
 <li>drupal-directory</li>

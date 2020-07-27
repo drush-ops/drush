@@ -172,6 +172,14 @@
                     <li class="toctree-l1"><a class="reference internal" href="../pm_security/">pm:security</a>
                     </li>
                     <li class="toctree-l1 current"><a class="reference internal current" href="./">pm:security-php</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#examples">Examples</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#options">Options</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#aliases">Aliases</a>
+    </li>
+    </ul>
                     </li>
                     <li class="toctree-l1"><a class="reference internal" href="../pm_uninstall/">pm:uninstall</a>
                     </li>
@@ -336,21 +344,21 @@
           <div role="main">
             <div class="section">
               
-                <h1>pm:security-php</h1>
+                <h1 id="pmsecurity-php">pm:security-php<a class="headerlink" href="#pmsecurity-php" title="Permanent link">&para;</a></h1>
 <p>Check non-Drupal PHP packages for pending security updates.</p>
 <p>Thanks to <a href="https://github.com/FriendsOfPHP/security-advisories">https://github.com/FriendsOfPHP/security-advisories</a> and Symfony
 for providing this service.</p>
-<h4>Examples</h4>
+<h4 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h4>
 <ul>
 <li><code>drush pm:security-php --format=json</code>. Get security data in JSON format.</li>
 </ul>
-<h4>Options</h4>
+<h4 id="options">Options<a class="headerlink" href="#options" title="Permanent link">&para;</a></h4>
 <ul>
 <li><strong> --format[=FORMAT]</strong>. Format the result data. Available formats: csv,json,list,null,php,print-r,tsv,var_dump,var_export,xml,yaml [default: <em>yaml</em>]</li>
 <li><strong> --fields=FIELDS</strong>. Limit output to only the listed elements. Name top-level elements by key, e.g. "--fields=name,date", or use dot notation to select a nested element, e.g. "--fields=a.b.c as example".</li>
 <li><strong> --field=FIELD</strong>. Select just one field, and force format to 'string'.</li>
 </ul>
-<h4>Aliases</h4>
+<h4 id="aliases">Aliases<a class="headerlink" href="#aliases" title="Permanent link">&para;</a></h4>
 <ul>
 <li>sec-php</li>
 <li>pm-security-php</li>

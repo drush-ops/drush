@@ -262,6 +262,18 @@
                     <li class="toctree-l1"><a class="reference internal" href="../user_create/">user:create</a>
                     </li>
                     <li class="toctree-l1 current"><a class="reference internal current" href="./">user:information</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#examples">Examples</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#arguments">Arguments</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#options">Options</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#topics">Topics</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#aliases">Aliases</a>
+    </li>
+    </ul>
                     </li>
                     <li class="toctree-l1"><a class="reference internal" href="../user_login/">user:login</a>
                     </li>
@@ -336,19 +348,19 @@
           <div role="main">
             <div class="section">
               
-                <h1>user:information</h1>
+                <h1 id="userinformation">user:information<a class="headerlink" href="#userinformation" title="Permanent link">&para;</a></h1>
 <p>Print information about the specified user(s).</p>
-<h4>Examples</h4>
+<h4 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h4>
 <ul>
 <li><code>drush user:information someguy,somegal</code>. Display information about the someguy and somegal user accounts.</li>
 <li><code>drush user:information --mail=<a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#115;&#111;&#109;&#101;&#103;&#117;&#121;&#64;&#115;&#111;&#109;&#101;&#103;&#97;&#108;&#46;&#99;&#111;&#109;">&#115;&#111;&#109;&#101;&#103;&#117;&#121;&#64;&#115;&#111;&#109;&#101;&#103;&#97;&#108;&#46;&#99;&#111;&#109;</a></code>. Display information for a given email account.</li>
 <li><code>drush user:information --uid=5</code>. Display information for a given user id.</li>
 </ul>
-<h4>Arguments</h4>
+<h4 id="arguments">Arguments<a class="headerlink" href="#arguments" title="Permanent link">&para;</a></h4>
 <ul>
 <li><strong>[--names]</strong>. A comma delimited list of user names.</li>
 </ul>
-<h4>Options</h4>
+<h4 id="options">Options<a class="headerlink" href="#options" title="Permanent link">&para;</a></h4>
 <ul>
 <li><strong> --format[=FORMAT]</strong>. Format the result data. Available formats: csv,json,list,null,php,print-r,sections,string,table,tsv,var_dump,var_export,xml,yaml [default: <em>table</em>]</li>
 <li><strong> --uid=UID</strong>. A comma delimited list of user ids to lookup (an alternative to names).</li>
@@ -357,11 +369,11 @@
 <li><strong> --field=FIELD</strong>. Select just one field, and force format to 'string'.</li>
 <li><strong> --filter[=FILTER]</strong>. Filter output based on provided expression</li>
 </ul>
-<h4>Topics</h4>
+<h4 id="topics">Topics<a class="headerlink" href="#topics" title="Permanent link">&para;</a></h4>
 <ul>
 <li><a href="https://docs.drush.org/en/master/output-formats-filters">Output formatters and filters: control the command output</a> (docs:output-formats-filters)</li>
 </ul>
-<h4>Aliases</h4>
+<h4 id="aliases">Aliases<a class="headerlink" href="#aliases" title="Permanent link">&para;</a></h4>
 <ul>
 <li>uinf</li>
 <li>user-information</li>

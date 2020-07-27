@@ -110,6 +110,16 @@
                     <li class="toctree-l1"><a class="reference internal" href="../core_cron/">core:cron</a>
                     </li>
                     <li class="toctree-l1 current"><a class="reference internal current" href="./">core:edit</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#examples">Examples</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#arguments">Arguments</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#options">Options</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#aliases">Aliases</a>
+    </li>
+    </ul>
                     </li>
                     <li class="toctree-l1"><a class="reference internal" href="../core_init/">core:init</a>
                     </li>
@@ -336,9 +346,9 @@
           <div role="main">
             <div class="section">
               
-                <h1>core:edit</h1>
+                <h1 id="coreedit">core:edit<a class="headerlink" href="#coreedit" title="Permanent link">&para;</a></h1>
 <p>Edit drushrc, site alias, and Drupal settings.php files.</p>
-<h4>Examples</h4>
+<h4 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h4>
 <ul>
 <li><code>drush core:config</code>. Pick from a list of config/alias/settings files. Open selected in editor.</li>
 <li><code>drush --bg core-config</code>. Return to shell prompt as soon as the editor window opens.</li>
@@ -347,16 +357,16 @@
 <li><code>drush core:config sett</code>. Edit settings.php for the current Drupal site.</li>
 <li><code>drush core:config --choice=2</code>. Edit the second file in the choice list.</li>
 </ul>
-<h4>Arguments</h4>
+<h4 id="arguments">Arguments<a class="headerlink" href="#arguments" title="Permanent link">&para;</a></h4>
 <ul>
 <li><strong>[--filter]</strong>. A substring for filtering the list of files. Omit this argument to choose from loaded files.</li>
 </ul>
-<h4>Options</h4>
+<h4 id="options">Options<a class="headerlink" href="#options" title="Permanent link">&para;</a></h4>
 <ul>
 <li><strong> --editor[=EDITOR]</strong>. A string of bash which launches user's preferred text editor. Defaults to <em>${VISUAL-${EDITOR-vi}}</em>.</li>
 <li><strong> --bg</strong>. Launch editor in background process.</li>
 </ul>
-<h4>Aliases</h4>
+<h4 id="aliases">Aliases<a class="headerlink" href="#aliases" title="Permanent link">&para;</a></h4>
 <ul>
 <li>conf</li>
 <li>config</li>

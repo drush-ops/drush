@@ -228,6 +228,18 @@
                     <li class="toctree-l1"><a class="reference internal" href="../sql_sanitize/">sql:sanitize</a>
                     </li>
                     <li class="toctree-l1 current"><a class="reference internal current" href="./">sql:sync</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#examples">Examples</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#arguments">Arguments</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#options">Options</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#topics">Topics</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#aliases">Aliases</a>
+    </li>
+    </ul>
                     </li>
                 </ul>
                 <p class="caption"><span class="caption-text">state</span></p>
@@ -336,20 +348,20 @@
           <div role="main">
             <div class="section">
               
-                <h1>sql:sync</h1>
+                <h1 id="sqlsync">sql:sync<a class="headerlink" href="#sqlsync" title="Permanent link">&para;</a></h1>
 <p>Copy DB data from a source site to a target site. Transfers data via rsync.</p>
-<h4>Examples</h4>
+<h4 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h4>
 <ul>
 <li><code>drush sql:sync @source @self</code>. Copy the database from the site with the alias 'source' to the local site.</li>
 <li><code>drush sql:sync @self @target</code>. Copy the database from the local site to the site with the alias 'target'.</li>
 <li><code>drush sql:sync #prod #dev</code>. Copy the database from the site in /sites/prod to the site in /sites/dev (multisite installation).</li>
 </ul>
-<h4>Arguments</h4>
+<h4 id="arguments">Arguments<a class="headerlink" href="#arguments" title="Permanent link">&para;</a></h4>
 <ul>
 <li><strong>--source</strong>. A site-alias or the name of a subdirectory within /sites whose database you want to copy from.</li>
 <li><strong>--target</strong>. A site-alias or the name of a subdirectory within /sites whose database you want to replace.</li>
 </ul>
-<h4>Options</h4>
+<h4 id="options">Options<a class="headerlink" href="#options" title="Permanent link">&para;</a></h4>
 <ul>
 <li><strong> --no-dump</strong>. Do not dump the sql database; always use an existing dump file.</li>
 <li><strong> --no-sync</strong>. Do not rsync the database dump file from source to target.</li>
@@ -367,14 +379,14 @@
 <li><strong> --structure-tables-list=STRUCTURE-TABLES-LIST</strong>. A comma-separated list of tables to include for structure, but not data.</li>
 <li><strong> --tables-list=TABLES-LIST</strong>. A comma-separated list of tables to transfer.</li>
 </ul>
-<h4>Topics</h4>
+<h4 id="topics">Topics<a class="headerlink" href="#topics" title="Permanent link">&para;</a></h4>
 <ul>
 <li><a href="https://raw.githubusercontent.com/drush-ops/drush/master/examples/example.site.yml">Creating site aliases for running Drush on remote sites.</a> (docs:aliases)</li>
 <li><a href="https://raw.githubusercontent.com/drush-ops/drush/master/examples/Commands/PolicyCommands.php">Example policy file.</a> (docs:policy)</li>
 <li><a href="https://raw.githubusercontent.com/drush-ops/drush/master/examples/example.drush.yml">Configuration overview with examples from example.drush.yml.</a> (docs:configuration)</li>
 <li><a href="https://raw.githubusercontent.com/drush-ops/drush/master/examples/Commands/SyncViaHttpCommands.php">Extend sql-sync to allow transfer of the sql dump file via http.</a> (docs:example-sync-via-http)</li>
 </ul>
-<h4>Aliases</h4>
+<h4 id="aliases">Aliases<a class="headerlink" href="#aliases" title="Permanent link">&para;</a></h4>
 <ul>
 <li>sql-sync</li>
 </ul>

@@ -292,6 +292,16 @@
                 <p class="caption"><span class="caption-text">watchdog</span></p>
                 <ul class="current">
                     <li class="toctree-l1 current"><a class="reference internal current" href="./">watchdog:delete</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#examples">Examples</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#arguments">Arguments</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#options">Options</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#aliases">Aliases</a>
+    </li>
+    </ul>
                     </li>
                     <li class="toctree-l1"><a class="reference internal" href="../watchdog_list/">watchdog:list</a>
                     </li>
@@ -336,9 +346,9 @@
           <div role="main">
             <div class="section">
               
-                <h1>watchdog:delete</h1>
+                <h1 id="watchdogdelete">watchdog:delete<a class="headerlink" href="#watchdogdelete" title="Permanent link">&para;</a></h1>
 <p>Delete watchdog log records.</p>
-<h4>Examples</h4>
+<h4 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h4>
 <ul>
 <li><code>drush watchdog:delete all</code>. Delete all messages.</li>
 <li><code>drush watchdog:delete 64</code>. Delete messages with id 64.</li>
@@ -346,16 +356,16 @@
 <li><code>drush watchdog:delete --severity=notice</code>. Delete all messages with a severity of notice.</li>
 <li><code>drush watchdog:delete --type=cron</code>. Delete all messages of type cron.</li>
 </ul>
-<h4>Arguments</h4>
+<h4 id="arguments">Arguments<a class="headerlink" href="#arguments" title="Permanent link">&para;</a></h4>
 <ul>
 <li><strong>[--substring]</strong>. Delete all log records with this text in the messages.</li>
 </ul>
-<h4>Options</h4>
+<h4 id="options">Options<a class="headerlink" href="#options" title="Permanent link">&para;</a></h4>
 <ul>
 <li><strong> --severity=SEVERITY</strong>. Delete messages of a given severity level.</li>
 <li><strong> --type=TYPE</strong>. Delete messages of a given type.</li>
 </ul>
-<h4>Aliases</h4>
+<h4 id="aliases">Aliases<a class="headerlink" href="#aliases" title="Permanent link">&para;</a></h4>
 <ul>
 <li>wd-del</li>
 <li>wd-delete</li>

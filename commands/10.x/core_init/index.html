@@ -112,6 +112,14 @@
                     <li class="toctree-l1"><a class="reference internal" href="../core_edit/">core:edit</a>
                     </li>
                     <li class="toctree-l1 current"><a class="reference internal current" href="./">core:init</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#examples">Examples</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#options">Options</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#aliases">Aliases</a>
+    </li>
+    </ul>
                     </li>
                     <li class="toctree-l1"><a class="reference internal" href="../core_requirements/">core:requirements</a>
                     </li>
@@ -336,21 +344,21 @@
           <div role="main">
             <div class="section">
               
-                <h1>core:init</h1>
+                <h1 id="coreinit">core:init<a class="headerlink" href="#coreinit" title="Permanent link">&para;</a></h1>
 <p>Enrich the bash startup file with bash aliases and a smart command prompt.</p>
-<h4>Examples</h4>
+<h4 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h4>
 <ul>
 <li><code>core-init --edit</code>. Enrich Bash and open drush config file in editor.</li>
 <li><code>core-init --edit --bg</code>. Return to shell prompt as soon as the editor window opens</li>
 </ul>
-<h4>Options</h4>
+<h4 id="options">Options<a class="headerlink" href="#options" title="Permanent link">&para;</a></h4>
 <ul>
 <li><strong> --edit</strong>. Open the new config file in an editor.</li>
 <li><strong> --add-path[=ADD-PATH]</strong>. Always add Drush to the $PATH in the user's .bashrc file, even if it is already in the $PATH. Use --no-add-path to skip updating .bashrc with the Drush $PATH. Default is to update .bashrc only if Drush is not already in the $PATH.</li>
 <li><strong> --editor[=EDITOR]</strong>. A string of bash which launches user's preferred text editor. Defaults to <em>${VISUAL-${EDITOR-vi}}</em>.</li>
 <li><strong> --bg</strong>. Launch editor in background process.</li>
 </ul>
-<h4>Aliases</h4>
+<h4 id="aliases">Aliases<a class="headerlink" href="#aliases" title="Permanent link">&para;</a></h4>
 <ul>
 <li>init</li>
 <li>core-init</li>

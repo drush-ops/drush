@@ -141,6 +141,16 @@
                     <li class="toctree-l1"><a class="reference internal" href="../image_derive/">image:derive</a>
                     </li>
                     <li class="toctree-l1 current"><a class="reference internal current" href="./">image:flush</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#examples">Examples</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#arguments">Arguments</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#options">Options</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#aliases">Aliases</a>
+    </li>
+    </ul>
                     </li>
                 </ul>
                 <p class="caption"><span class="caption-text">locale</span></p>
@@ -336,23 +346,23 @@
           <div role="main">
             <div class="section">
               
-                <h1>image:flush</h1>
+                <h1 id="imageflush">image:flush<a class="headerlink" href="#imageflush" title="Permanent link">&para;</a></h1>
 <p>Flush all derived images for a given style.</p>
-<h4>Examples</h4>
+<h4 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h4>
 <ul>
 <li><code>drush image:flush</code>. Pick an image style and then delete its derivatives.</li>
 <li><code>drush image:flush thumbnail,large</code>. Delete all thumbnail and large derivatives.</li>
 <li><code>drush image:flush --all</code>. Flush all derived images. They will be regenerated on demand.</li>
 </ul>
-<h4>Arguments</h4>
+<h4 id="arguments">Arguments<a class="headerlink" href="#arguments" title="Permanent link">&para;</a></h4>
 <ul>
 <li><strong>--style_names</strong>. A comma delimited list of image style machine names. If not provided, user may choose from a list of names.</li>
 </ul>
-<h4>Options</h4>
+<h4 id="options">Options<a class="headerlink" href="#options" title="Permanent link">&para;</a></h4>
 <ul>
 <li><strong> --all</strong>. Flush all derived images</li>
 </ul>
-<h4>Aliases</h4>
+<h4 id="aliases">Aliases<a class="headerlink" href="#aliases" title="Permanent link">&para;</a></h4>
 <ul>
 <li>if</li>
 <li>image-flush</li>

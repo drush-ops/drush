@@ -93,6 +93,16 @@
                     <li class="toctree-l1"><a class="reference internal" href="../config_edit/">config:edit</a>
                     </li>
                     <li class="toctree-l1 current"><a class="reference internal current" href="./">config:export</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#examples">Examples</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#arguments">Arguments</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#options">Options</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#aliases">Aliases</a>
+    </li>
+    </ul>
                     </li>
                     <li class="toctree-l1"><a class="reference internal" href="../config_get/">config:get</a>
                     </li>
@@ -336,18 +346,18 @@
           <div role="main">
             <div class="section">
               
-                <h1>config:export</h1>
+                <h1 id="configexport">config:export<a class="headerlink" href="#configexport" title="Permanent link">&para;</a></h1>
 <p>Export Drupal configuration to a directory.</p>
-<h4>Examples</h4>
+<h4 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h4>
 <ul>
 <li><code>drush config:export</code>. Export configuration files to the site's config directory.</li>
 <li><code>drush config:export --destination</code>. Export configuration; Save files in a backup directory named config-export.</li>
 </ul>
-<h4>Arguments</h4>
+<h4 id="arguments">Arguments<a class="headerlink" href="#arguments" title="Permanent link">&para;</a></h4>
 <ul>
 <li><strong>[--label]</strong>. A config directory label (i.e. a key in $config_directories array in settings.php).</li>
 </ul>
-<h4>Options</h4>
+<h4 id="options">Options<a class="headerlink" href="#options" title="Permanent link">&para;</a></h4>
 <ul>
 <li><strong> --add</strong>. Run <code>git add -p</code> after exporting. This lets you choose which config changes to sync for commit.</li>
 <li><strong> --commit</strong>. Run <code>git add -A</code> and <code>git commit</code> after exporting. This commits everything that was exported without prompting.</li>
@@ -356,7 +366,7 @@
 <li><strong> --diff</strong>. Show preview as a diff, instead of a change list.</li>
 <li><strong> --format[=FORMAT]</strong>. </li>
 </ul>
-<h4>Aliases</h4>
+<h4 id="aliases">Aliases<a class="headerlink" href="#aliases" title="Permanent link">&para;</a></h4>
 <ul>
 <li>cex</li>
 <li>config-export</li>

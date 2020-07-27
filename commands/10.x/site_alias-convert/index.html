@@ -203,6 +203,16 @@
                     <li class="toctree-l1"><a class="reference internal" href="../site_alias/">site:alias</a>
                     </li>
                     <li class="toctree-l1 current"><a class="reference internal current" href="./">site:alias-convert</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#examples">Examples</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#arguments">Arguments</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#options">Options</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#aliases">Aliases</a>
+    </li>
+    </ul>
                     </li>
                     <li class="toctree-l1"><a class="reference internal" href="../site_install/">site:install</a>
                     </li>
@@ -336,23 +346,23 @@
           <div role="main">
             <div class="section">
               
-                <h1>site:alias-convert</h1>
+                <h1 id="sitealias-convert">site:alias-convert<a class="headerlink" href="#sitealias-convert" title="Permanent link">&para;</a></h1>
 <p>Convert legacy site alias files to the new yml format.</p>
-<h4>Examples</h4>
+<h4 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h4>
 <ul>
 <li><code>drush site:alias-convert</code>. Find legacy alias files and convert them to yml. You will be prompted for a destination directory.</li>
 <li><code>drush site:alias-convert --simulate</code>. List the files to be converted but do not actually do anything.</li>
 </ul>
-<h4>Arguments</h4>
+<h4 id="arguments">Arguments<a class="headerlink" href="#arguments" title="Permanent link">&para;</a></h4>
 <ul>
 <li><strong>--destination</strong>. An absolute path to a directory for writing new alias files.If omitted, user will be prompted.</li>
 </ul>
-<h4>Options</h4>
+<h4 id="options">Options<a class="headerlink" href="#options" title="Permanent link">&para;</a></h4>
 <ul>
 <li><strong> --format[=FORMAT]</strong>.  [default: <em>yaml</em>]</li>
 <li><strong> --sources=SOURCES</strong>. A comma delimited list of paths to search. Overrides the default paths.</li>
 </ul>
-<h4>Aliases</h4>
+<h4 id="aliases">Aliases<a class="headerlink" href="#aliases" title="Permanent link">&para;</a></h4>
 <ul>
 <li>sa-convert</li>
 <li>sac</li>

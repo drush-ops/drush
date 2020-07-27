@@ -264,6 +264,16 @@
                     <li class="toctree-l1"><a class="reference internal" href="../user_information/">user:information</a>
                     </li>
                     <li class="toctree-l1 current"><a class="reference internal current" href="./">user:login</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#examples">Examples</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#arguments">Arguments</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#options">Options</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#aliases">Aliases</a>
+    </li>
+    </ul>
                     </li>
                     <li class="toctree-l1"><a class="reference internal" href="../user_password/">user:password</a>
                     </li>
@@ -336,9 +346,9 @@
           <div role="main">
             <div class="section">
               
-                <h1>user:login</h1>
+                <h1 id="userlogin">user:login<a class="headerlink" href="#userlogin" title="Permanent link">&para;</a></h1>
 <p>Display a one time login link for user ID 1, or another user.</p>
-<h4>Examples</h4>
+<h4 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h4>
 <ul>
 <li><code>drush user:login</code>. Open default web browser and browse to homepage, logged in as uid=1.</li>
 <li><code>drush user:login --name=ryan node/add/blog</code>. Open default web browser (if configured or detected) for a one-time login link for username ryan that redirects to node/add/blog.</li>
@@ -346,11 +356,11 @@
 <li><code>drush user:login --mail=<a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#102;&#111;&#111;&#64;&#98;&#97;&#114;&#46;&#99;&#111;&#109;">&#102;&#111;&#111;&#64;&#98;&#97;&#114;&#46;&#99;&#111;&#109;</a></code>. Open default web browser and login as user with mail "<a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#102;&#111;&#111;&#64;&#98;&#97;&#114;&#46;&#99;&#111;&#109;">&#102;&#111;&#111;&#64;&#98;&#97;&#114;&#46;&#99;&#111;&#109;</a>".</li>
 <li><code>drush user:login --browser=firefox --name=$(drush user:information --mail="<a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#100;&#114;&#117;&#115;&#104;&#64;&#101;&#120;&#97;&#109;&#112;&#108;&#101;&#46;&#111;&#114;&#103;">&#100;&#114;&#117;&#115;&#104;&#64;&#101;&#120;&#97;&#109;&#112;&#108;&#101;&#46;&#111;&#114;&#103;</a>" --fields=name --format=string)</code>. Open firefox web browser, and login as the user with the e-mail address <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#100;&#114;&#117;&#115;&#104;&#64;&#101;&#120;&#97;&#109;&#112;&#108;&#101;&#46;&#111;&#114;&#103;">&#100;&#114;&#117;&#115;&#104;&#64;&#101;&#120;&#97;&#109;&#112;&#108;&#101;&#46;&#111;&#114;&#103;</a>.</li>
 </ul>
-<h4>Arguments</h4>
+<h4 id="arguments">Arguments<a class="headerlink" href="#arguments" title="Permanent link">&para;</a></h4>
 <ul>
 <li><strong>[--path]</strong>. Optional path to redirect to after logging in.</li>
 </ul>
-<h4>Options</h4>
+<h4 id="options">Options<a class="headerlink" href="#options" title="Permanent link">&para;</a></h4>
 <ul>
 <li><strong> --name[=NAME]</strong>. A user name to log in as.</li>
 <li><strong> --uid[=UID]</strong>. A uid to log in as.</li>
@@ -359,7 +369,7 @@
 <li><strong> --redirect-port=REDIRECT-PORT</strong>. A custom port for redirecting to (e.g., when running within a Vagrant environment)</li>
 <li><strong> --no-browser</strong>. Negate --browser option.</li>
 </ul>
-<h4>Aliases</h4>
+<h4 id="aliases">Aliases<a class="headerlink" href="#aliases" title="Permanent link">&para;</a></h4>
 <ul>
 <li>uli</li>
 <li>user-login</li>

@@ -132,6 +132,16 @@
                 <p class="caption"><span class="caption-text">entity</span></p>
                 <ul class="current">
                     <li class="toctree-l1 current"><a class="reference internal current" href="./">entity:delete</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#examples">Examples</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#arguments">Arguments</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#options">Options</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#aliases">Aliases</a>
+    </li>
+    </ul>
                     </li>
                     <li class="toctree-l1"><a class="reference internal" href="../entity_updates/">entity:updates</a>
                     </li>
@@ -336,10 +346,10 @@
           <div role="main">
             <div class="section">
               
-                <h1>entity:delete</h1>
+                <h1 id="entitydelete">entity:delete<a class="headerlink" href="#entitydelete" title="Permanent link">&para;</a></h1>
 <p>Delete content entities.</p>
 <p>To delete configuration entities, see config:delete command.</p>
-<h4>Examples</h4>
+<h4 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h4>
 <ul>
 <li><code>drush entity:delete node --bundle=article</code>. Delete all article entities.</li>
 <li><code>drush entity:delete shortcut</code>. Delete all shortcut entities.</li>
@@ -347,17 +357,17 @@
 <li><code>drush entity:delete node --exclude=9,14,81</code>. Delete all nodes except node 9, 14 and 81.</li>
 <li><code>drush entity:delete user</code>. Delete all users except uid=1.</li>
 </ul>
-<h4>Arguments</h4>
+<h4 id="arguments">Arguments<a class="headerlink" href="#arguments" title="Permanent link">&para;</a></h4>
 <ul>
 <li><strong>--entity_type</strong>. An entity machine name.</li>
 <li><strong>[--ids]</strong>. A comma delimited list of Ids.</li>
 </ul>
-<h4>Options</h4>
+<h4 id="options">Options<a class="headerlink" href="#options" title="Permanent link">&para;</a></h4>
 <ul>
 <li><strong> --bundle=BUNDLE</strong>. Restrict deletion to the specified bundle. Ignored when ids is specified.</li>
 <li><strong> --exclude=EXCLUDE</strong>. Exclude certain entities from deletion. Ignored when ids is specified.</li>
 </ul>
-<h4>Aliases</h4>
+<h4 id="aliases">Aliases<a class="headerlink" href="#aliases" title="Permanent link">&para;</a></h4>
 <ul>
 <li>edel</li>
 <li>entity-delete</li>

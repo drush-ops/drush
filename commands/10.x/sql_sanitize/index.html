@@ -226,6 +226,14 @@
                     <li class="toctree-l1"><a class="reference internal" href="../sql_query/">sql:query</a>
                     </li>
                     <li class="toctree-l1 current"><a class="reference internal current" href="./">sql:sanitize</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#examples">Examples</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#options">Options</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#aliases">Aliases</a>
+    </li>
+    </ul>
                     </li>
                     <li class="toctree-l1"><a class="reference internal" href="../sql_sync/">sql:sync</a>
                     </li>
@@ -336,26 +344,26 @@
           <div role="main">
             <div class="section">
               
-                <h1>sql:sanitize</h1>
+                <h1 id="sqlsanitize">sql:sanitize<a class="headerlink" href="#sqlsanitize" title="Permanent link">&para;</a></h1>
 <p>Sanitize the database by removing or obfuscating user data.</p>
 <p>Commandfiles may add custom operations by implementing:
 - @hook_on-event sql-sanitize-message
 Display summary to user before confirmation.
 - @hook post-command sql-sanitize
 Run queries or call APIs to perform sanitizing</p>
-<h4>Examples</h4>
+<h4 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h4>
 <ul>
 <li><code>drush sql:sanitize --sanitize-password=no</code>. Sanitize database without modifying any passwords.</li>
 <li><code>drush sql:sanitize --allowlist-fields=field_biography,field_phone_number</code>. Sanitizes database but exempts two user fields from modification.</li>
 </ul>
-<h4>Options</h4>
+<h4 id="options">Options<a class="headerlink" href="#options" title="Permanent link">&para;</a></h4>
 <ul>
 <li><strong> --whitelist-fields[=WHITELIST-FIELDS]</strong>. Deprecated. Use allowlist-fields instead.</li>
 <li><strong> --allowlist-fields[=ALLOWLIST-FIELDS]</strong>. A comma delimited list of fields exempt from sanitization.</li>
 <li><strong> --sanitize-email[=SANITIZE-EMAIL]</strong>. The pattern for test email addresses in the sanitization operation, or "no" to keep email addresses unchanged. May contain replacement patterns %uid, %mail or %name. [default: <em>user+%<a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#117;&#105;&#100;&#64;&#108;&#111;&#99;&#97;&#108;&#104;&#111;&#115;&#116;&#46;&#108;&#111;&#99;&#97;&#108;&#100;&#111;&#109;&#97;&#105;&#110;">&#117;&#105;&#100;&#64;&#108;&#111;&#99;&#97;&#108;&#104;&#111;&#115;&#116;&#46;&#108;&#111;&#99;&#97;&#108;&#100;&#111;&#109;&#97;&#105;&#110;</a></em>]</li>
 <li><strong> --sanitize-password[=SANITIZE-PASSWORD]</strong>. By default, passwords are randomized. Specify 'no' to disable that. Specify any other value to set all passwords to that value.</li>
 </ul>
-<h4>Aliases</h4>
+<h4 id="aliases">Aliases<a class="headerlink" href="#aliases" title="Permanent link">&para;</a></h4>
 <ul>
 <li>sqlsan</li>
 <li>sql-sanitize</li>

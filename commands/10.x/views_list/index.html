@@ -287,6 +287,16 @@
                     <li class="toctree-l1"><a class="reference internal" href="../views_execute/">views:execute</a>
                     </li>
                     <li class="toctree-l1 current"><a class="reference internal current" href="./">views:list</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#examples">Examples</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#options">Options</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#topics">Topics</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#aliases">Aliases</a>
+    </li>
+    </ul>
                     </li>
                 </ul>
                 <p class="caption"><span class="caption-text">watchdog</span></p>
@@ -336,16 +346,16 @@
           <div role="main">
             <div class="section">
               
-                <h1>views:list</h1>
+                <h1 id="viewslist">views:list<a class="headerlink" href="#viewslist" title="Permanent link">&para;</a></h1>
 <p>Get a list of all views in the system.</p>
-<h4>Examples</h4>
+<h4 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h4>
 <ul>
 <li><code>drush vl</code>. Show a list of all available views.</li>
 <li><code>drush vl --name=blog</code>. Show a list of views which names contain 'blog'.</li>
 <li><code>drush vl --tags=tag1,tag2</code>. Show a list of views tagged with 'tag1' or 'tag2'.</li>
 <li><code>drush vl --status=enabled</code>. Show a list of enabled views.</li>
 </ul>
-<h4>Options</h4>
+<h4 id="options">Options<a class="headerlink" href="#options" title="Permanent link">&para;</a></h4>
 <ul>
 <li><strong> --name=NAME</strong>. A string contained in the view's name to filter the results with.</li>
 <li><strong> --tags=TAGS</strong>. A comma-separated list of views tags by which to filter the results.</li>
@@ -355,11 +365,11 @@
 <li><strong> --field=FIELD</strong>. Select just one field, and force format to 'string'.</li>
 <li><strong> --filter[=FILTER]</strong>. Filter output based on provided expression</li>
 </ul>
-<h4>Topics</h4>
+<h4 id="topics">Topics<a class="headerlink" href="#topics" title="Permanent link">&para;</a></h4>
 <ul>
 <li><a href="https://docs.drush.org/en/master/output-formats-filters">Output formatters and filters: control the command output</a> (docs:output-formats-filters)</li>
 </ul>
-<h4>Aliases</h4>
+<h4 id="aliases">Aliases<a class="headerlink" href="#aliases" title="Permanent link">&para;</a></h4>
 <ul>
 <li>vl</li>
 <li>views-list</li>

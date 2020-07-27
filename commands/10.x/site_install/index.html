@@ -205,6 +205,16 @@
                     <li class="toctree-l1"><a class="reference internal" href="../site_alias-convert/">site:alias-convert</a>
                     </li>
                     <li class="toctree-l1 current"><a class="reference internal current" href="./">site:install</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#examples">Examples</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#arguments">Arguments</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#options">Options</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#aliases">Aliases</a>
+    </li>
+    </ul>
                     </li>
                     <li class="toctree-l1"><a class="reference internal" href="../site_set/">site:set</a>
                     </li>
@@ -336,9 +346,9 @@
           <div role="main">
             <div class="section">
               
-                <h1>site:install</h1>
+                <h1 id="siteinstall">site:install<a class="headerlink" href="#siteinstall" title="Permanent link">&para;</a></h1>
 <p>Install Drupal along with modules/themes/configuration/profile.</p>
-<h4>Examples</h4>
+<h4 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h4>
 <ul>
 <li><code>drush si expert --locale=uk</code>. (Re)install using the expert install profile. Set default language to Ukrainian.</li>
 <li><code>drush si --db-url=mysql://root:pass@localhost:port/dbname</code>. Install using the specified DB params.</li>
@@ -347,11 +357,11 @@
 <li><code>drush si --existing-config</code>. Install based on the yml files stored in the config export/import directory.</li>
 <li><code>drush si standard install_configure_form.enable_update_status_emails=NULL</code>. Disable email notification during install and later. If your server has no mail transfer agent, this gets rid of an error during install.</li>
 </ul>
-<h4>Arguments</h4>
+<h4 id="arguments">Arguments<a class="headerlink" href="#arguments" title="Permanent link">&para;</a></h4>
 <ul>
 <li><strong>[--profile]...</strong>. An install profile name. Defaults to <em>standard</em> unless an install profile is marked as a distribution. Additional info for the install profile may also be provided with additional arguments. The key is in the form <em>[form name].[parameter name]</em></li>
 </ul>
-<h4>Options</h4>
+<h4 id="options">Options<a class="headerlink" href="#options" title="Permanent link">&para;</a></h4>
 <ul>
 <li><strong> --db-url=DB-URL</strong>. A Drupal 6 style database URL. Required for initial install, not re-install. If omitted and required, Drush prompts for this item.</li>
 <li><strong> --db-prefix=DB-PREFIX</strong>. An optional table prefix to use for initial install.</li>
@@ -368,7 +378,7 @@
 <li><strong> --config-dir=CONFIG-DIR</strong>. Deprecated - only use with Drupal 8.5-. A path pointing to a full set of configuration which should be installed during installation.</li>
 <li><strong> --existing-config</strong>. Configuration from <em>sync</em> directory should be imported during installation. Use with Drupal 8.6+.</li>
 </ul>
-<h4>Aliases</h4>
+<h4 id="aliases">Aliases<a class="headerlink" href="#aliases" title="Permanent link">&para;</a></h4>
 <ul>
 <li>si</li>
 <li>sin</li>

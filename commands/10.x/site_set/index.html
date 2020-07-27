@@ -207,6 +207,14 @@
                     <li class="toctree-l1"><a class="reference internal" href="../site_install/">site:install</a>
                     </li>
                     <li class="toctree-l1 current"><a class="reference internal current" href="./">site:set</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#examples">Examples</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#arguments">Arguments</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#aliases">Aliases</a>
+    </li>
+    </ul>
                     </li>
                     <li class="toctree-l1"><a class="reference internal" href="../site_ssh/">site:ssh</a>
                     </li>
@@ -336,11 +344,11 @@
           <div role="main">
             <div class="section">
               
-                <h1>site:set</h1>
+                <h1 id="siteset">site:set<a class="headerlink" href="#siteset" title="Permanent link">&para;</a></h1>
 <p>Set a site alias that will persist for the current session.</p>
 <p>Stores the site alias being used in the current session in a temporary
 file.</p>
-<h4>Examples</h4>
+<h4 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h4>
 <ul>
 <li><code>drush site:set @dev</code>. Set the current session to use the @dev alias.</li>
 <li><code>drush site:set user@server/path/to/drupal#sitename</code>. Set the current session to use a remote site via site specification.</li>
@@ -348,11 +356,11 @@ file.</p>
 <li><code>drush site:set -</code>. Go back to the previously-set site (like <code>cd -</code>).</li>
 <li><code>drush site:set</code>. Without an argument, any existing site becomes unset.</li>
 </ul>
-<h4>Arguments</h4>
+<h4 id="arguments">Arguments<a class="headerlink" href="#arguments" title="Permanent link">&para;</a></h4>
 <ul>
 <li><strong>[--site]</strong>. Site specification to use, or <em>-</em> for previous site. Omit this argument to unset.</li>
 </ul>
-<h4>Aliases</h4>
+<h4 id="aliases">Aliases<a class="headerlink" href="#aliases" title="Permanent link">&para;</a></h4>
 <ul>
 <li>use</li>
 <li>site-set</li>

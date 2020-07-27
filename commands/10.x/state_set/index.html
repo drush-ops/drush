@@ -237,6 +237,16 @@
                     <li class="toctree-l1"><a class="reference internal" href="../state_get/">state:get</a>
                     </li>
                     <li class="toctree-l1 current"><a class="reference internal current" href="./">state:set</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#examples">Examples</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#arguments">Arguments</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#options">Options</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#aliases">Aliases</a>
+    </li>
+    </ul>
                     </li>
                 </ul>
                 <p class="caption"><span class="caption-text">theme</span></p>
@@ -336,25 +346,25 @@
           <div role="main">
             <div class="section">
               
-                <h1>state:set</h1>
+                <h1 id="stateset">state:set<a class="headerlink" href="#stateset" title="Permanent link">&para;</a></h1>
 <p>Set a state value.</p>
-<h4>Examples</h4>
+<h4 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h4>
 <ul>
 <li><code>drush sset system.maintenance_mode 1 --input-format=integer</code>. Put site into Maintenance mode.</li>
 <li><code>drush state:set system.cron_last 1406682882 --input-format=integer</code>. Sets a timestamp for last cron run.</li>
 <li><code>php -r "print json_encode(array(\'drupal\', \'simpletest\'));"  | drush state-set --input-format=json foo.name -</code>. Set a key to a complex value (e.g. array)</li>
 </ul>
-<h4>Arguments</h4>
+<h4 id="arguments">Arguments<a class="headerlink" href="#arguments" title="Permanent link">&para;</a></h4>
 <ul>
 <li><strong>--key</strong>. The state key, for example: <em>system.cron_last</em>.</li>
 <li><strong>--value</strong>. The value to assign to the state key. Use <em>-</em> to read from STDIN.</li>
 </ul>
-<h4>Options</h4>
+<h4 id="options">Options<a class="headerlink" href="#options" title="Permanent link">&para;</a></h4>
 <ul>
 <li><strong> --input-format[=INPUT-FORMAT]</strong>. Type for the value. Other recognized values: string, integer, float, boolean, json, yaml. [default: <em>auto</em>]</li>
 <li><strong> --value=VALUE</strong>. For internal use only.</li>
 </ul>
-<h4>Aliases</h4>
+<h4 id="aliases">Aliases<a class="headerlink" href="#aliases" title="Permanent link">&para;</a></h4>
 <ul>
 <li>sset</li>
 <li>state-set</li>

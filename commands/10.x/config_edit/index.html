@@ -91,6 +91,16 @@
                     <li class="toctree-l1"><a class="reference internal" href="../config_delete/">config:delete</a>
                     </li>
                     <li class="toctree-l1 current"><a class="reference internal current" href="./">config:edit</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#examples">Examples</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#arguments">Arguments</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#options">Options</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#aliases">Aliases</a>
+    </li>
+    </ul>
                     </li>
                     <li class="toctree-l1"><a class="reference internal" href="../config_export/">config:export</a>
                     </li>
@@ -336,24 +346,24 @@
           <div role="main">
             <div class="section">
               
-                <h1>config:edit</h1>
+                <h1 id="configedit">config:edit<a class="headerlink" href="#configedit" title="Permanent link">&para;</a></h1>
 <p>Open a config file in a text editor. Edits are imported after closing editor.</p>
-<h4>Examples</h4>
+<h4 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h4>
 <ul>
 <li><code>drush config:edit image.style.large</code>. Edit the image style configurations.</li>
 <li><code>drush config:edit</code>. Choose a config file to edit.</li>
 <li><code>drush --bg config-edit image.style.large</code>. Return to shell prompt as soon as the editor window opens.</li>
 </ul>
-<h4>Arguments</h4>
+<h4 id="arguments">Arguments<a class="headerlink" href="#arguments" title="Permanent link">&para;</a></h4>
 <ul>
 <li><strong>--config_name</strong>. The config object name, for example <em>system.site</em>.</li>
 </ul>
-<h4>Options</h4>
+<h4 id="options">Options<a class="headerlink" href="#options" title="Permanent link">&para;</a></h4>
 <ul>
 <li><strong> --editor[=EDITOR]</strong>. A string of bash which launches user's preferred text editor. Defaults to <em>${VISUAL-${EDITOR-vi}}</em>.</li>
 <li><strong> --bg</strong>. Launch editor in background process.</li>
 </ul>
-<h4>Aliases</h4>
+<h4 id="aliases">Aliases<a class="headerlink" href="#aliases" title="Permanent link">&para;</a></h4>
 <ul>
 <li>cedit</li>
 <li>config-edit</li>

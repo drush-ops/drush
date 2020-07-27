@@ -159,6 +159,16 @@
                     <li class="toctree-l1"><a class="reference internal" href="../php_cli/">php:cli</a>
                     </li>
                     <li class="toctree-l1 current"><a class="reference internal current" href="./">php:eval</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#examples">Examples</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#arguments">Arguments</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#options">Options</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#aliases">Aliases</a>
+    </li>
+    </ul>
                     </li>
                     <li class="toctree-l1"><a class="reference internal" href="../php_script/">php:script</a>
                     </li>
@@ -336,23 +346,23 @@
           <div role="main">
             <div class="section">
               
-                <h1>php:eval</h1>
+                <h1 id="phpeval">php:eval<a class="headerlink" href="#phpeval" title="Permanent link">&para;</a></h1>
 <p>Evaluate arbitrary php code after bootstrapping Drupal (if available).</p>
-<h4>Examples</h4>
+<h4 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h4>
 <ul>
 <li><code>drush php:eval '$node = node_load(1); print $node-&gt;title;'</code>. Loads node with nid 1 and then prints its title.</li>
 <li><code>drush php:eval "file_unmanaged_copy(\'$HOME/Pictures/image.jpg\', \'public://image.jpg\');"</code>. Copies a file whose path is determined by an environment's variable. Use of double quotes so the variable $HOME gets replaced by its value.</li>
 <li><code>drush php:eval "node_access_rebuild();"</code>. Rebuild node access permissions.</li>
 </ul>
-<h4>Arguments</h4>
+<h4 id="arguments">Arguments<a class="headerlink" href="#arguments" title="Permanent link">&para;</a></h4>
 <ul>
 <li><strong>--code</strong>. PHP code</li>
 </ul>
-<h4>Options</h4>
+<h4 id="options">Options<a class="headerlink" href="#options" title="Permanent link">&para;</a></h4>
 <ul>
 <li><strong> --format[=FORMAT]</strong>.  [default: <em>var_export</em>]</li>
 </ul>
-<h4>Aliases</h4>
+<h4 id="aliases">Aliases<a class="headerlink" href="#aliases" title="Permanent link">&para;</a></h4>
 <ul>
 <li>eval</li>
 <li>ev</li>

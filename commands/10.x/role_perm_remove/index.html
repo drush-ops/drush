@@ -196,6 +196,14 @@
                     <li class="toctree-l1"><a class="reference internal" href="../role_perm_add/">role:perm:add</a>
                     </li>
                     <li class="toctree-l1 current"><a class="reference internal current" href="./">role:perm:remove</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#examples">Examples</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#arguments">Arguments</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#aliases">Aliases</a>
+    </li>
+    </ul>
                     </li>
                 </ul>
                 <p class="caption"><span class="caption-text">site</span></p>
@@ -336,18 +344,18 @@
           <div role="main">
             <div class="section">
               
-                <h1>role:perm:remove</h1>
+                <h1 id="rolepermremove">role:perm:remove<a class="headerlink" href="#rolepermremove" title="Permanent link">&para;</a></h1>
 <p>Remove specified permission(s) from a role.</p>
-<h4>Examples</h4>
+<h4 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h4>
 <ul>
 <li><code>drush role:remove-perm anonymous 'access content'</code>. Hide content from anon users.</li>
 </ul>
-<h4>Arguments</h4>
+<h4 id="arguments">Arguments<a class="headerlink" href="#arguments" title="Permanent link">&para;</a></h4>
 <ul>
 <li><strong>--machine_name</strong>. The role to modify.</li>
 <li><strong>--permissions</strong>. The list of permission to grant, delimited by commas.</li>
 </ul>
-<h4>Aliases</h4>
+<h4 id="aliases">Aliases<a class="headerlink" href="#aliases" title="Permanent link">&para;</a></h4>
 <ul>
 <li>rmp</li>
 <li>role-remove-perm</li>

@@ -235,6 +235,16 @@
                     <li class="toctree-l1"><a class="reference internal" href="../state_delete/">state:delete</a>
                     </li>
                     <li class="toctree-l1 current"><a class="reference internal current" href="./">state:get</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#examples">Examples</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#arguments">Arguments</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#options">Options</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#aliases">Aliases</a>
+    </li>
+    </ul>
                     </li>
                     <li class="toctree-l1"><a class="reference internal" href="../state_set/">state:set</a>
                     </li>
@@ -336,24 +346,24 @@
           <div role="main">
             <div class="section">
               
-                <h1>state:get</h1>
+                <h1 id="stateget">state:get<a class="headerlink" href="#stateget" title="Permanent link">&para;</a></h1>
 <p>Display a state value.</p>
-<h4>Examples</h4>
+<h4 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h4>
 <ul>
 <li><code>drush state:get system.cron_last</code>. Displays last cron run timestamp</li>
 <li><code>drush state:get drupal_css_cache_files --format=yaml</code>. Displays an array of css files in yaml format.</li>
 </ul>
-<h4>Arguments</h4>
+<h4 id="arguments">Arguments<a class="headerlink" href="#arguments" title="Permanent link">&para;</a></h4>
 <ul>
 <li><strong>--key</strong>. The key name.</li>
 </ul>
-<h4>Options</h4>
+<h4 id="options">Options<a class="headerlink" href="#options" title="Permanent link">&para;</a></h4>
 <ul>
 <li><strong> --format[=FORMAT]</strong>. Format the result data. Available formats: csv,json,list,null,php,print-r,string,table,tsv,var_dump,var_export,xml,yaml [default: <em>string</em>]</li>
 <li><strong> --fields=FIELDS</strong>. Limit output to only the listed elements. Name top-level elements by key, e.g. "--fields=name,date", or use dot notation to select a nested element, e.g. "--fields=a.b.c as example".</li>
 <li><strong> --field=FIELD</strong>. Select just one field, and force format to 'string'.</li>
 </ul>
-<h4>Aliases</h4>
+<h4 id="aliases">Aliases<a class="headerlink" href="#aliases" title="Permanent link">&para;</a></h4>
 <ul>
 <li>sget</li>
 <li>state-get</li>

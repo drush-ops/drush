@@ -192,6 +192,16 @@
                     <li class="toctree-l1"><a class="reference internal" href="../role_delete/">role:delete</a>
                     </li>
                     <li class="toctree-l1 current"><a class="reference internal current" href="./">role:list</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#examples">Examples</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#options">Options</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#topics">Topics</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#aliases">Aliases</a>
+    </li>
+    </ul>
                     </li>
                     <li class="toctree-l1"><a class="reference internal" href="../role_perm_add/">role:perm:add</a>
                     </li>
@@ -336,27 +346,27 @@
           <div role="main">
             <div class="section">
               
-                <h1>role:list</h1>
+                <h1 id="rolelist">role:list<a class="headerlink" href="#rolelist" title="Permanent link">&para;</a></h1>
 <p>Display a list of all roles defined on the system.</p>
 <p>If a role name is provided as an argument, then all of the permissions of
 that role will be listed.  If a permission name is provided as an option,
 then all of the roles that have been granted that permission will be listed.</p>
-<h4>Examples</h4>
+<h4 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h4>
 <ul>
 <li><code>drush role:list --filter='administer nodes'</code>. Display a list of roles that have the administer nodes permission assigned.</li>
 </ul>
-<h4>Options</h4>
+<h4 id="options">Options<a class="headerlink" href="#options" title="Permanent link">&para;</a></h4>
 <ul>
 <li><strong> --format[=FORMAT]</strong>. Format the result data. Available formats: csv,json,list,null,php,print-r,sections,string,table,tsv,var_dump,var_export,xml,yaml [default: <em>yaml</em>]</li>
 <li><strong> --fields=FIELDS</strong>. Available fields: ID (rid), Role Label (label), Permissions (perms)</li>
 <li><strong> --field=FIELD</strong>. Select just one field, and force format to 'string'.</li>
 <li><strong> --filter[=FILTER]</strong>. Filter output based on provided expression</li>
 </ul>
-<h4>Topics</h4>
+<h4 id="topics">Topics<a class="headerlink" href="#topics" title="Permanent link">&para;</a></h4>
 <ul>
 <li><a href="https://docs.drush.org/en/master/output-formats-filters">Output formatters and filters: control the command output</a> (docs:output-formats-filters)</li>
 </ul>
-<h4>Aliases</h4>
+<h4 id="aliases">Aliases<a class="headerlink" href="#aliases" title="Permanent link">&para;</a></h4>
 <ul>
 <li>rls</li>
 <li>role-list</li>
