@@ -336,6 +336,9 @@
     <li>watchdog:show-one</li>
     <li class="wy-breadcrumbs-aside">
       
+        <a href="https://github.com/drush-ops/drush/blob/master/docs/watchdog_show-one.md"
+          class="icon icon-github"> Edit on GitHub</a>
+      
     </li>
   </ul>
   
@@ -348,7 +351,14 @@
 <p>Show one log record by ID.</p>
 <h4 id="arguments">Arguments<a class="headerlink" href="#arguments" title="Permanent link">&para;</a></h4>
 <ul>
-<li><strong>--id</strong>. Watchdog Id</li>
+<li>
+<p><strong>--id</strong>. Watchdog Id</p>
+</li>
+<li>
+<p><strong> --format[=FORMAT]</strong>. Format the result data. Available formats: csv,json,list,null,php,print-r,string,table,tsv,var_dump,var_export,xml,yaml [default: <em>yaml</em>]</p>
+</li>
+<li><strong> --fields=FIELDS</strong>. Limit output to only the listed elements. Name top-level elements by key, e.g. "--fields=name,date", or use dot notation to select a nested element, e.g. "--fields=a.b.c as example".</li>
+<li><strong> --field=FIELD</strong>. Select just one field, and force format to 'string'.</li>
 </ul>
 <h4 id="options">Options<a class="headerlink" href="#options" title="Permanent link">&para;</a></h4>
 <ul>
@@ -402,7 +412,7 @@
   <div class="rst-versions" role="note" aria-label="versions">
     <span class="rst-current-version" data-toggle="rst-current-version">
       
-          <a href="https://github.com/drush-ops/drush" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
+          <a href="https://github.com/drush-ops/drush/" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
       
       
         <span><a href="../watchdog_show/" style="color: #fcfcfc;">&laquo; Previous</a></span>

@@ -340,6 +340,9 @@
     <li>core:rsync</li>
     <li class="wy-breadcrumbs-aside">
       
+        <a href="https://github.com/drush-ops/drush/blob/master/docs/core_rsync.md"
+          class="icon icon-github"> Edit on GitHub</a>
+      
     </li>
   </ul>
   
@@ -361,7 +364,15 @@
 <ul>
 <li><strong>--source</strong>. A site alias and optional path. See rsync documentation and example.site.yml.</li>
 <li><strong>--target</strong>. A site alias and optional path. See rsync documentation and example.site.yml.</li>
-<li><strong>[--extra]...</strong>. Additional parameters after the ssh statement.</li>
+<li>
+<p><strong>[--extra]...</strong>. Additional parameters after the ssh statement.</p>
+</li>
+<li>
+<p><strong> --exclude-paths=EXCLUDE-PATHS</strong>. List of paths to exclude, seperated by : (Unix-based systems) or ; (Windows).</p>
+</li>
+<li><strong> --include-paths=INCLUDE-PATHS</strong>. List of paths to include, seperated by : (Unix-based systems) or ; (Windows).</li>
+<li><strong> --mode[=MODE]</strong>. The unary flags to pass to rsync; --mode=rultz implies rsync -rultz. Default is -akz. [default: <em>akz</em>]</li>
+<li><strong> --ssh-options=SSH-OPTIONS</strong>. A string appended to ssh command during rsync, sql-sync, etc.</li>
 </ul>
 <h4 id="options">Options<a class="headerlink" href="#options" title="Permanent link">&para;</a></h4>
 <ul>
@@ -422,7 +433,7 @@
   <div class="rst-versions" role="note" aria-label="versions">
     <span class="rst-current-version" data-toggle="rst-current-version">
       
-          <a href="https://github.com/drush-ops/drush" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
+          <a href="https://github.com/drush-ops/drush/" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
       
       
         <span><a href="../core_requirements/" style="color: #fcfcfc;">&laquo; Previous</a></span>

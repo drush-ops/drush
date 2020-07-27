@@ -336,6 +336,9 @@
     <li>updatedb:status</li>
     <li class="wy-breadcrumbs-aside">
       
+        <a href="https://github.com/drush-ops/drush/blob/master/docs/updatedb_status.md"
+          class="icon icon-github"> Edit on GitHub</a>
+      
     </li>
   </ul>
   
@@ -346,6 +349,16 @@
               
                 <h1 id="updatedbstatus">updatedb:status<a class="headerlink" href="#updatedbstatus" title="Permanent link">&para;</a></h1>
 <p>List any pending database updates.</p>
+<ul>
+<li><strong> --format[=FORMAT]</strong>. Format the result data. Available formats: csv,json,list,null,php,print-r,sections,string,table,tsv,var_dump,var_export,xml,yaml [default: <em>table</em>]</li>
+<li><strong> --entity-updates[=ENTITY-UPDATES]</strong>. Show entity schema updates. [default: <em>1</em>]</li>
+<li><strong> --post-updates[=POST-UPDATES]</strong>. Show post updates. [default: <em>1</em>]</li>
+<li><strong> --no-entity-updates</strong>. Negate --entity-updates option.</li>
+<li><strong> --no-post-updates</strong>. Negate --post-updates option.</li>
+<li><strong> --fields=FIELDS</strong>. Available fields: Module (module), Update ID (update_id), Description (description), Type (type) [default: <em>module,update_id,type,description</em>]</li>
+<li><strong> --field=FIELD</strong>. Select just one field, and force format to 'string'.</li>
+<li><strong> --filter[=FILTER]</strong>. Filter output based on provided expression</li>
+</ul>
 <h4 id="options">Options<a class="headerlink" href="#options" title="Permanent link">&para;</a></h4>
 <ul>
 <li><strong> --format[=FORMAT]</strong>. Format the result data. Available formats: csv,json,list,null,php,print-r,sections,string,table,tsv,var_dump,var_export,xml,yaml [default: <em>table</em>]</li>
@@ -409,7 +422,7 @@
   <div class="rst-versions" role="note" aria-label="versions">
     <span class="rst-current-version" data-toggle="rst-current-version">
       
-          <a href="https://github.com/drush-ops/drush" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
+          <a href="https://github.com/drush-ops/drush/" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
       
       
         <span><a href="../updatedb/" style="color: #fcfcfc;">&laquo; Previous</a></span>

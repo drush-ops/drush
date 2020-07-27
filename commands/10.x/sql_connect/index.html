@@ -336,6 +336,9 @@
     <li>sql:connect</li>
     <li class="wy-breadcrumbs-aside">
       
+        <a href="https://github.com/drush-ops/drush/blob/master/docs/sql_connect.md"
+          class="icon icon-github"> Edit on GitHub</a>
+      
     </li>
   </ul>
   
@@ -349,7 +352,16 @@
 <h4 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h4>
 <ul>
 <li><code>$(drush sql-connect) &lt; example.sql</code>. Bash: Import SQL statements from a file into the current database.</li>
-<li><code>eval (drush sql-connect) &lt; example.sql</code>. Fish: Import SQL statements from a file into the current database.</li>
+<li>
+<p><code>eval (drush sql-connect) &lt; example.sql</code>. Fish: Import SQL statements from a file into the current database.</p>
+</li>
+<li>
+<p><strong> --extra=EXTRA</strong>. Add custom options to the connect string (e.g. --extra=--skip-column-names)</p>
+</li>
+<li><strong> --database[=DATABASE]</strong>. The DB connection key if using multiple connections in settings.php. [default: <em>default</em>]</li>
+<li><strong> --target[=TARGET]</strong>. The name of a target within the specified database connection. [default: <em>default</em>]</li>
+<li><strong> --db-url=DB-URL</strong>. A Drupal 6 style database URL. For example <em>mysql://root:pass@localhost:port/dbname</em></li>
+<li><strong> --show-passwords</strong>. Show password on the CLI. Useful for debugging.</li>
 </ul>
 <h4 id="options">Options<a class="headerlink" href="#options" title="Permanent link">&para;</a></h4>
 <ul>
@@ -406,7 +418,7 @@
   <div class="rst-versions" role="note" aria-label="versions">
     <span class="rst-current-version" data-toggle="rst-current-version">
       
-          <a href="https://github.com/drush-ops/drush" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
+          <a href="https://github.com/drush-ops/drush/" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
       
       
         <span><a href="../sql_cli/" style="color: #fcfcfc;">&laquo; Previous</a></span>

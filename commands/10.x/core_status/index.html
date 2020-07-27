@@ -340,6 +340,9 @@
     <li>core:status</li>
     <li class="wy-breadcrumbs-aside">
       
+        <a href="https://github.com/drush-ops/drush/blob/master/docs/core_status.md"
+          class="icon icon-github"> Edit on GitHub</a>
+      
     </li>
   </ul>
   
@@ -357,7 +360,15 @@
 </ul>
 <h4 id="arguments">Arguments<a class="headerlink" href="#arguments" title="Permanent link">&para;</a></h4>
 <ul>
-<li><strong>[--filter]</strong>. A field to filter on. @deprecated - use --field option instead.</li>
+<li>
+<p><strong>[--filter]</strong>. A field to filter on. @deprecated - use --field option instead.</p>
+</li>
+<li>
+<p><strong> --project=PROJECT</strong>. A comma delimited list of projects. Their paths will be added to path-aliases section.</p>
+</li>
+<li><strong> --format[=FORMAT]</strong>. Format the result data. Available formats: csv,json,list,null,php,print-r,string,table,tsv,var_dump,var_export,xml,yaml [default: <em>table</em>]</li>
+<li><strong> --fields=FIELDS</strong>. Available fields: Drupal version (drupal-version), Site URI (uri), DB driver (db-driver), DB hostname (db-hostname), DB port (db-port), DB username (db-username), DB password (db-password), DB name (db-name), Database (db-status), Drupal bootstrap (bootstrap), Default theme (theme), Admin theme (admin-theme), PHP binary (php-bin), PHP config (php-conf), PHP OS (php-os), Drush script (drush-script), Drush version (drush-version), Drush temp (drush-temp), Drush cache folder (drush-cache-directory), Drush configs (drush-conf), Drush aliases (drush-alias-files), Alias search paths (alias-searchpaths), Install profile (install-profile), Drupal root (root), Drupal Settings (drupal-settings-file), Site path (site-path), Site path (site), Themes path (themes), Modules path (modules), Files, Public (files), Files, Private (private), Files, Temp (temp), Drupal config (config-sync), Files, Public (files-path), Files, Temp (temp-path), Other paths (%paths) [default: <em>drupal-version,uri,db-driver,db-hostname,db-port,db-username,db-name,db-status,bootstrap,theme,admin-theme,php-bin,php-conf,php-os,drush-script,drush-version,drush-temp,drush-conf,install-profile,root,site,files,private,temp</em>]</li>
+<li><strong> --field=FIELD</strong>. Select just one field, and force format to 'string'.</li>
 </ul>
 <h4 id="options">Options<a class="headerlink" href="#options" title="Permanent link">&para;</a></h4>
 <ul>
@@ -420,7 +431,7 @@
   <div class="rst-versions" role="note" aria-label="versions">
     <span class="rst-current-version" data-toggle="rst-current-version">
       
-          <a href="https://github.com/drush-ops/drush" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
+          <a href="https://github.com/drush-ops/drush/" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
       
       
         <span><a href="../core_rsync/" style="color: #fcfcfc;">&laquo; Previous</a></span>

@@ -336,6 +336,9 @@
     <li>pm:list</li>
     <li class="wy-breadcrumbs-aside">
       
+        <a href="https://github.com/drush-ops/drush/blob/master/docs/pm_list.md"
+          class="icon icon-github"> Edit on GitHub</a>
+      
     </li>
   </ul>
   
@@ -346,6 +349,17 @@
               
                 <h1 id="pmlist">pm:list<a class="headerlink" href="#pmlist" title="Permanent link">&para;</a></h1>
 <p>Show a list of available extensions (modules and themes).</p>
+<ul>
+<li><strong> --format[=FORMAT]</strong>. Format the result data. Available formats: csv,json,list,null,php,print-r,sections,string,table,tsv,var_dump,var_export,xml,yaml [default: <em>table</em>]</li>
+<li><strong> --type[=TYPE]</strong>. Only show extensions having a given type. Choices: module, theme. [default: <em>module,theme</em>]</li>
+<li><strong> --status[=STATUS]</strong>. Only show extensions having a given status. Choices: enabled or disabled. [default: <em>enabled,disabled</em>]</li>
+<li><strong> --package=PACKAGE</strong>. Only show extensions having a given project packages (e.g. Development).</li>
+<li><strong> --core</strong>. Only show extensions that are in Drupal core.</li>
+<li><strong> --no-core</strong>. Only show extensions that are not provided by Drupal core.</li>
+<li><strong> --fields=FIELDS</strong>. Available fields: Package (package), Name (display_name), Name (name), Type (type), Path (path), Status (status), Version (version) [default: <em>package,display_name,status,version</em>]</li>
+<li><strong> --field=FIELD</strong>. Select just one field, and force format to 'string'.</li>
+<li><strong> --filter[=FILTER]</strong>. Filter output based on provided expression</li>
+</ul>
 <h4 id="options">Options<a class="headerlink" href="#options" title="Permanent link">&para;</a></h4>
 <ul>
 <li><strong> --format[=FORMAT]</strong>. Format the result data. Available formats: csv,json,list,null,php,print-r,sections,string,table,tsv,var_dump,var_export,xml,yaml [default: <em>table</em>]</li>
@@ -410,7 +424,7 @@
   <div class="rst-versions" role="note" aria-label="versions">
     <span class="rst-current-version" data-toggle="rst-current-version">
       
-          <a href="https://github.com/drush-ops/drush" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
+          <a href="https://github.com/drush-ops/drush/" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
       
       
         <span><a href="../pm_enable/" style="color: #fcfcfc;">&laquo; Previous</a></span>

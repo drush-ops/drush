@@ -340,6 +340,9 @@
     <li>site:ssh</li>
     <li class="wy-breadcrumbs-aside">
       
+        <a href="https://github.com/drush-ops/drush/blob/master/docs/site_ssh.md"
+          class="icon icon-github"> Edit on GitHub</a>
+      
     </li>
   </ul>
   
@@ -359,7 +362,14 @@
 </ul>
 <h4 id="arguments">Arguments<a class="headerlink" href="#arguments" title="Permanent link">&para;</a></h4>
 <ul>
-<li><strong>[--code]...</strong>. Code which should run at remote host.</li>
+<li>
+<p><strong>[--code]...</strong>. Code which should run at remote host.</p>
+</li>
+<li>
+<p><strong> --cd=CD</strong>. Directory to change to. Defaults to Drupal root.</p>
+</li>
+<li><strong> --tty</strong>. Create a tty (e.g. to run an interactive program).</li>
+<li><strong> --ssh-options=SSH-OPTIONS</strong>. A string of extra options that will be passed to the ssh command (e.g. <em>-p 100</em>)</li>
 </ul>
 <h4 id="options">Options<a class="headerlink" href="#options" title="Permanent link">&para;</a></h4>
 <ul>
@@ -419,7 +429,7 @@
   <div class="rst-versions" role="note" aria-label="versions">
     <span class="rst-current-version" data-toggle="rst-current-version">
       
-          <a href="https://github.com/drush-ops/drush" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
+          <a href="https://github.com/drush-ops/drush/" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
       
       
         <span><a href="../site_set/" style="color: #fcfcfc;">&laquo; Previous</a></span>

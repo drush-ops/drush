@@ -338,6 +338,9 @@
     <li>config:status</li>
     <li class="wy-breadcrumbs-aside">
       
+        <a href="https://github.com/drush-ops/drush/blob/master/docs/config_status.md"
+          class="icon icon-github"> Edit on GitHub</a>
+      
     </li>
   </ul>
   
@@ -353,7 +356,18 @@
 <li><code>drush config:status</code>. Display configuration items that need to be synchronized.</li>
 <li><code>drush config:status --state=Identical</code>. Display configuration items that are in default state.</li>
 <li><code>drush config:status --state='Only in sync dir' --prefix=node.type.</code>. Display all content types that would be created in active storage on configuration import.</li>
-<li><code>drush config:status --state=Any --format=list</code>. List all config names.</li>
+<li>
+<p><code>drush config:status --state=Any --format=list</code>. List all config names.</p>
+</li>
+<li>
+<p><strong> --state[=STATE]</strong>. A comma-separated list of states to filter results. [default: <em>Only in DB,Only in sync dir,Different</em>]</p>
+</li>
+<li><strong> --prefix=PREFIX</strong>. Prefix The config prefix. For example, <em>system</em>. No prefix will return all names in the system.</li>
+<li><strong> --label=LABEL</strong>. A config directory label (i.e. a key in $config_directories array in settings.php).</li>
+<li><strong> --format=FORMAT</strong>. Format the result data. Available formats: csv,json,list,null,php,print-r,sections,string,table,tsv,var_dump,var_export,xml,yaml [default: <em>table</em>]</li>
+<li><strong> --fields=FIELDS</strong>. Available fields: Name (name), State (state) [default: <em>name,state</em>]</li>
+<li><strong> --field=FIELD</strong>. Select just one field, and force format to 'string'.</li>
+<li><strong> --filter[=FILTER]</strong>. Filter output based on provided expression</li>
 </ul>
 <h4 id="options">Options<a class="headerlink" href="#options" title="Permanent link">&para;</a></h4>
 <ul>
@@ -417,7 +431,7 @@
   <div class="rst-versions" role="note" aria-label="versions">
     <span class="rst-current-version" data-toggle="rst-current-version">
       
-          <a href="https://github.com/drush-ops/drush" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
+          <a href="https://github.com/drush-ops/drush/" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
       
       
         <span><a href="../config_set/" style="color: #fcfcfc;">&laquo; Previous</a></span>

@@ -338,6 +338,9 @@
     <li>config:set</li>
     <li class="wy-breadcrumbs-aside">
       
+        <a href="https://github.com/drush-ops/drush/blob/master/docs/config_set.md"
+          class="icon icon-github"> Edit on GitHub</a>
+      
     </li>
   </ul>
   
@@ -356,7 +359,13 @@
 <ul>
 <li><strong>--config_name</strong>. The config object name, for example <em>system.site</em>.</li>
 <li><strong>--key</strong>. The config key, for example <em>page.front</em>.</li>
-<li><strong>[--value]</strong>. The value to assign to the config key. Use <em>-</em> to read from STDIN.</li>
+<li>
+<p><strong>[--value]</strong>. The value to assign to the config key. Use <em>-</em> to read from STDIN.</p>
+</li>
+<li>
+<p><strong> --input-format[=INPUT-FORMAT]</strong>. Format to parse the object. Recognized values: <em>string</em>, <em>yaml</em> [default: <em>string</em>]</p>
+</li>
+<li><strong> --value=VALUE</strong>. The value to assign to the config key (if any).</li>
 </ul>
 <h4 id="options">Options<a class="headerlink" href="#options" title="Permanent link">&para;</a></h4>
 <ul>
@@ -411,7 +420,7 @@
   <div class="rst-versions" role="note" aria-label="versions">
     <span class="rst-current-version" data-toggle="rst-current-version">
       
-          <a href="https://github.com/drush-ops/drush" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
+          <a href="https://github.com/drush-ops/drush/" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
       
       
         <span><a href="../config_pull/" style="color: #fcfcfc;">&laquo; Previous</a></span>

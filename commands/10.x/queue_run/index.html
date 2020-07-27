@@ -336,6 +336,9 @@
     <li>queue:run</li>
     <li class="wy-breadcrumbs-aside">
       
+        <a href="https://github.com/drush-ops/drush/blob/master/docs/queue_run.md"
+          class="icon icon-github"> Edit on GitHub</a>
+      
     </li>
   </ul>
   
@@ -348,7 +351,13 @@
 <p>Run a specific queue by name.</p>
 <h4 id="arguments">Arguments<a class="headerlink" href="#arguments" title="Permanent link">&para;</a></h4>
 <ul>
-<li><strong>--name</strong>. The name of the queue to run, as defined in either hook_queue_info or hook_cron_queue_info.</li>
+<li>
+<p><strong>--name</strong>. The name of the queue to run, as defined in either hook_queue_info or hook_cron_queue_info.</p>
+</li>
+<li>
+<p><strong> --time-limit=TIME-LIMIT</strong>. The maximum number of seconds allowed to run the queue</p>
+</li>
+<li><strong> --items-limit[=ITEMS-LIMIT]</strong>. The maximum number of items allowed to run the queue</li>
 </ul>
 <h4 id="options">Options<a class="headerlink" href="#options" title="Permanent link">&para;</a></h4>
 <ul>
@@ -402,7 +411,7 @@
   <div class="rst-versions" role="note" aria-label="versions">
     <span class="rst-current-version" data-toggle="rst-current-version">
       
-          <a href="https://github.com/drush-ops/drush" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
+          <a href="https://github.com/drush-ops/drush/" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
       
       
         <span><a href="../queue_list/" style="color: #fcfcfc;">&laquo; Previous</a></span>

@@ -340,6 +340,9 @@
     <li>sql:sync</li>
     <li class="wy-breadcrumbs-aside">
       
+        <a href="https://github.com/drush-ops/drush/blob/master/docs/sql_sync.md"
+          class="icon icon-github"> Edit on GitHub</a>
+      
     </li>
   </ul>
   
@@ -359,7 +362,26 @@
 <h4 id="arguments">Arguments<a class="headerlink" href="#arguments" title="Permanent link">&para;</a></h4>
 <ul>
 <li><strong>--source</strong>. A site-alias or the name of a subdirectory within /sites whose database you want to copy from.</li>
-<li><strong>--target</strong>. A site-alias or the name of a subdirectory within /sites whose database you want to replace.</li>
+<li>
+<p><strong>--target</strong>. A site-alias or the name of a subdirectory within /sites whose database you want to replace.</p>
+</li>
+<li>
+<p><strong> --no-dump</strong>. Do not dump the sql database; always use an existing dump file.</p>
+</li>
+<li><strong> --no-sync</strong>. Do not rsync the database dump file from source to target.</li>
+<li><strong> --runner=RUNNER</strong>. Where to run the rsync command; defaults to the local site. Can also be <em>source</em> or <em>target</em>.</li>
+<li><strong> --create-db</strong>. Create a new database before importing the database dump on the target machine.</li>
+<li><strong> --db-su=DB-SU</strong>. Account to use when creating a new database (e.g. <em>root</em>).</li>
+<li><strong> --db-su-pw=DB-SU-PW</strong>. Password for the db-su account.</li>
+<li><strong> --target-dump=TARGET-DUMP</strong>. The path for storing the sql-dump on target machine.</li>
+<li><strong> --source-dump[=SOURCE-DUMP]</strong>. The path for retrieving the sql-dump on source machine.</li>
+<li><strong> --extra-dump[=EXTRA-DUMP]</strong>. Add custom arguments/options to the dumping of the database (e.g. mysqldump command).</li>
+<li><strong> --skip-tables-key=SKIP-TABLES-KEY</strong>. A key in the $skip_tables array. @see example.drush.yml</li>
+<li><strong> --structure-tables-key=STRUCTURE-TABLES-KEY</strong>. A key in the $structure_tables array. @see example.drush.yml</li>
+<li><strong> --tables-key=TABLES-KEY</strong>. A key in the $tables array.</li>
+<li><strong> --skip-tables-list=SKIP-TABLES-LIST</strong>. A comma-separated list of tables to exclude completely.</li>
+<li><strong> --structure-tables-list=STRUCTURE-TABLES-LIST</strong>. A comma-separated list of tables to include for structure, but not data.</li>
+<li><strong> --tables-list=TABLES-LIST</strong>. A comma-separated list of tables to transfer.</li>
 </ul>
 <h4 id="options">Options<a class="headerlink" href="#options" title="Permanent link">&para;</a></h4>
 <ul>
@@ -433,7 +455,7 @@
   <div class="rst-versions" role="note" aria-label="versions">
     <span class="rst-current-version" data-toggle="rst-current-version">
       
-          <a href="https://github.com/drush-ops/drush" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
+          <a href="https://github.com/drush-ops/drush/" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
       
       
         <span><a href="../sql_sanitize/" style="color: #fcfcfc;">&laquo; Previous</a></span>

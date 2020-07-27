@@ -336,6 +336,9 @@
     <li>core:init</li>
     <li class="wy-breadcrumbs-aside">
       
+        <a href="https://github.com/drush-ops/drush/blob/master/docs/core_init.md"
+          class="icon icon-github"> Edit on GitHub</a>
+      
     </li>
   </ul>
   
@@ -349,7 +352,15 @@
 <h4 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h4>
 <ul>
 <li><code>core-init --edit</code>. Enrich Bash and open drush config file in editor.</li>
-<li><code>core-init --edit --bg</code>. Return to shell prompt as soon as the editor window opens</li>
+<li>
+<p><code>core-init --edit --bg</code>. Return to shell prompt as soon as the editor window opens</p>
+</li>
+<li>
+<p><strong> --edit</strong>. Open the new config file in an editor.</p>
+</li>
+<li><strong> --add-path[=ADD-PATH]</strong>. Always add Drush to the $PATH in the user's .bashrc file, even if it is already in the $PATH. Use --no-add-path to skip updating .bashrc with the Drush $PATH. Default is to update .bashrc only if Drush is not already in the $PATH.</li>
+<li><strong> --editor[=EDITOR]</strong>. A string of bash which launches user's preferred text editor. Defaults to <em>${VISUAL-${EDITOR-vi}}</em>.</li>
+<li><strong> --bg</strong>. Launch editor in background process.</li>
 </ul>
 <h4 id="options">Options<a class="headerlink" href="#options" title="Permanent link">&para;</a></h4>
 <ul>
@@ -406,7 +417,7 @@
   <div class="rst-versions" role="note" aria-label="versions">
     <span class="rst-current-version" data-toggle="rst-current-version">
       
-          <a href="https://github.com/drush-ops/drush" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
+          <a href="https://github.com/drush-ops/drush/" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
       
       
         <span><a href="../core_edit/" style="color: #fcfcfc;">&laquo; Previous</a></span>

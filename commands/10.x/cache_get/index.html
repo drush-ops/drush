@@ -340,6 +340,9 @@
     <li>cache:get</li>
     <li class="wy-breadcrumbs-aside">
       
+        <a href="https://github.com/drush-ops/drush/blob/master/docs/cache_get.md"
+          class="icon icon-github"> Edit on GitHub</a>
+      
     </li>
   </ul>
   
@@ -358,7 +361,14 @@
 <h4 id="arguments">Arguments<a class="headerlink" href="#arguments" title="Permanent link">&para;</a></h4>
 <ul>
 <li><strong>--cid</strong>. The id of the object to fetch.</li>
-<li><strong>[--bin]</strong>. The cache bin to fetch from.</li>
+<li>
+<p><strong>[--bin]</strong>. The cache bin to fetch from.</p>
+</li>
+<li>
+<p><strong> --format[=FORMAT]</strong>. Format the result data. Available formats: csv,json,list,null,php,print-r,string,table,tsv,var_dump,var_export,xml,yaml [default: <em>json</em>]</p>
+</li>
+<li><strong> --fields=FIELDS</strong>. Available fields: Cache ID (cid), Data (data), Created (created), Expire (expire), Tags (tags), Checksum (checksum), Valid (valid) [default: <em>cid,data,created,expire,tags</em>]</li>
+<li><strong> --field=FIELD</strong>. Select just one field, and force format to 'string'.</li>
 </ul>
 <h4 id="options">Options<a class="headerlink" href="#options" title="Permanent link">&para;</a></h4>
 <ul>
@@ -418,7 +428,7 @@
   <div class="rst-versions" role="note" aria-label="versions">
     <span class="rst-current-version" data-toggle="rst-current-version">
       
-          <a href="https://github.com/drush-ops/drush" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
+          <a href="https://github.com/drush-ops/drush/" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
       
       
         <span><a href="../cache_clear/" style="color: #fcfcfc;">&laquo; Previous</a></span>

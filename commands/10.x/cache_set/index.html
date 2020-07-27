@@ -336,6 +336,9 @@
     <li>cache:set</li>
     <li class="wy-breadcrumbs-aside">
       
+        <a href="https://github.com/drush-ops/drush/blob/master/docs/cache_set.md"
+          class="icon icon-github"> Edit on GitHub</a>
+      
     </li>
   </ul>
   
@@ -352,7 +355,13 @@
 <li><strong>--data</strong>. The object to set in the cache. Use - to read the object from STDIN.</li>
 <li><strong>[--bin]</strong>. The cache bin to store the object in.</li>
 <li><strong>[--expire]</strong>. 'CACHE_PERMANENT', or a Unix timestamp.</li>
-<li><strong>[--tags]</strong>. A comma delimited list of cache tags.</li>
+<li>
+<p><strong>[--tags]</strong>. A comma delimited list of cache tags.</p>
+</li>
+<li>
+<p><strong> --input-format[=INPUT-FORMAT]</strong>. The format of value. Use <em>json</em> for complex values. [default: <em>string</em>]</p>
+</li>
+<li><strong> --cache-get</strong>. If the object is the result a previous fetch from the cache, only store the value in the 'data' property of the object in the cache.</li>
 </ul>
 <h4 id="options">Options<a class="headerlink" href="#options" title="Permanent link">&para;</a></h4>
 <ul>
@@ -407,7 +416,7 @@
   <div class="rst-versions" role="note" aria-label="versions">
     <span class="rst-current-version" data-toggle="rst-current-version">
       
-          <a href="https://github.com/drush-ops/drush" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
+          <a href="https://github.com/drush-ops/drush/" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
       
       
         <span><a href="../cache_rebuild/" style="color: #fcfcfc;">&laquo; Previous</a></span>

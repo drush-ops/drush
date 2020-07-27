@@ -336,6 +336,9 @@
     <li>sql:sanitize</li>
     <li class="wy-breadcrumbs-aside">
       
+        <a href="https://github.com/drush-ops/drush/blob/master/docs/sql_sanitize.md"
+          class="icon icon-github"> Edit on GitHub</a>
+      
     </li>
   </ul>
   
@@ -354,7 +357,15 @@ Run queries or call APIs to perform sanitizing</p>
 <h4 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h4>
 <ul>
 <li><code>drush sql:sanitize --sanitize-password=no</code>. Sanitize database without modifying any passwords.</li>
-<li><code>drush sql:sanitize --allowlist-fields=field_biography,field_phone_number</code>. Sanitizes database but exempts two user fields from modification.</li>
+<li>
+<p><code>drush sql:sanitize --allowlist-fields=field_biography,field_phone_number</code>. Sanitizes database but exempts two user fields from modification.</p>
+</li>
+<li>
+<p><strong> --whitelist-fields[=WHITELIST-FIELDS]</strong>. Deprecated. Use allowlist-fields instead.</p>
+</li>
+<li><strong> --allowlist-fields[=ALLOWLIST-FIELDS]</strong>. A comma delimited list of fields exempt from sanitization.</li>
+<li><strong> --sanitize-email[=SANITIZE-EMAIL]</strong>. The pattern for test email addresses in the sanitization operation, or "no" to keep email addresses unchanged. May contain replacement patterns %uid, %mail or %name. [default: <em>user+%<a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#117;&#105;&#100;&#64;&#108;&#111;&#99;&#97;&#108;&#104;&#111;&#115;&#116;&#46;&#108;&#111;&#99;&#97;&#108;&#100;&#111;&#109;&#97;&#105;&#110;">&#117;&#105;&#100;&#64;&#108;&#111;&#99;&#97;&#108;&#104;&#111;&#115;&#116;&#46;&#108;&#111;&#99;&#97;&#108;&#100;&#111;&#109;&#97;&#105;&#110;</a></em>]</li>
+<li><strong> --sanitize-password[=SANITIZE-PASSWORD]</strong>. By default, passwords are randomized. Specify 'no' to disable that. Specify any other value to set all passwords to that value.</li>
 </ul>
 <h4 id="options">Options<a class="headerlink" href="#options" title="Permanent link">&para;</a></h4>
 <ul>
@@ -411,7 +422,7 @@ Run queries or call APIs to perform sanitizing</p>
   <div class="rst-versions" role="note" aria-label="versions">
     <span class="rst-current-version" data-toggle="rst-current-version">
       
-          <a href="https://github.com/drush-ops/drush" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
+          <a href="https://github.com/drush-ops/drush/" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
       
       
         <span><a href="../sql_query/" style="color: #fcfcfc;">&laquo; Previous</a></span>

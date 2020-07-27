@@ -338,6 +338,9 @@
     <li>config:export</li>
     <li class="wy-breadcrumbs-aside">
       
+        <a href="https://github.com/drush-ops/drush/blob/master/docs/config_export.md"
+          class="icon icon-github"> Edit on GitHub</a>
+      
     </li>
   </ul>
   
@@ -355,7 +358,17 @@
 </ul>
 <h4 id="arguments">Arguments<a class="headerlink" href="#arguments" title="Permanent link">&para;</a></h4>
 <ul>
-<li><strong>[--label]</strong>. A config directory label (i.e. a key in $config_directories array in settings.php).</li>
+<li>
+<p><strong>[--label]</strong>. A config directory label (i.e. a key in $config_directories array in settings.php).</p>
+</li>
+<li>
+<p><strong> --add</strong>. Run <code>git add -p</code> after exporting. This lets you choose which config changes to sync for commit.</p>
+</li>
+<li><strong> --commit</strong>. Run <code>git add -A</code> and <code>git commit</code> after exporting. This commits everything that was exported without prompting.</li>
+<li><strong> --message=MESSAGE</strong>. Commit comment for the exported configuration. Optional; may only be used with --commit.</li>
+<li><strong> --destination[=DESTINATION]</strong>. An arbitrary directory that should receive the exported files. A backup directory is used when no value is provided.</li>
+<li><strong> --diff</strong>. Show preview as a diff, instead of a change list.</li>
+<li><strong> --format[=FORMAT]</strong>. </li>
 </ul>
 <h4 id="options">Options<a class="headerlink" href="#options" title="Permanent link">&para;</a></h4>
 <ul>
@@ -414,7 +427,7 @@
   <div class="rst-versions" role="note" aria-label="versions">
     <span class="rst-current-version" data-toggle="rst-current-version">
       
-          <a href="https://github.com/drush-ops/drush" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
+          <a href="https://github.com/drush-ops/drush/" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
       
       
         <span><a href="../config_edit/" style="color: #fcfcfc;">&laquo; Previous</a></span>

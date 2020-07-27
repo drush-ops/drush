@@ -340,6 +340,9 @@
     <li>config:pull</li>
     <li class="wy-breadcrumbs-aside">
       
+        <a href="https://github.com/drush-ops/drush/blob/master/docs/config_pull.md"
+          class="icon icon-github"> Edit on GitHub</a>
+      
     </li>
   </ul>
   
@@ -359,7 +362,17 @@
 <h4 id="arguments">Arguments<a class="headerlink" href="#arguments" title="Permanent link">&para;</a></h4>
 <ul>
 <li><strong>--source</strong>. A site-alias or the name of a subdirectory within /sites whose config you want to copy from.</li>
-<li><strong>--destination</strong>. A site-alias or the name of a subdirectory within /sites whose config you want to replace.</li>
+<li>
+<p><strong>--destination</strong>. A site-alias or the name of a subdirectory within /sites whose config you want to replace.</p>
+</li>
+<li>
+<p><strong> --safe</strong>. Validate that there are no git uncommitted changes before proceeding</p>
+</li>
+<li><strong> --label[=LABEL]</strong>. A config directory label (i.e. a key in $config_directories array in settings.php). [default: <em>sync</em>]</li>
+<li><strong> --runner[=RUNNER]</strong>. Where to run the rsync command; defaults to the local site. Can also be <em>source</em> or <em>destination</em>.</li>
+<li><strong> --format[=FORMAT]</strong>. Format the result data. Available formats: csv,json,list,null,php,print-r,string,table,tsv,var_dump,var_export,xml,yaml [default: <em>null</em>]</li>
+<li><strong> --fields=FIELDS</strong>. Available fields: Path (path)</li>
+<li><strong> --field=FIELD</strong>. Select just one field, and force format to 'string'.</li>
 </ul>
 <h4 id="options">Options<a class="headerlink" href="#options" title="Permanent link">&para;</a></h4>
 <ul>
@@ -424,7 +437,7 @@
   <div class="rst-versions" role="note" aria-label="versions">
     <span class="rst-current-version" data-toggle="rst-current-version">
       
-          <a href="https://github.com/drush-ops/drush" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
+          <a href="https://github.com/drush-ops/drush/" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
       
       
         <span><a href="../config_import/" style="color: #fcfcfc;">&laquo; Previous</a></span>

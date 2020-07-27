@@ -338,6 +338,9 @@
     <li>locale:import</li>
     <li class="wy-breadcrumbs-aside">
       
+        <a href="https://github.com/drush-ops/drush/blob/master/docs/locale_import.md"
+          class="icon icon-github"> Edit on GitHub</a>
+      
     </li>
   </ul>
   
@@ -356,7 +359,13 @@
 <h4 id="arguments">Arguments<a class="headerlink" href="#arguments" title="Permanent link">&para;</a></h4>
 <ul>
 <li><strong>--langcode</strong>. The language code of the imported translations.</li>
-<li><strong>--file</strong>. Path and file name of the gettext file.</li>
+<li>
+<p><strong>--file</strong>. Path and file name of the gettext file.</p>
+</li>
+<li>
+<p><strong> --type[=TYPE]</strong>. The type of translations to be imported, Options: - customized: Treat imported strings as custom translations. - not-customized: Treat imported strings as not-custom translations. [default: <em>not-customized</em>]</p>
+</li>
+<li><strong> --override=OVERRIDE</strong>. Whether and how imported strings will override existing translations. Defaults to the Import behavior configured in the admin interface. Options: - none: Don't overwrite existing translations. Only append new translations. - customized: Only override existing customized translations. - not-customized: Only override non-customized translations, customized translations are kept. - all: Override any existing translation.</li>
 </ul>
 <h4 id="options">Options<a class="headerlink" href="#options" title="Permanent link">&para;</a></h4>
 <ul>
@@ -410,7 +419,7 @@
   <div class="rst-versions" role="note" aria-label="versions">
     <span class="rst-current-version" data-toggle="rst-current-version">
       
-          <a href="https://github.com/drush-ops/drush" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
+          <a href="https://github.com/drush-ops/drush/" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
       
       
         <span><a href="../locale_export/" style="color: #fcfcfc;">&laquo; Previous</a></span>
