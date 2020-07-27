@@ -149,8 +149,7 @@ EOT;
             'extra_css' => ['css/extra.readthedocs.css'],
             'markdown_extensions' => [
                 ['toc' => [
-                    'toc_depth' => 0,
-                    'permalink' => '',
+                    'permalink' => true,
                 ]],
                 ['admonition' => []],
                 ['pymdownx.magiclink' => []],
