@@ -45,78 +45,17 @@ class MkCommands extends DrushCommands implements SiteAliasManagerAwareInterface
                 if ($command instanceof AnnotatedCommand) {
                     $command->optionsHook();
                 }
-                $name = $command->getName();
-                $filename = str_replace(':', '_', $name)  . '.md';
+                $body = self::appendPreamble($command);
+                $body .= self::appendUsages($command);
+                $body .= self::appendArguments($command);
+                $body .= self::appendOptions($command);
+                if ($command instanceof AnnotatedCommand) {
+                    $body .= self::appendTopics($command);
+                }
+                $body .= self::appendAliases($command);
+                $body .= self::appendPostAmble();
+                $filename = str_replace(':', '_', $command->getName())  . '.md';
                 $pages[] = $filename;
-                $body = "# $name\n\n";
-                if ($command->getDescription()) {
-                    $body .= self::cliTextToMarkdown($command->getDescription()) ."\n\n";
-                    if ($command->getHelp()) {
-                        $body .= self::cliTextToMarkdown($command->getHelp()). "\n\n";
-                    }
-                }
-                if ($examples = $command->getExampleUsages()) {
-                    $body .= "#### Examples\n\n";
-                    foreach ($examples as $key => $value) {
-                        $body .= '- <code>' . $key . '</code>. ' . self::cliTextToMarkdown($value) . "\n";
-                    }
-                    $body .= "\n";
-                }
-                if ($args = $command->getDefinition()->getArguments()) {
-                    $body .= "#### Arguments\n\n";
-                    foreach ($args as $arg) {
-                        $arg_array = self::argToArray($arg);
-                        $body .= '- **' . HelpCLIFormatter::formatArgumentName($arg_array) . '**. ' . self::cliTextToMarkdown($arg->getDescription()) . "\n";
-                    }
-                    $body .= "\n";
-                }
-                if ($opts = $command->getDefinition()->getOptions()) {
-                    $body_opt = '';
-                    foreach ($opts as $opt) {
-                        if (!HelpCLIFormatter::isGlobalOption($opt->getName())) {
-                            $opt_array = self::optionToArray($opt);
-                            $body_opt .= '- **' . HelpCLIFormatter::formatOptionKeys($opt_array) . '**. ' . self::cliTextToMarkdown(HelpCLIFormatter::formatOptionDescription($opt_array)) . "\n";
-                        }
-                    }
-                    if ($body_opt) {
-                        $body .= "#### Options\n\n$body_opt\n";
-                    }
-                }
-                if ($topics = $command->getTopics()) {
-                    $body .= "#### Topics\n\n";
-                    foreach ($topics as $name) {
-                        $value = "- `drush $name`\n";
-                        $topic_command = Drush::getApplication()->find($name);
-                        $topic_description = $topic_command->getDescription();
-                        if ($docs_relative = $topic_command->getAnnotationData()->get('topic')) {
-                            $abs = Path::makeAbsolute($docs_relative, dirname($topic_command->getAnnotationData()->get('_path')));
-                            if (file_exists($abs)) {
-                                $docs_path = Path::join(DRUSH_BASE_PATH, 'docs');
-                                if (Path::isBasePath($docs_path, $abs)) {
-                                    $rel_from_docs = str_replace('.md', '', Path::makeRelative($abs, $docs_path));
-                                    $value = "- [$topic_description](https://docs.drush.org/en/master/$rel_from_docs) ($name)";
-                                } else {
-                                    $rel_from_root = Path::makeRelative($abs, DRUSH_BASE_PATH);
-                                    $value = "- [$topic_description](https://raw.githubusercontent.com/drush-ops/drush/master/$rel_from_root) ($name)";
-                                }
-                            }
-                        }
-                        $body .= "$value\n";
-                    }
-                    $body .= "\n";
-                }
-                if ($aliases = $command->getAliases()) {
-                    $body .= "#### Aliases\n\n";
-                    foreach ($aliases as $value) {
-                        $body .= '- ' . $value . "\n";
-                    }
-                    $body .= "\n";
-                }
-                $body .= '!!! note "Legend"' . "\n" . <<<EOT
-    - An argument or option with square brackets is optional.
-    - Any default value is listed at end of arg/option description.
-    - An ellipsis indicates that an argument accepts multiple values separated by a space.
-EOT;
                 file_put_contents(Path::join($options['destination'], 'docs', $filename), $body);
             }
             $this->logger()->info('Found {pages} pages in {cat}', ['pages' => count($pages), 'cat' => $category]);
@@ -127,37 +66,115 @@ EOT;
         $this->writeyml($nav, $options['destination']);
     }
 
-    /**
-     * Write mkdocs.yml.
-     *
-     * @param $nav
-     * @param $dest
-     */
-    protected function writeyml($nav, $dest)
+    protected static function appendPostAmble(): string
     {
-        // Write yml file.
-        $mkdocs = [
-            'site_name' => 'Drush Commands',
-            'site_author' => 'Moshe Weitzman',
-            'repo_name' => 'GitHub',
-            'repo_url' => 'https://github.com/drush-ops/drush',
-            'edit_uri' => '',
-            'theme' => [
-                'name' => 'readthedocs',
-            ],
-            'site_url' => 'http://commands.drush.org',
-            'extra_css' => ['css/extra.readthedocs.css'],
-            'markdown_extensions' => [
-                ['toc' => [
-                    'permalink' => true,
-                ]],
-                ['admonition' => []],
-                ['pymdownx.magiclink' => []],
-            ],
-            'nav' => $nav,
-        ];
-        $yaml = Yaml::dump($mkdocs, PHP_INT_MAX, 2);
-        file_put_contents(Path::join($dest, 'mkdocs.yml'), $yaml);
+        return '!!! note "Legend"' . "\n" . <<<EOT
+    - An argument or option with square brackets is optional.
+    - Any default value is listed at end of arg/option description.
+    - An ellipsis indicates that an argument accepts multiple values separated by a space.
+EOT;
+    }
+
+    protected static function appendAliases(AnnotatedCommand $command): string
+    {
+        if ($aliases = $command->getAliases()) {
+            $body = "#### Aliases\n\n";
+            foreach ($aliases as $value) {
+                $body .= '- ' . $value . "\n";
+            }
+            return "$body\n";
+        }
+        return '';
+    }
+
+    protected static function appendTopics(AnnotatedCommand $command): string
+    {
+        if ($topics = $command->getTopics()) {
+            $body = "#### Topics\n\n";
+            foreach ($topics as $name) {
+                $value = "- `drush $name`\n";
+                $topic_command = Drush::getApplication()->find($name);
+                $topic_description = $topic_command->getDescription();
+                if ($docs_relative = $topic_command->getAnnotationData()->get('topic')) {
+                    $abs = Path::makeAbsolute($docs_relative, dirname($topic_command->getAnnotationData()->get('_path')));
+                    if (file_exists($abs)) {
+                        $docs_path = Path::join(DRUSH_BASE_PATH, 'docs');
+                        if (Path::isBasePath($docs_path, $abs)) {
+                            $rel_from_docs = str_replace('.md', '', Path::makeRelative($abs, $docs_path));
+                            $value = "- [$topic_description](https://docs.drush.org/en/master/$rel_from_docs) ($name)";
+                        } else {
+                            $rel_from_root = Path::makeRelative($abs, DRUSH_BASE_PATH);
+                            $value = "- [$topic_description](https://raw.githubusercontent.com/drush-ops/drush/master/$rel_from_root) ($name)";
+                        }
+                    }
+                }
+                $body .= "$value\n";
+            }
+            return "$body\n";
+        }
+        return '';
+    }
+
+    protected static function appendOptions(AnnotatedCommand $command): string
+    {
+        if ($opts = $command->getDefinition()->getOptions()) {
+            $body = '';
+            foreach ($opts as $opt) {
+                if (!HelpCLIFormatter::isGlobalOption($opt->getName())) {
+                    $opt_array = self::optionToArray($opt);
+                    $body .= '- **' . HelpCLIFormatter::formatOptionKeys($opt_array) . '**. ' . self::cliTextToMarkdown(HelpCLIFormatter::formatOptionDescription($opt_array)) . "\n";
+                }
+            }
+            if ($body) {
+                $body .= "#### Options\n\n$body\n";
+            }
+            return $body;
+        }
+        return '';
+    }
+
+    protected static function appendArguments(AnnotatedCommand $command): string
+    {
+        if ($args = $command->getDefinition()->getArguments()) {
+            $body = "#### Arguments\n\n";
+            foreach ($args as $arg) {
+                $arg_array = self::argToArray($arg);
+                $body .= '- **' . HelpCLIFormatter::formatArgumentName($arg_array) . '**. ' . self::cliTextToMarkdown($arg->getDescription()) . "\n";
+            }
+            return "$body\n";
+        }
+        return '';
+    }
+
+    protected static function appendUsages(AnnotatedCommand $command): string
+    {
+        if ($examples = $command->getExampleUsages()) {
+            $body = "#### Examples\n\n";
+            foreach ($examples as $key => $value) {
+                $body .= '- <code>' . $key . '</code>. ' . self::cliTextToMarkdown($value) . "\n";
+            }
+            return "$body\n";
+        }
+        return '';
+    }
+
+    protected static function appendPreamble(AnnotatedCommand $command): string
+    {
+        $body = "# {$command->getName()}\n\n";
+        if ($command->getDescription()) {
+            $body .= self::cliTextToMarkdown($command->getDescription()) . "\n\n";
+            if ($command->getHelp()) {
+                $body .= self::cliTextToMarkdown($command->getHelp()) . "\n\n";
+            }
+        }
+        return $body;
+    }
+
+    protected function writeyml(array $nav, string $dest): void
+    {
+        $base = file_get_contents('../misc/mkdocs_base.yml');
+        $yaml_nav = Yaml::dump(['nav' => $nav], PHP_INT_MAX, 2);
+        file_put_contents(Path::join($dest, 'mkdocs.yml'), $base . $yaml_nav);
     }
 
     /**
@@ -165,7 +182,7 @@ EOT;
      *
      * @param $destination
      */
-    protected function prepare($destination)
+    protected function prepare($destination): void
     {
         $fs = new Filesystem();
         $dest = $destination;
@@ -185,13 +202,9 @@ EOT;
     }
 
     /**
-     * Build an array since thats what HelpCLIFormatter expects.
-     *
-     * @param \Symfony\Component\Console\Input\InputArgument $arg
-     *
-     * @return array
+     * Build an array since that's what HelpCLIFormatter expects.
      */
-    public static function argToArray(InputArgument $arg)
+    public static function argToArray(InputArgument $arg): iterable
     {
         $return = [
             'name' => '--' . $arg->getName(),
@@ -202,13 +215,9 @@ EOT;
     }
 
     /**
-     * Build an array since thats what HelpCLIFormatter expects.
-     *
-     * @param \Symfony\Component\Console\Input\InputOption $opt
-     *
-     * @return array
+     * Build an array since that's what HelpCLIFormatter expects.
      */
-    public static function optionToArray(InputOption $opt)
+    public static function optionToArray(InputOption $opt): iterable
     {
         $return = [
             'name' => '--' . $opt->getName(),
@@ -230,7 +239,7 @@ EOT;
      *
      * @return string
      */
-    public static function cliTextToMarkdown($text)
+    public static function cliTextToMarkdown(string $text): string
     {
         return str_replace(['<info>', '</info>'], '*', $text);
     }
