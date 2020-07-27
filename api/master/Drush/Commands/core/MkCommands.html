@@ -282,17 +282,95 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    
+                    static&nbsp;string
                 </div>
                 <div class="col-md-8 type">
-                    <a href="#method_writeyml">writeyml</a>($nav, $dest)
+                    <a href="#method_appendPostAmble">appendPostAmble</a>()
         
-                                            <p>Write mkdocs.yml.</p>                </div>
+                                            <p class="no-description">No description</p>
+                                    </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    
+                    static&nbsp;string
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_appendAliases">appendAliases</a>(<abbr title="Consolidation\AnnotatedCommand\AnnotatedCommand">AnnotatedCommand</abbr> $command)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    static&nbsp;string
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_appendTopics">appendTopics</a>(<abbr title="Consolidation\AnnotatedCommand\AnnotatedCommand">AnnotatedCommand</abbr> $command)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    static&nbsp;string
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_appendOptions">appendOptions</a>(<abbr title="Consolidation\AnnotatedCommand\AnnotatedCommand">AnnotatedCommand</abbr> $command)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    static&nbsp;string
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_appendArguments">appendArguments</a>(<abbr title="Consolidation\AnnotatedCommand\AnnotatedCommand">AnnotatedCommand</abbr> $command)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    static&nbsp;string
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_appendUsages">appendUsages</a>(<abbr title="Consolidation\AnnotatedCommand\AnnotatedCommand">AnnotatedCommand</abbr> $command)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    static&nbsp;string
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_appendPreamble">appendPreamble</a>(<abbr title="Consolidation\AnnotatedCommand\AnnotatedCommand">AnnotatedCommand</abbr> $command)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    void
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_writeyml">writeyml</a>(array $nav, string $dest)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    void
                 </div>
                 <div class="col-md-8 type">
                     <a href="#method_prepare">prepare</a>($destination)
@@ -302,22 +380,22 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    static&nbsp;array
+                    static&nbsp;<abbr title="Drush\Commands\core\iterable">iterable</abbr>
                 </div>
                 <div class="col-md-8 type">
                     <a href="#method_argToArray">argToArray</a>(<abbr title="Symfony\Component\Console\Input\InputArgument">InputArgument</abbr> $arg)
         
-                                            <p>Build an array since thats what HelpCLIFormatter expects.</p>                </div>
+                                            <p>Build an array since that's what HelpCLIFormatter expects.</p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    static&nbsp;array
+                    static&nbsp;<abbr title="Drush\Commands\core\iterable">iterable</abbr>
                 </div>
                 <div class="col-md-8 type">
                     <a href="#method_optionToArray">optionToArray</a>(<abbr title="Symfony\Component\Console\Input\InputOption">InputOption</abbr> $opt)
         
-                                            <p>Build an array since thats what HelpCLIFormatter expects.</p>                </div>
+                                            <p>Build an array since that's what HelpCLIFormatter expects.</p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -325,7 +403,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                     static&nbsp;string
                 </div>
                 <div class="col-md-8 type">
-                    <a href="#method_cliTextToMarkdown">cliTextToMarkdown</a>($text)
+                    <a href="#method_cliTextToMarkdown">cliTextToMarkdown</a>(string $text)
         
                                             <p>Convert text like <info>foo</info> to <em>foo</em>.</p>                </div>
                 <div class="col-md-2"></div>
@@ -573,35 +651,298 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
 
             </div>
                     <div class="method-item">
-                    <h3 id="method_writeyml">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/core/MkCommands.php#L136">line 136</a></div>
-        <code>            protected        
-    <strong>writeyml</strong>($nav, $dest)
+                    <h3 id="method_appendPostAmble">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/core/MkCommands.php#L69">line 69</a></div>
+        <code>        static    protected        string
+    <strong>appendPostAmble</strong>()
         </code>
     </h3>
     <div class="details">
             
     
 
-                    <div class="method-description">
-                                    <p>Write mkdocs.yml.</p>                                                </div>
+                <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_appendAliases">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/core/MkCommands.php#L78">line 78</a></div>
+        <code>        static    protected        string
+    <strong>appendAliases</strong>(<abbr title="Consolidation\AnnotatedCommand\AnnotatedCommand">AnnotatedCommand</abbr> $command)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
                 <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
+                <td><abbr title="Consolidation\AnnotatedCommand\AnnotatedCommand">AnnotatedCommand</abbr></td>
+                <td>$command</td>
                 <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_appendTopics">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/core/MkCommands.php#L90">line 90</a></div>
+        <code>        static    protected        string
+    <strong>appendTopics</strong>(<abbr title="Consolidation\AnnotatedCommand\AnnotatedCommand">AnnotatedCommand</abbr> $command)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Consolidation\AnnotatedCommand\AnnotatedCommand">AnnotatedCommand</abbr></td>
+                <td>$command</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_appendOptions">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/core/MkCommands.php#L118">line 118</a></div>
+        <code>        static    protected        string
+    <strong>appendOptions</strong>(<abbr title="Consolidation\AnnotatedCommand\AnnotatedCommand">AnnotatedCommand</abbr> $command)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Consolidation\AnnotatedCommand\AnnotatedCommand">AnnotatedCommand</abbr></td>
+                <td>$command</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_appendArguments">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/core/MkCommands.php#L136">line 136</a></div>
+        <code>        static    protected        string
+    <strong>appendArguments</strong>(<abbr title="Consolidation\AnnotatedCommand\AnnotatedCommand">AnnotatedCommand</abbr> $command)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Consolidation\AnnotatedCommand\AnnotatedCommand">AnnotatedCommand</abbr></td>
+                <td>$command</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_appendUsages">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/core/MkCommands.php#L149">line 149</a></div>
+        <code>        static    protected        string
+    <strong>appendUsages</strong>(<abbr title="Consolidation\AnnotatedCommand\AnnotatedCommand">AnnotatedCommand</abbr> $command)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Consolidation\AnnotatedCommand\AnnotatedCommand">AnnotatedCommand</abbr></td>
+                <td>$command</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_appendPreamble">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/core/MkCommands.php#L161">line 161</a></div>
+        <code>        static    protected        string
+    <strong>appendPreamble</strong>(<abbr title="Consolidation\AnnotatedCommand\AnnotatedCommand">AnnotatedCommand</abbr> $command)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Consolidation\AnnotatedCommand\AnnotatedCommand">AnnotatedCommand</abbr></td>
+                <td>$command</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_writeyml">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/core/MkCommands.php#L173">line 173</a></div>
+        <code>            protected        void
+    <strong>writeyml</strong>(array $nav, string $dest)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>array</td>
                 <td>$nav</td>
                 <td></td>
             </tr>
                     <tr>
-                <td></td>
+                <td>string</td>
                 <td>$dest</td>
                 <td></td>
             </tr>
             </table>
 
             
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>void</td>
+            <td></td>
+        </tr>
+    </table>
+
             
             
                     </div>
@@ -610,8 +951,8 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </div>
                     <div class="method-item">
                     <h3 id="method_prepare">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/core/MkCommands.php#L168">line 168</a></div>
-        <code>            protected        
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/core/MkCommands.php#L185">line 185</a></div>
+        <code>            protected        void
     <strong>prepare</strong>($destination)
         </code>
     </h3>
@@ -633,6 +974,15 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </table>
 
             
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>void</td>
+            <td></td>
+        </tr>
+    </table>
+
             
             
                     </div>
@@ -641,8 +991,8 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </div>
                     <div class="method-item">
                     <h3 id="method_argToArray">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/core/MkCommands.php#L194">line 194</a></div>
-        <code>        static            array
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/core/MkCommands.php#L211">line 211</a></div>
+        <code>        static            <abbr title="Drush\Commands\core\iterable">iterable</abbr>
     <strong>argToArray</strong>(<abbr title="Symfony\Component\Console\Input\InputArgument">InputArgument</abbr> $arg)
         </code>
     </h3>
@@ -651,7 +1001,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
     
 
                     <div class="method-description">
-                                    <p>Build an array since thats what HelpCLIFormatter expects.</p>                                                </div>
+                                    <p>Build an array since that's what HelpCLIFormatter expects.</p>                                                </div>
                 <div class="tags">
                             <h4>Parameters</h4>
 
@@ -668,7 +1018,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
 
                     <table class="table table-condensed">
         <tr>
-            <td>array</td>
+            <td><abbr title="Drush\Commands\core\iterable">iterable</abbr></td>
             <td></td>
         </tr>
     </table>
@@ -681,8 +1031,8 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </div>
                     <div class="method-item">
                     <h3 id="method_optionToArray">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/core/MkCommands.php#L211">line 211</a></div>
-        <code>        static            array
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/core/MkCommands.php#L227">line 227</a></div>
+        <code>        static            <abbr title="Drush\Commands\core\iterable">iterable</abbr>
     <strong>optionToArray</strong>(<abbr title="Symfony\Component\Console\Input\InputOption">InputOption</abbr> $opt)
         </code>
     </h3>
@@ -691,7 +1041,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
     
 
                     <div class="method-description">
-                                    <p>Build an array since thats what HelpCLIFormatter expects.</p>                                                </div>
+                                    <p>Build an array since that's what HelpCLIFormatter expects.</p>                                                </div>
                 <div class="tags">
                             <h4>Parameters</h4>
 
@@ -708,7 +1058,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
 
                     <table class="table table-condensed">
         <tr>
-            <td>array</td>
+            <td><abbr title="Drush\Commands\core\iterable">iterable</abbr></td>
             <td></td>
         </tr>
     </table>
@@ -721,9 +1071,9 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </div>
                     <div class="method-item">
                     <h3 id="method_cliTextToMarkdown">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/core/MkCommands.php#L233">line 233</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/core/MkCommands.php#L249">line 249</a></div>
         <code>        static            string
-    <strong>cliTextToMarkdown</strong>($text)
+    <strong>cliTextToMarkdown</strong>(string $text)
         </code>
     </h3>
     <div class="details">
@@ -737,7 +1087,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
 
                     <table class="table table-condensed">
                     <tr>
-                <td></td>
+                <td>string</td>
                 <td>$text</td>
                 <td></td>
             </tr>
