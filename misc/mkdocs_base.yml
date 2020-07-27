@@ -1,0 +1,15 @@
+site_name: 'Drush Commands'
+site_author: 'Moshe Weitzman'
+repo_name: GitHub
+repo_url: 'https://github.com/drush-ops/drush'
+edit_uri: blob/master/docs/
+theme:
+  name: readthedocs
+site_url: 'http://commands.drush.org'
+extra_css:
+  - css/extra.readthedocs.css
+markdown_extensions:
+  - toc:
+      permalink: true
+  - admonition: {  }
+  - pymdownx.magiclink: {  }
