@@ -1037,10 +1037,18 @@ function drush_sitealias_get_db_spec(&$alias_record, $default_to_self = FALSE, $
  */
 function drush_sitealias_add_db_settings(&$alias_record) {
   $altered_record = FALSE;
-  if (isset($alias_record['root'])) {
+  if (isset($alias_record['root']) || isset($alias_record['remote-host'])) {
     // If the alias record does not have a defined 'databases' entry,
     // then we'll need to look one up
     if (!isset($alias_record['db-url']) && !isset($alias_record['databases']) && !isset($alias_record['site-list'])) {
+      // If this alias record is remote, and it does NOT have a 'root' element
+      // explicitly set, and 'root' was not passed on the command line, then
+      // force the 'root' element in the alias record to NULL to prevent
+      // backend invoke from adding a --root using the locally-bootstrapped
+      // Drupal site's 'root' path.
+      if (isset($alias_record['remote-host']) && !isset($alias_record['root']) && (drush_get_option('root', NULL, 'cli') === NULL)) {
+        $alias_record['root'] = NULL;
+      }
       $values = drush_invoke_process($alias_record, "sql-conf", array(), array('all' => TRUE), array('integrate' => FALSE, 'override-simulated' => TRUE));
       if (is_array($values) && ($values['error_status'] == 0)) {
         $altered_record = TRUE;
