@@ -20,32 +20,40 @@ class MkCommands extends DrushCommands implements SiteAliasManagerAwareInterface
     use SiteAliasManagerAwareTrait;
 
     /**
-     * Build an mkdocs site.
+     * Build a Markdown document for each Drush command thats available on a site.
      *
-     * @option destination The target directory where files should be written. A relative path starts at Drupal root.
+     * This command is an early step when building the www.drush.org static site. Adapt it to build a similar site listing the commands that are available on your site. Also see Drush's [Github Actions workflow](https://github.com/drush-ops/drush/blob/master/.github/workflows/main.yml).
+     *
+     * @option destination The path, relative to 'docs' dir, where command docs should be written.
      *
      * @command mk:docs
      * @bootstrap max
-     * @hidden
-     * @usage drush mk:docs --destination=/tmp/build
-     *   Build an mkdocs site at /tmp/build directory.
+     * @usage drush mk:docs --destination=commands/10.x
+     *   Build many .md files in the docs/commands/10.x directory.
      */
     public function docs($options = ['destination' => self::REQ])
     {
-        $this->prepare($options['destination']);
+        $dir_root = Drush::bootstrapManager()->getComposerRoot();
+        $dir_commands = Path::join($dir_root, 'docs', $options['destination']);
+        $this->prepare($dir_commands);
 
         $application = Drush::getApplication();
         $all = $application->all();
         $namespaced = ListCommands::categorize($all);
 
         // Write content files
-        $pages = $nav = [];
+        $pages = $pages_all = $nav = [];
         foreach ($namespaced as $category => $commands) {
             foreach ($commands as $command) {
+                // Special case a single page
+                if (empty($pages_all)) {
+                    $pages['all'] = $options['destination'] . '/all.md';
+                }
+
                 if ($command instanceof AnnotatedCommand) {
                     $command->optionsHook();
                 }
-                $body = self::appendPreamble($command);
+                $body = self::appendPreamble($command, $dir_root);
                 $body .= self::appendUsages($command);
                 $body .= self::appendArguments($command);
                 $body .= self::appendOptions($command);
@@ -55,20 +63,22 @@ class MkCommands extends DrushCommands implements SiteAliasManagerAwareInterface
                 $body .= self::appendAliases($command);
                 $body .= self::appendPostAmble();
                 $filename = str_replace(':', '_', $command->getName())  . '.md';
-                $pages[] = $filename;
-                file_put_contents(Path::join($options['destination'], 'docs', $filename), $body);
+                $pages[$command->getName()] = $options['destination'] . "/$filename";
+                file_put_contents(Path::join($dir_commands, $filename), $body);
             }
             $this->logger()->info('Found {pages} pages in {cat}', ['pages' => count($pages), 'cat' => $category]);
             $nav[] = [$category => $pages];
+            $pages_all = array_merge($pages_all, $pages);
             unset($pages);
         }
 
-        $this->writeyml($nav, $options['destination']);
+        $this->writeYml($nav, $dir_root);
+        $this->writeAllMd($pages_all, $dir_commands);
     }
 
     protected static function appendPostAmble(): string
     {
-        return '!!! note "Legend"' . "\n" . <<<EOT
+        return '!!! hint "Legend"' . "\n" . <<<EOT
     - An argument or option with square brackets is optional.
     - Any default value is listed at end of arg/option description.
     - An ellipsis indicates that an argument accepts multiple values separated by a space.
@@ -126,7 +136,7 @@ EOT;
                 }
             }
             if ($body) {
-                $body .= "#### Options\n\n$body\n";
+                $body = "#### Options\n\n$body\n";
             }
             return $body;
         }
@@ -158,9 +168,16 @@ EOT;
         return '';
     }
 
-    protected static function appendPreamble(AnnotatedCommand $command): string
+    protected static function appendPreamble(AnnotatedCommand $command, $root): string
     {
-        $body = "# {$command->getName()}\n\n";
+        $path = Path::makeRelative($command->getAnnotationData()->get('_path'), $root);
+        $body = <<<EOT
+---
+edit_url: https://github.com/drush-ops/drush/blob/master/$path
+---
+
+EOT;
+        $body .= "# {$command->getName()}\n\n";
         if ($command->getDescription()) {
             $body .= self::cliTextToMarkdown($command->getDescription()) . "\n\n";
             if ($command->getHelp()) {
@@ -170,11 +187,30 @@ EOT;
         return $body;
     }
 
-    protected function writeyml(array $nav, string $dest): void
+    protected function writeYml(array $nav, string $dest): void
     {
-        $base = file_get_contents('../misc/mkdocs_base.yml');
-        $yaml_nav = Yaml::dump(['nav' => $nav], PHP_INT_MAX, 2);
-        file_put_contents(Path::join($dest, 'mkdocs.yml'), $base . $yaml_nav);
+        $base = Yaml::parseFile(Path::join($dest, 'mkdocs_base.yml'));
+        $base['nav'][] = ['Commands' => $nav];
+        $yaml_nav = Yaml::dump($base, PHP_INT_MAX, 2);
+        file_put_contents(Path::join($dest, 'mkdocs.yml'), $yaml_nav);
+    }
+
+    protected function writeAllMd(array $pages_all, string $dest): void
+    {
+        unset($pages_all['all']);
+        foreach ($pages_all as $name => $page) {
+            $basename = basename($page);
+            $items[] = "* [$name]($basename)";
+        }
+        $preamble = <<<EOT
+# All commands
+
+!!! tip
+
+    Press the ++slash++ key to Search for a command. Or use your browser's *Find in Page* feature.
+
+EOT;
+        file_put_contents(Path::join($dest, 'all.md'), $preamble . implode("\n", $items));
     }
 
     /**
@@ -185,20 +221,12 @@ EOT;
     protected function prepare($destination): void
     {
         $fs = new Filesystem();
-        $dest = $destination;
-        if ($fs->exists($dest)) {
-            drush_delete_dir_contents($dest);
+        if ($fs->exists($destination)) {
+            drush_delete_dir_contents($destination);
         }
-        $fs->mkdir($dest);
-        $docs_dir = Path::join($dest, 'docs');
-        $fs->mkdir($docs_dir);
-        $img_dir = Path::join($dest, 'docs', 'img');
-        $fs->mkdir($img_dir);
-        $fs->copy('../misc/favicon.ico', Path::join($img_dir, 'favicon.ico'));
-        $fs->copy('../drush_logo-black.png', Path::join($img_dir, 'drush_logo-black.png'));
-        $fs->copy('../misc/icon_PhpStorm.png', Path::join($img_dir, 'icon_PhpStorm.png'));
-        $fs->copy('../docs/index.md', Path::join($docs_dir, 'index.md'));
-        $fs->mirror('../docs/css', Path::join($docs_dir, 'css'));
+        else {
+            $fs->mkdir($destination);
+        }
     }
 
     /**

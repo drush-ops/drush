@@ -5,8 +5,8 @@ name: Build static sites
 on:
   push:
     branches: [master]
-#  pull_request:
-#    branches: [master]
+  pull_request:
+    branches: [master]
 
 jobs:
   build:
@@ -30,7 +30,7 @@ jobs:
       - name: Install Python dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install mkdocs pymdown-extensions
+          pip install mkdocs pymdown-extensions git+https://gitlab.com/blacs30/mkdocs-edit-url.git
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
@@ -54,9 +54,9 @@ jobs:
         run: composer mk:docs
 
       - name: Mkdocs build
-        run: cd build-commands && mkdocs build --site-dir ../gh-pages/commands/10.x
+        run: mkdocs build --site-dir gh-pages
 
-      - name: Commit Commands to gh-pages
+      - name: Commit mkdocs pages to gh-pages
         run: |
           cd gh-pages
 
@@ -68,7 +68,7 @@ jobs:
           if git diff-index --quiet HEAD --; then
             echo "No changes..."
           else
-            git commit -m "[CI] Build Commands static site"
+            git commit -m "[CI] Build mkdocs static site"
           fi
 
       - name: Install Sami
@@ -95,5 +95,5 @@ jobs:
             git commit -m "[CI] Build API static site"
           fi
 
-      - name: Git Push
-        run: cd gh-pages && git push
+#      - name: Git Push
+#        run: cd gh-pages && git push

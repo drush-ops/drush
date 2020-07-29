@@ -1,8 +1,4 @@
-/*Remove right hand column*/
-.wy-nav-content {
-    max-width: unset;
-}
-
-.rst-content div[role=navigation] {
-    display: none;
-}
+/* Works better on slate scheme.
+/*.md-typeset a {*/
+/*    color: hsl(231, 68%, 85%);*/
+/*}*/

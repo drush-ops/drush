@@ -9,7 +9,7 @@ Types of Injection
 There are two ways that a class can receive its dependencies. One is called “constructor injection”, and the other is called “setter injection”.
 
 *Example of constructor injection:*
-```
+```php
     public function __construct(DependencyType $service)
     {
         $this->service = $service;
@@ -17,7 +17,7 @@ There are two ways that a class can receive its dependencies. One is called “c
 ```
 
 *Example of setter injection:*
-```
+```php
     public function setService(DependencyType $service)
     {
         $this->service = $service;
@@ -29,7 +29,7 @@ Services Files
 ------------------
 
 Drush command files can request that Drupal inject services by using a drush.services.yml file. See [creating commands](commands.md) for instructions on how to use the Drupal Code Generator to create a simple command file starter with a drush.services.yml file. An initial services file will look something like this:
-```
+```yaml
 services:
   my_module.commands:
     class: \Drupal\my_module\Commands\MyModuleiCommands
@@ -45,7 +45,7 @@ Drush will also inject dependencies that it provides using a technique called in
 
 For example:
 
-```
+```php
 <?php
 namespace Drupal\my_module\Commands;
 
