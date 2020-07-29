@@ -2,6 +2,7 @@
 namespace Drush\Commands\pm;
 
 use Composer\Semver\Semver;
+use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\AnnotatedCommand\CommandResult;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Drush\Commands\DrushCommands;
@@ -156,13 +157,28 @@ class SecurityUpdateCommands extends DrushCommands
      */
     protected function filterAllowedPackages(&$flagged_packages, $allowed_packages = NULL) {
         if (!empty($allowed_packages)) {
-            $allowed_packages = explode(',', $allowed_packages);
             foreach ($allowed_packages as $package) {
                 list($package_name, $package_version) = explode(':', $package);
                 if (!empty($flagged_packages[$package_name]) && $flagged_packages[$package_name]['version'] == $package_version) {
                     unset($flagged_packages[$package_name]);
                 }
             }
+        }
+    }
+
+    /**
+     * Validate pm:security.
+     *
+     * @param \Consolidation\AnnotatedCommand\CommandData $data
+     *
+     * @hook validate pm:security
+     */
+    public function validateDrupalSecurityCommand(CommandData $data) {
+        $options = $data->options();
+        if (!empty($options['allowed']) && is_string($options['allowed'])) {
+            // Convert to array so its consistent with the expected structure
+            // if you were to set the option in drush.yml.
+            $data->input()->setOption('allowed', explode(',', $options['allowed']));
         }
     }
 }
