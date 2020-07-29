@@ -5,6 +5,7 @@ use Composer\Semver\Semver;
 use Consolidation\AnnotatedCommand\CommandResult;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Drush\Commands\DrushCommands;
+use Drush\Commands\generate\Helper\InputHandler;
 use Drush\Drush;
 use Exception;
 use Webmozart\PathUtil\Path;
@@ -36,11 +37,12 @@ class SecurityUpdateCommands extends DrushCommands
      *
      * @throws \Exception
      */
-    public function security()
+    public function security($options = ['allowed' => DrushCommands::OPT])
     {
         $security_advisories_composer_json = $this->fetchAdvisoryComposerJson();
         $composer_lock_data = $this->loadSiteComposerLock();
         $updates = $this->calculateSecurityUpdates($composer_lock_data, $security_advisories_composer_json);
+        $this->filterAllowedPackages($updates, $options['allowed']);
         if ($updates) {
             $this->suggestComposerCommand($updates);
             return CommandResult::dataWithExitCode(new RowsOfFields($updates), self::EXIT_FAILURE);
@@ -142,5 +144,25 @@ class SecurityUpdateCommands extends DrushCommands
             }
         }
         return $updates;
+    }
+
+    /**
+     * Filter out flagged packages that are explicitly permitted.
+     *
+     * @param array $flagged_packages
+     *   Packages flagged with a security advisory.
+     * @param null|string $allowed_packages
+     *   Explicit package versions permitted.
+     */
+    protected function filterAllowedPackages(&$flagged_packages, $allowed_packages = NULL) {
+        if (!empty($allowed_packages)) {
+            $allowed_packages = explode(',', $allowed_packages);
+            foreach ($allowed_packages as $package) {
+                list($package_name, $package_version) = explode(':', $package);
+                if (!empty($flagged_packages[$package_name]) && $flagged_packages[$package_name]['version'] == $package_version) {
+                    unset($flagged_packages[$package_name]);
+                }
+            }
+        }
     }
 }
