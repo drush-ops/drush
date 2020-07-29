@@ -170,6 +170,7 @@ class SecurityUpdateCommands extends DrushCommands
      * Validate pm:security.
      *
      * @param \Consolidation\AnnotatedCommand\CommandData $data
+     *   The command data object.
      *
      * @hook validate pm:security
      */
