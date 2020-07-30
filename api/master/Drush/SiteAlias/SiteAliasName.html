@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="robots" content="index, follow, all" />
+    <title>Drush\SiteAlias\SiteAliasName | Drush API</title>
+
+            <link rel="stylesheet" type="text/css" href="../../css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="../../css/bootstrap-theme.min.css">
+        <link rel="stylesheet" type="text/css" href="../../css/sami.css">
+        <script src="../../js/jquery-1.11.1.min.js"></script>
+        <script src="../../js/bootstrap.min.js"></script>
+        <script src="../../js/typeahead.min.js"></script>
+        <script src="../../sami.js"></script>
+        <meta name="MobileOptimized" content="width">
+        <meta name="HandheldFriendly" content="true">
+        <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+    
+    
+    </head>
+
+    <body id="class" data-name="class:Drush_SiteAlias_SiteAliasName" data-root-path="../../">
+            <div id="content">
+        <div id="left-column">
+                <div id="control-panel">
+                <script>
+            $('option[data-version="'+window.projectVersion+'"]').prop('selected', true);
+        </script>
+        <form id="search-form" action="../../search.html" method="GET">
+            <span class="glyphicon glyphicon-search"></span>
+            <input name="search"
+                   class="typeahead form-control"
+                   type="search"
+                   placeholder="Search">
+        </form>
+    </div>
+
+                <div id="api-tree"></div>
+
+        </div>
+        <div id="right-column">
+                <nav id="site-nav" class="navbar navbar-default" role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-elements">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="../../index.html">Drush API</a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar-elements">
+                <ul class="nav navbar-nav">
+                    <li><a href="../../classes.html">Classes</a></li>
+                                            <li><a href="../../namespaces.html">Namespaces</a></li>
+                                        <li><a href="../../interfaces.html">Interfaces</a></li>
+                    <li><a href="../../traits.html">Traits</a></li>
+                    <li><a href="../../doc-index.html">Index</a></li>
+                    <li><a href="../../search.html">Search</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+                        <div class="namespace-breadcrumbs">
+            <ol class="breadcrumb">
+                <li><span class="label label-default">class</span></li>
+                        <li><a href="../../Drush.html">Drush</a></li><li class="backslash">\</li><li><a href="../../Drush/SiteAlias.html">SiteAlias</a></li><li class="backslash">\</li><li>SiteAliasName</li>
+            </ol>
+        </div>
+                <div id="page-content">
+                
+    <div class="page-header">
+        <h1>
+            SiteAliasName
+                
+        </h1>
+    </div>
+
+    <p>    class
+    <strong>SiteAliasName</strong>        extends <abbr title="Consolidation\SiteAlias\SiteAliasName">SiteAliasName</abbr>        (<a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasName.php">View source</a>)
+</p>
+
+        
+    
+
+            <div class="description">
+            <p>Parse a string that contains a site alias name, and provide convenience
+methods to access the parts.</p>            <p>When provided by users, aliases must be in one of the following forms:</p>
+
+<ul>
+<li><p>@sitename.env: List only sitename and environment.</p></li>
+<li><p>@env: Look up a named environment in instances where the site root
+  is known (e.g. via cwd). In this form, there is an implicit sitename
+  'self' which is replaced by the actual site alias name once known.</p></li>
+<li><p>@sitename: Provides only the sitename; uses the 'default' environment,
+  or 'dev' if there is no 'default' (or whatever is there if there is
+  only one). With this form, the site alias name has no environment
+  until the appropriate default environment is looked up. This form
+  is checked only after <code>@env</code> returns no matches.</p></li>
+</ul>
+
+<p>There are also two special aliases that are recognized:</p>
+
+<ul>
+<li><p>@self: The current bootstrapped site.</p></li>
+<li><p>@none: No alias ('root' and 'uri' unset).</p></li>
+</ul>
+
+<p>The special alias forms have no environment component.</p>
+
+<p>When provided to an API, the '@' is optional.</p>
+
+<p>Note that @sitename and @env are ambiguous. Aliases in this form
+(that are not one of the special aliases) will first be assumed
+to be @env, and may be converted to @sitename later.</p>
+
+<p>Note that:</p>
+
+<ul>
+<li>'sitename' and 'env' MUST NOT contain a '.' (unlike previous
+versions of Drush).</li>
+<li>Users SHOULD NOT create any environments that have the same name
+as any site name (and visa-versa).</li>
+<li>All environments in one site record SHOULD be different versions
+of the same site (e.g. dev / test / live).</li>
+</ul>
+</p>                    </div>
+    
+    
+    
+    
+    
+            </div>
+                <div id="footer">
+        Generated by <a href="http://sami.sensiolabs.org/">Sami, the API Documentation Generator</a>.
+    </div>
+
+        </div>
+    </div>
+    </body>
+
+</html>

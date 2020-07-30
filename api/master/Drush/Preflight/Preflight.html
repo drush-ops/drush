@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="robots" content="index, follow, all" />
+    <title>Drush\Preflight\Preflight | Drush API</title>
+
+            <link rel="stylesheet" type="text/css" href="../../css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="../../css/bootstrap-theme.min.css">
+        <link rel="stylesheet" type="text/css" href="../../css/sami.css">
+        <script src="../../js/jquery-1.11.1.min.js"></script>
+        <script src="../../js/bootstrap.min.js"></script>
+        <script src="../../js/typeahead.min.js"></script>
+        <script src="../../sami.js"></script>
+        <meta name="MobileOptimized" content="width">
+        <meta name="HandheldFriendly" content="true">
+        <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+    
+    
+    </head>
+
+    <body id="class" data-name="class:Drush_Preflight_Preflight" data-root-path="../../">
+            <div id="content">
+        <div id="left-column">
+                <div id="control-panel">
+                <script>
+            $('option[data-version="'+window.projectVersion+'"]').prop('selected', true);
+        </script>
+        <form id="search-form" action="../../search.html" method="GET">
+            <span class="glyphicon glyphicon-search"></span>
+            <input name="search"
+                   class="typeahead form-control"
+                   type="search"
+                   placeholder="Search">
+        </form>
+    </div>
+
+                <div id="api-tree"></div>
+
+        </div>
+        <div id="right-column">
+                <nav id="site-nav" class="navbar navbar-default" role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-elements">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="../../index.html">Drush API</a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar-elements">
+                <ul class="nav navbar-nav">
+                    <li><a href="../../classes.html">Classes</a></li>
+                                            <li><a href="../../namespaces.html">Namespaces</a></li>
+                                        <li><a href="../../interfaces.html">Interfaces</a></li>
+                    <li><a href="../../traits.html">Traits</a></li>
+                    <li><a href="../../doc-index.html">Index</a></li>
+                    <li><a href="../../search.html">Search</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+                        <div class="namespace-breadcrumbs">
+            <ol class="breadcrumb">
+                <li><span class="label label-default">class</span></li>
+                        <li><a href="../../Drush.html">Drush</a></li><li class="backslash">\</li><li><a href="../../Drush/Preflight.html">Preflight</a></li><li class="backslash">\</li><li>Preflight</li>
+            </ol>
+        </div>
+                <div id="page-content">
+                
+    <div class="page-header">
+        <h1>
+            Preflight
+                
+        </h1>
+    </div>
+
+    <p>    class
+    <strong>Preflight</strong>        (<a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/Preflight.php">View source</a>)
+</p>
+
+        
+    
+
+            <div class="description">
+            <p>The Drush preflight determines what needs to be done for this request.</p>            <p>The preflight happens after Drush has loaded its autoload file, but
+prior to loading Drupal's autoload file and setting up the DI container.</p>
+
+<ul>
+<li>Pre-parse commandline arguments</li>
+<li>Read configuration .yml files</li>
+<li>Determine the site to use</li>
+</ul>
+</p>                    </div>
+    
+    
+    
+            <h2>Properties</h2>
+
+            <table class="table table-condensed">
+                    <tr>
+                <td class="type" id="property_environment">
+                                        protected                                        <a href="../../Drush/Config/Environment.html"><abbr title="Drush\Config\Environment">Environment</abbr></a>
+                </td>
+                <td>$environment</td>
+                <td class="last"></td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_verify">
+                                        protected                                        <a href="../../Drush/Preflight/PreflightVerify.html"><abbr title="Drush\Preflight\PreflightVerify">PreflightVerify</abbr></a>
+                </td>
+                <td>$verify</td>
+                <td class="last"></td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_configLocator">
+                                        protected                                        <a href="../../Drush/Config/ConfigLocator.html"><abbr title="Drush\Config\ConfigLocator">ConfigLocator</abbr></a>
+                </td>
+                <td>$configLocator</td>
+                <td class="last"></td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_drupalFinder">
+                                        protected                                        <abbr title="DrupalFinder\DrupalFinder">DrupalFinder</abbr>
+                </td>
+                <td>$drupalFinder</td>
+                <td class="last"></td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_preflightArgs">
+                                        protected                                        <a href="../../Drush/Preflight/PreflightArgs.html"><abbr title="Drush\Preflight\PreflightArgs">PreflightArgs</abbr></a>
+                </td>
+                <td>$preflightArgs</td>
+                <td class="last"></td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_aliasManager">
+                                        protected                                        <abbr title="Consolidation\SiteAlias\SiteAliasManager">SiteAliasManager</abbr>
+                </td>
+                <td>$aliasManager</td>
+                <td class="last"></td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_logger">
+                                        protected                                        <a href="../../Drush/Preflight/PreflightLog.html"><abbr title="Drush\Preflight\PreflightLog">PreflightLog</abbr></a>
+                </td>
+                <td>$logger</td>
+                <td class="last"></td>
+                <td></td>
+            </tr>
+            </table>
+
+    
+            <h2>Methods</h2>
+
+            <div class="container-fluid underlined">
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method___construct">__construct</a>(<a href="../../Drush/Config/Environment.html"><abbr title="Drush\Config\Environment">Environment</abbr></a> $environment, $verify = null, $configLocator = null, $preflightLog = null)
+        
+                                            <p>Preflight constructor</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    <a href="../../Drush/Preflight/PreflightLog.html"><abbr title="Drush\Preflight\PreflightLog">PreflightLog</abbr></a>
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_logger">logger</a>()
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_setLogger">setLogger</a>(<a href="../../Drush/Preflight/PreflightLog.html"><abbr title="Drush\Preflight\PreflightLog">PreflightLog</abbr></a> $logger)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_init">init</a>()
+        
+                                            <p>Perform preliminary initialization. This mostly involves setting up
+legacy systems.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_remapOptions">remapOptions</a>()
+        
+                                            <p>Remapping table for arguments. Anything found in a key
+here will be converted to the corresponding value entry.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_remapCommandAliases">remapCommandAliases</a>()
+        
+                                            <p>Symfony Console dislikes certain command aliases, because
+they are too similar to other Drush commands that contain
+the same characters.  To avoid the "I don't know which
+command you mean"-type errors, we will replace problematic
+aliases with their longhand equivalents.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_preflightArgs">preflightArgs</a>($argv)
+        
+                                            <p>Preprocess the args, removing any @sitealias that may be present.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_prepareConfig">prepareConfig</a>(<a href="../../Drush/Config/Environment.html"><abbr title="Drush\Config\Environment">Environment</abbr></a> $environment)
+        
+                                            <p>Create the initial config locator object, and inject any needed
+settings, paths and so on into it.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_createInput">createInput</a>()
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_getCommandFilePaths">getCommandFilePaths</a>()
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_loadSiteAutoloader">loadSiteAutoloader</a>()
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_config">config</a>()
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    bool
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_preflight">preflight</a>($argv)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_findSelectedSite">findSelectedSite</a>()
+        
+                                            <p>Find the site the user selected based on --root or cwd. If neither of
+those result in a site, then we will fall back to the vendor path.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_setSelectedSite">setSelectedSite</a>($selectedRoot, $fallbackPath = false, $originalSelection = null)
+        
+                                            <p>Use the DrupalFinder to locate the Drupal Root + Composer Root at
+the selected root, or, if nothing is found there, at a fallback path.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    <abbr title="DrupalFinder\DrupalFinder">DrupalFinder</abbr>
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_drupalFinder">drupalFinder</a>()
+        
+                                            <p>Return the Drupal Finder</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    <abbr title="Consolidation\SiteAlias\SiteAliasManager">SiteAliasManager</abbr>
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_aliasManager">aliasManager</a>()
+        
+                                            <p>Return the alias manager</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    <a href="../../Drush/Config/Environment.html"><abbr title="Drush\Config\Environment">Environment</abbr></a>
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_environment">environment</a>()
+        
+                                            <p>Return the environment</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+            </div>
+
+
+        <h2>Details</h2>
+
+            <div id="method-details">
+                    <div class="method-item">
+                    <h3 id="method___construct">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/Preflight.php#L59">line 59</a></div>
+        <code>                    
+    <strong>__construct</strong>(<a href="../../Drush/Config/Environment.html"><abbr title="Drush\Config\Environment">Environment</abbr></a> $environment, $verify = null, $configLocator = null, $preflightLog = null)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Preflight constructor</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><a href="../../Drush/Config/Environment.html"><abbr title="Drush\Config\Environment">Environment</abbr></a></td>
+                <td>$environment</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$verify</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$configLocator</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$preflightLog</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_logger">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/Preflight.php#L71">line 71</a></div>
+        <code>                    <a href="../../Drush/Preflight/PreflightLog.html"><abbr title="Drush\Preflight\PreflightLog">PreflightLog</abbr></a>
+    <strong>logger</strong>()
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><a href="../../Drush/Preflight/PreflightLog.html"><abbr title="Drush\Preflight\PreflightLog">PreflightLog</abbr></a></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_setLogger">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/Preflight.php#L79">line 79</a></div>
+        <code>                    
+    <strong>setLogger</strong>(<a href="../../Drush/Preflight/PreflightLog.html"><abbr title="Drush\Preflight\PreflightLog">PreflightLog</abbr></a> $logger)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><a href="../../Drush/Preflight/PreflightLog.html"><abbr title="Drush\Preflight\PreflightLog">PreflightLog</abbr></a></td>
+                <td>$logger</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_init">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/Preflight.php#L88">line 88</a></div>
+        <code>                    
+    <strong>init</strong>()
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Perform preliminary initialization. This mostly involves setting up
+legacy systems.</p>                                                </div>
+                <div class="tags">
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_remapOptions">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/Preflight.php#L114">line 114</a></div>
+        <code>            protected        
+    <strong>remapOptions</strong>()
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Remapping table for arguments. Anything found in a key
+here will be converted to the corresponding value entry.</p>                    <p>For example:
+   --ssh-options='-i mysite_dsa'
+will become:
+   -Dssh.options='-i mysite_dsa'</p>
+
+<p>TODO: We could consider loading this from a file or some other
+source. However, this table is needed very early -- even earlier
+than config is loaded (since this is needed for preflighting the
+arguments, which can select config files to load). Hardcoding
+is probably best; we might want to move to another class, perhaps.
+We also need this prior to Dependency Injection, though.</p>
+
+<p>Eventually, we might want to expose this table to some form of
+'help' output, so folks can see the available conversions.</p>                            </div>
+                <div class="tags">
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_remapCommandAliases">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/Preflight.php#L138">line 138</a></div>
+        <code>            protected        
+    <strong>remapCommandAliases</strong>()
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Symfony Console dislikes certain command aliases, because
+they are too similar to other Drush commands that contain
+the same characters.  To avoid the "I don't know which
+command you mean"-type errors, we will replace problematic
+aliases with their longhand equivalents.</p>                    <p>This should be fixed in Symfony Console.</p>                            </div>
+                <div class="tags">
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_preflightArgs">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/Preflight.php#L153">line 153</a></div>
+        <code>                    
+    <strong>preflightArgs</strong>($argv)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Preprocess the args, removing any @sitealias that may be present.</p>                    <p>Arguments and options not used during preflight will be processed
+with an ArgvInput.</p>                            </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$argv</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_prepareConfig">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/Preflight.php#L170">line 170</a></div>
+        <code>                    
+    <strong>prepareConfig</strong>(<a href="../../Drush/Config/Environment.html"><abbr title="Drush\Config\Environment">Environment</abbr></a> $environment)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Create the initial config locator object, and inject any needed
+settings, paths and so on into it.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><a href="../../Drush/Config/Environment.html"><abbr title="Drush\Config\Environment">Environment</abbr></a></td>
+                <td>$environment</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_createInput">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/Preflight.php#L179">line 179</a></div>
+        <code>                    
+    <strong>createInput</strong>()
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                <div class="tags">
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getCommandFilePaths">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/Preflight.php#L184">line 184</a></div>
+        <code>                    
+    <strong>getCommandFilePaths</strong>()
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                <div class="tags">
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_loadSiteAutoloader">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/Preflight.php#L195">line 195</a></div>
+        <code>                    
+    <strong>loadSiteAutoloader</strong>()
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                <div class="tags">
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_config">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/Preflight.php#L200">line 200</a></div>
+        <code>                    
+    <strong>config</strong>()
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                <div class="tags">
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_preflight">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/Preflight.php#L210">line 210</a></div>
+        <code>                    bool
+    <strong>preflight</strong>($argv)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$argv</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>bool</td>
+            <td>True if the request was successfully redispatched remotely. False if the request should proceed.</td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_findSelectedSite">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/Preflight.php#L308">line 308</a></div>
+        <code>            protected        
+    <strong>findSelectedSite</strong>()
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Find the site the user selected based on --root or cwd. If neither of
+those result in a site, then we will fall back to the vendor path.</p>                                                </div>
+                <div class="tags">
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_setSelectedSite">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/Preflight.php#L327">line 327</a></div>
+        <code>            protected        
+    <strong>setSelectedSite</strong>($selectedRoot, $fallbackPath = false, $originalSelection = null)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Use the DrupalFinder to locate the Drupal Root + Composer Root at
+the selected root, or, if nothing is found there, at a fallback path.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$selectedRoot</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$fallbackPath</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$originalSelection</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_drupalFinder">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/Preflight.php#L353">line 353</a></div>
+        <code>                    <abbr title="DrupalFinder\DrupalFinder">DrupalFinder</abbr>
+    <strong>drupalFinder</strong>()
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Return the Drupal Finder</p>                                                </div>
+                <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><abbr title="DrupalFinder\DrupalFinder">DrupalFinder</abbr></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_aliasManager">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/Preflight.php#L363">line 363</a></div>
+        <code>                    <abbr title="Consolidation\SiteAlias\SiteAliasManager">SiteAliasManager</abbr>
+    <strong>aliasManager</strong>()
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Return the alias manager</p>                                                </div>
+                <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><abbr title="Consolidation\SiteAlias\SiteAliasManager">SiteAliasManager</abbr></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_environment">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/Preflight.php#L373">line 373</a></div>
+        <code>                    <a href="../../Drush/Config/Environment.html"><abbr title="Drush\Config\Environment">Environment</abbr></a>
+    <strong>environment</strong>()
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Return the environment</p>                                                </div>
+                <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><a href="../../Drush/Config/Environment.html"><abbr title="Drush\Config\Environment">Environment</abbr></a></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+            </div>
+
+    
+            </div>
+                <div id="footer">
+        Generated by <a href="http://sami.sensiolabs.org/">Sami, the API Documentation Generator</a>.
+    </div>
+
+        </div>
+    </div>
+    </body>
+
+</html>

@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="robots" content="index, follow, all" />
+    <title>Drush\Preflight\PreflightVerify | Drush API</title>
+
+            <link rel="stylesheet" type="text/css" href="../../css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="../../css/bootstrap-theme.min.css">
+        <link rel="stylesheet" type="text/css" href="../../css/sami.css">
+        <script src="../../js/jquery-1.11.1.min.js"></script>
+        <script src="../../js/bootstrap.min.js"></script>
+        <script src="../../js/typeahead.min.js"></script>
+        <script src="../../sami.js"></script>
+        <meta name="MobileOptimized" content="width">
+        <meta name="HandheldFriendly" content="true">
+        <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+    
+    
+    </head>
+
+    <body id="class" data-name="class:Drush_Preflight_PreflightVerify" data-root-path="../../">
+            <div id="content">
+        <div id="left-column">
+                <div id="control-panel">
+                <script>
+            $('option[data-version="'+window.projectVersion+'"]').prop('selected', true);
+        </script>
+        <form id="search-form" action="../../search.html" method="GET">
+            <span class="glyphicon glyphicon-search"></span>
+            <input name="search"
+                   class="typeahead form-control"
+                   type="search"
+                   placeholder="Search">
+        </form>
+    </div>
+
+                <div id="api-tree"></div>
+
+        </div>
+        <div id="right-column">
+                <nav id="site-nav" class="navbar navbar-default" role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-elements">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="../../index.html">Drush API</a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar-elements">
+                <ul class="nav navbar-nav">
+                    <li><a href="../../classes.html">Classes</a></li>
+                                            <li><a href="../../namespaces.html">Namespaces</a></li>
+                                        <li><a href="../../interfaces.html">Interfaces</a></li>
+                    <li><a href="../../traits.html">Traits</a></li>
+                    <li><a href="../../doc-index.html">Index</a></li>
+                    <li><a href="../../search.html">Search</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+                        <div class="namespace-breadcrumbs">
+            <ol class="breadcrumb">
+                <li><span class="label label-default">class</span></li>
+                        <li><a href="../../Drush.html">Drush</a></li><li class="backslash">\</li><li><a href="../../Drush/Preflight.html">Preflight</a></li><li class="backslash">\</li><li>PreflightVerify</li>
+            </ol>
+        </div>
+                <div id="page-content">
+                
+    <div class="page-header">
+        <h1>
+            PreflightVerify
+                
+        </h1>
+    </div>
+
+    <p>    class
+    <strong>PreflightVerify</strong>        (<a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightVerify.php">View source</a>)
+</p>
+
+        
+    
+
+            <div class="description">
+            <p>Helper methods to verify preflight state.</p>                                </div>
+    
+    
+    
+    
+            <h2>Methods</h2>
+
+            <div class="container-fluid underlined">
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_verify">verify</a>(<a href="../../Drush/Config/Environment.html"><abbr title="Drush\Config\Environment">Environment</abbr></a> $environment)
+        
+                                            <p>Throw an exception if the environment is not right for running Drush.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_confirmPhpVersion">confirmPhpVersion</a>(string $minimumPhpVersion)
+        
+                                            <p>Fail fast if the php version does not meet the minimum requirements.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_confirmUsingCLI">confirmUsingCLI</a>(<a href="../../Drush/Config/Environment.html"><abbr title="Drush\Config\Environment">Environment</abbr></a> $environment)
+        
+                                            <p>Fail if not being run from the command line.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_checkPhpIni">checkPhpIni</a>()
+        
+                                            <p>Evaluate the environment before command bootstrapping
+begins.  If the php environment is too restrictive, then
+notify the user that a setting change is needed and abort.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    bool
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_invalidIniValue">invalidIniValue</a>(string $ini_value, string|string[] $disallowed_value)
+        
+                                            <p>Determine whether an ini value is valid based on the criteria.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_loadedPhpIniMessage">loadedPhpIniMessage</a>()
+        
+                                            <p>Returns a localizable message about php.ini that
+varies depending on whether the php_ini_loaded_file()
+is available or not.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+            </div>
+
+
+        <h2>Details</h2>
+
+            <div id="method-details">
+                    <div class="method-item">
+                    <h3 id="method_verify">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightVerify.php#L17">line 17</a></div>
+        <code>                    
+    <strong>verify</strong>(<a href="../../Drush/Config/Environment.html"><abbr title="Drush\Config\Environment">Environment</abbr></a> $environment)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Throw an exception if the environment is not right for running Drush.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><a href="../../Drush/Config/Environment.html"><abbr title="Drush\Config\Environment">Environment</abbr></a></td>
+                <td>$environment</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_confirmPhpVersion">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightVerify.php#L38">line 38</a></div>
+        <code>                    
+    <strong>confirmPhpVersion</strong>(string $minimumPhpVersion)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Fail fast if the php version does not meet the minimum requirements.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$minimumPhpVersion</td>
+                <td>The minimum allowable php version</td>
+            </tr>
+            </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_confirmUsingCLI">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightVerify.php#L50">line 50</a></div>
+        <code>            protected        
+    <strong>confirmUsingCLI</strong>(<a href="../../Drush/Config/Environment.html"><abbr title="Drush\Config\Environment">Environment</abbr></a> $environment)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Fail if not being run from the command line.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><a href="../../Drush/Config/Environment.html"><abbr title="Drush\Config\Environment">Environment</abbr></a></td>
+                <td>$environment</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_checkPhpIni">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightVerify.php#L62">line 62</a></div>
+        <code>            protected        
+    <strong>checkPhpIni</strong>()
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Evaluate the environment before command bootstrapping
+begins.  If the php environment is too restrictive, then
+notify the user that a setting change is needed and abort.</p>                                                </div>
+                <div class="tags">
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_invalidIniValue">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightVerify.php#L89">line 89</a></div>
+        <code>            protected        bool
+    <strong>invalidIniValue</strong>(string $ini_value, string|string[] $disallowed_value)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Determine whether an ini value is valid based on the criteria.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$ini_value</td>
+                <td>The value of the ini setting being tested.</td>
+            </tr>
+                    <tr>
+                <td>string|string[]</td>
+                <td>$disallowed_value</td>
+                <td>The value that the ini seting cannot be, or a list of disallowed
+  values that cannot appear in the setting.</td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>bool</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_loadedPhpIniMessage">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightVerify.php#L108">line 108</a></div>
+        <code>            protected        
+    <strong>loadedPhpIniMessage</strong>()
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Returns a localizable message about php.ini that
+varies depending on whether the php_ini_loaded_file()
+is available or not.</p>                                                </div>
+                <div class="tags">
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+            </div>
+
+    
+            </div>
+                <div id="footer">
+        Generated by <a href="http://sami.sensiolabs.org/">Sami, the API Documentation Generator</a>.
+    </div>
+
+        </div>
+    </div>
+    </body>
+
+</html>

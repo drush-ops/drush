@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="robots" content="index, follow, all" />
+    <title>Drush\Preflight\PreflightSiteLocator | Drush API</title>
+
+            <link rel="stylesheet" type="text/css" href="../../css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="../../css/bootstrap-theme.min.css">
+        <link rel="stylesheet" type="text/css" href="../../css/sami.css">
+        <script src="../../js/jquery-1.11.1.min.js"></script>
+        <script src="../../js/bootstrap.min.js"></script>
+        <script src="../../js/typeahead.min.js"></script>
+        <script src="../../sami.js"></script>
+        <meta name="MobileOptimized" content="width">
+        <meta name="HandheldFriendly" content="true">
+        <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+    
+    
+    </head>
+
+    <body id="class" data-name="class:Drush_Preflight_PreflightSiteLocator" data-root-path="../../">
+            <div id="content">
+        <div id="left-column">
+                <div id="control-panel">
+                <script>
+            $('option[data-version="'+window.projectVersion+'"]').prop('selected', true);
+        </script>
+        <form id="search-form" action="../../search.html" method="GET">
+            <span class="glyphicon glyphicon-search"></span>
+            <input name="search"
+                   class="typeahead form-control"
+                   type="search"
+                   placeholder="Search">
+        </form>
+    </div>
+
+                <div id="api-tree"></div>
+
+        </div>
+        <div id="right-column">
+                <nav id="site-nav" class="navbar navbar-default" role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-elements">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="../../index.html">Drush API</a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar-elements">
+                <ul class="nav navbar-nav">
+                    <li><a href="../../classes.html">Classes</a></li>
+                                            <li><a href="../../namespaces.html">Namespaces</a></li>
+                                        <li><a href="../../interfaces.html">Interfaces</a></li>
+                    <li><a href="../../traits.html">Traits</a></li>
+                    <li><a href="../../doc-index.html">Index</a></li>
+                    <li><a href="../../search.html">Search</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+                        <div class="namespace-breadcrumbs">
+            <ol class="breadcrumb">
+                <li><span class="label label-default">class</span></li>
+                        <li><a href="../../Drush.html">Drush</a></li><li class="backslash">\</li><li><a href="../../Drush/Preflight.html">Preflight</a></li><li class="backslash">\</li><li>PreflightSiteLocator</li>
+            </ol>
+        </div>
+                <div id="page-content">
+                
+    <div class="page-header">
+        <h1>
+            PreflightSiteLocator
+                
+        </h1>
+    </div>
+
+    <p>    class
+    <strong>PreflightSiteLocator</strong>        (<a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightSiteLocator.php">View source</a>)
+</p>
+
+        
+    
+
+    
+    
+    
+            <h2>Properties</h2>
+
+            <table class="table table-condensed">
+                    <tr>
+                <td class="type" id="property_siteAliasManager">
+                                        protected                                        <abbr title="Consolidation\SiteAlias\SiteAliasManager">SiteAliasManager</abbr>
+                </td>
+                <td>$siteAliasManager</td>
+                <td class="last"></td>
+                <td></td>
+            </tr>
+            </table>
+
+    
+            <h2>Methods</h2>
+
+            <div class="container-fluid underlined">
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method___construct">__construct</a>(<abbr title="Consolidation\SiteAlias\SiteAliasManager">SiteAliasManager</abbr> $siteAliasManager)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    <abbr title="Consolidation\SiteAlias\SiteAlias">SiteAlias</abbr>|false
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_findSite">findSite</a>(<a href="../../Drush/Preflight/PreflightArgsInterface.html"><abbr title="Drush\Preflight\PreflightArgsInterface">PreflightArgsInterface</abbr></a> $preflightArgs, <a href="../../Drush/Config/Environment.html"><abbr title="Drush\Config\Environment">Environment</abbr></a> $environment, string $root)
+        
+                                            <p>During bootstrap, finds the currently selected site from the parameters
+provided on the commandline.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    <abbr title="Consolidation\SiteAlias\SiteAlias">SiteAlias</abbr>
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_determineSelf">determineSelf</a>(<a href="../../Drush/Preflight/PreflightArgsInterface.html"><abbr title="Drush\Preflight\PreflightArgsInterface">PreflightArgsInterface</abbr></a> $preflightArgs, <a href="../../Drush/Config/Environment.html"><abbr title="Drush\Config\Environment">Environment</abbr></a> $environment, $root)
+        
+                                            <p>Either look up the specified alias name / site spec,
+or, if those are invalid, then generate one from
+the provided root and URI.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    <abbr title="Consolidation\SiteAlias\SiteAlias">SiteAlias</abbr>
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_buildSelf">buildSelf</a>(<a href="../../Drush/Preflight/PreflightArgsInterface.html"><abbr title="Drush\Preflight\PreflightArgsInterface">PreflightArgsInterface</abbr></a> $preflightArgs, $root)
+        
+                                            <p>Generate @self from the provided root and URI.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+            </div>
+
+
+        <h2>Details</h2>
+
+            <div id="method-details">
+                    <div class="method-item">
+                    <h3 id="method___construct">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightSiteLocator.php#L19">line 19</a></div>
+        <code>                    
+    <strong>__construct</strong>(<abbr title="Consolidation\SiteAlias\SiteAliasManager">SiteAliasManager</abbr> $siteAliasManager)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Consolidation\SiteAlias\SiteAliasManager">SiteAliasManager</abbr></td>
+                <td>$siteAliasManager</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_findSite">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightSiteLocator.php#L37">line 37</a></div>
+        <code>                    <abbr title="Consolidation\SiteAlias\SiteAlias">SiteAlias</abbr>|false
+    <strong>findSite</strong>(<a href="../../Drush/Preflight/PreflightArgsInterface.html"><abbr title="Drush\Preflight\PreflightArgsInterface">PreflightArgsInterface</abbr></a> $preflightArgs, <a href="../../Drush/Config/Environment.html"><abbr title="Drush\Config\Environment">Environment</abbr></a> $environment, string $root)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>During bootstrap, finds the currently selected site from the parameters
+provided on the commandline.</p>                    <p>If 'false' is returned, that indicates that there was an alias name
+provided on the commandline that is either missing or invalid.</p>                            </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><a href="../../Drush/Preflight/PreflightArgsInterface.html"><abbr title="Drush\Preflight\PreflightArgsInterface">PreflightArgsInterface</abbr></a></td>
+                <td>$preflightArgs</td>
+                <td>An alias name or site specification</td>
+            </tr>
+                    <tr>
+                <td><a href="../../Drush/Config/Environment.html"><abbr title="Drush\Config\Environment">Environment</abbr></a></td>
+                <td>$environment</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>string</td>
+                <td>$root</td>
+                <td>The default Drupal root (from site:set, --root or cwd)</td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><abbr title="Consolidation\SiteAlias\SiteAlias">SiteAlias</abbr>|false</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_determineSelf">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightSiteLocator.php#L62">line 62</a></div>
+        <code>            protected        <abbr title="Consolidation\SiteAlias\SiteAlias">SiteAlias</abbr>
+    <strong>determineSelf</strong>(<a href="../../Drush/Preflight/PreflightArgsInterface.html"><abbr title="Drush\Preflight\PreflightArgsInterface">PreflightArgsInterface</abbr></a> $preflightArgs, <a href="../../Drush/Config/Environment.html"><abbr title="Drush\Config\Environment">Environment</abbr></a> $environment, $root)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Either look up the specified alias name / site spec,
+or, if those are invalid, then generate one from
+the provided root and URI.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><a href="../../Drush/Preflight/PreflightArgsInterface.html"><abbr title="Drush\Preflight\PreflightArgsInterface">PreflightArgsInterface</abbr></a></td>
+                <td>$preflightArgs</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><a href="../../Drush/Config/Environment.html"><abbr title="Drush\Config\Environment">Environment</abbr></a></td>
+                <td>$environment</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$root</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><abbr title="Consolidation\SiteAlias\SiteAlias">SiteAlias</abbr></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_buildSelf">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightSiteLocator.php#L103">line 103</a></div>
+        <code>            protected        <abbr title="Consolidation\SiteAlias\SiteAlias">SiteAlias</abbr>
+    <strong>buildSelf</strong>(<a href="../../Drush/Preflight/PreflightArgsInterface.html"><abbr title="Drush\Preflight\PreflightArgsInterface">PreflightArgsInterface</abbr></a> $preflightArgs, $root)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Generate @self from the provided root and URI.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><a href="../../Drush/Preflight/PreflightArgsInterface.html"><abbr title="Drush\Preflight\PreflightArgsInterface">PreflightArgsInterface</abbr></a></td>
+                <td>$preflightArgs</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$root</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><abbr title="Consolidation\SiteAlias\SiteAlias">SiteAlias</abbr></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+            </div>
+
+    
+            </div>
+                <div id="footer">
+        Generated by <a href="http://sami.sensiolabs.org/">Sami, the API Documentation Generator</a>.
+    </div>
+
+        </div>
+    </div>
+    </body>
+
+</html>
