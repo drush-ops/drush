@@ -143,6 +143,8 @@ class HelpCLIFormatter implements FormatterInterface
 
     public static function isGlobalOption($name)
     {
-        return substr($name, 0, 6) == 'notify' || substr($name, 0, 3) == 'xh-' || substr($name, 0, 9) == 'druplicon';
+        $application = Drush::getApplication();
+        $def = $application->getDefinition();
+        return array_key_exists($name, $def->getOptions()) || substr($name, 0, 6) == 'notify' || substr($name, 0, 3) == 'xh-' || substr($name, 0, 9) == 'druplicon';
     }
 }

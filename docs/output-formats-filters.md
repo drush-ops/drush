@@ -1,5 +1,4 @@
-Output Formats, Fields and Filters
-==================================
+# Output Formats, Fields and Filters
 
 Drush utilizes a powerful formatting and filtering system that provides the user with a lot of control over how output from various commands is rendered.
 
@@ -7,10 +6,8 @@ Drush utilizes a powerful formatting and filtering system that provides the user
 * Output fields may be used to select and order the data columns.
 * Output filters may be used to limit which data rows are printed based on logical expressions.
 
-Output Formats
-==============
-
-The `--format` option may be used to select the data format used to print the output of a command. Most commands that produce informative output about some object or system can transform their data into different formats. For example, the [version command](https://www.drush.org/commands/10.x/version/) may be printed in a human-readable table (the default), or in a json array:
+## Output Formats
+The `--format` option may be used to select the data format used to print the output of a command. Most commands that produce informative output about some object or system can transform their data into different formats. For example, the [version command](commands/10.x/version.md) may be printed in a human-readable table (the default), or in a json array:
 ```
 $ drush version
  Drush version : 10.3.1
@@ -28,8 +25,7 @@ Options:
  --format=<json>    Select output format. Available: json, string, var_export, yaml. Default is key-value.
 ```
 
-Output Fields
-=============
+## Output Fields
 
 If you wish to limit the number of columns produced by a command, use the `--fields` option. List the field names in the order they should be displayed:
 ```
@@ -70,7 +66,7 @@ Note also that some commands do not display all of their available data columns 
 
 There is also a singluar form `--field` available. If this form is used, it will also force the output format to `string`.
 ```
-$ drush9 views:list --field=machine-name 
+$ drush views:list --field=machine-name 
 block_content
 comment
 comments_recent
@@ -87,12 +83,10 @@ archive
 glossary
 ```
 
-Output Filters
-==============
-
+## Output Filters
 A number of Drush commands that output tabular data support a `--filter` option that allows rows from the output to be selected with simple logic expressions.
 
-In its simplest form, the `--filter` option takes a string that indicates the value to filter by in the command's *default filter field*. For example, the [role:list command](https://www.drush.org/commands/10.x/role_list/) specifies `perms` as its default filter; the output of the `role:list` command may be limited to only those roles that have a specified permission:
+In its simplest form, the `--filter` option takes a string that indicates the value to filter by in the command's *default filter field*. For example, the [role:list command](commands/10.x/role_list.md) specifies `perms` as its default filter; the output of the `role:list` command may be limited to only those roles that have a specified permission:
 ```
 $ drush role:list --filter='post comments'
 authenticated:
@@ -129,8 +123,7 @@ drush core:requirements --filter='title~=#(php|gd)#i&&severity=warning'
 
 The `=` and `*=` operators always use case-insensitive comparisons. The `~=` operator is case-sensitive, unless the `i` [PCRE modifier](http://php.net/manual/en/reference.pcre.pattern.modifiers.php) is used, as shown in the previous example.
 
-Comparison of Filters with Grep
--------------------------------
+## Comparison of Filters with Grep
 
 Using the `--filter` feature is similar to using `grep`. The main difference is that the filter feature does a semantic search, which is to say that it explicitly compares against the data in specific fields. In comparison, the `grep` command does a line-based search.
 

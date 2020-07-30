@@ -21,7 +21,7 @@ The configuration override system allows you to change configuration
 values for a given instance of a site (e.g. the development server) by
 setting configuration variables in the site's settings.php file.
 For example, to change the name of a local development site:
-```
+```php
 $config['system.site']['name'] = 'Local Install of Awesome Widgets, Inc.';
 ```
 Note that the configuration override system is a Drupal feature, not

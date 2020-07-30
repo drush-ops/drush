@@ -1,11 +1,9 @@
-Overview
-==========================
-Generators jump start your coding by building all the boring boilerplate code for you. After running the [generate command](https://www.drush.org/commands/10.x/generate/), you have a guide for where to insert your custom logic.
+# Overview
+Generators jump start your coding by building all the boring boilerplate code for you. After running the [generate command](commands/10.x/generate.md), you have a guide for where to insert your custom logic.
 
 Drush's generators reuse classes provided by the excellent [Drupal Code Generator](https://github.com/Chi-teck/drupal-code-generator) project. See its [Commands directory](https://github.com/Chi-teck/drupal-code-generator/tree/master/src/Command) for inspiration.
 
-Writing Custom Generators
-==========================
+## Writing Custom Generators
 Drupal modules may supply their own Generators, just like they can supply Commands.
 
 See [Woot module](https://github.com/drush-ops/drush/blob/master/tests/functional/resources/modules/d8/woot), which Drush uses for testing. Specifically,
@@ -15,8 +13,7 @@ See [Woot module](https://github.com/drush-ops/drush/blob/master/tests/functiona
   1. Add your class to your module's drush.services.yml file ([example](https://github.com/drush-ops/drush/blob/master/tests/functional/resources/modules/d8/woot/drush.services.yml)). Use the tag `drush.generator` instead of `drush.command`.
   1. Perform a `drush cache-rebuild` to compile your drush.services.yml changes into the Drupal container.
 
-Global Generators
-==============================
+## Global Generators
 
 Generators that don't ship inside Drupal modules are called 'global' generators. In general, its better to use modules to carry your generators. If you still prefer using a global generator, please note:
 
