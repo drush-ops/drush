@@ -95,5 +95,5 @@ jobs:
             git commit -m "[CI] Build API static site"
           fi
 
-#      - name: Git Push
-#        run: cd gh-pages && git push
+      - name: Git Push
+        run: cd gh-pages && git push
