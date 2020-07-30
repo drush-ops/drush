@@ -58,7 +58,7 @@ class MkCommands extends DrushCommands implements SiteAliasManagerAwareInterface
                 $body .= self::appendArguments($command);
                 $body .= self::appendOptions($command);
                 if ($command instanceof AnnotatedCommand) {
-                    $body .= self::appendTopics($command);
+                    $body .= self::appendTopics($command, $dir_commands);
                 }
                 $body .= self::appendAliases($command);
                 $body .= self::appendPostAmble();
@@ -97,7 +97,7 @@ EOT;
         return '';
     }
 
-    protected static function appendTopics(AnnotatedCommand $command): string
+    protected static function appendTopics(AnnotatedCommand $command, string $dir_commands): string
     {
         if ($topics = $command->getTopics()) {
             $body = "#### Topics\n\n";
@@ -106,12 +106,13 @@ EOT;
                 $topic_command = Drush::getApplication()->find($name);
                 $topic_description = $topic_command->getDescription();
                 if ($docs_relative = $topic_command->getAnnotationData()->get('topic')) {
-                    $abs = Path::makeAbsolute($docs_relative, dirname($topic_command->getAnnotationData()->get('_path')));
+                    $commandfile_path = dirname($topic_command->getAnnotationData()->get('_path'));
+                    $abs = Path::makeAbsolute($docs_relative, $commandfile_path);
                     if (file_exists($abs)) {
                         $docs_path = Path::join(DRUSH_BASE_PATH, 'docs');
                         if (Path::isBasePath($docs_path, $abs)) {
-                            $rel_from_docs = str_replace('.md', '', Path::makeRelative($abs, $docs_path));
-                            $value = "- [$topic_description](https://docs.drush.org/en/master/$rel_from_docs) ($name)";
+                            $target_relative = Path::makeRelative($abs, $dir_commands);
+                            $value = "- [$topic_description]($target_relative) ($name)";
                         } else {
                             $rel_from_root = Path::makeRelative($abs, DRUSH_BASE_PATH);
                             $value = "- [$topic_description](https://raw.githubusercontent.com/drush-ops/drush/master/$rel_from_root) ($name)";
