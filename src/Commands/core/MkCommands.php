@@ -223,8 +223,7 @@ EOT;
         $fs = new Filesystem();
         if ($fs->exists($destination)) {
             drush_delete_dir_contents($destination);
-        }
-        else {
+        } else {
             $fs->mkdir($destination);
         }
     }

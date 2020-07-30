@@ -145,6 +145,6 @@ class HelpCLIFormatter implements FormatterInterface
     {
         $application = Drush::getApplication();
         $def = $application->getDefinition();
-        return array_key_exists($name, $def->getOptions()) || substr($name, 0, 6) == 'notify' || substr($name, 0, 3) == 'xh-' || substr($name, 0, 9) == 'druplicon';;
+        return array_key_exists($name, $def->getOptions()) || substr($name, 0, 6) == 'notify' || substr($name, 0, 3) == 'xh-' || substr($name, 0, 9) == 'druplicon';
     }
 }
