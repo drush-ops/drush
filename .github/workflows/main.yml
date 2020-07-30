@@ -56,21 +56,6 @@ jobs:
       - name: Mkdocs build
         run: mkdocs build -v --site-dir gh-pages
 
-      - name: Commit mkdocs pages to gh-pages
-        run: |
-          cd gh-pages
-
-          git config --local user.email "actions@github.com"
-          git config --local user.name "Drush Documentation Bot"
-
-          git add -A .
-
-          if git diff-index --quiet HEAD --; then
-            echo "No changes..."
-          else
-            git commit -m "[CI] Build mkdocs static site"
-          fi
-
       - name: Install Sami
         run: composer sami-install
 
@@ -80,7 +65,12 @@ jobs:
           rm -rf gh-pages/api
           composer api || true
 
-      - name: Commit API to gh-pages
+      - name: Checkout CNAME file
+          # It got wiped and its needed.
+          run: |
+            cd gh-pages && git checkout -- CNAME
+
+      - name: Commit static site to gh-pages
         run: |
           cd gh-pages
 
@@ -92,7 +82,7 @@ jobs:
           if git diff-index --quiet HEAD --; then
             echo "No changes..."
           else
-            git commit -m "[CI] Build API static site"
+            git commit -m "[CI] Build static site"
           fi
 
       - name: Git Push
