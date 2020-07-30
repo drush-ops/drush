@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="robots" content="index, follow, all" />
+    <title>Drush\Preflight\PreflightArgsInterface | Drush API</title>
+
+            <link rel="stylesheet" type="text/css" href="../../css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="../../css/bootstrap-theme.min.css">
+        <link rel="stylesheet" type="text/css" href="../../css/sami.css">
+        <script src="../../js/jquery-1.11.1.min.js"></script>
+        <script src="../../js/bootstrap.min.js"></script>
+        <script src="../../js/typeahead.min.js"></script>
+        <script src="../../sami.js"></script>
+        <meta name="MobileOptimized" content="width">
+        <meta name="HandheldFriendly" content="true">
+        <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+    
+    
+    </head>
+
+    <body id="class" data-name="class:Drush_Preflight_PreflightArgsInterface" data-root-path="../../">
+            <div id="content">
+        <div id="left-column">
+                <div id="control-panel">
+                <script>
+            $('option[data-version="'+window.projectVersion+'"]').prop('selected', true);
+        </script>
+        <form id="search-form" action="../../search.html" method="GET">
+            <span class="glyphicon glyphicon-search"></span>
+            <input name="search"
+                   class="typeahead form-control"
+                   type="search"
+                   placeholder="Search">
+        </form>
+    </div>
+
+                <div id="api-tree"></div>
+
+        </div>
+        <div id="right-column">
+                <nav id="site-nav" class="navbar navbar-default" role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-elements">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="../../index.html">Drush API</a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar-elements">
+                <ul class="nav navbar-nav">
+                    <li><a href="../../classes.html">Classes</a></li>
+                                            <li><a href="../../namespaces.html">Namespaces</a></li>
+                                        <li><a href="../../interfaces.html">Interfaces</a></li>
+                    <li><a href="../../traits.html">Traits</a></li>
+                    <li><a href="../../doc-index.html">Index</a></li>
+                    <li><a href="../../search.html">Search</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+                        <div class="namespace-breadcrumbs">
+            <ol class="breadcrumb">
+                <li><span class="label label-default">interface</span></li>
+                        <li><a href="../../Drush.html">Drush</a></li><li class="backslash">\</li><li><a href="../../Drush/Preflight.html">Preflight</a></li><li class="backslash">\</li><li>PreflightArgsInterface</li>
+            </ol>
+        </div>
+                <div id="page-content">
+                
+    <div class="page-header">
+        <h1>
+            PreflightArgsInterface
+                
+        </h1>
+    </div>
+
+    <p>    interface
+    <strong>PreflightArgsInterface</strong>        (<a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightArgsInterface.php">View source</a>)
+</p>
+
+        
+    
+
+            <div class="description">
+            <p>Storage for arguments preprocessed during preflight.</p>                                </div>
+    
+    
+    
+    
+            <h2>Methods</h2>
+
+            <div class="container-fluid underlined">
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_optionsWithValues">optionsWithValues</a>()
+        
+                                            <p>Return an associative array of '--option' => 'methodName'.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_applyToConfig">applyToConfig</a>(<abbr title="Consolidation\Config\ConfigInterface">ConfigInterface</abbr> $config)
+        
+                                            <p>Copy any applicable arguments into the provided configuration
+object, as appropriate.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_args">args</a>()
+        
+                                            <p>Return all of the args from the inputs that were NOT processed
+by the ArgsPreprocessor (anything not listed in optionsWithValues).</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_applicationPath">applicationPath</a>()
+        
+                                            <p>Return the path to this application's executable ($argv[0]).</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_commandName">commandName</a>()
+        
+                                            <p>Return the command name from the runtime args. Note that the
+command name also exists inside the runtime args, because the
+runtime args maintain the order of the options relative to the
+command name (save for those options removed by preflight args).</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_setCommandName">setCommandName</a>($commandName)
+        
+                                            <p>Store the command name, once it is found.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_addArg">addArg</a>(string $arg)
+        
+                                            <p>Add one argument to the end of the list returned by the <code>args()</code> method.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_passArgs">passArgs</a>($args)
+        
+                                            <p>Add everything in the provided array to the list returned by <code>args()</code></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_alias">alias</a>()
+        
+                                            <p>Return any '@alias' that may have appeared before the argument
+holding the command name.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_hasAlias">hasAlias</a>()
+        
+                                            <p>Returns 'true' if an '@alias' was set.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_setAlias">setAlias</a>(string $alias)
+        
+                                            <p>Set an alias. Should always begin with '@'.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+            </div>
+
+
+        <h2>Details</h2>
+
+            <div id="method-details">
+                    <div class="method-item">
+                    <h3 id="method_optionsWithValues">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightArgsInterface.php#L17">line 17</a></div>
+        <code>                    
+    <strong>optionsWithValues</strong>()
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Return an associative array of '--option' => 'methodName'.</p>                    <p>The 'option' string should begin with the appropriate number
+of dashes (one or two, as desired), and should end with a '='
+if the option requires a value.</p>                            </div>
+                <div class="tags">
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_applyToConfig">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightArgsInterface.php#L25">line 25</a></div>
+        <code>                    
+    <strong>applyToConfig</strong>(<abbr title="Consolidation\Config\ConfigInterface">ConfigInterface</abbr> $config)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Copy any applicable arguments into the provided configuration
+object, as appropriate.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Consolidation\Config\ConfigInterface">ConfigInterface</abbr></td>
+                <td>$config</td>
+                <td>The configuration object to inject data into</td>
+            </tr>
+            </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_args">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightArgsInterface.php#L31">line 31</a></div>
+        <code>                    
+    <strong>args</strong>()
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Return all of the args from the inputs that were NOT processed
+by the ArgsPreprocessor (anything not listed in optionsWithValues).</p>                                                </div>
+                <div class="tags">
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_applicationPath">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightArgsInterface.php#L36">line 36</a></div>
+        <code>                    
+    <strong>applicationPath</strong>()
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Return the path to this application's executable ($argv[0]).</p>                                                </div>
+                <div class="tags">
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_commandName">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightArgsInterface.php#L44">line 44</a></div>
+        <code>                    
+    <strong>commandName</strong>()
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Return the command name from the runtime args. Note that the
+command name also exists inside the runtime args, because the
+runtime args maintain the order of the options relative to the
+command name (save for those options removed by preflight args).</p>                                                </div>
+                <div class="tags">
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_setCommandName">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightArgsInterface.php#L49">line 49</a></div>
+        <code>                    
+    <strong>setCommandName</strong>($commandName)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Store the command name, once it is found.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$commandName</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_addArg">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightArgsInterface.php#L56">line 56</a></div>
+        <code>                    
+    <strong>addArg</strong>(string $arg)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Add one argument to the end of the list returned by the <code>args()</code> method.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$arg</td>
+                <td>One argument</td>
+            </tr>
+            </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_passArgs">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightArgsInterface.php#L63">line 63</a></div>
+        <code>                    
+    <strong>passArgs</strong>($args)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Add everything in the provided array to the list returned by <code>args()</code></p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$args</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_alias">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightArgsInterface.php#L69">line 69</a></div>
+        <code>                    
+    <strong>alias</strong>()
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Return any '@alias' that may have appeared before the argument
+holding the command name.</p>                                                </div>
+                <div class="tags">
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_hasAlias">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightArgsInterface.php#L74">line 74</a></div>
+        <code>                    
+    <strong>hasAlias</strong>()
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Returns 'true' if an '@alias' was set.</p>                                                </div>
+                <div class="tags">
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_setAlias">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightArgsInterface.php#L81">line 81</a></div>
+        <code>                    
+    <strong>setAlias</strong>(string $alias)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Set an alias. Should always begin with '@'.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$alias</td>
+                <td>The alias name '@site'</td>
+            </tr>
+            </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+            </div>
+
+    
+            </div>
+                <div id="footer">
+        Generated by <a href="http://sami.sensiolabs.org/">Sami, the API Documentation Generator</a>.
+    </div>
+
+        </div>
+    </div>
+    </body>
+
+</html>
