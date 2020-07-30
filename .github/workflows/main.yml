@@ -54,7 +54,7 @@ jobs:
         run: composer mk:docs
 
       - name: Mkdocs build
-        run: mkdocs build --site-dir gh-pages
+        run: mkdocs build -v --site-dir gh-pages
 
       - name: Commit mkdocs pages to gh-pages
         run: |
