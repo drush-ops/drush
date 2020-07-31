@@ -15,12 +15,12 @@ See [Woot module](https://github.com/drush-ops/drush/blob/master/tests/functiona
 
 ## Global Generators
 
-Generators that don't ship inside Drupal modules are called 'global' generators. In general, its better to use modules to carry your generators. If you still prefer using a global generator, please note:
+Generators that don't ship inside Drupal modules are called *global* generators. In general, it is better to use modules to carry your generators. If you still prefer using a global generator, please note:
 
 1. The file's namespace should be `\Drush\Generators`.
-1. The filename must be have a name like Generators/FooGenerator.php
+1. The filename must have a name like Generators/FooGenerator.php
     1. The prefix `Foo` can be whatever string you want. The file must end in `Generator.php`
     1. The enclosing directory must be named `Generators`
 1. The directory above Generators must be one of:
-    1.  A Folder listed in the 'include' option. include may be provided via config or via CLI.
-    1.  ../drush, /drush or /sites/all/drush. These paths are relative to Drupal root.
+    1.  A Folder listed in the *--include* option. include may be provided via config or via CLI.
+    1.  `../drush`, `/drush` or `/sites/all/drush`. These paths are relative to Drupal root.
