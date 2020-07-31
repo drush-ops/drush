@@ -2569,7 +2569,7 @@
 <li>An informative example is the <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/core/BrowseCommands.php">browse command</a></li>
 <li>A commandfile gets access to the SAM by implementing the SiteAliasManagerAwareInterface and <em>use</em>ing the SiteAliasManagerAwareTrait trait. Then you gain access via <code>$this-&gt;siteAliasManager()</code>.</li>
 <li>If an alias was used for the current request, it is available via $this-&gt;siteAliasManager()-&gt;getself().</li>
-<li>The SAM generally deals in <a href="https://github.com/consolidation/site-alias/blob/master/src/AliasRecord.php">AliasRecord</a> objects. That is how any given site alias is represented. See its methods for determining things like whether the alias points to a local host or remote host.</li>
+<li>The SAM generally deals in <a href="https://github.com/consolidation/site-alias/blob/main/src/SiteAlias.php">SiteAlias</a> objects. That is how any given site alias is represented. See its methods for determining things like whether the alias points to a local host or remote host.</li>
 <li><a href="https://raw.githubusercontent.com/drush-ops/drush/master/examples/example.site.yml">An example site alias file</a>.</li>
 <li><a href="https://raw.githubusercontent.com/drush-ops/drush/master/examples/Commands/SiteAliasAlterCommands.php">Dynamically alter site aliases</a>.</li>
 <li>The SAM is also available for as <a href="https://github.com/consolidation/site-alias">a standalone Composer project</a>. More information available in the README there.</li>
