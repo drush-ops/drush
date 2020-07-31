@@ -202,7 +202,7 @@ class DocsCommands extends DrushCommands
      * @command docs:deploy
      * @aliases docs-deploy
      * @hidden
-     * @topic  ../../../docs/deploy.md
+     * @topic  ../../../docs/deploycommand.md
      */
     public function deploy()
     {
