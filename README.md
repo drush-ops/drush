@@ -25,26 +25,24 @@ The Drush project expects all participants to abide by the [Drupal Code of Condu
 FAQ
 ------
 
->  Q: What does "Drush" stand for?<br>
->  A: The Drupal Shell.
->
->  Q: How do I pronounce Drush?<br>
->  A: Some people pronounce the *dru* with a long 'u' like Dr*u*pal. Fidelity points
->     go to them, but they are in the minority. Most pronounce Drush so that it
->     rhymes with hush, rush, flush, etc. This is the preferred pronunciation.
->
->  Q: Does Drush have unit tests?<br>
->  A: Drush has an excellent suite of unit tests. See
-> [tests/README.md](https://github.com/drush-ops/drush/blob/master/tests/README.md) for more information.
+#### What does *Drush* stand for?
+A: The Drupal Shell.
+
+#### How do I pronounce Drush?
+Some people pronounce the *dru* with a long 'u' like Dr*u*pal. Fidelity points
+go to them, but they are in the minority. Most pronounce Drush so that it
+rhymes with hush, rush, flush, etc. This is the preferred pronunciation.
+
+#### Does Drush have unit tests?
+Drush has an excellent suite of unit tests. See [tests/README.md](https://github.com/drush-ops/drush/blob/master/tests/README.md) for more information.
 
 
 Credits
 -----------
 
+* Maintained by [Moshe Weitzman](http://drupal.org/moshe) with much help from the folks listed at https://github.com/orgs/drush-ops/people.
 * Originally developed by [Arto Bendiken](http://bendiken.net) for Drupal 4.7.
 * Redesigned by [Franz Heinzmann](http://unbiskant.org) in May 2007 for Drupal 5.
-* Maintained by [Moshe Weitzman](http://drupal.org/moshe) with much help from
-  the folks listed at https://github.com/orgs/drush-ops/people.
 * Thanks to [JetBrains](https://www.jetbrains.com) for [supporting this project and open source software](https://www.jetbrains.com/buy/opensource/).
 
 ![Drush Logo](img/drush_logo-black.png)
