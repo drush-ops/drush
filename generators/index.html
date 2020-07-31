@@ -2640,17 +2640,17 @@
 <li>Perform a <code>drush cache-rebuild</code> to compile your drush.services.yml changes into the Drupal container.</li>
 </ol>
 <h2 id="global-generators">Global Generators<a class="headerlink" href="#global-generators" title="Permanent link">&para;</a></h2>
-<p>Generators that don't ship inside Drupal modules are called 'global' generators. In general, its better to use modules to carry your generators. If you still prefer using a global generator, please note:</p>
+<p>Generators that don't ship inside Drupal modules are called <em>global</em> generators. In general, it is better to use modules to carry your generators. If you still prefer using a global generator, please note:</p>
 <ol>
 <li>The file's namespace should be <code>\Drush\Generators</code>.</li>
-<li>The filename must be have a name like Generators/FooGenerator.php<ol>
+<li>The filename must have a name like Generators/FooGenerator.php<ol>
 <li>The prefix <code>Foo</code> can be whatever string you want. The file must end in <code>Generator.php</code></li>
 <li>The enclosing directory must be named <code>Generators</code></li>
 </ol>
 </li>
 <li>The directory above Generators must be one of:<ol>
-<li>A Folder listed in the 'include' option. include may be provided via config or via CLI.</li>
-<li>../drush, /drush or /sites/all/drush. These paths are relative to Drupal root.</li>
+<li>A Folder listed in the <em>--include</em> option. include may be provided via config or via CLI.</li>
+<li><code>../drush</code>, <code>/drush</code> or <code>/sites/all/drush</code>. These paths are relative to Drupal root.</li>
 </ol>
 </li>
 </ol>

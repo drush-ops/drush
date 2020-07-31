@@ -2698,10 +2698,12 @@
                 
                 
                 <h1 id="the-drush-bootstrap-process">The Drush Bootstrap Process<a class="headerlink" href="#the-drush-bootstrap-process" title="Permanent link">&para;</a></h1>
-<p>When preparing to run a command, Drush works by "bootstrapping" the Drupal environment in very much the same way that is done during a normal page request from the web server, so most Drush commands run in the context of a fully-initialized website.</p>
+<p>When preparing to run a command, Drush works by <em>bootstrapping</em> the Drupal environment in very much the same way that is done during a normal page request from the web server, so most Drush commands run in the context of a fully-initialized website.</p>
 <p>For efficiency and convenience, some Drush commands can work without first bootstrapping a Drupal site, or by only partially bootstrapping a site. This is faster than a full bootstrap. It is also a matter of convenience, because some commands are useful even when you don't have a working Drupal site.</p>
 <p>Commands may specify their bootstrap level with a <code>@bootstrap</code> annotation. Commands supplied by Drupal modules are always <code>@bootstrap full</code>.</p>
-<p>Prior to bootstrapping, Drush goes through the "preflight" process, where the following things occur:</p>
+<p>Prior to bootstrapping, Drush goes through the <em>preflight</em> process, where the following things occur:</p>
+<div class="admonition example">
+<p class="admonition-title">Preflight</p>
 <ol>
 <li>Commandline arguments are parsed.</li>
 <li>Configuration files are read.</li>
@@ -2711,6 +2713,7 @@
 <li>Global commandfiles are loaded. Commandfiles with a drush.services.yml are loaded later, during <code>bootstrap @full</code>. </li>
 <li>The command is dispatched via the Symfony Console component.</li>
 </ol>
+</div>
 <p>Bootstrapping is done from a Symfony Console command hook. The different bootstrap levels are discribed below.</p>
 <h2 id="bootstrap-none">@bootstrap none<a class="headerlink" href="#bootstrap-none" title="Permanent link">&para;</a></h2>
 <p>Only run Drush <em>preflight</em>, without considering Drupal at all. Any code that operates on the Drush installation, and not specifically any Drupal directory, should bootstrap to this phase.</p>
@@ -2725,7 +2728,7 @@
 <h2 id="bootstrap-full">@bootstrap full<a class="headerlink" href="#bootstrap-full" title="Permanent link">&para;</a></h2>
 <p>Fully initialize Drupal. This is analogous to the DRUPAL_BOOTSTRAP_FULL bootstrap phase in Drupal. Any code that interacts with the general Drupal API should be bootstrapped to this phase.</p>
 <h2 id="bootstrap-max">@bootstrap max<a class="headerlink" href="#bootstrap-max" title="Permanent link">&para;</a></h2>
-<p>This is not an actual bootstrap phase. Commands that use the "max" bootstrap level will cause Drush to bootstrap as far as possible, and then run the command regardless of the bootstrap phase that was reached. This is useful for Drush commands that work without a bootstrapped site, but that provide additional information or capabilities in the presence of a bootstrapped site. For example, <code>drush status</code> will show progressively more information the farther the site bootstraps.</p>
+<p>This is not an actual bootstrap phase. Commands that use the "max" bootstrap level will cause Drush to bootstrap as far as possible, and then run the command regardless of the bootstrap phase that was reached. This is useful for Drush commands that work without a bootstrapped site, but that provide additional information or capabilities in the presence of a bootstrapped site. For example, <a href="../commands/10.x/core_status/"><code>drush status</code></a> will show progressively more information the farther the site bootstraps.</p>
                 
               
               
