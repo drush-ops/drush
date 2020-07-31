@@ -1,3 +1,6 @@
+---
+edit_url: https://github.com/drush-ops/drush/blob/master/tests/README.md
+---
 Drush's test suite (aka Unish) is based on [PHPUnit](http://www.phpunit.de). In order to maintain
 high quality, our tests are run on every push. See [CircleCi](https://circleci.com/gh/drush-ops/drush).
 
