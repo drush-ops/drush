@@ -66,9 +66,9 @@ jobs:
           composer api || true
 
       - name: Checkout CNAME file
-          # It got wiped and its needed.
-          run: |
-            cd gh-pages && git checkout -- CNAME
+        # It got wiped and its needed.
+        run: |
+          cd gh-pages && git checkout -- CNAME
 
       - name: Commit static site to gh-pages
         run: |
