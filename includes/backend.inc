@@ -1039,18 +1039,26 @@ function _drush_backend_invoke($cmds, $common_backend_options = array(), $contex
         $values = drush_backend_parse_output($proc['output'], $proc['backend-options'], $proc['outputted']);
         if (is_array($values)) {
           $values['site'] = $site;
-          if (empty($ret)) {
-            $ret = $values;
-          }
-          elseif (!array_key_exists('concurrent', $ret)) {
-            $ret = array('concurrent' => array($ret, $values));
-          }
-          else {
-            $ret['concurrent'][] = $values;
-          }
+        }
+        elseif (!empty($common_backend_options['convert-stdout-to-backend'])) {
+          $values = [
+            'site' => $site,
+            'output' => $proc['output'],
+            'error_status' => $proc['code'],
+            'log' => [],
+          ];
         }
         else {
-          $ret = drush_set_error('DRUSH_FRAMEWORK_ERROR', dt("The command could not be executed successfully (returned: !return, code: !code)", array("!return" => $proc['output'], "!code" =>  $proc['code'])));
+          return drush_set_error('DRUSH_FRAMEWORK_ERROR', dt("The command could not be executed successfully (returned: !return, code: !code)", array("!return" => $proc['output'], "!code" =>  $proc['code'])));
+        }
+        if (empty($ret)) {
+          $ret = $values;
+        }
+        elseif (!array_key_exists('concurrent', $ret)) {
+          $ret = array('concurrent' => array($ret, $values));
+        }
+        else {
+          $ret['concurrent'][] = $values;
         }
       }
     }
