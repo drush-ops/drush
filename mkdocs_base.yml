@@ -44,7 +44,7 @@ markdown_extensions:
       use_pygments: true
   - pymdownx.superfences: { }
 nav:
-  - Usage:
+  - Use:
     - Introduction: index.md
     - Install: install.md
     - Usage: usage.md
@@ -54,7 +54,7 @@ nav:
     - Output Formats, Fields & Filters: output-formats-filters.md
     - REPL (a custom shell for Drupal): repl.md
     - Deploy: deploycommand.md
-  - Authoring:
+  - Author:
     - Command Authoring: commands.md
     - Hooks: hooks.md
     - Dependency injection: dependency-injection.md
@@ -75,4 +75,6 @@ nav:
       - .bashrc: examples/example.bashrc.md
       - prompt.sh: examples/example.prompt.sh.md
       - git-bisect.sh: examples/git-bisect.example.sh.md
-
+  - Contribute:
+      - Guidelines: contribute/CONTRIBUTING.md
+      - Unish: contribute/README.md

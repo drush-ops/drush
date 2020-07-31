@@ -1,20 +1,15 @@
 Drush's test suite (aka Unish) is based on [PHPUnit](http://www.phpunit.de). In order to maintain
 high quality, our tests are run on every push. See [CircleCi](https://circleci.com/gh/drush-ops/drush).
 
-Usage
---------
+## Usage
 1. git clone https://github.com/drush-ops/drush.git
 1. cd drush
 1. composer install
-1. Review the configuration settings in:
-   - [tests/unit/phpunit.xml.dist](unit/phpunit.xml.dist). 
-   - [tests/integration/phpunit.xml.dist](integration/phpunit.xml.dist). 
-   - [tests/functional/phpunit.xml.dist](functional/phpunit.xml.dist).
+1. Review the configuration settings in [tests/phpunit.xml.dist](https://github.com/drush-ops/drush/blob/master/tests/phpunit.xml.dist). 
 1. If customization is needed, copy phpunit.xml.dist to phpunit.xml and edit away.
 1. Run all test suites: `composer test`
 
-Docker
-----------
+## Docker
 Drush's own tests may be run within provided Docker containers (see docker-compose.yml):
 
 - Start containers: `docker-compose up -d`
@@ -22,8 +17,7 @@ Drush's own tests may be run within provided Docker containers (see docker-compo
 - To change configuration, copy .env.example to .env, edit to taste, and run `docker-compose up -d` again
 - See that .env.example file for help on enabling Xdebug.
 
-Advanced usage
----------
+## Advanced usage
 - Run only one test suite
   - `composer unit`
   - `composer integration`
@@ -35,20 +29,18 @@ Advanced usage
   - `UNISH_DIRTY=1 composer functional -- --filter testUserRole`
   - `./drush @sut.dev status`
 
-About the Test Suites
----------
+## About the Test Suites
 - Unit tests operate on functions that take values and return results without creating side effects. No database connection is required to run these tests, and no Drupal site is set up.
 - Integration tests set up a test dependency injection container and operate by calling the Symfony Application APIs directly. A Drupal site called the System Under Test is set up and used for the tests. The SUT is set up and installed only once, and then is re-used for all tests. Integration tests therefore cannot make destructive changes to the SUT database. Also, Drupal is bootstrapped only once (always using the standard Drupal kernel, never the install or update kernel). This means that all commands run at BOOTSTRAP_FULL, and it is not possible to test loading different Drush configuration files and so on. It is not possible to test argument / option parsing. The shutdown and error handlers are not installed, so PHP deprecation warnings will be evidenced in the integration tests.
 - Functional tests operate by `exec`ing the Drush executable. All functional tests therefore run in their own separate processes. The Drupal System Under Test is set up every time it is needed by any functional test. It is therefore okay if a functional test changes the state of the SUT. The codebase is re-used, so no destructive changes should be made to the code.
 
-Drush Test Traits
--------
+## Drush Test Traits
 Drush provides test traits that may be used to test your own Drush extensions. Adding the traits varies slightly depending how you package your Drush extension:
 - An extension that ships inside a contributed module. See [DevelCommandsTest](https://cgit.drupalcode.org/devel/tree/tests/src/Functional/DevelCommandsTest.php?h=8.x-2.x) for an example. Note that you also need a [drupalci.yml](https://www.drupal.org/drupalorg/docs/drupal-ci/customizing-drupalci-testing-for-projects), which performs a `composer require drush/drush`. You can copy devel's [drupalci.yml](https://cgit.drupalcode.org/devel/tree/drupalci.yml?h=8.x-2.x). Also see [SchedulerDrushTest](https://git.drupalcode.org/project/scheduler/blob/8.x-1.x/tests/src/Functional/SchedulerDrushTest.php).
 - A standalone Drush extension or one that ships inside a custom module. See [example drush extension](https://github.com/drush-ops/example-drush-extension). 
 
 Once you have included the Drush Test Traits, you will be able to write simple tests that call your extension's commands and makes assertions against the output.
-```
+```php
     public function testMyCommand()
     {
         $this->drush('my:command', ['param'], ['flag' => 'value']);
