@@ -376,13 +376,14 @@ function drush_user_login($inputs = '', $path = NULL) {
   // the *local* machine.
   $alias = drush_get_context('DRUSH_TARGET_SITE_ALIAS');
   if (drush_sitealias_is_remote_site($alias)) {
-    $return = drush_invoke_process($alias, 'user-login', $args, drush_redispatch_get_options(), array('integrate' => FALSE));
+    $return = drush_invoke_process($alias, 'user-login', $args, drush_redispatch_get_options(), array('integrate' => FALSE, 'convert-stdout-to-backend' => TRUE));
+
     if ($return['error_status']) {
       return drush_set_error('Unable to execute user login.');
     }
     else {
       // Prior versions of Drupal returned a string so cast to an array if needed.
-      $links = is_string($return['object']) ? array($return['object']) : $return['object'];
+      $links = !isset($return['object']) ? [ $return['output'] ] : (is_string($return['object']) ? array($return['object']) : $return['object']);
     }
   }
   else {
