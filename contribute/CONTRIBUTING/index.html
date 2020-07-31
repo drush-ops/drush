@@ -11,7 +11,7 @@
         <meta name="description" content="A command line shell and Unix scripting interface for Drupal">
       
       
-        <link rel="canonical" href="http://www.drush.org/examples/PolicyCommands.php/">
+        <link rel="canonical" href="http://www.drush.org/contribute/CONTRIBUTING/">
       
       
         <meta name="author" content="Moshe Weitzman">
@@ -21,7 +21,7 @@
     
     
       
-        <title>PolicyCommands.php - Drush</title>
+        <title>Guidelines - Drush</title>
       
     
     
@@ -54,9 +54,9 @@
       
     
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="Drush - PolicyCommands.php" />
+    <meta property="og:title" content="Drush - Guidelines" />
     <meta property="og:description" content="A command line shell and Unix scripting interface for Drupal" />
-    <meta property="og:url" content="http://www.drush.org/examples/PolicyCommands.php/" />
+    <meta property="og:url" content="http://www.drush.org/contribute/CONTRIBUTING/" />
     <meta property="og:image" content="https://raw.githubusercontent.com/drush-ops/drush/master/drush_logo-black.png" />
     <meta property="og:image:type" content="image/png" />
     <meta property="og:image:width" content="218" />
@@ -69,7 +69,7 @@
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:site" content="@drushcli" />
     <meta name="twitter:creator" content="@weitzman" />
-    <meta name="twitter:title" content="Drush - PolicyCommands.php" />
+    <meta name="twitter:title" content="Drush - Guidelines" />
     <meta name="twitter:description" content="A command line shell and Unix scripting interface for Drupal" />
     <meta name="twitter:image" content="https://raw.githubusercontent.com/drush-ops/drush/master/drush_logo-black.png" />
 
@@ -88,6 +88,11 @@
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
+      
+        
+        <a href="#git-and-pull-requests" class="md-skip">
+          Skip to content
+        </a>
       
     </div>
     <div data-md-component="announce">
@@ -112,7 +117,7 @@
           </span>
           <span class="md-header-nav__topic md-ellipsis">
             
-              PolicyCommands.php
+              Guidelines
             
           </span>
         </div>
@@ -211,7 +216,7 @@
   
     <li class="md-tabs__item">
       
-        <a href="../example.drush.yml/" class="md-tabs__link md-tabs__link--active">
+        <a href="../../examples/example.drush.yml/" class="md-tabs__link">
           Examples
         </a>
       
@@ -224,7 +229,7 @@
   
     <li class="md-tabs__item">
       
-        <a href="../../contribute/CONTRIBUTING/" class="md-tabs__link">
+        <a href="./" class="md-tabs__link md-tabs__link--active">
           Contribute
         </a>
       
@@ -549,12 +554,10 @@
       
       
 
-  
 
-
-  <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+  <li class="md-nav__item md-nav__item--nested">
     
-      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-3" type="checkbox" id="nav-3" checked>
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-3" type="checkbox" id="nav-3">
     
     <label class="md-nav__link" for="nav-3">
       Examples
@@ -578,7 +581,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../example.drush.yml/" title="drush.yml" class="md-nav__link">
+    <a href="../../examples/example.drush.yml/" title="drush.yml" class="md-nav__link">
       drush.yml
     </a>
   </li>
@@ -590,7 +593,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../example.site.yml/" title="site.yml" class="md-nav__link">
+    <a href="../../examples/example.site.yml/" title="site.yml" class="md-nav__link">
       site.yml
     </a>
   </li>
@@ -602,7 +605,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../helloworld.script/" title="Helloworld.script" class="md-nav__link">
+    <a href="../../examples/helloworld.script/" title="Helloworld.script" class="md-nav__link">
       Helloworld.script
     </a>
   </li>
@@ -626,7 +629,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../ArtCommands.php/" title="ArtCommands.php" class="md-nav__link">
+    <a href="../../examples/ArtCommands.php/" title="ArtCommands.php" class="md-nav__link">
       ArtCommands.php
     </a>
   </li>
@@ -636,18 +639,11 @@
           
           
 
-  
 
-
-  <li class="md-nav__item md-nav__item--active">
-    
-    <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-    
-    
-    <a href="./" title="PolicyCommands.php" class="md-nav__link md-nav__link--active">
+  <li class="md-nav__item">
+    <a href="../../examples/PolicyCommands.php/" title="PolicyCommands.php" class="md-nav__link">
       PolicyCommands.php
     </a>
-    
   </li>
 
         
@@ -657,7 +653,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../SiteAliasAlterCommands.php/" title="SiteAliasAlterCommands.php" class="md-nav__link">
+    <a href="../../examples/SiteAliasAlterCommands.php/" title="SiteAliasAlterCommands.php" class="md-nav__link">
       SiteAliasAlterCommands.php
     </a>
   </li>
@@ -669,7 +665,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../SyncViaHttpCommands.php/" title="SyncViaHttpCommands.php" class="md-nav__link">
+    <a href="../../examples/SyncViaHttpCommands.php/" title="SyncViaHttpCommands.php" class="md-nav__link">
       SyncViaHttpCommands.php
     </a>
   </li>
@@ -681,7 +677,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../XkcdCommands.php/" title="XkcdCommands.php" class="md-nav__link">
+    <a href="../../examples/XkcdCommands.php/" title="XkcdCommands.php" class="md-nav__link">
       XkcdCommands.php
     </a>
   </li>
@@ -693,7 +689,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../example.bashrc/" title=".bashrc" class="md-nav__link">
+    <a href="../../examples/example.bashrc/" title=".bashrc" class="md-nav__link">
       .bashrc
     </a>
   </li>
@@ -705,7 +701,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../example.prompt.sh/" title="prompt.sh" class="md-nav__link">
+    <a href="../../examples/example.prompt.sh/" title="prompt.sh" class="md-nav__link">
       prompt.sh
     </a>
   </li>
@@ -717,7 +713,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../git-bisect.example.sh/" title="git-bisect.sh" class="md-nav__link">
+    <a href="../../examples/git-bisect.example.sh/" title="git-bisect.sh" class="md-nav__link">
       git-bisect.sh
     </a>
   </li>
@@ -732,10 +728,12 @@
       
       
 
+  
 
-  <li class="md-nav__item md-nav__item--nested">
+
+  <li class="md-nav__item md-nav__item--active md-nav__item--nested">
     
-      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-4" type="checkbox" id="nav-4">
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-4" type="checkbox" id="nav-4" checked>
     
     <label class="md-nav__link" for="nav-4">
       Contribute
@@ -757,11 +755,70 @@
           
           
 
+  
 
-  <li class="md-nav__item">
-    <a href="../../contribute/CONTRIBUTING/" title="Guidelines" class="md-nav__link">
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        Guidelines
+        <span class="md-nav__icon md-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 9h14V7H3v2m0 4h14v-2H3v2m0 4h14v-2H3v2m16 0h2v-2h-2v2m0-10v2h2V7h-2m0 6h2v-2h-2v2z"/></svg>
+        </span>
+      </label>
+    
+    <a href="./" title="Guidelines" class="md-nav__link md-nav__link--active">
       Guidelines
     </a>
+    
+      
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#git-and-pull-requests" class="md-nav__link">
+    Git and Pull requests
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#development-environment" class="md-nav__link">
+    Development Environment
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#coding-style" class="md-nav__link">
+    Coding style
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#documentation" class="md-nav__link">
+    Documentation
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+    
   </li>
 
         
@@ -771,7 +828,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../../contribute/" title="Unish" class="md-nav__link">
+    <a href="../" title="Unish" class="md-nav__link">
       Unish
     </a>
   </li>
@@ -2595,12 +2652,63 @@
               </div>
             
             
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#git-and-pull-requests" class="md-nav__link">
+    Git and Pull requests
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#development-environment" class="md-nav__link">
+    Development Environment
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#coding-style" class="md-nav__link">
+    Coding style
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#documentation" class="md-nav__link">
+    Documentation
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
           
           <div class="md-content">
             <article class="md-content__inner md-typeset">
               
                 
-                  <a href="https://github.com/drush-ops/drush/blob/master/examples/Commands/PolicyCommands.php" title="Edit this page" class="md-content__button md-icon">
+                  <a href="https://github.com/drush-ops/drush/blob/master/docs/contribute/CONTRIBUTING.md" title="Edit this page" class="md-content__button md-icon">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg>
                   </a>
                 
@@ -2608,73 +2716,33 @@
                   
                 
                 
-                  <h1>PolicyCommands.php</h1>
+                  <h1>Guidelines</h1>
                 
-                <div class="highlight"><pre><span></span><code><span class="cp">&lt;?php</span>
-<span class="k">namespace</span> <span class="nx">Drush\Commands</span><span class="p">;</span>
-
-<span class="k">use</span> <span class="nx">Consolidation\AnnotatedCommand\CommandData</span><span class="p">;</span>
-<span class="k">use</span> <span class="nx">Drush\Commands\DrushCommands</span><span class="p">;</span>
-<span class="k">use</span> <span class="nx">Symfony\Component\Console\Input\InputOption</span><span class="p">;</span>
-
-<span class="sd">/**</span>
-<span class="sd"> * Load this commandfile using the --include option - e.g. `drush --include=/path/to/drush/examples`</span>
-<span class="sd"> *</span>
-<span class="sd"> * See [Drush Test Traits](https://github.com/drush-ops/drush/blob/master/tests/README.md#about-the-test-suites) for info on testing Drush commands.</span>
-<span class="sd"> */</span>
-
-<span class="k">class</span> <span class="nc">PolicyCommands</span> <span class="k">extends</span> <span class="nx">DrushCommands</span>
-<span class="p">{</span>
-
-    <span class="sd">/**</span>
-<span class="sd">     * Prevent catastrophic braino. Note that this file has to be local to the</span>
-<span class="sd">     * machine that initiates the sql:sync command.</span>
-<span class="sd">     *</span>
-<span class="sd">     * @hook validate sql:sync</span>
-<span class="sd">     * @throws \Exception</span>
-<span class="sd">     */</span>
-    <span class="k">public</span> <span class="k">function</span> <span class="nf">sqlSyncValidate</span><span class="p">(</span><span class="nx">CommandData</span> <span class="nv">$commandData</span><span class="p">)</span>
-    <span class="p">{</span>
-        <span class="k">if</span> <span class="p">(</span><span class="nv">$commandData</span><span class="o">-&gt;</span><span class="na">input</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">getArgument</span><span class="p">(</span><span class="s1">&#39;destination&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;@prod&#39;</span><span class="p">)</span> <span class="p">{</span>
-            <span class="k">throw</span> <span class="k">new</span> <span class="nx">\Exception</span><span class="p">(</span><span class="nx">dt</span><span class="p">(</span><span class="s1">&#39;Per !file, you may never overwrite the production database.&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;!file&#39;</span> <span class="o">=&gt;</span> <span class="no">__FILE__</span><span class="p">]));</span>
-        <span class="p">}</span>
-    <span class="p">}</span>
-
-    <span class="sd">/**</span>
-<span class="sd">     * Limit rsync operations to production site.</span>
-<span class="sd">     *</span>
-<span class="sd">     * @hook validate core:rsync</span>
-<span class="sd">     */</span>
-    <span class="k">public</span> <span class="k">function</span> <span class="nf">rsyncValidate</span><span class="p">(</span><span class="nx">CommandData</span> <span class="nv">$commandData</span><span class="p">)</span>
-    <span class="p">{</span>
-        <span class="k">if</span> <span class="p">(</span><span class="nb">preg_match</span><span class="p">(</span><span class="s2">&quot;/^@prod/&quot;</span><span class="p">,</span> <span class="nv">$commandData</span><span class="o">-&gt;</span><span class="na">input</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">getArgument</span><span class="p">(</span><span class="s1">&#39;destination&#39;</span><span class="p">)))</span> <span class="p">{</span>
-            <span class="k">throw</span> <span class="k">new</span> <span class="nx">\Exception</span><span class="p">(</span><span class="nx">dt</span><span class="p">(</span><span class="s1">&#39;Per !file, you may never rsync to the production site.&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;!file&#39;</span> <span class="o">=&gt;</span> <span class="no">__FILE__</span><span class="p">]));</span>
-        <span class="p">}</span>
-    <span class="p">}</span>
-
-    <span class="sd">/**</span>
-<span class="sd">     * Unauthorized may not execute updates.</span>
-<span class="sd">     *</span>
-<span class="sd">     * @hook validate updatedb</span>
-<span class="sd">     */</span>
-    <span class="k">public</span> <span class="k">function</span> <span class="nf">validateUpdateDb</span><span class="p">(</span><span class="nx">CommandData</span> <span class="nv">$commandData</span><span class="p">)</span>
-    <span class="p">{</span>
-        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nv">$commandData</span><span class="o">-&gt;</span><span class="na">input</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">getOption</span><span class="p">(</span><span class="s1">&#39;secret&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;mysecret&#39;</span><span class="p">)</span> <span class="p">{</span>
-            <span class="k">throw</span> <span class="k">new</span> <span class="nx">\Exception</span><span class="p">(</span><span class="nx">dt</span><span class="p">(</span><span class="s1">&#39;UpdateDb command requires a secret token per site policy.&#39;</span><span class="p">));</span>
-        <span class="p">}</span>
-    <span class="p">}</span>
-
-    <span class="sd">/**</span>
-<span class="sd">     * @hook option updatedb</span>
-<span class="sd">     * @option secret A required token else user may not run updatedb command.</span>
-<span class="sd">     */</span>
-    <span class="k">public</span> <span class="k">function</span> <span class="nf">optionsetUpdateDb</span><span class="p">(</span><span class="nv">$options</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;secret&#39;</span> <span class="o">=&gt;</span> <span class="nx">self</span><span class="o">::</span><span class="na">REQ</span><span class="p">])</span>
-    <span class="p">{</span>
-    <span class="p">}</span>
-<span class="p">}</span>
-</code></pre></div>
-                
-                  
+                <p>Drush is built by people like you! Please <a href="https://github.com/drush-ops/drush">join us</a>.</p>
+<h2 id="git-and-pull-requests">Git and Pull requests<a class="headerlink" href="#git-and-pull-requests" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Contributions are submitted, reviewed, and accepted using GitHub pull requests.</li>
+<li>The latest changes are in the <code>master</code> branch. PR's should initially target this branch.</li>
+<li>Try to make clean commits that are easily readable (including descriptive commit messages!)</li>
+<li>See the test-specific <a href="https://github.com/drush-ops/drush/blob/master/tests/README.md">README.md</a> for instructions on running the test suite. Test before you push. Get familiar with Unish, our test suite. Optionally run tests in the provided Docker containers.</li>
+<li>We maintain branches named 10.x, 9.x, etc. These are release branches. From these branches, we make new tags for patch and minor versions.</li>
+</ul>
+<h2 id="development-environment">Development Environment<a class="headerlink" href="#development-environment" title="Permanent link">&para;</a></h2>
+<ul>
+<li>You may choose to use the docker-compose file in root directory for an optimized environment.</li>
+<li>See <code>composer run-script -l</code> for a list of helper scripts.</li>
+</ul>
+<h2 id="coding-style">Coding style<a class="headerlink" href="#coding-style" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Do write comments. You don't have to comment every line, but if you come up with something that'sZ a bit complex/weird, just leave a comment. Bear in mind that you will probably leave the project at some point and that other people will read your code. Undocumented huge amounts of code are nearly worthless!</li>
+<li>We use <a href="https://www.php-fig.org/psr/psr-2/">PSR-2</a> in the /src directory. <a href="https://drupal.org/coding-standards">Drupal's coding standards</a> are still used in the includes directory (deprecated code).</li>
+<li>Keep it compatible. Do not introduce changes to the public API, or configurations too casually. Don't make incompatible changes without good reasons!</li>
+</ul>
+<h2 id="documentation">Documentation<a class="headerlink" href="#documentation" title="Permanent link">&para;</a></h2>
+<ul>
+<li>The docs are on our <a href="https://www.drush.org">web site</a>. You may also read these from within Drush, with the <code>drush topic</code> command.</li>
+<li>Documentation should be kept up-to-date. This means, whenever you add a new API method, add a new hook or change the database model, pack the relevant changes to the docs in the same pull request.</li>
+</ul>
                 
               
               
@@ -2693,7 +2761,7 @@
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid" aria-label="Footer">
         
-          <a href="../ArtCommands.php/" title="ArtCommands.php" class="md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+          <a href="../../examples/git-bisect.example.sh/" title="git-bisect.sh" class="md-footer-nav__link md-footer-nav__link--prev" rel="prev">
             <div class="md-footer-nav__button md-icon">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
             </div>
@@ -2702,19 +2770,19 @@
                 <span class="md-footer-nav__direction">
                   Previous
                 </span>
-                ArtCommands.php
+                git-bisect.sh
               </div>
             </div>
           </a>
         
         
-          <a href="../SiteAliasAlterCommands.php/" title="SiteAliasAlterCommands.php" class="md-footer-nav__link md-footer-nav__link--next" rel="next">
+          <a href="../" title="Unish" class="md-footer-nav__link md-footer-nav__link--next" rel="next">
             <div class="md-footer-nav__title">
               <div class="md-ellipsis">
                 <span class="md-footer-nav__direction">
                   Next
                 </span>
-                SiteAliasAlterCommands.php
+                Unish
               </div>
             </div>
             <div class="md-footer-nav__button md-icon">
