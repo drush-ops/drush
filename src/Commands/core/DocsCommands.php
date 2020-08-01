@@ -53,7 +53,7 @@ class DocsCommands extends DrushCommands
     }
 
     /**
-     * Configuration overview with examples from example.drush.yml.
+     * Drush configuration example.
      *
      * @command docs:configuration
      * @aliases docs-configuration
@@ -61,6 +61,19 @@ class DocsCommands extends DrushCommands
      * @topic ../../../examples/example.drush.yml
      */
     public function config()
+    {
+        self::printFileTopic($this->commandData);
+    }
+
+    /**
+     * Drush hooks.
+     *
+     * @command docs:hooks
+     * @aliases docs-hooks
+     * @hidden
+     * @topic ../../../docs/hooks.md
+     */
+    public function hooks()
     {
         self::printFileTopic($this->commandData);
     }

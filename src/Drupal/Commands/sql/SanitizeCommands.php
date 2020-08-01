@@ -27,6 +27,7 @@ class SanitizeCommands extends DrushCommands implements CustomEventAwareInterfac
      *   Sanitize database without modifying any passwords.
      * @usage drush sql:sanitize --allowlist-fields=field_biography,field_phone_number
      *   Sanitizes database but exempts two user fields from modification.
+     * @topics docs:hooks
      */
     public function sanitize()
     {
