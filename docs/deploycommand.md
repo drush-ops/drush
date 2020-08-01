@@ -4,7 +4,7 @@ The [deploy command](commands/10.x/deploy.md) standardizes how Drupal deployment
 deployment script updates the codebase for the target site and then this command 
 performs the following:
 
-```
+```shell
 drush updatedb --no-cache-clear
 drush cache:rebuild
 drush config:import

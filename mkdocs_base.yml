@@ -42,6 +42,13 @@ markdown_extensions:
   - pymdownx.snippets: { }
   - pymdownx.highlight:
       use_pygments: true
+      # https://github.com/squidfunk/mkdocs-material/issues/506#issuecomment-338007823
+      extend_pygments_lang:
+        - name: php
+          lang: php
+          options:
+            startinline: true
+  - pymdownx.inlinehilite: { }
   - pymdownx.superfences: { }
 nav:
   - Use:
