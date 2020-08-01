@@ -105,19 +105,19 @@ authenticated:
 Note that not all commands have a default filter field.
 
 Other fields in the output may be searched by using a simple expression in the `--filter` term. For example, to list only the enabled extensions with the `pm:list` command, you could run:
-```
+```shell
 $ drush pm:list --filter='status=enabled'
 ```
 To search for fields that contain a string using the operator `*=`, or match a regular expression with the `~=` operator. For example, to find all views whose machine name contains the word "content":
-```
+```shell
 drush views:list --filter='machine-name*=content'
 ```
 To use a regular expression to find any core requirement notice whose title contains either "php" or "gd"
-```
+```shell
 drush core:requirements --filter='title~=#(php|gd)#i'
 ```
 Finally, filter expressions may also use logical-and (`&&`) or logical-or (`||`) operations to separate multiple terms.  Parenthesis are not supported. For example, to search both the `title` and `severity` fields in the `core:requirements` command:
-```
+```shell
 drush core:requirements --filter='title~=#(php|gd)#i&&severity=warning'
 ```
 
@@ -127,13 +127,13 @@ The `=` and `*=` operators always use case-insensitive comparisons. The `~=` ope
 
 Using the `--filter` feature is similar to using `grep`. The main difference is that the filter feature does a semantic search, which is to say that it explicitly compares against the data in specific fields. In comparison, the `grep` command does a line-based search.
 
-Show only results where the severity is "warning":
+Show only results where the severity is *warning*:
 
-`drush core:requirements --filter='severity=warning'`
+`#!shell drush core:requirements --filter='severity=warning'`
 
-Show only lines that contain the string "warning" (either in the severity field, or somewhere else on the line):
+Show only lines that contain the string *warning* (either in the severity field, or somewhere else on the line):
 
-`drush core:requirements | grep -i warning`
+`#!shell drush core:requirements | grep -i warning`
 
 The table below compares and contrasts the two ways of searching.
 
