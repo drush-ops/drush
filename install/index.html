@@ -2700,14 +2700,14 @@
 <li>It is required that Drupal sites be built using Composer, with Drush listed as a dependency. Popular starter templates for that include <a href="https://github.com/drupal-composer/drupal-project">drupal-project</a> (Drush is included) and <a href="https://www.drupal.org/docs/develop/using-composer/using-composer-to-install-drupal-and-manage-dependencies">recommended-project</a> (Drush must be added). If your Composer project doesn't yet depend on Drush, run <code>composer require drush/drush</code> to add it. After this step, you may call Drush via <code>vendor/bin/drush</code>.</li>
 <li>Optional. To be able to call <code>drush</code> from anywhere, install the <a href="https://github.com/drush-ops/drush-launcher">Drush Launcher</a>. That is a small program which listens on your $PATH and hands control to a site-local Drush that is in the /vendor directory of your Composer project.</li>
 </ol>
-<p>See <a href="../usage/">Usage</a> for details on using Drush.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
 <ul>
-<li>Tip: To use a non-default PHP, <a href="http://stackoverflow.com/questions/4145667/how-to-override-the-path-of-php-to-use-the-mamp-path/10653443#10653443">edit ~/.bashrc so that the desired PHP is in front of your $PATH</a>. If that is not desirable, you can change your PATH for just one request: <code>PATH=/path/to/php:$PATH</code> drush status ...`</li>
-<li>Tip: To use a custom php.ini for Drush requests, <a href="https://github.com/drush-ops/drush/issues/3294#issuecomment-370201342">see this comment</a>. </li>
+<li>See <a href="../usage/">Usage</a> for details on using Drush </li>
+<li>To use a non-default PHP, <a href="http://stackoverflow.com/questions/4145667/how-to-override-the-path-of-php-to-use-the-mamp-path/10653443#10653443">edit ~/.bashrc so that the desired PHP is in front of your $PATH</a>. If that is not desirable, you can change your PATH for just one request: <code>PATH=/path/to/php:$PATH</code> drush status ...`</li>
+<li>To use a custom php.ini for Drush requests, <a href="https://github.com/drush-ops/drush/issues/3294#issuecomment-370201342">see this comment</a>. </li>
+<li>See our <a href="https://weitzman.github.io/blog/port-to-drush9">guide on porting commandfiles</a> from Drush 8 to later versions. Also note that alias and config files use a new .yml format in Drush 10+.</li>
 </ul>
-<div class="admonition tip">
-<p class="admonition-title">Tip</p>
-<p>See our <a href="https://weitzman.github.io/blog/port-to-drush9">guide on porting commandfiles</a> from Drush 8 to later versions. Also note that alias and config files use a new .yml format in Drush 10+.</p>
 </div>
 <h2 id="drupal-compatibility">Drupal Compatibility<a class="headerlink" href="#drupal-compatibility" title="Permanent link">&para;</a></h2>
 <p><table>
