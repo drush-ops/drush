@@ -2713,16 +2713,16 @@
 <h2 id="types-of-injection">Types of Injection<a class="headerlink" href="#types-of-injection" title="Permanent link">&para;</a></h2>
 <p>There are two ways that a class can receive its dependencies. One is called “constructor injection”, and the other is called “setter injection”.</p>
 <p><em>Example of constructor injection:</em>
-<div class="highlight"><pre><span></span><code><span class="x">    public function __construct(DependencyType $service)</span>
-<span class="x">    {</span>
-<span class="x">        $this-&gt;service = $service;</span>
-<span class="x">    }</span>
+<div class="highlight"><pre><span></span><code>    <span class="k">public</span> <span class="k">function</span> <span class="fm">__construct</span><span class="p">(</span><span class="nx">DependencyType</span> <span class="nv">$service</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">service</span> <span class="o">=</span> <span class="nv">$service</span><span class="p">;</span>
+    <span class="p">}</span>
 </code></pre></div></p>
 <p><em>Example of setter injection:</em>
-<div class="highlight"><pre><span></span><code><span class="x">    public function setService(DependencyType $service)</span>
-<span class="x">    {</span>
-<span class="x">        $this-&gt;service = $service;</span>
-<span class="x">    }</span>
+<div class="highlight"><pre><span></span><code>    <span class="k">public</span> <span class="k">function</span> <span class="nf">setService</span><span class="p">(</span><span class="nx">DependencyType</span> <span class="nv">$service</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">service</span> <span class="o">=</span> <span class="nv">$service</span><span class="p">;</span>
+    <span class="p">}</span>
 </code></pre></div>
 A class should use one or the other of these methods. The code that is responsible for providing the dependencies a class need is usually an object called the dependency injection container.</p>
 <h2 id="services-files">Services Files<a class="headerlink" href="#services-files" title="Permanent link">&para;</a></h2>
@@ -2737,7 +2737,7 @@ See the <a href="https://www.drupal.org/docs/8/api/services-and-dependency-injec
 <h2 id="inflection">Inflection<a class="headerlink" href="#inflection" title="Permanent link">&para;</a></h2>
 <p>Drush will also inject dependencies that it provides using a technique called inflection. Inflection is a kind of dependency injection that works by way of a set of provided inflection interfaces, one for each available service. Each of these interfaces will define one or more setter methods (usually only one); these will automatically be called by Drush when the commandfile object is instantiated. The command only needs to implement this method and save the provided object in a class field. There is usually a corresponding trait that may be included via a <code>use</code> statement to fulfill this requirement.</p>
 <p>For example:</p>
-<div class="highlight"><pre><span></span><code><span class="cp">&lt;?php</span>
+<div class="highlight"><pre><span></span><code><span class="o">&lt;?</span><span class="nx">php</span>
 <span class="k">namespace</span> <span class="nx">Drupal\my_module\Commands</span><span class="p">;</span>
 
 <span class="k">use</span> <span class="nx">Drush\Commands\DrushCommands</span><span class="p">;</span>

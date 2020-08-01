@@ -2610,245 +2610,245 @@
                 
                   <h1>.bashrc</h1>
                 
-                <div class="highlight"><pre><span></span><code># -*- mode: shell-script; mode: flyspell-prog; ispell-local-dictionary: &quot;american&quot; -*-
-#
-# Example bash aliases to improve your Drush experience with bash.
-# Use `drush init` to copy this file to your home directory, rename and
-# customize it to suit, and source it from your ~/.bashrc file.
-#
-# Creates aliases to common Drush commands that work in a global context:
-#
-#       dr               - drush
-#       ddd              - drush drupal-directory
-#       ev               - drush php-eval
-#       sa               - drush site-alias
-#       sa               - drush site-alias --local-only (show local site aliases)
-#       st               - drush core-status
-#       use              - drush site-set
-#
-# Aliases for Drush commands that work on the current drupal site:
-#
-#       cr               - drush cache-rebuild
-#       en               - drush pm-enable
-#       pml              - drush pm-list
-#       unin             - drush pm-uninstall
-#       updb             - drush updatedb
-#       q                - drush sql-query
-#
-# Provides several common shell commands to work better with Drush:
-#
-#       ddd @dev         - print the path to the root directory of @dev
-#       cdd @dev         - change the current working directory to @dev
-#       lsd @dev         - ls root folder of @dev
-#       lsd %files       - ls &quot;files&quot; directory of current site
-#       lsd @dev:%devel  - ls devel module directory in @dev
-#       @dev st          - drush @dev core-status
-#       dssh @live       - ssh to the remote server @live points at
-#       gitd @live pull  - run `git pull` on the drupal root of @live
-#
-# Drush site alias expansion is also done for the cpd command:
-#
-#       cpd -R @site1:%files @site2:%files
-#
-# Note that the &#39;cpd&#39; alias only works for local sites.  Use
-# `drush rsync` or gitd` to move files between remote sites.
-#
-# Aliases are also possible for the following standard
-# commands. Uncomment their definitions below as desired.
-#
-#       cd                - cddl [*]
-#       ls                - lsd
-#       cp                - cpd
-#       ssh               - dssh
-#       git               - gitd
-#
-# These standard commands behave exactly the same as they always
-# do, unless a Drush site specification such as @dev or @live:%files
-# is used in one of the arguments.
+                <div class="highlight"><pre><span></span><code><span class="c1"># -*- mode: shell-script; mode: flyspell-prog; ispell-local-dictionary: &quot;american&quot; -*-</span>
+<span class="c1">#</span>
+<span class="c1"># Example bash aliases to improve your Drush experience with bash.</span>
+<span class="c1"># Use `drush init` to copy this file to your home directory, rename and</span>
+<span class="c1"># customize it to suit, and source it from your ~/.bashrc file.</span>
+<span class="c1">#</span>
+<span class="c1"># Creates aliases to common Drush commands that work in a global context:</span>
+<span class="c1">#</span>
+<span class="c1">#       dr               - drush</span>
+<span class="c1">#       ddd              - drush drupal-directory</span>
+<span class="c1">#       ev               - drush php-eval</span>
+<span class="c1">#       sa               - drush site-alias</span>
+<span class="c1">#       sa               - drush site-alias --local-only (show local site aliases)</span>
+<span class="c1">#       st               - drush core-status</span>
+<span class="c1">#       use              - drush site-set</span>
+<span class="c1">#</span>
+<span class="c1"># Aliases for Drush commands that work on the current drupal site:</span>
+<span class="c1">#</span>
+<span class="c1">#       cr               - drush cache-rebuild</span>
+<span class="c1">#       en               - drush pm-enable</span>
+<span class="c1">#       pml              - drush pm-list</span>
+<span class="c1">#       unin             - drush pm-uninstall</span>
+<span class="c1">#       updb             - drush updatedb</span>
+<span class="c1">#       q                - drush sql-query</span>
+<span class="c1">#</span>
+<span class="c1"># Provides several common shell commands to work better with Drush:</span>
+<span class="c1">#</span>
+<span class="c1">#       ddd @dev         - print the path to the root directory of @dev</span>
+<span class="c1">#       cdd @dev         - change the current working directory to @dev</span>
+<span class="c1">#       lsd @dev         - ls root folder of @dev</span>
+<span class="c1">#       lsd %files       - ls &quot;files&quot; directory of current site</span>
+<span class="c1">#       lsd @dev:%devel  - ls devel module directory in @dev</span>
+<span class="c1">#       @dev st          - drush @dev core-status</span>
+<span class="c1">#       dssh @live       - ssh to the remote server @live points at</span>
+<span class="c1">#       gitd @live pull  - run `git pull` on the drupal root of @live</span>
+<span class="c1">#</span>
+<span class="c1"># Drush site alias expansion is also done for the cpd command:</span>
+<span class="c1">#</span>
+<span class="c1">#       cpd -R @site1:%files @site2:%files</span>
+<span class="c1">#</span>
+<span class="c1"># Note that the &#39;cpd&#39; alias only works for local sites.  Use</span>
+<span class="c1"># `drush rsync` or gitd` to move files between remote sites.</span>
+<span class="c1">#</span>
+<span class="c1"># Aliases are also possible for the following standard</span>
+<span class="c1"># commands. Uncomment their definitions below as desired.</span>
+<span class="c1">#</span>
+<span class="c1">#       cd                - cddl [*]</span>
+<span class="c1">#       ls                - lsd</span>
+<span class="c1">#       cp                - cpd</span>
+<span class="c1">#       ssh               - dssh</span>
+<span class="c1">#       git               - gitd</span>
+<span class="c1">#</span>
+<span class="c1"># These standard commands behave exactly the same as they always</span>
+<span class="c1"># do, unless a Drush site specification such as @dev or @live:%files</span>
+<span class="c1"># is used in one of the arguments.</span>
 
-# Aliases for common Drush commands that work in a global context.
-alias dr=&#39;drush&#39;
-alias ddd=&#39;drush drupal:directory&#39;
-alias ev=&#39;drush php:eval&#39;
-alias sa=&#39;drush site:alias&#39;
-alias st=&#39;drush core:status&#39;
-alias use=&#39;drush site:set&#39;
+<span class="c1"># Aliases for common Drush commands that work in a global context.</span>
+<span class="nb">alias</span> <span class="nv">dr</span><span class="o">=</span><span class="s1">&#39;drush&#39;</span>
+<span class="nb">alias</span> <span class="nv">ddd</span><span class="o">=</span><span class="s1">&#39;drush drupal:directory&#39;</span>
+<span class="nb">alias</span> <span class="nv">ev</span><span class="o">=</span><span class="s1">&#39;drush php:eval&#39;</span>
+<span class="nb">alias</span> <span class="nv">sa</span><span class="o">=</span><span class="s1">&#39;drush site:alias&#39;</span>
+<span class="nb">alias</span> <span class="nv">st</span><span class="o">=</span><span class="s1">&#39;drush core:status&#39;</span>
+<span class="nb">alias</span> <span class="nv">use</span><span class="o">=</span><span class="s1">&#39;drush site:set&#39;</span>
 
-# Aliases for Drush commands that work on the current drupal site
-alias cr=&#39;drush cache:rebuild&#39;
-alias en=&#39;drush pm:enable&#39;
-alias pml=&#39;drush pm:list&#39;
-alias unin=&#39;drush pm:uninstall&#39;
-alias updb=&#39;drush updatedb&#39;
-alias q=&#39;drush sql:query&#39;
+<span class="c1"># Aliases for Drush commands that work on the current drupal site</span>
+<span class="nb">alias</span> <span class="nv">cr</span><span class="o">=</span><span class="s1">&#39;drush cache:rebuild&#39;</span>
+<span class="nb">alias</span> <span class="nv">en</span><span class="o">=</span><span class="s1">&#39;drush pm:enable&#39;</span>
+<span class="nb">alias</span> <span class="nv">pml</span><span class="o">=</span><span class="s1">&#39;drush pm:list&#39;</span>
+<span class="nb">alias</span> <span class="nv">unin</span><span class="o">=</span><span class="s1">&#39;drush pm:uninstall&#39;</span>
+<span class="nb">alias</span> <span class="nv">updb</span><span class="o">=</span><span class="s1">&#39;drush updatedb&#39;</span>
+<span class="nb">alias</span> <span class="nv">q</span><span class="o">=</span><span class="s1">&#39;drush sql:query&#39;</span>
 
-# Overrides for standard shell commands. Uncomment to enable.  Alias
-# cd=&#39;cdd&#39; if you want to be able to use cd @remote to ssh to a
-# remote site.
+<span class="c1"># Overrides for standard shell commands. Uncomment to enable.  Alias</span>
+<span class="c1"># cd=&#39;cdd&#39; if you want to be able to use cd @remote to ssh to a</span>
+<span class="c1"># remote site.</span>
 
-# alias cd=&#39;cddl&#39;
-# alias ls=&#39;lsd&#39;
-# alias cp=&#39;cpd&#39;
-# alias ssh=&#39;dssh&#39;
-# alias git=&#39;gitd&#39;
+<span class="c1"># alias cd=&#39;cddl&#39;</span>
+<span class="c1"># alias ls=&#39;lsd&#39;</span>
+<span class="c1"># alias cp=&#39;cpd&#39;</span>
+<span class="c1"># alias ssh=&#39;dssh&#39;</span>
+<span class="c1"># alias git=&#39;gitd&#39;</span>
 
-# We extend the cd command to allow convenient
-# shorthand notations, such as:
-#   cd @site1
-#   cd %modules
-#   cd %devel
-#   cd @site2:%files
-# You must use &#39;cddl&#39; instead of &#39;cd&#39; if you are not using
-# the optional &#39;cd&#39; alias from above.
-# This is the &quot;local-only&quot; version of the function;
-# see the cdd function, below, for an expanded implementation
-# that will ssh to the remote server when a remote site
-# specification is used.
-function cddl() {
-  fastcddl &quot;$1&quot;
+<span class="c1"># We extend the cd command to allow convenient</span>
+<span class="c1"># shorthand notations, such as:</span>
+<span class="c1">#   cd @site1</span>
+<span class="c1">#   cd %modules</span>
+<span class="c1">#   cd %devel</span>
+<span class="c1">#   cd @site2:%files</span>
+<span class="c1"># You must use &#39;cddl&#39; instead of &#39;cd&#39; if you are not using</span>
+<span class="c1"># the optional &#39;cd&#39; alias from above.</span>
+<span class="c1"># This is the &quot;local-only&quot; version of the function;</span>
+<span class="c1"># see the cdd function, below, for an expanded implementation</span>
+<span class="c1"># that will ssh to the remote server when a remote site</span>
+<span class="c1"># specification is used.</span>
+<span class="k">function</span> cddl<span class="o">()</span> <span class="o">{</span>
+  fastcddl <span class="s2">&quot;</span><span class="nv">$1</span><span class="s2">&quot;</span>
   use @self
-}
+<span class="o">}</span>
 
-# Use this function instead of &#39;cddl&#39; if you have a very large number
-# of alias files, and the &#39;cddl&#39; function is getting too slow as a result.
-# This function does not automatically set your prompt to the site that
-# you &#39;cd&#39; to, as &#39;cddl&#39; does.
-function fastcddl() {
-  s=&quot;$1&quot;
-  if [ -z &quot;$s&quot; ]
-  then
-    builtin cd
-  elif [ &quot;${s:0:1}&quot; == &quot;@&quot; ] || [ &quot;${s:0:1}&quot; == &quot;%&quot; ]
-  then
-    d=&quot;$(drush drupal:directory $1 --local-only 2&gt;/dev/null)&quot;
-    if [ $? == 0 ]
-    then
-      echo &quot;cd $d&quot;;
-      builtin cd &quot;$d&quot;;
-    else
-      t=&quot;$(drush site-alias $1 &gt;/dev/null 2&gt;/dev/null)&quot;
-      if [ $? == 0 ]
-      then
-        echo &quot;Cannot cd to remote site $s&quot;
-      else
-        echo &quot;Cannot cd to $s&quot;
-      fi
-    fi
-  else
-    builtin cd &quot;$s&quot;;
-  fi
-}
+<span class="c1"># Use this function instead of &#39;cddl&#39; if you have a very large number</span>
+<span class="c1"># of alias files, and the &#39;cddl&#39; function is getting too slow as a result.</span>
+<span class="c1"># This function does not automatically set your prompt to the site that</span>
+<span class="c1"># you &#39;cd&#39; to, as &#39;cddl&#39; does.</span>
+<span class="k">function</span> fastcddl<span class="o">()</span> <span class="o">{</span>
+  <span class="nv">s</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$1</span><span class="s2">&quot;</span>
+  <span class="k">if</span> <span class="o">[</span> -z <span class="s2">&quot;</span><span class="nv">$s</span><span class="s2">&quot;</span> <span class="o">]</span>
+  <span class="k">then</span>
+    <span class="nb">builtin</span> <span class="nb">cd</span>
+  <span class="k">elif</span> <span class="o">[</span> <span class="s2">&quot;</span><span class="si">${</span><span class="nv">s</span><span class="p">:</span><span class="nv">0</span><span class="p">:</span><span class="nv">1</span><span class="si">}</span><span class="s2">&quot;</span> <span class="o">==</span> <span class="s2">&quot;@&quot;</span> <span class="o">]</span> <span class="o">||</span> <span class="o">[</span> <span class="s2">&quot;</span><span class="si">${</span><span class="nv">s</span><span class="p">:</span><span class="nv">0</span><span class="p">:</span><span class="nv">1</span><span class="si">}</span><span class="s2">&quot;</span> <span class="o">==</span> <span class="s2">&quot;%&quot;</span> <span class="o">]</span>
+  <span class="k">then</span>
+    <span class="nv">d</span><span class="o">=</span><span class="s2">&quot;</span><span class="k">$(</span>drush drupal:directory <span class="nv">$1</span> --local-only <span class="m">2</span>&gt;/dev/null<span class="k">)</span><span class="s2">&quot;</span>
+    <span class="k">if</span> <span class="o">[</span> <span class="nv">$?</span> <span class="o">==</span> <span class="m">0</span> <span class="o">]</span>
+    <span class="k">then</span>
+      <span class="nb">echo</span> <span class="s2">&quot;cd </span><span class="nv">$d</span><span class="s2">&quot;</span><span class="p">;</span>
+      <span class="nb">builtin</span> <span class="nb">cd</span> <span class="s2">&quot;</span><span class="nv">$d</span><span class="s2">&quot;</span><span class="p">;</span>
+    <span class="k">else</span>
+      <span class="nv">t</span><span class="o">=</span><span class="s2">&quot;</span><span class="k">$(</span>drush site-alias <span class="nv">$1</span> &gt;/dev/null <span class="m">2</span>&gt;/dev/null<span class="k">)</span><span class="s2">&quot;</span>
+      <span class="k">if</span> <span class="o">[</span> <span class="nv">$?</span> <span class="o">==</span> <span class="m">0</span> <span class="o">]</span>
+      <span class="k">then</span>
+        <span class="nb">echo</span> <span class="s2">&quot;Cannot cd to remote site </span><span class="nv">$s</span><span class="s2">&quot;</span>
+      <span class="k">else</span>
+        <span class="nb">echo</span> <span class="s2">&quot;Cannot cd to </span><span class="nv">$s</span><span class="s2">&quot;</span>
+      <span class="k">fi</span>
+    <span class="k">fi</span>
+  <span class="k">else</span>
+    <span class="nb">builtin</span> <span class="nb">cd</span> <span class="s2">&quot;</span><span class="nv">$s</span><span class="s2">&quot;</span><span class="p">;</span>
+  <span class="k">fi</span>
+<span class="o">}</span>
 
-# Works just like the `cddl` shell alias above, with one additional
-# feature: `cdd @remote-site` works like `ssh @remote-site`,
-# whereas cd above will fail unless the site alias is local.  If
-# you prefer this behavior, you can add `alias cd=&#39;cdd&#39;` to your .bashrc
-function cdd() {
-  s=&quot;$1&quot;
-  if [ -z &quot;$s&quot; ]
-  then
-    builtin cd
-  elif [ &quot;${s:0:1}&quot; == &quot;@&quot; ] || [ &quot;${s:0:1}&quot; == &quot;%&quot; ]
-  then
-    d=&quot;$(drush drupal:directory $s 2&gt;/dev/null)&quot;
-    rh=&quot;$(drush sa ${s%%:*} --fields=host --format=list)&quot;
-    if [ -z &quot;$rh&quot; ]
-    then
-      echo &quot;cd $d&quot;
-      builtin cd &quot;$d&quot;
-    else
-      if [ -n &quot;$d&quot; ]
-      then
-        c=&quot;cd \&quot;$d\&quot; \; bash&quot;
-        drush -s ${s%%:*} ssh --tty
-        drush ${s%%:*} ssh --tty
-      else
-        drush ssh ${s%%:*}
-      fi
-    fi
-  else
-    builtin cd &quot;$s&quot;
-  fi
-}
+<span class="c1"># Works just like the `cddl` shell alias above, with one additional</span>
+<span class="c1"># feature: `cdd @remote-site` works like `ssh @remote-site`,</span>
+<span class="c1"># whereas cd above will fail unless the site alias is local.  If</span>
+<span class="c1"># you prefer this behavior, you can add `alias cd=&#39;cdd&#39;` to your .bashrc</span>
+<span class="k">function</span> cdd<span class="o">()</span> <span class="o">{</span>
+  <span class="nv">s</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$1</span><span class="s2">&quot;</span>
+  <span class="k">if</span> <span class="o">[</span> -z <span class="s2">&quot;</span><span class="nv">$s</span><span class="s2">&quot;</span> <span class="o">]</span>
+  <span class="k">then</span>
+    <span class="nb">builtin</span> <span class="nb">cd</span>
+  <span class="k">elif</span> <span class="o">[</span> <span class="s2">&quot;</span><span class="si">${</span><span class="nv">s</span><span class="p">:</span><span class="nv">0</span><span class="p">:</span><span class="nv">1</span><span class="si">}</span><span class="s2">&quot;</span> <span class="o">==</span> <span class="s2">&quot;@&quot;</span> <span class="o">]</span> <span class="o">||</span> <span class="o">[</span> <span class="s2">&quot;</span><span class="si">${</span><span class="nv">s</span><span class="p">:</span><span class="nv">0</span><span class="p">:</span><span class="nv">1</span><span class="si">}</span><span class="s2">&quot;</span> <span class="o">==</span> <span class="s2">&quot;%&quot;</span> <span class="o">]</span>
+  <span class="k">then</span>
+    <span class="nv">d</span><span class="o">=</span><span class="s2">&quot;</span><span class="k">$(</span>drush drupal:directory <span class="nv">$s</span> <span class="m">2</span>&gt;/dev/null<span class="k">)</span><span class="s2">&quot;</span>
+    <span class="nv">rh</span><span class="o">=</span><span class="s2">&quot;</span><span class="k">$(</span>drush sa <span class="si">${</span><span class="nv">s</span><span class="p">%%:*</span><span class="si">}</span> --fields<span class="o">=</span>host --format<span class="o">=</span>list<span class="k">)</span><span class="s2">&quot;</span>
+    <span class="k">if</span> <span class="o">[</span> -z <span class="s2">&quot;</span><span class="nv">$rh</span><span class="s2">&quot;</span> <span class="o">]</span>
+    <span class="k">then</span>
+      <span class="nb">echo</span> <span class="s2">&quot;cd </span><span class="nv">$d</span><span class="s2">&quot;</span>
+      <span class="nb">builtin</span> <span class="nb">cd</span> <span class="s2">&quot;</span><span class="nv">$d</span><span class="s2">&quot;</span>
+    <span class="k">else</span>
+      <span class="k">if</span> <span class="o">[</span> -n <span class="s2">&quot;</span><span class="nv">$d</span><span class="s2">&quot;</span> <span class="o">]</span>
+      <span class="k">then</span>
+        <span class="nv">c</span><span class="o">=</span><span class="s2">&quot;cd \&quot;</span><span class="nv">$d</span><span class="s2">\&quot; \; bash&quot;</span>
+        drush -s <span class="si">${</span><span class="nv">s</span><span class="p">%%:*</span><span class="si">}</span> ssh --tty
+        drush <span class="si">${</span><span class="nv">s</span><span class="p">%%:*</span><span class="si">}</span> ssh --tty
+      <span class="k">else</span>
+        drush ssh <span class="si">${</span><span class="nv">s</span><span class="p">%%:*</span><span class="si">}</span>
+      <span class="k">fi</span>
+    <span class="k">fi</span>
+  <span class="k">else</span>
+    <span class="nb">builtin</span> <span class="nb">cd</span> <span class="s2">&quot;</span><span class="nv">$s</span><span class="s2">&quot;</span>
+  <span class="k">fi</span>
+<span class="o">}</span>
 
-# Allow `git @site gitcommand` as a shortcut for `cd @site; git gitcommand`.
-# Also works on remote sites, though.
-function gitd() {
-  s=&quot;$1&quot;
-  if [ -n &quot;$s&quot; ] &amp;&amp; [ ${s:0:1} == &quot;@&quot; ] || [ ${s:0:1} == &quot;%&quot; ]
-  then
-    d=&quot;$(drush drupal-directory $s 2&gt;/dev/null)&quot;
-    rh=&quot;$(drush sa ${s%%:*} --fields=host --format=list)&quot;
-    if [ -n &quot;$rh&quot; ]
-    then
-      drush ${s%%:*} ssh &quot;cd &#39;$d&#39; ; git ${@:2}&quot;
-    else
-      echo cd &quot;$d&quot; \; git &quot;${@:2}&quot;
-      (
-        cd &quot;$d&quot;
-        &quot;git&quot; &quot;${@:2}&quot;
-      )
-    fi
-  else
-    &quot;git&quot; &quot;$@&quot;
-  fi
-}
+<span class="c1"># Allow `git @site gitcommand` as a shortcut for `cd @site; git gitcommand`.</span>
+<span class="c1"># Also works on remote sites, though.</span>
+<span class="k">function</span> gitd<span class="o">()</span> <span class="o">{</span>
+  <span class="nv">s</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$1</span><span class="s2">&quot;</span>
+  <span class="k">if</span> <span class="o">[</span> -n <span class="s2">&quot;</span><span class="nv">$s</span><span class="s2">&quot;</span> <span class="o">]</span> <span class="o">&amp;&amp;</span> <span class="o">[</span> <span class="si">${</span><span class="nv">s</span><span class="p">:</span><span class="nv">0</span><span class="p">:</span><span class="nv">1</span><span class="si">}</span> <span class="o">==</span> <span class="s2">&quot;@&quot;</span> <span class="o">]</span> <span class="o">||</span> <span class="o">[</span> <span class="si">${</span><span class="nv">s</span><span class="p">:</span><span class="nv">0</span><span class="p">:</span><span class="nv">1</span><span class="si">}</span> <span class="o">==</span> <span class="s2">&quot;%&quot;</span> <span class="o">]</span>
+  <span class="k">then</span>
+    <span class="nv">d</span><span class="o">=</span><span class="s2">&quot;</span><span class="k">$(</span>drush drupal-directory <span class="nv">$s</span> <span class="m">2</span>&gt;/dev/null<span class="k">)</span><span class="s2">&quot;</span>
+    <span class="nv">rh</span><span class="o">=</span><span class="s2">&quot;</span><span class="k">$(</span>drush sa <span class="si">${</span><span class="nv">s</span><span class="p">%%:*</span><span class="si">}</span> --fields<span class="o">=</span>host --format<span class="o">=</span>list<span class="k">)</span><span class="s2">&quot;</span>
+    <span class="k">if</span> <span class="o">[</span> -n <span class="s2">&quot;</span><span class="nv">$rh</span><span class="s2">&quot;</span> <span class="o">]</span>
+    <span class="k">then</span>
+      drush <span class="si">${</span><span class="nv">s</span><span class="p">%%:*</span><span class="si">}</span> ssh <span class="s2">&quot;cd &#39;</span><span class="nv">$d</span><span class="s2">&#39; ; git </span><span class="si">${</span><span class="p">@:</span><span class="nv">2</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="k">else</span>
+      <span class="nb">echo</span> <span class="nb">cd</span> <span class="s2">&quot;</span><span class="nv">$d</span><span class="s2">&quot;</span> <span class="se">\;</span> git <span class="s2">&quot;</span><span class="si">${</span><span class="p">@:</span><span class="nv">2</span><span class="si">}</span><span class="s2">&quot;</span>
+      <span class="o">(</span>
+        <span class="nb">cd</span> <span class="s2">&quot;</span><span class="nv">$d</span><span class="s2">&quot;</span>
+        <span class="s2">&quot;git&quot;</span> <span class="s2">&quot;</span><span class="si">${</span><span class="p">@:</span><span class="nv">2</span><span class="si">}</span><span class="s2">&quot;</span>
+      <span class="o">)</span>
+    <span class="k">fi</span>
+  <span class="k">else</span>
+    <span class="s2">&quot;git&quot;</span> <span class="s2">&quot;</span><span class="nv">$@</span><span class="s2">&quot;</span>
+  <span class="k">fi</span>
+<span class="o">}</span>
 
-# Get a directory listing on @site or @site:%files, etc, for local or remote sites.
-function lsd() {
-  p=()
-  r=
-  for a in &quot;$@&quot; ; do
-    if [ ${a:0:1} == &quot;@&quot; ] || [ ${a:0:1} == &quot;%&quot; ]
-    then
-      p[${#p[@]}]=&quot;$(drush drupal:directory $a 2&gt;/dev/null)&quot;
-      if [ ${a:0:1} == &quot;@&quot; ]
-      then
-        rh=&quot;$(drush sa ${a%:*} --fields=host --format=list)&quot;
-        if [ -n &quot;$rh&quot; ]
-        then
-          r=${a%:*}
-        fi
-      fi
-    elif [ -n &quot;$a&quot; ]
-    then
-      p[${#p[@]}]=&quot;$a&quot;
-    fi
-  done
-  if [ -n &quot;$r&quot; ]
-  then
-    drush $r ssh &#39;ls &quot;${p[@]}&quot;&#39;
-  else
-    &quot;ls&quot; &quot;${p[@]}&quot;
-  fi
-}
+<span class="c1"># Get a directory listing on @site or @site:%files, etc, for local or remote sites.</span>
+<span class="k">function</span> lsd<span class="o">()</span> <span class="o">{</span>
+  <span class="nv">p</span><span class="o">=()</span>
+  <span class="nv">r</span><span class="o">=</span>
+  <span class="k">for</span> a in <span class="s2">&quot;</span><span class="nv">$@</span><span class="s2">&quot;</span> <span class="p">;</span> <span class="k">do</span>
+    <span class="k">if</span> <span class="o">[</span> <span class="si">${</span><span class="nv">a</span><span class="p">:</span><span class="nv">0</span><span class="p">:</span><span class="nv">1</span><span class="si">}</span> <span class="o">==</span> <span class="s2">&quot;@&quot;</span> <span class="o">]</span> <span class="o">||</span> <span class="o">[</span> <span class="si">${</span><span class="nv">a</span><span class="p">:</span><span class="nv">0</span><span class="p">:</span><span class="nv">1</span><span class="si">}</span> <span class="o">==</span> <span class="s2">&quot;%&quot;</span> <span class="o">]</span>
+    <span class="k">then</span>
+      p<span class="o">[</span><span class="si">${#</span><span class="nv">p</span><span class="p">[@]</span><span class="si">}</span><span class="o">]=</span><span class="s2">&quot;</span><span class="k">$(</span>drush drupal:directory <span class="nv">$a</span> <span class="m">2</span>&gt;/dev/null<span class="k">)</span><span class="s2">&quot;</span>
+      <span class="k">if</span> <span class="o">[</span> <span class="si">${</span><span class="nv">a</span><span class="p">:</span><span class="nv">0</span><span class="p">:</span><span class="nv">1</span><span class="si">}</span> <span class="o">==</span> <span class="s2">&quot;@&quot;</span> <span class="o">]</span>
+      <span class="k">then</span>
+        <span class="nv">rh</span><span class="o">=</span><span class="s2">&quot;</span><span class="k">$(</span>drush sa <span class="si">${</span><span class="nv">a</span><span class="p">%:*</span><span class="si">}</span> --fields<span class="o">=</span>host --format<span class="o">=</span>list<span class="k">)</span><span class="s2">&quot;</span>
+        <span class="k">if</span> <span class="o">[</span> -n <span class="s2">&quot;</span><span class="nv">$rh</span><span class="s2">&quot;</span> <span class="o">]</span>
+        <span class="k">then</span>
+          <span class="nv">r</span><span class="o">=</span><span class="si">${</span><span class="nv">a</span><span class="p">%:*</span><span class="si">}</span>
+        <span class="k">fi</span>
+      <span class="k">fi</span>
+    <span class="k">elif</span> <span class="o">[</span> -n <span class="s2">&quot;</span><span class="nv">$a</span><span class="s2">&quot;</span> <span class="o">]</span>
+    <span class="k">then</span>
+      p<span class="o">[</span><span class="si">${#</span><span class="nv">p</span><span class="p">[@]</span><span class="si">}</span><span class="o">]=</span><span class="s2">&quot;</span><span class="nv">$a</span><span class="s2">&quot;</span>
+    <span class="k">fi</span>
+  <span class="k">done</span>
+  <span class="k">if</span> <span class="o">[</span> -n <span class="s2">&quot;</span><span class="nv">$r</span><span class="s2">&quot;</span> <span class="o">]</span>
+  <span class="k">then</span>
+    drush <span class="nv">$r</span> ssh <span class="s1">&#39;ls &quot;${p[@]}&quot;&#39;</span>
+  <span class="k">else</span>
+    <span class="s2">&quot;ls&quot;</span> <span class="s2">&quot;</span><span class="si">${</span><span class="nv">p</span><span class="p">[@]</span><span class="si">}</span><span class="s2">&quot;</span>
+  <span class="k">fi</span>
+<span class="o">}</span>
 
-# Copy files from or to @site or @site:%files, etc; local sites only.
-function cpd() {
-  p=()
-  for a in &quot;$@&quot; ; do
-    if [ ${a:0:1} == &quot;@&quot; ] || [ ${a:0:1} == &quot;%&quot; ]
-    then
-      p[${#p[@]}]=&quot;$(drush drupal:directory $a --local-only 2&gt;/dev/null)&quot;
-    elif [ -n &quot;$a&quot; ]
-    then
-      p[${#p[@]}]=&quot;$a&quot;
-    fi
-  done
-  &quot;cp&quot; &quot;${p[@]}&quot;
-}
+<span class="c1"># Copy files from or to @site or @site:%files, etc; local sites only.</span>
+<span class="k">function</span> cpd<span class="o">()</span> <span class="o">{</span>
+  <span class="nv">p</span><span class="o">=()</span>
+  <span class="k">for</span> a in <span class="s2">&quot;</span><span class="nv">$@</span><span class="s2">&quot;</span> <span class="p">;</span> <span class="k">do</span>
+    <span class="k">if</span> <span class="o">[</span> <span class="si">${</span><span class="nv">a</span><span class="p">:</span><span class="nv">0</span><span class="p">:</span><span class="nv">1</span><span class="si">}</span> <span class="o">==</span> <span class="s2">&quot;@&quot;</span> <span class="o">]</span> <span class="o">||</span> <span class="o">[</span> <span class="si">${</span><span class="nv">a</span><span class="p">:</span><span class="nv">0</span><span class="p">:</span><span class="nv">1</span><span class="si">}</span> <span class="o">==</span> <span class="s2">&quot;%&quot;</span> <span class="o">]</span>
+    <span class="k">then</span>
+      p<span class="o">[</span><span class="si">${#</span><span class="nv">p</span><span class="p">[@]</span><span class="si">}</span><span class="o">]=</span><span class="s2">&quot;</span><span class="k">$(</span>drush drupal:directory <span class="nv">$a</span> --local-only <span class="m">2</span>&gt;/dev/null<span class="k">)</span><span class="s2">&quot;</span>
+    <span class="k">elif</span> <span class="o">[</span> -n <span class="s2">&quot;</span><span class="nv">$a</span><span class="s2">&quot;</span> <span class="o">]</span>
+    <span class="k">then</span>
+      p<span class="o">[</span><span class="si">${#</span><span class="nv">p</span><span class="p">[@]</span><span class="si">}</span><span class="o">]=</span><span class="s2">&quot;</span><span class="nv">$a</span><span class="s2">&quot;</span>
+    <span class="k">fi</span>
+  <span class="k">done</span>
+  <span class="s2">&quot;cp&quot;</span> <span class="s2">&quot;</span><span class="si">${</span><span class="nv">p</span><span class="p">[@]</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="o">}</span>
 
-# This alias allows `dssh @site` to work like `drush @site ssh`.
-# Ssh commands, such as `dssh @site ls /tmp`, are also supported.
-function dssh() {
-  d=&quot;$1&quot;
-  if [ ${d:0:1} == &quot;@&quot; ]
-  then
-    drush &quot;$d&quot; ssh &quot;${@:2}&quot;
-  else
-    &quot;ssh&quot; &quot;$@&quot;
-  fi
-}
+<span class="c1"># This alias allows `dssh @site` to work like `drush @site ssh`.</span>
+<span class="c1"># Ssh commands, such as `dssh @site ls /tmp`, are also supported.</span>
+<span class="k">function</span> dssh<span class="o">()</span> <span class="o">{</span>
+  <span class="nv">d</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$1</span><span class="s2">&quot;</span>
+  <span class="k">if</span> <span class="o">[</span> <span class="si">${</span><span class="nv">d</span><span class="p">:</span><span class="nv">0</span><span class="p">:</span><span class="nv">1</span><span class="si">}</span> <span class="o">==</span> <span class="s2">&quot;@&quot;</span> <span class="o">]</span>
+  <span class="k">then</span>
+    drush <span class="s2">&quot;</span><span class="nv">$d</span><span class="s2">&quot;</span> ssh <span class="s2">&quot;</span><span class="si">${</span><span class="p">@:</span><span class="nv">2</span><span class="si">}</span><span class="s2">&quot;</span>
+  <span class="k">else</span>
+    <span class="s2">&quot;ssh&quot;</span> <span class="s2">&quot;</span><span class="nv">$@</span><span class="s2">&quot;</span>
+  <span class="k">fi</span>
+<span class="o">}</span>
 </code></pre></div>
                 
                   

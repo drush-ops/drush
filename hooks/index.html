@@ -2700,33 +2700,33 @@
 <p>Drush commands can define custom events that other command files can hook. You can find examples in <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/core/CacheCommands.php">CacheCommands</a> and <a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/Commands/sql/SanitizeCommands.php">SanitizeCommands</a></p>
 <p>First, the command must implement CustomEventAwareInterface and use CustomEventAwareTrait, as described in the <a href="../dependency-injection/">dependency injection</a> documentation.</p>
 <p>Then, the command may ask the provided hook manager to return a list of handlers with a certain annotation. In the example below, the <code>my-event</code> label is used:
-<div class="highlight"><pre><span></span><code><span class="x">    /**</span>
-<span class="x">     * This command uses a custom event &#39;my-event&#39; to collect data.  Note that</span>
-<span class="x">     * the event handlers will not be found unless the hook manager is</span>
-<span class="x">     * injected into this command handler object via `setHookManager()`</span>
-<span class="x">     * (defined in CustomEventAwareTrait).</span>
-<span class="x">     *</span>
-<span class="x">     * @command example:command</span>
-<span class="x">     */</span>
-<span class="x">    public function exampleCommand()</span>
-<span class="x">    {</span>
-<span class="x">        $myEventHandlers = $this-&gt;getCustomEventHandlers(&#39;my-event&#39;);</span>
-<span class="x">        $result = [];</span>
-<span class="x">        foreach ($myEventHandlers as $handler) {</span>
-<span class="x">            $result[] = $handler();</span>
-<span class="x">        }</span>
-<span class="x">        sort($result);</span>
-<span class="x">        return implode(&#39;,&#39;, $result);</span>
-<span class="x">    }</span>
+<div class="highlight"><pre><span></span><code>    <span class="sd">/**</span>
+<span class="sd">     * This command uses a custom event &#39;my-event&#39; to collect data.  Note that</span>
+<span class="sd">     * the event handlers will not be found unless the hook manager is</span>
+<span class="sd">     * injected into this command handler object via `setHookManager()`</span>
+<span class="sd">     * (defined in CustomEventAwareTrait).</span>
+<span class="sd">     *</span>
+<span class="sd">     * @command example:command</span>
+<span class="sd">     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">exampleCommand</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="nv">$myEventHandlers</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">getCustomEventHandlers</span><span class="p">(</span><span class="s1">&#39;my-event&#39;</span><span class="p">);</span>
+        <span class="nv">$result</span> <span class="o">=</span> <span class="p">[];</span>
+        <span class="k">foreach</span> <span class="p">(</span><span class="nv">$myEventHandlers</span> <span class="k">as</span> <span class="nv">$handler</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nv">$result</span><span class="p">[]</span> <span class="o">=</span> <span class="nv">$handler</span><span class="p">();</span>
+        <span class="p">}</span>
+        <span class="nb">sort</span><span class="p">(</span><span class="nv">$result</span><span class="p">);</span>
+        <span class="k">return</span> <span class="nb">implode</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="nv">$result</span><span class="p">);</span>
+    <span class="p">}</span>
 </code></pre></div></p>
 <p>Other command handlers may provide implementations by implementing <code>@hook on-event my-event</code>.</p>
-<div class="highlight"><pre><span></span><code><span class="x">    /**</span>
-<span class="x">     * @hook on-event my-event</span>
-<span class="x">     */</span>
-<span class="x">    public function hookOne()</span>
-<span class="x">    {</span>
-<span class="x">        return &#39;one&#39;;</span>
-<span class="x">    }</span>
+<div class="highlight"><pre><span></span><code>    <span class="sd">/**</span>
+<span class="sd">     * @hook on-event my-event</span>
+<span class="sd">     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">hookOne</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="s1">&#39;one&#39;</span><span class="p">;</span>
+    <span class="p">}</span>
 </code></pre></div>
                 
               

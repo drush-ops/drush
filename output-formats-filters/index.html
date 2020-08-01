@@ -2815,24 +2815,24 @@ authenticated:
 </code></pre></div>
 Note that not all commands have a default filter field.</p>
 <p>Other fields in the output may be searched by using a simple expression in the <code>--filter</code> term. For example, to list only the enabled extensions with the <code>pm:list</code> command, you could run:
-<div class="highlight"><pre><span></span><code>$ drush pm:list --filter=&#39;status=enabled&#39;
+<div class="highlight"><pre><span></span><code>$ drush pm:list --filter<span class="o">=</span><span class="s1">&#39;status=enabled&#39;</span>
 </code></pre></div>
 To search for fields that contain a string using the operator <code>*=</code>, or match a regular expression with the <code>~=</code> operator. For example, to find all views whose machine name contains the word "content":
-<div class="highlight"><pre><span></span><code>drush views:list --filter=&#39;machine-name*=content&#39;
+<div class="highlight"><pre><span></span><code>drush views:list --filter<span class="o">=</span><span class="s1">&#39;machine-name*=content&#39;</span>
 </code></pre></div>
 To use a regular expression to find any core requirement notice whose title contains either "php" or "gd"
-<div class="highlight"><pre><span></span><code>drush core:requirements --filter=&#39;title~=#(php|gd)#i&#39;
+<div class="highlight"><pre><span></span><code>drush core:requirements --filter<span class="o">=</span><span class="s1">&#39;title~=#(php|gd)#i&#39;</span>
 </code></pre></div>
 Finally, filter expressions may also use logical-and (<code>&amp;&amp;</code>) or logical-or (<code>||</code>) operations to separate multiple terms.  Parenthesis are not supported. For example, to search both the <code>title</code> and <code>severity</code> fields in the <code>core:requirements</code> command:
-<div class="highlight"><pre><span></span><code>drush core:requirements --filter=&#39;title~=#(php|gd)#i&amp;&amp;severity=warning&#39;
+<div class="highlight"><pre><span></span><code>drush core:requirements --filter<span class="o">=</span><span class="s1">&#39;title~=#(php|gd)#i&amp;&amp;severity=warning&#39;</span>
 </code></pre></div></p>
 <p>The <code>=</code> and <code>*=</code> operators always use case-insensitive comparisons. The <code>~=</code> operator is case-sensitive, unless the <code>i</code> <a href="http://php.net/manual/en/reference.pcre.pattern.modifiers.php">PCRE modifier</a> is used, as shown in the previous example.</p>
 <h2 id="comparison-of-filters-with-grep">Comparison of Filters with Grep<a class="headerlink" href="#comparison-of-filters-with-grep" title="Permanent link">&para;</a></h2>
 <p>Using the <code>--filter</code> feature is similar to using <code>grep</code>. The main difference is that the filter feature does a semantic search, which is to say that it explicitly compares against the data in specific fields. In comparison, the <code>grep</code> command does a line-based search.</p>
-<p>Show only results where the severity is "warning":</p>
-<p><code>drush core:requirements --filter='severity=warning'</code></p>
-<p>Show only lines that contain the string "warning" (either in the severity field, or somewhere else on the line):</p>
-<p><code>drush core:requirements | grep -i warning</code></p>
+<p>Show only results where the severity is <em>warning</em>:</p>
+<p><code class="highlight">drush core:requirements --filter<span class="o">=</span><span class="s1">&#39;severity=warning&#39;</span></code></p>
+<p>Show only lines that contain the string <em>warning</em> (either in the severity field, or somewhere else on the line):</p>
+<p><code class="highlight">drush core:requirements <span class="p">|</span> grep -i warning</code></p>
 <p>The table below compares and contrasts the two ways of searching.</p>
 <table>
 <thead>

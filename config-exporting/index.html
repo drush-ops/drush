@@ -2694,7 +2694,7 @@ done by the <a href="https://www.drupal.org/node/1928898">configuration override
 values for a given instance of a site (e.g. the development server) by
 setting configuration variables in the site's settings.php file.
 For example, to change the name of a local development site:
-<div class="highlight"><pre><span></span><code><span class="x">$config[&#39;system.site&#39;][&#39;name&#39;] = &#39;Local Install of Awesome Widgets, Inc.&#39;;</span>
+<div class="highlight"><pre><span></span><code><span class="nv">$config</span><span class="p">[</span><span class="s1">&#39;system.site&#39;</span><span class="p">][</span><span class="s1">&#39;name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Local Install of Awesome Widgets, Inc.&#39;</span><span class="p">;</span>
 </code></pre></div>
 Note that the configuration override system is a Drupal feature, not
 a Drush feature. It should be the preferred method for changing

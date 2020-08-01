@@ -2610,56 +2610,56 @@
                 
                   <h1>git-bisect.sh</h1>
                 
-                <div class="highlight"><pre><span></span><code>#!/usr/bin/env sh
+                <div class="highlight"><pre><span></span><code><span class="ch">#!/usr/bin/env sh</span>
 
-#
-# Git bisect is a helpful way to discover which commit an error
-# occurred in.  This example file gives simple instructions for
-# using git bisect with Drush to quickly find erroneous commits
-# in Drush commands or Drupal modules, presuming that you can
-# trigger the error condition via Drush (e.g. using `drush php-eval`).
-#
-# Follow these simple steps:
-#
-#   $ git bisect start
-#   $ git bisect bad              # Tell git that the current commit does not work
-#   $ git bisect good bcadd5a     # Tell drush that the commithash 12345 worked fine
-#   $ git bisect run mytestscript.sh
-#
-# &#39;git bisect run&#39; will continue to call &#39;git bisect good&#39; and &#39;git bisect bad&#39;,
-# based on whether the script&#39;s exit code was 0 or 1, respectively.
-#
-# Replace &#39;mytestscript.sh&#39; in the example above with a custom script that you
-# write yourself.  Use the example script at the end of this document as a
-# guide.  Replace the example command with one that calls the Drush command
-# that you would like to test, and replace the &#39;grep&#39; string with a value
-# that appears when the error exists in the commit, but does not appear when
-# commit is okay.
-#
-# If you are using Drush to test Drupal or an external Drush module, use:
-#
-#   $ git bisect run drush mycommand --strict=2
-#
-# This presumes that there is one or more &#39;[warning]&#39; or &#39;[error]&#39;
-# messages emitted when there is a problem, and no warnings or errors
-# when the commit is okay.  Omit &#39;--strict=2&#39; to ignore warnings, and
-# signal failure only when &#39;error&#39; messages are emitted.
-#
-# If you need to test for an error condition explicitly, to find errors
-# that do not return any warning or error log messages on their own, you
-# can use the Drush php-eval command to force an error when `myfunction()`
-# returns FALSE. Replace &#39;myfunction()&#39; with the name of an appropriate
-# function in your module that can be used to detect the error condition
-# you are looking for.
-#
-#   $ git bisect run drush ev &#39;if(!myfunction()) { return drush_set_error(&quot;ERR&quot;); }&#39;
-#
-drush mycommand --myoption 2&gt;&amp;1 | grep -q &#39;string that indicates there was a problem&#39;
-if [ $? == 0 ] ; then
-  exit 1
-else
-  exit 0
-fi
+<span class="c1">#</span>
+<span class="c1"># Git bisect is a helpful way to discover which commit an error</span>
+<span class="c1"># occurred in.  This example file gives simple instructions for</span>
+<span class="c1"># using git bisect with Drush to quickly find erroneous commits</span>
+<span class="c1"># in Drush commands or Drupal modules, presuming that you can</span>
+<span class="c1"># trigger the error condition via Drush (e.g. using `drush php-eval`).</span>
+<span class="c1">#</span>
+<span class="c1"># Follow these simple steps:</span>
+<span class="c1">#</span>
+<span class="c1">#   $ git bisect start</span>
+<span class="c1">#   $ git bisect bad              # Tell git that the current commit does not work</span>
+<span class="c1">#   $ git bisect good bcadd5a     # Tell drush that the commithash 12345 worked fine</span>
+<span class="c1">#   $ git bisect run mytestscript.sh</span>
+<span class="c1">#</span>
+<span class="c1"># &#39;git bisect run&#39; will continue to call &#39;git bisect good&#39; and &#39;git bisect bad&#39;,</span>
+<span class="c1"># based on whether the script&#39;s exit code was 0 or 1, respectively.</span>
+<span class="c1">#</span>
+<span class="c1"># Replace &#39;mytestscript.sh&#39; in the example above with a custom script that you</span>
+<span class="c1"># write yourself.  Use the example script at the end of this document as a</span>
+<span class="c1"># guide.  Replace the example command with one that calls the Drush command</span>
+<span class="c1"># that you would like to test, and replace the &#39;grep&#39; string with a value</span>
+<span class="c1"># that appears when the error exists in the commit, but does not appear when</span>
+<span class="c1"># commit is okay.</span>
+<span class="c1">#</span>
+<span class="c1"># If you are using Drush to test Drupal or an external Drush module, use:</span>
+<span class="c1">#</span>
+<span class="c1">#   $ git bisect run drush mycommand --strict=2</span>
+<span class="c1">#</span>
+<span class="c1"># This presumes that there is one or more &#39;[warning]&#39; or &#39;[error]&#39;</span>
+<span class="c1"># messages emitted when there is a problem, and no warnings or errors</span>
+<span class="c1"># when the commit is okay.  Omit &#39;--strict=2&#39; to ignore warnings, and</span>
+<span class="c1"># signal failure only when &#39;error&#39; messages are emitted.</span>
+<span class="c1">#</span>
+<span class="c1"># If you need to test for an error condition explicitly, to find errors</span>
+<span class="c1"># that do not return any warning or error log messages on their own, you</span>
+<span class="c1"># can use the Drush php-eval command to force an error when `myfunction()`</span>
+<span class="c1"># returns FALSE. Replace &#39;myfunction()&#39; with the name of an appropriate</span>
+<span class="c1"># function in your module that can be used to detect the error condition</span>
+<span class="c1"># you are looking for.</span>
+<span class="c1">#</span>
+<span class="c1">#   $ git bisect run drush ev &#39;if(!myfunction()) { return drush_set_error(&quot;ERR&quot;); }&#39;</span>
+<span class="c1">#</span>
+drush mycommand --myoption <span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span> <span class="p">|</span> grep -q <span class="s1">&#39;string that indicates there was a problem&#39;</span>
+<span class="k">if</span> <span class="o">[</span> <span class="nv">$?</span> <span class="o">==</span> <span class="m">0</span> <span class="o">]</span> <span class="p">;</span> <span class="k">then</span>
+  <span class="nb">exit</span> <span class="m">1</span>
+<span class="k">else</span>
+  <span class="nb">exit</span> <span class="m">0</span>
+<span class="k">fi</span>
 </code></pre></div>
                 
                   

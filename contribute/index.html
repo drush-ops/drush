@@ -2775,11 +2775,11 @@ high quality, our tests are run on every push. See <a href="https://circleci.com
 - An extension that ships inside a contributed module. See <a href="https://cgit.drupalcode.org/devel/tree/tests/src/Functional/DevelCommandsTest.php?h=8.x-2.x">DevelCommandsTest</a> for an example. Note that you also need a <a href="https://www.drupal.org/drupalorg/docs/drupal-ci/customizing-drupalci-testing-for-projects">drupalci.yml</a>, which performs a <code>composer require drush/drush</code>. You can copy devel's <a href="https://cgit.drupalcode.org/devel/tree/drupalci.yml?h=8.x-2.x">drupalci.yml</a>. Also see <a href="https://git.drupalcode.org/project/scheduler/blob/8.x-1.x/tests/src/Functional/SchedulerDrushTest.php">SchedulerDrushTest</a>.
 - A standalone Drush extension or one that ships inside a custom module. See <a href="https://github.com/drush-ops/example-drush-extension">example drush extension</a>. </p>
 <p>Once you have included the Drush Test Traits, you will be able to write simple tests that call your extension's commands and makes assertions against the output.
-<div class="highlight"><pre><span></span><code><span class="x">    public function testMyCommand()</span>
-<span class="x">    {</span>
-<span class="x">        $this-&gt;drush(&#39;my:command&#39;, [&#39;param&#39;], [&#39;flag&#39; =&gt; &#39;value&#39;]);</span>
-<span class="x">        $this-&gt;assertOutputEquals(&#39;The parameter is &quot;param&quot; and the &quot;flag&quot; option is &quot;value&quot;&#39;);</span>
-<span class="x">    }</span>
+<div class="highlight"><pre><span></span><code>    <span class="k">public</span> <span class="k">function</span> <span class="nf">testMyCommand</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">drush</span><span class="p">(</span><span class="s1">&#39;my:command&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;param&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;flag&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;value&#39;</span><span class="p">]);</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertOutputEquals</span><span class="p">(</span><span class="s1">&#39;The parameter is &quot;param&quot; and the &quot;flag&quot; option is &quot;value&quot;&#39;</span><span class="p">);</span>
+    <span class="p">}</span>
 </code></pre></div></p>
                 
                   
