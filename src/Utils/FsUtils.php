@@ -24,23 +24,92 @@ class FsUtils
      */
     public static function getBackupDir($subdir = null)
     {
+        $parent = self::getBackupDirParent();
+
         // Try to use db name as subdir if none was provided.
         if (empty($subdir)) {
-            $subdir = 'unknown';
             if ($sql = SqlBase::create()) {
                 $db_spec = $sql->getDbSpec();
                 $subdir = $db_spec['database'];
             }
         }
 
+        // Add in the subdirectory if it was provided or inferred.
+        if (!empty($subdir)) {
+            $parent = Path::join($parent, $subdir);
+        }
+
         // Save the date to be used in the backup directory's path name.
         $date = gmdate('YmdHis', $_SERVER['REQUEST_TIME']);
         return Path::join(
-            Drush::config()->home(),
-            'drush-backups',
-            $subdir,
+            $parent,
             $date
         );
+    }
+
+    /**
+     * Get the base dir where our backup directories will be stored
+     *
+     * @return
+     *   A path to the backup directory parent
+     * @throws \Exception
+     */
+    protected static function getBackupDirParent()
+    {
+        // Try in order:
+        //  1. The user-specified backup directory from drush.yml config file
+        //  2. The 'drush-backups' directory in $HOME
+        //  3. The 'drush-backups' directory in tmp
+        $candidates = [
+            Drush::config()->get('backup-dir'),
+            Path::join(
+                Drush::config()->home(),
+                'drush-backups'
+            ),
+            Path::join(
+                Drush::config()->tmp(),
+                'drush-backups'
+            ),
+        ];
+
+        // Return the first usable candidate
+        foreach ($candidates as $dir) {
+            if (self::isUsableDirectory($dir)) {
+                return $dir;
+            }
+        }
+
+        throw new \Exception('No viable backup directory found.');
+    }
+
+    /**
+     * Description
+     * @param string $dir
+     *   Path to directory that we are considering using
+     * @return bool
+     *   True if the specified location is writable, or if a writable
+     *   directory could be created at that path.
+     */
+    public static function isUsableDirectory($dir)
+    {
+        // This directory is not usable if it is empty or if it is the root.
+        if (empty($dir) || (dirname($dir) == $dir)) {
+            return false;
+        }
+
+        // If the directory already exists and is writable, then it is usable.
+        if (is_writable($dir)) {
+            return $dir;
+        }
+
+        // If the directory exists (and is not writable), then it is not usable.
+        if (file_exists($dir)) {
+            return false;
+        }
+
+        // Otherwise, this directory is usable (could be created) if its
+        // parent directory is usable.
+        return self::isUsableDirectory(dirname($dir));
     }
 
     /**
