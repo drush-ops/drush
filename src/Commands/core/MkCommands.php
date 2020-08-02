@@ -22,7 +22,7 @@ class MkCommands extends DrushCommands implements SiteAliasManagerAwareInterface
     /**
      * Build a Markdown document for each Drush command thats available on a site.
      *
-     * This command is an early step when building the www.drush.org static site. Adapt it to build a similar site listing the commands that are available on your site. Also see Drush's [Github Actions workflow](https://github.com/drush-ops/drush/blob/master/.github/workflows/main.yml).
+     * This command is an early step when building the www.drush.org static site. Adapt it to build a similar site listing the commands that are available on your site. Also see Drush's [Github Actions workflow](https://github.com/drush-ops/drush/blob/10.x/.github/workflows/main.yml).
      *
      * @option destination The path, relative to 'docs' dir, where command docs should be written.
      *
@@ -115,7 +115,7 @@ EOT;
                             $value = "- [$topic_description]($target_relative) ($name)";
                         } else {
                             $rel_from_root = Path::makeRelative($abs, DRUSH_BASE_PATH);
-                            $value = "- [$topic_description](https://raw.githubusercontent.com/drush-ops/drush/master/$rel_from_root) ($name)";
+                            $value = "- [$topic_description](https://raw.githubusercontent.com/drush-ops/drush/10.x/$rel_from_root) ($name)";
                         }
                     }
                 }
@@ -174,7 +174,7 @@ EOT;
         $path = Path::makeRelative($command->getAnnotationData()->get('_path'), $root);
         $body = <<<EOT
 ---
-edit_url: https://github.com/drush-ops/drush/blob/master/$path
+edit_url: https://github.com/drush-ops/drush/blob/10.x/$path
 ---
 
 EOT;

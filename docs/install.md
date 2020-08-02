@@ -30,7 +30,7 @@ Drupal Compatibility
   </tr>
   <tr>
     <td> Drush 10 </td>
-    <td> master </td>
+    <td> 10.x </td>
     <td> 7.1+ </td>
     <!-- Released Oct 2019 -->
     <td> <i>TBD</i> </td>

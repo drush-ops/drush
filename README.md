@@ -1,5 +1,5 @@
 ---
-edit_url: https://github.com/drush-ops/drush/blob/master/README.md
+edit_url: https://github.com/drush-ops/drush/blob/10.x/README.md
 ---
 Drush is a command line shell and Unix scripting interface for Drupal. Drush core ships with lots of [useful commands](commands/10.x/all.md) for interacting with code like modules/themes/profiles. Similarly, it runs update.php, executes SQL queries and DB migrations, and misc utilities like run cron or clear cache. Developers love the [generate command](commands/10.x/generate.md), which jump starts your coding project by writing ready-to-customize PHP and YML files. Drush can be extended by [3rd party commandfiles](https://www.drupal.org/project/project_module?f[2]=im_vid_3%3A4654).
 
@@ -10,10 +10,10 @@ Resources
 * [Installing and Upgrading](install.md) ([Drush 8](https://docs.drush.org/en/8.x/install/))
 * [General Documentation](usage.md) ([Drush 8](https://docs.drush.org/en/8.x/install/))
 * [Drush Commands](commands/10.x/all.md)
-* [API Documentation](/api/master/index.html)
+* [API Documentation](/api/10.x/index.html)
 * [Drush packages available via Composer](https://packagist.org/search/?type=drupal-drush)
 * [A list of modules that include Drush integration](https://www.drupal.org/project/project_module?f[2]=im_vid_3%3A4654&solrsort=ds_project_latest_release+desc)
-* Drush comes with a [full test suite](https://github.com/drush-ops/drush/blob/master/tests/README.md) powered by [PHPUnit](https://github.com/sebastianbergmann/phpunit). Each commit gets tested by our CI bots.
+* Drush comes with a [full test suite](https://github.com/drush-ops/drush/blob/10.x/tests/README.md) powered by [PHPUnit](https://github.com/sebastianbergmann/phpunit). Each commit gets tested by our CI bots.
 
 Support
 -----------
@@ -37,7 +37,7 @@ go to them, but they are in the minority. Most pronounce Drush so that it
 rhymes with hush, rush, flush, etc. This is the preferred pronunciation.
 
 #### Does Drush have unit tests?
-Drush has an excellent suite of unit tests. See [tests/README.md](https://github.com/drush-ops/drush/blob/master/tests/README.md) for more information.
+Drush has an excellent suite of unit tests. See [tests/README.md](https://github.com/drush-ops/drush/blob/10.x/tests/README.md) for more information.
 
 
 Credits
