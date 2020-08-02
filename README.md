@@ -1,5 +1,5 @@
 ---
-edit_url: https://github.com/drush-ops/drush/blob/master/tests/README.md
+edit_url: https://github.com/drush-ops/drush/blob/master/README.md
 ---
 Drush is a command line shell and Unix scripting interface for Drupal. Drush core ships with lots of [useful commands](commands/10.x/all.md) for interacting with code like modules/themes/profiles. Similarly, it runs update.php, executes SQL queries and DB migrations, and misc utilities like run cron or clear cache. Developers love the [generate command](commands/10.x/generate.md), which jump starts your coding project by writing ready-to-customize PHP and YML files. Drush can be extended by [3rd party commandfiles](https://www.drupal.org/project/project_module?f[2]=im_vid_3%3A4654).
 
