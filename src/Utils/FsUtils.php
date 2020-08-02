@@ -73,7 +73,7 @@ class FsUtils
         ];
 
         // Return the first usable candidate
-        foreach ($cadidates as $dir) {
+        foreach ($candidates as $dir) {
             if (self::isUsableDirectory($dir)) {
                 return $dir;
             }
