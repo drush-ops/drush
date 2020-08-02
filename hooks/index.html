@@ -57,7 +57,7 @@
     <meta property="og:title" content="Drush - Hooks" />
     <meta property="og:description" content="A command line shell and Unix scripting interface for Drupal" />
     <meta property="og:url" content="http://www.drush.org/hooks/" />
-    <meta property="og:image" content="https://raw.githubusercontent.com/drush-ops/drush/10.x/drush_logo-black.png" />
+    <meta property="og:image" content="https://raw.githubusercontent.com/drush-ops/drush/master/drush_logo-black.png" />
     <meta property="og:image:type" content="image/png" />
     <meta property="og:image:width" content="218" />
     <meta property="og:image:height" content="215" />
@@ -71,7 +71,7 @@
     <meta name="twitter:creator" content="@weitzman" />
     <meta name="twitter:title" content="Drush - Hooks" />
     <meta name="twitter:description" content="A command line shell and Unix scripting interface for Drupal" />
-    <meta name="twitter:image" content="https://raw.githubusercontent.com/drush-ops/drush/10.x/drush_logo-black.png" />
+    <meta name="twitter:image" content="https://raw.githubusercontent.com/drush-ops/drush/master/drush_logo-black.png" />
 
   </head>
   
@@ -258,7 +258,7 @@
       
 
       <li class="md-tabs__item">
-        <a href="/api/10.x" class="md-tabs__link">API</a>
+        <a href="/api/master" class="md-tabs__link">API</a>
       </li>
 
     </ul>
@@ -2680,7 +2680,7 @@
             <article class="md-content__inner md-typeset">
               
                 
-                  <a href="https://github.com/drush-ops/drush/blob/10.x/docs/hooks.md" title="Edit this page" class="md-content__button md-icon">
+                  <a href="https://github.com/drush-ops/drush/blob/master/docs/hooks.md" title="Edit this page" class="md-content__button md-icon">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg>
                   </a>
                 
@@ -2697,7 +2697,7 @@
 <li>To see how core commands implement a hook, you can <a href="https://github.com/drush-ops/drush/search?q=%40hook+validate&amp;type=Code&amp;utf8=%E2%9C%93">search the Drush source code</a>. This link uses validate hook as an example.</li>
 </ul>
 <h2 id="custom-hooks">Custom Hooks<a class="headerlink" href="#custom-hooks" title="Permanent link">&para;</a></h2>
-<p>Drush commands can define custom events that other command files can hook. You can find examples in <a href="https://github.com/drush-ops/drush/blob/10.x/src/Commands/core/CacheCommands.php">CacheCommands</a> and <a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Commands/sql/SanitizeCommands.php">SanitizeCommands</a></p>
+<p>Drush commands can define custom events that other command files can hook. You can find examples in <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/core/CacheCommands.php">CacheCommands</a> and <a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/Commands/sql/SanitizeCommands.php">SanitizeCommands</a></p>
 <p>First, the command must implement CustomEventAwareInterface and use CustomEventAwareTrait, as described in the <a href="../dependency-injection/">dependency injection</a> documentation.</p>
 <p>Then, the command may ask the provided hook manager to return a list of handlers with a certain annotation. In the example below, the <code>my-event</code> label is used:
 <div class="highlight"><pre><span></span><code>    <span class="sd">/**</span>

@@ -104,6 +104,26 @@
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
+                    static&nbsp;<abbr title="Drush\Utils\A">A</abbr>
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_getBackupDirParent">getBackupDirParent</a>()
+        
+                                            <p>Get the base dir where our backup directories will be stored</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    static&nbsp;bool
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_isUsableDirectory">isUsableDirectory</a>(string $dir)
+        
+                                            <p>Description</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
                     static&nbsp;string
                 </div>
                 <div class="col-md-8 type">
@@ -199,8 +219,88 @@
 
             </div>
                     <div class="method-item">
+                    <h3 id="method_getBackupDirParent">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Utils/FsUtils.php#L57">line 57</a></div>
+        <code>        static    protected        <abbr title="Drush\Utils\A">A</abbr>
+    <strong>getBackupDirParent</strong>()
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Get the base dir where our backup directories will be stored</p>                                                </div>
+                <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><abbr title="Drush\Utils\A">A</abbr></td>
+            <td>path to the backup directory parent</td>
+        </tr>
+    </table>
+
+            
+                            <h4>Exceptions</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><a target="_blank" href="http://php.net/Exception">Exception</a></td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_isUsableDirectory">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Utils/FsUtils.php#L93">line 93</a></div>
+        <code>        static            bool
+    <strong>isUsableDirectory</strong>(string $dir)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Description</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$dir</td>
+                <td>Path to directory that we are considering using</td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>bool</td>
+            <td>True if the specified location is writable, or if a writable
+  directory could be created at that path.</td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
                     <h3 id="method_prepareBackupDir">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Utils/FsUtils.php#L56">line 56</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Utils/FsUtils.php#L125">line 125</a></div>
         <code>        static            string
     <strong>prepareBackupDir</strong>(string $subdir = null)
         </code>
@@ -249,7 +349,7 @@
             </div>
                     <div class="method-item">
                     <h3 id="method_realpath">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Utils/FsUtils.php#L76">line 76</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Utils/FsUtils.php#L145">line 145</a></div>
         <code>        static            string
     <strong>realpath</strong>(string $path)
         </code>
@@ -290,7 +390,7 @@ return the original path even if it doesn't exist.</p>                          
             </div>
                     <div class="method-item">
                     <h3 id="method_isTarball">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Utils/FsUtils.php#L90">line 90</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Utils/FsUtils.php#L159">line 159</a></div>
         <code>        static            string|bool
     <strong>isTarball</strong>(string $path)
         </code>
@@ -330,7 +430,7 @@ return the original path even if it doesn't exist.</p>                          
             </div>
                     <div class="method-item">
                     <h3 id="method_getMimeContentType">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Utils/FsUtils.php#L119">line 119</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Utils/FsUtils.php#L188">line 188</a></div>
         <code>        static            string|bool|null
     <strong>getMimeContentType</strong>(string $path)
         </code>
