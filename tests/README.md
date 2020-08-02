@@ -1,5 +1,5 @@
 ---
-edit_url: https://github.com/drush-ops/drush/blob/master/tests/README.md
+edit_url: https://github.com/drush-ops/drush/blob/10.x/tests/README.md
 ---
 Drush's test suite (aka Unish) is based on [PHPUnit](http://www.phpunit.de). In order to maintain
 high quality, our tests are run on every push. See [CircleCi](https://circleci.com/gh/drush-ops/drush).
@@ -8,7 +8,7 @@ high quality, our tests are run on every push. See [CircleCi](https://circleci.c
 1. git clone https://github.com/drush-ops/drush.git
 1. cd drush
 1. composer install
-1. Review the configuration settings in [tests/phpunit.xml.dist](https://github.com/drush-ops/drush/blob/master/tests/phpunit.xml.dist). 
+1. Review the configuration settings in [tests/phpunit.xml.dist](https://github.com/drush-ops/drush/blob/10.x/tests/phpunit.xml.dist). 
 1. If customization is needed, copy phpunit.xml.dist to phpunit.xml and edit away.
 1. Run all test suites: `composer test`
 

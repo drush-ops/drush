@@ -7,9 +7,9 @@ Creating a new Drush command or porting a legacy command is easy. Follow the ste
     1. (optional) Drush will also prompt for the path to a legacy command file to port. See [tips on porting command to Drush 9](https://weitzman.github.io/blog/port-to-drush9)
     1. The module selected must already exist and be enabled. Use `drush generate module-standard` to create a new module.
 1. Drush will then report that it created a commandfile, a drush.services.yml file and a composer.json file. Edit those files as needed.
-1. Use the classes for the core Drush commands at [/src/Drupal/Commands](https://github.com/drush-ops/drush/tree/master/src/Drupal/Commands) as inspiration and documentation.
+1. Use the classes for the core Drush commands at [/src/Drupal/Commands](https://github.com/drush-ops/drush/tree/10.x/src/Drupal/Commands) as inspiration and documentation.
 1. See the [dependency injection docs](dependency-injection.md) for interfaces you can implement to gain access to Drush config, Drupal site aliases, etc.
-1. Write PHPUnit tests based on [Drush Test Traits](https://github.com/drush-ops/drush/tree/master/tests#drush-test-traits).
+1. Write PHPUnit tests based on [Drush Test Traits](https://github.com/drush-ops/drush/tree/10.x/tests#drush-test-traits).
 1. Once your two files are ready, run `drush cr` to get your command recognized by the Drupal container.
 
 ## Specifying the Services File
@@ -54,7 +54,7 @@ In order to alter an existing command info, follow the steps below:
 For an example, see the alterer class provided by the testing 'woot' module: `tests/functional/resources/modules/d8/woot/src/WootCommandInfoAlterer.php`.
 
 ## Site-Wide Drush Commands
-Commandfiles that are installed in a Drupal site and are not bundled inside a Drupal module are called 'site-wide' commandfiles. Site-wide commands may either be added directly to the Drupal site's repository (e.g. for site-specific policy files), or via `composer require`. See the [examples/Commands](https://github.com/drush-ops/drush/tree/master/examples/Commands) folder for examples. In general, it's better to use modules to carry your Drush commands, as module-based commands may [participate in Drupal's dependency injection via the drush.services.yml](#specifying-the-services-file).
+Commandfiles that are installed in a Drupal site and are not bundled inside a Drupal module are called 'site-wide' commandfiles. Site-wide commands may either be added directly to the Drupal site's repository (e.g. for site-specific policy files), or via `composer require`. See the [examples/Commands](https://github.com/drush-ops/drush/tree/10.x/examples/Commands) folder for examples. In general, it's better to use modules to carry your Drush commands, as module-based commands may [participate in Drupal's dependency injection via the drush.services.yml](#specifying-the-services-file).
 
 If you still prefer using site-wide commandfiles, here are some examples of valid commandfile names and namespaces:
 
@@ -106,4 +106,4 @@ With this configuration in place, global commands may be placed as described in 
 It is recommended that you avoid global Drush commands, and favor site-wide commandfiles instead. If you really need a command or commands that are not part of any Drupal site, consider making a stand-alone script or custom .phar instead. See [ahoy](https://github.com/ahoy-cli/ahoy), [Robo](https://github.com/consolidation/robo) and [g1a/starter](https://github.com/g1a/starter) as potential starting points.
 
 !!! warning "Symlinked packages"
-    While it is good practice to make your custom commands into a Composer package, please beware that symlinked packages (by using the composer repository type [Path](https://getcomposer.org/doc/05-repositories.md#path)) will **not** be discovered by Drush. When in development, it is recommended to [specify your package's](https://github.com/drush-ops/drush/blob/master/examples/example.drush.yml#L52-L67) path in your `drush.yml` to have quick access to your commands.
+    While it is good practice to make your custom commands into a Composer package, please beware that symlinked packages (by using the composer repository type [Path](https://getcomposer.org/doc/05-repositories.md#path)) will **not** be discovered by Drush. When in development, it is recommended to [specify your package's](https://github.com/drush-ops/drush/blob/10.x/examples/example.drush.yml#L52-L67) path in your `drush.yml` to have quick access to your commands.

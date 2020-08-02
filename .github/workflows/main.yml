@@ -1,19 +1,19 @@
 name: Build static sites
 
 # Controls when the action will run. Triggers the workflow on push or pull request
-# events but only for the master branch
+# events but only for the 10.x branch
 on:
   push:
-    branches: [master]
+    branches: [10.x]
 #  pull_request:
-#    branches: [master]
+#    branches: [10.x]
 
 jobs:
   build:
     name: Build and Push
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout master
+      - name: Checkout 10.x
         uses: actions/checkout@v2
 
       - name: Checkout gh-pages branch
