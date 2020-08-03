@@ -18,6 +18,7 @@ test_71_steps: &test71steps
     - checkout
     - run: cp .docker/zz-php.ini /usr/local/etc/php/conf.d/
     - run: composer install -n
+    - run: $HOME/drush/.circleci/patch-drupal.sh  8.8.x
     - run: composer lint
     - run: composer unit
     - run: composer functional
