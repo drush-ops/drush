@@ -4,7 +4,7 @@ site_author: 'Moshe Weitzman'
 site_description: A command line shell and Unix scripting interface for Drupal
 theme:
   name: material
-  logo: img/drush_logo-black.png
+  logo: drush_logo-black.png
   favicon: img/favicon.ico
   icon:
     repo: fontawesome/brands/github
