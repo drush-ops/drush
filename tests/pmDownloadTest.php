@@ -15,12 +15,17 @@ class pmDownloadCase extends CommandUnishTestCase {
     $this->assertArrayHasKey('DRUSH_PM_COULD_NOT_FIND_VERSION', $parsed['error_log']);
   }
 
+  protected function exectedReadme() {
+    if (version_compare(UNISH_DRUPAL_MAJOR_VERSION . UNISH_DRUPAL_MINOR_VERSION, '8.8.0', '>=')) {
+      return 'README.md';
+    }
+    return 'README.txt';
+  }
+
   // @todo Test pure drush commandfile projects. They get special destination.
   public function testDestination() {
-    // TODO: enable test when devel available for Drupal 9
-    if (version_compare(UNISH_DRUPAL_MAJOR_VERSION . str_replace('.x-dev', '.0-dev', UNISH_DRUPAL_MINOR_VERSION), '8.9.0-dev', '>=')) {
-      $this->markTestSkipped('Drupal 8.9 / 9.0 version of devel not available yet.');
-    }
+    $expectedReadme = $this->exectedReadme();
+
     // Setup two Drupal sites. Skip install for speed.
     $sites = $this->setUpDrupal(2, FALSE);
     $uri = key($sites);
@@ -39,13 +44,13 @@ class pmDownloadCase extends CommandUnishTestCase {
       'uri' => $uri,
     ) + $devel_options;
     $this->drush('pm-download', array('devel'), $options);
-    $this->assertFileExists($root . '/' . $this->drupalSitewideDirectory() . '/modules/devel/README.txt');
+    $this->assertFileExists($root . '/' . $this->drupalSitewideDirectory() . '/modules/devel/' . $expectedReadme);
 
     //  --use-site-dir
     // Expand above $options.
     $options += array('use-site-dir' => NULL);
     $this->drush('pm-download', array('devel'), $options);
-    $this->assertFileExists("$root/sites/$uri/modules/devel/README.txt");
+    $this->assertFileExists("$root/sites/$uri/modules/devel/$expectedReadme");
     unish_file_delete_recursive("{$root}/sites/{$uri}/modules/devel", TRUE);
 
     // If we are in site specific dir, then download belongs there.
@@ -53,7 +58,7 @@ class pmDownloadCase extends CommandUnishTestCase {
     // dir gets created by --use-site-dir above,
     $options = $devel_options;
     $this->drush('pm-download', array('devel'), $options, NULL, $path_stage);
-    $this->assertFileExists($path_stage . '/modules/devel/README.txt');
+    $this->assertFileExists($path_stage . '/modules/devel/' . $expectedReadme);
 
     // --destination with absolute path.
     $destination = UNISH_SANDBOX . '/test-destination1';
@@ -105,10 +110,6 @@ class pmDownloadCase extends CommandUnishTestCase {
   }
 
   public function testPackageHandler() {
-    // TODO: enable test when devel available for Drupal 9
-    if (UNISH_DRUPAL_MAJOR_VERSION >= 9) {
-      $this->markTestSkipped('Drupal 9 version of devel not available yet.');
-    }
     $options = array(
       'cache' => NULL,
       'package-handler' => 'git_drupalorg',

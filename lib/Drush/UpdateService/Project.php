@@ -3,6 +3,8 @@
 namespace Drush\UpdateService;
 
 use Drush\Log\LogLevel;
+use Symfony\Component\Yaml\Yaml;
+use Composer\Semver\Semver;
 
 /**
  * Representation of a project's release info from the update service.
@@ -49,11 +51,31 @@ class Project {
       }
     }
 
+    if (drush_drupal_major_version() >= 8) {
+      foreach ($this->parsed['releases'] as $version => $info) {
+        if (!$this->versionIsCompatible($version, $info)) {
+          unset($this->parsed['releases'][$version]);
+        }
+      }
+    }
+
     $this->project_status = $project_status;
     $this->error = $error;
     if ($error) {
       drush_set_error('DRUSH_RELEASE_INFO_ERROR', $error);
     }
+  }
+
+  protected function versionIsCompatible($version, $info) {
+    // If there is no "core_compatibility" field then assume this version
+    // is only compatible with Drupal 8.
+    if (!isset($info['core_compatibility'])) {
+      return drush_drupal_major_version() == 8;
+    }
+    if (preg_match('#^[0-9]*\.x$#', $info['core_compatibility'])) {
+      return $info['core_compatibility'] == drush_drupal_major_version() . '.x';
+    }
+    return Semver::satisfies(drush_drupal_version(), $info['core_compatibility']);
   }
 
   /**
@@ -94,6 +116,9 @@ class Project {
   public static function buildFetchUrl(array $request) {
     $status_url = isset($request['status url']) ? $request['status url'] : ReleaseInfo::DEFAULT_URL;
     $drupal_version = $request['drupal_version'];
+    if (drush_drupal_major_version() >= 8) {
+      $drupal_version = 'current';
+    }
     if ($drupal_version == '9.x') {
       $drupal_version = 'all';
     }
@@ -114,7 +139,7 @@ class Project {
 
     // Extract general project info.
     $items = array('title', 'short_name', 'dc:creator', 'type', 'api_version',
-      'recommended_major', 'supported_majors', 'default_major',
+      'recommended_major', 'supported_majors', 'default_major', 'supported_branches',
       'project_status', 'link',
     );
     foreach ($items as $item) {
@@ -122,6 +147,10 @@ class Project {
         $value = $xml->xpath($item);
         $project_info[$item] = (string)$value[0];
       }
+    }
+    $supported_branches = [];
+    if (isset($project_info['supported_branches'])) {
+      $supported_branches = explode(',', $project_info['supported_branches']);
     }
 
     // Parse project type.
@@ -162,7 +191,7 @@ class Project {
     $items = array(
       'name', 'date', 'status', 'type',
       'version', 'tag', 'version_major', 'version_patch', 'version_extra',
-      'release_link', 'download_link', 'mdhash', 'filesize',
+      'release_link', 'download_link', 'mdhash', 'filesize', 'core_compatibility',
     );
 
     $releases = array();
@@ -213,6 +242,36 @@ class Project {
           $item['variant'] = (string) $file->variant;
         }
         $release_info['files'][] = $item;
+
+        // Copy the mdhash from the matching download file into the
+        // root of the release object (make /current structure like /8.x)
+        if ($item['download_link'] == $release_info['download_link'] && !isset($release_info['mdhash'])) {
+          $release_info['mdhash'] = $item['mdhash'];
+        }
+      }
+
+      // '/current' does not include version_major et.al.; put them back if missing.
+      if (!isset($release_info['version_major'])) {
+          $two_part_version_key = 'version_patch';
+          $version = preg_replace('#^[89]\.x-#', '', $release_info['version']);
+          if ($version == $release_info['version']) {
+            $two_part_version_key = 'version_minor';
+          }
+          if (preg_match('#-([a-z]+[0-9]*)$#', $version, $matches)) {
+            $release_info['version_extra'] = $matches[1];
+            $version = preg_replace('#-[a-z]+[0-9]*$#', '', $version);
+          }
+          $version = preg_replace('#\.x$#', '', $version);
+          $parts = explode('.', $version);
+
+          $release_info['version_major'] = $parts[0];
+          if (count($parts) > 1) {
+            $release_info[$two_part_version_key] = $parts[1];
+          }
+          if (count($parts) > 2) {
+            $release_info['version_minor'] = $parts[1];
+            $release_info['version_patch'] = $parts[2];
+          }
       }
 
       // Calculate statuses.
@@ -233,6 +292,17 @@ class Project {
       }
       if (!empty($release_info['version_extra']) && ($release_info['version_extra'] == "dev")) {
         $statuses[] = "Development";
+      } else {
+        $supported_branch = static::branchIsSupported($release_info['version'], $supported_branches);
+        if ($supported_branch) {
+          $statuses[] = "Supported";
+          $supported_branches = array_diff($supported_branches, [$supported_branch]);
+          $sup_maj = $release_info['version_major'];
+          if (!empty($project_info['supported_majors'])) {
+            $sup_maj = $project_info['supported_majors'] . ',' . $sup_maj;
+          }
+          $project_info['supported_majors'] = $sup_maj;
+        }
       }
 
       $release_info['release_status'] = $statuses;
@@ -259,6 +329,15 @@ class Project {
     }
 
     return $project_info;
+  }
+
+  private static function branchIsSupported($version, $supported_branches) {
+    foreach ($supported_branches as $supported_branch) {
+      if (substr($version, 0, strlen($supported_branch)) == $supported_branch) {
+        return $supported_branch;
+      }
+    }
+    return false;
   }
 
   /**

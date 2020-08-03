@@ -36,7 +36,10 @@ class pmUpdateCode extends CommandUnishTestCase {
    * Download old core and older contrib releases which will always need updating.
    */
   public function setUp() {
-    if (UNISH_DRUPAL_MAJOR_VERSION >= 8) {
+    if (UNISH_DRUPAL_MAJOR_VERSION >= 9) {
+      $this->markTestSkipped("Test not supported in Drupal 9");
+    }
+    elseif (UNISH_DRUPAL_MAJOR_VERSION >= 8) {
       // Make sure that we can still update from the previous release
       // to the current release.
       $core = $this->getPreviousStable("drupal-8");
