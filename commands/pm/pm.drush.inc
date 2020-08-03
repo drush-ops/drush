@@ -1563,6 +1563,9 @@ function _pm_parse_version_compound($parts) {
  *   - 7.x-1.x-dev
  *   - 1.x
  *
+ * TODO: Currently does not support specific version releases of
+ *       contrib modules that use SEMVER release versions, e.g. devel-4.0.0.
+ *
  * @see pm_parse_request()
  *
  * @param string $version
