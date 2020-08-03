@@ -110,15 +110,13 @@ class pmDownloadCase extends CommandUnishTestCase {
   }
 
   public function testPackageHandler() {
-    $expectedReadme = $this->exectedReadme();
-
     $options = array(
       'cache' => NULL,
       'package-handler' => 'git_drupalorg',
       'yes' => NULL,
     );
     $this->drush('pm-download', array('devel'), $options);
-    $this->assertFileExists(UNISH_SANDBOX . '/devel/' . $expectedReadme);
+    $this->assertFileExists(UNISH_SANDBOX . '/devel/README.txt');
     $this->assertFileExists(UNISH_SANDBOX . '/devel/.git');
   }
 }
