@@ -64,7 +64,7 @@ Fields may be named either using their human-readable name, or via their machine
 
 Note also that some commands do not display all of their available data columns by default. To show all available fields, use `--fields=*`
 
-There is also a singuluar form `--field` available. If this form is used, it will also force the output format to `string`.
+There is also a singular form `--field` available. If this form is used, it will also force the output format to `string`.
 ```shell
 $ drush views:list --field=machine-name 
 block_content
