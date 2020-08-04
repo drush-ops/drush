@@ -17,7 +17,7 @@
         <meta name="author" content="Moshe Weitzman">
       
       <link rel="shortcut icon" href="../img/favicon.ico">
-      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-5.5.2">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-5.5.3">
     
     
       
@@ -25,9 +25,9 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.25b81cc6.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.947af8d5.min.css">
       
-        <link rel="stylesheet" href="../assets/stylesheets/palette.80a78273.min.css">
+        <link rel="stylesheet" href="../assets/stylesheets/palette.7f672a1f.min.css">
       
       
     
@@ -2732,55 +2732,55 @@
 <h2 id="output-formats">Output Formats<a class="headerlink" href="#output-formats" title="Permanent link">&para;</a></h2>
 <p>The <code>--format</code> option may be used to select the data format used to print the output of a command. Most commands that produce informative output about some object or system can transform their data into different formats. For example, the <a href="../commands/10.x/version/">version command</a> may be printed in a human-readable table (the default), or in a json array:
 <div class="highlight"><pre><span></span><code>$ drush version
- Drush version : 10.3.1
-$ drush version --format=json
-{
-    &quot;drush-version&quot;: &quot;10.3.1&quot;
-}
+ Drush version : <span class="m">10</span>.3.1
+$ drush version --format<span class="o">=</span>json
+<span class="o">{</span>
+    <span class="s2">&quot;drush-version&quot;</span>: <span class="s2">&quot;10.3.1&quot;</span>
+<span class="o">}</span>
 </code></pre></div>
 The available output formats are shown in the <code>help</code> for each command:
-<div class="highlight"><pre><span></span><code>$ drush help version
+<div class="highlight"><pre><span></span><code>$ drush <span class="nb">help</span> version
 Show drush version.
 
 Options:
- --format=&lt;json&gt;    Select output format. Available: json, string, var_export, yaml. Default is key-value.
+ --format<span class="o">=</span>&lt;json&gt;    Select output format. Available: json, string, var_export, yaml. Default is key-value.
 </code></pre></div></p>
 <h2 id="output-fields">Output Fields<a class="headerlink" href="#output-fields" title="Permanent link">&para;</a></h2>
 <p>If you wish to limit the number of columns produced by a command, use the <code>--fields</code> option. List the field names in the order they should be displayed:
-<div class="highlight"><pre><span></span><code>$ drush9 views:list --fields=machine-name,status
+<div class="highlight"><pre><span></span><code>$ drush views:list --fields<span class="o">=</span>machine-name,status
 +-------------------+----------+
-| Machine name      | Status   |
+<span class="p">|</span> Machine name      <span class="p">|</span> Status   <span class="p">|</span>
 +-------------------+----------+
-| block_content     | Enabled  |
-| comment           | Enabled  |
-| comments_recent   | Enabled  |
-| content           | Enabled  |
-| content_recent    | Enabled  |
-| files             | Enabled  |
-| frontpage         | Enabled  |
-| taxonomy_term     | Enabled  |
-| user_admin_people | Enabled  |
-| watchdog          | Enabled  |
-| who_s_new         | Enabled  |
-| who_s_online      | Enabled  |
-| archive           | Disabled |
-| glossary          | Disabled |
+<span class="p">|</span> block_content     <span class="p">|</span> Enabled  <span class="p">|</span>
+<span class="p">|</span> comment           <span class="p">|</span> Enabled  <span class="p">|</span>
+<span class="p">|</span> comments_recent   <span class="p">|</span> Enabled  <span class="p">|</span>
+<span class="p">|</span> content           <span class="p">|</span> Enabled  <span class="p">|</span>
+<span class="p">|</span> content_recent    <span class="p">|</span> Enabled  <span class="p">|</span>
+<span class="p">|</span> files             <span class="p">|</span> Enabled  <span class="p">|</span>
+<span class="p">|</span> frontpage         <span class="p">|</span> Enabled  <span class="p">|</span>
+<span class="p">|</span> taxonomy_term     <span class="p">|</span> Enabled  <span class="p">|</span>
+<span class="p">|</span> user_admin_people <span class="p">|</span> Enabled  <span class="p">|</span>
+<span class="p">|</span> watchdog          <span class="p">|</span> Enabled  <span class="p">|</span>
+<span class="p">|</span> who_s_new         <span class="p">|</span> Enabled  <span class="p">|</span>
+<span class="p">|</span> who_s_online      <span class="p">|</span> Enabled  <span class="p">|</span>
+<span class="p">|</span> archive           <span class="p">|</span> Disabled <span class="p">|</span>
+<span class="p">|</span> glossary          <span class="p">|</span> Disabled <span class="p">|</span>
 +-------------------+----------+
 </code></pre></div>
 The available field names are shown in the <code>help</code> text:
-<div class="highlight"><pre><span></span><code>$ drush9 help views:list
+<div class="highlight"><pre><span></span><code>$ drush <span class="nb">help</span> views:list
 Get a list of all views in the system.
 
 Options:
-  --fields=FIELDS   Available fields: Machine name (machine-name),     
-                    Name (label), Description (description), Status    
-                    (status), Tag (tag) [default:                      
-                    &quot;machine-name,label,description,status&quot;]           
+  --fields<span class="o">=</span>FIELDS   Available fields: Machine name <span class="o">(</span>machine-name<span class="o">)</span>,     
+                    Name <span class="o">(</span>label<span class="o">)</span>, Description <span class="o">(</span>description<span class="o">)</span>, Status    
+                    <span class="o">(</span>status<span class="o">)</span>, Tag <span class="o">(</span>tag<span class="o">)</span> <span class="o">[</span>default:                      
+                    <span class="s2">&quot;machine-name,label,description,status&quot;</span><span class="o">]</span>           
 </code></pre></div>
 Fields may be named either using their human-readable name, or via their machine name.</p>
 <p>Note also that some commands do not display all of their available data columns by default. To show all available fields, use <code>--fields=*</code></p>
-<p>There is also a singluar form <code>--field</code> available. If this form is used, it will also force the output format to <code>string</code>.
-<div class="highlight"><pre><span></span><code>$ drush views:list --field=machine-name 
+<p>There is also a singuluar form <code>--field</code> available. If this form is used, it will also force the output format to <code>string</code>.
+<div class="highlight"><pre><span></span><code>$ drush views:list --field<span class="o">=</span>machine-name 
 block_content
 comment
 comments_recent
@@ -2799,19 +2799,19 @@ glossary
 <h2 id="output-filters">Output Filters<a class="headerlink" href="#output-filters" title="Permanent link">&para;</a></h2>
 <p>A number of Drush commands that output tabular data support a <code>--filter</code> option that allows rows from the output to be selected with simple logic expressions.</p>
 <p>In its simplest form, the <code>--filter</code> option takes a string that indicates the value to filter by in the command's <em>default filter field</em>. For example, the <a href="../commands/10.x/role_list/">role:list command</a> specifies <code>perms</code> as its default filter; the output of the <code>role:list</code> command may be limited to only those roles that have a specified permission:
-<div class="highlight"><pre><span></span><code>$ drush role:list --filter=&#39;post comments&#39;
+<div class="highlight"><pre><span></span><code>$ drush role:list --filter<span class="o">=</span><span class="s1">&#39;post comments&#39;</span>
 authenticated:
-  label: &#39;Authenticated user&#39;
+  label: <span class="s1">&#39;Authenticated user&#39;</span>
   perms:
-    - &#39;access comments&#39;
-    - &#39;access content&#39;
-    - &#39;access shortcuts&#39;
-    - &#39;access site-wide contact form&#39;
-    - &#39;access user contact forms&#39;
-    - &#39;post comments&#39;
-    - &#39;search content&#39;
-    - &#39;skip comment approval&#39;
-    - &#39;use text format basic_html&#39;
+    - <span class="s1">&#39;access comments&#39;</span>
+    - <span class="s1">&#39;access content&#39;</span>
+    - <span class="s1">&#39;access shortcuts&#39;</span>
+    - <span class="s1">&#39;access site-wide contact form&#39;</span>
+    - <span class="s1">&#39;access user contact forms&#39;</span>
+    - <span class="s1">&#39;post comments&#39;</span>
+    - <span class="s1">&#39;search content&#39;</span>
+    - <span class="s1">&#39;skip comment approval&#39;</span>
+    - <span class="s1">&#39;use text format basic_html&#39;</span>
 </code></pre></div>
 Note that not all commands have a default filter field.</p>
 <p>Other fields in the output may be searched by using a simple expression in the <code>--filter</code> term. For example, to list only the enabled extensions with the <code>pm:list</code> command, you could run:
@@ -2967,15 +2967,15 @@ Finally, filter expressions may also use logical-and (<code>&amp;&amp;</code>) o
       
     </div>
     
-      <script src="../assets/javascripts/vendor.592d4e23.min.js"></script>
-      <script src="../assets/javascripts/bundle.806ca5c4.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents"}</script>
+      <script src="../assets/javascripts/vendor.c3dc8c49.min.js"></script>
+      <script src="../assets/javascripts/bundle.f9edbbd5.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents"}</script>
       
       <script>
         app = initialize({
           base: "..",
           features: ["tabs"],
           search: Object.assign({
-            worker: "../assets/javascripts/worker/search.01088dc6.min.js"
+            worker: "../assets/javascripts/worker/search.8e2cddea.min.js"
           }, typeof search !== "undefined" && search)
         })
       </script>
