@@ -8,7 +8,7 @@ Drush utilizes a powerful formatting and filtering system that provides the user
 
 ## Output Formats
 The `--format` option may be used to select the data format used to print the output of a command. Most commands that produce informative output about some object or system can transform their data into different formats. For example, the [version command](commands/10.x/version.md) may be printed in a human-readable table (the default), or in a json array:
-```
+```shell
 $ drush version
  Drush version : 10.3.1
 $ drush version --format=json
@@ -17,7 +17,7 @@ $ drush version --format=json
 }
 ```
 The available output formats are shown in the `help` for each command:
-```
+```shell
 $ drush help version
 Show drush version.
 
@@ -28,8 +28,8 @@ Options:
 ## Output Fields
 
 If you wish to limit the number of columns produced by a command, use the `--fields` option. List the field names in the order they should be displayed:
-```
-$ drush9 views:list --fields=machine-name,status
+```shell
+$ drush views:list --fields=machine-name,status
 +-------------------+----------+
 | Machine name      | Status   |
 +-------------------+----------+
@@ -50,8 +50,8 @@ $ drush9 views:list --fields=machine-name,status
 +-------------------+----------+
 ```
 The available field names are shown in the `help` text:
-```
-$ drush9 help views:list
+```shell
+$ drush help views:list
 Get a list of all views in the system.
 
 Options:
@@ -64,8 +64,8 @@ Fields may be named either using their human-readable name, or via their machine
 
 Note also that some commands do not display all of their available data columns by default. To show all available fields, use `--fields=*`
 
-There is also a singluar form `--field` available. If this form is used, it will also force the output format to `string`.
-```
+There is also a singuluar form `--field` available. If this form is used, it will also force the output format to `string`.
+```shell
 $ drush views:list --field=machine-name 
 block_content
 comment
@@ -87,7 +87,7 @@ glossary
 A number of Drush commands that output tabular data support a `--filter` option that allows rows from the output to be selected with simple logic expressions.
 
 In its simplest form, the `--filter` option takes a string that indicates the value to filter by in the command's *default filter field*. For example, the [role:list command](commands/10.x/role_list.md) specifies `perms` as its default filter; the output of the `role:list` command may be limited to only those roles that have a specified permission:
-```
+```shell
 $ drush role:list --filter='post comments'
 authenticated:
   label: 'Authenticated user'
