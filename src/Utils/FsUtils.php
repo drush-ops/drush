@@ -58,10 +58,14 @@ class FsUtils
     {
         // Try in order:
         //  1. The user-specified backup directory from drush.yml config file
+        //     n.b. drush.path.backup-dir is the correct location; backup-dir
+        //          was checked by accident, and is still included for
+        //          backwards compatibility.
         //  2. The 'drush-backups' directory in $HOME
         //  3. The 'drush-backups' directory in tmp
         $candidates = [
-            Drush::config()->get('backup-dir'),
+            Drush::config()->get('drush.paths.backup-dir'),
+            Drush::config()->get('backup-dir'), // deprecated
             Path::join(
                 Drush::config()->home(),
                 'drush-backups'
