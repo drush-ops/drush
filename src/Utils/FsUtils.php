@@ -61,7 +61,7 @@ class FsUtils
         //  2. The 'drush-backups' directory in $HOME
         //  3. The 'drush-backups' directory in tmp
         $candidates = [
-            Drush::config()->get('backup-dir'),
+            Drush::config()->get('drush.paths.backup-dir'),
             Path::join(
                 Drush::config()->home(),
                 'drush-backups'

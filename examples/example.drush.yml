@@ -79,6 +79,11 @@ drush:
 
     # Specify a folder where Drush should store its file based caches. If unspecified, defaults to $HOME/.drush.
     #cache-directory: /tmp/.drush
+    
+    # Specify a folder where Drush should store backup files, including
+    # temporary sql dump files created during sql:sync. If unspecified,
+    # defaults to $HOME/drush-backups
+    # backup-dir: /tmp/drush-backups
 
 # This section is for setting global options.
 options:
