@@ -2,6 +2,7 @@
 namespace Drush\Commands\core;
 
 use Consolidation\Log\ConsoleLogLevel;
+use Drush\Drupal\DrupalUtil;
 use DrushBatchContext;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Consolidation\OutputFormatters\StructuredData\UnstructuredListData;
@@ -670,9 +671,9 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
             }
             foreach ($requirements as $requirement) {
                 if (isset($requirement['severity']) && $requirement['severity'] != REQUIREMENT_OK) {
-                    $message = isset($requirement['description']) ? $requirement['description'] : '';
+                    $message = isset($requirement['description']) ? DrupalUtil::drushRender($requirement['description']) : '';
                     if (isset($requirement['value']) && $requirement['value']) {
-                        $message .= ' (Currently using '. $requirement['title'] .' '. $requirement['value'] .')';
+                        $message .= ' (Currently using '. $requirement['title'] .' '. DrupalUtil::drushRender($requirement['value']) .')';
                     }
                     $log_level = $requirement['severity'] === REQUIREMENT_ERROR ? LogLevel::ERROR : LogLevel::WARNING;
                     $this->logger()->log($log_level, $message);

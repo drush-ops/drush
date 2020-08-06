@@ -117,7 +117,7 @@ class DrupalCommands extends DrushCommands
             $severity = array_key_exists('severity', $info) ? $info['severity'] : -1;
             $rows[$i] = [
                 'title' => (string) $info['title'],
-                'value' => (string) $info['value'],
+                'value' => DrupalUtil::drushRender($info['value']),
                 'description' => DrupalUtil::drushRender($info['description']),
                 'sid' => $severity,
                 'severity' => @$severities[$severity]
