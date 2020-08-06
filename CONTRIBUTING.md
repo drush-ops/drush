@@ -15,7 +15,7 @@ Drush is built by people like you! Please [join us](https://github.com/drush-ops
 * See `composer run-script -l` for a list of helper scripts.
 
 ## Coding style
-* Do write comments. You don't have to comment every line, but if you come up with something that'sZ a bit complex/weird, just leave a comment. Bear in mind that you will probably leave the project at some point and that other people will read your code. Undocumented huge amounts of code are nearly worthless!
+* Do write comments. You don't have to comment every line, but if you come up with something that's a bit complex/weird, just leave a comment. Bear in mind that you will probably leave the project at some point and that other people will read your code. Undocumented huge amounts of code are nearly worthless!
 * We use [PSR-2](https://www.php-fig.org/psr/psr-2/) in the /src directory. [Drupal's coding standards](https://drupal.org/coding-standards) are still used in the includes directory (deprecated code).
 * Keep it compatible. Do not introduce changes to the public API, or configurations too casually. Don't make incompatible changes without good reasons!
 
