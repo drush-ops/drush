@@ -82,10 +82,12 @@ abstract class CommandUnishTestCase extends UnishTestCase
                 if ($key == 'uri' && $value == 'OMIT') {
                     continue;
                 }
+                $dashes = strlen($key) == 1 ? '-' : '--';
+                $equals = strlen($key) == 1 ? '' : '=';
                 if (!isset($value)) {
-                    $cmd[] = "--$key";
+                    $cmd[] = "$dashes$key";
                 } else {
-                    $cmd[] = "--$key=" . self::escapeshellarg($value);
+                    $cmd[] = "$dashes$key$equals" . self::escapeshellarg($value);
                 }
             }
         }
@@ -116,10 +118,12 @@ abstract class CommandUnishTestCase extends UnishTestCase
         }
         // insert drush command options
         foreach ($options as $key => $value) {
+            $dashes = strlen($key) == 1 ? '-' : '--';
+            $equals = strlen($key) == 1 ? '' : '=';
             if (!isset($value)) {
-                $cmd[] = "--$key";
+                $cmd[] = "$dashes$key";
             } else {
-                $cmd[] = "--$key=" . self::escapeshellarg($value);
+                $cmd[] = "$dashes$key$equals" . self::escapeshellarg($value);
             }
         }
 
