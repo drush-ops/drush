@@ -45,6 +45,8 @@ class SqlSyncTest extends CommandUnishTestCase
             'alias-path' => __DIR__ . '/resources/alias-fixtures',
             // Ensure that shortcuts are normalized to long option names https://github.com/drush-ops/drush/pull/4515.
             'q' => null,
+            // This option is needed in order to "override" -q and get error output from Drush.
+            'verbose' => null,
         ];
 
         $expectedAliasPath = '--alias-path=__DIR__/resources/alias-fixtures';
