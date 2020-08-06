@@ -494,8 +494,7 @@ class Drush
         foreach ($optionNamesFromCommandline as $key => $name) {
             try {
                 $optionNamesFromCommandline[$key] = Drush::getApplication()->get($command_name)->getDefinition()->shortcutToName($name);
-            }
-            catch (InvalidArgumentException $e) {
+            } catch (InvalidArgumentException $e) {
                 // Do nothing. It's expected.
             }
         }
