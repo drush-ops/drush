@@ -2,6 +2,7 @@
 namespace Drush\Commands\core;
 
 use Consolidation\Log\ConsoleLogLevel;
+use Drush\Drupal\DrupalUtil;
 use DrushBatchContext;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Consolidation\OutputFormatters\StructuredData\UnstructuredListData;
@@ -673,7 +674,7 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
                     $message = isset($requirement['description']) ? $requirement['description'] : '';
                     if (isset($requirement['value']) && $requirement['value']) {
                         if (is_array($requirement['value'])) {
-                            $value = (string) \Drupal::service('renderer')->renderPlain($requirement['value']);
+                            $value = DrupalUtil::drushRender($requirement['value']);
                         } else {
                             $value = $requirement['value'];
                         }

@@ -7,7 +7,7 @@ class DrupalUtil
     /**
      * Output a Drupal render array, object or string as plain text.
      *
-     * @param string $data
+     * @param string|array $data
      *   Data to render.
      *
      * @return string
