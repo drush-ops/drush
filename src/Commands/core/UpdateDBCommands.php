@@ -672,7 +672,12 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
                 if (isset($requirement['severity']) && $requirement['severity'] != REQUIREMENT_OK) {
                     $message = isset($requirement['description']) ? $requirement['description'] : '';
                     if (isset($requirement['value']) && $requirement['value']) {
-                        $message .= ' (Currently using '. $requirement['title'] .' '. $requirement['value'] .')';
+                        if (is_array($requirement['value'])) {
+                            $value = (string) \Drupal::service('renderer')->renderPlain($requirement['value']);
+                        } else {
+                            $value = $requirement['value'];
+                        }
+                        $message .= ' (Currently using '. $requirement['title'] .' '. $value .')';
                     }
                     $log_level = $requirement['severity'] === REQUIREMENT_ERROR ? LogLevel::ERROR : LogLevel::WARNING;
                     $this->logger()->log($log_level, $message);
