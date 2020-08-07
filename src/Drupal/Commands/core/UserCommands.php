@@ -167,11 +167,11 @@ class UserCommands extends DrushCommands
      * @command user:role:add
      *
      * @validate-entity-load user_role role
-     * @param string $role The name of the role to add.
+     * @param string $role The machine name of the role to add.
      * @param string $names A comma delimited list of user names.
      * @aliases urol,user-add-role
-     * @usage drush user-add-role "power user" user3
-     *   Add the "power user" role to user3
+     * @usage drush user-add-role "editor" user3
+     *   Add the editor role to user3
      */
     public function addRole($role, $names)
     {
