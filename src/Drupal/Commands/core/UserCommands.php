@@ -39,7 +39,7 @@ class UserCommands extends DrushCommands
      *   Display information for a given email account.
      * @usage drush user:information --uid=5
      *   Display information for a given user id.
-     * @usage drush uinf $(drush sqlq "SELECT GROUP_CONCAT(name) FROM users_field_data WHERE lower(roles) = 'administrator'")
+     * @usage drush uinf --uid=$(drush sqlq "SELECT GROUP_CONCAT(entity_id) FROM user__roles WHERE lower(roles_target_id) = 'administrator'")
      *   Display information for all administrators.
      * @field-labels
      *   uid: User ID
