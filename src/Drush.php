@@ -13,6 +13,7 @@ use Consolidation\SiteProcess\SiteProcess;
 use League\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Application;
+use Symfony\Component\Console\Exception\InvalidArgumentException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -481,12 +482,22 @@ class Drush
     public static function redispatchOptions($input = null)
     {
         $input = $input ?: self::input();
+        $command_name = $input->getFirstArgument();
 
         // $input->getOptions() returns an associative array of option => value
         $options = $input->getOptions();
 
         // The 'runtime.options' config contains a list of option names on th cli
         $optionNamesFromCommandline = self::config()->get('runtime.options');
+
+        // Attempt to normalize option names.
+        foreach ($optionNamesFromCommandline as $key => $name) {
+            try {
+                $optionNamesFromCommandline[$key] = Drush::getApplication()->get($command_name)->getDefinition()->shortcutToName($name);
+            } catch (InvalidArgumentException $e) {
+                // Do nothing. It's expected.
+            }
+        }
 
         // Remove anything in $options that was not on the cli
         $options = array_intersect_key($options, array_flip($optionNamesFromCommandline));
