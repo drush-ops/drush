@@ -1,6 +1,3 @@
-Usage
------------
-
 Drush can be run in your shell by typing `drush` from within your project root directory or anywhere within Drupal.
 
     $ drush [options] <command> [argument1] [argument2]
