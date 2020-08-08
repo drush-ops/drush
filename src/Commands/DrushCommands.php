@@ -4,6 +4,9 @@ namespace Drush\Commands;
 use Consolidation\AnnotatedCommand\CommandData;
 use Drush\Drush;
 use Drush\Style\DrushStyle;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\MessageFormatter;
+use GuzzleHttp\Middleware;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
@@ -117,5 +120,17 @@ abstract class DrushCommands implements IOAwareInterface, LoggerAwareInterface, 
     {
         $file = $commandData->annotationData()->get('topic');
         $this->printFile(Path::makeAbsolute($file, dirname($commandData->annotationData()->get('_path'))));
+    }
+
+    /**
+     * Get a Guzzle handler stack that uses the Drush logger.
+     *
+     * @see https://stackoverflow.com/questions/32681165/how-do-you-log-all-api-calls-using-guzzle-6.
+     */
+    protected function getStack(): \GuzzleHttp\HandlerStack
+    {
+        $stack = HandlerStack::create();
+        $stack->push(Middleware::log($this->logger(), new MessageFormatter(Drush::debug() ? MessageFormatter::DEBUG : MessageFormatter::SHORT)));
+        return $stack;
     }
 }

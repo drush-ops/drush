@@ -42,6 +42,10 @@ class SecurityUpdateCommands extends DrushCommands
      *
      * @command pm:security
      * @aliases sec,pm-security
+     * @usage drush pm:security --format=json
+     *   Get security data in JSON format.
+     * @usage HTTP_PROXY=tcp://localhost:8125 pm:security
+     *   Proxy Guzzle requests through an http proxy.
      * @bootstrap none
      * @table-style default
      * @field-labels
@@ -91,16 +95,11 @@ class SecurityUpdateCommands extends DrushCommands
      */
     protected function fetchAdvisoryComposerJson()
     {
-        try {
-            // We use the v2 branch for now, as per https://github.com/drupal-composer/drupal-security-advisories/pull/11.
-            $response_body = file_get_contents('https://raw.githubusercontent.com/drupal-composer/drupal-security-advisories/8.x-v2/composer.json');
-            if ($response_body === false) {
-                throw new Exception("Unable to fetch drupal-security-advisories information.");
-            }
-        } catch (Exception $e) {
-            throw new Exception("Unable to fetch drupal-security-advisories information.");
-        }
-        $security_advisories_composer_json = json_decode($response_body, true);
+        // We use the v2 branch for now, as per https://github.com/drupal-composer/drupal-security-advisories/pull/11.
+        $stack = $this->getStack();
+        $client = new \GuzzleHttp\Client(['handler' => $stack]);
+        $response = $client->get('https://raw.githubusercontent.com/drupal-composer/drupal-security-advisories/8.x-v2/composer.json');
+        $security_advisories_composer_json = json_decode($response->getBody(), true);
         return $security_advisories_composer_json;
     }
 
@@ -165,16 +164,23 @@ class SecurityUpdateCommands extends DrushCommands
      *
      * @usage drush pm:security-php --format=json
      *   Get security data in JSON format.
+     * @usage HTTP_PROXY=tcp://localhost:8125 pm:security
+     *   Proxy Guzzle requests through an http proxy.
      */
     public function securityPhp($options = ['format' => 'yaml'])
     {
         $path = self::composerLockPath();
-        // Note: wget does not support multipart/form-data so its not supported by this command.
-        $command = ['curl', '-H', 'Accept: application/json', 'https://security.symfony.com/check_lock', '-F', "lock=@{$path}"];
-        $process = $this->processManager()->process($command);
-        $process->mustRun();
-        $out = $process->getOutput();
-        if ($packages = json_decode($out, true)) {
+        $stack = $this->getStack();
+        $client = new \GuzzleHttp\Client(['handler' => $stack]);
+        $options = [
+            'headers'  => ['Accept' => 'application/json'],
+            'multipart' => [[
+                'name' => 'lock',
+                'contents' => fopen($path, 'r'),
+            ]],
+        ];
+        $response = $client->post('https://security.symfony.com/check_lock', $options);
+        if ($packages = json_decode($response->getBody(), true)) {
             $suggested_command = "composer why " . implode(' && composer why ', array_keys($packages));
             $this->logger()->warning('One or more of your dependencies has an outstanding security update.');
             $this->logger()->notice("Run <comment>$suggested_command</comment> to learn what module requires the package.");
