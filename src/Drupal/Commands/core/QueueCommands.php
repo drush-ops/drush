@@ -60,7 +60,7 @@ class QueueCommands extends DrushCommands
      * @option items-limit The maximum number of items allowed to run the queue.
      * @option lease-time The maximum number of seconds that an item remains claimed.
      */
-    public function run($name, $options = ['time-limit' => self::REQ, 'items-limit' => self::REQ, 'lease-time' => 3600])
+    public function run($name, $options = ['time-limit' => self::REQ, 'items-limit' => self::REQ, 'lease-time' => self::REQ])
     {
         $time_limit = (int) $options['time-limit'];
         $items_limit = (int) $options['items-limit'];
@@ -71,7 +71,7 @@ class QueueCommands extends DrushCommands
         $count = 0;
         $remaining = $time_limit;
 
-        while ((!$time_limit || $remaining > 0) && (!$items_limit || $count < $items_limit) && ($item = $queue->claimItem((int) $options['lease_time']))) {
+        while ((!$time_limit || $remaining > 0) && (!$items_limit || $count < $items_limit) && ($item = $queue->claimItem($options['lease_time']))) {
             try {
                 $this->logger()->info(dt('Processing item @id from @name queue.', ['@name' => $name, '@id' => $item->item_id]));
                 $worker->processItem($item->data);
