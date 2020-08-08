@@ -39,7 +39,7 @@ Drupal Compatibility
     <td> 5.6+ </td>
     <!-- Released Jan 2018 -->
     <td> <i>May 2020</i> </td>
-    <td></td> <td></td> <td>✅</td> <td></td>
+    <td></td> <td></td> <td>✓</td> <td></td>
   </tr>
   <tr>
     <td> Drush 8 </td>
