@@ -2,7 +2,7 @@
 
 Drush provides commands to [export](commands/10.x/config_export.md), [pull](commands/10.x/config_pull.md), and [import](commands/10.x/config_import.md) Drupal configuration files.
 
-## Simple - value Changes
+## Simple - value changes
 
 It is not necessary to alter configuration values to 
 make simple value changes to configuration variables, as this may be
