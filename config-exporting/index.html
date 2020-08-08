@@ -427,7 +427,14 @@
       
         <li class="md-nav__item">
   <a href="#simple-value-changes" class="md-nav__link">
-    Simple Value Changes
+    Simple - value Changes
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#advanced-variation-by-environment" class="md-nav__link">
+    Advanced - variation by environment
   </a>
   
 </li>
@@ -2655,7 +2662,14 @@
       
         <li class="md-nav__item">
   <a href="#simple-value-changes" class="md-nav__link">
-    Simple Value Changes
+    Simple - value Changes
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#advanced-variation-by-environment" class="md-nav__link">
+    Advanced - variation by environment
   </a>
   
 </li>
@@ -2681,13 +2695,9 @@
                 
                 
                 <h1 id="exporting-and-importing-configuration">Exporting and Importing Configuration<a class="headerlink" href="#exporting-and-importing-configuration" title="Permanent link">&para;</a></h1>
-<p>Drush provides commands to export, transfer, and import configuration files
-to and from a Drupal site.  Configuration can be altered by different
-methods in order to provide different behaviors in different environments;
-for example, a development server might be configured slightly differently
-than the production server.</p>
-<h2 id="simple-value-changes">Simple Value Changes<a class="headerlink" href="#simple-value-changes" title="Permanent link">&para;</a></h2>
-<p>It is not necessary to alter the configuration system values to 
+<p>Drush provides commands to <a href="../commands/10.x/config_export/">export</a>, <a href="../commands/10.x/config_pull/">pull</a>, and <a href="../commands/10.x/config_import/">import</a> Drupal configuration files.</p>
+<h2 id="simple-value-changes">Simple - value Changes<a class="headerlink" href="#simple-value-changes" title="Permanent link">&para;</a></h2>
+<p>It is not necessary to alter configuration values to 
 make simple value changes to configuration variables, as this may be
 done by the <a href="https://www.drupal.org/node/1928898">configuration override system</a>.</p>
 <p>The configuration override system allows you to change configuration
@@ -2700,8 +2710,12 @@ Note that the configuration override system is a Drupal feature, not
 a Drush feature. It should be the preferred method for changing
 configuration values on a per-environment basis; however, it does not
 work for some things, such as enabling and disabling modules.</p>
-<p>See <a href="https://www.drupal.org/project/config_split">Config Split</a> for advanced 
-variation by environment.</p>
+<h2 id="advanced-variation-by-environment">Advanced - variation by environment<a class="headerlink" href="#advanced-variation-by-environment" title="Permanent link">&para;</a></h2>
+<ul>
+<li>As of Drupal 8.8, Drupal supports <a href="https://www.drupal.org/node/3079028">excluding development modules from enabling on higher environments</a>.</li>
+<li>See <a href="https://www.drupal.org/project/config_split">Config Split</a> module for 
+more advanced needs.</li>
+</ul>
                 
               
               
