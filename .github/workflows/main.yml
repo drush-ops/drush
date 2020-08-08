@@ -1,0 +1,89 @@
+name: Build static sites
+
+# Controls when the action will run. Triggers the workflow on push or pull request
+# events but only for the 10.x branch
+on:
+  push:
+    branches: [10.x]
+#  pull_request:
+#    branches: [10.x]
+
+jobs:
+  build:
+    name: Build and Push
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 10.x
+        uses: actions/checkout@v2
+
+      - name: Checkout gh-pages branch
+        uses: actions/checkout@v2
+        with:
+          ref: gh-pages
+          path: gh-pages
+
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.8'
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install mkdocs-material pymdown-extensions git+https://gitlab.com/blacs30/mkdocs-edit-url.git
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 7.3
+          extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite
+          coverage: none
+
+      - name: Install Composer dependencies
+        run: composer install --prefer-dist --no-interaction --no-suggest
+
+      - name: Install Drupal
+        run: composer sut:si
+        env:
+          UNISH_DB_URL: sqlite://sites/default/files/.ht.sqlite
+
+      - name: Drush status
+        run: ./drush --uri=dev st
+
+      - name: Drush mk:docs
+        run: composer mk:docs
+
+      - name: Mkdocs build
+        run: mkdocs build -v --site-dir gh-pages
+
+      - name: Install Sami
+        run: composer sami-install
+
+      - name: Sami build
+        # We have Sami parse errors so ignore return value: https://stackoverflow.com/questions/35452147/allow-non-zero-return-codes-in-travis-ci-yml
+        run: |
+          rm -rf gh-pages/api
+          composer api || true
+
+      - name: Checkout CNAME file
+        # It got wiped and its needed.
+        run: |
+          cd gh-pages && git checkout -- CNAME
+
+      - name: Commit static site to gh-pages
+        run: |
+          cd gh-pages
+
+          git config --local user.email "actions@github.com"
+          git config --local user.name "Drush Documentation Bot"
+
+          git add -A .
+
+          if git diff-index --quiet HEAD --; then
+            echo "No changes..."
+          else
+            git commit -m "[CI] Build static site"
+          fi
+
+      - name: Git Push
+        run: cd gh-pages && git push

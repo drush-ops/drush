@@ -102,6 +102,8 @@ class ConfigExportCommands extends DrushCommands
      * @option message Commit comment for the exported configuration.  Optional; may only be used with --commit.
      * @option destination An arbitrary directory that should receive the exported files. A backup directory is used when no value is provided.
      * @option diff Show preview as a diff, instead of a change list.
+     * @usage drush config:export
+     *   Export configuration files to the site's config directory.
      * @usage drush config:export --destination
      *   Export configuration; Save files in a backup directory named config-export.
      * @aliases cex,config-export

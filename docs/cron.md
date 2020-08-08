@@ -1,7 +1,7 @@
 Running Drupal cron tasks from Drush
 ====================================
 
-Drupal cron tasks are often set up to be run via a wget call to cron.php; this same task can also be accomplished via the `drush cron` command, which circumvents the need to provide a web server interface to cron.
+Drupal cron tasks are often set up to be run via a wget call to cron.php; this same task can also be accomplished via the [cron command](commands/10.x/core_cron.md), which circumvents the need to provide a web server interface to cron.
 
 Quick start
 ----------

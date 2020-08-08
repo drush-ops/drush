@@ -28,6 +28,7 @@ services:
       - '@module_installer'
       - '@theme_handler'
       - '@string_translation'
+      - '@extension.list.module'
     calls:
       - [setImportTransformer, ['@?config.import_transformer']]
     tags:

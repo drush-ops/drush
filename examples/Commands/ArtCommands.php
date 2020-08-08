@@ -23,7 +23,7 @@ use Drush\Utils\StringUtils;
  * This file is a good example of the first of those bullets (a commandfile) but
  * since it isn't part of a module, it does not implement drush.services.yml.
  *
- * See [Drush Test Traits](https://github.com/drush-ops/drush/blob/master/tests/README.md#about-the-test-suites) for info on testing Drush commands.
+ * See [Drush Test Traits](https://github.com/drush-ops/drush/blob/10.x/tests/README.md#about-the-test-suites) for info on testing Drush commands.
  */
 
 class ArtCommands extends DrushCommands implements CustomEventAwareInterface

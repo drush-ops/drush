@@ -22,11 +22,11 @@ class CliCommands extends DrushCommands
      * @command docs:repl
      * @aliases docs-repl
      * @hidden
-     * @topic
+     * @topic ../../../../docs/repl.md
      */
     public function docs()
     {
-        self::printFile(DRUSH_BASE_PATH. '/docs/repl.md');
+        self::printFileTopic($this->commandData);
     }
 
     /**
@@ -35,12 +35,11 @@ class CliCommands extends DrushCommands
      * @aliases php,core:cli,core-cli
      * @option $version-history Use command history based on Drupal version
      *   (Default is per site).
-     * @option $cwd Changes the working directory of the shell
-     *   (Default is the project root directory)
+     * @option $cwd A directory to change to before launching the shell. Default is the project root directory
      * @topics docs:repl
      * @remote-tty
      */
-    public function cli(array $options = ['version-history' => false, 'cwd' => null])
+    public function cli(array $options = ['version-history' => false, 'cwd' => self::REQ])
     {
         $configuration = new Configuration();
 
@@ -82,7 +81,7 @@ class CliCommands extends DrushCommands
         }
 
         // If the cwd option is passed, lets change the current working directory to wherever
-        // the user wants to go before we lift psysh.
+        // the user wants to go before we launch psysh.
         if ($options['cwd']) {
             chdir($options['cwd']);
         }
@@ -205,7 +204,7 @@ class CliCommands extends DrushCommands
     /**
      * Returns a list of PHP keywords.
      *
-     * This will act as a blacklist for command and alias names.
+     * This will act as a blocklist for command and alias names.
      *
      * @return array
      */

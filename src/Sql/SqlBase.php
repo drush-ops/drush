@@ -329,14 +329,7 @@ class SqlBase implements ConfigAwareInterface
             $input_file = drush_save_data_to_temp_file($query);
         }
 
-        $parts = [
-            $this->command(),
-            $this->creds(!$this->getOption('show-passwords')),
-            $this->silent(), // This removes column header and various helpful things in mysql.
-            $this->getOption('extra', $this->queryExtra),
-            $this->queryFile,
-            Escape::shellArg($input_file),
-        ];
+        $parts = $this->alwaysQueryCommand($input_file);
         $exec = implode(' ', $parts);
 
         if ($result_file) {
@@ -460,7 +453,7 @@ class SqlBase implements ConfigAwareInterface
     public function dropOrCreate()
     {
         if ($this->dbExists()) {
-            return $this->drop($this->listTables());
+            return $this->drop($this->listTablesQuoted());
         } else {
             return $this->createdb();
         }
@@ -504,6 +497,18 @@ class SqlBase implements ConfigAwareInterface
      */
     public function listTables()
     {
+    }
+
+    /**
+     * Extract the name of all existing tables in the given database.
+     *
+     * @return array|null
+     *   An array of table names which exist in the current database,
+     *   appropriately quoted for the RDMS.
+     */
+    public function listTablesQuoted()
+    {
+        return $this->listTables();
     }
 
     /*
@@ -626,5 +631,25 @@ class SqlBase implements ConfigAwareInterface
         }
 
         return $db_spec;
+    }
+
+    /**
+     * Start building the command to run a query.
+     *
+     * @param $input_file
+     *
+     * @return array
+     */
+    public function alwaysQueryCommand($input_file): array
+    {
+        return [
+            $this->command(),
+            $this->creds(!$this->getOption('show-passwords')),
+            $this->silent(),
+            // This removes column header and various helpful things in mysql.
+            $this->getOption('extra', $this->queryExtra),
+            $this->queryFile,
+            Escape::shellArg($input_file),
+        ];
     }
 }

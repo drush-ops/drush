@@ -1,0 +1,87 @@
+# This file is augmented with more nav pages by drush mk:docs command.
+site_name: Drush
+site_author: 'Moshe Weitzman'
+site_description: A command line shell and Unix scripting interface for Drupal
+theme:
+  name: material
+  logo: drush_logo-black.png
+  favicon: img/favicon.ico
+  icon:
+    repo: fontawesome/brands/github
+  custom_dir: docs/overrides
+  palette:
+    scheme: preference
+  features:
+    - tabs
+site_url: http://www.drush.org
+repo_url: https://github.com/drush-ops/drush
+#Overridden on many pages via edit_uri plugin. See front matter.
+edit_uri: blob/10.x/docs
+extra_css:
+  - css/extra.readthedocs.css
+plugins:
+  - edit_url
+  - search
+extra:
+  social:
+    - icon: fontawesome/brands/twitter
+      link: https://twitter.com/drushcli
+    - icon: fontawesome/brands/github
+      link: https://github.com/drush-ops/drush
+    - icon: fontawesome/brands/slack
+      link: https://drupal.slack.com/archives/C62H9CWQM
+# Concerned about surveillance and spam so not enabling disqus for now.
+#  disqus: drush
+markdown_extensions:
+  - toc:
+      permalink: true
+  - admonition: {  }
+  - meta: { }
+  - pymdownx.magiclink: {  }
+  - pymdownx.keys: { }
+  - pymdownx.snippets: { }
+  - pymdownx.highlight:
+      use_pygments: true
+      # https://github.com/squidfunk/mkdocs-material/issues/506#issuecomment-338007823
+      extend_pygments_lang:
+        - name: php
+          lang: php
+          options:
+            startinline: true
+  - pymdownx.inlinehilite: { }
+  - pymdownx.superfences: { }
+nav:
+  - Use:
+    - Introduction: index.md
+    - Install: install.md
+    - Usage: usage.md
+    - Cron: cron.md
+    - Drush configuration: using-drush-configuration.md
+    - Drupal configuration: config-exporting.md
+    - Output Formats, Fields & Filters: output-formats-filters.md
+    - REPL (a custom shell for Drupal): repl.md
+    - Deploy: deploycommand.md
+  - Author:
+    - Command Authoring: commands.md
+    - Hooks: hooks.md
+    - Dependency injection: dependency-injection.md
+    - Input / Output: io.md
+    - Generator Authoring: generators.md
+    - Bootstrap: bootstrap.md
+    - Site Alias Manager: site-alias-manager.md
+  - Examples:
+      - drush.yml: examples/example.drush.yml.md
+      - site.yml: examples/example.site.yml.md
+      - examples/helloworld.script.md
+      - Example drush extension: https://github.com/drush-ops/example-drush-extension
+      - examples/ArtCommands.php.md
+      - examples/PolicyCommands.php.md
+      - examples/SiteAliasAlterCommands.php.md
+      - examples/SyncViaHttpCommands.php.md
+      - examples/XkcdCommands.php.md
+      - .bashrc: examples/example.bashrc.md
+      - prompt.sh: examples/example.prompt.sh.md
+      - git-bisect.sh: examples/git-bisect.example.sh.md
+  - Contribute:
+      - Guidelines: contribute/CONTRIBUTING.md
+      - Unish: contribute/README.md

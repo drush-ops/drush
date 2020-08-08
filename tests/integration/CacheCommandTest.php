@@ -5,7 +5,7 @@ namespace Unish;
 /**
  * Cache command testing.
  *
- * @group base
+ * @group commands
  */
 class CacheCommandCase extends UnishIntegrationTestCase
 {

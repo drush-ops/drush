@@ -3,7 +3,6 @@ namespace Drush\Commands\core;
 
 use Composer\Semver\Comparator;
 use Consolidation\AnnotatedCommand\CommandData;
-use Consolidation\SiteProcess\ProcessBase;
 use Drupal\Component\FileCache\FileCacheFactory;
 use Drupal\Core\Database\Database;
 use Drupal\Core\Installer\Exception\AlreadyInstalledException;
@@ -27,20 +26,20 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
      * Install Drupal along with modules/themes/configuration/profile.
      *
      * @command site:install
-     * @param $profile An install profile name. Defaults to 'standard' unless an install profile is marked as a distribution. Additional info for the install profile may also be provided with additional arguments. The key is in the form [form name].[parameter name]
+     * @param $profile An install profile name. Defaults to <info>standard</info> unless an install profile is marked as a distribution. Additional info for the install profile may also be provided with additional arguments. The key is in the form <info>[form name].[parameter name]</info>
      * @option db-url A Drupal 6 style database URL. Required for initial install, not re-install. If omitted and required, Drush prompts for this item.
      * @option db-prefix An optional table prefix to use for initial install.
      * @option db-su Account to use when creating a new database. Must have Grant permission (mysql only). Optional.
-     * @option db-su-pw Password for the "db-su" account. Optional.
-     * @option account-name uid1 name. Defaults to admin
+     * @option db-su-pw Password for the <info>db-su</info> account. Optional.
+     * @option account-name uid1 name.
      * @option account-pass uid1 pass. Defaults to a randomly generated password. If desired, set a fixed password in config.yml.
-     * @option account-mail uid1 email. Defaults to admin@example.com
+     * @option account-mail uid1 email.
      * @option locale A short language code. Sets the default site language. Language files must already be present.
-     * @option site-name Defaults to Site-Install
-     * @option site-mail From: for system mailings. Defaults to admin@example.com
-     * @option sites-subdir Name of directory under 'sites' which should be created.
+     * @option site-name
+     * @option site-mail <info>From:</info> for system mailings.
+     * @option sites-subdir Name of directory under <info>sites</info> which should be created.
      * @option config-dir Deprecated - only use with Drupal 8.5-. A path pointing to a full set of configuration which should be installed during installation.
-     * @option existing-config Configuration from "sync" directory should be imported during installation. Use with Drupal 8.6+.
+     * @option existing-config Configuration from <info>sync</info> directory should be imported during installation. Use with Drupal 8.6+.
      * @usage drush si expert --locale=uk
      *   (Re)install using the expert install profile. Set default language to Ukrainian.
      * @usage drush si --db-url=mysql://root:pass@localhost:port/dbname
@@ -147,7 +146,7 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
         // This can lead to an exit() in Drupal. See install_display_output() (e.g. config validation failure).
         // @todo Get Drupal to not call that function when on the CLI.
         try {
-            drush_op('install_drupal', $class_loader, $settings);
+            drush_op('install_drupal', $class_loader, $settings, [$this, 'taskCallback']);
         } catch (AlreadyInstalledException $e) {
             if ($sql && !$this->programExists($sql->command())) {
                 throw new \Exception(dt('Drush was unable to drop all tables because `@program` was not found, and therefore Drupal threw an AlreadyInstalledException. Ensure `@program` is available in your PATH.', ['@program' => $sql->command()]));
@@ -161,6 +160,12 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
             $this->logger()->success(dt('Installation complete.'));
         }
     }
+
+    public function taskCallback($install_state)
+    {
+        $this->logger()->notice('Performed install task: {task}', ['task' => $install_state['active_task']]);
+    }
+
 
     protected function determineProfile($profile, $options, $class_loader)
     {
@@ -337,24 +342,31 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
         $default = realpath(Path::join($root, 'sites/default'));
         $sitesfile_write = realpath($confPath) != $default && !file_exists($sitesfile);
 
+        $msg = [];
         if (!file_exists($settingsfile)) {
-            $msg[] = dt('create a @settingsfile file', ['@settingsfile' => $settingsfile]);
+            $msg[] = dt('Create a @settingsfile file', ['@settingsfile' => $settingsfile]);
         }
         if ($sitesfile_write) {
-            $msg[] = dt('create a @sitesfile file', ['@sitesfile' => $sitesfile]);
+            $msg[] = dt('Create a @sitesfile file', ['@sitesfile' => $sitesfile]);
         }
 
         $program = $sql ? $sql->command() : 'UNKNOWN';
         $program_exists = $this->programExists($program);
         if (!$program_exists) {
-            $msg[] = dt('Program @program not found. Proceed if you have already created or emptied the Drupal database.', ['@program' => $program]);
+            $this->logger()->warning(dt('Program @program not found. Proceed if you have already created or emptied the Drupal database.', ['@program' => $program]));
         } elseif ($sql->dbExists()) {
             $msg[] = dt("DROP all tables in your '@db' database.", ['@db' => $db_spec['database']]);
         } else {
             $msg[] = dt("CREATE the '@db' database.", ['@db' => $db_spec['database']]);
         }
 
-        if (!$this->io()->confirm(dt('You are about to ') . implode(dt(' and '), $msg) . ' Do you want to continue?')) {
+        if ($msg) {
+            $this->io()->text(dt('You are about to:'));
+            $this->io()->listing($msg);
+        }
+
+
+        if (!$this->io()->confirm(dt('Do you want to continue?'))) {
             throw new UserAbortException();
         }
 

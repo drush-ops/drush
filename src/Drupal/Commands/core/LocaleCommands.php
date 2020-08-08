@@ -2,13 +2,18 @@
 
 namespace Drush\Drupal\Commands\core;
 
+use Consolidation\AnnotatedCommand\CommandData;
+use Drupal\Component\Gettext\PoStreamWriter;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Language\LanguageInterface;
 use Drupal\Core\Language\LanguageManagerInterface;
 use Drupal\Core\State\StateInterface;
 use Drupal\language\Entity\ConfigurableLanguage;
+use Drupal\locale\PoDatabaseReader;
 use Drush\Commands\DrushCommands;
+use Drush\Exceptions\CommandFailedException;
+use Drush\Utils\StringUtils;
 
 class LocaleCommands extends DrushCommands
 {
@@ -117,17 +122,12 @@ class LocaleCommands extends DrushCommands
 
         if ($passed_langcodes = $options['langcodes']) {
             $langcodes = array_intersect($langcodes, explode(',', $passed_langcodes));
-            // @todo Not selecting any language code in the user interface results in
-            //   all translations being updated, so we mimick that behavior here.
         }
 
         // Deduplicate the list of langcodes since each project may have added the
         // same language several times.
         $langcodes = array_unique($langcodes);
 
-        // @todo Restricting by projects is not possible in the user interface and is
-        //   broken when attempting to do it in a hook_form_alter() implementation so
-        //   we do not allow for it here either.
         $projects = [];
 
         // Set the translation import options. This determines if existing
@@ -138,7 +138,7 @@ class LocaleCommands extends DrushCommands
         // translation updates. If the status is expired we clear it an run a batch to
         // update the status and then fetch the translation updates.
         $last_checked = $this->getState()->get('locale.translation_last_checked');
-        if ($last_checked < REQUEST_TIME - LOCALE_TRANSLATION_STATUS_TTL) {
+        if ($last_checked < time() - LOCALE_TRANSLATION_STATUS_TTL) {
             locale_translation_clear_status();
             $batch = locale_translation_batch_update_build([], $langcodes, $translationOptions);
             batch_set($batch);
@@ -156,28 +156,84 @@ class LocaleCommands extends DrushCommands
     }
 
     /**
+     * Exports to a gettext translation file.
+     *
+     * See Drupal Core: \Drupal\locale\Form\ExportForm::submitForm
+     *
+     * @throws \Exception
+     *
+     * @command locale:export
+     * @param $langcode The language code of the exported translations.
+     * @option template POT file output of extracted source texts to be translated.
+     * @option types String types to include, defaults to all types. Recognized values: <info>not-customized</info>, <info>customized</info>, </info>not-translated<info>.
+     * @usage drush locale:export nl > nl.po
+     *   Export the Dutch translations with all types.
+     * @usage drush locale:export nl --types=customized,not-customized > nl.po
+     *   Export the Dutch customized and not customized translations.
+     * @usage drush locale:export --template > drupal.pot
+     *   Export the source strings only as template file for translation.
+     * @aliases locale-export
+     * @validate-module-enabled locale
+     */
+    public function export($langcode = null, $options = ['template' => false, 'types' => self::REQ])
+    {
+        $language = $this->getTranslatableLanguage($langcode);
+        $poreader_options = [];
+
+        if (!$options['template']) {
+            $poreader_options = $this->convertTypesToPoDbReaderOptions(StringUtils::csvToArray($options['types']));
+        }
+
+        $file_uri = drush_tempnam('drush_', null, '.po');
+        if ($this->writePoFile($file_uri, $language, $poreader_options)) {
+            $this->output()->writeln(file_get_contents($file_uri));
+        } else {
+            $this->logger()->success(dt('Nothing to export.'));
+        }
+    }
+
+    /**
+     * Assure that required options are set.
+     *
+     * @hook validate locale:export
+     */
+    public function exportValidate(CommandData $commandData)
+    {
+        $langcode = $commandData->input()->getArgument('langcode');
+        $template = $commandData->input()->getOption('template');
+        $types = $commandData->input()->getOption('types');
+
+        if (!$langcode && !$template) {
+            throw new CommandFailedException('Set LANGCODE or --template, see help for more information.');
+        }
+        if ($template && $types) {
+            throw new CommandFailedException('Can not use both --types and --template, see help for more information.');
+        }
+    }
+
+    /**
      * Imports to a gettext translation file.
      *
      * @command locale:import
      * @validate-module-enabled locale
      * @param $langcode The language code of the imported translations.
      * @param $file Path and file name of the gettext file.
-     * @option type The type of translations to be imported, defaults to 'not-customized'. Options:
+     * @option type The type of translations to be imported, Options:
      *   - customized: Treat imported strings as custom translations.
      *   - not-customized: Treat imported strings as not-custom translations.
-     * @option override Whether and how imported strings will override existing translations. Defaults to the Import behavior configurred in the admin interface. Options:
+     * @option override Whether and how imported strings will override existing translations. Defaults to the Import behavior configured in the admin interface. Options:
      *  - none: Don't overwrite existing translations. Only append new translations.
      *  - customized: Only override existing customized translations.
      *  - not-customized: Only override non-customized translations, customized translations are kept.
      *  - all: Override any existing translation.
      * @usage drush locale-import nl drupal-8.4.2.nl.po
      *   Import the Dutch drupal core translation.
-     * @usage drush locale-import nl custom-translations.po --type=custom --override=all
+     * @usage drush locale-import nl custom-translations.po --type=customized --override=all
      *   Import customized Dutch translations and override any existing translation.
      * @aliases locale-import
      * @throws \Exception
      */
-    public function import($langcode, $file, $options = ['type' => self::OPT, 'override' => self::OPT])
+    public function import($langcode, $file, $options = ['type' => 'not-customized', 'override' => self::REQ])
     {
         if (!drush_file_not_empty($file)) {
             throw new \Exception(dt('File @file not found or empty.', ['@file' => $file]));
@@ -220,17 +276,7 @@ class LocaleCommands extends DrushCommands
      */
     private function convertCustomizedType($type)
     {
-        switch ($type) {
-            case 'customized':
-                $result = LOCALE_CUSTOMIZED;
-                break;
-
-            default:
-                $result = LOCALE_NOT_CUSTOMIZED;
-                break;
-        }
-
-        return $result;
+        return $type == 'customized' ? LOCALE_CUSTOMIZED : LOCALE_NOT_CUSTOMIZED;
     }
 
     /**
@@ -301,14 +347,14 @@ class LocaleCommands extends DrushCommands
                     '@language' => $language->label(),
                 ]));
             } else {
-                throw new \Exception(dt('Language code @langcode is not configured.', [
+                throw new CommandFailedException(dt('Language code @langcode is not configured.', [
                     '@langcode' => $langcode,
                 ]));
             }
         }
 
         if (!$this->isTranslatable($language)) {
-            throw new \Exception(dt('Language code @langcode is not translatable.', [
+            throw new CommandFailedException(dt('Language code @langcode is not translatable.', [
                 '@langcode' => $langcode,
             ]));
         }
@@ -335,5 +381,77 @@ class LocaleCommands extends DrushCommands
         return (bool)$this->getConfigFactory()
             ->get('locale.settings')
             ->get('translate_english');
+    }
+
+    /**
+     * Get PODatabaseReader options for given types.
+     *
+     * @param array $types
+     * @return array
+     *   Options list with value 'true'.
+     * @throws \Exception
+     *   Triggered with incorrect types.
+     */
+    private function convertTypesToPoDbReaderOptions(array $types = [])
+    {
+        $valid_convertions = [
+            'not_customized' => 'not-customized',
+            'customized' => 'customized',
+            'not_translated' => 'not-translated',
+        ];
+
+        if (empty($types)) {
+            return array_fill_keys(array_keys($valid_convertions), true);
+        }
+
+        // Check for invalid conversions.
+        if (array_diff($types, $valid_convertions)) {
+            throw new CommandFailedException(dt('Allowed types: @types.', [
+                '@types' => implode(', ', $valid_convertions),
+            ]));
+        }
+
+        // Convert Types to Options.
+        $options = array_keys(array_intersect($valid_convertions, $types));
+
+        return array_fill_keys($options, true);
+    }
+
+    /**
+     * Write out the exported language or template file.
+     *
+     * @param string $file_uri Uri string to gather the data.
+     * @param LanguageInterface|null $language The language to export.
+     * @param array $options The export options for PoDatabaseReader.
+     * @return bool True if successful.
+     */
+    private function writePoFile($file_uri, LanguageInterface $language = null, array $options = [])
+    {
+        $reader = new PoDatabaseReader();
+
+        if ($language) {
+            $reader->setLangcode($language->getId());
+            $reader->setOptions($options);
+        }
+
+        $reader_item = $reader->readItem();
+        if (empty($reader_item)) {
+            return false;
+        }
+
+        $header = $reader->getHeader();
+        $header->setProjectName($this->configFactory->get('system.site')->get('name'));
+        $language_name = ($language) ? $language->getName() : '';
+        $header->setLanguageName($language_name);
+
+        $writer = new PoStreamWriter();
+        $writer->setURI($file_uri);
+        $writer->setHeader($header);
+        $writer->open();
+        $writer->writeItem($reader_item);
+        $writer->writeItems($reader);
+        $writer->close();
+
+        return true;
     }
 }

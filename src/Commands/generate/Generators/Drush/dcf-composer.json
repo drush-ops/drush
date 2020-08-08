@@ -1,11 +1,4 @@
 {
   "name": "",
-  "description": "This extension provides new commands for Drush.",
-  "type": "drupal-drush",
-  "authors": [
-    { "name": "Author name", "email": "author@example.com" }
-  ],
-  "require": {
-    "php": ">=5.6.0"
-  }
+  "type": "drupal-drush"
 }

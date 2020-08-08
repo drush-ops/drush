@@ -16,7 +16,7 @@
 # Note that your Bash session must already have the __git_ps1 function available.
 # Typically this is provided by git-prompt.sh, see instructions for downloading
 # and including this file here:
-# https://github.com/git/git/blob/master/contrib/completion/git-prompt.sh
+# https://github.com/git/git/blob/10.x/contrib/completion/git-prompt.sh
 #
 # Features:
 #
@@ -48,7 +48,7 @@ if [ -n "$(type -t __git_ps1)" ] && [ "$(type -t __git_ps1)" = function ] && [ "
   DRUSH_PS1_SHOWCOLORHINTS=true
 
   # Git offers various prompt customization options as well as seen in
-  # https://github.com/git/git/blob/master/contrib/completion/git-prompt.sh.
+  # https://github.com/git/git/blob/10.x/contrib/completion/git-prompt.sh.
   # Adjust the following lines to enable the corresponding features:
   #
   GIT_PS1_SHOWDIRTYSTATE=true

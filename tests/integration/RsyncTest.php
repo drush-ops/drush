@@ -7,7 +7,6 @@ namespace Unish;
  *   Tests for rsync command
  *
  * @group commands
- * @group slow
  */
 class RsyncTest extends UnishIntegrationTestCase
 {

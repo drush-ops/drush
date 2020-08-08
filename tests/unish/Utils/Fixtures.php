@@ -16,8 +16,6 @@ trait Fixtures
         return Path::join($this->fixturesDir(), 'home');
     }
 
-    // It is still an aspirational goal to add Drupal 7 support back to Drush. :P
-    // For now, only Drupal 8 is supported.
     protected function siteDir($majorVersion = '8')
     {
         return Path::join($this->fixturesDir(), '/sites/d' . $majorVersion);

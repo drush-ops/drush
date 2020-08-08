@@ -12,6 +12,11 @@ services:
     arguments: ['@cron', '@module_handler']
     tags:
       -  { name: drush.command }
+  deploy_hook.commands:
+    class: \Drush\Drupal\Commands\core\DeployHookCommands
+    arguments: ['@app.root', '@site.path', '@module_handler', '@keyvalue']
+    tags:
+      -  { name: drush.command }
   entity.commands:
       class: \Drush\Drupal\Commands\core\EntityCommands
       arguments: ['@entity_type.manager']
@@ -37,8 +42,7 @@ services:
       -  { name: drush.command }
   messenger.commands:
       class: \Drush\Drupal\Commands\core\MessengerCommands
-      # Uncomment when Drupal 8.4 gets unsupported.
-      # arguments: ['@messenger']
+      arguments: ['@messenger']
       tags:
         -  { name: drush.command }
   queue.commands:

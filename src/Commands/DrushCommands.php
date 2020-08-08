@@ -1,6 +1,7 @@
 <?php
 namespace Drush\Commands;
 
+use Consolidation\AnnotatedCommand\CommandData;
 use Drush\Drush;
 use Drush\Style\DrushStyle;
 use Psr\Log\LoggerAwareInterface;
@@ -13,6 +14,7 @@ use Robo\Common\IO;
 use Symfony\Component\Console\Input\InputOption;
 use Consolidation\SiteProcess\ProcessManagerAwareTrait;
 use Consolidation\SiteProcess\ProcessManagerAwareInterface;
+use Webmozart\PathUtil\Path;
 
 abstract class DrushCommands implements IOAwareInterface, LoggerAwareInterface, ConfigAwareInterface, ProcessManagerAwareInterface
 {
@@ -31,6 +33,11 @@ abstract class DrushCommands implements IOAwareInterface, LoggerAwareInterface, 
     use IO {
         io as roboIo;
     }
+
+    /**
+     * @var CommandData
+     */
+    protected $commandData;
 
     public function __construct()
     {
@@ -86,5 +93,29 @@ abstract class DrushCommands implements IOAwareInterface, LoggerAwareInterface, 
                 }
             }
         }
+    }
+
+    /**
+     * Persist commandData for use in primary command callback. Used by 'topic' commands.
+     *
+     * @hook pre-command *
+     *
+     * @param \Consolidation\AnnotatedCommand\CommandData $commandData
+     */
+    public function preHook(CommandData $commandData)
+    {
+        $this->commandData = $commandData;
+    }
+
+    /**
+     * Print the contents of a file. The path comes from the @topic annotation.
+     *
+     * @param CommandData $commandData
+     *   Full path to a file.
+     */
+    protected function printFileTopic(CommandData $commandData)
+    {
+        $file = $commandData->annotationData()->get('topic');
+        $this->printFile(Path::makeAbsolute($file, dirname($commandData->annotationData()->get('_path'))));
     }
 }

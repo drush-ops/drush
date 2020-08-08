@@ -19,9 +19,10 @@ namespace Drush\Log;
 use Drupal\Core\Logger\LogMessageParserInterface;
 use Drupal\Core\Logger\RfcLoggerTrait;
 use Drupal\Core\Logger\RfcLogLevel;
-use Psr\Log\LoggerInterface;
+use Drush\Drush;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
+use Psr\Log\LoggerInterface;
 
 /**
  * Redirects Drupal logging messages to Drush log.
@@ -49,10 +50,9 @@ class DrushLog implements LoggerInterface, LoggerAwareInterface
      * @param \Drupal\Core\Logger\LogMessageParserInterface $parser
      *   The parser to use when extracting message variables.
      */
-    public function __construct(LogMessageParserInterface $parser, LoggerInterface $logger)
+    public function __construct(LogMessageParserInterface $parser)
     {
         $this->parser = $parser;
-        $this->logger = $logger;
     }
 
     /**
@@ -60,6 +60,11 @@ class DrushLog implements LoggerInterface, LoggerAwareInterface
      */
     public function log($level, $message, array $context = [])
     {
+        // Only log during Drush requests, not web requests.
+        if (!\Robo\Robo::hasContainer()) {
+            return;
+        }
+
         // Translate the RFC logging levels into their Drush counterparts, more or
         // less.
         // @todo ALERT, CRITICAL and EMERGENCY are considered show-stopping errors,
@@ -106,6 +111,6 @@ class DrushLog implements LoggerInterface, LoggerAwareInterface
 
         $message = empty($message_placeholders) ? $message : strtr($message, $message_placeholders);
 
-        $this->logger->log($error_type, $message, $context);
+        Drush::logger()->log($error_type, $message, $context);
     }
 }

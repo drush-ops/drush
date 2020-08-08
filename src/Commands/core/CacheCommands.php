@@ -128,7 +128,7 @@ class CacheCommands extends DrushCommands implements CustomEventAwareInterface, 
      * @param $bin The cache bin to store the object in.
      * @param $expire 'CACHE_PERMANENT', or a Unix timestamp.
      * @param $tags A comma delimited list of cache tags.
-     * @option input-format The format of value. Use 'json' for complex values.
+     * @option input-format The format of value. Use <info>json</info> for complex values.
      * @option cache-get If the object is the result a previous fetch from the cache, only store the value in the 'data' property of the object in the cache.
      * @aliases cs,cache-set
      * @bootstrap full

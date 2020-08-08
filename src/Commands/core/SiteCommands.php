@@ -25,7 +25,7 @@ class SiteCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
      *
      * @command site:set
      *
-     * @param string $site Site specification to use, or "-" for previous site. Omit this argument to unset.
+     * @param string $site Site specification to use, or <info>-</info> for previous site. Omit this argument to unset.
      *
      * @throws \Exception
      * @handle-remote-commands
