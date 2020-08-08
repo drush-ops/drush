@@ -58,13 +58,12 @@ class QueueCommands extends DrushCommands
      * @validate-queue name
      * @option time-limit The maximum number of seconds allowed to run the queue.
      * @option items-limit The maximum number of items allowed to run the queue.
-     * @option lease-time The maximum number of seconds that an item remains claimed. By default, this is one hour.
+     * @option lease-time The maximum number of seconds that an item remains claimed.
      */
-    public function run($name, $options = ['time-limit' => self::REQ, 'items-limit' => self::OPT, 'lease-time' => self::OPT])
+    public function run($name, $options = ['time-limit' => self::REQ, 'items-limit' => self::REQ, 'lease-time' => 3600])
     {
         $time_limit = (int) $options['time-limit'];
         $items_limit = (int) $options['items-limit'];
-        $lease_time = (int) $options['lease-time'] ?: 3600;
         $start = microtime(true);
         $worker = $this->getWorkerManager()->createInstance($name);
         $end = time() + $time_limit;
@@ -72,7 +71,7 @@ class QueueCommands extends DrushCommands
         $count = 0;
         $remaining = $time_limit;
 
-        while ((!$time_limit || $remaining > 0) && (!$items_limit || $count < $items_limit) && ($item = $queue->claimItem($lease_time))) {
+        while ((!$time_limit || $remaining > 0) && (!$items_limit || $count < $items_limit) && ($item = $queue->claimItem((int) $options['lease_time']))) {
             try {
                 $this->logger()->info(dt('Processing item @id from @name queue.', ['@name' => $name, '@id' => $item->item_id]));
                 $worker->processItem($item->data);
