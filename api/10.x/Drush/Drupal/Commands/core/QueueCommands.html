@@ -311,7 +311,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                     
                 </div>
                 <div class="col-md-8 type">
-                    <a href="#method_run">run</a>($name, $options = [&#039;time-limit&#039; =&gt; self::REQ, &#039;items-limit&#039; =&gt; self::OPT])
+                    <a href="#method_run">run</a>($name, $options = [&#039;time-limit&#039; =&gt; self::REQ, &#039;items-limit&#039; =&gt; self::REQ, &#039;lease-time&#039; =&gt; self::REQ])
         
                                             <p>Run a specific queue by name.</p>                </div>
                 <div class="col-md-2"></div>
@@ -650,9 +650,9 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </div>
                     <div class="method-item">
                     <h3 id="method_run">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Commands/core/QueueCommands.php#L62">line 62</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Commands/core/QueueCommands.php#L63">line 63</a></div>
         <code>                    
-    <strong>run</strong>($name, $options = [&#039;time-limit&#039; =&gt; self::REQ, &#039;items-limit&#039; =&gt; self::OPT])
+    <strong>run</strong>($name, $options = [&#039;time-limit&#039; =&gt; self::REQ, &#039;items-limit&#039; =&gt; self::REQ, &#039;lease-time&#039; =&gt; self::REQ])
         </code>
     </h3>
     <div class="details">
@@ -686,7 +686,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </div>
                     <div class="method-item">
                     <h3 id="method_qList">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Commands/core/QueueCommands.php#L105">line 105</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Commands/core/QueueCommands.php#L112">line 112</a></div>
         <code>                    <abbr title="Consolidation\OutputFormatters\StructuredData\RowsOfFields">RowsOfFields</abbr>
     <strong>qList</strong>($options = [&#039;format&#039; =&gt; &#039;table&#039;])
         </code>
@@ -726,7 +726,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </div>
                     <div class="method-item">
                     <h3 id="method_delete">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Commands/core/QueueCommands.php#L127">line 127</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Commands/core/QueueCommands.php#L134">line 134</a></div>
         <code>                    
     <strong>delete</strong>($name)
         </code>
@@ -757,7 +757,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </div>
                     <div class="method-item">
                     <h3 id="method_validateQueueName">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Commands/core/QueueCommands.php#L143">line 143</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Commands/core/QueueCommands.php#L150">line 150</a></div>
         <code>                    <abbr title="Consolidation\AnnotatedCommand\CommandError">CommandError</abbr>|null
     <strong>validateQueueName</strong>(<abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr> $commandData)
         </code>
@@ -797,7 +797,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </div>
                     <div class="method-item">
                     <h3 id="method_getQueues">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Commands/core/QueueCommands.php#L157">line 157</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Commands/core/QueueCommands.php#L164">line 164</a></div>
         <code>                    
     <strong>getQueues</strong>()
         </code>
@@ -818,7 +818,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </div>
                     <div class="method-item">
                     <h3 id="method_getQueue">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Commands/core/QueueCommands.php#L173">line 173</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Commands/core/QueueCommands.php#L180">line 180</a></div>
         <code>                    <abbr title="Drupal\Core\Queue\QueueInterface">QueueInterface</abbr>
     <strong>getQueue</strong>($name)
         </code>
