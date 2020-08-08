@@ -7,10 +7,10 @@ Drush is a command line shell and Unix scripting interface for Drupal. Drush cor
 
 Resources
 -----------
-* [Installing and Upgrading](install.md) ([Drush 8](https://docs.drush.org/en/8.x/install/))
-* [General Documentation](usage.md) ([Drush 8](https://docs.drush.org/en/8.x/install/))
-* [Drush Commands](commands/10.x/all.md)
-* [API Documentation](/api/10.x/index.html)
+* [Installing and Upgrading](https://www.drush.org/install) ([Drush 8](https://docs.drush.org/en/8.x/install/))
+* [General Documentation](https://www.drush.org/usage) ([Drush 8](https://docs.drush.org/en/8.x/install/))
+* [Drush Commands](https://www.drush.org/commands/10.x/all)
+* [API Documentation](https://www.drush.org/api/10.x)
 * [Drush packages available via Composer](https://packagist.org/search/?type=drupal-drush)
 * [A list of modules that include Drush integration](https://www.drupal.org/project/project_module?f[2]=im_vid_3%3A4654&solrsort=ds_project_latest_release+desc)
 * Drush comes with a [full test suite](https://github.com/drush-ops/drush/blob/10.x/tests/README.md) powered by [PHPUnit](https://github.com/sebastianbergmann/phpunit). Each commit gets tested by our CI bots.
