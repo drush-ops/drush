@@ -38,10 +38,10 @@ Drush's own tests may be run within provided Docker containers (see docker-compo
 - **Functional tests** operate by `exec`ing the Drush executable. All functional tests therefore run in their own separate processes. The Drupal System Under Test is set up every time it is needed by any functional test. It is therefore okay if a functional test changes the state of the SUT. The codebase is re-used, so no destructive changes should be made to the code.
 
 ## Drush Test Traits
-Drush provides test traits that may be used to test your own Drush extensions. Adding the traits varies slightly depending how you package your Drush extension:
+Drush provides test traits that may be used to test your own Drush extensions. Adding the traits varies slightly depending how you package your Drush extension.
 
-- An extension that ships inside a contributed module - [DevelCommandsTest](https://cgit.drupalcode.org/devel/tree/tests/src/Functional/DevelCommandsTest.php?h=8.x-2.x) for an example. Note that you also need a [drupalci.yml](https://www.drupal.org/drupalorg/docs/drupal-ci/customizing-drupalci-testing-for-projects), which performs a `composer require drush/drush`. You can copy devel's [drupalci.yml](https://cgit.drupalcode.org/devel/tree/drupalci.yml?h=8.x-2.x). Also see [SchedulerDrushTest](https://git.drupalcode.org/project/scheduler/blob/8.x-1.x/tests/src/Functional/SchedulerDrushTest.php).
-- A standalone Drush extension or one that ships inside a custom module - [example drush extension](https://github.com/drush-ops/example-drush-extension)
+  - An extension that ships inside a contributed module - [DevelCommandsTest](https://cgit.drupalcode.org/devel/tree/tests/src/Functional/DevelCommandsTest.php?h=8.x-2.x) for an example. Note that you also need a [drupalci.yml](https://www.drupal.org/drupalorg/docs/drupal-ci/customizing-drupalci-testing-for-projects), which performs a `composer require drush/drush`. You can copy devel's [drupalci.yml](https://cgit.drupalcode.org/devel/tree/drupalci.yml?h=8.x-2.x). Also see [SchedulerDrushTest](https://git.drupalcode.org/project/scheduler/blob/8.x-1.x/tests/src/Functional/SchedulerDrushTest.php).
+  - A standalone Drush extension or one that ships inside a custom module - [example drush extension](https://github.com/drush-ops/example-drush-extension)
 
 Once you have included the Drush Test Traits, you will be able to write simple tests that call your extension's commands and makes assertions against the output.
 ```php
