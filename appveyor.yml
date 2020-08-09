@@ -34,6 +34,10 @@ install:
   - cd c:\tools\php73
   - copy php.ini-production php.ini
 
+  # https://github.com/php-coveralls/php-coveralls/pull/223/files
+  - appveyor DownloadFile http://curl.haxx.se/ca/cacert.pem -FileName C:\cacert.pem
+  - echo curl.cainfo=C:\cacert.pem >> php.ini
+
   - echo extension_dir=ext >> php.ini
   - echo extension=php_openssl.dll >> php.ini
   - echo date.timezone="UTC" >> php.ini
