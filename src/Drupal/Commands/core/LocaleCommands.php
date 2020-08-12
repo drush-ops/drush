@@ -218,16 +218,16 @@ class LocaleCommands extends DrushCommands
      * @validate-module-enabled locale
      * @param $langcode The language code of the imported translations.
      * @param $file Path and file name of the gettext file.
-     * @option type The type of translations to be imported, Options:
-     *   - customized: Treat imported strings as custom translations.
-     *   - not-customized: Treat imported strings as not-custom translations.
-     * @option override Whether and how imported strings will override existing translations. Defaults to the Import behavior configured in the admin interface. Options:
-     *  - none: Don't overwrite existing translations. Only append new translations.
-     *  - customized: Only override existing customized translations.
-     *  - not-customized: Only override non-customized translations, customized translations are kept.
-     *  - all: Override any existing translation.
+     * @option type The type of translations to be imported. Recognized values: <info>customized</info>, <info>not-customized</info>
+     * @option override Whether and how imported strings will override existing translations. Defaults to the Import behavior configured in the admin interface. Recognized values: <info>none</info>, <info>customized</info>, <info>not-customized</info>, <info>all</info>,
      * @usage drush locale-import nl drupal-8.4.2.nl.po
      *   Import the Dutch drupal core translation.
+     * @usage drush locale-import --type=customized nl drupal-8.4.2.nl.po
+     *   Import the Dutch drupal core translation. Treat imported strings as custom translations.
+     * @usage drush locale-import --override=none nl drupal-8.4.2.nl.po
+     *   Import the Dutch drupal core translation. Don't overwrite existing translations. Only append new translations.
+     * @usage drush locale-import --override=not-customized nl drupal-8.4.2.nl.po
+     *   Import the Dutch drupal core translation. Only override non-customized translations, customized translations are kept.
      * @usage drush locale-import nl custom-translations.po --type=customized --override=all
      *   Import customized Dutch translations and override any existing translation.
      * @aliases locale-import
