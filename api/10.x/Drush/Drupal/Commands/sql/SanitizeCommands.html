@@ -544,7 +544,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </div>
                     <div class="method-item">
                     <h3 id="method_sanitize">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Commands/sql/SanitizeCommands.php#L32">line 32</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Commands/sql/SanitizeCommands.php#L31">line 31</a></div>
         <code>                    
     <strong>sanitize</strong>()
         </code>
@@ -554,11 +554,12 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
     
 
                     <div class="method-description">
-                                    <p>Sanitize the database by removing or obfuscating user data.</p>                    <p>Commandfiles may add custom operations by implementing:
-- @hook_on-event sql-sanitize-message
-    Display summary to user before confirmation.
-- @hook post-command sql-sanitize
-    Run queries or call APIs to perform sanitizing</p>                            </div>
+                                    <p>Sanitize the database by removing or obfuscating user data.</p>                    <p>Commandfiles may add custom operations by implementing:</p>
+
+<pre><code>- `@hook_on-event sql-sanitize-message`. Display summary to user before confirmation.
+- `@hook post-command sql-sanitize`. Run queries or call APIs to perform sanitizing
+</code></pre>
+</p>                            </div>
                 <div class="tags">
             
             

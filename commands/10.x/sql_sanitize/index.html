@@ -2726,11 +2726,11 @@
                 
                 <h1 id="sqlsanitize">sql:sanitize<a class="headerlink" href="#sqlsanitize" title="Permanent link">&para;</a></h1>
 <p>Sanitize the database by removing or obfuscating user data.</p>
-<p>Commandfiles may add custom operations by implementing:
-- @hook_on-event sql-sanitize-message
-Display summary to user before confirmation.
-- @hook post-command sql-sanitize
-Run queries or call APIs to perform sanitizing</p>
+<p>Commandfiles may add custom operations by implementing:</p>
+<ul>
+<li><code>@hook_on-event sql-sanitize-message</code>. Display summary to user before confirmation.</li>
+<li><code>@hook post-command sql-sanitize</code>. Run queries or call APIs to perform sanitizing</li>
+</ul>
 <h4 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h4>
 <ul>
 <li><code>drush sql:sanitize --sanitize-password=no</code>. Sanitize database without modifying any passwords.</li>
@@ -2740,8 +2740,8 @@ Run queries or call APIs to perform sanitizing</p>
 <ul>
 <li><strong> --whitelist-fields[=WHITELIST-FIELDS]</strong>. Deprecated. Use allowlist-fields instead.</li>
 <li><strong> --allowlist-fields[=ALLOWLIST-FIELDS]</strong>. A comma delimited list of fields exempt from sanitization.</li>
-<li><strong> --sanitize-email[=SANITIZE-EMAIL]</strong>. The pattern for test email addresses in the sanitization operation, or "no" to keep email addresses unchanged. May contain replacement patterns %uid, %mail or %name. [default: <em>user+%<a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#117;&#105;&#100;&#64;&#108;&#111;&#99;&#97;&#108;&#104;&#111;&#115;&#116;&#46;&#108;&#111;&#99;&#97;&#108;&#100;&#111;&#109;&#97;&#105;&#110;">&#117;&#105;&#100;&#64;&#108;&#111;&#99;&#97;&#108;&#104;&#111;&#115;&#116;&#46;&#108;&#111;&#99;&#97;&#108;&#100;&#111;&#109;&#97;&#105;&#110;</a></em>]</li>
-<li><strong> --sanitize-password[=SANITIZE-PASSWORD]</strong>. By default, passwords are randomized. Specify 'no' to disable that. Specify any other value to set all passwords to that value.</li>
+<li><strong> --sanitize-email[=SANITIZE-EMAIL]</strong>. The pattern for test email addresses in the sanitization operation, or <em>no</em> to keep email addresses unchanged. May contain replacement patterns <em>%uid</em>, <em>%mail</em> or <em>%name</em>. [default: <em>user+%<a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#117;&#105;&#100;&#64;&#108;&#111;&#99;&#97;&#108;&#104;&#111;&#115;&#116;&#46;&#108;&#111;&#99;&#97;&#108;&#100;&#111;&#109;&#97;&#105;&#110;">&#117;&#105;&#100;&#64;&#108;&#111;&#99;&#97;&#108;&#104;&#111;&#115;&#116;&#46;&#108;&#111;&#99;&#97;&#108;&#100;&#111;&#109;&#97;&#105;&#110;</a></em>]</li>
+<li><strong> --sanitize-password[=SANITIZE-PASSWORD]</strong>. By default, passwords are randomized. Specify <em>no</em> to disable that. Specify any other value to set all passwords to that value.</li>
 </ul>
 <h4 id="topics">Topics<a class="headerlink" href="#topics" title="Permanent link">&para;</a></h4>
 <ul>
