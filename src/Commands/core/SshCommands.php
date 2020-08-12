@@ -22,11 +22,11 @@ class SshCommands extends DrushCommands implements SiteAliasManagerAwareInterfac
      * @usage drush @mysite ssh
      *   Open an interactive shell on @mysite's server.
      * @usage drush @prod ssh ls /tmp
-     *   Run "ls /tmp" on @prod site.
+     *   Run <info>ls /tmp</info> on <info>@prod</info> site.
      * @usage drush @prod ssh git pull
-     *   Run "git pull" on the Drupal root directory on the @prod site.
+     *   Run <info>git pull</info> on the Drupal root directory on the <info>@prod</info> site.
      * @usage drush ssh git pull
-     *   Run "git pull" on the local Drupal root directory.
+     *   Run <info>git pull</info> on the local Drupal root directory.
      * @aliases ssh,site-ssh
      * @topics docs:aliases
      */

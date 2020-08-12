@@ -223,7 +223,7 @@ class SqlCommands extends DrushCommands implements StdinAwareInterface
      * @usage drush sql:dump --skip-tables-key=common
      *   Skip standard tables. See examples/example.drush.yml
      * @usage drush sql:dump --extra-dump=--no-data
-     *   Pass extra option to mysqldump command.
+     *   Pass extra option to <info>mysqldump</info> command.
      * @hidden-options create-db
      * @bootstrap max configuration
      * @field-labels

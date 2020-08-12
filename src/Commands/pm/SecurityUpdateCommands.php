@@ -150,8 +150,8 @@ class SecurityUpdateCommands extends DrushCommands
     /**
      * Check non-Drupal PHP packages for pending security updates.
      *
-     * Thanks to https://github.com/FriendsOfPHP/security-advisories and Symfony
-     * for providing this service.
+     * Packages are discovered via composer.lock file. Thanks to https://github.com/FriendsOfPHP/security-advisories
+     * and Symfony for providing this service.
      *
      * @param array $options
      *
