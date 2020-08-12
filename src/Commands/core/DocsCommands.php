@@ -119,6 +119,19 @@ class DocsCommands extends DrushCommands
     }
 
     /**
+     * An example Drush script.
+     *
+     * @command docs:script
+     * @aliases docs-scipt
+     * @hidden
+     * @topic ../../../examples/helloworld.script
+     */
+    public function script()
+    {
+        self::printFileTopic($this->commandData);
+    }
+
+    /**
      * Bootstrap explanation: how Drush starts up and prepares the Drupal environment.
      *
      * @command docs:bootstrap
