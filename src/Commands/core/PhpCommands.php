@@ -51,6 +51,7 @@ class PhpCommands extends DrushCommands implements StdinAwareInterface
      *   Run foo.php script with argument <info>apple</info> and option <info>cider</info>. Note the
      *   <info>--</info> separator.
      * @aliases scr,php-script
+     * @topics docs:script
      * @bootstrap max
      * @throws \Exception
      */
