@@ -169,6 +169,7 @@ class SecurityUpdateCommands extends DrushCommands
     public function securityPhp($options = ['format' => 'yaml'])
     {
         $path = self::composerLockPath();
+        // @todo If we ever need user config of Guzzle, see Behat as a model https://coderwall.com/p/nmtuvw/alter-the-curl-timeout-when-using-behat-mink-extension-and-goutte
         $client = new \GuzzleHttp\Client(['handler' => $this->getStack()]);
         $options = [
             'headers'  => ['Accept' => 'application/json'],
