@@ -14,12 +14,12 @@ use Drush\Commands\DrushCommands;
  *
  * Supports profiling Drush commands using either XHProf or Tideways XHProf.
  *
- * Note that XHProf is only compatible with PHP 5.6. For PHP 7+, you must use
+ * Note that XHProf is compatible with PHP 5.6 and PHP 7+, you could also use
  * the Tideways XHProf fork. The Tideways XHProf extension recently underwent a
  * major refactor; Drush is only compatible with the newer version.
- * @see https://tideways.com/profiler/blog/releasing-new-tideways-xhprof-extension
  *
- * @todo Remove support for XHProf extension once PHP 5.6 is EOL.
+ * @see https://pecl.php.net/package/xhprof
+ * @see https://tideways.com/profiler/blog/releasing-new-tideways-xhprof-extension
  */
 class XhprofCommands extends DrushCommands
 {
@@ -87,20 +87,32 @@ class XhprofCommands extends DrushCommands
 
     /**
      * Determines flags.
-     *
-     * TODO: Make these work for Tideways as well.
      */
     public static function xhprofFlags(array $config)
     {
+        if (extension_loaded('tideways_xhprof')) {
+            $map = [
+                'no-builtins' => TIDEWAYS_XHPROF_FLAGS_NO_BUILTINS,
+                'cpu' => TIDEWAYS_XHPROF_FLAGS_CPU,
+                'memory' => TIDEWAYS_XHPROF_FLAGS_MEMORY,
+            ];
+        } else {
+            $map = [
+                'no-builtins' => XHPROF_FLAGS_NO_BUILTINS,
+                'cpu' => XHPROF_FLAGS_CPU,
+                'memory' => XHPROF_FLAGS_MEMORY,
+            ];
+        }
+
         $flags = 0;
         if (!(isset($config['profile-builtins']) ? $config['profile-builtins']: self::XH_PROFILE_BUILTINS)) {
-            $flags |= XHPROF_FLAGS_NO_BUILTINS;
+            $flags |= $map['no-builtins'];
         }
         if (isset($config['profile-cpu']) ? $config['profile-cpu'] : self::XH_PROFILE_CPU) {
-            $flags |= XHPROF_FLAGS_CPU;
+            $flags |= $map['cpu'];
         }
         if (isset($config['profile-memory']) ? $config['profile-memory'] : self::XH_PROFILE_MEMORY) {
-            $flags |= XHPROF_FLAGS_MEMORY;
+            $flags |= $map['memory'];
         }
         return $flags;
     }
@@ -111,7 +123,7 @@ class XhprofCommands extends DrushCommands
     public static function xhprofEnable($flags)
     {
         if (extension_loaded('tideways_xhprof')) {
-            \tideways_xhprof_enable(TIDEWAYS_XHPROF_FLAGS_MEMORY | TIDEWAYS_XHPROF_FLAGS_CPU);
+            \tideways_xhprof_enable($flags);
         } else {
             \xhprof_enable($flags);
         }
