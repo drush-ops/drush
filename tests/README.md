@@ -1,1 +1,1 @@
-Learn more about Unish, Drush's test suite, at https://www.drush.org/contribute/unish.
+Learn more about Unish, Drush's test suite, at https://www.drush.org/contribute
