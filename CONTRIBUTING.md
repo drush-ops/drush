@@ -7,7 +7,7 @@ Drush is built by people like you! Please [join us](https://github.com/drush-ops
 * Contributions are submitted, reviewed, and accepted using GitHub pull requests.
 * The latest changes are in the `10.x` branch. PR's should initially target this branch.
 * Try to make clean commits that are easily readable (including descriptive commit messages!)
-* See the test-specific [README.md](https://github.com/drush-ops/drush/blob/10.x/tests/README.md) for instructions on running the test suite. Test before you push. Get familiar with Unish, our test suite. Optionally run tests in the provided Docker containers.
+* See the test-specific [README.md](https://github.com/drush-ops/drush/blob/10.x/docs/contribute/unish.md) for instructions on running the test suite. Test before you push. Get familiar with Unish, our test suite. Optionally run tests in the provided Docker containers.
 * We maintain branches named 10.x, 9.x, etc. These are release branches. From these branches, we make new tags for patch and minor versions.
 
 ## Development Environment

@@ -9,7 +9,7 @@ Creating a new Drush command or porting a legacy command is easy. Follow the ste
 1. Drush will then report that it created a commandfile, a drush.services.yml file and a composer.json file. Edit those files as needed.
 1. Use the classes for the core Drush commands at [/src/Drupal/Commands](https://github.com/drush-ops/drush/tree/10.x/src/Drupal/Commands) as inspiration and documentation.
 1. See the [dependency injection docs](dependency-injection.md) for interfaces you can implement to gain access to Drush config, Drupal site aliases, etc.
-1. Write PHPUnit tests based on [Drush Test Traits](https://github.com/drush-ops/drush/tree/10.x/tests#drush-test-traits).
+1. Write PHPUnit tests based on [Drush Test Traits](https://github.com/drush-ops/drush/blob/10.x/docs/contribute/unish.md#drush-test-traits).
 1. Once your two files are ready, run `drush cr` to get your command recognized by the Drupal container.
 
 ## Specifying the Services File
