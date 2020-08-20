@@ -15,6 +15,7 @@ use Drush\Drush;
 use Drush\Utils\StringUtils;
 use Consolidation\AnnotatedCommand\Input\StdinAwareInterface;
 use Consolidation\AnnotatedCommand\Input\StdinAwareTrait;
+use Symfony\Component\Filesystem\Exception\IOException;
 
 /*
  * Interact with Drupal's Cache API.
@@ -286,8 +287,14 @@ class CacheCommands extends DrushCommands implements CustomEventAwareInterface, 
      */
     public static function clearDrush()
     {
-        drush_cache_clear_all(null, 'default'); // commandfiles, etc.
-        drush_cache_clear_all(null, 'factory'); // command info from annotated-command library
+        try {
+            drush_cache_clear_all(null, 'default');// commandfiles, etc.
+            drush_cache_clear_all(null, 'factory'); // command info from annotated-command library
+        } catch (IOException $e) {
+            // Sometimes another process writes files into a bin dir and \Drush\Cache\FileCache::clear fails.
+            // That is not considered an error.
+            Drush::logger()->info($e->getMessage());
+        }
     }
 
     /**

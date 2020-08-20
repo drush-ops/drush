@@ -58,8 +58,6 @@ class DeployCommands extends DrushCommands implements SiteAliasManagerAwareInter
         // It is possible that no updates were pending and thus no caches cleared yet.
         $this->logger()->success("Cache rebuild start.");
         $process = $manager->drush($self, 'cache:rebuild', [], $redispatchOptions);
-        // To avoid occasional rmdir errors, disable Drush cache for this request.
-        $process->setEnv(['DRUSH_PATHS_CACHE_DIRECTORY' => drush_tempdir()]);
         $process->mustRun($process->showRealtime());
     }
 }
