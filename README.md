@@ -13,7 +13,7 @@ Resources
 * [API Documentation](https://www.drush.org/api/10.x)
 * [Drush packages available via Composer](https://packagist.org/search/?type=drupal-drush)
 * [A list of modules that include Drush integration](https://www.drupal.org/project/project_module?f[2]=im_vid_3%3A4654&solrsort=ds_project_latest_release+desc)
-* Drush comes with a [full test suite](https://github.com/drush-ops/drush/blob/10.x/tests/README.md) powered by [PHPUnit](https://github.com/sebastianbergmann/phpunit). Each commit gets tested by our CI bots.
+* Drush comes with a [full test suite](https://github.com/drush-ops/drush/blob/10.x/docs/contribute/unish.md) powered by [PHPUnit](https://github.com/sebastianbergmann/phpunit). Each commit gets tested by our CI bots.
 
 Support
 -----------
@@ -35,10 +35,6 @@ A: The Drupal Shell.
 Some people pronounce the *dru* with a long 'u' like Dr*u*pal. Fidelity points
 go to them, but they are in the minority. Most pronounce Drush so that it
 rhymes with hush, rush, flush, etc. This is the preferred pronunciation.
-
-#### Does Drush have unit tests?
-Drush has an excellent suite of unit tests. See [tests/README.md](https://github.com/drush-ops/drush/blob/10.x/tests/README.md) for more information.
-
 
 Credits
 -----------
