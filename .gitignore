@@ -8,9 +8,9 @@ gh-pages
 mkdocs.yml
 #The Commands site output directory.
 docs/commands
-#The sami output directories
+#The Doctum output directories
 api
-.sami-cache
+.doctum-cache
 # IDE config
 .idea/
 sut/*
