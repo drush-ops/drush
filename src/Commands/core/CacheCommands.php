@@ -87,6 +87,8 @@ class CacheCommands extends DrushCommands implements CustomEventAwareInterface, 
      * @aliases cc,cache-clear
      * @bootstrap max
      * @notify Caches have been cleared.
+     * @usage drush cc bin
+     *   Choose a bin to clear.
      * @usage drush cc bin entity,bootstrap
      *   Clear the entity and bootstrap cache bins.
      */
@@ -103,7 +105,10 @@ class CacheCommands extends DrushCommands implements CustomEventAwareInterface, 
 
         // Do it.
         drush_op($types[$type], $args);
-        $this->logger()->success(dt("'!name' cache was cleared.", ['!name' => $type]));
+        // Avoid double confirm.
+        if ($type !== 'bin') {
+            $this->logger()->success(dt("'!name' cache was cleared.", ['!name' => $type]));
+        }
     }
 
     /**
@@ -117,6 +122,13 @@ class CacheCommands extends DrushCommands implements CustomEventAwareInterface, 
             $choices = array_combine(array_keys($types), array_keys($types));
             $type = $this->io()->choice(dt("Choose a cache to clear"), $choices, 'all');
             $input->setArgument('type', $type);
+        }
+
+        if ($input->getArgument('type') == 'bin' && empty($input->getArgument('args'))) {
+            $bins = Cache::getBins();
+            $choices = array_combine(array_keys($bins), array_keys($bins));
+            $chosen = $this->io()->choice(dt("Choose a cache to clear"), $choices, 'default');
+            $input->setArgument('args', [$chosen]);
         }
     }
 
@@ -305,6 +317,7 @@ class CacheCommands extends DrushCommands implements CustomEventAwareInterface, 
         $bins = StringUtils::csvToArray($args);
         foreach ($bins as $bin) {
             \Drupal::service("cache.$bin")->deleteAll();
+            Drush::logger()->success("$bin cache bin cleared.");
         }
     }
 
