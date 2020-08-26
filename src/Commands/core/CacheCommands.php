@@ -129,7 +129,6 @@ class CacheCommands extends DrushCommands implements CustomEventAwareInterface, 
             $choices = array_combine(array_keys($bins), array_keys($bins));
             $chosen = $this->io()->choice(dt("Choose a cache to clear"), $choices, 'default');
             $input->setArgument('args', [$chosen]);
-
         }
     }
 
