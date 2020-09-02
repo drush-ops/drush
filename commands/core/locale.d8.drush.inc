@@ -24,6 +24,13 @@ function locale_drush_command() {
   $items['locale-check'] = [
     'description' => 'Checks for available translation updates.',
     'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_FULL,
+    'options' => [
+      'projects' => 'A comma delimited list of projects to update. If omitted, all projects will be updated.',
+    ],
+    'examples' => [
+      'drush locale-check' => 'Checks all projects.',
+      'drush locale-check --projects=custom_module,paragraphs' => 'Checks the custom_module and paragraphs projects.',
+    ],
   ];
   $items['locale-update'] = [
     'description' => 'Updates the available translations.',
@@ -46,13 +53,22 @@ function locale_drush_command() {
  *   in Drupal core.
  */
 function drush_locale_check() {
+  // Prepare the projects array.
+  $projects = drush_get_option('projects', []);
+  if (!empty($projects)) {
+    $projects = _convert_csv_to_array(',', $projects);
+
+    // Remove duplicate projects.
+    $projects = array_unique($projects);
+  }
+
   \Drupal::moduleHandler()->loadInclude('locale', 'inc', 'locale.compare');
 
   // Check translation status of all translatable project in all languages.
   // First we clear the cached list of projects. Although not strictly
   // necessary, this is helpful in case the project list is out of sync.
   locale_translation_flush_projects();
-  locale_translation_check_projects();
+  locale_translation_check_projects($projects);
 
   // Execute a batch if required. A batch is only used when remote files
   // are checked.
