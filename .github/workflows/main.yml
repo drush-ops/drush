@@ -60,10 +60,9 @@ jobs:
         run: composer doctum-install
 
       - name: Doctum build
-        # We have Doctum parse errors so ignore return value: https://stackoverflow.com/questions/35452147/allow-non-zero-return-codes-in-travis-ci-yml
         run: |
           rm -rf gh-pages/api
-          composer api || true
+          composer api
 
       - name: Checkout CNAME file
         # It got wiped and its needed.
