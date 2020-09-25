@@ -97,7 +97,7 @@
       "@phpunit",
       "@cs"
     ],
-    "api": "PATH=$HOME/bin:$PATH doctum.phar --ansi update doctum-config.php",
+    "api": "PATH=$HOME/bin:$PATH php doctum.phar --ansi update doctum-config.php",
     "doctum-install": "mkdir -p $HOME/bin && curl --output $HOME/bin/doctum.phar https://doctum.long-term.support/releases/latest/doctum.phar && chmod +x $HOME/bin/doctum.phar",
     "mk:docs": "./drush --uri=dev -v mk:docs --destination=commands/10.x",
     "sut": "./drush --uri=dev",
