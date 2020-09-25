@@ -129,8 +129,8 @@
             "@phpunit",
             "@cs"
         ],
-        "api": "PATH=$HOME/bin:$PATH sami.phar --ansi update sami-config.php",
-        "sami-install": "mkdir -p $HOME/bin && curl --output $HOME/bin/sami.phar http://get.sensiolabs.org/sami.phar && chmod +x $HOME/bin/sami.phar",
+        "api": "PATH=$HOME/bin:$PATH doctum.phar --ansi update doctum-config.php",
+        "doctum-install": "mkdir -p $HOME/bin && curl --output $HOME/bin/doctum.phar https://doctum.long-term.support/releases/latest/doctum.phar && chmod +x $HOME/bin/doctum.phar",
         "sut": "./drush --uri=dev",
         "sut:si": "./drush site:install testing --uri=dev --sites-subdir=dev --db-url=${UNISH_DB_URL:-mysql://root:password@mariadb}/unish_dev -v",
         "phpunit": "php -d sendmail_path='true' vendor/bin/phpunit --colors=always --configuration tests",
