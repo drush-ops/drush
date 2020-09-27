@@ -113,7 +113,7 @@ function drush_batch_command($id) {
  *   A return array. The callers only care about the finished marker and an #abort on an operation.
  *
  */
-function _drush_backend_batch_process($command = 'batch-process', $args, $options) {
+function _drush_backend_batch_process($command = 'batch-process', $args = [], $options = []) {
   $result = NULL;
 
   $batch =& batch_get();
