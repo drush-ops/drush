@@ -123,7 +123,7 @@ jobs:
       - checkout
       - run: cp .docker/zz-php.ini /usr/local/etc/php/conf.d/
       # Address out-of-memory error.
-      - run: composer self-update --preview
+      - run: sudo -H composer self-update --preview
       # We test with 9.0.0 so that \Unish\SecurityUpdatesTest can find an insecure drupal/core.
       # Remove that assertion once testing with 9.0.0 becomes stale.
       - run: composer require --dev drupal/core-recommended:9.0.0 --no-update
