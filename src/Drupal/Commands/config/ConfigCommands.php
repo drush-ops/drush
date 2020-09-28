@@ -41,6 +41,11 @@ class ConfigCommands extends DrushCommands implements StdinAwareInterface, SiteA
     protected $configStorageExport;
 
     /**
+     * @var \Drupal\Core\Config\ImportStorageTransformer
+     */
+    protected $importStorageTransformer;
+
+    /**
      * @return ConfigFactoryInterface
      */
     public function getConfigFactory()
@@ -78,6 +83,30 @@ class ConfigCommands extends DrushCommands implements StdinAwareInterface, SiteA
             return $this->configStorageExport;
         }
         return $this->configStorage;
+    }
+
+    /**
+     * @param \Drupal\Core\Config\ImportStorageTransformer $importStorageTransformer
+     */
+    public function setImportTransformer($importStorageTransformer)
+    {
+        $this->importStorageTransformer = $importStorageTransformer;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasImportTransformer()
+    {
+        return isset($this->importStorageTransformer);
+    }
+
+    /**
+     * @return \Drupal\Core\Config\ImportStorageTransformer
+     */
+    public function getImportTransformer()
+    {
+        return $this->importStorageTransformer;
     }
 
     /**
@@ -369,10 +398,11 @@ class ConfigCommands extends DrushCommands implements StdinAwareInterface, SiteA
      */
     public function getChanges($target_storage)
     {
-        /** @var StorageInterface $active_storage */
-        $active_storage = $this->getConfigStorageExport();
+        if ($this->hasImportTransformer()) {
+            $target_storage = $this->getImportTransformer()->transform($target_storage);
+        }
 
-        $config_comparer = new StorageComparer($active_storage, $target_storage, \Drupal::service('config.manager'));
+        $config_comparer = new StorageComparer($this->configStorage, $target_storage);
 
         $change_list = [];
         if ($config_comparer->createChangelist()->hasChanges()) {
