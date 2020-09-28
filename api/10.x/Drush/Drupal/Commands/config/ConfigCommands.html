@@ -191,6 +191,14 @@
                 <td class="last"></td>
                 <td></td>
             </tr>
+                    <tr>
+                <td class="type" id="property_importStorageTransformer">
+                                        protected                                        <abbr title="Drupal\Core\Config\ImportStorageTransformer">ImportStorageTransformer</abbr>
+                </td>
+                <td>$importStorageTransformer</td>
+                <td class="last"></td>
+                <td></td>
+            </tr>
             </table>
 
     
@@ -348,6 +356,39 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                 </div>
                 <div class="col-md-8 type">
                     <a href="#method_getConfigStorageExport">getConfigStorageExport</a>()
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_setImportTransformer">setImportTransformer</a>(<abbr title="Drupal\Core\Config\ImportStorageTransformer">ImportStorageTransformer</abbr> $importStorageTransformer)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    bool
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_hasImportTransformer">hasImportTransformer</a>()
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    <abbr title="Drupal\Core\Config\ImportStorageTransformer">ImportStorageTransformer</abbr>
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_getImportTransformer">getImportTransformer</a>()
         
                                             <p class="no-description">No description</p>
                                     </div>
@@ -546,7 +587,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </div>
                     <div class="method-item">
                     <h3 id="method___construct">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Commands/config/ConfigCommands.php#L57">at line 57</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Commands/config/ConfigCommands.php#L62">at line 62</a></div>
         <code>                    
     <strong>__construct</strong>(ConfigFactoryInterface $configFactory, <abbr title="Drupal\Core\Config\StorageInterface">StorageInterface</abbr> $configStorage)
         </code>
@@ -882,7 +923,7 @@ default browser could not be found.</td>
             </div>
                     <div class="method-item">
                     <h3 id="method_getConfigFactory">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Commands/config/ConfigCommands.php#L46">at line 46</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Commands/config/ConfigCommands.php#L51">at line 51</a></div>
         <code>                    ConfigFactoryInterface
     <strong>getConfigFactory</strong>()
         </code>
@@ -910,7 +951,7 @@ default browser could not be found.</td>
             </div>
                     <div class="method-item">
                     <h3 id="method_setExportStorage">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Commands/config/ConfigCommands.php#L67">at line 67</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Commands/config/ConfigCommands.php#L72">at line 72</a></div>
         <code>                    
     <strong>setExportStorage</strong>(<abbr title="Drupal\Core\Config\StorageInterface">StorageInterface</abbr> $exportStorage)
         </code>
@@ -939,7 +980,7 @@ default browser could not be found.</td>
             </div>
                     <div class="method-item">
                     <h3 id="method_getConfigStorageExport">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Commands/config/ConfigCommands.php#L75">at line 75</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Commands/config/ConfigCommands.php#L80">at line 80</a></div>
         <code>                    StorageInterface
     <strong>getConfigStorageExport</strong>()
         </code>
@@ -966,8 +1007,93 @@ default browser could not be found.</td>
 
             </div>
                     <div class="method-item">
-                    <h3 id="method_get">
+                    <h3 id="method_setImportTransformer">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Commands/config/ConfigCommands.php#L91">at line 91</a></div>
+        <code>                    
+    <strong>setImportTransformer</strong>(<abbr title="Drupal\Core\Config\ImportStorageTransformer">ImportStorageTransformer</abbr> $importStorageTransformer)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Drupal\Core\Config\ImportStorageTransformer">ImportStorageTransformer</abbr></td>
+                <td>$importStorageTransformer</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_hasImportTransformer">
         <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Commands/config/ConfigCommands.php#L99">at line 99</a></div>
+        <code>                    bool
+    <strong>hasImportTransformer</strong>()
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>bool</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getImportTransformer">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Commands/config/ConfigCommands.php#L107">at line 107</a></div>
+        <code>                    <abbr title="Drupal\Core\Config\ImportStorageTransformer">ImportStorageTransformer</abbr>
+    <strong>getImportTransformer</strong>()
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><abbr title="Drupal\Core\Config\ImportStorageTransformer">ImportStorageTransformer</abbr></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_get">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Commands/config/ConfigCommands.php#L128">at line 128</a></div>
         <code>                    
     <strong>get</strong>($config_name, $key = &#039;&#039;, $options = [&#039;format&#039; =&gt; &#039;yaml&#039;, &#039;source&#039; =&gt; &#039;active&#039;, &#039;include-overridden&#039; =&gt; false])
         </code>
@@ -1008,7 +1134,7 @@ default browser could not be found.</td>
             </div>
                     <div class="method-item">
                     <h3 id="method_set">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Commands/config/ConfigCommands.php#L125">at line 125</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Commands/config/ConfigCommands.php#L154">at line 154</a></div>
         <code>                    
     <strong>set</strong>($config_name, $key, $value = null, $options = [&#039;input-format&#039; =&gt; &#039;string&#039;, &#039;value&#039; =&gt; self::REQ])
         </code>
@@ -1054,7 +1180,7 @@ default browser could not be found.</td>
             </div>
                     <div class="method-item">
                     <h3 id="method_edit">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Commands/config/ConfigCommands.php#L189">at line 189</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Commands/config/ConfigCommands.php#L218">at line 218</a></div>
         <code>                    
     <strong>edit</strong>($config_name, $options = [])
         </code>
@@ -1090,7 +1216,7 @@ default browser could not be found.</td>
             </div>
                     <div class="method-item">
                     <h3 id="method_delete">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Commands/config/ConfigCommands.php#L231">at line 231</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Commands/config/ConfigCommands.php#L260">at line 260</a></div>
         <code>                    
     <strong>delete</strong>($config_name, $key = null)
         </code>
@@ -1126,7 +1252,7 @@ default browser could not be found.</td>
             </div>
                     <div class="method-item">
                     <h3 id="method_status">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Commands/config/ConfigCommands.php#L267">at line 267</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Commands/config/ConfigCommands.php#L296">at line 296</a></div>
         <code>                    <abbr title="Consolidation\OutputFormatters\StructuredData\RowsOfFields">RowsOfFields</abbr>
     <strong>status</strong>($options = [&#039;state&#039; =&gt; &#039;Only in DB,Only in sync dir,Different&#039;, &#039;prefix&#039; =&gt; self::REQ, &#039;label&#039; =&gt; self::REQ])
         </code>
@@ -1166,7 +1292,7 @@ default browser could not be found.</td>
             </div>
                     <div class="method-item">
                     <h3 id="method_getDirectory">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Commands/config/ConfigCommands.php#L347">at line 347</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Commands/config/ConfigCommands.php#L376">at line 376</a></div>
         <code>        static            
     <strong>getDirectory</strong>(string $label, string $directory = null)
         </code>
@@ -1205,7 +1331,7 @@ default browser could not be found.</td>
             </div>
                     <div class="method-item">
                     <h3 id="method_getChanges">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Commands/config/ConfigCommands.php#L370">at line 370</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Commands/config/ConfigCommands.php#L399">at line 399</a></div>
         <code>                    
     <strong>getChanges</strong>($target_storage)
         </code>
@@ -1236,7 +1362,7 @@ default browser could not be found.</td>
             </div>
                     <div class="method-item">
                     <h3 id="method_getStorage">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Commands/config/ConfigCommands.php#L389">at line 389</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Commands/config/ConfigCommands.php#L419">at line 419</a></div>
         <code>                    
     <strong>getStorage</strong>($directory)
         </code>
@@ -1267,7 +1393,7 @@ default browser could not be found.</td>
             </div>
                     <div class="method-item">
                     <h3 id="method_configChangesTable">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Commands/config/ConfigCommands.php#L406">at line 406</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Commands/config/ConfigCommands.php#L436">at line 436</a></div>
         <code>        static            Table
     <strong>configChangesTable</strong>(array $config_changes, <abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr> $output, $use_color = true)
         </code>
@@ -1317,7 +1443,7 @@ default browser could not be found.</td>
             </div>
                     <div class="method-item">
                     <h3 id="method_interactConfigName">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Commands/config/ConfigCommands.php#L449">at line 449</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Commands/config/ConfigCommands.php#L479">at line 479</a></div>
         <code>                    
     <strong>interactConfigName</strong>($input, $output)
         </code>
@@ -1351,7 +1477,7 @@ default browser could not be found.</td>
             </div>
                     <div class="method-item">
                     <h3 id="method_interactConfigLabel">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Commands/config/ConfigCommands.php#L461">at line 461</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Commands/config/ConfigCommands.php#L491">at line 491</a></div>
         <code>                    
     <strong>interactConfigLabel</strong>(<abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr> $input, <abbr title="Symfony\Component\Console\Output\ConsoleOutputInterface">ConsoleOutputInterface</abbr> $output)
         </code>
@@ -1385,7 +1511,7 @@ default browser could not be found.</td>
             </div>
                     <div class="method-item">
                     <h3 id="method_validateConfigName">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Commands/config/ConfigCommands.php#L491">at line 491</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Commands/config/ConfigCommands.php#L521">at line 521</a></div>
         <code>                    <abbr title="Consolidation\AnnotatedCommand\CommandError">CommandError</abbr>|null
     <strong>validateConfigName</strong>(<abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr> $commandData)
         </code>
@@ -1426,7 +1552,7 @@ argument name as the value of the annotation.</p>                            </d
             </div>
                     <div class="method-item">
                     <h3 id="method_copyConfig">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Commands/config/ConfigCommands.php#L510">at line 510</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Commands/config/ConfigCommands.php#L540">at line 540</a></div>
         <code>        static            
     <strong>copyConfig</strong>(<abbr title="Drupal\Core\Config\StorageInterface">StorageInterface</abbr> $source, <abbr title="Drupal\Core\Config\StorageInterface">StorageInterface</abbr> $destination)
         </code>
@@ -1462,7 +1588,7 @@ argument name as the value of the annotation.</p>                            </d
             </div>
                     <div class="method-item">
                     <h3 id="method_getDiff">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Commands/config/ConfigCommands.php#L544">at line 544</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Commands/config/ConfigCommands.php#L574">at line 574</a></div>
         <code>        static            array|bool
     <strong>getDiff</strong>(<abbr title="Drupal\Core\Config\StorageInterface">StorageInterface</abbr> $destination_storage, <abbr title="Drupal\Core\Config\StorageInterface">StorageInterface</abbr> $source_storage, <abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr> $output)
         </code>
