@@ -1,6 +1,6 @@
 <?php
 
-namespace Drush\CommandFiles\Core;
+namespace Drush\CommandFiles\core;
 
 class BrowseCommands {
 
