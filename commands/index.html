@@ -418,6 +418,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#symfony-console-commands" class="md-nav__link">
+    Symfony Console Commands
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#site-wide-drush-commands" class="md-nav__link">
     Site-Wide Drush Commands
   </a>
@@ -2495,6 +2502,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#symfony-console-commands" class="md-nav__link">
+    Symfony Console Commands
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#site-wide-drush-commands" class="md-nav__link">
     Site-Wide Drush Commands
   </a>
@@ -2573,6 +2587,8 @@ In this example, the file <code>drush-9-99.services.yml</code> loads commandfile
 <li>Along with the alter code, it's strongly recommended to log a debug message explaining what exactly was altered. This makes things easier on others who may need to debug the interaction of the alter code with other modules. Also it's a good practice to inject the the logger in the class constructor.</li>
 </ol>
 <p>For an example, see the alterer class provided by the testing 'woot' module: <code>tests/functional/resources/modules/d8/woot/src/WootCommandInfoAlterer.php</code>.</p>
+<h2 id="symfony-console-commands">Symfony Console Commands<a class="headerlink" href="#symfony-console-commands" title="Permanent link">&para;</a></h2>
+<p>Drush lists and runs Symfony Console commands, in addition to more typical annotated commands. See <a href="https://github.com/drush-ops/drush/blob/eed106ae4510d5a2df89f8e7fd54b41ffb0aa5fa/tests/integration/AnnotatedCommandCase.php#L178-L180">this test</a> and this <a href="https://github.com/drush-ops/drush/blob/049d2a4b36338178c0c7cf89b8e7caf9769524c9/tests/functional/resources/modules/d8/woot/src/Commands/GreetCommand.php">commandfile</a>. </p>
 <h2 id="site-wide-drush-commands">Site-Wide Drush Commands<a class="headerlink" href="#site-wide-drush-commands" title="Permanent link">&para;</a></h2>
 <p>Commandfiles that are installed in a Drupal site and are not bundled inside a Drupal module are called 'site-wide' commandfiles. Site-wide commands may either be added directly to the Drupal site's repository (e.g. for site-specific policy files), or via <code>composer require</code>. See the <a href="https://github.com/drush-ops/drush/tree/10.x/examples/Commands">examples/Commands</a> folder for examples. In general, it's better to use modules to carry your Drush commands, as module-based commands may <a href="#specifying-the-services-file">participate in Drupal's dependency injection via the drush.services.yml</a>.</p>
 <p>If you still prefer using site-wide commandfiles, here are some examples of valid commandfile names and namespaces:</p>
