@@ -116,6 +116,6 @@
       "sut/profiles/contrib/{$name}": ["type:drupal-profile"],
       "sut/themes/contrib/{$name}": ["type:drupal-theme"],
       "sut/drush/contrib/{$name}": ["type:drupal-drush"]
-    },
+    }
   }
 }
