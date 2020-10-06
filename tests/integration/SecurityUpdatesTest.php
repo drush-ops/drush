@@ -16,7 +16,7 @@ class SecurityUpdatesTest extends UnishIntegrationTestCase
     public function testInsecureDrupalPackage()
     {
         list($expected_package, $expected_version) = $this->isDrupalGreaterThanOrEqualTo('9.0.0') ? ['drupal/semver_example', '2.2.0'] : ['drupal/alinks', '1.0.0'];
-        $this->drush('pm:security', [], ['format' => 'json'], self::EXIT_ERROR);
+        $this->drush('pm:security', [], ['format' => 'json'], self::EXIT_ERROR_WITH_CLARITY);
         $this->assertContains('One or more of your dependencies has an outstanding security update.', $this->getErrorOutput());
         $this->assertContains("$expected_package", $this->getErrorOutput());
         $security_advisories = $this->getOutputFromJSON();
@@ -37,7 +37,7 @@ class SecurityUpdatesTest extends UnishIntegrationTestCase
      */
     public function testInsecurePhpPackage()
     {
-        $this->drush('pm:security-php', [], ['format' => 'json'], self::EXIT_ERROR);
+        $this->drush('pm:security-php', [], ['format' => 'json'], self::EXIT_ERROR_WITH_CLARITY);
         $this->assertContains('One or more of your dependencies has an outstanding security update.', $this->getErrorOutput());
         $this->assertContains('Run composer why david-garcia/phpwhois', $this->getErrorOutput());
         $security_advisories = $this->getOutputFromJSON();

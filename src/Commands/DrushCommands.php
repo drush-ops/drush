@@ -30,6 +30,8 @@ abstract class DrushCommands implements IOAwareInterface, LoggerAwareInterface, 
     // Common exit codes.
     const EXIT_SUCCESS = 0;
     const EXIT_FAILURE = 1;
+    // Used to signal that the command completed successfully, but we still want to indicate a failure to the caller.
+    const EXIT_FAILURE_WITH_CLARITY = 3;
 
     use LoggerAwareTrait;
     use ConfigAwareTrait;

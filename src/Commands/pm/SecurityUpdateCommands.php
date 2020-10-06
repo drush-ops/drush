@@ -65,7 +65,7 @@ class SecurityUpdateCommands extends DrushCommands
         $updates = $this->calculateSecurityUpdates($composer_lock_data, $security_advisories_composer_json);
         if ($updates) {
             $this->suggestComposerCommand($updates);
-            return CommandResult::dataWithExitCode(new RowsOfFields($updates), self::EXIT_FAILURE);
+            return CommandResult::dataWithExitCode(new RowsOfFields($updates), self::EXIT_FAILURE_WITH_CLARITY);
         } else {
             $this->logger()->success("<info>There are no outstanding security updates for Drupal projects.</info>");
         }
@@ -183,7 +183,7 @@ class SecurityUpdateCommands extends DrushCommands
             $suggested_command = "composer why " . implode(' && composer why ', array_keys($packages));
             $this->logger()->warning('One or more of your dependencies has an outstanding security update.');
             $this->logger()->notice("Run <comment>$suggested_command</comment> to learn what module requires the package.");
-            return CommandResult::dataWithExitCode(new UnstructuredData($packages), self::EXIT_FAILURE);
+            return CommandResult::dataWithExitCode(new UnstructuredData($packages), self::EXIT_FAILURE_WITH_CLARITY);
         }
         $this->logger()->success("There are no outstanding security updates for your dependencies.");
     }
