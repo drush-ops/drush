@@ -15,7 +15,7 @@ abstract class UnishTestCase extends TestCase
     // Unix exit codes.
     const EXIT_SUCCESS  = 0;
     const EXIT_ERROR = 1;
-    const EXIT_ERROR_WITH_CLARITY = 1;
+    const EXIT_ERROR_WITH_CLARITY = 3;
     const UNISH_EXITCODE_USER_ABORT = 75; // Same as DRUSH_EXITCODE_USER_ABORT
     const INTEGRATION_TEST_ENV = 'default';
 
