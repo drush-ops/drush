@@ -33,8 +33,7 @@ jobs:
   code_style:
     <<: *defaults
     docker:
-      # -dev needed as long as composer2 is not stable.
-      - image: wodby/php:7.1-dev
+      - image: wodby/php:7.1
     steps:
       - checkout
       - run: cp .docker/zz-php.ini /usr/local/etc/php/conf.d/
@@ -57,7 +56,8 @@ jobs:
   test_71_mysql:
     <<: *defaults
     docker:
-      - image: wodby/php:7.1
+      # -dev needed as long as composer2 is not stable.
+      - image: wodby/php:7.1-dev
         environment:
           - MYSQL_HOST=127.0.0.1
           - UNISH_DB_URL=mysql://root:@127.0.0.1
@@ -76,7 +76,7 @@ jobs:
   test_71_postgres:
     <<: *defaults
     docker:
-      - image: wodby/php:7.1
+      - image: wodby/php:7.1-dev
         environment:
           - UNISH_DB_URL=pgsql://unish:unish@127.0.0.1
       - image: wodby/postgres:10.5
@@ -94,7 +94,7 @@ jobs:
     environment:
       SYMFONY_DEPRECATIONS_HELPER: enabled
     docker:
-      - image: wodby/php:7.2
+      - image: wodby/php:7.2-dev
         environment:
           - MYSQL_HOST=127.0.0.1
           - UNISH_DB_URL=mysql://root:@127.0.0.1
@@ -117,7 +117,7 @@ jobs:
   test_73_drupal90:
     <<: *defaults
     docker:
-      - image: wodby/php:7.3
+      - image: wodby/php:7.3-dev
         environment:
           - MYSQL_HOST=127.0.0.1
           - UNISH_DB_URL=mysql://root:@127.0.0.1
