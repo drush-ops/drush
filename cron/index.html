@@ -2559,11 +2559,9 @@
 <p>If you just want to get started quickly, here is a crontab entry that will run cron once every hour at ten minutes after the hour:</p>
 <div class="highlight"><pre><span></span><code>10 * * * * cd [DOCROOT] &amp;&amp; /usr/bin/env PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin COLUMNS=72 ../vendor/bin/drush --uri=your.drupalsite.org --quiet cron
 </code></pre></div>
-
 <p>You should set up crontab to run your cron tasks as the same user that runs the web server; for example, if you run your web server as the user www-data:</p>
 <div class="highlight"><pre><span></span><code>sudo crontab -u www-data -e
 </code></pre></div>
-
 <p>You might need to edit the crontab entry shown above slightly for your particular setup; for example, if you have installed Drush to some directory other than /usr/local/drush, then you will need to adjust the path to drush appropriately. We'll break down the meaning of each section of the crontab entry in the documentation that continues below.</p>
 <h2 id="setting-the-schedule">Setting the schedule<a class="headerlink" href="#setting-the-schedule" title="Permanent link">&para;</a></h2>
 <p>See <code>man 5 crontab</code> for information on how to format the information in a crontab entry. In the example above, the schedule for the crontab is set by the string <code>10 * * * *</code>. These fields are the minute, hour, day of month, month and day of week; <code>*</code> means essentially 'all values', so <code>10 * * * *</code> will run any time the minute == 10 (once every hour).</p>
@@ -2571,7 +2569,6 @@
 <p>We use /usr/bin/env to run Drush so that we can set up some necessary environment variables that Drush needs to execute. By default, cron will run each command with an empty PATH, which would not work well with Drush. To find out what your PATH needs to be, just type:</p>
 <div class="highlight"><pre><span></span><code>echo $PATH
 </code></pre></div>
-
 <p>Take the value that is output and place it into your crontab entry in the place of the one shown above. You can remove any entry that is known to not be of interest to Drush (e.g. /usr/games), or is only useful in a graphic environment (e.g. /usr/X11/bin).</p>
 <h2 id="setting-columns">Setting COLUMNS<a class="headerlink" href="#setting-columns" title="Permanent link">&para;</a></h2>
 <p>When running Drush in a terminal, the number of columns will be automatically determined by Drush by way of the tput command, which queries the active terminal to determine what the width of the screen is. When running Drush from cron, there will not be any terminal set, and the call to tput will produce an error message. Spurious error messages are undesirable, as cron is often configured to send email whenever any output is produced, so it is important to make an effort to insure that successful runs of cron complete with no output.</p>

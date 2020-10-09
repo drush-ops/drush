@@ -2496,20 +2496,16 @@
                 <p>Drush can be run in your shell by typing <code>drush</code> from within your project root directory or anywhere within Drupal.</p>
 <div class="highlight"><pre><span></span><code>$ drush [options] &lt;command&gt; [argument1] [argument2]
 </code></pre></div>
-
 <p>Use the <a href="../commands/10.x/help/">help command</a> to get a list of available options and commands:</p>
 <div class="highlight"><pre><span></span><code>$ drush help pm:list
 </code></pre></div>
-
 <p>For even more documentation, use the <a href="../commands/10.x/core_topic/">topic command</a>:</p>
 <div class="highlight"><pre><span></span><code>$ drush topic
 </code></pre></div>
-
 <h2 id="using-the-uri-option-and-root-options">Using the --uri option and --root options.<a class="headerlink" href="#using-the-uri-option-and-root-options" title="Permanent link">&para;</a></h2>
 <p>For multi-site installations, use a site alias or the --uri option to target a particular site.</p>
 <div class="highlight"><pre><span></span><code>$ drush --uri=http://example.com pm:enable
 </code></pre></div>
-
 <p>If you are outside the Composer project and not using a site alias, you need to specify --root and --uri for Drush to locate and bootstrap the right Drupal site.</p>
 <h2 id="site-aliases">Site Aliases<a class="headerlink" href="#site-aliases" title="Permanent link">&para;</a></h2>
 <p>Drush lets you run commands on a remote server. Once defined, aliases can be referenced with the @ nomenclature, i.e.</p>
@@ -2520,7 +2516,6 @@ $ drush rsync @staging:%files/ @live:%files
 <span class="c1"># Synchronize database from production to local, excluding the cache table</span>
 $ drush sql:sync --structure-tables-key<span class="o">=</span>custom @live @self
 </code></pre></div>
-
 <p>See <a href="https://raw.githubusercontent.com/drush-ops/drush/10.x/examples/example.site.yml">example.site.yml</a> for more information.</p>
                 
               

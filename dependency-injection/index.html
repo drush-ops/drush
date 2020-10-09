@@ -2565,7 +2565,6 @@ See the <a href="https://www.drupal.org/docs/8/api/services-and-dependency-injec
   <span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
-
 <p>All Drush command files extend DrushCommands. DrushCommands implements ConfigAwareInterface, IOAwareInterface, LoggerAwareInterface, which gives access to <code>$this-&gt;getConfig()</code>, <code>$this-&gt;logger()</code> and other ways to do input and output. See the <a href="../io/">IO documentation</a> for more information.</p>
 <p>Any additional services that are desired must be injected by implementing the appropriate inflection interface.</p>
 <p>Additional Interfaces:</p>
