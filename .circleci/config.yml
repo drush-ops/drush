@@ -118,10 +118,10 @@ jobs:
         environment:
           - MYSQL_HOST=127.0.0.1
           - UNISH_DB_URL=mysql://root:@127.0.0.1
-          - COMPOSER_MEMORY_LIMIT=-1
       - image: circleci/mysql:5.7.24
     steps:
       - checkout
+      - run: sudo -H composer self-update --preview
       - run: cp .docker/zz-php.ini /usr/local/etc/php/conf.d/
       # We test with 9.0.0 so that \Unish\SecurityUpdatesTest can find an insecure drupal/core.
       # Remove that assertion once testing with 9.0.0 becomes stale.
