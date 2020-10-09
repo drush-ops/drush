@@ -17,7 +17,7 @@ test_71_steps: &test71steps
   steps:
     - checkout
     - run: cp .docker/zz-php.ini /usr/local/etc/php/conf.d/
-    - run: composer self-update --preview
+    - run: sudo composer self-update --preview
     - run: composer install -n
     - run: composer lint
     - run: composer unit
@@ -33,7 +33,8 @@ jobs:
   code_style:
     <<: *defaults
     docker:
-      - image: wodby/php:7.1
+      # -dev needed as long as composer2 is not stable.
+      - image: wodby/php:7.1-dev
     steps:
       - checkout
       - run: cp .docker/zz-php.ini /usr/local/etc/php/conf.d/
@@ -101,7 +102,7 @@ jobs:
     steps:
       - checkout
       - run: cp .docker/zz-php.ini /usr/local/etc/php/conf.d/
-      - run: composer self-update --preview
+      - run: sudo composer self-update --preview
       - run: composer require --dev drupal/core-recommended:8.9.x-dev --no-update
       - run: composer config platform.php 7.2
       - run: composer update --no-scripts
@@ -123,7 +124,7 @@ jobs:
       - image: circleci/mysql:5.7.24
     steps:
       - checkout
-      - run: composer self-update --preview
+      - run: sudo composer self-update --preview
       - run: cp .docker/zz-php.ini /usr/local/etc/php/conf.d/
       # We test with 9.0.0 so that \Unish\SecurityUpdatesTest can find an insecure drupal/core.
       # Remove that assertion once testing with 9.0.0 becomes stale.
