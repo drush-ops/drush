@@ -239,7 +239,7 @@ EOT;
     public static function argToArray(InputArgument $arg): iterable
     {
         return [
-            'name' => '--' . $arg->getName(),
+            'name' => $arg->getName(),
             'is_array' => $arg->isArray(),
             'is_required' => $arg->isRequired(),
         ];
