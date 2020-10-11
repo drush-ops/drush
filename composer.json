@@ -45,7 +45,7 @@
     "psr/log": "~1.0",
     "psy/psysh": "~0.6",
     "symfony/event-dispatcher": "^3.4 || ^4.0",
-    "symfony/finder": "^3.4 || ^4.0",
+    "symfony/finder": "^3.4 || ^4.0 || ^5",
     "symfony/var-dumper": "^3.4 || ^4.0 || ^5.0",
     "symfony/yaml": "^3.4 || ^4.0",
     "webflo/drupal-finder": "^1.2",
