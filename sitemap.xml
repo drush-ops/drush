@@ -124,10 +124,6 @@
      <lastmod>2020-10-11</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
-     <loc>http://www.drush.org/commands/10.x/deploy/</loc>
-     <lastmod>2020-10-11</lastmod>
-     <changefreq>daily</changefreq>
-    </url><url>
      <loc>http://www.drush.org/commands/10.x/drupal_directory/</loc>
      <lastmod>2020-10-11</lastmod>
      <changefreq>daily</changefreq>
@@ -153,14 +149,6 @@
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://www.drush.org/commands/10.x/runserver/</loc>
-     <lastmod>2020-10-11</lastmod>
-     <changefreq>daily</changefreq>
-    </url><url>
-     <loc>http://www.drush.org/commands/10.x/updatedb/</loc>
-     <lastmod>2020-10-11</lastmod>
-     <changefreq>daily</changefreq>
-    </url><url>
-     <loc>http://www.drush.org/commands/10.x/updatedb_status/</loc>
      <lastmod>2020-10-11</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
@@ -245,6 +233,10 @@
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://www.drush.org/commands/10.x/core_topic/</loc>
+     <lastmod>2020-10-11</lastmod>
+     <changefreq>daily</changefreq>
+    </url><url>
+     <loc>http://www.drush.org/commands/10.x/deploy/</loc>
      <lastmod>2020-10-11</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
@@ -429,6 +421,14 @@
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://www.drush.org/commands/10.x/twig_unused/</loc>
+     <lastmod>2020-10-11</lastmod>
+     <changefreq>daily</changefreq>
+    </url><url>
+     <loc>http://www.drush.org/commands/10.x/updatedb/</loc>
+     <lastmod>2020-10-11</lastmod>
+     <changefreq>daily</changefreq>
+    </url><url>
+     <loc>http://www.drush.org/commands/10.x/updatedb_status/</loc>
      <lastmod>2020-10-11</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
