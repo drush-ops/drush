@@ -2629,7 +2629,9 @@
                 
                 <h1 id="pmsecurity-php">pm:security-php<a class="headerlink" href="#pmsecurity-php" title="Permanent link">&para;</a></h1>
 <p>Check non-Drupal PHP packages for pending security updates.</p>
-<p>Packages are discovered via composer.lock file. Thanks to <a href="https://github.com/FriendsOfPHP/security-advisories">https://github.com/FriendsOfPHP/security-advisories</a>
+<p>Packages are discovered via composer.lock file. An exit code of 3
+indicates that the check completed, and insecure packages were found.</p>
+<p>Thanks to <a href="https://github.com/FriendsOfPHP/security-advisories">https://github.com/FriendsOfPHP/security-advisories</a>
 and Symfony for providing this service.</p>
 <h4 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h4>
 <ul>

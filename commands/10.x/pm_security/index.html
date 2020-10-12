@@ -2644,7 +2644,7 @@
                 <h1 id="pmsecurity">pm:security<a class="headerlink" href="#pmsecurity" title="Permanent link">&para;</a></h1>
 <p>Check Drupal Composer packages for pending security updates.</p>
 <p>This uses the <a href="https://github.com/drupal-composer/drupal-security-advisories">Drupal security advisories package</a> to determine if updates
-are available.</p>
+are available. An exit code of 3 indicates that the check completed, and insecure packages were found.</p>
 <h4 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h4>
 <ul>
 <li><code>drush pm:security --format=json</code>. Get security data in JSON format.</li>

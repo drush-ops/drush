@@ -646,7 +646,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
 
                     <div class="method-description">
                                     <p>Check Drupal Composer packages for pending security updates.</p>                    <p>This uses the <a href="https://github.com/drupal-composer/drupal-security-advisories">Drupal security advisories package</a> to determine if updates
-are available.</p>                            </div>
+are available. An exit code of 3 indicates that the check completed, and insecure packages were found.</p>                            </div>
                 <div class="tags">
             
                             <h4>Return Value</h4>
@@ -829,7 +829,7 @@ are available.</p>                            </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_securityPhp">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Commands/pm/SecurityUpdateCommands.php#L169">at line 169</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Commands/pm/SecurityUpdateCommands.php#L172">at line 172</a></div>
         <code>                    UnstructuredData
     <strong>securityPhp</strong>(array $options = [&#039;format&#039; =&gt; &#039;yaml&#039;])
         </code>
@@ -839,7 +839,10 @@ are available.</p>                            </div>
     
 
                     <div class="method-description">
-                                    <p>Check non-Drupal PHP packages for pending security updates.</p>                    <p>Packages are discovered via composer.lock file. Thanks to https://github.com/FriendsOfPHP/security-advisories
+                                    <p>Check non-Drupal PHP packages for pending security updates.</p>                    <p>Packages are discovered via composer.lock file. An exit code of 3
+indicates that the check completed, and insecure packages were found.</p>
+
+<p>Thanks to https://github.com/FriendsOfPHP/security-advisories
 and Symfony for providing this service.</p>                            </div>
                 <div class="tags">
                             <h4>Parameters</h4>
