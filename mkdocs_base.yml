@@ -13,7 +13,7 @@ theme:
     scheme: preference
   features:
     - navigation.tabs
-site_url: http://www.drush.org
+site_url: https://www.drush.org/
 repo_url: https://github.com/drush-ops/drush
 #Overridden on many pages via edit_uri plugin. See front matter.
 edit_uri: blob/10.x/docs
