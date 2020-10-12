@@ -38,7 +38,7 @@ class SecurityUpdateCommands extends DrushCommands
      * Check Drupal Composer packages for pending security updates.
      *
      * This uses the [Drupal security advisories package](https://github.com/drupal-composer/drupal-security-advisories) to determine if updates
-     * are available.
+     * are available. An exit code of 3 indicates that the check completed, and insecure packages were found.
      *
      * @command pm:security
      * @aliases sec,pm-security
@@ -150,7 +150,10 @@ class SecurityUpdateCommands extends DrushCommands
     /**
      * Check non-Drupal PHP packages for pending security updates.
      *
-     * Packages are discovered via composer.lock file. Thanks to https://github.com/FriendsOfPHP/security-advisories
+     * Packages are discovered via composer.lock file. An exit code of 3
+     * indicates that the check completed, and insecure packages were found.
+     *
+     * Thanks to https://github.com/FriendsOfPHP/security-advisories
      * and Symfony for providing this service.
      *
      * @param array $options
