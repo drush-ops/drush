@@ -513,6 +513,9 @@ function _drush_preflight_root_uri() {
  */
 function _drush_preflight_uri() {
   $uri = drush_get_option('uri', '');
+  if (empty($uri) && getenv('DRUSH_OPTIONS_URI')) {
+    $uri = getenv('DRUSH_OPTIONS_URI');
+  }
   drush_set_context('DRUSH_SELECTED_URI', $uri);
 }
 
