@@ -105,7 +105,7 @@ jobs:
       - run: sudo composer self-update --preview
       - run: composer require --dev drupal/core-recommended:8.9.x-dev --no-update
       - run: php --version
-      - run: composer config platform.php 7.2.24
+      - run: composer config platform.php 7.2.34
       - run: composer update
       - run: composer lint
       - run: composer unit
@@ -131,7 +131,7 @@ jobs:
       - run: composer remove --dev drupal/alinks --no-update
       - run: composer require --dev drupal/semver_example:2.2.0 --no-update
       - run: php --version
-      - run: composer config platform.php 7.3.12
+      - run: composer config platform.php 7.3.23
       - run: composer update
       - run: composer lint
       - run: composer unit
@@ -141,10 +141,10 @@ jobs:
 
   # PHP 7.4 test with HIGHEST dependencies:
   #   Determines whether a newer version of a dependency has broken Drush.
-  test_74_drupal91:
+  test_73_drupal91:
     <<: *defaults
     docker:
-      - image: wodby/php:7.4-dev
+      - image: wodby/php:7.3-dev
         environment:
           - MYSQL_HOST=127.0.0.1
           - UNISH_DB_URL=mysql://root:@127.0.0.1
@@ -158,7 +158,7 @@ jobs:
       - run: composer remove --dev drupal/alinks --no-update
       - run: composer require --dev drupal/semver_example:2.2.0 --no-update
       - run: php --version
-      - run: composer config platform.php 7.4.4
+      - run: composer config platform.php 7.3.23
       - run: composer update
       - run: composer info composer/semver
       - run: composer lint
@@ -185,7 +185,7 @@ workflows:
           <<: *requires
       - test_73_drupal90:
           <<: *requires
-      - test_74_drupal91:
+      - test_73_drupal91:
           <<: *requires
       - test_71_sqlite:
           <<: *requires
