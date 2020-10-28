@@ -124,7 +124,7 @@ jobs:
       - image: circleci/mysql:5.7.24
     steps:
       - checkout
-      - run: sudo composer self-update --preview
+      - run: sudo composer self-update --2
       - run: cp .docker/zz-php.ini /usr/local/etc/php/conf.d/
       # We test with 9.0.0 so that \Unish\SecurityUpdatesTest can find an insecure drupal/core.
       # Remove that assertion once testing with 9.0.0 becomes stale.
@@ -153,7 +153,7 @@ jobs:
       - image: circleci/mysql:5.7.24
     steps:
       - checkout
-      - run: sudo composer self-update --preview
+      - run: sudo composer self-update --2
       - run: cp .docker/zz-php.ini /usr/local/etc/php/conf.d/
       # We test with 9.0.0 so that \Unish\SecurityUpdatesTest can find an insecure drupal/core.
       # Remove that assertion once testing with 9.0.0 becomes stale.
