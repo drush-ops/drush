@@ -112,7 +112,29 @@ jobs:
       - run: composer functional
       - run: composer integration
 
-  # PHP 7.3 test with HIGHEST dependencies:
+  # Drupal 9.0.0 for Security test coverage for drupal/core
+  test_73_drupal90_security:
+    <<: *defaults
+    docker:
+      - image: wodby/php:7.3-dev
+        environment:
+          - MYSQL_HOST=127.0.0.1
+          - UNISH_DB_URL=mysql://root:@127.0.0.1
+      - image: circleci/mysql:5.7.24
+    steps:
+      - checkout
+      - run: sudo composer self-update --2
+      - run: cp .docker/zz-php.ini /usr/local/etc/php/conf.d/
+      - run: composer require --dev drupal/core-recommended:9.0.0 --no-update
+      # Replace alinks with semver for D9.
+      - run: composer remove --dev drupal/alinks --no-update
+      - run: composer require --dev drupal/semver_example:2.2.0 --no-update
+      - run: php --version
+      - run: composer config platform.php 7.3.23
+      - run: composer update
+      - run: composer phpunit -- --testsuite integration --filter=testInsecureDrupalPackage --stop-on-skipped
+
+  # PHP 7.3 test with Drupal 9.0.x
   #   Determines whether a newer version of a dependency has broken Drush.
   test_73_drupal90:
     <<: *defaults
@@ -126,7 +148,7 @@ jobs:
       - checkout
       - run: sudo composer self-update --2
       - run: cp .docker/zz-php.ini /usr/local/etc/php/conf.d/
-      - run: composer require --dev drupal/core-recommended:~9.0.0 --no-update
+      - run: composer require --dev drupal/core-recommended:9.0.x-dev --no-update
       # Replace alinks with semver for D9.
       - run: composer remove --dev drupal/alinks --no-update
       - run: composer require --dev drupal/semver_example:2.2.0 --no-update
@@ -139,7 +161,7 @@ jobs:
       - run: composer integration
 
 
-  # PHP 7.4 test with HIGHEST dependencies:
+  # PHP 7.3 test with Drupal 9.1.x
   #   Determines whether a newer version of a dependency has broken Drush.
   test_73_drupal91:
     <<: *defaults
@@ -168,17 +190,12 @@ jobs:
 
 workflows:
   version: 2
-  # Drush test jobs:
-  #   - If the mergeable test fails, then skip all of the other tests
-  #     (except code style)
-  #   - If code style check fails, then run only the LOWEST test and skip
-  #     all of the others.
-  #   - If both the code style and mergeable checks pass, then run the
-  #     standard suites.
   drush:
     jobs:
       - code_style
       - check_mergable
+      - test_73_drupal90_security:
+          <<: *requires
       - test_71_mysql:
           <<: *requires
       - test_72_drupal89:

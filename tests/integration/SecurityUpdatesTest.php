@@ -23,6 +23,15 @@ class SecurityUpdatesTest extends UnishIntegrationTestCase
         $this->arrayHasKey($expected_package, $security_advisories);
         $this->assertEquals($expected_package, $security_advisories[$expected_package]['name']);
         $this->assertEquals($expected_version, $security_advisories[$expected_package]['version']);
+
+        // If our SUT is 9.0.0, then we should find a security update for Drupal core too.
+        if (\Drupal::VERSION != '9.0.0') {
+            $this->markTestSkipped("We only test for drupal/core security updates if the SUT is on Drupal 9.0.0");
+        }
+        $this->assertContains("Try running: composer require drupal/core", $this->getErrorOutput());
+        $this->arrayHasKey('drupal/core', $security_advisories);
+        $this->assertEquals('drupal/core', $security_advisories['drupal/core']['name']);
+        $this->assertEquals('9.0.0', $security_advisories['drupal/core']['version']);
     }
 
     /**
