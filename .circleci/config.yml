@@ -126,9 +126,7 @@ jobs:
       - checkout
       - run: sudo composer self-update --2
       - run: cp .docker/zz-php.ini /usr/local/etc/php/conf.d/
-      # We test with 9.0.0 so that \Unish\SecurityUpdatesTest can find an insecure drupal/core.
-      # Remove that assertion once testing with 9.0.0 becomes stale.
-      - run: composer require drupal/core-recommended:~9.0.0 --no-update
+      - run: composer require --dev drupal/core-recommended:~9.0.0 --no-update
       # Replace alinks with semver for D9.
       - run: composer remove --dev drupal/alinks --no-update
       - run: composer require --dev drupal/semver_example:2.2.0 --no-update
@@ -155,9 +153,7 @@ jobs:
       - checkout
       - run: sudo composer self-update --2
       - run: cp .docker/zz-php.ini /usr/local/etc/php/conf.d/
-      # We test with 9.0.0 so that \Unish\SecurityUpdatesTest can find an insecure drupal/core.
-      # Remove that assertion once testing with 9.0.0 becomes stale.
-      - run: composer require --dev drupal/core-recommended:~9.1.0 --no-update
+      - run: composer require --dev drupal/core-recommended:~9.1.0@alpha --no-update
       # Replace alinks with semver for D9.
       - run: composer remove --dev drupal/alinks --no-update
       - run: composer require --dev drupal/semver_example:2.2.0 --no-update
