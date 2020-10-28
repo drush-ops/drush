@@ -34,6 +34,9 @@ class SqlDumpTest extends CommandUnishTestCase
             'yes' => null,
         ];
 
+        // In Drupal 9.1+, cache_discovery et. al. do not exist until after a cache rebuild.
+        $this->drush('cache:rebuild', []);
+
         $this->drush('sql-dump', [], $options + ['simulate' => null]);
         $expected = $this->dbDriver() == 'mysql' ? '--ignore-table=unish_dev.cache_discovery' : '--exclude-table=cache_discovery';
         $this->assertContains($expected, $this->getErrorOutput());
