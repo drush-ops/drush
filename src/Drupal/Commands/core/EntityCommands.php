@@ -5,6 +5,8 @@ namespace Drush\Drupal\Commands\core;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drush\Commands\DrushCommands;
 use Drush\Utils\StringUtils;
+use Symfony\Component\Console\Helper\ProgressBar;
+use Symfony\Component\Console\Output\OutputInterface;
 
 class EntityCommands extends DrushCommands
 {
@@ -24,12 +26,14 @@ class EntityCommands extends DrushCommands
      *
      * To delete configuration entities, see config:delete command.
      *
+     * @param \Symfony\Component\Console\Output\OutputInterface $output the symfony output interface.
      * @param string $entity_type An entity machine name.
      * @param string $ids A comma delimited list of Ids.
      * @param array $options
      *
      * @option bundle Restrict deletion to the specified bundle. Ignored when ids is specified.
      * @option exclude Exclude certain entities from deletion. Ignored when ids is specified.
+     * @option chunks Define how many entities will be deleted in the same step. Default is 10.
      * @usage drush entity:delete node --bundle=article
      *   Delete all article entities.
      * @usage drush entity:delete shortcut
@@ -40,18 +44,22 @@ class EntityCommands extends DrushCommands
      *   Delete all nodes except node 9, 14 and 81.
      * @usage drush entity:delete user
      *   Delete all users except uid=1.
+     * @usage drush entity:delete node --chunks=5
+     *   Delete all node entities in steps of 5.
      *
      * @command entity:delete
      * @aliases edel,entity-delete
      * @throws \Exception
      */
-    public function delete($entity_type, $ids = null, $options = ['bundle' => self::REQ, 'exclude' => self::REQ])
+    public function delete(OutputInterface $output, $entity_type, $ids = null, $options = ['bundle' => self::REQ, 'exclude' => self::REQ, 'chunks' => self::REQ])
     {
         $storage = $this->entityTypeManager->getStorage($entity_type);
+        $query = $storage->getQuery();
         if ($ids = StringUtils::csvToArray($ids)) {
-            $entities = $storage->loadMultiple($ids);
-        } elseif ($options['bundle'] || $options['exclude']) {
-            $query = $storage->getQuery();
+            $idKey = $this->entityTypeManager->getDefinition($entity_type)->getKey('id');
+            $query = $query->condition($idKey, $ids, 'IN');
+        }
+        elseif ($options['bundle'] || $options['exclude']) {
             if ($exclude = StringUtils::csvToArray($options['exclude'])) {
                 $idKey = $this->entityTypeManager->getDefinition($entity_type)->getKey('id');
                 $query = $query->condition($idKey, $exclude, 'NOT IN');
@@ -60,23 +68,43 @@ class EntityCommands extends DrushCommands
                 $bundleKey = $this->entityTypeManager->getDefinition($entity_type)->getKey('bundle');
                 $query = $query->condition($bundleKey, $bundle);
             }
-            $result = $query->execute();
-            $entities = $storage->loadMultiple($result);
-        } else {
-            $entities = $storage->loadMultiple();
         }
+        $result = $query->execute();
 
         // Don't delete uid=1, uid=0.
         if ($entity_type == 'user') {
-            unset($entities[1]);
-            unset($entities[0]);
+            unset($result[0], $result[1]);
         }
 
-        if (empty($entities)) {
+        if (empty($result)) {
             $this->logger()->success(dt('No matching entities found.'));
         } else {
-            $storage->delete($entities);
-            $this->logger()->success(dt('Deleted !type entity Ids: !ids', ['!type' => $entity_type, '!ids' => implode(', ', array_keys($entities))]));
+            $chunks = $options['chunks'] ?? 10;
+            $progress_bar = new ProgressBar($output, count($result));
+            foreach (array_chunk($result, $chunks, TRUE) as $chunk) {
+                drush_op([$this, 'doDelete'], $entity_type, $chunk);
+                $progress_bar->advance($chunks);
+            }
+            $progress_bar->finish();
+            $this->logger()->success(dt("\nDeleted !type entity Ids: !ids", ['!type' => $entity_type, '!ids' => implode(', ', array_values($result))]));
         }
     }
+
+    /**
+     * Actual delete method.
+     *
+     * @param string $entity_type
+     * @param array $ids
+     *
+     * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
+     * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
+     * @throws \Drupal\Core\Entity\EntityStorageException
+     */
+    public function doDelete(string $entity_type, array $ids): void
+    {
+        $storage = $this->entityTypeManager->getStorage($entity_type);
+        $entities = $storage->loadMultiple($ids);
+        $storage->delete($entities);
+    }
+
 }
