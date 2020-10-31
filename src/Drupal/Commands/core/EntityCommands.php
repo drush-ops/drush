@@ -106,4 +106,3 @@ class EntityCommands extends DrushCommands
         $storage->delete($entities);
     }
 }
-
