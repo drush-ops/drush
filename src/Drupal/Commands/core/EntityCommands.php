@@ -58,8 +58,7 @@ class EntityCommands extends DrushCommands
         if ($ids = StringUtils::csvToArray($ids)) {
             $idKey = $this->entityTypeManager->getDefinition($entity_type)->getKey('id');
             $query = $query->condition($idKey, $ids, 'IN');
-        }
-        elseif ($options['bundle'] || $options['exclude']) {
+        } elseif ($options['bundle'] || $options['exclude']) {
             if ($exclude = StringUtils::csvToArray($options['exclude'])) {
                 $idKey = $this->entityTypeManager->getDefinition($entity_type)->getKey('id');
                 $query = $query->condition($idKey, $exclude, 'NOT IN');
@@ -79,9 +78,9 @@ class EntityCommands extends DrushCommands
         if (empty($result)) {
             $this->logger()->success(dt('No matching entities found.'));
         } else {
-            $chunks = $options['chunks'] ?? 10;
+            $chunks = $options['chunks'] ?? 50;
             $progress_bar = new ProgressBar($output, count($result));
-            foreach (array_chunk($result, $chunks, TRUE) as $chunk) {
+            foreach (array_chunk($result, $chunks, true) as $chunk) {
                 drush_op([$this, 'doDelete'], $entity_type, $chunk);
                 $progress_bar->advance($chunks);
             }
@@ -106,5 +105,5 @@ class EntityCommands extends DrushCommands
         $entities = $storage->loadMultiple($ids);
         $storage->delete($entities);
     }
-
 }
+
