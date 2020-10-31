@@ -5,8 +5,6 @@ namespace Drush\Drupal\Commands\core;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drush\Commands\DrushCommands;
 use Drush\Utils\StringUtils;
-use Symfony\Component\Console\Helper\ProgressBar;
-use Symfony\Component\Console\Output\OutputInterface;
 
 class EntityCommands extends DrushCommands
 {
@@ -26,7 +24,6 @@ class EntityCommands extends DrushCommands
      *
      * To delete configuration entities, see config:delete command.
      *
-     * @param \Symfony\Component\Console\Output\OutputInterface $output the symfony output interface.
      * @param string $entity_type An entity machine name.
      * @param string $ids A comma delimited list of Ids.
      * @param array $options
@@ -51,7 +48,7 @@ class EntityCommands extends DrushCommands
      * @aliases edel,entity-delete
      * @throws \Exception
      */
-    public function delete(OutputInterface $output, $entity_type, $ids = null, $options = ['bundle' => self::REQ, 'exclude' => self::REQ, 'chunks' => self::REQ])
+    public function delete($entity_type, $ids = null, $options = ['bundle' => self::REQ, 'exclude' => self::REQ, 'chunks' => self::REQ])
     {
         $storage = $this->entityTypeManager->getStorage($entity_type);
         $query = $storage->getQuery();
@@ -79,12 +76,12 @@ class EntityCommands extends DrushCommands
             $this->logger()->success(dt('No matching entities found.'));
         } else {
             $chunks = $options['chunks'] ?? 50;
-            $progress_bar = new ProgressBar($output, count($result));
+            $this->io()->progressStart(count($result));
             foreach (array_chunk($result, $chunks, true) as $chunk) {
                 drush_op([$this, 'doDelete'], $entity_type, $chunk);
-                $progress_bar->advance($chunks);
+                $this->io()->progressAdvance($chunks);
             }
-            $progress_bar->finish();
+            $this->io()->progressFinish();
             $this->logger()->success(dt("\nDeleted !type entity Ids: !ids", ['!type' => $entity_type, '!ids' => implode(', ', array_values($result))]));
         }
     }
