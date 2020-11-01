@@ -30,7 +30,7 @@ class EntityCommands extends DrushCommands
      *
      * @option bundle Restrict deletion to the specified bundle. Ignored when ids is specified.
      * @option exclude Exclude certain entities from deletion. Ignored when ids is specified.
-     * @option chunks Define how many entities will be deleted in the same step. Default is 10.
+     * @option chunks Define how many entities will be deleted in the same step.
      * @usage drush entity:delete node --bundle=article
      *   Delete all article entities.
      * @usage drush entity:delete shortcut
@@ -48,7 +48,7 @@ class EntityCommands extends DrushCommands
      * @aliases edel,entity-delete
      * @throws \Exception
      */
-    public function delete($entity_type, $ids = null, $options = ['bundle' => self::REQ, 'exclude' => self::REQ, 'chunks' => self::REQ])
+    public function delete($entity_type, $ids = null, $options = ['bundle' => self::REQ, 'exclude' => self::REQ, 'chunks' => 50])
     {
         $storage = $this->entityTypeManager->getStorage($entity_type);
         $query = $storage->getQuery();
@@ -75,11 +75,10 @@ class EntityCommands extends DrushCommands
         if (empty($result)) {
             $this->logger()->success(dt('No matching entities found.'));
         } else {
-            $chunks = $options['chunks'] ?? 50;
             $this->io()->progressStart(count($result));
-            foreach (array_chunk($result, $chunks, true) as $chunk) {
+            foreach (array_chunk($result, $options['chunks'], true) as $chunk) {
                 drush_op([$this, 'doDelete'], $entity_type, $chunk);
-                $this->io()->progressAdvance($chunks);
+                $this->io()->progressAdvance($options['chunks']);
             }
             $this->io()->progressFinish();
             $this->logger()->success(dt("\nDeleted !type entity Ids: !ids", ['!type' => $entity_type, '!ids' => implode(', ', array_values($result))]));
