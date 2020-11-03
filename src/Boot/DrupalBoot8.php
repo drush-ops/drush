@@ -220,7 +220,7 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
         $kernel_factory = Kernels::getKernelFactory($kernel);
         $allow_dumping = $kernel !== Kernels::UPDATE;
         /** @var \Drupal\Core\DrupalKernelInterface kernel */
-        $this->kernel = $kernel_factory($request, $classloader, 'prod', $allow_dumping);
+        $this->kernel = $kernel_factory($request, $classloader, 'prod', $allow_dumping, $manager->getRoot());
         // Include Drush services in the container.
         // @see Drush\Drupal\DrupalKernel::addServiceModifier()
         $this->kernel->addServiceModifier(new DrushServiceModifier());
