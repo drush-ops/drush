@@ -17,7 +17,6 @@ test_71_steps: &test71steps
   steps:
     - checkout
     - run: cp .docker/zz-php.ini /usr/local/etc/php/conf.d/
-    - run: sudo composer self-update --preview
     - run: composer install -n
     - run: composer lint
     - run: composer unit
@@ -56,8 +55,7 @@ jobs:
   test_71_mysql:
     <<: *defaults
     docker:
-      # -dev needed as long as composer2 is not stable.
-      - image: wodby/php:7.1-dev
+      - image: wodby/php:7.1
         environment:
           - MYSQL_HOST=127.0.0.1
           - UNISH_DB_URL=mysql://root:@127.0.0.1
@@ -76,7 +74,7 @@ jobs:
   test_71_postgres:
     <<: *defaults
     docker:
-      - image: wodby/php:7.1-dev
+      - image: wodby/php:7.1
         environment:
           - UNISH_DB_URL=pgsql://unish:unish@127.0.0.1
       - image: wodby/postgres:10.5
@@ -94,7 +92,7 @@ jobs:
     environment:
       SYMFONY_DEPRECATIONS_HELPER: enabled
     docker:
-      - image: wodby/php:7.2-dev
+      - image: wodby/php:7.2
         environment:
           - MYSQL_HOST=127.0.0.1
           - UNISH_DB_URL=mysql://root:@127.0.0.1
@@ -102,7 +100,6 @@ jobs:
     steps:
       - checkout
       - run: cp .docker/zz-php.ini /usr/local/etc/php/conf.d/
-      - run: sudo composer self-update --preview
       - run: composer require --dev drupal/core-recommended:8.9.x-dev --no-update
       - run: php --version
       - run: composer config platform.php 7.2.34
@@ -116,14 +113,13 @@ jobs:
   test_73_drupal90_security:
     <<: *defaults
     docker:
-      - image: wodby/php:7.3-dev
+      - image: wodby/php:7.3
         environment:
           - MYSQL_HOST=127.0.0.1
           - UNISH_DB_URL=mysql://root:@127.0.0.1
       - image: circleci/mysql:5.7.24
     steps:
       - checkout
-      - run: sudo composer self-update --2
       - run: cp .docker/zz-php.ini /usr/local/etc/php/conf.d/
       - run: composer require --dev drupal/core-recommended:9.0.0 --no-update
       # Replace alinks with semver for D9.
@@ -139,14 +135,13 @@ jobs:
   test_73_drupal90:
     <<: *defaults
     docker:
-      - image: wodby/php:7.3-dev
+      - image: wodby/php:7.3
         environment:
           - MYSQL_HOST=127.0.0.1
           - UNISH_DB_URL=mysql://root:@127.0.0.1
       - image: circleci/mysql:5.7.24
     steps:
       - checkout
-      - run: sudo composer self-update --2
       - run: cp .docker/zz-php.ini /usr/local/etc/php/conf.d/
       - run: composer require --dev drupal/core-recommended:9.0.x-dev --no-update
       # Replace alinks with semver for D9.
@@ -166,14 +161,13 @@ jobs:
   test_73_drupal91:
     <<: *defaults
     docker:
-      - image: wodby/php:7.3-dev
+      - image: wodby/php:7.3
         environment:
           - MYSQL_HOST=127.0.0.1
           - UNISH_DB_URL=mysql://root:@127.0.0.1
       - image: circleci/mysql:5.7.24
     steps:
       - checkout
-      - run: sudo composer self-update --2
       - run: cp .docker/zz-php.ini /usr/local/etc/php/conf.d/
       - run: composer require --dev drupal/core-recommended:~9.1.0@alpha --no-update
       # Replace alinks with semver for D9.
