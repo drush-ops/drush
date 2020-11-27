@@ -156,12 +156,12 @@ jobs:
       - run: composer integration
 
 
-  # PHP 7.3 test with Drupal 9.1.x
+  # PHP 8.0 test with Drupal 9.1.x
   #   Determines whether a newer version of a dependency has broken Drush.
-  test_73_drupal91:
+  test_80_drupal91:
     <<: *defaults
     docker:
-      - image: wodby/php:7.3
+      - image: wodby/php:8.0
         environment:
           - MYSQL_HOST=127.0.0.1
           - UNISH_DB_URL=mysql://root:@127.0.0.1
@@ -174,7 +174,7 @@ jobs:
       - run: composer remove --dev drupal/alinks --no-update
       - run: composer require --dev drupal/semver_example:2.2.0 --no-update
       - run: php --version
-      - run: composer config platform.php 7.3.23
+      - run: composer config platform.php 8.0.0
       - run: composer update
       - run: composer info composer/semver
       - run: composer lint
