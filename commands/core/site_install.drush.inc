@@ -210,7 +210,11 @@ function drush_core_pre_site_install($profile = NULL) {
 
 function _drush_core_site_install_add_db_url_to_settings($settingsfile, $db_spec) {
   $settingsContents = file_get_contents($settingsfile);
-  if (preg_match('#^.db_url *=#', $settingsContents)) {
+  // There's no need to write $db_url if it's already set.
+  // The regexp below will allow one arbitrary character before $db_url.
+  // Allowing more/unlimited chars would be unwise as it would match $db_url
+  // occurrences inside comments.
+  if (preg_match('#^.?\$db_url *=#m', $settingsContents)) {
     return true;
   }
   // On D6, we have to write $db_url ourselves. In D7+, the installer does it.
