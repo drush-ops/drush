@@ -1,0 +1,144 @@
+on:
+  pull_request:
+    branches:
+      - 10.x
+  push:
+    branches:
+      - 10.x
+
+name: CI
+
+jobs:
+  coding-guidelines:
+    name: Coding Guidelines
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Install PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 7.4
+          coverage: none
+
+      - name: Install dependencies
+        run: composer install --no-ansi --no-interaction --no-progress
+
+      - name: Run phpcs
+        run: composer cs
+
+      - name: Run linter
+        run: composer lint
+
+  backward-compatibility:
+    name: Backward Compatibility
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Fetch tags
+        run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
+
+      - name: Install PHP with extensions
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 7.4
+          coverage: none
+          extensions: intl
+
+      - name: Install roave/backward-compatibility-check
+        run: |
+          mkdir -p tools
+          composer --working-dir=tools require roave/backward-compatibility-check:^5
+
+      - name: Run roave/backward-compatibility-check
+        run: ./tools/vendor/bin/roave-backward-compatibility-check --from=4.0.0
+
+  tests:
+    name: Tests
+
+    runs-on: ${{ matrix.os }}
+
+    env:
+      PHP_EXTENSIONS: dom, json, libxml, mbstring, pdo_sqlite, soap, xml, xmlwriter
+
+    strategy:
+      matrix:
+        os:
+          - windows-latest
+
+        php-version:
+          - "7.4"
+
+        php-ini-values:
+          - assert.exception=1, zend.assertions=1
+
+        dependencies:
+          - locked
+
+        include:
+          - os: ubuntu-latest
+            php-version: "8.0"
+            dependencies: locked
+            php-ini-values: assert.exception=1, zend.assertions=1, opcache.enable=1, opcache.enable_cli=1, opcache.optimization_level=-1, opcache.jit_buffer_size=4096M, opcache.jit=1205
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Install PHP with extensions
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-version }}
+          coverage: pcov
+          extensions: ${{ env.PHP_EXTENSIONS }}
+          ini-values: ${{ matrix.php-ini-values }}
+
+      - name: Determine composer cache directory on Linux
+        if: matrix.os == 'ubuntu-latest'
+        run: echo "COMPOSER_CACHE_DIR=$(composer config cache-dir)" >> $GITHUB_ENV
+
+      - name: Determine composer cache directory on Windows
+        if: matrix.os == 'windows-latest'
+        run: Add-Content -Path $ENV:GITHUB_ENV -Value "COMPOSER_CACHE_DIR=~\AppData\Local\Composer"
+
+      - name: Cache dependencies installed with composer
+        uses: actions/cache@v1
+        with:
+          path: ${{ env.COMPOSER_CACHE_DIR }}
+          key: php${{ matrix.php-version }}-composer-${{ matrix.dependencies }}-${{ hashFiles('**/composer.json') }}
+          restore-keys: |
+            php${{ matrix.php-version }}-composer-${{ matrix.dependencies }}-
+
+      - name: Clear platform php configuration in case we need to update phpunit
+        run: composer config --unset platform.php
+
+      - name: Install dependencies
+        run: composer install --no-ansi --no-interaction --no-progress
+
+      - name: Update phpunit if dependencies are locked in case phpunit version in lock file is not compatible
+        if: matrix.dependencies == 'locked'
+        run: composer update --no-ansi --no-interaction --no-progress phpunit/phpunit --with-all-dependencies
+
+      - name: Install lowest dependencies with composer
+        if: matrix.dependencies == 'lowest'
+        run: composer update --no-ansi --no-interaction --no-progress --prefer-lowest
+
+      - name: Install highest dependencies with composer
+        if: matrix.dependencies == 'highest'
+        run: composer update --no-ansi --no-interaction --no-progress
+
+      - name: Run tests with phpunit
+        run: composer phpunit
+      
+      - name: Publish code coverage to Codecov
+        if: matrix.os == 'ubuntu-latest' && matrix.php-version == '8.0'
+        run: bash <(curl -s https://codecov.io/bash)
