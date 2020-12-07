@@ -50,7 +50,7 @@ jobs:
           - "7.4"
 
         php-ini-values:
-          - assert.exception=1, zend.assertions=1
+          - assert.exception=1, zend.assertions=1, sendmail_path='true'
 
         dependencies:
           - locked
@@ -107,7 +107,7 @@ jobs:
         run: composer update --no-ansi --no-interaction --no-progress
 
       - name: Run tests with phpunit
-        run: composer phpunit
+        run: vendor/bin/phpunit --colors=always --configuration tests
       
       - name: Publish code coverage to Codecov
         if: matrix.os == 'ubuntu-latest' && matrix.php-version == '8.0'
