@@ -60,7 +60,7 @@ jobs:
           composer --working-dir=tools require roave/backward-compatibility-check:^5
 
       - name: Run roave/backward-compatibility-check
-        run: ./tools/vendor/bin/roave-backward-compatibility-check --from=10.0.0
+        run: ./tools/vendor/bin/roave-backward-compatibility-check --from=10.3.0
 
   tests:
     name: Tests
@@ -68,7 +68,7 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     env:
-      PHP_EXTENSIONS: dom, json, libxml, mbstring, pdo_sqlite, soap, xml, xmlwriter
+      PHP_EXTENSIONS: dom, json, libxml, mbstring, pdo_sqlite, soap, xml, xmlwriter, gd
 
     strategy:
       matrix:
@@ -118,8 +118,13 @@ jobs:
           restore-keys: |
             php${{ matrix.php-version }}-composer-${{ matrix.dependencies }}-
 
+      - name: Make sure composer.json is valid before we start modifyig it
+        run: composer validate
+        
       - name: Clear platform php configuration in case we need to update phpunit
-        run: composer config --unset platform.php
+        run: |
+          composer config --unset platform.php
+          composer update --lock
 
       - name: Install dependencies
         run: composer install --no-ansi --no-interaction --no-progress
