@@ -211,7 +211,7 @@ abstract class UnishTestCase extends TestCase
     /**
      * Runs after all tests in a class are run.
      */
-    public static function tearDownAfterClass()
+    public static function tearDownAfterClass(): void
     {
         self::cleanDirs();
         self::$sites = [];

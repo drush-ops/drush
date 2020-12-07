@@ -25,7 +25,7 @@ class LegacyAliasConverterTest extends TestCase
         $this->sut->setTargetDir($this->target);
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         $this->removeDir($this->target);
     }
