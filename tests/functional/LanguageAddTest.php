@@ -12,7 +12,7 @@ use Webmozart\PathUtil\Path;
  */
 class LanguageAddCase extends CommandUnishTestCase
 {
-    protected function setup(): void()
+    protected function setup(): void
     {
         parent::setUp();
         if (empty($this->getSites())) {

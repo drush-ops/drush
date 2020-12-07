@@ -12,7 +12,7 @@ use Webmozart\PathUtil\Path;
 class ConfigPullCase extends CommandUnishTestCase
 {
 
-    public function setup(): void()
+    public function setup(): void
     {
         $this->setUpDrupal(2, true);
     }

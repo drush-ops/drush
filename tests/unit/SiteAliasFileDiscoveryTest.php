@@ -9,7 +9,7 @@ class SiteAliasFileDiscoveryTest extends TestCase
     use \Unish\Utils\Fixtures;
     use \Unish\Utils\FunctionUtils;
 
-    public function setup(): void()
+    public function setup(): void
     {
         $this->sut = new SiteAliasFileDiscovery();
     }
