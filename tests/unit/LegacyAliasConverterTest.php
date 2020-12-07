@@ -14,7 +14,7 @@ class LegacyAliasConverterTest extends TestCase
     protected $target;
     protected $sut;
 
-    protected function setUp()
+    protected function setup(): void()
     {
         $this->discovery = new SiteAliasFileDiscovery();
         $this->discovery->addSearchLocation($this->fixturesDir() . '/sitealiases/legacy');

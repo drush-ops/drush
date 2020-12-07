@@ -17,7 +17,7 @@ class LocaleTest extends CommandUnishTestCase
      */
     protected $sourceFile;
 
-    public function setUp()
+    public function setup(): void()
     {
         if (!$this->getSites()) {
             $this->setUpDrupal(1, true);

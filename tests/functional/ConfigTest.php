@@ -15,7 +15,7 @@ class ConfigCase extends CommandUnishTestCase
 {
     use TestModuleHelperTrait;
 
-    public function setUp()
+    public function setup(): void()
     {
         if (!$this->getSites()) {
             $this->setUpDrupal(1, true);
