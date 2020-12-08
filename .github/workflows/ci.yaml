@@ -56,6 +56,9 @@ jobs:
         dependencies:
           - locked
 
+        include:
+          - os: ubuntu-latest
+
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -75,7 +78,7 @@ jobs:
       - name: Determine composer cache directory on Windows
         if: matrix.os == 'windows-latest'
         run: Add-Content -Path $ENV:GITHUB_ENV -Value "COMPOSER_CACHE_DIR=~\AppData\Local\Composer"
-
+      
       - name: Cache dependencies installed with composer
         uses: actions/cache@v1
         with:
