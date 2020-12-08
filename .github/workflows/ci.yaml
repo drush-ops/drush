@@ -58,6 +58,8 @@ jobs:
 
         include:
           - os: ubuntu-latest
+            php-version: "7.4"
+            dependencies: locked
 
     steps:
       - name: Checkout
