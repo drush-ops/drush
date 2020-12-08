@@ -38,6 +38,18 @@ jobs:
 
     runs-on: ${{ matrix.os }}
 
+    services:
+      mysql:
+        image: mysql:5.7
+        ports:
+          - 3306
+        env:
+          MYSQL_USER: root
+          MYSQL_PASSWORD: ''
+          MYSQL_DATABASE: unishdb
+          MYSQL_ROOT_PASSWORD: ''
+        options: --health-cmd="mysqladmin ping" --health-interval=5s --health-timeout=2s --health-retries=3
+
     env:
       PHP_EXTENSIONS: dom, json, libxml, mbstring, pdo_sqlite, pdo_mysql, soap, xml, xmlwriter, gd
 
@@ -56,17 +68,6 @@ jobs:
           - locked
 
     steps:
-      - name: Mysql Server
-      - uses: samin/mysql-action@v1
-        with:
-          host port: 3306
-          character set server: 'utf8mb4'
-          mysql version: '5.7'
-          mysql database: 'unishdb'
-          mysql root password: ''
-          mysql user: 'root'
-          mysql password: ''
-
       - name: Checkout
         uses: actions/checkout@v2
 
