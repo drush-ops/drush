@@ -27,6 +27,6 @@ class SqlCliTest extends UnishIntegrationTestCase
         $this->drush('sql:query', [], ['file' => Path::join(__DIR__, 'resources/sqlcli.sql')], self::EXIT_SUCCESS);
         $sql = SqlBase::create();
         $tables = $sql->listTables();
-        $this->assertContains('sqlcli', $tables);
+        $this->assertStringContainsString('sqlcli', $tables);
     }
 }

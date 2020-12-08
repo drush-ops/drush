@@ -24,13 +24,13 @@ class LanguageAddCase extends CommandUnishTestCase
     public function testLanguageInfoAdd()
     {
         $this->drush('language-info', []);
-        $this->assertContains('English (en)', $this->getSimplifiedOutput());
+        $this->assertStringContainsString('English (en)', $this->getSimplifiedOutput());
 
         $this->drush('language-add', ['nl,fr'], ['skip-translations' => null]);
 
         $this->drush('language-info', []);
-        $this->assertContains('Dutch (nl)', $this->getSimplifiedOutput());
-        $this->assertContains('French (fr)', $this->getSimplifiedOutput());
+        $this->assertStringContainsString('Dutch (nl)', $this->getSimplifiedOutput());
+        $this->assertStringContainsString('French (fr)', $this->getSimplifiedOutput());
     }
 
     public function testLanguageAddWithTranslations()
@@ -58,7 +58,7 @@ class LanguageAddCase extends CommandUnishTestCase
         $this->drush('language-add', ['nl']);
 
         $this->drush('watchdog-show', []);
-        $this->assertContains('Translations imported:', $this->getSimplifiedOutput());
+        $this->assertStringContainsString('Translations imported:', $this->getSimplifiedOutput());
 
         // Clean up the mess this test creates.
         unlink(Path::join($translationDir, 'drush_empty_module.nl.po'));

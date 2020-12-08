@@ -55,7 +55,7 @@ class LegacyAliasConverterTest extends TestCase
         // Check to see that the checksum file was written, and that
         // it contains a useful comment.
         $checksumContents = file_get_contents($checksumPath);
-        $this->assertContains("# Checksum for converted Drush alias file testWriteOne.yml.\n# Delete this checksum file or modify testWriteOne.yml to prevent further updates to it.", $checksumContents);
+        $this->assertStringContainsString("# Checksum for converted Drush alias file testWriteOne.yml.\n# Delete this checksum file or modify testWriteOne.yml to prevent further updates to it.", $checksumContents);
 
         $overwriteContents = 'test: Overwrite the file contents';
 

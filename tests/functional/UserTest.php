@@ -81,21 +81,21 @@ class UserCase extends CommandUnishTestCase
         $this->drush('user-login', [], $user_login_options + ['debug' => null]);
         $logOutput = $this->getErrorOutput();
         $url = parse_url($this->getOutput());
-        $this->assertContains('/user/reset/1', $url['path'], 'Login returned a reset URL for uid 1 by default');
-        $this->assertContains('Opening browser unish at http://', $logOutput);
+        $this->assertStringContainsString('/user/reset/1', $url['path'], 'Login returned a reset URL for uid 1 by default');
+        $this->assertStringContainsString('Opening browser unish at http://', $logOutput);
         // Check specific user with a path argument.
         $uid = 2;
         $this->drush('user-login', ['node/add'], $user_login_options + ['name' => self::NAME]);
         $output = $this->getOutput();
         $url = parse_url($output);
         $query = $url['query'];
-        $this->assertContains('/user/reset/' . $uid, $url['path'], 'Login with user argument returned a valid reset URL');
+        $this->assertStringContainsString('/user/reset/' . $uid, $url['path'], 'Login with user argument returned a valid reset URL');
         $this->assertEquals('destination=node/add', $query, 'Login included destination path in URL');
         // Check path used as only argument when using uid option.
         $this->drush('user-login', ['node/add'], $user_login_options + ['name' => self::NAME]);
         $output = $this->getOutput();
         $url = parse_url($output);
-        $this->assertContains('/user/reset/' . $uid, $url['path'], 'Login with uid option returned a valid reset URL');
+        $this->assertStringContainsString('/user/reset/' . $uid, $url['path'], 'Login with uid option returned a valid reset URL');
         $query = $url['query'];
         $this->assertEquals('destination=node/add', $query, 'Login included destination path in URL');
         // Test specific user by uid.
@@ -103,14 +103,14 @@ class UserCase extends CommandUnishTestCase
         $this->drush('user-login', [], $user_login_options + ['uid' => $uid]);
         $output = $this->getOutput();
         $url = parse_url($output);
-        $this->assertContains('/user/reset/' . $uid, $url['path'], 'Login with uid option returned a valid reset URL');
+        $this->assertStringContainsString('/user/reset/' . $uid, $url['path'], 'Login with uid option returned a valid reset URL');
         // Test specific user by mail.
         $uid = 2;
         $mail = 'example@example.com';
         $this->drush('user-login', [], $user_login_options + ['mail' => $mail]);
         $output = $this->getOutput();
         $url = parse_url($output);
-        $this->assertContains('/user/reset/' . $uid, $url['path'], 'Login with mail option returned a valid reset URL');
+        $this->assertStringContainsString('/user/reset/' . $uid, $url['path'], 'Login with mail option returned a valid reset URL');
     }
 
     public function testUserCancel()

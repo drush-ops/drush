@@ -37,7 +37,7 @@ class RoleCase extends CommandUnishTestCase
         $rid = 'foo';
         $this->drush('role-create', [$rid]);
         $this->drush('role-list');
-        $this->assertContains($rid, $this->getOutput());
+        $this->assertStringContainsString($rid, $this->getOutput());
 
         // Assert that anon user starts without 'cancel other accounts' perm.
         $perm = 'cancel other accounts';

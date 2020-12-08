@@ -23,13 +23,13 @@ class EnDisUnListInfoCase extends CommandUnishTestCase
         // Test that pm-list lists uninstalled modules.
         $this->drush('pm-list', [], ['no-core' => null, 'status' => 'disabled']);
         $out = $this->getOutput();
-        $this->assertContains('drush_empty_module', $out);
+        $this->assertStringContainsString('drush_empty_module', $out);
 
         // Test pm-enable enables a module, and pm-list verifies that.
         $this->drush('pm-enable', ['drush_empty_module']);
         $this->drush('pm-list', [], ['status' => 'enabled']);
         $out = $this->getOutput();
-        $this->assertContains('drush_empty_module', $out);
+        $this->assertStringContainsString('drush_empty_module', $out);
 
         $this->drush('core:status', [], ['field' => 'drupal-version']);
         $drupal_version = $this->getOutputRaw();
@@ -42,7 +42,7 @@ class EnDisUnListInfoCase extends CommandUnishTestCase
         if (Comparator::lessThan($drupal_version, '8.8')) {
             $active_theme = 'classy';
         }
-        $this->assertContains($active_theme, $out, 'Themes are in the pm-list');
+        $this->assertStringContainsString($active_theme, $out, 'Themes are in the pm-list');
 
         // Test cache was cleared after enabling a module.
         $table = 'router';
@@ -60,6 +60,6 @@ class EnDisUnListInfoCase extends CommandUnishTestCase
         $this->drush('pm-uninstall', ['drush_empty_module']);
         $this->drush('pm-list', [], ['status' => 'disabled', 'type' => 'module']);
         $out = $this->getOutput();
-        $this->assertContains('drush_empty_module', $out);
+        $this->assertStringContainsString('drush_empty_module', $out);
     }
 }

@@ -32,8 +32,8 @@ class CoreCase extends CommandUnishTestCase
             $this->drush('core-status', [], $options);
             $output = $this->getOutput();
             $output = preg_replace('#  *#', ' ', $output);
-            $this->assertContains('Database : Connected', $output);
-            $this->assertContains("Site path : sites/$uri", $output);
+            $this->assertStringContainsString('Database : Connected', $output);
+            $this->assertStringContainsString("Site path : sites/$uri", $output);
         }
         chdir($cwd);
     }
@@ -167,8 +167,8 @@ class CoreCase extends CommandUnishTestCase
         unlink($b_drush_config_file);
         $output = $this->getOutputFromJSON();
         $drush_conf_as_string = print_r($output['drush-conf'], true);
-        $this->assertContains($a_drush_config_file, $output['drush-conf'], "Loaded drush config files are: " . $drush_conf_as_string);
-        $this->assertContains($b_drush_config_file, $output['drush-conf'], "Loaded drush config files are: " . $drush_conf_as_string);
+        $this->assertStringContainsString($a_drush_config_file, $output['drush-conf'], "Loaded drush config files are: " . $drush_conf_as_string);
+        $this->assertStringContainsString($b_drush_config_file, $output['drush-conf'], "Loaded drush config files are: " . $drush_conf_as_string);
         $this->assertEquals($test_uri, $output['uri']);
     }
 }
