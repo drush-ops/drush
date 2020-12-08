@@ -46,7 +46,7 @@ class SqlDumpTest extends CommandUnishTestCase
             $this->drush('sql-dump', [], array_merge($options, [], ['extra-dump' => '--skip-add-drop-table']));
             $this->assertFileExists($full_dump_file_path);
             $full_dump_file = file_get_contents($full_dump_file_path);
-            $this->assertNotContains('DROP TABLE IF EXISTS', $full_dump_file);
+            $this->assertStringNotContainsString('DROP TABLE IF EXISTS', $full_dump_file);
         }
 
 
@@ -57,7 +57,7 @@ class SqlDumpTest extends CommandUnishTestCase
         // Test that we have sane contents.
         $this->assertStringContainsString('menu_tree', $full_dump_file);
         // Test skip-files-list and wildcard expansion.
-        $this->assertNotContains('CREATE TABLE `key_value', $full_dump_file);
+        $this->assertStringNotContainsString('CREATE TABLE `key_value', $full_dump_file);
         // Next, set up an alias file and run a couple of simulated
         // tests to see if options are propagated correctly.
         // Control: insure options are not set when not specified
@@ -101,7 +101,7 @@ class SqlDumpTest extends CommandUnishTestCase
     //    // Test that we have sane contents.
     //    $this->assertStringContainsString('queue', $full_dump_file);
     //    // Test skip-files-list and wildcard expansion.
-    //    $this->assertNotContains('CREATE TABLE `key_value', $full_dump_file);
+    //    $this->assertStringNotContainsString('CREATE TABLE `key_value', $full_dump_file);
     //    // Repeat control test:  options not recovered in absence of an alias.
     //    unlink($full_dump_file_path);
     //    $this->drush('sql-dump', array(), $options);
@@ -120,6 +120,6 @@ class SqlDumpTest extends CommandUnishTestCase
     //    // Test that we have sane contents.
     //    $this->assertStringContainsString('queue', $full_dump_file);
     //    // Test absence of skip-files-list.
-    //    $this->assertNotContains('CREATE TABLE `key_value', $full_dump_file);
+    //    $this->assertStringNotContainsString('CREATE TABLE `key_value', $full_dump_file);
     }
 }

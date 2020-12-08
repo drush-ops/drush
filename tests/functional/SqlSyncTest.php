@@ -190,7 +190,7 @@ class SqlSyncTest extends CommandUnishTestCase
         if ($should_contain) {
             $this->assertStringContainsString($value, $output);
         } else {
-            $this->assertNotContains($value, $output);
+            $this->assertStringNotContainsString($value, $output);
         }
     }
 }
