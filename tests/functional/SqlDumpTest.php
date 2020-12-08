@@ -39,14 +39,14 @@ class SqlDumpTest extends CommandUnishTestCase
 
         $this->drush('sql-dump', [], $options + ['simulate' => null]);
         $expected = $this->dbDriver() == 'mysql' ? '--ignore-table=unish_dev.cache_discovery' : '--exclude-table=cache_discovery';
-        $this->assertContains($expected, $this->getErrorOutput());
+        $this->assertStringContainsString($expected, $this->getErrorOutput());
 
         // Test --extra-dump option
         if ($this->dbDriver() == 'mysql') {
             $this->drush('sql-dump', [], array_merge($options, [], ['extra-dump' => '--skip-add-drop-table']));
             $this->assertFileExists($full_dump_file_path);
             $full_dump_file = file_get_contents($full_dump_file_path);
-            $this->assertNotContains('DROP TABLE IF EXISTS', $full_dump_file);
+            $this->assertStringNotContainsString('DROP TABLE IF EXISTS', $full_dump_file);
         }
 
 
@@ -55,9 +55,9 @@ class SqlDumpTest extends CommandUnishTestCase
         $this->assertFileExists($full_dump_file_path);
         $full_dump_file = file_get_contents($full_dump_file_path);
         // Test that we have sane contents.
-        $this->assertContains('menu_tree', $full_dump_file);
+        $this->assertStringContainsString('menu_tree', $full_dump_file);
         // Test skip-files-list and wildcard expansion.
-        $this->assertNotContains('CREATE TABLE `key_value', $full_dump_file);
+        $this->assertStringNotContainsString('CREATE TABLE `key_value', $full_dump_file);
         // Next, set up an alias file and run a couple of simulated
         // tests to see if options are propagated correctly.
         // Control: insure options are not set when not specified
@@ -68,10 +68,10 @@ class SqlDumpTest extends CommandUnishTestCase
         $full_dump_file = file_get_contents($full_dump_file_path);
         // Test that we have sane contents.
         $expected = $this->dbDriver() == 'mysql' ? 'CREATE TABLE `menu_tree' : 'CREATE TABLE public.menu_tree';
-        $this->assertContains($expected, $full_dump_file);
+        $this->assertStringContainsString($expected, $full_dump_file);
         // Test absence of skip-files-list.
         $expected = $this->dbDriver() == 'mysql' ? 'CREATE TABLE `key_value' : 'CREATE TABLE public.key_value';
-        $this->assertContains($expected, $full_dump_file);
+        $this->assertStringContainsString($expected, $full_dump_file);
 
     // @todo Aliases to local sites are no longer supported. Throw exception?
     //    $aliasPath = self::getSandbox() . '/aliases';
@@ -99,18 +99,18 @@ class SqlDumpTest extends CommandUnishTestCase
     //    $this->assertFileExists($full_dump_file_path);
     //    $full_dump_file = file_get_contents($full_dump_file_path);
     //    // Test that we have sane contents.
-    //    $this->assertContains('queue', $full_dump_file);
+    //    $this->assertStringContainsString('queue', $full_dump_file);
     //    // Test skip-files-list and wildcard expansion.
-    //    $this->assertNotContains('CREATE TABLE `key_value', $full_dump_file);
+    //    $this->assertStringNotContainsString('CREATE TABLE `key_value', $full_dump_file);
     //    // Repeat control test:  options not recovered in absence of an alias.
     //    unlink($full_dump_file_path);
     //    $this->drush('sql-dump', array(), $options);
     //    $this->assertFileExists($full_dump_file_path);
     //    $full_dump_file = file_get_contents($full_dump_file_path);
     //    // Test that we have sane contents.
-    //    $this->assertContains('queue', $full_dump_file);
+    //    $this->assertStringContainsString('queue', $full_dump_file);
     //    // Test absence of skip-files-list.
-    //    $this->assertContains('CREATE TABLE `key_value', $full_dump_file);
+    //    $this->assertStringContainsString('CREATE TABLE `key_value', $full_dump_file);
     //    // Now run yet with @self, and test to see that Drush can recover the option
     //    // --skip-tables-list, defined in @test.
     //    unlink($full_dump_file_path);
@@ -118,8 +118,8 @@ class SqlDumpTest extends CommandUnishTestCase
     //    $this->assertFileExists($full_dump_file_path);
     //    $full_dump_file = file_get_contents($full_dump_file_path);
     //    // Test that we have sane contents.
-    //    $this->assertContains('queue', $full_dump_file);
+    //    $this->assertStringContainsString('queue', $full_dump_file);
     //    // Test absence of skip-files-list.
-    //    $this->assertNotContains('CREATE TABLE `key_value', $full_dump_file);
+    //    $this->assertStringNotContainsString('CREATE TABLE `key_value', $full_dump_file);
     }
 }

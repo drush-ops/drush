@@ -11,7 +11,6 @@
     bootstrap="../vendor/autoload.php"
     backupGlobals="false"
     backupStaticAttributes="false"
-    syntaxCheck="false"
     colors="true">
   <testsuites>
     <testsuite name="unit">
