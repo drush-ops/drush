@@ -74,7 +74,7 @@ class RsyncTest extends CommandUnishTestCase
         file_put_contents($source_file, $test_data);
 
         // We just deleted it -- should be missing
-        $this->assertFileNotExists($target_file);
+        $this->assertFileDoesNotExist($target_file);
         $this->assertFileExists($source_file);
 
         // Test an actual rsync between our two fixture sites. Note that

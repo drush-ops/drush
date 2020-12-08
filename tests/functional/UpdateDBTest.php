@@ -262,7 +262,7 @@ YAML_FRAGMENT;
         // Check error output.
         $this->assertStringContainsString('Update started: woot_update_8104', $this->getErrorOutput());
         $this->assertStringContainsString('Finished performing updates.', $this->getErrorOutput());
-        $this->assertNotContains('Failed', $this->getErrorOutput());
+        $this->assertStringNotContainsString('Failed', $this->getErrorOutput());
     }
 
     /**

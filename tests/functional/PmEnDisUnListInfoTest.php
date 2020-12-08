@@ -54,7 +54,7 @@ class EnDisUnListInfoCase extends CommandUnishTestCase
         // Test pm-list filtering.
         $this->drush('pm-list', [], ['package' => 'Core']);
         $out = $this->getOutput();
-        $this->assertNotContains('drush_empty_module', $out, 'Drush Empty Module is not part of core package');
+        $this->assertStringNotContainsString('drush_empty_module', $out, 'Drush Empty Module is not part of core package');
 
         // Test module uninstall.
         $this->drush('pm-uninstall', ['drush_empty_module']);

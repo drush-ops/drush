@@ -30,8 +30,8 @@ class RoleCase extends CommandUnishTestCase
 
         $this->drush('role-list', [], ['filter' => 'cancel other accounts']);
         $output = $this->getOutput();
-        $this->assertNotContains('authenticated', $output);
-        $this->assertNotContains('anonymous', $output);
+        $this->assertStringNotContainsString('authenticated', $output);
+        $this->assertStringNotContainsString('anonymous', $output);
 
         // Create the role foo.
         $rid = 'foo';
@@ -60,6 +60,6 @@ class RoleCase extends CommandUnishTestCase
         // Delete the foo role
         $this->drush('role-delete', [$rid]);
         $this->drush('role-list');
-        $this->assertNotContains($rid, $this->getOutput());
+        $this->assertStringNotContainsString($rid, $this->getOutput());
     }
 }

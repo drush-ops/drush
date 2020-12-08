@@ -53,6 +53,6 @@ class DeployHookTest extends CommandUnishTestCase
         // This time there is nothing more to run.
         $this->drush('deploy:hook', [], [], null, null, self::EXIT_SUCCESS);
         $this->assertStringContainsString('[success] No pending deploy hooks.', $this->getErrorOutput());
-        $this->assertNotContains('Finished performing deploy hooks.', $this->getErrorOutput());
+        $this->assertStringNotContainsString('Finished performing deploy hooks.', $this->getErrorOutput());
     }
 }
