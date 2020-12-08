@@ -360,7 +360,7 @@ POST_UPDATE;
         $this->assertStringContainsString('taxonomy_term', $this->getOutputRaw());
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         $this->recursiveDelete($this->pathPostUpdate, true);
         parent::tearDown();

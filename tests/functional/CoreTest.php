@@ -12,7 +12,7 @@ use Webmozart\PathUtil\Path;
  */
 class CoreCase extends CommandUnishTestCase
 {
-    public function setup(): void()
+    public function setup(): void
     {
         if (!$this->getSites()) {
             $this->setUpDrupal(2, true);

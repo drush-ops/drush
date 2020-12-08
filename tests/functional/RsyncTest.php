@@ -12,7 +12,7 @@ namespace Unish;
 class RsyncTest extends CommandUnishTestCase
 {
 
-    public function setup(): void()
+    public function setup(): void
     {
         if ($this->isWindows()) {
             $this->markTestSkipped('rsync paths may not contain colons on Windows.');
