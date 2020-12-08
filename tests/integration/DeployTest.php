@@ -19,7 +19,7 @@ class DeployTest extends UnishIntegrationTestCase
         $this->drush('deploy');
         $expecteds = ["Database updates start.", 'Config import start.', 'Deploy hook start.', 'Cache rebuild start.'];
         foreach ($expecteds as $expected) {
-            $this->assertContains($expected, $this->getErrorOutput());
+            $this->assertStringContainsString($expected, $this->getErrorOutput());
         }
     }
 }

@@ -17,6 +17,6 @@ class BatchCase extends CommandUnishTestCase
             'include' => __DIR__,
         ];
         $this->drush('unit-batch', [], $options);
-        $this->assertContains('!!! ArrayObject does its job.', $this->getErrorOutput());
+        $this->assertStringContainsString('!!! ArrayObject does its job.', $this->getErrorOutput());
     }
 }

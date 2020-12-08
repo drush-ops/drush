@@ -42,7 +42,7 @@ class PmEnLocaleImportCase extends CommandUnishTestCase
 
         $this->drush('pm-enable', ['drush_empty_module']);
         $this->drush('watchdog-show');
-        $this->assertContains('Translations imported:', $this->getSimplifiedOutput());
+        $this->assertStringContainsString('Translations imported:', $this->getSimplifiedOutput());
 
         // Clean up the mess this test creates.
         unlink(Path::join($translationDir, 'drush_empty_module.nl.po'));
