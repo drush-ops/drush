@@ -5,7 +5,7 @@ namespace Unish;
 use Composer\Semver\Comparator;
 use Consolidation\SiteAlias\SiteAlias;
 use Consolidation\SiteProcess\SiteProcess;
-use Yoast\PHPUnitPolyfills\TestCases;
+use Yoast\PHPUnitPolyfills\TestCases\TestCase;
 use Symfony\Component\Yaml\Yaml;
 use Webmozart\PathUtil\Path;
 use Consolidation\SiteProcess\ProcessManager;
