@@ -21,7 +21,7 @@ class CommandInfoAlterTest extends CommandUnishTestCase
         $this->setupModulesForTests(['woot'], Path::join(__DIR__, 'resources/modules/d8'));
         $this->drush('pm-enable', ['woot']);
         $this->drush('woot:altered', [], ['help' => true, 'debug' => true]);
-        $this->assertNotContains('woot-initial-alias', $this->getOutput());
+        $this->assertStringNotContainsString('woot-initial-alias', $this->getOutput());
         $this->assertStringContainsString('woot-new-alias', $this->getOutput());
 
         // Check the debug messages.

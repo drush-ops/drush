@@ -26,7 +26,7 @@ class RoleCase extends CommandUnishTestCase
 
         $this->drush('role-list');
         $output = $this->getOutput();
-        $this->assertNotContains('cancel other accounts', $output);
+        $this->assertStringNotContainsString('cancel other accounts', $output);
 
         $this->drush('role-list', [], ['filter' => 'cancel other accounts']);
         $output = $this->getOutput();
