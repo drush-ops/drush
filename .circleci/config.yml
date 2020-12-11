@@ -196,7 +196,7 @@ workflows:
           <<: *requires
       - test_73_drupal90:
           <<: *requires
-      - test_73_drupal91:
+      - test_80_drupal91:
           <<: *requires
       - test_71_sqlite:
           <<: *requires
