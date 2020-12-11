@@ -59,7 +59,8 @@ class ShutdownAndErrorHandlerTest extends CommandUnishTestCase
         if (empty($this->logLevel())) {
             $this->assertEquals('', $this->getErrorOutput(), 'Error handler did not suppress deprecated message.');
         } else {
-            $this->assertStringContainsString('Undefined index: b PhpCommands.php', $this->getErrorOutput());
+            $msg = PHP_MAJOR_VERSION >= 8 ? 'Undefined array key "b" PhpCommands.php' : 'Undefined index: b PhpCommands.php';
+            $this->assertStringContainsString($msg, $this->getErrorOutput());
         }
     }
 }
