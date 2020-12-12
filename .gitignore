@@ -20,3 +20,4 @@ sut/drush/sites/*test.site.yml
 .env
 # Test fixtures
 sut/drush/sites/synctest.site.yml
+/tests/.phpunit.result.cache
