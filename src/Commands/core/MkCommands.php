@@ -61,6 +61,7 @@ class MkCommands extends DrushCommands implements SiteAliasManagerAwareInterface
                     $body .= self::appendTopics($command, $dir_commands);
                 }
                 $body .= self::appendAliases($command);
+                $body .= self::appendOutputs($command);
                 $body .= self::appendPostAmble();
                 $filename = str_replace(':', '_', $command->getName())  . '.md';
                 $pages[$command->getName()] = $options['destination'] . "/$filename";
@@ -83,6 +84,24 @@ class MkCommands extends DrushCommands implements SiteAliasManagerAwareInterface
     - Any default value is listed at end of arg/option description.
     - An ellipsis indicates that an argument accepts multiple values separated by a space.
 EOT;
+    }
+
+    protected static function appendOutputs($command): string
+    {
+        $body = "#### Outputs\n\n";
+        $body .= '<div class="termy">' . "\n\n" . <<<EOT
+```console
+$ drush pm:list
+--------------------- --------------------------------------------------------------------- ---------- ---------
+  Package               Name                                                                  Status     Version
+ --------------------- --------------------------------------------------------------------- ---------- ---------
+  Core                  Actions (action)                                                      Disabled   8.9.6
+  Core                  Aggregator (aggregator)                                               Enabled    8.9.6
+  Core                  Automated Cron (automated_cron)                                       Disabled   8.9.6
+  Core                  Ban (ban)                                                             Disabled   8.9.6
+```
+EOT;
+        return $body . "\n\n</div>\n\n";
     }
 
     protected static function appendAliases(AnnotatedCommand $command): string

@@ -19,6 +19,10 @@ repo_url: https://github.com/drush-ops/drush
 edit_uri: blob/10.x/docs
 extra_css:
   - css/extra.readthedocs.css
+  - css/termynal.css
+extra_javascript:
+  - js/termynal.js
+  - js/custom.js
 plugins:
   - edit_url
   - search
