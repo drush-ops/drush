@@ -31,7 +31,7 @@ class ShutdownAndErrorHandlerTest extends CommandUnishTestCase
     public function testShutdownFunctionExitCodePassedThrough()
     {
         // script command passes along an exit code nicely for our purposes.
-        $this->drush('php:script', ['exit.php'], ['script-path' => __DIR__ . '/resources'], NULL, NULL, 123);
+        $this->drush('php:script', ['exit.php'], ['script-path' => __DIR__ . '/resources'], null, null, 123);
         // Placate phpunit. If above succeeds we are done here.
         $this->addToAssertionCount(1);
     }
