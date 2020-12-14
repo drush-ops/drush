@@ -46,6 +46,14 @@ class CliCommands extends DrushCommands
         // Set the Drush specific history file path.
         $configuration->setHistoryFile($this->historyPath($options));
 
+        $configuration->setStartupMessage(
+            sprintf(
+                '<aside>%s (Drupal %s)</aside>',
+                \Drupal::config('system.site')->get('name'),
+                \Drupal::VERSION
+            )
+        );
+
         // Disable checking for updates. Our dependencies are managed with Composer.
         $configuration->setUpdateCheck(Checker::NEVER);
 
