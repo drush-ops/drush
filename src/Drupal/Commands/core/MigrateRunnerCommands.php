@@ -260,7 +260,6 @@ class MigrateRunnerCommands extends DrushCommands
                 'total',
             ])),
             'execute_dependencies' => $options['execute-dependencies'],
-            'executed_migrations' => [],
         ];
 
 
@@ -289,16 +288,17 @@ class MigrateRunnerCommands extends DrushCommands
      * @throws \Exception
      *   If there are failed migrations.
      */
-    protected function executeMigration(MigrationInterface $migration, $migration_id, array &$user_data)
+    protected function executeMigration(MigrationInterface $migration, $migration_id, array $user_data)
     {
-        $user_data['executed_migrations'][] = $migration_id;
+        static $executed_migrations = [];
+
         if ($user_data['execute_dependencies']) {
             $dependencies = $migration->getMigrationDependencies()['required'];
             // Remove already executed migrations.
-            $dependencies = array_diff($dependencies, $user_data['executed_migrations']);
+            $dependencies = array_diff($dependencies, $executed_migrations);
             if ($dependencies) {
                 $required_migrations = $this->getMigrationPluginManager()->createInstances($dependencies);
-                array_walk($required_migrations, [$this, __FUNCTION__], $user_data);
+                array_walk($required_migrations, [static::class, __FUNCTION__], $user_data);
             }
         }
         if (!empty($user_data['options']['force'])) {
@@ -314,6 +314,9 @@ class MigrateRunnerCommands extends DrushCommands
             // Nudge Drush to use a non-zero exit code.
             throw new \Exception(dt('!name migration: !count failed.', ['!name' => $migration_id, '!count' => $count]));
         }
+
+        // Keep track of executed migrations.
+        $executed_migrations[] = $migration_id;
     }
 
     /**
