@@ -460,7 +460,7 @@ class MigrateRunnerCommands extends DrushCommands
         /** @var \Drupal\migrate\Plugin\MigrationInterface $migration */
         $migration = $this->getMigrationPluginManager()->createInstance($migration_id);
         $table = [];
-        foreach ($migration->getIdMap()->getMessageIterator() as $row) {
+        foreach ($migration->getIdMap()->getMessages() as $row) {
             $table[] = [
                 'level' => $row->level,
                 'message' => $row->message,
