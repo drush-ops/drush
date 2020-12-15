@@ -92,7 +92,6 @@ class MigrateRunnerTest extends CommandUnishTestCase
 
         // Check for the expected command output.
         $output = $this->getErrorOutput();
-        print_r($output);
         $this->assertStringContainsString('Processed 2 items (1 created, 0 updated, 1 failed, 0 ignored)', $output);
         $this->assertStringContainsString('test_migration migration: 1 failed.', $output);
 
