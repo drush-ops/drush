@@ -100,12 +100,12 @@ class MigrateRunnerTest extends CommandUnishTestCase
         $this->assertStringContainsString('MigrateEvents::DRUSH_MIGRATE_PREPARE_ROW fired for row with ID 2', $output);
 
         // Check that the migration import actually works.
-        $eval = "echo \\Drupal\\node\\Entity\\Node::load(1)->label();";
+        $eval = 'echo \Drupal\node\Entity\Node::load(1)->label();';
         $this->drush('php:eval', [$eval]);
         $this->assertStringContainsString('foo', $this->getOutput());
         // The node with nid 2 import failed.
         // @see \Drupal\woot\Plugin\migrate\process\TestFailProcess
-        $eval = "var_export(\\Drupal\\node\\Entity\\Node::load(2));";
+        $eval = 'var_export(\Drupal\node\Entity\Node::load(2));';
         $this->drush('php:eval', [$eval]);
         $this->assertEquals('NULL', $this->getOutput());
 
@@ -114,7 +114,7 @@ class MigrateRunnerTest extends CommandUnishTestCase
         $this->assertStringContainsString('Rolled back 2 items', $this->getErrorOutput());
 
         // Check that the migration rollback actually works.
-        $eval = "var_export(\\Drupal\\node\\Entity\\Node::load(1));";
+        $eval = 'var_export(\Drupal\node\Entity\Node::load(1));';
         $this->drush('php:eval', [$eval]);
         $this->assertEquals('NULL', $this->getOutput());
 
