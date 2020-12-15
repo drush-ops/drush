@@ -3,3 +3,7 @@ services:
     class: Drupal\woot\EventSubscriber\ConfigSubscriber
     tags:
       - { name: event_subscriber }
+  woot.process_row_test.subscriber:
+    class: Drupal\woot\EventSubscriber\ProcessRowTestSubscriber
+    tags:
+      - { name: event_subscriber }
