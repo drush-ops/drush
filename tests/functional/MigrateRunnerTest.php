@@ -28,7 +28,7 @@ class MigrateRunnerTest extends CommandUnishTestCase
      * @covers ::status
      * @covers ::getMigrationList
      */
-    public function testMigrateStatus()
+    public function testMigrateStatus(): void
     {
         // No arguments, no options.
         $this->drush('migrate:status', [], ['format' => 'json']);
@@ -41,7 +41,7 @@ class MigrateRunnerTest extends CommandUnishTestCase
 
         // With arguments.
         $this->drush('migrate:status', ['test_migration_tagged,test_migration_untagged'], ['format' => 'json']);
-        $output = $this->getOutputFromJSON(null, true);
+        $output = $this->getOutputFromJSON();
         $actualIds = array_column($output, 'id');
         $this->assertCount(2, $actualIds);
         $this->assertContains('test_migration_tagged', $actualIds);
@@ -49,7 +49,7 @@ class MigrateRunnerTest extends CommandUnishTestCase
 
         // Using --tag with value.
         $this->drush('migrate:status', [], ['tag' => 'tag1,tag2', 'format' => 'json']);
-        $output = $this->getOutputFromJSON(null, true);
+        $output = $this->getOutputFromJSON();
 
         $this->assertCount(7, $output);
         // Tag: tag1. The first line contains the tag.
@@ -66,7 +66,7 @@ class MigrateRunnerTest extends CommandUnishTestCase
 
         // Names only.
         $this->drush('migrate:status', [], ['names-only' => true, 'format' => 'json']);
-        $output = $this->getOutputFromJSON(null, true);
+        $output = $this->getOutputFromJSON();
         $this->assertArrayHasKey('id', $output[0]);
         $this->assertArrayNotHasKey('status', $output[0]);
         $this->assertArrayNotHasKey('total', $output[0]);
@@ -81,10 +81,10 @@ class MigrateRunnerTest extends CommandUnishTestCase
     }
 
     /**
-     * @covers import
-     * @covers rollback
+     * @covers ::import
+     * @covers ::rollback
      */
-    public function testMigrateImportAndRollback()
+    public function testMigrateImportAndRollback(): void
     {
         // Expect that this command will fail because the 2nd row fails.
         // @see \Drupal\woot\Plugin\migrate\process\TestFailProcess
@@ -92,17 +92,18 @@ class MigrateRunnerTest extends CommandUnishTestCase
 
         // Check for the expected command output.
         $output = $this->getErrorOutput();
-        $this->assertContains('Processed 2 items (1 created, 0 updated, 1 failed, 0 ignored)', $output);
-        $this->assertContains('test_migration migration: 1 failed.', $output);
+        print_r($output);
+        $this->assertStringContainsString('Processed 2 items (1 created, 0 updated, 1 failed, 0 ignored)', $output);
+        $this->assertStringContainsString('test_migration migration: 1 failed.', $output);
 
         // Check if the MigrateEvents::DRUSH_MIGRATE_PREPARE_ROW event is dispatched.
-        $this->assertContains('MigrateEvents::DRUSH_MIGRATE_PREPARE_ROW fired for row with ID 1', $output);
-        $this->assertContains('MigrateEvents::DRUSH_MIGRATE_PREPARE_ROW fired for row with ID 2', $output);
+        $this->assertStringContainsString('MigrateEvents::DRUSH_MIGRATE_PREPARE_ROW fired for row with ID 1', $output);
+        $this->assertStringContainsString('MigrateEvents::DRUSH_MIGRATE_PREPARE_ROW fired for row with ID 2', $output);
 
         // Check that the migration import actually works.
         $eval = "echo \\Drupal\\node\\Entity\\Node::load(1)->label();";
         $this->drush('php:eval', [$eval]);
-        $this->assertContains('foo', $this->getOutput());
+        $this->assertStringContainsString('foo', $this->getOutput());
         // The node with nid 2 import failed.
         // @see \Drupal\woot\Plugin\migrate\process\TestFailProcess
         $eval = "var_export(\\Drupal\\node\\Entity\\Node::load(2));";
@@ -111,7 +112,7 @@ class MigrateRunnerTest extends CommandUnishTestCase
 
         $this->drush('migrate:rollback', ['test_migration']);
         // Check for the expected command output.
-        $this->assertContains('Rolled back 2 items', $this->getErrorOutput());
+        $this->assertStringContainsString('Rolled back 2 items', $this->getErrorOutput());
 
         // Check that the migration rollback actually works.
         $eval = "var_export(\\Drupal\\node\\Entity\\Node::load(1));";
@@ -127,32 +128,32 @@ class MigrateRunnerTest extends CommandUnishTestCase
     }
 
     /**
-     * @covers stop
-     * @covers resetStatus
+     * @covers ::stop
+     * @covers ::resetStatus
      */
-    public function testMigrateStopAndResetStatus()
+    public function testMigrateStopAndResetStatus(): void
     {
         $this->drush('migrate:stop', ['test_migration']);
         // @todo Find a way to stop a migration that runs.
-        $this->assertContains('Migration test_migration is idle', $this->getErrorOutput());
+        $this->assertStringContainsString('Migration test_migration is idle', $this->getErrorOutput());
 
         $this->drush('migrate:reset', ['test_migration']);
         // @todo Find a way to reset a migration that is not idle.
-        $this->assertContains('Migration test_migration is already Idle', $this->getErrorOutput());
+        $this->assertStringContainsString('Migration test_migration is already Idle', $this->getErrorOutput());
     }
 
     /**
-     * @covers messages
-     * @covers fieldsSource
+     * @covers ::messages
+     * @covers ::fieldsSource
      */
-    public function testMigrateMessagesAndFieldSource()
+    public function testMigrateMessagesAndFieldSource(): void
     {
         $this->drush('migrate:messages', ['test_migration']);
         // @todo Cover cases with non-empty message list.
-        $this->assertContains('Level   Message   Source IDs hash', $this->getOutputRaw());
+        $this->assertStringContainsString('Level   Message   Source IDs hash', $this->getOutputRaw());
 
         $this->drush('migrate:fields-source', ['test_migration'], ['format' => 'json']);
-        $output = $this->getOutputFromJSON(null, true);
+        $output = $this->getOutputFromJSON();
         $this->assertEquals('id', $output[0]['machine_name']);
         $this->assertEquals('id', $output[0]['description']);
         $this->assertEquals('name', $output[1]['machine_name']);
