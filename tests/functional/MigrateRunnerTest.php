@@ -99,24 +99,24 @@ class MigrateRunnerTest extends CommandUnishTestCase
         $this->assertStringContainsString('MigrateEvents::DRUSH_MIGRATE_PREPARE_ROW fired for row with ID 1', $output);
         $this->assertStringContainsString('MigrateEvents::DRUSH_MIGRATE_PREPARE_ROW fired for row with ID 2', $output);
 
-        // Check that the migration import actually works.
-        $eval = 'echo \Drupal\node\Entity\Node::load(1)->label();';
-        $this->drush('php:eval', [$eval]);
-        $this->assertStringContainsString('foo', $this->getOutput());
-        // The node with nid 2 import failed.
+        // Check that nid 1 has been imported successfully while nid 2 failed.
         // @see \Drupal\woot\Plugin\migrate\process\TestFailProcess
-        $eval = 'var_export(\Drupal\node\Entity\Node::load(2));';
-        $this->drush('php:eval', [$eval]);
-        $this->assertEquals('NULL', $this->getOutput());
+        $this->drush('sql:query', ["SELECT * FROM {node_field_data}"], [
+          'db-prefix' => null
+        ]);
+        $this->assertStringContainsString('foo', $this->getOutput());
+        $this->assertStringNotContainsString('bar', $this->getOutput());
 
         $this->drush('migrate:rollback', ['test_migration']);
         // Check for the expected command output.
         $this->assertStringContainsString('Rolled back 2 items', $this->getErrorOutput());
 
-        // Check that the migration rollback actually works.
-        $eval = 'var_export(\Drupal\node\Entity\Node::load(1));';
-        $this->drush('php:eval', [$eval]);
-        $this->assertEquals('NULL', $this->getOutput());
+        // Check that the migration rollback removes both nodes from backend.
+        $this->drush('sql:query', ["SELECT * FROM {node_field_data}"], [
+          'db-prefix' => null
+        ]);
+        $this->assertStringNotContainsString('foo', $this->getOutput());
+        $this->assertStringNotContainsString('bar', $this->getOutput());
 
         // Test that dependent migrations run only once.
         $this->drush('migrate:import', ['test_migration_tagged,test_migration_untagged'], ['execute-dependencies' => true]);
