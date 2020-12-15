@@ -289,7 +289,7 @@ class MigrateRunnerCommands extends DrushCommands
      * @throws \Exception
      *   If there are failed migrations.
      */
-    protected function executeMigration(MigrationInterface $migration, $migration_id, array &$user_data = [])
+    protected function executeMigration(MigrationInterface $migration, $migration_id, array &$user_data)
     {
         $user_data['executed_migrations'][] = $migration_id;
         if ($user_data['execute_dependencies']) {
