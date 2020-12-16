@@ -106,7 +106,7 @@ class MigrateRunnerCommands extends DrushCommands
                 $printed_migration_id = ($tag ? ' ' : '') . $migration_id;
                 if ($names_only) {
                     $table[] = $this->prepareTableRow(['id' => $printed_migration_id], $names_only);
-                    // No future processing is needed. We're don with this row.
+                    // No future processing is needed. We're done with this row.
                     continue;
                 }
 
