@@ -53,5 +53,4 @@ class MigrateRunnerTest extends TestCase
           ],
         ];
     }
-
 }
