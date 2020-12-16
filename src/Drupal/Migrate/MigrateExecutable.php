@@ -322,6 +322,8 @@ class MigrateExecutable extends MigrateExecutableBase
      */
     public function onPostRollback(MigrateRollbackEvent $event)
     {
+        \Drupal::keyValue('migrate_last_imported')->delete($event->getMigration()->id());
+        \Drupal::keyValue('migrate_status')->delete($event->getMigration()->id());
         $this->rollbackMessage();
         $this->removeListeners();
     }

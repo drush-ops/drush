@@ -118,6 +118,14 @@ class MigrateRunnerTest extends CommandUnishTestCase
         $this->assertStringNotContainsString('foo', $this->getOutput());
         $this->assertStringNotContainsString('bar', $this->getOutput());
 
+        $this->drush('migrate:status', ['test_migration'], [
+          'format' => 'json',
+        ]);
+        // Check that status and last import time were reset.
+        // @see https://www.drupal.org/project/migrate_tools/issues/3011996
+        $this->assertSame('Idle', $this->getOutputFromJSON(0)['status']);
+        $this->assertEmpty($this->getOutputFromJSON(0)['last_imported']);
+
         // Test that dependent migrations run only once.
         $this->drush('migrate:import', ['test_migration_tagged,test_migration_untagged'], ['execute-dependencies' => true]);
         foreach (['test_migration_tagged', 'test_migration_untagged'] as $migration_id) {
