@@ -177,6 +177,11 @@ class MigrateRunnerTest extends CommandUnishTestCase
         $importOutput = array_filter(array_map('trim', $this->getErrorOutputAsList()), function (string $line): bool {
             return strpos($line, '[notice]') === 0;
         });
+
+        if ($this->isWindows()) {
+            print_r($importOutput);
+        }
+
         $this->assertCount(10, $importOutput);
         foreach ($importOutput as $delta => $outputLine) {
             if ($delta < 9) {
