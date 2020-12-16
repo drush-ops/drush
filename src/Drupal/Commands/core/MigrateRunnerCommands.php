@@ -94,10 +94,11 @@ class MigrateRunnerCommands extends DrushCommands
      * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
      *   Migrations status formatted as table.
      */
-    public function status(?string $migration_ids = NULL, array $options = [
+    public function status(?string $migration_ids = null, array $options = [
       'tag' => null,
       'names-only' => null,
-    ]): RowsOfFields {
+    ]): RowsOfFields
+    {
         $names_only = $options['names-only'];
         $list = $this->getMigrationList($migration_ids, $options);
 
@@ -242,7 +243,7 @@ class MigrateRunnerCommands extends DrushCommands
      * @throws \Exception
      *   When not enough options were provided or no migration was found.
      */
-    public function import(?string $migration_ids = NULL, array $options = [
+    public function import(?string $migration_ids = null, array $options = [
         'all' => null,
         'tag' => null,
         'limit' => null,
@@ -368,7 +369,7 @@ class MigrateRunnerCommands extends DrushCommands
      * @throws \Exception
      *   When not enough options were provided.
      */
-    public function rollback(?string $migration_ids = NULL, array $options = [
+    public function rollback(?string $migration_ids = null, array $options = [
       'all' => null,
       'tag' => null,
       'feedback' => null
