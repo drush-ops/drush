@@ -26,7 +26,11 @@ class ProcessRowTestSubscriber implements EventSubscriberInterface
      */
     public function onPrepareRow(MigratePrepareRowEvent $event)
     {
-        \Drush\Drush::logger()
-            ->notice("MigrateEvents::DRUSH_MIGRATE_PREPARE_ROW fired for row with ID {$event->getRow()->getSourceProperty('id')}");
+        // Log only in MigrateRunnerTest::testMigrateImportAndRollback() test.
+        // @see \Unish\MigrateRunnerTest::testMigrateImportAndRollback()
+        if (\Drupal::state()->get('woot.test_migrate_import_and_rollback')) {
+            \Drush\Drush::logger()
+              ->notice("MigrateEvents::DRUSH_MIGRATE_PREPARE_ROW fired for row with ID {$event->getRow()->getSourceProperty('id')}");
+        }
     }
 }

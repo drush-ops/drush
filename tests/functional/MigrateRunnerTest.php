@@ -86,6 +86,10 @@ class MigrateRunnerTest extends CommandUnishTestCase
      */
     public function testMigrateImportAndRollback(): void
     {
+        // Trigger logging in ProcessRowTestSubscriber::onPrepareRow().
+        // @see \Drupal\woot\EventSubscriber\ProcessRowTestSubscriber::onPrepareRow()
+        $this->drush('state:set', ['woot.test_migrate_import_and_rollback', true]);
+
         // Expect that this command will fail because the 2nd row fails.
         // @see \Drupal\woot\Plugin\migrate\process\TestFailProcess
         $this->drush('migrate:import', ['test_migration'], [], null, null, self::EXIT_ERROR);
@@ -153,5 +157,40 @@ class MigrateRunnerTest extends CommandUnishTestCase
         $this->assertEquals('id', $output[0]['description']);
         $this->assertEquals('name', $output[1]['machine_name']);
         $this->assertEquals('name', $output[1]['description']);
+    }
+
+    /**
+     * Regression test when importing with --limit and --feedback.
+     *
+     * @see https://www.drupal.org/project/migrate_tools/issues/2919108
+     */
+    public function testImportingWithLimitAndFeedback(): void
+    {
+        // Trigger 'test_migration' source plugin alteration.
+        // @see woot_migrate_source_info_alter(0
+        $this->drush('state:set', ['woot.test_importing_with_limit_and_feedback', true]);
+        $this->drush('migrate:import', ['test_migration'], [
+            'feedback' => 20,
+            'limit' => 199,
+        ]);
+        $importOutput = $this->getErrorOutputAsList();
+        $this->assertCount(10, $importOutput);
+        foreach ($importOutput as $delta => $outputLine) {
+            $outputLine = trim($outputLine);
+            if ($delta < 9) {
+                $this->assertRegExp("/^\[notice\] Processed 20 items \(20 created, 0 updated, 0 failed, 0 ignored\) in \d+\.\d+ seconds \(\d+(\.\d+)?\/min\) \- continuing with 'test_migration'$/", $outputLine);
+            } else {
+                // The last line is different.
+                $this->assertRegExp("/^\[notice\] Processed 19 items \(19 created, 0 updated, 0 failed, 0 ignored\) in \d+\.\d+ seconds \(\d+(\.\d+)?\/min\) \- done with 'test_migration'$/", $outputLine);
+            }
+        }
+
+        $this->drush('migrate:status', ['test_migration'], ['format' => 'json']);
+        $output = $this->getOutputFromJSON();
+
+        // Check also stats.
+        $this->assertSame(300, $output[0]['total']);
+        $this->assertSame('199 (66.3%)', $output[0]['imported']);
+        $this->assertSame(101, $output[0]['unprocessed']);
     }
 }
