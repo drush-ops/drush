@@ -101,9 +101,7 @@ class MigrateRunnerTest extends CommandUnishTestCase
 
         // Check that nid 1 has been imported successfully while nid 2 failed.
         // @see \Drupal\woot\Plugin\migrate\process\TestFailProcess
-        $this->drush('sql:query', ["SELECT * FROM {node_field_data}"], [
-          'db-prefix' => null
-        ]);
+        $this->drush('sql:query', ['SELECT * FROM node_field_data']);
         $this->assertStringContainsString('foo', $this->getOutput());
         $this->assertStringNotContainsString('bar', $this->getOutput());
 
@@ -112,9 +110,7 @@ class MigrateRunnerTest extends CommandUnishTestCase
         $this->assertStringContainsString('Rolled back 2 items', $this->getErrorOutput());
 
         // Check that the migration rollback removes both nodes from backend.
-        $this->drush('sql:query', ["SELECT * FROM {node_field_data}"], [
-          'db-prefix' => null
-        ]);
+        $this->drush('sql:query', ['SELECT * FROM node_field_data']);
         $this->assertStringNotContainsString('foo', $this->getOutput());
         $this->assertStringNotContainsString('bar', $this->getOutput());
 
