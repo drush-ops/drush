@@ -181,20 +181,20 @@ class MigrateRunnerTest extends CommandUnishTestCase
         $this->assertCount(10, $importOutput);
         foreach ($importOutput as $delta => $outputLine) {
             if ($delta < 9) {
-                $this->assertMatchesRegularExpression("/^\[notice\] Processed 20 items \(20 created, 0 updated, 0 failed, 0 ignored\) in \d+\.\d+ seconds \(\d+(\.\d+)?\/min\) \- continuing with 'test_migration'/", $outputLine);
+                $this->assertMatchesRegularExpression("/^\[notice\] Processed 20 items \(20 created, 0 updated, 0 failed, 0 ignored\) in \d+(\.\d+)? seconds \(\d+(\.\d+)?\/min\) \- continuing with 'test_migration'/", $outputLine);
             } else {
-                // The last line is different.
-                $this->assertMatchesRegularExpression("/^\[notice\] Processed 19 items \(19 created, 0 updated, 0 failed, 0 ignored\) in \d+\.\d+ seconds \(\d+(\.\d+)?\/min\) \- done with 'test_migration'/", $outputLine);
+                // The last log entry is different.
+                $this->assertMatchesRegularExpression("/^\[notice\] Processed 19 items \(19 created, 0 updated, 0 failed, 0 ignored\) in \d+(\.\d+)? seconds \(\d+(\.\d+)?\/min\) \- done with 'test_migration'/", $outputLine);
             }
         }
 
         $this->drush('migrate:status', ['test_migration'], ['format' => 'json']);
-        $output = $this->getOutputFromJSON();
+        $output = $this->getOutputFromJSON(0);
 
         // Check also stats.
-        $this->assertSame(300, $output[0]['total']);
-        $this->assertSame('199 (66.3%)', $output[0]['imported']);
-        $this->assertSame(101, $output[0]['unprocessed']);
+        $this->assertSame(300, $output['total']);
+        $this->assertSame('199 (66.3%)', $output['imported']);
+        $this->assertSame(101, $output['unprocessed']);
     }
 
     /**
