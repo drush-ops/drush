@@ -174,16 +174,11 @@ class MigrateRunnerTest extends CommandUnishTestCase
             'limit' => 199,
         ]);
 
-        if (PHP_OS_FAMILY === 'Windows') {
-            print_r($this->getErrorOutputRaw());
-            print_r('----ENDPLAIN---');
-            print_r(bin2hex($this->getErrorOutputRaw()));
-        }
-
-        $importOutput = $this->getErrorOutputAsList();
+        $importOutput = array_filter(array_map('trim', $this->getErrorOutputAsList()), function (string $line): bool {
+            return strpos($line, '[notice]') === 0;
+        });
         $this->assertCount(10, $importOutput);
         foreach ($importOutput as $delta => $outputLine) {
-            $outputLine = trim($outputLine);
             if ($delta < 9) {
                 $this->assertMatchesRegularExpression("/^\[notice\] Processed 20 items \(20 created, 0 updated, 0 failed, 0 ignored\) in \d+\.\d+ seconds \(\d+(\.\d+)?\/min\) \- continuing with 'test_migration'$/", $outputLine);
             } else {
