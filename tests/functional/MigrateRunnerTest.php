@@ -173,6 +173,13 @@ class MigrateRunnerTest extends CommandUnishTestCase
             'feedback' => 20,
             'limit' => 199,
         ]);
+
+        if (PHP_OS_FAMILY === 'Windows') {
+            print_r($this->getErrorOutputRaw());
+            print_r('----ENDPLAIN---');
+            print_r(bin2hex($this->getErrorOutputRaw()));
+        }
+
         $importOutput = $this->getErrorOutputAsList();
         $this->assertCount(10, $importOutput);
         foreach ($importOutput as $delta => $outputLine) {
