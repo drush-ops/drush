@@ -178,10 +178,10 @@ class MigrateRunnerTest extends CommandUnishTestCase
         foreach ($importOutput as $delta => $outputLine) {
             $outputLine = trim($outputLine);
             if ($delta < 9) {
-                $this->assertRegExp("/^\[notice\] Processed 20 items \(20 created, 0 updated, 0 failed, 0 ignored\) in \d+\.\d+ seconds \(\d+(\.\d+)?\/min\) \- continuing with 'test_migration'$/", $outputLine);
+                $this->assertMatchesRegularExpression("/^\[notice\] Processed 20 items \(20 created, 0 updated, 0 failed, 0 ignored\) in \d+\.\d+ seconds \(\d+(\.\d+)?\/min\) \- continuing with 'test_migration'$/", $outputLine);
             } else {
                 // The last line is different.
-                $this->assertRegExp("/^\[notice\] Processed 19 items \(19 created, 0 updated, 0 failed, 0 ignored\) in \d+\.\d+ seconds \(\d+(\.\d+)?\/min\) \- done with 'test_migration'$/", $outputLine);
+                $this->assertMatchesRegularExpression("/^\[notice\] Processed 19 items \(19 created, 0 updated, 0 failed, 0 ignored\) in \d+\.\d+ seconds \(\d+(\.\d+)?\/min\) \- done with 'test_migration'$/", $outputLine);
             }
         }
 
