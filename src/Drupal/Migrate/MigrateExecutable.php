@@ -115,10 +115,7 @@ class MigrateExecutable extends MigrateExecutableBase
             $this->showTotal = true;
         }
         if (isset($options['idlist'])) {
-            $this->idlist = explode(',', $options['idlist']);
-            array_walk($this->idlist, function (&$value, $key) {
-                $value = explode(':', $value);
-            });
+            $this->idlist = MigrateUtils::parseIdList($options['idlist']);
         }
 
         $this->listeners[MigrateEvents::MAP_SAVE] = [$this, 'onMapSave'];

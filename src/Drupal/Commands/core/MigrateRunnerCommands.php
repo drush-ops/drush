@@ -6,9 +6,10 @@ use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Drupal\Core\Datetime\DateFormatter;
 use Drupal\Core\KeyValueStore\KeyValueFactoryInterface;
 use Drupal\migrate\Plugin\MigrationInterface;
-use Drush\Drupal\Migrate\MigrateMessage;
 use Drush\Commands\DrushCommands;
 use Drush\Drupal\Migrate\MigrateExecutable;
+use Drush\Drupal\Migrate\MigrateMessage;
+use Drush\Drupal\Migrate\MigrateUtils;
 use Webmozart\PathUtil\Path;
 
 class MigrateRunnerCommands extends DrushCommands
@@ -83,9 +84,10 @@ class MigrateRunnerCommands extends DrushCommands
      *   status: Status
      *   total: Total
      *   imported: Imported
+     *   needing_update: Needing update
      *   unprocessed: Unprocessed
      *   last_imported: Last Imported
-     * @default-fields id,status,total,imported,unprocessed,last_imported
+     * @default-fields id,status,total,imported,needing_update,unprocessed,last_imported
      *
      * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
      *   Migrations status formatted as table.
@@ -132,11 +134,13 @@ class MigrateRunnerCommands extends DrushCommands
                             $imported .= ' (' . round(($imported / $source_rows) * 100, 1) . '%)';
                         }
                     }
+                    $needing_update = count($map->getRowsNeedingUpdate($map->processedCount()));
                 } catch (\Exception $e) {
                     $arguments = ['@migration' => $migration_id, '@message' => $e->getMessage()];
                     $this->logger()->error(dt('Could not retrieve source count from @migration: @message', $arguments));
                     $source_rows = dt('N/A');
                     $unprocessed = dt('N/A');
+                    $needing_update = dt('N/A');
                 }
 
                 $status = $migration->getStatusLabel();
@@ -153,6 +157,7 @@ class MigrateRunnerCommands extends DrushCommands
                     'status' => $status,
                     'total' => $source_rows,
                     'imported' => $imported,
+                    'needing_update' => $needing_update,
                     'unprocessed' => $unprocessed,
                     'last_imported' => $last_imported,
                 ];
@@ -200,7 +205,7 @@ class MigrateRunnerCommands extends DrushCommands
      * @option tag A comma-separated list of migration tags to import
      * @option limit Limit on the number of items to process in each migration
      * @option feedback Frequency of progress messages, in items processed
-     * @option idlist Comma-separated list of IDs to import
+     * @option idlist Comma-separated list of IDs to import. As an ID may have more than one columns, concatenate the columns with the colon ':' separator
      * @option update In addition to processing unprocessed items from the source, update previously-imported items with the current data
      * @option force Force an operation to run, even if all dependencies are not satisfied
      * @option execute-dependencies Execute all dependent migrations first.
@@ -305,7 +310,15 @@ class MigrateRunnerCommands extends DrushCommands
             $migration->set('requirements', []);
         }
         if (!empty($user_data['options']['update'])) {
-            $migration->getIdMap()->prepareUpdate();
+            if (empty($user_data['options']['idlist'])) {
+                $migration->getIdMap()->prepareUpdate();
+            } else {
+                $source_id_values_list = MigrateUtils::parseIdList($user_data['options']['idlist']);
+                $keys = array_keys($migration->getSourcePlugin()->getIds());
+                foreach ($source_id_values_list as $source_id_values) {
+                    $migration->getIdMap()->setUpdate(array_combine($keys, $source_id_values));
+                }
+            }
         }
         $executable = new MigrateExecutable($migration, $this->getMigrateMessage(), $user_data['options']);
         // drush_op() provides --simulate support.

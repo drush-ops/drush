@@ -196,4 +196,36 @@ class MigrateRunnerTest extends CommandUnishTestCase
         $this->assertSame('199 (66.3%)', $output[0]['imported']);
         $this->assertSame(101, $output[0]['unprocessed']);
     }
+
+    /**
+     * Regression test when importing with --update and --idlist.
+     *
+     * @covers ::executeMigration
+     * @see https://www.drupal.org/project/migrate_tools/issues/3015386
+     */
+    public function testImportingWithUpdateAndIdlist(): void
+    {
+        // Check a migration limited by ID.
+        $this->drush('migrate:import', ['test_migration'], ['idlist' => '1']);
+        $this->drush('migrate:status', ['test_migration'], [
+            'format' => 'json',
+        ]);
+        $this->assertSame('1 (50%)', $this->getOutputFromJSON(0)['imported']);
+        // Migrate all.
+        $this->drush('migrate:import', ['test_migration']);
+        $this->drush('migrate:status', ['test_migration'], [
+            'format' => 'json',
+        ]);
+        $this->assertSame('2 (100%)', $this->getOutputFromJSON(0)['imported']);
+        // Try to reimport with --idlist and --update.
+        $this->drush('migrate:import', ['test_migration'], [
+            'idlist' => '1',
+            'update' => null,
+        ]);
+        $this->drush('migrate:status', ['test_migration'], [
+          'format' => 'json',
+        ]);
+        // Check that now row needs update.
+        $this->assertSame(0, $this->getOutputFromJSON(0)['needing_update']);
+    }
 }
