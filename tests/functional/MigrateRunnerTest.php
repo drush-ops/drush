@@ -47,9 +47,11 @@ class MigrateRunnerTest extends CommandUnishTestCase
         $this->assertStringContainsString("[debug] Migration 'test_migration_source_issues' is skipped as its source plugin has missed requirements: type1: a. type1: b. type1: c. type2: x. type2: y. type2: z.", $this->getErrorOutputRaw());
 
         // With arguments.
-        $this->drush('migrate:status',
-          ['test_migration_tagged,test_migration_untagged'],
-          ['format' => 'json']);
+        $this->drush(
+            'migrate:status',
+            ['test_migration_tagged,test_migration_untagged'],
+            ['format' => 'json']
+        );
         $output = $this->getOutputFromJSON();
         $actualIds = array_column($output, 'id');
         $this->assertCount(2, $actualIds);

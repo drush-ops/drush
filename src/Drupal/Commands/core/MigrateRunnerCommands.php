@@ -558,8 +558,7 @@ class MigrateRunnerCommands extends DrushCommands
         $migrations = $this->getMigrationPluginManager()->createInstances($migration_ids);
 
         // Check for invalid migration IDs.
-        if ($invalid_migrations = array_diff_key(array_flip($migration_ids),
-          $migrations)) {
+        if ($invalid_migrations = array_diff_key(array_flip($migration_ids), $migrations)) {
             throw new \InvalidArgumentException('Invalid migration IDs: ' . implode(', ', array_flip($invalid_migrations)));
         }
 
