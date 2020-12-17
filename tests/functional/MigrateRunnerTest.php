@@ -103,6 +103,7 @@ class MigrateRunnerTest extends CommandUnishTestCase
     {
         // Trigger logging in ProcessRowTestSubscriber::onPrepareRow().
         // @see \Drupal\woot\EventSubscriber\ProcessRowTestSubscriber::onPrepareRow()
+        // @see \Drupal\woot\EventSubscriber\PreRowDeleteTestSubscriber::onPreRowDelete()
         $this->drush('state:set', ['woot.test_migrate_import_and_rollback', true]);
 
         // Expect that this command will fail because the 2nd row fails.
@@ -124,9 +125,19 @@ class MigrateRunnerTest extends CommandUnishTestCase
         $this->assertStringContainsString('foo', $this->getOutput());
         $this->assertStringNotContainsString('bar', $this->getOutput());
 
+        // Check that an appropriate error is logged when rollback fails.
+        // @see \Drupal\woot\EventSubscriber\PreRowDeleteTestSubscriber::onPreRowDelete()
+        $this->drush('migrate:rollback', [], ['all' => null], null, null, self::EXIT_ERROR);
+        $this->assertStringContainsString('Earthquake while rolling back', $this->getErrorOutputRaw());
+        $this->drush('migrate:reset', ['test_migration']);
+
+        // Reset the flag, so we won't fail the rollback again.
+        $this->drush('state:delete', ['woot.test_migrate_import_and_rollback']);
+
         $this->drush('migrate:rollback', ['test_migration']);
-        // Check for the expected command output.
-        $this->assertStringContainsString('Rolled back 2 items', $this->getErrorOutput());
+        // Note that item with source ID 2, which failed to import, was already
+        // deleted from the map in the previous rollback.
+        $this->assertStringContainsString('Rolled back 1 item', $this->getErrorOutput());
 
         // Check that the migration rollback removes both nodes from backend.
         $this->drush('sql:query', ['SELECT * FROM node_field_data']);

@@ -7,3 +7,7 @@ services:
     class: Drupal\woot\EventSubscriber\ProcessRowTestSubscriber
     tags:
       - { name: event_subscriber }
+  woot.pre_row_delete_test.subscriber:
+    class: Drupal\woot\EventSubscriber\PreRowDeleteTestSubscriber
+    tags:
+      - { name: event_subscriber }
