@@ -40,26 +40,25 @@ class MigrateExecutable extends MigrateExecutableBase
     protected $deleteCounter = 0;
 
     /**
-     * Maximum number of items to process in this migration. 0 indicates no limit
-     * is to be applied.
+     * Maximum number of items to process in this migration (0 == no limit).
      *
      * @var int
      */
-    protected $itemLimit = 0;
+    protected $itemLimit;
 
     /**
      * Frequency (in items) at which progress messages should be emitted.
      *
      * @var int
      */
-    protected $feedback = 0;
+    protected $feedback;
 
     /**
      * Show timestamp in progress message.
      *
      * @var bool
      */
-    protected $showTimestamp = false;
+    protected $showTimestamp;
 
     /**
      * Show internal counter in progress message.
@@ -101,22 +100,14 @@ class MigrateExecutable extends MigrateExecutableBase
     public function __construct(MigrationInterface $migration, MigrateMessageInterface $message, array $options = [])
     {
         parent::__construct($migration, $message);
+
         Timer::start('migrate:' . $migration->getPluginId());
-        if (isset($options['limit'])) {
-            $this->itemLimit = $options['limit'];
-        }
-        if (isset($options['feedback'])) {
-            $this->feedback = $options['feedback'];
-        }
-        if (isset($options['timestamp'])) {
-            $this->showTimestamp = true;
-        }
-        if (isset($options['total'])) {
-            $this->showTotal = true;
-        }
-        if (isset($options['idlist'])) {
-            $this->idlist = MigrateUtils::parseIdList($options['idlist']);
-        }
+
+        $this->itemLimit = $options['limit'] ?? 0;
+        $this->feedback = $options['feedback'] ?? 0;
+        $this->showTimestamp = $options['timestamp'] ?? false;
+        $this->showTotal = $options['total'] ?? false;
+        $this->idlist = MigrateUtils::parseIdList($options['idlist'] ?? '');
 
         $this->listeners[MigrateEvents::MAP_SAVE] = [$this, 'onMapSave'];
         $this->listeners[MigrateEvents::MAP_DELETE] = [$this, 'onMapDelete'];
@@ -247,8 +238,8 @@ class MigrateExecutable extends MigrateExecutableBase
      */
     public function onPostImport(MigrateImportEvent $event)
     {
-        $migrate_last_imported_store = \Drupal::keyValue('migrate_last_imported');
-        $migrate_last_imported_store->set($event->getMigration()->id(), round(microtime(true) * 1000));
+        $migrateLastImportedStore = \Drupal::keyValue('migrate_last_imported');
+        $migrateLastImportedStore->set($event->getMigration()->id(), round(microtime(true) * 1000));
         $this->progressMessage();
         $this->removeListeners();
     }
@@ -273,7 +264,7 @@ class MigrateExecutable extends MigrateExecutableBase
     {
         $processed = $this->getProcessedCount();
         $timer = Timer::read('migrate:' . $this->migration->getPluginId());
-        $perminute = round(60 * ($processed / ($timer / 1000)), 1);
+        $perMinute = round(60 * ($processed / ($timer / 1000)), 1);
         if ($this->showTimestamp) {
             // Show timestamp in progress message
             $message = '@time -- ';
@@ -290,13 +281,13 @@ class MigrateExecutable extends MigrateExecutableBase
         } else {
             $message .= " - continuing with '@name'";
         }
-        $singular_message = "Processed 1 item $message";
-        $plural_message = "Processed @numitems items $message";
+        $singularMessage = "Processed 1 item $message";
+        $pluralMessage = "Processed @numitems items $message";
         $this->message->display(
             \Drupal::translation()->formatPlural(
                 $processed,
-                $singular_message,
-                $plural_message,
+                $singularMessage,
+                $pluralMessage,
                 [
                     '@time' => \Drupal::service('date.formatter')->format(time(), 'custom', 'r'),
                     '@numitems' => $processed,
@@ -306,7 +297,7 @@ class MigrateExecutable extends MigrateExecutableBase
                     '@ignored' => $this->getIgnoredCount(),
                     '@total' => $this->counter,
                     '@second' => round($timer / 1000, 1),
-                    '@perminute' => $perminute,
+                    '@perminute' => $perMinute,
                     '@name' => $this->migration->id(),
                 ]
             )
@@ -336,21 +327,21 @@ class MigrateExecutable extends MigrateExecutableBase
      */
     protected function rollbackMessage($done = true)
     {
-        $rolled_back = $this->getRollbackCount();
+        $rolledBack = $this->getRollbackCount();
         if ($done) {
-            $singular_message = "Rolled back 1 item - done with '@name'";
-            $plural_message = "Rolled back @numitems items - done with '@name'";
+            $singularMessage = "Rolled back 1 item - done with '@name'";
+            $pluralMessage = "Rolled back @numitems items - done with '@name'";
         } else {
-            $singular_message = "Rolled back 1 item - continuing with '@name'";
-            $plural_message = "Rolled back @numitems items - continuing with '@name'";
+            $singularMessage = "Rolled back 1 item - continuing with '@name'";
+            $pluralMessage = "Rolled back @numitems items - continuing with '@name'";
         }
         $this->message->display(
             \Drupal::translation()->formatPlural(
-                $rolled_back,
-                $singular_message,
-                $plural_message,
+                $rolledBack,
+                $singularMessage,
+                $pluralMessage,
                 [
-                    '@numitems' => $rolled_back,
+                    '@numitems' => $rolledBack,
                     '@name' => $this->migration->id()
                 ]
             )
@@ -365,8 +356,8 @@ class MigrateExecutable extends MigrateExecutableBase
      */
     public function onPreRowSave(MigratePreRowSaveEvent $event)
     {
-        $id_map = $event->getRow()->getIdMap();
-        if (!empty($id_map['destid1'])) {
+        $idMap = $event->getRow()->getIdMap();
+        if (!empty($idMap['destid1'])) {
             $this->preExistingItem = true;
         } else {
             $this->preExistingItem = false;
@@ -400,15 +391,10 @@ class MigrateExecutable extends MigrateExecutableBase
     {
         if (!empty($this->idlist)) {
             $row = $event->getRow();
-            /**
-             * @TODO replace for $source_id = $row->getSourceIdValues(); when https://www.drupal.org/node/2698023 is fixed
-             */
-            $migration = $event->getMigration();
-            $source_id = array_merge(array_flip(array_keys($migration->getSourcePlugin()
-                ->getIds())), $row->getSourceIdValues());
+            $sourceId = $row->getSourceIdValues();
             $skip = true;
-            foreach ($this->idlist as $item) {
-                if (array_values($source_id) == $item) {
+            foreach ($this->idlist as $id) {
+                if (array_values($sourceId) == $id) {
                     $skip = false;
                     break;
                 }

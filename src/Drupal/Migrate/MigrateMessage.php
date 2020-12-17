@@ -12,11 +12,12 @@ use Psr\Log\LoggerInterface;
  */
 class MigrateMessage implements MigrateMessageInterface, LoggerAwareInterface
 {
-
     use LoggerAwareTrait;
 
     /**
      * Constructs a migrate message class.
+     *
+     * @param \Psr\Log\LoggerInterface $logger
      */
     public function __construct(LoggerInterface $logger)
     {
@@ -31,7 +32,7 @@ class MigrateMessage implements MigrateMessageInterface, LoggerAwareInterface
      * @param string $type
      *   The type of message to display.
      */
-    public function display($message, $type = 'status')
+    public function display($message, $type = 'status'): void
     {
         $type = ($type === 'status' ? 'notice' : $type);
         $this->logger->$type((string)$message);

@@ -76,7 +76,10 @@ class MigrateRunnerTest extends CommandUnishTestCase
         $this->assertNull($output[6]['id']);
 
         // Names only.
-        $this->drush('migrate:status', [], ['names-only' => true, 'format' => 'json']);
+        $this->drush('migrate:status', [], [
+          'names-only' => null,
+          'format' => 'json',
+        ]);
         $output = $this->getOutputFromJSON();
         $this->assertArrayHasKey('id', $output[0]);
         $this->assertArrayNotHasKey('status', $output[0]);
@@ -153,7 +156,7 @@ class MigrateRunnerTest extends CommandUnishTestCase
         $this->assertEmpty($this->getOutputFromJSON(0)['last_imported']);
 
         // Test that dependent migrations run only once.
-        $this->drush('migrate:import', ['test_migration_tagged,test_migration_untagged'], ['execute-dependencies' => true]);
+        $this->drush('migrate:import', ['test_migration_tagged,test_migration_untagged'], ['execute-dependencies' => null]);
         foreach (['test_migration_tagged', 'test_migration_untagged'] as $migration_id) {
             $occurrences = substr_count($this->getErrorOutput(), "done with '$migration_id'");
             $this->assertEquals(1, $occurrences);

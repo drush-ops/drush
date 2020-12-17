@@ -13,22 +13,22 @@ use Drupal\migrate\Plugin\RequirementsInterface;
  */
 class TestSourceWithMissedRequirements extends SourcePluginBase implements RequirementsInterface
 {
-    public function fields()
+    public function fields(): array
     {
         return [];
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         return 'test_source_with_missed_requirements';
     }
 
-    public function getIds()
+    public function getIds(): array
     {
         return ['id' => ['type' => 'integer']];
     }
 
-    public function checkRequirements()
+    public function checkRequirements(): array
     {
         throw new RequirementsException('message', [
           'type1' => ['a', 'b', 'c'],
@@ -36,7 +36,7 @@ class TestSourceWithMissedRequirements extends SourcePluginBase implements Requi
         ]);
     }
 
-    protected function initializeIterator()
+    protected function initializeIterator(): \Iterator
     {
         return new \ArrayIterator([]);
     }

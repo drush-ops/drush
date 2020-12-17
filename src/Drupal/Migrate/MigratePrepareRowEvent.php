@@ -12,9 +12,7 @@ use Symfony\Component\EventDispatcher\Event;
  *
  * @internal
  *
- * @todo When https://www.drupal.org/project/drupal/issues/2952291 lands, we will use the core event class but we will
- * still keep this around for backward compatibility.
- *
+ * @todo @todo Deprecate this class when #2952291 lands.
  * @see https://www.drupal.org/project/drupal/issues/2952291
  */
 final class MigratePrepareRowEvent extends Event
@@ -63,7 +61,7 @@ final class MigratePrepareRowEvent extends Event
      * @return \Drupal\migrate\Row
      *   The row object about to be imported.
      */
-    public function getRow()
+    public function getRow(): Row
     {
         return $this->row;
     }
@@ -74,7 +72,7 @@ final class MigratePrepareRowEvent extends Event
      * @return \Drupal\migrate\Plugin\MigrateSourceInterface $source
      *   The source plugin firing the event.
      */
-    public function getSource()
+    public function getSource(): MigrateSourceInterface
     {
         return $this->source;
     }
@@ -85,7 +83,7 @@ final class MigratePrepareRowEvent extends Event
      * @return \Drupal\migrate\Plugin\MigrationInterface
      *   The migration entity being imported.
      */
-    public function getMigration()
+    public function getMigration(): MigrationInterface
     {
         return $this->migration;
     }
