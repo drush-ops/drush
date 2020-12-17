@@ -31,7 +31,10 @@ class MigrateRunnerTest extends CommandUnishTestCase
     public function testMigrateStatus(): void
     {
         // No arguments, no options.
-        $this->drush('migrate:status', [], ['format' => 'json']);
+        $this->drush('migrate:status', [], [
+          'format' => 'json',
+          'debug' => null,
+        ]);
         $output = $this->getOutputFromJSON();
         $actualIds = array_column($output, 'id');
         $this->assertCount(3, $actualIds);
@@ -39,8 +42,14 @@ class MigrateRunnerTest extends CommandUnishTestCase
         $this->assertContains('test_migration_tagged', $actualIds);
         $this->assertContains('test_migration_untagged', $actualIds);
 
+        // Debug message registered for 'test_migration_source_issues'.
+        // @see \Drush\Drupal\Commands\core\MigrateRunnerCommands::getMigrationList()
+        $this->assertStringContainsString("[debug] Migration 'test_migration_source_issues' is skipped as its source plugin has missed requirements: type1: a. type1: b. type1: c. type2: x. type2: y. type2: z.", $this->getErrorOutputRaw());
+
         // With arguments.
-        $this->drush('migrate:status', ['test_migration_tagged,test_migration_untagged'], ['format' => 'json']);
+        $this->drush('migrate:status',
+          ['test_migration_tagged,test_migration_untagged'],
+          ['format' => 'json']);
         $output = $this->getOutputFromJSON();
         $actualIds = array_column($output, 'id');
         $this->assertCount(2, $actualIds);
@@ -78,6 +87,10 @@ class MigrateRunnerTest extends CommandUnishTestCase
         $this->assertContains('test_migration', $actualIds);
         $this->assertContains('test_migration_tagged', $actualIds);
         $this->assertContains('test_migration_untagged', $actualIds);
+
+        // Check that invalid migration IDs are reported.
+        $this->drush('migrate:status', ['non_existing,test_migration,another_invalid'], [], null, null, self::EXIT_ERROR);
+        $this->assertStringContainsString('Invalid migration IDs: non_existing, another_invalid', $this->getErrorOutput());
     }
 
     /**

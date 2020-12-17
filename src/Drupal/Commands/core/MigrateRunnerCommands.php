@@ -5,9 +5,11 @@ namespace Drush\Drupal\Commands\core;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Drupal\Core\Datetime\DateFormatter;
 use Drupal\Core\KeyValueStore\KeyValueFactoryInterface;
+use Drupal\migrate\Exception\RequirementsException;
 use Drupal\migrate\MigrateMessageInterface;
 use Drupal\migrate\Plugin\MigrationInterface;
 use Drupal\migrate\Plugin\MigrationPluginManagerInterface;
+use Drupal\migrate\Plugin\RequirementsInterface;
 use Drush\Commands\DrushCommands;
 use Drush\Drupal\Migrate\MigrateExecutable;
 use Drush\Drupal\Migrate\MigrateMessage;
@@ -394,7 +396,7 @@ class MigrateRunnerCommands extends DrushCommands
             foreach ($migrations as $migration_id => $migration) {
                 $executable = new MigrateExecutable($migration, $this->getMigrateMessage(), $executable_options);
                 // drush_op() provides --simulate support.
-                drush_op(array($executable, 'rollback'));
+                drush_op([$executable, 'rollback']);
             }
         }
     }
@@ -553,9 +555,25 @@ class MigrateRunnerCommands extends DrushCommands
     {
         $tags = $options['tag'];
         $migration_ids = array_filter(array_map('trim', explode(',', $migration_ids)));
-
-        /** @var \Drupal\migrate\Plugin\MigrationInterface[] $migrations */
         $migrations = $this->getMigrationPluginManager()->createInstances($migration_ids);
+
+        // Check for invalid migration IDs.
+        if ($invalid_migrations = array_diff_key(array_flip($migration_ids),
+          $migrations)) {
+            throw new \InvalidArgumentException('Invalid migration IDs: ' . implode(', ', array_flip($invalid_migrations)));
+        }
+
+        foreach ($migrations as $migration_id => $migration) {
+            try {
+                $source_plugin = $migration->getSourcePlugin();
+                if ($source_plugin instanceof RequirementsInterface) {
+                    $source_plugin->checkRequirements();
+                }
+            } catch (RequirementsException $exception) {
+                $this->logger()->debug("Migration '{$migration_id}' is skipped as its source plugin has missed requirements: " . $exception->getRequirementsString());
+                unset($migrations[$migration_id]);
+            }
+        }
 
         // If --tag was not passed, don't group on tags, use a single empty tag.
         if ($tags === null) {
@@ -611,7 +629,7 @@ class MigrateRunnerCommands extends DrushCommands
      *   The migration plugin manager service.
      *
      * @todo This service cannot be injected as the 'migrate' module might not be enabled and will throw the following
-     * exception:
+     *   exception:
      *   Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException
      *   The service "migrate_runner.commands" has a dependency on a non-existent service "plugin.manager.migration".
      *   Unfortunately, we cannot avoid the class instantiation, via an annotation (as @validate-module-enabled for
