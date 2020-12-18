@@ -288,28 +288,26 @@ class MigrateRunnerTest extends CommandUnishTestCase
 Output;
 
         $getOutput = function (): string {
-            // On Windows systems the new line delimiter is a CR+LF (\r\n) sequence
-            // instead of LF (\n) as it is on *nix systems.
             return str_replace("\r\n", "\n", $this->getErrorOutputRaw());
         };
 
         // Check an import and rollback with progress bar.
         $this->drush('migrate:import', ['test_migration']);
-        $this->assertStringContainsString($expected_progress_output, $getOutput());
+        $this->assertProgressBar();
         $this->drush('migrate:rollback', ['test_migration']);
-        $this->assertStringContainsString($expected_progress_output, $getOutput());
+        $this->assertProgressBar();
 
         // Check that progress bar won't show when --no-progress is passed.
         $this->drush('migrate:import', ['test_migration'], ['no-progress' => null]);
-        $this->assertStringNotContainsString($expected_progress_output, $getOutput());
+        $this->assertNoProgressBar();
         $this->drush('migrate:rollback', ['test_migration'], ['no-progress' => null]);
-        $this->assertStringNotContainsString($expected_progress_output, $getOutput());
+        $this->assertNoProgressBar();
 
         // Check that progress bar won't show when --feedback is passed.
         $this->drush('migrate:import', ['test_migration'], ['feedback' => 10]);
-        $this->assertStringNotContainsString($expected_progress_output, $getOutput());
+        $this->assertNoProgressBar();
         $this->drush('migrate:rollback', ['test_migration'], ['feedback' => 10]);
-        $this->assertStringNotContainsString($expected_progress_output, $getOutput());
+        $this->assertNoProgressBar();
 
         // Set the 'test_migration' source plugin to skip count.
         // @see woot_migrate_source_info_alter()
@@ -318,8 +316,55 @@ Output;
 
         // Check that progress bar won't show when the source skips count.
         $this->drush('migrate:import', ['test_migration']);
-        $this->assertStringNotContainsString($expected_progress_output, $getOutput());
+        $this->assertNoProgressBar();
         $this->drush('migrate:rollback', ['test_migration']);
-        $this->assertStringNotContainsString($expected_progress_output, $getOutput());
+        $this->assertNoProgressBar();
+    }
+
+    /**
+     * Asserts that the command exposes a progress bar.
+     */
+    protected function assertProgressBar(): void
+    {
+        $this->progressBarAssertionHelper(TRUE);
+    }
+
+    /**
+     * Asserts that the command doesn't expose a progress bar.
+     */
+    protected function assertNoProgressBar(): void
+    {
+        $this->progressBarAssertionHelper(FALSE);
+    }
+
+    /**
+     * @param bool $assertHasProgressBar
+     */
+    protected function progressBarAssertionHelper(bool $assertHasProgressBar): void
+    {
+        static $expectedProgressBars = [
+          '5/50 [==>-------------------------]  10%',
+          '10/50 [=====>----------------------]  20%',
+          '15/50 [========>-------------------]  30%',
+          '20/50 [===========>----------------]  40%',
+          '25/50 [==============>-------------]  50%',
+          '30/50 [================>-----------]  60%',
+          '35/50 [===================>--------]  70%',
+          '40/50 [======================>-----]  80%',
+          '45/50 [=========================>--]  90%',
+          '50/50 [============================] 100%',
+        ];
+
+        // On Windows systems the new line delimiter is a CR+LF (\r\n) sequence
+        // instead of LF (\n) as it is on *nix systems.
+        $actualOutput = str_replace("\r\n", "\n", $this->getErrorOutputRaw());
+
+        foreach ($expectedProgressBars as $expectedProgressBar) {
+            if ($assertHasProgressBar) {
+                $this->assertStringContainsString($expectedProgressBar, $actualOutput);
+            } else {
+                $this->assertStringNotContainsString($expectedProgressBar, $actualOutput);
+            }
+        }
     }
 }
