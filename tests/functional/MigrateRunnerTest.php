@@ -125,8 +125,8 @@ class MigrateRunnerTest extends CommandUnishTestCase
         // Check that nid 1 has been imported successfully while nid 2 failed.
         // @see \Drupal\woot\Plugin\migrate\process\TestFailProcess
         $this->drush('sql:query', ['SELECT * FROM node_field_data']);
-        $this->assertStringContainsString('foo', $this->getOutput());
-        $this->assertStringNotContainsString('bar', $this->getOutput());
+        $this->assertStringContainsString('Item 1', $this->getOutput());
+        $this->assertStringNotContainsString('Item 2', $this->getOutput());
 
         // Check that an appropriate error is logged when rollback fails.
         // @see \Drupal\woot\EventSubscriber\PreRowDeleteTestSubscriber::onPreRowDelete()
@@ -144,8 +144,8 @@ class MigrateRunnerTest extends CommandUnishTestCase
 
         // Check that the migration rollback removes both nodes from backend.
         $this->drush('sql:query', ['SELECT * FROM node_field_data']);
-        $this->assertStringNotContainsString('foo', $this->getOutput());
-        $this->assertStringNotContainsString('bar', $this->getOutput());
+        $this->assertStringNotContainsString('Item 1', $this->getOutput());
+        $this->assertStringNotContainsString('Item 2', $this->getOutput());
 
         $this->drush('migrate:status', ['test_migration'], [
           'format' => 'json',
@@ -203,9 +203,9 @@ class MigrateRunnerTest extends CommandUnishTestCase
      */
     public function testImportingWithLimitAndFeedback(): void
     {
-        // Trigger 'test_migration' source plugin alteration.
-        // @see woot_migrate_source_info_alter(0
-        $this->drush('state:set', ['woot.test_importing_with_limit_and_feedback', true]);
+        // Set the test_migration source to 300 records.
+        // @see woot_migrate_source_info_alter()
+        $this->drush('state:set', ['woot.test_migration_source_data_amount', 300]);
         $this->drush('migrate:import', ['test_migration'], [
             'feedback' => 20,
             'limit' => 199,
@@ -264,5 +264,56 @@ class MigrateRunnerTest extends CommandUnishTestCase
         ]);
         // Check that now row needs update.
         $this->assertSame(0, $this->getOutputFromJSON(0)['needing_update']);
+    }
+
+    /**
+     * @covers \Drush\Drupal\Migrate\MigrateCommandProgressBar
+     * @covers ::initProgressBar
+     */
+    public function testCommandProgressBar(): void
+    {
+        $this->drush('state:set', ['woot.test_migration_source_data_amount', 50]);
+
+        $expected_progress_output = <<<Output
+5/50 [==>-------------------------]  10%
+ 10/50 [=====>----------------------]  20%
+ 15/50 [========>-------------------]  30%
+ 20/50 [===========>----------------]  40%
+ 25/50 [==============>-------------]  50%
+ 30/50 [================>-----------]  60%
+ 35/50 [===================>--------]  70%
+ 40/50 [======================>-----]  80%
+ 45/50 [=========================>--]  90%
+ 50/50 [============================] 100%
+Output;
+
+        // Check an import and rollback with progress bar.
+        $this->drush('migrate:import', ['test_migration']);
+        $this->assertStringContainsString($expected_progress_output, $this->getErrorOutput());
+        $this->drush('migrate:rollback', ['test_migration']);
+        $this->assertStringContainsString($expected_progress_output, $this->getErrorOutput());
+
+        // Check that progress bar won't show when --no-progress is passed.
+        $this->drush('migrate:import', ['test_migration'], ['no-progress' => null]);
+        $this->assertStringNotContainsString($expected_progress_output, $this->getErrorOutput());
+        $this->drush('migrate:rollback', ['test_migration'], ['no-progress' => null]);
+        $this->assertStringNotContainsString($expected_progress_output, $this->getErrorOutput());
+
+        // Check that progress bar won't show when --feedback is passed.
+        $this->drush('migrate:import', ['test_migration'], ['feedback' => 10]);
+        $this->assertStringNotContainsString($expected_progress_output, $this->getErrorOutput());
+        $this->drush('migrate:rollback', ['test_migration'], ['feedback' => 10]);
+        $this->assertStringNotContainsString($expected_progress_output, $this->getErrorOutput());
+
+        // Set the 'test_migration' source plugin to skip count.
+        // @see woot_migrate_source_info_alter()
+        $this->drush('state:set', ['woot.test_command_progress_bar.skip_count', true]);
+        $this->drush('cache:rebuild');
+
+        // Check that progress bar won't show when the source skips count.
+        $this->drush('migrate:import', ['test_migration']);
+        $this->assertStringNotContainsString($expected_progress_output, $this->getErrorOutput());
+        $this->drush('migrate:rollback', ['test_migration']);
+        $this->assertStringNotContainsString($expected_progress_output, $this->getErrorOutput());
     }
 }
