@@ -84,16 +84,20 @@ class MigrateRunnerCommands extends DrushCommands
      *
      * @option tag A comma-separated list of migration tags to list. If only --tag is provided, all migrations will be listed, grouped by tags.
      * @option names-only Only return names, not all the details (faster)
-     * @usage migrate-status
+     *
+     * @usage migrate:status
      *   Retrieve status for all migrations
-     * @usage migrate-status --tag
+     * @usage migrate:status --tag
      *   Retrieve status for all migrations, grouped by tag
-     * @usage migrate-status --tag=user,main_content
+     * @usage migrate:status --tag=user,main_content
      *   Retrieve status for all migrations tagged with "user" or "main_content"
-     * @usage migrate-status classification,article
+     * @usage migrate:status classification,article
      *   Retrieve status for specific migrations
+     *
      * @aliases ms,migrate-status
+     *
      * @topics docs:migrate
+     *
      * @validate-module-enabled migrate
      *
      * @field-labels
@@ -202,17 +206,16 @@ class MigrateRunnerCommands extends DrushCommands
      */
     protected function prepareTableRow(array $row, ?bool $namesOnly): array
     {
-        $defaults = array_fill_keys([
-          'id',
-          'status',
-          'total',
-          'imported',
-          'needing_update',
-          'unprocessed',
-          'last_imported',
-        ], null);
         if (!$namesOnly) {
-            $row += $defaults;
+            $row += array_fill_keys([
+              'id',
+              'status',
+              'total',
+              'imported',
+              'needing_update',
+              'unprocessed',
+              'last_imported',
+            ], null);
         }
 
         return $row;
@@ -232,7 +235,7 @@ class MigrateRunnerCommands extends DrushCommands
      * @option tag A comma-separated list of migration tags to import
      * @option limit Limit on the number of items to process in each migration
      * @option feedback Frequency of progress messages, in items processed
-     * @option idlist Comma-separated list of IDs to import. As an ID may have more than one columns, concatenate the columns with the colon ':' separator
+     * @option idlist Comma-separated list of IDs to import. As an ID may have more than one column, concatenate the columns with the colon ':' separator
      * @option update In addition to processing unprocessed items from the source, update previously-imported items with the current data
      * @option force Force an operation to run, even if all dependencies are not satisfied
      * @option execute-dependencies Execute all dependent migrations first.
@@ -240,17 +243,21 @@ class MigrateRunnerCommands extends DrushCommands
      * @option total Show total processed item number in progress messages
      * @option progress Show progress bar
      *
-     * @usage migrate-import --all
+     * @usage migrate:import --all
      *   Perform all migrations
-     * @usage migrate-import --tag=user,main_content
+     * @usage migrate:import --all --no-progress
+     *   Perform all migrations but avoid the progress bar
+     * @usage migrate:import --tag=user,main_content
      *   Import all migrations tagged with user and main_content tags
-     * @usage migrate-import classification,article
-     *   Import new terms and nodes
-     * @usage migrate-import beer_user --limit=2
-     *   Import no more than 2 users
-     * @usage migrate-import beer_user --idlist=5
+     * @usage migrateimport classification,article
+     *   Import new terms and nodes using migration 'classification' and 'article'
+     * @usage migrate:import user --limit=2
+     *   Import no more than 2 users using the 'user' migration
+     * @usage migrate:import user --idlist=5
      *   Import the user record with source ID 5
-     * @usage migrate-import beer_user --limit=50 --feedback=20
+     * @usage migrate:import node_revision --idlist=1:2,2:3,3:5
+     *   Import the node revision record with source IDs [1,2], [2,3], and [3,5]
+     * @usage migrate:import user --limit=50 --feedback=20
      *   Import 50 users and show process message every 20th record
      *
      * @aliases mim,migrate-import
@@ -262,19 +269,7 @@ class MigrateRunnerCommands extends DrushCommands
      * @throws \Exception
      *   When not enough options were provided or no migration was found.
      */
-    public function import(?string $migrationIds = null, array $options = [
-        'all' => false,
-        'tag' => self::REQ,
-        'limit' => self::REQ,
-        'feedback' => self::REQ,
-        'idlist' => self::REQ,
-        'update' => false,
-        'force' => false,
-        'execute-dependencies' => false,
-        'timestamp' => false,
-        'total' => false,
-        'progress' => true,
-    ])
+    public function import(?string $migrationIds = null, array $options = ['all' => false, 'tag' => self::REQ, 'limit' => self::REQ, 'feedback' => self::REQ, 'idlist' => self::REQ, 'update' => false, 'force' => false, 'execute-dependencies' => false, 'timestamp' => false, 'total' => false, 'progress' => true])
     {
         $tags = $options['tag'];
         $all = $options['all'];
@@ -383,28 +378,30 @@ class MigrateRunnerCommands extends DrushCommands
      * @option all Process all migrations.
      * @option tag A comma-separated list of migration tags to rollback
      * @option feedback Frequency of progress messages, in items processed
+     * @option idlist Comma-separated list of IDs to rollback. As an ID may have more than one column, concatenate the columns with the colon ':' separator
      * @option progress Show progress bar
      *
-     * @usage migrate-rollback --all
-     *   Perform all migrations
-     * @usage migrate-rollback --tag=user,main_content
+     * @usage migrate:rollback --all
+     *   Rollback all migrations
+     * @usage migrate:rollback --all --no-progress
+     *   Rollback all migrations but avoid the progress bar
+     * @usage migrate:rollback --tag=user,main_content
      *   Rollback all migrations tagged with user and main_content tags
-     * @usage migrate-rollback classification,article
-     *   Rollback imported terms and nodes
+     * @usage migrate:rollback classification,article
+     *   Rollback terms and nodes imported by 'classification' and 'article' migrations
+     * @usage migrate:rollback user --idlist=5
+     *   Rollback imported user record with source ID 5
      *
      * @aliases mr,migrate-rollback
+     *
      * @topics docs:migrate
+     *
      * @validate-module-enabled migrate
      *
      * @throws \Exception
      *   When not enough options were provided.
      */
-    public function rollback(?string $migrationIds = null, array $options = [
-      'all' => false,
-      'tag' => self::REQ,
-      'feedback' => self::REQ,
-      'progress' => true,
-    ]): void
+    public function rollback(?string $migrationIds = null, array $options = ['all' => false, 'tag' => self::REQ, 'feedback' => self::REQ, 'idlist' => self::REQ, 'progress' => true]): void
     {
         $tags = $options['tag'];
         $all = $options['all'];
@@ -417,7 +414,12 @@ class MigrateRunnerCommands extends DrushCommands
             $this->logger()->error(dt('No migrations found.'));
         }
 
-        $executableOptions = $options['feedback'] ? ['feedback' => $options['feedback']] : [];
+        $executableOptions = [];
+        foreach (['feedback', 'idlist'] as $option) {
+            if ($options[$option]) {
+                $executableOptions[$option] = $options[$option];
+            }
+        }
         // Take it one tag at a time, rolling back the migrations within each tag.
         foreach ($list as $migrations) {
             // Rollback in reverse order.
@@ -442,7 +444,9 @@ class MigrateRunnerCommands extends DrushCommands
      *   The ID of migration to stop.
      *
      * @aliases mst,migrate-stop
+     *
      * @topics docs:migrate
+     *
      * @validate-module-enabled migrate
      */
     public function stop(string $migrationId): void
@@ -477,7 +481,9 @@ class MigrateRunnerCommands extends DrushCommands
      *   The ID of migration to reset.
      *
      * @aliases mrs,migrate-reset-status
+     *
      * @topics docs:migrate
+     *
      * @validate-module-enabled migrate
      */
     public function resetStatus(string $migrationId): void
@@ -507,10 +513,13 @@ class MigrateRunnerCommands extends DrushCommands
      * @param string $migrationId
      *   The ID of the migration.
      *
-     * @usage migrate-messages article
+     * @usage migrate:messages article
      *   Show all messages for the article migration
+     *
      * @aliases mmsg,migrate-messages
+     *
      * @topics docs:migrate
+     *
      * @validate-module-enabled migrate
      *
      * @field-labels
@@ -547,10 +556,13 @@ class MigrateRunnerCommands extends DrushCommands
      * @param string $migrationId
      *   The ID of the migration.
      *
-     * @usage migrate-fields-source article
+     * @usage migrate:fields-source article
      *   List fields for the source in the article migration
+     *
      * @aliases mfs,migrate-fields-source
+     *
      * @topics docs:migrate
+     *
      * @validate-module-enabled migrate
      *
      * @field-labels
@@ -684,9 +696,9 @@ class MigrateRunnerCommands extends DrushCommands
     protected function initProgressBar(MigrationInterface $migration, array $options): void
     {
         // Cannot use the progress bar when:
-        // - The --no-progress option is used,
-        // - The --feedback option is used,
-        // - The migration source skips count.
+        // - `--no-progress` option is used,
+        // - `--feedback` option is used,
+        // - The migration source plugin is configured to skips count.
         if ($options['progress'] && !$options['feedback'] && empty($migration->getSourceConfiguration()['skip_count'])) {
             $this->commandProgress->initProgressBar($migration, $this->output());
         }

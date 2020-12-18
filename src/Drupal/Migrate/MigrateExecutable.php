@@ -412,4 +412,12 @@ class MigrateExecutable extends MigrateExecutableBase
             $event->getMigration()->interruptMigration(MigrationInterface::RESULT_COMPLETED);
         }
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getIdMap()
+    {
+        return new MigrateIdMapFilter(parent::getIdMap(), $this->idlist);
+    }
 }

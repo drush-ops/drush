@@ -21,8 +21,8 @@ class TestFailProcess extends ProcessPluginBase
     {
         // Fail only in MigrateRunnerTest::testMigrateImportAndRollback() test.
         // @see \Unish\MigrateRunnerTest::testMigrateImportAndRollback()
-        if ($value == 2 && \Drupal::state()->get('woot.test_migrate_import_and_rollback')) {
-            throw new MigrateException('ID 2 should fail.');
+        if (in_array($value, [2, 9, 17]) && \Drupal::state()->get('woot.test_migrate_trigger_failures')) {
+            throw new MigrateException("ID {$value} should fail");
         }
         return $value;
     }

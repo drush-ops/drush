@@ -107,7 +107,7 @@ class MigrateRunnerTest extends CommandUnishTestCase
         // Trigger logging in ProcessRowTestSubscriber::onPrepareRow().
         // @see \Drupal\woot\EventSubscriber\ProcessRowTestSubscriber::onPrepareRow()
         // @see \Drupal\woot\EventSubscriber\PreRowDeleteTestSubscriber::onPreRowDelete()
-        $this->drush('state:set', ['woot.test_migrate_import_and_rollback', true]);
+        $this->drush('state:set', ['woot.test_migrate_trigger_failures', true]);
 
         // Expect that this command will fail because the 2nd row fails.
         // @see \Drupal\woot\Plugin\migrate\process\TestFailProcess
@@ -124,9 +124,8 @@ class MigrateRunnerTest extends CommandUnishTestCase
 
         // Check that nid 1 has been imported successfully while nid 2 failed.
         // @see \Drupal\woot\Plugin\migrate\process\TestFailProcess
-        $this->drush('sql:query', ['SELECT * FROM node_field_data']);
-        $this->assertStringContainsString('Item 1', $this->getOutput());
-        $this->assertStringNotContainsString('Item 2', $this->getOutput());
+        $this->drush('sql:query', ['SELECT title FROM node_field_data']);
+        $this->assertSame(['Item 1'], $this->getOutputAsList());
 
         // Check that an appropriate error is logged when rollback fails.
         // @see \Drupal\woot\EventSubscriber\PreRowDeleteTestSubscriber::onPreRowDelete()
@@ -135,7 +134,7 @@ class MigrateRunnerTest extends CommandUnishTestCase
         $this->drush('migrate:reset', ['test_migration']);
 
         // Reset the flag, so we won't fail the rollback again.
-        $this->drush('state:delete', ['woot.test_migrate_import_and_rollback']);
+        $this->drush('state:delete', ['woot.test_migrate_trigger_failures']);
 
         $this->drush('migrate:rollback', ['test_migration']);
         // Note that item with source ID 2, which failed to import, was already
@@ -143,9 +142,8 @@ class MigrateRunnerTest extends CommandUnishTestCase
         $this->assertStringContainsString('Rolled back 1 item', $this->getErrorOutput());
 
         // Check that the migration rollback removes both nodes from backend.
-        $this->drush('sql:query', ['SELECT * FROM node_field_data']);
-        $this->assertStringNotContainsString('Item 1', $this->getOutput());
-        $this->assertStringNotContainsString('Item 2', $this->getOutput());
+        $this->drush('sql:query', ['SELECT title FROM node_field_data']);
+        $this->assertEmpty(array_filter($this->getOutputAsList()));
 
         $this->drush('migrate:status', ['test_migration'], [
           'format' => 'json',
@@ -161,6 +159,46 @@ class MigrateRunnerTest extends CommandUnishTestCase
             $occurrences = substr_count($this->getErrorOutput(), "done with '$migration_id'");
             $this->assertEquals(1, $occurrences);
         }
+    }
+
+    /**
+     * @covers ::import
+     * @covers ::rollback
+     */
+    public function testMigrateImportAndRollbackWithIdList(): void
+    {
+        // Enlarge the source recordset to 50 rows.
+        $this->drush('state:set', ['woot.test_migration_source_data_amount', 50]);
+
+        $this->drush('migrate:import', ['test_migration'], [
+            // Intentionally added 56, which is out of bounds.
+          'idlist' => '4,12,29,34,56',
+        ]);
+        $this->drush('migrate:status', ['test_migration'], [
+          'format' => 'json',
+        ]);
+
+        // Check that only rows with ID 4, 12, 29, 34 were imported.
+        $this->assertSame(50, $this->getOutputFromJSON(0)['total']);
+        $this->assertSame('4 (8%)', $this->getOutputFromJSON(0)['imported']);
+        $this->assertSame(46, $this->getOutputFromJSON(0)['unprocessed']);
+        $this->drush('sql:query', ['SELECT title FROM node_field_data']);
+        $this->assertSame(['Item 4', 'Item 12', 'Item 29', 'Item 34'], $this->getOutputAsList());
+
+        $this->drush('migrate:rollback', ['test_migration'], [
+            // Intentionally added 56, which is out of bounds.
+          'idlist' => '4,34,56',
+        ]);
+        $this->drush('migrate:status', ['test_migration'], [
+          'format' => 'json',
+        ]);
+
+        // Check that only rows with ID 4, 12, 29, 34 were rolled back.
+        $this->assertSame(50, $this->getOutputFromJSON(0)['total']);
+        $this->assertSame('2 (4%)', $this->getOutputFromJSON(0)['imported']);
+        $this->assertSame(48, $this->getOutputFromJSON(0)['unprocessed']);
+        $this->drush('sql:query', ['SELECT title FROM node_field_data']);
+        $this->assertEquals(['Item 12', 'Item 29'], $this->getOutputAsList());
     }
 
     /**
@@ -184,9 +222,24 @@ class MigrateRunnerTest extends CommandUnishTestCase
      */
     public function testMigrateMessagesAndFieldSource(): void
     {
-        $this->drush('migrate:messages', ['test_migration']);
-        // @todo Cover cases with non-empty message list.
-        $this->assertStringContainsString('Level   Message   Source IDs hash', $this->getOutputRaw());
+        $this->drush('state:set', ['woot.test_migration_source_data_amount', 20]);
+        $this->drush('state:set', ['woot.test_migrate_trigger_failures', true]);
+
+        $this->drush('migrate:import', ['test_migration'], [
+          'no-progress' => null,
+        ], null, null, self::EXIT_ERROR);
+
+        $this->drush('migrate:messages', ['test_migration'], ['format' => 'json']);
+
+        $output = $this->getOutputFromJSON();
+        // @see \Drupal\woot\Plugin\migrate\process\TestFailProcess::transform()
+        $this->assertCount(3, $output);
+        $this->assertEquals(1, $output[0]['level']);
+        $this->assertSame('ID 2 should fail', $output[0]['message']);
+        $this->assertEquals(1, $output[1]['level']);
+        $this->assertSame('ID 9 should fail', $output[1]['message']);
+        $this->assertEquals(1, $output[2]['level']);
+        $this->assertSame('ID 17 should fail', $output[2]['message']);
 
         $this->drush('migrate:fields-source', ['test_migration'], ['format' => 'json']);
         $output = $this->getOutputFromJSON();
@@ -273,23 +326,6 @@ class MigrateRunnerTest extends CommandUnishTestCase
     public function testCommandProgressBar(): void
     {
         $this->drush('state:set', ['woot.test_migration_source_data_amount', 50]);
-
-        $expected_progress_output = <<<Output
-5/50 [==>-------------------------]  10%
- 10/50 [=====>----------------------]  20%
- 15/50 [========>-------------------]  30%
- 20/50 [===========>----------------]  40%
- 25/50 [==============>-------------]  50%
- 30/50 [================>-----------]  60%
- 35/50 [===================>--------]  70%
- 40/50 [======================>-----]  80%
- 45/50 [=========================>--]  90%
- 50/50 [============================] 100%
-Output;
-
-        $getOutput = function (): string {
-            return str_replace("\r\n", "\n", $this->getErrorOutputRaw());
-        };
 
         // Check an import and rollback with progress bar.
         $this->drush('migrate:import', ['test_migration']);
