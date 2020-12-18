@@ -19,6 +19,11 @@ class MigrateCommandProgressBar implements EventSubscriberInterface
     protected $progressBar;
 
     /**
+     * @var \Symfony\Component\Console\Output\OutputInterface
+     */
+    protected $output;
+
+    /**
      * {@inheritdoc}
      */
     public static function getSubscribedEvents(): array
@@ -26,8 +31,8 @@ class MigrateCommandProgressBar implements EventSubscriberInterface
         return [
           'migrate.post_row_save' => ['updateProgressBar', -10],
           'migrate.map_delete' => ['updateProgressBar', -10],
-          'migrate.post_import' => ['clearProgress', 10],
-          'migrate.post_rollback' => ['clearProgress', 10],
+          'migrate.post_import' => ['finishProgress', 10],
+          'migrate.post_rollback' => ['finishProgress', 10],
         ];
     }
 
@@ -53,15 +58,18 @@ class MigrateCommandProgressBar implements EventSubscriberInterface
     {
         // Clone so that any generators aren't initialized prematurely.
         $source = clone $migration->getSourcePlugin();
-        $this->progressBar = new ProgressBar($output, $source->count());
+        $this->progressBar = new ProgressBar($output, $source->count(), 0);
+        $this->output = $output;
     }
 
     /**
      * Event callback for removing the progress bar after operation is finished.
      */
-    public function clearProgress(): void
+    public function finishProgress(): void
     {
         if ($this->progressBar) {
+            $this->progressBar->finish();
+            $this->output->write("\n");
             $this->progressBar->clear();
         }
     }

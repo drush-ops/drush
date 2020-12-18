@@ -287,23 +287,29 @@ class MigrateRunnerTest extends CommandUnishTestCase
  50/50 [============================] 100%
 Output;
 
+        $getOutput = function (): string {
+            // On Windows systems the new line delimiter is a CR+LF (\r\n) sequence
+            // instead of LF (\n) as it is on *nix systems.
+            return str_replace("\r\n", "\n", $this->getErrorOutputRaw());
+        };
+
         // Check an import and rollback with progress bar.
         $this->drush('migrate:import', ['test_migration']);
-        $this->assertStringContainsString($expected_progress_output, $this->getErrorOutput());
+        $this->assertStringContainsString($expected_progress_output, $getOutput());
         $this->drush('migrate:rollback', ['test_migration']);
-        $this->assertStringContainsString($expected_progress_output, $this->getErrorOutput());
+        $this->assertStringContainsString($expected_progress_output, $getOutput());
 
         // Check that progress bar won't show when --no-progress is passed.
         $this->drush('migrate:import', ['test_migration'], ['no-progress' => null]);
-        $this->assertStringNotContainsString($expected_progress_output, $this->getErrorOutput());
+        $this->assertStringNotContainsString($expected_progress_output, $getOutput());
         $this->drush('migrate:rollback', ['test_migration'], ['no-progress' => null]);
-        $this->assertStringNotContainsString($expected_progress_output, $this->getErrorOutput());
+        $this->assertStringNotContainsString($expected_progress_output, $getOutput());
 
         // Check that progress bar won't show when --feedback is passed.
         $this->drush('migrate:import', ['test_migration'], ['feedback' => 10]);
-        $this->assertStringNotContainsString($expected_progress_output, $this->getErrorOutput());
+        $this->assertStringNotContainsString($expected_progress_output, $getOutput());
         $this->drush('migrate:rollback', ['test_migration'], ['feedback' => 10]);
-        $this->assertStringNotContainsString($expected_progress_output, $this->getErrorOutput());
+        $this->assertStringNotContainsString($expected_progress_output, $getOutput());
 
         // Set the 'test_migration' source plugin to skip count.
         // @see woot_migrate_source_info_alter()
@@ -312,8 +318,8 @@ Output;
 
         // Check that progress bar won't show when the source skips count.
         $this->drush('migrate:import', ['test_migration']);
-        $this->assertStringNotContainsString($expected_progress_output, $this->getErrorOutput());
+        $this->assertStringNotContainsString($expected_progress_output, $getOutput());
         $this->drush('migrate:rollback', ['test_migration']);
-        $this->assertStringNotContainsString($expected_progress_output, $this->getErrorOutput());
+        $this->assertStringNotContainsString($expected_progress_output, $getOutput());
     }
 }
