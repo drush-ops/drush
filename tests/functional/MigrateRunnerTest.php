@@ -326,7 +326,7 @@ Output;
      */
     protected function assertProgressBar(): void
     {
-        $this->progressBarAssertionHelper(TRUE);
+        $this->progressBarAssertionHelper(true);
     }
 
     /**
@@ -334,7 +334,7 @@ Output;
      */
     protected function assertNoProgressBar(): void
     {
-        $this->progressBarAssertionHelper(FALSE);
+        $this->progressBarAssertionHelper(false);
     }
 
     /**
