@@ -10,13 +10,13 @@
       
       
       
-        <link rel="canonical" href="https://www.drush.org/commands/10.x/all/">
-      
-      
         <meta name="author" content="Moshe Weitzman">
       
+      
+        <link rel="canonical" href="https://www.drush.org/commands/10.x/all/">
+      
       <link rel="shortcut icon" href="../../../img/favicon.ico">
-      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-6.1.7">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-6.2.2">
     
     
       
@@ -24,10 +24,10 @@
       
     
     
-      <link rel="stylesheet" href="../../../assets/stylesheets/main.19753c6b.min.css">
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.73f7c429.min.css">
       
         
-        <link rel="stylesheet" href="../../../assets/stylesheets/palette.196e0c26.min.css">
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.39b8e14a.min.css">
         
       
     
@@ -35,7 +35,7 @@
     
       
         
-        <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
         <style>body,input{font-family:"Roboto",-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono",SFMono-Regular,Consolas,Menlo,monospace}</style>
       
@@ -87,6 +87,7 @@
         <script>matchMedia("(prefers-color-scheme: dark)").matches&&document.body.setAttribute("data-md-color-scheme","slate")</script>
       
   
+    
     <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
     <label class="md-overlay" for="__drawer"></label>
@@ -115,18 +116,20 @@
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
     </label>
     <div class="md-header-nav__title" data-md-component="header-title">
-      
-        <div class="md-header-nav__ellipsis">
-          <span class="md-header-nav__topic md-ellipsis">
+      <div class="md-header-nav__ellipsis">
+        <div class="md-header-nav__topic">
+          <span class="md-ellipsis">
             Drush
           </span>
-          <span class="md-header-nav__topic md-ellipsis">
+        </div>
+        <div class="md-header-nav__topic">
+          <span class="md-ellipsis">
             
               all
             
           </span>
         </div>
-      
+      </div>
     </div>
     
       <label class="md-header-nav__button md-icon" for="__search">
@@ -189,12 +192,12 @@
     <ul class="md-tabs__list">
       
         
+
+  
   
   
     <li class="md-tabs__item">
-      
-      
-      <a href="../../.." class="md-tabs__link">
+      <a href="../../.." class="md-tabs md-tabs--active">
         Use
       </a>
     </li>
@@ -202,12 +205,12 @@
 
       
         
+
+  
   
   
     <li class="md-tabs__item">
-      
-      
-      <a href="../../" class="md-tabs__link">
+      <a href="../../" class="md-tabs md-tabs--active">
         Author
       </a>
     </li>
@@ -215,12 +218,12 @@
 
       
         
+
+  
   
   
     <li class="md-tabs__item">
-      
-      
-      <a href="../../../examples/example.drush.yml/" class="md-tabs__link">
+      <a href="../../../examples/example.drush.yml/" class="md-tabs md-tabs--active">
         Examples
       </a>
     </li>
@@ -228,12 +231,12 @@
 
       
         
+
+  
   
   
     <li class="md-tabs__item">
-      
-      
-      <a href="../../../contribute/CONTRIBUTING/" class="md-tabs__link">
+      <a href="../../../contribute/CONTRIBUTING/" class="md-tabs md-tabs--active">
         Contribute
       </a>
     </li>
@@ -241,18 +244,17 @@
 
       
         
+
+  
   
   
     
-    
+
+  
   
   
     <li class="md-tabs__item">
-      
-      
-        
-      
-      <a href="./" class="md-tabs__link md-tabs__link--active">
+      <a href="./" class="md-tabs md-tabs--active">
         Commands
       </a>
     </li>
@@ -275,12 +277,18 @@
         <div class="md-main__inner md-grid">
           
             
-              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation" >
                 <div class="md-sidebar__scrollwrap">
                   <div class="md-sidebar__inner">
                     
 
-<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
     <a href="https://www.drush.org/" title="Drush" class="md-nav__button md-logo" aria-label="Drush">
       
@@ -310,9 +318,13 @@
       
 
 
+
+  
   <li class="md-nav__item md-nav__item--nested">
     
-    <input class="md-nav__toggle md-toggle" data-md-toggle="nav-1" type="checkbox" id="nav-1" >
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-1" type="checkbox" id="nav-1" >
+    
     <label class="md-nav__link" for="nav-1">
       Use
       <span class="md-nav__icon md-icon"></span>
@@ -330,6 +342,7 @@
           
 
 
+
   <li class="md-nav__item">
     <a href="../../.." class="md-nav__link">
       Introduction
@@ -340,6 +353,7 @@
           
           
           
+
 
 
   <li class="md-nav__item">
@@ -354,6 +368,7 @@
           
 
 
+
   <li class="md-nav__item">
     <a href="../../../usage/" class="md-nav__link">
       Usage
@@ -364,6 +379,7 @@
           
           
           
+
 
 
   <li class="md-nav__item">
@@ -378,6 +394,7 @@
           
 
 
+
   <li class="md-nav__item">
     <a href="../../../using-drush-configuration/" class="md-nav__link">
       Drush configuration
@@ -388,6 +405,7 @@
           
           
           
+
 
 
   <li class="md-nav__item">
@@ -402,6 +420,7 @@
           
 
 
+
   <li class="md-nav__item">
     <a href="../../../output-formats-filters/" class="md-nav__link">
       Output Formats, Fields & Filters
@@ -414,6 +433,7 @@
           
 
 
+
   <li class="md-nav__item">
     <a href="../../../repl/" class="md-nav__link">
       REPL (a custom shell for Drupal)
@@ -424,6 +444,7 @@
           
           
           
+
 
 
   <li class="md-nav__item">
@@ -443,9 +464,13 @@
       
 
 
+
+  
   <li class="md-nav__item md-nav__item--nested">
     
-    <input class="md-nav__toggle md-toggle" data-md-toggle="nav-2" type="checkbox" id="nav-2" >
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-2" type="checkbox" id="nav-2" >
+    
     <label class="md-nav__link" for="nav-2">
       Author
       <span class="md-nav__icon md-icon"></span>
@@ -463,6 +488,7 @@
           
 
 
+
   <li class="md-nav__item">
     <a href="../../" class="md-nav__link">
       Command Authoring
@@ -473,6 +499,7 @@
           
           
           
+
 
 
   <li class="md-nav__item">
@@ -487,6 +514,7 @@
           
 
 
+
   <li class="md-nav__item">
     <a href="../../../dependency-injection/" class="md-nav__link">
       Dependency injection
@@ -497,6 +525,7 @@
           
           
           
+
 
 
   <li class="md-nav__item">
@@ -511,6 +540,7 @@
           
 
 
+
   <li class="md-nav__item">
     <a href="../../../generators/" class="md-nav__link">
       Generator Authoring
@@ -523,6 +553,7 @@
           
 
 
+
   <li class="md-nav__item">
     <a href="../../../bootstrap/" class="md-nav__link">
       Bootstrap
@@ -533,6 +564,7 @@
           
           
           
+
 
 
   <li class="md-nav__item">
@@ -552,9 +584,13 @@
       
 
 
+
+  
   <li class="md-nav__item md-nav__item--nested">
     
-    <input class="md-nav__toggle md-toggle" data-md-toggle="nav-3" type="checkbox" id="nav-3" >
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-3" type="checkbox" id="nav-3" >
+    
     <label class="md-nav__link" for="nav-3">
       Examples
       <span class="md-nav__icon md-icon"></span>
@@ -572,6 +608,7 @@
           
 
 
+
   <li class="md-nav__item">
     <a href="../../../examples/example.drush.yml/" class="md-nav__link">
       drush.yml
@@ -582,6 +619,7 @@
           
           
           
+
 
 
   <li class="md-nav__item">
@@ -596,6 +634,7 @@
           
 
 
+
   <li class="md-nav__item">
     <a href="../../../examples/helloworld.script/" class="md-nav__link">
       Helloworld.script
@@ -606,6 +645,7 @@
           
           
           
+
 
 
   <li class="md-nav__item">
@@ -620,6 +660,7 @@
           
 
 
+
   <li class="md-nav__item">
     <a href="../../../examples/ArtCommands.php/" class="md-nav__link">
       ArtCommands.php
@@ -630,6 +671,7 @@
           
           
           
+
 
 
   <li class="md-nav__item">
@@ -644,6 +686,7 @@
           
 
 
+
   <li class="md-nav__item">
     <a href="../../../examples/SiteAliasAlterCommands.php/" class="md-nav__link">
       SiteAliasAlterCommands.php
@@ -654,6 +697,7 @@
           
           
           
+
 
 
   <li class="md-nav__item">
@@ -668,6 +712,7 @@
           
 
 
+
   <li class="md-nav__item">
     <a href="../../../examples/XkcdCommands.php/" class="md-nav__link">
       XkcdCommands.php
@@ -678,6 +723,7 @@
           
           
           
+
 
 
   <li class="md-nav__item">
@@ -692,6 +738,7 @@
           
 
 
+
   <li class="md-nav__item">
     <a href="../../../examples/example.prompt.sh/" class="md-nav__link">
       prompt.sh
@@ -702,6 +749,7 @@
           
           
           
+
 
 
   <li class="md-nav__item">
@@ -721,9 +769,13 @@
       
 
 
+
+  
   <li class="md-nav__item md-nav__item--nested">
     
-    <input class="md-nav__toggle md-toggle" data-md-toggle="nav-4" type="checkbox" id="nav-4" >
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-4" type="checkbox" id="nav-4" >
+    
     <label class="md-nav__link" for="nav-4">
       Contribute
       <span class="md-nav__icon md-icon"></span>
@@ -741,6 +793,7 @@
           
 
 
+
   <li class="md-nav__item">
     <a href="../../../contribute/CONTRIBUTING/" class="md-nav__link">
       Guidelines
@@ -751,6 +804,7 @@
           
           
           
+
 
 
   <li class="md-nav__item">
@@ -769,12 +823,16 @@
       
       
 
+
   
 
 
+  
   <li class="md-nav__item md-nav__item--active md-nav__item--nested">
     
-    <input class="md-nav__toggle md-toggle" data-md-toggle="nav-5" type="checkbox" id="nav-5" checked>
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-5" type="checkbox" id="nav-5" checked>
+    
     <label class="md-nav__link" for="nav-5">
       Commands
       <span class="md-nav__icon md-icon"></span>
@@ -791,12 +849,16 @@
           
           
 
+
   
 
 
+  
   <li class="md-nav__item md-nav__item--active md-nav__item--nested">
     
-    <input class="md-nav__toggle md-toggle" data-md-toggle="nav-5-1" type="checkbox" id="nav-5-1" checked>
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-5-1" type="checkbox" id="nav-5-1" checked>
+    
     <label class="md-nav__link" for="nav-5-1">
       _global
       <span class="md-nav__icon md-icon"></span>
@@ -812,6 +874,7 @@
           
           
           
+
 
   
 
@@ -835,6 +898,7 @@
           
 
 
+
   <li class="md-nav__item">
     <a href="../browse/" class="md-nav__link">
       browse
@@ -845,6 +909,7 @@
           
           
           
+
 
 
   <li class="md-nav__item">
@@ -859,6 +924,7 @@
           
 
 
+
   <li class="md-nav__item">
     <a href="../generate/" class="md-nav__link">
       generate
@@ -869,6 +935,7 @@
           
           
           
+
 
 
   <li class="md-nav__item">
@@ -883,6 +950,7 @@
           
 
 
+
   <li class="md-nav__item">
     <a href="../jn_get/" class="md-nav__link">
       jn:get
@@ -893,6 +961,7 @@
           
           
           
+
 
 
   <li class="md-nav__item">
@@ -907,6 +976,7 @@
           
 
 
+
   <li class="md-nav__item">
     <a href="../mk_docs/" class="md-nav__link">
       mk:docs
@@ -919,6 +989,7 @@
           
 
 
+
   <li class="md-nav__item">
     <a href="../runserver/" class="md-nav__link">
       runserver
@@ -929,6 +1000,7 @@
           
           
           
+
 
 
   <li class="md-nav__item">
@@ -948,9 +1020,13 @@
           
 
 
+
+  
   <li class="md-nav__item md-nav__item--nested">
     
-    <input class="md-nav__toggle md-toggle" data-md-toggle="nav-5-2" type="checkbox" id="nav-5-2" >
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-5-2" type="checkbox" id="nav-5-2" >
+    
     <label class="md-nav__link" for="nav-5-2">
       cache
       <span class="md-nav__icon md-icon"></span>
@@ -968,6 +1044,7 @@
           
 
 
+
   <li class="md-nav__item">
     <a href="../cache_clear/" class="md-nav__link">
       cache:clear
@@ -978,6 +1055,7 @@
           
           
           
+
 
 
   <li class="md-nav__item">
@@ -992,6 +1070,7 @@
           
 
 
+
   <li class="md-nav__item">
     <a href="../cache_rebuild/" class="md-nav__link">
       cache:rebuild
@@ -1004,6 +1083,7 @@
           
 
 
+
   <li class="md-nav__item">
     <a href="../cache_set/" class="md-nav__link">
       cache:set
@@ -1014,6 +1094,7 @@
           
           
           
+
 
 
   <li class="md-nav__item">
@@ -1033,9 +1114,13 @@
           
 
 
+
+  
   <li class="md-nav__item md-nav__item--nested">
     
-    <input class="md-nav__toggle md-toggle" data-md-toggle="nav-5-3" type="checkbox" id="nav-5-3" >
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-5-3" type="checkbox" id="nav-5-3" >
+    
     <label class="md-nav__link" for="nav-5-3">
       config
       <span class="md-nav__icon md-icon"></span>
@@ -1053,6 +1138,7 @@
           
 
 
+
   <li class="md-nav__item">
     <a href="../config_delete/" class="md-nav__link">
       config:delete
@@ -1063,6 +1149,7 @@
           
           
           
+
 
 
   <li class="md-nav__item">
@@ -1077,6 +1164,7 @@
           
 
 
+
   <li class="md-nav__item">
     <a href="../config_export/" class="md-nav__link">
       config:export
@@ -1087,6 +1175,7 @@
           
           
           
+
 
 
   <li class="md-nav__item">
@@ -1101,6 +1190,7 @@
           
 
 
+
   <li class="md-nav__item">
     <a href="../config_import/" class="md-nav__link">
       config:import
@@ -1111,6 +1201,7 @@
           
           
           
+
 
 
   <li class="md-nav__item">
@@ -1125,6 +1216,7 @@
           
 
 
+
   <li class="md-nav__item">
     <a href="../config_set/" class="md-nav__link">
       config:set
@@ -1135,6 +1227,7 @@
           
           
           
+
 
 
   <li class="md-nav__item">
@@ -1154,9 +1247,13 @@
           
 
 
+
+  
   <li class="md-nav__item md-nav__item--nested">
     
-    <input class="md-nav__toggle md-toggle" data-md-toggle="nav-5-4" type="checkbox" id="nav-5-4" >
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-5-4" type="checkbox" id="nav-5-4" >
+    
     <label class="md-nav__link" for="nav-5-4">
       core
       <span class="md-nav__icon md-icon"></span>
@@ -1174,6 +1271,7 @@
           
 
 
+
   <li class="md-nav__item">
     <a href="../core_cron/" class="md-nav__link">
       core:cron
@@ -1184,6 +1282,7 @@
           
           
           
+
 
 
   <li class="md-nav__item">
@@ -1198,6 +1297,7 @@
           
 
 
+
   <li class="md-nav__item">
     <a href="../core_init/" class="md-nav__link">
       core:init
@@ -1208,6 +1308,7 @@
           
           
           
+
 
 
   <li class="md-nav__item">
@@ -1222,6 +1323,7 @@
           
 
 
+
   <li class="md-nav__item">
     <a href="../core_rsync/" class="md-nav__link">
       core:rsync
@@ -1234,6 +1336,7 @@
           
 
 
+
   <li class="md-nav__item">
     <a href="../core_status/" class="md-nav__link">
       core:status
@@ -1244,6 +1347,7 @@
           
           
           
+
 
 
   <li class="md-nav__item">
@@ -1263,9 +1367,13 @@
           
 
 
+
+  
   <li class="md-nav__item md-nav__item--nested">
     
-    <input class="md-nav__toggle md-toggle" data-md-toggle="nav-5-5" type="checkbox" id="nav-5-5" >
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-5-5" type="checkbox" id="nav-5-5" >
+    
     <label class="md-nav__link" for="nav-5-5">
       deploy
       <span class="md-nav__icon md-icon"></span>
@@ -1283,6 +1391,7 @@
           
 
 
+
   <li class="md-nav__item">
     <a href="../deploy/" class="md-nav__link">
       deploy
@@ -1295,6 +1404,7 @@
           
 
 
+
   <li class="md-nav__item">
     <a href="../deploy_hook/" class="md-nav__link">
       deploy:hook
@@ -1305,6 +1415,7 @@
           
           
           
+
 
 
   <li class="md-nav__item">
@@ -1324,9 +1435,13 @@
           
 
 
+
+  
   <li class="md-nav__item md-nav__item--nested">
     
-    <input class="md-nav__toggle md-toggle" data-md-toggle="nav-5-6" type="checkbox" id="nav-5-6" >
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-5-6" type="checkbox" id="nav-5-6" >
+    
     <label class="md-nav__link" for="nav-5-6">
       entity
       <span class="md-nav__icon md-icon"></span>
@@ -1344,6 +1459,7 @@
           
 
 
+
   <li class="md-nav__item">
     <a href="../entity_delete/" class="md-nav__link">
       entity:delete
@@ -1354,6 +1470,7 @@
           
           
           
+
 
 
   <li class="md-nav__item">
@@ -1373,9 +1490,13 @@
           
 
 
+
+  
   <li class="md-nav__item md-nav__item--nested">
     
-    <input class="md-nav__toggle md-toggle" data-md-toggle="nav-5-7" type="checkbox" id="nav-5-7" >
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-5-7" type="checkbox" id="nav-5-7" >
+    
     <label class="md-nav__link" for="nav-5-7">
       image
       <span class="md-nav__icon md-icon"></span>
@@ -1393,6 +1514,7 @@
           
 
 
+
   <li class="md-nav__item">
     <a href="../image_derive/" class="md-nav__link">
       image:derive
@@ -1403,6 +1525,7 @@
           
           
           
+
 
 
   <li class="md-nav__item">
@@ -1422,9 +1545,13 @@
           
 
 
+
+  
   <li class="md-nav__item md-nav__item--nested">
     
-    <input class="md-nav__toggle md-toggle" data-md-toggle="nav-5-8" type="checkbox" id="nav-5-8" >
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-5-8" type="checkbox" id="nav-5-8" >
+    
     <label class="md-nav__link" for="nav-5-8">
       locale
       <span class="md-nav__icon md-icon"></span>
@@ -1442,6 +1569,7 @@
           
 
 
+
   <li class="md-nav__item">
     <a href="../locale_check/" class="md-nav__link">
       locale:check
@@ -1452,6 +1580,7 @@
           
           
           
+
 
 
   <li class="md-nav__item">
@@ -1466,6 +1595,7 @@
           
 
 
+
   <li class="md-nav__item">
     <a href="../locale_import/" class="md-nav__link">
       locale:import
@@ -1476,6 +1606,7 @@
           
           
           
+
 
 
   <li class="md-nav__item">
@@ -1495,9 +1626,13 @@
           
 
 
+
+  
   <li class="md-nav__item md-nav__item--nested">
     
-    <input class="md-nav__toggle md-toggle" data-md-toggle="nav-5-9" type="checkbox" id="nav-5-9" >
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-5-9" type="checkbox" id="nav-5-9" >
+    
     <label class="md-nav__link" for="nav-5-9">
       php
       <span class="md-nav__icon md-icon"></span>
@@ -1515,6 +1650,7 @@
           
 
 
+
   <li class="md-nav__item">
     <a href="../php_cli/" class="md-nav__link">
       php:cli
@@ -1527,6 +1663,7 @@
           
 
 
+
   <li class="md-nav__item">
     <a href="../php_eval/" class="md-nav__link">
       php:eval
@@ -1537,6 +1674,7 @@
           
           
           
+
 
 
   <li class="md-nav__item">
@@ -1556,9 +1694,13 @@
           
 
 
+
+  
   <li class="md-nav__item md-nav__item--nested">
     
-    <input class="md-nav__toggle md-toggle" data-md-toggle="nav-5-10" type="checkbox" id="nav-5-10" >
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-5-10" type="checkbox" id="nav-5-10" >
+    
     <label class="md-nav__link" for="nav-5-10">
       pm
       <span class="md-nav__icon md-icon"></span>
@@ -1576,6 +1718,7 @@
           
 
 
+
   <li class="md-nav__item">
     <a href="../pm_enable/" class="md-nav__link">
       pm:enable
@@ -1586,6 +1729,7 @@
           
           
           
+
 
 
   <li class="md-nav__item">
@@ -1600,6 +1744,7 @@
           
 
 
+
   <li class="md-nav__item">
     <a href="../pm_security/" class="md-nav__link">
       pm:security
@@ -1612,6 +1757,7 @@
           
 
 
+
   <li class="md-nav__item">
     <a href="../pm_security-php/" class="md-nav__link">
       pm:security-php
@@ -1622,6 +1768,7 @@
           
           
           
+
 
 
   <li class="md-nav__item">
@@ -1641,9 +1788,13 @@
           
 
 
+
+  
   <li class="md-nav__item md-nav__item--nested">
     
-    <input class="md-nav__toggle md-toggle" data-md-toggle="nav-5-11" type="checkbox" id="nav-5-11" >
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-5-11" type="checkbox" id="nav-5-11" >
+    
     <label class="md-nav__link" for="nav-5-11">
       queue
       <span class="md-nav__icon md-icon"></span>
@@ -1661,6 +1812,7 @@
           
 
 
+
   <li class="md-nav__item">
     <a href="../queue_delete/" class="md-nav__link">
       queue:delete
@@ -1673,6 +1825,7 @@
           
 
 
+
   <li class="md-nav__item">
     <a href="../queue_list/" class="md-nav__link">
       queue:list
@@ -1683,6 +1836,7 @@
           
           
           
+
 
 
   <li class="md-nav__item">
@@ -1702,9 +1856,13 @@
           
 
 
+
+  
   <li class="md-nav__item md-nav__item--nested">
     
-    <input class="md-nav__toggle md-toggle" data-md-toggle="nav-5-12" type="checkbox" id="nav-5-12" >
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-5-12" type="checkbox" id="nav-5-12" >
+    
     <label class="md-nav__link" for="nav-5-12">
       role
       <span class="md-nav__icon md-icon"></span>
@@ -1722,6 +1880,7 @@
           
 
 
+
   <li class="md-nav__item">
     <a href="../role_create/" class="md-nav__link">
       role:create
@@ -1732,6 +1891,7 @@
           
           
           
+
 
 
   <li class="md-nav__item">
@@ -1746,6 +1906,7 @@
           
 
 
+
   <li class="md-nav__item">
     <a href="../role_list/" class="md-nav__link">
       role:list
@@ -1758,6 +1919,7 @@
           
 
 
+
   <li class="md-nav__item">
     <a href="../role_perm_add/" class="md-nav__link">
       role:perm:add
@@ -1768,6 +1930,7 @@
           
           
           
+
 
 
   <li class="md-nav__item">
@@ -1787,9 +1950,13 @@
           
 
 
+
+  
   <li class="md-nav__item md-nav__item--nested">
     
-    <input class="md-nav__toggle md-toggle" data-md-toggle="nav-5-13" type="checkbox" id="nav-5-13" >
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-5-13" type="checkbox" id="nav-5-13" >
+    
     <label class="md-nav__link" for="nav-5-13">
       site
       <span class="md-nav__icon md-icon"></span>
@@ -1807,6 +1974,7 @@
           
 
 
+
   <li class="md-nav__item">
     <a href="../site_alias/" class="md-nav__link">
       site:alias
@@ -1817,6 +1985,7 @@
           
           
           
+
 
 
   <li class="md-nav__item">
@@ -1831,6 +2000,7 @@
           
 
 
+
   <li class="md-nav__item">
     <a href="../site_install/" class="md-nav__link">
       site:install
@@ -1843,6 +2013,7 @@
           
 
 
+
   <li class="md-nav__item">
     <a href="../site_set/" class="md-nav__link">
       site:set
@@ -1853,6 +2024,7 @@
           
           
           
+
 
 
   <li class="md-nav__item">
@@ -1872,9 +2044,13 @@
           
 
 
+
+  
   <li class="md-nav__item md-nav__item--nested">
     
-    <input class="md-nav__toggle md-toggle" data-md-toggle="nav-5-14" type="checkbox" id="nav-5-14" >
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-5-14" type="checkbox" id="nav-5-14" >
+    
     <label class="md-nav__link" for="nav-5-14">
       sql
       <span class="md-nav__icon md-icon"></span>
@@ -1892,6 +2068,7 @@
           
 
 
+
   <li class="md-nav__item">
     <a href="../sql_cli/" class="md-nav__link">
       sql:cli
@@ -1902,6 +2079,7 @@
           
           
           
+
 
 
   <li class="md-nav__item">
@@ -1916,6 +2094,7 @@
           
 
 
+
   <li class="md-nav__item">
     <a href="../sql_create/" class="md-nav__link">
       sql:create
@@ -1926,6 +2105,7 @@
           
           
           
+
 
 
   <li class="md-nav__item">
@@ -1940,6 +2120,7 @@
           
 
 
+
   <li class="md-nav__item">
     <a href="../sql_dump/" class="md-nav__link">
       sql:dump
@@ -1950,6 +2131,7 @@
           
           
           
+
 
 
   <li class="md-nav__item">
@@ -1964,6 +2146,7 @@
           
 
 
+
   <li class="md-nav__item">
     <a href="../sql_sanitize/" class="md-nav__link">
       sql:sanitize
@@ -1974,6 +2157,7 @@
           
           
           
+
 
 
   <li class="md-nav__item">
@@ -1993,9 +2177,13 @@
           
 
 
+
+  
   <li class="md-nav__item md-nav__item--nested">
     
-    <input class="md-nav__toggle md-toggle" data-md-toggle="nav-5-15" type="checkbox" id="nav-5-15" >
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-5-15" type="checkbox" id="nav-5-15" >
+    
     <label class="md-nav__link" for="nav-5-15">
       state
       <span class="md-nav__icon md-icon"></span>
@@ -2013,6 +2201,7 @@
           
 
 
+
   <li class="md-nav__item">
     <a href="../state_delete/" class="md-nav__link">
       state:delete
@@ -2025,6 +2214,7 @@
           
 
 
+
   <li class="md-nav__item">
     <a href="../state_get/" class="md-nav__link">
       state:get
@@ -2035,6 +2225,7 @@
           
           
           
+
 
 
   <li class="md-nav__item">
@@ -2054,9 +2245,13 @@
           
 
 
+
+  
   <li class="md-nav__item md-nav__item--nested">
     
-    <input class="md-nav__toggle md-toggle" data-md-toggle="nav-5-16" type="checkbox" id="nav-5-16" >
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-5-16" type="checkbox" id="nav-5-16" >
+    
     <label class="md-nav__link" for="nav-5-16">
       theme
       <span class="md-nav__icon md-icon"></span>
@@ -2074,6 +2269,7 @@
           
 
 
+
   <li class="md-nav__item">
     <a href="../theme_enable/" class="md-nav__link">
       theme:enable
@@ -2084,6 +2280,7 @@
           
           
           
+
 
 
   <li class="md-nav__item">
@@ -2103,9 +2300,13 @@
           
 
 
+
+  
   <li class="md-nav__item md-nav__item--nested">
     
-    <input class="md-nav__toggle md-toggle" data-md-toggle="nav-5-17" type="checkbox" id="nav-5-17" >
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-5-17" type="checkbox" id="nav-5-17" >
+    
     <label class="md-nav__link" for="nav-5-17">
       twig
       <span class="md-nav__icon md-icon"></span>
@@ -2123,6 +2324,7 @@
           
 
 
+
   <li class="md-nav__item">
     <a href="../twig_compile/" class="md-nav__link">
       twig:compile
@@ -2133,6 +2335,7 @@
           
           
           
+
 
 
   <li class="md-nav__item">
@@ -2152,9 +2355,13 @@
           
 
 
+
+  
   <li class="md-nav__item md-nav__item--nested">
     
-    <input class="md-nav__toggle md-toggle" data-md-toggle="nav-5-18" type="checkbox" id="nav-5-18" >
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-5-18" type="checkbox" id="nav-5-18" >
+    
     <label class="md-nav__link" for="nav-5-18">
       updatedb
       <span class="md-nav__icon md-icon"></span>
@@ -2172,6 +2379,7 @@
           
 
 
+
   <li class="md-nav__item">
     <a href="../updatedb/" class="md-nav__link">
       updatedb
@@ -2182,6 +2390,7 @@
           
           
           
+
 
 
   <li class="md-nav__item">
@@ -2201,9 +2410,13 @@
           
 
 
+
+  
   <li class="md-nav__item md-nav__item--nested">
     
-    <input class="md-nav__toggle md-toggle" data-md-toggle="nav-5-19" type="checkbox" id="nav-5-19" >
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-5-19" type="checkbox" id="nav-5-19" >
+    
     <label class="md-nav__link" for="nav-5-19">
       user
       <span class="md-nav__icon md-icon"></span>
@@ -2221,6 +2434,7 @@
           
 
 
+
   <li class="md-nav__item">
     <a href="../user_block/" class="md-nav__link">
       user:block
@@ -2231,6 +2445,7 @@
           
           
           
+
 
 
   <li class="md-nav__item">
@@ -2245,6 +2460,7 @@
           
 
 
+
   <li class="md-nav__item">
     <a href="../user_create/" class="md-nav__link">
       user:create
@@ -2255,6 +2471,7 @@
           
           
           
+
 
 
   <li class="md-nav__item">
@@ -2269,6 +2486,7 @@
           
 
 
+
   <li class="md-nav__item">
     <a href="../user_login/" class="md-nav__link">
       user:login
@@ -2279,6 +2497,7 @@
           
           
           
+
 
 
   <li class="md-nav__item">
@@ -2293,6 +2512,7 @@
           
 
 
+
   <li class="md-nav__item">
     <a href="../user_role_add/" class="md-nav__link">
       user:role:add
@@ -2305,6 +2525,7 @@
           
 
 
+
   <li class="md-nav__item">
     <a href="../user_role_remove/" class="md-nav__link">
       user:role:remove
@@ -2315,6 +2536,7 @@
           
           
           
+
 
 
   <li class="md-nav__item">
@@ -2334,9 +2556,13 @@
           
 
 
+
+  
   <li class="md-nav__item md-nav__item--nested">
     
-    <input class="md-nav__toggle md-toggle" data-md-toggle="nav-5-20" type="checkbox" id="nav-5-20" >
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-5-20" type="checkbox" id="nav-5-20" >
+    
     <label class="md-nav__link" for="nav-5-20">
       views
       <span class="md-nav__icon md-icon"></span>
@@ -2354,6 +2580,7 @@
           
 
 
+
   <li class="md-nav__item">
     <a href="../views_analyze/" class="md-nav__link">
       views:analyze
@@ -2364,6 +2591,7 @@
           
           
           
+
 
 
   <li class="md-nav__item">
@@ -2378,6 +2606,7 @@
           
 
 
+
   <li class="md-nav__item">
     <a href="../views_disable/" class="md-nav__link">
       views:disable
@@ -2388,6 +2617,7 @@
           
           
           
+
 
 
   <li class="md-nav__item">
@@ -2402,6 +2632,7 @@
           
 
 
+
   <li class="md-nav__item">
     <a href="../views_execute/" class="md-nav__link">
       views:execute
@@ -2412,6 +2643,7 @@
           
           
           
+
 
 
   <li class="md-nav__item">
@@ -2431,9 +2663,13 @@
           
 
 
+
+  
   <li class="md-nav__item md-nav__item--nested">
     
-    <input class="md-nav__toggle md-toggle" data-md-toggle="nav-5-21" type="checkbox" id="nav-5-21" >
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-5-21" type="checkbox" id="nav-5-21" >
+    
     <label class="md-nav__link" for="nav-5-21">
       watchdog
       <span class="md-nav__icon md-icon"></span>
@@ -2451,6 +2687,7 @@
           
 
 
+
   <li class="md-nav__item">
     <a href="../watchdog_delete/" class="md-nav__link">
       watchdog:delete
@@ -2461,6 +2698,7 @@
           
           
           
+
 
 
   <li class="md-nav__item">
@@ -2475,6 +2713,7 @@
           
 
 
+
   <li class="md-nav__item">
     <a href="../watchdog_show/" class="md-nav__link">
       watchdog:show
@@ -2485,6 +2724,7 @@
           
           
           
+
 
 
   <li class="md-nav__item">
@@ -2511,7 +2751,8 @@
               </div>
             
             
-              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc" >
                 <div class="md-sidebar__scrollwrap">
                   <div class="md-sidebar__inner">
                     
@@ -2737,15 +2978,15 @@
       
     </div>
     
-      <script src="../../../assets/javascripts/vendor.0ac82a11.min.js"></script>
-      <script src="../../../assets/javascripts/bundle.f81dfb4d.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}</script>
+      <script src="../../../assets/javascripts/vendor.08c56446.min.js"></script>
+      <script src="../../../assets/javascripts/bundle.6ced434e.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}</script>
       
       <script>
         app = initialize({
           base: "../../..",
           features: ['navigation.tabs'],
           search: Object.assign({
-            worker: "../../../assets/javascripts/worker/search.4ac00218.min.js"
+            worker: "../../../assets/javascripts/worker/search.8c7e0a7e.min.js"
           }, typeof search !== "undefined" && search)
         })
       </script>

@@ -274,7 +274,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                     <abbr title="Consolidation\OutputFormatters\StructuredData\RowsOfFields">RowsOfFields</abbr>
                 </div>
                 <div class="col-md-8 type">
-                    <a href="#method_information">information</a>($names = &#039;&#039;, $options = [&#039;format&#039; =&gt; &#039;table&#039;, &#039;uid&#039; =&gt; self::REQ, &#039;mail&#039; =&gt; self::REQ])
+                    <a href="#method_information">information</a>(string $names = &#039;&#039;, $options = [&#039;format&#039; =&gt; &#039;table&#039;, &#039;uid&#039; =&gt; self::REQ, &#039;mail&#039; =&gt; self::REQ])
         
                                             <p>Print information about the specified user(s).</p>                </div>
                 <div class="col-md-2"></div>
@@ -335,7 +335,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                     
                 </div>
                 <div class="col-md-8 type">
-                    <a href="#method_create">create</a>($name, $options = [&#039;password&#039; =&gt; self::REQ, &#039;mail&#039; =&gt; self::REQ])
+                    <a href="#method_create">create</a>(string $name, $options = [&#039;password&#039; =&gt; self::REQ, &#039;mail&#039; =&gt; self::REQ])
         
                                             <p>Create a user account.</p>                </div>
                 <div class="col-md-2"></div>
@@ -355,7 +355,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                     
                 </div>
                 <div class="col-md-8 type">
-                    <a href="#method_cancel">cancel</a>($names, $options = [&#039;delete-content&#039; =&gt; false])
+                    <a href="#method_cancel">cancel</a>(string $names, $options = [&#039;delete-content&#039; =&gt; false])
         
                                             <p>Cancel user account(s) with the specified name(s).</p>                </div>
                 <div class="col-md-2"></div>
@@ -653,7 +653,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
                     <h3 id="method_information">
         <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Commands/core/UserCommands.php#L73">at line 73</a></div>
         <code>                    <abbr title="Consolidation\OutputFormatters\StructuredData\RowsOfFields">RowsOfFields</abbr>
-    <strong>information</strong>($names = &#039;&#039;, $options = [&#039;format&#039; =&gt; &#039;table&#039;, &#039;uid&#039; =&gt; self::REQ, &#039;mail&#039; =&gt; self::REQ])
+    <strong>information</strong>(string $names = &#039;&#039;, $options = [&#039;format&#039; =&gt; &#039;table&#039;, &#039;uid&#039; =&gt; self::REQ, &#039;mail&#039; =&gt; self::REQ])
         </code>
     </h3>
     <div class="details">
@@ -667,9 +667,9 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
 
                     <table class="table table-condensed">
                     <tr>
-                <td></td>
+                <td>string</td>
                 <td>$names</td>
-                <td></td>
+                <td>A comma delimited list of user names.</td>
             </tr>
                     <tr>
                 <td></td>
@@ -871,7 +871,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
                     <h3 id="method_create">
         <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Commands/core/UserCommands.php#L238">at line 238</a></div>
         <code>                    
-    <strong>create</strong>($name, $options = [&#039;password&#039; =&gt; self::REQ, &#039;mail&#039; =&gt; self::REQ])
+    <strong>create</strong>(string $name, $options = [&#039;password&#039; =&gt; self::REQ, &#039;mail&#039; =&gt; self::REQ])
         </code>
     </h3>
     <div class="details">
@@ -885,9 +885,9 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
 
                     <table class="table table-condensed">
                     <tr>
-                <td></td>
+                <td>string</td>
                 <td>$name</td>
-                <td></td>
+                <td>The name of the account to add</td>
             </tr>
                     <tr>
                 <td></td>
@@ -938,7 +938,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
                     <h3 id="method_cancel">
         <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Commands/core/UserCommands.php#L288">at line 288</a></div>
         <code>                    
-    <strong>cancel</strong>($names, $options = [&#039;delete-content&#039; =&gt; false])
+    <strong>cancel</strong>(string $names, $options = [&#039;delete-content&#039; =&gt; false])
         </code>
     </h3>
     <div class="details">
@@ -952,9 +952,9 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
 
                     <table class="table table-condensed">
                     <tr>
-                <td></td>
+                <td>string</td>
                 <td>$names</td>
-                <td></td>
+                <td>A comma delimited list of user names.</td>
             </tr>
                     <tr>
                 <td></td>
@@ -1050,8 +1050,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
 
     
             </div><div id="footer">
-        Generated by <a href="https://github.com/code-lts/doctum">Doctum, a API Documentation generator and fork of Sami</a>.
-    </div></div>
+        Generated by <a href="https://github.com/code-lts/doctum">Doctum, a API Documentation generator and fork of Sami</a>.</div></div>
     </div>
     </body>
 

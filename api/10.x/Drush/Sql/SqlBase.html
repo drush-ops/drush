@@ -220,7 +220,7 @@ for structure only, or have structure and data dumped.</p>                </div>
                     array
                 </div>
                 <div class="col-md-8 type">
-                    <a href="#method_getRawTableList">getRawTableList</a>(option_name $option_name, array $options)
+                    <a href="#method_getRawTableList">getRawTableList</a>($option_name, array $options)
         
                                             <p>Consult the specified options and return the list of tables specified.</p>                </div>
                 <div class="col-md-2"><small>from&nbsp;<a href="../../Drush/Sql/SqlTableSelectionTrait.html#method_getRawTableList">
@@ -462,7 +462,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                     string
                 </div>
                 <div class="col-md-8 type">
-                    <a href="#method_createdbSql">createdbSql</a>(string $dbname, bool $quoted = false)
+                    <a href="#method_createdbSql">createdbSql</a>($dbname, bool $quoted = false)
         
                                             <p>Build a SQL string for dropping and creating a database.</p>                </div>
                 <div class="col-md-2"></div>
@@ -597,7 +597,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                     static&nbsp;array
                 </div>
                 <div class="col-md-8 type">
-                    <a href="#method_dbSpecFromDbUrl">dbSpecFromDbUrl</a>(db_url $db_url)
+                    <a href="#method_dbSpecFromDbUrl">dbSpecFromDbUrl</a>($db_url)
         
                                             <p>Convert from an old-style database URL to an array of database settings.</p>                </div>
                 <div class="col-md-2"></div>
@@ -846,7 +846,7 @@ for structure only, or have structure and data dumped.</p>                    <p
         <div class="location">in <a href="../../Drush/Sql/SqlTableSelectionTrait.html#method_getRawTableList">
 <abbr title="Drush\Sql\SqlTableSelectionTrait">SqlTableSelectionTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/10.x/src/Sql/SqlTableSelectionTrait.php#L148">at line 148</a></div>
         <code>                    array
-    <strong>getRawTableList</strong>(option_name $option_name, array $options)
+    <strong>getRawTableList</strong>($option_name, array $options)
         </code>
     </h3>
     <div class="details">
@@ -860,10 +860,9 @@ for structure only, or have structure and data dumped.</p>                    <p
 
                     <table class="table table-condensed">
                     <tr>
-                <td>option_name</td>
+                <td></td>
                 <td>$option_name</td>
-                <td>The option name to check: skip-tables, structure-tables
-or tables.  This function will check both *-key and *-list.</td>
+                <td></td>
             </tr>
                     <tr>
                 <td>array</td>
@@ -1623,7 +1622,7 @@ provide a $result_file whose value can be drush_bit_bucket().</p>               
                     <h3 id="method_createdbSql">
         <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Sql/SqlBase.php#L425">at line 425</a></div>
         <code>                    string
-    <strong>createdbSql</strong>(string $dbname, bool $quoted = false)
+    <strong>createdbSql</strong>($dbname, bool $quoted = false)
         </code>
     </h3>
     <div class="details">
@@ -1637,10 +1636,9 @@ provide a $result_file whose value can be drush_bit_bucket().</p>               
 
                     <table class="table table-condensed">
                     <tr>
-                <td>string</td>
+                <td></td>
                 <td>$dbname</td>
-                <td>dbname
-The database name.</td>
+                <td></td>
             </tr>
                     <tr>
                 <td>bool</td>
@@ -2031,7 +2029,7 @@ specified site alias record.</p>                            </div>
                     <h3 id="method_dbSpecFromDbUrl">
         <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Sql/SqlBase.php#L593">at line 593</a></div>
         <code>        static            array
-    <strong>dbSpecFromDbUrl</strong>(db_url $db_url)
+    <strong>dbSpecFromDbUrl</strong>($db_url)
         </code>
     </h3>
     <div class="details">
@@ -2045,9 +2043,9 @@ specified site alias record.</p>                            </div>
 
                     <table class="table table-condensed">
                     <tr>
-                <td>db_url</td>
+                <td></td>
                 <td>$db_url</td>
-                <td>A Drupal 6 db url string to convert, or an array with a 'default' element.</td>
+                <td></td>
             </tr>
             </table>
 
@@ -2111,8 +2109,7 @@ specified site alias record.</p>                            </div>
 
     
             </div><div id="footer">
-        Generated by <a href="https://github.com/code-lts/doctum">Doctum, a API Documentation generator and fork of Sami</a>.
-    </div></div>
+        Generated by <a href="https://github.com/code-lts/doctum">Doctum, a API Documentation generator and fork of Sami</a>.</div></div>
     </div>
     </body>
 
