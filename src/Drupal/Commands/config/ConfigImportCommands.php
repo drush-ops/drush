@@ -20,7 +20,6 @@ use Drupal\Core\Lock\LockBackendInterface;
 use Drupal\Core\StringTranslation\TranslationInterface;
 use Drush\Commands\DrushCommands;
 use Drush\Exceptions\UserAbortException;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Webmozart\PathUtil\Path;
 
 class ConfigImportCommands extends DrushCommands
@@ -104,6 +103,8 @@ class ConfigImportCommands extends DrushCommands
     }
 
     /**
+     * Note that type hint is changing https://www.drupal.org/project/drupal/issues/3161983
+     *
      * @return \Symfony\Component\EventDispatcher\EventDispatcherInterface
      */
     public function getEventDispatcher()
@@ -189,7 +190,7 @@ class ConfigImportCommands extends DrushCommands
      * @param StorageInterface $configStorageSync
      * @param \Drupal\Core\Cache\CacheBackendInterface $configCache
      * @param \Drupal\Core\Extension\ModuleHandlerInterface $moduleHandler
-     * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface $eventDispatcher
+     * @param $eventDispatcher
      * @param \Drupal\Core\Lock\LockBackendInterface $lock
      * @param \Drupal\Core\Config\TypedConfigManagerInterface $configTyped
      * @param \Drupal\Core\Extension\ModuleInstallerInterface $moduleInstaller
@@ -203,7 +204,8 @@ class ConfigImportCommands extends DrushCommands
         StorageInterface $configStorageSync,
         CacheBackendInterface $configCache,
         ModuleHandlerInterface $moduleHandler,
-        EventDispatcherInterface $eventDispatcher,
+        // Omit type hint as it changed in https://www.drupal.org/project/drupal/issues/3161983
+        $eventDispatcher,
         LockBackendInterface $lock,
         TypedConfigManagerInterface $configTyped,
         ModuleInstallerInterface $moduleInstaller,
