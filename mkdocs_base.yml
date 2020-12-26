@@ -13,12 +13,13 @@ theme:
     scheme: preference
   features:
     - navigation.tabs
+    - toc.integrate
 site_url: https://www.drush.org/
 repo_url: https://github.com/drush-ops/drush
 #Overridden on many pages via edit_uri plugin. See front matter.
 edit_uri: blob/10.x/docs
 extra_css:
-  - css/extra.readthedocs.css
+  - css/extra.drush.css
 plugins:
   - edit_url
   - search
