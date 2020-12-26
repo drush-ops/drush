@@ -42,7 +42,7 @@
     
     
     
-      <link rel="stylesheet" href="../css/extra.readthedocs.css">
+      <link rel="stylesheet" href="../css/extra.drush.css">
     
     
       
@@ -308,10 +308,11 @@
       
 
       <!-- MW: Add link built outside of mkdocs -->
+      <!-- This can now be done in 'nav' without an override but I'd have to hard code the domain https://github.com/squidfunk/mkdocs-material/issues/2072 and https://github.com/squidfunk/mkdocs-material/issues/1884 -->
       <li class="md-tabs__item">
         <a href="/api/10.x" class="md-tabs__link">API</a>
       </li>
-      <!-- End add -->
+      <!-- End Add -->
 
     </ul>
   </div>
@@ -333,7 +334,9 @@
   
 
 
-<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  
+
+<nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
     <a href="https://www.drush.org/" title="Drush" class="md-nav__button md-logo" aria-label="Drush">
       
@@ -2851,65 +2854,6 @@
               </div>
             
             
-              
-              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc" >
-                <div class="md-sidebar__scrollwrap">
-                  <div class="md-sidebar__inner">
-                    
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#specifying-the-services-file" class="md-nav__link">
-    Specifying the Services File
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#altering-drush-command-info" class="md-nav__link">
-    Altering Drush Command Info
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#symfony-console-commands" class="md-nav__link">
-    Symfony Console Commands
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#site-wide-drush-commands" class="md-nav__link">
-    Site-Wide Drush Commands
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#global-drush-commands" class="md-nav__link">
-    Global Drush Commands
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-                  </div>
-                </div>
-              </div>
-            
           
           <div class="md-content">
             <article class="md-content__inner md-typeset">
@@ -3131,7 +3075,7 @@ With this configuration in place, global commands may be placed as described in 
       <script>
         app = initialize({
           base: "..",
-          features: ['navigation.tabs'],
+          features: ['navigation.tabs', 'toc.integrate'],
           search: Object.assign({
             worker: "../assets/javascripts/worker/search.8c7e0a7e.min.js"
           }, typeof search !== "undefined" && search)
