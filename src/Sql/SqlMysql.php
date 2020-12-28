@@ -111,9 +111,12 @@ EOT;
 
             // For MariaDB, ALTER USER was introduced in 10.2 so before that use SET PASSWORD.
             // @see Drupal\Core\Database\Driver\mysql\Connection::getMariaDbVersionMatch()
-            // in Drupal 9 (code copied here for Drupal 8 support).
+            // in Drupal 9.
+            $this->su();
+            $this->alwaysQuery('SELECT VERSION();');
+            $version = trim($this->getProcess()->getOutput());
             $regex = '/^(?:5\.5\.5-)?(\d+\.\d+\.\d+).*-mariadb.*/i';
-            preg_match($regex, Database::getConnection()->version(), $matches);
+            preg_match($regex, $version, $matches);
             if (!empty($matches[1]) && version_compare($matches[1], '10.2') < 0) {
                 $sql[] = sprintf("SET PASSWORD FOR %s = PASSWORD('%s');", $user, $dbSpec['password']);
             }
