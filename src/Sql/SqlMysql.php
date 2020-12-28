@@ -2,6 +2,7 @@
 
 namespace Drush\Sql;
 
+use Drupal\Core\Database\Database;
 use PDO;
 
 class SqlMysql extends SqlBase
@@ -107,7 +108,18 @@ EOT;
             $user = sprintf("'%s'@'%s'", $dbSpec['username'], $domain);
             $sql[] = sprintf("DROP USER IF EXISTS %s;", $user);
             $sql[] = sprintf("CREATE USER %s IDENTIFIED WITH mysql_native_password;", $user);
-            $sql[] = sprintf("SET PASSWORD FOR %s = PASSWORD('%s');", $user, $dbSpec['password']);
+
+            // For MariaDB, ALTER USER was introduced in 10.2 so before that use SET PASSWORD.
+            // @see Drupal\Core\Database\Driver\mysql\Connection::getMariaDbVersionMatch()
+            // in Drupal 9 (code copied here for Drupal 8 support).
+            $regex = '/^(?:5\.5\.5-)?(\d+\.\d+\.\d+).*-mariadb.*/i';
+            preg_match($regex, Database::getConnection()->version(), $matches);
+            if (!empty($matches[1]) && version_compare($matches[1], '10.2') < 0) {
+                $sql[] = sprintf("SET PASSWORD FOR %s = PASSWORD('%s');", $user, $dbSpec['password']);
+            }
+            else {
+                $sql[] = sprintf("ALTER USER %s IDENTIFIED BY '%s';", $user, $dbSpec['password']);
+            }
             $sql[] = sprintf('GRANT ALL PRIVILEGES ON %s.* TO %s;', $dbname, $user);
             $sql[] = 'FLUSH PRIVILEGES;';
         }
