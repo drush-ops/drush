@@ -268,7 +268,7 @@ whitespace.</p>                </div>
                     
                 </div>
                 <div class="col-md-8 type">
-                    <a href="#method_execute">execute</a>(string $command, int $expected_return = 0, $cd = null, array $env = null, string $input = null)
+                    <a href="#method_execute">execute</a>(array|string $command, int $expected_return = 0, $cd = null, array $env = null, string $input = null)
         
                                             <p>Actually runs the command.</p>                </div>
                 <div class="col-md-2"><small>from&nbsp;<a href="../../Drush/TestTraits/CliTestTrait.html#method_execute">
@@ -738,7 +738,7 @@ whitespace.</p>                                                </div>
         <div class="location">in <a href="../../Drush/TestTraits/CliTestTrait.html#method_execute">
 <abbr title="Drush\TestTraits\CliTestTrait">CliTestTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/10.x/src/TestTraits/CliTestTrait.php#L92">at line 92</a></div>
         <code>                    
-    <strong>execute</strong>(string $command, int $expected_return = 0, $cd = null, array $env = null, string $input = null)
+    <strong>execute</strong>(array|string $command, int $expected_return = 0, $cd = null, array $env = null, string $input = null)
         </code>
     </h3>
     <div class="details">
@@ -752,7 +752,7 @@ whitespace.</p>                                                </div>
 
                     <table class="table table-condensed">
                     <tr>
-                <td>string</td>
+                <td>array|string</td>
                 <td>$command</td>
                 <td>The actual command line to run.</td>
             </tr>
@@ -788,7 +788,7 @@ whitespace.</p>                                                </div>
                     <div class="method-item">
                     <h3 id="method_escapeshellarg">
         <div class="location">in <a href="../../Drush/TestTraits/CliTestTrait.html#method_escapeshellarg">
-<abbr title="Drush\TestTraits\CliTestTrait">CliTestTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/10.x/src/TestTraits/CliTestTrait.php#L120">at line 120</a></div>
+<abbr title="Drush\TestTraits\CliTestTrait">CliTestTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/10.x/src/TestTraits/CliTestTrait.php#L130">at line 130</a></div>
         <code>        static            
     <strong>escapeshellarg</strong>($arg)
         </code>
@@ -818,7 +818,7 @@ whitespace.</p>                                                </div>
                     <div class="method-item">
                     <h3 id="method_isWindows">
         <div class="location">in <a href="../../Drush/TestTraits/CliTestTrait.html#method_isWindows">
-<abbr title="Drush\TestTraits\CliTestTrait">CliTestTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/10.x/src/TestTraits/CliTestTrait.php#L132">at line 132</a></div>
+<abbr title="Drush\TestTraits\CliTestTrait">CliTestTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/10.x/src/TestTraits/CliTestTrait.php#L142">at line 142</a></div>
         <code>        static            
     <strong>isWindows</strong>()
         </code>
@@ -838,7 +838,7 @@ whitespace.</p>                                                </div>
                     <div class="method-item">
                     <h3 id="method__escapeshellargWindows">
         <div class="location">in <a href="../../Drush/TestTraits/CliTestTrait.html#method__escapeshellargWindows">
-<abbr title="Drush\TestTraits\CliTestTrait">CliTestTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/10.x/src/TestTraits/CliTestTrait.php#L137">at line 137</a></div>
+<abbr title="Drush\TestTraits\CliTestTrait">CliTestTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/10.x/src/TestTraits/CliTestTrait.php#L147">at line 147</a></div>
         <code>        static            
     <strong>_escapeshellargWindows</strong>($arg)
         </code>
@@ -868,7 +868,7 @@ whitespace.</p>                                                </div>
                     <div class="method-item">
                     <h3 id="method_buildProcessMessage">
         <div class="location">in <a href="../../Drush/TestTraits/CliTestTrait.html#method_buildProcessMessage">
-<abbr title="Drush\TestTraits\CliTestTrait">CliTestTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/10.x/src/TestTraits/CliTestTrait.php#L159">at line 159</a></div>
+<abbr title="Drush\TestTraits\CliTestTrait">CliTestTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/10.x/src/TestTraits/CliTestTrait.php#L169">at line 169</a></div>
         <code>                    string
     <strong>buildProcessMessage</strong>()
         </code>
@@ -899,7 +899,7 @@ whitespace.</p>                                                </div>
                     <div class="method-item">
                     <h3 id="method_assertOutputEquals">
         <div class="location">in <a href="../../Drush/TestTraits/CliTestTrait.html#method_assertOutputEquals">
-<abbr title="Drush\TestTraits\CliTestTrait">CliTestTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/10.x/src/TestTraits/CliTestTrait.php#L193">at line 193</a></div>
+<abbr title="Drush\TestTraits\CliTestTrait">CliTestTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/10.x/src/TestTraits/CliTestTrait.php#L203">at line 203</a></div>
         <code>            protected        
     <strong>assertOutputEquals</strong>(string $expected, string $filter = &#039;&#039;)
         </code>
@@ -938,7 +938,7 @@ on minor differences.</p>                            </div>
                     <div class="method-item">
                     <h3 id="method_assertErrorOutputEquals">
         <div class="location">in <a href="../../Drush/TestTraits/CliTestTrait.html#method_assertErrorOutputEquals">
-<abbr title="Drush\TestTraits\CliTestTrait">CliTestTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/10.x/src/TestTraits/CliTestTrait.php#L214">at line 214</a></div>
+<abbr title="Drush\TestTraits\CliTestTrait">CliTestTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/10.x/src/TestTraits/CliTestTrait.php#L224">at line 224</a></div>
         <code>            protected        
     <strong>assertErrorOutputEquals</strong>(string $expected, string $filter = &#039;&#039;)
         </code>
