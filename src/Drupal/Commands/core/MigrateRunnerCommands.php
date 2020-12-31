@@ -74,7 +74,7 @@ class MigrateRunnerCommands extends DrushCommands
      * @param string|null $migrationIds
      *   Restrict to a comma-separated list of migrations. Optional.
      *
-     * @option tag A comma-separated list of migration tags to list. If only --tag is provided, all migrations will be listed, grouped by tags.
+     * @option tag A comma-separated list of migration tags to list. If only <info>--tag</info> is provided, all tagged migrations will be listed, grouped by tags.
      * @option names-only Only return names, not all the details (faster)
      *
      * @usage migrate:status
@@ -82,7 +82,7 @@ class MigrateRunnerCommands extends DrushCommands
      * @usage migrate:status --tag
      *   Retrieve status for all migrations, grouped by tag
      * @usage migrate:status --tag=user,main_content
-     *   Retrieve status for all migrations tagged with "user" or "main_content"
+     *   Retrieve status for all migrations tagged with <info>user</info> or <info>main_content</info>
      * @usage migrate:status classification,article
      *   Retrieve status for specific migrations
      *
@@ -241,11 +241,11 @@ class MigrateRunnerCommands extends DrushCommands
      * @usage migrate:import --all --no-progress
      *   Perform all migrations but avoid the progress bar
      * @usage migrate:import --tag=user,main_content
-     *   Import all migrations tagged with user and main_content tags
+     *   Import all migrations tagged with <info>user</info> and <info>main_content</info> tags
      * @usage migrate:import classification,article
-     *   Import new terms and nodes using migration 'classification' and 'article'
+     *   Import new terms and nodes using migration <info>classification</info> and <info>article</info>
      * @usage migrate:import user --limit=2
-     *   Import no more than 2 users using the 'user' migration
+     *   Import no more than 2 users using the <info>user</info> migration
      * @usage migrate:import user --idlist=5
      *   Import the user record with source ID 5
      * @usage migrate:import node_revision --idlist=1:2,2:3,3:5
@@ -375,9 +375,9 @@ class MigrateRunnerCommands extends DrushCommands
      * @usage migrate:rollback --all --no-progress
      *   Rollback all migrations but avoid the progress bar
      * @usage migrate:rollback --tag=user,main_content
-     *   Rollback all migrations tagged with user and main_content tags
+     *   Rollback all migrations tagged with <info>user</info> and <info>main_content</info> tags
      * @usage migrate:rollback classification,article
-     *   Rollback terms and nodes imported by 'classification' and 'article' migrations
+     *   Rollback terms and nodes imported by <info>classification</info> and <info>article</info> migrations
      * @usage migrate:rollback user --idlist=5
      *   Rollback imported user record with source ID 5
      *
