@@ -310,7 +310,7 @@ class MigrateExecutable extends MigrateExecutableBase
                 \Drupal::translation()->formatPlural(
                     $count,
                     '1 item is missing from source and will be rolled back',
-                    '@count items are missing from source and will be rolled back',
+                    '@count items are missing from source and will be rolled back'
                 )
             );
             // Filter the map on destination IDs.
