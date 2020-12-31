@@ -415,9 +415,17 @@ class MigrateRunnerTest extends CommandUnishTestCase
           '50/50 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%',
         ];
 
-        // On Windows systems the new line delimiter is a CR+LF (\r\n) sequence
-        // instead of LF (\n) as it is on *nix systems.
-        $actualOutput = str_replace("\r\n", "\n", $this->getErrorOutputRaw());
+        if ($this->isWindows()) {
+            // On Windows systems the new line delimiter is a CR+LF (\r\n)
+            // sequence instead of LF (\n) as it is on *nix systems.
+            $actualOutput = str_replace("\r\n", "\n", $this->getErrorOutputRaw());
+            // Only standard bar is supported.
+            array_walk($expectedProgressBars, function (string &$bar): void {
+                $bar = str_replace('▓░', '>-', $bar);
+                $bar = str_replace('▓', '=', $bar);
+                $bar = str_replace('░', '-', $bar);
+            });
+        }
 
         foreach ($expectedProgressBars as $expectedProgressBar) {
             if ($assertHasProgressBar) {
