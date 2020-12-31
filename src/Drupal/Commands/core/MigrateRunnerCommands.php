@@ -480,7 +480,7 @@ class MigrateRunnerCommands extends DrushCommands
                 $this->logger()->warning(dt('Migration @id is already Idle', ['@id' => $migrationId]));
             } else {
                 $migration->setStatus(MigrationInterface::STATUS_IDLE);
-                $this->logger()->log('status', dt('Migration @id reset to Idle', ['@id' => $migrationId]));
+                $this->logger()->success(dt('Migration @id reset to Idle', ['@id' => $migrationId]));
             }
         } else {
             $this->logger()->error(dt('Migration @id does not exist', ['@id' => $migrationId]));
