@@ -427,7 +427,7 @@ class MigrateRunnerTest extends CommandUnishTestCase
             $actualOutput = str_replace("\r\n", "\n", $this->getErrorOutputRaw());
             // Only standard bar is supported.
             array_walk($expectedProgressBars, function (string &$bar): void {
-                $bar = str_replace('▓░', '>-', $bar);
+                $bar = str_replace('▓░', '=>', $bar);
                 $bar = str_replace('▓', '=', $bar);
                 $bar = str_replace('░', '-', $bar);
             });
