@@ -5,28 +5,38 @@ namespace Drush\Drupal\Migrate;
 use Drupal\migrate\Plugin\MigrateIdMapInterface;
 
 /**
- * Filters the ID map by an ID list.
+ * Filters the ID map by a source and/or a destination ID list.
  */
 class MigrateIdMapFilter extends \FilterIterator
 {
 
     /**
-     * List of specific IDs to filter on.
+     * List of specific source IDs to filter on.
      *
      * @var array
      */
-    protected $idList;
+    protected $sourceIdList;
 
     /**
-     * @param \Drupal\migrate\Plugin\MigrateIdMapInterface $id_map
-     *   The ID map.
-     * @param array $id_list
-     *   The id list to use in the filter.
+     * List of specific destination IDs to filter on.
+     *
+     * @var array
      */
-    public function __construct(MigrateIdMapInterface $id_map, array $id_list)
+    protected $destinationIdList;
+
+    /**
+     * @param \Drupal\migrate\Plugin\MigrateIdMapInterface $idMap
+     *   The ID map.
+     * @param array|null $sourceIdList
+     *   The source ID list to filter on.
+     * @param array|null $destinationIdList
+     *   The destination ID list to filter on.
+     */
+    public function __construct(MigrateIdMapInterface $idMap, array $sourceIdList = [], array $destinationIdList = [])
     {
-        parent::__construct($id_map);
-        $this->idList = $id_list;
+        parent::__construct($idMap);
+        $this->sourceIdList = array_map('array_values', $sourceIdList);
+        $this->destinationIdList = array_map('array_values', $destinationIdList);
     }
 
     /**
@@ -34,6 +44,21 @@ class MigrateIdMapFilter extends \FilterIterator
      */
     public function accept(): bool
     {
-        return !$this->idList || in_array(array_values($this->getInnerIterator()->currentSource()), $this->idList);
+        if (!$this->sourceIdList && !$this->destinationIdList) {
+            // No filtering has been requested.
+            return true;
+        }
+
+        /** @var \Drupal\migrate\Plugin\MigrateIdMapInterface $idMap */
+        $idMap = $this->getInnerIterator();
+
+        $acceptedBySourceIdList = $this->sourceIdList && in_array(array_values($idMap->currentSource()), $this->sourceIdList);
+        // Either no destination filtering has been requested, or a source
+        // filtering was requested but is not satisfied.
+        if (!$this->destinationIdList || ($this->sourceIdList && !$acceptedBySourceIdList)) {
+            return $acceptedBySourceIdList;
+        }
+
+        return in_array(array_values($idMap->currentDestination()), $this->destinationIdList);
     }
 }

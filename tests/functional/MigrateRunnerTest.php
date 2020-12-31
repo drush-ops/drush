@@ -193,12 +193,36 @@ class MigrateRunnerTest extends CommandUnishTestCase
           'format' => 'json',
         ]);
 
-        // Check that only rows with ID 4, 12, 29, 34 were rolled back.
+        // Check that only rows with ID 4 and 34 were rolled back.
         $this->assertSame(50, $this->getOutputFromJSON(0)['total']);
         $this->assertSame('2 (4%)', $this->getOutputFromJSON(0)['imported']);
         $this->assertSame(48, $this->getOutputFromJSON(0)['unprocessed']);
         $this->drush('sql:query', ['SELECT title FROM node_field_data']);
         $this->assertEquals(['Item 12', 'Item 29'], $this->getOutputAsList());
+    }
+
+    /**
+     * @covers ::import
+     * @covers \Drush\Drupal\Migrate\MigrateExecutable::handleMissingSourceRows
+     */
+    public function testMissingSourceRows(): void
+    {
+        $this->drush('state:set', ['woot.test_migration_source_data_amount', 5]);
+        $this->drush('migrate:import', ['test_migration']);
+        $this->drush('sql:query', ['SELECT title FROM node_field_data']);
+        $this->assertSame(['Item 1', 'Item 2', 'Item 3', 'Item 4', 'Item 5'], $this->getOutputAsList());
+
+        $this->drush('state:set', ['woot.test_migration_source_removed_rows', '2,4']);
+        // Rebuild cache to get the new source plugin definition.
+        $this->drush('cache:rebuild');
+
+        $this->drush('migrate:import', ['test_migration'], ['delete' => null]);
+
+        $this->assertStringContainsString('[notice] 2 items are missing from source and will be rolled back', $this->getErrorOutput());
+        $this->assertStringContainsString("[notice] Rolled back 2 items - done with 'test_migration'", $this->getErrorOutput());
+        $this->assertStringContainsString('[notice] Processed 3 items (0 created, 3 updated, 0 failed, 0 ignored)', $this->getErrorOutput());
+        $this->drush('sql:query', ['SELECT title FROM node_field_data']);
+        $this->assertEquals(['Item 1', 'Item 3', 'Item 5'], $this->getOutputAsList());
     }
 
     /**
@@ -262,6 +286,7 @@ class MigrateRunnerTest extends CommandUnishTestCase
         $this->drush('migrate:import', ['test_migration'], [
             'feedback' => 20,
             'limit' => 199,
+            'no-progress' => null,
         ]);
 
         $importOutput = array_values(array_filter(array_map('trim', $this->getErrorOutputAsList()), function (string $line): bool {
@@ -315,13 +340,12 @@ class MigrateRunnerTest extends CommandUnishTestCase
         $this->drush('migrate:status', ['test_migration'], [
           'format' => 'json',
         ]);
-        // Check that now row needs update.
+        // Check that no row needs update.
         $this->assertSame(0, $this->getOutputFromJSON(0)['needing_update']);
     }
 
     /**
-     * @covers \Drush\Drupal\Migrate\MigrateCommandProgressBar
-     * @covers ::initProgressBar
+     * @covers \Drush\Drupal\Migrate\MigrateExecutable::initProgressBar
      */
     public function testCommandProgressBar(): void
     {
@@ -379,16 +403,17 @@ class MigrateRunnerTest extends CommandUnishTestCase
     protected function progressBarAssertionHelper(bool $assertHasProgressBar): void
     {
         static $expectedProgressBars = [
-          '5/50 [==>-------------------------]  10%',
-          '10/50 [=====>----------------------]  20%',
-          '15/50 [========>-------------------]  30%',
-          '20/50 [===========>----------------]  40%',
-          '25/50 [==============>-------------]  50%',
-          '30/50 [================>-----------]  60%',
-          '35/50 [===================>--------]  70%',
-          '40/50 [======================>-----]  80%',
-          '45/50 [=========================>--]  90%',
-          '50/50 [============================] 100%',
+          '0/50 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%',
+          '5/50 [▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░]  10%',
+          '10/50 [▓▓▓▓▓░░░░░░░░░░░░░░░░░░░░░░░]  20%',
+          '15/50 [▓▓▓▓▓▓▓▓░░░░░░░░░░░░░░░░░░░░]  30%',
+          '20/50 [▓▓▓▓▓▓▓▓▓▓▓░░░░░░░░░░░░░░░░░]  40%',
+          '25/50 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░░░░░░░░░]  50%',
+          '30/50 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░░░░░░░]  60%',
+          '35/50 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░░░░]  70%',
+          '40/50 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░]  80%',
+          '45/50 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░]  90%',
+          '50/50 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%',
         ];
 
         // On Windows systems the new line delimiter is a CR+LF (\r\n) sequence

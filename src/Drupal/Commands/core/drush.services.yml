@@ -47,13 +47,9 @@ services:
         -  { name: drush.command }
   migrate_runner.commands:
     class: Drush\Drupal\Commands\core\MigrateRunnerCommands
-    arguments: ['@date.formatter', '@keyvalue', '@migrate_runner.command_progress']
+    arguments: ['@date.formatter', '@keyvalue']
     tags:
       -  { name: drush.command }
-  migrate_runner.command_progress:
-    class: Drush\Drupal\Migrate\MigrateCommandProgressBar
-    tags:
-      - { name: event_subscriber }
   queue.commands:
     class: \Drush\Drupal\Commands\core\QueueCommands
     arguments: ['@plugin.manager.queue_worker', '@queue']

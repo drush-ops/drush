@@ -11,12 +11,14 @@ use Drupal\migrate\Plugin\MigrationInterface;
 use Drupal\migrate\Plugin\MigrationPluginManagerInterface;
 use Drupal\migrate\Plugin\RequirementsInterface;
 use Drush\Commands\DrushCommands;
-use Drush\Drupal\Migrate\MigrateCommandProgressBar;
 use Drush\Drupal\Migrate\MigrateExecutable;
 use Drush\Drupal\Migrate\MigrateMessage;
 use Drush\Drupal\Migrate\MigrateUtils;
 use Webmozart\PathUtil\Path;
 
+/**
+ * Migrate runner commands.
+ */
 class MigrateRunnerCommands extends DrushCommands
 {
     /**
@@ -41,13 +43,6 @@ class MigrateRunnerCommands extends DrushCommands
     protected $keyValue;
 
     /**
-     * The command progress bar service.
-     *
-     * @var \Drush\Drupal\Migrate\MigrateCommandProgressBar
-     */
-    protected $commandProgress;
-
-    /**
      * Migrate message service.
      *
      * @var \Drupal\migrate\MigrateMessageInterface
@@ -61,15 +56,12 @@ class MigrateRunnerCommands extends DrushCommands
      *   Date formatter service.
      * @param \Drupal\Core\KeyValueStore\KeyValueFactoryInterface $keyValueFactory
      *   The key-value factory service.
-     * @param \Drush\Drupal\Migrate\MigrateCommandProgressBar $commandProgress
-     *   The command progress bar service.
      */
-    public function __construct(DateFormatter $dateFormatter, KeyValueFactoryInterface $keyValueFactory, MigrateCommandProgressBar $commandProgress)
+    public function __construct(DateFormatter $dateFormatter, KeyValueFactoryInterface $keyValueFactory)
     {
         parent::__construct();
         $this->dateFormatter = $dateFormatter;
         $this->keyValue = $keyValueFactory->get('migrate_last_imported');
-        $this->commandProgress = $commandProgress;
     }
 
     /**
@@ -242,6 +234,7 @@ class MigrateRunnerCommands extends DrushCommands
      * @option timestamp Show progress ending timestamp in progress messages
      * @option total Show total processed item number in progress messages
      * @option progress Show progress bar
+     * @option delete Delete destination records missed from the source
      *
      * @usage migrate:import --all
      *   Perform all migrations
@@ -249,7 +242,7 @@ class MigrateRunnerCommands extends DrushCommands
      *   Perform all migrations but avoid the progress bar
      * @usage migrate:import --tag=user,main_content
      *   Import all migrations tagged with user and main_content tags
-     * @usage migrateimport classification,article
+     * @usage migrate:import classification,article
      *   Import new terms and nodes using migration 'classification' and 'article'
      * @usage migrate:import user --limit=2
      *   Import no more than 2 users using the 'user' migration
@@ -259,6 +252,8 @@ class MigrateRunnerCommands extends DrushCommands
      *   Import the node revision record with source IDs [1,2], [2,3], and [3,5]
      * @usage migrate:import user --limit=50 --feedback=20
      *   Import 50 users and show process message every 20th record
+     * @usage migrate:import --all --delete
+     *   Perform all migrations and delete the destination items that are missing from source
      *
      * @aliases mim,migrate-import
      *
@@ -269,7 +264,7 @@ class MigrateRunnerCommands extends DrushCommands
      * @throws \Exception
      *   When not enough options were provided or no migration was found.
      */
-    public function import(?string $migrationIds = null, array $options = ['all' => false, 'tag' => self::REQ, 'limit' => self::REQ, 'feedback' => self::REQ, 'idlist' => self::REQ, 'update' => false, 'force' => false, 'execute-dependencies' => false, 'timestamp' => false, 'total' => false, 'progress' => true])
+    public function import(?string $migrationIds = null, array $options = ['all' => false, 'tag' => self::REQ, 'limit' => self::REQ, 'feedback' => self::REQ, 'idlist' => self::REQ, 'update' => false, 'force' => false, 'execute-dependencies' => false, 'timestamp' => false, 'total' => false, 'progress' => true, 'delete' => false]): void
     {
         $tags = $options['tag'];
         $all = $options['all'];
@@ -292,15 +287,14 @@ class MigrateRunnerCommands extends DrushCommands
                 'timestamp',
                 'total',
                 'progress',
+                'delete',
             ])),
             'execute_dependencies' => $options['execute-dependencies'],
         ];
 
-
-        // Include the file providing a 'migrate_prepare_row' hook implementation.
+        // Include the file providing a migrate_prepare_row hook implementation.
         require_once Path::join(DRUSH_BASE_PATH, 'includes/migrate_runner.inc');
 
-        // Take it one group at a time, importing the migrations within each group.
         foreach ($list as $tag => $migrations) {
             array_walk($migrations, [static::class, 'executeMigration'], $userData);
         }
@@ -350,10 +344,7 @@ class MigrateRunnerCommands extends DrushCommands
             }
         }
 
-        // Initialize the Symfony Console progress bar, if case.
-        $this->initProgressBar($migration, $userData['options']);
-
-        $executable = new MigrateExecutable($migration, $this->getMigrateMessage(), $userData['options']);
+        $executable = new MigrateExecutable($migration, $this->getMigrateMessage(), $this->io(), $userData['options']);
         // drush_op() provides --simulate support.
         drush_op([$executable, 'import']);
         if ($count = $executable->getFailedCount()) {
@@ -415,18 +406,17 @@ class MigrateRunnerCommands extends DrushCommands
         }
 
         $executableOptions = [];
-        foreach (['feedback', 'idlist'] as $option) {
+        foreach (['feedback', 'idlist', 'progress'] as $option) {
             if ($options[$option]) {
                 $executableOptions[$option] = $options[$option];
             }
         }
-        // Take it one tag at a time, rolling back the migrations within each tag.
+
         foreach ($list as $migrations) {
             // Rollback in reverse order.
             $migrations = array_reverse($migrations);
             foreach ($migrations as $migrationId => $migration) {
-                $this->initProgressBar($migration, $options);
-                $executable = new MigrateExecutable($migration, $this->getMigrateMessage(), $executableOptions);
+                $executable = new MigrateExecutable($migration, $this->getMigrateMessage(), $this->io(), $executableOptions);
                 // drush_op() provides --simulate support.
                 drush_op([$executable, 'rollback']);
             }
@@ -683,24 +673,5 @@ class MigrateRunnerCommands extends DrushCommands
             $this->migrationPluginManager = \Drupal::service('plugin.manager.migration');
         }
         return $this->migrationPluginManager;
-    }
-
-    /**
-     * Initializes the command progress bar if possible.
-     *
-     * @param \Drupal\migrate\Plugin\MigrationInterface $migration
-     *   The migration.
-     * @param array $options
-     *   The command options.
-     */
-    protected function initProgressBar(MigrationInterface $migration, array $options): void
-    {
-        // Cannot use the progress bar when:
-        // - `--no-progress` option is used,
-        // - `--feedback` option is used,
-        // - The migration source plugin is configured to skips count.
-        if ($options['progress'] && !$options['feedback'] && empty($migration->getSourceConfiguration()['skip_count'])) {
-            $this->commandProgress->initProgressBar($migration, $this->output());
-        }
     }
 }

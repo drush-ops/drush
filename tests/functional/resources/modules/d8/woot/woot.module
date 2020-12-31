@@ -57,6 +57,18 @@ function woot_migration_plugins_alter(array &$migration_plugins): void
         ];
     }
 
+    // Allow tests to remove rows from the source.
+    if ($removedRows = \Drupal::state()->get('woot.test_migration_source_removed_rows')) {
+        $removedRows = explode(',', $removedRows);
+        $migration_plugins['test_migration']['source']['data_rows'] = array_filter(
+          $migration_plugins['test_migration']['source']['data_rows'],
+          function (array $row) use ($removedRows): bool {
+              return !in_array($row['id'], $removedRows);
+          }
+        );
+        $migration_plugins['test_migration']['source']['data_rows'] = array_values($migration_plugins['test_migration']['source']['data_rows']);
+    }
+
     if (\Drupal::state()->get('woot.test_command_progress_bar.skip_count')) {
         // Test the command progress bar for sources that skip count.
         // @see \Unish\MigrateRunnerTest::testCommandProgressBar()

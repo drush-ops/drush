@@ -10,8 +10,11 @@ use Drush\Drupal\Migrate\MigratePrepareRowEvent;
  * Implements hook_migrate_prepare_row().
  *
  * We implement this in behalf of the 'system' module.
+ *
+ * @todo Deprecate this hook implementation when #2952291 lands.
+ * @see https://www.drupal.org/project/drupal/issues/2952291
  */
-function system_migrate_prepare_row(Row $row, MigrateSourceInterface $source, MigrationInterface $migration)
+function system_migrate_prepare_row(Row $row, MigrateSourceInterface $source, MigrationInterface $migration): void
 {
     \Drupal::service('event_dispatcher')->dispatch(
         MigrateEvents::DRUSH_MIGRATE_PREPARE_ROW,
