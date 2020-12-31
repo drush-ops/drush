@@ -7,6 +7,7 @@ use Drupal\Core\Datetime\DateFormatter;
 use Drupal\Core\KeyValueStore\KeyValueFactoryInterface;
 use Drupal\migrate\Exception\RequirementsException;
 use Drupal\migrate\MigrateMessageInterface;
+use Drupal\migrate\Plugin\MigrateIdMapInterface;
 use Drupal\migrate\Plugin\MigrationInterface;
 use Drupal\migrate\Plugin\MigrationPluginManagerInterface;
 use Drupal\migrate\Plugin\RequirementsInterface;
@@ -497,7 +498,7 @@ class MigrateRunnerCommands extends DrushCommands
      *   The ID of the migration.
      *
      * @usage migrate:messages article
-     *   Show all messages for the article migration
+     *   Show all messages for the <info>article</info> migration
      *
      * @aliases mmsg,migrate-messages
      *
@@ -507,9 +508,11 @@ class MigrateRunnerCommands extends DrushCommands
      *
      * @field-labels
      *   level: Level
+     *   source_ids: Source ID(s)
+     *   destination_ids: Destination ID(s)
      *   message: Message
      *   hash: Source IDs hash
-     * @default-fields level,message,hash
+     * @default-fields level,source_ids,destination_ids,message,hash
      *
      * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
      *   Migration messages status formatted as table.
@@ -518,13 +521,33 @@ class MigrateRunnerCommands extends DrushCommands
     {
         /** @var \Drupal\migrate\Plugin\MigrationInterface $migration */
         $migration = $this->getMigrationPluginManager()->createInstance($migrationId);
+        if (!$migration) {
+            throw new \InvalidArgumentException(dt('Migration @id does not exist', ['@id' => $migrationId]));
+        }
+
+        $idMap = $migration->getIdMap();
+        $sourceIdKeys = $this->getSourceIdKeys($idMap);
         $table = [];
-        foreach ($migration->getIdMap()->getMessages() as $row) {
-            $table[] = [
-                'level' => $row->level,
-                'message' => $row->message,
-                'hash' => $row->source_ids_hash,
-            ];
+        foreach ($idMap->getMessages() as $row) {
+            unset($row->msgid);
+            $row = (array) $row;
+            // If the message includes useful IDs don't print the hash.
+            if (count($sourceIdKeys) === count(array_intersect_key($sourceIdKeys, $row))) {
+                unset($row['source_ids_hash']);
+            }
+            $sourceIds = $destinationIds = [];
+            foreach ($row as $key => $value) {
+                if (substr($key, 0, 4) === 'src_') {
+                    $sourceIds[$key] = $value;
+                }
+                if (substr($key, 0, 5) === 'dest_') {
+                    $destinationIds[$key] = $value;
+                }
+            }
+            $row['source_ids'] = implode(' : ', $sourceIds);
+            $row['destination_ids'] = implode(' : ', $destinationIds);
+
+            $table[] = $row;
         }
         return new RowsOfFields($table);
     }
@@ -664,5 +687,24 @@ class MigrateRunnerCommands extends DrushCommands
             $this->migrationPluginManager = \Drupal::service('plugin.manager.migration');
         }
         return $this->migrationPluginManager;
+    }
+
+    /**
+     * Get the source ID keys.
+     *
+     * @param \Drupal\migrate\Plugin\MigrateIdMapInterface $idMap
+     *   The migration ID map.
+     *
+     * @return string[]
+     *   The source ID keys.
+     */
+    protected function getSourceIdKeys(MigrateIdMapInterface $idMap): array
+    {
+        $idMap->rewind();
+        $columns = $idMap->currentSource();
+        $sourceIdKeys = array_map(static function ($id) {
+            return "src_{$id}";
+        }, array_keys($columns));
+        return array_combine($sourceIdKeys, $sourceIdKeys);
     }
 }
