@@ -293,7 +293,7 @@ class MigrateRunnerCommands extends DrushCommands
         ];
 
         // Include the file providing a migrate_prepare_row hook implementation.
-        require_once Path::join(DRUSH_BASE_PATH, 'includes/migrate_runner.inc');
+        require_once Path::join(DRUSH_BASE_PATH, 'src/Drupal/Migrate/migrate_runner.inc');
 
         foreach ($list as $tag => $migrations) {
             array_walk($migrations, [static::class, 'executeMigration'], $userData);
