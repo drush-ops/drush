@@ -361,8 +361,6 @@ class MigrateRunnerCommands extends DrushCommands
      *
      * @command migrate:rollback
      *
-     * @drupal-dependencies migrate
-     *
      * @param string|null $migrationIds
      *   Comma-separated list of migration IDs.
      *
@@ -428,8 +426,6 @@ class MigrateRunnerCommands extends DrushCommands
      *
      * @command migrate:stop
      *
-     * @drupal-dependencies migrate
-     *
      * @param string $migrationId
      *   The ID of migration to stop.
      *
@@ -465,8 +461,6 @@ class MigrateRunnerCommands extends DrushCommands
      *
      * @command migrate:reset-status
      *
-     * @drupal-dependencies migrate
-     *
      * @param string $migrationId
      *   The ID of migration to reset.
      *
@@ -497,8 +491,6 @@ class MigrateRunnerCommands extends DrushCommands
      * View any messages associated with a migration.
      *
      * @command migrate:messages
-     *
-     * @drupal-dependencies migrate
      *
      * @param string $migrationId
      *   The ID of the migration.
@@ -540,8 +532,6 @@ class MigrateRunnerCommands extends DrushCommands
      * List the fields available for mapping in a source.
      *
      * @command migrate:fields-source
-     *
-     * @drupal-dependencies migrate
      *
      * @param string $migrationId
      *   The ID of the migration.
