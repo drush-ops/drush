@@ -403,7 +403,6 @@ class MigrateRunnerTest extends CommandUnishTestCase
     protected function progressBarAssertionHelper(bool $assertHasProgressBar): void
     {
         static $expectedProgressBars = [
-          '0/50 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%',
           '5/50 [▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░]  10%',
           '10/50 [▓▓▓▓▓░░░░░░░░░░░░░░░░░░░░░░░]  20%',
           '15/50 [▓▓▓▓▓▓▓▓░░░░░░░░░░░░░░░░░░░░]  30%',

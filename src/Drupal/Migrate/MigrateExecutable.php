@@ -17,16 +17,17 @@ use Drupal\migrate\MigrateSkipRowException;
 use Drupal\migrate\Plugin\MigrateIdMapInterface;
 use Drupal\migrate\Plugin\MigrationInterface;
 use Drush\Drupal\Migrate\MigrateEvents as MigrateRunnerEvents;
-use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\Console\Helper\ProgressBar;
+use Symfony\Component\Console\Output\OutputInterface;
 
 class MigrateExecutable extends MigrateExecutableBase
 {
     /**
      * The Symfony console output.
      *
-     * @var \Symfony\Component\Console\Style\SymfonyStyle
+     * @var \Symfony\Component\Console\Output\OutputInterface
      */
-    protected $io;
+    protected $output;
 
     /**
      * Counters of map statuses.
@@ -126,6 +127,13 @@ class MigrateExecutable extends MigrateExecutableBase
     protected $exposeProgressBar;
 
     /**
+     * The Symfony progress bar.
+     *
+     * @var \Symfony\Component\Console\Helper\ProgressBar
+     */
+    protected $progressBar;
+
+    /**
      * Used to bypass the prepare row feedback.
      *
      * @var bool
@@ -139,19 +147,19 @@ class MigrateExecutable extends MigrateExecutableBase
      *
      * @param \Drupal\migrate\Plugin\MigrationInterface $migration
      * @param \Drupal\migrate\MigrateMessageInterface $message
-     * @param \Symfony\Component\Console\Style\SymfonyStyle $io
+     * @param \Symfony\Component\Console\Output\OutputInterface $output
      * @param array $options
      *
      * @throws \Drupal\migrate\MigrateException
      */
-    public function __construct(MigrationInterface $migration, MigrateMessageInterface $message, SymfonyStyle $io, array $options = [])
+    public function __construct(MigrationInterface $migration, MigrateMessageInterface $message, OutputInterface $output, array $options = [])
     {
         Timer::start('migrate:' . $migration->getPluginId());
         $this->idlist = MigrateUtils::parseIdList($options['idlist']);
 
         parent::__construct($migration, $message);
 
-        $this->io = $io;
+        $this->output = $output;
         $this->limit = $options['limit'];
         $this->feedback = $options['feedback'] ?? 0;
         $this->showTimestamp = $options['timestamp'];
@@ -626,7 +634,12 @@ class MigrateExecutable extends MigrateExecutableBase
     {
         if ($this->exposeProgressBar) {
             $source = clone $migration->getSourcePlugin();
-            $this->io->progressStart($source->count());
+            $this->progressBar = new ProgressBar($this->output, $source->count(), 0);
+            if ('\\' !== \DIRECTORY_SEPARATOR || 'Hyper' === getenv('TERM_PROGRAM')) {
+                $this->progressBar->setEmptyBarCharacter('░');
+                $this->progressBar->setProgressCharacter('');
+                $this->progressBar->setBarCharacter('▓');
+            }
         }
     }
 
@@ -636,7 +649,7 @@ class MigrateExecutable extends MigrateExecutableBase
     public function updateProgressBar(): void
     {
         if ($this->exposeProgressBar) {
-            $this->io->progressAdvance();
+            $this->progressBar->advance();
         }
     }
 
@@ -646,7 +659,9 @@ class MigrateExecutable extends MigrateExecutableBase
     public function progressFinish(): void
     {
         if ($this->exposeProgressBar) {
-            $this->io->progressFinish();
+            $this->progressBar->finish();
+            $this->output->write(PHP_EOL);
+            $this->progressBar = null;
         }
     }
 

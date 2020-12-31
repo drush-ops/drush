@@ -344,7 +344,7 @@ class MigrateRunnerCommands extends DrushCommands
             }
         }
 
-        $executable = new MigrateExecutable($migration, $this->getMigrateMessage(), $this->io(), $userData['options']);
+        $executable = new MigrateExecutable($migration, $this->getMigrateMessage(), $this->output(), $userData['options']);
         // drush_op() provides --simulate support.
         drush_op([$executable, 'import']);
         if ($count = $executable->getFailedCount()) {
@@ -414,7 +414,7 @@ class MigrateRunnerCommands extends DrushCommands
             // Rollback in reverse order.
             $migrations = array_reverse($migrations);
             foreach ($migrations as $migrationId => $migration) {
-                $executable = new MigrateExecutable($migration, $this->getMigrateMessage(), $this->io(), $executableOptions);
+                $executable = new MigrateExecutable($migration, $this->getMigrateMessage(), $this->output(), $executableOptions);
                 // drush_op() provides --simulate support.
                 drush_op([$executable, 'rollback']);
             }
