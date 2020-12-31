@@ -14,6 +14,7 @@ use Drush\Commands\DrushCommands;
 use Drush\Drupal\Migrate\MigrateExecutable;
 use Drush\Drupal\Migrate\MigrateMessage;
 use Drush\Drupal\Migrate\MigrateUtils;
+use Drush\Utils\StringUtils;
 use Webmozart\PathUtil\Path;
 
 /**
@@ -584,7 +585,7 @@ class MigrateRunnerCommands extends DrushCommands
      */
     protected function getMigrationList(?string $migrationIds, ?string $tags): array
     {
-        $migrationIds = array_filter(array_map('trim', explode(',', $migrationIds)));
+        $migrationIds = StringUtils::csvToArray($migrationIds);
         $migrations = $this->getMigrationPluginManager()->createInstances($migrationIds);
 
         // Check for invalid migration IDs.
