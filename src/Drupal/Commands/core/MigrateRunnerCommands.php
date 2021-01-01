@@ -71,8 +71,6 @@ class MigrateRunnerCommands extends DrushCommands
      *
      * @command migrate:status
      *
-     * @drupal-dependencies migrate
-     *
      * @param string|null $migrationIds
      *   Restrict to a comma-separated list of migrations. Optional.
      *
@@ -219,8 +217,6 @@ class MigrateRunnerCommands extends DrushCommands
      * Perform one or more migration processes.
      *
      * @command migrate:import
-     *
-     * @drupal-dependencies migrate
      *
      * @param string|null $migrationIds
      *   Comma-separated list of migration IDs.
