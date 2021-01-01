@@ -259,7 +259,6 @@ class MigrateExecutable extends MigrateExecutableBase
         $source = clone $migration->getSourcePlugin();
 
         $idMap = $migration->getIdMap();
-//        $idMap->prepareUpdate();
         if (empty($this->idlist)) {
             $idMap->prepareUpdate();
         } else {
