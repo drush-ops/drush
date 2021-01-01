@@ -201,7 +201,7 @@ class DocsCommands extends DrushCommands
      *
      * @command docs:migrate
      * @hidden
-     * @topic TBD
+     * @topic ../../../docs/migrate.md
      */
     public function migrate()
     {
