@@ -9,7 +9,7 @@ use Drush\Drupal\Migrate\MigratePrepareRowEvent;
 /**
  * Implements hook_migrate_prepare_row().
  *
- * We implement this in behalf of the 'system' module.
+ * We implement this on behalf of the 'system' module.
  *
  * @todo Deprecate this hook implementation when #2952291 lands.
  * @see https://www.drupal.org/project/drupal/issues/2952291
