@@ -449,7 +449,7 @@ class MigrateRunnerCommands extends DrushCommands
                 break;
             default:
                 $migration->interruptMigration(MigrationInterface::RESULT_STOPPED);
-                $this->logger()->log('status', dt('Migration @id requested to stop', ['@id' => $migrationId]));
+                $this->logger()->success(dt('Migration @id requested to stop', ['@id' => $migrationId]));
                 break;
         }
     }
