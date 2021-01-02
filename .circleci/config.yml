@@ -144,7 +144,7 @@ jobs:
     steps:
       - checkout
       - run: cp .docker/zz-php.ini /usr/local/etc/php/conf.d/
-      - run: composer require --dev drupal/core-recommended:dev-9.2.x --no-update
+      - run: composer require --dev drupal/core-recommended:9.2.x-dev --no-update
       # Replace alinks with semver for D9.
       - run: composer remove --dev drupal/alinks --no-update
       - run: composer require --dev drupal/semver_example:2.2.0 --no-update
