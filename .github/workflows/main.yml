@@ -65,10 +65,10 @@ jobs:
           rm -rf gh-pages/latest/api
           composer api
 
-      - name: Checkout CNAME+redirec files
+      - name: Checkout CNAME+redirect+404 files
         # They got wiped and are needed.
         run: |
-          cd gh-pages && git checkout -- CNAME index.html
+          cd gh-pages && git checkout -- CNAME index.html 404.html
 
       - name: Commit static site to gh-pages
         run: |
