@@ -52,7 +52,7 @@ jobs:
 
   # PHP 7.1 test:
   #   Checks the most common configuration.
-  test_71_mysql:
+  test_71_drupal89_mysql:
     <<: *defaults
     docker:
       - image: wodby/php:7.1
@@ -62,7 +62,7 @@ jobs:
       - image: circleci/mysql:5.7.24
     <<: *test71steps
 
-  test_71_sqlite:
+  test_71_drupal89_sqlite:
     <<: *defaults
     docker:
       # We use a custom image here because wodby/php does not ship with sqlite3 program.
@@ -71,7 +71,7 @@ jobs:
           - UNISH_DB_URL=sqlite://sut/sites/dev/files/.ht.sqlite
     <<: *test71steps
 
-  test_71_postgres:
+  test_71_drupal89_postgres:
     <<: *defaults
     docker:
       - image: wodby/php:7.1
@@ -165,13 +165,13 @@ workflows:
       - check_mergable
       - test_73_drupal91_security:
           <<: *requires
-      - test_71_mysql:
+      - test_71_drupal89_mysql:
           <<: *requires
       - test_73_drupal91:
           <<: *requires
       - test_80_drupal92:
           <<: *requires
-      - test_71_sqlite:
+      - test_71_drupal89_sqlite:
           <<: *requires
-      - test_71_postgres:
+      - test_71_drupal89_postgres:
           <<: *requires
