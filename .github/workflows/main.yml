@@ -55,20 +55,20 @@ jobs:
         run: composer mk:docs
 
       - name: Mkdocs build
-        run: mkdocs build -v --site-dir gh-pages
+        run: mkdocs build -v --site-dir gh-pages/latest
 
       - name: Install Doctum
         run: composer doctum-install
 
       - name: Doctum build
         run: |
-          rm -rf gh-pages/api
+          rm -rf gh-pages/latest/api
           composer api
 
-      - name: Checkout CNAME file
-        # It got wiped and its needed.
+      - name: Checkout CNAME+redirec files
+        # They got wiped and are needed.
         run: |
-          cd gh-pages && git checkout -- CNAME
+          cd gh-pages && git checkout -- CNAME index.html
 
       - name: Commit static site to gh-pages
         run: |

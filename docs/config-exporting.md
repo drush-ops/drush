@@ -1,6 +1,6 @@
 # Exporting and Importing Configuration
 
-Drush provides commands to [export](commands/10.x/config_export.md), [pull](commands/10.x/config_pull.md), and [import](commands/10.x/config_import.md) Drupal configuration files.
+Drush provides commands to [export](commands/config_export.md), [pull](commands/config_pull.md), and [import](commands/config_import.md) Drupal configuration files.
 
 ## Simple - value changes
 

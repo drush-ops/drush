@@ -45,5 +45,5 @@ Fully initialize Drupal. This is analogous to the DRUPAL\_BOOTSTRAP\_FULL bootst
 
 @bootstrap max
 ---------------------
-This is not an actual bootstrap phase. Commands that use the "max" bootstrap level will cause Drush to bootstrap as far as possible, and then run the command regardless of the bootstrap phase that was reached. This is useful for Drush commands that work without a bootstrapped site, but that provide additional information or capabilities in the presence of a bootstrapped site. For example, [`drush status`](commands/10.x/core_status.md) will show progressively more information the farther the site bootstraps.
+This is not an actual bootstrap phase. Commands that use the "max" bootstrap level will cause Drush to bootstrap as far as possible, and then run the command regardless of the bootstrap phase that was reached. This is useful for Drush commands that work without a bootstrapped site, but that provide additional information or capabilities in the presence of a bootstrapped site. For example, [`drush status`](commands/core_status.md) will show progressively more information the farther the site bootstraps.
 

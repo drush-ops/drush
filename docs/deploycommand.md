@@ -1,6 +1,6 @@
 # Deploy
 
-The [deploy command](commands/10.x/deploy.md) standardizes how Drupal deployments work. The intent is your 
+The [deploy command](commands/deploy.md) standardizes how Drupal deployments work. The intent is your 
 deployment script updates the codebase for the target site and then this command 
 performs the following:
 
@@ -24,4 +24,4 @@ Below are the 3 types of update functions run by this command, in order. Choose 
 ## Configuration
 
 If you need to customize this command, you should use Drush configuration for the 
-subcommands listed above (e.g. [updatedb](commands/10.x/updatedb.md), [config:import](commands/10.x/config_import.md), etc.).
+subcommands listed above (e.g. [updatedb](commands/updatedb.md), [config:import](commands/config_import.md), etc.).
