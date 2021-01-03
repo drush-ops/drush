@@ -1,0 +1,1529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="robots" content="index, follow, all" />
+    <title>Drush\Drupal\Migrate\MigrateExecutable | Drush API</title>
+
+            <link rel="stylesheet" type="text/css" href="../../../css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="../../../css/bootstrap-theme.min.css">
+        <link rel="stylesheet" type="text/css" href="../../../css/doctum.css">
+        <link rel="stylesheet" type="text/css" href="../../../fonts/doctum-font.css">
+        <script src="../../../js/jquery-3.5.1.slim.min.js"></script>
+        <script async defer src="../../../js/bootstrap.min.js"></script>
+        <script src="../../../js/typeahead.min.js"></script>
+        <script src="../../../doctum.js"></script>
+        <meta name="MobileOptimized" content="width">
+        <meta name="HandheldFriendly" content="true">
+        <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+    </head>
+
+    <body id="class" data-name="class:Drush_Drupal_Migrate_MigrateExecutable" data-root-path="../../../">
+            <div id="content">
+        <div id="left-column">
+                <div id="control-panel">
+                <form id="search-form" action="../../../search.html">
+            <span class="icon icon-search"></span>
+            <input name="search"
+                   class="typeahead form-control"
+                   type="search"
+                   placeholder="Search">
+        </form>
+    </div>
+
+                <div id="api-tree"></div>
+
+        </div>
+        <div id="right-column">
+                <nav id="site-nav" class="navbar navbar-default" role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-elements">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="../../../index.html">Drush API</a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar-elements">
+                <ul class="nav navbar-nav">
+                    <li><a href="../../../classes.html">Classes</a></li>
+                    <li><a href="../../../namespaces.html">Namespaces</a></li>
+                    <li><a href="../../../interfaces.html">Interfaces</a></li>
+                    <li><a href="../../../traits.html">Traits</a></li>
+                    <li><a href="../../../doc-index.html">Index</a></li>
+                    <li><a href="../../../search.html">Search</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+                        <div class="namespace-breadcrumbs">
+            <ol class="breadcrumb">
+                <li><span class="label label-default">class</span></li>
+                        <li><a href="../../../Drush.html">Drush</a></li><li class="backslash">\</li><li><a href="../../../Drush/Drupal.html">Drupal</a></li><li class="backslash">\</li><li><a href="../../../Drush/Drupal/Migrate.html">Migrate</a></li><li class="backslash">\</li><li>MigrateExecutable</li>
+            </ol>
+        </div>
+                <div id="page-content">
+                
+    <div class="page-header">
+        <h1>
+            MigrateExecutable
+                
+        </h1>
+    </div>
+
+    <p>        class
+    <strong>MigrateExecutable</strong>        extends <abbr title="Drupal\migrate\MigrateExecutable">MigrateExecutable</abbr>        (<a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Migrate/MigrateExecutable.php">View source</a>)
+</p>
+
+        
+    
+
+    
+    
+    
+            <h2>Properties</h2>
+
+            <table class="table table-condensed">
+                    <tr>
+                <td class="type" id="property_output">
+                                        protected                                        <abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr>
+                </td>
+                <td>$output</td>
+                <td class="last">The Symfony console output.</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_saveCounters">
+                                        protected                                        array
+                </td>
+                <td>$saveCounters</td>
+                <td class="last">Counters of map statuses.</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_deleteCounter">
+                                        protected                                        int
+                </td>
+                <td>$deleteCounter</td>
+                <td class="last">Counter of map deletions.</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_limit">
+                                        protected                                        int|null
+                </td>
+                <td>$limit</td>
+                <td class="last">Maximum number of items to process in this migration.</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_feedback">
+                                        protected                                        int
+                </td>
+                <td>$feedback</td>
+                <td class="last">Frequency (in items) at which progress messages should be emitted.</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_showTimestamp">
+                                        protected                                        bool
+                </td>
+                <td>$showTimestamp</td>
+                <td class="last">Show timestamp in progress message.</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_showTotal">
+                                        protected                                        bool
+                </td>
+                <td>$showTotal</td>
+                <td class="last">Show internal counter in progress message.</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_idlist">
+                                        protected                                        array
+                </td>
+                <td>$idlist</td>
+                <td class="last">List of specific source IDs to import.</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_counter">
+                                        protected                                        int
+                </td>
+                <td>$counter</td>
+                <td class="last">Count of number of items processed so far in this migration.</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_preExistingItem">
+                                        protected                                        bool
+                </td>
+                <td>$preExistingItem</td>
+                <td class="last">Whether the destination item exists before saving.</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_listeners">
+                                        protected                                        callable[]
+                </td>
+                <td>$listeners</td>
+                <td class="last">List of event listeners we have registered.</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_deleteMissingSourceRows">
+                                        protected                                        bool|null
+                </td>
+                <td>$deleteMissingSourceRows</td>
+                <td class="last">Whether to delete rows missing from source after an import.</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_idMap">
+                                        protected                                        <a href="../../../Drush/Drupal/Migrate/MigrateIdMapFilter.html"><abbr title="Drush\Drupal\Migrate\MigrateIdMapFilter">MigrateIdMapFilter</abbr></a>
+                </td>
+                <td>$idMap</td>
+                <td class="last">Static cached ID map.</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_exposeProgressBar">
+                                        protected                                        bool
+                </td>
+                <td>$exposeProgressBar</td>
+                <td class="last">If the execution exposes an progress bar.</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_progressBar">
+                                        protected                                        <abbr title="Symfony\Component\Console\Helper\ProgressBar">ProgressBar</abbr>
+                </td>
+                <td>$progressBar</td>
+                <td class="last">The Symfony progress bar.</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_showPrepareRowFeedback">
+                                        protected                                        bool
+                </td>
+                <td>$showPrepareRowFeedback</td>
+                <td class="last">Used to bypass the prepare row feedback.</td>
+                <td></td>
+            </tr>
+            </table>
+
+    
+            <h2>Methods</h2>
+
+            <div class="container-fluid underlined">
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method___construct">__construct</a>(<abbr title="Drupal\migrate\Plugin\MigrationInterface">MigrationInterface</abbr> $migration, <abbr title="Drupal\migrate\MigrateMessageInterface">MigrateMessageInterface</abbr> $message, <abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr> $output, array $options = [])
+        
+                                            <p>Constructs a new migrate executable instance.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    void
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_onMapSave">onMapSave</a>(<abbr title="Drupal\migrate\Event\MigrateMapSaveEvent">MigrateMapSaveEvent</abbr> $event)
+        
+                                            <p>Counts up any map save events.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    void
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_onMapDelete">onMapDelete</a>(<abbr title="Drupal\migrate\Event\MigrateMapDeleteEvent">MigrateMapDeleteEvent</abbr> $event)
+        
+                                            <p>Counts up any rollback events.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    void
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_onPreImport">onPreImport</a>(<abbr title="Drupal\migrate\Event\MigrateImportEvent">MigrateImportEvent</abbr> $event)
+        
+                                            <p>Reacts when the import is about to start.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    void
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_handleMissingSourceRows">handleMissingSourceRows</a>(<abbr title="Drupal\migrate\Plugin\MigrationInterface">MigrationInterface</abbr> $migration)
+        
+                                            <p>Handles missing source rows after import.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    void
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_onMissingSourceRows">onMissingSourceRows</a>(<a href="../../../Drush/Drupal/Migrate/MigrateMissingSourceRowsEvent.html"><abbr title="Drush\Drupal\Migrate\MigrateMissingSourceRowsEvent">MigrateMissingSourceRowsEvent</abbr></a> $event)
+        
+                                            <p>Reacts on detecting a list of missing source rows after an import.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    void
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_onPostImport">onPostImport</a>(<abbr title="Drupal\migrate\Event\MigrateImportEvent">MigrateImportEvent</abbr> $event)
+        
+                                            <p>Reacts to migration completion.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    void
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_importFeedbackMessage">importFeedbackMessage</a>(bool $done = true)
+        
+                                            <p>Emits information on the import progress.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    void
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_onPreRollback">onPreRollback</a>(<abbr title="Drupal\migrate\Event\MigrateRollbackEvent">MigrateRollbackEvent</abbr> $event)
+        
+                                            <p>Reacts when the rollback is about to starts.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    void
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_onPostRollback">onPostRollback</a>(<abbr title="Drupal\migrate\Event\MigrateRollbackEvent">MigrateRollbackEvent</abbr> $event)
+        
+                                            <p>Reacts to rollback completion.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    void
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_rollbackFeedbackMessage">rollbackFeedbackMessage</a>(bool $done = true)
+        
+                                            <p>Emits information on the rollback execution  progress.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    void
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_onPreRowSave">onPreRowSave</a>(<abbr title="Drupal\migrate\Event\MigratePreRowSaveEvent">MigratePreRowSaveEvent</abbr> $event)
+        
+                                            <p>Reacts to an item about to be imported.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    void
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_onPostRowSave">onPostRowSave</a>(<abbr title="Drupal\migrate\Event\MigratePostRowSaveEvent">MigratePostRowSaveEvent</abbr> $event)
+        
+                                            <p>Reacts aftre a row has been deleted.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    void
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_onPostRowDelete">onPostRowDelete</a>(<abbr title="Drupal\migrate\Event\MigrateRowDeleteEvent">MigrateRowDeleteEvent</abbr> $event)
+        
+                                            <p>Reacts to item rollback.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    void
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_onPrepareRow">onPrepareRow</a>(<a href="../../../Drush/Drupal/Migrate/MigratePrepareRowEvent.html"><abbr title="Drush\Drupal\Migrate\MigratePrepareRowEvent">MigratePrepareRowEvent</abbr></a> $event)
+        
+                                            <p>Reacts to a new row being prepared.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    <a href="../../../Drush/Drupal/Migrate/MigrateIdMapFilter.html"><abbr title="Drush\Drupal\Migrate\MigrateIdMapFilter">MigrateIdMapFilter</abbr></a>
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_getIdMap">getIdMap</a>()
+        
+                                            <p>{@inheritdoc}</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    int
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_getCreatedCount">getCreatedCount</a>()
+        
+                                            <p>Returns the number of items created.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    int
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_getUpdatedCount">getUpdatedCount</a>()
+        
+                                            <p>Returns the number of items updated.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    int
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_getIgnoredCount">getIgnoredCount</a>()
+        
+                                            <p>Returns the number of items ignored.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    int
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_getFailedCount">getFailedCount</a>()
+        
+                                            <p>Returns the number of items that failed.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    int
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_getProcessedCount">getProcessedCount</a>()
+        
+                                            <p>Returns the total number of items processed.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    int
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_getRollbackCount">getRollbackCount</a>()
+        
+                                            <p>Returns the number of items rolled back.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    void
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_resetCounters">resetCounters</a>()
+        
+                                            <p>Resets all the per-status counters to 0.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    void
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_initProgressBar">initProgressBar</a>(<abbr title="Drupal\migrate\Plugin\MigrationInterface">MigrationInterface</abbr> $migration)
+        
+                                            <p>Initializes the command progress bar if possible.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    void
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_updateProgressBar">updateProgressBar</a>()
+        
+                                            <p>Advances the progress bar.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    void
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_progressFinish">progressFinish</a>()
+        
+                                            <p>Removes the progress bar after operation is finished.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    void
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_unregisterListeners">unregisterListeners</a>()
+        
+                                            <p>Unregisters all event listeners.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+            </div>
+
+
+        <h2>Details</h2>
+
+            <div id="method-details">
+                    <div class="method-item">
+                    <h3 id="method___construct">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Migrate/MigrateExecutable.php#L155">at line 155</a></div>
+        <code>                    
+    <strong>__construct</strong>(<abbr title="Drupal\migrate\Plugin\MigrationInterface">MigrationInterface</abbr> $migration, <abbr title="Drupal\migrate\MigrateMessageInterface">MigrateMessageInterface</abbr> $message, <abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr> $output, array $options = [])
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Constructs a new migrate executable instance.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Drupal\migrate\Plugin\MigrationInterface">MigrationInterface</abbr></td>
+                <td>$migration</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><abbr title="Drupal\migrate\MigrateMessageInterface">MigrateMessageInterface</abbr></td>
+                <td>$message</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr></td>
+                <td>$output</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>array</td>
+                <td>$options</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+                            <h4>Exceptions</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Drupal\migrate\MigrateException">MigrateException</abbr></td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_onMapSave">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Migrate/MigrateExecutable.php#L197">at line 197</a></div>
+        <code>                    void
+    <strong>onMapSave</strong>(<abbr title="Drupal\migrate\Event\MigrateMapSaveEvent">MigrateMapSaveEvent</abbr> $event)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Counts up any map save events.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Drupal\migrate\Event\MigrateMapSaveEvent">MigrateMapSaveEvent</abbr></td>
+                <td>$event</td>
+                <td>The map event.</td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>void</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_onMapDelete">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Migrate/MigrateExecutable.php#L217">at line 217</a></div>
+        <code>                    void
+    <strong>onMapDelete</strong>(<abbr title="Drupal\migrate\Event\MigrateMapDeleteEvent">MigrateMapDeleteEvent</abbr> $event)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Counts up any rollback events.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Drupal\migrate\Event\MigrateMapDeleteEvent">MigrateMapDeleteEvent</abbr></td>
+                <td>$event</td>
+                <td>The map event.</td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>void</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_onPreImport">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Migrate/MigrateExecutable.php#L229">at line 229</a></div>
+        <code>                    void
+    <strong>onPreImport</strong>(<abbr title="Drupal\migrate\Event\MigrateImportEvent">MigrateImportEvent</abbr> $event)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Reacts when the import is about to start.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Drupal\migrate\Event\MigrateImportEvent">MigrateImportEvent</abbr></td>
+                <td>$event</td>
+                <td>The import event.</td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>void</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_handleMissingSourceRows">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Migrate/MigrateExecutable.php#L256">at line 256</a></div>
+        <code>            protected        void
+    <strong>handleMissingSourceRows</strong>(<abbr title="Drupal\migrate\Plugin\MigrationInterface">MigrationInterface</abbr> $migration)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Handles missing source rows after import.</p>                    <p>Detect if, before importing, the destination contains rows that are no
+more available in the source. If we can build such a list, we dispatch
+the \Drush\Drupal\Migrate\MigrateMissingSourceRowsEvent event, allowing
+subscribers to perform specific actions on detected destination objects.
+We also provide a default listener to this event that rolls-back the
+items, if the <code>--delete</code> option has been passed.</p>
+
+<p>Custom subscribers, provided by third-party code, may also subscribe,
+with a higher priority, to the same event, and perform different tasks,
+such as unpublishing the destination entity and then stopping the event
+propagation, thus avoiding the destination object rollback, even when
+the<code>--delete</code> option has been passed.</p>                            </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Drupal\migrate\Plugin\MigrationInterface">MigrationInterface</abbr></td>
+                <td>$migration</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>void</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                            <h4>See also</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>
+                                            <a href="../../../Drush/Drupal/Migrate/MigrateExecutable.html#method_onMissingSourceRows">
+<abbr title="Drush\Drupal\Migrate\MigrateExecutable">MigrateExecutable</abbr>::onMissingSourceRows</a>
+                                    </td>
+                <td></td>
+            </tr>
+            </table>
+
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_onMissingSourceRows">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Migrate/MigrateExecutable.php#L312">at line 312</a></div>
+        <code>                    void
+    <strong>onMissingSourceRows</strong>(<a href="../../../Drush/Drupal/Migrate/MigrateMissingSourceRowsEvent.html"><abbr title="Drush\Drupal\Migrate\MigrateMissingSourceRowsEvent">MigrateMissingSourceRowsEvent</abbr></a> $event)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Reacts on detecting a list of missing source rows after an import.</p>                    <p>Note that third-party code may subscribe to the same event, with a higher
+priority, and perform different tasks, such as unpublishing the
+destination entity and then stopping the event propagation, thus avoiding
+the destination object deletion, even the <code>--delete</code> option was passed.</p>                            </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><a href="../../../Drush/Drupal/Migrate/MigrateMissingSourceRowsEvent.html"><abbr title="Drush\Drupal\Migrate\MigrateMissingSourceRowsEvent">MigrateMissingSourceRowsEvent</abbr></a></td>
+                <td>$event</td>
+                <td>The event object.</td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>void</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_onPostImport">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Migrate/MigrateExecutable.php#L337">at line 337</a></div>
+        <code>                    void
+    <strong>onPostImport</strong>(<abbr title="Drupal\migrate\Event\MigrateImportEvent">MigrateImportEvent</abbr> $event)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Reacts to migration completion.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Drupal\migrate\Event\MigrateImportEvent">MigrateImportEvent</abbr></td>
+                <td>$event</td>
+                <td>The map event.</td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>void</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_importFeedbackMessage">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Migrate/MigrateExecutable.php#L351">at line 351</a></div>
+        <code>            protected        void
+    <strong>importFeedbackMessage</strong>(bool $done = true)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Emits information on the import progress.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>bool</td>
+                <td>$done</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>void</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_onPreRollback">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Migrate/MigrateExecutable.php#L402">at line 402</a></div>
+        <code>                    void
+    <strong>onPreRollback</strong>(<abbr title="Drupal\migrate\Event\MigrateRollbackEvent">MigrateRollbackEvent</abbr> $event)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Reacts when the rollback is about to starts.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Drupal\migrate\Event\MigrateRollbackEvent">MigrateRollbackEvent</abbr></td>
+                <td>$event</td>
+                <td>The map event.</td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>void</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_onPostRollback">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Migrate/MigrateExecutable.php#L413">at line 413</a></div>
+        <code>                    void
+    <strong>onPostRollback</strong>(<abbr title="Drupal\migrate\Event\MigrateRollbackEvent">MigrateRollbackEvent</abbr> $event)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Reacts to rollback completion.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Drupal\migrate\Event\MigrateRollbackEvent">MigrateRollbackEvent</abbr></td>
+                <td>$event</td>
+                <td>The map event.</td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>void</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_rollbackFeedbackMessage">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Migrate/MigrateExecutable.php#L433">at line 433</a></div>
+        <code>            protected        void
+    <strong>rollbackFeedbackMessage</strong>(bool $done = true)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Emits information on the rollback execution  progress.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>bool</td>
+                <td>$done</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>void</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_onPreRowSave">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Migrate/MigrateExecutable.php#L462">at line 462</a></div>
+        <code>                    void
+    <strong>onPreRowSave</strong>(<abbr title="Drupal\migrate\Event\MigratePreRowSaveEvent">MigratePreRowSaveEvent</abbr> $event)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Reacts to an item about to be imported.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Drupal\migrate\Event\MigratePreRowSaveEvent">MigratePreRowSaveEvent</abbr></td>
+                <td>$event</td>
+                <td>The pre-save event.</td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>void</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_onPostRowSave">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Migrate/MigrateExecutable.php#L478">at line 478</a></div>
+        <code>                    void
+    <strong>onPostRowSave</strong>(<abbr title="Drupal\migrate\Event\MigratePostRowSaveEvent">MigratePostRowSaveEvent</abbr> $event)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Reacts aftre a row has been deleted.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Drupal\migrate\Event\MigratePostRowSaveEvent">MigratePostRowSaveEvent</abbr></td>
+                <td>$event</td>
+                <td>The event.</td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>void</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_onPostRowDelete">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Migrate/MigrateExecutable.php#L489">at line 489</a></div>
+        <code>                    void
+    <strong>onPostRowDelete</strong>(<abbr title="Drupal\migrate\Event\MigrateRowDeleteEvent">MigrateRowDeleteEvent</abbr> $event)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Reacts to item rollback.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Drupal\migrate\Event\MigrateRowDeleteEvent">MigrateRowDeleteEvent</abbr></td>
+                <td>$event</td>
+                <td>The post-save event.</td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>void</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_onPrepareRow">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Migrate/MigrateExecutable.php#L505">at line 505</a></div>
+        <code>                    void
+    <strong>onPrepareRow</strong>(<a href="../../../Drush/Drupal/Migrate/MigratePrepareRowEvent.html"><abbr title="Drush\Drupal\Migrate\MigratePrepareRowEvent">MigratePrepareRowEvent</abbr></a> $event)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Reacts to a new row being prepared.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><a href="../../../Drush/Drupal/Migrate/MigratePrepareRowEvent.html"><abbr title="Drush\Drupal\Migrate\MigratePrepareRowEvent">MigratePrepareRowEvent</abbr></a></td>
+                <td>$event</td>
+                <td>The prepare-row event.</td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>void</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+                            <h4>Exceptions</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Drupal\migrate\MigrateSkipRowException">MigrateSkipRowException</abbr></td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getIdMap">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Migrate/MigrateExecutable.php#L541">at line 541</a></div>
+        <code>            protected        <a href="../../../Drush/Drupal/Migrate/MigrateIdMapFilter.html"><abbr title="Drush\Drupal\Migrate\MigrateIdMapFilter">MigrateIdMapFilter</abbr></a>
+    <strong>getIdMap</strong>()
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>{@inheritdoc}</p>                                                </div>
+                <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><a href="../../../Drush/Drupal/Migrate/MigrateIdMapFilter.html"><abbr title="Drush\Drupal\Migrate\MigrateIdMapFilter">MigrateIdMapFilter</abbr></a></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getCreatedCount">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Migrate/MigrateExecutable.php#L554">at line 554</a></div>
+        <code>                    int
+    <strong>getCreatedCount</strong>()
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Returns the number of items created.</p>                                                </div>
+                <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>int</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getUpdatedCount">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Migrate/MigrateExecutable.php#L564">at line 564</a></div>
+        <code>                    int
+    <strong>getUpdatedCount</strong>()
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Returns the number of items updated.</p>                                                </div>
+                <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>int</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getIgnoredCount">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Migrate/MigrateExecutable.php#L574">at line 574</a></div>
+        <code>                    int
+    <strong>getIgnoredCount</strong>()
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Returns the number of items ignored.</p>                                                </div>
+                <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>int</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getFailedCount">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Migrate/MigrateExecutable.php#L584">at line 584</a></div>
+        <code>                    int
+    <strong>getFailedCount</strong>()
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Returns the number of items that failed.</p>                                                </div>
+                <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>int</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getProcessedCount">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Migrate/MigrateExecutable.php#L597">at line 597</a></div>
+        <code>                    int
+    <strong>getProcessedCount</strong>()
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Returns the total number of items processed.</p>                    <p>Note that STATUS_NEEDS_UPDATE is not counted, since this is typically set
+on stubs created as side effects, not on the primary item being imported.</p>                            </div>
+                <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>int</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getRollbackCount">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Migrate/MigrateExecutable.php#L610">at line 610</a></div>
+        <code>                    int
+    <strong>getRollbackCount</strong>()
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Returns the number of items rolled back.</p>                                                </div>
+                <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>int</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_resetCounters">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Migrate/MigrateExecutable.php#L618">at line 618</a></div>
+        <code>            protected        void
+    <strong>resetCounters</strong>()
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Resets all the per-status counters to 0.</p>                                                </div>
+                <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>void</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_initProgressBar">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Migrate/MigrateExecutable.php#L632">at line 632</a></div>
+        <code>            protected        void
+    <strong>initProgressBar</strong>(<abbr title="Drupal\migrate\Plugin\MigrationInterface">MigrationInterface</abbr> $migration)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Initializes the command progress bar if possible.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Drupal\migrate\Plugin\MigrationInterface">MigrationInterface</abbr></td>
+                <td>$migration</td>
+                <td>The migration.</td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>void</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_updateProgressBar">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Migrate/MigrateExecutable.php#L648">at line 648</a></div>
+        <code>                    void
+    <strong>updateProgressBar</strong>()
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Advances the progress bar.</p>                                                </div>
+                <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>void</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_progressFinish">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Migrate/MigrateExecutable.php#L658">at line 658</a></div>
+        <code>                    void
+    <strong>progressFinish</strong>()
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Removes the progress bar after operation is finished.</p>                                                </div>
+                <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>void</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_unregisterListeners">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Migrate/MigrateExecutable.php#L670">at line 670</a></div>
+        <code>                    void
+    <strong>unregisterListeners</strong>()
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Unregisters all event listeners.</p>                                                </div>
+                <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>void</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+            </div>
+
+    
+            </div><div id="footer">
+        Generated by <a href="https://github.com/code-lts/doctum">Doctum, a API Documentation generator and fork of Sami</a>.</div></div>
+    </div>
+    </body>
+
+</html>
