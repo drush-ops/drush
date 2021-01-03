@@ -63,6 +63,10 @@
     "squizlabs/php_codesniffer": "^2.7 || ^3",
     "vlucas/phpdotenv": "^2.4"
   },
+  "conflict": {
+    "drupal/migrate_run": "*",
+    "drupal/migrate_tools": "<= 5"
+  },
   "autoload": {
     "psr-4": {
       "Drush\\":            "src/",
@@ -73,6 +77,9 @@
     "psr-4": {
       "Unish\\": "tests/unish"
     },
+    "classmap": [
+        "sut/core/modules/migrate/src"
+    ],
     "files": ["tests/load.environment.php"]
   },
   "config": {

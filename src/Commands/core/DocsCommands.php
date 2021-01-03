@@ -197,6 +197,18 @@ class DocsCommands extends DrushCommands
     }
 
     /**
+     * Defining and running migrations.
+     *
+     * @command docs:migrate
+     * @hidden
+     * @topic ../../../docs/migrate.md
+     */
+    public function migrate()
+    {
+        self::printFileTopic($this->commandData);
+    }
+
+    /**
      * Extend sql-sync to allow transfer of the sql dump file via http.
      *
      * @command docs:example-sync-via-http
