@@ -60,6 +60,7 @@ nav:
     - Drush configuration: using-drush-configuration.md
     - Drupal configuration: config-exporting.md
     - Output Formats, Fields & Filters: output-formats-filters.md
+    - Migrate: migrate.md
     - REPL (a custom shell for Drupal): repl.md
     - Deploy: deploycommand.md
   - Author:
