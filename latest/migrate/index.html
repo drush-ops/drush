@@ -2986,10 +2986,10 @@
 <li>Drupal API: <a href="https://api.drupal.org/api/drupal/core%21modules%21migrate%21migrate.api.php/group/migration">https://api.drupal.org/api/drupal/core%21modules%21migrate%21migrate.api.php/group/migration</a></li>
 </ul>
 <h2 id="running-migrations">Running migrations<a class="headerlink" href="#running-migrations" title="Permanent link">&para;</a></h2>
-<p>Drush provides a set of commands that allows to run migration operations such as importing, checking the current status of migrations, rolling-back migrations, stopping an ongoing migration, etc. Such commands are available <em>only</em> when the <code>migrate</code> module is enabled. In order the get a full list of migrate commands, type:</p>
+<p>Drush provides a set of commands that allows to run migration operations such as importing, <a href="../commands/migrate_status/">checking the current status of migrations</a>, <a href="../commands/migrate_rollback/">rolling-back migrations</a>, <a href="../commands/migrate_stop/">stopping an ongoing migration</a>, etc. Such commands are available <em>only</em> when the <code>migrate</code> module is enabled. In order the get a full list of migrate commands, type:</p>
 <div class="highlight"><pre><span></span><code>drush --filter=migrate
 </code></pre></div>
-<p>To get help on each command run drush with the command name as parameter and the <code>--help</code> option. For example next command will show details about the <code>migrate:import</code> Drush command:</p>
+<p>To get help on each command run drush with the command name as parameter and the <code>--help</code> option. For example next command will show details about the <a href="../commands/migrate_import/">migrate:import</a> Drush command:</p>
 <div class="highlight"><pre><span></span><code>drush migrate:import --help
 </code></pre></div>
                 
