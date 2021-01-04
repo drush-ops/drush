@@ -16,10 +16,11 @@ Learn how to create migrations from the Drupal official documentation:
 Running migrations
 ------------------
 
-Drush provides a set of commands that allows to run migration operations such as importing, checking the current status of migrations, rolling-back migrations, stopping an ongoing migration, etc. Such commands are available *only* when the `migrate` module is enabled. In order the get a full list of migrate commands, type:
+Drush provides a set of commands that allows to run migration operations such as importing, [checking the current status of migrations](commands/migrate_status.md), [rolling-back migrations](commands/migrate_rollback.md
+), [stopping an ongoing migration](commands/migrate_stop.md), etc. Such commands are available *only* when the `migrate` module is enabled. In order the get a full list of migrate commands, type:
 
     drush --filter=migrate
 
-To get help on each command run drush with the command name as parameter and the `--help` option. For example next command will show details about the `migrate:import` Drush command:
+To get help on each command run drush with the command name as parameter and the `--help` option. For example next command will show details about the [migrate:import](commands/migrate_import.md) Drush command:
 
     drush migrate:import --help
