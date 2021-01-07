@@ -5,7 +5,7 @@ Drush is a command line shell and Unix scripting interface for Drupal. Drush cor
 Resources
 -----------
 * [Installing and Upgrading](install.md) ([Drush 8](https://docs.drush.org/en/8.x/install/))
-* [General Documentation](usage.md) ([Drush 8](https://docs.drush.org/en/8.x/install/))
+* [Usage](usage.md) ([Drush 8](https://docs.drush.org/en/8.x/install/))
 * [Drush Commands](commands/all.md)
 * [API Documentation](https://www.drush.org/latest/api)
 * [Drush packages available via Composer](https://packagist.org/search/?type=drupal-drush)
@@ -14,9 +14,9 @@ Resources
 
 Support
 -----------
-* Post support requests to [Drupal Answers](http://drupal.stackexchange.com/questions/tagged/drush). Tag question with 'drush'.
+* Post support requests to [Drupal Answers](http://drupal.stackexchange.com/questions/tagged/drush). Tag question with _drush_.
 * Report bugs and request features in the [GitHub Drush Issue Queue](https://github.com/drush-ops/drush/issues).
-* Use pull requests (PRs) to contribute to Drush.
+* Use pull requests (PRs) to contribute to Drush. [Guidelines](contribute/CONTRIBUTING.md).
 
 Code of Conduct
 ---------------
