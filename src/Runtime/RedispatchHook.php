@@ -103,7 +103,7 @@ class RedispatchHook implements InitializeHookInterface, ConfigAwareInterface, S
         } else {
             $process->setTty($this->getConfig()->get('ssh.tty', $input->isInteractive()));
         }
-        $process->mustRun($process->showRealtime());
+        $process->run($process->showRealtime());
 
         return $this->exitEarly($process->getExitCode());
     }
