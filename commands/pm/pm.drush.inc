@@ -2245,7 +2245,8 @@ function drush_find_empty_directories($dir, $exclude = array()) {
 function drush_pm_inject_info_file_metadata($project_dir, $project_name, $version, $datestamp) {
   // `drush_drupal_major_version()` cannot be used here because this may be running
   // outside of a Drupal context.
-  $yaml_format = substr($version, 0, 1) >= 8;
+  $regex = '/((\d*)\.\d*\.[\dx]*-?.*)|([89]\.x-\d*\.[\dx]*.*)/';
+  $yaml_format = preg_match($regex, $version);
   $pattern = preg_quote($yaml_format ? '.info.yml' : '.info');
   $info_files = drush_scan_directory($project_dir, '/.*' . $pattern . '$/');
   if (!empty($info_files)) {
