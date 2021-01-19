@@ -117,7 +117,7 @@ EOT;
             $version = trim($this->getProcess()->getOutput());
             $regex = '/^(?:5\.5\.5-)?(\d+\.\d+\.\d+).*-mariadb.*/i';
             preg_match($regex, $version, $matches);
-            if (!empty($matches[1]) && version_compare($matches[1], '10.2') < 0) {
+            if (!empty($matches[1]) && version_compare($matches[1], '10.2', '<')) {
                 $sql[] = sprintf("SET PASSWORD FOR %s = PASSWORD('%s');", $user, $dbSpec['password']);
             }
             else {
