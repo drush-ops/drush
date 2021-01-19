@@ -2846,8 +2846,8 @@
 <p>Grant specified permission(s) to a role.</p>
 <h4 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h4>
 <ul>
-<li><code>drush role-add-perm anonymous 'post comments'</code>. Allow anon users to post comments.</li>
-<li><code>drush role:add-perm anonymous "'post comments','access content'"</code>. Allow anon users to post comments and access content.</li>
+<li><code>drush role:perm:add anonymous 'post comments'</code>. Allow anon users to post comments.</li>
+<li><code>drush role:perm:add anonymous 'post comments,access content'</code>. Allow anon users to post comments and access content.</li>
 <li><code>drush pm:info --fields=permissions --format=csv aggregator</code>. Discover the permissions associated with given module (then use this command as needed).</li>
 </ul>
 <h4 id="arguments">Arguments<a class="headerlink" href="#arguments" title="Permanent link">&para;</a></h4>
