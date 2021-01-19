@@ -1,3 +1,4 @@
+
 #
 # Examples of valid statements for a Drush runtime config (drush.yml) file.
 #
@@ -13,7 +14,7 @@
 # Rename this file to drush.yml and copy it to one of the places listed below
 # in order of precedence:
 #
-# 1.  Drupal site folder (e.g. sites/{default|example.com}/drush.yml).
+# 1.  Drupal site folder (e.g. sites/{example.com}/drush.yml). 'default' site does not work.
 # 2.  Drupal /drush and sites/all/drush folders, or the /drush folder
 #       in the directory above the Drupal root.
 # 3.  In any location, as specified by the --config (-c) option.
