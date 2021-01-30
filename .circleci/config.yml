@@ -6,7 +6,31 @@ defaults: &defaults
     TERM: dumb
     PHPUNIT_ARGS: ""
 
-version: 2
+version: 2.1
+
+executors:
+  linux74:
+    docker:
+      - image: circleci/php:7.4-apache-node
+      - image: circleci/mysql:5.7.31
+  linux56:
+    docker:
+      - image: circleci/php:5.6-apache-node
+      - image: circleci/mysql:5.6.50
+
+commands:
+  prepare_php:
+    description: Installs the extensions we need and configures PHP to run Drush tests
+    steps:
+      - run: sudo apt-get update -y
+      - run: sudo apt-get install -y imagemagick libmagickwand-dev mariadb-client
+      - run: sudo docker-php-ext-install bcmath
+      - run: sudo docker-php-ext-install dom
+      - run: sudo docker-php-ext-install filter
+      - run: sudo docker-php-ext-install gd
+      - run: sudo docker-php-ext-install pdo_mysql
+      - run: sudo cp .docker/zz-php.ini /usr/local/etc/php/conf.d/
+
 jobs:
   lint:
     <<: *defaults
@@ -17,8 +41,34 @@ jobs:
       - run: composer install --prefer-dist --no-interaction
       - run: composer lint
 
+  test:
+    parameters:
+      os:
+        type: executor
+      drupal:
+        type: string
+    executor: << parameters.os >>
+    environment:
+      UNISH_NO_TIMEOUTS: y
+      UNISH_DB_URL: mysql://root:@127.0.0.1
+      UNISH_DRUPAL_VERSION: << parameters.drupal >>
+    steps:
+      - checkout
+      - prepare_php
+      - run: composer install --prefer-dist --no-interaction
+      - run: ./unish.sh
+
 workflows:
-  version: 2
   build_test:
     jobs:
       - lint
+      - test:
+          matrix:
+            parameters:
+              os: [linux74, linux56]
+              drupal: ["9.1.3", "8.9.13", "7"]
+            exclude:
+              - os: linux56
+                drupal: "9.1.3"
+              - os: linux56
+                drupal: "8.9.13"

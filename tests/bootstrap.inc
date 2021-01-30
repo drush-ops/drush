@@ -24,6 +24,15 @@ unish_init();
 function unish_init() {
   // Default drupal major version to run tests over.
   $unish_drupal_major = '8';
+  $unish_drupal_minor = '';
+  if (getenv('UNISH_DRUPAL_VERSION')) {
+    if (preg_match('#([0-9]+)(\..*)*#', getenv('UNISH_DRUPAL_VERSION'), $matches)) {
+      $unish_drupal_major = $matches[1];
+      if ((count($matches) > 2) && ($unish_drupal_major >= 8)) {
+        $unish_drupal_minor = $matches[2];
+      }
+    }
+  }
   if (getenv('UNISH_DRUPAL_MAJOR_VERSION')) {
     $unish_drupal_major = getenv('UNISH_DRUPAL_MAJOR_VERSION');
   }
@@ -31,7 +40,6 @@ function unish_init() {
     $unish_drupal_major = $GLOBALS['UNISH_DRUPAL_MAJOR_VERSION'];
   }
   define('UNISH_DRUPAL_MAJOR_VERSION', $unish_drupal_major);
-  $unish_drupal_minor = '';
   if ($unish_drupal_major >= 8) {
     if (getenv('UNISH_DRUPAL_MINOR_VERSION')) {
       $unish_drupal_minor = '.' . getenv('UNISH_DRUPAL_MINOR_VERSION');
