@@ -52,6 +52,9 @@ class quickDrupalCase extends CommandUnishTestCase {
   }
 
   function testQuickDrupal() {
+    if (version_compare(phpversion(), '7.4.0', '>=')) {
+      $this->markTestSkipped('Quick Drupal test does not work on php 7.4+ (old makefile)');
+    }
     $this->runQuickDrupalTest('devel');
   }
 
