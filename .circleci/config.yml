@@ -19,26 +19,6 @@ executors:
       - image: circleci/mysql:5.7.31
 
 commands:
-  prepare_mysql:
-    description: Waits for mysql server to spin up in the other container
-    steps:
-      - run:
-          # Install the things we need to set up our sql server.
-          name: Install sql dependencies
-          command: sudo apt-get install -y netcat default-mysql-client
-      - run:
-          # Our primary container isn't MYSQL so run a sleep command until it's ready.
-          name: Waiting for MySQL to be ready
-          command: |
-            echo '-----------------------------'
-            for i in `seq 1 10`;
-            do
-              nc -z 127.0.0.1 3306 && echo Success && exit 0
-              echo -n .
-              sleep 1
-            done
-            echo Failed waiting for MySQL && exit 1
-
   prepare_php:
     description: Installs the extensions we need and configures PHP to run Drush tests
     steps:
@@ -67,10 +47,8 @@ jobs:
       UNISH_DRUPAL_VERSION: << parameters.drupal >>
     steps:
       - checkout
-      - run: sudo apt-get update -y
       - prepare_php
       - run: composer install --prefer-dist --no-interaction
-      - prepare_mysql
       - run: ./unish.sh
 
 workflows:
