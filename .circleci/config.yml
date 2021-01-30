@@ -6,7 +6,49 @@ defaults: &defaults
     TERM: dumb
     PHPUNIT_ARGS: ""
 
-version: 2
+version: 2.1
+
+executors:
+  linux74:
+    docker:
+      - image: circleci/php:7.4-apache-node
+      - image: circleci/mysql:5.7.31
+  linux56:
+    docker:
+      - image: circleci/php:5.6-apache-node
+      - image: circleci/mysql:5.7.31
+
+commands:
+  prepare_mysql:
+    description: Waits for mysql server to spin up in the other container
+    steps:
+      - run:
+          # Install the things we need to set up our sql server.
+          name: Install sql dependencies
+          command: sudo apt-get install -y netcat default-mysql-client
+      - run:
+          # Our primary container isn't MYSQL so run a sleep command until it's ready.
+          name: Waiting for MySQL to be ready
+          command: |
+            echo '-----------------------------'
+            for i in `seq 1 10`;
+            do
+              nc -z 127.0.0.1 3306 && echo Success && exit 0
+              echo -n .
+              sleep 1
+            done
+            echo Failed waiting for MySQL && exit 1
+
+  prepare_php:
+    description: Installs the extensions we need and configures PHP to run Drush tests
+    steps:
+      - run: sudo apt-get install -y php-curl php-pdo php-mysql
+      - run: sudo docker-php-ext-install pdo_mysql
+      - run: sudo docker-php-ext-enable pdo_mysql
+      - run: echo -e "mbstring.http_input = pass" | sudo tee /usr/local/etc/php/php.ini > /dev/null
+      - run: echo -e "mbstring.http_output = pass" | sudo tee /usr/local/etc/php/php.ini > /dev/null
+      - run: echo -e "sendmail_path = /bin/true" | sudo tee /usr/local/etc/php/php.ini > /dev/null
+
 jobs:
   lint:
     <<: *defaults
@@ -17,8 +59,44 @@ jobs:
       - run: composer install --prefer-dist --no-interaction
       - run: composer lint
 
+  test:
+    parameters:
+      os:
+        type: executor
+      drupal:
+        type: string
+    executor: << parameters.os >>
+    environment:
+      UNISH_NO_TIMEOUTS: y
+      UNISH_DB_URL: mysql://root:@127.0.0.1
+      UNISH_DRUPAL_VERSION: << parameters.drupal >>
+    steps:
+      - checkout
+      - run: sudo apt-get update -y
+      - prepare_php
+      - run: composer install --prefer-dist --no-interaction
+      - prepare_mysql
+      - run: ./unish.sh
+
 workflows:
-  version: 2
   build_test:
     jobs:
       - lint
+      - test:
+          matrix:
+            parameters:
+              os: [linux74, linux56]
+              drupal: ["9.0.2", "8.9.13", "8.8.12", "8.7.14", "8.6.18", "7", "6"]
+            exclude:
+              - os: linux74
+                drupal: "6"
+              - os: linux56
+                drupal: "9.0.2"
+              - os: linux56
+                drupal: "8.9.13"
+              - os: linux56
+                drupal: "8.8.12"
+              - os: linux56
+                drupal: "8.7.14"
+              - os: linux56
+                drupal: "8.6.18"
