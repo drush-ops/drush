@@ -23,10 +23,13 @@ commands:
     description: Installs the extensions we need and configures PHP to run Drush tests
     steps:
       - run: sudo apt-get update -y
-      - run: sudo apt-get install -y imagemagick libmagickwand-dev
+      - run: sudo apt-get install -y imagemagick libmagickwand-dev mariadb-client
       - run: sudo docker-php-ext-install bcmath
-      - run: sudo docker-php-ext-install pdo_mysqli
-      - run: cp .docker/zz-php.ini /usr/local/etc/php/conf.d/
+      - run: sudo docker-php-ext-install dom
+      - run: sudo docker-php-ext-install filter
+      - run: sudo docker-php-ext-install gd
+      - run: sudo docker-php-ext-install pdo_mysql
+      - run: sudo cp .docker/zz-php.ini /usr/local/etc/php/conf.d/
 
 jobs:
   lint:
