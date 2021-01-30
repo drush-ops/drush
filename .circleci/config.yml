@@ -11,11 +11,11 @@ version: 2.1
 executors:
   linux74:
     docker:
-      - image: circleci/php:7.4-apache-node
+      - image: wodby/php:7.4
       - image: circleci/mysql:5.7.31
   linux56:
     docker:
-      - image: circleci/php:5.6-apache-node
+      - image: wodby/php:5.6
       - image: circleci/mysql:5.7.31
 
 commands:
@@ -42,11 +42,7 @@ commands:
   prepare_php:
     description: Installs the extensions we need and configures PHP to run Drush tests
     steps:
-      - run: sudo docker-php-ext-install pdo_mysql
-      - run: sudo docker-php-ext-enable pdo_mysql
-      - run: echo -e "mbstring.http_input = pass" | sudo tee -a /usr/local/etc/php/php.ini > /dev/null
-      - run: echo -e "mbstring.http_output = pass" | sudo tee -a /usr/local/etc/php/php.ini > /dev/null
-      - run: echo -e "sendmail_path = /bin/true" | sudo tee -a /usr/local/etc/php/php.ini > /dev/null
+      - run: cp .docker/zz-php.ini /usr/local/etc/php/conf.d/
 
 jobs:
   lint:
