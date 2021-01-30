@@ -11,17 +11,21 @@ version: 2.1
 executors:
   linux74:
     docker:
-      - image: wodby/php:7.4
+      - image: circleci/php:7.4-apache-node
       - image: circleci/mysql:5.7.31
   linux56:
     docker:
-      - image: wodby/php:5.6
+      - image: circleci/php:5.6-apache-node
       - image: circleci/mysql:5.7.31
 
 commands:
   prepare_php:
     description: Installs the extensions we need and configures PHP to run Drush tests
     steps:
+      - run: sudo apt-get update -y
+      - run: sudo apt-get install -y imagemagick libmagickwand-dev
+      - run: sudo docker-php-ext-install bcmath
+      - run: sudo docker-php-ext-install pdo_mysqli
       - run: cp .docker/zz-php.ini /usr/local/etc/php/conf.d/
 
 jobs:
