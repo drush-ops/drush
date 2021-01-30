@@ -42,12 +42,11 @@ commands:
   prepare_php:
     description: Installs the extensions we need and configures PHP to run Drush tests
     steps:
-      - run: sudo apt-get install -y php-curl php-pdo php-mysql
       - run: sudo docker-php-ext-install pdo_mysql
       - run: sudo docker-php-ext-enable pdo_mysql
-      - run: echo -e "mbstring.http_input = pass" | sudo tee /usr/local/etc/php/php.ini > /dev/null
-      - run: echo -e "mbstring.http_output = pass" | sudo tee /usr/local/etc/php/php.ini > /dev/null
-      - run: echo -e "sendmail_path = /bin/true" | sudo tee /usr/local/etc/php/php.ini > /dev/null
+      - run: echo -e "mbstring.http_input = pass" | sudo tee -a /usr/local/etc/php/php.ini > /dev/null
+      - run: echo -e "mbstring.http_output = pass" | sudo tee -a /usr/local/etc/php/php.ini > /dev/null
+      - run: echo -e "sendmail_path = /bin/true" | sudo tee -a /usr/local/etc/php/php.ini > /dev/null
 
 jobs:
   lint:
@@ -86,7 +85,7 @@ workflows:
           matrix:
             parameters:
               os: [linux74, linux56]
-              drupal: ["9.0.2", "8.9.13", "8.8.12", "8.7.14", "8.6.18", "7", "6"]
+              drupal: ["9.0.2", "8.9.13", "7", "6"]
             exclude:
               - os: linux74
                 drupal: "6"
@@ -94,9 +93,3 @@ workflows:
                 drupal: "9.0.2"
               - os: linux56
                 drupal: "8.9.13"
-              - os: linux56
-                drupal: "8.8.12"
-              - os: linux56
-                drupal: "8.7.14"
-              - os: linux56
-                drupal: "8.6.18"

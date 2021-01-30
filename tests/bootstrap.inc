@@ -28,7 +28,7 @@ function unish_init() {
   if (getenv('UNISH_DRUPAL_VERSION')) {
     if (preg_match('#([0-9]+)(\..*)#', getenv('UNISH_DRUPAL_VERSION'), $matches)) {
       $unish_drupal_major = $matches[1];
-      if (len($matches > 2) && ($unish_drupal_major >= 8)) {
+      if ((count($matches) > 2) && ($unish_drupal_major >= 8)) {
         $unish_drupal_minor = $matches[2];
       }
     }
