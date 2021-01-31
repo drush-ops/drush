@@ -390,7 +390,7 @@ abstract class DrupalBoot extends BaseBoot {
 
     $conf_path = drush_bootstrap_value('conf_path', $this->conf_path(TRUE, TRUE));
     $conf_file = "$conf_path/settings.php";
-    if (!file_exists($conf_file)) {
+    if (!file_exists($conf_file) && !getenv('PRESSFLOW_SETTINGS')) {
       return drush_bootstrap_error('DRUPAL_SITE_SETTINGS_NOT_FOUND', dt("Could not find a Drupal settings.php file at !file.",
          array('!file' => $conf_file)));
     }
