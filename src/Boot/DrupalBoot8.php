@@ -9,14 +9,18 @@ use Drush\Drupal\DrushLoggerServiceProvider;
 use Drush\Drupal\DrushServiceModifier;
 use Drush\Drush;
 use Drush\Log\LogLevel;
+use Drush\Runtime\Runtime;
+use Robo\Common\OutputAwareTrait;
+use Robo\Contract\OutputAwareInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Webmozart\PathUtil\Path;
 use Psr\Log\LoggerInterface;
 
-class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
+class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface, OutputAwareInterface
 {
     use AutoloaderAwareTrait;
+    use OutputAwareTrait;
 
     /**
      * @var LoggerInterface
@@ -225,8 +229,10 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
         // @see Drush\Drupal\DrupalKernel::addServiceModifier()
         $this->kernel->addServiceModifier(new DrushServiceModifier());
 
-        // Unset drupal error handler and restore Drush's one.
-        restore_error_handler();
+        // Unset Drupal's error handler in favor of Drush's.
+        // Runtime::setCollision($this->stderr());
+        Drush::getContainer()->get('errorHandler')->installHandler();
+
 
         // Disable automated cron if the module is enabled.
         $GLOBALS['config']['automated_cron.settings']['interval'] = 0;

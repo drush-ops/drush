@@ -5,6 +5,7 @@ use Drush\Drush;
 use Drush\Preflight\Preflight;
 use Drush\Runtime\ErrorHandler;
 use Drush\Runtime\ShutdownHandler;
+use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Control the Drush runtime environment
@@ -38,23 +39,13 @@ class Runtime
     }
 
     /**
-     * Run the application, catching any errors that may be thrown.
-     * Typically, this will happen only for code that fails fast during
-     * preflight. Later code should catch and handle its own exceptions.
+     * Run the application.
      */
     public function run($argv)
     {
-        try {
             $output = new \Symfony\Component\Console\Output\ConsoleOutput();
+            // Runtime::setCollision($output->getErrorOutput());
             $status = $this->doRun($argv, $output);
-        } catch (\Exception $e) {
-            $status = $e->getCode();
-            $message = $e->getMessage();
-            // Uncaught exceptions could happen early, before our logger
-            // and other classes are initialized. Print them and exit.
-            $this->preflight->logger()->setDebug(true)->log($message);
-        }
-        return $status;
     }
 
     /**
@@ -153,5 +144,16 @@ class Runtime
     public static function exitCode()
     {
         return Drush::config()->get(self::DRUSH_RUNTIME_EXIT_CODE_NAMESPACE, DRUSH_SUCCESS);
+    }
+
+    /**
+     * Set Collision as error and exception handler.
+     *
+     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     */
+    public static function setCollision(OutputInterface $output) {
+        $provider = new \NunoMaduro\Collision\Provider();
+        $provider->getHandler()->setOutput($output);
+        $provider->register();
     }
 }

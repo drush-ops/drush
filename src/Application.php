@@ -44,6 +44,14 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
     /** @var TildeExpansionHook */
     protected $tildeExpansionHook;
 
+    public function __construct(string $name = 'UNKNOWN', string $version = 'UNKNOWN')
+    {
+        parent::__construct($name, $version);
+        // Bypass Console's Exception handling in favor of Collision.
+        // $this->setCatchExceptions(false);
+    }
+
+
     /**
      * Add global options to the Application and their default values to Config.
      */
@@ -378,5 +386,15 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
             ->setSearchLocations(['Commands', 'Hooks', 'Generators'])
             ->setSearchPattern('#.*(Command|Hook|Generator)s?.php$#');
         return $discovery;
+    }
+
+    /**
+     * Renders a caught exception. Omits the command docs at end.
+     */
+    public function renderException(\Exception $e, OutputInterface $output)
+    {
+        $output->writeln('', OutputInterface::VERBOSITY_QUIET);
+
+        $this->doRenderException($e, $output);
     }
 }

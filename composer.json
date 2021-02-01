@@ -42,6 +42,7 @@
     "grasmash/yaml-expander": "^1.1.1",
     "guzzlehttp/guzzle": "^6.3 || ^7.0",
     "league/container": "~2",
+    "nunomaduro/collision": "^3.0 || ^4.0 || ^5.0",
     "psr/log": "~1.0",
     "psy/psysh": "~0.6",
     "symfony/event-dispatcher": "^3.4 || ^4.0",
