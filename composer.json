@@ -76,6 +76,8 @@
     }
   },
   "scripts": {
+    "phar:install-tools": "curl -LSs https://box-project.github.io/box2/installer.php | php",
+    "phar:build": "php box.phar build",
     "lint": [
       "find includes -name '*.inc' -print0 | xargs -0 -n1 php -l",
       "find lib/Drush -name '*.php' -print0 | xargs -0 -n1 php -l"
