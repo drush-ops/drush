@@ -16,7 +16,7 @@
         <link rel="canonical" href="https://www.drush.org/latest/output-formats-filters/">
       
       <link rel="shortcut icon" href="../img/favicon.ico">
-      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-6.2.5">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-6.2.8">
     
     
       
@@ -24,10 +24,10 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.15aa0b43.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.cb6bc1d0.min.css">
       
         
-        <link rel="stylesheet" href="../assets/stylesheets/palette.75751829.min.css">
+        <link rel="stylesheet" href="../assets/stylesheets/palette.39b8e14a.min.css">
         
       
     
@@ -365,7 +365,6 @@
       
       
 
-
   
   
     
@@ -578,7 +577,6 @@
       
       
 
-
   
   
   
@@ -693,7 +691,6 @@
       
       
       
-
 
   
   
@@ -870,7 +867,6 @@
       
       
 
-
   
   
   
@@ -925,7 +921,6 @@
       
       
       
-
 
   
   
@@ -2942,10 +2937,10 @@ Note that not all commands have a default filter field.</p>
 <p>Other fields in the output may be searched by using a simple expression in the <code>--filter</code> term. For example, to list only the enabled extensions with the <code>pm:list</code> command, you could run:
 <div class="highlight"><pre><span></span><code>$ drush pm:list --filter<span class="o">=</span><span class="s1">&#39;status=enabled&#39;</span>
 </code></pre></div>
-To search for fields that contain a string using the operator <code>*=</code>, or match a regular expression with the <code>~=</code> operator. For example, to find all views whose machine name contains the word "content":
+To search for fields that contain a string using the operator <code>*=</code>, or match a regular expression with the <code>~=</code> operator. For example, to find all views whose machine name contains the word <em>content</em>:
 <div class="highlight"><pre><span></span><code>drush views:list --filter<span class="o">=</span><span class="s1">&#39;machine-name*=content&#39;</span>
 </code></pre></div>
-To use a regular expression to find any core requirement notice whose title contains either "php" or "gd"
+To use a regular expression to find any core requirement notice whose title contains either <em>php</em> or <em>gd</em>
 <div class="highlight"><pre><span></span><code>drush core:requirements --filter<span class="o">=</span><span class="s1">&#39;title~=#(php|gd)#i&#39;</span>
 </code></pre></div>
 Finally, filter expressions may also use logical-and (<code>&amp;&amp;</code>) or logical-or (<code>||</code>) operations to separate multiple terms.  Parenthesis are not supported. For example, to search both the <code>title</code> and <code>severity</code> fields in the <code>core:requirements</code> command:
@@ -3097,15 +3092,15 @@ Finally, filter expressions may also use logical-and (<code>&amp;&amp;</code>) o
       
     </div>
     
-      <script src="../assets/javascripts/vendor.93c04032.min.js"></script>
-      <script src="../assets/javascripts/bundle.83e5331e.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}</script>
+      <script src="../assets/javascripts/vendor.18f0862e.min.js"></script>
+      <script src="../assets/javascripts/bundle.994580cf.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}</script>
       
       <script>
         app = initialize({
           base: "..",
           features: ['navigation.tabs', 'toc.integrate'],
           search: Object.assign({
-            worker: "../assets/javascripts/worker/search.8c7e0a7e.min.js"
+            worker: "../assets/javascripts/worker/search.9c0e82ba.min.js"
           }, typeof search !== "undefined" && search)
         })
       </script>
