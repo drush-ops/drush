@@ -1,10 +1,9 @@
 <?php
 namespace Drush\Runtime;
 
+use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Drush\Preflight\Preflight;
-use Drush\Runtime\ErrorHandler;
-use Drush\Runtime\ShutdownHandler;
 
 /**
  * Control the Drush runtime environment
@@ -48,7 +47,8 @@ class Runtime
             $output = new \Symfony\Component\Console\Output\ConsoleOutput();
             $status = $this->doRun($argv, $output);
         } catch (\Exception $e) {
-            $status = $e->getCode();
+            // Fallback to status 1 if the Exception has not indicated otherwise.
+            $status = $e->getCode() ?: DrushCommands::EXIT_FAILURE;
             $message = $e->getMessage();
             // Uncaught exceptions could happen early, before our logger
             // and other classes are initialized. Print them and exit.
