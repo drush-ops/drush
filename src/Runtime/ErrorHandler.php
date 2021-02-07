@@ -8,10 +8,13 @@ namespace Drush\Runtime;
 
 use Drush\Drush;
 use Drush\Log\LogLevel;
+use NunoMaduro\Collision\Writer;
+use Symfony\Component\Console\Output\BufferedOutput;
 use Webmozart\PathUtil\Path;
 
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
+use Whoops\Exception\Inspector;
 
 /**
  * Log PHP errors to the Drush log. This is in effect until Drupal's error
@@ -53,7 +56,11 @@ class ErrorHandler implements LoggerAwareInterface, HandlerInterface
                 $type = LogLevel::WARNING;
             }
 
-            $this->logger->log($type, $message . ' ' . basename($filename) . ':' . $line);
+            $throwable = new \ErrorException($message, null, null, $filename, $line);
+            $inspector = new Inspector($throwable);
+            $buffered = new BufferedOutput(Drush::output()->getVerbosity(), true);
+            (new Writer($buffered))->write($inspector);
+            $this->logger->log($type, $buffered->fetch());
 
             if ($errno == E_RECOVERABLE_ERROR && $halt_on_error) {
                 $this->logger->error(dt('E_RECOVERABLE_ERROR encountered; aborting. To ignore recoverable errors, run again with --no-halt-on-error'));

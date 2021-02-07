@@ -401,7 +401,8 @@ class MigrateRunnerCommands extends DrushCommands
             $this->logger()->error(dt('No migrations found.'));
         }
 
-        $executableOptions = [];
+        // If idlist et al. are omitted, MigrateExecutable gives 'Undefined index' error.
+        $executableOptions = ['idlist' => '', 'limit' => null, 'delete' => null, 'total' => null, 'timestamp' => null];
         foreach (['feedback', 'idlist', 'progress'] as $option) {
             if ($options[$option]) {
                 $executableOptions[$option] = $options[$option];

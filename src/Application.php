@@ -44,6 +44,14 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
     /** @var TildeExpansionHook */
     protected $tildeExpansionHook;
 
+    public function __construct(string $name = 'UNKNOWN', string $version = 'UNKNOWN')
+    {
+        parent::__construct($name, $version);
+        // Bypass Console's Exception handling in favor of Collision.
+        // $this->setCatchExceptions(false);
+    }
+
+
     /**
      * Add global options to the Application and their default values to Config.
      */

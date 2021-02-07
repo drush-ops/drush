@@ -11,17 +11,6 @@ use Drush\Commands\DrushCommands;
  */
 class ShutdownAndErrorHandlerTest extends CommandUnishTestCase
 {
-    /**
-     * Check to see if the shutdown function is working
-     * if request exits abruptly (e.g. page redirect)
-     */
-    public function testShutdownFunctionAbruptExit()
-    {
-        // Run some garbage php with a syntax error.
-        $this->drush('ev', ['exit(0);'], [], null, null, DrushCommands::EXIT_FAILURE);
-
-        $this->assertStringContainsString("Drush command terminated abnormally.", $this->getErrorOutput(), 'Error handler did not log a message.');
-    }
 
     /**
      * Check to see if the shutdown function is working
@@ -34,18 +23,6 @@ class ShutdownAndErrorHandlerTest extends CommandUnishTestCase
         $this->drush('php:script', ['exit.php'], ['script-path' => __DIR__ . '/resources'], null, null, 123);
         // Placate phpunit. If above succeeds we are done here.
         $this->addToAssertionCount(1);
-    }
-
-    /**
-     * Check to see if the shutdown function is working
-     * if request exits due to a PHP problem such as a syntax error
-     */
-    public function testShutdownFunctionPHPError()
-    {
-        // Run some garbage php with a syntax error.
-        $this->drush('ev', ['\Drush\Drush::setContainer("string is the wrong type to pass here");'], [], null, null, PHP_MAJOR_VERSION == 5 ? 255 : DrushCommands::EXIT_FAILURE);
-
-        $this->assertStringContainsString("Drush command terminated abnormally.", $this->getErrorOutput(), 'Error handler did not log a message.');
     }
 
     /**
