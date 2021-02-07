@@ -379,4 +379,14 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
             ->setSearchPattern('#.*(Command|Hook|Generator)s?.php$#');
         return $discovery;
     }
+
+    /**
+     * Renders a caught exception. Omits the command docs at end.
+     */
+    public function renderException(\Exception $e, OutputInterface $output)
+    {
+        $output->writeln('', OutputInterface::VERBOSITY_QUIET);
+
+        $this->doRenderException($e, $output);
+    }
 }
