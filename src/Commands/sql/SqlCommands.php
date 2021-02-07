@@ -100,7 +100,7 @@ class SqlCommands extends DrushCommands implements StdinAwareInterface
         }
 
         if (!$sql->createdb(true)) {
-            throw new \Exception('Unable to create database. Rerun with --debug to see any error message.');
+            throw new \Exception('Unable to create database. Rerun with --debug to see any error message.  ' . $sql->getProcess()->getErrorOutput());
         }
     }
 
@@ -122,7 +122,7 @@ class SqlCommands extends DrushCommands implements StdinAwareInterface
         }
         $tables = $sql->listTablesQuoted();
         if (!$sql->drop($tables)) {
-            throw new \Exception('Unable to drop all tables. Rerun with --debug to see any error message.');
+            throw new \Exception('Unable to drop all tables: ' . $sql->getProcess()->getErrorOutput());
         }
     }
 
@@ -197,7 +197,7 @@ class SqlCommands extends DrushCommands implements StdinAwareInterface
             $sql = SqlBase::create($options);
             $result = $sql->query($query, $filename, $options['result-file']);
             if (!$result) {
-                throw new \Exception(dt('Query failed.'));
+                throw new \Exception('Query failed. Rerun with --debug to see any error message. ' . $sql->getProcess()->getErrorOutput());
             }
             $this->output()->writeln($sql->getProcess()->getOutput());
         }
