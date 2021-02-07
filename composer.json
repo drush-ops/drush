@@ -39,6 +39,7 @@
     "consolidation/robo": "^1.4.11 || ^2",
     "consolidation/site-alias": "^3.0.0@stable",
     "consolidation/site-process": "^2.1 || ^4",
+    "enlightn/security-checker": "^1",
     "grasmash/yaml-expander": "^1.1.1",
     "guzzlehttp/guzzle": "^6.3 || ^7.0",
     "league/container": "~2",
