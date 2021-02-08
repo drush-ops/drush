@@ -159,7 +159,7 @@ class SecurityUpdateCommands extends DrushCommands
      * @return UnstructuredData
      * @throws \Exception
      * @command pm:security-php
-     * @validate-php-extension ext-zip
+     * @validate-php-extension zip,json
      * @aliases sec-php,pm-security-php
      * @bootstrap none
      *
