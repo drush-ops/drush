@@ -154,14 +154,12 @@ class SecurityUpdateCommands extends DrushCommands
      * Packages are discovered via composer.lock file. An exit code of 3
      * indicates that the check completed, and insecure packages were found.
      *
-     * Thanks to https://github.com/FriendsOfPHP/security-advisories
-     * and Symfony for providing this service.
-     *
      * @param array $options
      *
      * @return UnstructuredData
      * @throws \Exception
      * @command pm:security-php
+     * @validate-php-extension zip,json
      * @aliases sec-php,pm-security-php
      * @bootstrap none
      *
