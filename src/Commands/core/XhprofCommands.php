@@ -42,7 +42,7 @@ class XhprofCommands extends DrushCommands
     }
 
     /**
-     * Enable profiling via XHProf
+     * Finish profiling and emit a link.
      *
      * @hook post-command *
      */
