@@ -272,7 +272,7 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
         }
 
         // Record the schema update if it was completed successfully.
-        if ($context['finished'] == 1 && empty($ret['#abort'])) {
+        if ($context['finished'] >= 1 && empty($ret['#abort'])) {
             drupal_set_installed_schema_version($module, $number);
             // Setting this value will output a success message.
             // @see \DrushBatchContext::offsetSet()
