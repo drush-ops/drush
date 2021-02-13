@@ -110,7 +110,15 @@ class HelpCLIFormatter implements FormatterInterface
 
     public static function formatOptionDescription($option)
     {
-        $defaults = array_key_exists('defaults', $option) ? ' [default: <info>' . implode(' ', $option['defaults']) . '</info>]' : '';
+        $defaults = '';
+        if (array_key_exists('defaults', $option)) {
+            $defaults = implode(' ', $option['defaults']); //
+            // Avoid info tags for large strings https://github.com/drush-ops/drush/issues/4639.
+            if (strlen($defaults) <= 100) {
+                $defaults = "<info>$defaults</info>";
+            }
+            $defaults = ' [default: ' . $defaults . ']';
+        }
         return $option['description'] . $defaults;
     }
 
