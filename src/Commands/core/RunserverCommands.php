@@ -25,7 +25,7 @@ class RunserverCommands extends DrushCommands
      * @command runserver
      * @param $uri Host IP address and port number to bind to and path to open in web browser. Format is addr:port/path. Only opens a browser if a path is specified.
      * @option default-server A default addr:port/path to use for any values not specified as an argument.
-     * @option browser If opening a web browser, which browser to use (defaults to operating system default). Use --no-browser to avoid opening a browser.
+     * @option browser Open the URL in the default browser. Use --no-browser to avoid opening a browser.
      * @option dns Resolve hostnames/IPs using DNS/rDNS (if possible) to determine binding IPs and/or human friendly hostnames for URLs and browser.
      * @bootstrap full
      * @aliases rs,serve
