@@ -2854,8 +2854,7 @@ high quality, our tests are run on every push. See <a href="https://circleci.com
 <li><code>git clone https://github.com/drush-ops/drush.git</code></li>
 <li><code>cd drush</code></li>
 <li><code>composer install</code></li>
-<li>Review the configuration settings in <a href="https://github.com/drush-ops/drush/blob/10.x/tests/phpunit.xml.dist">tests/phpunit.xml.dist</a>. </li>
-<li>If customization is needed, copy phpunit.xml.dist to phpunit.xml and edit away.</li>
+<li>Review the configuration settings in <a href="https://github.com/drush-ops/drush/blob/10.x/tests/phpunit.xml.dist">tests/phpunit.xml.dist</a>. If customization is needed, copy phpunit.xml.dist to phpunit.xml and edit away.</li>
 <li>Run all test suites: <code>composer test</code></li>
 </ol>
 <h2 id="docker">Docker<a class="headerlink" href="#docker" title="Permanent link">&para;</a></h2>
@@ -2863,7 +2862,7 @@ high quality, our tests are run on every push. See <a href="https://circleci.com
 <ul>
 <li>Start containers: <code>docker-compose up -d</code></li>
 <li>Run a test: <code>docker-compose exec drupal composer functional -- --filter testUserRole</code></li>
-<li>To change configuration, copy .env.example to .env, edit to taste, and run <code>docker-compose up -d</code> again</li>
+<li>To change configuration, copy <code>.env.example</code> to <code>.env</code>, edit to taste, and run <code>docker-compose up -d</code> again.</li>
 <li>See the <a href="https://github.com/drush-ops/drush/blob/10.x/.env.example">.env.example file</a> for help on enabling Xdebug.</li>
 </ul>
 <h2 id="advanced-usage">Advanced usage<a class="headerlink" href="#advanced-usage" title="Permanent link">&para;</a></h2>
@@ -2878,13 +2877,14 @@ high quality, our tests are run on every push. See <a href="https://circleci.com
 <li>Skip slow tests (usually those with network usage): <code>composer functional -- --exclude-group slow</code></li>
 <li>XML results: <code>composer functional -- --log-junit results.xml</code></li>
 <li>Ad-hoc testing with the SUT</li>
+<li><code>composer sut:si</code>. See composer.json for details.</li>
 <li><code>UNISH_DIRTY=1 composer functional -- --filter testUserRole</code></li>
 <li><code>./drush @sut.dev status</code></li>
 </ul>
 <h2 id="about-the-test-suites">About the Test Suites<a class="headerlink" href="#about-the-test-suites" title="Permanent link">&para;</a></h2>
 <ul>
 <li><strong>Unit tests</strong> operate on functions that take values and return results without creating side effects. No database connection is required to run these tests, and no Drupal site is set up.</li>
-<li><strong>Integration tests</strong> set up a test dependency injection container and operate by calling the Symfony Application APIs directly. A Drupal site called the System Under Test is set up and used for the tests. The SUT is set up and installed only once, and then is re-used for all tests. Integration tests therefore cannot make destructive changes to the SUT database. Also, Drupal is bootstrapped only once (always using the standard Drupal kernel, never the install or update kernel). This means that all commands run at BOOTSTRAP_FULL, and it is not possible to test loading different Drush configuration files and so on. It is not possible to test argument / option parsing. The shutdown and error handlers are not installed, so PHP deprecation warnings will be evidenced in the integration tests.</li>
+<li><strong>Integration tests</strong> set up a test dependency injection container and operate by calling the Symfony Application APIs directly. A Drupal site called the System Under Test is set up and used for the tests. The SUT is set up and installed only once, and then is re-used for all tests. Integration tests therefore cannot make destructive changes to the SUT database. Also, Drupal is bootstrapped only once (always using the standard Drupal kernel, never the install or update kernel). This means that all commands run at <code>@bootstrap full</code>, and it is not possible to test loading different Drush configuration files and so on. It is not possible to test argument / option parsing. The shutdown and error handlers are not installed, so PHP deprecation warnings will be evidenced in the integration tests.</li>
 <li><strong>Functional tests</strong> operate by <code>exec</code>ing the Drush executable. All functional tests therefore run in their own separate processes. The Drupal System Under Test is set up every time it is needed by any functional test. It is therefore okay if a functional test changes the state of the SUT. The codebase is re-used, so no destructive changes should be made to the code.</li>
 </ul>
 <h2 id="drush-test-traits">Drush Test Traits<a class="headerlink" href="#drush-test-traits" title="Permanent link">&para;</a></h2>
