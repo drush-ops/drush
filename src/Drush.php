@@ -323,7 +323,7 @@ class Drush
      *             $selfRecord = $this->siteAliasManager()->getSelf();
      *             $args = ['system.site', ...];
      *             $options = ['yes' => true];
-     *             $process = $this->processManager()->drush(selfRecord, 'config-set', $args, $options);
+     *             $process = $this->processManager()->drush($selfRecord, 'config-set', $args, $options);
      *             $process->mustRun();
      *         }
      *     }
