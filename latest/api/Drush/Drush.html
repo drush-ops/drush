@@ -1107,7 +1107,7 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
         $selfRecord = $this-&gt;siteAliasManager()-&gt;getSelf();
         $args = ['system.site', ...];
         $options = ['yes' =&gt; true];
-        $process = $this-&gt;processManager()-&gt;drush(selfRecord, 'config-set', $args, $options);
+        $process = $this-&gt;processManager()-&gt;drush($selfRecord, 'config-set', $args, $options);
         $process-&gt;mustRun();
     }
 }
