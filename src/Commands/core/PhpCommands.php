@@ -14,7 +14,7 @@ class PhpCommands extends DrushCommands implements StdinAwareInterface
      * Evaluate arbitrary php code after bootstrapping Drupal (if available).
      *
      * @command php:eval
-     * @param $code PHP code
+     * @param $code PHP code. If shell escaping gets too tedious, consider using the php:script command.
      * @usage drush php:eval '$node = node_load(1); print $node->title;'
      *   Loads node with nid 1 and then prints its title.
      * @usage drush php:eval "file_unmanaged_copy(\'$HOME/Pictures/image.jpg\', \'public://image.jpg\');"
