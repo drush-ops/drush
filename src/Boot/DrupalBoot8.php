@@ -189,7 +189,7 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
             $connection_options = $connection->getConnectionOptions();
             $connection->open($connection_options);
         } catch (\Exception $e) {
-            $this->logger->log(LogLevel::BOOTSTRAP, 'Unable to connect to database. More information may be available by running `drush status`. This may occur when Drush is trying to bootstrap a site that has not been installed or does not have a configured database. In this case you can select another site with a working database setup by specifying the URI to use with the --uri parameter on the command line. See `drush topic docs-aliases` for details.');
+            $this->logger->log(LogLevel::BOOTSTRAP, 'Unable to connect to database with message: ' . $e->getMessage() . '. More debug information is available by running `drush status`. This may occur when Drush is trying to bootstrap a site that has not been installed or does not have a configured database. In this case you can select another site with a working database setup by specifying the URI to use with the --uri parameter on the command line. See `drush topic docs-aliases` for details.');
             return false;
         }
         if (!$connection->schema()->tableExists('key_value')) {
