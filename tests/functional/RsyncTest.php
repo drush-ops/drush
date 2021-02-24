@@ -12,7 +12,7 @@ namespace Unish;
 class RsyncTest extends CommandUnishTestCase
 {
 
-    public function setUp()
+    public function setup(): void
     {
         if ($this->isWindows()) {
             $this->markTestSkipped('rsync paths may not contain colons on Windows.');
@@ -41,7 +41,7 @@ class RsyncTest extends CommandUnishTestCase
         // injection will be done.
         $this->drush('rsync', ['@example.dev', '@example.stage'], $options, 'user@server/path/to/drupal#sitename');
         $expected = "[notice] Simulating: ssh -o PasswordAuthentication=no user@server 'drush --no-interaction rsync @example.dev @example.stage --uri=sitename --root=/path/to/drupal";
-        $this->assertContains($expected, $this->getSimplifiedErrorOutput());
+        $this->assertStringContainsString($expected, $this->getSimplifiedErrorOutput());
     }
 
     public function testRsyncPathAliases()
@@ -74,13 +74,13 @@ class RsyncTest extends CommandUnishTestCase
         file_put_contents($source_file, $test_data);
 
         // We just deleted it -- should be missing
-        $this->assertFileNotExists($target_file);
+        $this->assertFileDoesNotExist($target_file);
         $this->assertFileExists($source_file);
 
         // Test an actual rsync between our two fixture sites. Note that
         // these sites share the same web root.
         $this->drush('rsync', ["$source_alias:%files/a/", "$target_alias:%files/b"], $options, null, null, self::EXIT_SUCCESS, '2>&1');
-        $this->assertContains('Copy new and override existing files at ', $this->getOutput());
+        $this->assertStringContainsString('Copy new and override existing files at ', $this->getOutput());
 
         // Test to see if our fixture file now exists at $target
         $this->assertFileExists($target_file);
@@ -97,6 +97,6 @@ class RsyncTest extends CommandUnishTestCase
         $site = current($this->getAliases());
         $options['simulate'] = null;
         $this->drush('core:rsync', ["$site:%files", "/tmp"], $options, null, null, self::EXIT_SUCCESS, '2>&1;');
-        $this->assertContains('[notice] Simulating: rsync -e \'ssh \' -akz __DIR__/sut/sites/dev/files/ /tmp', $this->getSimplifiedOutput());
+        $this->assertStringContainsString('[notice] Simulating: rsync -e \'ssh \' -akz __DIR__/sut/sites/dev/files/ /tmp', $this->getSimplifiedOutput());
     }
 }

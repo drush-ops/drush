@@ -1,8 +1,12 @@
 <?php
 namespace Drush\Commands;
 
+use Consolidation\AnnotatedCommand\CommandData;
 use Drush\Drush;
 use Drush\Style\DrushStyle;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\MessageFormatter;
+use GuzzleHttp\Middleware;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
@@ -13,6 +17,7 @@ use Robo\Common\IO;
 use Symfony\Component\Console\Input\InputOption;
 use Consolidation\SiteProcess\ProcessManagerAwareTrait;
 use Consolidation\SiteProcess\ProcessManagerAwareInterface;
+use Webmozart\PathUtil\Path;
 
 abstract class DrushCommands implements IOAwareInterface, LoggerAwareInterface, ConfigAwareInterface, ProcessManagerAwareInterface
 {
@@ -25,12 +30,19 @@ abstract class DrushCommands implements IOAwareInterface, LoggerAwareInterface, 
     // Common exit codes.
     const EXIT_SUCCESS = 0;
     const EXIT_FAILURE = 1;
+    // Used to signal that the command completed successfully, but we still want to indicate a failure to the caller.
+    const EXIT_FAILURE_WITH_CLARITY = 3;
 
     use LoggerAwareTrait;
     use ConfigAwareTrait;
     use IO {
         io as roboIo;
     }
+
+    /**
+     * @var CommandData
+     */
+    protected $commandData;
 
     public function __construct()
     {
@@ -86,5 +98,41 @@ abstract class DrushCommands implements IOAwareInterface, LoggerAwareInterface, 
                 }
             }
         }
+    }
+
+    /**
+     * Persist commandData for use in primary command callback. Used by 'topic' commands.
+     *
+     * @hook pre-command *
+     *
+     * @param \Consolidation\AnnotatedCommand\CommandData $commandData
+     */
+    public function preHook(CommandData $commandData)
+    {
+        $this->commandData = $commandData;
+    }
+
+    /**
+     * Print the contents of a file. The path comes from the @topic annotation.
+     *
+     * @param CommandData $commandData
+     *   Full path to a file.
+     */
+    protected function printFileTopic(CommandData $commandData)
+    {
+        $file = $commandData->annotationData()->get('topic');
+        $this->printFile(Path::makeAbsolute($file, dirname($commandData->annotationData()->get('_path'))));
+    }
+
+    /**
+     * Get a Guzzle handler stack that uses the Drush logger.
+     *
+     * @see https://stackoverflow.com/questions/32681165/how-do-you-log-all-api-calls-using-guzzle-6.
+     */
+    protected function getStack(): \GuzzleHttp\HandlerStack
+    {
+        $stack = HandlerStack::create();
+        $stack->push(Middleware::log($this->logger(), new MessageFormatter(Drush::debug() ? MessageFormatter::DEBUG : MessageFormatter::SHORT)));
+        return $stack;
     }
 }

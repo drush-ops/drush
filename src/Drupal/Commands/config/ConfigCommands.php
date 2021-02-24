@@ -41,6 +41,11 @@ class ConfigCommands extends DrushCommands implements StdinAwareInterface, SiteA
     protected $configStorageExport;
 
     /**
+     * @var \Drupal\Core\Config\ImportStorageTransformer
+     */
+    protected $importStorageTransformer;
+
+    /**
      * @return ConfigFactoryInterface
      */
     public function getConfigFactory()
@@ -81,13 +86,37 @@ class ConfigCommands extends DrushCommands implements StdinAwareInterface, SiteA
     }
 
     /**
+     * @param \Drupal\Core\Config\ImportStorageTransformer $importStorageTransformer
+     */
+    public function setImportTransformer($importStorageTransformer)
+    {
+        $this->importStorageTransformer = $importStorageTransformer;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasImportTransformer()
+    {
+        return isset($this->importStorageTransformer);
+    }
+
+    /**
+     * @return \Drupal\Core\Config\ImportStorageTransformer
+     */
+    public function getImportTransformer()
+    {
+        return $this->importStorageTransformer;
+    }
+
+    /**
      * Display a config value, or a whole configuration object.
      *
      * @command config:get
      * @validate-config-name
      * @interact-config-name
-     * @param $config_name The config object name, for example "system.site".
-     * @param $key The config key, for example "page.front". Optional.
+     * @param $config_name The config object name, for example <info>system.site</info>.
+     * @param $key The config key, for example <info>page.front</info>. Optional.
      * @option source The config storage source to read. Additional labels may be defined in settings.php.
      * @option include-overridden Apply module and settings.php overrides to values.
      * @usage drush config:get system.site
@@ -112,14 +141,14 @@ class ConfigCommands extends DrushCommands implements StdinAwareInterface, SiteA
      * @command config:set
      * @validate-config-name
      * @todo @interact-config-name deferred until we have interaction for key.
-     * @param $config_name The config object name, for example "system.site".
-     * @param $key The config key, for example "page.front".
-     * @param $value The value to assign to the config key. Use '-' to read from STDIN.
-     * @option input-format Format to parse the object. Use "string" for string (default), and "yaml" for YAML.
+     * @param $config_name The config object name, for example <info>system.site</info>.
+     * @param $key The config key, for example <info>page.front</info>.
+     * @param $value The value to assign to the config key. Use <info>-</info> to read from STDIN.
+     * @option input-format Format to parse the object. Recognized values: <info>string</info>, <info>yaml</info>
      * @option value The value to assign to the config key (if any).
      * @hidden-options value
      * @usage drush config:set system.site page.front '/path/to/page'
-     *   Sets the given URL path as value for the config item with key "page.front" of "system.site" config object.
+     *   Sets the given URL path as value for the config item with key <info>page.front</info> of <info>system.site</info> config object.
      * @aliases cset,config-set
      */
     public function set($config_name, $key, $value = null, $options = ['input-format' => 'string', 'value' => self::REQ])
@@ -173,7 +202,7 @@ class ConfigCommands extends DrushCommands implements StdinAwareInterface, SiteA
      * @command config:edit
      * @validate-config-name
      * @interact-config-name
-     * @param $config_name The config object name, for example "system.site".
+     * @param $config_name The config object name, for example <info>system.site</info>.
      * @optionset_get_editor
      * @allow_additional_options config-import
      * @hidden-options source,partial
@@ -246,8 +275,8 @@ class ConfigCommands extends DrushCommands implements StdinAwareInterface, SiteA
      *
      * @command config:status
      * @option state  A comma-separated list of states to filter results.
-     * @option prefix Prefix The config prefix. For example, "system". No prefix will return all names in the system.
-     * @option string $label A config directory label (i.e. a key in \$config_directories array in settings.php).
+     * @option prefix Prefix The config prefix. For example, <info>system</info>. No prefix will return all names in the system.
+     * @option string $label A config directory label (i.e. a key in $config_directories array in settings.php).
      * @usage drush config:status
      *   Display configuration items that need to be synchronized.
      * @usage drush config:status --state=Identical
@@ -369,10 +398,11 @@ class ConfigCommands extends DrushCommands implements StdinAwareInterface, SiteA
      */
     public function getChanges($target_storage)
     {
-        /** @var StorageInterface $active_storage */
-        $active_storage = $this->getConfigStorageExport();
+        if ($this->hasImportTransformer()) {
+            $target_storage = $this->getImportTransformer()->transform($target_storage);
+        }
 
-        $config_comparer = new StorageComparer($active_storage, $target_storage, \Drupal::service('config.manager'));
+        $config_comparer = new StorageComparer($this->configStorage, $target_storage);
 
         $change_list = [];
         if ($config_comparer->createChangelist()->hasChanges()) {

@@ -14,7 +14,7 @@ class EditCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
     use ExecTrait;
 
     /**
-     * Edit drushrc, site alias, and Drupal settings.php files.
+     * Edit drush.yml, site alias, and Drupal settings.php files.
      *
      * @command core:edit
      * @bootstrap max
@@ -87,7 +87,7 @@ class EditCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
             // @todo filter out any files that are within Drush.
             $rcs = array_combine($rcs, $rcs);
             if ($headers) {
-                $rcs_header = ['drushrc' => '-- Drushrc --'];
+                $rcs_header = ['drushyml' => '-- drush.yml --'];
             }
         }
 

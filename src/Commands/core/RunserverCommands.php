@@ -25,7 +25,7 @@ class RunserverCommands extends DrushCommands
      * @command runserver
      * @param $uri Host IP address and port number to bind to and path to open in web browser. Format is addr:port/path. Only opens a browser if a path is specified.
      * @option default-server A default addr:port/path to use for any values not specified as an argument.
-     * @option browser If opening a web browser, which browser to use (defaults to operating system default). Use --no-browser to avoid opening a browser.
+     * @option browser Open the URL in the default browser. Use --no-browser to avoid opening a browser.
      * @option dns Resolve hostnames/IPs using DNS/rDNS (if possible) to determine binding IPs and/or human friendly hostnames for URLs and browser.
      * @bootstrap full
      * @aliases rs,serve
@@ -39,8 +39,6 @@ class RunserverCommands extends DrushCommands
      *   Start runserver on localhost (using rDNS to determine binding IP), port 8888, and open /user in browser.
      * @usage drush rs /
      *  Start runserver on default IP/port (127.0.0.1, port 8888), and open / in browser.
-     * @usage drush rs --default-server=127.0.0.1:8080/ -
-     *   Use a default (would be specified in your drushrc) that starts runserver on port 8080, and opens a browser to the front page. Set path to a single hyphen path in argument to prevent opening browser for this session.
      * @usage drush rs :9000/admin
      *   Start runserver on 127.0.0.1, port 9000, and open /admin in browser. Note that you need a colon when you specify port and path, but no IP.
      * @usage drush --quiet rs

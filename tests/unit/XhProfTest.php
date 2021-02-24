@@ -32,7 +32,25 @@ class XhProfTest extends TestCase
         if (!defined('XHPROF_FLAGS_NO_BUILTINS')) {
             define('XHPROF_FLAGS_NO_BUILTINS', 1);
             define('XHPROF_FLAGS_CPU', 2);
-            define('XHPROF_FLAGS_MEMORY', 3);
+            define('XHPROF_FLAGS_MEMORY', 4);
+        }
+        if (!defined('TIDEWAYS_XHPROF_FLAGS_NO_BUILTINS')) {
+            define('TIDEWAYS_XHPROF_FLAGS_NO_BUILTINS', 8);
+            define('TIDEWAYS_XHPROF_FLAGS_CPU', 1);
+            define('TIDEWAYS_XHPROF_FLAGS_MEMORY', 6);
+        }
+        if (extension_loaded('tideways_xhprof')) {
+            $flags = [
+                'no-builtins' => TIDEWAYS_XHPROF_FLAGS_NO_BUILTINS,
+                'cpu' => TIDEWAYS_XHPROF_FLAGS_CPU,
+                'memory' => TIDEWAYS_XHPROF_FLAGS_MEMORY,
+            ];
+        } else {
+            $flags = [
+                'no-builtins' => XHPROF_FLAGS_NO_BUILTINS,
+                'cpu' => XHPROF_FLAGS_CPU,
+                'memory' => XHPROF_FLAGS_MEMORY,
+            ];
         }
 
         return [
@@ -52,7 +70,7 @@ class XhProfTest extends TestCase
           'profile-cpu' => false,
           'profile-memory' => false,
         ],
-        'expected' => XHPROF_FLAGS_NO_BUILTINS,
+        'expected' => $flags['no-builtins'],
         ],
         [
         'name' => 'Enable profiling of CPU',
@@ -61,7 +79,7 @@ class XhProfTest extends TestCase
           'profile-cpu' => true,
           'profile-memory' => false,
         ],
-        'expected' => XHPROF_FLAGS_CPU,
+        'expected' => $flags['cpu'],
         ],
         [
         'name' => 'Enable profiling of CPU, without builtins',
@@ -70,7 +88,7 @@ class XhProfTest extends TestCase
           'profile-cpu' => true,
           'profile-memory' => false,
         ],
-        'expected' => XHPROF_FLAGS_NO_BUILTINS | XHPROF_FLAGS_CPU,
+        'expected' => $flags['no-builtins'] | $flags['cpu'],
         ],
         [
         'name' => 'Enable profiling of Memory',
@@ -79,7 +97,7 @@ class XhProfTest extends TestCase
           'profile-cpu' => false,
           'profile-memory' => true,
         ],
-        'expected' => XHPROF_FLAGS_MEMORY,
+        'expected' => $flags['memory'],
         ],
         [
         'name' => 'Enable profiling of Memory, without builtins',
@@ -88,7 +106,7 @@ class XhProfTest extends TestCase
           'profile-cpu' => false,
           'profile-memory' => true,
         ],
-        'expected' => XHPROF_FLAGS_NO_BUILTINS | XHPROF_FLAGS_MEMORY,
+        'expected' => $flags['no-builtins'] | $flags['memory'],
         ],
         [
         'name' => 'Enable profiling of CPU & Memory',
@@ -97,7 +115,7 @@ class XhProfTest extends TestCase
           'profile-cpu' => true,
           'profile-memory' => true,
         ],
-        'expected' => XHPROF_FLAGS_CPU | XHPROF_FLAGS_MEMORY,
+        'expected' => $flags['cpu'] | $flags['memory'],
         ],
         ];
     }

@@ -453,7 +453,7 @@ class SqlBase implements ConfigAwareInterface
     public function dropOrCreate()
     {
         if ($this->dbExists()) {
-            return $this->drop($this->listTables());
+            return $this->drop($this->listTablesQuoted());
         } else {
             return $this->createdb();
         }
@@ -499,6 +499,18 @@ class SqlBase implements ConfigAwareInterface
     {
     }
 
+    /**
+     * Extract the name of all existing tables in the given database.
+     *
+     * @return array|null
+     *   An array of table names which exist in the current database,
+     *   appropriately quoted for the RDMS.
+     */
+    public function listTablesQuoted()
+    {
+        return $this->listTables();
+    }
+
     /*
      * Helper method to turn associative array into options with values.
      *
@@ -521,9 +533,6 @@ class SqlBase implements ConfigAwareInterface
 
     /**
      * Adjust DB connection with superuser credentials if provided.
-     *
-     * The options 'db-su' and 'db-su-pw' will be retrieved from the
-     * specified site alias record.
      *
      * @return null
      */

@@ -3,7 +3,7 @@ version: "3.1"
 services:
   # More info at https://github.com/wodby/mariadb
   mariadb:
-    image: wodby/mariadb:${MARIADB_TAG-10.1}
+    image: wodby/mariadb:${MARIADB_TAG-10.3}
     container_name: ${PROJECT_NAME-unish}_mariadb
     stop_grace_period: 30s
     environment:

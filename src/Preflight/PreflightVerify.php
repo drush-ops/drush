@@ -61,7 +61,7 @@ class PreflightVerify
      */
     protected function checkPhpIni()
     {
-        $ini_checks = ['safe_mode' => '', 'open_basedir' => '', 'disable_functions' => ['exec', 'system'], 'disable_classes' => ''];
+        $ini_checks = ['safe_mode' => '', 'open_basedir' => ''];
 
         // Test to insure that certain php ini restrictions have not been enabled
         $prohibited_list = [];
@@ -108,9 +108,9 @@ class PreflightVerify
     protected function loadedPhpIniMessage()
     {
         if (function_exists('php_ini_loaded_file')) {
-            return StringUtils::interpolate('Please check your configuration settings in !phpini or in your drush.ini file; see examples/example.drush.ini for details.', ['!phpini' => php_ini_loaded_file()]);
+            return StringUtils::interpolate('Please check your configuration settings in !phpini.', ['!phpini' => php_ini_loaded_file()]);
         } else {
-            return StringUtils::interpolate('Please check your configuration settings in your php.ini file or in your drush.ini file; see examples/example.drush.ini for details.');
+            return StringUtils::interpolate('Please check your configuration settings in your php.ini file.');
         }
     }
 }

@@ -49,15 +49,15 @@ class AnnotatedCommandCase extends UnishIntegrationTestCase
     {
         $this->drush('sut:simple');
         $output = $this->getErrorOutput();
-        $this->assertContains("This is an example site-wide command committed to the repository in the SUT inside of the 'drush/Commands' directory.", $output);
+        $this->assertStringContainsString("This is an example site-wide command committed to the repository in the SUT inside of the 'drush/Commands' directory.", $output);
 
         $this->drush('sut:nested');
         $output = $this->getErrorOutput();
-        $this->assertContains("This is an example site-wide command committed to the repository in the SUT nested inside a custom/example-site-wide-command directory.", $output);
+        $this->assertStringContainsString("This is an example site-wide command committed to the repository in the SUT nested inside a custom/example-site-wide-command directory.", $output);
 
         $this->drush('sut:nested-src');
         $output = $this->getErrorOutput();
-        $this->assertContains("This is an example site-wide command committed to the repository in the SUT nested inside a custom/example-site-wide-command/src directory.", $output);
+        $this->assertStringContainsString("This is an example site-wide command committed to the repository in the SUT nested inside a custom/example-site-wide-command/src directory.", $output);
     }
 
     public function testExecute()
@@ -166,13 +166,13 @@ EOT;
         // drush help my-cat
         $this->drush('help', ['my-cat']);
         $output = $this->getOutput();
-        $this->assertContains('bet alpha --flip Concatinate "alpha" and "bet".', $output);
-        $this->assertContains('Aliases: c', $output);
+        $this->assertStringContainsString('bet alpha --flip Concatinate "alpha" and "bet".', $output);
+        $this->assertStringContainsString('Aliases: c', $output);
 
         // drush help woot
         $this->drush('help', ['woot']);
         $output = $this->getOutput();
-        $this->assertContains('Woot mightily.', $output);
+        $this->assertStringContainsString('Woot mightily.', $output);
 
         // TODO: support console.command commands
         $this->drush('annotated:greet symfony');
@@ -188,27 +188,27 @@ EOT;
         // drush my-cat --help
         $this->drush('my-cat', [], ['help' => null]);
         $output = $this->getOutput();
-        $this->assertContains('my-cat bet alpha --flip', $output);
-        $this->assertContains('The first parameter', $output);
-        $this->assertContains('The other parameter', $output);
-        $this->assertContains('Whether or not the second parameter', $output);
+        $this->assertStringContainsString('my-cat bet alpha --flip', $output);
+        $this->assertStringContainsString('The first parameter', $output);
+        $this->assertStringContainsString('The other parameter', $output);
+        $this->assertStringContainsString('Whether or not the second parameter', $output);
 
         // drush woot --help
         $this->drush('woot', [], ['help' => null]);
         $output = $this->getOutput();
-        $this->assertContains('Usage:', $output);
-        $this->assertContains('woot [options]', $output);
-        $this->assertContains('Woot mightily.', $output);
+        $this->assertStringContainsString('Usage:', $output);
+        $this->assertStringContainsString('woot [options]', $output);
+        $this->assertStringContainsString('Woot mightily.', $output);
 
         // drush try-formatters --help
         $this->drush('try-formatters', [], ['help' => null]);
         $output = $this->getOutput();
-        $this->assertContains('Demonstrate formatters', $output);
-        $this->assertContains('try:formatters --fields=first,third', $output);
-        $this->assertContains('try:formatters --fields=III,II', $output);
-        // $this->assertContains('--fields=<first, second, third>', $output);
-        $this->assertContains('Available fields:', $output);
-        $this->assertContains('[default: "table"]', $output);
+        $this->assertStringContainsString('Demonstrate formatters', $output);
+        $this->assertStringContainsString('try:formatters --fields=first,third', $output);
+        $this->assertStringContainsString('try:formatters --fields=III,II', $output);
+        // $this->assertStringContainsString('--fields=<first, second, third>', $output);
+        $this->assertStringContainsString('Available fields:', $output);
+        $this->assertStringContainsString('[default: "table"]', $output);
     }
 
     public function setupGlobalExtensionsForTests()

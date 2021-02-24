@@ -15,7 +15,7 @@ class ConfigCase extends CommandUnishTestCase
 {
     use TestModuleHelperTrait;
 
-    public function setUp()
+    public function setup(): void
     {
         if (!$this->getSites()) {
             $this->setUpDrupal(1, true);
@@ -47,13 +47,13 @@ class ConfigCase extends CommandUnishTestCase
 
         // Test status of changed configuration.
         $this->drush('config:status');
-        $this->assertContains('system.site', $this->getOutput(), 'config:status correctly reports changes.');
+        $this->assertStringContainsString('system.site', $this->getOutput(), 'config:status correctly reports changes.');
 
         // Test import.
         $this->drush('config-import');
         $this->drush('config-get', ['system.site', 'page'], ['format' => 'json']);
         $page = $this->getOutputFromJSON('system.site:page');
-        $this->assertContains('unish', $page['front'], 'Config was successfully imported.');
+        $this->assertStringContainsString('unish', $page['front'], 'Config was successfully imported.');
 
         // Test status of identical configuration, in different formatters.
         $expected_output = [
@@ -80,7 +80,7 @@ XML
             $this->installDrupal('dev', true, ['existing-config' => true], false);
             $this->drush('config-get', ['system.site', 'page'], ['format' => 'json']);
             $page = $this->getOutputFromJSON('system.site:page');
-            $this->assertContains('unish existing', $page['front'], 'Existing config was successfully imported during site:install.');
+            $this->assertStringContainsString('unish existing', $page['front'], 'Existing config was successfully imported during site:install.');
         }
 
         // Similar, but this time via --partial option.
@@ -95,7 +95,7 @@ XML
         $this->drush('config-import', [], ['partial' => null, 'source' => $partial_path]);
         $this->drush('config-get', ['system.site', 'page'], ['format' => 'json']);
         $page = $this->getOutputFromJSON('system.site:page');
-        $this->assertContains('unish partial', $page['front'], '--partial was successfully imported.');
+        $this->assertStringContainsString('unish partial', $page['front'], '--partial was successfully imported.');
     }
 
     public function testConfigImport()
@@ -139,7 +139,7 @@ YAML_FRAGMENT;
 
         // When importing config, the 'woot' module should warn about a validation error.
         $this->drush('config:import', [], [], null, null, CommandUnishTestCase::EXIT_ERROR);
-        $this->assertContains("woot config error", $this->getErrorOutput(), 'Woot returned an expected config validation error.');
+        $this->assertStringContainsString("woot config error", $this->getErrorOutput(), 'Woot returned an expected config validation error.');
 
         // Now we disable the error, and retry the config import.
         $this->drush('state:set', ['woot.shoud_not_fail_on_cim', 'true']);

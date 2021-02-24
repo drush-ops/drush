@@ -45,6 +45,11 @@ services:
       arguments: ['@messenger']
       tags:
         -  { name: drush.command }
+  migrate_runner.commands:
+    class: Drush\Drupal\Commands\core\MigrateRunnerCommands
+    arguments: ['@date.formatter', '@keyvalue']
+    tags:
+      -  { name: drush.command }
   queue.commands:
     class: \Drush\Drupal\Commands\core\QueueCommands
     arguments: ['@plugin.manager.queue_worker', '@queue']

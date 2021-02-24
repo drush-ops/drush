@@ -27,7 +27,7 @@ class ImageTest extends UnishIntegrationTestCase
 
         // Test that "drush image-flush thumbnail" deletes derivatives created by the thumbnail image style.
         $this->drush('image-flush', [$style_name], ['all' => null]);
-        $this->assertFileNotExists($thumbnail);
+        $this->assertFileDoesNotExist($thumbnail);
 
         // Check that "drush image-flush --all" deletes all image styles by creating two different ones and testing its
         // existence afterwards.
@@ -36,7 +36,7 @@ class ImageTest extends UnishIntegrationTestCase
         $this->drush('image-derive', ['medium', $logo]);
         $this->assertFileExists($medium);
         $this->drush('image-flush', [], ['all' => null]);
-        $this->assertFileNotExists($thumbnail);
-        $this->assertFileNotExists($medium);
+        $this->assertFileDoesNotExist($thumbnail);
+        $this->assertFileDoesNotExist($medium);
     }
 }

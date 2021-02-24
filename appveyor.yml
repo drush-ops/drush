@@ -4,7 +4,7 @@ platform: 'x86'
 clone_folder: C:\projects\work
 branches:
   only:
-    - master
+    - 10.x
 
   ## Cache composer bits
 cache:
@@ -33,6 +33,10 @@ install:
   - ps: appveyor-retry cinst --limit-output --ignore-checksums -y php --version 7.3.7
   - cd c:\tools\php73
   - copy php.ini-production php.ini
+
+  # https://github.com/php-coveralls/php-coveralls/pull/223/files
+  - appveyor DownloadFile http://curl.haxx.se/ca/cacert.pem -FileName C:\cacert.pem
+  - echo curl.cainfo=C:\cacert.pem >> php.ini
 
   - echo extension_dir=ext >> php.ini
   - echo extension=php_openssl.dll >> php.ini
