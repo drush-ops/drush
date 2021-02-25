@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b95b1579e99f0c4319d31d0b286be016",
+    "content-hash": "d7caa893a83dce22a672e425b8facfdf",
     "packages": [
         {
             "name": "chi-teck/drupal-code-generator",
@@ -2878,16 +2878,16 @@
         },
         {
             "name": "webflo/drupal-finder",
-            "version": "1.2.2",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/webflo/drupal-finder.git",
-                "reference": "c8e5dbe65caef285fec8057a4c718a0d4138d1ee"
+                "reference": "9f16035188b2aa9576e340e68b7d14d0a446e1ef"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/webflo/drupal-finder/zipball/c8e5dbe65caef285fec8057a4c718a0d4138d1ee",
-                "reference": "c8e5dbe65caef285fec8057a4c718a0d4138d1ee",
+                "url": "https://api.github.com/repos/webflo/drupal-finder/zipball/9f16035188b2aa9576e340e68b7d14d0a446e1ef",
+                "reference": "9f16035188b2aa9576e340e68b7d14d0a446e1ef",
                 "shasum": ""
             },
             "require": {
@@ -2895,8 +2895,9 @@
             },
             "require-dev": {
                 "mikey179/vfsstream": "^1.6",
-                "phpunit/phpunit": "^4.8"
+                "phpunit/phpunit": "^8.5.14"
             },
+            "default-branch": true,
             "type": "library",
             "autoload": {
                 "classmap": [
@@ -2916,9 +2917,9 @@
             "description": "Helper class to locate a Drupal installation from a given path.",
             "support": {
                 "issues": "https://github.com/webflo/drupal-finder/issues",
-                "source": "https://github.com/webflo/drupal-finder/tree/1.2.2"
+                "source": "https://github.com/webflo/drupal-finder/tree/master"
             },
-            "time": "2020-10-27T09:42:17+00:00"
+            "time": "2021-02-24T22:03:33+00:00"
         },
         {
             "name": "webmozart/assert",
@@ -8116,6 +8117,7 @@
     "minimum-stability": "dev",
     "stability-flags": {
         "consolidation/site-alias": 0,
+        "webflo/drupal-finder": 20,
         "lox/xhprof": 20
     },
     "prefer-stable": true,
