@@ -319,7 +319,7 @@ class Preflight
                 // This is how we tell drupal-finder what we already know https://github.com/webflo/drupal-finder/pull/55.
                 putenv("DRUPAL_FINDER_DRUPAL_ROOT=$root_provided");
                 $this->logger()->log('Using the provided Drupal root: ' . $root_provided);
-                return $this->drupalFinder()->getDrupalRoot();
+                return $this->setSelectedSite($root_provided);
             }
         }
 
