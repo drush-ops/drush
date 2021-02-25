@@ -6,6 +6,7 @@ use Drush\Config\ConfigLocator;
 use Drush\Config\EnvironmentConfigLoader;
 use Consolidation\SiteAlias\SiteAliasManager;
 use DrupalFinder\DrupalFinder;
+use Webmozart\PathUtil\Path;
 
 /**
  * The Drush preflight determines what needs to be done for this request.
@@ -310,6 +311,17 @@ class Preflight
         // TODO: If we want to support ONLY site-local Drush (which is
         // DIFFERENT than --local), then skip the call to `$preflightArgs->selectedSite`
         // and just assign `false` to $selectedRoot.
+
+        // If a root was explicitly provided, use it.
+        if ($root_provided = $this->preflightArgs->selectedSite(false)) {
+            if (empty(getenv('DRUPAL_FINDER_DRUPAL_ROOT'))) {
+                $root_provided = Path::makeAbsolute($root_provided,$this->environment->cwd());
+                // This is how we tell drupal-finder what we already know https://github.com/webflo/drupal-finder/pull/55.
+                putenv("DRUPAL_FINDER_DRUPAL_ROOT=$root_provided");
+                $this->logger()->log('Using the provided Drupal root: ' . $root_provided);
+                return $this->drupalFinder()->getDrupalRoot();
+            }
+        }
 
         // Try two approaches.
         $selectedRoot = $this->preflightArgs->selectedSite($this->environment->cwd());
