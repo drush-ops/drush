@@ -315,7 +315,7 @@ class Preflight
         // If a root was explicitly provided, use it.
         if ($root_provided = $this->preflightArgs->selectedSite(false)) {
             if (empty(getenv('DRUPAL_FINDER_DRUPAL_ROOT'))) {
-                $root_provided = Path::makeAbsolute($root_provided,$this->environment->cwd());
+                $root_provided = Path::makeAbsolute($root_provided, $this->environment->cwd());
                 // This is how we tell drupal-finder what we already know https://github.com/webflo/drupal-finder/pull/55.
                 putenv("DRUPAL_FINDER_DRUPAL_ROOT=$root_provided");
                 $this->logger()->log('Using the provided Drupal root: ' . $root_provided);
