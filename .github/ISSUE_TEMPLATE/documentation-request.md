@@ -1,8 +1,7 @@
 ---
 name: Documentation request
 about: If you know what the documentation change should be, please consider submitting
-  a pull request instead. If you do know where the documentation you need is, please
-  submit a support request first.
+  a pull request instead.
 
 ---
 
