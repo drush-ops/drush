@@ -240,6 +240,20 @@ function drush_memory_limit() {
   return $size;
 }
 
+/**
+ * Get the Drush batch process time limit value in seconds.
+ */
+function drush_batch_process_time_limit() {
+  $value = trim(getenv('DRUSH_BATCH_PROCESS_TIME_LIMIT')) ?: '0';
+  $last = strtolower($value[strlen($value)-1]);
+  $time = (int) rtrim($value, 'SsMm');
+  switch ($last) {
+    case 'm':
+      $time *= 60;
+  }
+
+  return $time;
+}
 
 /**
  * Form an associative array from a linear array.

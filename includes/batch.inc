@@ -217,8 +217,9 @@ function _drush_batch_worker() {
   $current_set =& _batch_current_set();
   $set_changed = TRUE;
 
+  $start = microtime(TRUE);
   if (empty($current_set['start'])) {
-    $current_set['start'] = microtime(TRUE);
+    $current_set['start'] = $start;
   }
   $queue = _batch_queue($current_set);
   while (!$current_set['success']) {
@@ -290,6 +291,17 @@ function _drush_batch_worker() {
     // is reached.
     if (drush_memory_limit() > 0 && (memory_get_usage() * 1.6) >= drush_memory_limit()) {
       Drush::logger()->notice(dt("Batch process has consumed in excess of 60% of available memory. Starting new thread"));
+      // Record elapsed wall clock time.
+      $current_set['elapsed'] = round((microtime(TRUE) - $current_set['start']) * 1000, 2);
+      break;
+    }
+
+    // Long running processes in Drupal often have memory leaks due to static
+    // caches. The environment variable DRUSH_BATCH_PROCESS_TIME_LIMIT can be
+    // used to limit the about of time each thread runs for.
+    $time_limit = drush_batch_process_time_limit();
+    if ($time_limit > 0 && round((microtime(TRUE) - $start) * 1000) >= $time_limit) {
+      Drush::logger()->notice(dt("Batch process has lasted longer than @secs seconds. Starting new thread", ['@secs' => $time_limit]));
       // Record elapsed wall clock time.
       $current_set['elapsed'] = round((microtime(TRUE) - $current_set['start']) * 1000, 2);
       break;
