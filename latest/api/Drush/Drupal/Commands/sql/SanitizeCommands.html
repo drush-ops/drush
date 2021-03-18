@@ -552,7 +552,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
                     <div class="method-description">
                                     <p>Sanitize the database by removing or obfuscating user data.</p>                    <p>Commandfiles may add custom operations by implementing:</p>
 
-<pre><code>- `@hook on-event sql-sanitize-message`. Display summary to user before confirmation.
+<pre><code>- `@hook on-event sql-sanitize-confirms`. Display summary to user before confirmation.
 - `@hook post-command sql-sanitize`. Run queries or call APIs to perform sanitizing
 </code></pre>
 

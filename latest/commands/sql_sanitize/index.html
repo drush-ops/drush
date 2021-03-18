@@ -2820,7 +2820,7 @@
 <p>Sanitize the database by removing or obfuscating user data.</p>
 <p>Commandfiles may add custom operations by implementing:</p>
 <ul>
-<li><code>@hook on-event sql-sanitize-message</code>. Display summary to user before confirmation.</li>
+<li><code>@hook on-event sql-sanitize-confirms</code>. Display summary to user before confirmation.</li>
 <li><code>@hook post-command sql-sanitize</code>. Run queries or call APIs to perform sanitizing</li>
 </ul>
 <p>Several working commandfiles may be found at <a href="https://github.com/drush-ops/drush/tree/10.x/src/Drupal/Commands/sql">https://github.com/drush-ops/drush/tree/10.x/src/Drupal/Commands/sql</a></p>
