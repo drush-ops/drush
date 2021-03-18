@@ -552,8 +552,7 @@ class ConfigCommands extends DrushCommands implements StdinAwareInterface, SiteA
         foreach ($source->listAll() as $name) {
             try {
                 $destination->write($name, $source->read($name));
-            }
-            catch (\TypeError $e) {
+            } catch (\TypeError $e) {
                 throw new \Exception(dt('Source not found for @name.', ['@name' => $name]));
             }
         }
