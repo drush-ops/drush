@@ -68,7 +68,7 @@ function views_drush_command() {
     'outputformat' => array(
       'default' => 'table',
       'pipe-format' => 'list',
-      'field-default' => array('name', 'label', 'description', 'status', 'tag'),
+      'fields-default' => array('name', 'label', 'description', 'status', 'tag'),
       'field-labels' => array('name' => 'Machine Name', 'label' => 'Name', 'description' => 'Description', 'status' => 'Status', 'tag' => 'Tag'),
       'output-data-type' => 'format-table',
     ),
