@@ -1,23 +1,25 @@
 <?php
 namespace Drush;
 
+use Composer\Autoload\ClassLoader;
 use Consolidation\AnnotatedCommand\AnnotatedCommand;
 use Consolidation\AnnotatedCommand\CommandFileDiscovery;
-use Drush\Boot\BootstrapManager;
-use Drush\Runtime\TildeExpansionHook;
 use Consolidation\SiteAlias\SiteAliasManager;
-use Drush\Log\LogLevel;
+use Drush\Boot\BootstrapManager;
 use Drush\Command\RemoteCommandProxy;
-use Drush\Runtime\RedispatchHook;
 use Drush\Config\ConfigAwareTrait;
-use Robo\Contract\ConfigAwareInterface;
-use Symfony\Component\Console\Application as SymfonyApplication;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Exception\CommandNotFoundException;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
+use Drush\Log\LogLevel;
+use Drush\Runtime\RedispatchHook;
+use Drush\Runtime\TildeExpansionHook;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
+use Robo\ClassDiscovery\RelativeNamespaceDiscovery;
+use Robo\Contract\ConfigAwareInterface;
+use Symfony\Component\Console\Application as SymfonyApplication;
+use Symfony\Component\Console\Exception\CommandNotFoundException;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Our application object
@@ -306,7 +308,7 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
      * Configure the application object and register all of the commandfiles
      * available in the search paths provided via Preflight
      */
-    public function configureAndRegisterCommands(InputInterface $input, OutputInterface $output, $commandfileSearchpath)
+    public function configureAndRegisterCommands(InputInterface $input, OutputInterface $output, $commandfileSearchpath, ClassLoader $classLoader)
     {
         // Symfony will call this method for us in run() (it will be
         // called again), but we want to call it up-front, here, so that
@@ -318,7 +320,11 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
         $discovery = $this->commandDiscovery();
         $commandClasses = $discovery->discover($commandfileSearchpath, '\Drush');
         $commandClasses[] = \Consolidation\Filter\Hooks\FilterHooks::class;
-        $commandClasses = array_merge($this->commandsFromConfiguration(), $commandClasses);
+        $commandClasses = array_merge(
+            $this->commandsFromConfiguration(),
+            $this->discoverPsr4Commands($classLoader),
+            $commandClasses
+        );
 
         $this->loadCommandClasses($commandClasses);
 
@@ -378,6 +384,17 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
             ->setSearchLocations(['Commands', 'Hooks', 'Generators'])
             ->setSearchPattern('#.*(Command|Hook|Generator)s?.php$#');
         return $discovery;
+    }
+
+    /**
+     * Discovers commands that are PSR4 auto-loaded.
+     */
+    protected function discoverPsr4Commands(ClassLoader $classLoader): array
+    {
+        return (new RelativeNamespaceDiscovery($classLoader))
+            ->setRelativeNamespace('Drush\Commands')
+            ->setSearchPattern('/.*DrushCommands\.php$/')
+            ->getClasses();
     }
 
     /**
