@@ -18,5 +18,4 @@ class CustomLibraryCommandsTest extends UnishIntegrationTestCase
         $this->drush('custom_cmd');
         $this->assertStringContainsString('Hello world!', $this->getOutput());
     }
-
 }
