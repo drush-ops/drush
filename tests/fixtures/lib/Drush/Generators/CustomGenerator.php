@@ -8,7 +8,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class CustomGenerator extends BaseGenerator
 {
-
     protected $name = 'custom-testing-generator';
     protected $description = 'Custom testing generator';
 
@@ -16,5 +15,4 @@ class CustomGenerator extends BaseGenerator
     {
         $this->addFile('drush/foo.bar');
     }
-
 }
