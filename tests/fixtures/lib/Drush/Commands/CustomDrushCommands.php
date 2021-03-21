@@ -7,7 +7,7 @@ use Drush\Commands\DrushCommands;
 class CustomDrushCommands extends DrushCommands
 {
     /**
-     * A custom command provided by a custom non-Drupal library
+     * Auto-discoverable custom command
      *
      * @command custom_cmd
      */

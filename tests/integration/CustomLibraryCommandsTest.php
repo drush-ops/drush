@@ -14,7 +14,7 @@ class CustomLibraryCommandsTest extends UnishIntegrationTestCase
     {
         $this->drush('list');
         $this->assertStringContainsString('custom_cmd', $this->getOutput());
-        $this->assertStringContainsString('A custom command provided by a custom non-Drupal library', $this->getOutput());
+        $this->assertStringContainsString('Auto-discoverable custom command', $this->getOutput());
         $this->drush('custom_cmd');
         $this->assertStringContainsString('Hello world!', $this->getOutput());
     }
