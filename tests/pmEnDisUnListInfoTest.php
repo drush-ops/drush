@@ -66,6 +66,15 @@ class EnDisUnListInfoCase extends CommandUnishTestCase {
       $this->assertEquals($output->{$key}, $value);
     }
 
+    // Check output fields in pm-list
+    $this->drush('pm-list', [], $options + ['format' => 'json']);
+    $extensionProperties = (array)$this->getOutputFromJSON();
+    $this->assertTrue(isset($extensionProperties[$moduleToTest]));
+    $moduleProperties = (array)$extensionProperties[$moduleToTest];
+    $this->assertEquals($moduleToTest, $moduleProperties['project']);
+    $this->assertEquals('Enabled', $moduleProperties['status']);
+    $this->assertEquals('Module', $moduleProperties['type']);
+
     // Test pm-projectinfo shows some project info.
     $this->drush('pm-projectinfo', array($moduleToTest), $options);
     $output = $this->getOutputFromJSON($moduleToTest);
@@ -86,7 +95,7 @@ class EnDisUnListInfoCase extends CommandUnishTestCase {
     if (UNISH_DRUPAL_MAJOR_VERSION >= 8) {
       $themeToCheck = 'stark';
       // UNISH_DRUPAL_MINOR_VERSION is something like ".8.0-alpha1".
-      if (UNISH_DRUPAL_MINOR_VERSION[1] <= 8) {
+      if (isset(UNISH_DRUPAL_MINOR_VERSION[1]) && UNISH_DRUPAL_MINOR_VERSION[1] <= 8) {
         $themeToCheck = 'classy';
         $this->markTestSkipped('Project "panels", used in this test, no longer works with earlier versions of Drupal 8.');
       }
