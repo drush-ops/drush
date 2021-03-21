@@ -121,5 +121,13 @@ It is recommended that you avoid global Drush commands, and favor site-wide comm
 Such commands are auto-discovered by their class PSR4 namespace and class/file name suffix. Drush will auto-discover commands if:
 
 * The commands class is PSR4 auto-loadable.
-* The commands class namespace ends with `*\Drush\Commands`, e.g. `My\Custom\Library\Drush\Commands`.
+* The commands class namespace, relative to base namespace, is `Drush\Commands`. For instance, if a Drush command provider third party library maps this PSR4 autoload entry:
+  ```json
+  "autoload": {
+    "psr-4": {
+      "My\\Custom\\Library\\": "src"
+    }
+  }
+  ```
+  then the Drush global commands class namespace should be `My\Custom\Library\Drush\Commands` and the class file should be located under the `src/Drush/Commands` directory.
 * The class and file name ends with `*DrushCommands`, e.g. `FooDrushCommands`.
