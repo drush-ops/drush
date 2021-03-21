@@ -69,7 +69,6 @@ class EnDisUnListInfoCase extends CommandUnishTestCase {
     // Check output fields in pm-list
     $this->drush('pm-list', [], $options + ['format' => 'json']);
     $extensionProperties = (array)$this->getOutputFromJSON();
-    $this->assertTrue(isset($extensionProperties[$moduleToTest]));
     $moduleProperties = (array)$extensionProperties[$moduleToTest];
     $this->assertEquals($moduleToTest, $moduleProperties['project']);
     $this->assertEquals('Enabled', $moduleProperties['status']);
