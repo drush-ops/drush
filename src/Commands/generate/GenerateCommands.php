@@ -6,6 +6,8 @@ use Consolidation\SiteProcess\Util\Escape;
 use DrupalCodeGenerator\GeneratorDiscovery;
 use DrupalCodeGenerator\Helper\Dumper;
 use DrupalCodeGenerator\Helper\Renderer;
+use Drush\Boot\AutoloaderAwareInterface;
+use Drush\Boot\AutoloaderAwareTrait;
 use Drush\Commands\DrushCommands;
 use Drush\Commands\generate\Helper\InputHandler;
 use Drush\Commands\generate\Helper\OutputHandler;
@@ -19,8 +21,9 @@ use Symfony\Component\Filesystem\Filesystem;
 /**
  * Drush generate command.
  */
-class GenerateCommands extends DrushCommands
+class GenerateCommands extends DrushCommands implements AutoloaderAwareInterface
 {
+    use AutoloaderAwareTrait;
 
     /**
      * Generate boilerplate code for modules/plugins/services etc.
@@ -108,6 +111,7 @@ class GenerateCommands extends DrushCommands
         $helperSet->set(new OutputHandler());
 
         // Discover generators.
+        $classloader = $this->autoloader();
         $discovery = new GeneratorDiscovery(new Filesystem());
 
         /**
