@@ -4,9 +4,11 @@ namespace Drush;
 use Composer\Autoload\ClassLoader;
 use Consolidation\AnnotatedCommand\AnnotatedCommand;
 use Consolidation\AnnotatedCommand\CommandFileDiscovery;
+use Consolidation\Filter\Hooks\FilterHooks;
 use Consolidation\SiteAlias\SiteAliasManager;
 use Drush\Boot\BootstrapManager;
 use Drush\Command\RemoteCommandProxy;
+use Drush\Commands\DrushCommands;
 use Drush\Config\ConfigAwareTrait;
 use Drush\Log\LogLevel;
 use Drush\Runtime\RedispatchHook;
@@ -317,16 +319,12 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
         // any of the configuration steps we do here.
         $this->configureIO($input, $output);
 
-        $discovery = $this->commandDiscovery();
-        $commandClasses = $discovery->discover($commandfileSearchpath, '\Drush');
-        $commandClasses[] = \Consolidation\Filter\Hooks\FilterHooks::class;
-        $commandClasses = array_merge(
-            $this->commandsFromConfiguration(),
+        $commandClasses = array_unique(array_merge(
+            $this->discoverCommandsFromConfiguration(),
+            $this->discoverCommands($commandfileSearchpath, '\Drush'),
             $this->discoverPsr4Commands($classLoader),
-            $commandClasses
-        );
-
-        $this->loadCommandClasses($commandClasses);
+            [FilterHooks::class]
+        ));
 
         // Uncomment the lines below to use Console's built in help and list commands.
         // unset($commandClasses[__DIR__ . '/Commands/help/HelpCommands.php']);
@@ -339,21 +337,20 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
         $runner->registerCommandClasses($this, $commandClasses);
     }
 
-    protected function commandsFromConfiguration()
+    protected function discoverCommandsFromConfiguration()
     {
         $commandList = [];
-
         foreach ($this->config->get('drush.commands', []) as $key => $value) {
-            $classname = $key;
-            $path = $value;
             if (is_numeric($key)) {
                 $classname = $value;
                 $commandList[] = $classname;
             } else {
-                $commandList[$path] = $classname;
+                $classname = ltrim($key, '\\');
+                $commandList[$value] = $classname;
             }
         }
-        return $commandList;
+        $this->loadCommandClasses($commandList);
+        return array_keys($commandList);
     }
 
     /**
@@ -370,9 +367,9 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
     }
 
     /**
-     * Create a command file discovery object
+     * Discovers command classes.
      */
-    protected function commandDiscovery()
+    protected function discoverCommands(array $directoryList, string $baseNamespace): array
     {
         $discovery = new CommandFileDiscovery();
         $discovery
@@ -383,7 +380,10 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
             ->ignoreNamespacePart('src')
             ->setSearchLocations(['Commands', 'Hooks', 'Generators'])
             ->setSearchPattern('#.*(Command|Hook|Generator)s?.php$#');
-        return $discovery;
+        $baseNamespace = ltrim($baseNamespace, '\\');
+        $commandClasses = $discovery->discover($directoryList, $baseNamespace);
+        $this->loadCommandClasses($commandClasses);
+        return array_values($commandClasses);
     }
 
     /**
@@ -391,10 +391,18 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
      */
     protected function discoverPsr4Commands(ClassLoader $classLoader): array
     {
-        return (new RelativeNamespaceDiscovery($classLoader))
+        $classes = (new RelativeNamespaceDiscovery($classLoader))
             ->setRelativeNamespace('Drush\Commands')
             ->setSearchPattern('/.*DrushCommands\.php$/')
             ->getClasses();
+
+        return array_filter($classes, function (string $class): bool {
+            $reflectionClass = new \ReflectionClass($class);
+            return $reflectionClass->isSubclassOf(DrushCommands::class)
+                && !$reflectionClass->isAbstract()
+                && !$reflectionClass->isInterface()
+                && !$reflectionClass->isTrait();
+        });
     }
 
     /**
