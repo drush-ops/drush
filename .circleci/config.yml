@@ -118,6 +118,9 @@ workflows:
           requires:
             - check_mergable
             - code_style
+      - test_56_lowest:
+          requires:
+            - check_mergable
   # Drush nightly scheduled jobs:
   #   - Run the HIGHEST tests.
   #   - Run functional tests under Sqlite and Postgres.
