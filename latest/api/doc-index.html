@@ -417,11 +417,7 @@ immediately; the command will not run, and no hooks will be called.</dd><dt><a h
                     <dd></dd><dt><a href="Drush/Application.html#method_configureAndRegisterCommands">
 <abbr title="Drush\Application">Application</abbr>::configureAndRegisterCommands</a>() &mdash; <em>Method in class <a href="Drush/Application.html"><abbr title="Drush\Application">Application</abbr></a></em></dt>
                     <dd>Configure the application object and register all of the commandfiles
-available in the search paths provided via Preflight</dd><dt><a href="Drush/Application.html#method_commandsFromConfiguration">
-<abbr title="Drush\Application">Application</abbr>::commandsFromConfiguration</a>() &mdash; <em>Method in class <a href="Drush/Application.html"><abbr title="Drush\Application">Application</abbr></a></em></dt>
-                    <dd></dd><dt><a href="Drush/Application.html#method_commandDiscovery">
-<abbr title="Drush\Application">Application</abbr>::commandDiscovery</a>() &mdash; <em>Method in class <a href="Drush/Application.html"><abbr title="Drush\Application">Application</abbr></a></em></dt>
-                    <dd>Create a command file discovery object</dd><dt><a href="Drush/Boot/BaseBoot.html#method_commandDefaults">
+available in the search paths provided via Preflight</dd><dt><a href="Drush/Boot/BaseBoot.html#method_commandDefaults">
 <abbr title="Drush\Boot\BaseBoot">BaseBoot</abbr>::commandDefaults</a>() &mdash; <em>Method in class <a href="Drush/Boot/BaseBoot.html"><abbr title="Drush\Boot\BaseBoot">BaseBoot</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Boot/DrupalBoot.html#method_confPath">
 <abbr title="Drush\Boot\DrupalBoot">DrupalBoot</abbr>::confPath</a>() &mdash; <em>Method in class <a href="Drush/Boot/DrupalBoot.html"><abbr title="Drush\Boot\DrupalBoot">DrupalBoot</abbr></a></em></dt>
@@ -729,7 +725,13 @@ for launching executable programs in functional tests.</dd><dt><a href="Drush/Te
 <abbr title="Drush\Utils\StringUtils">StringUtils</abbr>::csvToArray</a>() &mdash; <em>Method in class <a href="Drush/Utils/StringUtils.html"><abbr title="Drush\Utils\StringUtils">StringUtils</abbr></a></em></dt>
                     <dd>Convert a csv string, or an array of items which
 may contain csv strings, into an array of items.</dd>        </dl><h2 id="letterD">D</h2>
-        <dl id="indexD"><dt>$<a href="Drush/Boot/BootstrapManager.html#property_drupalFinder">
+        <dl id="indexD"><dt><a href="Drush/Application.html#method_discoverCommandsFromConfiguration">
+<abbr title="Drush\Application">Application</abbr>::discoverCommandsFromConfiguration</a>() &mdash; <em>Method in class <a href="Drush/Application.html"><abbr title="Drush\Application">Application</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/Application.html#method_discoverCommands">
+<abbr title="Drush\Application">Application</abbr>::discoverCommands</a>() &mdash; <em>Method in class <a href="Drush/Application.html"><abbr title="Drush\Application">Application</abbr></a></em></dt>
+                    <dd>Discovers command classes.</dd><dt><a href="Drush/Application.html#method_discoverPsr4Commands">
+<abbr title="Drush\Application">Application</abbr>::discoverPsr4Commands</a>() &mdash; <em>Method in class <a href="Drush/Application.html"><abbr title="Drush\Application">Application</abbr></a></em></dt>
+                    <dd>Discovers commands that are PSR4 auto-loaded.</dd><dt>$<a href="Drush/Boot/BootstrapManager.html#property_drupalFinder">
 <abbr title="Drush\Boot\BootstrapManager">BootstrapManager</abbr>#drupalFinder</a> &mdash; <em>Property in class <a href="Drush/Boot/BootstrapManager.html"><abbr title="Drush\Boot\BootstrapManager">BootstrapManager</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Boot/BootstrapManager.html#method_drupalFinder">
 <abbr title="Drush\Boot\BootstrapManager">BootstrapManager</abbr>::drupalFinder</a>() &mdash; <em>Method in class <a href="Drush/Boot/BootstrapManager.html"><abbr title="Drush\Boot\BootstrapManager">BootstrapManager</abbr></a></em></dt>
@@ -761,6 +763,8 @@ may contain csv strings, into an array of items.</dd>        </dl><h2 id="letter
 <abbr title="Drush\Commands\core\MkCommands">MkCommands</abbr>::docs</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/MkCommands.html"><abbr title="Drush\Commands\core\MkCommands">MkCommands</abbr></a></em></dt>
                     <dd>Build a Markdown document for each Drush command thats available on a site.</dd><dt><a href="Drush/Commands/core/SiteInstallCommands.html#method_determineProfile">
 <abbr title="Drush\Commands\core\SiteInstallCommands">SiteInstallCommands</abbr>::determineProfile</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/SiteInstallCommands.html"><abbr title="Drush\Commands\core\SiteInstallCommands">SiteInstallCommands</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/generate/GenerateCommands.html#method_discoverPsr4Generators">
+<abbr title="Drush\Commands\generate\GenerateCommands">GenerateCommands</abbr>::discoverPsr4Generators</a>() &mdash; <em>Method in class <a href="Drush/Commands/generate/GenerateCommands.html"><abbr title="Drush\Commands\generate\GenerateCommands">GenerateCommands</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/generate/Generators/Drush/DrushAliasFile.html"><abbr title="Drush\Commands\generate\Generators\Drush\DrushAliasFile">DrushAliasFile</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands/generate/Generators/Drush.html">Drush\Commands\generate\Generators\Drush</a></em></dt>
                     <dd>Implements drush-alias-file command.</dd><dt>$<a href="Drush/Commands/generate/Generators/Drush/DrushAliasFile.html#property_description">
 <abbr title="Drush\Commands\generate\Generators\Drush\DrushAliasFile">DrushAliasFile</abbr>#description</a> &mdash; <em>Property in class <a href="Drush/Commands/generate/Generators/Drush/DrushAliasFile.html"><abbr title="Drush\Commands\generate\Generators\Drush\DrushAliasFile">DrushAliasFile</abbr></a></em></dt>

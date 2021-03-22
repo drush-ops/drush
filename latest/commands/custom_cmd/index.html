@@ -13,14 +13,14 @@
         <meta name="author" content="Moshe Weitzman">
       
       
-        <link rel="canonical" href="https://www.drush.org/latest/commands/theme_uninstall/">
+        <link rel="canonical" href="https://www.drush.org/latest/commands/custom_cmd/">
       
       <link rel="icon" href="../../img/favicon.ico">
       <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-7.0.6">
     
     
       
-        <title>theme:uninstall - Drush</title>
+        <title>custom_cmd - Drush</title>
       
     
     
@@ -55,9 +55,9 @@
       
     
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="Drush - theme:uninstall" />
+    <meta property="og:title" content="Drush - custom_cmd" />
     <meta property="og:description" content="A command line shell and Unix scripting interface for Drupal" />
-    <meta property="og:url" content="https://www.drush.org/latest/commands/theme_uninstall/" />
+    <meta property="og:url" content="https://www.drush.org/latest/commands/custom_cmd/" />
     <meta property="og:image" content="https://raw.githubusercontent.com/drush-ops/drush/10.x/drush_logo-black.png" />
     <meta property="og:image:type" content="image/png" />
     <meta property="og:image:width" content="218" />
@@ -70,7 +70,7 @@
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:site" content="@drushcli" />
     <meta name="twitter:creator" content="@weitzman" />
-    <meta name="twitter:title" content="Drush - theme:uninstall" />
+    <meta name="twitter:title" content="Drush - custom_cmd" />
     <meta name="twitter:description" content="A command line shell and Unix scripting interface for Drupal" />
     <meta name="twitter:image" content="https://raw.githubusercontent.com/drush-ops/drush/10.x/drush_logo-black.png" />
 
@@ -94,7 +94,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#themeuninstall" class="md-skip">
+        <a href="#custom_cmd" class="md-skip">
           Skip to content
         </a>
       
@@ -123,7 +123,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              theme:uninstall
+              custom_cmd
             
           </span>
         </div>
@@ -881,12 +881,14 @@
             
   
   
+    
+  
   
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5_1" type="checkbox" id="__nav_5_1" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5_1" type="checkbox" id="__nav_5_1" checked>
       
       <label class="md-nav__link" for="__nav_5_1">
         _global
@@ -926,11 +928,20 @@
             
   
   
+    
   
-    <li class="md-nav__item">
-      <a href="../custom_cmd/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+        
+      
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         custom_cmd
       </a>
+      
     </li>
   
 
@@ -2285,14 +2296,12 @@
             
   
   
-    
-  
   
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5_17" type="checkbox" id="__nav_5_17" checked>
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5_17" type="checkbox" id="__nav_5_17" >
       
       <label class="md-nav__link" for="__nav_5_17">
         theme
@@ -2320,56 +2329,11 @@
             
   
   
-    
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          theme:uninstall
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../theme_uninstall/" class="md-nav__link">
         theme:uninstall
       </a>
-      
-        
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#arguments" class="md-nav__link">
-    Arguments
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#aliases" class="md-nav__link">
-    Aliases
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -2809,22 +2773,13 @@
             <article class="md-content__inner md-typeset">
               
                 
-                  <a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Commands/pm/ThemeCommands.php" title="Edit this page" class="md-content__button md-icon">
+                  <a href="https://github.com/drush-ops/drush/blob/10.x/tests/fixtures/lib/Drush/Commands/CustomDrushCommands.php" title="Edit this page" class="md-content__button md-icon">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg>
                   </a>
                 
                 
-                <h1 id="themeuninstall">theme:uninstall<a class="headerlink" href="#themeuninstall" title="Permanent link">&para;</a></h1>
-<p>Uninstall theme.</p>
-<h4 id="arguments">Arguments<a class="headerlink" href="#arguments" title="Permanent link">&para;</a></h4>
-<ul>
-<li><strong>[themes]...</strong>. A comma delimited list of themes.</li>
-</ul>
-<h4 id="aliases">Aliases<a class="headerlink" href="#aliases" title="Permanent link">&para;</a></h4>
-<ul>
-<li>thun</li>
-<li>theme-uninstall</li>
-</ul>
+                <h1 id="custom_cmd">custom_cmd<a class="headerlink" href="#custom_cmd" title="Permanent link">&para;</a></h1>
+<p>Auto-discoverable custom command</p>
 <div class="admonition hint">
 <p class="admonition-title">Legend</p>
 <ul>
@@ -2843,7 +2798,7 @@
 <script>
     window.FastCommentsUI(document.getElementById('fastcomments-widget'), {
         tenantId: '7tG3defply',
-        urlId: 'commands/theme_uninstall/'
+        urlId: 'commands/custom_cmd/'
     });
 </script>
 
@@ -2857,7 +2812,7 @@
   
     <nav class="md-footer__inner md-grid" aria-label="Footer">
       
-        <a href="../theme_enable/" class="md-footer__link md-footer__link--prev" rel="prev">
+        <a href="../browse/" class="md-footer__link md-footer__link--prev" rel="prev">
           <div class="md-footer__button md-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
           </div>
@@ -2866,19 +2821,19 @@
               <span class="md-footer__direction">
                 Previous
               </span>
-              theme:enable
+              browse
             </div>
           </div>
         </a>
       
       
-        <a href="../twig_compile/" class="md-footer__link md-footer__link--next" rel="next">
+        <a href="../drupal_directory/" class="md-footer__link md-footer__link--next" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
                 Next
               </span>
-              twig:compile
+              drupal:directory
             </div>
           </div>
           <div class="md-footer__button md-icon">

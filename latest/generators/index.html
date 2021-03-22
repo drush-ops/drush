@@ -973,6 +973,18 @@
   
   
     <li class="md-nav__item">
+      <a href="../commands/custom_cmd/" class="md-nav__link">
+        custom_cmd
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../commands/drupal_directory/" class="md-nav__link">
         drupal:directory
       </a>
@@ -2815,13 +2827,18 @@
 <h2 id="global-generators">Global Generators<a class="headerlink" href="#global-generators" title="Permanent link">&para;</a></h2>
 <p>Generators that don't ship inside Drupal modules are called <em>global</em> generators. In general, it is better to use modules to carry your generators. If you still prefer using a global generator, please note:</p>
 <ol>
-<li>The file's namespace should be <code>\Drush\Generators</code>.</li>
-<li>The filename must have a name like Generators/FooGenerator.php<ol>
-<li>The prefix <code>Foo</code> can be whatever string you want. The file must end in <code>Generator.php</code></li>
-<li>The enclosing directory must be named <code>Generators</code></li>
-</ol>
-</li>
-<li>The directory above Generators must be one of:<ol>
+<li>The generator class should be PSR4 auto-loadable.</li>
+<li>The generator class namespace, relative to base namespace, should be <code>Drush\Generators</code>. For instance, if a Drush generator provider third party library maps this PSR4 autoload entry:
+   <div class="highlight"><pre><span></span><code><span class="nt">&quot;autoload&quot;</span><span class="p">:</span> <span class="p">{</span>
+  <span class="nt">&quot;psr-4&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;My\\Custom\\Library\\&quot;</span><span class="p">:</span> <span class="s2">&quot;src&quot;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+   then the Drush global generator class namespace should be <code>My\Custom\Library\Drush\Generators</code> and the class file should be located under the <code>src/Drush/Generators</code> directory.</li>
+<li>The global generator namespace should start with <code>\Drush\Generators</code> but this might be subject to change in the following release.</li>
+<li>The filename must have a name like FooGenerator.php. The prefix <code>Foo</code> can be whatever string you want. The file must end in <code>Generator.php</code></li>
+<li>When the namespace starts with <code>\Drush\Generators</code>, the directory above Generators must be one of:<ol>
 <li>A Folder listed in the <em>--include</em> option. include may be provided via config or via CLI.</li>
 <li><code>../drush</code>, <code>/drush</code> or <code>/sites/all/drush</code>. These paths are relative to Drupal root.</li>
 </ol>
