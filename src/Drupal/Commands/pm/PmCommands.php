@@ -142,6 +142,7 @@ class PmCommands extends DrushCommands
      * @option package Only show extensions having a given project packages (e.g. Development).
      * @field-labels
      *   package: Package
+     *   project: Project
      *   display_name: Name
      *   name: Name
      *   type: Type
@@ -210,6 +211,7 @@ class PmCommands extends DrushCommands
 
             $row = [
                 'package' => $extension->info['package'],
+                'project' => isset($extension->info['project']) ? $extension->info['project'] : '',
                 'display_name' => $extension->info['name']. ' ('. $extension->getName(). ')',
                 'name' => $extension->getName(),
                 'type' => $extension->getType(),
