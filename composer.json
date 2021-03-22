@@ -61,8 +61,7 @@
     "squizlabs/php_codesniffer": "^2.7 || ^3",
     "composer/installers": "^1.2",
     "cweagans/composer-patches": "~1.0",
-    "webflo/drupal-core-strict": "8.7.x-dev",
-    "webflo/drupal-core-require-dev": "8.7.x-dev",
+    "drupal/core-recommended": "^8.9",
     "drupal/empty_theme": "1.0",
     "drupal/devel": "^2",
     "drupal/alinks": "1.0.0",
@@ -130,8 +129,7 @@
           }
         },
         "require-dev": {
-          "webflo/drupal-core-strict": "8.6.x-dev",
-          "webflo/drupal-core-require-dev": "8.6.x-dev"
+          "drupal/core-recommended": "~8.6.0"
         }
       }
     },

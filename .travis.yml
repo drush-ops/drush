@@ -42,7 +42,8 @@ before_install:
   - echo 'mbstring.http_input = pass' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
   - echo 'mbstring.http_output = pass' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
   - echo 'memory_limit = -1' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
-
+  - composer selfupdate --1
+  
 # Build a System-Under-Test.
 install:
   - '.scenarios.lock/install "${SCENARIO}" "${DEPENDENCIES}"'

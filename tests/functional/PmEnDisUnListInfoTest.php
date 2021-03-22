@@ -56,6 +56,14 @@ class EnDisUnListInfoCase extends CommandUnishTestCase
         $out = $this->getOutput();
         $this->assertNotContains('devel', $out, 'Devel is not part of core package');
 
+        // Check output fields in pm-list
+        $this->drush('pm-list', [], ['fields' => '*', 'format' => 'json']);
+        $extensionProperties = $this->getOutputFromJSON();
+        $this->assertTrue(isset($extensionProperties['devel']));
+        $this->assertEquals('devel', $extensionProperties['devel']['project']);
+        $this->assertEquals('Enabled', $extensionProperties['devel']['status']);
+        $this->assertEquals('module', $extensionProperties['devel']['type']);
+
         // Test module uninstall.
         $this->drush('pm-uninstall', ['devel']);
         $this->drush('pm-list', [], ['status' => 'disabled', 'type' => 'module']);
