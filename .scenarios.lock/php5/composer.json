@@ -79,8 +79,7 @@
         "webmozart/path-util": "^2.1.0"
     },
     "require-dev": {
-        "webflo/drupal-core-strict": "8.6.x-dev",
-        "webflo/drupal-core-require-dev": "8.6.x-dev",
+        "drupal/core-recommended": "~8.6.0",
         "lox/xhprof": "dev-master",
         "g1a/composer-test-scenarios": "^3",
         "phpunit/phpunit": "^4.8.36 || ^6.1",
