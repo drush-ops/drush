@@ -2,7 +2,6 @@
 
 namespace Unish;
 
-use Drupal\Tests\media_library\FunctionalJavascript\MediaOverviewTest;
 use Symfony\Component\Yaml\Yaml;
 use Webmozart\PathUtil\Path;
 

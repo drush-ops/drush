@@ -148,7 +148,7 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
             'SCRIPT_NAME' => isset($parsed_url['path']) ? $parsed_url['path'] . 'index.php' : '/index.php',
         ] + $_SERVER;
         $request = Request::create($uri, 'GET', [], [], [], $server);
-        // $request->overrideGlobals();
+        $request->overrideGlobals();
         $this->setRequest($request);
         return true;
     }
