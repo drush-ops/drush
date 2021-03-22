@@ -59,11 +59,10 @@ class EnDisUnListInfoCase extends CommandUnishTestCase
         // Check output fields in pm-list
         $this->drush('pm-list', [], ['fields' => '*', 'format' => 'json']);
         $extensionProperties = $this->getOutputFromJSON();
-        $this->assertTrue(isset($extensionProperties['drush_empty_module']));
-        $this->assertEquals($extensionProperties['drush_empty_module']['project'], 'drush_empty_module');
-        $this->assertEquals($extensionProperties['drush_empty_module']['package'], 'Other');
-        $this->assertEquals($extensionProperties['drush_empty_module']['status'], 'Enabled');
-        $this->assertEquals($extensionProperties['drush_empty_module']['type'], 'module');
+        $this->assertTrue(isset($extensionProperties['devel']));
+        $this->assertEquals('devel', $extensionProperties['devel']['project']);
+        $this->assertEquals('Enabled', $extensionProperties['devel']['status']);
+        $this->assertEquals('module', $extensionProperties['devel']['type']);
 
         // Test module uninstall.
         $this->drush('pm-uninstall', ['devel']);
