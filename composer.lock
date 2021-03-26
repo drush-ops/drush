@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b95b1579e99f0c4319d31d0b286be016",
+    "content-hash": "ea561d363526815ef222760db138c692",
     "packages": [
         {
             "name": "chi-teck/drupal-code-generator",
@@ -4695,49 +4695,6 @@
             "time": "2020-05-20T16:45:56+00:00"
         },
         {
-            "name": "lox/xhprof",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/lox/xhprof.git",
-                "reference": "c64571f892bda1298bad9c5e94ede0bc3f0e4627"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/lox/xhprof/zipball/c64571f892bda1298bad9c5e94ede0bc3f0e4627",
-                "reference": "c64571f892bda1298bad9c5e94ede0bc3f0e4627",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.2.0"
-            },
-            "default-branch": true,
-            "bin": [
-                "bin/xhprofile"
-            ],
-            "type": "library",
-            "autoload": {
-                "files": [
-                    "xhprof_lib/utils/xhprof_lib.php",
-                    "xhprof_lib/utils/xhprof_runs.php"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "Apache-2.0"
-            ],
-            "description": "XHProf: A Hierarchical Profiler for PHP",
-            "homepage": "http://pecl.php.net/package/xhprof",
-            "keywords": [
-                "performance",
-                "profiling"
-            ],
-            "support": {
-                "source": "https://github.com/lox/xhprof/tree/master"
-            },
-            "time": "2015-08-31T22:07:48+00:00"
-        },
-        {
             "name": "masterminds/html5",
             "version": "2.3.0",
             "source": {
@@ -8115,8 +8072,7 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
-        "consolidation/site-alias": 0,
-        "lox/xhprof": 20
+        "consolidation/site-alias": 0
     },
     "prefer-stable": true,
     "prefer-lowest": false,
