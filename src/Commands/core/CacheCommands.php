@@ -212,7 +212,13 @@ class CacheCommands extends DrushCommands implements CustomEventAwareInterface, 
             $this->logger()->info(dt("Skipping cache-clear operation due to --no-cache-clear option."));
             return true;
         }
-        chdir(DRUPAL_ROOT);
+
+        // Through some magic I don't claim to understand, the current directory
+        // is already the web root.
+        // Use this, and NOT the DRUPAL_ROOT constant, as that is unreliable if
+        // the Drupal package is not installed in the usual location and
+        // symlinked in by Composer.
+        $root = getcwd();
 
         // We no longer clear APC and similar caches as they are useless on CLI.
         // See https://github.com/drush-ops/drush/pull/2450
@@ -226,7 +232,6 @@ class CacheCommands extends DrushCommands implements CustomEventAwareInterface, 
         DrupalKernel::bootEnvironment();
 
         // Avoid 'Only variables should be passed by reference'
-        $root  = DRUPAL_ROOT;
         $site_path = DrupalKernel::findSitePath($request);
         Settings::initialize($root, $site_path, $autoloader);
 
