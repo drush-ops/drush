@@ -229,24 +229,26 @@ class Project {
 
       // Extract files.
       $release_info['files'] = array();
-      foreach ($release->files->children() as $file) {
-        // Normalize keys to match the ones in the release info.
-        $item = array(
-          'download_link' => (string) $file->url,
-          'date'          => (string) $file->filedate,
-          'mdhash'        => (string) $file->md5,
-          'filesize'      => (string) $file->size,
-          'archive_type'  => (string) $file->archive_type,
-        );
-        if (!empty($file->variant)) {
-          $item['variant'] = (string) $file->variant;
-        }
-        $release_info['files'][] = $item;
+      if (!empty($release->files)) {
+        foreach ($release->files->children() as $file) {
+          // Normalize keys to match the ones in the release info.
+          $item = array(
+            'download_link' => (string) $file->url,
+            'date'          => (string) $file->filedate,
+            'mdhash'        => (string) $file->md5,
+            'filesize'      => (string) $file->size,
+            'archive_type'  => (string) $file->archive_type,
+          );
+          if (!empty($file->variant)) {
+            $item['variant'] = (string) $file->variant;
+          }
+          $release_info['files'][] = $item;
 
-        // Copy the mdhash from the matching download file into the
-        // root of the release object (make /current structure like /8.x)
-        if ($item['download_link'] == $release_info['download_link'] && !isset($release_info['mdhash'])) {
-          $release_info['mdhash'] = $item['mdhash'];
+          // Copy the mdhash from the matching download file into the
+          // root of the release object (make /current structure like /8.x)
+          if ($item['download_link'] == $release_info['download_link'] && !isset($release_info['mdhash'])) {
+            $release_info['mdhash'] = $item['mdhash'];
+          }
         }
       }
 
