@@ -148,14 +148,17 @@ class XhprofCommands extends DrushCommands
     {
         if (extension_loaded('tideways_xhprof')) {
             $data = \tideways_xhprof_disable();
-            $dir = $this->getConfig()->tmp();
-            $run_id = uniqid();
-            file_put_contents($dir . DIRECTORY_SEPARATOR . $run_id . '.' . $namespace . '.xhprof', serialize($data));
-            return $run_id;
         } else {
-            $xhprof_data = \xhprof_disable();
-            $xhprof_runs = new \XHProfRuns_Default();
-            return $xhprof_runs->save_run($xhprof_data, $namespace);
+            $data = \xhprof_disable();
+            if (class_exists('\XHProfRuns_Default')) {
+                $xhprof_runs = new \XHProfRuns_Default($this->getConfig()->get('xh.path'));
+                return $xhprof_runs->save_run($data, $namespace);
+            }
         }
+        $config = $this->getConfig();
+        $dir = $config->get('xh.path', $config->tmp());
+        $run_id = uniqid();
+        file_put_contents($dir . DIRECTORY_SEPARATOR . $run_id . '.' . $namespace . '.xhprof', serialize($data));
+        return $run_id;
     }
 }
