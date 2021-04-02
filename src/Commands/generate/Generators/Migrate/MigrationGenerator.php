@@ -24,7 +24,6 @@ class MigrationGenerator extends BaseGenerator
     protected function interact(InputInterface $input, OutputInterface $output)
     {
         $questions = Utils::defaultPluginQuestions() + [
-            'migration_group' => new Question('Migration group', 'default'),
             'destination_plugin' => new Question('Destination plugin', 'entity:node'),
         ];
 
@@ -36,7 +35,7 @@ class MigrationGenerator extends BaseGenerator
             ->template('migration.php.twig');
 
         $this->addFile()
-            ->path('config/install/migrate_plus.migration.{plugin_id}.yml')
+            ->path('migrations/{plugin_id}.yml')
             ->template('migration.yml.twig');
     }
 }
