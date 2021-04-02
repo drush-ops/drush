@@ -51,5 +51,4 @@ EOT;
         $this->drush('cron', [], $options);
         $this->assertStringContainsString('Message: test', $this->getErrorOutput());
     }
-
 }
