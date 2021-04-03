@@ -2778,7 +2778,7 @@
 <p>Drush users may provide configuration via: </p>
 <ol>
 <li>yml files that are placed in specific directories. <a href="https://raw.githubusercontent.com/drush-ops/drush/10.x/examples/example.drush.yml">See our example file</a> for more information. You may also add configuration to a site alias - <a href="https://raw.githubusercontent.com/drush-ops/drush/10.x/examples/example.site.yml">see example site alias</a>.</li>
-<li>Properly named environment variables are automatically used as configuration. To populate the options.uri config item, create an environment variable like so <code>DRUSH_OPTIONS_URI=http://example.com</code>. As you can see, variable names should be uppercased, prefixed with <code>DRUSH_</code>, and periods replaced with dashes. </li>
+<li>Properly named environment variables are automatically used as configuration. To populate the <code>options.uri</code> config item, create an environment variable like so <code>DRUSH_OPTIONS_URI=http://example.com</code>. As you can see, variable names should be uppercased, prefixed with <code>DRUSH_</code>, and periods replaced with dashes. </li>
 </ol>
 <p>If you are authoring a commandfile and wish to access the user's configuration, see <a href="../commands/">Command Authoring</a>.</p>
 <p>The Drush configuration system has been factored out of Drush and shared with the world at <a href="https://github.com/consolidation/config">https://github.com/consolidation/config</a>. Feel free to use it for your projects. Lots more usage information is there.</p>
