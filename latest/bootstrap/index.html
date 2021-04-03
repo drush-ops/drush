@@ -459,6 +459,18 @@
   
   
     <li class="md-nav__item">
+      <a href="../site-aliases/" class="md-nav__link">
+        Site aliases
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../output-formats-filters/" class="md-nav__link">
         Output Formats, Fields & Filters
       </a>
@@ -2868,7 +2880,7 @@
 <h2 id="bootstrap-root">@bootstrap root<a class="headerlink" href="#bootstrap-root" title="Permanent link">&para;</a></h2>
 <p>Set up and test for a valid Drupal root, either through the --root options, or evaluated based on the current working directory. Any code that interacts with an entire Drupal installation, and not a specific site on the Drupal installation should use this bootstrap phase.</p>
 <h2 id="bootstrap-site">@bootstrap site<a class="headerlink" href="#bootstrap-site" title="Permanent link">&para;</a></h2>
-<p>Set up a Drupal site directory and the correct environment variables to allow Drupal to find the configuration file. If no site is specified with the --uri options, Drush will assume the site is 'default', which mimics Drupal's behaviour.  Note that it is necessary to specify a full URI, e.g. --uri=<a href="http://example.com">http://example.com</a>, in order for certain Drush commands and Drupal modules to behave correctly. See the <a href="https://github.com/drush-ops/drush/blob/10.x/examples/example.drush.yml">example Config file</a> for more information. Any code that needs to modify or interact with a specific Drupal site's settings.php file should bootstrap to this phase.</p>
+<p>Set up a Drupal site directory and the correct environment variables to allow Drupal to find the configuration file. If no site is specified with the --uri options, Drush will assume the site is 'default', which mimics Drupal's behaviour.  Note that it is necessary to specify a full URI, e.g. --uri=<a href="http://example.com">http://example.com</a>, in order for certain Drush commands and Drupal modules to behave correctly. See the <a href="../using-drush-configuration/">Drush configuration</a> for more information. Any code that needs to modify or interact with a specific Drupal site's settings.php file should bootstrap to this phase.</p>
 <h2 id="bootstrap-configuration">@bootstrap configuration<a class="headerlink" href="#bootstrap-configuration" title="Permanent link">&para;</a></h2>
 <p>Load the settings from the Drupal sites directory. This phase is analogous to the DRUPAL_BOOTSTRAP_CONFIGURATION bootstrap phase in Drupal itself, and this is also the first step where Drupal specific code is included. This phase is commonly used for code that interacts with the Drupal install API, as both install.php and update.php start at this phase.</p>
 <h2 id="bootstrap-database">@bootstrap database<a class="headerlink" href="#bootstrap-database" title="Permanent link">&para;</a></h2>

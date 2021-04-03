@@ -445,9 +445,121 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Drush configuration
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         Drush configuration
       </a>
+      
+        
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#directories-and-discovery" class="md-nav__link">
+    Directories and Discovery
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#environment-variables" class="md-nav__link">
+    Environment variables
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#config-examples" class="md-nav__link">
+    Config examples
+  </a>
+  
+    <nav class="md-nav" aria-label="Config examples">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#specify-config-files-to-load" class="md-nav__link">
+    Specify config files to load
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#specify-folders-to-search-for-drush-command-files" class="md-nav__link">
+    Specify folders to search for Drush command files.
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#specify-the-folders-to-search-for-drush-alias-files-siteyml" class="md-nav__link">
+    Specify the folders to search for Drush alias files (*.site.yml).
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cache-directory" class="md-nav__link">
+    Cache directory
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#backup-directory" class="md-nav__link">
+    Backup directory
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#global-options" class="md-nav__link">
+    Global options
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#command-specific-options" class="md-nav__link">
+    Command-specific options
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#non-options" class="md-nav__link">
+    Non-options
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#misc" class="md-nav__link">
+    Misc
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -460,6 +572,18 @@
     <li class="md-nav__item">
       <a href="../config-exporting/" class="md-nav__link">
         Drupal configuration
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../site-aliases/" class="md-nav__link">
+        Site aliases
       </a>
     </li>
   
@@ -2775,13 +2899,172 @@
                 
                 
                 <h1 id="drush-configuration">Drush Configuration<a class="headerlink" href="#drush-configuration" title="Permanent link">&para;</a></h1>
-<p>Drush users may provide configuration via: </p>
+<p>Drush configuration is useful to cut down on typing out lengthy and repetitive command line
+options, and to avoid mistakes.</p>
+<h4 id="directories-and-discovery">Directories and Discovery<a class="headerlink" href="#directories-and-discovery" title="Permanent link">&para;</a></h4>
+<p>drush.yml files are discovered as below, in order of precedence:</p>
 <ol>
-<li>yml files that are placed in specific directories. <a href="https://raw.githubusercontent.com/drush-ops/drush/10.x/examples/example.drush.yml">See our example file</a> for more information. You may also add configuration to a site alias - <a href="https://raw.githubusercontent.com/drush-ops/drush/10.x/examples/example.site.yml">see example site alias</a>.</li>
-<li>Properly named environment variables are automatically used as configuration. To populate the <code>options.uri</code> config item, create an environment variable like so <code>DRUSH_OPTIONS_URI=http://example.com</code>. As you can see, variable names should be uppercased, prefixed with <code>DRUSH_</code>, and periods replaced with dashes. </li>
+<li>Drupal site folder (e.g. <code>sites/{example.com}/drush.yml</code>). <a href="https://github.com/drush-ops/drush/pull/4345"><em>default</em> site does not yet work</a>.</li>
+<li><code>sites/all/drush</code>, <code>WEBROOT/drush</code>, or <code>PROJECTROOT/drush</code>.</li>
+<li>In any location, as specified by the <code>--config</code> option.</li>
+<li>User's .drush folder (i.e. <code>~/.drush/drush.yml</code>).</li>
+<li>System-wide configuration folder (e.g. <code>/etc/drush/drush.yml</code> or <code>C:\ProgramData\Drush\drush.yml</code>).</li>
 </ol>
-<p>If you are authoring a commandfile and wish to access the user's configuration, see <a href="../commands/">Command Authoring</a>.</p>
-<p>The Drush configuration system has been factored out of Drush and shared with the world at <a href="https://github.com/consolidation/config">https://github.com/consolidation/config</a>. Feel free to use it for your projects. Lots more usage information is there.</p>
+<p>If a configuration file is found in any of the above locations, it will be
+loaded and merged with other configuration files in the search list. Run <code>drush status --field=drush-conf</code> 
+to see all discovered config files.</p>
+<h4 id="environment-variables">Environment variables<a class="headerlink" href="#environment-variables" title="Permanent link">&para;</a></h4>
+<p>Your Drush config file may reference environment variables using a syntax like <code>${env.HOME}</code>.
+For example see the <code>drush.paths</code> examples below.</p>
+<p>An alternative way to populate Drush configuration is to define environment variables that
+correspond to config keys. For example, to populate the <code>options.uri</code> config item,
+create an environment variable <code>DRUSH_OPTIONS_URI=http://example.com</code>.
+As you can see, variable names should be uppercased, prefixed with <code>DRUSH_</code>, and periods
+replaced with dashes.</p>
+<h3 id="config-examples">Config examples<a class="headerlink" href="#config-examples" title="Permanent link">&para;</a></h3>
+<h4 id="specify-config-files-to-load">Specify config files to load<a class="headerlink" href="#specify-config-files-to-load" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code>drush:
+  paths:
+    config:
+      # Load any personal config files. Is silently skipped if not found. Filename must be drush.yml
+      - ${env.HOME}/.drush/config/drush.yml
+</code></pre></div>
+<h4 id="specify-folders-to-search-for-drush-command-files">Specify folders to search for Drush command files.<a class="headerlink" href="#specify-folders-to-search-for-drush-command-files" title="Permanent link">&para;</a></h4>
+<p>These locations are always merged with include paths defined on the command line or
+in other configuration files.  On the command line, paths may be separated
+by a colon <code>:</code> on Unix-based systems or a semi-colon <code>;</code> on Windows,
+or multiple <code>--include</code> options may be provided. Drush 8 and earlier did
+a deep search in <code>~/.drush</code> and <code>/usr/share/drush/commands</code> when loading
+command files.</p>
+<p>For testing, specify the namespace component in the key. e.g.:</p>
+<div class="highlight"><pre><span></span><code>drush:
+ include:
+   &#39;Commands/example_drush_extension&#39;: &#39;${env.PWD}&#39;
+    include:
+      - &#39;${env.HOME}/.drush/commands&#39;
+      - /usr/share/drush/commands
+</code></pre></div>
+<h4 id="specify-the-folders-to-search-for-drush-alias-files-siteyml">Specify the folders to search for Drush alias files (*.site.yml).<a class="headerlink" href="#specify-the-folders-to-search-for-drush-alias-files-siteyml" title="Permanent link">&para;</a></h4>
+<p>These locations are always merged with alias paths defined on the command line
+ or in other configuration files.  On the command line, paths may be
+ separated by a colon <code>:</code> on Unix-based systems or a semi-colon <code>;</code> on
+ Windows, or multiple <code>--alias-path</code> options may be provided. Note that
+ Drush 8 and earlier did a deep search in <code>~/.drush</code> and <code>/etc/drush</code> when
+ loading alias files.
+<div class="highlight"><pre><span></span><code>drush:
+  alias-path:
+    - &#39;${env.HOME}/.drush/sites&#39;
+    - /etc/drush/sites
+</code></pre></div></p>
+<h4 id="cache-directory">Cache directory<a class="headerlink" href="#cache-directory" title="Permanent link">&para;</a></h4>
+<p>Specify a folder where Drush should store its file based caches. If unspecified, defaults to <code>$HOME/.drush</code>.
+<div class="highlight"><pre><span></span><code>drush:  
+  cache-directory: /tmp/.drush
+</code></pre></div></p>
+<h4 id="backup-directory">Backup directory<a class="headerlink" href="#backup-directory" title="Permanent link">&para;</a></h4>
+<p>Specify a folder where Drush should store backup files, including
+temporary sql dump files created during <a href="https://www.drush.org/latest/commands/sql_sync/">sql:sync</a>. If unspecified,
+defaults to <code>$HOME/drush-backups</code>.
+<div class="highlight"><pre><span></span><code>drush:
+  backup-dir: /tmp/drush-backups
+</code></pre></div></p>
+<h4 id="global-options">Global options<a class="headerlink" href="#global-options" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code>options:
+  # Specify the base_url that should be used when generating links.
+  uri: &#39;http://example.com/subdir&#39;
+
+  # Specify your Drupal core base directory (useful if you use symlinks).
+  root: &#39;/home/USER/workspace/drupal&#39;
+
+  # Enable verbose mode.
+  verbose: true
+</code></pre></div>
+<h4 id="command-specific-options">Command-specific options<a class="headerlink" href="#command-specific-options" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code>command:
+  sql:
+    dump:
+      options:
+        # Omit cache and similar tables (including during a sql:sync).
+          structure-tables-key: common
+  php:
+    script:
+      options:
+        # Additional folders to search for scripts.
+        script-path: &#39;sites/all/scripts:profiles/myprofile/scripts&#39;
+  core:
+    rsync:
+      options:
+        # Ensure all rsync commands use verbose output.
+        verbose: true
+
+  site:
+    install:
+      options:
+        # Set a predetermined username and password when using site:install.
+        account-name: &#39;alice&#39;
+        account-pass: &#39;secret&#39;
+</code></pre></div>
+<h4 id="non-options">Non-options<a class="headerlink" href="#non-options" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code>sql:
+  # An explicit list of tables which should be included in sql-dump and sql-sync.
+  tables:
+    common:
+      - user
+      - permissions
+      - role_permissions
+      - role
+  # List of tables whose *data* is skipped by the &#39;sql-dump&#39; and &#39;sql-sync&#39;
+  # commands when the &quot;--structure-tables-key=common&quot; option is provided.
+  # You may add specific tables to the existing array or add a new element.
+  structure-tables:
+    common:
+      - cache
+      - &#39;cache_*&#39;
+      - history
+      - &#39;search_*&#39;
+      - &#39;sessions&#39;
+      - &#39;watchdog&#39;
+  # List of tables to be omitted entirely from SQL dumps made by the &#39;sql-dump&#39;
+  # and &#39;sql-sync&#39; commands when the &quot;--skip-tables-key=common&quot; option is
+  # provided on the command line.  This is useful if your database contains
+  # non-Drupal tables used by some other application or during a migration for
+  # example.  You may add new tables to the existing array or add a new element.
+  skip-tables:
+    common:
+      - &#39;migration_*&#39;
+
+ssh:
+  # Specify options to pass to ssh.  The default is to prohibit
+  # password authentication, and is included here, so you may add additional
+  # parameters without losing the default configuration.
+  options: &#39;-o PasswordAuthentication=no&#39;
+  # This string is valid for Bash shell. Override in case you need something different. See https://github.com/drush-ops/drush/issues/3816.
+  pipefail: &#39;set -o pipefail; &#39;
+
+notify:
+  # Notify when command takes more than 30 seconds.
+  duration: 30
+  # Specify a command to run. Defaults to Notification Center (OSX) or libnotify (Linux)
+  cmd: /path/to/program
+  # See https://github.com/drush-ops/drush/blob/10.x/src/Commands/core/NotifyCommands.php for more settings.
+
+xh:
+  # Start profiling via xhprof/tideways and show a link to the run report.
+  link: http://xhprof.local
+  # See https://github.com/drush-ops/drush/blob/10.x/src/Commands/core/XhprofCommands.php for more settings.
+  profile-builtins: true
+  profile-cpu: false
+  profile-memory: false
+</code></pre></div>
+<h3 id="misc">Misc<a class="headerlink" href="#misc" title="Permanent link">&para;</a></h3>
+<ul>
+<li>If you are authoring a commandfile and wish to access the user's configuration, see <a href="../commands/">Command Authoring</a>.</li>
+<li><a href="https://github.com/drush-ops/drush/issues/2956">Setting boolean options broke with Symfony 3</a>. This will be fixed
+  in a future release.  </li>
+<li>Version-specific configuration. Limit the version of Drush that will load a configuration file by placing
+the Drush major version number in the filename, e.g. <code>drush10.yml</code>.</li>
+<li>The Drush configuration system has been factored out of Drush and shared with the world at <a href="https://github.com/consolidation/config">https://github.com/consolidation/config</a>. Feel free to use it for your projects. Lots more usage information is there.</li>
+</ul>
                 
               
               
