@@ -148,6 +148,7 @@ class SiteCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
      *   List the files to be converted but do not actually do anything.
      * @bootstrap max
      * @aliases sa-convert,sac
+     * @topics docs:aliases
      * @return array
      */
     public function siteAliasConvert($destination, $options = ['format' => 'yaml', 'sources' => self::REQ])
