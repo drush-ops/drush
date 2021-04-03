@@ -29,7 +29,7 @@ Set up and test for a valid Drupal root, either through the --root options, or e
 
 @bootstrap site
 ------------------------------
-Set up a Drupal site directory and the correct environment variables to allow Drupal to find the configuration file. If no site is specified with the --uri options, Drush will assume the site is 'default', which mimics Drupal's behaviour.  Note that it is necessary to specify a full URI, e.g. --uri=http://example.com, in order for certain Drush commands and Drupal modules to behave correctly. See the [example Config file](https://github.com/drush-ops/drush/blob/10.x/examples/example.drush.yml) for more information. Any code that needs to modify or interact with a specific Drupal site's settings.php file should bootstrap to this phase.
+Set up a Drupal site directory and the correct environment variables to allow Drupal to find the configuration file. If no site is specified with the --uri options, Drush will assume the site is 'default', which mimics Drupal's behaviour.  Note that it is necessary to specify a full URI, e.g. --uri=http://example.com, in order for certain Drush commands and Drupal modules to behave correctly. See the [Drush configuration](using-drush-configuration.md) for more information. Any code that needs to modify or interact with a specific Drupal site's settings.php file should bootstrap to this phase.
 
 @bootstrap configuration
 ---------------------------------------

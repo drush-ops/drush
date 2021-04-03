@@ -1,4 +1,7 @@
 #
+# A minimalist Drush config file.
+# See https://www.drush.org/latest/site-aliases/ for lots more documentation.
+#
 # Example of valid statements for an alias file.
 
 # Basic Alias File Usage
