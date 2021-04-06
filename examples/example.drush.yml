@@ -9,6 +9,12 @@ drush:
     config:
       # Load any personal config files. Is silently skipped if not found. Filename must be drush.yml
       - ${env.HOME}/.drush/config/drush.yml
+    include:
+      - '${env.HOME}/.drush/commands'
+      - /usr/share/drush/commands
+    alias-path:
+      - '${env.HOME}/.drush/sites'
+      - /etc/drush/sites
 
 # Global options.
 options:
