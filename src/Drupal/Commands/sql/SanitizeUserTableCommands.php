@@ -77,7 +77,7 @@ class SanitizeUserTableCommands extends DrushCommands implements SanitizePluginI
         if (in_array('ignore-admins', $options)) {
             $admins = $this->database->query("SELECT entity_id FROM user__roles WHERE roles_target_id='administrator'")->fetchCol();
             $query->condition('uid', $admins, 'NOT IN');
-            $messages[] = dt('Admin user data preserved.');
+            $messages[] = dt('Admin emails and passwords preserved.');
         }
 
         if ($messages) {
@@ -119,7 +119,7 @@ class SanitizeUserTableCommands extends DrushCommands implements SanitizePluginI
             $messages[] = dt('Sanitize user emails.');
         }
         if (in_array('ignore-admins', $options)) {
-            $messages[] = dt('Preserve admin user data.');
+            $messages[] = dt('Preserve admin emails and passwords.');
         }
     }
 
