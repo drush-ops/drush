@@ -16,6 +16,7 @@
         <meta name="MobileOptimized" content="width">
         <meta name="HandheldFriendly" content="true">
         <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+
     </head>
 
     <body id="classes" data-name="" data-root-path="">
@@ -59,8 +60,7 @@
         </div>
     </nav>
 
-                        <div id="page-content">
-                    <div class="page-header">
+                        <div id="page-content">    <div class="page-header">
         <h1>Classes</h1>
     </div>
 
@@ -69,7 +69,7 @@
                     <div class="row">
                 <div class="col-md-6">
                     <a href="Drush/Application.html"><abbr title="Drush\Application">Application</abbr></a>    </div>
-                <div class="col-md-6">Our application object</div>
+                <div class="col-md-6"><p>Our application object</p></div>
             </div>
                     <div class="row">
                 <div class="col-md-6">
@@ -96,16 +96,16 @@
                 <div class="col-md-6">
                                             <em><a href="Drush/Boot/Boot.html"><abbr title="Drush\Boot\Boot">Boot</abbr></a></em>
                         </div>
-                <div class="col-md-6">Defines the interface for a Boot classes.  Any CMS that wishes
+                <div class="col-md-6"><p>Defines the interface for a Boot classes.  Any CMS that wishes
 to work with Drush should extend BaseBoot.  If the CMS has a
-Drupal-Compatibility layer, then it should extend DrupalBoot.</div>
+Drupal-Compatibility layer, then it should extend DrupalBoot.</p></div>
             </div>
                     <div class="row">
                 <div class="col-md-6">
                     <a href="Drush/Boot/BootstrapHook.html"><abbr title="Drush\Boot\BootstrapHook">BootstrapHook</abbr></a>    </div>
-                <div class="col-md-6">The BootstrapHook is installed as an init hook that runs before
+                <div class="col-md-6"><p>The BootstrapHook is installed as an init hook that runs before
 all commands. If there is a <code>@bootstrap</code> annotation, then we will
-bootstrap Drupal to the requested phase.</div>
+bootstrap Drupal to the requested phase.</p></div>
             </div>
                     <div class="row">
                 <div class="col-md-6">
@@ -125,34 +125,34 @@ bootstrap Drupal to the requested phase.</div>
                     <div class="row">
                 <div class="col-md-6">
                     <a href="Drush/Boot/EmptyBoot.html"><abbr title="Drush\Boot\EmptyBoot">EmptyBoot</abbr></a>    </div>
-                <div class="col-md-6">This is a do-nothing 'Boot' class that is used when there
-is no site at --root, or when no root is specified.</div>
+                <div class="col-md-6"><p>This is a do-nothing 'Boot' class that is used when there
+is no site at --root, or when no root is specified.</p></div>
             </div>
                     <div class="row">
                 <div class="col-md-6">
                     <a href="Drush/Boot/Kernels.html"><abbr title="Drush\Boot\Kernels">Kernels</abbr></a>    </div>
-                <div class="col-md-6">Defines the available kernels that can be bootstrapped.</div>
+                <div class="col-md-6"><p>Defines the available kernels that can be bootstrapped.</p></div>
             </div>
                     <div class="row">
                 <div class="col-md-6">
                                             <em><a href="Drush/Cache/CacheInterface.html"><abbr title="Drush\Cache\CacheInterface">CacheInterface</abbr></a></em>
-                        <small><sup><span class="label label-danger">deprecated</span></sup></small></div>
-                <div class="col-md-6">Interface for cache implementations.</div>
+                        <small><span class="label label-danger">deprecated</span></small></div>
+                <div class="col-md-6"><p>Interface for cache implementations.</p></div>
             </div>
                     <div class="row">
                 <div class="col-md-6">
                     <a href="Drush/Cache/CommandCache.html"><abbr title="Drush\Cache\CommandCache">CommandCache</abbr></a>    </div>
-                <div class="col-md-6">Command cache implementation.</div>
+                <div class="col-md-6"><p>Command cache implementation.</p></div>
             </div>
                     <div class="row">
                 <div class="col-md-6">
-                    <a href="Drush/Cache/FileCache.html"><abbr title="Drush\Cache\FileCache">FileCache</abbr></a>    <small><sup><span class="label label-danger">deprecated</span></sup></small></div>
-                <div class="col-md-6">Default cache implementation.</div>
+                    <a href="Drush/Cache/FileCache.html"><abbr title="Drush\Cache\FileCache">FileCache</abbr></a>    <small><span class="label label-danger">deprecated</span></small></div>
+                <div class="col-md-6"><p>Default cache implementation.</p></div>
             </div>
                     <div class="row">
                 <div class="col-md-6">
-                    <a href="Drush/Cache/JSONCache.html"><abbr title="Drush\Cache\JSONCache">JSONCache</abbr></a>    <small><sup><span class="label label-danger">deprecated</span></sup></small></div>
-                <div class="col-md-6">JSON cache storage backend.</div>
+                    <a href="Drush/Cache/JSONCache.html"><abbr title="Drush\Cache\JSONCache">JSONCache</abbr></a>    <small><span class="label label-danger">deprecated</span></small></div>
+                <div class="col-md-6"><p>JSON cache storage backend.</p></div>
             </div>
                     <div class="row">
                 <div class="col-md-6">
@@ -167,13 +167,13 @@ is no site at --root, or when no root is specified.</div>
                     <div class="row">
                 <div class="col-md-6">
                     <a href="Drush/Command/RemoteCommandProxy.html"><abbr title="Drush\Command\RemoteCommandProxy">RemoteCommandProxy</abbr></a>    </div>
-                <div class="col-md-6">Create a placeholder proxy command to represent an unknown command.</div>
+                <div class="col-md-6"><p>Create a placeholder proxy command to represent an unknown command.</p></div>
             </div>
                     <div class="row">
                 <div class="col-md-6">
                     <a href="Drush/Command/ServiceCommandlist.html"><abbr title="Drush\Command\ServiceCommandlist">ServiceCommandlist</abbr></a>    </div>
-                <div class="col-md-6">Keep a list of all of the service commands that we can find when the
-Drupal Kernel is booted.</div>
+                <div class="col-md-6"><p>Keep a list of all of the service commands that we can find when the
+Drupal Kernel is booted.</p></div>
             </div>
                     <div class="row">
                 <div class="col-md-6">
@@ -228,7 +228,7 @@ Drupal Kernel is booted.</div>
                     <div class="row">
                 <div class="col-md-6">
                     <a href="Drush/Commands/core/DocsCommands.html"><abbr title="Drush\Commands\core\DocsCommands">DocsCommands</abbr></a>    </div>
-                <div class="col-md-6">Topic commands.</div>
+                <div class="col-md-6"><p>Topic commands.</p></div>
             </div>
                     <div class="row">
                 <div class="col-md-6">
@@ -313,37 +313,37 @@ Drupal Kernel is booted.</div>
                     <div class="row">
                 <div class="col-md-6">
                     <a href="Drush/Commands/core/XhprofCommands.html"><abbr title="Drush\Commands\core\XhprofCommands">XhprofCommands</abbr></a>    </div>
-                <div class="col-md-6">Class XhprofCommands</div>
+                <div class="col-md-6"><p>Class XhprofCommands</p></div>
             </div>
                     <div class="row">
                 <div class="col-md-6">
                     <a href="Drush/Commands/generate/GenerateCommands.html"><abbr title="Drush\Commands\generate\GenerateCommands">GenerateCommands</abbr></a>    </div>
-                <div class="col-md-6">Drush generate command.</div>
+                <div class="col-md-6"><p>Drush generate command.</p></div>
             </div>
                     <div class="row">
                 <div class="col-md-6">
                     <a href="Drush/Commands/generate/Generators/Drush/DrushAliasFile.html"><abbr title="Drush\Commands\generate\Generators\Drush\DrushAliasFile">DrushAliasFile</abbr></a>    </div>
-                <div class="col-md-6">Implements drush-alias-file command.</div>
+                <div class="col-md-6"><p>Implements drush-alias-file command.</p></div>
             </div>
                     <div class="row">
                 <div class="col-md-6">
                     <a href="Drush/Commands/generate/Generators/Drush/DrushCommandFile.html"><abbr title="Drush\Commands\generate\Generators\Drush\DrushCommandFile">DrushCommandFile</abbr></a>    </div>
-                <div class="col-md-6">Implements drush-command-file command.</div>
+                <div class="col-md-6"><p>Implements drush-command-file command.</p></div>
             </div>
                     <div class="row">
                 <div class="col-md-6">
                     <a href="Drush/Commands/generate/Generators/Migrate/MigrationGenerator.html"><abbr title="Drush\Commands\generate\Generators\Migrate\MigrationGenerator">MigrationGenerator</abbr></a>    </div>
-                <div class="col-md-6">Implements <code>generate migration</code> command.</div>
+                <div class="col-md-6"><p>Implements <code>generate migration</code> command.</p></div>
             </div>
                     <div class="row">
                 <div class="col-md-6">
                     <a href="Drush/Commands/generate/Helper/InputHandler.html"><abbr title="Drush\Commands\generate\Helper\InputHandler">InputHandler</abbr></a>    </div>
-                <div class="col-md-6">Generators input handler.</div>
+                <div class="col-md-6"><p>Generators input handler.</p></div>
             </div>
                     <div class="row">
                 <div class="col-md-6">
                     <a href="Drush/Commands/generate/Helper/OutputHandler.html"><abbr title="Drush\Commands\generate\Helper\OutputHandler">OutputHandler</abbr></a>    </div>
-                <div class="col-md-6">Output printer form generators.</div>
+                <div class="col-md-6"><p>Output printer form generators.</p></div>
             </div>
                     <div class="row">
                 <div class="col-md-6">
@@ -353,7 +353,7 @@ Drupal Kernel is booted.</div>
                     <div class="row">
                 <div class="col-md-6">
                     <a href="Drush/Commands/help/HelpCLIFormatter.html"><abbr title="Drush\Commands\help\HelpCLIFormatter">HelpCLIFormatter</abbr></a>    </div>
-                <div class="col-md-6">Format an array into CLI help string.</div>
+                <div class="col-md-6"><p>Format an array into CLI help string.</p></div>
             </div>
                     <div class="row">
                 <div class="col-md-6">
@@ -368,7 +368,7 @@ Drupal Kernel is booted.</div>
                     <div class="row">
                 <div class="col-md-6">
                     <a href="Drush/Commands/pm/SecurityUpdateCommands.html"><abbr title="Drush\Commands\pm\SecurityUpdateCommands">SecurityUpdateCommands</abbr></a>    </div>
-                <div class="col-md-6">Check Drupal Composer packages for security updates.</div>
+                <div class="col-md-6"><p>Check Drupal Composer packages for security updates.</p></div>
             </div>
                     <div class="row">
                 <div class="col-md-6">
@@ -388,24 +388,24 @@ Drupal Kernel is booted.</div>
                     <div class="row">
                 <div class="col-md-6">
                     <a href="Drush/Config/ConfigLocator.html"><abbr title="Drush\Config\ConfigLocator">ConfigLocator</abbr></a>    </div>
-                <div class="col-md-6">Locate Drush configuration files and load them into the configuration
-instance.</div>
+                <div class="col-md-6"><p>Locate Drush configuration files and load them into the configuration
+instance.</p></div>
             </div>
                     <div class="row">
                 <div class="col-md-6">
                     <a href="Drush/Config/DrushConfig.html"><abbr title="Drush\Config\DrushConfig">DrushConfig</abbr></a>    </div>
-                <div class="col-md-6">Accessors for common Drush config keys.</div>
+                <div class="col-md-6"><p>Accessors for common Drush config keys.</p></div>
             </div>
                     <div class="row">
                 <div class="col-md-6">
                     <a href="Drush/Config/Environment.html"><abbr title="Drush\Config\Environment">Environment</abbr></a>    </div>
-                <div class="col-md-6">Store information about the environment</div>
+                <div class="col-md-6"><p>Store information about the environment</p></div>
             </div>
                     <div class="row">
                 <div class="col-md-6">
                     <a href="Drush/Config/Loader/YamlConfigLoader.html"><abbr title="Drush\Config\Loader\YamlConfigLoader">YamlConfigLoader</abbr></a>    </div>
-                <div class="col-md-6">Load configuration files, and fill in any property values that
-need to be expanded.</div>
+                <div class="col-md-6"><p>Load configuration files, and fill in any property values that
+need to be expanded.</p></div>
             </div>
                     <div class="row">
                 <div class="col-md-6">
@@ -475,7 +475,7 @@ need to be expanded.</div>
                     <div class="row">
                 <div class="col-md-6">
                     <a href="Drush/Drupal/Commands/core/MigrateRunnerCommands.html"><abbr title="Drush\Drupal\Commands\core\MigrateRunnerCommands">MigrateRunnerCommands</abbr></a>    </div>
-                <div class="col-md-6">Migrate runner commands.</div>
+                <div class="col-md-6"><p>Migrate runner commands.</p></div>
             </div>
                     <div class="row">
                 <div class="col-md-6">
@@ -530,38 +530,38 @@ need to be expanded.</div>
                     <div class="row">
                 <div class="col-md-6">
                     <a href="Drush/Drupal/Commands/sql/SanitizeCommentsCommands.html"><abbr title="Drush\Drupal\Commands\sql\SanitizeCommentsCommands">SanitizeCommentsCommands</abbr></a>    </div>
-                <div class="col-md-6">This class is a good example of a sql-sanitize plugin.</div>
+                <div class="col-md-6"><p>This class is a good example of a sql-sanitize plugin.</p></div>
             </div>
                     <div class="row">
                 <div class="col-md-6">
                                             <em><a href="Drush/Drupal/Commands/sql/SanitizePluginInterface.html"><abbr title="Drush\Drupal\Commands\sql\SanitizePluginInterface">SanitizePluginInterface</abbr></a></em>
                         </div>
-                <div class="col-md-6">Implement this interface when building a Drush sql-sanitize plugin.</div>
+                <div class="col-md-6"><p>Implement this interface when building a Drush sql-sanitize plugin.</p></div>
             </div>
                     <div class="row">
                 <div class="col-md-6">
                     <a href="Drush/Drupal/Commands/sql/SanitizeSessionsCommands.html"><abbr title="Drush\Drupal\Commands\sql\SanitizeSessionsCommands">SanitizeSessionsCommands</abbr></a>    </div>
-                <div class="col-md-6">This class is a good example of how to build a sql-sanitize plugin.</div>
+                <div class="col-md-6"><p>This class is a good example of how to build a sql-sanitize plugin.</p></div>
             </div>
                     <div class="row">
                 <div class="col-md-6">
                     <a href="Drush/Drupal/Commands/sql/SanitizeUserFieldsCommands.html"><abbr title="Drush\Drupal\Commands\sql\SanitizeUserFieldsCommands">SanitizeUserFieldsCommands</abbr></a>    </div>
-                <div class="col-md-6">This class is a good example of how to build a sql-sanitize plugin.</div>
+                <div class="col-md-6"><p>This class is a good example of how to build a sql-sanitize plugin.</p></div>
             </div>
                     <div class="row">
                 <div class="col-md-6">
                     <a href="Drush/Drupal/Commands/sql/SanitizeUserTableCommands.html"><abbr title="Drush\Drupal\Commands\sql\SanitizeUserTableCommands">SanitizeUserTableCommands</abbr></a>    </div>
-                <div class="col-md-6">A sql-sanitize plugin.</div>
+                <div class="col-md-6"><p>A sql-sanitize plugin.</p></div>
             </div>
                     <div class="row">
                 <div class="col-md-6">
                     <a href="Drush/Drupal/DrupalKernel.html"><abbr title="Drush\Drupal\DrupalKernel">DrupalKernel</abbr></a>    </div>
-                <div class="col-md-6">Overridden version of DrupalKernel adapted to the needs of Drush.</div>
+                <div class="col-md-6"><p>Overridden version of DrupalKernel adapted to the needs of Drush.</p></div>
             </div>
                     <div class="row">
                 <div class="col-md-6">
                     <a href="Drush/Drupal/DrupalKernelTrait.html"><abbr title="Drush\Drupal\DrupalKernelTrait">DrupalKernelTrait</abbr></a>    </div>
-                <div class="col-md-6">Common functionality for overridden kernels.</div>
+                <div class="col-md-6"><p>Common functionality for overridden kernels.</p></div>
             </div>
                     <div class="row">
                 <div class="col-md-6">
@@ -586,21 +586,21 @@ need to be expanded.</div>
                     <div class="row">
                 <div class="col-md-6">
                     <a href="Drush/Drupal/FindCommandsCompilerPass.html"><abbr title="Drush\Drupal\FindCommandsCompilerPass">FindCommandsCompilerPass</abbr></a>    </div>
-                <div class="col-md-6">This compiler pass is added to Drupal's ContainerBuilder by our own
+                <div class="col-md-6"><p>This compiler pass is added to Drupal's ContainerBuilder by our own
 subclass of DrupalKernel.  Our DrupalKernel subclass knows which
 compiler passes to add because they are registered to it via its
 'alter()' method. This happens in DrupalBoot8 immediately after the
-DrupalKernel object is created.</div>
+DrupalKernel object is created.</p></div>
             </div>
                     <div class="row">
                 <div class="col-md-6">
                     <a href="Drush/Drupal/InstallerKernel.html"><abbr title="Drush\Drupal\InstallerKernel">InstallerKernel</abbr></a>    </div>
-                <div class="col-md-6">Overridden version of InstallerKernel adapted to the needs of Drush.</div>
+                <div class="col-md-6"><p>Overridden version of InstallerKernel adapted to the needs of Drush.</p></div>
             </div>
                     <div class="row">
                 <div class="col-md-6">
                     <a href="Drush/Drupal/Migrate/MigrateEvents.html"><abbr title="Drush\Drupal\Migrate\MigrateEvents">MigrateEvents</abbr></a>    </div>
-                <div class="col-md-6">Defines the row preparation event for the migration system.</div>
+                <div class="col-md-6"><p>Defines the row preparation event for the migration system.</p></div>
             </div>
                     <div class="row">
                 <div class="col-md-6">
@@ -610,47 +610,47 @@ DrupalKernel object is created.</div>
                     <div class="row">
                 <div class="col-md-6">
                     <a href="Drush/Drupal/Migrate/MigrateIdMapFilter.html"><abbr title="Drush\Drupal\Migrate\MigrateIdMapFilter">MigrateIdMapFilter</abbr></a>    </div>
-                <div class="col-md-6">Filters the ID map by a source and/or a destination ID list.</div>
+                <div class="col-md-6"><p>Filters the ID map by a source and/or a destination ID list.</p></div>
             </div>
                     <div class="row">
                 <div class="col-md-6">
                     <a href="Drush/Drupal/Migrate/MigrateMessage.html"><abbr title="Drush\Drupal\Migrate\MigrateMessage">MigrateMessage</abbr></a>    </div>
-                <div class="col-md-6">Print message in drush from migrate message.</div>
+                <div class="col-md-6"><p>Print message in drush from migrate message.</p></div>
             </div>
                     <div class="row">
                 <div class="col-md-6">
                     <a href="Drush/Drupal/Migrate/MigrateMissingSourceRowsEvent.html"><abbr title="Drush\Drupal\Migrate\MigrateMissingSourceRowsEvent">MigrateMissingSourceRowsEvent</abbr></a>    </div>
-                <div class="col-md-6">Missing source rows event.</div>
+                <div class="col-md-6"><p>Missing source rows event.</p></div>
             </div>
                     <div class="row">
                 <div class="col-md-6">
                     <a href="Drush/Drupal/Migrate/MigratePrepareRowEvent.html"><abbr title="Drush\Drupal\Migrate\MigratePrepareRowEvent">MigratePrepareRowEvent</abbr></a>    </div>
-                <div class="col-md-6">Wraps a prepare-row event for event listeners.</div>
+                <div class="col-md-6"><p>Wraps a prepare-row event for event listeners.</p></div>
             </div>
                     <div class="row">
                 <div class="col-md-6">
                     <a href="Drush/Drupal/Migrate/MigrateUtils.html"><abbr title="Drush\Drupal\Migrate\MigrateUtils">MigrateUtils</abbr></a>    </div>
-                <div class="col-md-6">Utility methods.</div>
+                <div class="col-md-6"><p>Utility methods.</p></div>
             </div>
                     <div class="row">
                 <div class="col-md-6">
                     <a href="Drush/Drupal/UpdateKernel.html"><abbr title="Drush\Drupal\UpdateKernel">UpdateKernel</abbr></a>    </div>
-                <div class="col-md-6">Overridden version of UpdateKernel adapted to the needs of Drush.</div>
+                <div class="col-md-6"><p>Overridden version of UpdateKernel adapted to the needs of Drush.</p></div>
             </div>
                     <div class="row">
                 <div class="col-md-6">
                     <a href="Drush/Drush.html"><abbr title="Drush\Drush">Drush</abbr></a>    </div>
-                <div class="col-md-6">Static Service Container wrapper.</div>
+                <div class="col-md-6"><p>Static Service Container wrapper.</p></div>
             </div>
                     <div class="row">
                 <div class="col-md-6">
                     <a href="Drush/Exceptions/CommandFailedException.html"><abbr title="Drush\Exceptions\CommandFailedException">CommandFailedException</abbr></a>    </div>
-                <div class="col-md-6">Throw an exception indicating that the command was unable to continue.</div>
+                <div class="col-md-6"><p>Throw an exception indicating that the command was unable to continue.</p></div>
             </div>
                     <div class="row">
                 <div class="col-md-6">
                     <a href="Drush/Exceptions/UserAbortException.html"><abbr title="Drush\Exceptions\UserAbortException">UserAbortException</abbr></a>    </div>
-                <div class="col-md-6">Throw an exception indicating that the user cancelled the operation.</div>
+                <div class="col-md-6"><p>Throw an exception indicating that the user cancelled the operation.</p></div>
             </div>
                     <div class="row">
                 <div class="col-md-6">
@@ -660,39 +660,39 @@ DrupalKernel object is created.</div>
                     <div class="row">
                 <div class="col-md-6">
                     <a href="Drush/Formatters/DrushFormatterManager.html"><abbr title="Drush\Formatters\DrushFormatterManager">DrushFormatterManager</abbr></a>    </div>
-                <div class="col-md-6">Our own output formatter</div>
+                <div class="col-md-6"><p>Our own output formatter</p></div>
             </div>
                     <div class="row">
                 <div class="col-md-6">
                     <a href="Drush/Internal/Config/Yaml/Escaper.html"><abbr title="Drush\Internal\Config\Yaml\Escaper">Escaper</abbr></a>    </div>
-                <div class="col-md-6">Escaper encapsulates escaping rules for single and double-quoted
-YAML strings.</div>
+                <div class="col-md-6"><p>Escaper encapsulates escaping rules for single and double-quoted
+YAML strings.</p></div>
             </div>
                     <div class="row">
                 <div class="col-md-6">
                                             <em><a href="Drush/Internal/Config/Yaml/Exception/ExceptionInterface.html"><abbr title="Drush\Internal\Config\Yaml\Exception\ExceptionInterface">ExceptionInterface</abbr></a></em>
                         </div>
-                <div class="col-md-6">Exception interface for all exceptions thrown by the component.</div>
+                <div class="col-md-6"><p>Exception interface for all exceptions thrown by the component.</p></div>
             </div>
                     <div class="row">
                 <div class="col-md-6">
                     <a href="Drush/Internal/Config/Yaml/Exception/ParseException.html"><abbr title="Drush\Internal\Config\Yaml\Exception\ParseException">ParseException</abbr></a>    </div>
-                <div class="col-md-6">Exception class thrown when an error occurs during parsing.</div>
+                <div class="col-md-6"><p>Exception class thrown when an error occurs during parsing.</p></div>
             </div>
                     <div class="row">
                 <div class="col-md-6">
                     <a href="Drush/Internal/Config/Yaml/Exception/RuntimeException.html"><abbr title="Drush\Internal\Config\Yaml\Exception\RuntimeException">RuntimeException</abbr></a>    </div>
-                <div class="col-md-6">Exception class thrown when an error occurs during parsing.</div>
+                <div class="col-md-6"><p>Exception class thrown when an error occurs during parsing.</p></div>
             </div>
                     <div class="row">
                 <div class="col-md-6">
                     <a href="Drush/Internal/Config/Yaml/Inline.html"><abbr title="Drush\Internal\Config\Yaml\Inline">Inline</abbr></a>    </div>
-                <div class="col-md-6">Inline implements a YAML parser/dumper for the YAML inline syntax.</div>
+                <div class="col-md-6"><p>Inline implements a YAML parser/dumper for the YAML inline syntax.</p></div>
             </div>
                     <div class="row">
                 <div class="col-md-6">
                     <a href="Drush/Internal/Config/Yaml/Parser.html"><abbr title="Drush\Internal\Config\Yaml\Parser">Parser</abbr></a>    </div>
-                <div class="col-md-6">Parser parses YAML strings to convert them to PHP arrays.</div>
+                <div class="col-md-6"><p>Parser parses YAML strings to convert them to PHP arrays.</p></div>
             </div>
                     <div class="row">
                 <div class="col-md-6">
@@ -702,23 +702,23 @@ YAML strings.</div>
                     <div class="row">
                 <div class="col-md-6">
                     <a href="Drush/Internal/Config/Yaml/Unescaper.html"><abbr title="Drush\Internal\Config\Yaml\Unescaper">Unescaper</abbr></a>    </div>
-                <div class="col-md-6">Unescaper encapsulates unescaping rules for single and double-quoted
-YAML strings.</div>
+                <div class="col-md-6"><p>Unescaper encapsulates unescaping rules for single and double-quoted
+YAML strings.</p></div>
             </div>
                     <div class="row">
                 <div class="col-md-6">
                     <a href="Drush/Internal/Config/Yaml/Yaml.html"><abbr title="Drush\Internal\Config\Yaml\Yaml">Yaml</abbr></a>    </div>
-                <div class="col-md-6">Yaml offers convenience methods to load and dump YAML.</div>
+                <div class="col-md-6"><p>Yaml offers convenience methods to load and dump YAML.</p></div>
             </div>
                     <div class="row">
                 <div class="col-md-6">
                     <a href="Drush/Log/DrushLog.html"><abbr title="Drush\Log\DrushLog">DrushLog</abbr></a>    </div>
-                <div class="col-md-6">Redirects Drupal logging messages to Drush log.</div>
+                <div class="col-md-6"><p>Redirects Drupal logging messages to Drush log.</p></div>
             </div>
                     <div class="row">
                 <div class="col-md-6">
                     <a href="Drush/Log/LogLevel.html"><abbr title="Drush\Log\LogLevel">LogLevel</abbr></a>    </div>
-                <div class="col-md-6">Additional log levels that Drush uses for historical reasons.</div>
+                <div class="col-md-6"><p>Additional log levels that Drush uses for historical reasons.</p></div>
             </div>
                     <div class="row">
                 <div class="col-md-6">
@@ -728,33 +728,33 @@ YAML strings.</div>
                     <div class="row">
                 <div class="col-md-6">
                     <a href="Drush/Preflight/ArgsPreprocessor.html"><abbr title="Drush\Preflight\ArgsPreprocessor">ArgsPreprocessor</abbr></a>    </div>
-                <div class="col-md-6">Preprocess commandline arguments.</div>
+                <div class="col-md-6"><p>Preprocess commandline arguments.</p></div>
             </div>
                     <div class="row">
                 <div class="col-md-6">
                     <a href="Drush/Preflight/ArgsRemapper.html"><abbr title="Drush\Preflight\ArgsRemapper">ArgsRemapper</abbr></a>    </div>
-                <div class="col-md-6">Map commandline arguments from one value to another during preflight.</div>
+                <div class="col-md-6"><p>Map commandline arguments from one value to another during preflight.</p></div>
             </div>
                     <div class="row">
                 <div class="col-md-6">
                     <a href="Drush/Preflight/LegacyPreflight.html"><abbr title="Drush\Preflight\LegacyPreflight">LegacyPreflight</abbr></a>    </div>
-                <div class="col-md-6">Prepare to bootstrap Drupal</div>
+                <div class="col-md-6"><p>Prepare to bootstrap Drupal</p></div>
             </div>
                     <div class="row">
                 <div class="col-md-6">
                     <a href="Drush/Preflight/Preflight.html"><abbr title="Drush\Preflight\Preflight">Preflight</abbr></a>    </div>
-                <div class="col-md-6">The Drush preflight determines what needs to be done for this request.</div>
+                <div class="col-md-6"><p>The Drush preflight determines what needs to be done for this request.</p></div>
             </div>
                     <div class="row">
                 <div class="col-md-6">
                     <a href="Drush/Preflight/PreflightArgs.html"><abbr title="Drush\Preflight\PreflightArgs">PreflightArgs</abbr></a>    </div>
-                <div class="col-md-6">Storage for arguments preprocessed during preflight.</div>
+                <div class="col-md-6"><p>Storage for arguments preprocessed during preflight.</p></div>
             </div>
                     <div class="row">
                 <div class="col-md-6">
                                             <em><a href="Drush/Preflight/PreflightArgsInterface.html"><abbr title="Drush\Preflight\PreflightArgsInterface">PreflightArgsInterface</abbr></a></em>
                         </div>
-                <div class="col-md-6">Storage for arguments preprocessed during preflight.</div>
+                <div class="col-md-6"><p>Storage for arguments preprocessed during preflight.</p></div>
             </div>
                     <div class="row">
                 <div class="col-md-6">
@@ -769,31 +769,31 @@ YAML strings.</div>
                     <div class="row">
                 <div class="col-md-6">
                     <a href="Drush/Preflight/PreflightVerify.html"><abbr title="Drush\Preflight\PreflightVerify">PreflightVerify</abbr></a>    </div>
-                <div class="col-md-6">Helper methods to verify preflight state.</div>
+                <div class="col-md-6"><p>Helper methods to verify preflight state.</p></div>
             </div>
                     <div class="row">
                 <div class="col-md-6">
                     <a href="Drush/Preflight/RedispatchToSiteLocal.html"><abbr title="Drush\Preflight\RedispatchToSiteLocal">RedispatchToSiteLocal</abbr></a>    </div>
-                <div class="col-md-6">RedispatchToSiteLocal forces an <code>exec</code> to the site-local Drush if it
+                <div class="col-md-6"><p>RedispatchToSiteLocal forces an <code>exec</code> to the site-local Drush if it
 exist.  We must do this super-early, before loading Drupal's autoload
 file.  If we do not, we will crash unless the site-local Drush and the
 global Drush are using the exact same versions of all dependencies, which
-will rarely line up sufficiently to prevent problems.</div>
+will rarely line up sufficiently to prevent problems.</p></div>
             </div>
                     <div class="row">
                 <div class="col-md-6">
                     <a href="Drush/Psysh/Caster.html"><abbr title="Drush\Psysh\Caster">Caster</abbr></a>    </div>
-                <div class="col-md-6">Caster class for VarDumper casters for the shell.</div>
+                <div class="col-md-6"><p>Caster class for VarDumper casters for the shell.</p></div>
             </div>
                     <div class="row">
                 <div class="col-md-6">
                     <a href="Drush/Psysh/DrushCommand.html"><abbr title="Drush\Psysh\DrushCommand">DrushCommand</abbr></a>    </div>
-                <div class="col-md-6">Main Drush command.</div>
+                <div class="col-md-6"><p>Main Drush command.</p></div>
             </div>
                     <div class="row">
                 <div class="col-md-6">
                     <a href="Drush/Psysh/DrushHelpCommand.html"><abbr title="Drush\Psysh\DrushHelpCommand">DrushHelpCommand</abbr></a>    </div>
-                <div class="col-md-6">Help command.</div>
+                <div class="col-md-6"><p>Help command.</p></div>
             </div>
                     <div class="row">
                 <div class="col-md-6">
@@ -803,88 +803,88 @@ will rarely line up sufficiently to prevent problems.</div>
                     <div class="row">
                 <div class="col-md-6">
                     <a href="Drush/Runtime/DependencyInjection.html"><abbr title="Drush\Runtime\DependencyInjection">DependencyInjection</abbr></a>    </div>
-                <div class="col-md-6">Prepare our Dependency Injection Container</div>
+                <div class="col-md-6"><p>Prepare our Dependency Injection Container</p></div>
             </div>
                     <div class="row">
                 <div class="col-md-6">
                     <a href="Drush/Runtime/ErrorHandler.html"><abbr title="Drush\Runtime\ErrorHandler">ErrorHandler</abbr></a>    </div>
-                <div class="col-md-6">Log PHP errors to the Drush log. This is in effect until Drupal's error
-handler takes over.</div>
+                <div class="col-md-6"><p>Log PHP errors to the Drush log. This is in effect until Drupal's error
+handler takes over.</p></div>
             </div>
                     <div class="row">
                 <div class="col-md-6">
                                             <em><a href="Drush/Runtime/HandlerInterface.html"><abbr title="Drush\Runtime\HandlerInterface">HandlerInterface</abbr></a></em>
                         </div>
-                <div class="col-md-6">HandlerInterface represents a PHP system handler (e.g. the error reporting
-handler, the shutdown handler) that may be globally installed.</div>
+                <div class="col-md-6"><p>HandlerInterface represents a PHP system handler (e.g. the error reporting
+handler, the shutdown handler) that may be globally installed.</p></div>
             </div>
                     <div class="row">
                 <div class="col-md-6">
                     <a href="Drush/Runtime/RedispatchHook.html"><abbr title="Drush\Runtime\RedispatchHook">RedispatchHook</abbr></a>    </div>
-                <div class="col-md-6">The RedispatchHook is installed as an init hook that runs before
+                <div class="col-md-6"><p>The RedispatchHook is installed as an init hook that runs before
 all commands. If the commandline contains an alias or a site specification
 that points at a remote machine, then we will stop execution of the
-current command and instead run the command remotely.</div>
+current command and instead run the command remotely.</p></div>
             </div>
                     <div class="row">
                 <div class="col-md-6">
                     <a href="Drush/Runtime/Runtime.html"><abbr title="Drush\Runtime\Runtime">Runtime</abbr></a>    </div>
-                <div class="col-md-6">Control the Drush runtime environment</div>
+                <div class="col-md-6"><p>Control the Drush runtime environment</p></div>
             </div>
                     <div class="row">
                 <div class="col-md-6">
                     <a href="Drush/Runtime/ShutdownHandler.html"><abbr title="Drush\Runtime\ShutdownHandler">ShutdownHandler</abbr></a>    </div>
-                <div class="col-md-6">Drush's shutdown handler</div>
+                <div class="col-md-6"><p>Drush's shutdown handler</p></div>
             </div>
                     <div class="row">
                 <div class="col-md-6">
                     <a href="Drush/Runtime/TildeExpansionHook.html"><abbr title="Drush\Runtime\TildeExpansionHook">TildeExpansionHook</abbr></a>    </div>
-                <div class="col-md-6">The TildeExpansionHook is installed as a preValidate hook that runs before
+                <div class="col-md-6"><p>The TildeExpansionHook is installed as a preValidate hook that runs before
 all commands. Argument or option values containing a leading tilde will be expanded
-to an absolute path.</div>
+to an absolute path.</p></div>
             </div>
                     <div class="row">
                 <div class="col-md-6">
                     <a href="Drush/SiteAlias/HostPath.html"><abbr title="Drush\SiteAlias\HostPath">HostPath</abbr></a>    </div>
-                <div class="col-md-6">A host path is a path on some machine. The machine may be specified
-by a label, and the label may be an @alias or a site specification.</div>
+                <div class="col-md-6"><p>A host path is a path on some machine. The machine may be specified
+by a label, and the label may be an @alias or a site specification.</p></div>
             </div>
                     <div class="row">
                 <div class="col-md-6">
                     <a href="Drush/SiteAlias/LegacyAliasConverter.html"><abbr title="Drush\SiteAlias\LegacyAliasConverter">LegacyAliasConverter</abbr></a>    </div>
-                <div class="col-md-6">Find all legacy alias files and convert them to an equivalent '.yml' file.</div>
+                <div class="col-md-6"><p>Find all legacy alias files and convert them to an equivalent '.yml' file.</p></div>
             </div>
                     <div class="row">
                 <div class="col-md-6">
                     <a href="Drush/SiteAlias/ProcessManager.html"><abbr title="Drush\SiteAlias\ProcessManager">ProcessManager</abbr></a>    </div>
-                <div class="col-md-6">The Drush ProcessManager adds a few Drush-specific service methods.</div>
+                <div class="col-md-6"><p>The Drush ProcessManager adds a few Drush-specific service methods.</p></div>
             </div>
                     <div class="row">
                 <div class="col-md-6">
                     <a href="Drush/SiteAlias/SiteAliasFileLoader.html"><abbr title="Drush\SiteAlias\SiteAliasFileLoader">SiteAliasFileLoader</abbr></a>    </div>
-                <div class="col-md-6">Discover alias files:</div>
+                <div class="col-md-6"><p>Discover alias files:</p></div>
             </div>
                     <div class="row">
                 <div class="col-md-6">
                                             <em><a href="Drush/SiteAlias/SiteAliasManagerAwareInterface.html"><abbr title="Drush\SiteAlias\SiteAliasManagerAwareInterface">SiteAliasManagerAwareInterface</abbr></a></em>
                         </div>
-                <div class="col-md-6">Inflection interface for the site alias manager.</div>
+                <div class="col-md-6"><p>Inflection interface for the site alias manager.</p></div>
             </div>
                     <div class="row">
                 <div class="col-md-6">
-                    <a href="Drush/SiteAlias/SiteAliasManagerAwareTrait.html"><abbr title="Drush\SiteAlias\SiteAliasManagerAwareTrait">SiteAliasManagerAwareTrait</abbr></a>    <small><sup><span class="label label-danger">deprecated</span></sup></small></div>
-                <div class="col-md-6">Inflection trait for the site alias manager.</div>
+                    <a href="Drush/SiteAlias/SiteAliasManagerAwareTrait.html"><abbr title="Drush\SiteAlias\SiteAliasManagerAwareTrait">SiteAliasManagerAwareTrait</abbr></a>    <small><span class="label label-danger">deprecated</span></small></div>
+                <div class="col-md-6"><p>Inflection trait for the site alias manager.</p></div>
             </div>
                     <div class="row">
                 <div class="col-md-6">
                     <a href="Drush/SiteAlias/SiteAliasName.html"><abbr title="Drush\SiteAlias\SiteAliasName">SiteAliasName</abbr></a>    </div>
-                <div class="col-md-6">Parse a string that contains a site alias name, and provide convenience
-methods to access the parts.</div>
+                <div class="col-md-6"><p>Parse a string that contains a site alias name, and provide convenience
+methods to access the parts.</p></div>
             </div>
                     <div class="row">
                 <div class="col-md-6">
                     <a href="Drush/SiteAlias/SiteSpecParser.html"><abbr title="Drush\SiteAlias\SiteSpecParser">SiteSpecParser</abbr></a>    </div>
-                <div class="col-md-6">Parse a string that contains a site specification.</div>
+                <div class="col-md-6"><p>Parse a string that contains a site specification.</p></div>
             </div>
                     <div class="row">
                 <div class="col-md-6">
@@ -919,7 +919,7 @@ methods to access the parts.</div>
                     <div class="row">
                 <div class="col-md-6">
                     <a href="Drush/Sql/SqlTableSelectionTrait.html"><abbr title="Drush\Sql\SqlTableSelectionTrait">SqlTableSelectionTrait</abbr></a>    </div>
-                <div class="col-md-6">Note: when using this trait, also implement ConfigAwareInterface/ConfigAwareTrait.</div>
+                <div class="col-md-6"><p>Note: when using this trait, also implement ConfigAwareInterface/ConfigAwareTrait.</p></div>
             </div>
                     <div class="row">
                 <div class="col-md-6">
@@ -934,12 +934,12 @@ methods to access the parts.</div>
                     <div class="row">
                 <div class="col-md-6">
                     <a href="Drush/Symfony/BufferedConsoleOutput.html"><abbr title="Drush\Symfony\BufferedConsoleOutput">BufferedConsoleOutput</abbr></a>    </div>
-                <div class="col-md-6">BufferedConsoleOutput supports separation of the stdout and stderr streams.</div>
+                <div class="col-md-6"><p>BufferedConsoleOutput supports separation of the stdout and stderr streams.</p></div>
             </div>
                     <div class="row">
                 <div class="col-md-6">
                     <a href="Drush/Symfony/DrushArgvInput.html"><abbr title="Drush\Symfony\DrushArgvInput">DrushArgvInput</abbr></a>    </div>
-                <div class="col-md-6">ArgvInput represents an input coming from the CLI arguments.</div>
+                <div class="col-md-6"><p>ArgvInput represents an input coming from the CLI arguments.</p></div>
             </div>
                     <div class="row">
                 <div class="col-md-6">
@@ -949,31 +949,31 @@ methods to access the parts.</div>
                     <div class="row">
                 <div class="col-md-6">
                     <a href="Drush/Symfony/IndiscriminateInputDefinition.html"><abbr title="Drush\Symfony\IndiscriminateInputDefinition">IndiscriminateInputDefinition</abbr></a>    </div>
-                <div class="col-md-6">This is an InputDefinition that allows any option to be considered valid.</div>
+                <div class="col-md-6"><p>This is an InputDefinition that allows any option to be considered valid.</p></div>
             </div>
                     <div class="row">
                 <div class="col-md-6">
                     <a href="Drush/Symfony/LessStrictArgvInput.html"><abbr title="Drush\Symfony\LessStrictArgvInput">LessStrictArgvInput</abbr></a>    </div>
-                <div class="col-md-6">UnvalidatedArgvInput is an ArgvInput that never reports errors when
-extra options are provided.</div>
+                <div class="col-md-6"><p>UnvalidatedArgvInput is an ArgvInput that never reports errors when
+extra options are provided.</p></div>
             </div>
                     <div class="row">
                 <div class="col-md-6">
                     <a href="Drush/TestTraits/CliTestTrait.html"><abbr title="Drush\TestTraits\CliTestTrait">CliTestTrait</abbr></a>    </div>
-                <div class="col-md-6">CliTestTrait provides an <code>execute()</code> method that is useful
-for launching executable programs in functional tests.</div>
+                <div class="col-md-6"><p>CliTestTrait provides an <code>execute()</code> method that is useful
+for launching executable programs in functional tests.</p></div>
             </div>
                     <div class="row">
                 <div class="col-md-6">
                     <a href="Drush/TestTraits/DrushTestTrait.html"><abbr title="Drush\TestTraits\DrushTestTrait">DrushTestTrait</abbr></a>    </div>
-                <div class="col-md-6">DrushTestTrait provides a <code>drush()</code> method that may be
-used to write functional tests for Drush extensions.</div>
+                <div class="col-md-6"><p>DrushTestTrait provides a <code>drush()</code> method that may be
+used to write functional tests for Drush extensions.</p></div>
             </div>
                     <div class="row">
                 <div class="col-md-6">
                     <a href="Drush/TestTraits/OutputUtilsTrait.html"><abbr title="Drush\TestTraits\OutputUtilsTrait">OutputUtilsTrait</abbr></a>    </div>
-                <div class="col-md-6">OutputUtilsTrait provides some useful utility methods for test classes
-that define <code>getOutputRaw()</code> and <code>getErrorOutputRaw()</code> methods.</div>
+                <div class="col-md-6"><p>OutputUtilsTrait provides some useful utility methods for test classes
+that define <code>getOutputRaw()</code> and <code>getErrorOutputRaw()</code> methods.</p></div>
             </div>
                     <div class="row">
                 <div class="col-md-6">
@@ -986,7 +986,7 @@ that define <code>getOutputRaw()</code> and <code>getErrorOutputRaw()</code> met
                 <div class="col-md-6"></div>
             </div>
             </div>
-            </div><div id="footer">
+</div><div id="footer">
         Generated by <a href="https://github.com/code-lts/doctum">Doctum, a API Documentation generator and fork of Sami</a>.</div></div>
     </div>
     </body>

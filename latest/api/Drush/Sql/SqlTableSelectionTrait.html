@@ -16,6 +16,7 @@
         <meta name="MobileOptimized" content="width">
         <meta name="HandheldFriendly" content="true">
         <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+
     </head>
 
     <body id="class" data-name="class:Drush_Sql_SqlTableSelectionTrait" data-root-path="../../">
@@ -66,25 +67,24 @@
             </ol>
         </div>
                 <div id="page-content">
-                
     <div class="page-header">
-        <h1>
-            SqlTableSelectionTrait
-                
-        </h1>
+        <h1>SqlTableSelectionTrait    
+            </h1>
     </div>
 
+    
     <p>        trait
     <strong>SqlTableSelectionTrait</strong>        (<a href="https://github.com/drush-ops/drush/blob/10.x/src/Sql/SqlTableSelectionTrait.php">View source</a>)
 </p>
 
         
     
+        
 
             <div class="description">
-            <p>Note: when using this trait, also implement ConfigAwareInterface/ConfigAwareTrait.</p>                                </div>
-    
-    
+            <p><p>Note: when using this trait, also implement ConfigAwareInterface/ConfigAwareTrait.</p></p>                    </div>
+            
+        
     
     
             <h2>Methods</h2>
@@ -97,8 +97,8 @@
                 <div class="col-md-8 type">
                     <a href="#method_getExpandedTableSelection">getExpandedTableSelection</a>(array $options, array $all_tables)
         
-                                            <p>Given a list of all tables, expand the convert the wildcards in the
-option-provided lists into a list of actual table names.</p>                </div>
+                                            <p><p>Given a list of all tables, expand the convert the wildcards in the
+option-provided lists into a list of actual table names.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -108,9 +108,9 @@ option-provided lists into a list of actual table names.</p>                </di
                 <div class="col-md-8 type">
                     <a href="#method_expandAndFilterTables">expandAndFilterTables</a>(array $tables, array $db_tables)
         
-                                            <p>Given the table names in the input array that may contain wildcards (<code>*</code>),
+                                            <p><p>Given the table names in the input array that may contain wildcards (<code>*</code>),
 expand the table names so that the array returned only contains table names
-that exist in the database.</p>                </div>
+that exist in the database.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -118,20 +118,19 @@ that exist in the database.</p>                </div>
                     
                 </div>
                 <div class="col-md-8 type">
-                    <a href="#method_expandWildcardTables">expandWildcardTables</a>($tables, $db_tables)
+                    <a href="#method_expandWildcardTables">expandWildcardTables</a>(array $tables, array $db_tables)
         
-                                            <p class="no-description">No description</p>
-                                    </div>
+                                            <p><p>Expand wildcard tables.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    An
+                    <abbr title="Drush\Sql\An">An</abbr>
                 </div>
                 <div class="col-md-8 type">
                     <a href="#method_filterTables">filterTables</a>(array $tables, array $db_tables)
         
-                                            <p>Filters tables.</p>                </div>
+                                            <p><p>Filters tables.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -141,9 +140,9 @@ that exist in the database.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_getTableSelection">getTableSelection</a>($options)
         
-                                            <p>Construct an array that places table names in appropriate
+                                            <p><p>Construct an array that places table names in appropriate
 buckets based on whether the table is to be skipped, included
-for structure only, or have structure and data dumped.</p>                </div>
+for structure only, or have structure and data dumped.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -153,7 +152,7 @@ for structure only, or have structure and data dumped.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_getRawTableList">getRawTableList</a>($option_name, array $options)
         
-                                            <p>Consult the specified options and return the list of tables specified.</p>                </div>
+                                            <p><p>Consult the specified options and return the list of tables specified.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
             </div>
@@ -169,26 +168,27 @@ for structure only, or have structure and data dumped.</p>                </div>
     <strong>getExpandedTableSelection</strong>(array $options, array $all_tables)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Given a list of all tables, expand the convert the wildcards in the
-option-provided lists into a list of actual table names.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Given a list of all tables, expand the convert the wildcards in the
+option-provided lists into a list of actual table names.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
                 <td>array</td>
                 <td>$options</td>
-                <td>An options array as passed to an Annotated Command.</td>
+                <td><p>An options array as passed to an Annotated Command.</p></td>
             </tr>
                     <tr>
                 <td>array</td>
                 <td>$all_tables</td>
-                <td>A list of all eligible tables.</td>
+                <td><p>A list of all eligible tables.</p></td>
             </tr>
             </table>
 
@@ -198,10 +198,12 @@ option-provided lists into a list of actual table names.</p>                    
                     <table class="table table-condensed">
         <tr>
             <td>array</td>
-            <td></td>
+            <td><p>An array of tables with each table name in the appropriate
+element of the array.</p></td>
         </tr>
     </table>
 
+            
             
             
                     </div>
@@ -215,28 +217,29 @@ option-provided lists into a list of actual table names.</p>                    
     <strong>expandAndFilterTables</strong>(array $tables, array $db_tables)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Given the table names in the input array that may contain wildcards (<code>*</code>),
+        <div class="method-description">
+                            <p><p>Given the table names in the input array that may contain wildcards (<code>*</code>),
 expand the table names so that the array returned only contains table names
-that exist in the database.</p>                                                </div>
-                <div class="tags">
+that exist in the database.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
                 <td>array</td>
                 <td>$tables</td>
-                <td>An array of table names where the table names may contain the
-<code>*</code> wildcard character.</td>
+                <td><p>An array of table names where the table names may contain the
+<code>*</code> wildcard character.</p></td>
             </tr>
                     <tr>
                 <td>array</td>
                 <td>$db_tables</td>
-                <td>The list of tables present in a database.</td>
+                <td><p>The list of tables present in a database.</p></td>
             </tr>
             </table>
 
@@ -246,10 +249,11 @@ that exist in the database.</p>                                                <
                     <table class="table table-condensed">
         <tr>
             <td>array</td>
-            <td></td>
+            <td><p>An array of tables with non-existant tables removed.</p></td>
         </tr>
     </table>
 
+            
             
             
                     </div>
@@ -260,29 +264,33 @@ that exist in the database.</p>                                                <
                     <h3 id="method_expandWildcardTables">
         <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Sql/SqlTableSelectionTrait.php#L73">at line 73</a></div>
         <code>                    
-    <strong>expandWildcardTables</strong>($tables, $db_tables)
+    <strong>expandWildcardTables</strong>(array $tables, array $db_tables)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Expand wildcard tables.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
-                <td></td>
+                <td>array</td>
                 <td>$tables</td>
-                <td></td>
+                <td><p>An array of table names, some of which may contain wildcards (<code>*</code>).</p></td>
             </tr>
                     <tr>
-                <td></td>
+                <td>array</td>
                 <td>$db_tables</td>
-                <td></td>
+                <td><p>An array with all the existing table names in the current database.</p></td>
             </tr>
             </table>
 
+            
             
             
             
@@ -293,29 +301,30 @@ that exist in the database.</p>                                                <
                     <div class="method-item">
                     <h3 id="method_filterTables">
         <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Sql/SqlTableSelectionTrait.php#L100">at line 100</a></div>
-        <code>                    An
+        <code>                    <abbr title="Drush\Sql\An">An</abbr>
     <strong>filterTables</strong>(array $tables, array $db_tables)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Filters tables.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Filters tables.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
                 <td>array</td>
                 <td>$tables</td>
-                <td>An array of table names to filter.</td>
+                <td><p>An array of table names to filter.</p></td>
             </tr>
                     <tr>
                 <td>array</td>
                 <td>$db_tables</td>
-                <td>An array with all the existing table names in the current database.</td>
+                <td><p>An array with all the existing table names in the current database.</p></td>
             </tr>
             </table>
 
@@ -324,11 +333,13 @@ that exist in the database.</p>                                                <
 
                     <table class="table table-condensed">
         <tr>
-            <td>An</td>
-            <td></td>
+            <td><abbr title="Drush\Sql\An">An</abbr></td>
+            <td><p>array with only valid table names (i.e. all of which actually exist in
+the database).</p></td>
         </tr>
     </table>
 
+            
             
             
                     </div>
@@ -342,18 +353,21 @@ that exist in the database.</p>                                                <
     <strong>getTableSelection</strong>($options)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Construct an array that places table names in appropriate
+        <div class="method-description">
+                            <p><p>Construct an array that places table names in appropriate
 buckets based on whether the table is to be skipped, included
-for structure only, or have structure and data dumped.</p>                    <p>The keys of the array are:
-- skip: tables to be skipped completed in the dump
-- structure: tables to only have their structure i.e. DDL dumped
-- tables: tables to have structure and data dumped</p>                            </div>
-                <div class="tags">
+for structure only, or have structure and data dumped.</p></p>                <p><p>The keys of the array are:</p>
+<ul>
+<li>skip: tables to be skipped completed in the dump</li>
+<li>structure: tables to only have their structure i.e. DDL dumped</li>
+<li>tables: tables to have structure and data dumped</li>
+</ul></p>        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -370,10 +384,12 @@ for structure only, or have structure and data dumped.</p>                    <p
                     <table class="table table-condensed">
         <tr>
             <td>array</td>
-            <td></td>
+            <td><p>An array of table names with each table name in the appropriate
+element of the array.</p></td>
         </tr>
     </table>
 
+            
             
             
                     </div>
@@ -387,13 +403,14 @@ for structure only, or have structure and data dumped.</p>                    <p
     <strong>getRawTableList</strong>($option_name, array $options)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Consult the specified options and return the list of tables specified.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Consult the specified options and return the list of tables specified.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -405,7 +422,7 @@ for structure only, or have structure and data dumped.</p>                    <p
                     <tr>
                 <td>array</td>
                 <td>$options</td>
-                <td>An options array as passed to an Annotated Command.</td>
+                <td><p>An options array as passed to an Annotated Command.</p></td>
             </tr>
             </table>
 
@@ -415,10 +432,12 @@ for structure only, or have structure and data dumped.</p>                    <p
                     <table class="table table-condensed">
         <tr>
             <td>array</td>
-            <td></td>
+            <td><p>Returns an array of tables based on the first option
+found, or an empty array if there were no matches.</p></td>
         </tr>
     </table>
 
+            
             
             
                     </div>
@@ -428,7 +447,7 @@ for structure only, or have structure and data dumped.</p>                    <p
             </div>
 
     
-            </div><div id="footer">
+</div><div id="footer">
         Generated by <a href="https://github.com/code-lts/doctum">Doctum, a API Documentation generator and fork of Sami</a>.</div></div>
     </div>
     </body>

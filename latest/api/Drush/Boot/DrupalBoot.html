@@ -16,6 +16,7 @@
         <meta name="MobileOptimized" content="width">
         <meta name="HandheldFriendly" content="true">
         <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+
     </head>
 
     <body id="class" data-name="class:Drush_Boot_DrupalBoot" data-root-path="../../">
@@ -66,23 +67,22 @@
             </ol>
         </div>
                 <div id="page-content">
-                
     <div class="page-header">
-        <h1>
-            DrupalBoot
-                
-        </h1>
+        <h1>DrupalBoot    
+            </h1>
     </div>
 
+    
     <p>    abstract     class
     <strong>DrupalBoot</strong>        extends <a href="../../Drush/Boot/BaseBoot.html"><abbr title="Drush\Boot\BaseBoot">BaseBoot</abbr></a>        (<a href="https://github.com/drush-ops/drush/blob/10.x/src/Boot/DrupalBoot.php">View source</a>)
 </p>
 
         
     
+        
 
-    
-            <h2>Traits</h2>
+            
+                <h2>Traits</h2>
 
         
     <div class="container-fluid underlined">
@@ -100,7 +100,8 @@
                     <tr>
                 <td class="type" id="property_uri">
                                         protected                                        
-                </td>
+                                                                                
+                                    </td>
                 <td>$uri</td>
                 <td class="last"></td>
                 <td><small>from&nbsp;<a href="../../Drush/Boot/BaseBoot.html#property_uri">
@@ -109,7 +110,8 @@
                     <tr>
                 <td class="type" id="property_phase">
                                         protected                                        
-                </td>
+                                                                                
+                                    </td>
                 <td>$phase</td>
                 <td class="last"></td>
                 <td><small>from&nbsp;<a href="../../Drush/Boot/BaseBoot.html#property_phase">
@@ -140,8 +142,8 @@
                 <div class="col-md-8 type">
                     <a href="#method_findUri">findUri</a>($root, $cwd)
         
-                                            <p>Select the best URI for the provided cwd. Only called
-if the user did not explicitly specify a URI.</p>                </div>
+                                            <p><p>Select the best URI for the provided cwd. Only called
+if the user did not explicitly specify a URI.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -163,7 +165,7 @@ if the user did not explicitly specify a URI.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_setUri">setUri</a>(string $uri)
         
-                                            <p>Inject the uri for the specific site to be bootstrapped</p>                </div>
+                                            <p><p>Inject the uri for the specific site to be bootstrapped</p></p>                </div>
                 <div class="col-md-2"><small>from&nbsp;<a href="../../Drush/Boot/BaseBoot.html#method_setUri">
 <abbr title="Drush\Boot\BaseBoot">BaseBoot</abbr></a></small></div>
             </div>
@@ -193,14 +195,14 @@ if the user did not explicitly specify a URI.</p>                </div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    bool
+                    true
                 </div>
                 <div class="col-md-8 type">
                     <a href="#method_validRoot">validRoot</a>($path)
         
-                                            <p>This function determines if the specified path points to
+                                            <p><p>This function determines if the specified path points to
 the root directory of a CMS that can be bootstrapped by
-the specific subclass that implements it.</p>                </div>
+the specific subclass that implements it.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -210,7 +212,7 @@ the specific subclass that implements it.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_getVersion">getVersion</a>($drupal_root)
         
-                                            <p>Given a site root directory, determine the exact version of the software.</p>                </div>
+                                            <p><p>Given a site root directory, determine the exact version of the software.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -232,8 +234,8 @@ the specific subclass that implements it.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_reportCommandError">reportCommandError</a>($command)
         
-                                            <p>Called by Drush if a command is not found, or if the
-command was found, but did not meet requirements.</p>                </div>
+                                            <p><p>Called by Drush if a command is not found, or if the
+command was found, but did not meet requirements.</p></p>                </div>
                 <div class="col-md-2"><small>from&nbsp;<a href="../../Drush/Boot/BaseBoot.html#method_reportCommandError">
 <abbr title="Drush\Boot\BaseBoot">BaseBoot</abbr></a></small></div>
             </div>
@@ -244,7 +246,7 @@ command was found, but did not meet requirements.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_bootstrapPhases">bootstrapPhases</a>()
         
-                                            <p>Bootstrap phases used with Drupal:</p>                </div>
+                                            <p><p>Bootstrap phases used with Drupal:</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -254,9 +256,9 @@ command was found, but did not meet requirements.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_bootstrapPhaseMap">bootstrapPhaseMap</a>()
         
-                                            <p>Return an array mapping from bootstrap phase shorthand
-strings (e.g. "full") to the corresponding bootstrap
-phase index constant (e.g. DRUSH_BOOTSTRAP_DRUPAL_FULL).</p>                </div>
+                                            <p><p>Return an array mapping from bootstrap phase shorthand
+strings (e.g. &quot;full&quot;) to the corresponding bootstrap
+phase index constant (e.g. DRUSH_BOOTSTRAP_DRUPAL_FULL).</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -266,7 +268,7 @@ phase index constant (e.g. DRUSH_BOOTSTRAP_DRUPAL_FULL).</p>                </di
                 <div class="col-md-8 type">
                     <a href="#method_lookUpPhaseIndex">lookUpPhaseIndex</a>($phase)
         
-                                            <p>Convert from a phase shorthand or constant to a phase index.</p>                </div>
+                                            <p><p>Convert from a phase shorthand or constant to a phase index.</p></p>                </div>
                 <div class="col-md-2"><small>from&nbsp;<a href="../../Drush/Boot/BaseBoot.html#method_lookUpPhaseIndex">
 <abbr title="Drush\Boot\BaseBoot">BaseBoot</abbr></a></small></div>
             </div>
@@ -301,7 +303,7 @@ phase index constant (e.g. DRUSH_BOOTSTRAP_DRUPAL_FULL).</p>                </di
                 <div class="col-md-8 type">
                     <a href="#method_terminate">terminate</a>()
         
-                                            <p>This method is called during the shutdown of drush.</p>                </div>
+                                            <p><p>This method is called during the shutdown of drush.</p></p>                </div>
                 <div class="col-md-2"><small>from&nbsp;<a href="../../Drush/Boot/BaseBoot.html#method_terminate">
 <abbr title="Drush\Boot\BaseBoot">BaseBoot</abbr></a></small></div>
             </div>
@@ -334,7 +336,7 @@ phase index constant (e.g. DRUSH_BOOTSTRAP_DRUPAL_FULL).</p>                </di
                 <div class="col-md-8 type">
                     <a href="#method_bootstrapDrupalRootValidate">bootstrapDrupalRootValidate</a>(<a href="../../Drush/Boot/BootstrapManager.html"><abbr title="Drush\Boot\BootstrapManager">BootstrapManager</abbr></a> $manager)
         
-                                            <p>Validate the DRUSH_BOOTSTRAP_DRUPAL_ROOT phase.</p>                </div>
+                                            <p><p>Validate the DRUSH_BOOTSTRAP_DRUPAL_ROOT phase.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -344,7 +346,7 @@ phase index constant (e.g. DRUSH_BOOTSTRAP_DRUPAL_FULL).</p>                </di
                 <div class="col-md-8 type">
                     <a href="#method_bootstrapDrupalRoot">bootstrapDrupalRoot</a>(<a href="../../Drush/Boot/BootstrapManager.html"><abbr title="Drush\Boot\BootstrapManager">BootstrapManager</abbr></a> $manager)
         
-                                            <p>Bootstrap Drush with a valid Drupal Directory.</p>                </div>
+                                            <p><p>Bootstrap Drush with a valid Drupal Directory.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -354,7 +356,7 @@ phase index constant (e.g. DRUSH_BOOTSTRAP_DRUPAL_FULL).</p>                </di
                 <div class="col-md-8 type">
                     <a href="#method_bootstrapDrupalSiteValidate">bootstrapDrupalSiteValidate</a>(<a href="../../Drush/Boot/BootstrapManager.html"><abbr title="Drush\Boot\BootstrapManager">BootstrapManager</abbr></a> $manager)
         
-                                            <p>VALIDATE the DRUSH_BOOTSTRAP_DRUPAL_SITE phase.</p>                </div>
+                                            <p><p>VALIDATE the DRUSH_BOOTSTRAP_DRUPAL_SITE phase.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -364,7 +366,7 @@ phase index constant (e.g. DRUSH_BOOTSTRAP_DRUPAL_FULL).</p>                </di
                 <div class="col-md-8 type">
                     <a href="#method_bootstrapDrupalSite">bootstrapDrupalSite</a>(<a href="../../Drush/Boot/BootstrapManager.html"><abbr title="Drush\Boot\BootstrapManager">BootstrapManager</abbr></a> $manager)
         
-                                            <p>Initialize a site on the Drupal root.</p>                </div>
+                                            <p><p>Initialize a site on the Drupal root.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -374,7 +376,7 @@ phase index constant (e.g. DRUSH_BOOTSTRAP_DRUPAL_FULL).</p>                </di
                 <div class="col-md-8 type">
                     <a href="#method_bootstrapDrupalConfiguration">bootstrapDrupalConfiguration</a>(<a href="../../Drush/Boot/BootstrapManager.html"><abbr title="Drush\Boot\BootstrapManager">BootstrapManager</abbr></a> $manager)
         
-                                            <p>Initialize and load the Drupal configuration files.</p>                </div>
+                                            <p><p>Initialize and load the Drupal configuration files.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -384,7 +386,7 @@ phase index constant (e.g. DRUSH_BOOTSTRAP_DRUPAL_FULL).</p>                </di
                 <div class="col-md-8 type">
                     <a href="#method_bootstrapDrupalDatabaseValidate">bootstrapDrupalDatabaseValidate</a>(<a href="../../Drush/Boot/BootstrapManager.html"><abbr title="Drush\Boot\BootstrapManager">BootstrapManager</abbr></a> $manager)
         
-                                            <p>Validate the DRUSH_BOOTSTRAP_DRUPAL_DATABASE phase</p>                </div>
+                                            <p><p>Validate the DRUSH_BOOTSTRAP_DRUPAL_DATABASE phase</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -394,7 +396,7 @@ phase index constant (e.g. DRUSH_BOOTSTRAP_DRUPAL_FULL).</p>                </di
                 <div class="col-md-8 type">
                     <a href="#method_bootstrapDrupalDatabase">bootstrapDrupalDatabase</a>(<a href="../../Drush/Boot/BootstrapManager.html"><abbr title="Drush\Boot\BootstrapManager">BootstrapManager</abbr></a> $manager)
         
-                                            <p>Bootstrap the Drupal database.</p>                </div>
+                                            <p><p>Bootstrap the Drupal database.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -404,7 +406,7 @@ phase index constant (e.g. DRUSH_BOOTSTRAP_DRUPAL_FULL).</p>                </di
                 <div class="col-md-8 type">
                     <a href="#method_bootstrapDrupalFull">bootstrapDrupalFull</a>(<a href="../../Drush/Boot/BootstrapManager.html"><abbr title="Drush\Boot\BootstrapManager">BootstrapManager</abbr></a> $manager)
         
-                                            <p>Attempt to load the full Drupal system.</p>                </div>
+                                            <p><p>Attempt to load the full Drupal system.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
             </div>
@@ -421,11 +423,16 @@ phase index constant (e.g. DRUSH_BOOTSTRAP_DRUPAL_FULL).</p>                </di
     <strong>__construct</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                <div class="tags">
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+            
             
             
             
@@ -440,14 +447,15 @@ phase index constant (e.g. DRUSH_BOOTSTRAP_DRUPAL_FULL).</p>                </di
     <strong>findUri</strong>($root, $cwd)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Select the best URI for the provided cwd. Only called
-if the user did not explicitly specify a URI.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Select the best URI for the provided cwd. Only called
+if the user did not explicitly specify a URI.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -466,6 +474,7 @@ if the user did not explicitly specify a URI.</p>                               
             
             
             
+            
                     </div>
     </div>
 
@@ -478,11 +487,16 @@ if the user did not explicitly specify a URI.</p>                               
     <strong>getUri</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                <div class="tags">
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+            
             
             
             
@@ -498,23 +512,25 @@ if the user did not explicitly specify a URI.</p>                               
     <strong>setUri</strong>(string $uri)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Inject the uri for the specific site to be bootstrapped</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Inject the uri for the specific site to be bootstrapped</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
                 <td>string</td>
                 <td>$uri</td>
-                <td>Site to bootstrap</td>
+                <td><p>Site to bootstrap</p></td>
             </tr>
             </table>
 
+            
             
             
             
@@ -530,11 +546,15 @@ if the user did not explicitly specify a URI.</p>                               
     <strong>getPhase</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                <div class="tags">
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
             
                             <h4>Return Value</h4>
 
@@ -545,6 +565,7 @@ if the user did not explicitly specify a URI.</p>                               
         </tr>
     </table>
 
+            
             
             
                     </div>
@@ -559,11 +580,15 @@ if the user did not explicitly specify a URI.</p>                               
     <strong>setPhase</strong>(int $phase)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                <div class="tags">
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -577,6 +602,7 @@ if the user did not explicitly specify a URI.</p>                               
             
             
             
+            
                     </div>
     </div>
 
@@ -584,27 +610,28 @@ if the user did not explicitly specify a URI.</p>                               
                     <div class="method-item">
                     <h3 id="method_validRoot">
         <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Boot/DrupalBoot.php#L48">at line 48</a></div>
-        <code>                    bool
+        <code>                    true
     <strong>validRoot</strong>($path)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>This function determines if the specified path points to
+        <div class="method-description">
+                            <p><p>This function determines if the specified path points to
 the root directory of a CMS that can be bootstrapped by
-the specific subclass that implements it.</p>                    <p>These functions should be written such that one and only
-one class will return TRUE for any given $path.</p>                            </div>
-                <div class="tags">
+the specific subclass that implements it.</p></p>                <p><p>These functions should be written such that one and only
+one class will return TRUE for any given $path.</p></p>        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
                 <td></td>
                 <td>$path</td>
-                <td>a directory to test</td>
+                <td><p>to a directory to test</p></td>
             </tr>
             </table>
 
@@ -613,11 +640,12 @@ one class will return TRUE for any given $path.</p>                            <
 
                     <table class="table table-condensed">
         <tr>
-            <td>bool</td>
-            <td></td>
+            <td>true</td>
+            <td><p>if $path is a valid root directory</p></td>
         </tr>
     </table>
 
+            
             
             
                     </div>
@@ -631,13 +659,14 @@ one class will return TRUE for any given $path.</p>                            <
     <strong>getVersion</strong>($drupal_root)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Given a site root directory, determine the exact version of the software.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Given a site root directory, determine the exact version of the software.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -654,10 +683,11 @@ one class will return TRUE for any given $path.</p>                            <
                     <table class="table table-condensed">
         <tr>
             <td>string|null</td>
-            <td></td>
+            <td><p>The version string for the current version of the software, e.g. 8.1.3</p></td>
         </tr>
     </table>
 
+            
             
             
                     </div>
@@ -672,11 +702,16 @@ one class will return TRUE for any given $path.</p>                            <
     <strong>commandDefaults</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                <div class="tags">
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+            
             
             
             
@@ -692,16 +727,17 @@ one class will return TRUE for any given $path.</p>                            <
     <strong>reportCommandError</strong>($command)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Called by Drush if a command is not found, or if the
-command was found, but did not meet requirements.</p>                    <p>The implementation in BaseBoot should be sufficient
+        <div class="method-description">
+                            <p><p>Called by Drush if a command is not found, or if the
+command was found, but did not meet requirements.</p></p>                <p><p>The implementation in BaseBoot should be sufficient
 for most cases, so this method typically will not need
-to be overridden.</p>                            </div>
-                <div class="tags">
+to be overridden.</p></p>        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -712,6 +748,7 @@ to be overridden.</p>                            </div>
             </tr>
             </table>
 
+            
             
             
             
@@ -726,33 +763,34 @@ to be overridden.</p>                            </div>
     <strong>bootstrapPhases</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Bootstrap phases used with Drupal:</p>                    <p>DRUSH_BOOTSTRAP_DRUSH                = Only Drush.
-    DRUSH_BOOTSTRAP_DRUPAL_ROOT          = Find a valid Drupal root.
-    DRUSH_BOOTSTRAP_DRUPAL_SITE          = Find a valid Drupal site.
-    DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION = Load the site's settings.
-    DRUSH_BOOTSTRAP_DRUPAL_DATABASE      = Initialize the database.
-    DRUSH_BOOTSTRAP_DRUPAL_FULL          = Initialize Drupal fully.</p>
-
+        <div class="method-description">
+                            <p><p>Bootstrap phases used with Drupal:</p></p>                <p><p>DRUSH_BOOTSTRAP_DRUSH                = Only Drush.
+DRUSH_BOOTSTRAP_DRUPAL_ROOT          = Find a valid Drupal root.
+DRUSH_BOOTSTRAP_DRUPAL_SITE          = Find a valid Drupal site.
+DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION = Load the site's settings.
+DRUSH_BOOTSTRAP_DRUPAL_DATABASE      = Initialize the database.
+DRUSH_BOOTSTRAP_DRUPAL_FULL          = Initialize Drupal fully.</p>
 <p>The value is the name of the method of the Boot class to
-execute when bootstrapping.  Prior to bootstrapping, a "validate"
+execute when bootstrapping.  Prior to bootstrapping, a &quot;validate&quot;
 method is called, if defined.  The validate method name is the
-bootstrap method name with "_validate" appended.</p>                            </div>
-                <div class="tags">
+bootstrap method name with &quot;_validate&quot; appended.</p></p>        
+        </div>
+        <div class="tags">
             
                             <h4>Return Value</h4>
 
                     <table class="table table-condensed">
         <tr>
             <td>array</td>
-            <td></td>
+            <td><p>of PHASE index =&gt; method name.</p></td>
         </tr>
     </table>
 
+            
             
             
                     </div>
@@ -766,15 +804,17 @@ bootstrap method name with "_validate" appended.</p>                            
     <strong>bootstrapPhaseMap</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Return an array mapping from bootstrap phase shorthand
-strings (e.g. "full") to the corresponding bootstrap
-phase index constant (e.g. DRUSH_BOOTSTRAP_DRUPAL_FULL).</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Return an array mapping from bootstrap phase shorthand
+strings (e.g. &quot;full&quot;) to the corresponding bootstrap
+phase index constant (e.g. DRUSH_BOOTSTRAP_DRUPAL_FULL).</p></p>                        
+        </div>
+        <div class="tags">
+            
             
             
             
@@ -790,13 +830,14 @@ phase index constant (e.g. DRUSH_BOOTSTRAP_DRUPAL_FULL).</p>                    
     <strong>lookUpPhaseIndex</strong>($phase)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Convert from a phase shorthand or constant to a phase index.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Convert from a phase shorthand or constant to a phase index.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -807,6 +848,7 @@ phase index constant (e.g. DRUSH_BOOTSTRAP_DRUPAL_FULL).</p>                    
             </tr>
             </table>
 
+            
             
             
             
@@ -822,11 +864,16 @@ phase index constant (e.g. DRUSH_BOOTSTRAP_DRUPAL_FULL).</p>                    
     <strong>bootstrapDrush</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                <div class="tags">
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+            
             
             
             
@@ -842,11 +889,15 @@ phase index constant (e.g. DRUSH_BOOTSTRAP_DRUPAL_FULL).</p>                    
     <strong>hasRegisteredSymfonyCommand</strong>($application, $name)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                <div class="tags">
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -865,6 +916,7 @@ phase index constant (e.g. DRUSH_BOOTSTRAP_DRUPAL_FULL).</p>                    
             
             
             
+            
                     </div>
     </div>
 
@@ -877,13 +929,14 @@ phase index constant (e.g. DRUSH_BOOTSTRAP_DRUPAL_FULL).</p>                    
     <strong>terminate</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>This method is called during the shutdown of drush.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>This method is called during the shutdown of drush.</p></p>                        
+        </div>
+        <div class="tags">
             
                             <h4>Return Value</h4>
 
@@ -894,6 +947,7 @@ phase index constant (e.g. DRUSH_BOOTSTRAP_DRUPAL_FULL).</p>                    
         </tr>
     </table>
 
+            
             
             
                     </div>
@@ -907,11 +961,15 @@ phase index constant (e.g. DRUSH_BOOTSTRAP_DRUPAL_FULL).</p>                    
     <strong>scanUpForUri</strong>($root, $scan)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                <div class="tags">
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -930,6 +988,7 @@ phase index constant (e.g. DRUSH_BOOTSTRAP_DRUPAL_FULL).</p>                    
             
             
             
+            
                     </div>
     </div>
 
@@ -941,11 +1000,15 @@ phase index constant (e.g. DRUSH_BOOTSTRAP_DRUPAL_FULL).</p>                    
     <strong>confPath</strong>($require_settings = true, $reset = false)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                <div class="tags">
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -964,6 +1027,7 @@ phase index constant (e.g. DRUSH_BOOTSTRAP_DRUPAL_FULL).</p>                    
             
             
             
+            
                     </div>
     </div>
 
@@ -975,13 +1039,14 @@ phase index constant (e.g. DRUSH_BOOTSTRAP_DRUPAL_FULL).</p>                    
     <strong>bootstrapDrupalRootValidate</strong>(<a href="../../Drush/Boot/BootstrapManager.html"><abbr title="Drush\Boot\BootstrapManager">BootstrapManager</abbr></a> $manager)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Validate the DRUSH_BOOTSTRAP_DRUPAL_ROOT phase.</p>                    <p>In this function, we will check if a valid Drupal directory is available.</p>                            </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Validate the DRUSH_BOOTSTRAP_DRUPAL_ROOT phase.</p></p>                <p><p>In this function, we will check if a valid Drupal directory is available.</p></p>        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -992,6 +1057,7 @@ phase index constant (e.g. DRUSH_BOOTSTRAP_DRUPAL_FULL).</p>                    
             </tr>
             </table>
 
+            
             
             
             
@@ -1006,18 +1072,18 @@ phase index constant (e.g. DRUSH_BOOTSTRAP_DRUPAL_FULL).</p>                    
     <strong>bootstrapDrupalRoot</strong>(<a href="../../Drush/Boot/BootstrapManager.html"><abbr title="Drush\Boot\BootstrapManager">BootstrapManager</abbr></a> $manager)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Bootstrap Drush with a valid Drupal Directory.</p>                    <p>In this function, the pwd will be moved to the root
+        <div class="method-description">
+                            <p><p>Bootstrap Drush with a valid Drupal Directory.</p></p>                <p><p>In this function, the pwd will be moved to the root
 of the Drupal installation.</p>
-
 <p>We also now load the drush.yml for this specific Drupal site.
 We can now include files from the Drupal tree, and figure
-out more context about the codebase, such as the version of Drupal.</p>                            </div>
-                <div class="tags">
+out more context about the codebase, such as the version of Drupal.</p></p>        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -1028,6 +1094,7 @@ out more context about the codebase, such as the version of Drupal.</p>         
             </tr>
             </table>
 
+            
             
             
             
@@ -1042,14 +1109,15 @@ out more context about the codebase, such as the version of Drupal.</p>         
     <strong>bootstrapDrupalSiteValidate</strong>(<a href="../../Drush/Boot/BootstrapManager.html"><abbr title="Drush\Boot\BootstrapManager">BootstrapManager</abbr></a> $manager)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>VALIDATE the DRUSH_BOOTSTRAP_DRUPAL_SITE phase.</p>                    <p>In this function we determine the URL used for the command,
-and check for a valid settings.php file.</p>                            </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>VALIDATE the DRUSH_BOOTSTRAP_DRUPAL_SITE phase.</p></p>                <p><p>In this function we determine the URL used for the command,
+and check for a valid settings.php file.</p></p>        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -1060,6 +1128,7 @@ and check for a valid settings.php file.</p>                            </div>
             </tr>
             </table>
 
+            
             
             
             
@@ -1074,14 +1143,15 @@ and check for a valid settings.php file.</p>                            </div>
     <strong>bootstrapDrupalSite</strong>(<a href="../../Drush/Boot/BootstrapManager.html"><abbr title="Drush\Boot\BootstrapManager">BootstrapManager</abbr></a> $manager)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Initialize a site on the Drupal root.</p>                    <p>We now set various contexts that we determined and confirmed to be valid.
-Additionally we load an optional drush.yml file in the site directory.</p>                            </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Initialize a site on the Drupal root.</p></p>                <p><p>We now set various contexts that we determined and confirmed to be valid.
+Additionally we load an optional drush.yml file in the site directory.</p></p>        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -1092,6 +1162,7 @@ Additionally we load an optional drush.yml file in the site directory.</p>      
             </tr>
             </table>
 
+            
             
             
             
@@ -1106,13 +1177,14 @@ Additionally we load an optional drush.yml file in the site directory.</p>      
     <strong>bootstrapDrupalConfiguration</strong>(<a href="../../Drush/Boot/BootstrapManager.html"><abbr title="Drush\Boot\BootstrapManager">BootstrapManager</abbr></a> $manager)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Initialize and load the Drupal configuration files.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Initialize and load the Drupal configuration files.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -1123,6 +1195,7 @@ Additionally we load an optional drush.yml file in the site directory.</p>      
             </tr>
             </table>
 
+            
             
             
             
@@ -1137,15 +1210,16 @@ Additionally we load an optional drush.yml file in the site directory.</p>      
     <strong>bootstrapDrupalDatabaseValidate</strong>(<a href="../../Drush/Boot/BootstrapManager.html"><abbr title="Drush\Boot\BootstrapManager">BootstrapManager</abbr></a> $manager)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Validate the DRUSH_BOOTSTRAP_DRUPAL_DATABASE phase</p>                    <p>Attempt to make a working database connection using the
+        <div class="method-description">
+                            <p><p>Validate the DRUSH_BOOTSTRAP_DRUPAL_DATABASE phase</p></p>                <p><p>Attempt to make a working database connection using the
 database credentials that were loaded during the previous
-phase.</p>                            </div>
-                <div class="tags">
+phase.</p></p>        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -1156,6 +1230,7 @@ phase.</p>                            </div>
             </tr>
             </table>
 
+            
             
             
             
@@ -1170,13 +1245,14 @@ phase.</p>                            </div>
     <strong>bootstrapDrupalDatabase</strong>(<a href="../../Drush/Boot/BootstrapManager.html"><abbr title="Drush\Boot\BootstrapManager">BootstrapManager</abbr></a> $manager)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Bootstrap the Drupal database.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Bootstrap the Drupal database.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -1187,6 +1263,7 @@ phase.</p>                            </div>
             </tr>
             </table>
 
+            
             
             
             
@@ -1201,13 +1278,14 @@ phase.</p>                            </div>
     <strong>bootstrapDrupalFull</strong>(<a href="../../Drush/Boot/BootstrapManager.html"><abbr title="Drush\Boot\BootstrapManager">BootstrapManager</abbr></a> $manager)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Attempt to load the full Drupal system.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Attempt to load the full Drupal system.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -1221,6 +1299,7 @@ phase.</p>                            </div>
             
             
             
+            
                     </div>
     </div>
 
@@ -1228,7 +1307,7 @@ phase.</p>                            </div>
             </div>
 
     
-            </div><div id="footer">
+</div><div id="footer">
         Generated by <a href="https://github.com/code-lts/doctum">Doctum, a API Documentation generator and fork of Sami</a>.</div></div>
     </div>
     </body>

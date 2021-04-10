@@ -16,6 +16,7 @@
         <meta name="MobileOptimized" content="width">
         <meta name="HandheldFriendly" content="true">
         <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+
     </head>
 
     <body id="class" data-name="class:Drush_Drupal_Migrate_MigrateExecutable" data-root-path="../../../">
@@ -66,23 +67,22 @@
             </ol>
         </div>
                 <div id="page-content">
-                
     <div class="page-header">
-        <h1>
-            MigrateExecutable
-                
-        </h1>
+        <h1>MigrateExecutable    
+            </h1>
     </div>
 
+    
     <p>        class
     <strong>MigrateExecutable</strong>        extends <abbr title="Drupal\migrate\MigrateExecutable">MigrateExecutable</abbr>        (<a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Migrate/MigrateExecutable.php">View source</a>)
 </p>
 
         
     
+        
 
-    
-    
+            
+        
     
             <h2>Properties</h2>
 
@@ -90,129 +90,145 @@
                     <tr>
                 <td class="type" id="property_output">
                                         protected                                        <abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr>
-                </td>
+                                                                                
+                                    </td>
                 <td>$output</td>
-                <td class="last">The Symfony console output.</td>
+                <td class="last"><p>The Symfony console output.</p></td>
                 <td></td>
             </tr>
                     <tr>
                 <td class="type" id="property_saveCounters">
                                         protected                                        array
-                </td>
+                                                                                
+                                    </td>
                 <td>$saveCounters</td>
-                <td class="last">Counters of map statuses.</td>
+                <td class="last"><p>Counters of map statuses.</p></td>
                 <td></td>
             </tr>
                     <tr>
                 <td class="type" id="property_deleteCounter">
                                         protected                                        int
-                </td>
+                                                                                
+                                    </td>
                 <td>$deleteCounter</td>
-                <td class="last">Counter of map deletions.</td>
+                <td class="last"><p>Counter of map deletions.</p></td>
                 <td></td>
             </tr>
                     <tr>
                 <td class="type" id="property_limit">
                                         protected                                        int|null
-                </td>
+                                                                                
+                                    </td>
                 <td>$limit</td>
-                <td class="last">Maximum number of items to process in this migration.</td>
+                <td class="last"><p>Maximum number of items to process in this migration.</p></td>
                 <td></td>
             </tr>
                     <tr>
                 <td class="type" id="property_feedback">
                                         protected                                        int
-                </td>
+                                                                                
+                                    </td>
                 <td>$feedback</td>
-                <td class="last">Frequency (in items) at which progress messages should be emitted.</td>
+                <td class="last"><p>Frequency (in items) at which progress messages should be emitted.</p></td>
                 <td></td>
             </tr>
                     <tr>
                 <td class="type" id="property_showTimestamp">
                                         protected                                        bool
-                </td>
+                                                                                
+                                    </td>
                 <td>$showTimestamp</td>
-                <td class="last">Show timestamp in progress message.</td>
+                <td class="last"><p>Show timestamp in progress message.</p></td>
                 <td></td>
             </tr>
                     <tr>
                 <td class="type" id="property_showTotal">
                                         protected                                        bool
-                </td>
+                                                                                
+                                    </td>
                 <td>$showTotal</td>
-                <td class="last">Show internal counter in progress message.</td>
+                <td class="last"><p>Show internal counter in progress message.</p></td>
                 <td></td>
             </tr>
                     <tr>
                 <td class="type" id="property_idlist">
                                         protected                                        array
-                </td>
+                                                                                
+                                    </td>
                 <td>$idlist</td>
-                <td class="last">List of specific source IDs to import.</td>
+                <td class="last"><p>List of specific source IDs to import.</p></td>
                 <td></td>
             </tr>
                     <tr>
                 <td class="type" id="property_counter">
                                         protected                                        int
-                </td>
+                                                                                
+                                    </td>
                 <td>$counter</td>
-                <td class="last">Count of number of items processed so far in this migration.</td>
+                <td class="last"><p>Count of number of items processed so far in this migration.</p></td>
                 <td></td>
             </tr>
                     <tr>
                 <td class="type" id="property_preExistingItem">
                                         protected                                        bool
-                </td>
+                                                                                
+                                    </td>
                 <td>$preExistingItem</td>
-                <td class="last">Whether the destination item exists before saving.</td>
+                <td class="last"><p>Whether the destination item exists before saving.</p></td>
                 <td></td>
             </tr>
                     <tr>
                 <td class="type" id="property_listeners">
                                         protected                                        callable[]
-                </td>
+                                                                                
+                                    </td>
                 <td>$listeners</td>
-                <td class="last">List of event listeners we have registered.</td>
+                <td class="last"><p>List of event listeners we have registered.</p></td>
                 <td></td>
             </tr>
                     <tr>
                 <td class="type" id="property_deleteMissingSourceRows">
                                         protected                                        bool|null
-                </td>
+                                                                                
+                                    </td>
                 <td>$deleteMissingSourceRows</td>
-                <td class="last">Whether to delete rows missing from source after an import.</td>
+                <td class="last"><p>Whether to delete rows missing from source after an import.</p></td>
                 <td></td>
             </tr>
                     <tr>
                 <td class="type" id="property_idMap">
                                         protected                                        <a href="../../../Drush/Drupal/Migrate/MigrateIdMapFilter.html"><abbr title="Drush\Drupal\Migrate\MigrateIdMapFilter">MigrateIdMapFilter</abbr></a>
-                </td>
+                                                                                
+                                    </td>
                 <td>$idMap</td>
-                <td class="last">Static cached ID map.</td>
+                <td class="last"><p>Static cached ID map.</p></td>
                 <td></td>
             </tr>
                     <tr>
                 <td class="type" id="property_exposeProgressBar">
                                         protected                                        bool
-                </td>
+                                                                                
+                                    </td>
                 <td>$exposeProgressBar</td>
-                <td class="last">If the execution exposes an progress bar.</td>
+                <td class="last"><p>If the execution exposes an progress bar.</p></td>
                 <td></td>
             </tr>
                     <tr>
                 <td class="type" id="property_progressBar">
                                         protected                                        <abbr title="Symfony\Component\Console\Helper\ProgressBar">ProgressBar</abbr>
-                </td>
+                                                                                
+                                    </td>
                 <td>$progressBar</td>
-                <td class="last">The Symfony progress bar.</td>
+                <td class="last"><p>The Symfony progress bar.</p></td>
                 <td></td>
             </tr>
                     <tr>
                 <td class="type" id="property_showPrepareRowFeedback">
                                         protected                                        bool
-                </td>
+                                                                                
+                                    </td>
                 <td>$showPrepareRowFeedback</td>
-                <td class="last">Used to bypass the prepare row feedback.</td>
+                <td class="last"><p>Used to bypass the prepare row feedback.</p></td>
                 <td></td>
             </tr>
             </table>
@@ -228,7 +244,7 @@
                 <div class="col-md-8 type">
                     <a href="#method___construct">__construct</a>(<abbr title="Drupal\migrate\Plugin\MigrationInterface">MigrationInterface</abbr> $migration, <abbr title="Drupal\migrate\MigrateMessageInterface">MigrateMessageInterface</abbr> $message, <abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr> $output, array $options = [])
         
-                                            <p>Constructs a new migrate executable instance.</p>                </div>
+                                            <p><p>Constructs a new migrate executable instance.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -238,7 +254,7 @@
                 <div class="col-md-8 type">
                     <a href="#method_onMapSave">onMapSave</a>(<abbr title="Drupal\migrate\Event\MigrateMapSaveEvent">MigrateMapSaveEvent</abbr> $event)
         
-                                            <p>Counts up any map save events.</p>                </div>
+                                            <p><p>Counts up any map save events.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -248,7 +264,7 @@
                 <div class="col-md-8 type">
                     <a href="#method_onMapDelete">onMapDelete</a>(<abbr title="Drupal\migrate\Event\MigrateMapDeleteEvent">MigrateMapDeleteEvent</abbr> $event)
         
-                                            <p>Counts up any rollback events.</p>                </div>
+                                            <p><p>Counts up any rollback events.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -258,7 +274,7 @@
                 <div class="col-md-8 type">
                     <a href="#method_onPreImport">onPreImport</a>(<abbr title="Drupal\migrate\Event\MigrateImportEvent">MigrateImportEvent</abbr> $event)
         
-                                            <p>Reacts when the import is about to start.</p>                </div>
+                                            <p><p>Reacts when the import is about to start.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -268,7 +284,7 @@
                 <div class="col-md-8 type">
                     <a href="#method_handleMissingSourceRows">handleMissingSourceRows</a>(<abbr title="Drupal\migrate\Plugin\MigrationInterface">MigrationInterface</abbr> $migration)
         
-                                            <p>Handles missing source rows after import.</p>                </div>
+                                            <p><p>Handles missing source rows after import.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -278,7 +294,7 @@
                 <div class="col-md-8 type">
                     <a href="#method_onMissingSourceRows">onMissingSourceRows</a>(<a href="../../../Drush/Drupal/Migrate/MigrateMissingSourceRowsEvent.html"><abbr title="Drush\Drupal\Migrate\MigrateMissingSourceRowsEvent">MigrateMissingSourceRowsEvent</abbr></a> $event)
         
-                                            <p>Reacts on detecting a list of missing source rows after an import.</p>                </div>
+                                            <p><p>Reacts on detecting a list of missing source rows after an import.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -288,7 +304,7 @@
                 <div class="col-md-8 type">
                     <a href="#method_onPostImport">onPostImport</a>(<abbr title="Drupal\migrate\Event\MigrateImportEvent">MigrateImportEvent</abbr> $event)
         
-                                            <p>Reacts to migration completion.</p>                </div>
+                                            <p><p>Reacts to migration completion.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -298,7 +314,7 @@
                 <div class="col-md-8 type">
                     <a href="#method_importFeedbackMessage">importFeedbackMessage</a>(bool $done = true)
         
-                                            <p>Emits information on the import progress.</p>                </div>
+                                            <p><p>Emits information on the import progress.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -308,7 +324,7 @@
                 <div class="col-md-8 type">
                     <a href="#method_onPreRollback">onPreRollback</a>(<abbr title="Drupal\migrate\Event\MigrateRollbackEvent">MigrateRollbackEvent</abbr> $event)
         
-                                            <p>Reacts when the rollback is about to starts.</p>                </div>
+                                            <p><p>Reacts when the rollback is about to starts.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -318,7 +334,7 @@
                 <div class="col-md-8 type">
                     <a href="#method_onPostRollback">onPostRollback</a>(<abbr title="Drupal\migrate\Event\MigrateRollbackEvent">MigrateRollbackEvent</abbr> $event)
         
-                                            <p>Reacts to rollback completion.</p>                </div>
+                                            <p><p>Reacts to rollback completion.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -328,7 +344,7 @@
                 <div class="col-md-8 type">
                     <a href="#method_rollbackFeedbackMessage">rollbackFeedbackMessage</a>(bool $done = true)
         
-                                            <p>Emits information on the rollback execution  progress.</p>                </div>
+                                            <p><p>Emits information on the rollback execution  progress.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -338,7 +354,7 @@
                 <div class="col-md-8 type">
                     <a href="#method_onPreRowSave">onPreRowSave</a>(<abbr title="Drupal\migrate\Event\MigratePreRowSaveEvent">MigratePreRowSaveEvent</abbr> $event)
         
-                                            <p>Reacts to an item about to be imported.</p>                </div>
+                                            <p><p>Reacts to an item about to be imported.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -348,7 +364,7 @@
                 <div class="col-md-8 type">
                     <a href="#method_onPostRowSave">onPostRowSave</a>(<abbr title="Drupal\migrate\Event\MigratePostRowSaveEvent">MigratePostRowSaveEvent</abbr> $event)
         
-                                            <p>Reacts aftre a row has been deleted.</p>                </div>
+                                            <p><p>Reacts aftre a row has been deleted.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -358,7 +374,7 @@
                 <div class="col-md-8 type">
                     <a href="#method_onPostRowDelete">onPostRowDelete</a>(<abbr title="Drupal\migrate\Event\MigrateRowDeleteEvent">MigrateRowDeleteEvent</abbr> $event)
         
-                                            <p>Reacts to item rollback.</p>                </div>
+                                            <p><p>Reacts to item rollback.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -368,7 +384,7 @@
                 <div class="col-md-8 type">
                     <a href="#method_onPrepareRow">onPrepareRow</a>(<a href="../../../Drush/Drupal/Migrate/MigratePrepareRowEvent.html"><abbr title="Drush\Drupal\Migrate\MigratePrepareRowEvent">MigratePrepareRowEvent</abbr></a> $event)
         
-                                            <p>Reacts to a new row being prepared.</p>                </div>
+                                            <p><p>Reacts to a new row being prepared.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -378,7 +394,7 @@
                 <div class="col-md-8 type">
                     <a href="#method_getIdMap">getIdMap</a>()
         
-                                            <p>{@inheritdoc}</p>                </div>
+                                            <p><p>{@inheritdoc}</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -388,7 +404,7 @@
                 <div class="col-md-8 type">
                     <a href="#method_getCreatedCount">getCreatedCount</a>()
         
-                                            <p>Returns the number of items created.</p>                </div>
+                                            <p><p>Returns the number of items created.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -398,7 +414,7 @@
                 <div class="col-md-8 type">
                     <a href="#method_getUpdatedCount">getUpdatedCount</a>()
         
-                                            <p>Returns the number of items updated.</p>                </div>
+                                            <p><p>Returns the number of items updated.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -408,7 +424,7 @@
                 <div class="col-md-8 type">
                     <a href="#method_getIgnoredCount">getIgnoredCount</a>()
         
-                                            <p>Returns the number of items ignored.</p>                </div>
+                                            <p><p>Returns the number of items ignored.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -418,7 +434,7 @@
                 <div class="col-md-8 type">
                     <a href="#method_getFailedCount">getFailedCount</a>()
         
-                                            <p>Returns the number of items that failed.</p>                </div>
+                                            <p><p>Returns the number of items that failed.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -428,7 +444,7 @@
                 <div class="col-md-8 type">
                     <a href="#method_getProcessedCount">getProcessedCount</a>()
         
-                                            <p>Returns the total number of items processed.</p>                </div>
+                                            <p><p>Returns the total number of items processed.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -438,7 +454,7 @@
                 <div class="col-md-8 type">
                     <a href="#method_getRollbackCount">getRollbackCount</a>()
         
-                                            <p>Returns the number of items rolled back.</p>                </div>
+                                            <p><p>Returns the number of items rolled back.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -448,7 +464,7 @@
                 <div class="col-md-8 type">
                     <a href="#method_resetCounters">resetCounters</a>()
         
-                                            <p>Resets all the per-status counters to 0.</p>                </div>
+                                            <p><p>Resets all the per-status counters to 0.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -458,7 +474,7 @@
                 <div class="col-md-8 type">
                     <a href="#method_initProgressBar">initProgressBar</a>(<abbr title="Drupal\migrate\Plugin\MigrationInterface">MigrationInterface</abbr> $migration)
         
-                                            <p>Initializes the command progress bar if possible.</p>                </div>
+                                            <p><p>Initializes the command progress bar if possible.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -468,7 +484,7 @@
                 <div class="col-md-8 type">
                     <a href="#method_updateProgressBar">updateProgressBar</a>()
         
-                                            <p>Advances the progress bar.</p>                </div>
+                                            <p><p>Advances the progress bar.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -478,7 +494,7 @@
                 <div class="col-md-8 type">
                     <a href="#method_progressFinish">progressFinish</a>()
         
-                                            <p>Removes the progress bar after operation is finished.</p>                </div>
+                                            <p><p>Removes the progress bar after operation is finished.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -488,7 +504,7 @@
                 <div class="col-md-8 type">
                     <a href="#method_unregisterListeners">unregisterListeners</a>()
         
-                                            <p>Unregisters all event listeners.</p>                </div>
+                                            <p><p>Unregisters all event listeners.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
             </div>
@@ -504,13 +520,14 @@
     <strong>__construct</strong>(<abbr title="Drupal\migrate\Plugin\MigrationInterface">MigrationInterface</abbr> $migration, <abbr title="Drupal\migrate\MigrateMessageInterface">MigrateMessageInterface</abbr> $message, <abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr> $output, array $options = [])
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Constructs a new migrate executable instance.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Constructs a new migrate executable instance.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -548,6 +565,7 @@
             </table>
 
             
+            
                     </div>
     </div>
 
@@ -559,20 +577,21 @@
     <strong>onMapSave</strong>(<abbr title="Drupal\migrate\Event\MigrateMapSaveEvent">MigrateMapSaveEvent</abbr> $event)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Counts up any map save events.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Counts up any map save events.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
                 <td><abbr title="Drupal\migrate\Event\MigrateMapSaveEvent">MigrateMapSaveEvent</abbr></td>
                 <td>$event</td>
-                <td>The map event.</td>
+                <td><p>The map event.</p></td>
             </tr>
             </table>
 
@@ -586,6 +605,7 @@
         </tr>
     </table>
 
+            
             
             
                     </div>
@@ -599,20 +619,21 @@
     <strong>onMapDelete</strong>(<abbr title="Drupal\migrate\Event\MigrateMapDeleteEvent">MigrateMapDeleteEvent</abbr> $event)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Counts up any rollback events.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Counts up any rollback events.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
                 <td><abbr title="Drupal\migrate\Event\MigrateMapDeleteEvent">MigrateMapDeleteEvent</abbr></td>
                 <td>$event</td>
-                <td>The map event.</td>
+                <td><p>The map event.</p></td>
             </tr>
             </table>
 
@@ -626,6 +647,7 @@
         </tr>
     </table>
 
+            
             
             
                     </div>
@@ -639,20 +661,21 @@
     <strong>onPreImport</strong>(<abbr title="Drupal\migrate\Event\MigrateImportEvent">MigrateImportEvent</abbr> $event)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Reacts when the import is about to start.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Reacts when the import is about to start.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
                 <td><abbr title="Drupal\migrate\Event\MigrateImportEvent">MigrateImportEvent</abbr></td>
                 <td>$event</td>
-                <td>The import event.</td>
+                <td><p>The import event.</p></td>
             </tr>
             </table>
 
@@ -668,6 +691,7 @@
 
             
             
+            
                     </div>
     </div>
 
@@ -679,24 +703,24 @@
     <strong>handleMissingSourceRows</strong>(<abbr title="Drupal\migrate\Plugin\MigrationInterface">MigrationInterface</abbr> $migration)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Handles missing source rows after import.</p>                    <p>Detect if, before importing, the destination contains rows that are no
+        <div class="method-description">
+                            <p><p>Handles missing source rows after import.</p></p>                <p><p>Detect if, before importing, the destination contains rows that are no
 more available in the source. If we can build such a list, we dispatch
 the \Drush\Drupal\Migrate\MigrateMissingSourceRowsEvent event, allowing
 subscribers to perform specific actions on detected destination objects.
 We also provide a default listener to this event that rolls-back the
 items, if the <code>--delete</code> option has been passed.</p>
-
 <p>Custom subscribers, provided by third-party code, may also subscribe,
 with a higher priority, to the same event, and perform different tasks,
 such as unpublishing the destination entity and then stopping the event
 propagation, thus avoiding the destination object rollback, even when
-the<code>--delete</code> option has been passed.</p>                            </div>
-                <div class="tags">
+the<code>--delete</code> option has been passed.</p></p>        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -731,6 +755,7 @@ the<code>--delete</code> option has been passed.</p>                            
             </tr>
             </table>
 
+            
                     </div>
     </div>
 
@@ -742,23 +767,24 @@ the<code>--delete</code> option has been passed.</p>                            
     <strong>onMissingSourceRows</strong>(<a href="../../../Drush/Drupal/Migrate/MigrateMissingSourceRowsEvent.html"><abbr title="Drush\Drupal\Migrate\MigrateMissingSourceRowsEvent">MigrateMissingSourceRowsEvent</abbr></a> $event)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Reacts on detecting a list of missing source rows after an import.</p>                    <p>Note that third-party code may subscribe to the same event, with a higher
+        <div class="method-description">
+                            <p><p>Reacts on detecting a list of missing source rows after an import.</p></p>                <p><p>Note that third-party code may subscribe to the same event, with a higher
 priority, and perform different tasks, such as unpublishing the
 destination entity and then stopping the event propagation, thus avoiding
-the destination object deletion, even the <code>--delete</code> option was passed.</p>                            </div>
-                <div class="tags">
+the destination object deletion, even the <code>--delete</code> option was passed.</p></p>        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
                 <td><a href="../../../Drush/Drupal/Migrate/MigrateMissingSourceRowsEvent.html"><abbr title="Drush\Drupal\Migrate\MigrateMissingSourceRowsEvent">MigrateMissingSourceRowsEvent</abbr></a></td>
                 <td>$event</td>
-                <td>The event object.</td>
+                <td><p>The event object.</p></td>
             </tr>
             </table>
 
@@ -772,6 +798,7 @@ the destination object deletion, even the <code>--delete</code> option was passe
         </tr>
     </table>
 
+            
             
             
                     </div>
@@ -785,20 +812,21 @@ the destination object deletion, even the <code>--delete</code> option was passe
     <strong>onPostImport</strong>(<abbr title="Drupal\migrate\Event\MigrateImportEvent">MigrateImportEvent</abbr> $event)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Reacts to migration completion.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Reacts to migration completion.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
                 <td><abbr title="Drupal\migrate\Event\MigrateImportEvent">MigrateImportEvent</abbr></td>
                 <td>$event</td>
-                <td>The map event.</td>
+                <td><p>The map event.</p></td>
             </tr>
             </table>
 
@@ -812,6 +840,7 @@ the destination object deletion, even the <code>--delete</code> option was passe
         </tr>
     </table>
 
+            
             
             
                     </div>
@@ -825,13 +854,14 @@ the destination object deletion, even the <code>--delete</code> option was passe
     <strong>importFeedbackMessage</strong>(bool $done = true)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Emits information on the import progress.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Emits information on the import progress.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -852,6 +882,7 @@ the destination object deletion, even the <code>--delete</code> option was passe
         </tr>
     </table>
 
+            
             
             
                     </div>
@@ -865,20 +896,21 @@ the destination object deletion, even the <code>--delete</code> option was passe
     <strong>onPreRollback</strong>(<abbr title="Drupal\migrate\Event\MigrateRollbackEvent">MigrateRollbackEvent</abbr> $event)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Reacts when the rollback is about to starts.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Reacts when the rollback is about to starts.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
                 <td><abbr title="Drupal\migrate\Event\MigrateRollbackEvent">MigrateRollbackEvent</abbr></td>
                 <td>$event</td>
-                <td>The map event.</td>
+                <td><p>The map event.</p></td>
             </tr>
             </table>
 
@@ -892,6 +924,7 @@ the destination object deletion, even the <code>--delete</code> option was passe
         </tr>
     </table>
 
+            
             
             
                     </div>
@@ -905,20 +938,21 @@ the destination object deletion, even the <code>--delete</code> option was passe
     <strong>onPostRollback</strong>(<abbr title="Drupal\migrate\Event\MigrateRollbackEvent">MigrateRollbackEvent</abbr> $event)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Reacts to rollback completion.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Reacts to rollback completion.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
                 <td><abbr title="Drupal\migrate\Event\MigrateRollbackEvent">MigrateRollbackEvent</abbr></td>
                 <td>$event</td>
-                <td>The map event.</td>
+                <td><p>The map event.</p></td>
             </tr>
             </table>
 
@@ -934,6 +968,7 @@ the destination object deletion, even the <code>--delete</code> option was passe
 
             
             
+            
                     </div>
     </div>
 
@@ -945,13 +980,14 @@ the destination object deletion, even the <code>--delete</code> option was passe
     <strong>rollbackFeedbackMessage</strong>(bool $done = true)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Emits information on the rollback execution  progress.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Emits information on the rollback execution  progress.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -974,6 +1010,7 @@ the destination object deletion, even the <code>--delete</code> option was passe
 
             
             
+            
                     </div>
     </div>
 
@@ -985,20 +1022,21 @@ the destination object deletion, even the <code>--delete</code> option was passe
     <strong>onPreRowSave</strong>(<abbr title="Drupal\migrate\Event\MigratePreRowSaveEvent">MigratePreRowSaveEvent</abbr> $event)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Reacts to an item about to be imported.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Reacts to an item about to be imported.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
                 <td><abbr title="Drupal\migrate\Event\MigratePreRowSaveEvent">MigratePreRowSaveEvent</abbr></td>
                 <td>$event</td>
-                <td>The pre-save event.</td>
+                <td><p>The pre-save event.</p></td>
             </tr>
             </table>
 
@@ -1012,6 +1050,7 @@ the destination object deletion, even the <code>--delete</code> option was passe
         </tr>
     </table>
 
+            
             
             
                     </div>
@@ -1025,20 +1064,21 @@ the destination object deletion, even the <code>--delete</code> option was passe
     <strong>onPostRowSave</strong>(<abbr title="Drupal\migrate\Event\MigratePostRowSaveEvent">MigratePostRowSaveEvent</abbr> $event)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Reacts aftre a row has been deleted.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Reacts aftre a row has been deleted.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
                 <td><abbr title="Drupal\migrate\Event\MigratePostRowSaveEvent">MigratePostRowSaveEvent</abbr></td>
                 <td>$event</td>
-                <td>The event.</td>
+                <td><p>The event.</p></td>
             </tr>
             </table>
 
@@ -1052,6 +1092,7 @@ the destination object deletion, even the <code>--delete</code> option was passe
         </tr>
     </table>
 
+            
             
             
                     </div>
@@ -1065,20 +1106,21 @@ the destination object deletion, even the <code>--delete</code> option was passe
     <strong>onPostRowDelete</strong>(<abbr title="Drupal\migrate\Event\MigrateRowDeleteEvent">MigrateRowDeleteEvent</abbr> $event)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Reacts to item rollback.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Reacts to item rollback.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
                 <td><abbr title="Drupal\migrate\Event\MigrateRowDeleteEvent">MigrateRowDeleteEvent</abbr></td>
                 <td>$event</td>
-                <td>The post-save event.</td>
+                <td><p>The post-save event.</p></td>
             </tr>
             </table>
 
@@ -1094,6 +1136,7 @@ the destination object deletion, even the <code>--delete</code> option was passe
 
             
             
+            
                     </div>
     </div>
 
@@ -1105,20 +1148,21 @@ the destination object deletion, even the <code>--delete</code> option was passe
     <strong>onPrepareRow</strong>(<a href="../../../Drush/Drupal/Migrate/MigratePrepareRowEvent.html"><abbr title="Drush\Drupal\Migrate\MigratePrepareRowEvent">MigratePrepareRowEvent</abbr></a> $event)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Reacts to a new row being prepared.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Reacts to a new row being prepared.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
                 <td><a href="../../../Drush/Drupal/Migrate/MigratePrepareRowEvent.html"><abbr title="Drush\Drupal\Migrate\MigratePrepareRowEvent">MigratePrepareRowEvent</abbr></a></td>
                 <td>$event</td>
-                <td>The prepare-row event.</td>
+                <td><p>The prepare-row event.</p></td>
             </tr>
             </table>
 
@@ -1143,6 +1187,7 @@ the destination object deletion, even the <code>--delete</code> option was passe
             </table>
 
             
+            
                     </div>
     </div>
 
@@ -1154,13 +1199,14 @@ the destination object deletion, even the <code>--delete</code> option was passe
     <strong>getIdMap</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>{@inheritdoc}</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>{@inheritdoc}</p></p>                        
+        </div>
+        <div class="tags">
             
                             <h4>Return Value</h4>
 
@@ -1171,6 +1217,7 @@ the destination object deletion, even the <code>--delete</code> option was passe
         </tr>
     </table>
 
+            
             
             
                     </div>
@@ -1184,13 +1231,14 @@ the destination object deletion, even the <code>--delete</code> option was passe
     <strong>getCreatedCount</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Returns the number of items created.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Returns the number of items created.</p></p>                        
+        </div>
+        <div class="tags">
             
                             <h4>Return Value</h4>
 
@@ -1201,6 +1249,7 @@ the destination object deletion, even the <code>--delete</code> option was passe
         </tr>
     </table>
 
+            
             
             
                     </div>
@@ -1214,13 +1263,14 @@ the destination object deletion, even the <code>--delete</code> option was passe
     <strong>getUpdatedCount</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Returns the number of items updated.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Returns the number of items updated.</p></p>                        
+        </div>
+        <div class="tags">
             
                             <h4>Return Value</h4>
 
@@ -1231,6 +1281,7 @@ the destination object deletion, even the <code>--delete</code> option was passe
         </tr>
     </table>
 
+            
             
             
                     </div>
@@ -1244,13 +1295,14 @@ the destination object deletion, even the <code>--delete</code> option was passe
     <strong>getIgnoredCount</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Returns the number of items ignored.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Returns the number of items ignored.</p></p>                        
+        </div>
+        <div class="tags">
             
                             <h4>Return Value</h4>
 
@@ -1261,6 +1313,7 @@ the destination object deletion, even the <code>--delete</code> option was passe
         </tr>
     </table>
 
+            
             
             
                     </div>
@@ -1274,13 +1327,14 @@ the destination object deletion, even the <code>--delete</code> option was passe
     <strong>getFailedCount</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Returns the number of items that failed.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Returns the number of items that failed.</p></p>                        
+        </div>
+        <div class="tags">
             
                             <h4>Return Value</h4>
 
@@ -1291,6 +1345,7 @@ the destination object deletion, even the <code>--delete</code> option was passe
         </tr>
     </table>
 
+            
             
             
                     </div>
@@ -1304,14 +1359,15 @@ the destination object deletion, even the <code>--delete</code> option was passe
     <strong>getProcessedCount</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Returns the total number of items processed.</p>                    <p>Note that STATUS_NEEDS_UPDATE is not counted, since this is typically set
-on stubs created as side effects, not on the primary item being imported.</p>                            </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Returns the total number of items processed.</p></p>                <p><p>Note that STATUS_NEEDS_UPDATE is not counted, since this is typically set
+on stubs created as side effects, not on the primary item being imported.</p></p>        
+        </div>
+        <div class="tags">
             
                             <h4>Return Value</h4>
 
@@ -1322,6 +1378,7 @@ on stubs created as side effects, not on the primary item being imported.</p>   
         </tr>
     </table>
 
+            
             
             
                     </div>
@@ -1335,13 +1392,14 @@ on stubs created as side effects, not on the primary item being imported.</p>   
     <strong>getRollbackCount</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Returns the number of items rolled back.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Returns the number of items rolled back.</p></p>                        
+        </div>
+        <div class="tags">
             
                             <h4>Return Value</h4>
 
@@ -1352,6 +1410,7 @@ on stubs created as side effects, not on the primary item being imported.</p>   
         </tr>
     </table>
 
+            
             
             
                     </div>
@@ -1365,13 +1424,14 @@ on stubs created as side effects, not on the primary item being imported.</p>   
     <strong>resetCounters</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Resets all the per-status counters to 0.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Resets all the per-status counters to 0.</p></p>                        
+        </div>
+        <div class="tags">
             
                             <h4>Return Value</h4>
 
@@ -1382,6 +1442,7 @@ on stubs created as side effects, not on the primary item being imported.</p>   
         </tr>
     </table>
 
+            
             
             
                     </div>
@@ -1395,20 +1456,21 @@ on stubs created as side effects, not on the primary item being imported.</p>   
     <strong>initProgressBar</strong>(<abbr title="Drupal\migrate\Plugin\MigrationInterface">MigrationInterface</abbr> $migration)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Initializes the command progress bar if possible.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Initializes the command progress bar if possible.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
                 <td><abbr title="Drupal\migrate\Plugin\MigrationInterface">MigrationInterface</abbr></td>
                 <td>$migration</td>
-                <td>The migration.</td>
+                <td><p>The migration.</p></td>
             </tr>
             </table>
 
@@ -1424,6 +1486,7 @@ on stubs created as side effects, not on the primary item being imported.</p>   
 
             
             
+            
                     </div>
     </div>
 
@@ -1435,13 +1498,14 @@ on stubs created as side effects, not on the primary item being imported.</p>   
     <strong>updateProgressBar</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Advances the progress bar.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Advances the progress bar.</p></p>                        
+        </div>
+        <div class="tags">
             
                             <h4>Return Value</h4>
 
@@ -1452,6 +1516,7 @@ on stubs created as side effects, not on the primary item being imported.</p>   
         </tr>
     </table>
 
+            
             
             
                     </div>
@@ -1465,13 +1530,14 @@ on stubs created as side effects, not on the primary item being imported.</p>   
     <strong>progressFinish</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Removes the progress bar after operation is finished.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Removes the progress bar after operation is finished.</p></p>                        
+        </div>
+        <div class="tags">
             
                             <h4>Return Value</h4>
 
@@ -1482,6 +1548,7 @@ on stubs created as side effects, not on the primary item being imported.</p>   
         </tr>
     </table>
 
+            
             
             
                     </div>
@@ -1495,13 +1562,14 @@ on stubs created as side effects, not on the primary item being imported.</p>   
     <strong>unregisterListeners</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Unregisters all event listeners.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Unregisters all event listeners.</p></p>                        
+        </div>
+        <div class="tags">
             
                             <h4>Return Value</h4>
 
@@ -1514,6 +1582,7 @@ on stubs created as side effects, not on the primary item being imported.</p>   
 
             
             
+            
                     </div>
     </div>
 
@@ -1521,7 +1590,7 @@ on stubs created as side effects, not on the primary item being imported.</p>   
             </div>
 
     
-            </div><div id="footer">
+</div><div id="footer">
         Generated by <a href="https://github.com/code-lts/doctum">Doctum, a API Documentation generator and fork of Sami</a>.</div></div>
     </div>
     </body>

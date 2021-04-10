@@ -16,6 +16,7 @@
         <meta name="MobileOptimized" content="width">
         <meta name="HandheldFriendly" content="true">
         <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+
     </head>
 
     <body id="class" data-name="class:Drush_Preflight_PreflightArgsInterface" data-root-path="../../">
@@ -66,25 +67,24 @@
             </ol>
         </div>
                 <div id="page-content">
-                
     <div class="page-header">
-        <h1>
-            PreflightArgsInterface
-                
-        </h1>
+        <h1>PreflightArgsInterface    
+            </h1>
     </div>
 
+    
     <p>        interface
     <strong>PreflightArgsInterface</strong>        (<a href="https://github.com/drush-ops/drush/blob/10.x/src/Preflight/PreflightArgsInterface.php">View source</a>)
 </p>
 
         
     
+        
 
             <div class="description">
-            <p>Storage for arguments preprocessed during preflight.</p>                                </div>
-    
-    
+            <p><p>Storage for arguments preprocessed during preflight.</p></p>                    </div>
+            
+        
     
     
             <h2>Methods</h2>
@@ -97,7 +97,7 @@
                 <div class="col-md-8 type">
                     <a href="#method_optionsWithValues">optionsWithValues</a>()
         
-                                            <p>Return an associative array of '--option' => 'methodName'.</p>                </div>
+                                            <p><p>Return an associative array of '--option' =&gt; 'methodName'.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -107,8 +107,8 @@
                 <div class="col-md-8 type">
                     <a href="#method_applyToConfig">applyToConfig</a>(<abbr title="Consolidation\Config\ConfigInterface">ConfigInterface</abbr> $config)
         
-                                            <p>Copy any applicable arguments into the provided configuration
-object, as appropriate.</p>                </div>
+                                            <p><p>Copy any applicable arguments into the provided configuration
+object, as appropriate.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -118,8 +118,8 @@ object, as appropriate.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_args">args</a>()
         
-                                            <p>Return all of the args from the inputs that were NOT processed
-by the ArgsPreprocessor (anything not listed in optionsWithValues).</p>                </div>
+                                            <p><p>Return all of the args from the inputs that were NOT processed
+by the ArgsPreprocessor (anything not listed in optionsWithValues).</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -129,7 +129,7 @@ by the ArgsPreprocessor (anything not listed in optionsWithValues).</p>         
                 <div class="col-md-8 type">
                     <a href="#method_applicationPath">applicationPath</a>()
         
-                                            <p>Return the path to this application's executable ($argv[0]).</p>                </div>
+                                            <p><p>Return the path to this application's executable ($argv[0]).</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -139,10 +139,10 @@ by the ArgsPreprocessor (anything not listed in optionsWithValues).</p>         
                 <div class="col-md-8 type">
                     <a href="#method_commandName">commandName</a>()
         
-                                            <p>Return the command name from the runtime args. Note that the
+                                            <p><p>Return the command name from the runtime args. Note that the
 command name also exists inside the runtime args, because the
 runtime args maintain the order of the options relative to the
-command name (save for those options removed by preflight args).</p>                </div>
+command name (save for those options removed by preflight args).</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -152,7 +152,7 @@ command name (save for those options removed by preflight args).</p>            
                 <div class="col-md-8 type">
                     <a href="#method_setCommandName">setCommandName</a>($commandName)
         
-                                            <p>Store the command name, once it is found.</p>                </div>
+                                            <p><p>Store the command name, once it is found.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -162,7 +162,7 @@ command name (save for those options removed by preflight args).</p>            
                 <div class="col-md-8 type">
                     <a href="#method_addArg">addArg</a>(string $arg)
         
-                                            <p>Add one argument to the end of the list returned by the <code>args()</code> method.</p>                </div>
+                                            <p><p>Add one argument to the end of the list returned by the <code>args()</code> method.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -172,7 +172,7 @@ command name (save for those options removed by preflight args).</p>            
                 <div class="col-md-8 type">
                     <a href="#method_passArgs">passArgs</a>($args)
         
-                                            <p>Add everything in the provided array to the list returned by <code>args()</code></p>                </div>
+                                            <p><p>Add everything in the provided array to the list returned by <code>args()</code></p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -182,8 +182,8 @@ command name (save for those options removed by preflight args).</p>            
                 <div class="col-md-8 type">
                     <a href="#method_alias">alias</a>()
         
-                                            <p>Return any '@alias' that may have appeared before the argument
-holding the command name.</p>                </div>
+                                            <p><p>Return any '@alias' that may have appeared before the argument
+holding the command name.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -193,7 +193,7 @@ holding the command name.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_hasAlias">hasAlias</a>()
         
-                                            <p>Returns 'true' if an '@alias' was set.</p>                </div>
+                                            <p><p>Returns 'true' if an '@alias' was set.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -203,7 +203,7 @@ holding the command name.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_setAlias">setAlias</a>(string $alias)
         
-                                            <p>Set an alias. Should always begin with '@'.</p>                </div>
+                                            <p><p>Set an alias. Should always begin with '@'.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
             </div>
@@ -219,15 +219,17 @@ holding the command name.</p>                </div>
     <strong>optionsWithValues</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Return an associative array of '--option' => 'methodName'.</p>                    <p>The 'option' string should begin with the appropriate number
+        <div class="method-description">
+                            <p><p>Return an associative array of '--option' =&gt; 'methodName'.</p></p>                <p><p>The 'option' string should begin with the appropriate number
 of dashes (one or two, as desired), and should end with a '='
-if the option requires a value.</p>                            </div>
-                <div class="tags">
+if the option requires a value.</p></p>        
+        </div>
+        <div class="tags">
+            
             
             
             
@@ -242,24 +244,26 @@ if the option requires a value.</p>                            </div>
     <strong>applyToConfig</strong>(<abbr title="Consolidation\Config\ConfigInterface">ConfigInterface</abbr> $config)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Copy any applicable arguments into the provided configuration
-object, as appropriate.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Copy any applicable arguments into the provided configuration
+object, as appropriate.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
                 <td><abbr title="Consolidation\Config\ConfigInterface">ConfigInterface</abbr></td>
                 <td>$config</td>
-                <td>The configuration object to inject data into</td>
+                <td><p>The configuration object to inject data into</p></td>
             </tr>
             </table>
 
+            
             
             
             
@@ -274,14 +278,16 @@ object, as appropriate.</p>                                                </div
     <strong>args</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Return all of the args from the inputs that were NOT processed
-by the ArgsPreprocessor (anything not listed in optionsWithValues).</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Return all of the args from the inputs that were NOT processed
+by the ArgsPreprocessor (anything not listed in optionsWithValues).</p></p>                        
+        </div>
+        <div class="tags">
+            
             
             
             
@@ -296,13 +302,15 @@ by the ArgsPreprocessor (anything not listed in optionsWithValues).</p>         
     <strong>applicationPath</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Return the path to this application's executable ($argv[0]).</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Return the path to this application's executable ($argv[0]).</p></p>                        
+        </div>
+        <div class="tags">
+            
             
             
             
@@ -317,16 +325,18 @@ by the ArgsPreprocessor (anything not listed in optionsWithValues).</p>         
     <strong>commandName</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Return the command name from the runtime args. Note that the
+        <div class="method-description">
+                            <p><p>Return the command name from the runtime args. Note that the
 command name also exists inside the runtime args, because the
 runtime args maintain the order of the options relative to the
-command name (save for those options removed by preflight args).</p>                                                </div>
-                <div class="tags">
+command name (save for those options removed by preflight args).</p></p>                        
+        </div>
+        <div class="tags">
+            
             
             
             
@@ -341,13 +351,14 @@ command name (save for those options removed by preflight args).</p>            
     <strong>setCommandName</strong>($commandName)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Store the command name, once it is found.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Store the command name, once it is found.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -358,6 +369,7 @@ command name (save for those options removed by preflight args).</p>            
             </tr>
             </table>
 
+            
             
             
             
@@ -372,23 +384,25 @@ command name (save for those options removed by preflight args).</p>            
     <strong>addArg</strong>(string $arg)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Add one argument to the end of the list returned by the <code>args()</code> method.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Add one argument to the end of the list returned by the <code>args()</code> method.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
                 <td>string</td>
                 <td>$arg</td>
-                <td>One argument</td>
+                <td><p>One argument</p></td>
             </tr>
             </table>
 
+            
             
             
             
@@ -403,13 +417,14 @@ command name (save for those options removed by preflight args).</p>            
     <strong>passArgs</strong>($args)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Add everything in the provided array to the list returned by <code>args()</code></p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Add everything in the provided array to the list returned by <code>args()</code></p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -420,6 +435,7 @@ command name (save for those options removed by preflight args).</p>            
             </tr>
             </table>
 
+            
             
             
             
@@ -434,14 +450,16 @@ command name (save for those options removed by preflight args).</p>            
     <strong>alias</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Return any '@alias' that may have appeared before the argument
-holding the command name.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Return any '@alias' that may have appeared before the argument
+holding the command name.</p></p>                        
+        </div>
+        <div class="tags">
+            
             
             
             
@@ -456,13 +474,15 @@ holding the command name.</p>                                                </d
     <strong>hasAlias</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Returns 'true' if an '@alias' was set.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Returns 'true' if an '@alias' was set.</p></p>                        
+        </div>
+        <div class="tags">
+            
             
             
             
@@ -477,23 +497,25 @@ holding the command name.</p>                                                </d
     <strong>setAlias</strong>(string $alias)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Set an alias. Should always begin with '@'.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Set an alias. Should always begin with '@'.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
                 <td>string</td>
                 <td>$alias</td>
-                <td>The alias name '@site'</td>
+                <td><p>The alias name '@site'</p></td>
             </tr>
             </table>
 
+            
             
             
             
@@ -504,7 +526,7 @@ holding the command name.</p>                                                </d
             </div>
 
     
-            </div><div id="footer">
+</div><div id="footer">
         Generated by <a href="https://github.com/code-lts/doctum">Doctum, a API Documentation generator and fork of Sami</a>.</div></div>
     </div>
     </body>

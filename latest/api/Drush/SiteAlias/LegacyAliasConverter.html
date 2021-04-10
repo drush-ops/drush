@@ -16,6 +16,7 @@
         <meta name="MobileOptimized" content="width">
         <meta name="HandheldFriendly" content="true">
         <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+
     </head>
 
     <body id="class" data-name="class:Drush_SiteAlias_LegacyAliasConverter" data-root-path="../../">
@@ -66,34 +67,34 @@
             </ol>
         </div>
                 <div id="page-content">
-                
     <div class="page-header">
-        <h1>
-            LegacyAliasConverter
-                
-        </h1>
+        <h1>LegacyAliasConverter    
+            </h1>
     </div>
 
+    
     <p>        class
     <strong>LegacyAliasConverter</strong>        (<a href="https://github.com/drush-ops/drush/blob/10.x/src/SiteAlias/LegacyAliasConverter.php">View source</a>)
 </p>
 
         
     
+        
 
             <div class="description">
-            <p>Find all legacy alias files and convert them to an equivalent '.yml' file.</p>            <p>We will check the respective mod date of the legacy file and the generated
-file, and update the generated file when the legacy file changes.</p>                    </div>
-    
-    
+            <p><p>Find all legacy alias files and convert them to an equivalent '.yml' file.</p></p>            <p><p>We will check the respective mod date of the legacy file and the generated
+file, and update the generated file when the legacy file changes.</p></p>        </div>
+            
+        
     
             <h2>Properties</h2>
 
             <table class="table table-condensed">
                     <tr>
                 <td class="type" id="property_discovery">
-                                        protected                                        SiteAliasFileDiscovery
-                </td>
+                                        protected                                        <abbr title="Consolidation\SiteAlias\SiteAliasFileDiscovery">SiteAliasFileDiscovery</abbr>
+                                                                                
+                                    </td>
                 <td>$discovery</td>
                 <td class="last"></td>
                 <td></td>
@@ -101,7 +102,8 @@ file, and update the generated file when the legacy file changes.</p>           
                     <tr>
                 <td class="type" id="property_target">
                                         protected                                        string
-                </td>
+                                                                                
+                                    </td>
                 <td>$target</td>
                 <td class="last"></td>
                 <td></td>
@@ -109,7 +111,8 @@ file, and update the generated file when the legacy file changes.</p>           
                     <tr>
                 <td class="type" id="property_converted">
                                         protected                                        bool
-                </td>
+                                                                                
+                                    </td>
                 <td>$converted</td>
                 <td class="last"></td>
                 <td></td>
@@ -117,7 +120,8 @@ file, and update the generated file when the legacy file changes.</p>           
                     <tr>
                 <td class="type" id="property_simulate">
                                         protected                                        bool
-                </td>
+                                                                                
+                                    </td>
                 <td>$simulate</td>
                 <td class="last"></td>
                 <td></td>
@@ -125,7 +129,8 @@ file, and update the generated file when the legacy file changes.</p>           
                     <tr>
                 <td class="type" id="property_convertedFileMap">
                                         protected                                        array
-                </td>
+                                                                                
+                                    </td>
                 <td>$convertedFileMap</td>
                 <td class="last"></td>
                 <td></td>
@@ -143,7 +148,7 @@ file, and update the generated file when the legacy file changes.</p>           
                 <div class="col-md-8 type">
                     <a href="#method___construct">__construct</a>(<abbr title="Consolidation\SiteAlias\SiteAliasFileDiscovery">SiteAliasFileDiscovery</abbr> $discovery)
         
-                                            <p>LegacyAliasConverter constructor.</p>                </div>
+                                            <p><p>LegacyAliasConverter constructor.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -263,9 +268,9 @@ file, and update the generated file when the legacy file changes.</p>           
                 <div class="col-md-8 type">
                     <a href="#method_safeToWrite">safeToWrite</a>($path, $contents, $checksumPath)
         
-                                            <p>Without any safeguards, the conversion process could be very
+                                            <p><p>Without any safeguards, the conversion process could be very
 dangerous to users who modify their converted alias files (as we
-would encourage them to do, if the goal is to convert!).</p>                </div>
+would encourage them to do, if the goal is to convert!).</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -429,8 +434,8 @@ would encourage them to do, if the goal is to convert!).</p>                </di
                 <div class="col-md-8 type">
                     <a href="#method_keyConversion">keyConversion</a>()
         
-                                            <p>Anything in the key of the returned array is converted
-and written to a new top-level item in the result.</p>                </div>
+                                            <p><p>Anything in the key of the returned array is converted
+and written to a new top-level item in the result.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -440,9 +445,9 @@ and written to a new top-level item in the result.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_dataRemap">dataRemap</a>()
         
-                                            <p>This table allows for flexible remapping from one location
+                                            <p><p>This table allows for flexible remapping from one location
 in the original alias to any other location in the target
-alias.</p>                </div>
+alias.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -485,7 +490,7 @@ alias.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_arrayMergeRecursiveDistinct">arrayMergeRecursiveDistinct</a>(array $array1, array $array2)
         
-                                            <p>Merges arrays recursively while preserving.</p>                </div>
+                                            <p><p>Merges arrays recursively while preserving.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
             </div>
@@ -501,25 +506,27 @@ alias.</p>                </div>
     <strong>__construct</strong>(<abbr title="Consolidation\SiteAlias\SiteAliasFileDiscovery">SiteAliasFileDiscovery</abbr> $discovery)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>LegacyAliasConverter constructor.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>LegacyAliasConverter constructor.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
                 <td><abbr title="Consolidation\SiteAlias\SiteAliasFileDiscovery">SiteAliasFileDiscovery</abbr></td>
                 <td>$discovery</td>
-                <td>Provide the same discovery
+                <td><p>Provide the same discovery
 object as used by the SiteAliasFileLoader to ensure that the same
-search locations are used for both classed.</td>
+search locations are used for both classed.</p></td>
             </tr>
             </table>
 
+            
             
             
             
@@ -534,11 +541,15 @@ search locations are used for both classed.</td>
     <strong>isSimulate</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                <div class="tags">
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
             
                             <h4>Return Value</h4>
 
@@ -549,6 +560,7 @@ search locations are used for both classed.</td>
         </tr>
     </table>
 
+            
             
             
                     </div>
@@ -562,11 +574,15 @@ search locations are used for both classed.</td>
     <strong>setSimulate</strong>(bool $simulate)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                <div class="tags">
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -577,6 +593,7 @@ search locations are used for both classed.</td>
             </tr>
             </table>
 
+            
             
             
             
@@ -591,21 +608,26 @@ search locations are used for both classed.</td>
     <strong>setTargetDir</strong>(string $target)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                <div class="tags">
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
                 <td>string</td>
                 <td>$target</td>
-                <td>A directory to write to. If not provided, writes go into same dir as the corresponding legacy file.</td>
+                <td><p>A directory to write to. If not provided, writes go into same dir as the corresponding legacy file.</p></td>
             </tr>
             </table>
 
+            
             
             
             
@@ -620,11 +642,16 @@ search locations are used for both classed.</td>
     <strong>convertOnce</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                <div class="tags">
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+            
             
             
             
@@ -639,11 +666,16 @@ search locations are used for both classed.</td>
     <strong>convert</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                <div class="tags">
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+            
             
             
             
@@ -658,11 +690,15 @@ search locations are used for both classed.</td>
     <strong>checkAnyNeedsConversion</strong>($legacyFiles)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                <div class="tags">
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -673,6 +709,7 @@ search locations are used for both classed.</td>
             </tr>
             </table>
 
+            
             
             
             
@@ -687,11 +724,15 @@ search locations are used for both classed.</td>
     <strong>convertAll</strong>($legacyFiles)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                <div class="tags">
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -702,6 +743,7 @@ search locations are used for both classed.</td>
             </tr>
             </table>
 
+            
             
             
             
@@ -716,11 +758,15 @@ search locations are used for both classed.</td>
     <strong>writeAll</strong>($convertedFiles)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                <div class="tags">
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -731,6 +777,7 @@ search locations are used for both classed.</td>
             </tr>
             </table>
 
+            
             
             
             
@@ -745,11 +792,15 @@ search locations are used for both classed.</td>
     <strong>getContents</strong>($path, $data)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                <div class="tags">
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -765,6 +816,7 @@ search locations are used for both classed.</td>
             </tr>
             </table>
 
+            
             
             
             
@@ -779,11 +831,15 @@ search locations are used for both classed.</td>
     <strong>writeOne</strong>($path, $contents)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                <div class="tags">
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -799,6 +855,7 @@ search locations are used for both classed.</td>
             </tr>
             </table>
 
+            
             
             
             
@@ -813,17 +870,18 @@ search locations are used for both classed.</td>
     <strong>safeToWrite</strong>($path, $contents, $checksumPath)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Without any safeguards, the conversion process could be very
+        <div class="method-description">
+                            <p><p>Without any safeguards, the conversion process could be very
 dangerous to users who modify their converted alias files (as we
-would encourage them to do, if the goal is to convert!).</p>                    <p>This method determines whether it is safe to write to the converted
+would encourage them to do, if the goal is to convert!).</p></p>                <p><p>This method determines whether it is safe to write to the converted
 alias file at the specified path. If the user has modified the target
-file, then we will not overwrite it.</p>                            </div>
-                <div class="tags">
+file, then we will not overwrite it.</p></p>        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -844,6 +902,7 @@ file, then we will not overwrite it.</p>                            </div>
             </tr>
             </table>
 
+            
             
             
             
@@ -858,11 +917,15 @@ file, then we will not overwrite it.</p>                            </div>
     <strong>saveChecksum</strong>($checksumPath, $path, $contents)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                <div class="tags">
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -886,6 +949,7 @@ file, then we will not overwrite it.</p>                            </div>
             
             
             
+            
                     </div>
     </div>
 
@@ -897,11 +961,15 @@ file, then we will not overwrite it.</p>                            </div>
     <strong>readChecksum</strong>($checksumPath)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                <div class="tags">
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -912,6 +980,7 @@ file, then we will not overwrite it.</p>                            </div>
             </tr>
             </table>
 
+            
             
             
             
@@ -926,11 +995,15 @@ file, then we will not overwrite it.</p>                            </div>
     <strong>checksumPath</strong>($path)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                <div class="tags">
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -941,6 +1014,7 @@ file, then we will not overwrite it.</p>                            </div>
             </tr>
             </table>
 
+            
             
             
             
@@ -955,11 +1029,15 @@ file, then we will not overwrite it.</p>                            </div>
     <strong>calculateChecksum</strong>($data)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                <div class="tags">
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -970,6 +1048,7 @@ file, then we will not overwrite it.</p>                            </div>
             </tr>
             </table>
 
+            
             
             
             
@@ -984,11 +1063,15 @@ file, then we will not overwrite it.</p>                            </div>
     <strong>determineConvertedFilename</strong>($legacyFile)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                <div class="tags">
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -999,6 +1082,7 @@ file, then we will not overwrite it.</p>                            </div>
             </tr>
             </table>
 
+            
             
             
             
@@ -1013,11 +1097,15 @@ file, then we will not overwrite it.</p>                            </div>
     <strong>cacheConvertedFilePath</strong>($legacyFile, $convertedFile)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                <div class="tags">
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -1033,6 +1121,7 @@ file, then we will not overwrite it.</p>                            </div>
             </tr>
             </table>
 
+            
             
             
             
@@ -1047,11 +1136,15 @@ file, then we will not overwrite it.</p>                            </div>
     <strong>recoverLegacyFile</strong>($convertedFile)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                <div class="tags">
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -1062,6 +1155,7 @@ file, then we will not overwrite it.</p>                            </div>
             </tr>
             </table>
 
+            
             
             
             
@@ -1076,11 +1170,15 @@ file, then we will not overwrite it.</p>                            </div>
     <strong>checkNeedsConversion</strong>($legacyFile, $convertedFile)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                <div class="tags">
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -1099,6 +1197,7 @@ file, then we will not overwrite it.</p>                            </div>
             
             
             
+            
                     </div>
     </div>
 
@@ -1110,11 +1209,15 @@ file, then we will not overwrite it.</p>                            </div>
     <strong>convertLegacyFile</strong>($legacyFile)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                <div class="tags">
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -1125,6 +1228,7 @@ file, then we will not overwrite it.</p>                            </div>
             </tr>
             </table>
 
+            
             
             
             
@@ -1139,11 +1243,15 @@ file, then we will not overwrite it.</p>                            </div>
     <strong>convertSingleAliasLegacyFile</strong>($legacyFile, $options)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                <div class="tags">
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -1162,6 +1270,7 @@ file, then we will not overwrite it.</p>                            </div>
             
             
             
+            
                     </div>
     </div>
 
@@ -1173,11 +1282,15 @@ file, then we will not overwrite it.</p>                            </div>
     <strong>convertMultipleAliasesLegacyFile</strong>($legacyFile, $aliases, $options)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                <div class="tags">
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -1201,6 +1314,7 @@ file, then we will not overwrite it.</p>                            </div>
             
             
             
+            
                     </div>
     </div>
 
@@ -1212,11 +1326,15 @@ file, then we will not overwrite it.</p>                            </div>
     <strong>convertAlias</strong>($aliasName, $data, $dir = &#039;&#039;)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                <div class="tags">
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -1240,6 +1358,7 @@ file, then we will not overwrite it.</p>                            </div>
             
             
             
+            
                     </div>
     </div>
 
@@ -1251,11 +1370,15 @@ file, then we will not overwrite it.</p>                            </div>
     <strong>fixSiteData</strong>($data)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                <div class="tags">
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -1266,6 +1389,7 @@ file, then we will not overwrite it.</p>                            </div>
             </tr>
             </table>
 
+            
             
             
             
@@ -1280,11 +1404,15 @@ file, then we will not overwrite it.</p>                            </div>
     <strong>remapData</strong>($data)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                <div class="tags">
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -1295,6 +1423,7 @@ file, then we will not overwrite it.</p>                            </div>
             </tr>
             </table>
 
+            
             
             
             
@@ -1309,15 +1438,17 @@ file, then we will not overwrite it.</p>                            </div>
     <strong>keyConversion</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Anything in the key of the returned array is converted
-and written to a new top-level item in the result.</p>                    <p>Anything NOT identified by the key in the returned array
-is moved to the 'options' element.</p>                            </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Anything in the key of the returned array is converted
+and written to a new top-level item in the result.</p></p>                <p><p>Anything NOT identified by the key in the returned array
+is moved to the 'options' element.</p></p>        
+        </div>
+        <div class="tags">
+            
             
             
             
@@ -1332,17 +1463,19 @@ is moved to the 'options' element.</p>                            </div>
     <strong>dataRemap</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>This table allows for flexible remapping from one location
+        <div class="method-description">
+                            <p><p>This table allows for flexible remapping from one location
 in the original alias to any other location in the target
-alias.</p>                    <p>n.b. Most arbitrary data from the original alias will have
+alias.</p></p>                <p><p>n.b. Most arbitrary data from the original alias will have
 been moved into the 'options' element before this remapping
-table is consulted.</p>                            </div>
-                <div class="tags">
+table is consulted.</p></p>        
+        </div>
+        <div class="tags">
+            
             
             
             
@@ -1357,11 +1490,15 @@ table is consulted.</p>                            </div>
     <strong>removePercentFromKey</strong>($data)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                <div class="tags">
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -1372,6 +1509,7 @@ table is consulted.</p>                            </div>
             </tr>
             </table>
 
+            
             
             
             
@@ -1386,11 +1524,15 @@ table is consulted.</p>                            </div>
     <strong>convertSingleFileAlias</strong>($aliasName, $env, $data, $dir = &#039;&#039;)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                <div class="tags">
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -1419,6 +1561,7 @@ table is consulted.</p>                            </div>
             
             
             
+            
                     </div>
     </div>
 
@@ -1430,11 +1573,15 @@ table is consulted.</p>                            </div>
     <strong>outputFilename</strong>($name, $extension, $dir = &#039;&#039;)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                <div class="tags">
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -1458,6 +1605,7 @@ table is consulted.</p>                            </div>
             
             
             
+            
                     </div>
     </div>
 
@@ -1469,13 +1617,14 @@ table is consulted.</p>                            </div>
     <strong>arrayMergeRecursiveDistinct</strong>(array $array1, array $array2)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Merges arrays recursively while preserving.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Merges arrays recursively while preserving.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -1520,6 +1669,7 @@ table is consulted.</p>                            </div>
             </tr>
             </table>
 
+            
                     </div>
     </div>
 
@@ -1527,7 +1677,7 @@ table is consulted.</p>                            </div>
             </div>
 
     
-            </div><div id="footer">
+</div><div id="footer">
         Generated by <a href="https://github.com/code-lts/doctum">Doctum, a API Documentation generator and fork of Sami</a>.</div></div>
     </div>
     </body>

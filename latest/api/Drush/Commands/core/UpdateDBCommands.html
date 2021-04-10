@@ -16,6 +16,7 @@
         <meta name="MobileOptimized" content="width">
         <meta name="HandheldFriendly" content="true">
         <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+
     </head>
 
     <body id="class" data-name="class:Drush_Commands_core_UpdateDBCommands" data-root-path="../../../">
@@ -66,14 +67,12 @@
             </ol>
         </div>
                 <div id="page-content">
-                
     <div class="page-header">
-        <h1>
-            UpdateDBCommands
-                
-        </h1>
+        <h1>UpdateDBCommands    
+            </h1>
     </div>
 
+    
     <p>        class
     <strong>UpdateDBCommands</strong>        extends <a href="../../../Drush/Commands/DrushCommands.html"><abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a>        implements
         <abbr title="Consolidation\SiteAlias\SiteAliasManagerAwareInterface">SiteAliasManagerAwareInterface</abbr>        (<a href="https://github.com/drush-ops/drush/blob/10.x/src/Commands/core/UpdateDBCommands.php">View source</a>)
@@ -81,9 +80,10 @@
 
         
     
+        
 
-    
-            <h2>Traits</h2>
+            
+                <h2>Traits</h2>
 
         
     <div class="container-fluid underlined">
@@ -119,39 +119,47 @@
             </div>
             </div>
     
-            <h2>Constants</h2>
-
-            <table class="table table-condensed">
+            <h2>Constants</h2>    <table class="table table-condensed">
                     <tr>
-                <td>REQ</td>
+                <td>
+                                                                                                                        REQ
+                                    </td>
                 <td class="last">
                     <p><em></em></p>
                     <p></p>
                 </td>
             </tr>
                     <tr>
-                <td>OPT</td>
+                <td>
+                                                                                                                        OPT
+                                    </td>
                 <td class="last">
                     <p><em></em></p>
                     <p></p>
                 </td>
             </tr>
                     <tr>
-                <td>EXIT_SUCCESS</td>
+                <td>
+                                                                                                                        EXIT_SUCCESS
+                                    </td>
                 <td class="last">
                     <p><em></em></p>
                     <p></p>
                 </td>
             </tr>
                     <tr>
-                <td>EXIT_FAILURE</td>
+                <td>
+                                                                                                                        EXIT_FAILURE
+                                    </td>
                 <td class="last">
                     <p><em></em></p>
                     <p></p>
                 </td>
             </tr>
                     <tr>
-                <td>EXIT_FAILURE_WITH_CLARITY</td>
+                <td>
+                                                                                                                        EXIT_FAILURE_WITH_CLARITY
+                                    </td>
                 <td class="last">
                     <p><em></em></p>
                     <p></p>
@@ -165,8 +173,9 @@
             <table class="table table-condensed">
                     <tr>
                 <td class="type" id="property_commandData">
-                                        protected                                        CommandData
-                </td>
+                                        protected                                        <abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr>
+                                                                                
+                                    </td>
                 <td>$commandData</td>
                 <td class="last"></td>
                 <td><small>from&nbsp;<a href="../../../Drush/Commands/DrushCommands.html#property_commandData">
@@ -175,7 +184,8 @@
                     <tr>
                 <td class="type" id="property_cache_clear">
                                         protected                                        
-                </td>
+                                                                                
+                                    </td>
                 <td>$cache_clear</td>
                 <td class="last"></td>
                 <td></td>
@@ -183,7 +193,8 @@
                     <tr>
                 <td class="type" id="property_maintenanceModeOriginalState">
                                         protected                                        
-                </td>
+                                                                                
+                                    </td>
                 <td>$maintenanceModeOriginalState</td>
                 <td class="last"></td>
                 <td></td>
@@ -201,8 +212,8 @@
                 <div class="col-md-8 type">
                     <a href="#method_getConfig">getConfig</a>()
         
-                                            <p>Replaces same method in ConfigAwareTrait in order to provide a
-DrushConfig as return type. Helps with IDE completion.</p>                </div>
+                                            <p><p>Replaces same method in ConfigAwareTrait in order to provide a
+DrushConfig as return type. Helps with IDE completion.</p></p>                </div>
                 <div class="col-md-2"><small>from&nbsp;<a href="../../../Drush/Config/ConfigAwareTrait.html#method_getConfig">
 <abbr title="Drush\Config\ConfigAwareTrait">ConfigAwareTrait</abbr></a></small></div>
             </div>
@@ -225,18 +236,18 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_io">io</a>()
         
-                                            <p>Override Robo's IO function with our custom style.</p>                </div>
+                                            <p><p>Override Robo's IO function with our custom style.</p></p>                </div>
                 <div class="col-md-2"><small>from&nbsp;<a href="../../../Drush/Commands/DrushCommands.html#method_io">
 <abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a></small></div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    LoggerInterface
+                    <abbr title="Psr\Log\LoggerInterface">LoggerInterface</abbr>
                 </div>
                 <div class="col-md-8 type">
                     <a href="#method_logger">logger</a>()
         
-                                            <p>Returns a logger object.</p>                </div>
+                                            <p><p>Returns a logger object.</p></p>                </div>
                 <div class="col-md-2"><small>from&nbsp;<a href="../../../Drush/Commands/DrushCommands.html#method_logger">
 <abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a></small></div>
             </div>
@@ -247,7 +258,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_printFile">printFile</a>(string $file)
         
-                                            <p>Print the contents of a file.</p>                </div>
+                                            <p><p>Print the contents of a file.</p></p>                </div>
                 <div class="col-md-2"><small>from&nbsp;<a href="../../../Drush/Commands/DrushCommands.html#method_printFile">
 <abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a></small></div>
             </div>
@@ -258,7 +269,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_preHook">preHook</a>(<abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr> $commandData)
         
-                                            <p>Persist commandData for use in primary command callback. Used by 'topic' commands.</p>                </div>
+                                            <p><p>Persist commandData for use in primary command callback. Used by 'topic' commands.</p></p>                </div>
                 <div class="col-md-2"><small>from&nbsp;<a href="../../../Drush/Commands/DrushCommands.html#method_preHook">
 <abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a></small></div>
             </div>
@@ -269,7 +280,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_printFileTopic">printFileTopic</a>(<abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr> $commandData)
         
-                                            <p>Print the contents of a file. The path comes from the @topic annotation.</p>                </div>
+                                            <p><p>Print the contents of a file. The path comes from the @topic annotation.</p></p>                </div>
                 <div class="col-md-2"><small>from&nbsp;<a href="../../../Drush/Commands/DrushCommands.html#method_printFileTopic">
 <abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a></small></div>
             </div>
@@ -280,7 +291,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_getStack">getStack</a>()
         
-                                            <p>Get a Guzzle handler stack that uses the Drush logger.</p>                </div>
+                                            <p><p>Get a Guzzle handler stack that uses the Drush logger.</p></p>                </div>
                 <div class="col-md-2"><small>from&nbsp;<a href="../../../Drush/Commands/DrushCommands.html#method_getStack">
 <abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a></small></div>
             </div>
@@ -291,7 +302,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_updatedb">updatedb</a>($options = [&#039;cache-clear&#039; =&gt; true, &#039;entity-updates&#039; =&gt; false, &#039;post-updates&#039; =&gt; true])
         
-                                            <p>Apply any database updates required (as with running update.php).</p>                </div>
+                                            <p><p>Apply any database updates required (as with running update.php).</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -301,7 +312,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_entityUpdates">entityUpdates</a>($options = [&#039;cache-clear&#039; =&gt; true])
         
-                                            <p>Apply pending entity schema updates.</p>                </div>
+                                            <p><p>Apply pending entity schema updates.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -311,7 +322,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_updatedbStatus">updatedbStatus</a>($options = [&#039;format&#039; =&gt; &#039;table&#039;, &#039;entity-updates&#039; =&gt; true, &#039;post-updates&#039; =&gt; true])
         
-                                            <p>List any pending database updates.</p>                </div>
+                                            <p><p>List any pending database updates.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -321,7 +332,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_process">process</a>(string $batch_id, $options = [&#039;format&#039; =&gt; &#039;json&#039;])
         
-                                            <p>Process operations in the specified batch set.</p>                </div>
+                                            <p><p>Process operations in the specified batch set.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -331,8 +342,8 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_updateDoOne">updateDoOne</a>(string $module, int $number, array $dependency_map, DrushBatchContext $context)
         
-                                            <p>Perform one update and store the results which will later be displayed on
-the finished page.</p>                </div>
+                                            <p><p>Perform one update and store the results which will later be displayed on
+the finished page.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -342,7 +353,7 @@ the finished page.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_updateDoOnePostUpdate">updateDoOnePostUpdate</a>(string $function, DrushBatchContext $context)
         
-                                            <p>Batch command that executes a single post-update.</p>                </div>
+                                            <p><p>Batch command that executes a single post-update.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -352,7 +363,7 @@ the finished page.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_updateFinished">updateFinished</a>(bool $success, array $results, array $operations)
         
-                                            <p>Batch finished callback.</p>                </div>
+                                            <p><p>Batch finished callback.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -362,7 +373,7 @@ the finished page.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_updateBatch">updateBatch</a>($options)
         
-                                            <p>Start the database update batch process.</p>                </div>
+                                            <p><p>Start the database update batch process.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -383,7 +394,7 @@ the finished page.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_updateEntityDefinitions">updateEntityDefinitions</a>($context)
         
-                                            <p>Apply entity schema updates.</p>                </div>
+                                            <p><p>Apply entity schema updates.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -404,7 +415,7 @@ the finished page.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_cacheRebuild">cacheRebuild</a>()
         
-                                            <p>Clears caches and rebuilds the container.</p>                </div>
+                                            <p><p>Clears caches and rebuilds the container.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -414,8 +425,10 @@ the finished page.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_getUpdatedbStatus">getUpdatedbStatus</a>(array $options)
         
-                                            <p>Return a 2 item array with
- - an array where each item is a 4 item associative array describing a pending update.</p>                </div>
+                                            <p><p>Return a 2 item array with</p>
+<ul>
+<li>an array where each item is a 4 item associative array describing a pending update.</li>
+</ul></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -425,7 +438,7 @@ the finished page.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_entityUpdatesMain">entityUpdatesMain</a>()
         
-                                            <p>Apply pending entity schema updates.</p>                </div>
+                                            <p><p>Apply pending entity schema updates.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -435,7 +448,7 @@ the finished page.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_updateCheckRequirements">updateCheckRequirements</a>()
         
-                                            <p>Log messages for any requirements warnings/errors.</p>                </div>
+                                            <p><p>Log messages for any requirements warnings/errors.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
             </div>
@@ -452,14 +465,15 @@ the finished page.</p>                </div>
     <strong>getConfig</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Replaces same method in ConfigAwareTrait in order to provide a
-DrushConfig as return type. Helps with IDE completion.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Replaces same method in ConfigAwareTrait in order to provide a
+DrushConfig as return type. Helps with IDE completion.</p></p>                        
+        </div>
+        <div class="tags">
             
                             <h4>Return Value</h4>
 
@@ -483,6 +497,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </tr>
             </table>
 
+            
                     </div>
     </div>
 
@@ -495,11 +510,16 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
     <strong>__construct</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                <div class="tags">
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+            
             
             
             
@@ -515,13 +535,15 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
     <strong>io</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Override Robo's IO function with our custom style.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Override Robo's IO function with our custom style.</p></p>                        
+        </div>
+        <div class="tags">
+            
             
             
             
@@ -533,27 +555,29 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
                     <h3 id="method_logger">
         <div class="location">in <a href="../../../Drush/Commands/DrushCommands.html#method_logger">
 <abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a> <a href="https://github.com/drush-ops/drush/blob/10.x/src/Commands/DrushCommands.php#L68">at line 68</a></div>
-        <code>            protected        LoggerInterface
+        <code>            protected        <abbr title="Psr\Log\LoggerInterface">LoggerInterface</abbr>
     <strong>logger</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Returns a logger object.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Returns a logger object.</p></p>                        
+        </div>
+        <div class="tags">
             
                             <h4>Return Value</h4>
 
                     <table class="table table-condensed">
         <tr>
-            <td>LoggerInterface</td>
+            <td><abbr title="Psr\Log\LoggerInterface">LoggerInterface</abbr></td>
             <td></td>
         </tr>
     </table>
 
+            
             
             
                     </div>
@@ -568,23 +592,25 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
     <strong>printFile</strong>(string $file)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Print the contents of a file.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Print the contents of a file.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
                 <td>string</td>
                 <td>$file</td>
-                <td>Full path to a file.</td>
+                <td><p>Full path to a file.</p></td>
             </tr>
             </table>
 
+            
             
             
             
@@ -600,13 +626,14 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
     <strong>preHook</strong>(<abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr> $commandData)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Persist commandData for use in primary command callback. Used by 'topic' commands.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Persist commandData for use in primary command callback. Used by 'topic' commands.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -617,6 +644,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </tr>
             </table>
 
+            
             
             
             
@@ -632,23 +660,25 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
     <strong>printFileTopic</strong>(<abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr> $commandData)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Print the contents of a file. The path comes from the @topic annotation.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Print the contents of a file. The path comes from the @topic annotation.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
                 <td><abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr></td>
                 <td>$commandData</td>
-                <td>Full path to a file.</td>
+                <td><p>Full path to a file.</p></td>
             </tr>
             </table>
 
+            
             
             
             
@@ -664,13 +694,14 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
     <strong>getStack</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Get a Guzzle handler stack that uses the Drush logger.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Get a Guzzle handler stack that uses the Drush logger.</p></p>                        
+        </div>
+        <div class="tags">
             
                             <h4>Return Value</h4>
 
@@ -694,6 +725,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </tr>
             </table>
 
+            
                     </div>
     </div>
 
@@ -705,13 +737,14 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
     <strong>updatedb</strong>($options = [&#039;cache-clear&#039; =&gt; true, &#039;entity-updates&#039; =&gt; false, &#039;post-updates&#039; =&gt; true])
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Apply any database updates required (as with running update.php).</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Apply any database updates required (as with running update.php).</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -722,6 +755,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </tr>
             </table>
 
+            
             
             
             
@@ -736,13 +770,14 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
     <strong>entityUpdates</strong>($options = [&#039;cache-clear&#039; =&gt; true])
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Apply pending entity schema updates.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Apply pending entity schema updates.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -753,6 +788,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </tr>
             </table>
 
+            
             
             
             
@@ -767,13 +803,14 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
     <strong>updatedbStatus</strong>($options = [&#039;format&#039; =&gt; &#039;table&#039;, &#039;entity-updates&#039; =&gt; true, &#039;post-updates&#039; =&gt; true])
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>List any pending database updates.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>List any pending database updates.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -796,6 +833,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
 
             
             
+            
                     </div>
     </div>
 
@@ -807,20 +845,21 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
     <strong>process</strong>(string $batch_id, $options = [&#039;format&#039; =&gt; &#039;json&#039;])
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Process operations in the specified batch set.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Process operations in the specified batch set.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
                 <td>string</td>
                 <td>$batch_id</td>
-                <td>The batch id that will be processed.</td>
+                <td><p>The batch id that will be processed.</p></td>
             </tr>
                     <tr>
                 <td></td>
@@ -841,6 +880,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
 
             
             
+            
                     </div>
     </div>
 
@@ -852,46 +892,47 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
     <strong>updateDoOne</strong>(string $module, int $number, array $dependency_map, DrushBatchContext $context)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Perform one update and store the results which will later be displayed on
-the finished page.</p>                    <p>An update function can force the current and all later updates for this
+        <div class="method-description">
+                            <p><p>Perform one update and store the results which will later be displayed on
+the finished page.</p></p>                <p><p>An update function can force the current and all later updates for this
 module to abort by returning a $ret array with an element like:
-$ret['#abort'] = array('success' => FALSE, 'query' => 'What went wrong');
+$ret['#abort'] = array('success' =&gt; FALSE, 'query' =&gt; 'What went wrong');
 The schema version will not be updated in this case, and all the
 aborted updates will continue to appear on update.php as updates that
 have not yet been run.</p>
-
-<p>This method is static since since it is called by _drush_batch_worker().</p>                            </div>
-                <div class="tags">
+<p>This method is static since since it is called by _drush_batch_worker().</p></p>        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
                 <td>string</td>
                 <td>$module</td>
-                <td>The module whose update will be run.</td>
+                <td><p>The module whose update will be run.</p></td>
             </tr>
                     <tr>
                 <td>int</td>
                 <td>$number</td>
-                <td>The update number to run.</td>
+                <td><p>The update number to run.</p></td>
             </tr>
                     <tr>
                 <td>array</td>
                 <td>$dependency_map</td>
-                <td>The update dependency map.</td>
+                <td><p>The update dependency map.</p></td>
             </tr>
                     <tr>
                 <td>DrushBatchContext</td>
                 <td>$context</td>
-                <td>The batch context object.</td>
+                <td><p>The batch context object.</p></td>
             </tr>
             </table>
 
+            
             
             
             
@@ -906,28 +947,30 @@ have not yet been run.</p>
     <strong>updateDoOnePostUpdate</strong>(string $function, DrushBatchContext $context)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Batch command that executes a single post-update.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Batch command that executes a single post-update.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
                 <td>string</td>
                 <td>$function</td>
-                <td>The post-update function to execute.</td>
+                <td><p>The post-update function to execute.</p></td>
             </tr>
                     <tr>
                 <td>DrushBatchContext</td>
                 <td>$context</td>
-                <td>The batch context object.</td>
+                <td><p>The batch context object.</p></td>
             </tr>
             </table>
 
+            
             
             
             
@@ -942,20 +985,21 @@ have not yet been run.</p>
     <strong>updateFinished</strong>(bool $success, array $results, array $operations)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Batch finished callback.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Batch finished callback.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
                 <td>bool</td>
                 <td>$success</td>
-                <td>Whether the batch ended without a fatal error.</td>
+                <td><p>Whether the batch ended without a fatal error.</p></td>
             </tr>
                     <tr>
                 <td>array</td>
@@ -972,6 +1016,7 @@ have not yet been run.</p>
             
             
             
+            
                     </div>
     </div>
 
@@ -983,13 +1028,14 @@ have not yet been run.</p>
     <strong>updateBatch</strong>($options)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Start the database update batch process.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Start the database update batch process.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -1012,6 +1058,7 @@ have not yet been run.</p>
 
             
             
+            
                     </div>
     </div>
 
@@ -1023,11 +1070,15 @@ have not yet been run.</p>
     <strong>restoreMaintMode</strong>($status)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                <div class="tags">
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -1038,6 +1089,7 @@ have not yet been run.</p>
             </tr>
             </table>
 
+            
             
             
             
@@ -1052,13 +1104,14 @@ have not yet been run.</p>
     <strong>updateEntityDefinitions</strong>($context)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Apply entity schema updates.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Apply entity schema updates.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -1069,6 +1122,7 @@ have not yet been run.</p>
             </tr>
             </table>
 
+            
             
             
             
@@ -1083,11 +1137,16 @@ have not yet been run.</p>
     <strong>getUpdateList</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                <div class="tags">
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+            
             
             
             
@@ -1102,19 +1161,19 @@ have not yet been run.</p>
     <strong>cacheRebuild</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Clears caches and rebuilds the container.</p>                    <p>This is called in between regular updates and post updates. Do not use
+        <div class="method-description">
+                            <p><p>Clears caches and rebuilds the container.</p></p>                <p><p>This is called in between regular updates and post updates. Do not use
 drush_drupal_cache_clear_all() as the cache clearing and container rebuild
 must happen in the same process that the updates are run in.</p>
-
 <p>Drupal core's update.php uses drupal_flush_all_caches() directly without
 explicitly rebuilding the container as the container is rebuilt on the next
-HTTP request of the batch.</p>                            </div>
-                <div class="tags">
+HTTP request of the batch.</p></p>        
+        </div>
+        <div class="tags">
             
             
             
@@ -1129,6 +1188,7 @@ HTTP request of the batch.</p>                            </div>
             </tr>
             </table>
 
+            
                     </div>
     </div>
 
@@ -1140,17 +1200,19 @@ HTTP request of the batch.</p>                            </div>
     <strong>getUpdatedbStatus</strong>(array $options)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Return a 2 item array with
- - an array where each item is a 4 item associative array describing a pending update.</p>                    <p><ul>
+        <div class="method-description">
+                            <p><p>Return a 2 item array with</p>
+<ul>
+<li>an array where each item is a 4 item associative array describing a pending update.</li>
+</ul></p>                <p><ul>
 <li>an array listing the first update to run, keyed by module.</li>
-</ul>
-</p>                            </div>
-                <div class="tags">
+</ul></p>        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -1161,6 +1223,7 @@ HTTP request of the batch.</p>                            </div>
             </tr>
             </table>
 
+            
             
             
             
@@ -1175,13 +1238,15 @@ HTTP request of the batch.</p>                            </div>
     <strong>entityUpdatesMain</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Apply pending entity schema updates.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Apply pending entity schema updates.</p></p>                        
+        </div>
+        <div class="tags">
+            
             
             
             
@@ -1196,13 +1261,15 @@ HTTP request of the batch.</p>                            </div>
     <strong>updateCheckRequirements</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Log messages for any requirements warnings/errors.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Log messages for any requirements warnings/errors.</p></p>                        
+        </div>
+        <div class="tags">
+            
             
             
             
@@ -1213,7 +1280,7 @@ HTTP request of the batch.</p>                            </div>
             </div>
 
     
-            </div><div id="footer">
+</div><div id="footer">
         Generated by <a href="https://github.com/code-lts/doctum">Doctum, a API Documentation generator and fork of Sami</a>.</div></div>
     </div>
     </body>

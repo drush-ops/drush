@@ -16,6 +16,7 @@
         <meta name="MobileOptimized" content="width">
         <meta name="HandheldFriendly" content="true">
         <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+
     </head>
 
     <body id="class" data-name="class:Drush_Commands_core_DocsCommands" data-root-path="../../../">
@@ -66,28 +67,27 @@
             </ol>
         </div>
                 <div id="page-content">
-                
     <div class="page-header">
-        <h1>
-            DocsCommands
-                
-        </h1>
+        <h1>DocsCommands    
+            </h1>
     </div>
 
+    
     <p>        class
     <strong>DocsCommands</strong>        extends <a href="../../../Drush/Commands/DrushCommands.html"><abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a>        (<a href="https://github.com/drush-ops/drush/blob/10.x/src/Commands/core/DocsCommands.php">View source</a>)
 </p>
 
         
     
+        
 
             <div class="description">
-            <p>Topic commands.</p>            <p>Any commandfile may add topics.
-Set 'topic' => TRUE to indicate the command is a topic (REQUIRED)
+            <p><p>Topic commands.</p></p>            <p><p>Any commandfile may add topics.
+Set 'topic' =&gt; TRUE to indicate the command is a topic (REQUIRED)
 Begin the topic name with the name of the commandfile (just like
-any other command).</p>                    </div>
-    
-            <h2>Traits</h2>
+any other command).</p></p>        </div>
+            
+                <h2>Traits</h2>
 
         
     <div class="container-fluid underlined">
@@ -118,39 +118,47 @@ any other command).</p>                    </div>
             </div>
             </div>
     
-            <h2>Constants</h2>
-
-            <table class="table table-condensed">
+            <h2>Constants</h2>    <table class="table table-condensed">
                     <tr>
-                <td>REQ</td>
+                <td>
+                                                                                                                        REQ
+                                    </td>
                 <td class="last">
                     <p><em></em></p>
                     <p></p>
                 </td>
             </tr>
                     <tr>
-                <td>OPT</td>
+                <td>
+                                                                                                                        OPT
+                                    </td>
                 <td class="last">
                     <p><em></em></p>
                     <p></p>
                 </td>
             </tr>
                     <tr>
-                <td>EXIT_SUCCESS</td>
+                <td>
+                                                                                                                        EXIT_SUCCESS
+                                    </td>
                 <td class="last">
                     <p><em></em></p>
                     <p></p>
                 </td>
             </tr>
                     <tr>
-                <td>EXIT_FAILURE</td>
+                <td>
+                                                                                                                        EXIT_FAILURE
+                                    </td>
                 <td class="last">
                     <p><em></em></p>
                     <p></p>
                 </td>
             </tr>
                     <tr>
-                <td>EXIT_FAILURE_WITH_CLARITY</td>
+                <td>
+                                                                                                                        EXIT_FAILURE_WITH_CLARITY
+                                    </td>
                 <td class="last">
                     <p><em></em></p>
                     <p></p>
@@ -164,8 +172,9 @@ any other command).</p>                    </div>
             <table class="table table-condensed">
                     <tr>
                 <td class="type" id="property_commandData">
-                                        protected                                        CommandData
-                </td>
+                                        protected                                        <abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr>
+                                                                                
+                                    </td>
                 <td>$commandData</td>
                 <td class="last"></td>
                 <td><small>from&nbsp;<a href="../../../Drush/Commands/DrushCommands.html#property_commandData">
@@ -184,8 +193,8 @@ any other command).</p>                    </div>
                 <div class="col-md-8 type">
                     <a href="#method_getConfig">getConfig</a>()
         
-                                            <p>Replaces same method in ConfigAwareTrait in order to provide a
-DrushConfig as return type. Helps with IDE completion.</p>                </div>
+                                            <p><p>Replaces same method in ConfigAwareTrait in order to provide a
+DrushConfig as return type. Helps with IDE completion.</p></p>                </div>
                 <div class="col-md-2"><small>from&nbsp;<a href="../../../Drush/Config/ConfigAwareTrait.html#method_getConfig">
 <abbr title="Drush\Config\ConfigAwareTrait">ConfigAwareTrait</abbr></a></small></div>
             </div>
@@ -208,18 +217,18 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_io">io</a>()
         
-                                            <p>Override Robo's IO function with our custom style.</p>                </div>
+                                            <p><p>Override Robo's IO function with our custom style.</p></p>                </div>
                 <div class="col-md-2"><small>from&nbsp;<a href="../../../Drush/Commands/DrushCommands.html#method_io">
 <abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a></small></div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    LoggerInterface
+                    <abbr title="Psr\Log\LoggerInterface">LoggerInterface</abbr>
                 </div>
                 <div class="col-md-8 type">
                     <a href="#method_logger">logger</a>()
         
-                                            <p>Returns a logger object.</p>                </div>
+                                            <p><p>Returns a logger object.</p></p>                </div>
                 <div class="col-md-2"><small>from&nbsp;<a href="../../../Drush/Commands/DrushCommands.html#method_logger">
 <abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a></small></div>
             </div>
@@ -230,7 +239,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_printFile">printFile</a>(string $file)
         
-                                            <p>Print the contents of a file.</p>                </div>
+                                            <p><p>Print the contents of a file.</p></p>                </div>
                 <div class="col-md-2"><small>from&nbsp;<a href="../../../Drush/Commands/DrushCommands.html#method_printFile">
 <abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a></small></div>
             </div>
@@ -241,7 +250,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_preHook">preHook</a>(<abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr> $commandData)
         
-                                            <p>Persist commandData for use in primary command callback. Used by 'topic' commands.</p>                </div>
+                                            <p><p>Persist commandData for use in primary command callback. Used by 'topic' commands.</p></p>                </div>
                 <div class="col-md-2"><small>from&nbsp;<a href="../../../Drush/Commands/DrushCommands.html#method_preHook">
 <abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a></small></div>
             </div>
@@ -252,7 +261,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_printFileTopic">printFileTopic</a>(<abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr> $commandData)
         
-                                            <p>Print the contents of a file. The path comes from the @topic annotation.</p>                </div>
+                                            <p><p>Print the contents of a file. The path comes from the @topic annotation.</p></p>                </div>
                 <div class="col-md-2"><small>from&nbsp;<a href="../../../Drush/Commands/DrushCommands.html#method_printFileTopic">
 <abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a></small></div>
             </div>
@@ -263,7 +272,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_getStack">getStack</a>()
         
-                                            <p>Get a Guzzle handler stack that uses the Drush logger.</p>                </div>
+                                            <p><p>Get a Guzzle handler stack that uses the Drush logger.</p></p>                </div>
                 <div class="col-md-2"><small>from&nbsp;<a href="../../../Drush/Commands/DrushCommands.html#method_getStack">
 <abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a></small></div>
             </div>
@@ -274,7 +283,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_readme">readme</a>()
         
-                                            <p>README.md</p>                </div>
+                                            <p><p>README.md</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -284,7 +293,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_bisect">bisect</a>()
         
-                                            <p>Drush's support for Git Bisect.</p>                </div>
+                                            <p><p>Drush's support for Git Bisect.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -294,7 +303,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_bashrc">bashrc</a>()
         
-                                            <p>Bashrc customization examples for Drush.</p>                </div>
+                                            <p><p>Bashrc customization examples for Drush.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -304,7 +313,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_config">config</a>()
         
-                                            <p>Drush configuration.</p>                </div>
+                                            <p><p>Drush configuration.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -314,7 +323,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_hooks">hooks</a>()
         
-                                            <p>Drush hooks.</p>                </div>
+                                            <p><p>Drush hooks.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -324,7 +333,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_configExport">configExport</a>()
         
-                                            <p>Drupal config export instructions, including customizing config by environment.</p>                </div>
+                                            <p><p>Drupal config export instructions, including customizing config by environment.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -334,7 +343,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_outputFormatsFilters">outputFormatsFilters</a>()
         
-                                            <p>Output formatters and filters: control the command output</p>                </div>
+                                            <p><p>Output formatters and filters: control the command output</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -344,7 +353,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_siteAliases">siteAliases</a>()
         
-                                            <p>Creating site aliases for running Drush on remote sites.</p>                </div>
+                                            <p><p>Creating site aliases for running Drush on remote sites.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -354,7 +363,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_script">script</a>()
         
-                                            <p>An example Drush script.</p>                </div>
+                                            <p><p>An example Drush script.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -364,7 +373,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_bootstrap">bootstrap</a>()
         
-                                            <p>Bootstrap explanation: how Drush starts up and prepares the Drupal environment.</p>                </div>
+                                            <p><p>Bootstrap explanation: how Drush starts up and prepares the Drupal environment.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -374,7 +383,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_cron">cron</a>()
         
-                                            <p>Crontab instructions for running your Drupal cron tasks via <code>drush cron</code>.</p>                </div>
+                                            <p><p>Crontab instructions for running your Drupal cron tasks via <code>drush cron</code>.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -384,7 +393,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_commands">commands</a>()
         
-                                            <p>Instructions on creating your own Drush commands.</p>                </div>
+                                            <p><p>Instructions on creating your own Drush commands.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -394,7 +403,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_generators">generators</a>()
         
-                                            <p>Instructions on creating your own Drush Generators.</p>                </div>
+                                            <p><p>Instructions on creating your own Drush Generators.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -404,7 +413,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_exampleCommand">exampleCommand</a>()
         
-                                            <p>Example Drush command file.</p>                </div>
+                                            <p><p>Example Drush command file.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -414,7 +423,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_migrate">migrate</a>()
         
-                                            <p>Defining and running migrations.</p>                </div>
+                                            <p><p>Defining and running migrations.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -424,7 +433,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_syncHttp">syncHttp</a>()
         
-                                            <p>Extend sql-sync to allow transfer of the sql dump file via http.</p>                </div>
+                                            <p><p>Extend sql-sync to allow transfer of the sql dump file via http.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -434,7 +443,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_policy">policy</a>()
         
-                                            <p>Example policy file.</p>                </div>
+                                            <p><p>Example policy file.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -444,7 +453,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_deploy">deploy</a>()
         
-                                            <p>Deploy command for Drupal.</p>                </div>
+                                            <p><p>Deploy command for Drupal.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
             </div>
@@ -461,14 +470,15 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
     <strong>getConfig</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Replaces same method in ConfigAwareTrait in order to provide a
-DrushConfig as return type. Helps with IDE completion.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Replaces same method in ConfigAwareTrait in order to provide a
+DrushConfig as return type. Helps with IDE completion.</p></p>                        
+        </div>
+        <div class="tags">
             
                             <h4>Return Value</h4>
 
@@ -492,6 +502,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </tr>
             </table>
 
+            
                     </div>
     </div>
 
@@ -504,11 +515,16 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
     <strong>__construct</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                <div class="tags">
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+            
             
             
             
@@ -524,13 +540,15 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
     <strong>io</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Override Robo's IO function with our custom style.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Override Robo's IO function with our custom style.</p></p>                        
+        </div>
+        <div class="tags">
+            
             
             
             
@@ -542,27 +560,29 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
                     <h3 id="method_logger">
         <div class="location">in <a href="../../../Drush/Commands/DrushCommands.html#method_logger">
 <abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a> <a href="https://github.com/drush-ops/drush/blob/10.x/src/Commands/DrushCommands.php#L68">at line 68</a></div>
-        <code>            protected        LoggerInterface
+        <code>            protected        <abbr title="Psr\Log\LoggerInterface">LoggerInterface</abbr>
     <strong>logger</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Returns a logger object.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Returns a logger object.</p></p>                        
+        </div>
+        <div class="tags">
             
                             <h4>Return Value</h4>
 
                     <table class="table table-condensed">
         <tr>
-            <td>LoggerInterface</td>
+            <td><abbr title="Psr\Log\LoggerInterface">LoggerInterface</abbr></td>
             <td></td>
         </tr>
     </table>
 
+            
             
             
                     </div>
@@ -577,23 +597,25 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
     <strong>printFile</strong>(string $file)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Print the contents of a file.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Print the contents of a file.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
                 <td>string</td>
                 <td>$file</td>
-                <td>Full path to a file.</td>
+                <td><p>Full path to a file.</p></td>
             </tr>
             </table>
 
+            
             
             
             
@@ -609,13 +631,14 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
     <strong>preHook</strong>(<abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr> $commandData)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Persist commandData for use in primary command callback. Used by 'topic' commands.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Persist commandData for use in primary command callback. Used by 'topic' commands.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -626,6 +649,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </tr>
             </table>
 
+            
             
             
             
@@ -641,23 +665,25 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
     <strong>printFileTopic</strong>(<abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr> $commandData)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Print the contents of a file. The path comes from the @topic annotation.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Print the contents of a file. The path comes from the @topic annotation.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
                 <td><abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr></td>
                 <td>$commandData</td>
-                <td>Full path to a file.</td>
+                <td><p>Full path to a file.</p></td>
             </tr>
             </table>
 
+            
             
             
             
@@ -673,13 +699,14 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
     <strong>getStack</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Get a Guzzle handler stack that uses the Drush logger.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Get a Guzzle handler stack that uses the Drush logger.</p></p>                        
+        </div>
+        <div class="tags">
             
                             <h4>Return Value</h4>
 
@@ -703,6 +730,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </tr>
             </table>
 
+            
                     </div>
     </div>
 
@@ -714,13 +742,15 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
     <strong>readme</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>README.md</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>README.md</p></p>                        
+        </div>
+        <div class="tags">
+            
             
             
             
@@ -735,13 +765,15 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
     <strong>bisect</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Drush's support for Git Bisect.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Drush's support for Git Bisect.</p></p>                        
+        </div>
+        <div class="tags">
+            
             
             
             
@@ -756,13 +788,15 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
     <strong>bashrc</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Bashrc customization examples for Drush.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Bashrc customization examples for Drush.</p></p>                        
+        </div>
+        <div class="tags">
+            
             
             
             
@@ -777,13 +811,15 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
     <strong>config</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Drush configuration.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Drush configuration.</p></p>                        
+        </div>
+        <div class="tags">
+            
             
             
             
@@ -798,13 +834,15 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
     <strong>hooks</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Drush hooks.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Drush hooks.</p></p>                        
+        </div>
+        <div class="tags">
+            
             
             
             
@@ -819,13 +857,15 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
     <strong>configExport</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Drupal config export instructions, including customizing config by environment.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Drupal config export instructions, including customizing config by environment.</p></p>                        
+        </div>
+        <div class="tags">
+            
             
             
             
@@ -840,13 +880,15 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
     <strong>outputFormatsFilters</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Output formatters and filters: control the command output</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Output formatters and filters: control the command output</p></p>                        
+        </div>
+        <div class="tags">
+            
             
             
             
@@ -861,13 +903,15 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
     <strong>siteAliases</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Creating site aliases for running Drush on remote sites.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Creating site aliases for running Drush on remote sites.</p></p>                        
+        </div>
+        <div class="tags">
+            
             
             
             
@@ -882,13 +926,15 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
     <strong>script</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>An example Drush script.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>An example Drush script.</p></p>                        
+        </div>
+        <div class="tags">
+            
             
             
             
@@ -903,13 +949,15 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
     <strong>bootstrap</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Bootstrap explanation: how Drush starts up and prepares the Drupal environment.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Bootstrap explanation: how Drush starts up and prepares the Drupal environment.</p></p>                        
+        </div>
+        <div class="tags">
+            
             
             
             
@@ -924,13 +972,15 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
     <strong>cron</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Crontab instructions for running your Drupal cron tasks via <code>drush cron</code>.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Crontab instructions for running your Drupal cron tasks via <code>drush cron</code>.</p></p>                        
+        </div>
+        <div class="tags">
+            
             
             
             
@@ -945,13 +995,15 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
     <strong>commands</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Instructions on creating your own Drush commands.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Instructions on creating your own Drush commands.</p></p>                        
+        </div>
+        <div class="tags">
+            
             
             
             
@@ -966,13 +1018,15 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
     <strong>generators</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Instructions on creating your own Drush Generators.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Instructions on creating your own Drush Generators.</p></p>                        
+        </div>
+        <div class="tags">
+            
             
             
             
@@ -987,13 +1041,15 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
     <strong>exampleCommand</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Example Drush command file.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Example Drush command file.</p></p>                        
+        </div>
+        <div class="tags">
+            
             
             
             
@@ -1008,13 +1064,15 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
     <strong>migrate</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Defining and running migrations.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Defining and running migrations.</p></p>                        
+        </div>
+        <div class="tags">
+            
             
             
             
@@ -1029,13 +1087,15 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
     <strong>syncHttp</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Extend sql-sync to allow transfer of the sql dump file via http.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Extend sql-sync to allow transfer of the sql dump file via http.</p></p>                        
+        </div>
+        <div class="tags">
+            
             
             
             
@@ -1050,13 +1110,15 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
     <strong>policy</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Example policy file.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Example policy file.</p></p>                        
+        </div>
+        <div class="tags">
+            
             
             
             
@@ -1071,13 +1133,15 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
     <strong>deploy</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Deploy command for Drupal.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Deploy command for Drupal.</p></p>                        
+        </div>
+        <div class="tags">
+            
             
             
             
@@ -1088,7 +1152,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </div>
 
     
-            </div><div id="footer">
+</div><div id="footer">
         Generated by <a href="https://github.com/code-lts/doctum">Doctum, a API Documentation generator and fork of Sami</a>.</div></div>
     </div>
     </body>

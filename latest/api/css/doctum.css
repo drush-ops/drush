@@ -387,6 +387,9 @@ pre {
     border-radius: 3px;
 }
 
+pre.examples {
+    padding: 1rem;
+}
 h2 {
     background-color: #edf3fe;
     padding: 4px 4px 4px 8px;

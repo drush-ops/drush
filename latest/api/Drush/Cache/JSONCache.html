@@ -16,6 +16,7 @@
         <meta name="MobileOptimized" content="width">
         <meta name="HandheldFriendly" content="true">
         <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+
     </head>
 
     <body id="class" data-name="class:Drush_Cache_JSONCache" data-root-path="../../">
@@ -66,37 +67,36 @@
             </ol>
         </div>
                 <div id="page-content">
-                
     <div class="page-header">
-        <h1>
-            JSONCache
-                <small><sup><span class="label label-danger">deprecated</span></sup></small>
-        </h1>
+        <h1>JSONCache    <small><span class="label label-danger">deprecated</span></small>
+            </h1>
     </div>
 
+    
     <p>        class
     <strong>JSONCache</strong>        extends <a href="../../Drush/Cache/FileCache.html"><abbr title="Drush\Cache\FileCache">FileCache</abbr></a>        (<a href="https://github.com/drush-ops/drush/blob/10.x/src/Cache/JSONCache.php">View source</a>)
 </p>
 
         
             <p>
-                <small><sup><span class="label label-danger">deprecated</span></sup></small>
+                <small><span class="label label-danger">deprecated</span></small>
                             <tr>
                     <td></td>
                     <td></td>
                 </tr>
                     </p>
     
+        
 
             <div class="description">
-            <p>JSON cache storage backend.</p>                                </div>
-    
-    
-            <h2>Constants</h2>
-
-            <table class="table table-condensed">
+            <p><p>JSON cache storage backend.</p></p>                    </div>
+            
+        
+            <h2>Constants</h2>    <table class="table table-condensed">
                     <tr>
-                <td>EXTENSION</td>
+                <td>
+                                                                                                                        EXTENSION
+                                    </td>
                 <td class="last">
                     <p><em></em></p>
                     <p></p>
@@ -111,7 +111,8 @@
                     <tr>
                 <td class="type" id="property_bin">
                                         protected                                        
-                </td>
+                                                                                
+                                    </td>
                 <td>$bin</td>
                 <td class="last"></td>
                 <td><small>from&nbsp;<a href="../../Drush/Cache/FileCache.html#property_bin">
@@ -130,7 +131,7 @@
                 <div class="col-md-8 type">
                     <a href="#method___construct">__construct</a>($bin)
         
-                                            <p>Constructor.</p>                </div>
+                                            <p><p>Constructor.</p></p>                </div>
                 <div class="col-md-2"><small>from&nbsp;<a href="../../Drush/Cache/FileCache.html#method___construct">
 <abbr title="Drush\Cache\FileCache">FileCache</abbr></a></small></div>
             </div>
@@ -141,29 +142,29 @@
                 <div class="col-md-8 type">
                     <a href="#method_cacheDirectory">cacheDirectory</a>(string $bin = null)
         
-                                            <p>Returns the cache directory for the given bin.</p>                </div>
+                                            <p><p>Returns the cache directory for the given bin.</p></p>                </div>
                 <div class="col-md-2"><small>from&nbsp;<a href="../../Drush/Cache/FileCache.html#method_cacheDirectory">
 <abbr title="Drush\Cache\FileCache">FileCache</abbr></a></small></div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    The
+                    <abbr title="Drush\Cache\The">The</abbr>
                 </div>
                 <div class="col-md-8 type">
                     <a href="#method_get">get</a>(string $cid)
         
-                                            <p>Return data from the persistent cache.</p>                </div>
+                                            <p><p>Return data from the persistent cache.</p></p>                </div>
                 <div class="col-md-2"><small>from&nbsp;<a href="../../Drush/Cache/FileCache.html#method_get">
 <abbr title="Drush\Cache\FileCache">FileCache</abbr></a></small></div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    An
+                    <abbr title="Drush\Cache\An">An</abbr>
                 </div>
                 <div class="col-md-8 type">
                     <a href="#method_getMultiple">getMultiple</a>(array $cids)
         
-                                            <p>Return data from the persistent cache when given an array of cache IDs.</p>                </div>
+                                            <p><p>Return data from the persistent cache when given an array of cache IDs.</p></p>                </div>
                 <div class="col-md-2"><small>from&nbsp;<a href="../../Drush/Cache/FileCache.html#method_getMultiple">
 <abbr title="Drush\Cache\FileCache">FileCache</abbr></a></small></div>
             </div>
@@ -174,7 +175,7 @@
                 <div class="col-md-8 type">
                     <a href="#method_readFile">readFile</a>(string $filename)
         
-                                            <p>Returns the contents of the given filename unserialized.</p>                </div>
+                                            <p><p>Returns the contents of the given filename unserialized.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -184,7 +185,7 @@
                 <div class="col-md-8 type">
                     <a href="#method_set">set</a>(string $cid, array $data, $expire = DRUSH_CACHE_PERMANENT)
         
-                                            <p>Store data in the persistent cache.</p>                </div>
+                                            <p><p>Store data in the persistent cache.</p></p>                </div>
                 <div class="col-md-2"><small>from&nbsp;<a href="../../Drush/Cache/FileCache.html#method_set">
 <abbr title="Drush\Cache\FileCache">FileCache</abbr></a></small></div>
             </div>
@@ -195,7 +196,7 @@
                 <div class="col-md-8 type">
                     <a href="#method_writeFile">writeFile</a>(string $filename, $cache)
         
-                                            <p>Serializes data and write it to the given filename.</p>                </div>
+                                            <p><p>Serializes data and write it to the given filename.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -205,30 +206,30 @@
                 <div class="col-md-8 type">
                     <a href="#method_clear">clear</a>(string $cid = null, bool $wildcard = false)
         
-                                            <p>Expire data from the cache. If called without arguments, expirable
-entries will be cleared from all known cache bins.</p>                </div>
+                                            <p><p>Expire data from the cache. If called without arguments, expirable
+entries will be cleared from all known cache bins.</p></p>                </div>
                 <div class="col-md-2"><small>from&nbsp;<a href="../../Drush/Cache/FileCache.html#method_clear">
 <abbr title="Drush\Cache\FileCache">FileCache</abbr></a></small></div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    bool
+                    true
                 </div>
                 <div class="col-md-8 type">
                     <a href="#method_isEmpty">isEmpty</a>()
         
-                                            <p>Check if a cache bin is empty.</p>                </div>
+                                            <p><p>Check if a cache bin is empty.</p></p>                </div>
                 <div class="col-md-2"><small>from&nbsp;<a href="../../Drush/Cache/FileCache.html#method_isEmpty">
 <abbr title="Drush\Cache\FileCache">FileCache</abbr></a></small></div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    The
+                    <abbr title="Drush\Cache\The">The</abbr>
                 </div>
                 <div class="col-md-8 type">
                     <a href="#method_getFilePath">getFilePath</a>($cid)
         
-                                            <p>Converts a cache id to a full path.</p>                </div>
+                                            <p><p>Converts a cache id to a full path.</p></p>                </div>
                 <div class="col-md-2"><small>from&nbsp;<a href="../../Drush/Cache/FileCache.html#method_getFilePath">
 <abbr title="Drush\Cache\FileCache">FileCache</abbr></a></small></div>
             </div>
@@ -246,23 +247,25 @@ entries will be cleared from all known cache bins.</p>                </div>
     <strong>__construct</strong>($bin)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Constructor.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Constructor.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
                 <td></td>
                 <td>$bin</td>
-                <td>cache bin for which the object is created.</td>
+                <td><p>The cache bin for which the object is created.</p></td>
             </tr>
             </table>
 
+            
             
             
             
@@ -278,13 +281,14 @@ entries will be cleared from all known cache bins.</p>                </div>
     <strong>cacheDirectory</strong>(string $bin = null)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Returns the cache directory for the given bin.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Returns the cache directory for the given bin.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -298,6 +302,7 @@ entries will be cleared from all known cache bins.</p>                </div>
             
             
             
+            
                     </div>
     </div>
 
@@ -306,24 +311,25 @@ entries will be cleared from all known cache bins.</p>                </div>
                     <h3 id="method_get">
         <div class="location">in <a href="../../Drush/Cache/FileCache.html#method_get">
 <abbr title="Drush\Cache\FileCache">FileCache</abbr></a> <a href="https://github.com/drush-ops/drush/blob/10.x/src/Cache/FileCache.php#L46">at line 46</a></div>
-        <code>                    The
+        <code>                    <abbr title="Drush\Cache\The">The</abbr>
     <strong>get</strong>(string $cid)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Return data from the persistent cache.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Return data from the persistent cache.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
                 <td>string</td>
                 <td>$cid</td>
-                <td>The cache ID of the data to retrieve.</td>
+                <td><p>The cache ID of the data to retrieve.</p></td>
             </tr>
             </table>
 
@@ -332,11 +338,12 @@ entries will be cleared from all known cache bins.</p>                </div>
 
                     <table class="table table-condensed">
         <tr>
-            <td>The</td>
-            <td></td>
+            <td><abbr title="Drush\Cache\The">The</abbr></td>
+            <td><p>cache or FALSE on failure.</p></td>
         </tr>
     </table>
 
+            
             
             
                     </div>
@@ -347,26 +354,27 @@ entries will be cleared from all known cache bins.</p>                </div>
                     <h3 id="method_getMultiple">
         <div class="location">in <a href="../../Drush/Cache/FileCache.html#method_getMultiple">
 <abbr title="Drush\Cache\FileCache">FileCache</abbr></a> <a href="https://github.com/drush-ops/drush/blob/10.x/src/Cache/FileCache.php#L53">at line 53</a></div>
-        <code>                    An
+        <code>                    <abbr title="Drush\Cache\An">An</abbr>
     <strong>getMultiple</strong>(array $cids)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Return data from the persistent cache when given an array of cache IDs.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Return data from the persistent cache when given an array of cache IDs.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
                 <td>array</td>
                 <td>$cids</td>
-                <td>An array of cache IDs for the data to retrieve. This is passed by
+                <td><p>An array of cache IDs for the data to retrieve. This is passed by
 reference, and will have the IDs successfully returned from cache
-removed.</td>
+removed.</p></td>
             </tr>
             </table>
 
@@ -375,11 +383,12 @@ removed.</td>
 
                     <table class="table table-condensed">
         <tr>
-            <td>An</td>
-            <td></td>
+            <td><abbr title="Drush\Cache\An">An</abbr></td>
+            <td><p>array of the items successfully returned from cache indexed by cid.</p></td>
         </tr>
     </table>
 
+            
             
             
                     </div>
@@ -393,23 +402,25 @@ removed.</td>
     <strong>readFile</strong>(string $filename)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Returns the contents of the given filename unserialized.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Returns the contents of the given filename unserialized.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
                 <td>string</td>
                 <td>$filename</td>
-                <td>Absolute path to filename to read contents from.</td>
+                <td><p>Absolute path to filename to read contents from.</p></td>
             </tr>
             </table>
 
+            
             
             
             
@@ -425,39 +436,43 @@ removed.</td>
     <strong>set</strong>(string $cid, array $data, $expire = DRUSH_CACHE_PERMANENT)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Store data in the persistent cache.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Store data in the persistent cache.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
                 <td>string</td>
                 <td>$cid</td>
-                <td>The cache ID of the data to store.</td>
+                <td><p>The cache ID of the data to store.</p></td>
             </tr>
                     <tr>
                 <td>array</td>
                 <td>$data</td>
-                <td>The data to store in the cache.</td>
+                <td><p>The data to store in the cache.</p></td>
             </tr>
                     <tr>
                 <td></td>
                 <td>$expire</td>
-                <td>of the following values:
-- DRUSH_CACHE_PERMANENT: Indicates that the item should never be removed unless
-  explicitly told to using _drush_cache_clear_all() with a cache ID.
-- DRUSH_CACHE_TEMPORARY: Indicates that the item should be removed at the next
-  general cache wipe.
-- A Unix timestamp: Indicates that the item should be kept at least until
-  the given time, after which it behaves like CACHE_TEMPORARY.</td>
+                <td><p>One of the following values:</p>
+<ul>
+<li>DRUSH_CACHE_PERMANENT: Indicates that the item should never be removed unless
+explicitly told to using _drush_cache_clear_all() with a cache ID.</li>
+<li>DRUSH_CACHE_TEMPORARY: Indicates that the item should be removed at the next
+general cache wipe.</li>
+<li>A Unix timestamp: Indicates that the item should be kept at least until
+the given time, after which it behaves like CACHE_TEMPORARY.</li>
+</ul></td>
             </tr>
             </table>
 
+            
             
             
             
@@ -472,28 +487,30 @@ removed.</td>
     <strong>writeFile</strong>(string $filename, $cache)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Serializes data and write it to the given filename.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Serializes data and write it to the given filename.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
                 <td>string</td>
                 <td>$filename</td>
-                <td>Absolute path to filename to write cache data.</td>
+                <td><p>Absolute path to filename to write cache data.</p></td>
             </tr>
                     <tr>
                 <td></td>
                 <td>$cache</td>
-                <td>data to serialize and write to $filename.</td>
+                <td><p>Cache data to serialize and write to $filename.</p></td>
             </tr>
             </table>
 
+            
             
             
             
@@ -509,32 +526,34 @@ removed.</td>
     <strong>clear</strong>(string $cid = null, bool $wildcard = false)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Expire data from the cache. If called without arguments, expirable
-entries will be cleared from all known cache bins.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Expire data from the cache. If called without arguments, expirable
+entries will be cleared from all known cache bins.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
                 <td>string</td>
                 <td>$cid</td>
-                <td>If set, the cache ID to delete. Otherwise, all cache entries that can
-expire are deleted.</td>
+                <td><p>If set, the cache ID to delete. Otherwise, all cache entries that can
+expire are deleted.</p></td>
             </tr>
                     <tr>
                 <td>bool</td>
                 <td>$wildcard</td>
-                <td>If set to TRUE, the $cid is treated as a substring
+                <td><p>If set to TRUE, the $cid is treated as a substring
 to match rather than a complete ID. The match is a right hand
-match. If '*' is given as $cid, the bin $bin will be emptied.</td>
+match. If '*' is given as $cid, the bin $bin will be emptied.</p></td>
             </tr>
             </table>
 
+            
             
             
             
@@ -546,28 +565,30 @@ match. If '*' is given as $cid, the bin $bin will be emptied.</td>
                     <h3 id="method_isEmpty">
         <div class="location">in <a href="../../Drush/Cache/FileCache.html#method_isEmpty">
 <abbr title="Drush\Cache\FileCache">FileCache</abbr></a> <a href="https://github.com/drush-ops/drush/blob/10.x/src/Cache/FileCache.php#L151">at line 151</a></div>
-        <code>                    bool
+        <code>                    true
     <strong>isEmpty</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Check if a cache bin is empty.</p>                    <p>A cache bin is considered empty if it does not contain any valid data for
-any cache ID.</p>                            </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Check if a cache bin is empty.</p></p>                <p><p>A cache bin is considered empty if it does not contain any valid data for
+any cache ID.</p></p>        
+        </div>
+        <div class="tags">
             
                             <h4>Return Value</h4>
 
                     <table class="table table-condensed">
         <tr>
-            <td>bool</td>
-            <td></td>
+            <td>true</td>
+            <td><p>if the cache bin specified is empty.</p></td>
         </tr>
     </table>
 
+            
             
             
                     </div>
@@ -578,24 +599,25 @@ any cache ID.</p>                            </div>
                     <h3 id="method_getFilePath">
         <div class="location">in <a href="../../Drush/Cache/FileCache.html#method_getFilePath">
 <abbr title="Drush\Cache\FileCache">FileCache</abbr></a> <a href="https://github.com/drush-ops/drush/blob/10.x/src/Cache/FileCache.php#L171">at line 171</a></div>
-        <code>            protected        The
+        <code>            protected        <abbr title="Drush\Cache\The">The</abbr>
     <strong>getFilePath</strong>($cid)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Converts a cache id to a full path.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Converts a cache id to a full path.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
                 <td></td>
                 <td>$cid</td>
-                <td>cache ID of the data to retrieve.</td>
+                <td><p>The cache ID of the data to retrieve.</p></td>
             </tr>
             </table>
 
@@ -604,11 +626,12 @@ any cache ID.</p>                            </div>
 
                     <table class="table table-condensed">
         <tr>
-            <td>The</td>
-            <td></td>
+            <td><abbr title="Drush\Cache\The">The</abbr></td>
+            <td><p>full path to the cache file.</p></td>
         </tr>
     </table>
 
+            
             
             
                     </div>
@@ -618,7 +641,7 @@ any cache ID.</p>                            </div>
             </div>
 
     
-            </div><div id="footer">
+</div><div id="footer">
         Generated by <a href="https://github.com/code-lts/doctum">Doctum, a API Documentation generator and fork of Sami</a>.</div></div>
     </div>
     </body>

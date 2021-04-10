@@ -16,6 +16,7 @@
         <meta name="MobileOptimized" content="width">
         <meta name="HandheldFriendly" content="true">
         <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+
     </head>
 
     <body id="class" data-name="class:Drush_Drupal_Migrate_MigrateMissingSourceRowsEvent" data-root-path="../../../">
@@ -66,25 +67,24 @@
             </ol>
         </div>
                 <div id="page-content">
-                
     <div class="page-header">
-        <h1>
-            MigrateMissingSourceRowsEvent
-                
-        </h1>
+        <h1>MigrateMissingSourceRowsEvent    
+            </h1>
     </div>
 
+    
     <p>        class
     <strong>MigrateMissingSourceRowsEvent</strong>        extends <abbr title="Symfony\Component\EventDispatcher\Event">Event</abbr>        (<a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Migrate/MigrateMissingSourceRowsEvent.php">View source</a>)
 </p>
 
         
     
+        
 
             <div class="description">
-            <p>Missing source rows event.</p>                                </div>
-    
-    
+            <p><p>Missing source rows event.</p></p>                    </div>
+            
+        
     
             <h2>Properties</h2>
 
@@ -92,17 +92,19 @@
                     <tr>
                 <td class="type" id="property_migration">
                                         protected                                        <abbr title="Drupal\migrate\Plugin\MigrationInterface">MigrationInterface</abbr>
-                </td>
+                                                                                
+                                    </td>
                 <td>$migration</td>
-                <td class="last">The migration plugin instance.</td>
+                <td class="last"><p>The migration plugin instance.</p></td>
                 <td></td>
             </tr>
                     <tr>
                 <td class="type" id="property_destinationIds">
                                         protected                                        array[]
-                </td>
+                                                                                
+                                    </td>
                 <td>$destinationIds</td>
-                <td class="last">Values representing the destination IDs.</td>
+                <td class="last"><p>Values representing the destination IDs.</p></td>
                 <td></td>
             </tr>
             </table>
@@ -118,7 +120,7 @@
                 <div class="col-md-8 type">
                     <a href="#method___construct">__construct</a>(<abbr title="Drupal\migrate\Plugin\MigrationInterface">MigrationInterface</abbr> $migration, array $destinationIds)
         
-                                            <p>Constructs a new event instance.</p>                </div>
+                                            <p><p>Constructs a new event instance.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -128,7 +130,7 @@
                 <div class="col-md-8 type">
                     <a href="#method_getMigration">getMigration</a>()
         
-                                            <p>Gets the migration plugin instance.</p>                </div>
+                                            <p><p>Gets the migration plugin instance.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -138,7 +140,7 @@
                 <div class="col-md-8 type">
                     <a href="#method_getDestinationIds">getDestinationIds</a>()
         
-                                            <p>Gets the destination ID values.</p>                </div>
+                                            <p><p>Gets the destination ID values.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
             </div>
@@ -154,28 +156,30 @@
     <strong>__construct</strong>(<abbr title="Drupal\migrate\Plugin\MigrationInterface">MigrationInterface</abbr> $migration, array $destinationIds)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Constructs a new event instance.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Constructs a new event instance.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
                 <td><abbr title="Drupal\migrate\Plugin\MigrationInterface">MigrationInterface</abbr></td>
                 <td>$migration</td>
-                <td>The migration plugin instance.</td>
+                <td><p>The migration plugin instance.</p></td>
             </tr>
                     <tr>
                 <td>array</td>
                 <td>$destinationIds</td>
-                <td>Values representing the destination ID.</td>
+                <td><p>Values representing the destination ID.</p></td>
             </tr>
             </table>
 
+            
             
             
             
@@ -190,23 +194,25 @@
     <strong>getMigration</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Gets the migration plugin instance.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Gets the migration plugin instance.</p></p>                        
+        </div>
+        <div class="tags">
             
                             <h4>Return Value</h4>
 
                     <table class="table table-condensed">
         <tr>
             <td><abbr title="Drupal\migrate\Plugin\MigrationInterface">MigrationInterface</abbr></td>
-            <td></td>
+            <td><p>The migration being rolled back.</p></td>
         </tr>
     </table>
 
+            
             
             
                     </div>
@@ -220,23 +226,25 @@
     <strong>getDestinationIds</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Gets the destination ID values.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Gets the destination ID values.</p></p>                        
+        </div>
+        <div class="tags">
             
                             <h4>Return Value</h4>
 
                     <table class="table table-condensed">
         <tr>
             <td>array</td>
-            <td></td>
+            <td><p>The destination IDs as an array of arrays.</p></td>
         </tr>
     </table>
 
+            
             
             
                     </div>
@@ -246,7 +254,7 @@
             </div>
 
     
-            </div><div id="footer">
+</div><div id="footer">
         Generated by <a href="https://github.com/code-lts/doctum">Doctum, a API Documentation generator and fork of Sami</a>.</div></div>
     </div>
     </body>

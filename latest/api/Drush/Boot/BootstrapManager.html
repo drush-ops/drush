@@ -16,6 +16,7 @@
         <meta name="MobileOptimized" content="width">
         <meta name="HandheldFriendly" content="true">
         <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+
     </head>
 
     <body id="class" data-name="class:Drush_Boot_BootstrapManager" data-root-path="../../">
@@ -66,14 +67,12 @@
             </ol>
         </div>
                 <div id="page-content">
-                
     <div class="page-header">
-        <h1>
-            BootstrapManager
-                
-        </h1>
+        <h1>BootstrapManager    
+            </h1>
     </div>
 
+    
     <p>        class
     <strong>BootstrapManager</strong>        implements
         <abbr title="Psr\Log\LoggerAwareInterface">LoggerAwareInterface</abbr>, <a href="../../Drush/Boot/AutoloaderAwareInterface.html"><abbr title="Drush\Boot\AutoloaderAwareInterface">AutoloaderAwareInterface</abbr></a>, <abbr title="Robo\Contract\ConfigAwareInterface">ConfigAwareInterface</abbr>, <abbr title="League\Container\ContainerAwareInterface">ContainerAwareInterface</abbr>        (<a href="https://github.com/drush-ops/drush/blob/10.x/src/Boot/BootstrapManager.php">View source</a>)
@@ -81,9 +80,10 @@
 
         
     
+        
 
-    
-            <h2>Traits</h2>
+            
+                <h2>Traits</h2>
 
         
     <div class="container-fluid underlined">
@@ -121,7 +121,8 @@
                     <tr>
                 <td class="type" id="property_loader">
                                         protected                                        
-                </td>
+                                                                                
+                                    </td>
                 <td>$loader</td>
                 <td class="last"></td>
                 <td><small>from&nbsp;<a href="../../Drush/Boot/AutoloaderAwareTrait.html#property_loader">
@@ -129,8 +130,9 @@
             </tr>
                     <tr>
                 <td class="type" id="property_drupalFinder">
-                                        protected                                        DrupalFinder
-                </td>
+                                        protected                                        <abbr title="DrupalFinder\DrupalFinder">DrupalFinder</abbr>
+                                                                                
+                                    </td>
                 <td>$drupalFinder</td>
                 <td class="last"></td>
                 <td></td>
@@ -138,7 +140,8 @@
                     <tr>
                 <td class="type" id="property_bootstrapCandidates">
                                         protected                                        <a href="../../Drush/Boot/Boot.html"><abbr title="Drush\Boot\Boot">Boot</abbr></a>[]
-                </td>
+                                                                                
+                                    </td>
                 <td>$bootstrapCandidates</td>
                 <td class="last"></td>
                 <td></td>
@@ -146,7 +149,8 @@
                     <tr>
                 <td class="type" id="property_bootstrap">
                                         protected                                        <a href="../../Drush/Boot/Boot.html"><abbr title="Drush\Boot\Boot">Boot</abbr></a>
-                </td>
+                                                                                
+                                    </td>
                 <td>$bootstrap</td>
                 <td class="last"></td>
                 <td></td>
@@ -154,7 +158,8 @@
                     <tr>
                 <td class="type" id="property_phase">
                                         protected                                        int
-                </td>
+                                                                                
+                                    </td>
                 <td>$phase</td>
                 <td class="last"></td>
                 <td></td>
@@ -208,8 +213,8 @@
                 <div class="col-md-8 type">
                     <a href="#method_getConfig">getConfig</a>()
         
-                                            <p>Replaces same method in ConfigAwareTrait in order to provide a
-DrushConfig as return type. Helps with IDE completion.</p>                </div>
+                                            <p><p>Replaces same method in ConfigAwareTrait in order to provide a
+DrushConfig as return type. Helps with IDE completion.</p></p>                </div>
                 <div class="col-md-2"><small>from&nbsp;<a href="../../Drush/Config/ConfigAwareTrait.html#method_getConfig">
 <abbr title="Drush\Config\ConfigAwareTrait">ConfigAwareTrait</abbr></a></small></div>
             </div>
@@ -242,7 +247,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_add">add</a>($candidateList)
         
-                                            <p>Add a bootstrap object to the list of candidates.</p>                </div>
+                                            <p><p>Add a bootstrap object to the list of candidates.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -274,7 +279,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_getRoot">getRoot</a>()
         
-                                            <p>Return the framework root selected by the user.</p>                </div>
+                                            <p><p>Return the framework root selected by the user.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -284,7 +289,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_getComposerRoot">getComposerRoot</a>()
         
-                                            <p>Return the composer root for the selected Drupal site.</p>                </div>
+                                            <p><p>Return the composer root for the selected Drupal site.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -305,7 +310,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_getUri">getUri</a>()
         
-                                            <p>Return the framework uri selected by the user.</p>                </div>
+                                            <p><p>Return the framework uri selected by the user.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -315,8 +320,8 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_selectUri">selectUri</a>($cwd)
         
-                                            <p>This method is called by the Application iff the user
-did not explicitly provide a URI.</p>                </div>
+                                            <p><p>This method is called by the Application iff the user
+did not explicitly provide a URI.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -337,10 +342,10 @@ did not explicitly provide a URI.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_bootstrap">bootstrap</a>()
         
-                                            <p>Return the bootstrap object in use.  This will
+                                            <p><p>Return the bootstrap object in use.  This will
 be the latched bootstrap object if we have started
 bootstrapping; otherwise, it will be whichever bootstrap
-object is best for the selected root.</p>                </div>
+object is best for the selected root.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -350,7 +355,7 @@ object is best for the selected root.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_injectBootstrap">injectBootstrap</a>($bootstrap)
         
-                                            <p>For use in testing</p>                </div>
+                                            <p><p>For use in testing</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -360,8 +365,8 @@ object is best for the selected root.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_bootstrapObjectForRoot">bootstrapObjectForRoot</a>($path)
         
-                                            <p>Look up the best bootstrap class for the given location
-from the set of available candidates.</p>                </div>
+                                            <p><p>Look up the best bootstrap class for the given location
+from the set of available candidates.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -371,12 +376,12 @@ from the set of available candidates.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_selectBootstrapClass">selectBootstrapClass</a>()
         
-                                            <p>Select the bootstrap class to use.  If this is called multiple
+                                            <p><p>Select the bootstrap class to use.  If this is called multiple
 times, the bootstrap class returned might change on subsequent
 calls, if the root directory changes.  Once the bootstrap object
 starts changing the state of the system, however, it will
 be 'latched', and further calls to Drush::bootstrap()
-will always return the same object.</p>                </div>
+will always return the same object.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -386,9 +391,9 @@ will always return the same object.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_latch">latch</a>($bootstrap)
         
-                                            <p>Once bootstrapping has started, we stash the bootstrap
+                                            <p><p>Once bootstrapping has started, we stash the bootstrap
 object being used, and do not allow it to change any
-longer.</p>                </div>
+longer.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -398,8 +403,8 @@ longer.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_bootstrapPhases">bootstrapPhases</a>(bool $function_names = false)
         
-                                            <p>Returns an array that determines what bootstrap phases
-are necessary to bootstrap the CMS.</p>                </div>
+                                            <p><p>Returns an array that determines what bootstrap phases
+are necessary to bootstrap the CMS.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -409,7 +414,7 @@ are necessary to bootstrap the CMS.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_doBootstrap">doBootstrap</a>(int $phase, int|bool $phase_max = false, <abbr title="Consolidation\AnnotatedCommand\AnnotationData">AnnotationData</abbr> $annotationData = null)
         
-                                            <p>Bootstrap Drush to the desired phase.</p>                </div>
+                                            <p><p>Bootstrap Drush to the desired phase.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -419,7 +424,7 @@ are necessary to bootstrap the CMS.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_hasBootstrap">hasBootstrap</a>()
         
-                                            <p>hasBootstrap determines whether the manager has a bootstrap object yet.</p>                </div>
+                                            <p><p>hasBootstrap determines whether the manager has a bootstrap object yet.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -429,7 +434,7 @@ are necessary to bootstrap the CMS.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_hasBootstrapped">hasBootstrapped</a>(int $phase)
         
-                                            <p>Determine whether a given bootstrap phase has been completed.</p>                </div>
+                                            <p><p>Determine whether a given bootstrap phase has been completed.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -439,7 +444,7 @@ are necessary to bootstrap the CMS.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_bootstrapValidate">bootstrapValidate</a>(int $phase)
         
-                                            <p>Validate whether a bootstrap phase can be reached.</p>                </div>
+                                            <p><p>Validate whether a bootstrap phase can be reached.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -449,7 +454,7 @@ are necessary to bootstrap the CMS.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_bootstrapToPhase">bootstrapToPhase</a>(string $bootstrapPhase, <abbr title="Consolidation\AnnotatedCommand\AnnotationData">AnnotationData</abbr> $annotationData = null)
         
-                                            <p>Bootstrap to the specified phase.</p>                </div>
+                                            <p><p>Bootstrap to the specified phase.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -470,7 +475,7 @@ are necessary to bootstrap the CMS.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_bootstrapToPhaseIndex">bootstrapToPhaseIndex</a>(int $max_phase_index, <abbr title="Consolidation\AnnotatedCommand\AnnotationData">AnnotationData</abbr> $annotationData = null)
         
-                                            <p>Bootstrap to the specified phase.</p>                </div>
+                                            <p><p>Bootstrap to the specified phase.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -480,7 +485,7 @@ are necessary to bootstrap the CMS.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_bootstrapMax">bootstrapMax</a>(int $max_phase_index = false, <abbr title="Consolidation\AnnotatedCommand\AnnotationData">AnnotationData</abbr> $annotationData = null)
         
-                                            <p>Bootstrap to the highest level possible, without triggering any errors.</p>                </div>
+                                            <p><p>Bootstrap to the highest level possible, without triggering any errors.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -490,7 +495,7 @@ are necessary to bootstrap the CMS.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_logger">logger</a>()
         
-                                            <p>Allow those with an instance to us to the BootstrapManager to use its logger</p>                </div>
+                                            <p><p>Allow those with an instance to us to the BootstrapManager to use its logger</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -518,11 +523,15 @@ are necessary to bootstrap the CMS.</p>                </div>
     <strong>setAutoloader</strong>($loader)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                <div class="tags">
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -533,6 +542,7 @@ are necessary to bootstrap the CMS.</p>                </div>
             </tr>
             </table>
 
+            
             
             
             
@@ -548,11 +558,16 @@ are necessary to bootstrap the CMS.</p>                </div>
     <strong>autoloader</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                <div class="tags">
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+            
             
             
             
@@ -568,11 +583,16 @@ are necessary to bootstrap the CMS.</p>                </div>
     <strong>hasAutoloader</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                <div class="tags">
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+            
             
             
             
@@ -588,14 +608,15 @@ are necessary to bootstrap the CMS.</p>                </div>
     <strong>getConfig</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Replaces same method in ConfigAwareTrait in order to provide a
-DrushConfig as return type. Helps with IDE completion.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Replaces same method in ConfigAwareTrait in order to provide a
+DrushConfig as return type. Helps with IDE completion.</p></p>                        
+        </div>
+        <div class="tags">
             
                             <h4>Return Value</h4>
 
@@ -619,6 +640,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </tr>
             </table>
 
+            
                     </div>
     </div>
 
@@ -630,11 +652,15 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
     <strong>getPhase</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                <div class="tags">
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
             
                             <h4>Return Value</h4>
 
@@ -645,6 +671,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
         </tr>
     </table>
 
+            
             
             
                     </div>
@@ -658,11 +685,15 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
     <strong>setPhase</strong>(int $phase)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                <div class="tags">
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -673,6 +704,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </tr>
             </table>
 
+            
             
             
             
@@ -687,13 +719,14 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
     <strong>add</strong>($candidateList)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Add a bootstrap object to the list of candidates.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Add a bootstrap object to the list of candidates.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -704,6 +737,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </tr>
             </table>
 
+            
             
             
             
@@ -718,11 +752,16 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
     <strong>drupalFinder</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                <div class="tags">
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+            
             
             
             
@@ -737,11 +776,15 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
     <strong>setDrupalFinder</strong>(<abbr title="DrupalFinder\DrupalFinder">DrupalFinder</abbr> $drupalFinder)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                <div class="tags">
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -752,6 +795,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </tr>
             </table>
 
+            
             
             
             
@@ -766,13 +810,15 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
     <strong>getRoot</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Return the framework root selected by the user.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Return the framework root selected by the user.</p></p>                        
+        </div>
+        <div class="tags">
+            
             
             
             
@@ -787,13 +833,15 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
     <strong>getComposerRoot</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Return the composer root for the selected Drupal site.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Return the composer root for the selected Drupal site.</p></p>                        
+        </div>
+        <div class="tags">
+            
             
             
             
@@ -808,11 +856,15 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
     <strong>locateRoot</strong>($root, $start_path = null)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                <div class="tags">
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -831,6 +883,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             
             
             
+            
                     </div>
     </div>
 
@@ -842,13 +895,15 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
     <strong>getUri</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Return the framework uri selected by the user.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Return the framework uri selected by the user.</p></p>                        
+        </div>
+        <div class="tags">
+            
             
             
             
@@ -863,14 +918,15 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
     <strong>selectUri</strong>($cwd)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>This method is called by the Application iff the user
-did not explicitly provide a URI.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>This method is called by the Application iff the user
+did not explicitly provide a URI.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -881,6 +937,7 @@ did not explicitly provide a URI.</p>                                           
             </tr>
             </table>
 
+            
             
             
             
@@ -895,11 +952,15 @@ did not explicitly provide a URI.</p>                                           
     <strong>setUri</strong>($uri)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                <div class="tags">
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -910,6 +971,7 @@ did not explicitly provide a URI.</p>                                           
             </tr>
             </table>
 
+            
             
             
             
@@ -924,16 +986,17 @@ did not explicitly provide a URI.</p>                                           
     <strong>bootstrap</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Return the bootstrap object in use.  This will
+        <div class="method-description">
+                            <p><p>Return the bootstrap object in use.  This will
 be the latched bootstrap object if we have started
 bootstrapping; otherwise, it will be whichever bootstrap
-object is best for the selected root.</p>                                                </div>
-                <div class="tags">
+object is best for the selected root.</p></p>                        
+        </div>
+        <div class="tags">
             
                             <h4>Return Value</h4>
 
@@ -944,6 +1007,7 @@ object is best for the selected root.</p>                                       
         </tr>
     </table>
 
+            
             
             
                     </div>
@@ -957,13 +1021,14 @@ object is best for the selected root.</p>                                       
     <strong>injectBootstrap</strong>($bootstrap)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>For use in testing</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>For use in testing</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -974,6 +1039,7 @@ object is best for the selected root.</p>                                       
             </tr>
             </table>
 
+            
             
             
             
@@ -988,14 +1054,15 @@ object is best for the selected root.</p>                                       
     <strong>bootstrapObjectForRoot</strong>($path)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Look up the best bootstrap class for the given location
-from the set of available candidates.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Look up the best bootstrap class for the given location
+from the set of available candidates.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -1018,6 +1085,7 @@ from the set of available candidates.</p>                                       
 
             
             
+            
                     </div>
     </div>
 
@@ -1029,18 +1097,20 @@ from the set of available candidates.</p>                                       
     <strong>selectBootstrapClass</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Select the bootstrap class to use.  If this is called multiple
+        <div class="method-description">
+                            <p><p>Select the bootstrap class to use.  If this is called multiple
 times, the bootstrap class returned might change on subsequent
 calls, if the root directory changes.  Once the bootstrap object
 starts changing the state of the system, however, it will
 be 'latched', and further calls to Drush::bootstrap()
-will always return the same object.</p>                                                </div>
-                <div class="tags">
+will always return the same object.</p></p>                        
+        </div>
+        <div class="tags">
+            
             
             
             
@@ -1055,15 +1125,16 @@ will always return the same object.</p>                                         
     <strong>latch</strong>($bootstrap)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Once bootstrapping has started, we stash the bootstrap
+        <div class="method-description">
+                            <p><p>Once bootstrapping has started, we stash the bootstrap
 object being used, and do not allow it to change any
-longer.</p>                                                </div>
-                <div class="tags">
+longer.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -1074,6 +1145,7 @@ longer.</p>                                                </div>
             </tr>
             </table>
 
+            
             
             
             
@@ -1088,22 +1160,23 @@ longer.</p>                                                </div>
     <strong>bootstrapPhases</strong>(bool $function_names = false)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Returns an array that determines what bootstrap phases
-are necessary to bootstrap the CMS.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Returns an array that determines what bootstrap phases
+are necessary to bootstrap the CMS.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
                 <td>bool</td>
                 <td>$function_names</td>
-                <td>(optional) If TRUE, return an array of method names index by their
-corresponding phase values. Otherwise return an array of phase values.</td>
+                <td><p>(optional) If TRUE, return an array of method names index by their
+corresponding phase values. Otherwise return an array of phase values.</p></td>
             </tr>
             </table>
 
@@ -1131,6 +1204,7 @@ corresponding phase values. Otherwise return an array of phase values.</td>
             </tr>
             </table>
 
+            
                     </div>
     </div>
 
@@ -1142,34 +1216,35 @@ corresponding phase values. Otherwise return an array of phase values.</td>
     <strong>doBootstrap</strong>(int $phase, int|bool $phase_max = false, <abbr title="Consolidation\AnnotatedCommand\AnnotationData">AnnotationData</abbr> $annotationData = null)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Bootstrap Drush to the desired phase.</p>                    <p>This function will sequentially bootstrap each
-lower phase up to the phase that has been requested.</p>                            </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Bootstrap Drush to the desired phase.</p></p>                <p><p>This function will sequentially bootstrap each
+lower phase up to the phase that has been requested.</p></p>        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
                 <td>int</td>
                 <td>$phase</td>
-                <td>The bootstrap phase to bootstrap to.</td>
+                <td><p>The bootstrap phase to bootstrap to.</p></td>
             </tr>
                     <tr>
                 <td>int|bool</td>
                 <td>$phase_max</td>
-                <td>(optional) The maximum level to boot to. This does not have a use in this
+                <td><p>(optional) The maximum level to boot to. This does not have a use in this
 function itself but can be useful for other code called from within this
 function, to know if e.g. a caller is in the process of booting to the
-specified level. If specified, it should never be lower than $phase.</td>
+specified level. If specified, it should never be lower than $phase.</p></td>
             </tr>
                     <tr>
                 <td><abbr title="Consolidation\AnnotatedCommand\AnnotationData">AnnotationData</abbr></td>
                 <td>$annotationData</td>
-                <td>Optional annotation data from the command.</td>
+                <td><p>Optional annotation data from the command.</p></td>
             </tr>
             </table>
 
@@ -1179,7 +1254,7 @@ specified level. If specified, it should never be lower than $phase.</td>
                     <table class="table table-condensed">
         <tr>
             <td>bool</td>
-            <td></td>
+            <td><p>TRUE if the specified bootstrap phase has completed.</p></td>
         </tr>
     </table>
 
@@ -1197,6 +1272,7 @@ specified level. If specified, it should never be lower than $phase.</td>
             </tr>
             </table>
 
+            
                     </div>
     </div>
 
@@ -1208,13 +1284,15 @@ specified level. If specified, it should never be lower than $phase.</td>
     <strong>hasBootstrap</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>hasBootstrap determines whether the manager has a bootstrap object yet.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>hasBootstrap determines whether the manager has a bootstrap object yet.</p></p>                        
+        </div>
+        <div class="tags">
+            
             
             
             
@@ -1229,20 +1307,21 @@ specified level. If specified, it should never be lower than $phase.</td>
     <strong>hasBootstrapped</strong>(int $phase)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Determine whether a given bootstrap phase has been completed.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Determine whether a given bootstrap phase has been completed.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
                 <td>int</td>
                 <td>$phase</td>
-                <td>The bootstrap phase to test</td>
+                <td><p>The bootstrap phase to test</p></td>
             </tr>
             </table>
 
@@ -1252,10 +1331,11 @@ specified level. If specified, it should never be lower than $phase.</td>
                     <table class="table table-condensed">
         <tr>
             <td>bool</td>
-            <td></td>
+            <td><p>TRUE if the specified bootstrap phase has completed.</p></td>
         </tr>
     </table>
 
+            
             
             
                     </div>
@@ -1269,26 +1349,26 @@ specified level. If specified, it should never be lower than $phase.</td>
     <strong>bootstrapValidate</strong>(int $phase)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Validate whether a bootstrap phase can be reached.</p>                    <p>This function will validate the settings that will be used
+        <div class="method-description">
+                            <p><p>Validate whether a bootstrap phase can be reached.</p></p>                <p><p>This function will validate the settings that will be used
 during the actual bootstrap process, and allow commands to
 progressively bootstrap to the highest level that can be reached.</p>
-
 <p>This function will only run the validation function once, and
 store the result from that execution in a local static. This avoids
-validating phases multiple times.</p>                            </div>
-                <div class="tags">
+validating phases multiple times.</p></p>        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
                 <td>int</td>
                 <td>$phase</td>
-                <td>The bootstrap phase to validate to.</td>
+                <td><p>The bootstrap phase to validate to.</p></td>
             </tr>
             </table>
 
@@ -1298,7 +1378,7 @@ validating phases multiple times.</p>                            </div>
                     <table class="table table-condensed">
         <tr>
             <td>bool</td>
-            <td></td>
+            <td><p>TRUE if bootstrap is possible, FALSE if the validation failed.</p></td>
         </tr>
     </table>
 
@@ -1316,6 +1396,7 @@ validating phases multiple times.</p>                            </div>
             </tr>
             </table>
 
+            
                     </div>
     </div>
 
@@ -1327,25 +1408,26 @@ validating phases multiple times.</p>                            </div>
     <strong>bootstrapToPhase</strong>(string $bootstrapPhase, <abbr title="Consolidation\AnnotatedCommand\AnnotationData">AnnotationData</abbr> $annotationData = null)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Bootstrap to the specified phase.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Bootstrap to the specified phase.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
                 <td>string</td>
                 <td>$bootstrapPhase</td>
-                <td>Name of phase to bootstrap to. Will be converted to appropriate index.</td>
+                <td><p>Name of phase to bootstrap to. Will be converted to appropriate index.</p></td>
             </tr>
                     <tr>
                 <td><abbr title="Consolidation\AnnotatedCommand\AnnotationData">AnnotationData</abbr></td>
                 <td>$annotationData</td>
-                <td>Optional annotation data from the command.</td>
+                <td><p>Optional annotation data from the command.</p></td>
             </tr>
             </table>
 
@@ -1355,7 +1437,7 @@ validating phases multiple times.</p>                            </div>
                     <table class="table table-condensed">
         <tr>
             <td>bool</td>
-            <td></td>
+            <td><p>TRUE if the specified bootstrap phase has completed.</p></td>
         </tr>
     </table>
 
@@ -1365,11 +1447,12 @@ validating phases multiple times.</p>                            </div>
                     <table class="table table-condensed">
                     <tr>
                 <td><a target="_blank" rel="noopener" href="https://www.php.net/Exception">Exception</a></td>
-                <td>Thrown when an unknown bootstrap phase is passed in the annotation
-data.</td>
+                <td><p>Thrown when an unknown bootstrap phase is passed in the annotation
+data.</p></td>
             </tr>
             </table>
 
+            
             
                     </div>
     </div>
@@ -1382,11 +1465,15 @@ data.</td>
     <strong>maxPhaseLimit</strong>($bootstrap_str)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                <div class="tags">
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -1397,6 +1484,7 @@ data.</td>
             </tr>
             </table>
 
+            
             
             
             
@@ -1411,25 +1499,26 @@ data.</td>
     <strong>bootstrapToPhaseIndex</strong>(int $max_phase_index, <abbr title="Consolidation\AnnotatedCommand\AnnotationData">AnnotationData</abbr> $annotationData = null)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Bootstrap to the specified phase.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Bootstrap to the specified phase.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
                 <td>int</td>
                 <td>$max_phase_index</td>
-                <td>Only attempt bootstrap to the specified level.</td>
+                <td><p>Only attempt bootstrap to the specified level.</p></td>
             </tr>
                     <tr>
                 <td><abbr title="Consolidation\AnnotatedCommand\AnnotationData">AnnotationData</abbr></td>
                 <td>$annotationData</td>
-                <td>Optional annotation data from the command.</td>
+                <td><p>Optional annotation data from the command.</p></td>
             </tr>
             </table>
 
@@ -1439,10 +1528,11 @@ data.</td>
                     <table class="table table-condensed">
         <tr>
             <td>bool</td>
-            <td></td>
+            <td><p>TRUE if the specified bootstrap phase has completed.</p></td>
         </tr>
     </table>
 
+            
             
             
                     </div>
@@ -1456,25 +1546,26 @@ data.</td>
     <strong>bootstrapMax</strong>(int $max_phase_index = false, <abbr title="Consolidation\AnnotatedCommand\AnnotationData">AnnotationData</abbr> $annotationData = null)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Bootstrap to the highest level possible, without triggering any errors.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Bootstrap to the highest level possible, without triggering any errors.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
                 <td>int</td>
                 <td>$max_phase_index</td>
-                <td>(optional) Only attempt bootstrap to the specified level.</td>
+                <td><p>(optional) Only attempt bootstrap to the specified level.</p></td>
             </tr>
                     <tr>
                 <td><abbr title="Consolidation\AnnotatedCommand\AnnotationData">AnnotationData</abbr></td>
                 <td>$annotationData</td>
-                <td>Optional annotation data from the command.</td>
+                <td><p>Optional annotation data from the command.</p></td>
             </tr>
             </table>
 
@@ -1484,10 +1575,11 @@ data.</td>
                     <table class="table table-condensed">
         <tr>
             <td>int</td>
-            <td></td>
+            <td><p>The maximum phase to which we bootstrapped.</p></td>
         </tr>
     </table>
 
+            
             
             
                     </div>
@@ -1501,13 +1593,15 @@ data.</td>
     <strong>logger</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Allow those with an instance to us to the BootstrapManager to use its logger</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Allow those with an instance to us to the BootstrapManager to use its logger</p></p>                        
+        </div>
+        <div class="tags">
+            
             
             
             
@@ -1522,11 +1616,15 @@ data.</td>
     <strong>inflect</strong>($object)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                <div class="tags">
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -1540,6 +1638,7 @@ data.</td>
             
             
             
+            
                     </div>
     </div>
 
@@ -1547,7 +1646,7 @@ data.</td>
             </div>
 
     
-            </div><div id="footer">
+</div><div id="footer">
         Generated by <a href="https://github.com/code-lts/doctum">Doctum, a API Documentation generator and fork of Sami</a>.</div></div>
     </div>
     </body>

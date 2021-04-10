@@ -16,6 +16,7 @@
         <meta name="MobileOptimized" content="width">
         <meta name="HandheldFriendly" content="true">
         <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+
     </head>
 
     <body id="class" data-name="class:Drush_Drupal_Commands_core_MigrateRunnerCommands" data-root-path="../../../../">
@@ -66,25 +67,24 @@
             </ol>
         </div>
                 <div id="page-content">
-                
     <div class="page-header">
-        <h1>
-            MigrateRunnerCommands
-                
-        </h1>
+        <h1>MigrateRunnerCommands    
+            </h1>
     </div>
 
+    
     <p>        class
     <strong>MigrateRunnerCommands</strong>        extends <a href="../../../../Drush/Commands/DrushCommands.html"><abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a>        (<a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Commands/core/MigrateRunnerCommands.php">View source</a>)
 </p>
 
         
     
+        
 
             <div class="description">
-            <p>Migrate runner commands.</p>                                </div>
-    
-            <h2>Traits</h2>
+            <p><p>Migrate runner commands.</p></p>                    </div>
+            
+                <h2>Traits</h2>
 
         
     <div class="container-fluid underlined">
@@ -115,39 +115,47 @@
             </div>
             </div>
     
-            <h2>Constants</h2>
-
-            <table class="table table-condensed">
+            <h2>Constants</h2>    <table class="table table-condensed">
                     <tr>
-                <td>REQ</td>
+                <td>
+                                                                                                                        REQ
+                                    </td>
                 <td class="last">
                     <p><em></em></p>
                     <p></p>
                 </td>
             </tr>
                     <tr>
-                <td>OPT</td>
+                <td>
+                                                                                                                        OPT
+                                    </td>
                 <td class="last">
                     <p><em></em></p>
                     <p></p>
                 </td>
             </tr>
                     <tr>
-                <td>EXIT_SUCCESS</td>
+                <td>
+                                                                                                                        EXIT_SUCCESS
+                                    </td>
                 <td class="last">
                     <p><em></em></p>
                     <p></p>
                 </td>
             </tr>
                     <tr>
-                <td>EXIT_FAILURE</td>
+                <td>
+                                                                                                                        EXIT_FAILURE
+                                    </td>
                 <td class="last">
                     <p><em></em></p>
                     <p></p>
                 </td>
             </tr>
                     <tr>
-                <td>EXIT_FAILURE_WITH_CLARITY</td>
+                <td>
+                                                                                                                        EXIT_FAILURE_WITH_CLARITY
+                                    </td>
                 <td class="last">
                     <p><em></em></p>
                     <p></p>
@@ -161,8 +169,9 @@
             <table class="table table-condensed">
                     <tr>
                 <td class="type" id="property_commandData">
-                                        protected                                        CommandData
-                </td>
+                                        protected                                        <abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr>
+                                                                                
+                                    </td>
                 <td>$commandData</td>
                 <td class="last"></td>
                 <td><small>from&nbsp;<a href="../../../../Drush/Commands/DrushCommands.html#property_commandData">
@@ -171,33 +180,37 @@
                     <tr>
                 <td class="type" id="property_migrationPluginManager">
                                         protected                                        <abbr title="Drupal\migrate\Plugin\MigrationPluginManagerInterface">MigrationPluginManagerInterface</abbr>
-                </td>
+                                                                                
+                                    </td>
                 <td>$migrationPluginManager</td>
-                <td class="last">Migration plugin manager service.</td>
+                <td class="last"><p>Migration plugin manager service.</p></td>
                 <td></td>
             </tr>
                     <tr>
                 <td class="type" id="property_dateFormatter">
                                         protected                                        <abbr title="Drupal\Core\Datetime\DateFormatter">DateFormatter</abbr>
-                </td>
+                                                                                
+                                    </td>
                 <td>$dateFormatter</td>
-                <td class="last">Date formatter service.</td>
+                <td class="last"><p>Date formatter service.</p></td>
                 <td></td>
             </tr>
                     <tr>
                 <td class="type" id="property_keyValue">
                                         protected                                        <abbr title="Drupal\Core\KeyValueStore\KeyValueStoreInterface">KeyValueStoreInterface</abbr>
-                </td>
+                                                                                
+                                    </td>
                 <td>$keyValue</td>
-                <td class="last">The key-value store service.</td>
+                <td class="last"><p>The key-value store service.</p></td>
                 <td></td>
             </tr>
                     <tr>
                 <td class="type" id="property_migrateMessage">
                                         protected                                        <abbr title="Drupal\migrate\MigrateMessageInterface">MigrateMessageInterface</abbr>
-                </td>
+                                                                                
+                                    </td>
                 <td>$migrateMessage</td>
-                <td class="last">Migrate message service.</td>
+                <td class="last"><p>Migrate message service.</p></td>
                 <td></td>
             </tr>
             </table>
@@ -213,8 +226,8 @@
                 <div class="col-md-8 type">
                     <a href="#method_getConfig">getConfig</a>()
         
-                                            <p>Replaces same method in ConfigAwareTrait in order to provide a
-DrushConfig as return type. Helps with IDE completion.</p>                </div>
+                                            <p><p>Replaces same method in ConfigAwareTrait in order to provide a
+DrushConfig as return type. Helps with IDE completion.</p></p>                </div>
                 <div class="col-md-2"><small>from&nbsp;<a href="../../../../Drush/Config/ConfigAwareTrait.html#method_getConfig">
 <abbr title="Drush\Config\ConfigAwareTrait">ConfigAwareTrait</abbr></a></small></div>
             </div>
@@ -225,7 +238,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method___construct">__construct</a>(<abbr title="Drupal\Core\Datetime\DateFormatter">DateFormatter</abbr> $dateFormatter, <abbr title="Drupal\Core\KeyValueStore\KeyValueFactoryInterface">KeyValueFactoryInterface</abbr> $keyValueFactory)
         
-                                            <p>Constructs a new class instance.</p>                </div>
+                                            <p><p>Constructs a new class instance.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -235,18 +248,18 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_io">io</a>()
         
-                                            <p>Override Robo's IO function with our custom style.</p>                </div>
+                                            <p><p>Override Robo's IO function with our custom style.</p></p>                </div>
                 <div class="col-md-2"><small>from&nbsp;<a href="../../../../Drush/Commands/DrushCommands.html#method_io">
 <abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a></small></div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    LoggerInterface
+                    <abbr title="Psr\Log\LoggerInterface">LoggerInterface</abbr>
                 </div>
                 <div class="col-md-8 type">
                     <a href="#method_logger">logger</a>()
         
-                                            <p>Returns a logger object.</p>                </div>
+                                            <p><p>Returns a logger object.</p></p>                </div>
                 <div class="col-md-2"><small>from&nbsp;<a href="../../../../Drush/Commands/DrushCommands.html#method_logger">
 <abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a></small></div>
             </div>
@@ -257,7 +270,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_printFile">printFile</a>(string $file)
         
-                                            <p>Print the contents of a file.</p>                </div>
+                                            <p><p>Print the contents of a file.</p></p>                </div>
                 <div class="col-md-2"><small>from&nbsp;<a href="../../../../Drush/Commands/DrushCommands.html#method_printFile">
 <abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a></small></div>
             </div>
@@ -268,7 +281,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_preHook">preHook</a>(<abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr> $commandData)
         
-                                            <p>Persist commandData for use in primary command callback. Used by 'topic' commands.</p>                </div>
+                                            <p><p>Persist commandData for use in primary command callback. Used by 'topic' commands.</p></p>                </div>
                 <div class="col-md-2"><small>from&nbsp;<a href="../../../../Drush/Commands/DrushCommands.html#method_preHook">
 <abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a></small></div>
             </div>
@@ -279,7 +292,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_printFileTopic">printFileTopic</a>(<abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr> $commandData)
         
-                                            <p>Print the contents of a file. The path comes from the @topic annotation.</p>                </div>
+                                            <p><p>Print the contents of a file. The path comes from the @topic annotation.</p></p>                </div>
                 <div class="col-md-2"><small>from&nbsp;<a href="../../../../Drush/Commands/DrushCommands.html#method_printFileTopic">
 <abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a></small></div>
             </div>
@@ -290,7 +303,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_getStack">getStack</a>()
         
-                                            <p>Get a Guzzle handler stack that uses the Drush logger.</p>                </div>
+                                            <p><p>Get a Guzzle handler stack that uses the Drush logger.</p></p>                </div>
                 <div class="col-md-2"><small>from&nbsp;<a href="../../../../Drush/Commands/DrushCommands.html#method_getStack">
 <abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a></small></div>
             </div>
@@ -301,7 +314,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_status">status</a>(string|null $migrationIds = null, array $options = [&#039;tag&#039; =&gt; self::REQ, &#039;names-only&#039; =&gt; false])
         
-                                            <p>List all migrations with current status.</p>                </div>
+                                            <p><p>List all migrations with current status.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -311,7 +324,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_prepareTableRow">prepareTableRow</a>(array $row, bool|null $namesOnly)
         
-                                            <p>Prepares a table row for migrate status.</p>                </div>
+                                            <p><p>Prepares a table row for migrate status.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -321,7 +334,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_import">import</a>(string|null $migrationIds = null, array $options = [&#039;all&#039; =&gt; false, &#039;tag&#039; =&gt; self::REQ, &#039;limit&#039; =&gt; self::REQ, &#039;feedback&#039; =&gt; self::REQ, &#039;idlist&#039; =&gt; self::REQ, &#039;update&#039; =&gt; false, &#039;force&#039; =&gt; false, &#039;execute-dependencies&#039; =&gt; false, &#039;timestamp&#039; =&gt; false, &#039;total&#039; =&gt; false, &#039;progress&#039; =&gt; true, &#039;delete&#039; =&gt; false])
         
-                                            <p>Perform one or more migration processes.</p>                </div>
+                                            <p><p>Perform one or more migration processes.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -331,7 +344,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_executeMigration">executeMigration</a>(<abbr title="Drupal\migrate\Plugin\MigrationInterface">MigrationInterface</abbr> $migration, string $migrationId, array $userData)
         
-                                            <p>Executes a single migration.</p>                </div>
+                                            <p><p>Executes a single migration.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -341,7 +354,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_rollback">rollback</a>(string|null $migrationIds = null, array $options = [&#039;all&#039; =&gt; false, &#039;tag&#039; =&gt; self::REQ, &#039;feedback&#039; =&gt; self::REQ, &#039;idlist&#039; =&gt; self::REQ, &#039;progress&#039; =&gt; true])
         
-                                            <p>Rollback one or more migrations.</p>                </div>
+                                            <p><p>Rollback one or more migrations.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -351,7 +364,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_stop">stop</a>(string $migrationId)
         
-                                            <p>Stop an active migration operation.</p>                </div>
+                                            <p><p>Stop an active migration operation.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -361,7 +374,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_resetStatus">resetStatus</a>(string $migrationId)
         
-                                            <p>Reset an active migration's status to idle.</p>                </div>
+                                            <p><p>Reset an active migration's status to idle.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -371,7 +384,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_messages">messages</a>(string $migrationId)
         
-                                            <p>View any messages associated with a migration.</p>                </div>
+                                            <p><p>View any messages associated with a migration.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -381,7 +394,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_fieldsSource">fieldsSource</a>(string $migrationId)
         
-                                            <p>List the fields available for mapping in a source.</p>                </div>
+                                            <p><p>List the fields available for mapping in a source.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -391,7 +404,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_getMigrationList">getMigrationList</a>(string|null $migrationIds, string|null $tags)
         
-                                            <p>Retrieves a list of active migrations.</p>                </div>
+                                            <p><p>Retrieves a list of active migrations.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -401,7 +414,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_getMigrateMessage">getMigrateMessage</a>()
         
-                                            <p>Returns the migrate message logger.</p>                </div>
+                                            <p><p>Returns the migrate message logger.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -411,7 +424,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_getMigrationPluginManager">getMigrationPluginManager</a>()
         
-                                            <p>Returns the migration plugin manager service.</p>                </div>
+                                            <p><p>Returns the migration plugin manager service.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -421,7 +434,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_getSourceIdKeys">getSourceIdKeys</a>(<abbr title="Drupal\migrate\Plugin\MigrateIdMapInterface">MigrateIdMapInterface</abbr> $idMap)
         
-                                            <p>Get the source ID keys.</p>                </div>
+                                            <p><p>Get the source ID keys.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
             </div>
@@ -438,14 +451,15 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
     <strong>getConfig</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Replaces same method in ConfigAwareTrait in order to provide a
-DrushConfig as return type. Helps with IDE completion.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Replaces same method in ConfigAwareTrait in order to provide a
+DrushConfig as return type. Helps with IDE completion.</p></p>                        
+        </div>
+        <div class="tags">
             
                             <h4>Return Value</h4>
 
@@ -469,6 +483,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </tr>
             </table>
 
+            
                     </div>
     </div>
 
@@ -480,28 +495,30 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
     <strong>__construct</strong>(<abbr title="Drupal\Core\Datetime\DateFormatter">DateFormatter</abbr> $dateFormatter, <abbr title="Drupal\Core\KeyValueStore\KeyValueFactoryInterface">KeyValueFactoryInterface</abbr> $keyValueFactory)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Constructs a new class instance.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Constructs a new class instance.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
                 <td><abbr title="Drupal\Core\Datetime\DateFormatter">DateFormatter</abbr></td>
                 <td>$dateFormatter</td>
-                <td>Date formatter service.</td>
+                <td><p>Date formatter service.</p></td>
             </tr>
                     <tr>
                 <td><abbr title="Drupal\Core\KeyValueStore\KeyValueFactoryInterface">KeyValueFactoryInterface</abbr></td>
                 <td>$keyValueFactory</td>
-                <td>The key-value factory service.</td>
+                <td><p>The key-value factory service.</p></td>
             </tr>
             </table>
 
+            
             
             
             
@@ -517,13 +534,15 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
     <strong>io</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Override Robo's IO function with our custom style.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Override Robo's IO function with our custom style.</p></p>                        
+        </div>
+        <div class="tags">
+            
             
             
             
@@ -535,27 +554,29 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
                     <h3 id="method_logger">
         <div class="location">in <a href="../../../../Drush/Commands/DrushCommands.html#method_logger">
 <abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a> <a href="https://github.com/drush-ops/drush/blob/10.x/src/Commands/DrushCommands.php#L68">at line 68</a></div>
-        <code>            protected        LoggerInterface
+        <code>            protected        <abbr title="Psr\Log\LoggerInterface">LoggerInterface</abbr>
     <strong>logger</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Returns a logger object.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Returns a logger object.</p></p>                        
+        </div>
+        <div class="tags">
             
                             <h4>Return Value</h4>
 
                     <table class="table table-condensed">
         <tr>
-            <td>LoggerInterface</td>
+            <td><abbr title="Psr\Log\LoggerInterface">LoggerInterface</abbr></td>
             <td></td>
         </tr>
     </table>
 
+            
             
             
                     </div>
@@ -570,23 +591,25 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
     <strong>printFile</strong>(string $file)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Print the contents of a file.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Print the contents of a file.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
                 <td>string</td>
                 <td>$file</td>
-                <td>Full path to a file.</td>
+                <td><p>Full path to a file.</p></td>
             </tr>
             </table>
 
+            
             
             
             
@@ -602,13 +625,14 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
     <strong>preHook</strong>(<abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr> $commandData)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Persist commandData for use in primary command callback. Used by 'topic' commands.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Persist commandData for use in primary command callback. Used by 'topic' commands.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -619,6 +643,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </tr>
             </table>
 
+            
             
             
             
@@ -634,23 +659,25 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
     <strong>printFileTopic</strong>(<abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr> $commandData)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Print the contents of a file. The path comes from the @topic annotation.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Print the contents of a file. The path comes from the @topic annotation.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
                 <td><abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr></td>
                 <td>$commandData</td>
-                <td>Full path to a file.</td>
+                <td><p>Full path to a file.</p></td>
             </tr>
             </table>
 
+            
             
             
             
@@ -666,13 +693,14 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
     <strong>getStack</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Get a Guzzle handler stack that uses the Drush logger.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Get a Guzzle handler stack that uses the Drush logger.</p></p>                        
+        </div>
+        <div class="tags">
             
                             <h4>Return Value</h4>
 
@@ -696,6 +724,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </tr>
             </table>
 
+            
                     </div>
     </div>
 
@@ -707,20 +736,21 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
     <strong>status</strong>(string|null $migrationIds = null, array $options = [&#039;tag&#039; =&gt; self::REQ, &#039;names-only&#039; =&gt; false])
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>List all migrations with current status.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>List all migrations with current status.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
                 <td>string|null</td>
                 <td>$migrationIds</td>
-                <td>Restrict to a comma-separated list of migrations. Optional.</td>
+                <td><p>Restrict to a comma-separated list of migrations. Optional.</p></td>
             </tr>
                     <tr>
                 <td>array</td>
@@ -735,10 +765,11 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
                     <table class="table table-condensed">
         <tr>
             <td><abbr title="Consolidation\OutputFormatters\StructuredData\RowsOfFields">RowsOfFields</abbr></td>
-            <td></td>
+            <td><p>Migrations status formatted as table.</p></td>
         </tr>
     </table>
 
+            
             
             
                     </div>
@@ -752,25 +783,26 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
     <strong>prepareTableRow</strong>(array $row, bool|null $namesOnly)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Prepares a table row for migrate status.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Prepares a table row for migrate status.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
                 <td>array</td>
                 <td>$row</td>
-                <td>The row to be prepared.</td>
+                <td><p>The row to be prepared.</p></td>
             </tr>
                     <tr>
                 <td>bool|null</td>
                 <td>$namesOnly</td>
-                <td>If to output only the migration IDs.</td>
+                <td><p>If to output only the migration IDs.</p></td>
             </tr>
             </table>
 
@@ -780,10 +812,11 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
                     <table class="table table-condensed">
         <tr>
             <td>array</td>
-            <td></td>
+            <td><p>The prepared row.</p></td>
         </tr>
     </table>
 
+            
             
             
                     </div>
@@ -797,20 +830,21 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
     <strong>import</strong>(string|null $migrationIds = null, array $options = [&#039;all&#039; =&gt; false, &#039;tag&#039; =&gt; self::REQ, &#039;limit&#039; =&gt; self::REQ, &#039;feedback&#039; =&gt; self::REQ, &#039;idlist&#039; =&gt; self::REQ, &#039;update&#039; =&gt; false, &#039;force&#039; =&gt; false, &#039;execute-dependencies&#039; =&gt; false, &#039;timestamp&#039; =&gt; false, &#039;total&#039; =&gt; false, &#039;progress&#039; =&gt; true, &#039;delete&#039; =&gt; false])
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Perform one or more migration processes.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Perform one or more migration processes.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
                 <td>string|null</td>
                 <td>$migrationIds</td>
-                <td>Comma-separated list of migration IDs.</td>
+                <td><p>Comma-separated list of migration IDs.</p></td>
             </tr>
                     <tr>
                 <td>array</td>
@@ -835,10 +869,11 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
                     <table class="table table-condensed">
                     <tr>
                 <td><a target="_blank" rel="noopener" href="https://www.php.net/Exception">Exception</a></td>
-                <td>When not enough options were provided or no migration was found.</td>
+                <td><p>When not enough options were provided or no migration was found.</p></td>
             </tr>
             </table>
 
+            
             
                     </div>
     </div>
@@ -851,31 +886,32 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
     <strong>executeMigration</strong>(<abbr title="Drupal\migrate\Plugin\MigrationInterface">MigrationInterface</abbr> $migration, string $migrationId, array $userData)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Executes a single migration.</p>                    <p>If the --execute-dependencies option was given, the migration's
-dependencies will also be executed first.</p>                            </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Executes a single migration.</p></p>                <p><p>If the --execute-dependencies option was given, the migration's
+dependencies will also be executed first.</p></p>        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
                 <td><abbr title="Drupal\migrate\Plugin\MigrationInterface">MigrationInterface</abbr></td>
                 <td>$migration</td>
-                <td>The migration to execute.</td>
+                <td><p>The migration to execute.</p></td>
             </tr>
                     <tr>
                 <td>string</td>
                 <td>$migrationId</td>
-                <td>The migration ID (not used, just an artifact of array_walk()).</td>
+                <td><p>The migration ID (not used, just an artifact of array_walk()).</p></td>
             </tr>
                     <tr>
                 <td>array</td>
                 <td>$userData</td>
-                <td>Additional data passed to the callback.</td>
+                <td><p>Additional data passed to the callback.</p></td>
             </tr>
             </table>
 
@@ -895,10 +931,11 @@ dependencies will also be executed first.</p>                            </div>
                     <table class="table table-condensed">
                     <tr>
                 <td><a target="_blank" rel="noopener" href="https://www.php.net/Exception">Exception</a></td>
-                <td>If there are failed migrations.</td>
+                <td><p>If there are failed migrations.</p></td>
             </tr>
             </table>
 
+            
             
                     </div>
     </div>
@@ -911,20 +948,21 @@ dependencies will also be executed first.</p>                            </div>
     <strong>rollback</strong>(string|null $migrationIds = null, array $options = [&#039;all&#039; =&gt; false, &#039;tag&#039; =&gt; self::REQ, &#039;feedback&#039; =&gt; self::REQ, &#039;idlist&#039; =&gt; self::REQ, &#039;progress&#039; =&gt; true])
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Rollback one or more migrations.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Rollback one or more migrations.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
                 <td>string|null</td>
                 <td>$migrationIds</td>
-                <td>Comma-separated list of migration IDs.</td>
+                <td><p>Comma-separated list of migration IDs.</p></td>
             </tr>
                     <tr>
                 <td>array</td>
@@ -949,10 +987,11 @@ dependencies will also be executed first.</p>                            </div>
                     <table class="table table-condensed">
                     <tr>
                 <td><a target="_blank" rel="noopener" href="https://www.php.net/Exception">Exception</a></td>
-                <td>When not enough options were provided.</td>
+                <td><p>When not enough options were provided.</p></td>
             </tr>
             </table>
 
+            
             
                     </div>
     </div>
@@ -965,20 +1004,21 @@ dependencies will also be executed first.</p>                            </div>
     <strong>stop</strong>(string $migrationId)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Stop an active migration operation.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Stop an active migration operation.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
                 <td>string</td>
                 <td>$migrationId</td>
-                <td>The ID of migration to stop.</td>
+                <td><p>The ID of migration to stop.</p></td>
             </tr>
             </table>
 
@@ -992,6 +1032,7 @@ dependencies will also be executed first.</p>                            </div>
         </tr>
     </table>
 
+            
             
             
                     </div>
@@ -1005,20 +1046,21 @@ dependencies will also be executed first.</p>                            </div>
     <strong>resetStatus</strong>(string $migrationId)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Reset an active migration's status to idle.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Reset an active migration's status to idle.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
                 <td>string</td>
                 <td>$migrationId</td>
-                <td>The ID of migration to reset.</td>
+                <td><p>The ID of migration to reset.</p></td>
             </tr>
             </table>
 
@@ -1034,6 +1076,7 @@ dependencies will also be executed first.</p>                            </div>
 
             
             
+            
                     </div>
     </div>
 
@@ -1045,20 +1088,21 @@ dependencies will also be executed first.</p>                            </div>
     <strong>messages</strong>(string $migrationId)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>View any messages associated with a migration.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>View any messages associated with a migration.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
                 <td>string</td>
                 <td>$migrationId</td>
-                <td>The ID of the migration.</td>
+                <td><p>The ID of the migration.</p></td>
             </tr>
             </table>
 
@@ -1068,10 +1112,11 @@ dependencies will also be executed first.</p>                            </div>
                     <table class="table table-condensed">
         <tr>
             <td><abbr title="Consolidation\OutputFormatters\StructuredData\RowsOfFields">RowsOfFields</abbr></td>
-            <td></td>
+            <td><p>Migration messages status formatted as table.</p></td>
         </tr>
     </table>
 
+            
             
             
                     </div>
@@ -1085,20 +1130,21 @@ dependencies will also be executed first.</p>                            </div>
     <strong>fieldsSource</strong>(string $migrationId)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>List the fields available for mapping in a source.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>List the fields available for mapping in a source.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
                 <td>string</td>
                 <td>$migrationId</td>
-                <td>The ID of the migration.</td>
+                <td><p>The ID of the migration.</p></td>
             </tr>
             </table>
 
@@ -1108,10 +1154,11 @@ dependencies will also be executed first.</p>                            </div>
                     <table class="table table-condensed">
         <tr>
             <td><abbr title="Consolidation\OutputFormatters\StructuredData\RowsOfFields">RowsOfFields</abbr></td>
-            <td></td>
+            <td><p>Migration messages status formatted as table.</p></td>
         </tr>
     </table>
 
+            
             
             
                     </div>
@@ -1125,26 +1172,27 @@ dependencies will also be executed first.</p>                            </div>
     <strong>getMigrationList</strong>(string|null $migrationIds, string|null $tags)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Retrieves a list of active migrations.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Retrieves a list of active migrations.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
                 <td>string|null</td>
                 <td>$migrationIds</td>
-                <td>A comma-separated list of migration IDs. If omitted, will return all
-migrations.</td>
+                <td><p>A comma-separated list of migration IDs. If omitted, will return all
+migrations.</p></td>
             </tr>
                     <tr>
                 <td>string|null</td>
                 <td>$tags</td>
-                <td>A comma separated list of tags.</td>
+                <td><p>A comma separated list of tags.</p></td>
             </tr>
             </table>
 
@@ -1154,7 +1202,8 @@ migrations.</td>
                     <table class="table table-condensed">
         <tr>
             <td>array</td>
-            <td></td>
+            <td><p>An array keyed by migration tag, each value containing an array of
+migrations or an empty array if no migrations match the input criteria.</p></td>
         </tr>
     </table>
 
@@ -1169,6 +1218,7 @@ migrations.</td>
             </table>
 
             
+            
                     </div>
     </div>
 
@@ -1180,23 +1230,25 @@ migrations.</td>
     <strong>getMigrateMessage</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Returns the migrate message logger.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Returns the migrate message logger.</p></p>                        
+        </div>
+        <div class="tags">
             
                             <h4>Return Value</h4>
 
                     <table class="table table-condensed">
         <tr>
             <td><abbr title="Drupal\migrate\MigrateMessageInterface">MigrateMessageInterface</abbr></td>
-            <td></td>
+            <td><p>The migrate message logger.</p></td>
         </tr>
     </table>
 
+            
             
             
                     </div>
@@ -1210,23 +1262,39 @@ migrations.</td>
     <strong>getMigrationPluginManager</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Returns the migration plugin manager service.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Returns the migration plugin manager service.</p></p>                        
+                    <p>
+                        
+                                    <tr>
+                        <td>This</td>
+                        <td>service cannot be injected as the 'migrate' module might not
+be enabled and will throw the following exception:
+> Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException
+> The service "migrate_runner.commands" has a dependency on a
+> non-existent service "plugin.manager.migration".
+Unfortunately, we cannot avoid the class instantiation, via an
+annotation (as @validate-module-enabled for methods), if a specific
+module is not installed. Open a followup to tackle this issue.</td>
+                        </tr>
+                            </p>
+        </div>
+        <div class="tags">
             
                             <h4>Return Value</h4>
 
                     <table class="table table-condensed">
         <tr>
             <td><abbr title="Drupal\migrate\Plugin\MigrationPluginManagerInterface">MigrationPluginManagerInterface</abbr></td>
-            <td></td>
+            <td><p>The migration plugin manager service.</p></td>
         </tr>
     </table>
 
+            
             
             
                     </div>
@@ -1240,20 +1308,21 @@ migrations.</td>
     <strong>getSourceIdKeys</strong>(<abbr title="Drupal\migrate\Plugin\MigrateIdMapInterface">MigrateIdMapInterface</abbr> $idMap)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Get the source ID keys.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Get the source ID keys.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
                 <td><abbr title="Drupal\migrate\Plugin\MigrateIdMapInterface">MigrateIdMapInterface</abbr></td>
                 <td>$idMap</td>
-                <td>The migration ID map.</td>
+                <td><p>The migration ID map.</p></td>
             </tr>
             </table>
 
@@ -1263,10 +1332,11 @@ migrations.</td>
                     <table class="table table-condensed">
         <tr>
             <td>array</td>
-            <td></td>
+            <td><p>The source ID keys.</p></td>
         </tr>
     </table>
 
+            
             
             
                     </div>
@@ -1276,7 +1346,7 @@ migrations.</td>
             </div>
 
     
-            </div><div id="footer">
+</div><div id="footer">
         Generated by <a href="https://github.com/code-lts/doctum">Doctum, a API Documentation generator and fork of Sami</a>.</div></div>
     </div>
     </body>

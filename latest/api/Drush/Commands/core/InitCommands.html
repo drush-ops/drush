@@ -16,6 +16,7 @@
         <meta name="MobileOptimized" content="width">
         <meta name="HandheldFriendly" content="true">
         <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+
     </head>
 
     <body id="class" data-name="class:Drush_Commands_core_InitCommands" data-root-path="../../../">
@@ -66,14 +67,12 @@
             </ol>
         </div>
                 <div id="page-content">
-                
     <div class="page-header">
-        <h1>
-            InitCommands
-                
-        </h1>
+        <h1>InitCommands    
+            </h1>
     </div>
 
+    
     <p>        class
     <strong>InitCommands</strong>        extends <a href="../../../Drush/Commands/DrushCommands.html"><abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a>        implements
         <abbr title="Robo\Contract\BuilderAwareInterface">BuilderAwareInterface</abbr>, <abbr title="Robo\Contract\IOAwareInterface">IOAwareInterface</abbr>        (<a href="https://github.com/drush-ops/drush/blob/10.x/src/Commands/core/InitCommands.php">View source</a>)
@@ -81,9 +80,10 @@
 
         
     
+        
 
-    
-            <h2>Traits</h2>
+            
+                <h2>Traits</h2>
 
         
     <div class="container-fluid underlined">
@@ -124,39 +124,47 @@
             </div>
             </div>
     
-            <h2>Constants</h2>
-
-            <table class="table table-condensed">
+            <h2>Constants</h2>    <table class="table table-condensed">
                     <tr>
-                <td>REQ</td>
+                <td>
+                                                                                                                        REQ
+                                    </td>
                 <td class="last">
                     <p><em></em></p>
                     <p></p>
                 </td>
             </tr>
                     <tr>
-                <td>OPT</td>
+                <td>
+                                                                                                                        OPT
+                                    </td>
                 <td class="last">
                     <p><em></em></p>
                     <p></p>
                 </td>
             </tr>
                     <tr>
-                <td>EXIT_SUCCESS</td>
+                <td>
+                                                                                                                        EXIT_SUCCESS
+                                    </td>
                 <td class="last">
                     <p><em></em></p>
                     <p></p>
                 </td>
             </tr>
                     <tr>
-                <td>EXIT_FAILURE</td>
+                <td>
+                                                                                                                        EXIT_FAILURE
+                                    </td>
                 <td class="last">
                     <p><em></em></p>
                     <p></p>
                 </td>
             </tr>
                     <tr>
-                <td>EXIT_FAILURE_WITH_CLARITY</td>
+                <td>
+                                                                                                                        EXIT_FAILURE_WITH_CLARITY
+                                    </td>
                 <td class="last">
                     <p><em></em></p>
                     <p></p>
@@ -170,8 +178,9 @@
             <table class="table table-condensed">
                     <tr>
                 <td class="type" id="property_commandData">
-                                        protected                                        CommandData
-                </td>
+                                        protected                                        <abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr>
+                                                                                
+                                    </td>
                 <td>$commandData</td>
                 <td class="last"></td>
                 <td><small>from&nbsp;<a href="../../../Drush/Commands/DrushCommands.html#property_commandData">
@@ -190,8 +199,8 @@
                 <div class="col-md-8 type">
                     <a href="#method_getConfig">getConfig</a>()
         
-                                            <p>Replaces same method in ConfigAwareTrait in order to provide a
-DrushConfig as return type. Helps with IDE completion.</p>                </div>
+                                            <p><p>Replaces same method in ConfigAwareTrait in order to provide a
+DrushConfig as return type. Helps with IDE completion.</p></p>                </div>
                 <div class="col-md-2"><small>from&nbsp;<a href="../../../Drush/Config/ConfigAwareTrait.html#method_getConfig">
 <abbr title="Drush\Config\ConfigAwareTrait">ConfigAwareTrait</abbr></a></small></div>
             </div>
@@ -214,18 +223,18 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_io">io</a>()
         
-                                            <p>Override Robo's IO function with our custom style.</p>                </div>
+                                            <p><p>Override Robo's IO function with our custom style.</p></p>                </div>
                 <div class="col-md-2"><small>from&nbsp;<a href="../../../Drush/Commands/DrushCommands.html#method_io">
 <abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a></small></div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    LoggerInterface
+                    <abbr title="Psr\Log\LoggerInterface">LoggerInterface</abbr>
                 </div>
                 <div class="col-md-8 type">
                     <a href="#method_logger">logger</a>()
         
-                                            <p>Returns a logger object.</p>                </div>
+                                            <p><p>Returns a logger object.</p></p>                </div>
                 <div class="col-md-2"><small>from&nbsp;<a href="../../../Drush/Commands/DrushCommands.html#method_logger">
 <abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a></small></div>
             </div>
@@ -236,7 +245,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_printFile">printFile</a>(string $file)
         
-                                            <p>Print the contents of a file.</p>                </div>
+                                            <p><p>Print the contents of a file.</p></p>                </div>
                 <div class="col-md-2"><small>from&nbsp;<a href="../../../Drush/Commands/DrushCommands.html#method_printFile">
 <abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a></small></div>
             </div>
@@ -247,7 +256,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_preHook">preHook</a>(<abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr> $commandData)
         
-                                            <p>Persist commandData for use in primary command callback. Used by 'topic' commands.</p>                </div>
+                                            <p><p>Persist commandData for use in primary command callback. Used by 'topic' commands.</p></p>                </div>
                 <div class="col-md-2"><small>from&nbsp;<a href="../../../Drush/Commands/DrushCommands.html#method_preHook">
 <abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a></small></div>
             </div>
@@ -258,7 +267,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_printFileTopic">printFileTopic</a>(<abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr> $commandData)
         
-                                            <p>Print the contents of a file. The path comes from the @topic annotation.</p>                </div>
+                                            <p><p>Print the contents of a file. The path comes from the @topic annotation.</p></p>                </div>
                 <div class="col-md-2"><small>from&nbsp;<a href="../../../Drush/Commands/DrushCommands.html#method_printFileTopic">
 <abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a></small></div>
             </div>
@@ -269,7 +278,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_getStack">getStack</a>()
         
-                                            <p>Get a Guzzle handler stack that uses the Drush logger.</p>                </div>
+                                            <p><p>Get a Guzzle handler stack that uses the Drush logger.</p></p>                </div>
                 <div class="col-md-2"><small>from&nbsp;<a href="../../../Drush/Commands/DrushCommands.html#method_getStack">
 <abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a></small></div>
             </div>
@@ -280,7 +289,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_startBrowser">startBrowser</a>($uri = null, int $sleep = 0, bool $port = false, bool $browser = true)
         
-                                            <p>Starts a background browser/tab for the current site or a specified URL.</p>                </div>
+                                            <p><p>Starts a background browser/tab for the current site or a specified URL.</p></p>                </div>
                 <div class="col-md-2"><small>from&nbsp;<a href="../../../Drush/Exec/ExecTrait.html#method_startBrowser">
 <abbr title="Drush\Exec\ExecTrait">ExecTrait</abbr></a></small></div>
             </div>
@@ -315,7 +324,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_initializeDrush">initializeDrush</a>($options = [&#039;edit&#039; =&gt; false, &#039;add-path&#039; =&gt; &#039;&#039;])
         
-                                            <p>Enrich the bash startup file with bash aliases and a smart command prompt.</p>                </div>
+                                            <p><p>Enrich the bash startup file with bash aliases and a smart command prompt.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -325,7 +334,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_findBashrc">findBashrc</a>($home)
         
-                                            <p>Determine which .bashrc file is best to use on this platform.</p>                </div>
+                                            <p><p>Determine which .bashrc file is best to use on this platform.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -335,8 +344,8 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_findPathToDrush">findPathToDrush</a>()
         
-                                            <p>Determine where Drush is located, so that we can add
-that location to the $PATH.</p>                </div>
+                                            <p><p>Determine where Drush is located, so that we can add
+that location to the $PATH.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -364,14 +373,15 @@ that location to the $PATH.</p>                </div>
     <strong>getConfig</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Replaces same method in ConfigAwareTrait in order to provide a
-DrushConfig as return type. Helps with IDE completion.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Replaces same method in ConfigAwareTrait in order to provide a
+DrushConfig as return type. Helps with IDE completion.</p></p>                        
+        </div>
+        <div class="tags">
             
                             <h4>Return Value</h4>
 
@@ -395,6 +405,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </tr>
             </table>
 
+            
                     </div>
     </div>
 
@@ -407,11 +418,16 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
     <strong>__construct</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                <div class="tags">
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+            
             
             
             
@@ -427,13 +443,15 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
     <strong>io</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Override Robo's IO function with our custom style.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Override Robo's IO function with our custom style.</p></p>                        
+        </div>
+        <div class="tags">
+            
             
             
             
@@ -445,27 +463,29 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
                     <h3 id="method_logger">
         <div class="location">in <a href="../../../Drush/Commands/DrushCommands.html#method_logger">
 <abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a> <a href="https://github.com/drush-ops/drush/blob/10.x/src/Commands/DrushCommands.php#L68">at line 68</a></div>
-        <code>            protected        LoggerInterface
+        <code>            protected        <abbr title="Psr\Log\LoggerInterface">LoggerInterface</abbr>
     <strong>logger</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Returns a logger object.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Returns a logger object.</p></p>                        
+        </div>
+        <div class="tags">
             
                             <h4>Return Value</h4>
 
                     <table class="table table-condensed">
         <tr>
-            <td>LoggerInterface</td>
+            <td><abbr title="Psr\Log\LoggerInterface">LoggerInterface</abbr></td>
             <td></td>
         </tr>
     </table>
 
+            
             
             
                     </div>
@@ -480,23 +500,25 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
     <strong>printFile</strong>(string $file)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Print the contents of a file.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Print the contents of a file.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
                 <td>string</td>
                 <td>$file</td>
-                <td>Full path to a file.</td>
+                <td><p>Full path to a file.</p></td>
             </tr>
             </table>
 
+            
             
             
             
@@ -512,13 +534,14 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
     <strong>preHook</strong>(<abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr> $commandData)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Persist commandData for use in primary command callback. Used by 'topic' commands.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Persist commandData for use in primary command callback. Used by 'topic' commands.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -529,6 +552,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </tr>
             </table>
 
+            
             
             
             
@@ -544,23 +568,25 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
     <strong>printFileTopic</strong>(<abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr> $commandData)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Print the contents of a file. The path comes from the @topic annotation.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Print the contents of a file. The path comes from the @topic annotation.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
                 <td><abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr></td>
                 <td>$commandData</td>
-                <td>Full path to a file.</td>
+                <td><p>Full path to a file.</p></td>
             </tr>
             </table>
 
+            
             
             
             
@@ -576,13 +602,14 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
     <strong>getStack</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Get a Guzzle handler stack that uses the Drush logger.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Get a Guzzle handler stack that uses the Drush logger.</p></p>                        
+        </div>
+        <div class="tags">
             
                             <h4>Return Value</h4>
 
@@ -606,6 +633,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </tr>
             </table>
 
+            
                     </div>
     </div>
 
@@ -618,22 +646,23 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
     <strong>startBrowser</strong>($uri = null, int $sleep = 0, bool $port = false, bool $browser = true)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Starts a background browser/tab for the current site or a specified URL.</p>                    <p>Uses a non-blocking Process call, so Drush execution will continue.</p>                            </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Starts a background browser/tab for the current site or a specified URL.</p></p>                <p><p>Uses a non-blocking Process call, so Drush execution will continue.</p></p>        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
                 <td></td>
                 <td>$uri</td>
-                <td>URI or site path to open in browser. If omitted, or if a site path
+                <td><p>Optional URI or site path to open in browser. If omitted, or if a site path
 is specified, the current site home page uri will be prepended if the site's
-hostname resolves.</td>
+hostname resolves.</p></td>
             </tr>
                     <tr>
                 <td>int</td>
@@ -658,10 +687,12 @@ hostname resolves.</td>
                     <table class="table table-condensed">
         <tr>
             <td>bool</td>
-            <td></td>
+            <td><p>TRUE if browser was opened. FALSE if browser was disabled by the user or a
+default browser could not be found.</p></td>
         </tr>
     </table>
 
+            
             
             
                     </div>
@@ -676,11 +707,15 @@ hostname resolves.</td>
     <strong>programExists</strong>($program)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                <div class="tags">
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -691,6 +726,7 @@ hostname resolves.</td>
             </tr>
             </table>
 
+            
             
             
             
@@ -706,11 +742,16 @@ hostname resolves.</td>
     <strong>getEditor</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                <div class="tags">
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+            
             
             
             
@@ -725,13 +766,14 @@ hostname resolves.</td>
     <strong>initializeDrush</strong>($options = [&#039;edit&#039; =&gt; false, &#039;add-path&#039; =&gt; &#039;&#039;])
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Enrich the bash startup file with bash aliases and a smart command prompt.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Enrich the bash startup file with bash aliases and a smart command prompt.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -742,6 +784,7 @@ hostname resolves.</td>
             </tr>
             </table>
 
+            
             
             
             
@@ -756,13 +799,14 @@ hostname resolves.</td>
     <strong>findBashrc</strong>($home)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Determine which .bashrc file is best to use on this platform.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Determine which .bashrc file is best to use on this platform.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -773,6 +817,7 @@ hostname resolves.</td>
             </tr>
             </table>
 
+            
             
             
             
@@ -787,14 +832,16 @@ hostname resolves.</td>
     <strong>findPathToDrush</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Determine where Drush is located, so that we can add
-that location to the $PATH.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Determine where Drush is located, so that we can add
+that location to the $PATH.</p></p>                        
+        </div>
+        <div class="tags">
+            
             
             
             
@@ -809,11 +856,15 @@ that location to the $PATH.</p>                                                <
     <strong>bashAddition</strong>($file)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                <div class="tags">
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -827,6 +878,7 @@ that location to the $PATH.</p>                                                <
             
             
             
+            
                     </div>
     </div>
 
@@ -834,7 +886,7 @@ that location to the $PATH.</p>                                                <
             </div>
 
     
-            </div><div id="footer">
+</div><div id="footer">
         Generated by <a href="https://github.com/code-lts/doctum">Doctum, a API Documentation generator and fork of Sami</a>.</div></div>
     </div>
     </body>

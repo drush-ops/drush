@@ -16,6 +16,7 @@
         <meta name="MobileOptimized" content="width">
         <meta name="HandheldFriendly" content="true">
         <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+
     </head>
 
     <body id="class" data-name="class:Drush_Commands_generate_Helper_InputHandler" data-root-path="../../../../">
@@ -66,25 +67,24 @@
             </ol>
         </div>
                 <div id="page-content">
-                
     <div class="page-header">
-        <h1>
-            InputHandler
-                
-        </h1>
+        <h1>InputHandler    
+            </h1>
     </div>
 
+    
     <p>        class
     <strong>InputHandler</strong>        extends <abbr title="DrupalCodeGenerator\Helper\InputHandler">InputHandler</abbr>        (<a href="https://github.com/drush-ops/drush/blob/10.x/src/Commands/generate/Helper/InputHandler.php">View source</a>)
 </p>
 
         
     
+        
 
             <div class="description">
-            <p>Generators input handler.</p>                                </div>
-    
-    
+            <p><p>Generators input handler.</p></p>                    </div>
+            
+        
     
     
             <h2>Methods</h2>
@@ -97,7 +97,7 @@
                 <div class="col-md-8 type">
                     <a href="#method_collectVars">collectVars</a>(<abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr> $input, <abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr> $output, array $questions, array $vars = [])
         
-                                            <p>{@inheritdoc}</p>                </div>
+                                            <p><p>{@inheritdoc}</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -107,7 +107,7 @@
                 <div class="col-md-8 type">
                     <a href="#method_preprocessQuestions">preprocessQuestions</a>(array $questions, string $destination)
         
-                                            <p>Modifies questions for better DX.</p>                </div>
+                                            <p><p>Modifies questions for better DX.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -117,7 +117,7 @@
                 <div class="col-md-8 type">
                     <a href="#method_getDirectory">getDirectory</a>(array $vars, string|bool $destination)
         
-                                            <p>Defines the directory where generated files should be dumped.</p>                </div>
+                                            <p><p>Defines the directory where generated files should be dumped.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
             </div>
@@ -133,13 +133,14 @@
     <strong>collectVars</strong>(<abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr> $input, <abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr> $output, array $questions, array $vars = [])
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>{@inheritdoc}</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>{@inheritdoc}</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -168,6 +169,7 @@
             
             
             
+            
                     </div>
     </div>
 
@@ -179,28 +181,30 @@
     <strong>preprocessQuestions</strong>(array $questions, string $destination)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Modifies questions for better DX.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Modifies questions for better DX.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
                 <td>array</td>
                 <td>$questions</td>
-                <td>List of questions to modify.</td>
+                <td><p>List of questions to modify.</p></td>
             </tr>
                     <tr>
                 <td>string</td>
                 <td>$destination</td>
-                <td>The destination for dumped files.</td>
+                <td><p>The destination for dumped files.</p></td>
             </tr>
             </table>
 
+            
             
             
             
@@ -215,25 +219,26 @@
     <strong>getDirectory</strong>(array $vars, string|bool $destination)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Defines the directory where generated files should be dumped.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Defines the directory where generated files should be dumped.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
                 <td>array</td>
                 <td>$vars</td>
-                <td>Collected variables.</td>
+                <td><p>Collected variables.</p></td>
             </tr>
                     <tr>
                 <td>string|bool</td>
                 <td>$destination</td>
-                <td>The destination for dumped files.</td>
+                <td><p>The destination for dumped files.</p></td>
             </tr>
             </table>
 
@@ -243,10 +248,12 @@
                     <table class="table table-condensed">
         <tr>
             <td>string</td>
-            <td></td>
+            <td><p>$directory
+The directory to dump file or false it cannot be determined.</p></td>
         </tr>
     </table>
 
+            
             
             
                     </div>
@@ -256,7 +263,7 @@
             </div>
 
     
-            </div><div id="footer">
+</div><div id="footer">
         Generated by <a href="https://github.com/code-lts/doctum">Doctum, a API Documentation generator and fork of Sami</a>.</div></div>
     </div>
     </body>

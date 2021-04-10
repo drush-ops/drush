@@ -16,6 +16,7 @@
         <meta name="MobileOptimized" content="width">
         <meta name="HandheldFriendly" content="true">
         <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+
     </head>
 
     <body id="class" data-name="class:Drush_Runtime_DependencyInjection" data-root-path="../../">
@@ -66,25 +67,24 @@
             </ol>
         </div>
                 <div id="page-content">
-                
     <div class="page-header">
-        <h1>
-            DependencyInjection
-                
-        </h1>
+        <h1>DependencyInjection    
+            </h1>
     </div>
 
+    
     <p>        class
     <strong>DependencyInjection</strong>        (<a href="https://github.com/drush-ops/drush/blob/10.x/src/Runtime/DependencyInjection.php">View source</a>)
 </p>
 
         
     
+        
 
             <div class="description">
-            <p>Prepare our Dependency Injection Container</p>                                </div>
-    
-    
+            <p><p>Prepare our Dependency Injection Container</p></p>                    </div>
+            
+        
     
             <h2>Properties</h2>
 
@@ -92,7 +92,8 @@
                     <tr>
                 <td class="type" id="property_handlers">
                                         protected                                        
-                </td>
+                                                                                
+                                    </td>
                 <td>$handlers</td>
                 <td class="last"></td>
                 <td></td>
@@ -121,7 +122,7 @@
                 <div class="col-md-8 type">
                     <a href="#method_initContainer">initContainer</a>(<abbr title="Symfony\Component\Console\Application">Application</abbr> $application, <abbr title="Consolidation\Config\ConfigInterface">ConfigInterface</abbr> $config, <abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr> $input, <abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr> $output, <abbr title="Composer\Autoload\ClassLoader">ClassLoader</abbr> $loader, <abbr title="DrupalFinder\DrupalFinder">DrupalFinder</abbr> $drupalFinder, <abbr title="Consolidation\SiteAlias\SiteAliasManager">SiteAliasManager</abbr> $aliasManager)
         
-                                            <p>Set up our dependency injection container.</p>                </div>
+                                            <p><p>Set up our dependency injection container.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -131,7 +132,7 @@
                 <div class="col-md-8 type">
                     <a href="#method_installHandlers">installHandlers</a>($container)
         
-                                            <p>Make sure we are notified on exit, and when bad things happen.</p>                </div>
+                                            <p><p>Make sure we are notified on exit, and when bad things happen.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -180,11 +181,15 @@
     <strong>desiredHandlers</strong>($handlerList)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                <div class="tags">
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -195,6 +200,7 @@
             </tr>
             </table>
 
+            
             
             
             
@@ -209,13 +215,14 @@
     <strong>initContainer</strong>(<abbr title="Symfony\Component\Console\Application">Application</abbr> $application, <abbr title="Consolidation\Config\ConfigInterface">ConfigInterface</abbr> $config, <abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr> $input, <abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr> $output, <abbr title="Composer\Autoload\ClassLoader">ClassLoader</abbr> $loader, <abbr title="DrupalFinder\DrupalFinder">DrupalFinder</abbr> $drupalFinder, <abbr title="Consolidation\SiteAlias\SiteAliasManager">SiteAliasManager</abbr> $aliasManager)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Set up our dependency injection container.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Set up our dependency injection container.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -259,6 +266,7 @@
             
             
             
+            
                     </div>
     </div>
 
@@ -270,13 +278,14 @@
     <strong>installHandlers</strong>($container)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Make sure we are notified on exit, and when bad things happen.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Make sure we are notified on exit, and when bad things happen.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -287,6 +296,7 @@
             </tr>
             </table>
 
+            
             
             
             
@@ -301,11 +311,15 @@
     <strong>addDrushServices</strong>(<abbr title="League\Container\ContainerInterface">ContainerInterface</abbr> $container, <abbr title="Composer\Autoload\ClassLoader">ClassLoader</abbr> $loader, <abbr title="DrupalFinder\DrupalFinder">DrupalFinder</abbr> $drupalFinder, <abbr title="Consolidation\SiteAlias\SiteAliasManager">SiteAliasManager</abbr> $aliasManager, <a href="../../Drush/Config/DrushConfig.html"><abbr title="Drush\Config\DrushConfig">DrushConfig</abbr></a> $config)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                <div class="tags">
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -339,6 +353,7 @@
             
             
             
+            
                     </div>
     </div>
 
@@ -350,11 +365,15 @@
     <strong>alterServicesForDrush</strong>(<abbr title="League\Container\ContainerInterface">ContainerInterface</abbr> $container, <abbr title="Symfony\Component\Console\Application">Application</abbr> $application)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                <div class="tags">
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -370,6 +389,7 @@
             </tr>
             </table>
 
+            
             
             
             
@@ -384,11 +404,15 @@
     <strong>injectApplicationServices</strong>(<abbr title="League\Container\ContainerInterface">ContainerInterface</abbr> $container, <abbr title="Symfony\Component\Console\Application">Application</abbr> $application)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                <div class="tags">
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -407,6 +431,7 @@
             
             
             
+            
                     </div>
     </div>
 
@@ -414,7 +439,7 @@
             </div>
 
     
-            </div><div id="footer">
+</div><div id="footer">
         Generated by <a href="https://github.com/code-lts/doctum">Doctum, a API Documentation generator and fork of Sami</a>.</div></div>
     </div>
     </body>

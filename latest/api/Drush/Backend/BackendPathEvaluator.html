@@ -16,6 +16,7 @@
         <meta name="MobileOptimized" content="width">
         <meta name="HandheldFriendly" content="true">
         <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+
     </head>
 
     <body id="class" data-name="class:Drush_Backend_BackendPathEvaluator" data-root-path="../../">
@@ -66,23 +67,22 @@
             </ol>
         </div>
                 <div id="page-content">
-                
     <div class="page-header">
-        <h1>
-            BackendPathEvaluator
-                
-        </h1>
+        <h1>BackendPathEvaluator    
+            </h1>
     </div>
 
+    
     <p>        class
     <strong>BackendPathEvaluator</strong>        (<a href="https://github.com/drush-ops/drush/blob/10.x/src/Backend/BackendPathEvaluator.php">View source</a>)
 </p>
 
         
     
+        
 
-    
-    
+            
+        
     
     
             <h2>Methods</h2>
@@ -95,10 +95,10 @@
                 <div class="col-md-8 type">
                     <a href="#method_evaluate">evaluate</a>(<abbr title="Consolidation\SiteAlias\HostPath">HostPath</abbr> $path)
         
-                                            <p>Evaluate will check to see if the provided host path
+                                            <p><p>Evaluate will check to see if the provided host path
 contains a path alias. If it does, the alias will
 be resolved, and the result of the resolution will be
-injected into the HostPath, replacing the alias.</p>                </div>
+injected into the HostPath, replacing the alias.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -108,10 +108,10 @@ injected into the HostPath, replacing the alias.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_resolve">resolve</a>(<abbr title="Consolidation\SiteAlias\HostPath">HostPath</abbr> $path)
         
-                                            <p>Resolve will check to see if the provided host path
+                                            <p><p>Resolve will check to see if the provided host path
 contains a path alias. If it does, the alias will
 be resolved, and the result of the resolution will be
-returned.</p>                </div>
+returned.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -121,8 +121,8 @@ returned.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_lookup">lookup</a>(<abbr title="Consolidation\SiteAlias\SiteAlias">SiteAlias</abbr> $aliasRecord, $pathAlias)
         
-                                            <p>Lookup will use the provided alias record to look up and return
-the value of a path alias.</p>                </div>
+                                            <p><p>Lookup will use the provided alias record to look up and return
+the value of a path alias.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -132,8 +132,8 @@ the value of a path alias.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_request">request</a>(<abbr title="Consolidation\SiteAlias\SiteAlias">SiteAlias</abbr> $aliasRecord, string $pathAlias)
         
-                                            <p>Request the value of the path alias from the site associated with
-the alias record.</p>                </div>
+                                            <p><p>Request the value of the path alias from the site associated with
+the alias record.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
             </div>
@@ -149,26 +149,28 @@ the alias record.</p>                </div>
     <strong>evaluate</strong>(<abbr title="Consolidation\SiteAlias\HostPath">HostPath</abbr> $path)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Evaluate will check to see if the provided host path
+        <div class="method-description">
+                            <p><p>Evaluate will check to see if the provided host path
 contains a path alias. If it does, the alias will
 be resolved, and the result of the resolution will be
-injected into the HostPath, replacing the alias.</p>                                                </div>
-                <div class="tags">
+injected into the HostPath, replacing the alias.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
                 <td><abbr title="Consolidation\SiteAlias\HostPath">HostPath</abbr></td>
                 <td>$path</td>
-                <td>The host and path to evaluate aliases on.</td>
+                <td><p>The host and path to evaluate aliases on.</p></td>
             </tr>
             </table>
 
+            
             
             
             
@@ -183,23 +185,24 @@ injected into the HostPath, replacing the alias.</p>                            
     <strong>resolve</strong>(<abbr title="Consolidation\SiteAlias\HostPath">HostPath</abbr> $path)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Resolve will check to see if the provided host path
+        <div class="method-description">
+                            <p><p>Resolve will check to see if the provided host path
 contains a path alias. If it does, the alias will
 be resolved, and the result of the resolution will be
-returned.</p>                                                </div>
-                <div class="tags">
+returned.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
                 <td><abbr title="Consolidation\SiteAlias\HostPath">HostPath</abbr></td>
                 <td>$path</td>
-                <td>The host and path to resolve aliases on.</td>
+                <td><p>The host and path to resolve aliases on.</p></td>
             </tr>
             </table>
 
@@ -213,6 +216,7 @@ returned.</p>                                                </div>
         </tr>
     </table>
 
+            
             
             
                     </div>
@@ -226,26 +230,27 @@ returned.</p>                                                </div>
     <strong>lookup</strong>(<abbr title="Consolidation\SiteAlias\SiteAlias">SiteAlias</abbr> $aliasRecord, $pathAlias)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Lookup will use the provided alias record to look up and return
-the value of a path alias.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Lookup will use the provided alias record to look up and return
+the value of a path alias.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
                 <td><abbr title="Consolidation\SiteAlias\SiteAlias">SiteAlias</abbr></td>
                 <td>$aliasRecord</td>
-                <td>the host to use for lookups</td>
+                <td><p>the host to use for lookups</p></td>
             </tr>
                     <tr>
                 <td></td>
                 <td>$pathAlias</td>
-                <td>alias to look up (<code>files</code>, not <code>%files</code>)</td>
+                <td><p>the alias to look up (<code>files</code>, not <code>%files</code>)</p></td>
             </tr>
             </table>
 
@@ -259,6 +264,7 @@ the value of a path alias.</p>                                                </
         </tr>
     </table>
 
+            
             
             
                     </div>
@@ -272,26 +278,27 @@ the value of a path alias.</p>                                                </
     <strong>request</strong>(<abbr title="Consolidation\SiteAlias\SiteAlias">SiteAlias</abbr> $aliasRecord, string $pathAlias)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Request the value of the path alias from the site associated with
-the alias record.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Request the value of the path alias from the site associated with
+the alias record.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
                 <td><abbr title="Consolidation\SiteAlias\SiteAlias">SiteAlias</abbr></td>
                 <td>$aliasRecord</td>
-                <td>the host to use for lookups</td>
+                <td><p>the host to use for lookups</p></td>
             </tr>
                     <tr>
                 <td>string</td>
                 <td>$pathAlias</td>
-                <td>the alias to look up (<code>files</code>, not <code>%files</code>)</td>
+                <td><p>the alias to look up (<code>files</code>, not <code>%files</code>)</p></td>
             </tr>
             </table>
 
@@ -307,6 +314,7 @@ the alias record.</p>                                                </div>
 
             
             
+            
                     </div>
     </div>
 
@@ -314,7 +322,7 @@ the alias record.</p>                                                </div>
             </div>
 
     
-            </div><div id="footer">
+</div><div id="footer">
         Generated by <a href="https://github.com/code-lts/doctum">Doctum, a API Documentation generator and fork of Sami</a>.</div></div>
     </div>
     </body>

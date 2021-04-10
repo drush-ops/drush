@@ -16,6 +16,7 @@
         <meta name="MobileOptimized" content="width">
         <meta name="HandheldFriendly" content="true">
         <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+
     </head>
 
     <body id="class" data-name="class:Drush_Internal_Config_Yaml_Parser" data-root-path="../../../../">
@@ -66,37 +67,38 @@
             </ol>
         </div>
                 <div id="page-content">
-                
     <div class="page-header">
-        <h1>
-            Parser
-                
-        </h1>
+        <h1>Parser    
+            </h1>
     </div>
 
+    
     <p>        class
     <strong>Parser</strong>        (<a href="https://github.com/drush-ops/drush/blob/10.x/src/internal-forks/Config/Yaml/Parser.php">View source</a>)
 </p>
 
         
     
+        
 
             <div class="description">
-            <p>Parser parses YAML strings to convert them to PHP arrays.</p>                                </div>
-    
-    
-            <h2>Constants</h2>
-
-            <table class="table table-condensed">
+            <p><p>Parser parses YAML strings to convert them to PHP arrays.</p></p>                    </div>
+            
+        
+            <h2>Constants</h2>    <table class="table table-condensed">
                     <tr>
-                <td>TAG_PATTERN</td>
+                <td>
+                                                                                                                        TAG_PATTERN
+                                    </td>
                 <td class="last">
                     <p><em></em></p>
                     <p></p>
                 </td>
             </tr>
                     <tr>
-                <td>BLOCK_SCALAR_HEADER_PATTERN</td>
+                <td>
+                                                                                                                        BLOCK_SCALAR_HEADER_PATTERN
+                                    </td>
                 <td class="last">
                     <p><em></em></p>
                     <p></p>
@@ -127,7 +129,7 @@
                 <div class="col-md-8 type">
                     <a href="#method_parse">parse</a>(string $value, int $flags = 0)
         
-                                            <p>Parses a YAML string to a PHP value.</p>                </div>
+                                            <p><p>Parses a YAML string to a PHP value.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -137,8 +139,8 @@
                 <div class="col-md-8 type">
                     <a href="#method_pregMatch">pregMatch</a>($pattern, $subject, $matches = null, $flags = 0, $offset = 0)
         
-                                            <p>A local wrapper for <code>preg_match</code> which will throw a ParseException if there
-is an internal error in the PCRE engine.</p>                </div>
+                                            <p><p>A local wrapper for <code>preg_match</code> which will throw a ParseException if there
+is an internal error in the PCRE engine.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
             </div>
@@ -154,11 +156,16 @@ is an internal error in the PCRE engine.</p>                </div>
     <strong>__construct</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                <div class="tags">
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+            
             
             
             
@@ -173,25 +180,26 @@ is an internal error in the PCRE engine.</p>                </div>
     <strong>parse</strong>(string $value, int $flags = 0)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Parses a YAML string to a PHP value.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Parses a YAML string to a PHP value.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
                 <td>string</td>
                 <td>$value</td>
-                <td>A YAML string</td>
+                <td><p>A YAML string</p></td>
             </tr>
                     <tr>
                 <td>int</td>
                 <td>$flags</td>
-                <td>A bit field of PARSE_* constants to customize the YAML parser behavior</td>
+                <td><p>A bit field of PARSE_* constants to customize the YAML parser behavior</p></td>
             </tr>
             </table>
 
@@ -201,7 +209,7 @@ is an internal error in the PCRE engine.</p>                </div>
                     <table class="table table-condensed">
         <tr>
             <td>mixed</td>
-            <td></td>
+            <td><p>A PHP value</p></td>
         </tr>
     </table>
 
@@ -210,11 +218,12 @@ is an internal error in the PCRE engine.</p>                </div>
 
                     <table class="table table-condensed">
                     <tr>
-                <td>ParseException</td>
-                <td>If the YAML is not valid</td>
+                <td><a href="../../../../Drush/Internal/Config/Yaml/Exception/ParseException.html"><abbr title="Drush\Internal\Config\Yaml\Exception\ParseException">ParseException</abbr></a></td>
+                <td><p>If the YAML is not valid</p></td>
             </tr>
             </table>
 
+            
             
                     </div>
     </div>
@@ -227,19 +236,26 @@ is an internal error in the PCRE engine.</p>                </div>
     <strong>pregMatch</strong>($pattern, $subject, $matches = null, $flags = 0, $offset = 0)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
+    
+                            <table>
+            <tr>
+                <td><span class="label label-warning">internal</span></td>
+                <td>&nbsp; </td>
+            </tr>
+        </table>
+                &nbsp;
     
 
-                    <div class="method-description">
-                                    <p>A local wrapper for <code>preg_match</code> which will throw a ParseException if there
-is an internal error in the PCRE engine.</p>                    <p>This avoids us needing to check for "false" every time PCRE is used
+        <div class="method-description">
+                            <p><p>A local wrapper for <code>preg_match</code> which will throw a ParseException if there
+is an internal error in the PCRE engine.</p></p>                <p><p>This avoids us needing to check for &quot;false&quot; every time PCRE is used
 in the YAML engine</p>
-
 <p>DRUSH FORK: Renamed from preg_match to pregMatch. Not what I would have
 preferred, but easier / cleaner than customizing phpcs to not flag this
-one warning.</p>                            </div>
-                <div class="tags">
+one warning.</p></p>        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -276,8 +292,8 @@ one warning.</p>                            </div>
 
                     <table class="table table-condensed">
                     <tr>
-                <td>ParseException</td>
-                <td>on a PCRE internal error</td>
+                <td><a href="../../../../Drush/Internal/Config/Yaml/Exception/ParseException.html"><abbr title="Drush\Internal\Config\Yaml\Exception\ParseException">ParseException</abbr></a></td>
+                <td><p>on a PCRE internal error</p></td>
             </tr>
             </table>
 
@@ -287,12 +303,13 @@ one warning.</p>                            </div>
                     <table class="table table-condensed">
                     <tr>
                 <td>
-                                            preg_last_error()
+                                            <abbr title="Drush\Internal\Config\Yaml\preg_last_error()">preg_last_error()</abbr>
                                     </td>
                 <td></td>
             </tr>
             </table>
 
+            
                     </div>
     </div>
 
@@ -300,7 +317,7 @@ one warning.</p>                            </div>
             </div>
 
     
-            </div><div id="footer">
+</div><div id="footer">
         Generated by <a href="https://github.com/code-lts/doctum">Doctum, a API Documentation generator and fork of Sami</a>.</div></div>
     </div>
     </body>

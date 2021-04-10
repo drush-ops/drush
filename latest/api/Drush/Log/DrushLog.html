@@ -16,6 +16,7 @@
         <meta name="MobileOptimized" content="width">
         <meta name="HandheldFriendly" content="true">
         <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+
     </head>
 
     <body id="class" data-name="class:Drush_Log_DrushLog" data-root-path="../../">
@@ -66,14 +67,12 @@
             </ol>
         </div>
                 <div id="page-content">
-                
     <div class="page-header">
-        <h1>
-            DrushLog
-                
-        </h1>
+        <h1>DrushLog    
+            </h1>
     </div>
 
+    
     <p>        class
     <strong>DrushLog</strong>        implements
         <abbr title="Psr\Log\LoggerInterface">LoggerInterface</abbr>, <abbr title="Psr\Log\LoggerAwareInterface">LoggerAwareInterface</abbr>        (<a href="https://github.com/drush-ops/drush/blob/10.x/src/Log/DrushLog.php">View source</a>)
@@ -81,14 +80,15 @@
 
         
     
+        
 
             <div class="description">
-            <p>Redirects Drupal logging messages to Drush log.</p>            <p>Note that Drupal extends the LoggerInterface, and
+            <p><p>Redirects Drupal logging messages to Drush log.</p></p>            <p><p>Note that Drupal extends the LoggerInterface, and
 needlessly replaces Psr\Log\LogLevels with Drupal\Core\Logger\RfcLogLevel.
 Doing this arguably violates the Psr\Log contract,
-but we can't help that here -- we just need to convert back.</p>                    </div>
-    
-            <h2>Traits</h2>
+but we can't help that here -- we just need to convert back.</p></p>        </div>
+            
+                <h2>Traits</h2>
 
         
     <div class="container-fluid underlined">
@@ -111,9 +111,10 @@ but we can't help that here -- we just need to convert back.</p>                
                     <tr>
                 <td class="type" id="property_parser">
                                         protected                                        <abbr title="Drupal\Core\Logger\LogMessageParserInterface">LogMessageParserInterface</abbr>
-                </td>
+                                                                                
+                                    </td>
                 <td>$parser</td>
-                <td class="last">The message's placeholders parser.</td>
+                <td class="last"><p>The message's placeholders parser.</p></td>
                 <td></td>
             </tr>
             </table>
@@ -129,7 +130,7 @@ but we can't help that here -- we just need to convert back.</p>                
                 <div class="col-md-8 type">
                     <a href="#method___construct">__construct</a>(<abbr title="Drupal\Core\Logger\LogMessageParserInterface">LogMessageParserInterface</abbr> $parser)
         
-                                            <p>Constructs a DrushLog object.</p>                </div>
+                                            <p><p>Constructs a DrushLog object.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -139,7 +140,7 @@ but we can't help that here -- we just need to convert back.</p>                
                 <div class="col-md-8 type">
                     <a href="#method_log">log</a>($level, $message, array $context = [])
         
-                                            <p>{@inheritdoc}</p>                </div>
+                                            <p><p>{@inheritdoc}</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
             </div>
@@ -155,23 +156,25 @@ but we can't help that here -- we just need to convert back.</p>                
     <strong>__construct</strong>(<abbr title="Drupal\Core\Logger\LogMessageParserInterface">LogMessageParserInterface</abbr> $parser)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Constructs a DrushLog object.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Constructs a DrushLog object.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
                 <td><abbr title="Drupal\Core\Logger\LogMessageParserInterface">LogMessageParserInterface</abbr></td>
                 <td>$parser</td>
-                <td>The parser to use when extracting message variables.</td>
+                <td><p>The parser to use when extracting message variables.</p></td>
             </tr>
             </table>
 
+            
             
             
             
@@ -186,13 +189,14 @@ but we can't help that here -- we just need to convert back.</p>                
     <strong>log</strong>($level, $message, array $context = [])
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>{@inheritdoc}</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>{@inheritdoc}</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -216,6 +220,7 @@ but we can't help that here -- we just need to convert back.</p>                
             
             
             
+            
                     </div>
     </div>
 
@@ -223,7 +228,7 @@ but we can't help that here -- we just need to convert back.</p>                
             </div>
 
     
-            </div><div id="footer">
+</div><div id="footer">
         Generated by <a href="https://github.com/code-lts/doctum">Doctum, a API Documentation generator and fork of Sami</a>.</div></div>
     </div>
     </body>

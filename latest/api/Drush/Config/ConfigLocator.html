@@ -16,6 +16,7 @@
         <meta name="MobileOptimized" content="width">
         <meta name="HandheldFriendly" content="true">
         <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+
     </head>
 
     <body id="class" data-name="class:Drush_Config_ConfigLocator" data-root-path="../../">
@@ -66,97 +67,106 @@
             </ol>
         </div>
                 <div id="page-content">
-                
     <div class="page-header">
-        <h1>
-            ConfigLocator
-                
-        </h1>
+        <h1>ConfigLocator    
+            </h1>
     </div>
 
+    
     <p>        class
     <strong>ConfigLocator</strong>        (<a href="https://github.com/drush-ops/drush/blob/10.x/src/Config/ConfigLocator.php">View source</a>)
 </p>
 
         
     
+        
 
             <div class="description">
-            <p>Locate Drush configuration files and load them into the configuration
-instance.</p>            <p>This class knows how to find all of the global and site-local
+            <p><p>Locate Drush configuration files and load them into the configuration
+instance.</p></p>            <p><p>This class knows how to find all of the global and site-local
 configuration files for Drush, as long as it is provided with
 the necessary base directories:</p>
-
 <ul>
 <li>The user's home directory</li>
 <li>The values provided for --config and --alias-path</li>
 <li>The Drupal root</li>
 </ul>
-
 <p>There are two operating modes that are supported:</p>
-
 <ul>
 <li>Normal: All config locations are used.</li>
 <li>Local:  The global locations are omitted.</li>
 </ul>
-
-<p>The mode is set via the <code>setLocal()</code> method.</p>                    </div>
-    
-    
-            <h2>Constants</h2>
-
-            <table class="table table-condensed">
+<p>The mode is set via the <code>setLocal()</code> method.</p></p>        </div>
+            
+        
+            <h2>Constants</h2>    <table class="table table-condensed">
                     <tr>
-                <td>ENVIRONMENT_CONTEXT</td>
+                <td>
+                                                                                                                        ENVIRONMENT_CONTEXT
+                                    </td>
                 <td class="last">
                     <p><em></em></p>
                     <p></p>
                 </td>
             </tr>
                     <tr>
-                <td>PREFLIGHT_CONTEXT</td>
+                <td>
+                                                                                                                        PREFLIGHT_CONTEXT
+                                    </td>
                 <td class="last">
                     <p><em></em></p>
                     <p></p>
                 </td>
             </tr>
                     <tr>
-                <td>ALIAS_CONTEXT</td>
+                <td>
+                                                                                                                        ALIAS_CONTEXT
+                                    </td>
                 <td class="last">
                     <p><em></em></p>
                     <p></p>
                 </td>
             </tr>
                     <tr>
-                <td>SITE_CONTEXT</td>
+                <td>
+                                                                                                                        SITE_CONTEXT
+                                    </td>
                 <td class="last">
                     <p><em></em></p>
                     <p></p>
                 </td>
             </tr>
                     <tr>
-                <td>DRUPAL_CONTEXT</td>
+                <td>
+                                                                                                                        DRUPAL_CONTEXT
+                                    </td>
                 <td class="last">
                     <p><em></em></p>
                     <p></p>
                 </td>
             </tr>
                     <tr>
-                <td>USER_CONTEXT</td>
+                <td>
+                                                                                                                        USER_CONTEXT
+                                    </td>
                 <td class="last">
                     <p><em></em></p>
                     <p></p>
                 </td>
             </tr>
                     <tr>
-                <td>ENV_CONTEXT</td>
+                <td>
+                                                                                                                        ENV_CONTEXT
+                                    </td>
                 <td class="last">
                     <p><em></em></p>
                     <p></p>
                 </td>
             </tr>
                     <tr>
-                <td>DRUSH_CONTEXT</td>
+                <td>
+                                                                                                                        DRUSH_CONTEXT
+                                    </td>
                 <td class="last">
                     <p><em></em></p>
                     <p></p>
@@ -171,7 +181,8 @@ the necessary base directories:</p>
                     <tr>
                 <td class="type" id="property_config">
                                         protected                                        <abbr title="Robo\Config">Config</abbr>
-                </td>
+                                                                                
+                                    </td>
                 <td>$config</td>
                 <td class="last"></td>
                 <td></td>
@@ -179,7 +190,8 @@ the necessary base directories:</p>
                     <tr>
                 <td class="type" id="property_isLocal">
                                         protected                                        
-                </td>
+                                                                                
+                                    </td>
                 <td>$isLocal</td>
                 <td class="last"></td>
                 <td></td>
@@ -187,7 +199,8 @@ the necessary base directories:</p>
                     <tr>
                 <td class="type" id="property_sources">
                                         protected                                        
-                </td>
+                                                                                
+                                    </td>
                 <td>$sources</td>
                 <td class="last"></td>
                 <td></td>
@@ -195,7 +208,8 @@ the necessary base directories:</p>
                     <tr>
                 <td class="type" id="property_siteRoots">
                                         protected                                        
-                </td>
+                                                                                
+                                    </td>
                 <td>$siteRoots</td>
                 <td class="last"></td>
                 <td></td>
@@ -203,7 +217,8 @@ the necessary base directories:</p>
                     <tr>
                 <td class="type" id="property_composerRoot">
                                         protected                                        
-                </td>
+                                                                                
+                                    </td>
                 <td>$composerRoot</td>
                 <td class="last"></td>
                 <td></td>
@@ -211,7 +226,8 @@ the necessary base directories:</p>
                     <tr>
                 <td class="type" id="property_configFilePaths">
                                         protected                                        
-                </td>
+                                                                                
+                                    </td>
                 <td>$configFilePaths</td>
                 <td class="last"></td>
                 <td></td>
@@ -219,7 +235,8 @@ the necessary base directories:</p>
                     <tr>
                 <td class="type" id="property_configFileVariant">
                                         protected                                        
-                </td>
+                                                                                
+                                    </td>
                 <td>$configFileVariant</td>
                 <td class="last"></td>
                 <td></td>
@@ -227,7 +244,8 @@ the necessary base directories:</p>
                     <tr>
                 <td class="type" id="property_processedConfigPaths">
                                         protected                                        
-                </td>
+                                                                                
+                                    </td>
                 <td>$processedConfigPaths</td>
                 <td class="last"></td>
                 <td></td>
@@ -245,7 +263,7 @@ the necessary base directories:</p>
                 <div class="col-md-8 type">
                     <a href="#method___construct">__construct</a>($envPrefix = &#039;&#039;, $configFileVariant = &#039;&#039;)
         
-                                            <p>ConfigLocator constructor</p>                </div>
+                                            <p><p>ConfigLocator constructor</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -255,7 +273,7 @@ the necessary base directories:</p>
                 <div class="col-md-8 type">
                     <a href="#method_setLocal">setLocal</a>(bool $isLocal)
         
-                                            <p>Put the config locator into 'local 'mode.</p>                </div>
+                                            <p><p>Put the config locator into 'local 'mode.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -265,7 +283,7 @@ the necessary base directories:</p>
                 <div class="col-md-8 type">
                     <a href="#method_collectSources">collectSources</a>(bool $collect = true)
         
-                                            <p>Keep track of the source that every config item originally came from.</p>                </div>
+                                            <p><p>Keep track of the source that every config item originally came from.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -275,11 +293,11 @@ the necessary base directories:</p>
                 <div class="col-md-8 type">
                     <a href="#method_sources">sources</a>()
         
-                                            <p>Return all of the sources for every configuration item. The key
+                                            <p><p>Return all of the sources for every configuration item. The key
 is the address of the configuration item, and the value is the
 configuration file it was loaded from. Note that this method will
 return just an empty array unless collectSources(true) is called
-prior to loading configuration files.</p>                </div>
+prior to loading configuration files.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -289,7 +307,7 @@ prior to loading configuration files.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_configFilePaths">configFilePaths</a>()
         
-                                            <p>Return a list of all configuration files that were loaded.</p>                </div>
+                                            <p><p>Return a list of all configuration files that were loaded.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -299,18 +317,18 @@ prior to loading configuration files.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_addToSources">addToSources</a>(array $sources)
         
-                                            <p>Accumulate the sources provided by the configuration loader.</p>                </div>
+                                            <p><p>Accumulate the sources provided by the configuration loader.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    Config
+                    <abbr title="Drush\Config\Config">Config</abbr>
                 </div>
                 <div class="col-md-8 type">
                     <a href="#method_config">config</a>()
         
-                                            <p>Return the configuration object. Create it and load it with
-all identified configuration if necessary.</p>                </div>
+                                            <p><p>Return the configuration object. Create it and load it with
+all identified configuration if necessary.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -320,10 +338,10 @@ all identified configuration if necessary.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_addEnvironment">addEnvironment</a>(<a href="../../Drush/Config/Environment.html"><abbr title="Drush\Config\Environment">Environment</abbr></a> $environment)
         
-                                            <p>Exports all of the information stored in the environment, and adds
+                                            <p><p>Exports all of the information stored in the environment, and adds
 it to the configuration.  The Environment object itself is only
 available during preflight; the information exported here may be
-obtained by commands et. al. as needed.</p>                </div>
+obtained by commands et. al. as needed.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -333,7 +351,7 @@ obtained by commands et. al. as needed.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_addPreflightConfigFiles">addPreflightConfigFiles</a>($filepaths)
         
-                                            <p>Add config paths defined in preflight configuration.</p>                </div>
+                                            <p><p>Add config paths defined in preflight configuration.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -343,8 +361,8 @@ obtained by commands et. al. as needed.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_addAliasConfig">addAliasConfig</a>($aliasConfig)
         
-                                            <p>Take any configuration from the active alias record, and add it
-to our configuratino.</p>                </div>
+                                            <p><p>Take any configuration from the active alias record, and add it
+to our configuratino.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -354,8 +372,8 @@ to our configuratino.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_addUserConfig">addUserConfig</a>($configPaths, $systemConfigPath, $userConfigDir)
         
-                                            <p>Given the path provided via --config and the user's home directory,
-add all of the user configuration paths.</p>                </div>
+                                            <p><p>Given the path provided via --config and the user's home directory,
+add all of the user configuration paths.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -365,7 +383,7 @@ add all of the user configuration paths.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_addDrushConfig">addDrushConfig</a>($drushProjectDir)
         
-                                            <p>Add the Drush project directory as a configuration search location.</p>                </div>
+                                            <p><p>Add the Drush project directory as a configuration search location.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -375,8 +393,8 @@ add all of the user configuration paths.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_addSitewideConfig">addSitewideConfig</a>($siteRoot)
         
-                                            <p>Add any configuration files found around the Drupal root of the
-selected site.</p>                </div>
+                                            <p><p>Add any configuration files found around the Drupal root of the
+selected site.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -386,9 +404,9 @@ selected site.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_addConfigPaths">addConfigPaths</a>(string $contextName, string[] $paths)
         
-                                            <p>Add any configuration file found at any of the provided paths. Both the
+                                            <p><p>Add any configuration file found at any of the provided paths. Both the
 provided location, and the directory <code>config</code> inside each provided location
-is searched for a drush.yml file.</p>                </div>
+is searched for a drush.yml file.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -398,7 +416,7 @@ is searched for a drush.yml file.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_addConfigFiles">addConfigFiles</a>(<abbr title="Consolidation\Config\Loader\ConfigProcessor">ConfigProcessor</abbr> $processor, <abbr title="Consolidation\Config\Loader\ConfigLoaderInterface">ConfigLoaderInterface</abbr> $loader, array $configFiles)
         
-                                            <p>Adds $configFiles config files.</p>                </div>
+                                            <p><p>Adds $configFiles config files.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -408,9 +426,9 @@ is searched for a drush.yml file.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_identifyCandidates">identifyCandidates</a>(string[] $paths, string[] $candidates)
         
-                                            <p>Given a list of paths, and candidates that might exist at each path,
+                                            <p><p>Given a list of paths, and candidates that might exist at each path,
 return all of the candidates that can be found. Candidates may be
-either directories or files.</p>                </div>
+either directories or files.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -420,7 +438,7 @@ either directories or files.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_identifyCandidatesAtPath">identifyCandidatesAtPath</a>(string $path, string[] $candidates)
         
-                                            <p>Search for all matching candidate locations at a single path.</p>                </div>
+                                            <p><p>Search for all matching candidate locations at a single path.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -430,7 +448,7 @@ either directories or files.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_getSiteAliasPaths">getSiteAliasPaths</a>($paths, <a href="../../Drush/Config/Environment.html"><abbr title="Drush\Config\Environment">Environment</abbr></a> $environment)
         
-                                            <p>Get the site aliases according to preflight arguments and environment.</p>                </div>
+                                            <p><p>Get the site aliases according to preflight arguments and environment.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -440,7 +458,7 @@ either directories or files.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_getCommandFilePaths">getCommandFilePaths</a>($commandPaths, $root)
         
-                                            <p>Get the commandfile paths according to preflight arguments.</p>                </div>
+                                            <p><p>Get the commandfile paths according to preflight arguments.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -450,7 +468,7 @@ either directories or files.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_getBuiltinCommandFilePaths">getBuiltinCommandFilePaths</a>()
         
-                                            <p>Return all of the built-in commandfile locations</p>                </div>
+                                            <p><p>Return all of the built-in commandfile locations</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -460,8 +478,8 @@ either directories or files.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_getIncludedCommandFilePaths">getIncludedCommandFilePaths</a>($commandPaths)
         
-                                            <p>Return all of the commandfile locations specified via
-an 'include' option.</p>                </div>
+                                            <p><p>Return all of the commandfile locations specified via
+an 'include' option.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -471,9 +489,9 @@ an 'include' option.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_getSiteCommandFilePaths">getSiteCommandFilePaths</a>($root)
         
-                                            <p>Return all of the commandfile paths in any '$root/drush' or
+                                            <p><p>Return all of the commandfile paths in any '$root/drush' or
 'dirname($root)/drush' directory that contains a composer.json
-file or a 'Commands' or 'src/Commands' directory.</p>                </div>
+file or a 'Commands' or 'src/Commands' directory.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -483,7 +501,7 @@ file or a 'Commands' or 'src/Commands' directory.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_setComposerRoot">setComposerRoot</a>($selectedComposerRoot)
         
-                                            <p>Sets the composer root.</p>                </div>
+                                            <p><p>Sets the composer root.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -493,7 +511,7 @@ file or a 'Commands' or 'src/Commands' directory.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_expandCandidates">expandCandidates</a>($candidates, $prefix)
         
-                                            <p>Double the candidates, adding '$prefix' before each existing one.</p>                </div>
+                                            <p><p>Double the candidates, adding '$prefix' before each existing one.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -503,7 +521,7 @@ file or a 'Commands' or 'src/Commands' directory.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_findConfigFiles">findConfigFiles</a>(array $paths, array $candidates)
         
-                                            <p>Given an array of paths, separates files and directories.</p>                </div>
+                                            <p><p>Given an array of paths, separates files and directories.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
             </div>
@@ -519,13 +537,14 @@ file or a 'Commands' or 'src/Commands' directory.</p>                </div>
     <strong>__construct</strong>($envPrefix = &#039;&#039;, $configFileVariant = &#039;&#039;)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>ConfigLocator constructor</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>ConfigLocator constructor</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -544,6 +563,7 @@ file or a 'Commands' or 'src/Commands' directory.</p>                </div>
             
             
             
+            
                     </div>
     </div>
 
@@ -555,13 +575,14 @@ file or a 'Commands' or 'src/Commands' directory.</p>                </div>
     <strong>setLocal</strong>(bool $isLocal)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Put the config locator into 'local 'mode.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Put the config locator into 'local 'mode.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -572,6 +593,7 @@ file or a 'Commands' or 'src/Commands' directory.</p>                </div>
             </tr>
             </table>
 
+            
             
             
             
@@ -586,15 +608,16 @@ file or a 'Commands' or 'src/Commands' directory.</p>                </div>
     <strong>collectSources</strong>(bool $collect = true)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Keep track of the source that every config item originally came from.</p>                    <p>Potentially useful in debugging.  If collectSources(true) is called,
+        <div class="method-description">
+                            <p><p>Keep track of the source that every config item originally came from.</p></p>                <p><p>Potentially useful in debugging.  If collectSources(true) is called,
 then the sources will be accumulated as config files are loaded. Otherwise,
-this information will not be saved.</p>                            </div>
-                <div class="tags">
+this information will not be saved.</p></p>        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -617,6 +640,7 @@ this information will not be saved.</p>                            </div>
 
             
             
+            
                     </div>
     </div>
 
@@ -628,17 +652,18 @@ this information will not be saved.</p>                            </div>
     <strong>sources</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Return all of the sources for every configuration item. The key
+        <div class="method-description">
+                            <p><p>Return all of the sources for every configuration item. The key
 is the address of the configuration item, and the value is the
 configuration file it was loaded from. Note that this method will
 return just an empty array unless collectSources(true) is called
-prior to loading configuration files.</p>                                                </div>
-                <div class="tags">
+prior to loading configuration files.</p></p>                        
+        </div>
+        <div class="tags">
             
                             <h4>Return Value</h4>
 
@@ -649,6 +674,7 @@ prior to loading configuration files.</p>                                       
         </tr>
     </table>
 
+            
             
             
                     </div>
@@ -662,13 +688,14 @@ prior to loading configuration files.</p>                                       
     <strong>configFilePaths</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Return a list of all configuration files that were loaded.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Return a list of all configuration files that were loaded.</p></p>                        
+        </div>
+        <div class="tags">
             
                             <h4>Return Value</h4>
 
@@ -679,6 +706,7 @@ prior to loading configuration files.</p>                                       
         </tr>
     </table>
 
+            
             
             
                     </div>
@@ -692,13 +720,14 @@ prior to loading configuration files.</p>                                       
     <strong>addToSources</strong>(array $sources)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Accumulate the sources provided by the configuration loader.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Accumulate the sources provided by the configuration loader.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -712,6 +741,7 @@ prior to loading configuration files.</p>                                       
             
             
             
+            
                     </div>
     </div>
 
@@ -719,28 +749,30 @@ prior to loading configuration files.</p>                                       
                     <div class="method-item">
                     <h3 id="method_config">
         <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Config/ConfigLocator.php#L185">at line 185</a></div>
-        <code>                    Config
+        <code>                    <abbr title="Drush\Config\Config">Config</abbr>
     <strong>config</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Return the configuration object. Create it and load it with
-all identified configuration if necessary.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Return the configuration object. Create it and load it with
+all identified configuration if necessary.</p></p>                        
+        </div>
+        <div class="tags">
             
                             <h4>Return Value</h4>
 
                     <table class="table table-condensed">
         <tr>
-            <td>Config</td>
+            <td><abbr title="Drush\Config\Config">Config</abbr></td>
             <td></td>
         </tr>
     </table>
 
+            
             
             
                     </div>
@@ -754,16 +786,17 @@ all identified configuration if necessary.</p>                                  
     <strong>addEnvironment</strong>(<a href="../../Drush/Config/Environment.html"><abbr title="Drush\Config\Environment">Environment</abbr></a> $environment)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Exports all of the information stored in the environment, and adds
+        <div class="method-description">
+                            <p><p>Exports all of the information stored in the environment, and adds
 it to the configuration.  The Environment object itself is only
 available during preflight; the information exported here may be
-obtained by commands et. al. as needed.</p>                    <p>see Environment::exportConfigData()</p>                            </div>
-                <div class="tags">
+obtained by commands et. al. as needed.</p></p>                <p><p>see Environment::exportConfigData()</p></p>        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -786,6 +819,7 @@ obtained by commands et. al. as needed.</p>                    <p>see Environmen
 
             
             
+            
                     </div>
     </div>
 
@@ -797,13 +831,14 @@ obtained by commands et. al. as needed.</p>                    <p>see Environmen
     <strong>addPreflightConfigFiles</strong>($filepaths)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Add config paths defined in preflight configuration.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Add config paths defined in preflight configuration.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -826,6 +861,7 @@ obtained by commands et. al. as needed.</p>                    <p>see Environmen
 
             
             
+            
                     </div>
     </div>
 
@@ -837,14 +873,15 @@ obtained by commands et. al. as needed.</p>                    <p>see Environmen
     <strong>addAliasConfig</strong>($aliasConfig)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Take any configuration from the active alias record, and add it
-to our configuratino.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Take any configuration from the active alias record, and add it
+to our configuratino.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -867,6 +904,7 @@ to our configuratino.</p>                                                </div>
 
             
             
+            
                     </div>
     </div>
 
@@ -878,14 +916,15 @@ to our configuratino.</p>                                                </div>
     <strong>addUserConfig</strong>($configPaths, $systemConfigPath, $userConfigDir)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Given the path provided via --config and the user's home directory,
-add all of the user configuration paths.</p>                    <p>In 'local' mode, only the --config location is used.</p>                            </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Given the path provided via --config and the user's home directory,
+add all of the user configuration paths.</p></p>                <p><p>In 'local' mode, only the --config location is used.</p></p>        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -918,6 +957,7 @@ add all of the user configuration paths.</p>                    <p>In 'local' mo
 
             
             
+            
                     </div>
     </div>
 
@@ -929,20 +969,21 @@ add all of the user configuration paths.</p>                    <p>In 'local' mo
     <strong>addDrushConfig</strong>($drushProjectDir)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Add the Drush project directory as a configuration search location.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Add the Drush project directory as a configuration search location.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
                 <td></td>
                 <td>$drushProjectDir</td>
-                <td>to the drush project directory</td>
+                <td><p>path to the drush project directory</p></td>
             </tr>
             </table>
 
@@ -958,6 +999,7 @@ add all of the user configuration paths.</p>                    <p>In 'local' mo
 
             
             
+            
                     </div>
     </div>
 
@@ -969,14 +1011,15 @@ add all of the user configuration paths.</p>                    <p>In 'local' mo
     <strong>addSitewideConfig</strong>($siteRoot)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Add any configuration files found around the Drupal root of the
-selected site.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Add any configuration files found around the Drupal root of the
+selected site.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -999,6 +1042,7 @@ selected site.</p>                                                </div>
 
             
             
+            
                     </div>
     </div>
 
@@ -1010,27 +1054,28 @@ selected site.</p>                                                </div>
     <strong>addConfigPaths</strong>(string $contextName, string[] $paths)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Add any configuration file found at any of the provided paths. Both the
+        <div class="method-description">
+                            <p><p>Add any configuration file found at any of the provided paths. Both the
 provided location, and the directory <code>config</code> inside each provided location
-is searched for a drush.yml file.</p>                                                </div>
-                <div class="tags">
+is searched for a drush.yml file.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
                 <td>string</td>
                 <td>$contextName</td>
-                <td>Which context to put all configuration files in.</td>
+                <td><p>Which context to put all configuration files in.</p></td>
             </tr>
                     <tr>
                 <td>string[]</td>
                 <td>$paths</td>
-                <td>List of paths to search for configuration.</td>
+                <td><p>List of paths to search for configuration.</p></td>
             </tr>
             </table>
 
@@ -1046,6 +1091,7 @@ is searched for a drush.yml file.</p>                                           
 
             
             
+            
                     </div>
     </div>
 
@@ -1057,13 +1103,14 @@ is searched for a drush.yml file.</p>                                           
     <strong>addConfigFiles</strong>(<abbr title="Consolidation\Config\Loader\ConfigProcessor">ConfigProcessor</abbr> $processor, <abbr title="Consolidation\Config\Loader\ConfigLoaderInterface">ConfigLoaderInterface</abbr> $loader, array $configFiles)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Adds $configFiles config files.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Adds $configFiles config files.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -1087,6 +1134,7 @@ is searched for a drush.yml file.</p>                                           
             
             
             
+            
                     </div>
     </div>
 
@@ -1098,15 +1146,16 @@ is searched for a drush.yml file.</p>                                           
     <strong>identifyCandidates</strong>(string[] $paths, string[] $candidates)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Given a list of paths, and candidates that might exist at each path,
+        <div class="method-description">
+                            <p><p>Given a list of paths, and candidates that might exist at each path,
 return all of the candidates that can be found. Candidates may be
-either directories or files.</p>                                                </div>
-                <div class="tags">
+either directories or files.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -1128,10 +1177,11 @@ either directories or files.</p>                                                
                     <table class="table table-condensed">
         <tr>
             <td>string[]</td>
-            <td></td>
+            <td><p>paths</p></td>
         </tr>
     </table>
 
+            
             
             
                     </div>
@@ -1145,13 +1195,14 @@ either directories or files.</p>                                                
     <strong>identifyCandidatesAtPath</strong>(string $path, string[] $candidates)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Search for all matching candidate locations at a single path.</p>                    <p>Candidate locations may be either directories or files.</p>                            </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Search for all matching candidate locations at a single path.</p></p>                <p><p>Candidate locations may be either directories or files.</p></p>        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -1179,6 +1230,7 @@ either directories or files.</p>                                                
 
             
             
+            
                     </div>
     </div>
 
@@ -1190,13 +1242,14 @@ either directories or files.</p>                                                
     <strong>getSiteAliasPaths</strong>($paths, <a href="../../Drush/Config/Environment.html"><abbr title="Drush\Config\Environment">Environment</abbr></a> $environment)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Get the site aliases according to preflight arguments and environment.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Get the site aliases according to preflight arguments and environment.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -1224,6 +1277,7 @@ either directories or files.</p>                                                
 
             
             
+            
                     </div>
     </div>
 
@@ -1235,13 +1289,14 @@ either directories or files.</p>                                                
     <strong>getCommandFilePaths</strong>($commandPaths, $root)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Get the commandfile paths according to preflight arguments.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Get the commandfile paths according to preflight arguments.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -1269,6 +1324,7 @@ either directories or files.</p>                                                
 
             
             
+            
                     </div>
     </div>
 
@@ -1280,13 +1336,15 @@ either directories or files.</p>                                                
     <strong>getBuiltinCommandFilePaths</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Return all of the built-in commandfile locations</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Return all of the built-in commandfile locations</p></p>                        
+        </div>
+        <div class="tags">
+            
             
             
             
@@ -1301,14 +1359,15 @@ either directories or files.</p>                                                
     <strong>getIncludedCommandFilePaths</strong>($commandPaths)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Return all of the commandfile locations specified via
-an 'include' option.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Return all of the commandfile locations specified via
+an 'include' option.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -1319,6 +1378,7 @@ an 'include' option.</p>                                                </div>
             </tr>
             </table>
 
+            
             
             
             
@@ -1333,15 +1393,16 @@ an 'include' option.</p>                                                </div>
     <strong>getSiteCommandFilePaths</strong>($root)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Return all of the commandfile paths in any '$root/drush' or
+        <div class="method-description">
+                            <p><p>Return all of the commandfile paths in any '$root/drush' or
 'dirname($root)/drush' directory that contains a composer.json
-file or a 'Commands' or 'src/Commands' directory.</p>                                                </div>
-                <div class="tags">
+file or a 'Commands' or 'src/Commands' directory.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -1352,6 +1413,7 @@ file or a 'Commands' or 'src/Commands' directory.</p>                           
             </tr>
             </table>
 
+            
             
             
             
@@ -1366,13 +1428,14 @@ file or a 'Commands' or 'src/Commands' directory.</p>                           
     <strong>setComposerRoot</strong>($selectedComposerRoot)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Sets the composer root.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Sets the composer root.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -1383,6 +1446,7 @@ file or a 'Commands' or 'src/Commands' directory.</p>                           
             </tr>
             </table>
 
+            
             
             
             
@@ -1397,13 +1461,14 @@ file or a 'Commands' or 'src/Commands' directory.</p>                           
     <strong>expandCandidates</strong>($candidates, $prefix)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Double the candidates, adding '$prefix' before each existing one.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Double the candidates, adding '$prefix' before each existing one.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -1422,6 +1487,7 @@ file or a 'Commands' or 'src/Commands' directory.</p>                           
             
             
             
+            
                     </div>
     </div>
 
@@ -1433,26 +1499,27 @@ file or a 'Commands' or 'src/Commands' directory.</p>                           
     <strong>findConfigFiles</strong>(array $paths, array $candidates)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Given an array of paths, separates files and directories.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Given an array of paths, separates files and directories.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
                 <td>array</td>
                 <td>$paths</td>
-                <td>An array of config paths. These may be config files or paths to dirs
-containing config files.</td>
+                <td><p>An array of config paths. These may be config files or paths to dirs
+containing config files.</p></td>
             </tr>
                     <tr>
                 <td>array</td>
                 <td>$candidates</td>
-                <td>An array filenames that are considered config files.</td>
+                <td><p>An array filenames that are considered config files.</p></td>
             </tr>
             </table>
 
@@ -1462,10 +1529,12 @@ containing config files.</td>
                     <table class="table table-condensed">
         <tr>
             <td>array</td>
-            <td></td>
+            <td><p>An array. The first row is an array of files, the second row is an
+array of dirs.</p></td>
         </tr>
     </table>
 
+            
             
             
                     </div>
@@ -1475,7 +1544,7 @@ containing config files.</td>
             </div>
 
     
-            </div><div id="footer">
+</div><div id="footer">
         Generated by <a href="https://github.com/code-lts/doctum">Doctum, a API Documentation generator and fork of Sami</a>.</div></div>
     </div>
     </body>

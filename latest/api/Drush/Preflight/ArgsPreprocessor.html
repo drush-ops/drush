@@ -16,6 +16,7 @@
         <meta name="MobileOptimized" content="width">
         <meta name="HandheldFriendly" content="true">
         <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+
     </head>
 
     <body id="class" data-name="class:Drush_Preflight_ArgsPreprocessor" data-root-path="../../">
@@ -66,46 +67,46 @@
             </ol>
         </div>
                 <div id="page-content">
-                
     <div class="page-header">
-        <h1>
-            ArgsPreprocessor
-                
-        </h1>
+        <h1>ArgsPreprocessor    
+            </h1>
     </div>
 
+    
     <p>        class
     <strong>ArgsPreprocessor</strong>        (<a href="https://github.com/drush-ops/drush/blob/10.x/src/Preflight/ArgsPreprocessor.php">View source</a>)
 </p>
 
         
     
+        
 
             <div class="description">
-            <p>Preprocess commandline arguments.</p>            <p><ul>
+            <p><p>Preprocess commandline arguments.</p></p>            <p><ul>
 <li>Record @sitealias, if present</li>
 <li>Record a limited number of global options</li>
 </ul>
-
-<p>Anything not handled here is processed by Symfony Console.</p>                    </div>
-    
-    
+<p>Anything not handled here is processed by Symfony Console.</p></p>        </div>
+            
+        
     
             <h2>Properties</h2>
 
             <table class="table table-condensed">
                     <tr>
                 <td class="type" id="property_specParser">
-                                        protected                                        SiteSpecParser
-                </td>
+                                        protected                                        <abbr title="Consolidation\SiteAlias\SiteSpecParser">SiteSpecParser</abbr>
+                                                                                
+                                    </td>
                 <td>$specParser</td>
                 <td class="last"></td>
                 <td></td>
             </tr>
                     <tr>
                 <td class="type" id="property_remapper">
-                                        protected                                        ArgsRemapper
-                </td>
+                                        protected                                        <a href="../../Drush/Preflight/ArgsRemapper.html"><abbr title="Drush\Preflight\ArgsRemapper">ArgsRemapper</abbr></a>
+                                                                                
+                                    </td>
                 <td>$remapper</td>
                 <td class="last"></td>
                 <td></td>
@@ -123,7 +124,7 @@
                 <div class="col-md-8 type">
                     <a href="#method___construct">__construct</a>()
         
-                                            <p>ArgsPreprocessor constructor</p>                </div>
+                                            <p><p>ArgsPreprocessor constructor</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -144,7 +145,7 @@
                 <div class="col-md-8 type">
                     <a href="#method_parse">parse</a>(string[] $argv, <a href="../../Drush/Preflight/PreflightArgsInterface.html"><abbr title="Drush\Preflight\PreflightArgsInterface">PreflightArgsInterface</abbr></a> $storage)
         
-                                            <p>Parse the argv array.</p>                </div>
+                                            <p><p>Parse the argv array.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -154,8 +155,8 @@
                 <div class="col-md-8 type">
                     <a href="#method_nextCouldBeValue">nextCouldBeValue</a>($argv)
         
-                                            <p>nextCouldBeValue determines whether there is a next argument that
-exists and does not begin with a <code>-</code>.</p>                </div>
+                                            <p><p>nextCouldBeValue determines whether there is a next argument that
+exists and does not begin with a <code>-</code>.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -165,8 +166,8 @@ exists and does not begin with a <code>-</code>.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_isAliasOrSiteSpec">isAliasOrSiteSpec</a>(string $arg)
         
-                                            <p>Determine whether the provided argument is an alias or
-a site specification.</p>                </div>
+                                            <p><p>Determine whether the provided argument is an alias or
+a site specification.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -176,8 +177,8 @@ a site specification.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_findMethodForOptionWithValues">findMethodForOptionWithValues</a>($optionsTable, $opt)
         
-                                            <p class="no-description">No description</p>
-                                    </div>
+                                            <p><p>Check to see if '$opt' is one of the options that we record
+that takes a value.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -187,8 +188,8 @@ a site specification.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_checkMatchingOption">checkMatchingOption</a>($opt, $keyParam, $methodName)
         
-                                            <p class="no-description">No description</p>
-                                    </div>
+                                            <p><p>Check to see if the provided option matches the entry from the
+option table.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
             </div>
@@ -204,13 +205,15 @@ a site specification.</p>                </div>
     <strong>__construct</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>ArgsPreprocessor constructor</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>ArgsPreprocessor constructor</p></p>                        
+        </div>
+        <div class="tags">
+            
             
             
             
@@ -225,11 +228,15 @@ a site specification.</p>                </div>
     <strong>setArgsRemapper</strong>(<a href="../../Drush/Preflight/ArgsRemapper.html"><abbr title="Drush\Preflight\ArgsRemapper">ArgsRemapper</abbr></a> $remapper)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                <div class="tags">
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -240,6 +247,7 @@ a site specification.</p>                </div>
             </tr>
             </table>
 
+            
             
             
             
@@ -254,30 +262,32 @@ a site specification.</p>                </div>
     <strong>parse</strong>(string[] $argv, <a href="../../Drush/Preflight/PreflightArgsInterface.html"><abbr title="Drush\Preflight\PreflightArgsInterface">PreflightArgsInterface</abbr></a> $storage)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Parse the argv array.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Parse the argv array.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
                 <td>string[]</td>
                 <td>$argv</td>
-                <td>Commandline arguments. The first element is
-the path to the application, which we will ignore.</td>
+                <td><p>Commandline arguments. The first element is
+the path to the application, which we will ignore.</p></td>
             </tr>
                     <tr>
                 <td><a href="../../Drush/Preflight/PreflightArgsInterface.html"><abbr title="Drush\Preflight\PreflightArgsInterface">PreflightArgsInterface</abbr></a></td>
                 <td>$storage</td>
-                <td>A storage object to hold the arguments we remove
-from argv, plus the remaining argv arguments.</td>
+                <td><p>A storage object to hold the arguments we remove
+from argv, plus the remaining argv arguments.</p></td>
             </tr>
             </table>
 
+            
             
             
             
@@ -292,14 +302,15 @@ from argv, plus the remaining argv arguments.</td>
     <strong>nextCouldBeValue</strong>($argv)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>nextCouldBeValue determines whether there is a next argument that
-exists and does not begin with a <code>-</code>.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>nextCouldBeValue determines whether there is a next argument that
+exists and does not begin with a <code>-</code>.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -310,6 +321,7 @@ exists and does not begin with a <code>-</code>.</p>                            
             </tr>
             </table>
 
+            
             
             
             
@@ -324,21 +336,22 @@ exists and does not begin with a <code>-</code>.</p>                            
     <strong>isAliasOrSiteSpec</strong>(string $arg)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Determine whether the provided argument is an alias or
-a site specification.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Determine whether the provided argument is an alias or
+a site specification.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
                 <td>string</td>
                 <td>$arg</td>
-                <td>Argument to test.</td>
+                <td><p>Argument to test.</p></td>
             </tr>
             </table>
 
@@ -354,6 +367,7 @@ a site specification.</p>                                                </div>
 
             
             
+            
                     </div>
     </div>
 
@@ -365,26 +379,32 @@ a site specification.</p>                                                </div>
     <strong>findMethodForOptionWithValues</strong>($optionsTable, $opt)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Check to see if '$opt' is one of the options that we record
+that takes a value.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
                 <td></td>
                 <td>$optionsTable</td>
-                <td></td>
+                <td><p>Table of option names and the name of the
+method that should be called to process that option.</p></td>
             </tr>
                     <tr>
                 <td></td>
                 <td>$opt</td>
-                <td></td>
+                <td><p>The option string to check</p></td>
             </tr>
             </table>
 
+            
             
             
             
@@ -399,18 +419,22 @@ a site specification.</p>                                                </div>
     <strong>checkMatchingOption</strong>($opt, $keyParam, $methodName)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Check to see if the provided option matches the entry from the
+option table.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
                 <td></td>
                 <td>$opt</td>
-                <td></td>
+                <td><p>The option string to check</p></td>
             </tr>
                     <tr>
                 <td></td>
@@ -427,6 +451,7 @@ a site specification.</p>                                                </div>
             
             
             
+            
                     </div>
     </div>
 
@@ -434,7 +459,7 @@ a site specification.</p>                                                </div>
             </div>
 
     
-            </div><div id="footer">
+</div><div id="footer">
         Generated by <a href="https://github.com/code-lts/doctum">Doctum, a API Documentation generator and fork of Sami</a>.</div></div>
     </div>
     </body>

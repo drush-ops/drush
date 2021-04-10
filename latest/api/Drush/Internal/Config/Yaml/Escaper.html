@@ -16,6 +16,7 @@
         <meta name="MobileOptimized" content="width">
         <meta name="HandheldFriendly" content="true">
         <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+
     </head>
 
     <body id="class" data-name="class:Drush_Internal_Config_Yaml_Escaper" data-root-path="../../../../">
@@ -66,31 +67,37 @@
             </ol>
         </div>
                 <div id="page-content">
-                
     <div class="page-header">
-        <h1>
-            Escaper
-                
-        </h1>
+        <h1>Escaper    
+            </h1>
     </div>
 
+    
     <p>        class
     <strong>Escaper</strong>        (<a href="https://github.com/drush-ops/drush/blob/10.x/src/internal-forks/Config/Yaml/Escaper.php">View source</a>)
 </p>
 
         
     
+                        <table>
+            <tr>
+                <td><span class="label label-warning">internal</span></td>
+                <td>&nbsp; </td>
+            </tr>
+        </table>
+                &nbsp;
+    
 
             <div class="description">
-            <p>Escaper encapsulates escaping rules for single and double-quoted
-YAML strings.</p>                                </div>
-    
-    
-            <h2>Constants</h2>
-
-            <table class="table table-condensed">
+            <p><p>Escaper encapsulates escaping rules for single and double-quoted
+YAML strings.</p></p>                    </div>
+            
+        
+            <h2>Constants</h2>    <table class="table table-condensed">
                     <tr>
-                <td>REGEX_CHARACTER_TO_ESCAPE</td>
+                <td>
+                                                                                                                        REGEX_CHARACTER_TO_ESCAPE
+                                    </td>
                 <td class="last">
                     <p><em></em></p>
                     <p></p>
@@ -110,7 +117,7 @@ YAML strings.</p>                                </div>
                 <div class="col-md-8 type">
                     <a href="#method_requiresDoubleQuoting">requiresDoubleQuoting</a>(string $value)
         
-                                            <p>Determines if a PHP value would require double quoting in YAML.</p>                </div>
+                                            <p><p>Determines if a PHP value would require double quoting in YAML.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -120,7 +127,7 @@ YAML strings.</p>                                </div>
                 <div class="col-md-8 type">
                     <a href="#method_escapeWithDoubleQuotes">escapeWithDoubleQuotes</a>(string $value)
         
-                                            <p>Escapes and surrounds a PHP value with double quotes.</p>                </div>
+                                            <p><p>Escapes and surrounds a PHP value with double quotes.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -130,7 +137,7 @@ YAML strings.</p>                                </div>
                 <div class="col-md-8 type">
                     <a href="#method_requiresSingleQuoting">requiresSingleQuoting</a>(string $value)
         
-                                            <p>Determines if a PHP value would require single quoting in YAML.</p>                </div>
+                                            <p><p>Determines if a PHP value would require single quoting in YAML.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -140,7 +147,7 @@ YAML strings.</p>                                </div>
                 <div class="col-md-8 type">
                     <a href="#method_escapeWithSingleQuotes">escapeWithSingleQuotes</a>(string $value)
         
-                                            <p>Escapes and surrounds a PHP value with single quotes.</p>                </div>
+                                            <p><p>Escapes and surrounds a PHP value with single quotes.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
             </div>
@@ -156,20 +163,21 @@ YAML strings.</p>                                </div>
     <strong>requiresDoubleQuoting</strong>(string $value)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Determines if a PHP value would require double quoting in YAML.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Determines if a PHP value would require double quoting in YAML.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
                 <td>string</td>
                 <td>$value</td>
-                <td>A PHP value</td>
+                <td><p>A PHP value</p></td>
             </tr>
             </table>
 
@@ -179,10 +187,11 @@ YAML strings.</p>                                </div>
                     <table class="table table-condensed">
         <tr>
             <td>bool</td>
-            <td></td>
+            <td><p>True if the value would require double quotes</p></td>
         </tr>
     </table>
 
+            
             
             
                     </div>
@@ -196,20 +205,21 @@ YAML strings.</p>                                </div>
     <strong>escapeWithDoubleQuotes</strong>(string $value)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Escapes and surrounds a PHP value with double quotes.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Escapes and surrounds a PHP value with double quotes.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
                 <td>string</td>
                 <td>$value</td>
-                <td>A PHP value</td>
+                <td><p>A PHP value</p></td>
             </tr>
             </table>
 
@@ -219,10 +229,11 @@ YAML strings.</p>                                </div>
                     <table class="table table-condensed">
         <tr>
             <td>string</td>
-            <td></td>
+            <td><p>The quoted, escaped string</p></td>
         </tr>
     </table>
 
+            
             
             
                     </div>
@@ -236,20 +247,21 @@ YAML strings.</p>                                </div>
     <strong>requiresSingleQuoting</strong>(string $value)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Determines if a PHP value would require single quoting in YAML.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Determines if a PHP value would require single quoting in YAML.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
                 <td>string</td>
                 <td>$value</td>
-                <td>A PHP value</td>
+                <td><p>A PHP value</p></td>
             </tr>
             </table>
 
@@ -259,10 +271,11 @@ YAML strings.</p>                                </div>
                     <table class="table table-condensed">
         <tr>
             <td>bool</td>
-            <td></td>
+            <td><p>True if the value would require single quotes</p></td>
         </tr>
     </table>
 
+            
             
             
                     </div>
@@ -276,20 +289,21 @@ YAML strings.</p>                                </div>
     <strong>escapeWithSingleQuotes</strong>(string $value)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Escapes and surrounds a PHP value with single quotes.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Escapes and surrounds a PHP value with single quotes.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
                 <td>string</td>
                 <td>$value</td>
-                <td>A PHP value</td>
+                <td><p>A PHP value</p></td>
             </tr>
             </table>
 
@@ -299,10 +313,11 @@ YAML strings.</p>                                </div>
                     <table class="table table-condensed">
         <tr>
             <td>string</td>
-            <td></td>
+            <td><p>The quoted, escaped string</p></td>
         </tr>
     </table>
 
+            
             
             
                     </div>
@@ -312,7 +327,7 @@ YAML strings.</p>                                </div>
             </div>
 
     
-            </div><div id="footer">
+</div><div id="footer">
         Generated by <a href="https://github.com/code-lts/doctum">Doctum, a API Documentation generator and fork of Sami</a>.</div></div>
     </div>
     </body>

@@ -16,6 +16,7 @@
         <meta name="MobileOptimized" content="width">
         <meta name="HandheldFriendly" content="true">
         <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+
     </head>
 
     <body id="class" data-name="class:Drush_Drupal_Commands_sql_SanitizeUserTableCommands" data-root-path="../../../../">
@@ -66,14 +67,12 @@
             </ol>
         </div>
                 <div id="page-content">
-                
     <div class="page-header">
-        <h1>
-            SanitizeUserTableCommands
-                
-        </h1>
+        <h1>SanitizeUserTableCommands    
+            </h1>
     </div>
 
+    
     <p>        class
     <strong>SanitizeUserTableCommands</strong>        extends <a href="../../../../Drush/Commands/DrushCommands.html"><abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a>        implements
         <a href="../../../../Drush/Drupal/Commands/sql/SanitizePluginInterface.html"><abbr title="Drush\Drupal\Commands\sql\SanitizePluginInterface">SanitizePluginInterface</abbr></a>        (<a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Commands/sql/SanitizeUserTableCommands.php">View source</a>)
@@ -81,11 +80,12 @@
 
         
     
+        
 
             <div class="description">
-            <p>A sql-sanitize plugin.</p>                                </div>
-    
-            <h2>Traits</h2>
+            <p><p>A sql-sanitize plugin.</p></p>                    </div>
+            
+                <h2>Traits</h2>
 
         
     <div class="container-fluid underlined">
@@ -116,39 +116,47 @@
             </div>
             </div>
     
-            <h2>Constants</h2>
-
-            <table class="table table-condensed">
+            <h2>Constants</h2>    <table class="table table-condensed">
                     <tr>
-                <td>REQ</td>
+                <td>
+                                                                                                                        REQ
+                                    </td>
                 <td class="last">
                     <p><em></em></p>
                     <p></p>
                 </td>
             </tr>
                     <tr>
-                <td>OPT</td>
+                <td>
+                                                                                                                        OPT
+                                    </td>
                 <td class="last">
                     <p><em></em></p>
                     <p></p>
                 </td>
             </tr>
                     <tr>
-                <td>EXIT_SUCCESS</td>
+                <td>
+                                                                                                                        EXIT_SUCCESS
+                                    </td>
                 <td class="last">
                     <p><em></em></p>
                     <p></p>
                 </td>
             </tr>
                     <tr>
-                <td>EXIT_FAILURE</td>
+                <td>
+                                                                                                                        EXIT_FAILURE
+                                    </td>
                 <td class="last">
                     <p><em></em></p>
                     <p></p>
                 </td>
             </tr>
                     <tr>
-                <td>EXIT_FAILURE_WITH_CLARITY</td>
+                <td>
+                                                                                                                        EXIT_FAILURE_WITH_CLARITY
+                                    </td>
                 <td class="last">
                     <p><em></em></p>
                     <p></p>
@@ -162,8 +170,9 @@
             <table class="table table-condensed">
                     <tr>
                 <td class="type" id="property_commandData">
-                                        protected                                        CommandData
-                </td>
+                                        protected                                        <abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr>
+                                                                                
+                                    </td>
                 <td>$commandData</td>
                 <td class="last"></td>
                 <td><small>from&nbsp;<a href="../../../../Drush/Commands/DrushCommands.html#property_commandData">
@@ -172,7 +181,8 @@
                     <tr>
                 <td class="type" id="property_database">
                                         protected                                        
-                </td>
+                                                                                
+                                    </td>
                 <td>$database</td>
                 <td class="last"></td>
                 <td></td>
@@ -180,7 +190,8 @@
                     <tr>
                 <td class="type" id="property_passwordHasher">
                                         protected                                        
-                </td>
+                                                                                
+                                    </td>
                 <td>$passwordHasher</td>
                 <td class="last"></td>
                 <td></td>
@@ -188,7 +199,8 @@
                     <tr>
                 <td class="type" id="property_entityTypeManager">
                                         protected                                        
-                </td>
+                                                                                
+                                    </td>
                 <td>$entityTypeManager</td>
                 <td class="last"></td>
                 <td></td>
@@ -206,8 +218,8 @@
                 <div class="col-md-8 type">
                     <a href="#method_getConfig">getConfig</a>()
         
-                                            <p>Replaces same method in ConfigAwareTrait in order to provide a
-DrushConfig as return type. Helps with IDE completion.</p>                </div>
+                                            <p><p>Replaces same method in ConfigAwareTrait in order to provide a
+DrushConfig as return type. Helps with IDE completion.</p></p>                </div>
                 <div class="col-md-2"><small>from&nbsp;<a href="../../../../Drush/Config/ConfigAwareTrait.html#method_getConfig">
 <abbr title="Drush\Config\ConfigAwareTrait">ConfigAwareTrait</abbr></a></small></div>
             </div>
@@ -229,18 +241,18 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_io">io</a>()
         
-                                            <p>Override Robo's IO function with our custom style.</p>                </div>
+                                            <p><p>Override Robo's IO function with our custom style.</p></p>                </div>
                 <div class="col-md-2"><small>from&nbsp;<a href="../../../../Drush/Commands/DrushCommands.html#method_io">
 <abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a></small></div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    LoggerInterface
+                    <abbr title="Psr\Log\LoggerInterface">LoggerInterface</abbr>
                 </div>
                 <div class="col-md-8 type">
                     <a href="#method_logger">logger</a>()
         
-                                            <p>Returns a logger object.</p>                </div>
+                                            <p><p>Returns a logger object.</p></p>                </div>
                 <div class="col-md-2"><small>from&nbsp;<a href="../../../../Drush/Commands/DrushCommands.html#method_logger">
 <abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a></small></div>
             </div>
@@ -251,7 +263,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_printFile">printFile</a>(string $file)
         
-                                            <p>Print the contents of a file.</p>                </div>
+                                            <p><p>Print the contents of a file.</p></p>                </div>
                 <div class="col-md-2"><small>from&nbsp;<a href="../../../../Drush/Commands/DrushCommands.html#method_printFile">
 <abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a></small></div>
             </div>
@@ -262,7 +274,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_preHook">preHook</a>(<abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr> $commandData)
         
-                                            <p>Persist commandData for use in primary command callback. Used by 'topic' commands.</p>                </div>
+                                            <p><p>Persist commandData for use in primary command callback. Used by 'topic' commands.</p></p>                </div>
                 <div class="col-md-2"><small>from&nbsp;<a href="../../../../Drush/Commands/DrushCommands.html#method_preHook">
 <abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a></small></div>
             </div>
@@ -273,7 +285,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_printFileTopic">printFileTopic</a>(<abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr> $commandData)
         
-                                            <p>Print the contents of a file. The path comes from the @topic annotation.</p>                </div>
+                                            <p><p>Print the contents of a file. The path comes from the @topic annotation.</p></p>                </div>
                 <div class="col-md-2"><small>from&nbsp;<a href="../../../../Drush/Commands/DrushCommands.html#method_printFileTopic">
 <abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a></small></div>
             </div>
@@ -284,7 +296,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_getStack">getStack</a>()
         
-                                            <p>Get a Guzzle handler stack that uses the Drush logger.</p>                </div>
+                                            <p><p>Get a Guzzle handler stack that uses the Drush logger.</p></p>                </div>
                 <div class="col-md-2"><small>from&nbsp;<a href="../../../../Drush/Commands/DrushCommands.html#method_getStack">
 <abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a></small></div>
             </div>
@@ -295,8 +307,8 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_sanitize">sanitize</a>($result, <abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr> $commandData)
         
-                                            <p>Sanitize emails and passwords. This also an example of how to write a
-database sanitizer for sql-sync.</p>                </div>
+                                            <p><p>Sanitize emails and passwords. This also an example of how to write a
+database sanitizer for sql-sync.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -328,7 +340,7 @@ database sanitizer for sql-sync.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_isEnabled">isEnabled</a>($value)
         
-                                            <p>Test an option value to see if it is disabled.</p>                </div>
+                                            <p><p>Test an option value to see if it is disabled.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
             </div>
@@ -345,14 +357,15 @@ database sanitizer for sql-sync.</p>                </div>
     <strong>getConfig</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Replaces same method in ConfigAwareTrait in order to provide a
-DrushConfig as return type. Helps with IDE completion.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Replaces same method in ConfigAwareTrait in order to provide a
+DrushConfig as return type. Helps with IDE completion.</p></p>                        
+        </div>
+        <div class="tags">
             
                             <h4>Return Value</h4>
 
@@ -376,6 +389,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </tr>
             </table>
 
+            
                     </div>
     </div>
 
@@ -387,11 +401,15 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
     <strong>__construct</strong>($database, $passwordHasher, $entityTypeManager)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                <div class="tags">
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -415,6 +433,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             
             
             
+            
                     </div>
     </div>
 
@@ -427,13 +446,15 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
     <strong>io</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Override Robo's IO function with our custom style.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Override Robo's IO function with our custom style.</p></p>                        
+        </div>
+        <div class="tags">
+            
             
             
             
@@ -445,27 +466,29 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
                     <h3 id="method_logger">
         <div class="location">in <a href="../../../../Drush/Commands/DrushCommands.html#method_logger">
 <abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a> <a href="https://github.com/drush-ops/drush/blob/10.x/src/Commands/DrushCommands.php#L68">at line 68</a></div>
-        <code>            protected        LoggerInterface
+        <code>            protected        <abbr title="Psr\Log\LoggerInterface">LoggerInterface</abbr>
     <strong>logger</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Returns a logger object.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Returns a logger object.</p></p>                        
+        </div>
+        <div class="tags">
             
                             <h4>Return Value</h4>
 
                     <table class="table table-condensed">
         <tr>
-            <td>LoggerInterface</td>
+            <td><abbr title="Psr\Log\LoggerInterface">LoggerInterface</abbr></td>
             <td></td>
         </tr>
     </table>
 
+            
             
             
                     </div>
@@ -480,23 +503,25 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
     <strong>printFile</strong>(string $file)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Print the contents of a file.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Print the contents of a file.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
                 <td>string</td>
                 <td>$file</td>
-                <td>Full path to a file.</td>
+                <td><p>Full path to a file.</p></td>
             </tr>
             </table>
 
+            
             
             
             
@@ -512,13 +537,14 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
     <strong>preHook</strong>(<abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr> $commandData)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Persist commandData for use in primary command callback. Used by 'topic' commands.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Persist commandData for use in primary command callback. Used by 'topic' commands.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -529,6 +555,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </tr>
             </table>
 
+            
             
             
             
@@ -544,23 +571,25 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
     <strong>printFileTopic</strong>(<abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr> $commandData)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Print the contents of a file. The path comes from the @topic annotation.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Print the contents of a file. The path comes from the @topic annotation.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
                 <td><abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr></td>
                 <td>$commandData</td>
-                <td>Full path to a file.</td>
+                <td><p>Full path to a file.</p></td>
             </tr>
             </table>
 
+            
             
             
             
@@ -576,13 +605,14 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
     <strong>getStack</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Get a Guzzle handler stack that uses the Drush logger.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Get a Guzzle handler stack that uses the Drush logger.</p></p>                        
+        </div>
+        <div class="tags">
             
                             <h4>Return Value</h4>
 
@@ -606,6 +636,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </tr>
             </table>
 
+            
                     </div>
     </div>
 
@@ -617,29 +648,31 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
     <strong>sanitize</strong>($result, <abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr> $commandData)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Sanitize emails and passwords. This also an example of how to write a
-database sanitizer for sql-sync.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Sanitize emails and passwords. This also an example of how to write a
+database sanitizer for sql-sync.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
                 <td></td>
                 <td>$result</td>
-                <td>code from the main operation for sql-sanitize.</td>
+                <td><p>Exit code from the main operation for sql-sanitize.</p></td>
             </tr>
                     <tr>
                 <td><abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr></td>
                 <td>$commandData</td>
-                <td>Information about the current request.</td>
+                <td><p>Information about the current request.</p></td>
             </tr>
             </table>
 
+            
             
             
             
@@ -654,11 +687,15 @@ database sanitizer for sql-sync.</p>                                            
     <strong>options</strong>($options = [&#039;sanitize-email&#039; =&gt; &#039;user+%uid@localhost.localdomain&#039;, &#039;sanitize-password&#039; =&gt; null])
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                <div class="tags">
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -669,6 +706,7 @@ database sanitizer for sql-sync.</p>                                            
             </tr>
             </table>
 
+            
             
             
             
@@ -683,23 +721,27 @@ database sanitizer for sql-sync.</p>                                            
     <strong>messages</strong>(array $messages, <abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr> $input)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                <div class="tags">
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
                 <td>array</td>
                 <td>$messages</td>
-                <td>An array of messages to show during confirmation.</td>
+                <td><p>An array of messages to show during confirmation.</p></td>
             </tr>
                     <tr>
                 <td><abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr></td>
                 <td>$input</td>
-                <td>The effective commandline input for this request.</td>
+                <td><p>The effective commandline input for this request.</p></td>
             </tr>
             </table>
 
@@ -709,10 +751,11 @@ database sanitizer for sql-sync.</p>                                            
                     <table class="table table-condensed">
         <tr>
             <td>string[]</td>
-            <td></td>
+            <td><p>An array of messages.</p></td>
         </tr>
     </table>
 
+            
             
             
                     </div>
@@ -726,13 +769,14 @@ database sanitizer for sql-sync.</p>                                            
     <strong>isEnabled</strong>($value)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Test an option value to see if it is disabled.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Test an option value to see if it is disabled.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -755,6 +799,7 @@ database sanitizer for sql-sync.</p>                                            
 
             
             
+            
                     </div>
     </div>
 
@@ -762,7 +807,7 @@ database sanitizer for sql-sync.</p>                                            
             </div>
 
     
-            </div><div id="footer">
+</div><div id="footer">
         Generated by <a href="https://github.com/code-lts/doctum">Doctum, a API Documentation generator and fork of Sami</a>.</div></div>
     </div>
     </body>

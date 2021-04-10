@@ -16,6 +16,7 @@
         <meta name="MobileOptimized" content="width">
         <meta name="HandheldFriendly" content="true">
         <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+
     </head>
 
     <body id="class" data-name="class:Drush_Sql_SqlBase" data-root-path="../../">
@@ -66,14 +67,12 @@
             </ol>
         </div>
                 <div id="page-content">
-                
     <div class="page-header">
-        <h1>
-            SqlBase
-                
-        </h1>
+        <h1>SqlBase    
+            </h1>
     </div>
 
+    
     <p>        class
     <strong>SqlBase</strong>        implements
         <abbr title="Robo\Contract\ConfigAwareInterface">ConfigAwareInterface</abbr>        (<a href="https://github.com/drush-ops/drush/blob/10.x/src/Sql/SqlBase.php">View source</a>)
@@ -81,16 +80,17 @@
 
         
     
+        
 
-    
-            <h2>Traits</h2>
+            
+                <h2>Traits</h2>
 
         
     <div class="container-fluid underlined">
                     <div class="row">
                 <div class="col-md-6">
                     <a href="../../Drush/Sql/SqlTableSelectionTrait.html"><abbr title="Drush\Sql\SqlTableSelectionTrait">SqlTableSelectionTrait</abbr></a>    </div>
-                <div class="col-md-6">Note: when using this trait, also implement ConfigAwareInterface/ConfigAwareTrait.</div>
+                <div class="col-md-6"><p>Note: when using this trait, also implement ConfigAwareInterface/ConfigAwareTrait.</p></div>
             </div>
                     <div class="row">
                 <div class="col-md-6">
@@ -111,7 +111,8 @@
                     <tr>
                 <td class="type" id="property_dbSpec">
                                                                                 
-                </td>
+                                                                                
+                                    </td>
                 <td>$dbSpec</td>
                 <td class="last"></td>
                 <td></td>
@@ -119,7 +120,8 @@
                     <tr>
                 <td class="type" id="property_queryExtra">
                                                                                 
-                </td>
+                                                                                
+                                    </td>
                 <td>$queryExtra</td>
                 <td class="last"></td>
                 <td></td>
@@ -127,7 +129,8 @@
                     <tr>
                 <td class="type" id="property_queryFile">
                                                                                 
-                </td>
+                                                                                
+                                    </td>
                 <td>$queryFile</td>
                 <td class="last"></td>
                 <td></td>
@@ -135,15 +138,17 @@
                     <tr>
                 <td class="type" id="property_options">
                                                                                 
-                </td>
+                                                                                
+                                    </td>
                 <td>$options</td>
                 <td class="last"></td>
                 <td></td>
             </tr>
                     <tr>
                 <td class="type" id="property_process">
-                                        protected                                        Process
-                </td>
+                                        protected                                        <abbr title="Symfony\Component\Process\Process">Process</abbr>
+                                                                                
+                                    </td>
                 <td>$process</td>
                 <td class="last"></td>
                 <td></td>
@@ -161,8 +166,8 @@
                 <div class="col-md-8 type">
                     <a href="#method_getExpandedTableSelection">getExpandedTableSelection</a>(array $options, array $all_tables)
         
-                                            <p>Given a list of all tables, expand the convert the wildcards in the
-option-provided lists into a list of actual table names.</p>                </div>
+                                            <p><p>Given a list of all tables, expand the convert the wildcards in the
+option-provided lists into a list of actual table names.</p></p>                </div>
                 <div class="col-md-2"><small>from&nbsp;<a href="../../Drush/Sql/SqlTableSelectionTrait.html#method_getExpandedTableSelection">
 <abbr title="Drush\Sql\SqlTableSelectionTrait">SqlTableSelectionTrait</abbr></a></small></div>
             </div>
@@ -173,9 +178,9 @@ option-provided lists into a list of actual table names.</p>                </di
                 <div class="col-md-8 type">
                     <a href="#method_expandAndFilterTables">expandAndFilterTables</a>(array $tables, array $db_tables)
         
-                                            <p>Given the table names in the input array that may contain wildcards (<code>*</code>),
+                                            <p><p>Given the table names in the input array that may contain wildcards (<code>*</code>),
 expand the table names so that the array returned only contains table names
-that exist in the database.</p>                </div>
+that exist in the database.</p></p>                </div>
                 <div class="col-md-2"><small>from&nbsp;<a href="../../Drush/Sql/SqlTableSelectionTrait.html#method_expandAndFilterTables">
 <abbr title="Drush\Sql\SqlTableSelectionTrait">SqlTableSelectionTrait</abbr></a></small></div>
             </div>
@@ -184,21 +189,20 @@ that exist in the database.</p>                </div>
                     
                 </div>
                 <div class="col-md-8 type">
-                    <a href="#method_expandWildcardTables">expandWildcardTables</a>($tables, $db_tables)
+                    <a href="#method_expandWildcardTables">expandWildcardTables</a>(array $tables, array $db_tables)
         
-                                            <p class="no-description">No description</p>
-                                    </div>
+                                            <p><p>Expand wildcard tables.</p></p>                </div>
                 <div class="col-md-2"><small>from&nbsp;<a href="../../Drush/Sql/SqlTableSelectionTrait.html#method_expandWildcardTables">
 <abbr title="Drush\Sql\SqlTableSelectionTrait">SqlTableSelectionTrait</abbr></a></small></div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    An
+                    <abbr title="Drush\Sql\An">An</abbr>
                 </div>
                 <div class="col-md-8 type">
                     <a href="#method_filterTables">filterTables</a>(array $tables, array $db_tables)
         
-                                            <p>Filters tables.</p>                </div>
+                                            <p><p>Filters tables.</p></p>                </div>
                 <div class="col-md-2"><small>from&nbsp;<a href="../../Drush/Sql/SqlTableSelectionTrait.html#method_filterTables">
 <abbr title="Drush\Sql\SqlTableSelectionTrait">SqlTableSelectionTrait</abbr></a></small></div>
             </div>
@@ -209,9 +213,9 @@ that exist in the database.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_getTableSelection">getTableSelection</a>($options)
         
-                                            <p>Construct an array that places table names in appropriate
+                                            <p><p>Construct an array that places table names in appropriate
 buckets based on whether the table is to be skipped, included
-for structure only, or have structure and data dumped.</p>                </div>
+for structure only, or have structure and data dumped.</p></p>                </div>
                 <div class="col-md-2"><small>from&nbsp;<a href="../../Drush/Sql/SqlTableSelectionTrait.html#method_getTableSelection">
 <abbr title="Drush\Sql\SqlTableSelectionTrait">SqlTableSelectionTrait</abbr></a></small></div>
             </div>
@@ -222,7 +226,7 @@ for structure only, or have structure and data dumped.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_getRawTableList">getRawTableList</a>($option_name, array $options)
         
-                                            <p>Consult the specified options and return the list of tables specified.</p>                </div>
+                                            <p><p>Consult the specified options and return the list of tables specified.</p></p>                </div>
                 <div class="col-md-2"><small>from&nbsp;<a href="../../Drush/Sql/SqlTableSelectionTrait.html#method_getRawTableList">
 <abbr title="Drush\Sql\SqlTableSelectionTrait">SqlTableSelectionTrait</abbr></a></small></div>
             </div>
@@ -233,8 +237,8 @@ for structure only, or have structure and data dumped.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_getConfig">getConfig</a>()
         
-                                            <p>Replaces same method in ConfigAwareTrait in order to provide a
-DrushConfig as return type. Helps with IDE completion.</p>                </div>
+                                            <p><p>Replaces same method in ConfigAwareTrait in order to provide a
+DrushConfig as return type. Helps with IDE completion.</p></p>                </div>
                 <div class="col-md-2"><small>from&nbsp;<a href="../../Drush/Config/ConfigAwareTrait.html#method_getConfig">
 <abbr title="Drush\Config\ConfigAwareTrait">ConfigAwareTrait</abbr></a></small></div>
             </div>
@@ -245,7 +249,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method___construct">__construct</a>($db_spec, $options)
         
-                                            <p>Typically, SqlBase instances are constructed via SqlBase::create($options).</p>                </div>
+                                            <p><p>Typically, SqlBase instances are constructed via SqlBase::create($options).</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -255,17 +259,17 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_getEnv">getEnv</a>()
         
-                                            <p>Get environment variables to pass to Process.</p>                </div>
+                                            <p><p>Get environment variables to pass to Process.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    Process
+                    <abbr title="Symfony\Component\Process\Process">Process</abbr>
                 </div>
                 <div class="col-md-8 type">
                     <a href="#method_getProcess">getProcess</a>()
         
-                                            <p>Get the last used Process.</p>                </div>
+                                            <p><p>Get the last used Process.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -273,7 +277,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                     
                 </div>
                 <div class="col-md-8 type">
-                    <a href="#method_setProcess">setProcess</a>(Process $process)
+                    <a href="#method_setProcess">setProcess</a>(<abbr title="Symfony\Component\Process\Process">Process</abbr> $process)
         
                                             <p class="no-description">No description</p>
                                     </div>
@@ -281,12 +285,12 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    static&nbsp;SqlBase
+                    static&nbsp;<a href="../../Drush/Sql/SqlBase.html"><abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a>
                 </div>
                 <div class="col-md-8 type">
                     <a href="#method_create">create</a>($options = [])
         
-                                            <p>Get a driver specific instance of this class.</p>                </div>
+                                            <p><p>Get a driver specific instance of this class.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -318,7 +322,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_setDbSpec">setDbSpec</a>(array $dbSpec)
         
-                                            <p>Set the current db spec.</p>                </div>
+                                            <p><p>Set the current db spec.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -328,7 +332,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_command">command</a>()
         
-                                            <p>The unix command used to connect to the database.</p>                </div>
+                                            <p><p>The unix command used to connect to the database.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -338,7 +342,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_connect">connect</a>(bool $hide_password = true)
         
-                                            <p>A string for connecting to a database.</p>                </div>
+                                            <p><p>A string for connecting to a database.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -359,7 +363,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_addPipeFail">addPipeFail</a>(string $cmd, string $pipefail)
         
-                                            <p>Handle 'pipefail' option for the specified command.</p>                </div>
+                                            <p><p>Handle 'pipefail' option for the specified command.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -391,7 +395,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_query">query</a>(string $query, string $input_file = null, string $result_file = &#039;&#039;)
         
-                                            <p>Execute a SQL query. Respect simulate mode.</p>                </div>
+                                            <p><p>Execute a SQL query. Respect simulate mode.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -401,7 +405,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_alwaysQuery">alwaysQuery</a>(string $query, string $input_file = null, string $result_file = &#039;&#039;)
         
-                                            <p>Execute a SQL query. Always execute regardless of simulate mode.</p>                </div>
+                                            <p><p>Execute a SQL query. Always execute regardless of simulate mode.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -411,7 +415,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_logQueryInDebugMode">logQueryInDebugMode</a>($query, $input_file_original)
         
-                                            <p>Show the query in debug mode and simulate mode</p>                </div>
+                                            <p><p>Show the query in debug mode and simulate mode</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -454,7 +458,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_drop">drop</a>(array $tables)
         
-                                            <p>Drop specified database.</p>                </div>
+                                            <p><p>Drop specified database.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -464,7 +468,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_createdbSql">createdbSql</a>($dbname, bool $quoted = false)
         
-                                            <p>Build a SQL string for dropping and creating a database.</p>                </div>
+                                            <p><p>Build a SQL string for dropping and creating a database.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -474,7 +478,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_createdb">createdb</a>(bool $quoted = false)
         
-                                            <p>Create a new database.</p>                </div>
+                                            <p><p>Create a new database.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -484,7 +488,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_dropOrCreate">dropOrCreate</a>()
         
-                                            <p>Drop all tables (if DB exists) or CREATE target database.</p>                </div>
+                                            <p><p>Drop all tables (if DB exists) or CREATE target database.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -505,7 +509,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_creds">creds</a>(bool $hide_password = true)
         
-                                            <p>Build a fragment connection parameters.</p>                </div>
+                                            <p><p>Build a fragment connection parameters.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -515,7 +519,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_scheme">scheme</a>()
         
-                                            <p>The active database driver.</p>                </div>
+                                            <p><p>The active database driver.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -525,7 +529,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_listTables">listTables</a>()
         
-                                            <p>Extract the name of all existing tables in the given database.</p>                </div>
+                                            <p><p>Extract the name of all existing tables in the given database.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -535,7 +539,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_listTablesQuoted">listTablesQuoted</a>()
         
-                                            <p>Extract the name of all existing tables in the given database.</p>                </div>
+                                            <p><p>Extract the name of all existing tables in the given database.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -556,7 +560,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_su">su</a>()
         
-                                            <p>Adjust DB connection with superuser credentials if provided.</p>                </div>
+                                            <p><p>Adjust DB connection with superuser credentials if provided.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -587,7 +591,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                 </div>
                 <div class="col-md-8 type">
                     <a href="#method_db_spec">db_spec</a>()
-        <small><sup><span class="label label-danger">deprecated</span></sup></small>
+        
                                             <p class="no-description">No description</p>
                                     </div>
                 <div class="col-md-2"></div>
@@ -599,7 +603,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_dbSpecFromDbUrl">dbSpecFromDbUrl</a>($db_url)
         
-                                            <p>Convert from an old-style database URL to an array of database settings.</p>                </div>
+                                            <p><p>Convert from an old-style database URL to an array of database settings.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -609,7 +613,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_alwaysQueryCommand">alwaysQueryCommand</a>($input_file)
         
-                                            <p>Start building the command to run a query.</p>                </div>
+                                            <p><p>Start building the command to run a query.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
             </div>
@@ -626,26 +630,27 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
     <strong>getExpandedTableSelection</strong>(array $options, array $all_tables)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Given a list of all tables, expand the convert the wildcards in the
-option-provided lists into a list of actual table names.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Given a list of all tables, expand the convert the wildcards in the
+option-provided lists into a list of actual table names.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
                 <td>array</td>
                 <td>$options</td>
-                <td>An options array as passed to an Annotated Command.</td>
+                <td><p>An options array as passed to an Annotated Command.</p></td>
             </tr>
                     <tr>
                 <td>array</td>
                 <td>$all_tables</td>
-                <td>A list of all eligible tables.</td>
+                <td><p>A list of all eligible tables.</p></td>
             </tr>
             </table>
 
@@ -655,10 +660,12 @@ option-provided lists into a list of actual table names.</p>                    
                     <table class="table table-condensed">
         <tr>
             <td>array</td>
-            <td></td>
+            <td><p>An array of tables with each table name in the appropriate
+element of the array.</p></td>
         </tr>
     </table>
 
+            
             
             
                     </div>
@@ -673,28 +680,29 @@ option-provided lists into a list of actual table names.</p>                    
     <strong>expandAndFilterTables</strong>(array $tables, array $db_tables)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Given the table names in the input array that may contain wildcards (<code>*</code>),
+        <div class="method-description">
+                            <p><p>Given the table names in the input array that may contain wildcards (<code>*</code>),
 expand the table names so that the array returned only contains table names
-that exist in the database.</p>                                                </div>
-                <div class="tags">
+that exist in the database.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
                 <td>array</td>
                 <td>$tables</td>
-                <td>An array of table names where the table names may contain the
-<code>*</code> wildcard character.</td>
+                <td><p>An array of table names where the table names may contain the
+<code>*</code> wildcard character.</p></td>
             </tr>
                     <tr>
                 <td>array</td>
                 <td>$db_tables</td>
-                <td>The list of tables present in a database.</td>
+                <td><p>The list of tables present in a database.</p></td>
             </tr>
             </table>
 
@@ -704,10 +712,11 @@ that exist in the database.</p>                                                <
                     <table class="table table-condensed">
         <tr>
             <td>array</td>
-            <td></td>
+            <td><p>An array of tables with non-existant tables removed.</p></td>
         </tr>
     </table>
 
+            
             
             
                     </div>
@@ -719,29 +728,33 @@ that exist in the database.</p>                                                <
         <div class="location">in <a href="../../Drush/Sql/SqlTableSelectionTrait.html#method_expandWildcardTables">
 <abbr title="Drush\Sql\SqlTableSelectionTrait">SqlTableSelectionTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/10.x/src/Sql/SqlTableSelectionTrait.php#L73">at line 73</a></div>
         <code>                    
-    <strong>expandWildcardTables</strong>($tables, $db_tables)
+    <strong>expandWildcardTables</strong>(array $tables, array $db_tables)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Expand wildcard tables.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
-                <td></td>
+                <td>array</td>
                 <td>$tables</td>
-                <td></td>
+                <td><p>An array of table names, some of which may contain wildcards (<code>*</code>).</p></td>
             </tr>
                     <tr>
-                <td></td>
+                <td>array</td>
                 <td>$db_tables</td>
-                <td></td>
+                <td><p>An array with all the existing table names in the current database.</p></td>
             </tr>
             </table>
 
+            
             
             
             
@@ -753,29 +766,30 @@ that exist in the database.</p>                                                <
                     <h3 id="method_filterTables">
         <div class="location">in <a href="../../Drush/Sql/SqlTableSelectionTrait.html#method_filterTables">
 <abbr title="Drush\Sql\SqlTableSelectionTrait">SqlTableSelectionTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/10.x/src/Sql/SqlTableSelectionTrait.php#L100">at line 100</a></div>
-        <code>                    An
+        <code>                    <abbr title="Drush\Sql\An">An</abbr>
     <strong>filterTables</strong>(array $tables, array $db_tables)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Filters tables.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Filters tables.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
                 <td>array</td>
                 <td>$tables</td>
-                <td>An array of table names to filter.</td>
+                <td><p>An array of table names to filter.</p></td>
             </tr>
                     <tr>
                 <td>array</td>
                 <td>$db_tables</td>
-                <td>An array with all the existing table names in the current database.</td>
+                <td><p>An array with all the existing table names in the current database.</p></td>
             </tr>
             </table>
 
@@ -784,11 +798,13 @@ that exist in the database.</p>                                                <
 
                     <table class="table table-condensed">
         <tr>
-            <td>An</td>
-            <td></td>
+            <td><abbr title="Drush\Sql\An">An</abbr></td>
+            <td><p>array with only valid table names (i.e. all of which actually exist in
+the database).</p></td>
         </tr>
     </table>
 
+            
             
             
                     </div>
@@ -803,18 +819,21 @@ that exist in the database.</p>                                                <
     <strong>getTableSelection</strong>($options)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Construct an array that places table names in appropriate
+        <div class="method-description">
+                            <p><p>Construct an array that places table names in appropriate
 buckets based on whether the table is to be skipped, included
-for structure only, or have structure and data dumped.</p>                    <p>The keys of the array are:
-- skip: tables to be skipped completed in the dump
-- structure: tables to only have their structure i.e. DDL dumped
-- tables: tables to have structure and data dumped</p>                            </div>
-                <div class="tags">
+for structure only, or have structure and data dumped.</p></p>                <p><p>The keys of the array are:</p>
+<ul>
+<li>skip: tables to be skipped completed in the dump</li>
+<li>structure: tables to only have their structure i.e. DDL dumped</li>
+<li>tables: tables to have structure and data dumped</li>
+</ul></p>        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -831,10 +850,12 @@ for structure only, or have structure and data dumped.</p>                    <p
                     <table class="table table-condensed">
         <tr>
             <td>array</td>
-            <td></td>
+            <td><p>An array of table names with each table name in the appropriate
+element of the array.</p></td>
         </tr>
     </table>
 
+            
             
             
                     </div>
@@ -849,13 +870,14 @@ for structure only, or have structure and data dumped.</p>                    <p
     <strong>getRawTableList</strong>($option_name, array $options)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Consult the specified options and return the list of tables specified.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Consult the specified options and return the list of tables specified.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -867,7 +889,7 @@ for structure only, or have structure and data dumped.</p>                    <p
                     <tr>
                 <td>array</td>
                 <td>$options</td>
-                <td>An options array as passed to an Annotated Command.</td>
+                <td><p>An options array as passed to an Annotated Command.</p></td>
             </tr>
             </table>
 
@@ -877,10 +899,12 @@ for structure only, or have structure and data dumped.</p>                    <p
                     <table class="table table-condensed">
         <tr>
             <td>array</td>
-            <td></td>
+            <td><p>Returns an array of tables based on the first option
+found, or an empty array if there were no matches.</p></td>
         </tr>
     </table>
 
+            
             
             
                     </div>
@@ -895,14 +919,15 @@ for structure only, or have structure and data dumped.</p>                    <p
     <strong>getConfig</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Replaces same method in ConfigAwareTrait in order to provide a
-DrushConfig as return type. Helps with IDE completion.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Replaces same method in ConfigAwareTrait in order to provide a
+DrushConfig as return type. Helps with IDE completion.</p></p>                        
+        </div>
+        <div class="tags">
             
                             <h4>Return Value</h4>
 
@@ -926,6 +951,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </tr>
             </table>
 
+            
                     </div>
     </div>
 
@@ -937,13 +963,14 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
     <strong>__construct</strong>($db_spec, $options)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Typically, SqlBase instances are constructed via SqlBase::create($options).</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Typically, SqlBase instances are constructed via SqlBase::create($options).</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -959,6 +986,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </tr>
             </table>
 
+            
             
             
             
@@ -973,13 +1001,15 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
     <strong>getEnv</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Get environment variables to pass to Process.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Get environment variables to pass to Process.</p></p>                        
+        </div>
+        <div class="tags">
+            
             
             
             
@@ -990,27 +1020,29 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
                     <div class="method-item">
                     <h3 id="method_getProcess">
         <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Sql/SqlBase.php#L60">at line 60</a></div>
-        <code>                    Process
+        <code>                    <abbr title="Symfony\Component\Process\Process">Process</abbr>
     <strong>getProcess</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Get the last used Process.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Get the last used Process.</p></p>                        
+        </div>
+        <div class="tags">
             
                             <h4>Return Value</h4>
 
                     <table class="table table-condensed">
         <tr>
-            <td>Process</td>
+            <td><abbr title="Symfony\Component\Process\Process">Process</abbr></td>
             <td></td>
         </tr>
     </table>
 
+            
             
             
                     </div>
@@ -1021,24 +1053,29 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
                     <h3 id="method_setProcess">
         <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Sql/SqlBase.php#L68">at line 68</a></div>
         <code>                    
-    <strong>setProcess</strong>(Process $process)
+    <strong>setProcess</strong>(<abbr title="Symfony\Component\Process\Process">Process</abbr> $process)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                <div class="tags">
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
-                <td>Process</td>
+                <td><abbr title="Symfony\Component\Process\Process">Process</abbr></td>
                 <td>$process</td>
                 <td></td>
             </tr>
             </table>
 
+            
             
             
             
@@ -1049,24 +1086,25 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
                     <div class="method-item">
                     <h3 id="method_create">
         <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Sql/SqlBase.php#L80">at line 80</a></div>
-        <code>        static            SqlBase
+        <code>        static            <a href="../../Drush/Sql/SqlBase.html"><abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a>
     <strong>create</strong>($options = [])
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Get a driver specific instance of this class.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Get a driver specific instance of this class.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
                 <td></td>
                 <td>$options</td>
-                <td>options array as handed to a command callback.</td>
+                <td><p>An options array as handed to a command callback.</p></td>
             </tr>
             </table>
 
@@ -1075,11 +1113,12 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
 
                     <table class="table table-condensed">
         <tr>
-            <td>SqlBase</td>
+            <td><a href="../../Drush/Sql/SqlBase.html"><abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a></td>
             <td></td>
         </tr>
     </table>
 
+            
             
             
                     </div>
@@ -1093,11 +1132,15 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
     <strong>getInstance</strong>($db_spec, $options)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                <div class="tags">
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -1116,6 +1159,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             
             
             
+            
                     </div>
     </div>
 
@@ -1127,11 +1171,16 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
     <strong>getDbSpec</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                <div class="tags">
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+            
             
             
             
@@ -1146,13 +1195,14 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
     <strong>setDbSpec</strong>(array $dbSpec)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Set the current db spec.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Set the current db spec.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -1163,6 +1213,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </tr>
             </table>
 
+            
             
             
             
@@ -1177,13 +1228,14 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
     <strong>command</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>The unix command used to connect to the database.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>The unix command used to connect to the database.</p></p>                        
+        </div>
+        <div class="tags">
             
                             <h4>Return Value</h4>
 
@@ -1194,6 +1246,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
         </tr>
     </table>
 
+            
             
             
                     </div>
@@ -1207,21 +1260,22 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
     <strong>connect</strong>(bool $hide_password = true)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>A string for connecting to a database.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>A string for connecting to a database.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
                 <td>bool</td>
                 <td>$hide_password</td>
-                <td>If TRUE, DBMS should try to hide password from process list.
-On mysql, that means using --defaults-file to supply the user+password.</td>
+                <td><p>If TRUE, DBMS should try to hide password from process list.
+On mysql, that means using --defaults-file to supply the user+password.</p></td>
             </tr>
             </table>
 
@@ -1237,6 +1291,7 @@ On mysql, that means using --defaults-file to supply the user+password.</td>
 
             
             
+            
                     </div>
     </div>
 
@@ -1248,11 +1303,16 @@ On mysql, that means using --defaults-file to supply the user+password.</td>
     <strong>dump</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                <div class="tags">
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+            
             
             
             
@@ -1267,25 +1327,26 @@ On mysql, that means using --defaults-file to supply the user+password.</td>
     <strong>addPipeFail</strong>(string $cmd, string $pipefail)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Handle 'pipefail' option for the specified command.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Handle 'pipefail' option for the specified command.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
                 <td>string</td>
                 <td>$cmd</td>
-                <td>Script command to execute; should contain a pipe command</td>
+                <td><p>Script command to execute; should contain a pipe command</p></td>
             </tr>
                     <tr>
                 <td>string</td>
                 <td>$pipefail</td>
-                <td>Script statements to insert into / wrap around $cmd</td>
+                <td><p>Script statements to insert into / wrap around $cmd</p></td>
             </tr>
             </table>
 
@@ -1295,10 +1356,20 @@ On mysql, that means using --defaults-file to supply the user+password.</td>
                     <table class="table table-condensed">
         <tr>
             <td>string</td>
-            <td></td>
+            <td><p>Result varies based on value of $pipefail</p>
+<ul>
+<li>empty: Return $cmd unmodified</li>
+<li>simple string: Return $cmd appended to $pipefail</li>
+<li>interpolated: Add slashes to $cmd and insert in $pipefail</li>
+</ul>
+<p>Interpolation is particularly for environments such as Ubuntu
+that use something other than bash as the default shell. To
+make pipefail work right in this instance, we must wrap it
+in 'bash -c', since pipefail is a bash feature.</p></td>
         </tr>
     </table>
 
+            
             
             
                     </div>
@@ -1312,11 +1383,15 @@ On mysql, that means using --defaults-file to supply the user+password.</td>
     <strong>dumpCmd</strong>($table_selection)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                <div class="tags">
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -1327,6 +1402,7 @@ On mysql, that means using --defaults-file to supply the user+password.</td>
             </tr>
             </table>
 
+            
             
             
             
@@ -1341,11 +1417,15 @@ On mysql, that means using --defaults-file to supply the user+password.</td>
     <strong>dumpFile</strong>($file)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                <div class="tags">
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -1356,6 +1436,7 @@ On mysql, that means using --defaults-file to supply the user+password.</td>
             </tr>
             </table>
 
+            
             
             
             
@@ -1370,31 +1451,32 @@ On mysql, that means using --defaults-file to supply the user+password.</td>
     <strong>query</strong>(string $query, string $input_file = null, string $result_file = &#039;&#039;)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Execute a SQL query. Respect simulate mode.</p>                    <p>If you don't want to query results to print during --debug then
-provide a $result_file whose value can be drush_bit_bucket().</p>                            </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Execute a SQL query. Respect simulate mode.</p></p>                <p><p>If you don't want to query results to print during --debug then
+provide a $result_file whose value can be drush_bit_bucket().</p></p>        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
                 <td>string</td>
                 <td>$query</td>
-                <td>The SQL to be executed. Should be NULL if $input_file is provided.</td>
+                <td><p>The SQL to be executed. Should be NULL if $input_file is provided.</p></td>
             </tr>
                     <tr>
                 <td>string</td>
                 <td>$input_file</td>
-                <td>A path to a file containing the SQL to be executed.</td>
+                <td><p>A path to a file containing the SQL to be executed.</p></td>
             </tr>
                     <tr>
                 <td>string</td>
                 <td>$result_file</td>
-                <td>A path to save query results to. Can be drush_bit_bucket() if desired.</td>
+                <td><p>A path to save query results to. Can be drush_bit_bucket() if desired.</p></td>
             </tr>
             </table>
 
@@ -1404,10 +1486,11 @@ provide a $result_file whose value can be drush_bit_bucket().</p>               
                     <table class="table table-condensed">
         <tr>
             <td>bool</td>
-            <td></td>
+            <td><p>TRUE on success, FALSE on failure</p></td>
         </tr>
     </table>
 
+            
             
             
                     </div>
@@ -1421,31 +1504,32 @@ provide a $result_file whose value can be drush_bit_bucket().</p>               
     <strong>alwaysQuery</strong>(string $query, string $input_file = null, string $result_file = &#039;&#039;)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Execute a SQL query. Always execute regardless of simulate mode.</p>                    <p>If you don't want results to print during --debug then
-provide a $result_file whose value can be drush_bit_bucket().</p>                            </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Execute a SQL query. Always execute regardless of simulate mode.</p></p>                <p><p>If you don't want results to print during --debug then
+provide a $result_file whose value can be drush_bit_bucket().</p></p>        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
                 <td>string</td>
                 <td>$query</td>
-                <td>The SQL to be executed. Should be null if $input_file is provided.</td>
+                <td><p>The SQL to be executed. Should be null if $input_file is provided.</p></td>
             </tr>
                     <tr>
                 <td>string</td>
                 <td>$input_file</td>
-                <td>A path to a file containing the SQL to be executed.</td>
+                <td><p>A path to a file containing the SQL to be executed.</p></td>
             </tr>
                     <tr>
                 <td>string</td>
                 <td>$result_file</td>
-                <td>A path to save query results to. Can be drush_bit_bucket() if desired.</td>
+                <td><p>A path to save query results to. Can be drush_bit_bucket() if desired.</p></td>
             </tr>
             </table>
 
@@ -1455,10 +1539,11 @@ provide a $result_file whose value can be drush_bit_bucket().</p>               
                     <table class="table table-condensed">
         <tr>
             <td>bool</td>
-            <td></td>
+            <td><p>TRUE on success, FALSE on failure</p></td>
         </tr>
     </table>
 
+            
             
             
                     </div>
@@ -1472,13 +1557,14 @@ provide a $result_file whose value can be drush_bit_bucket().</p>               
     <strong>logQueryInDebugMode</strong>($query, $input_file_original)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Show the query in debug mode and simulate mode</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Show the query in debug mode and simulate mode</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -1497,6 +1583,7 @@ provide a $result_file whose value can be drush_bit_bucket().</p>               
             
             
             
+            
                     </div>
     </div>
 
@@ -1508,11 +1595,16 @@ provide a $result_file whose value can be drush_bit_bucket().</p>               
     <strong>silent</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                <div class="tags">
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+            
             
             
             
@@ -1527,11 +1619,15 @@ provide a $result_file whose value can be drush_bit_bucket().</p>               
     <strong>queryPrefix</strong>($query)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                <div class="tags">
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -1542,6 +1638,7 @@ provide a $result_file whose value can be drush_bit_bucket().</p>               
             </tr>
             </table>
 
+            
             
             
             
@@ -1556,11 +1653,15 @@ provide a $result_file whose value can be drush_bit_bucket().</p>               
     <strong>queryFormat</strong>($query)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                <div class="tags">
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -1571,6 +1672,7 @@ provide a $result_file whose value can be drush_bit_bucket().</p>               
             </tr>
             </table>
 
+            
             
             
             
@@ -1585,20 +1687,21 @@ provide a $result_file whose value can be drush_bit_bucket().</p>               
     <strong>drop</strong>(array $tables)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Drop specified database.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Drop specified database.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
                 <td>array</td>
                 <td>$tables</td>
-                <td>An array of table names</td>
+                <td><p>An array of table names</p></td>
             </tr>
             </table>
 
@@ -1608,10 +1711,11 @@ provide a $result_file whose value can be drush_bit_bucket().</p>               
                     <table class="table table-condensed">
         <tr>
             <td>bool</td>
-            <td></td>
+            <td><p>True if successful, FALSE if failed.</p></td>
         </tr>
     </table>
 
+            
             
             
                     </div>
@@ -1625,13 +1729,14 @@ provide a $result_file whose value can be drush_bit_bucket().</p>               
     <strong>createdbSql</strong>($dbname, bool $quoted = false)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Build a SQL string for dropping and creating a database.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Build a SQL string for dropping and creating a database.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -1643,8 +1748,8 @@ provide a $result_file whose value can be drush_bit_bucket().</p>               
                     <tr>
                 <td>bool</td>
                 <td>$quoted</td>
-                <td>Quote the database name. Mysql uses backticks to quote which can cause problems
-in a Windows shell. Set TRUE if the CREATE is not running on the bash command line.</td>
+                <td><p>Quote the database name. Mysql uses backticks to quote which can cause problems
+in a Windows shell. Set TRUE if the CREATE is not running on the bash command line.</p></td>
             </tr>
             </table>
 
@@ -1660,6 +1765,7 @@ in a Windows shell. Set TRUE if the CREATE is not running on the bash command li
 
             
             
+            
                     </div>
     </div>
 
@@ -1671,21 +1777,22 @@ in a Windows shell. Set TRUE if the CREATE is not running on the bash command li
     <strong>createdb</strong>(bool $quoted = false)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Create a new database.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Create a new database.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
                 <td>bool</td>
                 <td>$quoted</td>
-                <td>Quote the database name. Mysql uses backticks to quote which can cause problems
-in a Windows shell. Set TRUE if the CREATE is not running on the bash command line.</td>
+                <td><p>Quote the database name. Mysql uses backticks to quote which can cause problems
+in a Windows shell. Set TRUE if the CREATE is not running on the bash command line.</p></td>
             </tr>
             </table>
 
@@ -1695,10 +1802,11 @@ in a Windows shell. Set TRUE if the CREATE is not running on the bash command li
                     <table class="table table-condensed">
         <tr>
             <td>bool</td>
-            <td></td>
+            <td><p>True if successful, FALSE otherwise.</p></td>
         </tr>
     </table>
 
+            
             
             
                     </div>
@@ -1712,14 +1820,16 @@ in a Windows shell. Set TRUE if the CREATE is not running on the bash command li
     <strong>dropOrCreate</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Drop all tables (if DB exists) or CREATE target database.</p>                    <p>return boolean
-TRUE or FALSE depending on success.</p>                            </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Drop all tables (if DB exists) or CREATE target database.</p></p>                <p><p>return boolean
+TRUE or FALSE depending on success.</p></p>        
+        </div>
+        <div class="tags">
+            
             
             
             
@@ -1734,11 +1844,16 @@ TRUE or FALSE depending on success.</p>                            </div>
     <strong>dbExists</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                <div class="tags">
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+            
             
             
             
@@ -1753,21 +1868,22 @@ TRUE or FALSE depending on success.</p>                            </div>
     <strong>creds</strong>(bool $hide_password = true)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Build a fragment connection parameters.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Build a fragment connection parameters.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
                 <td>bool</td>
                 <td>$hide_password</td>
-                <td>If TRUE, DBMS should try to hide password from process list.
-On mysql, that means using --defaults-file to supply the user+password.</td>
+                <td><p>If TRUE, DBMS should try to hide password from process list.
+On mysql, that means using --defaults-file to supply the user+password.</p></td>
             </tr>
             </table>
 
@@ -1781,6 +1897,7 @@ On mysql, that means using --defaults-file to supply the user+password.</td>
         </tr>
     </table>
 
+            
             
             
                     </div>
@@ -1794,13 +1911,14 @@ On mysql, that means using --defaults-file to supply the user+password.</td>
     <strong>scheme</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>The active database driver.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>The active database driver.</p></p>                        
+        </div>
+        <div class="tags">
             
                             <h4>Return Value</h4>
 
@@ -1811,6 +1929,7 @@ On mysql, that means using --defaults-file to supply the user+password.</td>
         </tr>
     </table>
 
+            
             
             
                     </div>
@@ -1824,23 +1943,25 @@ On mysql, that means using --defaults-file to supply the user+password.</td>
     <strong>listTables</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Extract the name of all existing tables in the given database.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Extract the name of all existing tables in the given database.</p></p>                        
+        </div>
+        <div class="tags">
             
                             <h4>Return Value</h4>
 
                     <table class="table table-condensed">
         <tr>
             <td>array|null</td>
-            <td></td>
+            <td><p>An array of table names which exist in the current database.</p></td>
         </tr>
     </table>
 
+            
             
             
                     </div>
@@ -1854,23 +1975,26 @@ On mysql, that means using --defaults-file to supply the user+password.</td>
     <strong>listTablesQuoted</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Extract the name of all existing tables in the given database.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Extract the name of all existing tables in the given database.</p></p>                        
+        </div>
+        <div class="tags">
             
                             <h4>Return Value</h4>
 
                     <table class="table table-condensed">
         <tr>
             <td>array|null</td>
-            <td></td>
+            <td><p>An array of table names which exist in the current database,
+appropriately quoted for the RDMS.</p></td>
         </tr>
     </table>
 
+            
             
             
                     </div>
@@ -1884,11 +2008,15 @@ On mysql, that means using --defaults-file to supply the user+password.</td>
     <strong>paramsToOptions</strong>($parameters)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                <div class="tags">
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -1899,6 +2027,7 @@ On mysql, that means using --defaults-file to supply the user+password.</td>
             </tr>
             </table>
 
+            
             
             
             
@@ -1913,13 +2042,14 @@ On mysql, that means using --defaults-file to supply the user+password.</td>
     <strong>su</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Adjust DB connection with superuser credentials if provided.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Adjust DB connection with superuser credentials if provided.</p></p>                        
+        </div>
+        <div class="tags">
             
                             <h4>Return Value</h4>
 
@@ -1930,6 +2060,7 @@ On mysql, that means using --defaults-file to supply the user+password.</td>
         </tr>
     </table>
 
+            
             
             
                     </div>
@@ -1943,11 +2074,15 @@ On mysql, that means using --defaults-file to supply the user+password.</td>
     <strong>getOptions</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                <div class="tags">
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
             
                             <h4>Return Value</h4>
 
@@ -1958,6 +2093,7 @@ On mysql, that means using --defaults-file to supply the user+password.</td>
         </tr>
     </table>
 
+            
             
             
                     </div>
@@ -1971,11 +2107,15 @@ On mysql, that means using --defaults-file to supply the user+password.</td>
     <strong>getOption</strong>($name, $default = null)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                <div class="tags">
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -1994,6 +2134,7 @@ On mysql, that means using --defaults-file to supply the user+password.</td>
             
             
             
+            
                     </div>
     </div>
 
@@ -2003,20 +2144,18 @@ On mysql, that means using --defaults-file to supply the user+password.</td>
         <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Sql/SqlBase.php#L576">at line 576</a></div>
         <code>                    
     <strong>db_spec</strong>()
-        <small><sup><span class="label label-danger">deprecated</span></sup></small></code>
+        </code>
     </h3>
-    <div class="details">
-            
-            <p>
-                <small><sup><span class="label label-danger">deprecated</span></sup></small>
-                            <tr>
-                    <td></td>
-                    <td>.</td>
-                </tr>
-                    </p>
+    <div class="details">    
     
+            
 
-                <div class="tags">
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+            
             
             
             
@@ -2031,13 +2170,14 @@ On mysql, that means using --defaults-file to supply the user+password.</td>
     <strong>dbSpecFromDbUrl</strong>($db_url)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Convert from an old-style database URL to an array of database settings.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Convert from an old-style database URL to an array of database settings.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -2054,10 +2194,12 @@ On mysql, that means using --defaults-file to supply the user+password.</td>
                     <table class="table table-condensed">
         <tr>
             <td>array</td>
-            <td></td>
+            <td><p>An array of database values containing only the 'default' element of
+the db url. If the parse fails the array is empty.</p></td>
         </tr>
     </table>
 
+            
             
             
                     </div>
@@ -2071,13 +2213,14 @@ On mysql, that means using --defaults-file to supply the user+password.</td>
     <strong>alwaysQueryCommand</strong>($input_file)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Start building the command to run a query.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Start building the command to run a query.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -2100,6 +2243,7 @@ On mysql, that means using --defaults-file to supply the user+password.</td>
 
             
             
+            
                     </div>
     </div>
 
@@ -2107,7 +2251,7 @@ On mysql, that means using --defaults-file to supply the user+password.</td>
             </div>
 
     
-            </div><div id="footer">
+</div><div id="footer">
         Generated by <a href="https://github.com/code-lts/doctum">Doctum, a API Documentation generator and fork of Sami</a>.</div></div>
     </div>
     </body>

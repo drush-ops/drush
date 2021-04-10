@@ -16,6 +16,7 @@
         <meta name="MobileOptimized" content="width">
         <meta name="HandheldFriendly" content="true">
         <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+
     </head>
 
     <body id="class" data-name="class:Drush_Internal_Config_Yaml_Inline" data-root-path="../../../../">
@@ -66,30 +67,36 @@
             </ol>
         </div>
                 <div id="page-content">
-                
     <div class="page-header">
-        <h1>
-            Inline
-                
-        </h1>
+        <h1>Inline    
+            </h1>
     </div>
 
+    
     <p>        class
     <strong>Inline</strong>        (<a href="https://github.com/drush-ops/drush/blob/10.x/src/internal-forks/Config/Yaml/Inline.php">View source</a>)
 </p>
 
         
     
+                        <table>
+            <tr>
+                <td><span class="label label-warning">internal</span></td>
+                <td>&nbsp; </td>
+            </tr>
+        </table>
+                &nbsp;
+    
 
             <div class="description">
-            <p>Inline implements a YAML parser/dumper for the YAML inline syntax.</p>                                </div>
-    
-    
-            <h2>Constants</h2>
-
-            <table class="table table-condensed">
+            <p><p>Inline implements a YAML parser/dumper for the YAML inline syntax.</p></p>                    </div>
+            
+        
+            <h2>Constants</h2>    <table class="table table-condensed">
                     <tr>
-                <td>REGEX_QUOTED_STRING</td>
+                <td>
+                                                                                                                        REGEX_QUOTED_STRING
+                                    </td>
                 <td class="last">
                     <p><em></em></p>
                     <p></p>
@@ -104,7 +111,8 @@
                     <tr>
                 <td class="type" id="property_parsedLineNumber">
                     static                                                            
-                </td>
+                                                                                
+                                    </td>
                 <td>$parsedLineNumber</td>
                 <td class="last"></td>
                 <td></td>
@@ -122,7 +130,7 @@
                 <div class="col-md-8 type">
                     <a href="#method_parse">parse</a>(string $value, int $flags = 0, array $references = array())
         
-                                            <p>Converts a YAML string to a PHP value.</p>                </div>
+                                            <p><p>Converts a YAML string to a PHP value.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -132,7 +140,7 @@
                 <div class="col-md-8 type">
                     <a href="#method_dump">dump</a>(mixed $value, int $flags = 0)
         
-                                            <p>Dumps a given PHP variable to a YAML string.</p>                </div>
+                                            <p><p>Dumps a given PHP variable to a YAML string.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -142,7 +150,7 @@
                 <div class="col-md-8 type">
                     <a href="#method_isHash">isHash</a>(array|<a target="_blank" rel="noopener" href="https://www.php.net/ArrayObject">ArrayObject</a>|<a target="_blank" rel="noopener" href="https://www.php.net/stdClass">stdClass</a> $value)
         
-                                            <p>Check if given array is hash or just normal indexed array.</p>                </div>
+                                            <p><p>Check if given array is hash or just normal indexed array.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -150,9 +158,9 @@
                     static&nbsp;string
                 </div>
                 <div class="col-md-8 type">
-                    <a href="#method_parseScalar">parseScalar</a>(string $scalar, int $flags = 0, string[] $delimiters = null, $i = 0, bool $evaluate = true, array $references = array(), $legacyOmittedKeySupport = false)
+                    <a href="#method_parseScalar">parseScalar</a>(string $scalar, int $flags = 0, string[] $delimiters = null, int $i = 0, bool $evaluate = true, array $references = array(), $legacyOmittedKeySupport = false)
         
-                                            <p>Parses a YAML scalar.</p>                </div>
+                                            <p><p>Parses a YAML scalar.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -179,30 +187,31 @@
     <strong>parse</strong>(string $value, int $flags = 0, array $references = array())
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Converts a YAML string to a PHP value.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Converts a YAML string to a PHP value.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
                 <td>string</td>
                 <td>$value</td>
-                <td>A YAML string</td>
+                <td><p>A YAML string</p></td>
             </tr>
                     <tr>
                 <td>int</td>
                 <td>$flags</td>
-                <td>A bit field of PARSE_* constants to customize the YAML parser behavior</td>
+                <td><p>A bit field of PARSE_* constants to customize the YAML parser behavior</p></td>
             </tr>
                     <tr>
                 <td>array</td>
                 <td>$references</td>
-                <td>Mapping of variable names to values</td>
+                <td><p>Mapping of variable names to values</p></td>
             </tr>
             </table>
 
@@ -212,7 +221,7 @@
                     <table class="table table-condensed">
         <tr>
             <td>mixed</td>
-            <td></td>
+            <td><p>A PHP value</p></td>
         </tr>
     </table>
 
@@ -221,11 +230,12 @@
 
                     <table class="table table-condensed">
                     <tr>
-                <td>ParseException</td>
+                <td><a href="../../../../Drush/Internal/Config/Yaml/Exception/ParseException.html"><abbr title="Drush\Internal\Config\Yaml\Exception\ParseException">ParseException</abbr></a></td>
                 <td></td>
             </tr>
             </table>
 
+            
             
                     </div>
     </div>
@@ -238,25 +248,26 @@
     <strong>dump</strong>(mixed $value, int $flags = 0)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Dumps a given PHP variable to a YAML string.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Dumps a given PHP variable to a YAML string.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
                 <td>mixed</td>
                 <td>$value</td>
-                <td>The PHP variable to convert</td>
+                <td><p>The PHP variable to convert</p></td>
             </tr>
                     <tr>
                 <td>int</td>
                 <td>$flags</td>
-                <td>A bit field of Yaml::DUMP_* constants to customize the dumped YAML string</td>
+                <td><p>A bit field of Yaml::DUMP_* constants to customize the dumped YAML string</p></td>
             </tr>
             </table>
 
@@ -266,7 +277,7 @@
                     <table class="table table-condensed">
         <tr>
             <td>string</td>
-            <td></td>
+            <td><p>The YAML string representing the PHP value</p></td>
         </tr>
     </table>
 
@@ -275,11 +286,12 @@
 
                     <table class="table table-condensed">
                     <tr>
-                <td>DumpException</td>
-                <td>When trying to dump PHP resource</td>
+                <td><abbr title="Drush\Internal\Config\Yaml\Exception\DumpException">DumpException</abbr></td>
+                <td><p>When trying to dump PHP resource</p></td>
             </tr>
             </table>
 
+            
             
                     </div>
     </div>
@@ -292,20 +304,28 @@
     <strong>isHash</strong>(array|<a target="_blank" rel="noopener" href="https://www.php.net/ArrayObject">ArrayObject</a>|<a target="_blank" rel="noopener" href="https://www.php.net/stdClass">stdClass</a> $value)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
+    
+                            <table>
+            <tr>
+                <td><span class="label label-warning">internal</span></td>
+                <td>&nbsp; </td>
+            </tr>
+        </table>
+                &nbsp;
     
 
-                    <div class="method-description">
-                                    <p>Check if given array is hash or just normal indexed array.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Check if given array is hash or just normal indexed array.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
                 <td>array|<a target="_blank" rel="noopener" href="https://www.php.net/ArrayObject">ArrayObject</a>|<a target="_blank" rel="noopener" href="https://www.php.net/stdClass">stdClass</a></td>
                 <td>$value</td>
-                <td>The PHP array or array-like object to check</td>
+                <td><p>The PHP array or array-like object to check</p></td>
             </tr>
             </table>
 
@@ -315,10 +335,11 @@
                     <table class="table table-condensed">
         <tr>
             <td>bool</td>
-            <td></td>
+            <td><p>true if value is hash array, false otherwise</p></td>
         </tr>
     </table>
 
+            
             
             
                     </div>
@@ -329,16 +350,24 @@
                     <h3 id="method_parseScalar">
         <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/internal-forks/Config/Yaml/Inline.php#L303">at line 303</a></div>
         <code>        static            string
-    <strong>parseScalar</strong>(string $scalar, int $flags = 0, string[] $delimiters = null, $i = 0, bool $evaluate = true, array $references = array(), $legacyOmittedKeySupport = false)
+    <strong>parseScalar</strong>(string $scalar, int $flags = 0, string[] $delimiters = null, int $i = 0, bool $evaluate = true, array $references = array(), $legacyOmittedKeySupport = false)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
+    
+                            <table>
+            <tr>
+                <td><span class="label label-warning">internal</span></td>
+                <td>&nbsp; </td>
+            </tr>
+        </table>
+                &nbsp;
     
 
-                    <div class="method-description">
-                                    <p>Parses a YAML scalar.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Parses a YAML scalar.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -358,7 +387,7 @@
                 <td></td>
             </tr>
                     <tr>
-                <td></td>
+                <td>int</td>
                 <td>$i</td>
                 <td></td>
             </tr>
@@ -394,11 +423,12 @@
 
                     <table class="table table-condensed">
                     <tr>
-                <td>ParseException</td>
-                <td>When malformed inline YAML string is parsed</td>
+                <td><a href="../../../../Drush/Internal/Config/Yaml/Exception/ParseException.html"><abbr title="Drush\Internal\Config\Yaml\Exception\ParseException">ParseException</abbr></a></td>
+                <td><p>When malformed inline YAML string is parsed</p></td>
             </tr>
             </table>
 
+            
             
                     </div>
     </div>
@@ -411,11 +441,22 @@
     <strong>evaluateBinaryScalar</strong>(string $scalar)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
+    
+                            <table>
+            <tr>
+                <td><span class="label label-warning">internal</span></td>
+                <td>&nbsp; </td>
+            </tr>
+        </table>
+                &nbsp;
     
 
-                <div class="tags">
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -438,6 +479,7 @@
 
             
             
+            
                     </div>
     </div>
 
@@ -445,7 +487,7 @@
             </div>
 
     
-            </div><div id="footer">
+</div><div id="footer">
         Generated by <a href="https://github.com/code-lts/doctum">Doctum, a API Documentation generator and fork of Sami</a>.</div></div>
     </div>
     </body>

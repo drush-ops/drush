@@ -16,6 +16,7 @@
         <meta name="MobileOptimized" content="width">
         <meta name="HandheldFriendly" content="true">
         <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+
     </head>
 
     <body id="class" data-name="class:Drush_Config_Environment" data-root-path="../../">
@@ -66,25 +67,24 @@
             </ol>
         </div>
                 <div id="page-content">
-                
     <div class="page-header">
-        <h1>
-            Environment
-                
-        </h1>
+        <h1>Environment    
+            </h1>
     </div>
 
+    
     <p>        class
     <strong>Environment</strong>        (<a href="https://github.com/drush-ops/drush/blob/10.x/src/Config/Environment.php">View source</a>)
 </p>
 
         
     
+        
 
             <div class="description">
-            <p>Store information about the environment</p>                                </div>
-    
-    
+            <p><p>Store information about the environment</p></p>                    </div>
+            
+        
     
             <h2>Properties</h2>
 
@@ -92,7 +92,8 @@
                     <tr>
                 <td class="type" id="property_homeDir">
                                         protected                                        
-                </td>
+                                                                                
+                                    </td>
                 <td>$homeDir</td>
                 <td class="last"></td>
                 <td></td>
@@ -100,7 +101,8 @@
                     <tr>
                 <td class="type" id="property_originalCwd">
                                         protected                                        
-                </td>
+                                                                                
+                                    </td>
                 <td>$originalCwd</td>
                 <td class="last"></td>
                 <td></td>
@@ -108,7 +110,8 @@
                     <tr>
                 <td class="type" id="property_etcPrefix">
                                         protected                                        
-                </td>
+                                                                                
+                                    </td>
                 <td>$etcPrefix</td>
                 <td class="last"></td>
                 <td></td>
@@ -116,7 +119,8 @@
                     <tr>
                 <td class="type" id="property_sharePrefix">
                                         protected                                        
-                </td>
+                                                                                
+                                    </td>
                 <td>$sharePrefix</td>
                 <td class="last"></td>
                 <td></td>
@@ -124,7 +128,8 @@
                     <tr>
                 <td class="type" id="property_drushBasePath">
                                         protected                                        
-                </td>
+                                                                                
+                                    </td>
                 <td>$drushBasePath</td>
                 <td class="last"></td>
                 <td></td>
@@ -132,7 +137,8 @@
                     <tr>
                 <td class="type" id="property_vendorDir">
                                         protected                                        
-                </td>
+                                                                                
+                                    </td>
                 <td>$vendorDir</td>
                 <td class="last"></td>
                 <td></td>
@@ -140,7 +146,8 @@
                     <tr>
                 <td class="type" id="property_docPrefix">
                                         protected                                        
-                </td>
+                                                                                
+                                    </td>
                 <td>$docPrefix</td>
                 <td class="last"></td>
                 <td></td>
@@ -148,7 +155,8 @@
                     <tr>
                 <td class="type" id="property_configFileVariant">
                                         protected                                        
-                </td>
+                                                                                
+                                    </td>
                 <td>$configFileVariant</td>
                 <td class="last"></td>
                 <td></td>
@@ -156,7 +164,8 @@
                     <tr>
                 <td class="type" id="property_loader">
                                         protected                                        
-                </td>
+                                                                                
+                                    </td>
                 <td>$loader</td>
                 <td class="last"></td>
                 <td></td>
@@ -164,7 +173,8 @@
                     <tr>
                 <td class="type" id="property_siteLoader">
                                         protected                                        
-                </td>
+                                                                                
+                                    </td>
                 <td>$siteLoader</td>
                 <td class="last"></td>
                 <td></td>
@@ -182,17 +192,17 @@
                 <div class="col-md-8 type">
                     <a href="#method___construct">__construct</a>(string $homeDir, string $cwd, string $autoloadFile)
         
-                                            <p>Environment constructor</p>                </div>
+                                            <p><p>Environment constructor</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    ClassLoader
+                    <abbr title="Composer\Autoload\ClassLoader">ClassLoader</abbr>
                 </div>
                 <div class="col-md-8 type">
                     <a href="#method_loadSiteAutoloader">loadSiteAutoloader</a>(string $root)
         
-                                            <p>Load the autoloader for the selected Drupal site</p>                </div>
+                                            <p><p>Load the autoloader for the selected Drupal site</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -202,7 +212,7 @@
                 <div class="col-md-8 type">
                     <a href="#method_getUsername">getUsername</a>()
         
-                                            <p>Return the name of the user running drush.</p>                </div>
+                                            <p><p>Return the name of the user running drush.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -218,13 +228,13 @@
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    
+                    array
                 </div>
                 <div class="col-md-8 type">
                     <a href="#method_exportConfigData">exportConfigData</a>()
         
-                                            <p class="no-description">No description</p>
-                                    </div>
+                                            <p><p>Convert the environment object into an exported configuration
+array.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -234,8 +244,8 @@
                 <div class="col-md-8 type">
                     <a href="#method_drushBasePath">drushBasePath</a>()
         
-                                            <p>The base directory of the Drush application itself
-(where composer.json et.al. are found)</p>                </div>
+                                            <p><p>The base directory of the Drush application itself
+(where composer.json et.al. are found)</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -245,7 +255,7 @@
                 <div class="col-md-8 type">
                     <a href="#method_getSiteSetAliasName">getSiteSetAliasName</a>()
         
-                                            <p>Get the site:set alias from the current site:set file path.</p>                </div>
+                                            <p><p>Get the site:set alias from the current site:set file path.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -255,7 +265,7 @@
                 <div class="col-md-8 type">
                     <a href="#method_homeDir">homeDir</a>()
         
-                                            <p>User's home directory</p>                </div>
+                                            <p><p>User's home directory</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -265,7 +275,7 @@
                 <div class="col-md-8 type">
                     <a href="#method_userConfigPath">userConfigPath</a>()
         
-                                            <p>The user's Drush configuration directory, ~/.drush</p>                </div>
+                                            <p><p>The user's Drush configuration directory, ~/.drush</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -286,9 +296,9 @@
                 <div class="col-md-8 type">
                     <a href="#method_getConfigFileVariant">getConfigFileVariant</a>()
         
-                                            <p>Get the config file variant -- defined to be
+                                            <p><p>Get the config file variant -- defined to be
 the Drush major version number. This is for
-loading drush.yml and drush10.yml, etc.</p>                </div>
+loading drush.yml and drush10.yml, etc.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -298,7 +308,7 @@ loading drush.yml and drush10.yml, etc.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_cwd">cwd</a>()
         
-                                            <p>The original working directory</p>                </div>
+                                            <p><p>The original working directory</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -308,7 +318,7 @@ loading drush.yml and drush10.yml, etc.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_vendorPath">vendorPath</a>()
         
-                                            <p>Return the path to Drush's vendor directory</p>                </div>
+                                            <p><p>Return the path to Drush's vendor directory</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -318,7 +328,7 @@ loading drush.yml and drush10.yml, etc.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_loader">loader</a>()
         
-                                            <p>The class loader returned when the autoload.php file is included.</p>                </div>
+                                            <p><p>The class loader returned when the autoload.php file is included.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -328,7 +338,7 @@ loading drush.yml and drush10.yml, etc.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_setLoader">setLoader</a>(<abbr title="Composer\Autoload\ClassLoader">ClassLoader</abbr> $loader)
         
-                                            <p>Set the class loader from the autload.php file, if available.</p>                </div>
+                                            <p><p>Set the class loader from the autload.php file, if available.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -338,7 +348,7 @@ loading drush.yml and drush10.yml, etc.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_applyEnvironment">applyEnvironment</a>()
         
-                                            <p>Alter our default locations based on the value of environment variables</p>                </div>
+                                            <p><p>Alter our default locations based on the value of environment variables</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -348,8 +358,8 @@ loading drush.yml and drush10.yml, etc.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_setEtcPrefix">setEtcPrefix</a>(string $etcPrefix)
         
-                                            <p>Set the directory prefix to locate the directory that Drush will
-use as /etc (e.g. during the functional tests)</p>                </div>
+                                            <p><p>Set the directory prefix to locate the directory that Drush will
+use as /etc (e.g. during the functional tests)</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -359,8 +369,8 @@ use as /etc (e.g. during the functional tests)</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_setSharePrefix">setSharePrefix</a>(string $sharePrefix)
         
-                                            <p>Set the directory prefix to locate the directory that Drush will
-use as /user/share (e.g. during the functional tests)</p>                </div>
+                                            <p><p>Set the directory prefix to locate the directory that Drush will
+use as /user/share (e.g. during the functional tests)</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -370,10 +380,10 @@ use as /user/share (e.g. during the functional tests)</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_docsPath">docsPath</a>()
         
-                                            <p>Return the directory where Drush's documentation is stored. Usually
+                                            <p><p>Return the directory where Drush's documentation is stored. Usually
 this is within the Drush application, but some Drush RPM distributions
 &amp; c. for Linux platforms slice-and-dice the contents and put the docs
-elsewhere.</p>                </div>
+elsewhere.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -383,8 +393,8 @@ elsewhere.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_findDocsPath">findDocsPath</a>(string $drushBasePath)
         
-                                            <p>Locate the Drush documentation. This is recalculated whenever the
-share prefix is changed.</p>                </div>
+                                            <p><p>Locate the Drush documentation. This is recalculated whenever the
+share prefix is changed.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -394,7 +404,7 @@ share prefix is changed.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_findFromCandidates">findFromCandidates</a>(array $candidates)
         
-                                            <p>Check a list of directories and return the first one that exists.</p>                </div>
+                                            <p><p>Check a list of directories and return the first one that exists.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -404,7 +414,7 @@ share prefix is changed.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_systemPathPrefix">systemPathPrefix</a>(string $override = &#039;&#039;, string $defaultPrefix = &#039;&#039;)
         
-                                            <p>Return the appropriate system path prefix, unless an override is provided.</p>                </div>
+                                            <p><p>Return the appropriate system path prefix, unless an override is provided.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -414,7 +424,7 @@ share prefix is changed.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_systemConfigPath">systemConfigPath</a>()
         
-                                            <p>Return the system configuration path (default: /etc/drush)</p>                </div>
+                                            <p><p>Return the system configuration path (default: /etc/drush)</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -424,7 +434,7 @@ share prefix is changed.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_systemCommandFilePath">systemCommandFilePath</a>()
         
-                                            <p>Return the system shared commandfile path (default: /usr/share/drush/commands)</p>                </div>
+                                            <p><p>Return the system shared commandfile path (default: /usr/share/drush/commands)</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -434,7 +444,7 @@ share prefix is changed.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_isWindows">isWindows</a>($os = null)
         
-                                            <p>Determine whether current OS is a Windows variant.</p>                </div>
+                                            <p><p>Determine whether current OS is a Windows variant.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -444,7 +454,7 @@ share prefix is changed.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_verifyCLI">verifyCLI</a>()
         
-                                            <p>Verify that we are running PHP through the command line interface.</p>                </div>
+                                            <p><p>Verify that we are running PHP through the command line interface.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -454,17 +464,17 @@ share prefix is changed.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_calculateColumns">calculateColumns</a>()
         
-                                            <p>Get terminal width.</p>                </div>
+                                            <p><p>Get terminal width.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    string|bool
+                    string|false
                 </div>
                 <div class="col-md-8 type">
                     <a href="#method_getSiteSetAliasFilePath">getSiteSetAliasFilePath</a>(string $filename_prefix = &#039;drush-drupal-site-&#039;)
         
-                                            <p>Returns the filename for the file that stores the DRUPAL_SITE variable.</p>                </div>
+                                            <p><p>Returns the filename for the file that stores the DRUPAL_SITE variable.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
             </div>
@@ -480,33 +490,35 @@ share prefix is changed.</p>                </div>
     <strong>__construct</strong>(string $homeDir, string $cwd, string $autoloadFile)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Environment constructor</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Environment constructor</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
                 <td>string</td>
                 <td>$homeDir</td>
-                <td>User home directory.</td>
+                <td><p>User home directory.</p></td>
             </tr>
                     <tr>
                 <td>string</td>
                 <td>$cwd</td>
-                <td>The current working directory at the time Drush was called.</td>
+                <td><p>The current working directory at the time Drush was called.</p></td>
             </tr>
                     <tr>
                 <td>string</td>
                 <td>$autoloadFile</td>
-                <td>Path to the autoload.php file.</td>
+                <td><p>Path to the autoload.php file.</p></td>
             </tr>
             </table>
 
+            
             
             
             
@@ -517,17 +529,18 @@ share prefix is changed.</p>                </div>
                     <div class="method-item">
                     <h3 id="method_loadSiteAutoloader">
         <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Config/Environment.php#L51">at line 51</a></div>
-        <code>                    ClassLoader
+        <code>                    <abbr title="Composer\Autoload\ClassLoader">ClassLoader</abbr>
     <strong>loadSiteAutoloader</strong>(string $root)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Load the autoloader for the selected Drupal site</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Load the autoloader for the selected Drupal site</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -543,11 +556,12 @@ share prefix is changed.</p>                </div>
 
                     <table class="table table-condensed">
         <tr>
-            <td>ClassLoader</td>
+            <td><abbr title="Composer\Autoload\ClassLoader">ClassLoader</abbr></td>
             <td></td>
         </tr>
     </table>
 
+            
             
             
                     </div>
@@ -561,13 +575,14 @@ share prefix is changed.</p>                </div>
     <strong>getUsername</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Return the name of the user running drush.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Return the name of the user running drush.</p></p>                        
+        </div>
+        <div class="tags">
             
                             <h4>Return Value</h4>
 
@@ -578,6 +593,7 @@ share prefix is changed.</p>                </div>
         </tr>
     </table>
 
+            
             
             
                     </div>
@@ -591,11 +607,16 @@ share prefix is changed.</p>                </div>
     <strong>getTmp</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                <div class="tags">
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+            
             
             
             
@@ -606,17 +627,48 @@ share prefix is changed.</p>                </div>
                     <div class="method-item">
                     <h3 id="method_exportConfigData">
         <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Config/Environment.php#L160">at line 160</a></div>
-        <code>                    
+        <code>                    array
     <strong>exportConfigData</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Convert the environment object into an exported configuration
+array.</p></p>                        
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>array</td>
+            <td><p>Nested associative array that is overlayed on configuration.</p></td>
+        </tr>
+    </table>
+
             
             
+                            <h4>See also</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>
+                                            PreflightArgs::applyToConfig()
+                                    </td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>
+                                            <abbr title="Drush\Config\which also exports information to config.">which also exports information to config.</abbr>
+                                    </td>
+                <td></td>
+            </tr>
+            </table>
+
             
                     </div>
     </div>
@@ -629,14 +681,15 @@ share prefix is changed.</p>                </div>
     <strong>drushBasePath</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>The base directory of the Drush application itself
-(where composer.json et.al. are found)</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>The base directory of the Drush application itself
+(where composer.json et.al. are found)</p></p>                        
+        </div>
+        <div class="tags">
             
                             <h4>Return Value</h4>
 
@@ -647,6 +700,7 @@ share prefix is changed.</p>                </div>
         </tr>
     </table>
 
+            
             
             
                     </div>
@@ -660,13 +714,14 @@ share prefix is changed.</p>                </div>
     <strong>getSiteSetAliasName</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Get the site:set alias from the current site:set file path.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Get the site:set alias from the current site:set file path.</p></p>                        
+        </div>
+        <div class="tags">
             
                             <h4>Return Value</h4>
 
@@ -677,6 +732,7 @@ share prefix is changed.</p>                </div>
         </tr>
     </table>
 
+            
             
             
                     </div>
@@ -690,13 +746,14 @@ share prefix is changed.</p>                </div>
     <strong>homeDir</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>User's home directory</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>User's home directory</p></p>                        
+        </div>
+        <div class="tags">
             
                             <h4>Return Value</h4>
 
@@ -707,6 +764,7 @@ share prefix is changed.</p>                </div>
         </tr>
     </table>
 
+            
             
             
                     </div>
@@ -720,13 +778,14 @@ share prefix is changed.</p>                </div>
     <strong>userConfigPath</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>The user's Drush configuration directory, ~/.drush</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>The user's Drush configuration directory, ~/.drush</p></p>                        
+        </div>
+        <div class="tags">
             
                             <h4>Return Value</h4>
 
@@ -737,6 +796,7 @@ share prefix is changed.</p>                </div>
         </tr>
     </table>
 
+            
             
             
                     </div>
@@ -750,11 +810,15 @@ share prefix is changed.</p>                </div>
     <strong>setConfigFileVariant</strong>($variant)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                <div class="tags">
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -765,6 +829,7 @@ share prefix is changed.</p>                </div>
             </tr>
             </table>
 
+            
             
             
             
@@ -779,15 +844,17 @@ share prefix is changed.</p>                </div>
     <strong>getConfigFileVariant</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Get the config file variant -- defined to be
+        <div class="method-description">
+                            <p><p>Get the config file variant -- defined to be
 the Drush major version number. This is for
-loading drush.yml and drush10.yml, etc.</p>                                                </div>
-                <div class="tags">
+loading drush.yml and drush10.yml, etc.</p></p>                        
+        </div>
+        <div class="tags">
+            
             
             
             
@@ -802,13 +869,14 @@ loading drush.yml and drush10.yml, etc.</p>                                     
     <strong>cwd</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>The original working directory</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>The original working directory</p></p>                        
+        </div>
+        <div class="tags">
             
                             <h4>Return Value</h4>
 
@@ -819,6 +887,7 @@ loading drush.yml and drush10.yml, etc.</p>                                     
         </tr>
     </table>
 
+            
             
             
                     </div>
@@ -832,13 +901,14 @@ loading drush.yml and drush10.yml, etc.</p>                                     
     <strong>vendorPath</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Return the path to Drush's vendor directory</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Return the path to Drush's vendor directory</p></p>                        
+        </div>
+        <div class="tags">
             
                             <h4>Return Value</h4>
 
@@ -849,6 +919,7 @@ loading drush.yml and drush10.yml, etc.</p>                                     
         </tr>
     </table>
 
+            
             
             
                     </div>
@@ -862,13 +933,14 @@ loading drush.yml and drush10.yml, etc.</p>                                     
     <strong>loader</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>The class loader returned when the autoload.php file is included.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>The class loader returned when the autoload.php file is included.</p></p>                        
+        </div>
+        <div class="tags">
             
                             <h4>Return Value</h4>
 
@@ -879,6 +951,7 @@ loading drush.yml and drush10.yml, etc.</p>                                     
         </tr>
     </table>
 
+            
             
             
                     </div>
@@ -892,13 +965,14 @@ loading drush.yml and drush10.yml, etc.</p>                                     
     <strong>setLoader</strong>(<abbr title="Composer\Autoload\ClassLoader">ClassLoader</abbr> $loader)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Set the class loader from the autload.php file, if available.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Set the class loader from the autload.php file, if available.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -909,6 +983,7 @@ loading drush.yml and drush10.yml, etc.</p>                                     
             </tr>
             </table>
 
+            
             
             
             
@@ -923,13 +998,14 @@ loading drush.yml and drush10.yml, etc.</p>                                     
     <strong>applyEnvironment</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Alter our default locations based on the value of environment variables</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Alter our default locations based on the value of environment variables</p></p>                        
+        </div>
+        <div class="tags">
             
                             <h4>Return Value</h4>
 
@@ -940,6 +1016,7 @@ loading drush.yml and drush10.yml, etc.</p>                                     
         </tr>
     </table>
 
+            
             
             
                     </div>
@@ -953,14 +1030,15 @@ loading drush.yml and drush10.yml, etc.</p>                                     
     <strong>setEtcPrefix</strong>(string $etcPrefix)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Set the directory prefix to locate the directory that Drush will
-use as /etc (e.g. during the functional tests)</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Set the directory prefix to locate the directory that Drush will
+use as /etc (e.g. during the functional tests)</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -983,6 +1061,7 @@ use as /etc (e.g. during the functional tests)</p>                              
 
             
             
+            
                     </div>
     </div>
 
@@ -994,14 +1073,15 @@ use as /etc (e.g. during the functional tests)</p>                              
     <strong>setSharePrefix</strong>(string $sharePrefix)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Set the directory prefix to locate the directory that Drush will
-use as /user/share (e.g. during the functional tests)</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Set the directory prefix to locate the directory that Drush will
+use as /user/share (e.g. during the functional tests)</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -1024,6 +1104,7 @@ use as /user/share (e.g. during the functional tests)</p>                       
 
             
             
+            
                     </div>
     </div>
 
@@ -1035,16 +1116,17 @@ use as /user/share (e.g. during the functional tests)</p>                       
     <strong>docsPath</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Return the directory where Drush's documentation is stored. Usually
+        <div class="method-description">
+                            <p><p>Return the directory where Drush's documentation is stored. Usually
 this is within the Drush application, but some Drush RPM distributions
 &amp; c. for Linux platforms slice-and-dice the contents and put the docs
-elsewhere.</p>                                                </div>
-                <div class="tags">
+elsewhere.</p></p>                        
+        </div>
+        <div class="tags">
             
                             <h4>Return Value</h4>
 
@@ -1055,6 +1137,7 @@ elsewhere.</p>                                                </div>
         </tr>
     </table>
 
+            
             
             
                     </div>
@@ -1068,14 +1151,15 @@ elsewhere.</p>                                                </div>
     <strong>findDocsPath</strong>(string $drushBasePath)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Locate the Drush documentation. This is recalculated whenever the
-share prefix is changed.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Locate the Drush documentation. This is recalculated whenever the
+share prefix is changed.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -1098,6 +1182,7 @@ share prefix is changed.</p>                                                </di
 
             
             
+            
                     </div>
     </div>
 
@@ -1109,13 +1194,14 @@ share prefix is changed.</p>                                                </di
     <strong>findFromCandidates</strong>(array $candidates)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Check a list of directories and return the first one that exists.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Check a list of directories and return the first one that exists.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -1138,6 +1224,7 @@ share prefix is changed.</p>                                                </di
 
             
             
+            
                     </div>
     </div>
 
@@ -1149,13 +1236,14 @@ share prefix is changed.</p>                                                </di
     <strong>systemPathPrefix</strong>(string $override = &#039;&#039;, string $defaultPrefix = &#039;&#039;)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Return the appropriate system path prefix, unless an override is provided.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Return the appropriate system path prefix, unless an override is provided.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -1183,6 +1271,7 @@ share prefix is changed.</p>                                                </di
 
             
             
+            
                     </div>
     </div>
 
@@ -1194,13 +1283,14 @@ share prefix is changed.</p>                                                </di
     <strong>systemConfigPath</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Return the system configuration path (default: /etc/drush)</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Return the system configuration path (default: /etc/drush)</p></p>                        
+        </div>
+        <div class="tags">
             
                             <h4>Return Value</h4>
 
@@ -1211,6 +1301,7 @@ share prefix is changed.</p>                                                </di
         </tr>
     </table>
 
+            
             
             
                     </div>
@@ -1224,13 +1315,14 @@ share prefix is changed.</p>                                                </di
     <strong>systemCommandFilePath</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Return the system shared commandfile path (default: /usr/share/drush/commands)</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Return the system shared commandfile path (default: /usr/share/drush/commands)</p></p>                        
+        </div>
+        <div class="tags">
             
                             <h4>Return Value</h4>
 
@@ -1241,6 +1333,7 @@ share prefix is changed.</p>                                                </di
         </tr>
     </table>
 
+            
             
             
                     </div>
@@ -1254,13 +1347,14 @@ share prefix is changed.</p>                                                </di
     <strong>isWindows</strong>($os = null)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Determine whether current OS is a Windows variant.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Determine whether current OS is a Windows variant.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
@@ -1283,6 +1377,7 @@ share prefix is changed.</p>                                                </di
 
             
             
+            
                     </div>
     </div>
 
@@ -1294,23 +1389,26 @@ share prefix is changed.</p>                                                </di
     <strong>verifyCLI</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Verify that we are running PHP through the command line interface.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Verify that we are running PHP through the command line interface.</p></p>                        
+        </div>
+        <div class="tags">
             
                             <h4>Return Value</h4>
 
                     <table class="table table-condensed">
         <tr>
             <td>bool</td>
-            <td></td>
+            <td><p>A boolean value that is true when PHP is being run through the command line,
+and false if being run through cgi or mod_php.</p></td>
         </tr>
     </table>
 
+            
             
             
                     </div>
@@ -1324,13 +1422,14 @@ share prefix is changed.</p>                                                </di
     <strong>calculateColumns</strong>()
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Get terminal width.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Get terminal width.</p></p>                        
+        </div>
+        <div class="tags">
             
                             <h4>Return Value</h4>
 
@@ -1343,6 +1442,7 @@ share prefix is changed.</p>                                                </di
 
             
             
+            
                     </div>
     </div>
 
@@ -1350,24 +1450,25 @@ share prefix is changed.</p>                                                </di
                     <div class="method-item">
                     <h3 id="method_getSiteSetAliasFilePath">
         <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Config/Environment.php#L464">at line 464</a></div>
-        <code>            protected        string|bool
+        <code>            protected        string|false
     <strong>getSiteSetAliasFilePath</strong>(string $filename_prefix = &#039;drush-drupal-site-&#039;)
         </code>
     </h3>
-    <div class="details">
-            
+    <div class="details">    
     
+            
 
-                    <div class="method-description">
-                                    <p>Returns the filename for the file that stores the DRUPAL_SITE variable.</p>                                                </div>
-                <div class="tags">
+        <div class="method-description">
+                            <p><p>Returns the filename for the file that stores the DRUPAL_SITE variable.</p></p>                        
+        </div>
+        <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
                 <td>string</td>
                 <td>$filename_prefix</td>
-                <td>An arbitrary string to prefix the filename with.</td>
+                <td><p>An arbitrary string to prefix the filename with.</p></td>
             </tr>
             </table>
 
@@ -1376,11 +1477,12 @@ share prefix is changed.</p>                                                </di
 
                     <table class="table table-condensed">
         <tr>
-            <td>string|bool</td>
-            <td></td>
+            <td>string|false</td>
+            <td><p>Returns the full path to temp file if possible, or FALSE if not.</p></td>
         </tr>
     </table>
 
+            
             
             
                     </div>
@@ -1390,7 +1492,7 @@ share prefix is changed.</p>                                                </di
             </div>
 
     
-            </div><div id="footer">
+</div><div id="footer">
         Generated by <a href="https://github.com/code-lts/doctum">Doctum, a API Documentation generator and fork of Sami</a>.</div></div>
     </div>
     </body>
