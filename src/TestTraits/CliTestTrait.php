@@ -105,7 +105,7 @@ trait CliTestTrait
             }
 
             // Handle BC method of making env variables inherited. The default
-            // in later versions is always inherit and this method disappears.
+            // icn later versions is always inherit and this method disappears.
             if (method_exists($this->process, 'inheritEnvironmentVariables')) {
                 set_error_handler(null);
                 $this->process->inheritEnvironmentVariables();
