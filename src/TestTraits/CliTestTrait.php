@@ -104,7 +104,14 @@ trait CliTestTrait
                 $this->process = new Process($command, $cd, $env, $input, 0);
             }
 
-            $this->process->inheritEnvironmentVariables(true);
+            // Handle BC method of making env variables inherited. The default
+            // icn later versions is always inherit and this method disappears.
+            // @todo Remove this if() block once Symfony 3 support is dropped.
+            if (method_exists($this->process, 'inheritEnvironmentVariables')) {
+                set_error_handler(null);
+                $this->process->inheritEnvironmentVariables();
+                restore_error_handler();
+            }
             if ($this->timeout) {
                 $this->process->setTimeout($this->timeout)
                 ->setIdleTimeout($this->idleTimeout);
