@@ -152,6 +152,7 @@ class ProcessManager extends ConsolidationProcessManager
         $process->setVerbose(Drush::verbose());
         // Handle BC method of making env variables inherited. The default in
         // later versions is always inherit and this method disappears.
+        // @todo Remove this if() block once Symfony 3 support is dropped.
         if (method_exists($process, 'inheritEnvironmentVariables')) {
             set_error_handler(null);
             $process->inheritEnvironmentVariables();
