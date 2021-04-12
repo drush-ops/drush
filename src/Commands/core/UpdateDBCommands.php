@@ -31,6 +31,7 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
      * @option entity-updates Run automatic entity schema updates at the end of any update hooks. Not supported in Drupal >= 8.7.0.
      * @option post-updates Run post updates after hook_update_n and entity updates.
      * @bootstrap full
+     * @topics docs:deploy
      * @kernel update
      * @aliases updb
      */
