@@ -150,6 +150,8 @@ function _drush_backend_batch_process($command = 'batch-process', $args = [], $o
 
     while (!$finished) {
       $process = Drush::drush(Drush::aliasManager()->getSelf(), $command, $args);
+      // We already re-spawn when memory is low so no need for timeout.
+      $process->setTimeout(null);
       // Suppress printing stdout since a JSON array is returned to us here.
       $process->run($process->showRealtime()->hideStdout());
       $result = $process->getOutputAsJson();
