@@ -13,6 +13,7 @@ use Drupal\migrate\Plugin\MigrationPluginManagerInterface;
 use Drupal\migrate\Plugin\RequirementsInterface;
 use Drush\Commands\DrushCommands;
 use Drush\Drupal\Migrate\MigrateExecutable;
+use Drush\Drupal\Migrate\MigrateIdMapFilter;
 use Drush\Drupal\Migrate\MigrateMessage;
 use Drush\Drupal\Migrate\MigrateUtils;
 use Drush\Utils\StringUtils;
@@ -493,8 +494,14 @@ class MigrateRunnerCommands extends DrushCommands
      * @param string $migrationId
      *   The ID of the migration.
      *
+     * @option idlist Comma-separated list of IDs to import. As an ID may have more than one column, concatenate the columns with the colon ':' separator.
+     *
      * @usage migrate:messages article
      *   Show all messages for the <info>article</info> migration
+     * @usage migrate:messages article --idlist=5
+     *   Import the article record with source ID 5.
+     * @usage migrate:messages node_revision --idlist=1:2,2:3,3:5
+     *   Import the node revision record with source IDs [1,2], [2,3], and [3,5].
      *
      * @aliases mmsg,migrate-messages
      *
@@ -513,7 +520,7 @@ class MigrateRunnerCommands extends DrushCommands
      * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
      *   Migration messages status formatted as table.
      */
-    public function messages(string $migrationId): RowsOfFields
+    public function messages(string $migrationId, array $options = ['idlist' => self::REQ]): RowsOfFields
     {
         /** @var \Drupal\migrate\Plugin\MigrationInterface $migration */
         $migration = $this->getMigrationPluginManager()->createInstance($migrationId);
@@ -523,6 +530,18 @@ class MigrateRunnerCommands extends DrushCommands
 
         $idMap = $migration->getIdMap();
         $sourceIdKeys = $this->getSourceIdKeys($idMap);
+        $idlist_source_id_values = [];
+        if (!empty($options['idlist'])) {
+            $keys = array_keys($migration->getSourcePlugin()->getIds());
+            array_walk($keys, function (&$value, $key) {
+                // Use the same format than getSourceIdKeys() for later compare
+                // them.
+                $value = 'src_' . $value;
+            });
+            foreach (MigrateUtils::parseIdList($options['idlist']) as $idlist_item) {
+                $idlist_source_id_values[] = array_combine($keys, $idlist_item);
+            }
+        }
         $table = [];
         foreach ($idMap->getMessages() as $row) {
             unset($row->msgid);
@@ -542,6 +561,26 @@ class MigrateRunnerCommands extends DrushCommands
             }
             $row['source_ids'] = implode(' : ', $sourceIds);
             $row['destination_ids'] = implode(' : ', $destinationIds);
+
+            // Only show relevant messages.
+            // TODO This logic can be simplified if a new \FilterIterator child
+            // is used to filter the map.
+            if (empty($idlist_source_id_values)) {
+                // No filtering.
+                $skip = FALSE;
+            }
+            else {
+                $skip = TRUE;
+                foreach ($idlist_source_id_values as $idlist_source_ids_value) {
+                    if (empty(array_diff_assoc($sourceIds, $idlist_source_ids_value))) {
+                        $skip = FALSE;
+                        break;
+                    }
+                }
+            }
+            if ($skip) {
+                continue;
+            }
 
             $table[] = $row;
         }
