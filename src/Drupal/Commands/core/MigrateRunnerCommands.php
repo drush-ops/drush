@@ -567,13 +567,12 @@ class MigrateRunnerCommands extends DrushCommands
             // is used to filter the map.
             if (empty($idlist_source_id_values)) {
                 // No filtering.
-                $skip = FALSE;
-            }
-            else {
-                $skip = TRUE;
+                $skip = false;
+            } else {
+                $skip = true;
                 foreach ($idlist_source_id_values as $idlist_source_ids_value) {
                     if (empty(array_diff_assoc($sourceIds, $idlist_source_ids_value))) {
-                        $skip = FALSE;
+                        $skip = false;
                         break;
                     }
                 }
