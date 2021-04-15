@@ -535,7 +535,7 @@ class MigrateRunnerCommands extends DrushCommands
         $idlist_source_id_values = [];
         if (!empty($options['idlist'])) {
             $keys = array_keys($migration->getSourcePlugin()->getIds());
-            array_walk($keys, function (&$value, $key) {
+            array_walk($keys, function (string &$value, string $key) : void {
                 // Use the same format than getSourceIdKeys() for later compare
                 // them.
                 $value = 'src_' . $value;
