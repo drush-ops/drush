@@ -110,7 +110,7 @@ class Runtime
         // Configure the application object and register all of the commandfiles
         // from the search paths we found above.  After this point, the input
         // and output objects are ready & we can start using the logger, etc.
-        $application->configureAndRegisterCommands($input, $output, $commandfileSearchpath);
+        $application->configureAndRegisterCommands($input, $output, $commandfileSearchpath, $loader);
 
         // Run the Symfony Application
         // Predispatch: call a remote Drush command if applicable (via a 'pre-init' hook)

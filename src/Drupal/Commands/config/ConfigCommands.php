@@ -536,6 +536,7 @@ class ConfigCommands extends DrushCommands implements StdinAwareInterface, SiteA
      *   The source config storage service.
      * @param StorageInterface $destination
      *   The destination config storage service.
+     * @throws \Exception
      */
     public static function copyConfig(StorageInterface $source, StorageInterface $destination)
     {
@@ -549,7 +550,11 @@ class ConfigCommands extends DrushCommands implements StdinAwareInterface, SiteA
 
         // Export all the configuration.
         foreach ($source->listAll() as $name) {
-            $destination->write($name, $source->read($name));
+            try {
+                $destination->write($name, $source->read($name));
+            } catch (\TypeError $e) {
+                throw new \Exception(dt('Source not found for @name.', ['@name' => $name]));
+            }
         }
 
         // Export configuration collections.

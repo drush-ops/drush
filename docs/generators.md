@@ -17,10 +17,18 @@ See [Woot module](https://github.com/drush-ops/drush/blob/10.x/tests/functional/
 
 Generators that don't ship inside Drupal modules are called *global* generators. In general, it is better to use modules to carry your generators. If you still prefer using a global generator, please note:
 
-1. The file's namespace should be `\Drush\Generators`.
-1. The filename must have a name like Generators/FooGenerator.php
-    1. The prefix `Foo` can be whatever string you want. The file must end in `Generator.php`
-    1. The enclosing directory must be named `Generators`
-1. The directory above Generators must be one of:
+1. The generator class should be PSR4 auto-loadable.
+1. The generator class namespace, relative to base namespace, should be `Drush\Generators`. For instance, if a Drush generator provider third party library maps this PSR4 autoload entry:
+   ```json
+   "autoload": {
+     "psr-4": {
+       "My\\Custom\\Library\\": "src"
+     }
+   }
+   ```
+   then the Drush global generator class namespace should be `My\Custom\Library\Drush\Generators` and the class file should be located under the `src/Drush/Generators` directory.
+1. The global generator namespace should start with `\Drush\Generators` but this might be subject to change in the following release.
+1. The filename must have a name like FooGenerator.php. The prefix `Foo` can be whatever string you want. The file must end in `Generator.php`
+1. When the namespace starts with `\Drush\Generators`, the directory above Generators must be one of:
     1.  A Folder listed in the *--include* option. include may be provided via config or via CLI.
     1.  `../drush`, `/drush` or `/sites/all/drush`. These paths are relative to Drupal root.

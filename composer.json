@@ -58,7 +58,6 @@
     "david-garcia/phpwhois": "4.3.0",
     "drupal/core-recommended": "^8.8",
     "drupal/alinks": "1.0.0",
-    "lox/xhprof": "dev-master",
     "phpunit/phpunit": ">=7.5.20",
     "yoast/phpunit-polyfills": "^0.2.0",
     "squizlabs/php_codesniffer": "^2.7 || ^3",
@@ -76,7 +75,8 @@
   },
   "autoload-dev": {
     "psr-4": {
-      "Unish\\": "tests/unish"
+      "Unish\\": "tests/unish",
+      "Custom\\Library\\": "tests/fixtures/lib"
     },
     "classmap": [
         "sut/core/modules/migrate/src"
