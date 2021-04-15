@@ -203,7 +203,6 @@ class CoreCase extends CommandUnishTestCase
 
             $output = $this->getOutput();
             $this->assertEquals($site_cache_dir, $output);
-
         }
     }
 }
