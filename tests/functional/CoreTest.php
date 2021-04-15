@@ -174,25 +174,36 @@ class CoreCase extends CommandUnishTestCase
 
     public function testSiteSpecificConfigLoading()
     {
-        $drush_config_file = Path::join($this->webroot(), '/sites/dev/drush.yml');
+        $sandbox = $this->getSandbox();
 
-        $drush_config_yml = [
-            'drush' => [
-                'paths' => [
-                    'cache-directory' => '/foo/bar'
+        foreach (['dev', 'stage'] as $site) {
+            $site_cache_dir = "{$sandbox}/tmp/{$site}";
+
+            $drush_config_file = Path::join($this->webroot(), "/sites/{$site}/drush.yml");
+
+            $drush_config_yml = [
+                'drush' => [
+                    'paths' => [
+                        'cache-directory' => $site_cache_dir,
+                    ]
                 ]
-            ]
-        ];
+            ];
 
-        file_put_contents($drush_config_file, Yaml::dump($drush_config_yml, PHP_INT_MAX, 2));
+            file_put_contents($drush_config_file, Yaml::dump($drush_config_yml, PHP_INT_MAX, 2));
 
-        $this->drush('core-status', [], ['format' => 'json']);
-        $output = $this->getOutputFromJSON();
-        $loaded = array_flip($output['drush-conf']);
-        $this->assertArrayHasKey('sites/dev/drush.yml', $loaded);
+            $this->drush('core-status', [], ['uri' => $site, 'format' => 'json']);
+            $output = $this->getOutputFromJSON();
+            $loaded = array_flip($output['drush-conf']);
+            $this->assertArrayHasKey("sites/{$site}/drush.yml", $loaded);
 
-        $this->drush('core-status', [], ['field' => 'drush-cache-directory']);
-        $output = $this->getOutput();
-        $this->assertEquals('/foo/bar', $output);
+            $this->drush('core-status', [], [
+                'uri' => $site,
+                'field' => 'drush-cache-directory',
+            ]);
+
+            $output = $this->getOutput();
+            $this->assertEquals($site_cache_dir, $output);
+
+        }
     }
 }
