@@ -499,9 +499,11 @@ class MigrateRunnerCommands extends DrushCommands
      * @usage migrate:messages article
      *   Show all messages for the <info>article</info> migration
      * @usage migrate:messages article --idlist=5
-     *   Import the article record with source ID 5.
+     *   Show messages related to article record with source ID 5.
      * @usage migrate:messages node_revision --idlist=1:2,2:3,3:5
-     *   Import the node revision record with source IDs [1,2], [2,3], and [3,5].
+     *   Show messages related to node revision records with source IDs [1,2], [2,3], and [3,5].
+     * @usage migrate:messages custom_node_revision --idlist=1:"r:1",2:"r:3"
+     *   Show messages related to node revision records with source IDs [1,"r:1"], and [2,"r:3"].
      *
      * @aliases mmsg,migrate-messages
      *
