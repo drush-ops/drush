@@ -176,9 +176,8 @@ class CoreCase extends CommandUnishTestCase
     {
         $sandbox = $this->getSandbox();
 
-        foreach (['dev', 'stage'] as $site) {
+        foreach (['default', 'dev', 'stage'] as $site) {
             $site_cache_dir = "{$sandbox}/tmp/{$site}";
-
             $drush_config_file = Path::join($this->webroot(), "/sites/{$site}/drush.yml");
 
             $drush_config_yml = [
@@ -191,16 +190,20 @@ class CoreCase extends CommandUnishTestCase
 
             file_put_contents($drush_config_file, Yaml::dump($drush_config_yml, PHP_INT_MAX, 2));
 
-            $this->drush('core-status', [], ['uri' => $site, 'format' => 'json']);
+            // Don't use the uri option for the default site.
+            $options = [
+                'uri' => ($site == 'default') ? 'OMIT' : $site,
+                'format' => 'json',
+            ];
+
+            // Test that the config file is loaded.
+            $this->drush('core-status', [], $options);
             $output = $this->getOutputFromJSON();
             $loaded = array_flip($output['drush-conf']);
             $this->assertArrayHasKey("sites/{$site}/drush.yml", $loaded);
 
-            $this->drush('core-status', [], [
-                'uri' => $site,
-                'field' => 'drush-cache-directory',
-            ]);
-
+            // Test that the cache directory config is set.
+            $this->drush('core-status', [], $options + ['field' => 'drush-cache-directory']);
             $output = $this->getOutput();
             $this->assertEquals($site_cache_dir, $output);
         }
