@@ -202,7 +202,8 @@ class CoreCase extends CommandUnishTestCase
             $loaded = array_flip($output['drush-conf']);
             $this->assertArrayHasKey("sites/{$site}/drush.yml", $loaded);
 
-            // Test that the cache directory config is set.
+            // Test that the cache directory config is set. The field option
+            // forces format to string.
             $this->drush('core-status', [], $options + ['field' => 'drush-cache-directory']);
             $output = $this->getOutput();
             $this->assertEquals($site_cache_dir, $output);
