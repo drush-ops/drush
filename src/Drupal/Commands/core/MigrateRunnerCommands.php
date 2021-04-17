@@ -545,6 +545,11 @@ class MigrateRunnerCommands extends DrushCommands
             }
         }
         $table = [];
+        if (empty($sourceIdKeys)) {
+            // Cannot find one item to extract keys from, no need to process
+            // messages on an empty id map.
+            return new RowsOfFields($table);
+        }
         foreach ($idMap->getMessages() as $row) {
             unset($row->msgid);
             $row = (array) $row;
@@ -736,6 +741,11 @@ class MigrateRunnerCommands extends DrushCommands
      */
     protected function getSourceIdKeys(MigrateIdMapInterface $idMap): array
     {
+        if (iterator_count($idMap) == 0) {
+            // E.g. when the migration has not yet been executed. the id map is
+            // empty. do not try to process it.
+            return [];
+        }
         $idMap->rewind();
         $columns = $idMap->currentSource();
         $sourceIdKeys = array_map(static function ($id) {
