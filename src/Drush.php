@@ -68,7 +68,7 @@ class Drush
      *
      * @var int
      */
-    const TIMEOUT = 14400;
+    protected const TIMEOUT = 14400;
 
     public static function getTimeout(): int
     {
@@ -112,9 +112,6 @@ class Drush
 
     /**
      * Sets a new global container.
-     *
-     * @param \League\Container\Container $container
-     *   A new container instance to replace the current.
      */
     public static function setContainer(ContainerInterface $container)
     {
@@ -186,9 +183,6 @@ class Drush
 
     /**
      * Indicates if a service is defined in the container.
-     *
-     * @param string $id
-     *   The ID of the service to check.
      */
     public static function hasService(string $id): bool
     {
@@ -317,9 +311,9 @@ class Drush
     /**
      * Run a bash fragment on a site alias.
      *
-     * Use Drush::drush() instead of this method when calling Drush.
+     * Use \Drush\Drush::drush() instead of this method when calling Drush.
      *
-     * Tip: Consider using injected process manager instead of this method. @see \Drush\Drush::drush().
+     * Tip: Commands can consider using $this->processManager() instead of this method.
      */
     public static function siteProcess(SiteAliasInterface $siteAlias, array $args = [], array $options = [], array $options_double_dash = []): ProcessBase
     {
@@ -332,7 +326,7 @@ class Drush
      * The timeout parameter on this method doesn't work. It exists for compatibility with parent.
      * Call this method to get a Process and then call setters as needed.
      *
-     * Tip: Consider using injected process manager instead of this method. @see \Drush\Drush::drush().
+     * Tip: Consider using injected process manager instead of this method.
      *
      * @param string|array   $commandline The command line to run
      * @param string|null    $cwd         The working directory or null to use the working dir of the current PHP process
@@ -340,7 +334,7 @@ class Drush
      * @param mixed|null     $input       The input as stream resource, scalar or \Traversable, or null for no input
      * @param int|float|null $timeout     The timeout in seconds or null to disable
      *
-     * @return ProcessBase
+     * @return
      *   A wrapper around Symfony Process.
      */
     public static function process($commandline, $cwd = null, $env = null, $input = null, $timeout = 60): ProcessBase
@@ -351,13 +345,16 @@ class Drush
     /**
      * Create a Process instance from a commandline string.
      *
-     * Tip: Consider using injected process manager instead of this method. @see \Drush\Drush::drush().
+     * Tip: Consider using injected process manager instead of this method.
      *
      * @param string $command The commandline string to run
      * @param string|null $cwd     The working directory or null to use the working dir of the current PHP process
      * @param array|null $env     The environment variables or null to use the same environment as the current PHP process
      * @param mixed|null $input   The input as stream resource, scalar or \Traversable, or null for no input
      * @param int|float|null $timeout The timeout in seconds or null to disable
+     *
+     * @return
+     *   A wrapper around Symfony Process.
      */
     public static function shell($command, $cwd = null, array $env = null, $input = null, $timeout = 60): Process
     {
@@ -367,7 +364,7 @@ class Drush
     /**
      * Return 'true' if we are in simulated mode
      *
-     * @deprecated Inject configuration and use $this->getConfig()->simulate().
+     * @internal Commands should use $this->getConfig()->simulate().
      */
     public static function simulate()
     {
