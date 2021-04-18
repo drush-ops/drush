@@ -217,7 +217,7 @@ implementing the actual logic.</p></p>        </div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    static&nbsp;<abbr title="League\Container\ContainerInterface">ContainerInterface</abbr>|null
+                    static&nbsp;<abbr title="Drush\League\Container\ContainerInterface">ContainerInterface</abbr>|null
                 </div>
                 <div class="col-md-8 type">
                     <a href="#method_getContainer">getContainer</a>()
@@ -257,7 +257,7 @@ implementing the actual logic.</p></p>        </div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    static&nbsp;mixed
+                    static&nbsp;
                 </div>
                 <div class="col-md-8 type">
                     <a href="#method_service">service</a>(string $id)
@@ -291,7 +291,7 @@ implementing the actual logic.</p></p>        </div>
                 </div>
                 <div class="col-md-8 type">
                     <a href="#method_logger">logger</a>()
-        <small><span class="label label-danger">deprecated</span></small>
+        
                                             <p><p>Return the Drush logger object.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
@@ -301,7 +301,7 @@ implementing the actual logic.</p></p>        </div>
                 </div>
                 <div class="col-md-8 type">
                     <a href="#method_config">config</a>()
-        <small><span class="label label-danger">deprecated</span></small>
+        
                                             <p><p>Return the configuration object</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
@@ -311,18 +311,18 @@ implementing the actual logic.</p></p>        </div>
                 </div>
                 <div class="col-md-8 type">
                     <a href="#method_aliasManager">aliasManager</a>()
-        <small><span class="label label-danger">deprecated</span></small>
+        
                                             <p class="no-description">No description</p>
                                     </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    static&nbsp;<abbr title="Drush\ProcessManager">ProcessManager</abbr>
+                    static&nbsp;<a href="../Drush/SiteAlias/ProcessManager.html"><abbr title="Drush\SiteAlias\ProcessManager">ProcessManager</abbr></a>
                 </div>
                 <div class="col-md-8 type">
                     <a href="#method_processManager">processManager</a>()
-        <small><span class="label label-danger">deprecated</span></small>
+        
                                             <p class="no-description">No description</p>
                                     </div>
                 <div class="col-md-2"></div>
@@ -364,7 +364,7 @@ implementing the actual logic.</p></p>        </div>
                 <div class="col-md-8 type">
                     <a href="#method_siteProcess">siteProcess</a>(<abbr title="Consolidation\SiteAlias\SiteAliasInterface">SiteAliasInterface</abbr> $siteAlias, array $args = [], array $options = [], array $options_double_dash = [])
         
-                                            <p><p>Run a bash fragment on a site alias. U</p></p>                </div>
+                                            <p><p>Run a bash fragment on a site alias.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -372,7 +372,7 @@ implementing the actual logic.</p></p>        </div>
                     static&nbsp;<abbr title="Consolidation\SiteProcess\ProcessBase">ProcessBase</abbr>
                 </div>
                 <div class="col-md-8 type">
-                    <a href="#method_process">process</a>(string|array $commandline, string|null $cwd = null, array $env = null, mixed|null $input = null, int|float|null $timeout = 60)
+                    <a href="#method_process">process</a>(string|array $commandline, string|null $cwd = null, array|null $env = null, mixed|null $input = null, int|float|null $timeout = 60)
         
                                             <p><p>Run a bash fragment locally.</p></p>                </div>
                 <div class="col-md-2"></div>
@@ -419,7 +419,7 @@ implementing the actual logic.</p></p>        </div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    static&nbsp;
+                    static&nbsp;bool
                 </div>
                 <div class="col-md-8 type">
                     <a href="#method_verbose">verbose</a>()
@@ -429,7 +429,7 @@ implementing the actual logic.</p></p>        </div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    static&nbsp;
+                    static&nbsp;bool
                 </div>
                 <div class="col-md-8 type">
                     <a href="#method_debug">debug</a>()
@@ -637,8 +637,8 @@ Do not log, etc. here.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_getContainer">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drush.php#L139">at line 139</a></div>
-        <code>        static            <abbr title="League\Container\ContainerInterface">ContainerInterface</abbr>|null
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drush.php#L137">at line 137</a></div>
+        <code>        static            <abbr title="Drush\League\Container\ContainerInterface">ContainerInterface</abbr>|null
     <strong>getContainer</strong>()
         </code>
     </h3>
@@ -655,7 +655,7 @@ Do not log, etc. here.</p></p>
 
                     <table class="table table-condensed">
         <tr>
-            <td><abbr title="League\Container\ContainerInterface">ContainerInterface</abbr>|null</td>
+            <td><abbr title="Drush\League\Container\ContainerInterface">ContainerInterface</abbr>|null</td>
             <td></td>
         </tr>
     </table>
@@ -665,7 +665,7 @@ Do not log, etc. here.</p></p>
 
                     <table class="table table-condensed">
                     <tr>
-                <td><abbr title="Drush\RuntimeException">RuntimeException</abbr></td>
+                <td><a target="_blank" rel="noopener" href="https://www.php.net/RuntimeException">RuntimeException</a></td>
                 <td></td>
             </tr>
             </table>
@@ -678,7 +678,7 @@ Do not log, etc. here.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_hasContainer">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drush.php#L152">at line 152</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drush.php#L148">at line 148</a></div>
         <code>        static            bool
     <strong>hasContainer</strong>()
         </code>
@@ -710,7 +710,7 @@ Do not log, etc. here.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_getApplication">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drush.php#L162">at line 162</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drush.php#L156">at line 156</a></div>
         <code>        static            <abbr title="Symfony\Component\Console\Application">Application</abbr>
     <strong>getApplication</strong>()
         </code>
@@ -742,7 +742,7 @@ Do not log, etc. here.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_runner">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drush.php#L172">at line 172</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drush.php#L164">at line 164</a></div>
         <code>        static            <abbr title="Robo\Runner">Runner</abbr>
     <strong>runner</strong>()
         </code>
@@ -774,8 +774,8 @@ Do not log, etc. here.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_service">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drush.php#L193">at line 193</a></div>
-        <code>        static            mixed
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drush.php#L182">at line 182</a></div>
+        <code>        static            
     <strong>service</strong>(string $id)
         </code>
     </h3>
@@ -800,15 +800,6 @@ as they can return useful type hints.</p></p>
             </table>
 
             
-                            <h4>Return Value</h4>
-
-                    <table class="table table-condensed">
-        <tr>
-            <td>mixed</td>
-            <td><p>The specified service.</p></td>
-        </tr>
-    </table>
-
             
             
             
@@ -818,7 +809,7 @@ as they can return useful type hints.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_hasService">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drush.php#L207">at line 207</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drush.php#L193">at line 193</a></div>
         <code>        static            bool
     <strong>hasService</strong>(string $id)
         </code>
@@ -847,7 +838,7 @@ as they can return useful type hints.</p></p>
                     <table class="table table-condensed">
         <tr>
             <td>bool</td>
-            <td><p>TRUE if the specified service exists, FALSE otherwise.</p></td>
+            <td></td>
         </tr>
     </table>
 
@@ -860,7 +851,7 @@ as they can return useful type hints.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_commandFactory">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drush.php#L218">at line 218</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drush.php#L202">at line 202</a></div>
         <code>        static            <abbr title="Consolidation\AnnotatedCommand\AnnotatedCommandFactory">AnnotatedCommandFactory</abbr>
     <strong>commandFactory</strong>()
         </code>
@@ -892,21 +883,21 @@ as they can return useful type hints.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_logger">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drush.php#L230">at line 230</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drush.php#L212">at line 212</a></div>
         <code>        static            <abbr title="Psr\Log\LoggerInterface">LoggerInterface</abbr>
     <strong>logger</strong>()
-        <small><span class="label label-danger">deprecated</span></small></code>
+        </code>
     </h3>
     <div class="details">    
-            <p>
-                <small><span class="label label-danger">deprecated</span></small>
-                            <tr>
-                    <td>Use</td>
-                    <td>injected logger instead.</td>
-                </tr>
-                    </p>
     
-            
+                            <table>
+            <tr>
+                <td><span class="label label-warning">internal</span></td>
+                <td>&nbsp;Commands should use $this->logger() instead.</td>
+            </tr>
+        </table>
+                &nbsp;
+    
 
         <div class="method-description">
                             <p><p>Return the Drush logger object.</p></p>                        
@@ -931,21 +922,21 @@ as they can return useful type hints.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_config">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drush.php#L242">at line 242</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drush.php#L222">at line 222</a></div>
         <code>        static            <a href="../Drush/Config/DrushConfig.html"><abbr title="Drush\Config\DrushConfig">DrushConfig</abbr></a>
     <strong>config</strong>()
-        <small><span class="label label-danger">deprecated</span></small></code>
+        </code>
     </h3>
     <div class="details">    
-            <p>
-                <small><span class="label label-danger">deprecated</span></small>
-                            <tr>
-                    <td>Use</td>
-                    <td>injected configuration instead.</td>
-                </tr>
-                    </p>
     
-            
+                            <table>
+            <tr>
+                <td><span class="label label-warning">internal</span></td>
+                <td>&nbsp;Commands should use $this->config() instead.</td>
+            </tr>
+        </table>
+                &nbsp;
+    
 
         <div class="method-description">
                             <p><p>Return the configuration object</p></p>                        
@@ -970,21 +961,21 @@ as they can return useful type hints.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_aliasManager">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drush.php#L252">at line 252</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drush.php#L230">at line 230</a></div>
         <code>        static            <abbr title="Consolidation\SiteAlias\SiteAliasManager">SiteAliasManager</abbr>
     <strong>aliasManager</strong>()
-        <small><span class="label label-danger">deprecated</span></small></code>
+        </code>
     </h3>
     <div class="details">    
-            <p>
-                <small><span class="label label-danger">deprecated</span></small>
-                            <tr>
-                    <td>Use</td>
-                    <td>injected alias manager instead. @see Drush::drush()</td>
-                </tr>
-                    </p>
     
-            
+                            <table>
+            <tr>
+                <td><span class="label label-warning">internal</span></td>
+                <td>&nbsp;Commands should use $this->siteAliasManager() instead.</td>
+            </tr>
+        </table>
+                &nbsp;
+    
 
         <div class="method-description">
                             <p class="no-description">No description</p>
@@ -1010,21 +1001,21 @@ as they can return useful type hints.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_processManager">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drush.php#L262">at line 262</a></div>
-        <code>        static            <abbr title="Drush\ProcessManager">ProcessManager</abbr>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drush.php#L238">at line 238</a></div>
+        <code>        static            <a href="../Drush/SiteAlias/ProcessManager.html"><abbr title="Drush\SiteAlias\ProcessManager">ProcessManager</abbr></a>
     <strong>processManager</strong>()
-        <small><span class="label label-danger">deprecated</span></small></code>
+        </code>
     </h3>
     <div class="details">    
-            <p>
-                <small><span class="label label-danger">deprecated</span></small>
-                            <tr>
-                    <td>Use</td>
-                    <td>injected process manager instead. @see Drush::drush()</td>
-                </tr>
-                    </p>
     
-            
+                            <table>
+            <tr>
+                <td><span class="label label-warning">internal</span></td>
+                <td>&nbsp;Commands should use $this->processManager() instead.</td>
+            </tr>
+        </table>
+                &nbsp;
+    
 
         <div class="method-description">
                             <p class="no-description">No description</p>
@@ -1036,7 +1027,7 @@ as they can return useful type hints.</p></p>
 
                     <table class="table table-condensed">
         <tr>
-            <td><abbr title="Drush\ProcessManager">ProcessManager</abbr></td>
+            <td><a href="../Drush/SiteAlias/ProcessManager.html"><abbr title="Drush\SiteAlias\ProcessManager">ProcessManager</abbr></a></td>
             <td></td>
         </tr>
     </table>
@@ -1050,7 +1041,7 @@ as they can return useful type hints.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_input">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drush.php#L272">at line 272</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drush.php#L246">at line 246</a></div>
         <code>        static            <abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr>
     <strong>input</strong>()
         </code>
@@ -1082,7 +1073,7 @@ as they can return useful type hints.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_output">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drush.php#L282">at line 282</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drush.php#L254">at line 254</a></div>
         <code>        static            <abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr>
     <strong>output</strong>()
         </code>
@@ -1114,7 +1105,7 @@ as they can return useful type hints.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_drush">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drush.php#L346">at line 346</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drush.php#L312">at line 312</a></div>
         <code>        static            <abbr title="Consolidation\SiteProcess\SiteProcess">SiteProcess</abbr>
     <strong>drush</strong>(<abbr title="Consolidation\SiteAlias\SiteAliasInterface">SiteAliasInterface</abbr> $siteAlias, string $command, array $args = [], array $options = [], array $options_double_dash = [])
         </code>
@@ -1124,29 +1115,30 @@ as they can return useful type hints.</p></p>
             
 
         <div class="method-description">
-                            <p><p>Run a Drush command on a site alias (or @self).</p></p>                <p><p>Tip: Use injected process manager instead of this method. See below.</p>
+                            <p><p>Run a Drush command on a site alias (or @self).</p></p>                <p><p>Tip: Use injected processManager() instead of this method. See below.</p>
 <p>A class should use ProcessManagerAwareInterface / ProcessManagerAwareTrait
 in order to have the Process Manager injected by Drush's DI container.
-For example:</p>
-<pre><code>use Consolidation\SiteProcess\ProcessManagerAwareTrait;
-use Consolidation\SiteProcess\ProcessManagerAwareInterface;
-
-abstract class DrushCommands implements ProcessManagerAwareInterface ...
+For example:
+<code>
+use Consolidation\SiteProcess\ProcessManagerAwareTrait;
+use Consolidation\SiteProcess\ProcessManagerAwareInterface;</p>
+<pre><code>abstract class DrushCommands implements ProcessManagerAwareInterface ...
 {
     use ProcessManagerAwareTrait;
 }</code></pre>
-<p>Since DrushCommands already uses ProcessManagerAwareTrait, all Drush
+<p></code>
+Since DrushCommands already uses ProcessManagerAwareTrait, all Drush
 commands may use the process manager to call other Drush commands.
 Other classes will need to ensure that the process manager is injected
 as shown above.</p>
 <p>Note, however, that an alias record is required to use the <code>drush</code> method.
 The alias manager will provide an alias record, but the alias manager is
 not injected by default into Drush commands. In order to use it, it is
-necessary to use SiteAliasManagerAwareTrait:</p>
-<pre><code>use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
-use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
-
-class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAwareInterface
+necessary to use SiteAliasManagerAwareTrait:
+<code>
+use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
+use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;</p>
+<pre><code>class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAwareInterface
 {
     use SiteAliasManagerAwareTrait;
 
@@ -1159,7 +1151,8 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
         $process-&gt;mustRun();
     }
 }</code></pre>
-<p>Objects that are fetched from the DI container, or any Drush command will
+<p></code>
+Objects that are fetched from the DI container, or any Drush command will
 automatically be given a reference to the alias manager if SiteAliasManagerAwareTrait
 is used. Other objects will need to be manually provided with a reference
 to the alias manager once it is created (call $obj-&gt;setAliasManager($aliasManager);).</p>
@@ -1216,7 +1209,7 @@ manager may use Drush::aliasManager().</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_siteProcess">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drush.php#L363">at line 363</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drush.php#L324">at line 324</a></div>
         <code>        static            <abbr title="Consolidation\SiteProcess\ProcessBase">ProcessBase</abbr>
     <strong>siteProcess</strong>(<abbr title="Consolidation\SiteAlias\SiteAliasInterface">SiteAliasInterface</abbr> $siteAlias, array $args = [], array $options = [], array $options_double_dash = [])
         </code>
@@ -1226,8 +1219,8 @@ manager may use Drush::aliasManager().</p></p>
             
 
         <div class="method-description">
-                            <p><p>Run a bash fragment on a site alias. U</p></p>                <p><p>Use Drush::drush() instead of this method when calling Drush.
-Tip: Consider using injected process manager instead of this method. see \Drush\Drush::drush().</p></p>        
+                            <p><p>Run a bash fragment on a site alias.</p></p>                <p><p>Use Drush::drush() instead of this method when calling Drush.</p>
+<p>Tip: Consider using injected process manager instead of this method. see \Drush\Drush::drush().</p></p>        
         </div>
         <div class="tags">
                             <h4>Parameters</h4>
@@ -1274,9 +1267,9 @@ Tip: Consider using injected process manager instead of this method. see \Drush\
             </div>
                     <div class="method-item">
                     <h3 id="method_process">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drush.php#L386">at line 386</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drush.php#L346">at line 346</a></div>
         <code>        static            <abbr title="Consolidation\SiteProcess\ProcessBase">ProcessBase</abbr>
-    <strong>process</strong>(string|array $commandline, string|null $cwd = null, array $env = null, mixed|null $input = null, int|float|null $timeout = 60)
+    <strong>process</strong>(string|array $commandline, string|null $cwd = null, array|null $env = null, mixed|null $input = null, int|float|null $timeout = 60)
         </code>
     </h3>
     <div class="details">    
@@ -1303,7 +1296,7 @@ Call this method to get a Process and then call setters as needed.</p>
                 <td><p>The working directory or null to use the working dir of the current PHP process</p></td>
             </tr>
                     <tr>
-                <td>array</td>
+                <td>array|null</td>
                 <td>$env</td>
                 <td><p>The environment variables or null to use the same environment as the current PHP process</p></td>
             </tr>
@@ -1338,7 +1331,7 @@ Call this method to get a Process and then call setters as needed.</p>
             </div>
                     <div class="method-item">
                     <h3 id="method_shell">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drush.php#L403">at line 403</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drush.php#L362">at line 362</a></div>
         <code>        static            <abbr title="Symfony\Component\Process\Process">Process</abbr>
     <strong>shell</strong>(string $command, string|null $cwd = null, array $env = null, mixed|null $input = null, int|float|null $timeout = 60)
         </code>
@@ -1400,7 +1393,7 @@ Call this method to get a Process and then call setters as needed.</p>
             </div>
                     <div class="method-item">
                     <h3 id="method_simulate">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drush.php#L413">at line 413</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drush.php#L372">at line 372</a></div>
         <code>        static            
     <strong>simulate</strong>()
         <small><span class="label label-danger">deprecated</span></small></code>
@@ -1430,7 +1423,7 @@ Call this method to get a Process and then call setters as needed.</p>
             </div>
                     <div class="method-item">
                     <h3 id="method_affirmative">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drush.php#L421">at line 421</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drush.php#L380">at line 380</a></div>
         <code>        static            
     <strong>affirmative</strong>()
         </code>
@@ -1453,7 +1446,7 @@ Call this method to get a Process and then call setters as needed.</p>
             </div>
                     <div class="method-item">
                     <h3 id="method_negative">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drush.php#L432">at line 432</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drush.php#L391">at line 391</a></div>
         <code>        static            
     <strong>negative</strong>()
         </code>
@@ -1476,8 +1469,8 @@ Call this method to get a Process and then call setters as needed.</p>
             </div>
                     <div class="method-item">
                     <h3 id="method_verbose">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drush.php#L443">at line 443</a></div>
-        <code>        static            
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drush.php#L402">at line 402</a></div>
+        <code>        static            bool
     <strong>verbose</strong>()
         </code>
     </h3>
@@ -1490,6 +1483,15 @@ Call this method to get a Process and then call setters as needed.</p>
         </div>
         <div class="tags">
             
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>bool</td>
+            <td></td>
+        </tr>
+    </table>
+
             
             
             
@@ -1499,8 +1501,8 @@ Call this method to get a Process and then call setters as needed.</p>
             </div>
                     <div class="method-item">
                     <h3 id="method_debug">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drush.php#L454">at line 454</a></div>
-        <code>        static            
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drush.php#L413">at line 413</a></div>
+        <code>        static            bool
     <strong>debug</strong>()
         </code>
     </h3>
@@ -1513,6 +1515,15 @@ Call this method to get a Process and then call setters as needed.</p>
         </div>
         <div class="tags">
             
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>bool</td>
+            <td></td>
+        </tr>
+    </table>
+
             
             
             
@@ -1522,7 +1533,7 @@ Call this method to get a Process and then call setters as needed.</p>
             </div>
                     <div class="method-item">
                     <h3 id="method_bootstrapManager">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drush.php#L467">at line 467</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drush.php#L424">at line 424</a></div>
         <code>        static            <a href="../Drush/Boot/BootstrapManager.html"><abbr title="Drush\Boot\BootstrapManager">BootstrapManager</abbr></a>
     <strong>bootstrapManager</strong>()
         </code>
@@ -1554,7 +1565,7 @@ Call this method to get a Process and then call setters as needed.</p>
             </div>
                     <div class="method-item">
                     <h3 id="method_bootstrap">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drush.php#L477">at line 477</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drush.php#L432">at line 432</a></div>
         <code>        static            <a href="../Drush/Boot/Boot.html"><abbr title="Drush\Boot\Boot">Boot</abbr></a>
     <strong>bootstrap</strong>()
         </code>
@@ -1586,7 +1597,7 @@ Call this method to get a Process and then call setters as needed.</p>
             </div>
                     <div class="method-item">
                     <h3 id="method_redispatchOptions">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drush.php#L482">at line 482</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drush.php#L437">at line 437</a></div>
         <code>        static            
     <strong>redispatchOptions</strong>($input = null)
         </code>

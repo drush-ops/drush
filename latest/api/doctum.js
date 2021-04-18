@@ -979,7 +979,7 @@
                                                 {"type":"Class","fromName":"Drush\\Drupal","fromLink":"Drush/Drupal.html","link":"Drush/Drupal/UpdateKernel.html","name":"Drush\\Drupal\\UpdateKernel","doc":"<p>Overridden version of UpdateKernel adapted to the needs of Drush.</p>"},
                 
                                                 {"type":"Class","fromName":"Drush","fromLink":"Drush.html","link":"Drush/Drush.html","name":"Drush\\Drush","doc":"<p>Static Service Container wrapper.</p>"},
-                                {"type":"Method","fromName":"Drush\\Drush","fromLink":"Drush/Drush.html","link":"Drush/Drush.html#method_getTimeout","name":"Drush\\Drush::getTimeout","doc":""},
+                                {"type":"Method","fromName":"Drush\\Drush","fromLink":"Drush/Drush.html","link":"Drush/Drush.html#method_getTimeout","name":"Drush\\Drush::getTimeout","doc":null},
         {"type":"Method","fromName":"Drush\\Drush","fromLink":"Drush/Drush.html","link":"Drush/Drush.html#method_getVersion","name":"Drush\\Drush::getVersion","doc":"<p>Return the current Drush version.</p>"},
         {"type":"Method","fromName":"Drush\\Drush","fromLink":"Drush/Drush.html","link":"Drush/Drush.html#method_getMajorVersion","name":"Drush\\Drush::getMajorVersion","doc":null},
         {"type":"Method","fromName":"Drush\\Drush","fromLink":"Drush/Drush.html","link":"Drush/Drush.html#method_getMinorVersion","name":"Drush\\Drush::getMinorVersion","doc":null},
@@ -999,7 +999,7 @@
         {"type":"Method","fromName":"Drush\\Drush","fromLink":"Drush/Drush.html","link":"Drush/Drush.html#method_input","name":"Drush\\Drush::input","doc":"<p>Return the input object</p>"},
         {"type":"Method","fromName":"Drush\\Drush","fromLink":"Drush/Drush.html","link":"Drush/Drush.html#method_output","name":"Drush\\Drush::output","doc":"<p>Return the output object</p>"},
         {"type":"Method","fromName":"Drush\\Drush","fromLink":"Drush/Drush.html","link":"Drush/Drush.html#method_drush","name":"Drush\\Drush::drush","doc":"<p>Run a Drush command on a site alias (or @self).</p>"},
-        {"type":"Method","fromName":"Drush\\Drush","fromLink":"Drush/Drush.html","link":"Drush/Drush.html#method_siteProcess","name":"Drush\\Drush::siteProcess","doc":"<p>Run a bash fragment on a site alias. U</p>"},
+        {"type":"Method","fromName":"Drush\\Drush","fromLink":"Drush/Drush.html","link":"Drush/Drush.html#method_siteProcess","name":"Drush\\Drush::siteProcess","doc":"<p>Run a bash fragment on a site alias.</p>"},
         {"type":"Method","fromName":"Drush\\Drush","fromLink":"Drush/Drush.html","link":"Drush/Drush.html#method_process","name":"Drush\\Drush::process","doc":"<p>Run a bash fragment locally.</p>"},
         {"type":"Method","fromName":"Drush\\Drush","fromLink":"Drush/Drush.html","link":"Drush/Drush.html#method_shell","name":"Drush\\Drush::shell","doc":"<p>Create a Process instance from a commandline string.</p>"},
         {"type":"Method","fromName":"Drush\\Drush","fromLink":"Drush/Drush.html","link":"Drush/Drush.html#method_simulate","name":"Drush\\Drush::simulate","doc":"<p>Return 'true' if we are in simulated mode</p>"},
