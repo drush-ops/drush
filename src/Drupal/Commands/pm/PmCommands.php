@@ -150,8 +150,8 @@ class PmCommands extends DrushCommands
         }
 
         if ($error) {
-            // Allow the user to bypass the install requirements.
-            if (!$this->io()->confirm(dt('The module install requirements failed. Do you wish to continue?'), false)) {
+            // Let the user confirm the installation if the requirements are unmet.
+            if (!$this->io()->confirm(dt('The module install requirements failed. Do you wish to continue?'))) {
                 throw new UserAbortException();
             }
         }
