@@ -1358,6 +1358,8 @@ loading drush.yml and drush10.yml, etc.</p></dd><dt><a href="Drush/Config/Enviro
 <abbr title="Drush\Drupal\Commands\pm\PmCommands">PmCommands</abbr>::getConfigFactory</a>() &mdash; <em>Method in class <a href="Drush/Drupal/Commands/pm/PmCommands.html"><abbr title="Drush\Drupal\Commands\pm\PmCommands">PmCommands</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Drupal/Commands/pm/PmCommands.html#method_getModuleInstaller">
 <abbr title="Drush\Drupal\Commands\pm\PmCommands">PmCommands</abbr>::getModuleInstaller</a>() &mdash; <em>Method in class <a href="Drush/Drupal/Commands/pm/PmCommands.html"><abbr title="Drush\Drupal\Commands\pm\PmCommands">PmCommands</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/Drupal/Commands/pm/PmCommands.html#method_getModuleHandler">
+<abbr title="Drush\Drupal\Commands\pm\PmCommands">PmCommands</abbr>::getModuleHandler</a>() &mdash; <em>Method in class <a href="Drush/Drupal/Commands/pm/PmCommands.html"><abbr title="Drush\Drupal\Commands\pm\PmCommands">PmCommands</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Drupal/Commands/pm/PmCommands.html#method_getThemeHandler">
 <abbr title="Drush\Drupal\Commands\pm\PmCommands">PmCommands</abbr>::getThemeHandler</a>() &mdash; <em>Method in class <a href="Drush/Drupal/Commands/pm/PmCommands.html"><abbr title="Drush\Drupal\Commands\pm\PmCommands">PmCommands</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Drupal/Commands/pm/PmCommands.html#method_getExtensionListModule">
@@ -1876,6 +1878,8 @@ extra options are provided.</p></dd>        </dl><h2 id="letterM">M</h2>
 <abbr title="Drush\Drupal\Commands\core\WatchdogCommands">WatchdogCommands</abbr>::messageTypes</a>() &mdash; <em>Method in class <a href="Drush/Drupal/Commands/core/WatchdogCommands.html"><abbr title="Drush\Drupal\Commands\core\WatchdogCommands">WatchdogCommands</abbr></a></em></dt>
                     <dd><p>Helper function to obtain the message types based on drupal version.</p></dd><dt>$<a href="Drush/Drupal/Commands/pm/PmCommands.html#property_moduleInstaller">
 <abbr title="Drush\Drupal\Commands\pm\PmCommands">PmCommands</abbr>#moduleInstaller</a> &mdash; <em>Property in class <a href="Drush/Drupal/Commands/pm/PmCommands.html"><abbr title="Drush\Drupal\Commands\pm\PmCommands">PmCommands</abbr></a></em></dt>
+                    <dd></dd><dt>$<a href="Drush/Drupal/Commands/pm/PmCommands.html#property_moduleHandler">
+<abbr title="Drush\Drupal\Commands\pm\PmCommands">PmCommands</abbr>#moduleHandler</a> &mdash; <em>Property in class <a href="Drush/Drupal/Commands/pm/PmCommands.html"><abbr title="Drush\Drupal\Commands\pm\PmCommands">PmCommands</abbr></a></em></dt>
                     <dd></dd><dt>$<a href="Drush/Drupal/Commands/sql/SanitizeCommentsCommands.html#property_moduleHandler">
 <abbr title="Drush\Drupal\Commands\sql\SanitizeCommentsCommands">SanitizeCommentsCommands</abbr>#moduleHandler</a> &mdash; <em>Property in class <a href="Drush/Drupal/Commands/sql/SanitizeCommentsCommands.html"><abbr title="Drush\Drupal\Commands\sql\SanitizeCommentsCommands">SanitizeCommentsCommands</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Drupal/Commands/sql/SanitizeCommentsCommands.html#method_messages">
@@ -2859,7 +2863,9 @@ need to know that their module is enabled (e.g. image-flush).</p></dd><dt><a hre
                     <dd><p>Validate that queue permission exists.</p></dd><dt><a href="Drush/Drupal/Commands/core/ViewsCommands.html"><abbr title="Drush\Drupal\Commands\core\ViewsCommands">ViewsCommands</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Drupal/Commands/core.html">Drush\Drupal\Commands\core</a></em></dt>
                     <dd></dd><dt><a href="Drush/Drupal/Commands/core/ViewsCommands.html#method_vlist">
 <abbr title="Drush\Drupal\Commands\core\ViewsCommands">ViewsCommands</abbr>::vlist</a>() &mdash; <em>Method in class <a href="Drush/Drupal/Commands/core/ViewsCommands.html"><abbr title="Drush\Drupal\Commands\core\ViewsCommands">ViewsCommands</abbr></a></em></dt>
-                    <dd><p>Get a list of all views in the system.</p></dd><dt><a href="Drush/Drupal/Commands/pm/PmCommands.html#method_validateUninstall">
+                    <dd><p>Get a list of all views in the system.</p></dd><dt><a href="Drush/Drupal/Commands/pm/PmCommands.html#method_validateEnableModules">
+<abbr title="Drush\Drupal\Commands\pm\PmCommands">PmCommands</abbr>::validateEnableModules</a>() &mdash; <em>Method in class <a href="Drush/Drupal/Commands/pm/PmCommands.html"><abbr title="Drush\Drupal\Commands\pm\PmCommands">PmCommands</abbr></a></em></dt>
+                    <dd><p>Run requirements checks on the module installation.</p></dd><dt><a href="Drush/Drupal/Commands/pm/PmCommands.html#method_validateUninstall">
 <abbr title="Drush\Drupal\Commands\pm\PmCommands">PmCommands</abbr>::validateUninstall</a>() &mdash; <em>Method in class <a href="Drush/Drupal/Commands/pm/PmCommands.html"><abbr title="Drush\Drupal\Commands\pm\PmCommands">PmCommands</abbr></a></em></dt>
                     <dd></dd><dt>$<a href="Drush/Drush.html#property_version">
 <abbr title="Drush\Drush">Drush</abbr>#version</a> &mdash; <em>Property in class <a href="Drush/Drush.html"><abbr title="Drush\Drush">Drush</abbr></a></em></dt>

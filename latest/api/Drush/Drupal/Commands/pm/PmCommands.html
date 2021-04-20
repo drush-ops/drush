@@ -194,6 +194,15 @@
                 <td></td>
             </tr>
                     <tr>
+                <td class="type" id="property_moduleHandler">
+                                        protected                                        
+                                                                                
+                                    </td>
+                <td>$moduleHandler</td>
+                <td class="last"></td>
+                <td></td>
+            </tr>
+                    <tr>
                 <td class="type" id="property_themeHandler">
                                         protected                                        
                                                                                 
@@ -234,7 +243,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>                </
                     
                 </div>
                 <div class="col-md-8 type">
-                    <a href="#method___construct">__construct</a>(<abbr title="Drupal\Core\Config\ConfigFactoryInterface">ConfigFactoryInterface</abbr> $configFactory, <abbr title="Drupal\Core\Extension\ModuleInstallerInterface">ModuleInstallerInterface</abbr> $moduleInstaller, <abbr title="Drupal\Core\Extension\ThemeHandlerInterface">ThemeHandlerInterface</abbr> $themeHandler, <abbr title="Drupal\Core\Extension\ModuleExtensionList">ModuleExtensionList</abbr> $extensionListModule)
+                    <a href="#method___construct">__construct</a>(<abbr title="Drupal\Core\Config\ConfigFactoryInterface">ConfigFactoryInterface</abbr> $configFactory, <abbr title="Drupal\Core\Extension\ModuleInstallerInterface">ModuleInstallerInterface</abbr> $moduleInstaller, <abbr title="Drupal\Core\Extension\ModuleHandlerInterface">ModuleHandlerInterface</abbr> $moduleHandler, <abbr title="Drupal\Core\Extension\ThemeHandlerInterface">ThemeHandlerInterface</abbr> $themeHandler, <abbr title="Drupal\Core\Extension\ModuleExtensionList">ModuleExtensionList</abbr> $extensionListModule)
         
                                             <p class="no-description">No description</p>
                                     </div>
@@ -330,6 +339,17 @@ DrushConfig as return type. Helps with IDE completion.</p></p>                </
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
+                    <abbr title="Drupal\Core\Extension\ModuleHandlerInterface">ModuleHandlerInterface</abbr>
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_getModuleHandler">getModuleHandler</a>()
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
                     <abbr title="Drupal\Core\Extension\ThemeHandlerInterface">ThemeHandlerInterface</abbr>
                 </div>
                 <div class="col-md-8 type">
@@ -358,6 +378,16 @@ DrushConfig as return type. Helps with IDE completion.</p></p>                </
                     <a href="#method_enable">enable</a>(array $modules)
         
                                             <p><p>Enable one or more modules.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_validateEnableModules">validateEnableModules</a>(<abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr> $commandData)
+        
+                                            <p><p>Run requirements checks on the module installation.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -476,9 +506,9 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method___construct">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Commands/pm/PmCommands.php#L27">at line 27</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Commands/pm/PmCommands.php#L30">at line 30</a></div>
         <code>                    
-    <strong>__construct</strong>(<abbr title="Drupal\Core\Config\ConfigFactoryInterface">ConfigFactoryInterface</abbr> $configFactory, <abbr title="Drupal\Core\Extension\ModuleInstallerInterface">ModuleInstallerInterface</abbr> $moduleInstaller, <abbr title="Drupal\Core\Extension\ThemeHandlerInterface">ThemeHandlerInterface</abbr> $themeHandler, <abbr title="Drupal\Core\Extension\ModuleExtensionList">ModuleExtensionList</abbr> $extensionListModule)
+    <strong>__construct</strong>(<abbr title="Drupal\Core\Config\ConfigFactoryInterface">ConfigFactoryInterface</abbr> $configFactory, <abbr title="Drupal\Core\Extension\ModuleInstallerInterface">ModuleInstallerInterface</abbr> $moduleInstaller, <abbr title="Drupal\Core\Extension\ModuleHandlerInterface">ModuleHandlerInterface</abbr> $moduleHandler, <abbr title="Drupal\Core\Extension\ThemeHandlerInterface">ThemeHandlerInterface</abbr> $themeHandler, <abbr title="Drupal\Core\Extension\ModuleExtensionList">ModuleExtensionList</abbr> $extensionListModule)
         </code>
     </h3>
     <div class="details">    
@@ -501,6 +531,11 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
                     <tr>
                 <td><abbr title="Drupal\Core\Extension\ModuleInstallerInterface">ModuleInstallerInterface</abbr></td>
                 <td>$moduleInstaller</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><abbr title="Drupal\Core\Extension\ModuleHandlerInterface">ModuleHandlerInterface</abbr></td>
+                <td>$moduleHandler</td>
                 <td></td>
             </tr>
                     <tr>
@@ -728,7 +763,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_getConfigFactory">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Commands/pm/PmCommands.php#L39">at line 39</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Commands/pm/PmCommands.php#L43">at line 43</a></div>
         <code>                    <abbr title="Drupal\Core\Config\ConfigFactoryInterface">ConfigFactoryInterface</abbr>
     <strong>getConfigFactory</strong>()
         </code>
@@ -761,7 +796,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_getModuleInstaller">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Commands/pm/PmCommands.php#L47">at line 47</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Commands/pm/PmCommands.php#L51">at line 51</a></div>
         <code>                    <abbr title="Drupal\Core\Extension\ModuleInstallerInterface">ModuleInstallerInterface</abbr>
     <strong>getModuleInstaller</strong>()
         </code>
@@ -793,8 +828,41 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
 
             </div>
                     <div class="method-item">
+                    <h3 id="method_getModuleHandler">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Commands/pm/PmCommands.php#L59">at line 59</a></div>
+        <code>                    <abbr title="Drupal\Core\Extension\ModuleHandlerInterface">ModuleHandlerInterface</abbr>
+    <strong>getModuleHandler</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><abbr title="Drupal\Core\Extension\ModuleHandlerInterface">ModuleHandlerInterface</abbr></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
                     <h3 id="method_getThemeHandler">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Commands/pm/PmCommands.php#L55">at line 55</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Commands/pm/PmCommands.php#L67">at line 67</a></div>
         <code>                    <abbr title="Drupal\Core\Extension\ThemeHandlerInterface">ThemeHandlerInterface</abbr>
     <strong>getThemeHandler</strong>()
         </code>
@@ -827,7 +895,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_getExtensionListModule">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Commands/pm/PmCommands.php#L63">at line 63</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Commands/pm/PmCommands.php#L75">at line 75</a></div>
         <code>                    <abbr title="Drupal\Core\Extension\ModuleExtensionList">ModuleExtensionList</abbr>
     <strong>getExtensionListModule</strong>()
         </code>
@@ -860,7 +928,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_enable">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Commands/pm/PmCommands.php#L75">at line 75</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Commands/pm/PmCommands.php#L88">at line 88</a></div>
         <code>                    
     <strong>enable</strong>(array $modules)
         </code>
@@ -892,8 +960,65 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
 
             </div>
                     <div class="method-item">
+                    <h3 id="method_validateEnableModules">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Commands/pm/PmCommands.php#L122">at line 122</a></div>
+        <code>                    
+    <strong>validateEnableModules</strong>(<abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr> $commandData)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Run requirements checks on the module installation.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr></td>
+                <td>$commandData</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+                            <h4>Exceptions</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><a href="../../../../Drush/Exceptions/UserAbortException.html"><abbr title="Drush\Exceptions\UserAbortException">UserAbortException</abbr></a></td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><abbr title="Drupal\Core\Extension\MissingDependencyException">MissingDependencyException</abbr></td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>See also</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>
+                                            drupal_check_module()
+                                    </td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
                     <h3 id="method_uninstall">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Commands/pm/PmCommands.php#L106">at line 106</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Commands/pm/PmCommands.php#L167">at line 167</a></div>
         <code>                    
     <strong>uninstall</strong>(array $modules)
         </code>
@@ -926,7 +1051,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_validateUninstall">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Commands/pm/PmCommands.php#L125">at line 125</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Commands/pm/PmCommands.php#L186">at line 186</a></div>
         <code>                    
     <strong>validateUninstall</strong>(<abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr> $commandData)
         </code>
@@ -960,7 +1085,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_pmList">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Commands/pm/PmCommands.php#L163">at line 163</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Commands/pm/PmCommands.php#L224">at line 224</a></div>
         <code>                    <abbr title="Consolidation\OutputFormatters\StructuredData\RowsOfFields">RowsOfFields</abbr>
     <strong>pmList</strong>($options = [&#039;format&#039; =&gt; &#039;table&#039;, &#039;type&#039; =&gt; &#039;module,theme&#039;, &#039;status&#039; =&gt; &#039;enabled,disabled&#039;, &#039;package&#039; =&gt; self::REQ, &#039;core&#039; =&gt; false, &#039;no-core&#039; =&gt; false])
         </code>
@@ -1002,7 +1127,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_extensionStatus">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Commands/pm/PmCommands.php#L244">at line 244</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Commands/pm/PmCommands.php#L305">at line 305</a></div>
         <code>                    string
     <strong>extensionStatus</strong>($extension)
         </code>
@@ -1044,7 +1169,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_addInstallDependencies">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Commands/pm/PmCommands.php#L249">at line 249</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Commands/pm/PmCommands.php#L310">at line 310</a></div>
         <code>                    
     <strong>addInstallDependencies</strong>($modules)
         </code>
@@ -1078,7 +1203,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_addUninstallDependencies">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Commands/pm/PmCommands.php#L282">at line 282</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Commands/pm/PmCommands.php#L343">at line 343</a></div>
         <code>                    
     <strong>addUninstallDependencies</strong>($modules)
         </code>
