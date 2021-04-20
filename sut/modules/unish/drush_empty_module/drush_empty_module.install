@@ -6,6 +6,28 @@
  */
 
 /**
+ * Implements hook_requirements().
+ */
+function drush_empty_module_requirements($phase) {
+  $requirements = [];
+  if (($phase === 'install') && getenv('UNISH_FAIL_INSTALL_REQUIREMENTS') === 'drush_empty_module') {
+    // Fail only if the environment variable is set to a specific value.
+    $requirements['drush_empty_module'] = [
+      'title' => t('Drush empty module: installation failure'),
+      'description' => t('Primary install requirements not met.'),
+      'severity' => REQUIREMENT_ERROR,
+    ];
+    $requirements['drush_empty_module_secondary'] = [
+      'title' => t('Drush empty module: installation failure'),
+      'description' => t('Secondary install requirements not met.'),
+      'severity' => REQUIREMENT_ERROR,
+    ];
+  }
+
+  return $requirements;
+}
+
+/**
  * Fake update hook.
  */
 function drush_empty_module_update_8001() {
