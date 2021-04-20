@@ -6,6 +6,7 @@ use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Extension\MissingDependencyException;
 use Drupal\Core\Extension\ModuleExtensionList;
+use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Extension\ModuleInstallerInterface;
 use Drupal\Core\Extension\ThemeHandlerInterface;
 use Drush\Commands\DrushCommands;
@@ -20,15 +21,18 @@ class PmCommands extends DrushCommands
 
     protected $moduleInstaller;
 
+    protected $moduleHandler;
+
     protected $themeHandler;
 
     protected $extensionListModule;
 
-    public function __construct(ConfigFactoryInterface $configFactory, ModuleInstallerInterface $moduleInstaller, ThemeHandlerInterface $themeHandler, ModuleExtensionList $extensionListModule)
+    public function __construct(ConfigFactoryInterface $configFactory, ModuleInstallerInterface $moduleInstaller, ModuleHandlerInterface $moduleHandler, ThemeHandlerInterface $themeHandler, ModuleExtensionList $extensionListModule)
     {
         parent::__construct();
         $this->configFactory = $configFactory;
         $this->moduleInstaller = $moduleInstaller;
+        $this->moduleHandler = $moduleHandler;
         $this->themeHandler = $themeHandler;
         $this->extensionListModule = $extensionListModule;
     }
@@ -47,6 +51,14 @@ class PmCommands extends DrushCommands
     public function getModuleInstaller()
     {
         return $this->moduleInstaller;
+    }
+
+    /**
+     * @return \Drupal\Core\Extension\ModuleHandlerInterface
+     */
+    public function getModuleHandler()
+    {
+        return $this->moduleHandler;
     }
 
     /**
@@ -71,7 +83,6 @@ class PmCommands extends DrushCommands
      * @command pm:enable
      * @param $modules A comma delimited list of modules.
      * @aliases en,pm-enable
-     * @bootstrap full
      */
     public function enable(array $modules)
     {
@@ -282,27 +293,35 @@ class PmCommands extends DrushCommands
         return $todo;
     }
 
+    /**
+     * Run requirements checks on the modules.
+     *
+     * @param array $modules
+     *   List of modules to validate.
+     *
+     * @throws \Exception
+     *
+     * @see \drupal_check_module()
+     */
     public function validateInstallModules(array $modules)
     {
-        // Run requirements checks on each module.
-        // @see \drupal_check_module()
         require_once DRUSH_DRUPAL_CORE . '/includes/install.inc';
         foreach ($modules as $module) {
             module_load_install($module);
-            $requirements = \Drupal::moduleHandler()->invoke($module, 'requirements', ['install']);
+            $requirements = $this->getModuleHandler()->invoke($module, 'requirements', ['install']);
             if (is_array($requirements) && drupal_requirements_severity($requirements) == REQUIREMENT_ERROR) {
                 $reasons = [];
-                // Print any error messages
                 foreach ($requirements as $id => $requirement) {
                     if (isset($requirement['severity']) && $requirement['severity'] == REQUIREMENT_ERROR) {
                         $message = $requirement['description'];
                         if (isset($requirement['value']) && $requirement['value']) {
                             $message = dt('@requirements_message (Currently using @item version @version)', ['@requirements_message' => $requirement['description'], '@item' => $requirement['title'], '@version' => $requirement['value']]);
                         }
-                        $reasons[$id] = "$module: " . (string) $message;
+                        $reasons[$id] = $message;
                     }
                 }
-                throw new \Exception(implode("\n", $reasons));
+
+                throw new \Exception(sprintf("Unable to install module '%s' due to unmet requirement(s):%s", $module, "\n  - " . implode("\n  - ", $reasons)));
             }
         }
     }

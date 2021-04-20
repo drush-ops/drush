@@ -25,6 +25,19 @@ class EnDisUnListInfoCase extends CommandUnishTestCase
         $out = $this->getOutput();
         $this->assertStringContainsString('drush_empty_module', $out);
 
+        // Test that pm-enable does not install a module if the install
+        // requirements are not met.
+        $this->drush('pm-enable', ['drush_empty_module'], [], null, null, self::EXIT_ERROR, null, [
+          'UNISH_FAIL_INSTALL_REQUIREMENTS' => 'drush_empty_module',
+        ]);
+        $err = $this->getErrorOutput();
+        $this->assertStringContainsString("Unable to install module 'drush_empty_module' due to unmet requirement(s)", $err);
+        $this->assertStringContainsString('Primary install requirements not met.', $err);
+        $this->assertStringContainsString('Secondary install requirements not met.', $err);
+        $this->drush('pm-list', [], ['no-core' => null, 'status' => 'disabled']);
+        $out = $this->getOutput();
+        $this->assertStringContainsString('drush_empty_module', $out);
+
         // Test pm-enable enables a module, and pm-list verifies that.
         $this->drush('pm-enable', ['drush_empty_module']);
         $this->drush('pm-list', [], ['status' => 'enabled']);
