@@ -83,6 +83,7 @@ class PmCommands extends DrushCommands
      * @command pm:enable
      * @param $modules A comma delimited list of modules.
      * @aliases en,pm-enable
+     * @bootstrap root
      */
     public function enable(array $modules)
     {
@@ -99,8 +100,6 @@ class PmCommands extends DrushCommands
             }
         }
 
-        $this->validateInstallModules($todo);
-
         if (!$this->getModuleInstaller()->install($modules, true)) {
             throw new \Exception('Unable to install modules.');
         }
@@ -108,6 +107,54 @@ class PmCommands extends DrushCommands
             drush_backend_batch_process();
         }
         $this->logger()->success(dt('Successfully enabled: !list', $todo_str));
+    }
+
+    /**
+     * Run requirements checks on the module installation.
+     *
+     * @hook validate pm:enable
+     *
+     * @throws \Drush\Exceptions\UserAbortException
+     * @throws \Drupal\Core\Extension\MissingDependencyException
+     *
+     * @see \drupal_check_module()
+     */
+    public function validateEnableModules(CommandData $commandData)
+    {
+        $modules = $commandData->input()->getArgument('modules');
+        $modules = StringUtils::csvToArray($modules);
+        $modules = $this->addInstallDependencies($modules);
+        if (empty($modules)) {
+            return;
+        }
+
+        require_once DRUSH_DRUPAL_CORE . '/includes/install.inc';
+        $error = false;
+        foreach ($modules as $module) {
+            module_load_install($module);
+            $requirements = $this->getModuleHandler()->invoke($module, 'requirements', ['install']);
+            if (is_array($requirements) && drupal_requirements_severity($requirements) == REQUIREMENT_ERROR) {
+                $error = true;
+                $reasons = [];
+                foreach ($requirements as $id => $requirement) {
+                    if (isset($requirement['severity']) && $requirement['severity'] == REQUIREMENT_ERROR) {
+                        $message = $requirement['description'];
+                        if (isset($requirement['value']) && $requirement['value']) {
+                            $message = dt('@requirements_message (Currently using @item version @version)', ['@requirements_message' => $requirement['description'], '@item' => $requirement['title'], '@version' => $requirement['value']]);
+                        }
+                        $reasons[$id] = $message;
+                    }
+                }
+                $this->logger()->error(sprintf("Unable to install module '%s' due to unmet requirement(s):%s", $module, "\n  - " . implode("\n  - ", $reasons)));
+            }
+        }
+
+        if ($error) {
+            // Allow the user to bypass the install requirements.
+            if (!$this->io()->confirm(dt('The module install requirements failed. Do you wish to continue?'), false)) {
+                throw new UserAbortException();
+            }
+        }
     }
 
     /**
@@ -291,39 +338,6 @@ class PmCommands extends DrushCommands
         // Remove already installed modules.
         $todo = array_diff_key($module_list, $installed_modules);
         return $todo;
-    }
-
-    /**
-     * Run requirements checks on the modules.
-     *
-     * @param array $modules
-     *   List of modules to validate.
-     *
-     * @throws \Exception
-     *
-     * @see \drupal_check_module()
-     */
-    public function validateInstallModules(array $modules)
-    {
-        require_once DRUSH_DRUPAL_CORE . '/includes/install.inc';
-        foreach ($modules as $module) {
-            module_load_install($module);
-            $requirements = $this->getModuleHandler()->invoke($module, 'requirements', ['install']);
-            if (is_array($requirements) && drupal_requirements_severity($requirements) == REQUIREMENT_ERROR) {
-                $reasons = [];
-                foreach ($requirements as $id => $requirement) {
-                    if (isset($requirement['severity']) && $requirement['severity'] == REQUIREMENT_ERROR) {
-                        $message = $requirement['description'];
-                        if (isset($requirement['value']) && $requirement['value']) {
-                            $message = dt('@requirements_message (Currently using @item version @version)', ['@requirements_message' => $requirement['description'], '@item' => $requirement['title'], '@version' => $requirement['value']]);
-                        }
-                        $reasons[$id] = $message;
-                    }
-                }
-
-                throw new \Exception(sprintf("Unable to install module '%s' due to unmet requirement(s):%s", $module, "\n  - " . implode("\n  - ", $reasons)));
-            }
-        }
     }
 
     public function addUninstallDependencies($modules)
