@@ -4,6 +4,8 @@ namespace Drush\Drupal\Commands\core;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Drupal\Core\CronInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
+use Drupal\Core\Routing\RouteProviderInterface;
+use Drupal\Core\Url;
 use Drush\Commands\DrushCommands;
 use Drush\Drupal\DrupalUtil;
 use Drush\Utils\StringUtils;
@@ -22,6 +24,11 @@ class DrupalCommands extends DrushCommands
     protected $moduleHandler;
 
     /**
+     * @var \Drupal\Core\Routing\RouteProviderInterface
+     */
+    protected $routeProvider;
+
+    /**
      * @return \Drupal\Core\CronInterface
      */
     public function getCron()
@@ -38,13 +45,23 @@ class DrupalCommands extends DrushCommands
     }
 
     /**
+     * @return \Drupal\Core\Routing\RouteProviderInterface
+     */
+    public function getRouteProvider()
+    {
+        return $this->routeProvider;
+    }
+
+    /**
      * @param \Drupal\Core\CronInterface $cron
      * @param ModuleHandlerInterface $moduleHandler
+     * @param RouteProviderInterface $routeProvider
      */
-    public function __construct(CronInterface $cron, ModuleHandlerInterface $moduleHandler)
+    public function __construct(CronInterface $cron, ModuleHandlerInterface $moduleHandler, RouteProviderInterface $routeProvider)
     {
         $this->cron = $cron;
         $this->moduleHandler = $moduleHandler;
+        $this->routeProvider = $routeProvider;
     }
 
     /**
@@ -129,5 +146,53 @@ class DrupalCommands extends DrushCommands
         }
         $result = new RowsOfFields($rows);
         return $result;
+    }
+
+    /**
+     * View information about all routes or one route.
+     *
+     * @command core:route
+     * @aliases route
+     * @usage drush route
+     *   View all routes.
+     * @usage drush route --name=update.status
+     *   View details about the update.status route.
+     * @usage drush route --path=user/1
+     *   View details about the entity.user.canonical route.
+     * @option name A route name.
+     * @option path An internal path.
+     */
+    public function route($options = ['name' => self::REQ, 'path' =>self::REQ, 'format' => 'yaml'])
+    {
+        $route = $items = null;
+        $provider = $this->getRouteProvider();
+        if ($path = $options['path']) {
+            $name = Url::fromUserInput($path)->getRouteName();
+            $route = $provider->getRouteByName($name);
+        } elseif ($name = $options['name']) {
+            $route = $provider->getRouteByName($name);
+        }
+        if ($route) {
+            $route = $provider->getRouteByName($name);
+            $return = [
+              'name' => $name,
+              'path' => $route->getPath(),
+              'defaults' => $route->getDefaults(),
+              'requirements' => $route->getRequirements(),
+              'options' => $route->getOptions(),
+                // Rarely useful parts are commented out.
+                //  'condition' => $route->getCondition(),
+                //  'methods' => $route->getMethods(),
+            ];
+            unset($return['options']['compiler_class'], $return['options']['utf8']);
+            return $return;
+        }
+
+        // Just show a list of all routes.
+        $routes = $provider->getAllRoutes();
+        foreach ($routes as $route_name => $route) {
+            $items[$route_name] = $route->getPath();
+        }
+        return $items;
     }
 }
