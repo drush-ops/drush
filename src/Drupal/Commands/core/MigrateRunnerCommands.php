@@ -553,15 +553,15 @@ class MigrateRunnerCommands extends DrushCommands
             // work-around, at the cost of more queries in the usual sql id map,
             // which is likely OK for its use, to show only few source ids
             // messages.
-            foreach (MigrateUtils::parseIdList($options['idlist']) as $source_ids_value) {
-                foreach ($idMap->getMessages($source_ids_value) as $row) {
+            foreach (MigrateUtils::parseIdList($options['idlist']) as $sourceIdValues) {
+                foreach ($idMap->getMessages($sourceIdValues) as $row) {
                     $table[] = $this->preprocessMessageRow($row, $sourceIdKeys);
                 }
             }
             return new RowsOfFields($table);
         }
         $table = [];
-        foreach ($idMap->getMessages() as $soure_key => $row) {
+        foreach ($idMap->getMessages() as $row) {
             $table[] = $this->preprocessMessageRow($row, $sourceIdKeys);
         }
         return new RowsOfFields($table);
