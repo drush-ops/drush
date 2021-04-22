@@ -271,12 +271,12 @@ class MigrateRunnerTest extends CommandUnishTestCase
         $this->assertSame('17', $output[2]['source_ids']);
         $this->assertEmpty($output[0]['destination_ids']);
 
-        // Only one invalid id.
+        // Only one invalid ID.
         $this->drush('migrate:messages', ['test_migration'], ['format' => 'json', 'idlist' => '100']);
         $output = $this->getOutputFromJSON();
         $this->assertCount(0, $output);
 
-        // Only one valid id.
+        // Only one valid ID.
         $this->drush('migrate:messages', ['test_migration'], ['format' => 'json', 'idlist' => '2']);
         $output = $this->getOutputFromJSON();
         // @see \Drupal\woot\Plugin\migrate\process\TestFailProcess::transform()
@@ -286,7 +286,7 @@ class MigrateRunnerTest extends CommandUnishTestCase
         $this->assertEmpty($output[0]['destination_ids']);
         $this->assertSame('ID 2 should fail', $output[0]['message']);
 
-        // Three valid ids, two with data, one without, and one invalid id.
+        // Three valid IDs, two with data, one without, and one invalid ID.
         $this->drush('migrate:messages', ['test_migration'], ['format' => 'json', 'idlist' => '1,2,9,100']);
         $output = $this->getOutputFromJSON();
         // @see \Drupal\woot\Plugin\migrate\process\TestFailProcess::transform()
