@@ -749,8 +749,8 @@ class MigrateRunnerCommands extends DrushCommands
      */
     protected function getSourceIdKeys(MigrateIdMapInterface $idMap): array
     {
-        if (iterator_count($idMap) == 0) {
-            // E.g. when the migration has not yet been executed. the id map is
+        if (iterator_count($idMap) === 0) {
+            // E.g. when the migration has not yet been executed. the ID map is
             // empty. do not try to process it.
             return [];
         }
