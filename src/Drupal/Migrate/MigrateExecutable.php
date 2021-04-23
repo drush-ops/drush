@@ -168,6 +168,7 @@ class MigrateExecutable extends MigrateExecutableBase
         // Cannot use the progress bar when:
         // - `--no-progress` option is used,
         // - `--feedback` option is used,
+        // - `--skip-progress-bar` option is used,
         // - The migration source plugin is configured to skips count.
         $this->exposeProgressBar = $options['progress'] && !$this->feedback && empty($migration->getSourceConfiguration()['skip_count']);
 

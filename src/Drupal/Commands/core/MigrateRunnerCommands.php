@@ -233,6 +233,7 @@ class MigrateRunnerCommands extends DrushCommands
      * @option timestamp Show progress ending timestamp in progress messages
      * @option total Show total processed item number in progress messages
      * @option progress Show progress bar
+     * @option skip-progress-bar Deprecated, please use --no-progress.
      * @option delete Delete destination records missed from the source
      *
      * @usage migrate:import --all
@@ -274,6 +275,12 @@ class MigrateRunnerCommands extends DrushCommands
 
         if (!$list = $this->getMigrationList($migrationIds, $options['tag'])) {
             throw new \Exception(dt('No migrations found.'));
+        }
+
+        // Temporarly increase compatibility with migrate_tools migrate:import.
+        // TODO Remove on next major drush core version, 11.x.
+        if (!empty($options['skip-progress-bar'])) {
+            $options['progress'] = false;
         }
 
         $userData = [
@@ -368,6 +375,7 @@ class MigrateRunnerCommands extends DrushCommands
      * @option feedback Frequency of progress messages, in items processed
      * @option idlist Comma-separated list of IDs to rollback. As an ID may have more than one column, concatenate the columns with the colon ':' separator
      * @option progress Show progress bar
+     * @option skip-progress-bar Deprecated, please use --no-progress.
      *
      * @usage migrate:rollback --all
      *   Rollback all migrations
@@ -400,6 +408,12 @@ class MigrateRunnerCommands extends DrushCommands
 
         if (!$list = $this->getMigrationList($migrationIds, $options['tag'])) {
             $this->logger()->error(dt('No migrations found.'));
+        }
+
+        // Temporarly increase compatibility with migrate_tools migrate:import.
+        // TODO Remove on next major drush core version, 11.x.
+        if (!empty($options['skip-progress-bar'])) {
+            $options['progress'] = false;
         }
 
         $executableOptions = [];

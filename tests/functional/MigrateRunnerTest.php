@@ -397,6 +397,12 @@ class MigrateRunnerTest extends CommandUnishTestCase
         $this->assertNoProgressBar();
         $this->drush('migrate:rollback', ['test_migration'], ['no-progress' => null]);
         $this->assertNoProgressBar();
+        // Check that progress bar won't show when --skip-progress-bar is passed.
+        // TODO Remove on next major drush core version, 11.x.
+        $this->drush('migrate:import', ['test_migration'], ['skip-progress-bar' => null]);
+        $this->assertNoProgressBar();
+        $this->drush('migrate:rollback', ['test_migration'], ['skip-progress-bar' => null]);
+        $this->assertNoProgressBar();
 
         // Check that progress bar won't show when --feedback is passed.
         $this->drush('migrate:import', ['test_migration'], ['feedback' => 10]);
