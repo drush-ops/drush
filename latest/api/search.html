@@ -121,7 +121,7 @@
 
                 // Add description, decode entities, and strip wrapping quotes
                 if (ele.doc) {
-                    text_content = $('<p>').text(ele.doc).html();
+                    text_content = $('<p>').html(ele.doc).html();
                     contents += text_content;
                 }
 

@@ -336,6 +336,10 @@ a abbr {
     font-size: 90%;
 }
 
+.type {
+    overflow-wrap: break-word;
+}
+
 /* Namespaces page */
 
 .namespaces {
@@ -350,6 +354,13 @@ a abbr {
 
 .namespaces h2 {
     margin: 0 0 20px 0;
+}
+
+.namespace-container > h2 {
+    background-color: #edf3fe;
+    padding: 4px 4px 4px 8px;
+    font-size: 25px;
+    margin: 20px 0;
 }
 
 @media (max-width: 991px) {
@@ -390,12 +401,14 @@ pre {
 pre.examples {
     padding: 1rem;
 }
-h2 {
+
+#page-content > h2 {
     background-color: #edf3fe;
     padding: 4px 4px 4px 8px;
     font-size: 25px;
     margin: 20px 0;
 }
+
 
 /** Doc index **/
 
@@ -432,14 +445,14 @@ dd {
     border-bottom: 1px solid #ccc;
 }
 
-.search-results h2 {
+.search-results > li > h2 {
     background: none;
     margin: 0;
     padding: 0;
     font-size: 18px;
 }
 
-.search-results h2 a {
+.search-results  > li > h2 > a {
     float: left;
     display: block;
     margin: 0 0 4px 0;
