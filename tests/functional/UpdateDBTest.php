@@ -100,8 +100,8 @@ class UpdateDBTest extends CommandUnishTestCase
                 // The expected status report that will be output before the
                 // test is initiated.
                 [
-                    'woot     8104        hook_update_n   Another good update.',
-                    'woot     failing     post-update     Failing post-update.',
+                    'woot     8104        hook_update_n',
+                    'woot     failing     post-update',
                 ],
                 [
                     '[notice] Update started: woot_update_8101',
@@ -119,9 +119,9 @@ class UpdateDBTest extends CommandUnishTestCase
                 // The expected status report that will be output before the
                 // test is initiated.
                 [
-                    'woot     8103        hook_update_n   Failing update 2.',
-                    'woot     8104        hook_update_n   Another good update.',
-                    'woot     failing     post-update     Failing post-update.',
+                    'woot     8103        hook_update_n',
+                    'woot     8104        hook_update_n',
+                    'woot     failing     post-update',
                 ],
                 [
                     'Update started: woot_update_8103',
@@ -256,7 +256,7 @@ YAML_FRAGMENT;
         // Run updates.
         $this->drush('updatedb', [], $options);
         // Check output.
-        $this->assertStringContainsString('woot 8104 hook_update_n Another good update.', $this->getSimplifiedOutput());
+        $this->assertStringContainsString('woot 8104 hook_update_n', $this->getSimplifiedOutput());
         $this->assertStringContainsString('woot a post-update Successful post-update.', $this->getSimplifiedOutput());
         $this->assertStringContainsString('woot render post-update Renders some content.', $this->getSimplifiedOutput());
         // Check error output.
