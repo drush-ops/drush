@@ -217,5 +217,4 @@ class DrupalCommands extends DrushCommands
                 return $content;
         }
     }
-
 }
