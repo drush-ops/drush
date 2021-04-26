@@ -133,11 +133,11 @@ class DrupalCommands extends DrushCommands
             $info += ['value' => '', 'description' => ''];
             $severity = array_key_exists('severity', $info) ? $info['severity'] : -1;
             $rows[$i] = [
-                'title' => (string) $info['title'],
-                'value' => DrupalUtil::drushRender($info['value']),
-                'description' => DrupalUtil::drushRender($info['description']),
-                'sid' => $severity,
-                'severity' => @$severities[$severity]
+                'title' => self::styleRow((string) $info['title'], $options['format'], $severity),
+                'value' => self::styleRow(DrupalUtil::drushRender($info['value']), $options['format'], $severity),
+                'description' => self::styleRow(DrupalUtil::drushRender($info['description']), $options['format'], $severity),
+                'sid' => self::styleRow($severity, $options['format'], $severity),
+                'severity' => self::styleRow(@$severities[$severity], $options['format'], $severity)
             ];
             if ($severity < $min_severity) {
                 unset($rows[$i]);
@@ -195,4 +195,27 @@ class DrupalCommands extends DrushCommands
         }
         return $items;
     }
+    
+    private static function styleRow($content, $format, $severity): ?string
+    {
+        if (!in_array($format, [
+            'sections',
+            'table',
+        ])) {
+            return $content;
+        }
+
+        switch ($severity) {
+            case REQUIREMENT_OK:
+                return '<info>' . $content . '</>';
+            case REQUIREMENT_WARNING:
+                return '<comment>' . $content . '</>';
+            case REQUIREMENT_ERROR:
+                return '<fg=red>' . $content . '</>';
+            case REQUIREMENT_INFO:
+            default:
+                return $content;
+        }
+    }
+
 }
