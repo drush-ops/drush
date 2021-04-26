@@ -72,7 +72,8 @@ class CoreTest extends UnishIntegrationTestCase
         $this->assertEquals(Path::join($root, '/themes/unish/drush_empty_theme'), $output);
     }
 
-    public function testRoute() {
+    public function testRoute()
+    {
         $this->drush('route', [], ['format' => 'json']);
         $json = $this->getOutputFromJSON();
         $this->assertArrayHasKey('user.login', $json);
