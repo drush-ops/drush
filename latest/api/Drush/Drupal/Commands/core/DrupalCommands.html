@@ -193,6 +193,15 @@
                 <td class="last"></td>
                 <td></td>
             </tr>
+                    <tr>
+                <td class="type" id="property_routeProvider">
+                                        protected                                        <abbr title="Drupal\Core\Routing\RouteProviderInterface">RouteProviderInterface</abbr>
+                                                                                
+                                    </td>
+                <td>$routeProvider</td>
+                <td class="last"></td>
+                <td></td>
+            </tr>
             </table>
 
     
@@ -216,7 +225,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>                </
                     
                 </div>
                 <div class="col-md-8">
-                    <a href="#method___construct">__construct</a>(<abbr title="Drupal\Core\CronInterface">CronInterface</abbr> $cron, <abbr title="Drupal\Core\Extension\ModuleHandlerInterface">ModuleHandlerInterface</abbr> $moduleHandler)
+                    <a href="#method___construct">__construct</a>(<abbr title="Drupal\Core\CronInterface">CronInterface</abbr> $cron, <abbr title="Drupal\Core\Extension\ModuleHandlerInterface">ModuleHandlerInterface</abbr> $moduleHandler, <abbr title="Drupal\Core\Routing\RouteProviderInterface">RouteProviderInterface</abbr> $routeProvider)
         
                                             <p class="no-description">No description</p>
                                     </div>
@@ -312,6 +321,17 @@ DrushConfig as return type. Helps with IDE completion.</p></p>                </
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
+                    <abbr title="Drupal\Core\Routing\RouteProviderInterface">RouteProviderInterface</abbr>
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_getRouteProvider">getRouteProvider</a>()
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
                     
                 </div>
                 <div class="col-md-8">
@@ -328,6 +348,16 @@ DrushConfig as return type. Helps with IDE completion.</p></p>                </
                     <a href="#method_requirements">requirements</a>($options = [&#039;format&#039; =&gt; &#039;table&#039;, &#039;severity&#039; =&gt; -1, &#039;ignore&#039; =&gt; &#039;&#039;])
         
                                             <p><p>Information about things that may be wrong in your Drupal installation.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_route">route</a>($options = [&#039;name&#039; =&gt; self::REQ, &#039;path&#039; =&gt; self::REQ, &#039;format&#039; =&gt; &#039;yaml&#039;])
+        
+                                            <p><p>View information about all routes or one route.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
             </div>
@@ -383,9 +413,9 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method___construct">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Commands/core/DrupalCommands.php#L44">at line 44</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Commands/core/DrupalCommands.php#L60">at line 60</a></div>
         <code>                    
-    <strong>__construct</strong>(<abbr title="Drupal\Core\CronInterface">CronInterface</abbr> $cron, <abbr title="Drupal\Core\Extension\ModuleHandlerInterface">ModuleHandlerInterface</abbr> $moduleHandler)
+    <strong>__construct</strong>(<abbr title="Drupal\Core\CronInterface">CronInterface</abbr> $cron, <abbr title="Drupal\Core\Extension\ModuleHandlerInterface">ModuleHandlerInterface</abbr> $moduleHandler, <abbr title="Drupal\Core\Routing\RouteProviderInterface">RouteProviderInterface</abbr> $routeProvider)
         </code>
     </h3>
     <div class="details">    
@@ -408,6 +438,11 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
                     <tr>
                 <td><abbr title="Drupal\Core\Extension\ModuleHandlerInterface">ModuleHandlerInterface</abbr></td>
                 <td>$moduleHandler</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><abbr title="Drupal\Core\Routing\RouteProviderInterface">RouteProviderInterface</abbr></td>
+                <td>$routeProvider</td>
                 <td></td>
             </tr>
             </table>
@@ -625,7 +660,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_getCron">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Commands/core/DrupalCommands.php#L27">at line 27</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Commands/core/DrupalCommands.php#L34">at line 34</a></div>
         <code>                    <abbr title="Drupal\Core\CronInterface">CronInterface</abbr>
     <strong>getCron</strong>()
         </code>
@@ -658,7 +693,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_getModuleHandler">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Commands/core/DrupalCommands.php#L35">at line 35</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Commands/core/DrupalCommands.php#L42">at line 42</a></div>
         <code>                    <abbr title="Drupal\Core\Extension\ModuleHandlerInterface">ModuleHandlerInterface</abbr>
     <strong>getModuleHandler</strong>()
         </code>
@@ -690,8 +725,41 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
 
             </div>
                     <div class="method-item">
+                    <h3 id="method_getRouteProvider">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Commands/core/DrupalCommands.php#L50">at line 50</a></div>
+        <code>                    <abbr title="Drupal\Core\Routing\RouteProviderInterface">RouteProviderInterface</abbr>
+    <strong>getRouteProvider</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><abbr title="Drupal\Core\Routing\RouteProviderInterface">RouteProviderInterface</abbr></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
                     <h3 id="method_cron">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Commands/core/DrupalCommands.php#L57">at line 57</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Commands/core/DrupalCommands.php#L74">at line 74</a></div>
         <code>                    
     <strong>cron</strong>()
         </code>
@@ -714,7 +782,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_requirements">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Commands/core/DrupalCommands.php#L84">at line 84</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Commands/core/DrupalCommands.php#L101">at line 101</a></div>
         <code>                    <abbr title="Consolidation\OutputFormatters\StructuredData\RowsOfFields">RowsOfFields</abbr>
     <strong>requirements</strong>($options = [&#039;format&#039; =&gt; &#039;table&#039;, &#039;severity&#039; =&gt; -1, &#039;ignore&#039; =&gt; &#039;&#039;])
         </code>
@@ -747,6 +815,39 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
         </tr>
     </table>
 
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_route">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Commands/core/DrupalCommands.php#L165">at line 165</a></div>
+        <code>                    
+    <strong>route</strong>($options = [&#039;name&#039; =&gt; self::REQ, &#039;path&#039; =&gt; self::REQ, &#039;format&#039; =&gt; &#039;yaml&#039;])
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>View information about all routes or one route.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$options</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
             
             
             
