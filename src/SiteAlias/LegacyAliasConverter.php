@@ -326,11 +326,12 @@ EOT;
 
     protected function convertMultipleAliasesLegacyFile($legacyFile, $aliases, $options)
     {
+        $aliasBaseName = str_replace('.aliases.drushrc.php', '', basename($legacyFile));
         $result = [];
         foreach ($aliases as $aliasName => $data) {
             // 'array_merge' is how Drush 8 combines these records.
             $data = array_merge($options, $data);
-            $convertedAlias = $this->convertAlias($aliasName, $data, dirname($legacyFile));
+            $convertedAlias = $this->convertAlias("{$aliasBaseName}.{$aliasName}", $data, dirname($legacyFile));
             $result = static::arrayMergeRecursiveDistinct($result, $convertedAlias);
         }
         return $result;
