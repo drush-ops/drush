@@ -49,6 +49,7 @@ function watchdog_drush_command() {
       'count' => 'The number of messages to show. Defaults to 10.',
       'severity' => 'Restrict to messages of a given severity level.',
       'type' => 'Restrict to messages of a given type.',
+      'uid' => 'Restrict to messages of a given user uid',
       'tail' => 'Continuously show new watchdog messages until interrupted.',
       'sleep-delay' => 'To be used in conjunction with --tail. This is the number of seconds to wait between each poll to the database. Delay is 1 second by default.',
       'extended' => 'Return extended information about each message.',
@@ -60,6 +61,7 @@ function watchdog_drush_command() {
       'drush watchdog-show --count=46' => 'Show a listing of most recent 46 messages.',
       'drush watchdog-show --severity=notice' => 'Show a listing of most recent 10 messages with a severity of notice.',
       'drush watchdog-show --type=php' => 'Show a listing of most recent 10 messages of type php.',
+      'drush watchdog-show --uid=6' => 'Show a listing of most recent 10 messages of uid 6',
       'drush watchdog-show --tail --extended' => 'Show a listing of most recent 10 messages with extended information about each one and continue showing messages as they are registered in the watchdog.',
       'drush watchdog-show --tail --sleep-delay=2' => 'Do a tail of the watchdog with a delay of two seconds between each poll to the database.',
     ),
@@ -67,7 +69,7 @@ function watchdog_drush_command() {
       'default' => 'table',
       'pipe-format' => 'var_export',
       'field-labels' => array('wid' => 'ID', 'type' => 'Type', 'message' => 'Message', 'severity' => 'Severity', 'location' => 'Location', 'hostname' => 'Hostname', 'date' => 'Date', 'username' => 'Username'),
-      'fields-default' => array('wid', 'date', 'type', 'severity', 'message'),
+      'fields-default' => array('wid', 'date', 'severity', 'username', 'type', 'message'),
       'column-widths' => array('type' => 8, 'severity' => 8),
       'output-data-type' => 'format-table',
     ),
@@ -79,6 +81,7 @@ function watchdog_drush_command() {
     'options' => array(
       'severity' => 'Delete messages of a given severity level.',
       'type' => 'Delete messages of a given type.',
+      'uid' => 'Delete messages of a given user uid.',
     ),
     'examples' => array(
       'drush watchdog-delete all' => 'Delete all messages.',
@@ -86,6 +89,7 @@ function watchdog_drush_command() {
       'drush watchdog-delete "cron run succesful"' => 'Delete messages containing the string "cron run succesful".',
       'drush watchdog-delete --severity=notice' => 'Delete all messages with a severity of notice.',
       'drush watchdog-delete --type=cron' => 'Delete all messages of type cron.',
+      'drush watchdog-delete --uid=6' => 'Delete all messages of uid 6.',
     ),
     'aliases' => array('wd-del', 'wd-delete', 'watchdog:delete'),
   );
@@ -162,10 +166,11 @@ function drush_core_watchdog_show_many($filter = NULL) {
   $count = drush_get_option('count', 10);
   $type = drush_get_option('type');
   $severity = drush_get_option('severity');
+  $uid = drush_get_option('uid');
   $tail = drush_get_option('tail', FALSE);
   $extended = drush_get_option('extended', FALSE);
 
-  $where = core_watchdog_query($type, $severity, $filter);
+  $where = core_watchdog_query($type, $severity, $uid, $filter);
   if ($where === FALSE) {
     return drush_log(dt('Aborting.'));
   }
@@ -186,7 +191,7 @@ function drush_core_watchdog_show_many($filter = NULL) {
     drush_log(dt('Most recent !count watchdog log messages:', array('!count' => $count)));
   }
   if ($tail) {
-    $field_list = array('wid' => 'ID', 'date' => 'Date', 'severity' => 'Severity', 'type' => 'Type', 'message' => 'Message');
+    $field_list = array('wid' => 'ID', 'date' => 'Date', 'severity' => 'Severity', 'username' => 'Username', 'type' => 'Type', 'message' => 'Message');
     $table = array_reverse($table);
     $table_rows = drush_rows_of_key_value_to_array_table($table, $field_list, array());
     $tbl = drush_print_table($table_rows, TRUE);
@@ -217,8 +222,7 @@ function drush_core_watchdog_show_many($filter = NULL) {
       $rsc = drush_db_select('watchdog', '*', $where['where'], $where['args'], NULL, NULL, 'wid', 'ASC');
       while ($result = drush_db_fetch_object($rsc)) {
         $row = core_watchdog_format_result($result, $extended);
-        $table[] = array($row->wid, $row->date, $row->severity, $row->type, $row->message);
-        #$tbl->addRow(array($row->wid, $row->date, $row->severity, $row->type, $row->message));
+        $table[] = array($row->wid, $row->date, $row->severity, $row->username, $row->type, $row->message);
         $last_wid = $row->wid;
       }
       $tbl->addData($table);
@@ -245,8 +249,16 @@ function core_watchdog_format_result($result, $extended = FALSE) {
   $result->severity = $severities[$result->severity];
 
   // Date.
-  $result->date = drush_format_date($result->timestamp, 'custom', 'd/M H:i');
+  $result->date = drush_format_date($result->timestamp, 'custom', 'd/M/Y H:i:s');
   unset($result->timestamp);
+
+  // Username.
+  if (!empty($result->uid) && ($account = drush_user_load($result->uid))) {
+    $result->username = $account->name;
+  } else {
+    $result->username = dt('Anonymous');
+  }
+  unset($result->uid);
 
   // Message.
   $variables = $result->variables;
@@ -268,14 +280,6 @@ function core_watchdog_format_result($result, $extended = FALSE) {
     if (empty($result->referer)) {
       unset($result->referer);
     }
-    // Username.
-    if ($account = drush_user_load($result->uid)) {
-      $result->username = $account->name;
-    }
-    else {
-      $result->username = dt('Anonymous');
-    }
-    unset($result->uid);
     $message_length = PHP_INT_MAX;
   }
 
@@ -322,10 +326,11 @@ function drush_core_watchdog_delete($arg = NULL) {
   else {
     $type = drush_get_option('type');
     $severity = drush_get_option('severity');
-    if ((!isset($arg))&&(!isset($type))&&(!isset($severity))) {
+    $uid = drush_get_option('uid');
+    if ((!isset($arg))&&(!isset($type))&&(!isset($severity))&&(!isset($uid))) {
       return drush_set_error(dt('No options provided.'));
     }
-    $where = core_watchdog_query($type, $severity, $arg, 'OR');
+    $where = core_watchdog_query($type, $severity, $uid, $arg, 'OR');
     if ($where === FALSE) {
       // Drush set error was already called by core_watchdog_query
       return FALSE;
@@ -346,6 +351,8 @@ function drush_core_watchdog_delete($arg = NULL) {
  *   String. Valid watchdog type.
  * @param $severity
  *   Int or String for a valid watchdog severity message.
+ * @param $uid
+ *   Int. Valid watchdog uid.
  * @param $filter
  *   String. Value to filter watchdog messages by.
  * @param $criteria
@@ -353,7 +360,7 @@ function drush_core_watchdog_delete($arg = NULL) {
  * @return
  *   False or array with structure ('where' => string, 'args' => array())
  */
-function core_watchdog_query($type = NULL, $severity = NULL, $filter = NULL, $criteria = 'AND') {
+function core_watchdog_query($type = NULL, $severity = NULL, $uid = NULL, $filter = NULL, $criteria = 'AND') {
   $args = array();
   $conditions = array();
   if ($type) {
@@ -389,6 +396,10 @@ function core_watchdog_query($type = NULL, $severity = NULL, $filter = NULL, $cr
   if ($filter) {
     $conditions[] = "message LIKE :filter";
     $args[':filter'] = '%'.$filter.'%';
+  }
+  if ($uid) {
+    $conditions[] = 'uid = :uid';
+    $args[':uid'] = $uid;
   }
 
   $where = implode(" $criteria ", $conditions);
