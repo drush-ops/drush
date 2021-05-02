@@ -13,7 +13,7 @@ drush.yml files are discovered as below, in order of precedence:
 5.  System-wide configuration folder (e.g. `/etc/drush/drush.yml` or `C:\ProgramData\Drush\drush.yml`).
 
 If a configuration file is found in any of the above locations, it will be
-loaded and merged with other configuration files in the search list. Run `drush status --field=drush-conf` 
+loaded and merged with other configuration files in the search list. Run `drush status --fields=drush-conf` 
 to see all discovered config files.
 
 #### Environment variables
