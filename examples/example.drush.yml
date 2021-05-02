@@ -5,13 +5,13 @@
 
 # Preflight configuration.
 drush:
+  include:
+    - '${env.HOME}/.drush/commands'
+    - /usr/share/drush/commands
   paths:
     config:
-      # Load any personal config files. Is silently skipped if not found. Filename must be drush.yml
+      # Load additional config files. Is silently skipped if not found. Filename must be drush.yml
       - ${env.HOME}/.drush/config/drush.yml
-    include:
-      - '${env.HOME}/.drush/commands'
-      - /usr/share/drush/commands
     alias-path:
       - '${env.HOME}/.drush/sites'
       - /etc/drush/sites
