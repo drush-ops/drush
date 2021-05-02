@@ -37,8 +37,9 @@ drush:
       # Load any personal config files. Is silently skipped if not found. Filename must be drush.yml
       - ${env.HOME}/.drush/config/drush.yml
 ```
+
 - The value may be path to a file, or to a directory containing drush.yml file(s).
-- View candidate config paths: `drush status --fields=drush-conf --format=yaml`
+- View discovered config paths: `drush status --fields=drush-conf --format=yaml`
 
 #### Specify folders to search for Drush command files.
 These locations are always merged with include paths defined on the command line or
