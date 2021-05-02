@@ -2801,13 +2801,13 @@
 
 <span class="c1"># Preflight configuration.</span>
 <span class="nt">drush</span><span class="p">:</span>
+  <span class="nt">include</span><span class="p">:</span>
+    <span class="p p-Indicator">-</span> <span class="s">&#39;${env.HOME}/.drush/commands&#39;</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">/usr/share/drush/commands</span>
   <span class="nt">paths</span><span class="p">:</span>
     <span class="nt">config</span><span class="p">:</span>
-      <span class="c1"># Load any personal config files. Is silently skipped if not found. Filename must be drush.yml</span>
+      <span class="c1"># Load additional config files. Is silently skipped if not found. Filename must be drush.yml</span>
       <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">${env.HOME}/.drush/config/drush.yml</span>
-    <span class="nt">include</span><span class="p">:</span>
-      <span class="p p-Indicator">-</span> <span class="s">&#39;${env.HOME}/.drush/commands&#39;</span>
-      <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">/usr/share/drush/commands</span>
     <span class="nt">alias-path</span><span class="p">:</span>
       <span class="p p-Indicator">-</span> <span class="s">&#39;${env.HOME}/.drush/sites&#39;</span>
       <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">/etc/drush/sites</span>

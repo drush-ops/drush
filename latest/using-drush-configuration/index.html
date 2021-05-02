@@ -2937,27 +2937,29 @@ As you can see, variable names should be uppercased, prefixed with <code>DRUSH_<
 replaced with dashes.</p>
 <h3 id="config-examples">Config examples<a class="headerlink" href="#config-examples" title="Permanent link">&para;</a></h3>
 <h4 id="specify-config-files-to-load">Specify config files to load<a class="headerlink" href="#specify-config-files-to-load" title="Permanent link">&para;</a></h4>
-<div class="highlight"><pre><span></span><code>drush:
+<p><div class="highlight"><pre><span></span><code>drush:
   paths:
     config:
       # Load any personal config files. Is silently skipped if not found. Filename must be drush.yml
       - ${env.HOME}/.drush/config/drush.yml
 </code></pre></div>
+- The value may be path to a file, or to a directory containing drush.yml file(s).
+- View candidate config paths: <code>drush status --fields=drush-conf --format=yaml</code></p>
 <h4 id="specify-folders-to-search-for-drush-command-files">Specify folders to search for Drush command files.<a class="headerlink" href="#specify-folders-to-search-for-drush-command-files" title="Permanent link">&para;</a></h4>
 <p>These locations are always merged with include paths defined on the command line or
 in other configuration files.  On the command line, paths may be separated
 by a colon <code>:</code> on Unix-based systems or a semi-colon <code>;</code> on Windows,
 or multiple <code>--include</code> options may be provided. Drush 8 and earlier did
 a deep search in <code>~/.drush</code> and <code>/usr/share/drush/commands</code> when loading
-command files.</p>
-<p>For testing, specify the namespace component in the key. e.g.:</p>
+command files, so we mimic that here as an example.</p>
 <div class="highlight"><pre><span></span><code>drush:
- include:
-   &#39;Commands/example_drush_extension&#39;: &#39;${env.PWD}&#39;
-    include:
-      - &#39;${env.HOME}/.drush/commands&#39;
-      - /usr/share/drush/commands
+  include:
+    - &#39;${env.HOME}/.drush/commands&#39;
+    - /usr/share/drush/commands
 </code></pre></div>
+<ul>
+<li>View all loaded commands: <code>drush list</code></li>
+</ul>
 <h4 id="specify-the-folders-to-search-for-drush-alias-files-siteyml">Specify the folders to search for Drush alias files (*.site.yml).<a class="headerlink" href="#specify-the-folders-to-search-for-drush-alias-files-siteyml" title="Permanent link">&para;</a></h4>
 <p>These locations are always merged with alias paths defined on the command line
  or in other configuration files.  On the command line, paths may be
@@ -2966,10 +2968,12 @@ command files.</p>
  Drush 8 and earlier did a deep search in <code>~/.drush</code> and <code>/etc/drush</code> when
  loading alias files.
 <div class="highlight"><pre><span></span><code>drush:
-  alias-path:
-    - &#39;${env.HOME}/.drush/sites&#39;
-    - /etc/drush/sites
-</code></pre></div></p>
+  paths:
+    alias-path:
+      - &#39;${env.HOME}/.drush/sites&#39;
+      - /etc/drush/sites
+</code></pre></div>
+- View all loaded site aliases: <code>drush site:alias</code></p>
 <h4 id="cache-directory">Cache directory<a class="headerlink" href="#cache-directory" title="Permanent link">&para;</a></h4>
 <p>Specify a folder where Drush should store its file based caches. If unspecified, defaults to <code>$HOME/.drush</code>.
 <div class="highlight"><pre><span></span><code>drush:  
