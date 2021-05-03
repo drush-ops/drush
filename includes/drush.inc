@@ -1320,7 +1320,7 @@ function _drush_log_to_logger($logger, $entry) {
     $logger->log($log_level, $message, $context);
 }
 
-function drush_log_has_errors($types = array(LogLevel::WARNING, LogLevel::ERROR, LogLevel::FAILED)) {
+function drush_log_has_errors($types = array(LogLevel::WARNING, LogLevel::ERROR, LogLevel::CRITICAL, LogLevel::ALERT, LogLevel::EMERGENCY)) {
   $log =& drush_get_context('DRUSH_LOG', array());
   foreach ($log as $entry) {
     if (in_array($entry['type'], $types)) {
