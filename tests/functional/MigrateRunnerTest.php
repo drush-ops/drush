@@ -220,7 +220,7 @@ class MigrateRunnerTest extends CommandUnishTestCase
 
         $this->assertStringContainsString('[notice] 2 items are missing from source and will be rolled back', $this->getErrorOutput());
         $this->assertStringContainsString("[notice] Rolled back 2 items - done with 'test_migration'", $this->getErrorOutput());
-        $this->assertStringContainsString('[notice] Processed 3 items (0 created, 3 updated, 0 failed, 0 ignored)', $this->getErrorOutput());
+        $this->assertStringContainsString('[notice] Processed 0 items (0 created, 0 updated, 0 failed, 0 ignored)', $this->getErrorOutput());
         $this->drush('sql:query', ['SELECT title FROM node_field_data']);
         $this->assertEquals(['Item 1', 'Item 3', 'Item 5'], $this->getOutputAsList());
     }
