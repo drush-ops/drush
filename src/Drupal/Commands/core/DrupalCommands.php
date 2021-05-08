@@ -156,9 +156,9 @@ class DrupalCommands extends DrushCommands
      * @usage drush route
      *   View all routes.
      * @usage drush route --name=update.status
-     *   View details about the update.status route.
+     *   View details about the <info>update.status</info> route.
      * @usage drush route --path=user/1
-     *   View details about the entity.user.canonical route.
+     *   View details about the <info>entity.user.canonical</info> route.
      * @option name A route name.
      * @option path An internal path.
      */
