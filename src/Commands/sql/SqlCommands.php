@@ -165,6 +165,7 @@ class SqlCommands extends DrushCommands implements StdinAwareInterface
      * @option file-delete Delete the --file after running it.
      * @option extra Add custom options to the connect string (e.g. --extra=--skip-column-names)
      * @option db-prefix Enable replacement of braces in your query.
+     * @option quote-identifier Process Drupal 9's quoted identifiers when db-prefix is enabled.
      * @validate-file-exists file
      * @aliases sqlq,sql-query
      * @usage drush sql:query "SELECT * FROM users WHERE uid=1"
@@ -180,7 +181,7 @@ class SqlCommands extends DrushCommands implements StdinAwareInterface
      * @bootstrap max configuration
      *
      */
-    public function query($query = '', $options = ['result-file' => null, 'file' => self::REQ, 'file-delete' => false, 'extra' => self::REQ, 'db-prefix' => false])
+    public function query($query = '', $options = ['result-file' => null, 'file' => self::REQ, 'file-delete' => false, 'extra' => self::REQ, 'db-prefix' => false, 'quote-identifier' => false])
     {
         $filename = $options['file'];
         // Enable prefix processing when db-prefix option is used.

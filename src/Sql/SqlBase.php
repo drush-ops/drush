@@ -2,6 +2,7 @@
 
 namespace Drush\Sql;
 
+use Composer\Semver\Comparator;
 use Consolidation\SiteProcess\Util\Escape;
 use Drupal\Core\Database\Database;
 use Drush\Drush;
@@ -382,7 +383,22 @@ class SqlBase implements ConfigAwareInterface
         if (Drush::bootstrapManager()->hasBootstrapped(DRUSH_BOOTSTRAP_DRUPAL_DATABASE)) {
             // Enable prefix processing which can be dangerous so off by default. See http://drupal.org/node/1219850.
             if ($this->getOption('db-prefix')) {
-                $query = Database::getConnection()->prefixTables($query);
+                $connection = Database::getConnection();
+                $connection_options = $connection->getConnectionOptions();
+                $prefix_commands = '';
+                // Apply init commands to maintain parity with Drupal's PDO.
+                if (!empty($connection_options['init_commands'])) {
+                    $separator = ";\n";
+                    $prefix_commands = implode($separator, $connection_options['init_commands']) . $separator;
+                }
+                $query = $connection->prefixTables($query);
+                if ($this->getOption('quote-identifier')) {
+                    // Only applicable to Drupal 9+.
+                    if (Comparator::greaterThanOrEqualTo(static::getVersion(), '9.0')) {
+                        $query = $connection->quoteIdentifiers($query);
+                    }
+                }
+                $query = $prefix_commands . $query;
             }
         }
         return $query;
@@ -628,6 +644,12 @@ class SqlBase implements ConfigAwareInterface
         }
 
         return $db_spec;
+    }
+
+    public static function getVersion()
+    {
+        $drupal_root = Drush::bootstrapManager()->getRoot();
+        return Drush::bootstrap()->getVersion($drupal_root);
     }
 
     /**
