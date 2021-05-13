@@ -230,7 +230,7 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
         if ($config = $commandData->input()->getOption('config-dir') && Comparator::lessThan(self::getVersion(), '8.6')) {
             // Set the destination site UUID to match the source UUID, to bypass a core fail-safe.
             $source_storage = new FileStorage($config);
-            $options = ['yes' => true];
+            $options = array_merge(Drush::redispatchOptions(), ['yes' => true, 'strict' => 0]);
             $selfRecord = $this->siteAliasManager()->getSelf();
 
             $process = $this->processManager()->drush($selfRecord, 'config-set', ['system.site', 'uuid', $source_storage->read('system.site')['uuid']], $options);
