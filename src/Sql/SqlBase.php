@@ -385,7 +385,8 @@ class SqlBase implements ConfigAwareInterface
      * @return array
      *   The modified init commands.
      */
-    public function processInitCommands(array $init_commands) {
+    public function processInitCommands(array $init_commands)
+    {
         return $init_commands;
     }
 

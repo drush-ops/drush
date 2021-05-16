@@ -29,7 +29,8 @@ class SqlSqlite extends SqlBase
     /**
      * {@inheritdoc}
      */
-    public function processInitCommands(array $init_commands) {
+    public function processInitCommands(array $init_commands)
+    {
         if (isset($init_commands['wal'])) {
             /*
              * Remove the WAL journal mode from the init command as it prints
