@@ -27,6 +27,26 @@ class SqlSqlite extends SqlBase
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function processInitCommands(array $init_commands) {
+        if (isset($init_commands['wal'])) {
+            /*
+             * Remove the WAL journal mode from the init command as it prints
+             * out the string "wal" whenever it's executed, and can affect the
+             * expected output.
+             * https://www.sqlite.org/wal.html#activating_and_configuring_wal_mode
+             *
+             * Luckily the WAL journal mode is persistent, so once it's set once,
+             * it'll keep running under WAL mode until it's changed.
+             * https://www.sqlite.org/wal.html#persistence_of_wal_mode
+             */
+            unset($init_commands['wal']);
+        }
+        return $init_commands;
+    }
+
+    /**
      * Create a new database.
      *
      * @param boolean $quoted

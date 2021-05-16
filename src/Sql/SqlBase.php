@@ -376,6 +376,18 @@ class SqlBase implements ConfigAwareInterface
     {
     }
 
+    /**
+     * Process the init commands. Removing or adding commands as necessary.
+     *
+     * @param array $init_commands
+     *   The original init commands.
+     *
+     * @return array
+     *   The modified init commands.
+     */
+    public function processInitCommands(array $init_commands) {
+        return $init_commands;
+    }
 
     public function queryPrefix($query)
     {
@@ -388,8 +400,11 @@ class SqlBase implements ConfigAwareInterface
                 $prefix_commands = '';
                 // Apply init commands to maintain parity with Drupal's PDO.
                 if (!empty($connection_options['init_commands'])) {
-                    $separator = ";\n";
-                    $prefix_commands = implode($separator, $connection_options['init_commands']) . $separator;
+                    $init_commands = $this->processInitCommands($connection_options['init_commands']);
+                    if ($init_commands) {
+                        $separator = ";\n";
+                        $prefix_commands = implode($separator, $init_commands) . $separator;
+                    }
                 }
                 $query = $connection->prefixTables($query);
                 if ($this->getOption('quote-identifier')) {
