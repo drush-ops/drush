@@ -202,7 +202,7 @@ class Project {
 
       // Extract general release info.
       foreach ($items as $item) {
-        if (array_key_exists($item, $release)) {
+        if (isset($release->{$item})) {
           $value = $release->xpath($item);
           $release_info[$item] = (string)$value[0];
         }
