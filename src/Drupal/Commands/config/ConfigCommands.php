@@ -9,6 +9,7 @@ use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
 use Consolidation\SiteProcess\Util\Escape;
 use Drupal\Core\Config\ConfigFactoryInterface;
+use Drupal\Core\Config\DatabaseStorage;
 use Drupal\Core\Config\FileStorage;
 use Drupal\Core\Config\StorageComparer;
 use Drupal\Core\Config\StorageInterface;
@@ -276,12 +277,12 @@ class ConfigCommands extends DrushCommands implements StdinAwareInterface, SiteA
      * @command config:status
      * @option state  A comma-separated list of states to filter results.
      * @option prefix Prefix The config prefix. For example, <info>system</info>. No prefix will return all names in the system.
-     * @option string $label A config directory label (i.e. a key in $config_directories array in settings.php).
+     * @option string $label A config directory label (i.e. a key in $config_directories array in settings.php), or 'snapshot'.
      * @usage drush config:status
      *   Display configuration items that need to be synchronized.
      * @usage drush config:status --state=Identical
      *   Display configuration items that are in default state.
-     * @usage drush config:status --state='Only in sync dir' --prefix=node.type.
+     * @usage drush config:status --state='Only in target' --prefix=node.type.
      *   Display all content types that would be created in active storage on configuration import.
      * @usage drush config:status --state=Any --format=list
      *   List all config names.
@@ -293,25 +294,36 @@ class ConfigCommands extends DrushCommands implements StdinAwareInterface, SiteA
      * @filter-default-field name
      * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
      */
-    public function status($options = ['state' => 'Only in DB,Only in sync dir,Different', 'prefix' => self::REQ, 'label' => self::REQ])
+    public function status($options = ['state' => 'Only in active store,Only in target,Different', 'prefix' => self::REQ, 'label' => self::REQ])
     {
         $config_list = array_fill_keys(
             $this->configFactory->listAll($options['prefix']),
-            'Identical'
+            'identical'
         );
 
-        $directory = $this->getDirectory($options['label']);
-        $storage = $this->getStorage($directory);
+        if ($options['label'] === 'snapshot') {
+            $storage = \Drupal::service('config.storage.snapshot');
+            if (!$storage->exists('core.extension')) {
+                throw new \Exception(dt("Can't compare to snapshot before first import."));
+            }
+            $empty_message = dt('No differences between snapshot and active config.');
+        }
+        else {
+            $directory = $this->getDirectory($options['label']);
+            $storage = $this->getStorage($directory);
+            $empty_message = dt('No differences between active store (DB) and sync directory.');
+        }
         $state_map = [
-            'create' => 'Only in DB',
+            'create' => 'Only in active store',
             'update' => 'Different',
-            'delete' => 'Only in sync dir',
+            'delete' => 'Only in target',
+            'identical' => 'Identical',
         ];
         foreach ($this->getChanges($storage) as $collection) {
             foreach ($collection as $operation => $configs) {
                 foreach ($configs as $config) {
                     if (!$options['prefix'] || strpos($config, $options['prefix']) === 0) {
-                        $config_list[$config] = $state_map[$operation];
+                        $config_list[$config] = $operation;
                     }
                 }
             }
@@ -320,8 +332,15 @@ class ConfigCommands extends DrushCommands implements StdinAwareInterface, SiteA
         if ($options['state']) {
             $allowed_states = explode(',', $options['state']);
             if (!in_array('Any', $allowed_states)) {
-                $config_list = array_filter($config_list, function ($state) use ($allowed_states) {
-                     return in_array($state, $allowed_states);
+                $state_map_reverse = array_flip($state_map);
+                $allowed_state_keys = array_map(
+                    function ($state_label) use ($state_map_reverse) {
+                        return $state_map_reverse[$state_label];
+                    },
+                    $allowed_states
+                );
+                $config_list = array_filter($config_list, function ($state) use ($allowed_state_keys) {
+                     return in_array($state, $allowed_state_keys, TRUE);
                 });
             }
         }
@@ -330,24 +349,27 @@ class ConfigCommands extends DrushCommands implements StdinAwareInterface, SiteA
 
         $rows = [];
         $color_map = [
-            'Only in DB' => 'green',
-            'Only in sync dir' => 'red',
-            'Different' => 'yellow',
-            'Identical' => 'white',
+            'create' => 'green',
+            'delete' => 'red',
+            'update' => 'yellow',
+            'identical' => 'white',
         ];
 
         foreach ($config_list as $config => $state) {
-            if ($options['format'] == 'table' && $state != 'Identical') {
-                $state = "<fg={$color_map[$state]};options=bold>$state</>";
+            if ($options['format'] === 'table' && $state !== 'identical') {
+                $state_display = "<fg={$color_map[$state]};options=bold>{$state_map[$state]}</>";
+            }
+            else {
+                $state_display = $state_map[$state];
             }
             $rows[$config] = [
                 'name' => $config,
-                'state' => $state,
+                'state' => $state_display,
             ];
         }
 
         if (!$rows) {
-            $this->logger()->notice(dt('No differences between DB and sync directory.'));
+            $this->logger()->notice($empty_message);
 
             // Suppress output if there are no differences and we are using the
             // human readable "table" formatter so that we not uselessly output
@@ -398,7 +420,7 @@ class ConfigCommands extends DrushCommands implements StdinAwareInterface, SiteA
      */
     public function getChanges($target_storage)
     {
-        if ($this->hasImportTransformer()) {
+        if (!$target_storage instanceof DatabaseStorage && $this->hasImportTransformer()) {
             $target_storage = $this->getImportTransformer()->transform($target_storage);
         }
 
