@@ -36,19 +36,19 @@
     "composer/semver": "^1.4 || ^3",
     "consolidation/config": "^1.2",
     "consolidation/filter-via-dot-access-data": "^1",
-    "consolidation/robo": "^1.4.11 || ^2",
+    "consolidation/robo": "^2 || ^3.0",
     "consolidation/site-alias": "^3.0.0@stable",
     "consolidation/site-process": "^2.1 || ^4",
     "enlightn/security-checker": "^1",
     "grasmash/yaml-expander": "^1.1.1",
     "guzzlehttp/guzzle": "^6.3 || ^7.0",
-    "league/container": "~2",
+    "league/container": "~2 || ^3",
     "psr/log": "~1.0",
     "psy/psysh": "~0.6",
-    "symfony/event-dispatcher": "^3.4 || ^4.0",
+    "symfony/event-dispatcher": "^3.4 || ^4.0 || ^5.0",
     "symfony/finder": "^3.4 || ^4.0 || ^5",
     "symfony/var-dumper": "^3.4 || ^4.0 || ^5.0",
-    "symfony/yaml": "^3.4 || ^4.0",
+    "symfony/yaml": "^3.4 || ^4.0 || ^5.0",
     "webflo/drupal-finder": "^1.2",
     "webmozart/path-util": "^2.1.0"
   },
@@ -56,12 +56,11 @@
     "composer/installers": "^1.7",
     "cweagans/composer-patches": "~1.0",
     "david-garcia/phpwhois": "4.3.0",
-    "drupal/core-recommended": "^8.8",
-    "drupal/alinks": "1.0.0",
+    "drupal/core-recommended": "^8.9 || ^9",
     "phpunit/phpunit": ">=7.5.20",
     "yoast/phpunit-polyfills": "^0.2.0",
     "squizlabs/php_codesniffer": "^2.7 || ^3",
-    "vlucas/phpdotenv": "^2.4"
+    "vlucas/phpdotenv": "^2.4 || ^5.3"
   },
   "conflict": {
     "drupal/migrate_run": "*",
@@ -87,10 +86,7 @@
     "optimize-autoloader": true,
     "preferred-install": "dist",
     "sort-packages": true,
-    "process-timeout": 9600,
-    "platform": {
-      "php": "7.1.3"
-    }
+    "process-timeout": 9600
   },
   "scripts": {
     "cs": "phpcs",
