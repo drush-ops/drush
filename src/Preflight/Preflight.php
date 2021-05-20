@@ -4,9 +4,9 @@ namespace Drush\Preflight;
 use Drush\Config\Environment;
 use Drush\Config\ConfigLocator;
 use Drush\Config\EnvironmentConfigLoader;
+use Drush\Utils\FsUtils;
 use Consolidation\SiteAlias\SiteAliasManager;
 use DrupalFinder\DrupalFinder;
-use Drush\Utils\FsUtils;
 
 /**
  * The Drush preflight determines what needs to be done for this request.
