@@ -11,7 +11,7 @@ class Sqlsqlsrv extends SqlBase {
     return 'sqlcmd';
   }
 
-  public function creds() {
+  public function creds($hide_password = TRUE) {
     // Some drush commands (e.g. site-install) want to connect to the
     // server, but not the database.  Connect to the built-in database.
     $database = empty($this->db_spec['database']) ? 'master' : $this->db_spec['database'];
