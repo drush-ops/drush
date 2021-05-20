@@ -307,8 +307,7 @@ class ConfigCommands extends DrushCommands implements StdinAwareInterface, SiteA
                 throw new \Exception(dt("Can't compare to snapshot before first import."));
             }
             $empty_message = dt('No differences between snapshot and active config.');
-        }
-        else {
+        } else {
             $directory = $this->getDirectory($options['label']);
             $storage = $this->getStorage($directory);
             $empty_message = dt('No differences between active store (DB) and sync directory.');
@@ -340,7 +339,7 @@ class ConfigCommands extends DrushCommands implements StdinAwareInterface, SiteA
                     $allowed_states
                 );
                 $config_list = array_filter($config_list, function ($state) use ($allowed_state_keys) {
-                     return in_array($state, $allowed_state_keys, TRUE);
+                     return in_array($state, $allowed_state_keys, true);
                 });
             }
         }
@@ -358,8 +357,7 @@ class ConfigCommands extends DrushCommands implements StdinAwareInterface, SiteA
         foreach ($config_list as $config => $state) {
             if ($options['format'] === 'table' && $state !== 'identical') {
                 $state_display = "<fg={$color_map[$state]};options=bold>{$state_map[$state]}</>";
-            }
-            else {
+            } else {
                 $state_display = $state_map[$state];
             }
             $rows[$config] = [
