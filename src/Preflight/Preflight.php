@@ -340,7 +340,7 @@ class Preflight
             if (!$foundRoot && $fallbackPath && is_dir($fallbackPath . '/sut') && is_dir($fallbackPath . '/vendor')) {
                 $foundRoot = $this->drupalFinder->locateRoot($fallbackPath);
             }
-            return $this->drupalFinder()->getDrupalRoot();
+            return FsUtils::realpath($this->drupalFinder()->getDrupalRoot());
         }
         return $originalSelection;
     }
