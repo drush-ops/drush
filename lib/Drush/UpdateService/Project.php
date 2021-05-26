@@ -197,12 +197,13 @@ class Project {
     $releases = array();
     $releases_xml = @$xml->xpath("/project/releases/release[status='published']");
     foreach ($releases_xml as $release) {
+      $release_array = (array) $release;
       $release_info = array();
       $statuses = array();
 
       // Extract general release info.
       foreach ($items as $item) {
-        if (array_key_exists($item, $release)) {
+        if (array_key_exists($item, $release_array)) {
           $value = $release->xpath($item);
           $release_info[$item] = (string)$value[0];
         }
