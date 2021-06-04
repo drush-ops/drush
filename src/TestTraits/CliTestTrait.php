@@ -76,6 +76,42 @@ trait CliTestTrait
     }
 
     /**
+     * Run a command and return the process without waiting for it to finish.
+     *
+     * @param string $command
+     *   The actual command line to run.
+     * @param sting cd
+     *   The directory to run the command in.
+     * @param array $env
+     *  Extra environment variables.
+     * @param string $input
+     *   A string representing the STDIN that is piped to the command.
+     */
+    public function startExecute($command, $cd = null, $env = null, $input = null)
+    {
+        try {
+            // Process uses a default timeout of 60 seconds, set it to 0 (none).
+            $this->process = new Process($command, $cd, $env, $input, 0);
+            $this->process->inheritEnvironmentVariables(true);
+            if ($this->timeout) {
+                $this->process->setTimeout($this->timeout)
+                ->setIdleTimeout($this->idleTimeout);
+            }
+            $this->process->start();
+            $this->timeout = $this->defaultTimeout;
+            $this->idleTimeout = $this->defaultIdleTimeout;
+            return $this->process;
+        } catch (ProcessTimedOutException $e) {
+            if ($e->isGeneralTimeout()) {
+                $message = 'Command runtime exceeded ' . $this->timeout . " seconds:\n" .  $command;
+            } else {
+                $message = 'Command had no output for ' . $this->idleTimeout . " seconds:\n" .  $command;
+            }
+            throw new \Exception($message . $this->buildProcessMessage());
+        }
+    }
+
+    /**
      * Actually runs the command.
      *
      * @param array|string $command
