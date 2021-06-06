@@ -214,6 +214,9 @@ function drush_sqlsync_sql_sync($source, $destination) {
     }
     else {
       $source_dump_path = $return['object'];
+      if (is_array($source_dump_path) && isset($source_dump_path['path'])) {
+        $source_dump_path = $source_dump_path['path'];
+      }
       if (!is_string($source_dump_path)) {
         return drush_set_error('DRUSH_SQL_DUMP_FILE_NOT_REPORTED', dt('The Drush sql-dump command did not report the path to the dump file produced.  Try upgrading the version of Drush you are using on the source machine.'));
       }
