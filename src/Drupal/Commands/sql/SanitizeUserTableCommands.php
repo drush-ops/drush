@@ -74,6 +74,12 @@ class SanitizeUserTableCommands extends DrushCommands implements SanitizePluginI
             $messages[] = dt('User emails sanitized.');
         }
 
+        if (in_array('ignore-admins', $options)) {
+            $admins = $this->database->query("SELECT entity_id FROM user__roles WHERE roles_target_id='administrator'")->fetchCol();
+            $query->condition('uid', $admins, 'NOT IN');
+            $messages[] = dt('Admin emails and passwords preserved.');
+        }
+
         if ($messages) {
             $query->execute();
             $this->entityTypeManager->getStorage('user')->resetCache();
@@ -91,8 +97,10 @@ class SanitizeUserTableCommands extends DrushCommands implements SanitizePluginI
      * @option sanitize-password
      *   By default, passwords are randomized. Specify <info>no</info> to disable that. Specify any other value to set all passwords
      *   to that value.
+     * @option ignore-admins
+     *   By default, all users are sanitized. Add option to skip sanitizing accounts with the administrator role.
      */
-    public function options($options = ['sanitize-email' => 'user+%uid@localhost.localdomain', 'sanitize-password' => null])
+    public function options($options = ['sanitize-email' => 'user+%uid@localhost.localdomain', 'sanitize-password' => null, 'ignore-admins' => false])
     {
     }
 
@@ -109,6 +117,9 @@ class SanitizeUserTableCommands extends DrushCommands implements SanitizePluginI
         }
         if ($this->isEnabled($options['sanitize-email'])) {
             $messages[] = dt('Sanitize user emails.');
+        }
+        if (in_array('ignore-admins', $options)) {
+            $messages[] = dt('Preserve admin emails and passwords.');
         }
     }
 
