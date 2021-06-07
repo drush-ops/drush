@@ -132,7 +132,7 @@ class SecurityUpdateCommands extends DrushCommands
      *
      * @return array
      */
-    protected function calculateSecurityUpdates($composer_lock_data, $security_advisories_composer_json, bool $excludeDev = FALSE)
+    protected function calculateSecurityUpdates($composer_lock_data, $security_advisories_composer_json, bool $excludeDev = false)
     {
         $updates = [];
         $packages = $composer_lock_data['packages'];
