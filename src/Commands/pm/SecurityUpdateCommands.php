@@ -43,6 +43,7 @@ class SecurityUpdateCommands extends DrushCommands
      *
      * @command pm:security
      * @aliases sec,pm-security
+     * @option no-dev Only check production dependencies.
      * @usage drush pm:security --format=json
      *   Get security data in JSON format.
      * @usage HTTP_PROXY=tcp://localhost:8125 pm:security
@@ -59,11 +60,11 @@ class SecurityUpdateCommands extends DrushCommands
      *
      * @throws \Exception
      */
-    public function security()
+    public function security(array $options = ['no-dev' => false])
     {
         $security_advisories_composer_json = $this->fetchAdvisoryComposerJson();
         $composer_lock_data = $this->loadSiteComposerLock();
-        $updates = $this->calculateSecurityUpdates($composer_lock_data, $security_advisories_composer_json);
+        $updates = $this->calculateSecurityUpdates($composer_lock_data, $security_advisories_composer_json, $options['no-dev']);
         if ($updates) {
             $this->suggestComposerCommand($updates);
             return CommandResult::dataWithExitCode(new RowsOfFields($updates), self::EXIT_FAILURE_WITH_CLARITY);
@@ -131,12 +132,15 @@ class SecurityUpdateCommands extends DrushCommands
      *
      * @return array
      */
-    protected function calculateSecurityUpdates($composer_lock_data, $security_advisories_composer_json)
+    protected function calculateSecurityUpdates($composer_lock_data, $security_advisories_composer_json, bool $excludeDev = false)
     {
         $updates = [];
-        $both = array_merge($composer_lock_data['packages-dev'], $composer_lock_data['packages']);
+        $packages = $composer_lock_data['packages'];
+        if (!$excludeDev) {
+            $packages = array_merge($composer_lock_data['packages-dev'], $packages);
+        }
         $conflict = $security_advisories_composer_json['conflict'];
-        foreach ($both as $package) {
+        foreach ($packages as $package) {
             $name = $package['name'];
             if (!empty($conflict[$name]) && Semver::satisfies($package['version'], $security_advisories_composer_json['conflict'][$name])) {
                 $updates[$name] = [
@@ -161,6 +165,7 @@ class SecurityUpdateCommands extends DrushCommands
      * @command pm:security-php
      * @validate-php-extension json
      * @aliases sec-php,pm-security-php
+     * @option no-dev Only check production dependencies.
      * @bootstrap none
      *
      * @usage drush pm:security-php --format=json
@@ -168,9 +173,9 @@ class SecurityUpdateCommands extends DrushCommands
      * @usage HTTP_PROXY=tcp://localhost:8125 pm:security
      *   Proxy Guzzle requests through an http proxy.
      */
-    public function securityPhp($options = ['format' => 'yaml'])
+    public function securityPhp($options = ['format' => 'yaml', 'no-dev' => false])
     {
-        $result = (new SecurityChecker())->check(self::composerLockPath());
+        $result = (new SecurityChecker())->check(self::composerLockPath(), $options['no-dev']);
         if ($result) {
             $suggested_command = "composer why " . implode(' && composer why ', array_keys($result));
             $this->logger()->warning('One or more of your dependencies has an outstanding security update.');
