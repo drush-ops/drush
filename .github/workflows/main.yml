@@ -41,7 +41,7 @@ jobs:
           tools: composer:v2
 
       - name: Install Composer dependencies
-        run: composer install --no-dev --prefer-dist --no-interaction
+        run: composer install --prefer-dist --no-interaction
 
       - name: Install Drupal
         run: composer sut:si
