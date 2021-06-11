@@ -285,6 +285,8 @@ class ConfigCommands extends DrushCommands implements StdinAwareInterface, SiteA
      *   Display all content types that would be created in active storage on configuration import.
      * @usage drush config:status --state=Any --format=list
      *   List all config names.
+     * @usage drush config:status 2>&1 | grep "No differences"
+     *   Check there are no differences between database and exported config. Useful for CI.
      * @field-labels
      *   name: Name
      *   state: State
