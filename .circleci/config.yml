@@ -1,6 +1,6 @@
 version: 2
 jobs:
-  build:
+  placeholder:
     docker:
       - image: circleci/ruby:2.4.3
     steps:
