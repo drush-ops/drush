@@ -7,9 +7,10 @@ use Drush\Commands\DrushCommands;
 class CustomDrushCommands extends DrushCommands
 {
     /**
-     * Auto-discoverable custom command
+     * Auto-discoverable custom command. Used for Drush testing.
      *
      * @command custom_cmd
+     * @hidden
      */
     public function customCommand(): void
     {
