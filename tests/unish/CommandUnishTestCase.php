@@ -13,13 +13,6 @@ abstract class CommandUnishTestCase extends UnishTestCase
     use CliTestTrait;
 
     /**
-     * Drush child processes.
-     *
-     * @var array
-     */
-    protected $drushChildProcesses = [];
-
-    /**
      * Code coverage data collected during a single test.
      *
      * @var array
@@ -52,7 +45,6 @@ abstract class CommandUnishTestCase extends UnishTestCase
         return $this->process ? $this->process->getErrorOutput() : '';
     }
 
-
     /**
      * Invoke drush command via startExecute(), and return the resulting process.
      *
@@ -78,7 +70,7 @@ abstract class CommandUnishTestCase extends UnishTestCase
      */
     public function drushBackground($command, array $args = [], array $options = [], $site_specification = null, $cd = null, $suffix = null, $env = [])
     {
-        $cmd = $this->prepareDrushCommand($command, $args, $options, $site_specification, $suffix);
+        list($cmd, ) = $this->prepareDrushCommand($command, $args, $options, $site_specification, $suffix);
         return $this->startExecute($cmd, $cd, $env);
     }
 
@@ -106,7 +98,7 @@ abstract class CommandUnishTestCase extends UnishTestCase
       */
     public function drush($command, array $args = [], array $options = [], $site_specification = null, $cd = null, $expected_return = self::EXIT_SUCCESS, $suffix = null, $env = [])
     {
-        $cmd = $this->prepareDrushCommand($command, $args, $options, $site_specification, $suffix);
+        list($cmd, $coverage_file) = $this->prepareDrushCommand($command, $args, $options, $site_specification, $suffix);
         $return = $this->execute($cmd, $expected_return, $cd, $env);
 
         // Save code coverage information.
@@ -153,6 +145,7 @@ abstract class CommandUnishTestCase extends UnishTestCase
         // Insert code coverage argument before command, in order for it to be
         // parsed as a global option. This matters for commands like ssh and rsync
         // where options after the command are passed along to external commands.
+        $coverage_file = null;
         $result = $this->getTestResultObject();
         if ($result->getCollectCodeCoverageInformation()) {
             $coverage_file = tempnam($this->getSandbox(), 'drush_coverage');
@@ -185,7 +178,8 @@ abstract class CommandUnishTestCase extends UnishTestCase
             $cmd[] = '2>' . $this->bitBucket();
         }
         $exec = array_filter($cmd, 'strlen'); // Remove NULLs
-        return implode(' ', $exec);
+        $cmd = implode(' ', $exec);
+        return [$cmd, $coverage_file];
     }
 
     protected function getLogMessage($entry)
