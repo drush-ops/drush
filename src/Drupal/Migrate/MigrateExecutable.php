@@ -59,7 +59,7 @@ class MigrateExecutable extends MigrateExecutableBase
     /**
      * Frequency (in items) at which progress messages should be emitted.
      *
-     * @var int
+     * @var int|null
      */
     protected $feedback;
 
@@ -75,7 +75,7 @@ class MigrateExecutable extends MigrateExecutableBase
      *
      * @var bool
      */
-    protected $showTotal = false;
+    protected $showTotal;
 
     /**
      * List of specific source IDs to import.
@@ -108,7 +108,7 @@ class MigrateExecutable extends MigrateExecutableBase
     /**
      * Whether to delete rows missing from source after an import.
      *
-     * @var bool|null
+     * @var bool
      */
     protected $deleteMissingSourceRows;
 
@@ -155,13 +155,25 @@ class MigrateExecutable extends MigrateExecutableBase
     public function __construct(MigrationInterface $migration, MigrateMessageInterface $message, OutputInterface $output, array $options = [])
     {
         Timer::start('migrate:' . $migration->getPluginId());
+
+        // Provide sane defaults.
+        $options += [
+            'idlist' => null,
+            'limit' => null,
+            'feedback' => null,
+            'timestamp' => false,
+            'total' => false,
+            'delete' => false,
+            'progress' => true,
+        ];
+
         $this->idlist = MigrateUtils::parseIdList($options['idlist']);
 
         parent::__construct($migration, $message);
 
         $this->output = $output;
         $this->limit = $options['limit'];
-        $this->feedback = $options['feedback'] ?? 0;
+        $this->feedback = $options['feedback'];
         $this->showTimestamp = $options['timestamp'];
         $this->showTotal = $options['total'];
         $this->deleteMissingSourceRows = $options['delete'];
