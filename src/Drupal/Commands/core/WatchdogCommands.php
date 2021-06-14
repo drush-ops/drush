@@ -11,6 +11,7 @@ use Drupal\Component\Utility\Unicode;
 use Drupal\Component\Utility\Html;
 use Drush\Drupal\DrupalUtil;
 use Drush\Exceptions\UserAbortException;
+use Symfony\Component\Console\Output\OutputInterface;
 
 class WatchdogCommands extends DrushCommands
 {
@@ -34,8 +35,6 @@ class WatchdogCommands extends DrushCommands
      *   Show a listing of most recent 10 messages with a severity of notice.
      * @usage drush watchdog:show --type=php
      *   Show a listing of most recent 10 messages of type php
-     * @usage  while sleep 2; do drush watchdog:show; done
-     *   Every 2 seconds, show the most recent 10 messages.
      * @aliases wd-show,ws,watchdog-show
      * @validate-module-enabled dblog
      * @field-labels
@@ -68,6 +67,7 @@ class WatchdogCommands extends DrushCommands
         }
         if (empty($table)) {
             $this->logger()->notice(dt('No log messages available.'));
+            return;
         } else {
             return new RowsOfFields($table);
         }
@@ -102,6 +102,75 @@ class WatchdogCommands extends DrushCommands
     public function watchdogList($substring = '', $options = ['format' => 'table', 'count' => 10, 'extended' => false])
     {
         return $this->show($substring, $options);
+    }
+
+    /**
+     * Tail watchdog messages.
+     *
+     * @command watchdog:tail
+     * @param OutputInterface $output
+     * @param $substring A substring to look search in error messages.
+     * @option severity Restrict to messages of a given severity level.
+     * @option type Restrict to messages of a given type.
+     * @option extended Return extended information about each message.
+     * @usage  drush watchdog:tail
+     *   Continuously tail watchdog messages.
+     * @usage drush watchdog:tail "cron run successful"
+     *   Continously tail watchdog messages, filtering on the string <info>cron run successful</info>.
+     * @usage drush watchdog:tail --severity=Notice
+     *   Continously tail watchdog messages, filtering severity of notice.
+     * @usage drush watchdog:tail --type=php
+     *   Continously tail watchdog messages, filtering on type equals php.
+     * @aliases wd-tail,wt,watchdog-tail
+     * @validate-module-enabled dblog
+     * @field-labels
+     *   wid: ID
+     *   type: Type
+     *   message: Message
+     *   severity: Severity
+     *   location: Location
+     *   hostname: Hostname
+     *   date: Date
+     *   username: Username
+     * @default-fields wid,date,type,severity,message
+     * @filter-default-field message
+     */
+    public function tail(OutputInterface $output, $substring = '', $options = ['format' => 'table', 'severity' => self::REQ, 'type' => self::REQ, 'extended' => false])
+    {
+        $where = $this->where($options['type'], $options['severity'], $substring);
+        if (empty($where['where'])) {
+            $where = [
+              'where' => 'wid > :wid',
+              'args' => [],
+            ];
+        } else {
+            $where['where'] .= " AND wid > ?";
+        }
+
+        $last_seen_wid = 0;
+        $iteration = 1;
+        while (true) {
+            $iteration++;
+            $where['args'][':wid'] = $last_seen_wid;
+            $query = Database::getConnection()->select('watchdog', 'w')
+                ->fields('w')
+                ->orderBy('wid', 'DESC');
+            if ($last_seen_wid === 0) {
+                $query->range(0, 10);
+            }
+            $query->where($where['where'], $where['args']);
+
+            $rsc = $query->execute();
+            while ($result = $rsc->fetchObject()) {
+                if ($result->wid > $last_seen_wid) {
+                    $last_seen_wid = $result->wid;
+                }
+                $row = $this->formatResult($result, $options['extended']);
+                $msg = "{$row->wid}\t{$row->date}\t{$row->type}\t{$row->severity}\t{$row->message}";
+                $output->writeln($msg);
+            }
+            sleep(2);
+        }
     }
 
     /**
