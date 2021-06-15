@@ -402,17 +402,14 @@ class MigrateRunnerCommands extends DrushCommands
             $this->logger()->error(dt('No migrations found.'));
         }
 
-        $executableOptions = [];
-        foreach (['feedback', 'idlist', 'progress'] as $option) {
-            if ($options[$option]) {
-                $executableOptions[$option] = $options[$option];
-            }
-        }
-
+        $executableOptions = array_intersect_key(
+            $options,
+            array_flip(['feedback', 'idlist', 'progress'])
+        );
         foreach ($list as $migrations) {
             // Rollback in reverse order.
             $migrations = array_reverse($migrations);
-            foreach ($migrations as $migrationId => $migration) {
+            foreach ($migrations as $migration) {
                 $executable = new MigrateExecutable($migration, $this->getMigrateMessage(), $this->output(), $executableOptions);
                 // drush_op() provides --simulate support.
                 drush_op([$executable, 'rollback']);
