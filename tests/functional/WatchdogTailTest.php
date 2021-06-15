@@ -27,7 +27,7 @@ class WatchdogTailTest extends CommandUnishTestCase
         do {
             $iteration++;
             $expected_output[$iteration] = "watchdog tail iteration $iteration.";
-            $this->drush('php-eval', ["\\Drupal::logger('drush')->notice('{$expected_output[$iteration]}');"]);
+            $this->drush('php-eval', ["'\\Drupal::logger(\"drush\")->notice(\"{$expected_output[$iteration]}\");'"]);
             sleep(2);
             $output = $childDrushProcess->getIncrementalOutput();
             $this->assertContains($expected_output[$iteration], $output);
