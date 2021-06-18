@@ -435,6 +435,10 @@ class MigrateRunnerCommands extends DrushCommands
     {
         /** @var \Drupal\migrate\Plugin\MigrationInterface $migration */
         $migration = $this->getMigrationPluginManager()->createInstance($migrationId);
+        if (!$migration) {
+            $this->logger()->error(dt('Migration @id does not exist', ['@id' => $migrationId]));
+            return;
+        }
         switch ($migration->getStatus()) {
             case MigrationInterface::STATUS_IDLE:
                 $this->logger()->warning(dt('Migration @id is idle', ['@id' => $migrationId]));
