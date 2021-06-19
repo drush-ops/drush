@@ -118,8 +118,8 @@ class MigrateRunnerCommands extends DrushCommands
       'tag' => self::REQ,
       'columns' => self::REQ,
       'names-only' => false,
-    ]
-    ): RowsOfFields {
+    ]): RowsOfFields
+    {
         $allColumns = [
           'id',
           'status',
@@ -190,7 +190,7 @@ class MigrateRunnerCommands extends DrushCommands
                             break;
                         case 'imported':
                             $importedCount = $this->getMigrationImportedCount($migration);
-                            if ($importedCount === NULL) {
+                            if ($importedCount === null) {
                                 // Next migration.
                                 continue 2;
                             }
