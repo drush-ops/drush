@@ -233,7 +233,7 @@ class MigrateRunnerCommands extends DrushCommands
      * @option timestamp Show progress ending timestamp in progress messages
      * @option total Show total processed item number in progress messages
      * @option progress Show progress bar
-     * @option delete Delete destination records missed from the source
+     * @option delete Delete destination records missed from the source. Not compatible with --limit and --idlist options, and high_water_property source configuration key.
      *
      * @usage migrate:import --all
      *   Perform all migrations
