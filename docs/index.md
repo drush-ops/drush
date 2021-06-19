@@ -1,4 +1,4 @@
-#### _The current docs for Drush are at https://www.drush.org. These docs are for Drush 8._
+#### _These docs are for Drush 8. [Here docs for Drush 10](https://www.drush.org), the current version._
 
 -----------
     
