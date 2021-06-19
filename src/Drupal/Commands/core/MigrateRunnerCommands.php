@@ -13,7 +13,6 @@ use Drupal\migrate\Plugin\MigrationPluginManagerInterface;
 use Drupal\migrate\Plugin\RequirementsInterface;
 use Drush\Commands\DrushCommands;
 use Drush\Drupal\Migrate\MigrateExecutable;
-use Drush\Drupal\Migrate\MigrateIdMapFilter;
 use Drush\Drupal\Migrate\MigrateMessage;
 use Drush\Drupal\Migrate\MigrateUtils;
 use Drush\Utils\StringUtils;
@@ -75,17 +74,23 @@ class MigrateRunnerCommands extends DrushCommands
      * @param string|null $migrationIds
      *   Restrict to a comma-separated list of migrations. Optional.
      *
-     * @option tag A comma-separated list of migration tags to list. If only <info>--tag</info> is provided, all tagged migrations will be listed, grouped by tags.
-     * @option names-only Only return names, not all the details (faster)
+     * @option tag A comma-separated list of migration tags to list. If only
+     *   <info>--tag</info> is provided, all tagged migrations will be listed,
+     *   grouped by tags.
+     * @option columns A comma-separated list of columns to show. Available options: id, status, total, imported, needing_update, unprocessed, last_imported.
+     * @option names-only [Deprecated, use --columns=id instead] Only return names, not all the details (faster).
      *
      * @usage migrate:status
      *   Retrieve status for all migrations
      * @usage migrate:status --tag
      *   Retrieve status for all migrations, grouped by tag
      * @usage migrate:status --tag=user,main_content
-     *   Retrieve status for all migrations tagged with <info>user</info> or <info>main_content</info>
+     *   Retrieve status for all migrations tagged with <info>user</info> or
+     *   <info>main_content</info>
      * @usage migrate:status classification,article
      *   Retrieve status for specific migrations
+     * @usage ms --columns=id,status
+     *   Display only the migration IDs and their status.
      *
      * @aliases ms,migrate-status
      *
@@ -105,81 +110,107 @@ class MigrateRunnerCommands extends DrushCommands
      *
      * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
      *   Migrations status formatted as table.
+     *
+     * @throws \Exception
+     *   If invalid columns were passed via --columns option.
      */
-    public function status(?string $migrationIds = null, array $options = ['tag' => self::REQ, 'names-only' => false]): RowsOfFields
-    {
-        $namesOnly = $options['names-only'];
+    public function status(?string $migrationIds = null, array $options = [
+      'tag' => self::REQ,
+      'columns' => self::REQ,
+      'names-only' => false,
+    ]
+    ): RowsOfFields {
+        $allColumns = [
+          'id',
+          'status',
+          'total',
+          'imported',
+          'needing_update',
+          'unprocessed',
+          'last_imported',
+        ];
+
+        $defaultColumns = [
+          'id',
+          'status',
+          'total',
+          'imported',
+          'unprocessed',
+          'last_imported',
+        ];
+
+        // The --names-only option takes precedence over --columns.
+        if ($namesOnly = $options['names-only']) {
+            $deprecationMessage = 'The --names-only option is deprecated in Drush 10.5.1 and is removed from Drush 11.0.0. Use --columns=id instead.';
+            $this->logger()->warning($deprecationMessage);
+            @trigger_error($deprecationMessage, E_USER_DEPRECATED);
+            $columns = ['id'];
+        } else {
+            $columns = $options['columns'] ? StringUtils::csvToArray($options['columns']) : $defaultColumns;
+            // The migration ID is mandatory.
+            if (!isset($columns['id'])) {
+                $columns = array_merge(['id'], $columns);
+            }
+        }
+        if ($invalidColumns = array_diff($columns, $allColumns)) {
+            throw new \Exception("Invalid columns passed in --columns option: '" . implode("', '", $invalidColumns) . "'. Valid columns are '" . implode("', '", $allColumns) . "'.");
+        }
+
         $list = $this->getMigrationList($migrationIds, $options['tag']);
 
         $table = [];
         // Take it one tag at a time, listing the migrations within each tag.
         foreach ($list as $tag => $migrations) {
             if ($tag) {
-                $table[] = $this->prepareTableRow(['id' => dt('Tag: @name', ['@name' => $tag])], $namesOnly);
+                $table[] = $this->padTableRow([
+                  'id' => dt('Tag: @name', ['@name' => $tag])
+                ], $columns);
             }
             ksort($migrations);
-            foreach ($migrations as $migrationId => $migration) {
-                $printedMigrationId = ($tag ? ' ' : '') . $migrationId;
-                if ($namesOnly) {
-                    $table[] = $this->prepareTableRow(['id' => $printedMigrationId], $namesOnly);
-                    // No future processing is needed. We're done with this row.
-                    continue;
-                }
-
-                try {
-                    $map = $migration->getIdMap();
-                    $imported = $map->importedCount();
-                    $sourcePlugin = $migration->getSourcePlugin();
-                } catch (\Exception $exception) {
-                    $arguments = ['@migration' => $migrationId, '@message' => $exception->getMessage()];
-                    $this->logger()->error(dt('Failure retrieving information on @migration: @message', $arguments));
-                    continue;
-                }
-
-                try {
-                    $sourceRows = $sourcePlugin->count();
-                    // -1 indicates uncountable sources.
-                    if ($sourceRows == -1) {
-                        $sourceRows = dt('N/A');
-                        $unprocessed = dt('N/A');
-                    } else {
-                        $unprocessed = $sourceRows - $map->processedCount();
-                        if ($sourceRows > 0 && $imported > 0) {
-                            $imported .= ' (' . round(($imported / $sourceRows) * 100, 1) . '%)';
-                        }
+            foreach ($migrations as $migration) {
+                $row = [];
+                foreach ($columns as $column) {
+                    switch ($column) {
+                        case 'id':
+                            $row[$column] = ($tag ? ' ' : '') . $migration->id();
+                            break;
+                        case 'status':
+                            $row[$column] = $migration->getStatusLabel();
+                            break;
+                        case 'total':
+                            $sourceRowsCount = $this->getMigrationSourceRowsCount($migration);
+                            $row[$column] = $sourceRowsCount !== null ? $sourceRowsCount : dt('N/A');
+                            break;
+                        case 'needing_update':
+                            $row[$column] = $this->getMigrationNeedingUpdateCount($migration);
+                            break;
+                        case 'unprocessed':
+                            $unprocessedCount = $this->getMigrationUnprocessedCount($migration);
+                            $row[$column] = $unprocessedCount !== null ? $unprocessedCount : dt('N/A');
+                            break;
+                        case 'imported':
+                            $importedCount = $this->getMigrationImportedCount($migration);
+                            if ($importedCount === NULL) {
+                                // Next migration.
+                                continue 2;
+                            }
+                            $sourceRowsCount = $sourceRowsCount ?? $this->getMigrationSourceRowsCount($migration);
+                            if ($sourceRowsCount > 0 && $importedCount > 0) {
+                                $importedCount .= ' (' . round(($importedCount / $sourceRowsCount) * 100, 1) . '%)';
+                            }
+                            $row[$column] = $importedCount;
+                            break;
+                        case 'last_imported':
+                            $row[$column] = $this->getMigrationLastImportedTime($migration);
+                            break;
                     }
-                    $needingUpdate = count($map->getRowsNeedingUpdate($map->processedCount()));
-                } catch (\Exception $exception) {
-                    $arguments = ['@migration' => $migrationId, '@message' => $exception->getMessage()];
-                    $this->logger()->error(dt('Could not retrieve source count from @migration: @message', $arguments));
-                    $sourceRows = dt('N/A');
-                    $unprocessed = dt('N/A');
-                    $needingUpdate = dt('N/A');
                 }
-
-                $status = $migration->getStatusLabel();
-                if ($lastImported = $this->keyValue->get($migration->id(), '')) {
-                    $lastImported = $this->dateFormatter->format(
-                        $lastImported / 1000,
-                        'custom',
-                        'Y-m-d H:i:s'
-                    );
-                }
-
-                $table[] = [
-                    'id' => $printedMigrationId,
-                    'status' => $status,
-                    'total' => $sourceRows,
-                    'imported' => $imported,
-                    'needing_update' => $needingUpdate,
-                    'unprocessed' => $unprocessed,
-                    'last_imported' => $lastImported,
-                ];
+                $table[] = $row;
             }
 
             // Add an empty row after a tag group.
             if ($tag) {
-                $table[] = $this->prepareTableRow([], $namesOnly);
+                $table[] = $this->padTableRow([], $columns);
             }
         }
 
@@ -187,30 +218,104 @@ class MigrateRunnerCommands extends DrushCommands
     }
 
     /**
-     * Prepares a table row for migrate status.
+     * @param \Drupal\migrate\Plugin\MigrationInterface $migration
+     *
+     * @return int|null
+     */
+    protected function getMigrationSourceRowsCount(MigrationInterface $migration): ?int
+    {
+        try {
+            $sourceRowsCount = $migration->getSourcePlugin()->count();
+            // -1 indicates uncountable sources.
+            if ($sourceRowsCount == -1) {
+                return null;
+            }
+            return $sourceRowsCount;
+        } catch (\Exception $exception) {
+            $arguments = [
+              '@migration' => $migration->id(),
+              '@message' => $exception->getMessage(),
+            ];
+            $this->logger()->error(dt('Could not retrieve source count from @migration: @message', $arguments));
+            return null;
+        }
+    }
+
+    /**
+     * @param \Drupal\migrate\Plugin\MigrationInterface $migration
+     *
+     * @return int|null
+     */
+    protected function getMigrationNeedingUpdateCount(MigrationInterface $migration): ?int
+    {
+        $map = $migration->getIdMap();
+        return count($map->getRowsNeedingUpdate($map->processedCount()));
+    }
+
+    /**
+     * @param \Drupal\migrate\Plugin\MigrationInterface $migration
+     *
+     * @return int|null
+     */
+    protected function getMigrationUnprocessedCount(MigrationInterface $migration): ?int
+    {
+        $sourceRowsCount = $this->getMigrationSourceRowsCount($migration);
+        if ($sourceRowsCount === null) {
+            return null;
+        }
+        return $sourceRowsCount - $migration->getIdMap()->processedCount();
+    }
+
+    /**
+     * @param \Drupal\migrate\Plugin\MigrationInterface $migration
+     *
+     * @return int|null
+     */
+    protected function getMigrationImportedCount(MigrationInterface $migration): ?int
+    {
+        try {
+            return $migration->getIdMap()->importedCount();
+        } catch (\Exception $exception) {
+            $arguments = [
+              '@migration' => $migration->id(),
+              '@message' => $exception->getMessage(),
+            ];
+            $this->logger()->error(dt('Failure retrieving information on @migration: @message', $arguments));
+            return null;
+        }
+    }
+
+    /**
+     * @param \Drupal\migrate\Plugin\MigrationInterface $migration
+     *
+     * @return string
+     */
+    protected function getMigrationLastImportedTime(MigrationInterface $migration): string
+    {
+        if ($lastImported = $this->keyValue->get($migration->id(), '')) {
+            $lastImported = $this->dateFormatter->format($lastImported / 1000, 'custom', 'Y-m-d H:i:s');
+        }
+        return $lastImported;
+    }
+
+    /**
+     * Pads an incomplete table row with empty cells migrate status.
      *
      * @param array $row
      *   The row to be prepared.
-     * @param true|null $namesOnly
-     *   If to output only the migration IDs.
+     * @param array $columns
+     *   The table columns.
      *
      * @return array
-     *   The prepared row.
+     *   The complete table row.
      */
-    protected function prepareTableRow(array $row, ?bool $namesOnly): array
+    protected function padTableRow(array $row, array $columns): array
     {
-        if (!$namesOnly) {
-            $row += array_fill_keys([
-              'id',
-              'status',
-              'total',
-              'imported',
-              'needing_update',
-              'unprocessed',
-              'last_imported',
-            ], null);
+        foreach ($columns as $column) {
+            if (!isset($row[$column])) {
+                $row[$column] = null;
+            }
         }
-
         return $row;
     }
 
