@@ -1,6 +1,6 @@
-!!! note
+#### _The current docs for Drush are at https://www.drush.org. These docs are for Drush 8._
 
-    The current docs for Drush are at https://www.drush.org. These docs are for Drush 8.
+-----------
     
 Drush is a command line shell and Unix scripting interface for Drupal. Drush core ships with lots of useful commands for interacting with code like modules/themes/profiles. Similarly, it runs update.php, executes sql queries and DB migrations, and misc utilities like run cron or clear cache. Drush can be extended by [3rd party commandfiles](https://www.drupal.org/project/project_module?f[2]=im_vid_3%3A4654).
 
