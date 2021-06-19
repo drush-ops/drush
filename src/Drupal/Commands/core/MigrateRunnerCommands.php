@@ -77,8 +77,7 @@ class MigrateRunnerCommands extends DrushCommands
      * @option tag A comma-separated list of migration tags to list. If only
      *   <info>--tag</info> is provided, all tagged migrations will be listed,
      *   grouped by tags.
-     * @option columns A comma-separated list of columns to show. Available options: id, status, total, imported, needing_update, unprocessed, last_imported.
-     * @option names-only [Deprecated, use --columns=id instead] Only return names, not all the details (faster).
+     * @option names-only [Deprecated, use --field=id instead] Only return names, not all the details (faster).
      *
      * @usage migrate:status
      *   Retrieve status for all migrations
@@ -106,54 +105,32 @@ class MigrateRunnerCommands extends DrushCommands
      *   needing_update: Needing update
      *   unprocessed: Unprocessed
      *   last_imported: Last Imported
-     * @default-fields id,status,total,imported,needing_update,unprocessed,last_imported
+     * @default-fields id,status,total,imported,unprocessed,last_imported
      *
      * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
      *   Migrations status formatted as table.
      *
      * @throws \Exception
-     *   If invalid columns were passed via --columns option.
+     *   If --names-only is used with --field having other value than 'id'.
      */
     public function status(?string $migrationIds = null, array $options = [
       'tag' => self::REQ,
-      'columns' => self::REQ,
       'names-only' => false,
     ]): RowsOfFields
     {
-        $allColumns = [
-          'id',
-          'status',
-          'total',
-          'imported',
-          'needing_update',
-          'unprocessed',
-          'last_imported',
-        ];
-
-        $defaultColumns = [
-          'id',
-          'status',
-          'total',
-          'imported',
-          'unprocessed',
-          'last_imported',
-        ];
-
-        // The --names-only option takes precedence over --columns.
-        if ($namesOnly = $options['names-only']) {
-            $deprecationMessage = 'The --names-only option is deprecated in Drush 10.5.1 and is removed from Drush 11.0.0. Use --columns=id instead.';
+        // The --names-only option takes precedence over --fields.
+        if ($options['names-only']) {
+            if ($options['field'] && $options['field'] !== 'id') {
+                throw new \Exception("Cannot use --names-only with --field={$options['field']}.");
+            }
+            $deprecationMessage = 'The --names-only option is deprecated in Drush 10.5.1 and is removed from Drush 11.0.0. Use --field=id instead.';
             $this->logger()->warning($deprecationMessage);
             @trigger_error($deprecationMessage, E_USER_DEPRECATED);
-            $columns = ['id'];
-        } else {
-            $columns = $options['columns'] ? StringUtils::csvToArray($options['columns']) : $defaultColumns;
-            // The migration ID is mandatory.
-            if (!isset($columns['id'])) {
-                $columns = array_merge(['id'], $columns);
-            }
-        }
-        if ($invalidColumns = array_diff($columns, $allColumns)) {
-            throw new \Exception("Invalid columns passed in --columns option: '" . implode("', '", $invalidColumns) . "'. Valid columns are '" . implode("', '", $allColumns) . "'.");
+            $fields = ['id'];
+        } elseif ($options['field']) {
+            $fields = [$options['field']];
+        } elseif ($options['fields']) {
+            $fields = StringUtils::csvToArray($options['fields']);
         }
 
         $list = $this->getMigrationList($migrationIds, $options['tag']);
@@ -164,29 +141,29 @@ class MigrateRunnerCommands extends DrushCommands
             if ($tag) {
                 $table[] = $this->padTableRow([
                   'id' => dt('Tag: @name', ['@name' => $tag])
-                ], $columns);
+                ], $fields);
             }
             ksort($migrations);
             foreach ($migrations as $migration) {
                 $row = [];
-                foreach ($columns as $column) {
-                    switch ($column) {
+                foreach ($fields as $field) {
+                    switch ($field) {
                         case 'id':
-                            $row[$column] = ($tag ? ' ' : '') . $migration->id();
+                            $row[$field] = ($tag ? ' ' : '') . $migration->id();
                             break;
                         case 'status':
-                            $row[$column] = $migration->getStatusLabel();
+                            $row[$field] = $migration->getStatusLabel();
                             break;
                         case 'total':
                             $sourceRowsCount = $this->getMigrationSourceRowsCount($migration);
-                            $row[$column] = $sourceRowsCount !== null ? $sourceRowsCount : dt('N/A');
+                            $row[$field] = $sourceRowsCount !== null ? $sourceRowsCount : dt('N/A');
                             break;
                         case 'needing_update':
-                            $row[$column] = $this->getMigrationNeedingUpdateCount($migration);
+                            $row[$field] = $this->getMigrationNeedingUpdateCount($migration);
                             break;
                         case 'unprocessed':
                             $unprocessedCount = $this->getMigrationUnprocessedCount($migration);
-                            $row[$column] = $unprocessedCount !== null ? $unprocessedCount : dt('N/A');
+                            $row[$field] = $unprocessedCount !== null ? $unprocessedCount : dt('N/A');
                             break;
                         case 'imported':
                             $importedCount = $this->getMigrationImportedCount($migration);
@@ -198,10 +175,10 @@ class MigrateRunnerCommands extends DrushCommands
                             if ($sourceRowsCount > 0 && $importedCount > 0) {
                                 $importedCount .= ' (' . round(($importedCount / $sourceRowsCount) * 100, 1) . '%)';
                             }
-                            $row[$column] = $importedCount;
+                            $row[$field] = $importedCount;
                             break;
                         case 'last_imported':
-                            $row[$column] = $this->getMigrationLastImportedTime($migration);
+                            $row[$field] = $this->getMigrationLastImportedTime($migration);
                             break;
                     }
                 }
@@ -210,7 +187,7 @@ class MigrateRunnerCommands extends DrushCommands
 
             // Add an empty row after a tag group.
             if ($tag) {
-                $table[] = $this->padTableRow([], $columns);
+                $table[] = $this->padTableRow([], $fields);
             }
         }
 
@@ -218,16 +195,20 @@ class MigrateRunnerCommands extends DrushCommands
     }
 
     /**
-     * @param \Drupal\migrate\Plugin\MigrationInterface $migration
+     * Returns the migration source rows count.
      *
+     * @param \Drupal\migrate\Plugin\MigrationInterface $migration
+     *   The migration plugin instance.
      * @return int|null
+     *   The migration source rows count or null if the source is uncountable or
+     *   the source count couldn't be retrieved.
      */
     protected function getMigrationSourceRowsCount(MigrationInterface $migration): ?int
     {
         try {
             $sourceRowsCount = $migration->getSourcePlugin()->count();
             // -1 indicates uncountable sources.
-            if ($sourceRowsCount == -1) {
+            if ($sourceRowsCount === -1) {
                 return null;
             }
             return $sourceRowsCount;
@@ -242,20 +223,28 @@ class MigrateRunnerCommands extends DrushCommands
     }
 
     /**
+     * Returns the number or items that needs update.
+     *
      * @param \Drupal\migrate\Plugin\MigrationInterface $migration
+     *   The migration plugin instance.
      *
      * @return int|null
+     *   The number or items that needs update.
      */
-    protected function getMigrationNeedingUpdateCount(MigrationInterface $migration): ?int
+    protected function getMigrationNeedingUpdateCount(MigrationInterface $migration): int
     {
         $map = $migration->getIdMap();
         return count($map->getRowsNeedingUpdate($map->processedCount()));
     }
 
     /**
+     * Returns the number of unprocessed items.
+     *
      * @param \Drupal\migrate\Plugin\MigrationInterface $migration
+     *   The migration plugin instance.
      *
      * @return int|null
+     *   The number of unprocessed items or null if it cannot be determined.
      */
     protected function getMigrationUnprocessedCount(MigrationInterface $migration): ?int
     {
@@ -267,9 +256,13 @@ class MigrateRunnerCommands extends DrushCommands
     }
 
     /**
+     * Returns the number of imported items.
+     *
      * @param \Drupal\migrate\Plugin\MigrationInterface $migration
+     *   The migration plugin instance.
      *
      * @return int|null
+     *   The number of imported items or null if it cannot be determined.
      */
     protected function getMigrationImportedCount(MigrationInterface $migration): ?int
     {
@@ -286,9 +279,13 @@ class MigrateRunnerCommands extends DrushCommands
     }
 
     /**
+     * Returns the last imported date/time if any.
+     *
      * @param \Drupal\migrate\Plugin\MigrationInterface $migration
+     *   The migration plugin instance.
      *
      * @return string
+     *   The last imported date/time if any.
      */
     protected function getMigrationLastImportedTime(MigrationInterface $migration): string
     {
@@ -299,7 +296,7 @@ class MigrateRunnerCommands extends DrushCommands
     }
 
     /**
-     * Pads an incomplete table row with empty cells migrate status.
+     * Pads an incomplete table row with empty cells.
      *
      * @param array $row
      *   The row to be prepared.

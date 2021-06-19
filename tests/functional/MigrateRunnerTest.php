@@ -78,7 +78,7 @@ class MigrateRunnerTest extends CommandUnishTestCase
         // Check that --name-only takes precedence over --columns.
         $this->drush('migrate:status', [], [
           'names-only' => null,
-          'columns' => 'id,status,imported',
+          'fields' => 'id,status,imported',
           'format' => 'json',
         ]);
         $output = $this->getOutputFromJSON();
@@ -90,7 +90,7 @@ class MigrateRunnerTest extends CommandUnishTestCase
         $this->assertArrayNotHasKey('unprocessed', $output[0]);
         $this->assertArrayNotHasKey('last_imported', $output[0]);
         // Check that the deprecation warning is printed.
-        $this->assertStringContainsString('The --names-only option is deprecated in Drush 10.5.1 and is removed from Drush 11.0.0. Use --columns=id instead.', $this->getErrorOutput());
+        $this->assertStringContainsString('The --names-only option is deprecated in Drush 10.5.1 and is removed from Drush 11.0.0. Use --field=id instead.', $this->getErrorOutput());
 
         $actualIds = array_column($output, 'id');
         $this->assertCount(3, $actualIds);
@@ -102,20 +102,9 @@ class MigrateRunnerTest extends CommandUnishTestCase
         $this->drush('migrate:status', ['non_existing,test_migration,another_invalid'], [], null, null, self::EXIT_ERROR);
         $this->assertStringContainsString('Invalid migration IDs: non_existing, another_invalid', $this->getErrorOutput());
 
-        // Check that passing invalid columns throws an exception.
+        // Check --fields option.
         $this->drush('migrate:status', [], [
-          'columns' => 'foo,bar',
-          'format' => 'json',
-        ], null, null, self::EXIT_ERROR);
-
-        $errorOutput = $this->getErrorOutputAsList();
-        $this->assertContains("  Invalid columns passed in --columns option: 'foo', 'bar'. Valid columns are", $errorOutput);
-        $this->assertContains("   'id', 'status', 'total', 'imported', 'needing_update', 'unprocessed', 'las", $errorOutput);
-        $this->assertContains("  t_imported'.", $errorOutput);
-
-        // Check --columns option.
-        $this->drush('migrate:status', [], [
-          'columns' => 'id,status,needing_update',
+          'fields' => 'id,status,needing_update',
           'format' => 'json',
         ]);
         $this->assertArrayHasKey('id', $this->getOutputFromJSON(0));
@@ -417,6 +406,7 @@ class MigrateRunnerTest extends CommandUnishTestCase
             'update' => null,
         ]);
         $this->drush('migrate:status', ['test_migration'], [
+          'fields' => 'needing_update',
           'format' => 'json',
         ]);
         // Check that no row needs update.
