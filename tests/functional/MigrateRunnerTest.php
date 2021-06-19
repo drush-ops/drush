@@ -209,6 +209,7 @@ class MigrateRunnerTest extends CommandUnishTestCase
     {
         $this->drush('state:set', ['woot.test_migration_source_data_amount', 5]);
         $this->drush('migrate:import', ['test_migration']);
+        $this->assertStringContainsString('[notice] Processed 5 items (5 created, 0 updated, 0 failed, 0 ignored)', $this->getErrorOutput());
         $this->drush('sql:query', ['SELECT title FROM node_field_data']);
         $this->assertSame(['Item 1', 'Item 2', 'Item 3', 'Item 4', 'Item 5'], $this->getOutputAsList());
 
@@ -222,7 +223,7 @@ class MigrateRunnerTest extends CommandUnishTestCase
         $this->assertStringContainsString("[notice] Rolled back 2 items - done with 'test_migration'", $this->getErrorOutput());
         $this->assertStringContainsString('[notice] Processed 0 items (0 created, 0 updated, 0 failed, 0 ignored)', $this->getErrorOutput());
         $this->drush('sql:query', ['SELECT title FROM node_field_data']);
-        $this->assertEquals(['Item 1', 'Item 3', 'Item 5'], $this->getOutputAsList());
+        $this->assertSame(['Item 1', 'Item 3', 'Item 5'], $this->getOutputAsList());
     }
 
     /**
