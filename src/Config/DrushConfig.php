@@ -69,7 +69,7 @@ class DrushConfig extends ConfigOverlay
      * Return the list of paths to active Drush configuration files.
      * @return array
      */
-    public function configPaths()
+    public function configPaths(): array
     {
         return $this->get('runtime.config.paths', []);
     }

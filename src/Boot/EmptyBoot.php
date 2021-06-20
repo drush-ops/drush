@@ -27,7 +27,7 @@ class EmptyBoot extends BaseBoot
         ];
     }
 
-    public function bootstrapInitPhases()
+    public function bootstrapInitPhases(): array
     {
         return [DRUSH_BOOTSTRAP_DRUSH];
     }

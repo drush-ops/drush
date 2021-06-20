@@ -56,12 +56,13 @@
     "composer/installers": "^1.7",
     "cweagans/composer-patches": "~1.0",
     "david-garcia/phpwhois": "4.3.0",
-    "drupal/core-recommended": "^8.8",
     "drupal/alinks": "1.0.0",
+    "drupal/core-recommended": "^8.8",
     "phpunit/phpunit": ">=7.5.20",
-    "yoast/phpunit-polyfills": "^0.2.0",
+    "rector/rector": "^0.11.20",
     "squizlabs/php_codesniffer": "^2.7 || ^3",
-    "vlucas/phpdotenv": "^2.4"
+    "vlucas/phpdotenv": "^2.4",
+    "yoast/phpunit-polyfills": "^0.2.0"
   },
   "conflict": {
     "drupal/migrate_run": "*",
@@ -113,7 +114,8 @@
     "phpunit": "php -d sendmail_path='true' vendor/bin/phpunit --colors=always --configuration tests",
     "unit": "composer phpunit -- --testsuite unit",
     "integration": "composer phpunit -- --testsuite integration",
-    "functional": "composer phpunit -- --testsuite functional"
+    "functional": "composer phpunit -- --testsuite functional",
+    "rector": "./vendor/bin/rector --config=./misc/rector-config.php process src/Boot src/Preflight src/Runtime src/SiteAlias src/Symfony src/Config"
   },
   "extra": {
     "installer-paths": {

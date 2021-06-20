@@ -29,7 +29,7 @@ class ProcessManager extends ConsolidationProcessManager
      * @param array $options_double_dash
      * @return SiteProcess
      */
-    public function drush(SiteAliasInterface $siteAlias, $command, $args = [], $options = [], $options_double_dash = [])
+    public function drush(SiteAliasInterface $siteAlias, string $command, array $args = [], array $options = [], array $options_double_dash = []): \Consolidation\SiteProcess\ProcessBase
     {
         array_unshift($args, $command);
         return $this->drushSiteProcess($siteAlias, $args, $options, $options_double_dash);
@@ -46,7 +46,7 @@ class ProcessManager extends ConsolidationProcessManager
      * @param array $options_double_dash
      * @return ProcessBase
      */
-    public function drushSiteProcess(SiteAliasInterface $siteAlias, $args = [], $options = [], $options_double_dash = [])
+    public function drushSiteProcess(SiteAliasInterface $siteAlias, array $args = [], array $options = [], array $options_double_dash = []): \Symfony\Component\Process\Process
     {
         // Fill in the root and URI from the site alias, if the caller
         // did not already provide them in $options.
@@ -101,7 +101,7 @@ class ProcessManager extends ConsolidationProcessManager
      * Use Drush::drush() or ProcessManager::drush() instead of this method
      * when calling Drush.
      */
-    public function siteProcess(SiteAliasInterface $siteAlias, $args = [], $options = [], $optionsPassedAsArgs = [])
+    public function siteProcess(SiteAliasInterface $siteAlias, $args = [], $options = [], $optionsPassedAsArgs = []): \Consolidation\SiteProcess\ProcessBase
     {
         $process = parent::siteProcess($siteAlias, $args, $options, $optionsPassedAsArgs);
         return $this->configureProcess($process);
@@ -122,7 +122,7 @@ class ProcessManager extends ConsolidationProcessManager
      * @return ProcessBase
      *   A wrapper around Symfony Process.
      */
-    public function process($commandline, $cwd = null, array $env = null, $input = null, $timeout = 60)
+    public function process($commandline, $cwd = null, array $env = null, $input = null, $timeout = 60): \Consolidation\SiteProcess\ProcessBase
     {
         $process = parent::process($commandline, $cwd, $env, $input, $timeout);
         return $this->configureProcess($process);
@@ -137,7 +137,7 @@ class ProcessManager extends ConsolidationProcessManager
      * @param int|float|null $timeout The timeout in seconds or null to disable
      * @return Process
      */
-    public function shell($command, $cwd = null, array $env = null, $input = null, $timeout = 60)
+    public function shell($command, $cwd = null, array $env = null, $input = null, $timeout = 60): \Consolidation\SiteProcess\ProcessBase
     {
         $process = parent::shell($command, $cwd, $env, $input, $timeout);
         return $this->configureProcess($process);
@@ -146,7 +146,7 @@ class ProcessManager extends ConsolidationProcessManager
     /**
      * configureProcess sets up a process object so that it is ready to use.
      */
-    protected static function configureProcess(ProcessBase $process)
+    protected static function configureProcess(ProcessBase $process): \Consolidation\SiteProcess\ProcessBase
     {
         $process->setSimulated(Drush::simulate());
         $process->setVerbose(Drush::verbose());

@@ -25,7 +25,7 @@ class DependencyInjection
 {
     protected $handlers = [];
 
-    public function desiredHandlers($handlerList)
+    public function desiredHandlers($handlerList): void
     {
         $this->handlers = $handlerList;
     }
@@ -41,7 +41,7 @@ class DependencyInjection
         ClassLoader $loader,
         DrupalFinder $drupalFinder,
         SiteAliasManager $aliasManager
-    ) {
+    ): \League\Container\Container {
 
         // Create default input and output objects if they were not provided
         if (!$input) {
@@ -73,7 +73,7 @@ class DependencyInjection
     /**
      * Make sure we are notified on exit, and when bad things happen.
      */
-    public function installHandlers($container)
+    public function installHandlers($container): void
     {
         foreach ($this->handlers as $handlerId) {
             $handler = $container->get($handlerId);
@@ -81,7 +81,7 @@ class DependencyInjection
         }
     }
 
-    protected function addDrushServices(ContainerInterface $container, ClassLoader $loader, DrupalFinder $drupalFinder, SiteAliasManager $aliasManager, DrushConfig $config)
+    protected function addDrushServices(ContainerInterface $container, ClassLoader $loader, DrupalFinder $drupalFinder, SiteAliasManager $aliasManager, DrushConfig $config): void
     {
         // Override Robo's logger with our own
         $container->share('logger', 'Drush\Log\Logger')
@@ -138,7 +138,7 @@ class DependencyInjection
             ->invokeMethod('setProcessManager', ['process.manager']);
     }
 
-    protected function alterServicesForDrush(ContainerInterface $container, Application $application)
+    protected function alterServicesForDrush(ContainerInterface $container, Application $application): void
     {
         $paramInjection = $container->get('parameterInjection');
         $paramInjection->register('Symfony\Component\Console\Style\SymfonyStyle', new DrushStyleInjector());
@@ -166,7 +166,7 @@ class DependencyInjection
         ProcessManager::addTransports($container->get('process.manager'));
     }
 
-    protected function injectApplicationServices(ContainerInterface $container, Application $application)
+    protected function injectApplicationServices(ContainerInterface $container, Application $application): void
     {
         $application->setLogger($container->get('logger'));
         $application->setBootstrapManager($container->get('bootstrap.manager'));

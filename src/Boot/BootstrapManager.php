@@ -53,7 +53,7 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
     /**
      * @param int $phase
      */
-    protected function setPhase($phase)
+    protected function setPhase(int $phase)
     {
         if ($this->bootstrap) {
             $this->bootstrap()->setPhase($phase);
@@ -73,7 +73,7 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
         }
     }
 
-    public function drupalFinder()
+    public function drupalFinder(): \DrupalFinder\DrupalFinder
     {
         if (!isset($this->drupalFinder)) {
             $this->drupalFinder = new DrupalFinder();
@@ -149,7 +149,7 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
      *
      * @return \Drush\Boot\Boot
      */
-    public function bootstrap()
+    public function bootstrap(): \Drush\Boot\Boot
     {
         if (!$this->bootstrap) {
             $this->bootstrap = $this->selectBootstrapClass();
@@ -160,7 +160,7 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
     /**
      * For use in testing
      */
-    public function injectBootstrap($bootstrap)
+    public function injectBootstrap(\Drush\Boot\Boot $bootstrap)
     {
         $this->inflect($bootstrap);
         $this->bootstrap = $bootstrap;
@@ -176,7 +176,7 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
      *
      * @return \Drush\Boot\Boot
      */
-    public function bootstrapObjectForRoot($path)
+    public function bootstrapObjectForRoot($path): \Drush\Boot\Boot
     {
         foreach ($this->bootstrapCandidates as $candidate) {
             if ($candidate->validRoot($path)) {
@@ -199,7 +199,7 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
      * be 'latched', and further calls to Drush::bootstrap()
      * will always return the same object.
      */
-    protected function selectBootstrapClass()
+    protected function selectBootstrapClass(): \Drush\Boot\Boot
     {
         // Once we have selected a Drupal root, we will reduce our bootstrap
         // candidates down to just the one used to select this site root.
@@ -211,7 +211,7 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
      * object being used, and do not allow it to change any
      * longer.
      */
-    public function latch($bootstrap)
+    public function latch(\Drush\Boot\Boot $bootstrap)
     {
         $this->bootstrap = $bootstrap;
     }
@@ -228,7 +228,7 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
      *
      * @see \Drush\Boot\Boot::bootstrapPhases()
      */
-    public function bootstrapPhases($function_names = false)
+    public function bootstrapPhases(bool $function_names = false): array
     {
         $result = [];
 
@@ -262,7 +262,7 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
      *
      * @see \Drush\Boot\Boot::bootstrapPhases()
      */
-    public function doBootstrap($phase, $phase_max = false, AnnotationData $annotationData = null)
+    public function doBootstrap(int $phase, $phase_max = false, AnnotationData $annotationData = null): bool
     {
         $bootstrap = $this->bootstrap();
         $phases = $this->bootstrapPhases(true);
@@ -302,7 +302,7 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
     /**
      * hasBootstrap determines whether the manager has a bootstrap object yet.
      */
-    public function hasBootstrap()
+    public function hasBootstrap(): bool
     {
         return $this->bootstrap != null;
     }
@@ -316,7 +316,7 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
      * @return bool
      *   TRUE if the specified bootstrap phase has completed.
      */
-    public function hasBootstrapped($phase)
+    public function hasBootstrapped(int $phase): bool
     {
         return $this->getPhase() >= $phase;
     }
@@ -340,7 +340,7 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
      *
      * @see \Drush\Boot\Boot::bootstrapPhases()
      */
-    public function bootstrapValidate($phase)
+    public function bootstrapValidate(int $phase): bool
     {
         $bootstrap = $this->bootstrap();
         $phases = $this->bootstrapPhases(true);
@@ -381,7 +381,7 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
      *   Thrown when an unknown bootstrap phase is passed in the annotation
      *   data.
      */
-    public function bootstrapToPhase($bootstrapPhase, AnnotationData $annotationData = null)
+    public function bootstrapToPhase(string $bootstrapPhase, AnnotationData $annotationData = null): bool
     {
         $this->logger->log(LogLevel::BOOTSTRAP, 'Starting bootstrap to {phase}', ['phase' => $bootstrapPhase]);
         $phase = $this->bootstrap()->lookUpPhaseIndex($bootstrapPhase);
@@ -418,7 +418,7 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
      * @return bool
      *   TRUE if the specified bootstrap phase has completed.
      */
-    public function bootstrapToPhaseIndex($max_phase_index, AnnotationData $annotationData = null)
+    public function bootstrapToPhaseIndex(int $max_phase_index, AnnotationData $annotationData = null): bool
     {
         if ($max_phase_index == DRUSH_BOOTSTRAP_MAX) {
             // Try get a max phase.
@@ -467,7 +467,7 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
      * @return int
      *   The maximum phase to which we bootstrapped.
      */
-    public function bootstrapMax($max_phase_index = false, AnnotationData $annotationData = null)
+    public function bootstrapMax(int $max_phase_index = false, AnnotationData $annotationData = null): int
     {
         // Bootstrap as far as we can without throwing an error, but log for
         // debugging purposes.
@@ -507,7 +507,7 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
     /**
      * Allow those with an instance to us to the BootstrapManager to use its logger
      */
-    public function logger()
+    public function logger(): \Psr\Log\LoggerInterface
     {
         return $this->logger;
     }

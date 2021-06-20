@@ -20,7 +20,7 @@ interface Boot
      *
      * @param string $uri Site to bootstrap
      */
-    public function setUri($uri);
+    public function setUri(string $uri);
 
     /**
      * This function determines if the specified path points to
@@ -44,7 +44,7 @@ interface Boot
      * @return string|NULL
      *   The version string for the current version of the software, e.g. 8.1.3
      */
-    public function getVersion($root);
+    public function getVersion(string $root);
 
     /**
      * Returns an array that determines what bootstrap phases

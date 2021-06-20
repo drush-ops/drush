@@ -68,7 +68,7 @@ class Preflight
     /**
      * @return PreflightLog
      */
-    public function logger()
+    public function logger(): \Drush\Preflight\PreflightLog
     {
         return $this->logger;
     }
@@ -76,7 +76,7 @@ class Preflight
     /**
      * @param PreflightLog $logger
      */
-    public function setLogger(PreflightLog $logger)
+    public function setLogger(PreflightLog $logger): void
     {
         $this->logger = $logger;
     }
@@ -85,7 +85,7 @@ class Preflight
      * Perform preliminary initialization. This mostly involves setting up
      * legacy systems.
      */
-    public function init()
+    public function init(): void
     {
         // Define legacy constants, and include legacy files that Drush still needs
         LegacyPreflight::includeCode($this->environment->drushBasePath());
@@ -111,7 +111,7 @@ class Preflight
      * Eventually, we might want to expose this table to some form of
      * 'help' output, so folks can see the available conversions.
      */
-    protected function remapOptions()
+    protected function remapOptions(): array
     {
         return [
             '--ssh-options' => '-Dssh.options',
@@ -135,7 +135,7 @@ class Preflight
      *
      * This should be fixed in Symfony Console.
      */
-    protected function remapCommandAliases()
+    protected function remapCommandAliases(): array
     {
         return [
             'si' => 'site:install',
@@ -150,7 +150,7 @@ class Preflight
      * Arguments and options not used during preflight will be processed
      * with an ArgvInput.
      */
-    public function preflightArgs($argv)
+    public function preflightArgs($argv): \Drush\Preflight\PreflightArgs
     {
         $argProcessor = new ArgsPreprocessor();
         $remapper = new ArgsRemapper($this->remapOptions(), $this->remapCommandAliases());
@@ -167,7 +167,7 @@ class Preflight
      * Create the initial config locator object, and inject any needed
      * settings, paths and so on into it.
      */
-    public function prepareConfig(Environment $environment)
+    public function prepareConfig(Environment $environment): void
     {
         // Make our environment settings available as configuration items
         $this->configLocator->addEnvironment($environment);
@@ -176,12 +176,12 @@ class Preflight
         $this->configLocator->addDrushConfig($environment->drushBasePath());
     }
 
-    public function createInput()
+    public function createInput(): \Symfony\Component\Console\Input\StreamableInputInterface
     {
         return $this->preflightArgs->createInput();
     }
 
-    public function getCommandFilePaths()
+    public function getCommandFilePaths(): array
     {
         $commandlinePaths = $this->preflightArgs->commandPaths();
         $configPaths = $this->config()->get('drush.include', []);
@@ -192,12 +192,12 @@ class Preflight
         return $this->configLocator->getCommandFilePaths(array_merge($commandlinePaths, $configPaths), $this->drupalFinder()->getDrupalRoot());
     }
 
-    public function loadSiteAutoloader()
+    public function loadSiteAutoloader(): \Composer\Autoload\ClassLoader
     {
         return $this->environment()->loadSiteAutoloader($this->drupalFinder()->getDrupalRoot());
     }
 
-    public function config()
+    public function config(): \Drush\Config\Config
     {
         return $this->configLocator->config();
     }
@@ -207,7 +207,7 @@ class Preflight
      * @return bool
      *   True if the request was successfully redispatched remotely. False if the request should proceed.
      */
-    public function preflight($argv)
+    public function preflight($argv): bool
     {
         // Fail fast if there is anything in our environment that does not check out
         $this->verify->verify($this->environment);
@@ -324,7 +324,7 @@ class Preflight
      * @param string $selectedRoot The location to being searching for a site
      * @param string|bool $fallbackPath The secondary location to search (usualy the vendor director)
      */
-    protected function setSelectedSite($selectedRoot, $fallbackPath = false, $originalSelection = null)
+    protected function setSelectedSite(string $selectedRoot, $fallbackPath = false, $originalSelection = null)
     {
         if ($selectedRoot || $fallbackPath) {
             $foundRoot = $this->drupalFinder->locateRoot($selectedRoot);
@@ -350,7 +350,7 @@ class Preflight
      *
      * @return DrupalFinder
      */
-    public function drupalFinder()
+    public function drupalFinder(): \DrupalFinder\DrupalFinder
     {
         return $this->drupalFinder;
     }
@@ -360,7 +360,7 @@ class Preflight
      *
      * @return SiteAliasManager
      */
-    public function aliasManager()
+    public function aliasManager(): \Consolidation\SiteAlias\SiteAliasManager
     {
         return $this->aliasManager;
     }
@@ -370,7 +370,7 @@ class Preflight
      *
      * @return Environment
      */
-    public function environment()
+    public function environment(): \Drush\Config\Environment
     {
         return $this->environment;
     }
