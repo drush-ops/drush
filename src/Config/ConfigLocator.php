@@ -29,7 +29,7 @@ use Webmozart\PathUtil\Path;
 class ConfigLocator
 {
     /**
-     * @var \Robo\Config
+     * @var \Drush\Config\DrushConfig
      */
     protected $config;
 
@@ -182,7 +182,7 @@ class ConfigLocator
      *
      * @return Config
      */
-    public function config(): \Robo\Config
+    public function config(): \Drush\Config\DrushConfig
     {
         return $this->config;
     }

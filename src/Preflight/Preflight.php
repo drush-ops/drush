@@ -1,6 +1,7 @@
 <?php
 namespace Drush\Preflight;
 
+use Drush\Config\DrushConfig;
 use Drush\Config\Environment;
 use Drush\Config\ConfigLocator;
 use Drush\Config\EnvironmentConfigLoader;
@@ -197,7 +198,7 @@ class Preflight
         return $this->environment()->loadSiteAutoloader($this->drupalFinder()->getDrupalRoot());
     }
 
-    public function config(): \Drush\Config\Config
+    public function config(): \Drush\Config\DrushConfig
     {
         return $this->configLocator->config();
     }
@@ -217,7 +218,7 @@ class Preflight
         $this->prepareConfig($this->environment);
 
         // Now that we know the value, set debug flag.
-        $this->logger()->setDebug($this->preflightArgs->get(PreflightArgs::DEBUG));
+        $this->logger()->setDebug($this->preflightArgs->get(PreflightArgs::DEBUG, false));
 
         // Do legacy initialization (load static includes, define old constants, etc.)
         $this->init();
@@ -296,7 +297,7 @@ class Preflight
 
         // We need to check the php minimum version again, in case anyone
         // has set it to something higher in one of the config files we loaded.
-        $this->verify->confirmPhpVersion($config->get('drush.php.minimum-version'));
+        $this->verify->confirmPhpVersion($config->get('drush.php.minimum-version', '7.1.3'));
 
         return false;
     }

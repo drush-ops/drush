@@ -396,7 +396,7 @@ class PreflightArgs extends Config implements PreflightArgsInterface
      */
     public function isLocal()
     {
-        return $this->get(self::LOCAL);
+        return $this->get(self::LOCAL, true);
     }
 
     /**

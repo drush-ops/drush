@@ -467,7 +467,7 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
      * @return int
      *   The maximum phase to which we bootstrapped.
      */
-    public function bootstrapMax(int $max_phase_index = false, AnnotationData $annotationData = null): int
+    public function bootstrapMax(int $max_phase_index = null, AnnotationData $annotationData = null): int
     {
         // Bootstrap as far as we can without throwing an error, but log for
         // debugging purposes.
