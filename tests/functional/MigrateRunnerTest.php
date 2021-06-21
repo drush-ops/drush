@@ -75,9 +75,10 @@ class MigrateRunnerTest extends CommandUnishTestCase
         $this->assertEquals('test_migration_tagged', trim($output[5]['id']));
         $this->assertNull($output[6]['id']);
 
-        // Names only.
+        // Check that --names-only takes precedence over --fields.
         $this->drush('migrate:status', [], [
           'names-only' => null,
+          'fields' => 'id,status,imported',
           'format' => 'json',
         ]);
         $output = $this->getOutputFromJSON();
@@ -85,7 +86,18 @@ class MigrateRunnerTest extends CommandUnishTestCase
         $this->assertArrayNotHasKey('status', $output[0]);
         $this->assertArrayNotHasKey('total', $output[0]);
         $this->assertArrayNotHasKey('imported', $output[0]);
+        $this->assertArrayNotHasKey('needing_update', $output[0]);
+        $this->assertArrayNotHasKey('unprocessed', $output[0]);
         $this->assertArrayNotHasKey('last_imported', $output[0]);
+        // Check that the deprecation warning is printed.
+        $this->assertStringContainsString('The --names-only option is deprecated in Drush 10.5.1 and is removed from Drush 11.0.0. Use --field=id instead.', $this->getErrorOutput());
+
+        // Check improper usage of --names-only with --field.
+        $this->drush('migrate:status', [], [
+          'field' => 'status',
+          'names-only' => null,
+        ], null, null, self::EXIT_ERROR);
+        $this->assertStringContainsString('Cannot use --names-only with --field=status.', $this->getErrorOutput());
 
         $actualIds = array_column($output, 'id');
         $this->assertCount(3, $actualIds);
@@ -96,6 +108,33 @@ class MigrateRunnerTest extends CommandUnishTestCase
         // Check that invalid migration IDs are reported.
         $this->drush('migrate:status', ['non_existing,test_migration,another_invalid'], [], null, null, self::EXIT_ERROR);
         $this->assertStringContainsString('Invalid migration IDs: non_existing, another_invalid', $this->getErrorOutput());
+
+        // Check --fields option.
+        $this->drush('migrate:status', [], [
+          'fields' => 'id,status,needing_update',
+          'format' => 'json',
+        ]);
+        $this->assertArrayHasKey('id', $this->getOutputFromJSON(0));
+        $this->assertArrayHasKey('status', $this->getOutputFromJSON(0));
+        $this->assertArrayHasKey('needing_update', $this->getOutputFromJSON(0));
+        $this->assertArrayNotHasKey('total', $this->getOutputFromJSON(0));
+        $this->assertArrayNotHasKey('imported', $this->getOutputFromJSON(0));
+        $this->assertArrayNotHasKey('unprocessed', $this->getOutputFromJSON(0));
+        $this->assertArrayNotHasKey('last_imported', $this->getOutputFromJSON(0));
+        $this->assertArrayHasKey('id', $this->getOutputFromJSON(1));
+        $this->assertArrayHasKey('status', $this->getOutputFromJSON(1));
+        $this->assertArrayHasKey('needing_update', $this->getOutputFromJSON(1));
+        $this->assertArrayNotHasKey('total', $this->getOutputFromJSON(1));
+        $this->assertArrayNotHasKey('imported', $this->getOutputFromJSON(1));
+        $this->assertArrayNotHasKey('unprocessed', $this->getOutputFromJSON(1));
+        $this->assertArrayNotHasKey('last_imported', $this->getOutputFromJSON(1));
+        $this->assertArrayHasKey('id', $this->getOutputFromJSON(2));
+        $this->assertArrayHasKey('status', $this->getOutputFromJSON(2));
+        $this->assertArrayHasKey('needing_update', $this->getOutputFromJSON(2));
+        $this->assertArrayNotHasKey('total', $this->getOutputFromJSON(2));
+        $this->assertArrayNotHasKey('imported', $this->getOutputFromJSON(2));
+        $this->assertArrayNotHasKey('unprocessed', $this->getOutputFromJSON(2));
+        $this->assertArrayNotHasKey('last_imported', $this->getOutputFromJSON(2));
     }
 
     /**
@@ -374,6 +413,7 @@ class MigrateRunnerTest extends CommandUnishTestCase
             'update' => null,
         ]);
         $this->drush('migrate:status', ['test_migration'], [
+          'fields' => 'needing_update',
           'format' => 'json',
         ]);
         // Check that no row needs update.
