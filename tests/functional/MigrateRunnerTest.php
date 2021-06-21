@@ -64,15 +64,15 @@ class MigrateRunnerTest extends CommandUnishTestCase
 
         $this->assertCount(7, $output);
         // Tag: tag1. The first line contains the tag.
-        $this->assertEquals('Tag: tag1', $output[0]['id']);
+        $this->assertSame('Tag: tag1', $output[0]['id']);
         // When using --tag, the migration IDs are indented, so we trim().
-        $this->assertEquals('test_migration', trim($output[1]['id']));
-        $this->assertEquals('test_migration_tagged', trim($output[2]['id']));
+        $this->assertSame('test_migration', trim($output[1]['id']));
+        $this->assertSame('test_migration_tagged', trim($output[2]['id']));
         // There's an empty row after each tag group.
         $this->assertNull($output[3]['id']);
         // Tag: tag2
-        $this->assertEquals('Tag: tag2', $output[4]['id']);
-        $this->assertEquals('test_migration_tagged', trim($output[5]['id']));
+        $this->assertSame('Tag: tag2', $output[4]['id']);
+        $this->assertSame('test_migration_tagged', trim($output[5]['id']));
         $this->assertNull($output[6]['id']);
 
         // Check that --names-only takes precedence over --fields.
