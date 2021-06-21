@@ -173,7 +173,7 @@ class ConfigCommands extends DrushCommands implements StdinAwareInterface, SiteA
 
 
         // Special handling for empty array.
-        if ($data = '[]') {
+        if ($data == '[]') {
             $data = [];
         }
 
