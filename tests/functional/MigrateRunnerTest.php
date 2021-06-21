@@ -75,7 +75,7 @@ class MigrateRunnerTest extends CommandUnishTestCase
         $this->assertEquals('test_migration_tagged', trim($output[5]['id']));
         $this->assertNull($output[6]['id']);
 
-        // Check that --name-only takes precedence over --columns.
+        // Check that --name-only takes precedence over --fields.
         $this->drush('migrate:status', [], [
           'names-only' => null,
           'fields' => 'id,status,imported',

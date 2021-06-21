@@ -88,8 +88,10 @@ class MigrateRunnerCommands extends DrushCommands
      *   <info>main_content</info>
      * @usage migrate:status classification,article
      *   Retrieve status for specific migrations
-     * @usage ms --columns=id,status
-     *   Display only the migration IDs and their status.
+     * @usage migrate:status --field=id
+     *   Retrieve a raw list of migration IDs.
+     * @usage ms --fields=id,status --format=json
+     *   Retrieve a Json serialized list of migrations, each item containing only the migration ID and its status.
      *
      * @aliases ms,migrate-status
      *
@@ -300,18 +302,16 @@ class MigrateRunnerCommands extends DrushCommands
      *
      * @param array $row
      *   The row to be prepared.
-     * @param array $columns
+     * @param array $fields
      *   The table columns.
      *
      * @return array
      *   The complete table row.
      */
-    protected function padTableRow(array $row, array $columns): array
+    protected function padTableRow(array $row, array $fields): array
     {
-        foreach ($columns as $column) {
-            if (!isset($row[$column])) {
-                $row[$column] = null;
-            }
+        foreach (array_diff_key(array_flip($fields), $row) as $field => $delta) {
+            $row[$field] = null;
         }
         return $row;
     }
