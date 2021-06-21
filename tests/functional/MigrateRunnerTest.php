@@ -92,6 +92,13 @@ class MigrateRunnerTest extends CommandUnishTestCase
         // Check that the deprecation warning is printed.
         $this->assertStringContainsString('The --names-only option is deprecated in Drush 10.5.1 and is removed from Drush 11.0.0. Use --field=id instead.', $this->getErrorOutput());
 
+        // Check improper usage of --names-only with --field.
+        $this->drush('migrate:status', [], [
+          'field' => 'status',
+          'names-only' => null,
+        ], null, null, self::EXIT_ERROR);
+        $this->assertStringContainsString('Cannot use --names-only with --field=status.', $this->getErrorOutput());
+
         $actualIds = array_column($output, 'id');
         $this->assertCount(3, $actualIds);
         $this->assertContains('test_migration', $actualIds);
