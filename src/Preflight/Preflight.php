@@ -4,6 +4,7 @@ namespace Drush\Preflight;
 use Drush\Config\Environment;
 use Drush\Config\ConfigLocator;
 use Drush\Config\EnvironmentConfigLoader;
+use Drush\Utils\FsUtils;
 use Consolidation\SiteAlias\SiteAliasManager;
 use DrupalFinder\DrupalFinder;
 
@@ -340,7 +341,7 @@ class Preflight
             if (!$foundRoot && $fallbackPath && is_dir($fallbackPath . '/sut') && is_dir($fallbackPath . '/vendor')) {
                 $foundRoot = $this->drupalFinder->locateRoot($fallbackPath);
             }
-            return $this->drupalFinder()->getDrupalRoot();
+            return FsUtils::realpath($this->drupalFinder()->getDrupalRoot());
         }
         return $originalSelection;
     }
