@@ -1,0 +1,23 @@
+id: test_migration_multiple_ids
+label: Test migration with multiple ids
+source:
+  plugin: embedded_data
+  data_rows:
+    -
+      identifier: i:1
+      revision: 2
+      channel_machine_name: coffee
+    -
+      identifier: i:2
+      revision: 1
+      channel_machine_name: water
+  ids:
+    identifier:
+      type: string
+    revision:
+      type: integer
+process:
+  title: channel_machine_name
+destination:
+  plugin: entity:node
+  default_bundle: page
