@@ -2,6 +2,8 @@
 
 namespace Drush\Drupal\Commands\core;
 
+use Consolidation\AnnotatedCommand\CommandData;
+use Consolidation\AnnotatedCommand\CommandError;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Drupal\Core\Datetime\DateFormatter;
 use Drupal\Core\KeyValueStore\KeyValueFactoryInterface;
@@ -430,15 +432,12 @@ class MigrateRunnerCommands extends DrushCommands
      * @topics docs:migrate
      *
      * @validate-module-enabled migrate
+     * @validate-migration-name
      */
     public function stop(string $migrationId): void
     {
         /** @var \Drupal\migrate\Plugin\MigrationInterface $migration */
         $migration = $this->getMigrationPluginManager()->createInstance($migrationId);
-        if (!$migration) {
-            $this->logger()->error(dt('Migration @id does not exist', ['@id' => $migrationId]));
-            return;
-        }
         switch ($migration->getStatus()) {
             case MigrationInterface::STATUS_IDLE:
                 $this->logger()->warning(dt('Migration @id is idle', ['@id' => $migrationId]));
@@ -762,5 +761,29 @@ class MigrateRunnerCommands extends DrushCommands
             return "src_{$id}";
         }, array_keys($columns));
         return array_combine($sourceIdKeys, $sourceIdKeys);
+    }
+
+    /**
+     * Validate that a migration name is valid.
+     *
+     * If the argument to be validated is not named migrationId, pass the
+     * argument name as the value of the annotation.
+     *
+     * @hook validate @validate-migration-name
+     *
+     * @param \Consolidation\AnnotatedCommand\CommandData $commandData
+     *
+     * @return \Consolidation\AnnotatedCommand\CommandError|null
+     */
+    public function validateMigrationName(CommandData $commandData)
+    {
+        $arg_name = $commandData->annotationData()->get('validate-migration-name', null) ?: 'migrationId';
+        $migration_name = $commandData->input()->getArgument($arg_name);
+        /** @var \Drupal\migrate\Plugin\MigrationInterface $migration */
+        $migration = $this->getMigrationPluginManager()->createInstance($migration_name);
+        if (!$migration) {
+            $msg = dt('Migration "@id" does not exist', ['@id' => $migration_name]);
+            return new CommandError($msg);
+        }
     }
 }
