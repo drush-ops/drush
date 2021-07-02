@@ -242,6 +242,27 @@ class MigrateRunnerTest extends CommandUnishTestCase
 
     /**
      * @covers ::import
+     * @covers ::rollback
+     */
+    public function testMigrateMultipleIdsImportWithIdList(): void
+    {
+        $this->drush('migrate:import', ['test_migration_multiple_ids'], [
+          'idlist' => '"i:1":2',
+        ]);
+        $this->drush('migrate:status', ['test_migration_multiple_ids'], [
+          'format' => 'json',
+        ]);
+
+        // Check that only the passed row was imported.
+        $this->assertSame(2, $this->getOutputFromJSON(0)['total']);
+        $this->assertSame('1 (50%)', $this->getOutputFromJSON(0)['imported']);
+        $this->assertSame(1, $this->getOutputFromJSON(0)['unprocessed']);
+        $this->drush('sql:query', ['SELECT title FROM node_field_data']);
+        $this->assertSame(['coffee'], $this->getOutputAsList());
+    }
+
+    /**
+     * @covers ::import
      * @covers \Drush\Drupal\Migrate\MigrateExecutable::handleMissingSourceRows
      */
     public function testMissingSourceRows(): void
