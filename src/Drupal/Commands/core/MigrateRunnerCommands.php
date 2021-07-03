@@ -615,6 +615,7 @@ class MigrateRunnerCommands extends DrushCommands
      * @topics docs:migrate
      *
      * @validate-module-enabled migrate
+     * @validate-migration-name
      *
      * @field-labels
      *   machine_name: Field name
