@@ -510,6 +510,7 @@ class MigrateRunnerCommands extends DrushCommands
      * @topics docs:migrate
      *
      * @validate-module-enabled migrate
+     * @validate-migration-name
      *
      * @field-labels
      *   level: Level
@@ -526,10 +527,6 @@ class MigrateRunnerCommands extends DrushCommands
     {
         /** @var \Drupal\migrate\Plugin\MigrationInterface $migration */
         $migration = $this->getMigrationPluginManager()->createInstance($migrationId);
-        if (!$migration) {
-            throw new \InvalidArgumentException(dt('Migration @id does not exist', ['@id' => $migrationId]));
-        }
-
         $idMap = $migration->getIdMap();
         $sourceIdKeys = $this->getSourceIdKeys($idMap);
         $table = [];
