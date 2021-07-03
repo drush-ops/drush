@@ -468,21 +468,18 @@ class MigrateRunnerCommands extends DrushCommands
      * @topics docs:migrate
      *
      * @validate-module-enabled migrate
+     * @validate-migration-name
      */
     public function resetStatus(string $migrationId): void
     {
         /** @var \Drupal\migrate\Plugin\MigrationInterface $migration */
         $migration = $this->getMigrationPluginManager()->createInstance($migrationId);
-        if ($migration) {
-            $status = $migration->getStatus();
-            if ($status == MigrationInterface::STATUS_IDLE) {
-                $this->logger()->warning(dt('Migration @id is already Idle', ['@id' => $migrationId]));
-            } else {
-                $migration->setStatus(MigrationInterface::STATUS_IDLE);
-                $this->logger()->success(dt('Migration @id reset to Idle', ['@id' => $migrationId]));
-            }
+        $status = $migration->getStatus();
+        if ($status == MigrationInterface::STATUS_IDLE) {
+            $this->logger()->warning(dt('Migration @id is already Idle', ['@id' => $migrationId]));
         } else {
-            throw new \InvalidArgumentException(dt('Migration @id does not exist', ['@id' => $migrationId]));
+            $migration->setStatus(MigrationInterface::STATUS_IDLE);
+            $this->logger()->success(dt('Migration @id reset to Idle', ['@id' => $migrationId]));
         }
     }
 
