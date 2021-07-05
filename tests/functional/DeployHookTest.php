@@ -55,4 +55,45 @@ class DeployHookTest extends CommandUnishTestCase
         $this->assertStringContainsString('[success] No pending deploy hooks.', $this->getErrorOutput());
         $this->assertStringNotContainsString('Finished performing deploy hooks.', $this->getErrorOutput());
     }
+
+    public function testSkipDeployHooks()
+    {
+        $this->setUpDrupal(1, true);
+        $this->setupModulesForTests(['woot'], Path::join(__DIR__, 'resources/modules/d8'));
+        $this->drush('pm-enable', ['woot'], ['yes' => null]);
+
+        $options = [
+            'format' => 'json'
+        ];
+        $hooks = <<<JSON
+[
+    {
+        "module": "woot",
+        "hook": "a",
+        "description": "Successful deploy hook."
+    },
+    {
+        "module": "woot",
+        "hook": "batch",
+        "description": "Successful batched deploy hook."
+    },
+    {
+        "module": "woot",
+        "hook": "failing",
+        "description": "Failing deploy hook."
+    }
+]
+JSON;
+        // Check pending deploy hooks.
+        $this->drush('deploy:hook-status', [], $options, null, null, self::EXIT_SUCCESS);
+        $this->assertEquals(json_decode($hooks), json_decode($this->getOutput()));
+
+        // Mark them all as having run.
+        $this->drush('deploy:hook-skip', [], [], null, null, self::EXIT_SUCCESS);
+        $this->assertStringContainsString('[success] Marked 3 pending deploy hooks as having run.', $this->getErrorOutput());
+
+        // Check again to see no pending hooks.
+        $this->drush('deploy:hook-status', [], $options, null, null, self::EXIT_SUCCESS);
+        $this->assertStringContainsString('[]', $this->getOutput());
+    }
 }
