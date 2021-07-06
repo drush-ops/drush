@@ -115,7 +115,7 @@ class RedispatchHook implements InitializeHookInterface, ConfigAwareInterface, S
      *
      * @param array $redispatchArgs
      */
-    protected function alterArgsForRedispatch($redispatchArgs)
+    protected function alterArgsForRedispatch(array $redispatchArgs): array
     {
         return array_filter($redispatchArgs, function ($item) {
             return strpos($item, '-D') !== 0;
@@ -128,7 +128,7 @@ class RedispatchHook implements InitializeHookInterface, ConfigAwareInterface, S
      *
      * @param int $exit_code.
      */
-    protected function exitEarly($exit_code)
+    protected function exitEarly(int $exit_code)
     {
         Drush::logger()->debug('Redispatch hook exit early');
 

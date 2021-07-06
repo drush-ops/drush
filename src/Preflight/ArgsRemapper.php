@@ -24,7 +24,7 @@ class ArgsRemapper
      *
      * @param string[] $argv
      */
-    public function remap($argv)
+    public function remap(array $argv): array
     {
         $result = [];
         $sawCommand = false;
@@ -45,7 +45,7 @@ class ArgsRemapper
      * @param string $sawCommand True if drush command was found
      * @return string The altered argument
      */
-    protected function checkRemap($arg, &$sawCommand)
+    protected function checkRemap(string $arg, string &$sawCommand)
     {
         if (!$sawCommand && ctype_alpha($arg[0])) {
             $sawCommand = true;
@@ -82,7 +82,7 @@ class ArgsRemapper
      * @param string $candidate
      * @return bool
      */
-    protected function matches($arg, $candidate)
+    protected function matches(string $arg, string $candidate): bool
     {
         if (strpos($arg, $candidate) !== 0) {
             return false;

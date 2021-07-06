@@ -49,7 +49,7 @@ abstract class DrupalBoot extends BaseBoot
     {
     }
 
-    public function getVersion($drupal_root)
+    public function getVersion(string $drupal_root)
     {
     }
 
@@ -101,7 +101,7 @@ abstract class DrupalBoot extends BaseBoot
      *
      * In this function, we will check if a valid Drupal directory is available.
      */
-    public function bootstrapDrupalRootValidate(BootstrapManager $manager)
+    public function bootstrapDrupalRootValidate(BootstrapManager $manager): bool
     {
         $drupal_root = $manager->getRoot();
         return (bool) $drupal_root;

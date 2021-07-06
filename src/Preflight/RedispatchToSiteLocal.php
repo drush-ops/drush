@@ -25,7 +25,7 @@ class RedispatchToSiteLocal
      * @return bool
      *   True if redispatch occurred, and was returned successfully.
      */
-    public static function redispatchIfSiteLocalDrush($argv, $root, $vendor, PreflightLog $preflightLog)
+    public static function redispatchIfSiteLocalDrush(array $argv, string $root, string $vendor, PreflightLog $preflightLog)
     {
 
         // Try to find the site-local Drush. If there is none, we are done.
@@ -66,7 +66,7 @@ class RedispatchToSiteLocal
      *
      * @param string $root The selected site root
      */
-    protected static function findSiteLocalDrush($root)
+    protected static function findSiteLocalDrush(string $root)
     {
         $candidates = [
             "$root/vendor/drush/drush/drush",

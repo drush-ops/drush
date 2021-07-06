@@ -21,7 +21,7 @@ class IndiscriminateInputDefinition extends InputDefinition
     /**
      * @inheritdoc
      */
-    public function hasShortcut($name)
+    public function hasShortcut($name): bool
     {
         return true;
     }
@@ -29,7 +29,7 @@ class IndiscriminateInputDefinition extends InputDefinition
     /**
      * @inheritdoc
      */
-    public function hasOption($name)
+    public function hasOption($name): bool
     {
         return true;
     }
@@ -37,7 +37,7 @@ class IndiscriminateInputDefinition extends InputDefinition
     /**
      * @inheritdoc
      */
-    public function getOption($name)
+    public function getOption($name): \Symfony\Component\Console\Input\InputOption
     {
         if (parent::hasOption($name)) {
             return parent::getOption($name);

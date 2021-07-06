@@ -53,7 +53,7 @@ interface PreflightArgsInterface
      *
      * @param string $arg One argument
      */
-    public function addArg($arg);
+    public function addArg(string $arg);
 
     /**
      * Add everything in the provided array to the list returned by `args()`
@@ -78,5 +78,5 @@ interface PreflightArgsInterface
      *
      * @param string $alias The alias name '@site'
      */
-    public function setAlias($alias);
+    public function setAlias(string $alias);
 }

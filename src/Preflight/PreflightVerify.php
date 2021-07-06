@@ -14,7 +14,7 @@ class PreflightVerify
      *
      * @param Environment $environment
      */
-    public function verify(Environment $environment)
+    public function verify(Environment $environment): void
     {
         // Fail fast if the PHP version is not at least 7.1.3.
         // We'll come back and check this again later, in case someone
@@ -35,7 +35,7 @@ class PreflightVerify
      * @param string $minimumPhpVersion
      *   The minimum allowable php version
      */
-    public function confirmPhpVersion($minimumPhpVersion)
+    public function confirmPhpVersion(string $minimumPhpVersion): void
     {
         if (version_compare(phpversion(), $minimumPhpVersion) < 0 && !getenv('DRUSH_NO_MIN_PHP')) {
             throw new \Exception(StringUtils::interpolate('Your command line PHP installation is too old. Drush requires at least PHP {version}. To suppress this check, set the environment variable DRUSH_NO_MIN_PHP=1', ['version' => $minimumPhpVersion]));
@@ -47,7 +47,7 @@ class PreflightVerify
      *
      * @param Environment $environment
      */
-    protected function confirmUsingCLI(Environment $environment)
+    protected function confirmUsingCLI(Environment $environment): void
     {
         if (!$environment->verifyCLI()) {
             throw new \Exception(StringUtils::interpolate('Drush is designed to run via the command line.'));
@@ -59,7 +59,7 @@ class PreflightVerify
      * begins.  If the php environment is too restrictive, then
      * notify the user that a setting change is needed and abort.
      */
-    protected function checkPhpIni()
+    protected function checkPhpIni(): void
     {
         $ini_checks = ['safe_mode' => '', 'open_basedir' => ''];
 
@@ -86,7 +86,7 @@ class PreflightVerify
      *   values that cannot appear in the setting.
      * @return bool
      */
-    protected function invalidIniValue($ini_value, $disallowed_value)
+    protected function invalidIniValue(string $ini_value, $disallowed_value): bool
     {
         if (empty($disallowed_value)) {
             return !empty($ini_value) && (strcasecmp($ini_value, 'off') != 0);

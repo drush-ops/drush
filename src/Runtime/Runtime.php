@@ -127,7 +127,7 @@ class Runtime
     /**
      * Mark the current request as having completed successfully.
      */
-    public static function setCompleted()
+    public static function setCompleted(): void
     {
         Drush::config()->set(self::DRUSH_RUNTIME_COMPLETED_NAMESPACE, true);
     }
@@ -139,7 +139,7 @@ class Runtime
      * Mark the exit code for current request.
      * @param int $code
      */
-    public static function setExitCode($code)
+    public static function setExitCode(int $code): void
     {
         Drush::config()->set(self::DRUSH_RUNTIME_EXIT_CODE_NAMESPACE, $code);
     }
