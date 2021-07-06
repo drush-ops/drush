@@ -43,7 +43,9 @@ class SqlPgsql extends SqlBase
 
     public function command()
     {
-        return 'psql -q';
+        // Stop as soon as there's an error anywhere in the script. Ensures the
+        // appropriate exit code is used upon failure.
+        return 'psql -v ON_ERROR_STOP=1 -q';
     }
 
     public function getEnv()
