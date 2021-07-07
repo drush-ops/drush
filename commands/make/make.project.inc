@@ -289,7 +289,7 @@ class DrushMakeProject {
           foreach ($patch_levels as $patch_level) {
             // --no-backup-if-mismatch here is a hack that fixes some
             // differences between how patch works on windows and unix.
-            if ($patched = drush_shell_exec("patch %s --no-backup-if-mismatch -d %s < %s", $patch_level, $project_directory, $filename)) {
+            if ($patched = drush_shell_exec("patch %s -F 0 --no-backup-if-mismatch -d %s < %s", $patch_level, $project_directory, $filename)) {
               break;
             }
           }
