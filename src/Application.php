@@ -375,6 +375,7 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
         $discovery
             ->setIncludeFilesAtBase(true)
             ->setSearchDepth(3)
+            ->followLinks()
             ->ignoreNamespacePart('contrib', 'Commands')
             ->ignoreNamespacePart('custom', 'Commands')
             ->ignoreNamespacePart('src')
