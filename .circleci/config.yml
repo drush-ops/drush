@@ -128,7 +128,7 @@ jobs:
       - run: composer lint
       - run: composer unit
       - run: composer functional
-      - run: composer integration
+      - run: composer integration -- --verbose
 
 
   # PHP 8 test with Drupal tip
