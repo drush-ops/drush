@@ -24,6 +24,7 @@ function locale_drush_command() {
   $items['locale-check'] = [
     'description' => 'Checks for available translation updates.',
     'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_FULL,
+    'aliases' => array('locale:check'),
   ];
   $items['locale-update'] = [
     'description' => 'Updates the available translations.',
@@ -31,7 +32,7 @@ function locale_drush_command() {
       'langcodes' => 'A comma-separated list of language codes to update. If omitted, all translations will be updated.'
     ],
     'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_FULL,
-    'aliases' => array('locale:check'),
+    'aliases' => array('locale:update'),
   ];
   // @todo Implement proper export and import commands.
   return $items;
