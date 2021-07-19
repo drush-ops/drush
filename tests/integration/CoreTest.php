@@ -71,4 +71,23 @@ class CoreTest extends UnishIntegrationTestCase
         $output = $this->getOutput();
         $this->assertEquals(Path::join($root, '/themes/unish/drush_empty_theme'), $output);
     }
+
+    public function testRoute()
+    {
+        $this->drush('route', [], ['format' => 'json']);
+        $json = $this->getOutputFromJSON();
+        $this->assertArrayHasKey('user.login', $json);
+        $this->assertSame('/user/login', $json['user.login']);
+        $this->drush('route', [], ['path' =>'/user/login', 'format' => 'json']);
+        $json = $this->getOutputFromJSON();
+        $this->assertSame('/user/login', $json['path']);
+        $this->assertSame('user.login', $json['name']);
+        $this->assertSame('\Drupal\user\Form\UserLoginForm', $json['defaults']['_form']);
+        $this->assertSame("FALSE", $json['requirements']['_user_is_logged_in']);
+        $this->assertSame('access_check.user.login_status', $json['options']['_access_checks'][0]);
+
+        $this->drush('route', [], ['name' =>'user.login', 'format' => 'json']);
+        $json = $this->getOutputFromJSON();
+        $this->assertSame('/user/login', $json['path']);
+    }
 }

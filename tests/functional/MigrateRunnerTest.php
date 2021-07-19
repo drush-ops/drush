@@ -75,9 +75,10 @@ class MigrateRunnerTest extends CommandUnishTestCase
         $this->assertEquals('test_migration_tagged', trim($output[5]['id']));
         $this->assertNull($output[6]['id']);
 
-        // Names only.
+        // Check that --names-only takes precedence over --fields.
         $this->drush('migrate:status', [], [
           'names-only' => null,
+          'fields' => 'id,status,imported',
           'format' => 'json',
         ]);
         $output = $this->getOutputFromJSON();
@@ -85,7 +86,18 @@ class MigrateRunnerTest extends CommandUnishTestCase
         $this->assertArrayNotHasKey('status', $output[0]);
         $this->assertArrayNotHasKey('total', $output[0]);
         $this->assertArrayNotHasKey('imported', $output[0]);
+        $this->assertArrayNotHasKey('needing_update', $output[0]);
+        $this->assertArrayNotHasKey('unprocessed', $output[0]);
         $this->assertArrayNotHasKey('last_imported', $output[0]);
+        // Check that the deprecation warning is printed.
+        $this->assertStringContainsString('The --names-only option is deprecated in Drush 10.5.1 and is removed from Drush 11.0.0. Use --field=id instead.', $this->getErrorOutput());
+
+        // Check improper usage of --names-only with --field.
+        $this->drush('migrate:status', [], [
+          'field' => 'status',
+          'names-only' => null,
+        ], null, null, self::EXIT_ERROR);
+        $this->assertStringContainsString('Cannot use --names-only with --field=status.', $this->getErrorOutput());
 
         $actualIds = array_column($output, 'id');
         $this->assertCount(3, $actualIds);
@@ -96,6 +108,33 @@ class MigrateRunnerTest extends CommandUnishTestCase
         // Check that invalid migration IDs are reported.
         $this->drush('migrate:status', ['non_existing,test_migration,another_invalid'], [], null, null, self::EXIT_ERROR);
         $this->assertStringContainsString('Invalid migration IDs: non_existing, another_invalid', $this->getErrorOutput());
+
+        // Check --fields option.
+        $this->drush('migrate:status', [], [
+          'fields' => 'id,status,needing_update',
+          'format' => 'json',
+        ]);
+        $this->assertArrayHasKey('id', $this->getOutputFromJSON(0));
+        $this->assertArrayHasKey('status', $this->getOutputFromJSON(0));
+        $this->assertArrayHasKey('needing_update', $this->getOutputFromJSON(0));
+        $this->assertArrayNotHasKey('total', $this->getOutputFromJSON(0));
+        $this->assertArrayNotHasKey('imported', $this->getOutputFromJSON(0));
+        $this->assertArrayNotHasKey('unprocessed', $this->getOutputFromJSON(0));
+        $this->assertArrayNotHasKey('last_imported', $this->getOutputFromJSON(0));
+        $this->assertArrayHasKey('id', $this->getOutputFromJSON(1));
+        $this->assertArrayHasKey('status', $this->getOutputFromJSON(1));
+        $this->assertArrayHasKey('needing_update', $this->getOutputFromJSON(1));
+        $this->assertArrayNotHasKey('total', $this->getOutputFromJSON(1));
+        $this->assertArrayNotHasKey('imported', $this->getOutputFromJSON(1));
+        $this->assertArrayNotHasKey('unprocessed', $this->getOutputFromJSON(1));
+        $this->assertArrayNotHasKey('last_imported', $this->getOutputFromJSON(1));
+        $this->assertArrayHasKey('id', $this->getOutputFromJSON(2));
+        $this->assertArrayHasKey('status', $this->getOutputFromJSON(2));
+        $this->assertArrayHasKey('needing_update', $this->getOutputFromJSON(2));
+        $this->assertArrayNotHasKey('total', $this->getOutputFromJSON(2));
+        $this->assertArrayNotHasKey('imported', $this->getOutputFromJSON(2));
+        $this->assertArrayNotHasKey('unprocessed', $this->getOutputFromJSON(2));
+        $this->assertArrayNotHasKey('last_imported', $this->getOutputFromJSON(2));
     }
 
     /**
@@ -209,6 +248,7 @@ class MigrateRunnerTest extends CommandUnishTestCase
     {
         $this->drush('state:set', ['woot.test_migration_source_data_amount', 5]);
         $this->drush('migrate:import', ['test_migration']);
+        $this->assertStringContainsString('[notice] Processed 5 items (5 created, 0 updated, 0 failed, 0 ignored)', $this->getErrorOutput());
         $this->drush('sql:query', ['SELECT title FROM node_field_data']);
         $this->assertSame(['Item 1', 'Item 2', 'Item 3', 'Item 4', 'Item 5'], $this->getOutputAsList());
 
@@ -220,9 +260,9 @@ class MigrateRunnerTest extends CommandUnishTestCase
 
         $this->assertStringContainsString('[notice] 2 items are missing from source and will be rolled back', $this->getErrorOutput());
         $this->assertStringContainsString("[notice] Rolled back 2 items - done with 'test_migration'", $this->getErrorOutput());
-        $this->assertStringContainsString('[notice] Processed 3 items (0 created, 3 updated, 0 failed, 0 ignored)', $this->getErrorOutput());
+        $this->assertStringContainsString('[notice] Processed 0 items (0 created, 0 updated, 0 failed, 0 ignored)', $this->getErrorOutput());
         $this->drush('sql:query', ['SELECT title FROM node_field_data']);
-        $this->assertEquals(['Item 1', 'Item 3', 'Item 5'], $this->getOutputAsList());
+        $this->assertSame(['Item 1', 'Item 3', 'Item 5'], $this->getOutputAsList());
     }
 
     /**
@@ -253,8 +293,8 @@ class MigrateRunnerTest extends CommandUnishTestCase
           'no-progress' => null,
         ], null, null, self::EXIT_ERROR);
 
+        // All messages together.
         $this->drush('migrate:messages', ['test_migration'], ['format' => 'json']);
-
         $output = $this->getOutputFromJSON();
         // @see \Drupal\woot\Plugin\migrate\process\TestFailProcess::transform()
         $this->assertCount(3, $output);
@@ -270,6 +310,35 @@ class MigrateRunnerTest extends CommandUnishTestCase
         $this->assertSame('ID 17 should fail', $output[2]['message']);
         $this->assertSame('17', $output[2]['source_ids']);
         $this->assertEmpty($output[0]['destination_ids']);
+
+        // Only one invalid ID.
+        $this->drush('migrate:messages', ['test_migration'], ['format' => 'json', 'idlist' => '100']);
+        $output = $this->getOutputFromJSON();
+        $this->assertCount(0, $output);
+
+        // Only one valid ID.
+        $this->drush('migrate:messages', ['test_migration'], ['format' => 'json', 'idlist' => '2']);
+        $output = $this->getOutputFromJSON();
+        // @see \Drupal\woot\Plugin\migrate\process\TestFailProcess::transform()
+        $this->assertCount(1, $output);
+        $this->assertEquals(1, $output[0]['level']);
+        $this->assertSame('2', $output[0]['source_ids']);
+        $this->assertEmpty($output[0]['destination_ids']);
+        $this->assertSame('ID 2 should fail', $output[0]['message']);
+
+        // Three valid IDs, two with data, one without, and one invalid ID.
+        $this->drush('migrate:messages', ['test_migration'], ['format' => 'json', 'idlist' => '1,2,9,100']);
+        $output = $this->getOutputFromJSON();
+        // @see \Drupal\woot\Plugin\migrate\process\TestFailProcess::transform()
+        $this->assertCount(2, $output);
+        $this->assertEquals(1, $output[0]['level']);
+        $this->assertSame('2', $output[0]['source_ids']);
+        $this->assertEmpty($output[0]['destination_ids']);
+        $this->assertSame('ID 2 should fail', $output[0]['message']);
+        $this->assertEquals(1, $output[1]['level']);
+        $this->assertSame('9', $output[1]['source_ids']);
+        $this->assertEmpty($output[0]['destination_ids']);
+        $this->assertSame('ID 9 should fail', $output[1]['message']);
 
         $this->drush('migrate:fields-source', ['test_migration'], ['format' => 'json']);
         $output = $this->getOutputFromJSON();
@@ -344,6 +413,7 @@ class MigrateRunnerTest extends CommandUnishTestCase
             'update' => null,
         ]);
         $this->drush('migrate:status', ['test_migration'], [
+          'fields' => 'needing_update',
           'format' => 'json',
         ]);
         // Check that no row needs update.

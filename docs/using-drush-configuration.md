@@ -13,7 +13,7 @@ drush.yml files are discovered as below, in order of precedence:
 5.  System-wide configuration folder (e.g. `/etc/drush/drush.yml` or `C:\ProgramData\Drush\drush.yml`).
 
 If a configuration file is found in any of the above locations, it will be
-loaded and merged with other configuration files in the search list. Run `drush status --field=drush-conf` 
+loaded and merged with other configuration files in the search list. Run `drush status --fields=drush-conf` 
 to see all discovered config files.
 
 #### Environment variables
@@ -37,24 +37,26 @@ drush:
       # Load any personal config files. Is silently skipped if not found. Filename must be drush.yml
       - ${env.HOME}/.drush/config/drush.yml
 ```
+
+- The value may be path to a file, or to a directory containing drush.yml file(s).
+- View discovered config paths: `drush status --fields=drush-conf --format=yaml`
+
 #### Specify folders to search for Drush command files.
 These locations are always merged with include paths defined on the command line or
 in other configuration files.  On the command line, paths may be separated
 by a colon `:` on Unix-based systems or a semi-colon `;` on Windows,
 or multiple `--include` options may be provided. Drush 8 and earlier did
 a deep search in `~/.drush` and `/usr/share/drush/commands` when loading
-command files.
-
-For testing, specify the namespace component in the key. e.g.:
+command files, so we mimic that here as an example.
 
 ```yml
 drush:
- include:
-   'Commands/example_drush_extension': '${env.PWD}'
-    include:
-      - '${env.HOME}/.drush/commands'
-      - /usr/share/drush/commands
+  include:
+    - '${env.HOME}/.drush/commands'
+    - /usr/share/drush/commands
 ```
+
+- View all loaded commands: `drush list`
 
 #### Specify the folders to search for Drush alias files (*.site.yml). 
 These locations are always merged with alias paths defined on the command line
@@ -65,10 +67,12 @@ These locations are always merged with alias paths defined on the command line
  loading alias files.
 ```yml 
 drush:
-  alias-path:
-    - '${env.HOME}/.drush/sites'
-    - /etc/drush/sites
+  paths:
+    alias-path:
+      - '${env.HOME}/.drush/sites'
+      - /etc/drush/sites
 ```
+- View all loaded site aliases: `drush site:alias`
 
 #### Cache directory 
 Specify a folder where Drush should store its file based caches. If unspecified, defaults to `$HOME/.drush`.

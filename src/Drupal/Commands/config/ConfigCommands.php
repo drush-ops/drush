@@ -149,6 +149,8 @@ class ConfigCommands extends DrushCommands implements StdinAwareInterface, SiteA
      * @hidden-options value
      * @usage drush config:set system.site page.front '/path/to/page'
      *   Sets the given URL path as value for the config item with key <info>page.front</info> of <info>system.site</info> config object.
+     * @usage drush config:set system.site '[]'
+     *   Sets the given key to an empty array.
      * @aliases cset,config-set
      */
     public function set($config_name, $key, $value = null, $options = ['input-format' => 'string', 'value' => self::REQ])
@@ -169,6 +171,12 @@ class ConfigCommands extends DrushCommands implements StdinAwareInterface, SiteA
             $data = $this->stdin()->contents();
         }
 
+
+        // Special handling for empty array.
+        if ($data == '[]') {
+            $data = [];
+        }
+
         // Now, we parse the value.
         switch ($options['input-format']) {
             case 'yaml':
@@ -176,7 +184,7 @@ class ConfigCommands extends DrushCommands implements StdinAwareInterface, SiteA
                 $data = $parser->parse($data, true);
         }
 
-        if (is_array($data) && $this->io()->confirm(dt('Do you want to update or set multiple keys on !name config.', ['!name' => $config_name]))) {
+        if (is_array($data) && !empty($data) && $this->io()->confirm(dt('Do you want to update or set multiple keys on !name config.', ['!name' => $config_name]))) {
             foreach ($data as $data_key => $value) {
                 $config->set("$key.$data_key", $value);
             }
@@ -285,6 +293,8 @@ class ConfigCommands extends DrushCommands implements StdinAwareInterface, SiteA
      *   Display all content types that would be created in active storage on configuration import.
      * @usage drush config:status --state=Any --format=list
      *   List all config names.
+     * @usage drush config:status 2>&1 | grep "No differences"
+     *   Check there are no differences between database and exported config. Useful for CI.
      * @field-labels
      *   name: Name
      *   state: State

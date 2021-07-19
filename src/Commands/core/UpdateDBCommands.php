@@ -62,7 +62,9 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
             // @see https://github.com/drush-ops/drush/pull/3855.
             'no-entity-updates' => !$options['entity-updates'],
             'no-post-updates' => !$options['post-updates'],
+            'strict' => 0,
         ];
+        $status_options = array_merge(Drush::redispatchOptions(), $status_options);
         $process = $this->processManager()->drush($this->siteAliasManager()->getSelf(), 'updatedb:status', [], $status_options);
         $process->mustRun();
         if ($output = $process->getOutput()) {

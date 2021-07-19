@@ -9,7 +9,7 @@ services:
       -  { name: drush.command }
   drupal.commands:
     class: \Drush\Drupal\Commands\core\DrupalCommands
-    arguments: ['@cron', '@module_handler']
+    arguments: ['@cron', '@module_handler', '@router.route_provider']
     tags:
       -  { name: drush.command }
   deploy_hook.commands:

@@ -6,12 +6,15 @@
  */
 namespace Drush;
 
+use Consolidation\AnnotatedCommand\AnnotatedCommandFactory;
 use Consolidation\SiteAlias\SiteAliasInterface;
 use Consolidation\SiteAlias\SiteAliasManager;
 use Consolidation\SiteProcess\ProcessBase;
 use Consolidation\SiteProcess\SiteProcess;
+use Drush\SiteAlias\ProcessManager;
 use League\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
+use RuntimeException;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Exception\InvalidArgumentException;
 use Symfony\Component\Console\Input\InputInterface;
@@ -65,12 +68,9 @@ class Drush
      *
      * @var int
      */
-    const TIMEOUT = 14400;
+    protected const TIMEOUT = 14400;
 
-    /**
-     * @return int
-     */
-    public static function getTimeout()
+    public static function getTimeout(): int
     {
         return self::TIMEOUT;
     }
@@ -112,9 +112,6 @@ class Drush
 
     /**
      * Sets a new global container.
-     *
-     * @param \League\Container\Container $container
-     *   A new container instance to replace the current.
      */
     public static function setContainer(ContainerInterface $container)
     {
@@ -132,44 +129,36 @@ class Drush
     /**
      * Returns the currently active global container.
      *
-     * @return \League\Container\ContainerInterface|null
-     *
      * @throws RuntimeException
      */
-    public static function getContainer()
+    public static function getContainer(): ?ContainerInterface
     {
         if (!\Robo\Robo::hasContainer()) {
-            throw new \RuntimeException('Drush::$container is not initialized yet. \Drush::setContainer() must be called with a real container.');
+            throw new RuntimeException('Drush::$container is not initialized yet. \Drush::setContainer() must be called with a real container.');
         }
         return \Robo\Robo::getContainer();
     }
 
     /**
      * Returns TRUE if the container has been initialized, FALSE otherwise.
-     *
-     * @return bool
      */
-    public static function hasContainer()
+    public static function hasContainer(): bool
     {
         return \Robo\Robo::hasContainer();
     }
 
     /**
      * Get the current Symfony Console Application.
-     *
-     * @return Application
      */
-    public static function getApplication()
+    public static function getApplication(): Application
     {
         return self::getContainer()->get('application');
     }
 
     /**
      * Return the Robo runner.
-     *
-     * @return \Robo\Runner
      */
-    public static function runner()
+    public static function runner(): \Robo\Runner
     {
         if (!isset(self::$runner)) {
             self::$runner = new \Robo\Runner();
@@ -186,25 +175,16 @@ class Drush
      *
      * @param string $id
      *   The ID of the service to retrieve.
-     *
-     * @return mixed
-     *   The specified service.
      */
-    public static function service($id)
+    public static function service(string $id)
     {
         return self::getContainer()->get($id);
     }
 
     /**
      * Indicates if a service is defined in the container.
-     *
-     * @param string $id
-     *   The ID of the service to check.
-     *
-     * @return bool
-     *   TRUE if the specified service exists, FALSE otherwise.
      */
-    public static function hasService($id)
+    public static function hasService(string $id): bool
     {
         // Check hasContainer() first in order to always return a Boolean.
         return self::hasContainer() && self::getContainer()->has($id);
@@ -212,10 +192,8 @@ class Drush
 
     /**
      * Return command factory
-     *
-     * @return \Consolidation\AnnotatedCommand\AnnotatedCommandFactory
      */
-    public static function commandFactory()
+    public static function commandFactory(): AnnotatedCommandFactory
     {
         return self::service('commandFactory');
     }
@@ -223,11 +201,9 @@ class Drush
     /**
      * Return the Drush logger object.
      *
-     * @return LoggerInterface
-     *
-     * @deprecated Use injected logger instead.
+     * @internal Commands should use $this->logger() instead.
      */
-    public static function logger()
+    public static function logger(): LoggerInterface
     {
         return self::service('logger');
     }
@@ -235,51 +211,41 @@ class Drush
     /**
      * Return the configuration object
      *
-     * @return \Drush\Config\DrushConfig
-     *
-     * @deprecated Use injected configuration instead.
+     * @internal Commands should use $this->config() instead.
      */
-    public static function config()
+    public static function config(): Config\DrushConfig
     {
         return self::service('config');
     }
 
     /**
-     * @return SiteAliasManager
-     *
-     * @deprecated Use injected alias manager instead. @see Drush::drush()
+     * @internal Commands should use $this->siteAliasManager() instead.
      */
-    public static function aliasManager()
+    public static function aliasManager(): SiteAliasManager
     {
         return self::service('site.alias.manager');
     }
 
     /**
-     * @return ProcessManager
-     *
-     * @deprecated Use injected process manager instead. @see Drush::drush()
+     * @internal Commands should use $this->processManager() instead.
      */
-    public static function processManager()
+    public static function processManager(): ProcessManager
     {
         return self::service('process.manager');
     }
 
     /**
      * Return the input object
-     *
-     * @return InputInterface
      */
-    public static function input()
+    public static function input(): InputInterface
     {
         return self::service('input');
     }
 
     /**
      * Return the output object
-     *
-     * @return OutputInterface
      */
-    public static function output()
+    public static function output(): OutputInterface
     {
         return self::service('output');
     }
@@ -287,12 +253,12 @@ class Drush
     /**
      * Run a Drush command on a site alias (or @self).
      *
-     * Tip: Use injected process manager instead of this method. See below.
+     * Tip: Use injected processManager() instead of this method. See below.
      *
      * A class should use ProcessManagerAwareInterface / ProcessManagerAwareTrait
      * in order to have the Process Manager injected by Drush's DI container.
      * For example:
-     *
+     * <code>
      *     use Consolidation\SiteProcess\ProcessManagerAwareTrait;
      *     use Consolidation\SiteProcess\ProcessManagerAwareInterface;
      *
@@ -300,7 +266,7 @@ class Drush
      *     {
      *         use ProcessManagerAwareTrait;
      *     }
-     *
+     * </code>
      * Since DrushCommands already uses ProcessManagerAwareTrait, all Drush
      * commands may use the process manager to call other Drush commands.
      * Other classes will need to ensure that the process manager is injected
@@ -310,7 +276,7 @@ class Drush
      * The alias manager will provide an alias record, but the alias manager is
      * not injected by default into Drush commands. In order to use it, it is
      * necessary to use SiteAliasManagerAwareTrait:
-     *
+     * <code>
      *     use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
      *     use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
      *
@@ -327,7 +293,7 @@ class Drush
      *             $process->mustRun();
      *         }
      *     }
-     *
+     * </code>
      * Objects that are fetched from the DI container, or any Drush command will
      * automatically be given a reference to the alias manager if SiteAliasManagerAwareTrait
      * is used. Other objects will need to be manually provided with a reference
@@ -336,31 +302,20 @@ class Drush
      * Clients that are using Drush::drush(), and need a reference to the alias
      * manager may use Drush::aliasManager().
      *
-     * @param SiteAliasInterface $siteAlias
-     * @param string $command
-     * @param array $args
-     * @param array $options
-     * @param array $options_double_dash
-     * @return SiteProcess
      */
-    public static function drush(SiteAliasInterface $siteAlias, $command, $args = [], $options = [], $options_double_dash = [])
+    public static function drush(SiteAliasInterface $siteAlias, string $command, array $args = [], array $options = [], array $options_double_dash = []): SiteProcess
     {
         return self::processManager()->drush($siteAlias, $command, $args, $options, $options_double_dash);
     }
 
     /**
-     * Run a bash fragment on a site alias. U
+     * Run a bash fragment on a site alias.
      *
-     * Use Drush::drush() instead of this method when calling Drush.
-     * Tip: Consider using injected process manager instead of this method. @see \Drush\Drush::drush().
+     * Use \Drush\Drush::drush() instead of this method when calling Drush.
      *
-     * @param SiteAliasInterface $siteAlias
-     * @param array $args
-     * @param array $options
-     * @param array $options_double_dash
-     * @return ProcessBase
+     * Tip: Commands can consider using $this->processManager() instead of this method.
      */
-    public static function siteProcess(SiteAliasInterface $siteAlias, $args = [], $options = [], $options_double_dash = [])
+    public static function siteProcess(SiteAliasInterface $siteAlias, array $args = [], array $options = [], array $options_double_dash = []): ProcessBase
     {
         return self::processManager()->siteProcess($siteAlias, $args, $options, $options_double_dash);
     }
@@ -371,19 +326,18 @@ class Drush
      * The timeout parameter on this method doesn't work. It exists for compatibility with parent.
      * Call this method to get a Process and then call setters as needed.
      *
-     * Tip: Consider using injected process manager instead of this method. @see \Drush\Drush::drush().
+     * Tip: Consider using injected process manager instead of this method.
      *
      * @param string|array   $commandline The command line to run
      * @param string|null    $cwd         The working directory or null to use the working dir of the current PHP process
      * @param array|null     $env         The environment variables or null to use the same environment as the current PHP process
      * @param mixed|null     $input       The input as stream resource, scalar or \Traversable, or null for no input
      * @param int|float|null $timeout     The timeout in seconds or null to disable
-     * @param array          $options     An array of options for proc_open
      *
-     * @return ProcessBase
+     * @return
      *   A wrapper around Symfony Process.
      */
-    public static function process($commandline, $cwd = null, array $env = null, $input = null, $timeout = 60)
+    public static function process($commandline, $cwd = null, $env = null, $input = null, $timeout = 60): ProcessBase
     {
         return self::processManager()->process($commandline, $cwd, $env, $input, $timeout);
     }
@@ -391,16 +345,18 @@ class Drush
     /**
      * Create a Process instance from a commandline string.
      *
-     * Tip: Consider using injected process manager instead of this method. @see \Drush\Drush::drush().
+     * Tip: Consider using injected process manager instead of this method.
      *
      * @param string $command The commandline string to run
      * @param string|null $cwd     The working directory or null to use the working dir of the current PHP process
      * @param array|null $env     The environment variables or null to use the same environment as the current PHP process
      * @param mixed|null $input   The input as stream resource, scalar or \Traversable, or null for no input
      * @param int|float|null $timeout The timeout in seconds or null to disable
-     * @return Process
+     *
+     * @return
+     *   A wrapper around Symfony Process.
      */
-    public static function shell($command, $cwd = null, array $env = null, $input = null, $timeout = 60)
+    public static function shell($command, $cwd = null, array $env = null, $input = null, $timeout = 60): Process
     {
         return self::processManager()->shell($command, $cwd, $env, $input, $timeout);
     }
@@ -408,11 +364,11 @@ class Drush
     /**
      * Return 'true' if we are in simulated mode
      *
-     * @deprecated Inject configuration and use $this->getConfig()->simulate().
+     * @internal Commands should use $this->getConfig()->simulate().
      */
     public static function simulate()
     {
-        return \Drush\Drush::config()->simulate();
+        return Drush::config()->simulate();
     }
 
     /**
@@ -440,41 +396,37 @@ class Drush
     /**
      * Return 'true' if we are in verbose mode
      */
-    public static function verbose()
+    public static function verbose(): bool
     {
         if (!self::hasService('output')) {
             return false;
         }
-        return \Drush\Drush::output()->isVerbose();
+        return Drush::output()->isVerbose();
     }
 
     /**
      * Return 'true' if we are in debug mode
      */
-    public static function debug()
+    public static function debug(): bool
     {
         if (!self::hasService('output')) {
             return false;
         }
-        return \Drush\Drush::output()->isDebug();
+        return Drush::output()->isDebug();
     }
 
     /**
      * Return the Bootstrap Manager.
-     *
-     * @return \Drush\Boot\BootstrapManager
      */
-    public static function bootstrapManager()
+    public static function bootstrapManager(): Boot\BootstrapManager
     {
         return self::service('bootstrap.manager');
     }
 
     /**
      * Return the Bootstrap object.
-     *
-     * @return \Drush\Boot\Boot
      */
-    public static function bootstrap()
+    public static function bootstrap(): Boot\Boot
     {
         return self::bootstrapManager()->bootstrap();
     }
@@ -509,7 +461,7 @@ class Drush
     /**
      * Read the drush info file.
      */
-    private static function drushReadDrushInfo()
+    private static function drushReadDrushInfo(): array
     {
         $drush_info_file = dirname(__FILE__) . '/../drush.info';
 

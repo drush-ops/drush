@@ -397,7 +397,7 @@ class ConfigLocator
      */
     public function getSiteAliasPaths($paths, Environment $environment)
     {
-        // In addition to the paths passed in to us (from --alias-paths
+        // In addition to the paths passed in to us (from --alias-path
         // commandline options), add some site-local locations.
         $siteroot_parents = array_map(
             function ($dir) {
