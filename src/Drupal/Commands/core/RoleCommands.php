@@ -68,8 +68,6 @@ class RoleCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
      *   Allow anon users to post comments.
      * @usage drush role:perm:add anonymous 'post comments,access content'
      *   Allow anon users to post comments and access content.
-     * @usage drush pm:info --fields=permissions --format=csv aggregator
-     *   Discover the permissions associated with  given module (then use this command as needed).
      * @aliases rap,role-add-perm
      */
     public function roleAddPerm($machine_name, $permissions)
