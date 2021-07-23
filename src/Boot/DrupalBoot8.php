@@ -160,7 +160,7 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
     public function bootstrapDoDrupalSite(BootstrapManager $manager)
     {
         // Note: this reports the'default' during site:install even if we eventually install to a different multisite.
-        $this->logger->log(LogLevel::BOOTSTRAP, dt("Initialized Drupal site !site at !site_root", ['!site' => $this->getRequest()->getHttpHost(), '!site_root' => $this->confPath()]));
+        $this->logger->log(LogLevel::INFO, dt("Initialized Drupal site !site at !site_root", ['!site' => $this->getRequest()->getHttpHost(), '!site_root' => $this->confPath()]));
     }
 
     public function bootstrapDrupalConfigurationValidate(BootstrapManager $manager)
@@ -180,7 +180,7 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
         // Drupal requires PDO, and Drush requires php 5.6+ which ships with PDO
         // but PHP may be compiled with --disable-pdo.
         if (!class_exists('\PDO')) {
-            $this->logger->log(LogLevel::BOOTSTRAP, dt('PDO support is required.'));
+            $this->logger->log(LogLevel::INFO, dt('PDO support is required.'));
             return false;
         }
 
@@ -190,11 +190,11 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
             $connection_options = $connection->getConnectionOptions();
             $connection->open($connection_options);
         } catch (\Exception $e) {
-            $this->logger->log(LogLevel::BOOTSTRAP, 'Unable to connect to database with message: ' . $e->getMessage() . '. More debug information is available by running `drush status`. This may occur when Drush is trying to bootstrap a site that has not been installed or does not have a configured database. In this case you can select another site with a working database setup by specifying the URI to use with the --uri parameter on the command line. See `drush topic docs-aliases` for details.');
+            $this->logger->log(LogLevel::INFO, 'Unable to connect to database with message: ' . $e->getMessage() . '. More debug information is available by running `drush status`. This may occur when Drush is trying to bootstrap a site that has not been installed or does not have a configured database. In this case you can select another site with a working database setup by specifying the URI to use with the --uri parameter on the command line. See `drush topic docs-aliases` for details.');
             return false;
         }
         if (!$connection->schema()->tableExists('key_value')) {
-            $this->logger->log(LogLevel::BOOTSTRAP, 'key_value table not found. Database may be empty.');
+            $this->logger->log(LogLevel::INFO, 'key_value table not found. Database may be empty.');
             return false;
         }
         return true;
@@ -271,7 +271,7 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
         if ($container->has(DrushServiceModifier::DRUSH_CONSOLE_SERVICES)) {
             foreach ($serviceCommandlist->getCommandList() as $command) {
                 $manager->inflect($command);
-                $this->logger->log(LogLevel::DEBUG_NOTIFY, dt('Add a command: !name', ['!name' => $command->getName()]));
+                $this->logger->log(LogLevel::DEBUG, dt('Add a command: !name', ['!name' => $command->getName()]));
                 $application->add($command);
             }
         }
@@ -280,7 +280,7 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
             $serviceCommandlist = $container->get(DrushServiceModifier::DRUSH_COMMAND_SERVICES);
             foreach ($serviceCommandlist->getCommandList() as $commandHandler) {
                 $manager->inflect($commandHandler);
-                $this->logger->log(LogLevel::DEBUG_NOTIFY, dt('Add a commandfile class: !name', ['!name' => get_class($commandHandler)]));
+                $this->logger->log(LogLevel::DEBUG, dt('Add a commandfile class: !name', ['!name' => get_class($commandHandler)]));
                 $runner->registerCommandClass($application, $commandHandler);
             }
         }

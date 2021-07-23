@@ -289,7 +289,7 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
             if ($phase_index > $bootstrapped_phase) {
                 if ($result = $this->bootstrapValidate($phase_index)) {
                     if (method_exists($bootstrap, $current_phase)) {
-                        $this->logger->log(LogLevel::BOOTSTRAP, 'Drush bootstrap phase: {function}()', ['function' => $current_phase]);
+                        $this->logger->log(LogLevel::INFO, 'Drush bootstrap phase: {function}()', ['function' => $current_phase]);
                         $bootstrap->{$current_phase}($this, $annotationData);
                     }
                     $bootstrap->setPhase($phase_index);
@@ -383,7 +383,7 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
      */
     public function bootstrapToPhase($bootstrapPhase, AnnotationData $annotationData = null)
     {
-        $this->logger->log(LogLevel::BOOTSTRAP, 'Starting bootstrap to {phase}', ['phase' => $bootstrapPhase]);
+        $this->logger->log(LogLevel::INFO, 'Starting bootstrap to {phase}', ['phase' => $bootstrapPhase]);
         $phase = $this->bootstrap()->lookUpPhaseIndex($bootstrapPhase);
         if (!isset($phase)) {
             throw new \Exception(dt('Bootstrap phase !phase unknown.', ['!phase' => $bootstrapPhase]));
@@ -428,7 +428,7 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
             return true;
         }
 
-        $this->logger->log(LogLevel::BOOTSTRAP, 'Drush bootstrap phase {phase}', ['phase' => $max_phase_index]);
+        $this->logger->log(LogLevel::INFO, 'Drush bootstrap phase {phase}', ['phase' => $max_phase_index]);
         $phases = $this->bootstrapPhases();
         $result = true;
 
@@ -439,15 +439,15 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
                 break;
             }
 
-            $this->logger->log(LogLevel::BOOTSTRAP, 'Try to validate bootstrap phase {phase}', ['phase' => $max_phase_index]);
+            $this->logger->log(LogLevel::INFO, 'Try to validate bootstrap phase {phase}', ['phase' => $max_phase_index]);
 
             if ($this->bootstrapValidate($phase_index)) {
                 if ($phase_index > $this->getPhase()) {
-                    $this->logger->log(LogLevel::BOOTSTRAP, 'Try to bootstrap at phase {phase}', ['phase' => $max_phase_index]);
+                    $this->logger->log(LogLevel::INFO, 'Try to bootstrap at phase {phase}', ['phase' => $max_phase_index]);
                     $result = $this->doBootstrap($phase_index, $max_phase_index, $annotationData);
                 }
             } else {
-                $this->logger->log(LogLevel::BOOTSTRAP, 'Could not bootstrap at phase {phase}', ['phase' => $max_phase_index]);
+                $this->logger->log(LogLevel::INFO, 'Could not bootstrap at phase {phase}', ['phase' => $max_phase_index]);
                 $result = false;
                 break;
             }
