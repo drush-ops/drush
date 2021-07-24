@@ -1,27 +1,13 @@
 <?php
-namespace Custom\Library\Drush\Commands;
+namespace Drush\Commands;
 
 use Consolidation\AnnotatedCommand\CommandLineAttributes;
-use Drush\Commands\DrushCommands;
 
 /**
  * Borrowed from https://github.com/beejeebus/annotated-command/blob/58e677d96b70845ce54bf0c367ddd09568f10044/tests/src/ExampleAttributesCommandFile.php.
  */
 class ExampleAttributesDrushCommands extends DrushCommands
 {
-    protected $state;
-    protected $output;
-
-    public function __construct($state = '')
-    {
-        $this->state = $state;
-    }
-
-    public function setOutput($output)
-    {
-        $this->output = $output;
-    }
-
     #[CommandLineAttributes(
         name: 'my:echo',
         description: 'This is the my:echo command',
@@ -55,7 +41,6 @@ class ExampleAttributesDrushCommands extends DrushCommands
         'one' => ['description' => 'The first number to add.'],
         'two' => ['description' => 'The other number to add. Default: 2']
     ],
-        custom: ['command' => ['test:arithmatic'] ]
     )]
     public function testArithmatic($one, $two = 2, array $options = ['negate' => false, 'unused' => 'bob'])
     {
