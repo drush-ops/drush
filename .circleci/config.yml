@@ -60,7 +60,7 @@ jobs:
       - image: circleci/mysql:5.7.24
     <<: *test74steps
 
-  test_71_drupal92_sqlite:
+  test_74_drupal92_sqlite:
     <<: *defaults
     docker:
       # We use a custom image here because wodby/php does not ship with sqlite3 program.
@@ -159,15 +159,15 @@ workflows:
     jobs:
       - code_style
       - check_mergable
-      - test_73_drupal91_security:
+      - test_74_drupal91_security:
           <<: *requires
-      - test_71_drupal89_mysql:
+      - test_74_drupal92_mysql:
           <<: *requires
-      - test_73_drupal91:
+      - test_74_drupal93:
           <<: *requires
-      - test_80_drupal92:
+      - test_80_drupal93:
           <<: *requires
-      - test_71_drupal89_sqlite:
+      - test_74_drupal92_sqlite:
           <<: *requires
-      - test_71_drupal89_postgres:
+      - test_74_drupal92_postgres:
           <<: *requires
