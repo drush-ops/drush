@@ -55,7 +55,7 @@
     "cweagans/composer-patches": "~1.0",
     "david-garcia/phpwhois": "4.3.0",
     "drupal/core-recommended": "^9",
-    "drupal/alinks": "^1",
+    "drupal/semver_example": "2.2.0",
     "phpunit/phpunit": "^9",
     "yoast/phpunit-polyfills": "^0.2.0",
     "squizlabs/php_codesniffer": "^3",
