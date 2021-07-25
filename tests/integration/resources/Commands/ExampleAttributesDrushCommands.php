@@ -9,7 +9,7 @@ use Consolidation\AnnotatedCommand\CommandLineAttributes;
 class ExampleAttributesDrushCommands extends DrushCommands
 {
     #[CommandLineAttributes(
-        name: 'my:echo',
+        command: 'my:echo',
         description: 'This is the my:echo command',
         help: "This command will concatenate two parameters. If the --flip flag\nis provided, then the result is the concatenation of two and one.",
         aliases: ['c'],
@@ -29,7 +29,7 @@ class ExampleAttributesDrushCommands extends DrushCommands
     }
 
     #[CommandLineAttributes(
-        name: 'test:arithmatic',
+        command: 'test:arithmatic',
         description: 'This is the test:arithmatic command',
         help: "This command will add one and two. If the --negate flag\nis provided, then the result is negated.",
         aliases: ['arithmatic'],
