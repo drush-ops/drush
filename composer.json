@@ -96,7 +96,7 @@
     "lint": [
       "find includes -name '*.inc' -print0 | xargs -0 -n1 php -l",
       "find src -name '*.php' -print0 | xargs -0 -n1 php -l",
-      "find tests -name '*.php' -print0 | xargs -0 -n1 php -l"
+      "find tests -name '*.php' -and ! -name 'ExampleAttributesDrushCommands.php' -print0 | xargs -0 -n1 php -l"
     ],
     "test": [
       "@lint",
