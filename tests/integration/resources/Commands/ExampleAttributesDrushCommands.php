@@ -36,11 +36,11 @@ class ExampleAttributesDrushCommands extends DrushCommands
         usage: ['2 2 --negate' => 'Add two plus two and then negate.'],
         options: [
         'negate' => ['description' => 'Whether or not the result should be negated. Default: false']
-    ],
+        ],
         params: [
         'one' => ['description' => 'The first number to add.'],
         'two' => ['description' => 'The other number to add. Default: 2']
-    ],
+        ],
     )]
     public function testArithmatic($one, $two = 2, array $options = ['negate' => false, 'unused' => 'bob'])
     {

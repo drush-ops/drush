@@ -13,7 +13,7 @@ class AttributesTest extends UnishIntegrationTestCase
     {
         
         if (PHP_MAJOR_VERSION < 8) {
-           $this->markTestSkipped('PHP8+ only'); 
+            $this->markTestSkipped('PHP8+ only');
         }
         
         $this->drush('test:arithmatic', ['9'], ['include' => __DIR__ . '/resources/']);
