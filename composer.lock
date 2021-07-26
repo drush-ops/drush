@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "9b30226dd6a04e1094616e997d9167f2",
+    "content-hash": "d0d36cc5ad297aeeb919540329876591",
     "packages": [
         {
             "name": "chi-teck/drupal-code-generator",
@@ -141,16 +141,16 @@
         },
         {
             "name": "consolidation/annotated-command",
-            "version": "dev-main",
+            "version": "dev-attributes-command-hook",
             "source": {
                 "type": "git",
                 "url": "https://github.com/consolidation/annotated-command.git",
-                "reference": "90e17b2a5319db3fc86ee459ba2975ce7172417f"
+                "reference": "2326782e4bd82a4b29f7ccec4f4f51b8d1ec05f4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/consolidation/annotated-command/zipball/90e17b2a5319db3fc86ee459ba2975ce7172417f",
-                "reference": "90e17b2a5319db3fc86ee459ba2975ce7172417f",
+                "url": "https://api.github.com/repos/consolidation/annotated-command/zipball/2326782e4bd82a4b29f7ccec4f4f51b8d1ec05f4",
+                "reference": "2326782e4bd82a4b29f7ccec4f4f51b8d1ec05f4",
                 "shasum": ""
             },
             "require": {
@@ -166,7 +166,6 @@
                 "squizlabs/php_codesniffer": "^3",
                 "yoast/phpunit-polyfills": "^0.2.0"
             },
-            "default-branch": true,
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -191,9 +190,9 @@
             "description": "Initialize Symfony Console commands from annotated command class methods.",
             "support": {
                 "issues": "https://github.com/consolidation/annotated-command/issues",
-                "source": "https://github.com/consolidation/annotated-command/tree/main"
+                "source": "https://github.com/consolidation/annotated-command/tree/attributes-command-hook"
             },
-            "time": "2021-06-25T19:40:03+00:00"
+            "time": "2021-07-26T03:14:02+00:00"
         },
         {
             "name": "consolidation/config",
@@ -8437,7 +8436,7 @@
     "aliases": [
         {
             "package": "consolidation/annotated-command",
-            "version": "5.9999999.9999999.9999999-dev",
+            "version": "dev-attributes-command-hook",
             "alias": "4.x-dev",
             "alias_normalized": "4.9999999.9999999.9999999-dev"
         }

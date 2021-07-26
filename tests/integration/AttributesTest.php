@@ -17,6 +17,6 @@ class AttributesTest extends UnishIntegrationTestCase
         }
         
         $this->drush('test:arithmatic', ['9'], ['include' => __DIR__ . '/resources/']);
-        $this->assertOutputEquals('11');
+        $this->assertOutputEquals("HOOKED\n11");
     }
 }

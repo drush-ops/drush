@@ -9,7 +9,7 @@ use Consolidation\AnnotatedCommand\CommandLineAttributes;
 class ExampleAttributesDrushCommands extends DrushCommands
 {
     #[CommandLineAttributes(
-        command: [['my:echo']],
+        command: 'my:echo',
         description: 'This is the my:echo command',
         help: "This command will concatenate two parameters. If the --flip flag\nis provided, then the result is the concatenation of two and one.",
         aliases: ['c'],
@@ -29,7 +29,7 @@ class ExampleAttributesDrushCommands extends DrushCommands
     }
 
     #[CommandLineAttributes(
-        command: [['test:arithmatic']],
+        command: 'test:arithmatic',
         description: 'This is the test:arithmatic command',
         help: "This command will add one and two. If the --negate flag\nis provided, then the result is negated.",
         aliases: ['arithmatic'],
@@ -52,5 +52,14 @@ class ExampleAttributesDrushCommands extends DrushCommands
         // Integer return codes are exit codes (errors), so
         // return a the result as a string so that it will be printed.
         return "$result";
+    }
+
+    #[CommandLineAttributes(
+        hook: 'post-command test:arithmatic',
+        description: 'Add a text after test:arithmatic command',
+    )]
+    public function postArithmatic()
+    {
+        $this->output->writeln('HOOKED');
     }
 }

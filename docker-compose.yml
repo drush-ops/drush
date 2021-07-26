@@ -24,8 +24,9 @@ services:
       COLUMNS: ${COLUMNS-80} # Set 80 columns for docker exec -it.
     ## Read instructions at https://wodby.com/docs/stacks/drupal/local/#debugging-cli-requests
       PHP_XDEBUG:
-      PHP_XDEBUG_DEFAULT_ENABLE:
+      PHP_XDEBUG_MODE:
       PHP_IDE_CONFIG:
+      PHP_XDEBUG_START_WITH_REQUEST:
       PHP_XDEBUG_REMOTE_HOST:
     volumes:
       - ./:/var/www/html:${VOLUME_FLAGS-cached}
