@@ -17,7 +17,6 @@ class ExampleAttributesDrushCommands extends DrushCommands
         usages: [
             'bet alpha --flip' => 'Concatenate "alpha" and "bet".'
         ],
-        validate_php_extension: 'hhh'
     )]
     public function myEcho($one, $two = '', array $options = ['flip' => false])
     {
