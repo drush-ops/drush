@@ -724,7 +724,7 @@ class MigrateRunnerCommands extends DrushCommands
      * @default-fields machine_name,description
      *
      * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
-     *   Migration messages status formatted as table.
+     *   Source fields of the given migration.
      */
     public function fieldsSource(string $migrationId): RowsOfFields
     {
