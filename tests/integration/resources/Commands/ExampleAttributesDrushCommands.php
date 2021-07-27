@@ -1,24 +1,23 @@
 <?php
 namespace Drush\Commands;
 
-use Consolidation\AnnotatedCommand\CommandLineAttributes;
-
 /**
  * Borrowed from https://github.com/beejeebus/annotated-command/blob/58e677d96b70845ce54bf0c367ddd09568f10044/tests/src/ExampleAttributesCommandFile.php.
  */
 class ExampleAttributesDrushCommands extends DrushCommands
 {
-    #[CommandLineAttributes(
+    #[DrushAttributes(
+        aliases: ['c'],
         command: 'my:echo',
         description: 'This is the my:echo command',
         help: "This command will concatenate two parameters. If the --flip flag\nis provided, then the result is the concatenation of two and one.",
-        aliases: ['c'],
-        usage: ['bet alpha --flip' => 'Concatenate "alpha" and "bet".'],
         options: [
-            'flip' => [
-                'description' => 'Whether or not the second parameter should come first in the result. Default: false'
-            ]
-        ]
+            'flip' => 'Whether or not the second parameter should come first in the result.',
+        ],
+        usages: [
+            'bet alpha --flip' => 'Concatenate "alpha" and "bet".'
+        ],
+        validate_php_extension: 'hhh'
     )]
     public function myEcho($one, $two = '', array $options = ['flip' => false])
     {
@@ -28,18 +27,22 @@ class ExampleAttributesDrushCommands extends DrushCommands
         return "{$one}{$two}";
     }
 
-    #[CommandLineAttributes(
+    #[DrushAttributes(
+        aliases: ['arithmatic'],
         command: 'test:arithmatic',
         description: 'This is the test:arithmatic command',
-        help: "This command will add one and two. If the --negate flag\nis provided, then the result is negated.",
-        aliases: ['arithmatic'],
-        usage: ['2 2 --negate' => 'Add two plus two and then negate.'],
+        help: "This command will add one and two. If the --negate flag is provided, then the result is negated.",
         options: [
-        'negate' => ['description' => 'Whether or not the result should be negated. Default: false']
+            'negate' => 'Whether or not the result should be negated.',
+            'unused' => 'Gotta provide a description',
         ],
         params: [
-        'one' => ['description' => 'The first number to add.'],
-        'two' => ['description' => 'The other number to add. Default: 2']
+            'one' => 'The first number to add.',
+            'two' => 'The other number to add.',
+        ],
+        usages: [
+            '2 2' => 'Add two plus two',
+            '2 2 --negate' => 'Add two plus two and then negate.'
         ],
     )]
     public function testArithmatic($one, $two = 2, array $options = ['negate' => false, 'unused' => 'bob'])
@@ -54,7 +57,7 @@ class ExampleAttributesDrushCommands extends DrushCommands
         return "$result";
     }
 
-    #[CommandLineAttributes(
+    #[DrushAttributes(
         hook: 'post-command test:arithmatic',
         description: 'Add a text after test:arithmatic command',
     )]
