@@ -202,7 +202,7 @@ class DeployHookCommands extends DrushCommands implements SiteAliasManagerAwareI
                 unset($variables['backtrace']);
                 $ret['#abort'] = [
                     'success' => false,
-                    'query' => t('%type: @message in %function (line %line of %file).', $variables),
+                    'query' => strip_tags((string) t('%type: @message in %function (line %line of %file).', $variables)),
                 ];
             }
         } else {
