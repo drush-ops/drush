@@ -107,7 +107,6 @@ class DeployHookCommands extends DrushCommands implements SiteAliasManagerAwareI
 
         $success = true;
         if (!$this->getConfig()->simulate()) {
-
             $operations = [];
             foreach ($pending as $function) {
                 $operations[] = ['\Drush\Drupal\Commands\core\DeployHookCommands::updateDoOneDeployHook', [$function]];
