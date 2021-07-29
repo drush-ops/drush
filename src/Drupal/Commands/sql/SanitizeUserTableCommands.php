@@ -74,10 +74,13 @@ class SanitizeUserTableCommands extends DrushCommands implements SanitizePluginI
             $messages[] = dt('User emails sanitized.');
         }
 
-        if (in_array('ignore-admins', $options)) {
-            $admins = $this->database->query("SELECT entity_id FROM user__roles WHERE roles_target_id='administrator'")->fetchCol();
+        if (array_key_exists('ignored-roles', $options)) {
+            $roles = explode(',', $options['ignored-roles']);
+            $admins = $this->database->query("SELECT entity_id FROM user__roles WHERE roles_target_id IN (:roles[])",
+                [':roles[]' => $roles]
+            )->fetchCol();
             $query->condition('uid', $admins, 'NOT IN');
-            $messages[] = dt('Admin emails and passwords preserved.');
+            $messages[] = dt('User emails and passwords for the specified roles preserved.');
         }
 
         if ($messages) {
@@ -97,10 +100,10 @@ class SanitizeUserTableCommands extends DrushCommands implements SanitizePluginI
      * @option sanitize-password
      *   By default, passwords are randomized. Specify <info>no</info> to disable that. Specify any other value to set all passwords
      *   to that value.
-     * @option ignore-admins
-     *   By default, all users are sanitized. Add option to skip sanitizing accounts with the administrator role.
+     * @option ignored-roles
+     *   A comma delimited list of roles. Users with at least one of the roles will be exempt from sanitization.
      */
-    public function options($options = ['sanitize-email' => 'user+%uid@localhost.localdomain', 'sanitize-password' => null, 'ignore-admins' => false])
+    public function options($options = ['sanitize-email' => 'user+%uid@localhost.localdomain', 'sanitize-password' => null, 'ignored-roles' => ''])
     {
     }
 
@@ -118,8 +121,8 @@ class SanitizeUserTableCommands extends DrushCommands implements SanitizePluginI
         if ($this->isEnabled($options['sanitize-email'])) {
             $messages[] = dt('Sanitize user emails.');
         }
-        if (in_array('ignore-admins', $options)) {
-            $messages[] = dt('Preserve admin emails and passwords.');
+        if (in_array('ignored-roles', $options)) {
+            $messages[] = dt('Preserve user emails and passwords for the specified roles.');
         }
     }
 
