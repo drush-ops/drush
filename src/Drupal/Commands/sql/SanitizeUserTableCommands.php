@@ -76,10 +76,10 @@ class SanitizeUserTableCommands extends DrushCommands implements SanitizePluginI
 
         if (array_key_exists('ignored-roles', $options)) {
             $roles = explode(',', $options['ignored-roles']);
-            $admins = $this->database->query("SELECT entity_id FROM user__roles WHERE roles_target_id IN (:roles[])",
+            $ignored_roles = $this->database->query("SELECT entity_id FROM user__roles WHERE roles_target_id IN (:roles[])",
                 [':roles[]' => $roles]
             )->fetchCol();
-            $query->condition('uid', $admins, 'NOT IN');
+            $query->condition('uid', $ignored_roles, 'NOT IN');
             $messages[] = dt('User emails and passwords for the specified roles preserved.');
         }
 
