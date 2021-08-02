@@ -154,6 +154,10 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
             throw $e;
         }
 
+        // Chained fast cache backend data may persist from a prior install.
+        if (function_exists('apcu_clear_cache')) {
+            apcu_clear_cache();
+        }
         if (empty($options['account-pass'])) {
             $this->logger()->success(dt('Installation complete.  User name: @name  User password: @pass', ['@name' => $options['account-name'], '@pass' => $account_pass]));
         } else {
