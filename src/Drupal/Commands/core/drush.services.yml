@@ -14,7 +14,6 @@ services:
       -  { name: drush.command }
   deploy_hook.commands:
     class: \Drush\Drupal\Commands\core\DeployHookCommands
-    arguments: ['@app.root', '@site.path', '@module_handler', '@keyvalue']
     tags:
       -  { name: drush.command }
   entity.commands:

@@ -36,7 +36,7 @@ class DeployHookTest extends CommandUnishTestCase
         $this->assertStringContainsString('[notice] Iteration 2.', $this->getErrorOutput());
         $this->assertStringContainsString('[notice] Finished at 3.', $this->getErrorOutput());
         $this->assertStringContainsString('[notice] Deploy hook started: woot_deploy_failing', $this->getErrorOutput());
-        $this->assertStringContainsString('[error]  Exception: This is the exception message thrown in woot_deploy_failing in woot_deploy_failing()', $this->getErrorOutput());
+        $this->assertStringContainsString('[error]  This is the exception message thrown in woot_deploy_failing', $this->getErrorOutput());
         $this->assertStringContainsString('[error]  Finished performing deploy hooks.', $this->getErrorOutput());
 
         // Set the drupal state so that the failing hook passes

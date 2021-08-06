@@ -4,13 +4,14 @@ namespace Drush\Drupal\Commands\core;
 
 use Consolidation\Log\ConsoleLogLevel;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
+use Consolidation\OutputFormatters\StructuredData\UnstructuredListData;
 use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
 use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
-use Drupal\Core\Extension\ModuleHandlerInterface;
-use Drupal\Core\KeyValueStore\KeyValueFactoryInterface;
 use Drupal\Core\Update\UpdateRegistry;
 use Drupal\Core\Utility\Error;
 use Drush\Commands\DrushCommands;
+use Drush\Drush;
+use DrushBatchContext;
 use Drush\Exceptions\UserAbortException;
 use Psr\Log\LogLevel;
 
@@ -19,43 +20,26 @@ class DeployHookCommands extends DrushCommands implements SiteAliasManagerAwareI
     use SiteAliasManagerAwareTrait;
 
     /**
-     * @var \Drupal\Core\Update\UpdateRegistry
-     */
-    protected $registry;
-
-    /**
-     * @var \Drupal\Core\KeyValueStore\KeyValueStoreInterface
-     */
-    protected $keyValue;
-
-    /**
-     * DeployHookCommands constructor.
+     * Get the deploy hook update registry.
      *
-     * @param string $root
-     *   The app root.
-     * @param string $site_path
-     *   The site path.
-     * @param \Drupal\Core\Extension\ModuleHandlerInterface $moduleHandler
-     *   The module handler.
-     * @param \Drupal\Core\KeyValueStore\KeyValueFactoryInterface $keyValueFactory
-     *   The key value store factory.
+     * @return UpdateRegistry
      */
-    public function __construct($root, $site_path, ModuleHandlerInterface $moduleHandler, KeyValueFactoryInterface $keyValueFactory)
+    public static function getRegistry()
     {
-        parent::__construct();
-        $this->keyValue = $keyValueFactory->get('deploy_hook');
-        $this->registry = new class(
-            $root,
-            $site_path,
-            array_keys($moduleHandler->getModuleList()),
-            $this->keyValue
+        $registry = new class(
+            \Drupal::service('app.root'),
+            \Drupal::service('site.path'),
+            array_keys(\Drupal::service('module_handler')->getModuleList()),
+            \Drupal::service('keyvalue')->get('deploy_hook')
         ) extends UpdateRegistry {
             public function setUpdateType($type)
             {
                 $this->updateType = $type;
             }
         };
-        $this->registry->setUpdateType('deploy');
+        $registry->setUpdateType('deploy');
+
+        return $registry;
     }
 
     /**
@@ -78,7 +62,7 @@ class DeployHookCommands extends DrushCommands implements SiteAliasManagerAwareI
      */
     public function status()
     {
-        $updates = $this->registry->getPendingUpdateInformation();
+        $updates = self::getRegistry()->getPendingUpdateInformation();
         $rows = [];
         foreach ($updates as $module => $update) {
             if (!empty($update['pending'])) {
@@ -106,7 +90,7 @@ class DeployHookCommands extends DrushCommands implements SiteAliasManagerAwareI
      */
     public function run()
     {
-        $pending = $this->registry->getPendingUpdateFunctions();
+        $pending = self::getRegistry()->getPendingUpdateFunctions();
 
         if (empty($pending)) {
             $this->logger()->success(dt('No pending deploy hooks.'));
@@ -123,34 +107,150 @@ class DeployHookCommands extends DrushCommands implements SiteAliasManagerAwareI
 
         $success = true;
         if (!$this->getConfig()->simulate()) {
-            try {
-                foreach ($pending as $function) {
-                    $func = new \ReflectionFunction($function);
-                    $this->logger()->notice('Deploy hook started: ' . $func->getName());
+            $operations = [];
+            foreach ($pending as $function) {
+                $operations[] = ['\Drush\Drupal\Commands\core\DeployHookCommands::updateDoOneDeployHook', [$function]];
+            }
 
-                    // Pretend it is a batch operation to keep the same signature
-                    // as the post update hooks.
-                    $sandbox = [];
-                    do {
-                        $return = $function($sandbox);
-                        if (!empty($return)) {
-                            $this->logger()->notice($return);
-                        }
-                    } while (isset($sandbox['#finished']) && $sandbox['#finished'] < 1);
+            $batch = [
+                'operations' => $operations,
+                'title' => 'Updating',
+                'init_message' => 'Starting deploy hooks',
+                'error_message' => 'An unrecoverable error has occurred. You can find the error message below. It is advised to copy it to the clipboard for reference.',
+                'finished' => [$this, 'updateFinished'],
+            ];
+            batch_set($batch);
+            $result = drush_backend_batch_process('deploy:batch-process');
 
-                    $this->registry->registerInvokedUpdates([$function]);
-                    $this->logger()->debug('Performed: ' . $func->getName());
-                }
-            } catch (\Throwable $e) {
-                $variables = Error::decodeException($e);
-                unset($variables['backtrace']);
-                $this->logger()->error(dt('%type: @message in %function (line %line of %file).', $variables));
-                $success = false;
+            $success = false;
+            if (!is_array($result)) {
+                $this->logger()->error(dt('Batch process did not return a result array. Returned: !type', ['!type' => gettype($result)]));
+            } elseif (!empty($result[0]['#abort'])) {
+                // Whenever an error occurs the batch process does not continue, so
+                // this array should only contain a single item, but we still output
+                // all available data for completeness.
+                $this->logger()->error(dt('Update aborted by: !process', [
+                    '!process' => implode(', ', $result[0]['#abort']),
+                ]));
+            } else {
+                $success = true;
             }
         }
 
         $level = $success ? ConsoleLogLevel::SUCCESS : LogLevel::ERROR;
         $this->logger()->log($level, dt('Finished performing deploy hooks.'));
         return $success ? self::EXIT_SUCCESS : self::EXIT_FAILURE;
+    }
+
+    /**
+     * Process operations in the specified batch set.
+     *
+     * @command deploy:batch-process
+     * @param string $batch_id The batch id that will be processed.
+     * @bootstrap full
+     * @hidden
+     *
+     * @return \Consolidation\OutputFormatters\StructuredData\UnstructuredListData
+     */
+    public function process($batch_id, $options = ['format' => 'json'])
+    {
+        $result = drush_batch_command($batch_id);
+        return new UnstructuredListData($result);
+    }
+
+    /**
+     * Batch command that executes a single deploy hook.
+     *
+     * @param string $function
+     *   The deploy-hook function to execute.
+     * @param DrushBatchContext $context
+     *   The batch context object.
+     */
+    public static function updateDoOneDeployHook($function, DrushBatchContext $context)
+    {
+        $ret = [];
+
+        // If this update was aborted in a previous step, or has a dependency that was
+        // aborted in a previous step, go no further.
+        if (!empty($context['results']['#abort'])) {
+            return;
+        }
+
+        list($module, $name) = explode('_deploy_', $function, 2);
+        $filename = $module . '.deploy';
+        \Drupal::moduleHandler()->loadInclude($module, 'php', $filename);
+        if (function_exists($function)) {
+            if (empty($context['results'][$module][$name]['type'])) {
+                Drush::logger()->notice("Deploy hook started: $function");
+            }
+            try {
+                $ret['results']['query'] = $function($context['sandbox']);
+                $ret['results']['success'] = true;
+                $ret['type'] = 'deploy';
+
+                if (!isset($context['sandbox']['#finished']) || (isset($context['sandbox']['#finished']) && $context['sandbox']['#finished'] >= 1)) {
+                    self::getRegistry()->registerInvokedUpdates([$function]);
+                }
+            } catch (\Exception $e) {
+                // @TODO We may want to do different error handling for different exception
+                // types, but for now we'll just log the exception and return the message
+                // for printing.
+                // @see https://www.drupal.org/node/2564311
+                Drush::logger()->error($e->getMessage());
+
+                $variables = Error::decodeException($e);
+                unset($variables['backtrace']);
+                // On windows there is a problem with json encoding a string with backslashes.
+                $variables['%file'] = strtr($variables['%file'], [DIRECTORY_SEPARATOR => '/']);
+                $ret['#abort'] = [
+                    'success' => false,
+                    'query' => strip_tags((string) t('%type: @message in %function (line %line of %file).', $variables)),
+                ];
+            }
+        } else {
+            $ret['#abort'] = ['success' => false];
+            Drush::logger()->warning(dt('Deploy hook function @function not found in file @filename', [
+                '@function' => $function,
+                '@filename' => "$filename.php",
+            ]));
+        }
+
+        if (isset($context['sandbox']['#finished'])) {
+            $context['finished'] = $context['sandbox']['#finished'];
+            unset($context['sandbox']['#finished']);
+        }
+        if (!isset($context['results'][$module][$name])) {
+            $context['results'][$module][$name] = [];
+        }
+        $context['results'][$module][$name] = array_merge($context['results'][$module][$name], $ret);
+
+        // Log the message that was returned.
+        if (!empty($ret['results']['query'])) {
+            Drush::logger()->notice(strip_tags((string) $ret['results']['query']));
+        }
+
+        if (!empty($ret['#abort'])) {
+            // Record this function in the list of updates that were aborted.
+            $context['results']['#abort'][] = $function;
+            // Setting this value will output an error message.
+            // @see \DrushBatchContext::offsetSet()
+            $context['error_message'] = "Deploy hook failed: $function";
+        } elseif ($context['finished'] == 1 && empty($ret['#abort'])) {
+            // Setting this value will output a success message.
+            // @see \DrushBatchContext::offsetSet()
+            $context['message'] = "Performed: $function";
+        }
+    }
+
+    /**
+     * Batch finished callback.
+     *
+     * @param boolean $success Whether the batch ended without a fatal error.
+     * @param array $results
+     * @param array $operations
+     */
+    public function updateFinished($success, $results, $operations)
+    {
+        // In theory there is nothing to do here.
     }
 }
