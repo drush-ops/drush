@@ -1306,7 +1306,9 @@ loading drush.yml and drush10.yml, etc.</p></dd><dt><a href="Drush/Config/Enviro
 <abbr title="Drush\Drupal\Commands\core\CliCommands">CliCommands</abbr>::getCasters</a>() &mdash; <em>Method in class <a href="Drush/Drupal/Commands/core/CliCommands.html"><abbr title="Drush\Drupal\Commands\core\CliCommands">CliCommands</abbr></a></em></dt>
                     <dd><p>Returns a mapped array of casters for use in the shell.</p></dd><dt><a href="Drush/Drupal/Commands/core/CliCommands.html#method_getPhpKeywords">
 <abbr title="Drush\Drupal\Commands\core\CliCommands">CliCommands</abbr>::getPhpKeywords</a>() &mdash; <em>Method in class <a href="Drush/Drupal/Commands/core/CliCommands.html"><abbr title="Drush\Drupal\Commands\core\CliCommands">CliCommands</abbr></a></em></dt>
-                    <dd><p>Returns a list of PHP keywords.</p></dd><dt><a href="Drush/Drupal/Commands/core/DrupalCommands.html#method_getCron">
+                    <dd><p>Returns a list of PHP keywords.</p></dd><dt><a href="Drush/Drupal/Commands/core/DeployHookCommands.html#method_getRegistry">
+<abbr title="Drush\Drupal\Commands\core\DeployHookCommands">DeployHookCommands</abbr>::getRegistry</a>() &mdash; <em>Method in class <a href="Drush/Drupal/Commands/core/DeployHookCommands.html"><abbr title="Drush\Drupal\Commands\core\DeployHookCommands">DeployHookCommands</abbr></a></em></dt>
+                    <dd><p>Get the deploy hook update registry.</p></dd><dt><a href="Drush/Drupal/Commands/core/DrupalCommands.html#method_getCron">
 <abbr title="Drush\Drupal\Commands\core\DrupalCommands">DrupalCommands</abbr>::getCron</a>() &mdash; <em>Method in class <a href="Drush/Drupal/Commands/core/DrupalCommands.html"><abbr title="Drush\Drupal\Commands\core\DrupalCommands">DrupalCommands</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Drupal/Commands/core/DrupalCommands.html#method_getModuleHandler">
 <abbr title="Drush\Drupal\Commands\core\DrupalCommands">DrupalCommands</abbr>::getModuleHandler</a>() &mdash; <em>Method in class <a href="Drush/Drupal/Commands/core/DrupalCommands.html"><abbr title="Drush\Drupal\Commands\core\DrupalCommands">DrupalCommands</abbr></a></em></dt>
@@ -1748,9 +1750,7 @@ legacy systems.</p></dd><dt><a href="Drush/Preflight/PreflightArgs.html#method_i
         <dl id="indexK"><dt>$<a href="Drush/Boot/DrupalBoot8.html#property_kernel">
 <abbr title="Drush\Boot\DrupalBoot8">DrupalBoot8</abbr>#kernel</a> &mdash; <em>Property in class <a href="Drush/Boot/DrupalBoot8.html"><abbr title="Drush\Boot\DrupalBoot8">DrupalBoot8</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Boot/Kernels.html"><abbr title="Drush\Boot\Kernels">Kernels</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Boot.html">Drush\Boot</a></em></dt>
-                    <dd><p>Defines the available kernels that can be bootstrapped.</p></dd><dt>$<a href="Drush/Drupal/Commands/core/DeployHookCommands.html#property_keyValue">
-<abbr title="Drush\Drupal\Commands\core\DeployHookCommands">DeployHookCommands</abbr>#keyValue</a> &mdash; <em>Property in class <a href="Drush/Drupal/Commands/core/DeployHookCommands.html"><abbr title="Drush\Drupal\Commands\core\DeployHookCommands">DeployHookCommands</abbr></a></em></dt>
-                    <dd></dd><dt>$<a href="Drush/Drupal/Commands/core/MigrateRunnerCommands.html#property_keyValue">
+                    <dd><p>Defines the available kernels that can be bootstrapped.</p></dd><dt>$<a href="Drush/Drupal/Commands/core/MigrateRunnerCommands.html#property_keyValue">
 <abbr title="Drush\Drupal\Commands\core\MigrateRunnerCommands">MigrateRunnerCommands</abbr>#keyValue</a> &mdash; <em>Property in class <a href="Drush/Drupal/Commands/core/MigrateRunnerCommands.html"><abbr title="Drush\Drupal\Commands\core\MigrateRunnerCommands">MigrateRunnerCommands</abbr></a></em></dt>
                     <dd><p>The key-value store service.</p></dd><dt><a href="Drush/SiteAlias/LegacyAliasConverter.html#method_keyConversion">
 <abbr title="Drush\SiteAlias\LegacyAliasConverter">LegacyAliasConverter</abbr>::keyConversion</a>() &mdash; <em>Method in class <a href="Drush/SiteAlias/LegacyAliasConverter.html"><abbr title="Drush\SiteAlias\LegacyAliasConverter">LegacyAliasConverter</abbr></a></em></dt>
@@ -2252,8 +2252,6 @@ command was found, but did not meet requirements.</p></dd><dt>$<a href="Drush/Bo
 <abbr title="Drush\Commands\help\ListCommands">ListCommands</abbr>::renderListRaw</a>() &mdash; <em>Method in class <a href="Drush/Commands/help/ListCommands.html"><abbr title="Drush\Commands\help\ListCommands">ListCommands</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/sql/SqlSyncCommands.html#method_rsync">
 <abbr title="Drush\Commands\sql\SqlSyncCommands">SqlSyncCommands</abbr>::rsync</a>() &mdash; <em>Method in class <a href="Drush/Commands/sql/SqlSyncCommands.html"><abbr title="Drush\Commands\sql\SqlSyncCommands">SqlSyncCommands</abbr></a></em></dt>
-                    <dd></dd><dt>$<a href="Drush/Drupal/Commands/core/DeployHookCommands.html#property_registry">
-<abbr title="Drush\Drupal\Commands\core\DeployHookCommands">DeployHookCommands</abbr>#registry</a> &mdash; <em>Property in class <a href="Drush/Drupal/Commands/core/DeployHookCommands.html"><abbr title="Drush\Drupal\Commands\core\DeployHookCommands">DeployHookCommands</abbr></a></em></dt>
                     <dd></dd><dt>$<a href="Drush/Drupal/Commands/core/DrupalCommands.html#property_routeProvider">
 <abbr title="Drush\Drupal\Commands\core\DrupalCommands">DrupalCommands</abbr>#routeProvider</a> &mdash; <em>Property in class <a href="Drush/Drupal/Commands/core/DrupalCommands.html"><abbr title="Drush\Drupal\Commands\core\DrupalCommands">DrupalCommands</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Drupal/Commands/core/DrupalCommands.html#method_requirements">
@@ -2970,9 +2968,7 @@ need to be expanded.</p></dd><dt><a href="Drush/Internal/Config/Yaml/Yaml.html">
 <abbr title="Drush\Drupal\Commands\config\ConfigExportCommands">ConfigExportCommands</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/Drupal/Commands/config/ConfigExportCommands.html"><abbr title="Drush\Drupal\Commands\config\ConfigExportCommands">ConfigExportCommands</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Drupal/Commands/config/ConfigImportCommands.html#method___construct">
 <abbr title="Drush\Drupal\Commands\config\ConfigImportCommands">ConfigImportCommands</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/Drupal/Commands/config/ConfigImportCommands.html"><abbr title="Drush\Drupal\Commands\config\ConfigImportCommands">ConfigImportCommands</abbr></a></em></dt>
-                    <dd></dd><dt><a href="Drush/Drupal/Commands/core/DeployHookCommands.html#method___construct">
-<abbr title="Drush\Drupal\Commands\core\DeployHookCommands">DeployHookCommands</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/Drupal/Commands/core/DeployHookCommands.html"><abbr title="Drush\Drupal\Commands\core\DeployHookCommands">DeployHookCommands</abbr></a></em></dt>
-                    <dd><p>DeployHookCommands constructor.</p></dd><dt><a href="Drush/Drupal/Commands/core/DrupalCommands.html#method___construct">
+                    <dd></dd><dt><a href="Drush/Drupal/Commands/core/DrupalCommands.html#method___construct">
 <abbr title="Drush\Drupal\Commands\core\DrupalCommands">DrupalCommands</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/Drupal/Commands/core/DrupalCommands.html"><abbr title="Drush\Drupal\Commands\core\DrupalCommands">DrupalCommands</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Drupal/Commands/core/EntityCommands.html#method___construct">
 <abbr title="Drush\Drupal\Commands\core\EntityCommands">EntityCommands</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/Drupal/Commands/core/EntityCommands.html"><abbr title="Drush\Drupal\Commands\core\EntityCommands">EntityCommands</abbr></a></em></dt>

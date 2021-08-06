@@ -186,24 +186,6 @@
                 <td><small>from&nbsp;<a href="../../../../Drush/Commands/DrushCommands.html#property_commandData">
 <abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a></small></td>
             </tr>
-                    <tr>
-                <td class="type" id="property_registry">
-                                        protected                                        <abbr title="Drupal\Core\Update\UpdateRegistry">UpdateRegistry</abbr>
-                                                                                
-                                    </td>
-                <td>$registry</td>
-                <td class="last"></td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td class="type" id="property_keyValue">
-                                        protected                                        <abbr title="Drupal\Core\KeyValueStore\KeyValueStoreInterface">KeyValueStoreInterface</abbr>
-                                                                                
-                                    </td>
-                <td>$keyValue</td>
-                <td class="last"></td>
-                <td></td>
-            </tr>
             </table>
 
     
@@ -262,10 +244,12 @@ DrushConfig as return type. Helps with IDE completion.</p></p>                </
                     
                 </div>
                 <div class="col-md-8">
-                    <a href="#method___construct">__construct</a>(string $root, string $site_path, <abbr title="Drupal\Core\Extension\ModuleHandlerInterface">ModuleHandlerInterface</abbr> $moduleHandler, <abbr title="Drupal\Core\KeyValueStore\KeyValueFactoryInterface">KeyValueFactoryInterface</abbr> $keyValueFactory)
+                    <a href="#method___construct">__construct</a>()
         
-                                            <p><p>DeployHookCommands constructor.</p></p>                </div>
-                <div class="col-md-2"></div>
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../../../Drush/Commands/DrushCommands.html#method___construct">
+<abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a></small></div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
@@ -332,6 +316,16 @@ DrushConfig as return type. Helps with IDE completion.</p></p>                </
                                             <p><p>Get a Guzzle handler stack that uses the Drush logger.</p></p>                </div>
                 <div class="col-md-2"><small>from&nbsp;<a href="../../../../Drush/Commands/DrushCommands.html#method_getStack">
 <abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    static&nbsp;<abbr title="Drupal\Core\Update\UpdateRegistry">UpdateRegistry</abbr>
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_getRegistry">getRegistry</a>()
+        
+                                            <p><p>Get the deploy hook update registry.</p></p>                </div>
+                <div class="col-md-2"></div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
@@ -518,9 +512,10 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method___construct">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Commands/core/DeployHookCommands.php#L43">at line 43</a></div>
+        <div class="location">in <a href="../../../../Drush/Commands/DrushCommands.html#method___construct">
+<abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a> <a href="https://github.com/drush-ops/drush/blob/10.x/src/Commands/DrushCommands.php#L49">at line 49</a></div>
         <code>                    
-    <strong>__construct</strong>(string $root, string $site_path, <abbr title="Drupal\Core\Extension\ModuleHandlerInterface">ModuleHandlerInterface</abbr> $moduleHandler, <abbr title="Drupal\Core\KeyValueStore\KeyValueFactoryInterface">KeyValueFactoryInterface</abbr> $keyValueFactory)
+    <strong>__construct</strong>()
         </code>
     </h3>
     <div class="details">    
@@ -528,34 +523,10 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             
 
         <div class="method-description">
-                            <p><p>DeployHookCommands constructor.</p></p>                        
+                            <p class="no-description">No description</p>
+                    
         </div>
         <div class="tags">
-                            <h4>Parameters</h4>
-
-                    <table class="table table-condensed">
-                    <tr>
-                <td>string</td>
-                <td>$root</td>
-                <td><p>The app root.</p></td>
-            </tr>
-                    <tr>
-                <td>string</td>
-                <td>$site_path</td>
-                <td><p>The site path.</p></td>
-            </tr>
-                    <tr>
-                <td><abbr title="Drupal\Core\Extension\ModuleHandlerInterface">ModuleHandlerInterface</abbr></td>
-                <td>$moduleHandler</td>
-                <td><p>The module handler.</p></td>
-            </tr>
-                    <tr>
-                <td><abbr title="Drupal\Core\KeyValueStore\KeyValueFactoryInterface">KeyValueFactoryInterface</abbr></td>
-                <td>$keyValueFactory</td>
-                <td><p>The key value store factory.</p></td>
-            </tr>
-            </table>
-
             
             
             
@@ -768,8 +739,40 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
 
             </div>
                     <div class="method-item">
+                    <h3 id="method_getRegistry">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Commands/core/DeployHookCommands.php#L27">at line 27</a></div>
+        <code>        static            <abbr title="Drupal\Core\Update\UpdateRegistry">UpdateRegistry</abbr>
+    <strong>getRegistry</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Get the deploy hook update registry.</p></p>                        
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><abbr title="Drupal\Core\Update\UpdateRegistry">UpdateRegistry</abbr></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
                     <h3 id="method_setUpdateType">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Commands/core/DeployHookCommands.php#L53">at line 53</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Commands/core/DeployHookCommands.php#L35">at line 35</a></div>
         <code>                    
     <strong>setUpdateType</strong>($type)
         </code>
