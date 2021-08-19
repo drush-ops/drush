@@ -120,21 +120,8 @@ class EditCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
 
     public static function phpIniFiles()
     {
-        $ini_files = [];
-        $path = php_ini_loaded_file();
-        $ini_files[$path] = $path;
-        if ($drush_ini = getenv('DRUSH_INI')) {
-            if (file_exists($drush_ini)) {
-                $ini_files[$drush_ini] = $drush_ini;
-            }
-        }
-        foreach ([DRUSH_BASE_PATH, '/etc/drush', Drush::config()->user() . '/.drush'] as $ini_dir) {
-            if (file_exists($ini_dir . "/drush.ini")) {
-                $path = realpath($ini_dir . "/drush.ini");
-                $ini_files[$path] = $path;
-            }
-        }
-        return $ini_files;
+        $paths[] = php_ini_loaded_file();
+        return $paths;
     }
 
     public function bashFiles()
