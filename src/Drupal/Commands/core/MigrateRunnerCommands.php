@@ -2,6 +2,8 @@
 
 namespace Drush\Drupal\Commands\core;
 
+use Consolidation\AnnotatedCommand\AnnotationData;
+use Consolidation\OutputFormatters\Options\FormatterOptions;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Drupal\Core\Datetime\DateFormatter;
 use Drupal\Core\KeyValueStore\KeyValueFactoryInterface;
@@ -16,6 +18,7 @@ use Drush\Drupal\Migrate\MigrateExecutable;
 use Drush\Drupal\Migrate\MigrateMessage;
 use Drush\Drupal\Migrate\MigrateUtils;
 use Drush\Utils\StringUtils;
+use Symfony\Component\Console\Input\InputInterface;
 use Webmozart\PathUtil\Path;
 
 /**
@@ -107,6 +110,7 @@ class MigrateRunnerCommands extends DrushCommands
      *   needing_update: Needing update
      *   unprocessed: Unprocessed
      *   last_imported: Last Imported
+     *   tag: Tags
      * @default-fields id,status,total,imported,unprocessed,last_imported
      *
      * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
@@ -137,10 +141,18 @@ class MigrateRunnerCommands extends DrushCommands
 
         $list = $this->getMigrationList($migrationIds, $options['tag']);
 
+        $isTableFormatWithTags = $options['format'] === 'table' && $options['tag'] !== null;
+        $isDataFormatWithTags =  $options['tag'] !== null && $options['format'] !== 'table';
+
+        if ($isDataFormatWithTags && !in_array('tag', $fields, TRUE)) {
+            $fields[] = 'tag';
+        }
+
         $table = [];
+        $count = 0;
         // Take it one tag at a time, listing the migrations within each tag.
         foreach ($list as $tag => $migrations) {
-            if ($tag) {
+            if ($isTableFormatWithTags) {
                 $table[] = $this->padTableRow([
                   'id' => dt('Tag: @name', ['@name' => $tag])
                 ], $fields);
@@ -151,7 +163,7 @@ class MigrateRunnerCommands extends DrushCommands
                 foreach ($fields as $field) {
                     switch ($field) {
                         case 'id':
-                            $row[$field] = ($tag ? ' ' : '') . $migration->id();
+                            $row[$field] = ($isTableFormatWithTags ? ' ' : '') . $migration->id();
                             break;
                         case 'status':
                             $row[$field] = $migration->getStatusLabel();
@@ -182,18 +194,45 @@ class MigrateRunnerCommands extends DrushCommands
                         case 'last_imported':
                             $row[$field] = $this->getMigrationLastImportedTime($migration);
                             break;
+                        case 'tag':
+                            $row[$field] = $migration->getMigrationTags();
                     }
                 }
                 $table[] = $row;
             }
 
+            $count++;
+
             // Add an empty row after a tag group.
-            if ($tag) {
+            if ($isTableFormatWithTags && $count < count($list)) {
                 $table[] = $this->padTableRow([], $fields);
             }
         }
 
         return new RowsOfFields($table);
+    }
+
+    /**
+     * Adds the 'tag' field when a non-table format is used with --tag.
+     *
+     * The default format (--format=table), is intended to be consumed by
+     * humans. When used together with --tag, the migrations are grouped on
+     * --tag value. This makes no sense when outputting the list in a data
+     * format, such as 'csv', 'json', etc. In such cases we're adding the 'tag'
+     * field to the result set, so that the consumer can decide whether to
+     * handle or not per-tag grouping.
+     *
+     * @hook init migrate:status
+     */
+    public function initMigrateStatus(InputInterface $input, AnnotationData $annotationData): void
+    {
+        if ($input->getOption('format') !== 'table' && !$input->getOption('field') && $input->getOption('tag')) {
+            $fields = StringUtils::csvToArray($input->getOption(FormatterOptions::FIELDS));
+            if (!in_array('tag', $fields, true)) {
+                $fields[] = 'tag';
+                $input->setOption(FormatterOptions::FIELDS, implode(',', $fields));
+            }
+        }
     }
 
     /**

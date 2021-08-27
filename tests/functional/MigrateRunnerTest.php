@@ -59,21 +59,37 @@ class MigrateRunnerTest extends CommandUnishTestCase
         $this->assertContains('test_migration_untagged', $actualIds);
 
         // Using --tag with value.
-        $this->drush('migrate:status', [], ['tag' => 'tag1,tag2', 'format' => 'json']);
-        $output = $this->getOutputFromJSON();
+        $this->drush('migrate:status', [], ['tag' => 'tag1,tag2']);
+        $output = array_map('trim', $this->getOutputAsList());
+        $this->assertSame('------------------------ -------- ------- ---------- ------------- ---------------', $output[0]);
+        $this->assertSame('Migration ID             Status   Total   Imported   Unprocessed   Last Imported', $output[1]);
+        $this->assertSame('------------------------ -------- ------- ---------- ------------- ---------------', $output[2]);
+        $this->assertSame('Tag: tag1', $output[3]);
+        $this->assertSame('test_migration          Idle     2       0          2', $output[4]);
+        $this->assertSame('test_migration_tagged   Idle     1       0          1', $output[5]);
+        $this->assertEmpty($output[6]);
+        $this->assertSame('Tag: tag2', $output[7]);
+        $this->assertSame('test_migration_tagged   Idle     1       0          1', $output[8]);
+        $this->assertSame('------------------------ -------- ------- ---------- ------------- ---------------', $output[9]);
 
-        $this->assertCount(7, $output);
-        // Tag: tag1. The first line contains the tag.
-        $this->assertEquals('Tag: tag1', $output[0]['id']);
-        // When using --tag, the migration IDs are indented, so we trim().
-        $this->assertEquals('test_migration', trim($output[1]['id']));
-        $this->assertEquals('test_migration_tagged', trim($output[2]['id']));
-        // There's an empty row after each tag group.
-        $this->assertNull($output[3]['id']);
+        // Same but with Json output.
+        $this->drush('migrate:status', [], ['tag' => 'tag1,tag2', 'format' => 'json']);
+
+        // Results are no more grouped under a tag entry.
+        $this->assertCount(3, $this->getOutputFromJSON());
+
+        // Tag: tag1.
+        $this->assertSame('test_migration', trim($this->getOutputFromJSON(0)['id']));
+        // A 'tag' field has been automatically added.
+        $this->assertSame(['tag1'], $this->getOutputFromJSON(0)['tag']);
+        $this->assertSame('test_migration_tagged', trim($this->getOutputFromJSON(1)['id']));
+        // A 'tag' field has been automatically added.
+        $this->assertSame(['tag1', 'tag2'], $this->getOutputFromJSON(1)['tag']);
+
         // Tag: tag2
-        $this->assertEquals('Tag: tag2', $output[4]['id']);
-        $this->assertEquals('test_migration_tagged', trim($output[5]['id']));
-        $this->assertNull($output[6]['id']);
+        $this->assertSame('test_migration_tagged', trim($this->getOutputFromJSON(2)['id']));
+        // A 'tag' field has been automatically added.
+        $this->assertSame(['tag1', 'tag2'], $this->getOutputFromJSON(2)['tag']);
 
         // Check that --names-only takes precedence over --fields.
         $this->drush('migrate:status', [], [
