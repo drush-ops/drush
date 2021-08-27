@@ -432,7 +432,7 @@ class MigrateRunnerCommands extends DrushCommands
      * @topics docs:migrate
      *
      * @validate-module-enabled migrate
-     * @validate-migration-name
+     * @validate-migration-id
      */
     public function stop(string $migrationId): void
     {
@@ -468,7 +468,7 @@ class MigrateRunnerCommands extends DrushCommands
      * @topics docs:migrate
      *
      * @validate-module-enabled migrate
-     * @validate-migration-name
+     * @validate-migration-id
      */
     public function resetStatus(string $migrationId): void
     {
@@ -507,7 +507,7 @@ class MigrateRunnerCommands extends DrushCommands
      * @topics docs:migrate
      *
      * @validate-module-enabled migrate
-     * @validate-migration-name
+     * @validate-migration-id
      *
      * @field-labels
      *   level: Level
@@ -612,7 +612,7 @@ class MigrateRunnerCommands extends DrushCommands
      * @topics docs:migrate
      *
      * @validate-module-enabled migrate
-     * @validate-migration-name
+     * @validate-migration-id
      *
      * @field-labels
      *   machine_name: Field name
@@ -759,20 +759,20 @@ class MigrateRunnerCommands extends DrushCommands
     }
 
     /**
-     * Validate that a migration name is valid.
+     * Validates a migration id is valid.
      *
      * If the argument to be validated is not named migrationId, pass the
      * argument name as the value of the annotation.
      *
-     * @hook validate @validate-migration-name
+     * @hook validate @validate-migration-id
      *
      * @param \Consolidation\AnnotatedCommand\CommandData $commandData
      *
      * @return \Consolidation\AnnotatedCommand\CommandError|null
      */
-    public function validateMigrationName(CommandData $commandData)
+    public function validateMigrationId(CommandData $commandData)
     {
-        $arg_name = $commandData->annotationData()->get('validate-migration-name', null) ?: 'migrationId';
+        $arg_name = $commandData->annotationData()->get('validate-migration-id', null) ?: 'migrationId';
         $migration_name = $commandData->input()->getArgument($arg_name);
         /** @var \Drupal\migrate\Plugin\MigrationInterface $migration */
         $migration = $this->getMigrationPluginManager()->createInstance($migration_name);
