@@ -113,7 +113,7 @@ class Drush
     /**
      * Sets a new global container.
      */
-    public static function setContainer(ContainerInterface $container)
+    public static function setContainer($container)
     {
         \Robo\Robo::setContainer($container);
     }
@@ -131,7 +131,7 @@ class Drush
      *
      * @throws RuntimeException
      */
-    public static function getContainer(): ?ContainerInterface
+    public static function getContainer()
     {
         if (!\Robo\Robo::hasContainer()) {
             throw new RuntimeException('Drush::$container is not initialized yet. \Drush::setContainer() must be called with a real container.');

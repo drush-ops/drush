@@ -53,10 +53,14 @@ class DependencyInjection
         // Set up our dependency injection container.
         $container = new \League\Container\Container();
 
+        // Add Drush services first, because in league/container 3.x, first call wins.
+        $this->addDrushServices($container, $loader, $drupalFinder, $aliasManager, $config);
+
         // Robo has the same signature for configureContainer in 1.x, 2.x and 3.x.
         \Robo\Robo::configureContainer($container, $application, $config, $input, $output);
         $container->add('container', $container);
 
+        // Add Drush services second, because in league/container 2.x, last call wins.
         $this->addDrushServices($container, $loader, $drupalFinder, $aliasManager, $config);
 
         // Store the container in the \Drush object
@@ -82,7 +86,7 @@ class DependencyInjection
         }
     }
 
-    protected function addDrushServices(ContainerInterface $container, ClassLoader $loader, DrupalFinder $drupalFinder, SiteAliasManager $aliasManager, DrushConfig $config)
+    protected function addDrushServices($container, ClassLoader $loader, DrupalFinder $drupalFinder, SiteAliasManager $aliasManager, DrushConfig $config)
     {
         // If we're using league/container 2.x or 1.x, use the legacy container configuration method.
         if (method_exists(\League\Container\Definition\DefinitionInterface::class, 'withArgument')) {
@@ -147,7 +151,7 @@ class DependencyInjection
     }
 
     // Add Drush Services to league/container 2.x and 1.x
-    protected function addDrushServicesLegacyContainer(ContainerInterface $container, ClassLoader $loader, DrupalFinder $drupalFinder, SiteAliasManager $aliasManager, DrushConfig $config)
+    protected function addDrushServicesLegacyContainer($container, ClassLoader $loader, DrupalFinder $drupalFinder, SiteAliasManager $aliasManager, DrushConfig $config)
     {
         // Override Robo's logger with our own
         $container->share('logger', 'Drush\Log\Logger')
@@ -204,7 +208,7 @@ class DependencyInjection
             ->invokeMethod('setProcessManager', ['process.manager']);
     }
 
-    protected function alterServicesForDrush(ContainerInterface $container, Application $application)
+    protected function alterServicesForDrush($container, Application $application)
     {
         $paramInjection = $container->get('parameterInjection');
         $paramInjection->register('Symfony\Component\Console\Style\SymfonyStyle', new DrushStyleInjector());
@@ -232,7 +236,7 @@ class DependencyInjection
         ProcessManager::addTransports($container->get('process.manager'));
     }
 
-    protected function injectApplicationServices(ContainerInterface $container, Application $application)
+    protected function injectApplicationServices($container, Application $application)
     {
         $application->setLogger($container->get('logger'));
         $application->setBootstrapManager($container->get('bootstrap.manager'));
