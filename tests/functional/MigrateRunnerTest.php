@@ -358,6 +358,7 @@ class MigrateRunnerTest extends CommandUnishTestCase
         // Set the test_migration source to 300 records.
         // @see woot_migrate_source_info_alter()
         $this->drush('state:set', ['woot.test_migration_source_data_amount', 300]);
+        $this->drush('migrate:status', ['test_migration']);
         $this->drush('migrate:import', ['test_migration'], [
             'feedback' => 20,
             'limit' => 199,

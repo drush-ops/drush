@@ -376,6 +376,9 @@ class MigrateRunnerCommands extends DrushCommands
             throw new \Exception(dt('You must specify --all, --tag or one or more migration names separated by commas'));
         }
 
+        // Include the file providing a migrate_prepare_row hook implementation.
+        require_once Path::join(DRUSH_BASE_PATH, 'src/Drupal/Migrate/migrate_runner.inc');
+
         if (!$list = $this->getMigrationList($migrationIds, $options['tag'])) {
             throw new \Exception(dt('No migrations found.'));
         }
@@ -394,9 +397,6 @@ class MigrateRunnerCommands extends DrushCommands
             ])),
             'execute_dependencies' => $options['execute-dependencies'],
         ];
-
-        // Include the file providing a migrate_prepare_row hook implementation.
-        require_once Path::join(DRUSH_BASE_PATH, 'src/Drupal/Migrate/migrate_runner.inc');
 
         foreach ($list as $tag => $migrations) {
             array_walk($migrations, [static::class, 'executeMigration'], $userData);
