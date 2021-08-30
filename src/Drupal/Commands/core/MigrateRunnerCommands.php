@@ -774,7 +774,6 @@ class MigrateRunnerCommands extends DrushCommands
     {
         $argName = $commandData->annotationData()->get('validate-migration-id') ?: 'migrationId';
         $migrationId = $commandData->input()->getArgument($argName);
-        /** @var \Drupal\migrate\Plugin\MigrationInterface $migration */
         if (!$this->getMigrationPluginManager()->hasDefinition($migrationId)) {
             return new CommandError(dt('Migration "@id" does not exist', ['@id' => $migrationId]));
         }
