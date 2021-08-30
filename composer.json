@@ -42,7 +42,7 @@
     "enlightn/security-checker": "^1",
     "grasmash/yaml-expander": "^1.1.1",
     "guzzlehttp/guzzle": "^6.3 || ^7.0",
-    "league/container": "~2",
+    "league/container": "^2.5 || ^3.4",
     "psr/log": "~1.0",
     "psy/psysh": "~0.6",
     "symfony/event-dispatcher": "^3.4 || ^4.0",
