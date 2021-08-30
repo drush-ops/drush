@@ -53,15 +53,19 @@ class DependencyInjection
         // Set up our dependency injection container.
         $container = new \League\Container\Container();
 
-        // Add Drush services first, because in league/container 3.x, first call wins.
-        $this->addDrushServices($container, $loader, $drupalFinder, $aliasManager, $config);
+        // With league/container 3.x, first call wins, so add Drush services first.
+        if (!static::usingLegacyContainer()) {
+            $this->addDrushServices($container, $loader, $drupalFinder, $aliasManager, $config);
+        }
 
         // Robo has the same signature for configureContainer in 1.x, 2.x and 3.x.
         \Robo\Robo::configureContainer($container, $application, $config, $input, $output);
         $container->add('container', $container);
 
-        // Add Drush services second, because in league/container 2.x, last call wins.
-        $this->addDrushServices($container, $loader, $drupalFinder, $aliasManager, $config);
+        // With league/container 2.x, last call wins, so add Drush services second.
+        if (static::usingLegacyContainer()) {
+            $this->addDrushServicesToLegacyContainer($container, $loader, $drupalFinder, $aliasManager, $config);
+        }
 
         // Store the container in the \Drush object
         Drush::setContainer($container);
@@ -86,15 +90,14 @@ class DependencyInjection
         }
     }
 
+    protected static function usingLegacyContainer()
+    {
+        return method_exists(\League\Container\Definition\DefinitionInterface::class, 'withArgument');
+    }
+
+    // Add Drush Services to league/container 3.x
     protected function addDrushServices($container, ClassLoader $loader, DrupalFinder $drupalFinder, SiteAliasManager $aliasManager, DrushConfig $config)
     {
-        // If we're using league/container 2.x or 1.x, use the legacy container configuration method.
-        if (method_exists(\League\Container\Definition\DefinitionInterface::class, 'withArgument')) {
-            return $this->addDrushServicesLegacyContainer($container, $loader, $drupalFinder, $aliasManager, $config);
-        }
-
-        // Configuration for league/container
-
         // Override Robo's logger with our own
         $container->share('logger', 'Drush\Log\Logger')
           ->addArgument('output')
@@ -151,7 +154,7 @@ class DependencyInjection
     }
 
     // Add Drush Services to league/container 2.x and 1.x
-    protected function addDrushServicesLegacyContainer($container, ClassLoader $loader, DrupalFinder $drupalFinder, SiteAliasManager $aliasManager, DrushConfig $config)
+    protected function addDrushServicesToLegacyContainer($container, ClassLoader $loader, DrupalFinder $drupalFinder, SiteAliasManager $aliasManager, DrushConfig $config)
     {
         // Override Robo's logger with our own
         $container->share('logger', 'Drush\Log\Logger')
