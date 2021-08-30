@@ -759,7 +759,7 @@ class MigrateRunnerCommands extends DrushCommands
     }
 
     /**
-     * Validates a migration id is valid.
+     * Validates a migration ID is valid.
      *
      * If the argument to be validated is not named migrationId, pass the
      * argument name as the value of the annotation.
