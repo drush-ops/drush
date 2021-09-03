@@ -13,14 +13,14 @@
         <meta name="author" content="Moshe Weitzman">
       
       
-        <link rel="canonical" href="https://www.drush.org/latest/commands/site_set/">
+        <link rel="canonical" href="https://www.drush.org/latest/commands/deploy_mark-complete/">
       
       <link rel="icon" href="../../img/favicon.ico">
       <meta name="generator" content="mkdocs-1.2.2, mkdocs-material-7.2.6">
     
     
       
-        <title>site:set - Drush</title>
+        <title>deploy:mark-complete - Drush</title>
       
     
     
@@ -57,9 +57,9 @@
       
     
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="Drush - site:set" />
+    <meta property="og:title" content="Drush - deploy:mark-complete" />
     <meta property="og:description" content="A command line shell and Unix scripting interface for Drupal" />
-    <meta property="og:url" content="https://www.drush.org/latest/commands/site_set/" />
+    <meta property="og:url" content="https://www.drush.org/latest/commands/deploy_mark-complete/" />
     <meta property="og:image" content="https://raw.githubusercontent.com/drush-ops/drush/10.x/drush_logo-black.png" />
     <meta property="og:image:type" content="image/png" />
     <meta property="og:image:width" content="218" />
@@ -72,7 +72,7 @@
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:site" content="@drushcli" />
     <meta name="twitter:creator" content="@weitzman" />
-    <meta name="twitter:title" content="Drush - site:set" />
+    <meta name="twitter:title" content="Drush - deploy:mark-complete" />
     <meta name="twitter:description" content="A command line shell and Unix scripting interface for Drupal" />
     <meta name="twitter:image" content="https://raw.githubusercontent.com/drush-ops/drush/10.x/drush_logo-black.png" />
 
@@ -95,7 +95,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#siteset" class="md-skip">
+        <a href="#deploymark-complete" class="md-skip">
           Skip to content
         </a>
       
@@ -124,7 +124,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              site:set
+              deploy:mark-complete
             
           </span>
         </div>
@@ -1377,12 +1377,14 @@
             
   
   
+    
+  
   
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5_5" type="checkbox" id="__nav_5_5" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5_5" type="checkbox" id="__nav_5_5" checked>
       
       <label class="md-nav__link" for="__nav_5_5">
         deploy
@@ -1434,11 +1436,58 @@
             
   
   
+    
   
-    <li class="md-nav__item">
-      <a href="../deploy_mark-complete/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          deploy:mark-complete
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         deploy:mark-complete
       </a>
+      
+        
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#examples" class="md-nav__link">
+    Examples
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#topics" class="md-nav__link">
+    Topics
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -2040,14 +2089,12 @@
             
   
   
-    
-  
   
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5_14" type="checkbox" id="__nav_5_14" checked>
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5_14" type="checkbox" id="__nav_5_14" >
       
       <label class="md-nav__link" for="__nav_5_14">
         site
@@ -2099,65 +2146,11 @@
             
   
   
-    
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          site:set
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../site_set/" class="md-nav__link">
         site:set
       </a>
-      
-        
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#examples" class="md-nav__link">
-    Examples
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#arguments" class="md-nav__link">
-    Arguments
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#aliases" class="md-nav__link">
-    Aliases
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -2858,31 +2851,20 @@
             <article class="md-content__inner md-typeset">
               
                 
-                  <a href="https://github.com/drush-ops/drush/blob/10.x/src/Commands/core/SiteCommands.php" title="Edit this page" class="md-content__button md-icon">
+                  <a href="https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Commands/core/DeployHookCommands.php" title="Edit this page" class="md-content__button md-icon">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg>
                   </a>
                 
                 
-                <h1 id="siteset">site:set<a class="headerlink" href="#siteset" title="Permanent link">&para;</a></h1>
-<p>Set a site alias that will persist for the current session.</p>
-<p>Stores the site alias being used in the current session in a temporary
-file.</p>
+                <h1 id="deploymark-complete">deploy:mark-complete<a class="headerlink" href="#deploymark-complete" title="Permanent link">&para;</a></h1>
+<p>Mark all deploy hooks as having run.</p>
 <h4 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h4>
 <ul>
-<li><code>drush site:set @dev</code>. Set the current session to use the @dev alias.</li>
-<li><code>drush site:set user@server/path/to/drupal#sitename</code>. Set the current session to use a remote site via site specification.</li>
-<li><code>drush site:set /path/to/drupal#sitename</code>. Set the current session to use a local site via site specification.</li>
-<li><code>drush site:set -</code>. Go back to the previously-set site (like <code>cd -</code>).</li>
-<li><code>drush site:set</code>. Without an argument, any existing site becomes unset.</li>
+<li><code>deploy:mark-complete</code>. Skip all pending deploy hooks and mark them as complete.</li>
 </ul>
-<h4 id="arguments">Arguments<a class="headerlink" href="#arguments" title="Permanent link">&para;</a></h4>
+<h4 id="topics">Topics<a class="headerlink" href="#topics" title="Permanent link">&para;</a></h4>
 <ul>
-<li><strong>[site]</strong>. Site specification to use, or <em>-</em> for previous site. Omit this argument to unset.</li>
-</ul>
-<h4 id="aliases">Aliases<a class="headerlink" href="#aliases" title="Permanent link">&para;</a></h4>
-<ul>
-<li>use</li>
-<li>site-set</li>
+<li><a href="../../deploycommand/">Deploy command for Drupal.</a> (docs:deploy)</li>
 </ul>
 <div class="admonition hint">
 <p class="admonition-title">Legend</p>
@@ -2902,7 +2884,7 @@ file.</p>
 <script>
     window.FastCommentsUI(document.getElementById('fastcomments-widget'), {
         tenantId: '7tG3defply',
-        urlId: 'commands/site_set/'
+        urlId: 'commands/deploy_mark-complete/'
     });
 </script>
 
@@ -2918,7 +2900,7 @@ file.</p>
     <nav class="md-footer__inner md-grid" aria-label="Footer">
       
         
-        <a href="../site_install/" class="md-footer__link md-footer__link--prev" aria-label="Previous: site:install" rel="prev">
+        <a href="../deploy_hook-status/" class="md-footer__link md-footer__link--prev" aria-label="Previous: deploy:hook-status" rel="prev">
           <div class="md-footer__button md-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
           </div>
@@ -2927,20 +2909,20 @@ file.</p>
               <span class="md-footer__direction">
                 Previous
               </span>
-              site:install
+              deploy:hook-status
             </div>
           </div>
         </a>
       
       
         
-        <a href="../site_ssh/" class="md-footer__link md-footer__link--next" aria-label="Next: site:ssh" rel="next">
+        <a href="../entity_delete/" class="md-footer__link md-footer__link--next" aria-label="Next: entity:delete" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
                 Next
               </span>
-              site:ssh
+              entity:delete
             </div>
           </div>
           <div class="md-footer__button md-icon">
