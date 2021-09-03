@@ -65,32 +65,30 @@ class DeployHookTest extends CommandUnishTestCase
         $options = [
             'format' => 'json'
         ];
-        $hooks = <<<JSON
-[
-    {
-        "module": "woot",
-        "hook": "a",
-        "description": "Successful deploy hook."
-    },
-    {
-        "module": "woot",
-        "hook": "batch",
-        "description": "Successful batched deploy hook."
-    },
-    {
-        "module": "woot",
-        "hook": "failing",
-        "description": "Failing deploy hook."
-    }
-]
-JSON;
+        $hooks = [
+            [
+                "module" => "woot",
+                "hook" => "a",
+                "description" => "Successful deploy hook.",
+            ],
+            [
+                "module" => "woot",
+                "hook" => "batch",
+                "description" => "Successful batched deploy hook.",
+            ],
+            [
+                "module" => "woot",
+                "hook" => "failing",
+                "description" => "Failing deploy hook.",
+            ],
+        ];
         // Check pending deploy hooks.
         $this->drush('deploy:hook-status', [], $options, null, null, self::EXIT_SUCCESS);
-        $this->assertEquals(json_decode($hooks), json_decode($this->getOutput()));
+        $this->assertEquals($hooks, $this->getOutputFromJSON());
 
         // Mark them all as having run.
-        $this->drush('deploy:hook-skip', [], [], null, null, self::EXIT_SUCCESS);
-        $this->assertStringContainsString('[success] Marked 3 pending deploy hooks as having run.', $this->getErrorOutput());
+        $this->drush('deploy:mark-complete', [], [], null, null, self::EXIT_SUCCESS);
+        $this->assertStringContainsString('[success] Marked 3 pending deploy hooks as completed.', $this->getErrorOutput());
 
         // Check again to see no pending hooks.
         $this->drush('deploy:hook-status', [], $options, null, null, self::EXIT_SUCCESS);
