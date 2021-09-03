@@ -253,4 +253,22 @@ class DeployHookCommands extends DrushCommands implements SiteAliasManagerAwareI
     {
         // In theory there is nothing to do here.
     }
+
+    /**
+     * Mark all deploy hooks as having run.
+     *
+     * @usage deploy:mark-complete
+     *   Skip all pending deploy hooks and mark them as complete.
+     *
+     * @command deploy:mark-complete
+     * @topics docs:deploy
+     */
+    public function markComplete()
+    {
+        $pending = self::getRegistry()->getPendingUpdateFunctions();
+        self::getRegistry()->registerInvokedUpdates($pending);
+
+        $this->logger()->success(dt('Marked %count pending deploy hooks as complete.', ['%count' => count($pending)]));
+        return self::EXIT_SUCCESS;
+    }
 }
