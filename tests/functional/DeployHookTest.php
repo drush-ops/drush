@@ -88,7 +88,7 @@ class DeployHookTest extends CommandUnishTestCase
 
         // Mark them all as having run.
         $this->drush('deploy:mark-complete', [], [], null, null, self::EXIT_SUCCESS);
-        $this->assertStringContainsString('[success] Marked 3 pending deploy hooks as completed.', $this->getErrorOutput());
+        $this->assertStringContainsString('[success] Marked 3 pending deploy hooks as complete.', $this->getErrorOutput());
 
         // Check again to see no pending hooks.
         $this->drush('deploy:hook-status', [], $options, null, null, self::EXIT_SUCCESS);
