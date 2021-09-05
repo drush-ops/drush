@@ -148,6 +148,7 @@ jobs:
       # Replace alinks with semver for D9.
       - run: composer remove --dev drupal/alinks --no-update
       - run: composer require --dev drupal/semver_example:2.2.0 --no-update
+      - run: composer require "consolidation/annotated-command:dev-attributes-command-hook as 4.x-dev" --no-update
       - run: php --version
       - run: composer config platform.php 8.0.0
       - run: composer update
