@@ -8,7 +8,7 @@ use Consolidation\AnnotatedCommand\AnnotationData;
 
 /**
  * The BootstrapHook is installed as an init hook that runs before
- * all commands. If there is a `@bootstrap` annotation, then we will
+ * all commands. If there is a `@bootstrap` annotation/attribute, then we will
  * bootstrap Drupal to the requested phase.
  */
 class BootstrapHook implements InitializeHookInterface
