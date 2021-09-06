@@ -1,8 +1,10 @@
 <?php
 namespace Drush\Commands;
 
+// Copy either of the lines below into your commandfile. It is a matter of taste.
 use Drush\Attributes as CLI;
-use Drush\Attributes as DR, Consolidation\AnnotatedCommand\Attributes as AC;
+use Drush\Attributes as DR;
+use Consolidation\AnnotatedCommand\Attributes as AC;
 
 class ExampleAttributesCommands extends DrushCommands
 {

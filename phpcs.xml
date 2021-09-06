@@ -8,4 +8,5 @@
     <rule ref="PSR2"/>
 
     <arg name="warning-severity" value="0"/>
+    <arg value="s" />
 </ruleset>
