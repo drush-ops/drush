@@ -2,6 +2,7 @@
 namespace Drush\Commands;
 
 use Drush\Attributes as CLI;
+use Drush\Attributes as DR, Consolidation\AnnotatedCommand\Attributes as AC;
 
 class ExampleAttributesCommands extends DrushCommands
 {
@@ -60,17 +61,17 @@ class ExampleAttributesCommands extends DrushCommands
     }
 
     // Use lots of hooks including ValidateEntityLoad and Bootstrap.
-    #[CLI\Command(name: 'validatestuff')]
-    #[CLI\Help(description: 'Exercise some validators')]
-    #[CLI\Param(name: 'permissions', description: 'A list of permissions.')]
-    #[CLI\Param(name: 'paths', description: 'A list of paths.')]
-    #[CLI\Param(name: 'roleName', description: 'A role name')]
-    #[CLI\Bootstrap(level: 'full')]
-    #[CLI\ValidateEntityLoad(entityType: 'user_role', argumentName: 'roleName')]
-    #[CLI\ValidateFileExists(argName: 'paths')]
-    #[CLI\ValidatePhpExtensions(extensions: ['json'])]
-    #[CLI\ValidateModulesEnabled(modules: ['user'])]
-    #[CLI\ValidatePermissions(argName: 'permissions')]
+    #[AC\Command(name: 'validatestuff')]
+    #[AC\Help(description: 'Exercise some validators')]
+    #[AC\Param(name: 'permissions', description: 'A list of permissions.')]
+    #[AC\Param(name: 'paths', description: 'A list of paths.')]
+    #[AC\Param(name: 'roleName', description: 'A role name')]
+    #[DR\Bootstrap(level: 'full')]
+    #[DR\ValidateEntityLoad(entityType: 'user_role', argumentName: 'roleName')]
+    #[DR\ValidateFileExists(argName: 'paths')]
+    #[DR\ValidatePhpExtensions(extensions: ['json'])]
+    #[DR\ValidateModulesEnabled(modules: ['user'])]
+    #[DR\ValidatePermissions(argName: 'permissions')]
     public function validateStuff($permissions, $paths, $roleName)
     {
         return 'Validators are happy';

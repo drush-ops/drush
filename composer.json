@@ -34,6 +34,7 @@
     "ext-dom": "*",
     "chi-teck/drupal-code-generator": "^1.32.1",
     "composer/semver": "^1.4 || ^3",
+    "consolidation/annotated-command": "dev-attributes-command-hook as 4.x-dev",
     "consolidation/config": "^1.2",
     "consolidation/filter-via-dot-access-data": "^1",
     "consolidation/robo": "^1.4.11 || ^2 || ^3",
@@ -56,12 +57,11 @@
     "composer/installers": "^1.7",
     "cweagans/composer-patches": "~1.0",
     "david-garcia/phpwhois": "4.3.0",
-    "drupal/core-recommended": "^8.8",
-    "drupal/alinks": "1.0.0",
+    "drupal/core-recommended": "9.2.x-dev",
     "phpunit/phpunit": ">=7.5.20",
-    "yoast/phpunit-polyfills": "^0.2.0",
     "squizlabs/php_codesniffer": "^2.7 || ^3",
-    "vlucas/phpdotenv": "^2.4"
+    "vlucas/phpdotenv": "^2.4",
+    "yoast/phpunit-polyfills": "^0.2.0"
   },
   "conflict": {
     "drupal/migrate_run": "*",
