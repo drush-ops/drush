@@ -83,11 +83,6 @@ abstract class DrupalBoot extends BaseBoot
         ];
     }
 
-    public static function bootstrapPhasesCompletion(): array
-    {
-        return [DRUSH_BOOTSTRAP_MAX, DRUSH_BOOTSTRAP_DRUPAL_ROOT, DRUSH_BOOTSTRAP_DRUPAL_SITE, DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION, DRUSH_BOOTSTRAP_DRUPAL_DATABASE, DRUSH_BOOTSTRAP_DRUPAL_FULL];
-    }
-
     public function bootstrapPhaseMap()
     {
         return parent::bootstrapPhaseMap() + [

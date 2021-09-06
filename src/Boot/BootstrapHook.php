@@ -22,9 +22,14 @@ class BootstrapHook implements InitializeHookInterface
 
     public function initialize(InputInterface $input, AnnotationData $annotationData)
     {
-        // Get the @bootstrap annotation. If there isn't one, then assume NONE.
+        // Get the @bootstrap annotation/attribute. If there isn't one, then assume NONE.
         $phase_long = $annotationData->get('bootstrap', 'none');
-        $phase = current(explode(' ', $phase_long));
+        if (is_int($phase_long)) {
+            $phase = DrupalBootLevels::getPhaseName($phase_long);
+        }
+        else {
+            $phase = current(explode(' ', $phase_long));
+        }
         $bootstrap_successful = $this->bootstrapManager->bootstrapToPhase($phase, $annotationData);
 
         if (!$bootstrap_successful) {

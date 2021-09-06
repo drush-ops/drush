@@ -6,6 +6,7 @@ use Consolidation\AnnotatedCommand\Hooks\HookManager;
 use Drush\Attributes as CLI;
 use Drush\Attributes as DR;
 use Consolidation\AnnotatedCommand\Attributes as AC;
+use Drush\Boot\DrupalBootLevels;
 
 class ExampleAttributesCommands extends DrushCommands
 {
@@ -69,7 +70,7 @@ class ExampleAttributesCommands extends DrushCommands
     #[AC\Param(name: 'permissions', description: 'A list of permissions.')]
     #[AC\Param(name: 'paths', description: 'A list of paths.')]
     #[AC\Param(name: 'roleName', description: 'A role name')]
-    #[DR\Bootstrap(level: 'full')]
+    #[DR\Bootstrap(level: DrupalBootLevels::FULL)]
     #[DR\ValidateEntityLoad(entityType: 'user_role', argumentName: 'roleName')]
     #[DR\ValidateFileExists(argName: 'paths')]
     #[DR\ValidatePhpExtensions(extensions: ['json'])]
