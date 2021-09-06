@@ -2,6 +2,7 @@
 namespace Drush\Commands;
 
 // Copy either of the lines below into your commandfile. It is a matter of taste.
+use Consolidation\AnnotatedCommand\Hooks\HookManager;
 use Drush\Attributes as CLI;
 use Drush\Attributes as DR;
 use Consolidation\AnnotatedCommand\Attributes as AC;
@@ -55,7 +56,7 @@ class ExampleAttributesCommands extends DrushCommands
     }
 
     // Declare a hook with a target.
-    #[CLI\Hook(type: 'post-command', target: 'test:arithmatic')]
+    #[CLI\Hook(type: HookManager::POST_COMMAND_HOOK, target: 'test:arithmatic')]
     #[CLI\Help(description: 'Add a text after test:arithmatic command')]
     public function postArithmatic()
     {
