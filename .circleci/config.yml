@@ -152,7 +152,6 @@ jobs:
       - run: php --version
       - run: composer config platform.php 8.0.0
       - run: composer update
-      - run: composer info composer/semver
       - run: composer lint
       - run: composer unit
       - run: composer functional

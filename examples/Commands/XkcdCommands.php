@@ -1,6 +1,11 @@
 <?php
 namespace Drush\Commands;
 
+use Drush\Attributes\Command;
+use Drush\Attributes\Help;
+use Drush\Attributes\Option;
+use Drush\Attributes\Param;
+use Drush\Attributes\Usage;
 use Drush\Exec\ExecTrait;
 
 /**
@@ -33,6 +38,30 @@ class XkcdCommands extends DrushCommands
      * @aliases xkcd
      */
     public function fetch($search = null, $options = ['image-viewer' => 'open', 'google-custom-search-api-key' => 'AIzaSyDpE01VDNNT73s6CEeJRdSg5jukoG244ek'])
+    {
+        $this->doFetch($search, $options);
+    }
+
+    #[Command(name: 'xkcd:fetch-attributes', aliases: ['xkcd-attributes'])]
+    #[Param(name: 'search', description: 'Optional argument to retrieve the cartoons matching an index number, keyword search or "random". If omitted the latest cartoon will be retrieved.')]
+    #[Option(name: 'image-viewer', description: 'Command to use to view images (e.g. xv, firefox). Defaults to "display" (from ImageMagick).')]
+    #[Option(name: 'google-custom-search-api-key', description: 'Google Custom Search API Key, available from https://code.google.com/apis/console/. Default key limited to 100 queries/day globally.')]
+    #[Help(description: 'Retrieve and display xkcd cartoons (attribute variant).')]
+    #[Usage(name: 'drush xkcd', description: 'Retrieve and display the latest cartoon')]
+    #[Usage(name: 'drush xkcd sandwich', description: 'Retrieve and display cartoons about sandwiches.')]
+    #[Usage(name: 'drush xkcd 123 --image-viewer=eog', description: 'Retrieve and display cartoon #123 in eog.')]
+    #[Usage(name: 'drush xkcd random --image-viewer=firefox', description: 'Retrieve and display a random cartoon in Firefox.')]
+    public function fetchAttributes($search = null, $options = ['image-viewer' => 'open', 'google-custom-search-api-key' => 'AIzaSyDpE01VDNNT73s6CEeJRdSg5jukoG244ek'])
+    {
+        $this->doFetch($search, $options);
+    }
+
+    /**
+     * @param $search
+     * @param array $options
+     * @throws \Exception
+     */
+    protected function doFetch($search, array $options): void
     {
         if (empty($search)) {
             $this->startBrowser('http://xkcd.com');

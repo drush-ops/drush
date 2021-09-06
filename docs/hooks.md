@@ -33,7 +33,7 @@ Then, the command may ask the provided hook manager to return a list of handlers
     }
 ```
 
-Other command handlers may provide implementations by implementing `@hook on-event my-event`.
+Other command handlers may provide implementations by implementing `@hook on-event my-event` or `#[CLI/Hook(type: 'on-event', target: 'my-event')]`.
 
 ```php
     /**

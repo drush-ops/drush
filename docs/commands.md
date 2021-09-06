@@ -9,6 +9,7 @@ Creating a new Drush command or porting a legacy command is easy. Follow the ste
 1. Drush will then report that it created a commandfile, a drush.services.yml file and a composer.json file. Edit those files as needed.
 1. Use the classes for the core Drush commands at [/src/Drupal/Commands](https://github.com/drush-ops/drush/tree/10.x/src/Drupal/Commands) as inspiration and documentation.
 1. See the [dependency injection docs](dependency-injection.md) for interfaces you can implement to gain access to Drush config, Drupal site aliases, etc.
+1. A commandfile that will only be used on PHP8+ can [use Attributes](https://github.com/drush-ops/drush/pull/4821) instead of Annotations.
 1. Write PHPUnit tests based on [Drush Test Traits](https://github.com/drush-ops/drush/blob/10.x/docs/contribute/unish.md#drush-test-traits).
 1. Once your two files are ready, run `drush cr` to get your command recognized by the Drupal container.
 
@@ -42,7 +43,7 @@ It is also possible to use [version ranges](https://getcomposer.org/doc/articles
 In Drush 9, the default services file, `drush.services.yml`, will be used in instances where there is no `services` section in the Drush extras of the project's composer.json file. In Drush 10, however, the services section must exist, and must name the services file to be used. If a future Drush extension is written such that it only works with Drush 10 and later, then its entry would read `"drush.services.yml": "^10"`, and Drush 9 would not load the extension's commands. It is all the same recommended that Drush 9 extensions explicitly declare their services file with an appropriate version constraint.
 
 ## Altering Drush Command Info
-Drush command info (annotations) can be altered from other modules. This is done by creating and registering 'command info alterers'. Alterers are class services that are able to intercept and manipulate an existing command annotation.
+Drush command info (annotations/attributes) can be altered from other modules. This is done by creating and registering 'command info alterers'. Alterers are class services that are able to intercept and manipulate an existing command annotation.
 
 In order to alter an existing command info, follow the steps below:
 
