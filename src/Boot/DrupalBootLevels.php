@@ -80,7 +80,8 @@ class DrupalBootLevels
      */
     const FULL = 5;
 
-    public static function getPhaseName($index) {
+    public static function getPhaseName($index)
+    {
         $reflection = new \ReflectionClass(self::class);
         return strtolower(array_search($index, $reflection->getConstants()));
     }

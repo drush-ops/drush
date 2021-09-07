@@ -26,8 +26,7 @@ class BootstrapHook implements InitializeHookInterface
         $phase_long = $annotationData->get('bootstrap', 'none');
         if (is_int($phase_long)) {
             $phase = DrupalBootLevels::getPhaseName($phase_long);
-        }
-        else {
+        } else {
             $phase = current(explode(' ', $phase_long));
         }
         $bootstrap_successful = $this->bootstrapManager->bootstrapToPhase($phase, $annotationData);
