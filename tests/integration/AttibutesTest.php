@@ -22,6 +22,11 @@ class AttributesTest extends UnishIntegrationTestCase
         $this->drush('test:arithmatic', ['9'], $options);
         $this->assertOutputEquals("HOOKED\n11");
 
+        // Table Attributes
+        $this->drush('birds', [], $options + ['format' => 'json', 'filter' => 'Cardinal']);
+        $data = $this->getOutputFromJSON('cardinal');
+        $this->assertEquals(['name' => 'Cardinal', 'color' => 'red'], $data);
+
         // Validators and Bootstrap test
         $this->drush('validatestuff', ['access df', '/tmp', 'authenticated'], $options, self::EXIT_ERROR);
         $this->assertErrorOutputContains('Permission(s) not found: access df');

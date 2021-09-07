@@ -3,6 +3,7 @@ namespace Drush\Commands;
 
 // Copy either of the lines below into your commandfile. It is a matter of taste.
 use Consolidation\AnnotatedCommand\Hooks\HookManager;
+use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Drush\Attributes as CLI;
 use Drush\Attributes as DR;
 use Consolidation\AnnotatedCommand\Attributes as AC;
@@ -79,5 +80,18 @@ class ExampleAttributesCommands extends DrushCommands
     public function validateStuff($permissions, $paths, $roleName)
     {
         return 'Validators are happy';
+    }
+
+    #[CLI\Command(name: 'birds')]
+    #[CLI\FieldLabels(labels: ['name' => 'Name', 'color' => 'Color'])]
+    #[CLI\DefaultFields(fields: ['name', 'color'])]
+    #[CLI\FilterDefaultField(field: 'name')]
+    public function birds(): RowsOfFields
+    {
+        $rows = [
+            'bluebird' => ['name' => 'Bluebird', 'color' => 'blue'],
+            'cardinal' => ['name' => 'Cardinal', 'color' => 'red'],
+        ];
+        return new RowsOfFields($rows);
     }
 }
