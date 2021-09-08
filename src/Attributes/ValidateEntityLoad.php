@@ -3,11 +3,10 @@
 namespace Drush\Attributes;
 
 use Attribute;
-use Consolidation\AnnotatedCommand\Attributes\AttributeInterface;
 use Consolidation\AnnotatedCommand\Parser\CommandInfo;
 
 #[Attribute(Attribute::TARGET_METHOD)]
-class ValidateEntityLoad implements AttributeInterface
+class ValidateEntityLoad
 {
     /**
      * @param $entityType

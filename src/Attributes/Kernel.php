@@ -3,7 +3,6 @@
 namespace Drush\Attributes;
 
 use Attribute;
-use Consolidation\AnnotatedCommand\Attributes\AttributeInterface;
 use Consolidation\AnnotatedCommand\Parser\CommandInfo;
 use Drush\Boot\DrupalBoot;
 use Drush\Boot\DrupalBootLevels;
@@ -11,7 +10,7 @@ use Drush\Boot\Kernels;
 use JetBrains\PhpStorm\ExpectedValues;
 
 #[Attribute(Attribute::TARGET_METHOD)]
-class Kernel implements AttributeInterface
+class Kernel
 {
     /**
      * @param $kernel

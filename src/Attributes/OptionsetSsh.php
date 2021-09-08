@@ -3,10 +3,10 @@
 namespace Drush\Attributes;
 
 use Attribute;
-use Consolidation\AnnotatedCommand\Attributes\Generic;
+use Consolidation\AnnotatedCommand\Attributes\NoArgumentsBase;
 
 #[Attribute(Attribute::TARGET_METHOD)]
-class OptionsetSsh extends Generic
+class OptionsetSsh extends NoArgumentsBase
 {
     const NAME = 'optionset_ssh';
 }

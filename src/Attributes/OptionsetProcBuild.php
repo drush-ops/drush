@@ -3,10 +3,10 @@
 namespace Drush\Attributes;
 
 use Attribute;
-use Consolidation\AnnotatedCommand\Attributes\Generic;
+use Consolidation\AnnotatedCommand\Attributes\NoArgumentsBase;
 
 #[Attribute(Attribute::TARGET_METHOD)]
-class OptionsetProcBuild extends Generic
+class OptionsetProcBuild extends NoArgumentsBase
 {
     const NAME = 'optionset_proc_build';
 }
