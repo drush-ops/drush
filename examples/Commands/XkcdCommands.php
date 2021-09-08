@@ -4,7 +4,7 @@ namespace Drush\Commands;
 use Drush\Attributes\Command;
 use Drush\Attributes\Help;
 use Drush\Attributes\Option;
-use Drush\Attributes\Param;
+use Drush\Attributes\Argument;
 use Drush\Attributes\Usage;
 use Drush\Exec\ExecTrait;
 
@@ -43,7 +43,7 @@ class XkcdCommands extends DrushCommands
     }
 
     #[Command(name: 'xkcd:fetch-attributes', aliases: ['xkcd-attributes'])]
-    #[Param(name: 'search', description: 'Optional argument to retrieve the cartoons matching an index number, keyword search or "random". If omitted the latest cartoon will be retrieved.')]
+    #[Argument(name: 'search', description: 'Optional argument to retrieve the cartoons matching an index number, keyword search or "random". If omitted the latest cartoon will be retrieved.')]
     #[Option(name: 'image-viewer', description: 'Command to use to view images (e.g. xv, firefox). Defaults to "display" (from ImageMagick).')]
     #[Option(name: 'google-custom-search-api-key', description: 'Google Custom Search API Key, available from https://code.google.com/apis/console/. Default key limited to 100 queries/day globally.')]
     #[Help(description: 'Retrieve and display xkcd cartoons (attribute variant).')]
