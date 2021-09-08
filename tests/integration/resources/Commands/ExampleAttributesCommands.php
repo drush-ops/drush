@@ -84,7 +84,7 @@ class ExampleAttributesCommands extends DrushCommands
 
     #[CLI\Command(name: 'birds')]
     #[CLI\FieldLabels(labels: ['name' => 'Name', 'color' => 'Color'])]
-    #[CLI\DefaultFields(fields: ['name', 'color'])]
+    #[CLI\DefaultFields(fields: ['color'])]
     #[CLI\FilterDefaultField(field: 'name')]
     public function birds(): RowsOfFields
     {

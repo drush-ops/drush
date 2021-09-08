@@ -25,7 +25,7 @@ class AttributesTest extends UnishIntegrationTestCase
         // Table Attributes
         $this->drush('birds', [], $options + ['format' => 'json', 'filter' => 'Cardinal']);
         $data = $this->getOutputFromJSON('cardinal');
-        $this->assertEquals(['name' => 'Cardinal', 'color' => 'red'], $data);
+        $this->assertEquals(['color' => 'red'], $data);
 
         // Validators and Bootstrap test
         $this->drush('validatestuff', ['access df', '/tmp', 'authenticated'], $options, self::EXIT_ERROR);
