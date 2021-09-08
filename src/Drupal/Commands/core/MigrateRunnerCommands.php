@@ -2,6 +2,7 @@
 
 namespace Drush\Drupal\Commands\core;
 
+use Consolidation\AnnotatedCommand\AnnotationData;
 use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\AnnotatedCommand\CommandError;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
@@ -18,6 +19,7 @@ use Drush\Drupal\Migrate\MigrateExecutable;
 use Drush\Drupal\Migrate\MigrateMessage;
 use Drush\Drupal\Migrate\MigrateUtils;
 use Drush\Utils\StringUtils;
+use Symfony\Component\Console\Input\InputInterface;
 use Webmozart\PathUtil\Path;
 
 /**
@@ -66,6 +68,37 @@ class MigrateRunnerCommands extends DrushCommands
         parent::__construct();
         $this->dateFormatter = $dateFormatter;
         $this->keyValue = $keyValueFactory->get('migrate_last_imported');
+    }
+
+    /**
+     * Process options for status().
+     *
+     * @hook init migrate:status
+     * @option migrationList The array of migrations to process, used internally.
+     */
+    public function initStatus(InputInterface $input, AnnotationData $annotationData)
+    {
+        $options = $input->getOptions();
+        $migrationIds = $input->getArgument('migrationIds');
+
+        // The --names-only option takes precedence over --fields.
+        if ($options['names-only']) {
+            if ($options['field'] && $options['field'] !== 'id') {
+                throw new \Exception("Cannot use --names-only with --field={$options['field']}.");
+            }
+            $deprecationMessage = 'The --names-only option is deprecated in Drush 10.5.1 and is removed from Drush 11.0.0. Use --field=id instead.';
+            $this->logger()->warning($deprecationMessage);
+            @trigger_error($deprecationMessage, E_USER_DEPRECATED);
+            $fields = ['id'];
+        } elseif ($options['field']) {
+            $fields = [$options['field']];
+        } elseif ($options['fields']) {
+            $fields = StringUtils::csvToArray($options['fields']);
+        }
+
+        $input->setOption('fields', $fields);
+        $list = $this->getMigrationList($migrationIds, $options['tag']);
+        $input->setOption('migrationList', $list);
     }
 
     /**
@@ -122,22 +155,8 @@ class MigrateRunnerCommands extends DrushCommands
       'names-only' => false,
     ]): RowsOfFields
     {
-        // The --names-only option takes precedence over --fields.
-        if ($options['names-only']) {
-            if ($options['field'] && $options['field'] !== 'id') {
-                throw new \Exception("Cannot use --names-only with --field={$options['field']}.");
-            }
-            $deprecationMessage = 'The --names-only option is deprecated in Drush 10.5.1 and is removed from Drush 11.0.0. Use --field=id instead.';
-            $this->logger()->warning($deprecationMessage);
-            @trigger_error($deprecationMessage, E_USER_DEPRECATED);
-            $fields = ['id'];
-        } elseif ($options['field']) {
-            $fields = [$options['field']];
-        } elseif ($options['fields']) {
-            $fields = StringUtils::csvToArray($options['fields']);
-        }
-
-        $list = $this->getMigrationList($migrationIds, $options['tag']);
+        $fields = $options['fields'];
+        $list = $options['migrationList'];
 
         $table = [];
         // Take it one tag at a time, listing the migrations within each tag.
