@@ -495,6 +495,17 @@ class MigrateRunnerCommands extends DrushCommands
     }
 
     /**
+     * Process options for rollback().
+     *
+     * @hook init migrate:rollback
+     * @option migrationList The array of migrations to process, used internally.
+     */
+    public function initRollback(InputInterface $input, AnnotationData $annotationData)
+    {
+        $this->initImport($input, $annotationData);
+    }
+
+    /**
      * Rollback one or more migrations.
      *
      * @command migrate:rollback
@@ -530,16 +541,7 @@ class MigrateRunnerCommands extends DrushCommands
      */
     public function rollback(?string $migrationIds = null, array $options = ['all' => false, 'tag' => self::REQ, 'feedback' => self::REQ, 'idlist' => self::REQ, 'progress' => true]): void
     {
-        $tags = $options['tag'];
-        $all = $options['all'];
-
-        if (!$all && !$migrationIds && !$tags) {
-            throw new \Exception(dt('You must specify --all, --tag, or one or more migration names separated by commas'));
-        }
-
-        if (!$list = $this->getMigrationList($migrationIds, $options['tag'])) {
-            $this->logger()->error(dt('No migrations found.'));
-        }
+        $list = $options['migrationList'];
 
         $executableOptions = array_intersect_key(
             $options,
