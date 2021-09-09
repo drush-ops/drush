@@ -338,6 +338,32 @@ class MigrateRunnerCommands extends DrushCommands
     }
 
     /**
+     * Process options for import().
+     *
+     * @hook init migrate:import
+     * @option migrationList The array of migrations to process, used internally.
+     */
+    public function initImport(InputInterface $input, AnnotationData $annotationData)
+    {
+        $options = $input->getOptions();
+        $migrationIds = $input->getArgument('migrationIds');
+
+        $tags = $options['tag'];
+        $all = $options['all'];
+
+        if (!$all && !$migrationIds && !$tags) {
+            throw new \Exception(dt('You must specify --all, --tag or one or more migration names separated by commas'));
+        }
+
+        $list = $this->getMigrationList($migrationIds, $options['tag']);
+        if (!$list) {
+            throw new \Exception(dt('No migrations found.'));
+        }
+
+        $input->setOption('migrationList', $list);
+    }
+
+    /**
      * Perform one or more migration processes.
      *
      * @command migrate:import
@@ -388,17 +414,7 @@ class MigrateRunnerCommands extends DrushCommands
      */
     public function import(?string $migrationIds = null, array $options = ['all' => false, 'tag' => self::REQ, 'limit' => self::REQ, 'feedback' => self::REQ, 'idlist' => self::REQ, 'update' => false, 'force' => false, 'execute-dependencies' => false, 'timestamp' => false, 'total' => false, 'progress' => true, 'delete' => false]): void
     {
-        $tags = $options['tag'];
-        $all = $options['all'];
-
-        if (!$all && !$migrationIds && !$tags) {
-            throw new \Exception(dt('You must specify --all, --tag or one or more migration names separated by commas'));
-        }
-
-        if (!$list = $this->getMigrationList($migrationIds, $options['tag'])) {
-            throw new \Exception(dt('No migrations found.'));
-        }
-
+        $list = $options['migrationList'];
         $userData = [
             'options' => array_intersect_key($options, array_flip([
                 'limit',
