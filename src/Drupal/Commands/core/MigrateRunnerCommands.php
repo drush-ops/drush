@@ -502,6 +502,7 @@ class MigrateRunnerCommands extends DrushCommands
      */
     public function initRollback(InputInterface $input, AnnotationData $annotationData)
     {
+        // Do the same as hook init migrate:import.
         $this->initImport($input, $annotationData);
     }
 
