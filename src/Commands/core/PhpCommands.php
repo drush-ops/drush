@@ -15,9 +15,9 @@ class PhpCommands extends DrushCommands implements StdinAwareInterface
      *
      * @command php:eval
      * @param $code PHP code. If shell escaping gets too tedious, consider using the php:script command.
-     * @usage drush php:eval '$node = node_load(1); print $node->title;'
+     * @usage drush php:eval '$node = \Drupal\node\Entity\Node::load(1); print $node->getTitle();'
      *   Loads node with nid 1 and then prints its title.
-     * @usage drush php:eval "file_unmanaged_copy(\'$HOME/Pictures/image.jpg\', \'public://image.jpg\');"
+     * @usage drush php:eval "\Drupal::service('file_system')->copy('$HOME/Pictures/image.jpg', 'public://image.jpg');"
      *   Copies a file whose path is determined by an environment's variable. Use of double quotes so the variable $HOME gets replaced by its value.
      * @usage drush php:eval "node_access_rebuild();"
      *   Rebuild node access permissions.
