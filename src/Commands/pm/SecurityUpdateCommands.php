@@ -68,9 +68,12 @@ class SecurityUpdateCommands extends DrushCommands
         if ($updates) {
             $this->suggestComposerCommand($updates);
             return CommandResult::dataWithExitCode(new RowsOfFields($updates), self::EXIT_FAILURE_WITH_CLARITY);
-        } else {
-            $this->logger()->success("<info>There are no outstanding security updates for Drupal projects.</info>");
         }
+        $this->logger()->success("<info>There are no outstanding security updates for Drupal projects.</info>");
+        if ($options['format'] === 'table') {
+            return null;
+        }
+        return new RowsOfFields([]);
     }
 
     /**
@@ -183,5 +186,9 @@ class SecurityUpdateCommands extends DrushCommands
             return CommandResult::dataWithExitCode(new UnstructuredData($result), self::EXIT_FAILURE_WITH_CLARITY);
         }
         $this->logger()->success("There are no outstanding security updates for your dependencies.");
+        if ($options['format'] === 'table') {
+            return null;
+        }
+        return new RowsOfFields([]);
     }
 }
