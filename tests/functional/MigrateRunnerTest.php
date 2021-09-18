@@ -20,7 +20,7 @@ class MigrateRunnerTest extends CommandUnishTestCase
     {
         parent::setUp();
         $this->setUpDrupal(1, true);
-        $this->setupModulesForTests(['woot'], Path::join(__DIR__, 'resources/modules/d8'));
+        $this->setupModulesForTests(['woot'], Path::join(__DIR__, '/../fixtures/modules/d8'));
         $this->drush('pm:enable', ['migrate', 'node', 'woot']);
     }
 

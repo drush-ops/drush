@@ -23,7 +23,7 @@ class ContainerTest extends CommandUnishTestCase
         $this->setUpDrupal(1, true);
 
         // Copy the 'woot' module over to the Drupal site we just set up.
-        $this->setupModulesForTests(['woot'], Path::join(__DIR__, 'resources/modules/d8'));
+        $this->setupModulesForTests(['woot'], Path::join(__DIR__, '/../fixtures/modules/d8'));
 
         // Enable our module.
         $this->drush('pm-enable', ['woot']);

@@ -18,7 +18,7 @@ class CommandInfoAlterTest extends CommandUnishTestCase
     public function testCommandInfoAlter()
     {
         $this->setUpDrupal(1, true);
-        $this->setupModulesForTests(['woot'], Path::join(__DIR__, 'resources/modules/d8'));
+        $this->setupModulesForTests(['woot'], Path::join(__DIR__, '/../fixtures/modules/d8'));
         $this->drush('pm-enable', ['woot']);
         $this->drush('woot:altered', [], ['help' => true, 'debug' => true]);
         $this->assertStringNotContainsString('woot-initial-alias', $this->getOutput());
