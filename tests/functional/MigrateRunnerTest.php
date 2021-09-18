@@ -153,7 +153,7 @@ class MigrateRunnerTest extends CommandUnishTestCase
         // MigrateEvents::DRUSH_MIGRATE_PREPARE_ROW test, later.
         // @see system_migrate_prepare_row()
         // @see \Drupal\woot\EventSubscriber\ProcessRowTestSubscriber::onPrepareRow()
-        $this->drush('php:eval', ['\Drupal::moduleHandler()->invokeAll("migrate_prepare_row");']);
+        $this->drush('php:eval', ["Drupal::moduleHandler()->invokeAll('migrate_prepare_row');"]);
 
         // Expect that this command will fail because the 2nd row fails.
         // @see \Drupal\woot\Plugin\migrate\process\TestFailProcess
