@@ -23,6 +23,15 @@ class MigrateRunnerTest extends UnishIntegrationTestCase
     }
 
     /**
+     * {@inheritdoc}
+     */
+    protected function tearDown(): void
+    {
+        $this->drush('pm:uninstall', ['migrate', 'node', 'woot']);
+        parent::tearDown();
+    }
+
+    /**
      * @covers ::status
      * @covers ::getMigrationList
      */
