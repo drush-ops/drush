@@ -14,8 +14,8 @@ class IntegrationTestsTest extends UnishIntegrationTestCase
     public function testStdErr(): void
     {
         $this->drush('version', [], ['debug' => null]);
-        $this->assertStringContainsString('[debug] Starting bootstrap to none', $this->getErrorOutput());
+        $this->assertStringContainsString('[debug] Starting bootstrap to none', $this->getErrorOutputRaw());
         $this->drush('version');
-        $this->assertStringNotContainsString('[debug] Starting bootstrap to none', $this->getErrorOutput());
+        $this->assertStringNotContainsString('[debug] Starting bootstrap to none', $this->getErrorOutputRaw());
     }
 }
