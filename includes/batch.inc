@@ -38,6 +38,7 @@ use Drush\Log\LogLevel;
  * @see _drush_batch_worker().
  */
 class DrushBatchContext extends ArrayObject {
+  #[\ReturnTypeWillChange]
   function offsetSet($name, $value) {
     if ($name == 'message') {
       Drush::logger()->notice(strip_tags($value));
