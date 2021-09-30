@@ -3318,7 +3318,7 @@
         <span class="k">return</span> <span class="nb">implode</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="nv">$result</span><span class="p">);</span>
     <span class="p">}</span>
 </code></pre></div></p>
-<p>Other command handlers may provide implementations by implementing <code>@hook on-event my-event</code>.</p>
+<p>Other command handlers may provide implementations by implementing <code>@hook on-event my-event</code> or <code>#[CLI/Hook(type: 'on-event', target: 'my-event')]</code>.</p>
 <div class="highlight"><pre><span></span><code>    <span class="sd">/**</span>
 <span class="sd">     * @hook on-event my-event</span>
 <span class="sd">     */</span>

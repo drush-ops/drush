@@ -3252,6 +3252,11 @@
                 <div class="highlight"><pre><span></span><code><span class="o">&lt;?</span><span class="nx">php</span>
 <span class="k">namespace</span> <span class="nx">Drush\Commands</span><span class="p">;</span>
 
+<span class="k">use</span> <span class="nx">Drush\Attributes\Command</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Drush\Attributes\Help</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Drush\Attributes\Option</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Drush\Attributes\Argument</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Drush\Attributes\Usage</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Drush\Exec\ExecTrait</span><span class="p">;</span>
 
 <span class="sd">/**</span>
@@ -3284,6 +3289,36 @@
 <span class="sd">     * @aliases xkcd</span>
 <span class="sd">     */</span>
     <span class="k">public</span> <span class="k">function</span> <span class="nf">fetch</span><span class="p">(</span><span class="nv">$search</span> <span class="o">=</span> <span class="k">null</span><span class="p">,</span> <span class="nv">$options</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;image-viewer&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;open&#39;</span><span class="p">,</span> <span class="s1">&#39;google-custom-search-api-key&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;AIzaSyDpE01VDNNT73s6CEeJRdSg5jukoG244ek&#39;</span><span class="p">])</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">doFetch</span><span class="p">(</span><span class="nv">$search</span><span class="p">,</span> <span class="nv">$options</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="sd">/**</span>
+<span class="sd">     * This command uses PHP8 Attributes instead of annotations. This</span>
+<span class="sd">     * is recommended for commandfiles that only need to run on PHP8+. All</span>
+<span class="sd">     * Attributes provided by Drush core are listed at</span>
+<span class="sd">     * https://www.drush.org/latest/api/Drush/Attributes.html</span>
+<span class="sd">     */</span>
+    <span class="c1">#[Command(name: &#39;xkcd:fetch-attributes&#39;, aliases: [&#39;xkcd-attributes&#39;])]</span>
+    <span class="c1">#[Argument(name: &#39;search&#39;, description: &#39;Optional argument to retrieve the cartoons matching an index number, keyword search or &quot;random&quot;. If omitted the latest cartoon will be retrieved.&#39;)]</span>
+    <span class="c1">#[Option(name: &#39;image-viewer&#39;, description: &#39;Command to use to view images (e.g. xv, firefox). Defaults to &quot;display&quot; (from ImageMagick).&#39;)]</span>
+    <span class="c1">#[Option(name: &#39;google-custom-search-api-key&#39;, description: &#39;Google Custom Search API Key, available from https://code.google.com/apis/console/. Default key limited to 100 queries/day globally.&#39;)]</span>
+    <span class="c1">#[Help(description: &#39;Retrieve and display xkcd cartoons (attribute variant).&#39;)]</span>
+    <span class="c1">#[Usage(name: &#39;drush xkcd&#39;, description: &#39;Retrieve and display the latest cartoon&#39;)]</span>
+    <span class="c1">#[Usage(name: &#39;drush xkcd sandwich&#39;, description: &#39;Retrieve and display cartoons about sandwiches.&#39;)]</span>
+    <span class="c1">#[Usage(name: &#39;drush xkcd 123 --image-viewer=eog&#39;, description: &#39;Retrieve and display cartoon #123 in eog.&#39;)]</span>
+    <span class="c1">#[Usage(name: &#39;drush xkcd random --image-viewer=firefox&#39;, description: &#39;Retrieve and display a random cartoon in Firefox.&#39;)]</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">fetchAttributes</span><span class="p">(</span><span class="nv">$search</span> <span class="o">=</span> <span class="k">null</span><span class="p">,</span> <span class="nv">$options</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;image-viewer&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;open&#39;</span><span class="p">,</span> <span class="s1">&#39;google-custom-search-api-key&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;AIzaSyDpE01VDNNT73s6CEeJRdSg5jukoG244ek&#39;</span><span class="p">])</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">doFetch</span><span class="p">(</span><span class="nv">$search</span><span class="p">,</span> <span class="nv">$options</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="sd">/**</span>
+<span class="sd">     * @param $search</span>
+<span class="sd">     * @param array $options</span>
+<span class="sd">     * @throws \Exception</span>
+<span class="sd">     */</span>
+    <span class="k">protected</span> <span class="k">function</span> <span class="nf">doFetch</span><span class="p">(</span><span class="nv">$search</span><span class="p">,</span> <span class="k">array</span> <span class="nv">$options</span><span class="p">)</span><span class="o">:</span> <span class="nx">void</span>
     <span class="p">{</span>
         <span class="k">if</span> <span class="p">(</span><span class="k">empty</span><span class="p">(</span><span class="nv">$search</span><span class="p">))</span> <span class="p">{</span>
             <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">startBrowser</span><span class="p">(</span><span class="s1">&#39;http://xkcd.com&#39;</span><span class="p">);</span>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="robots" content="index, follow, all" />
-    <title>Drush\Boot\BootstrapHook | Drush API</title>
+    <title>Drush\Attributes\ValidatePhpExtensions | Drush API</title>
 
             <link rel="stylesheet" type="text/css" href="../../css/bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="../../css/bootstrap-theme.min.css">
@@ -19,7 +19,7 @@
 
     </head>
 
-    <body id="class" data-name="class:Drush_Boot_BootstrapHook" data-root-path="../../">
+    <body id="class" data-name="class:Drush_Attributes_ValidatePhpExtensions" data-root-path="../../">
             <div id="content">
         <div id="left-column">
                 <div id="control-panel">
@@ -63,46 +63,27 @@
                         <div class="namespace-breadcrumbs">
             <ol class="breadcrumb">
                 <li><span class="label label-default">class</span></li>
-                        <li><a href="../../Drush.html">Drush</a></li><li class="backslash">\</li><li><a href="../../Drush/Boot.html">Boot</a></li><li class="backslash">\</li><li>BootstrapHook</li>
+                        <li><a href="../../Drush.html">Drush</a></li><li class="backslash">\</li><li><a href="../../Drush/Attributes.html">Attributes</a></li><li class="backslash">\</li><li>ValidatePhpExtensions</li>
             </ol>
         </div>
                 <div id="page-content">
     <div class="page-header">
-        <h1>BootstrapHook    
+        <h1>ValidatePhpExtensions    
             </h1>
     </div>
 
     
     <p>        class
-    <strong>BootstrapHook</strong>        implements
-        <abbr title="Consolidation\AnnotatedCommand\Hooks\InitializeHookInterface">InitializeHookInterface</abbr>        (<a href="https://github.com/drush-ops/drush/blob/10.x/src/Boot/BootstrapHook.php">View source</a>)
+    <strong>ValidatePhpExtensions</strong>        (<a href="https://github.com/drush-ops/drush/blob/10.x/src/Attributes/ValidatePhpExtensions.php">View source</a>)
 </p>
 
         
     
         
 
-            <div class="description">
-            <p><p>The BootstrapHook is installed as an init hook that runs before
-all commands. If there is a <code>@bootstrap</code> annotation/attribute, then we will
-bootstrap Drupal to the requested phase.</p></p>                    </div>
             
         
     
-            <h2>Properties</h2>
-
-            <table class="table table-condensed">
-                    <tr>
-                <td class="type" id="property_bootstrapManager">
-                                        protected                                        
-                                                                                
-                                    </td>
-                <td>$bootstrapManager</td>
-                <td class="last"></td>
-                <td></td>
-            </tr>
-            </table>
-
     
             <h2>Methods</h2>
 
@@ -112,7 +93,7 @@ bootstrap Drupal to the requested phase.</p></p>                    </div>
                     
                 </div>
                 <div class="col-md-8">
-                    <a href="#method___construct">__construct</a>(<a href="../../Drush/Boot/BootstrapManager.html"><abbr title="Drush\Boot\BootstrapManager">BootstrapManager</abbr></a> $bootstrapManager)
+                    <a href="#method___construct">__construct</a>(array $extensions)
         
                                             <p class="no-description">No description</p>
                                     </div>
@@ -120,10 +101,10 @@ bootstrap Drupal to the requested phase.</p></p>                    </div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    
+                    static&nbsp;
                 </div>
                 <div class="col-md-8">
-                    <a href="#method_initialize">initialize</a>(<abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr> $input, <abbr title="Consolidation\AnnotatedCommand\AnnotationData">AnnotationData</abbr> $annotationData)
+                    <a href="#method_handle">handle</a>(ReflectionAttribute $attribute, <abbr title="Consolidation\AnnotatedCommand\Parser\CommandInfo">CommandInfo</abbr> $commandInfo)
         
                                             <p class="no-description">No description</p>
                                     </div>
@@ -137,9 +118,9 @@ bootstrap Drupal to the requested phase.</p></p>                    </div>
             <div id="method-details">
                     <div class="method-item">
                     <h3 id="method___construct">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Boot/BootstrapHook.php#L18">at line 18</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Attributes/ValidatePhpExtensions.php#L15">at line 15</a></div>
         <code>                    
-    <strong>__construct</strong>(<a href="../../Drush/Boot/BootstrapManager.html"><abbr title="Drush\Boot\BootstrapManager">BootstrapManager</abbr></a> $bootstrapManager)
+    <strong>__construct</strong>(array $extensions)
         </code>
     </h3>
     <div class="details">    
@@ -155,9 +136,9 @@ bootstrap Drupal to the requested phase.</p></p>                    </div>
 
                     <table class="table table-condensed">
                     <tr>
-                <td><a href="../../Drush/Boot/BootstrapManager.html"><abbr title="Drush\Boot\BootstrapManager">BootstrapManager</abbr></a></td>
-                <td>$bootstrapManager</td>
-                <td></td>
+                <td>array</td>
+                <td>$extensions</td>
+                <td><p>The required module name.</p></td>
             </tr>
             </table>
 
@@ -170,10 +151,10 @@ bootstrap Drupal to the requested phase.</p></p>                    </div>
 
             </div>
                     <div class="method-item">
-                    <h3 id="method_initialize">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Boot/BootstrapHook.php#L23">at line 23</a></div>
-        <code>                    
-    <strong>initialize</strong>(<abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr> $input, <abbr title="Consolidation\AnnotatedCommand\AnnotationData">AnnotationData</abbr> $annotationData)
+                    <h3 id="method_handle">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Attributes/ValidatePhpExtensions.php#L20">at line 20</a></div>
+        <code>        static            
+    <strong>handle</strong>(ReflectionAttribute $attribute, <abbr title="Consolidation\AnnotatedCommand\Parser\CommandInfo">CommandInfo</abbr> $commandInfo)
         </code>
     </h3>
     <div class="details">    
@@ -189,13 +170,13 @@ bootstrap Drupal to the requested phase.</p></p>                    </div>
 
                     <table class="table table-condensed">
                     <tr>
-                <td><abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr></td>
-                <td>$input</td>
+                <td>ReflectionAttribute</td>
+                <td>$attribute</td>
                 <td></td>
             </tr>
                     <tr>
-                <td><abbr title="Consolidation\AnnotatedCommand\AnnotationData">AnnotationData</abbr></td>
-                <td>$annotationData</td>
+                <td><abbr title="Consolidation\AnnotatedCommand\Parser\CommandInfo">CommandInfo</abbr></td>
+                <td>$commandInfo</td>
                 <td></td>
             </tr>
             </table>
