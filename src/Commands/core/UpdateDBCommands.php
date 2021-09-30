@@ -346,7 +346,7 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
                 '@filename' => "$filename.php",
             ]));
         }
-        
+
         if (isset($context['sandbox']['#finished'])) {
             $context['finished'] = $context['sandbox']['#finished'];
             unset($context['sandbox']['#finished']);
