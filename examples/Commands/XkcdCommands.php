@@ -42,6 +42,12 @@ class XkcdCommands extends DrushCommands
         $this->doFetch($search, $options);
     }
 
+    /**
+     * This command uses PHP8 Attributes instead of annotations. This
+     * is recommended for commandfiles that only need to run on PHP8+. All
+     * Attributes provided by Drush core are listed at
+     * https://www.drush.org/latest/api/Drush/Attributes.html
+     */
     #[Command(name: 'xkcd:fetch-attributes', aliases: ['xkcd-attributes'])]
     #[Argument(name: 'search', description: 'Optional argument to retrieve the cartoons matching an index number, keyword search or "random". If omitted the latest cartoon will be retrieved.')]
     #[Option(name: 'image-viewer', description: 'Command to use to view images (e.g. xv, firefox). Defaults to "display" (from ImageMagick).')]
