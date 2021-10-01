@@ -16,10 +16,10 @@ class PreflightVerify
      */
     public function verify(Environment $environment)
     {
-        // Fail fast if the PHP version is not at least 7.1.3.
+        // Fail fast if the PHP version is not at least 7.4.0.
         // We'll come back and check this again later, in case someone
         // set a higher value in a configuration file.
-        $this->confirmPhpVersion('7.1.3');
+        $this->confirmPhpVersion('7.4.0');
 
         // Fail if this is not a CLI php
         $this->confirmUsingCLI($environment);
