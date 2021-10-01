@@ -66,7 +66,7 @@ jobs:
     <<: *defaults
     docker:
       # We use a custom image here because wodby/php does not ship with sqlite3 program.
-      - image: drush/php:7.4
+      - image: wodby/php:7.4
         environment:
           - UNISH_DB_URL=sqlite://sut/sites/dev/files/.ht.sqlite
     <<: *test74steps
