@@ -3344,7 +3344,6 @@
 <li>Drush will then report that it created a commandfile, a drush.services.yml file and a composer.json file. Edit those files as needed.</li>
 <li>Use the classes for the core Drush commands at <a href="https://github.com/drush-ops/drush/tree/10.x/src/Drupal/Commands">/src/Drupal/Commands</a> as inspiration and documentation.</li>
 <li>See the <a href="../dependency-injection/">dependency injection docs</a> for interfaces you can implement to gain access to Drush config, Drupal site aliases, etc.</li>
-<li>A commandfile that will only be used on PHP8+ can <a href="https://github.com/drush-ops/drush/pull/4821">use Attributes</a> instead of Annotations.</li>
 <li>Write PHPUnit tests based on <a href="https://github.com/drush-ops/drush/blob/10.x/docs/contribute/unish.md#drush-test-traits">Drush Test Traits</a>.</li>
 <li>Once your two files are ready, run <code>drush cr</code> to get your command recognized by the Drupal container.</li>
 </ol>
@@ -3372,7 +3371,7 @@ In this example, the file <code>drush-9-99.services.yml</code> loads commandfile
 <p>It is also possible to use <a href="https://getcomposer.org/doc/articles/versions.md#version-range">version ranges</a> to exactly specify which version of Drush the services file should be used with (e.g. <code>"drush.services.yml": "&gt;=9 &lt;9.99"</code>).</p>
 <p>In Drush 9, the default services file, <code>drush.services.yml</code>, will be used in instances where there is no <code>services</code> section in the Drush extras of the project's composer.json file. In Drush 10, however, the services section must exist, and must name the services file to be used. If a future Drush extension is written such that it only works with Drush 10 and later, then its entry would read <code>"drush.services.yml": "^10"</code>, and Drush 9 would not load the extension's commands. It is all the same recommended that Drush 9 extensions explicitly declare their services file with an appropriate version constraint.</p>
 <h2 id="altering-drush-command-info">Altering Drush Command Info<a class="headerlink" href="#altering-drush-command-info" title="Permanent link">&para;</a></h2>
-<p>Drush command info (annotations/attributes) can be altered from other modules. This is done by creating and registering 'command info alterers'. Alterers are class services that are able to intercept and manipulate an existing command annotation.</p>
+<p>Drush command info (annotations) can be altered from other modules. This is done by creating and registering 'command info alterers'. Alterers are class services that are able to intercept and manipulate an existing command annotation.</p>
 <p>In order to alter an existing command info, follow the steps below:</p>
 <ol>
 <li>In the module that wants to alter a command info, add a service class that implements the <code>\Consolidation\AnnotatedCommand\CommandInfoAltererInterface</code>.</li>
