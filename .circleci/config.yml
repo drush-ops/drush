@@ -103,7 +103,7 @@ jobs:
 
   # PHP 8 test with Drupal tip
   #   Determines whether a newer version of a dependency has broken Drush.
-  test_80_drupal93-dev:
+  test_80_drupal93_highest:
     <<: *defaults
     docker:
       - image: wodby/php:8.0
@@ -133,7 +133,7 @@ workflows:
           <<: *requires
       - test_74_drupal9_mysql:
           <<: *requires
-      - test_80_drupal9:
+      - test_80_drupal93_highest:
           <<: *requires
       - test_74_drupal9_sqlite:
           <<: *requires
