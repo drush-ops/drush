@@ -103,7 +103,7 @@ jobs:
 
   # PHP 8 test with Drupal tip
   #   Determines whether a newer version of a dependency has broken Drush.
-  test_80_drupal9:
+  test_80_drupal93-dev:
     <<: *defaults
     docker:
       - image: wodby/php:8.0
@@ -116,6 +116,7 @@ jobs:
       - run: cp .docker/zz-php.ini /usr/local/etc/php/conf.d/
       - run: php --version
       - run: composer config platform.php 8.0.0
+      - run: composer require --dev drupal/core-recommended:9.3.x-dev --no-update
       - run: composer update
       - run: composer lint
       - run: composer unit
