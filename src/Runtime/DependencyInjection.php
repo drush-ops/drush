@@ -230,6 +230,7 @@ class DependencyInjection
 
         $factory = $container->get('commandFactory');
         $factory->setIncludeAllPublicMethods(false);
+        $factory->setIgnoreCommandsInTraits(true);
         $factory->setDataStore($commandCacheDataStore);
         $factory->addCommandInfoAlterer(new DrushCommandInfoAlterer());
 
