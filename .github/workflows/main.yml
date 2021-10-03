@@ -6,7 +6,7 @@ on:
   push:
     branches: [11.x]
 #  pull_request:
-#    branches: [10.x]
+#    branches: [11.x]
 
 jobs:
   build:
