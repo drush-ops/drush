@@ -22,7 +22,7 @@ $iterator = Finder::create()
 // Generate documentation for the main branch only
 $versions = GitVersionCollection::create($dir)
 //   ->addFromTags('10.*') // Also generate documentation for 10.x semver releases
-   ->add('10.x', 'Main branch');
+   ->add('11.x', 'Main branch');
 
 return new Doctum($iterator, [
   // 'theme'                => 'symfony',

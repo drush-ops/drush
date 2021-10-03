@@ -40,7 +40,7 @@ jobs:
       - run: composer cs
 
   # Mergeable test:
-  #   FAIL if merging test branch with 10.x produces conflicts
+  #   FAIL if merging test branch with 11.x produces conflicts
   #   PASS if the test branch is out of date, but mergeable without conflicts
   check_mergable:
     <<: *defaults
