@@ -50,8 +50,8 @@ Drupal Compatibility
     <td> Drush 8 </td>
     <td> 5.4.5+ </td>
     <!-- Released Nov 2015 -->
-    <td> Nov 2021 </td>
-    <td>✓</td> <td>✓</td> <td><b>✓️</b></td> <td></td>
+    <td> Nov 2022 </td>
+    <td>✅</td> <td>✅</td> <td><b>⚠</b></td> <td></td>
   </tr>
   <tr>
     <td> Drush 7 </td>
@@ -91,3 +91,4 @@ Drupal Compatibility
     </tr>
     
 </table>
+
