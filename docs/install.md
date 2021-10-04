@@ -29,15 +29,15 @@ Drupal Compatibility
     <td> Drush 11 </td>
     <td> 7.4+ </td>
     <!-- TBD -->
-    <td> <i>TBD</i> </td>
+    <td> TBD </td>
     <td></td> <td></td> <td></td> <td><b>✅</b></td>
   </tr>
   <tr>
     <td> Drush 10 </td>
     <td> 7.1+ </td>
     <!-- Released Oct 2019 -->
-    <td> <i>TBD</i> </td>
-    <td></td> <td></td> <td>✅</td> <td><b>✅</b></td>
+    <td> Nov 2021 </td>
+    <td></td> <td></td> <td>✓</td> <td><b>✓</b></td>
   </tr>
   <tr>
     <td> Drush 9 </td>
@@ -50,8 +50,8 @@ Drupal Compatibility
     <td> Drush 8 </td>
     <td> 5.4.5+ </td>
     <!-- Released Nov 2015 -->
-    <td> ❶ </td>
-    <td>✅</td> <td>✅</td> <td><b>⚠️</b></td> <td></td>
+    <td> Nov 2022 </td>
+    <td>✅</td> <td>✅</td> <td><b>⚠</b></td> <td></td>
   </tr>
   <tr>
     <td> Drush 7 </td>
@@ -92,4 +92,3 @@ Drupal Compatibility
     
 </table>
 
-❶: EOL date for Drush 8 tbd, but estimated to be in concert with <a href="https://www.drupal.org/psa-2019-02-25">Drupal 7 EOL</a>.</td>
