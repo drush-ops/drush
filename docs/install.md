@@ -51,7 +51,7 @@ Drupal Compatibility
     <td> 5.4.5+ </td>
     <!-- Released Nov 2015 -->
     <td> Nov 2022 </td>
-    <td>✅</td> <td>✅</td> <td><b>⚠</b></td> <td></td>
+    <td>✅</td> <td>✅</td> <td><b>⚠️</b></td> <td></td>
   </tr>
   <tr>
     <td> Drush 7 </td>
