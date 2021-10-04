@@ -11,6 +11,7 @@ use Drupal\Core\Config\StorageComparer;
 use Drupal\Core\Config\ConfigImporter;
 use Drupal\Core\Config\ConfigException;
 use Drupal\Core\Config\FileStorage;
+use Drupal\Core\Site\Settings;
 use Drupal\Component\Utility\NestedArray;
 use Drush\Config\StorageWrapper;
 use Drush\Config\CoreExtensionFilter;
@@ -410,6 +411,10 @@ function drush_config_export($destination = NULL) {
       drush_mkdir($destination_dir);
     }
   }
+  elseif ($config_directories === NULL) {
+    // For Drupal 8.8+ see https://www.drupal.org/node/3018145 change.
+    $destination_dir = Settings::get('config_sync_directory');
+  }
   else {
     $choices = drush_map_assoc(array_keys($config_directories));
     unset($choices[CONFIG_ACTIVE_DIRECTORY]);
@@ -464,6 +469,10 @@ function drush_config_export($destination = NULL) {
 }
 
 function _drush_config_export($destination, $destination_dir, $branch) {
+  if (!defined('CONFIG_SYNC_DIRECTORY')) {
+    // For Drupal 8.8+ see https://www.drupal.org/node/3018145 change.
+    define('CONFIG_SYNC_DIRECTORY', Settings::get('config_sync_directory'));
+  }
   $commit = drush_get_option('commit');
   $comment = drush_get_option('message', 'Exported configuration.');
   if (count(glob($destination_dir . '/*')) > 0) {
@@ -593,6 +602,10 @@ function drush_config_import_validate() {
  */
 function drush_config_import($source = NULL) {
   global $config_directories;
+  if (!defined('CONFIG_SYNC_DIRECTORY')) {
+    // For Drupal 8.8+ see https://www.drupal.org/node/3018145 change.
+    define('CONFIG_SYNC_DIRECTORY', Settings::get('config_sync_directory'));
+  }
 
   // Determine source directory.
   if ($target = drush_get_option('source')) {
