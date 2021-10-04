@@ -114,7 +114,7 @@ jobs:
       - checkout
       - run: cp .docker/zz-php.ini /usr/local/etc/php/conf.d/
       - run: php --version
-      - run: composer config platform.php 8.0.0
+      - run: composer config platform.php --unset
       - run: composer require --dev drupal/core-recommended:9.3.x-dev --no-update
       - run: composer update
       - run: composer lint
