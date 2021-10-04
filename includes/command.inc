@@ -998,10 +998,14 @@ function drush_adjust_args_if_shebang_script(&$args) {
     // The drush.launcher script may add --php or --php-options at the
     // head of the argument list; skip past those.
     $base_arg_number = 1;
-    while (substr($args[$base_arg_number], 0, 5) == '--php') {
+    while (isset($args[$base_arg_number]) && substr($args[$base_arg_number], 0, 5) == '--php') {
       ++$base_arg_number;
     }
-    if (_drush_is_drush_shebang_script($args[$base_arg_number])) {
+    if (!isset($args[$base_arg_number])) {
+      // No arguments passed.
+      return;
+    }
+    elseif (_drush_is_drush_shebang_script($args[$base_arg_number])) {
       // If $args[1] is a drush "shebang" script, we will insert
       // the option "--bootstrap-to-first-arg" and the command
       // "php-script" at the beginning of  @args, so the command
