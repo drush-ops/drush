@@ -105,7 +105,7 @@ jobs:
   test_80_drupal93_highest:
     <<: *defaults
     docker:
-      - image: wodby/php:8.0
+      - image: wodby/php:latest
         environment:
           - MYSQL_HOST=127.0.0.1
           - UNISH_DB_URL=mysql://root:@127.0.0.1
