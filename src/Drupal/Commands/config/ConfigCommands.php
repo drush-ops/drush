@@ -425,7 +425,7 @@ class ConfigCommands extends DrushCommands implements StdinAwareInterface, SiteA
      */
     public function getStorage($directory)
     {
-        if ($directory == Path::canonicalize(\drush_config_get_config_directory())) {
+        if ($directory == Path::canonicalize(Settings::get('config_sync_directory'))) {
             return \Drupal::service('config.storage.sync');
         } else {
             return new FileStorage($directory);
