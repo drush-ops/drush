@@ -394,7 +394,7 @@ class ConfigCommands extends DrushCommands implements StdinAwareInterface, SiteA
                 $return = $directory;
             }
         } else {
-            // If a directory isn't specified, use the label argument or default sync directory.
+            // If a directory isn't specified, use default sync directory.
             $return = Settings::get('config_sync_directory');
         }
         return Path::canonicalize($return);
