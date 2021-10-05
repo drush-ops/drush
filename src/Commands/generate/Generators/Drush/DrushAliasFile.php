@@ -19,19 +19,9 @@ class DrushAliasFile extends Generator
     /**
      * {@inheritdoc}
      */
-    protected function generate(): void
+    protected function generate(array &$vars): void
     {
-        $vars = &$this->vars;
-        $vars['prefix'] = $this->ask('File prefix (one word)', 'self');
-        $vars['root'] = $this->ask('Path to Drupal root', Drush::bootstrapManager()->getRoot());
-        $vars['uri'] = $this->ask('Drupal uri', Drush::bootstrapManager()->getUri());
-        $vars['host'] = $this->ask('Remote host');
-
-        if ($vars['host']) {
-            $vars['user'] = $this->ask('Remote user', Drush::config()->user());
-        }
-
-        $this->addFile('drush/{prefix}.site.yml', 'drush-alias-file.yml');
+        // @todo Update this.
     }
 
 }

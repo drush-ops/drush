@@ -17,7 +17,7 @@ class MigrationGenerator extends PluginGenerator
     /**
      * {@inheritdoc}
      */
-    protected function generate(): void
+    protected function generate(array &$vars): void
     {
         // @todo Update it.
     }

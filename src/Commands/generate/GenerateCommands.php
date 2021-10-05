@@ -104,7 +104,6 @@ class GenerateCommands extends DrushCommands
             new Dumper(new Filesystem(), $replace),
             new Renderer(new TwigEnvironment(new FilesystemLoader())),
             new ResultPrinter(),
-            new LoggerFactory(),
             new DrupalContext(\Drupal::getContainer())
         ]);
 

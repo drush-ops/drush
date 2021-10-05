@@ -22,39 +22,9 @@ class DrushCommandFile extends ModuleGenerator
     /**
      * {@inheritdoc}
      */
-    protected function generate(): void
+    protected function generate(array &$vars): void
     {
-        $vars = &$this->collectDefault();
-
-        $validator = function ($path): string {
-            if ($path && !is_file($path)) {
-                throw new \UnexpectedValueException(sprintf('Could not open file "%s".', $path));
-            }
-            return $path;
-        };
-        $vars['source'] = $this->ask('Absolute path to legacy Drush command file (optional - for porting)', NULL, $validator);
-        $vars['class'] = '{machine_name|camelize}Commands';
-
-        if ($vars['source']) {
-            require_once $vars['source'];
-            $filename = str_replace(['.drush.inc', '.drush8.inc'], '', basename($vars['source']));
-            $command_hook = $filename . '_drush_command';
-            if (!function_exists($command_hook)) {
-                throw new \InvalidArgumentException('Drush command hook "' . $command_hook . '" does not exist.');
-            }
-            $commands = call_user_func($filename . '_drush_command');
-            $vars['commands'] = $this->adjustCommands($commands);
-        }
-
-        $this->addFile('src/Commands/{class}.php','drush-command-file.php');
-
-        $json = $this->getComposerJson($vars);
-        $content = json_encode($json, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
-        $this->addFile('composer.json')
-            ->content($content)
-            ->replaceIfExists();
-
-        $this->addFile('drush.services.yml', 'drush.services.yml');
+        // @todo update this.
     }
 
     protected function getComposerJson(array $vars)
