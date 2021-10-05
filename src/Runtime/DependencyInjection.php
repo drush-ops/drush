@@ -54,18 +54,11 @@ class DependencyInjection
         $container = new \League\Container\Container();
 
         // With league/container 3.x, first call wins, so add Drush services first.
-        if (!static::usingLegacyContainer()) {
-            $this->addDrushServices($container, $loader, $drupalFinder, $aliasManager, $config);
-        }
+        $this->addDrushServices($container, $loader, $drupalFinder, $aliasManager, $config);
 
         // Robo has the same signature for configureContainer in 1.x, 2.x and 3.x.
         \Robo\Robo::configureContainer($container, $application, $config, $input, $output);
         $container->add('container', $container);
-
-        // With league/container 2.x, last call wins, so add Drush services second.
-        if (static::usingLegacyContainer()) {
-            $this->addDrushServicesToLegacyContainer($container, $loader, $drupalFinder, $aliasManager, $config);
-        }
 
         // Store the container in the \Drush object
         Drush::setContainer($container);
@@ -88,11 +81,6 @@ class DependencyInjection
             $handler = $container->get($handlerId);
             $handler->installHandler();
         }
-    }
-
-    protected static function usingLegacyContainer()
-    {
-        return method_exists(\League\Container\Definition\DefinitionInterface::class, 'withArgument');
     }
 
     // Add Drush Services to league/container 3.x
@@ -139,64 +127,6 @@ class DependencyInjection
         $container->share('commandDiscovery', 'Consolidation\AnnotatedCommand\CommandFileDiscovery')
             ->addMethodCall('addSearchLocation', ['CommandFiles'])
             ->addMethodCall('setSearchPattern', ['#.*(Commands|CommandFile).php$#']);
-
-        // Error and Shutdown handlers
-        $container->share('errorHandler', 'Drush\Runtime\ErrorHandler');
-        $container->share('shutdownHandler', 'Drush\Runtime\ShutdownHandler');
-
-        // Add inflectors. @see \Drush\Boot\BaseBoot::inflect
-        $container->inflector(\Drush\Boot\AutoloaderAwareInterface::class)
-            ->invokeMethod('setAutoloader', ['loader']);
-        $container->inflector(\Consolidation\SiteAlias\SiteAliasManagerAwareInterface::class)
-            ->invokeMethod('setSiteAliasManager', ['site.alias.manager']);
-        $container->inflector(\Consolidation\SiteProcess\ProcessManagerAwareInterface::class)
-            ->invokeMethod('setProcessManager', ['process.manager']);
-    }
-
-    // Add Drush Services to league/container 2.x and 1.x
-    protected function addDrushServicesToLegacyContainer($container, ClassLoader $loader, DrupalFinder $drupalFinder, SiteAliasManager $aliasManager, DrushConfig $config)
-    {
-        // Override Robo's logger with our own
-        $container->share('logger', 'Drush\Log\Logger')
-          ->withArgument('output')
-          ->withMethodCall('setLogOutputStyler', ['logStyler']);
-
-        $container->share('loader', $loader);
-        $container->share('site.alias.manager', $aliasManager);
-
-        // Fetch the runtime config, where -D et. al. are stored, and
-        // add a reference to it to the container.
-        $container->share('config.runtime', $config->getContext(ConfigOverlay::PROCESS_CONTEXT));
-
-        // Override Robo's formatter manager with our own
-        // @todo not sure that we'll use this. Maybe remove it.
-        $container->share('formatterManager', \Drush\Formatters\DrushFormatterManager::class)
-            ->withMethodCall('addDefaultFormatters', [])
-            ->withMethodCall('addDefaultSimplifiers', []);
-
-        // Add some of our own objects to the container
-        $container->share('bootstrap.drupal8', 'Drush\Boot\DrupalBoot8');
-        $container->share('bootstrap.manager', 'Drush\Boot\BootstrapManager')
-            ->withMethodCall('setDrupalFinder', [$drupalFinder]);
-        // TODO: Can we somehow add these via discovery (e.g. backdrop extension?)
-        $container->extend('bootstrap.manager')
-            ->withMethodCall('add', ['bootstrap.drupal8']);
-        $container->share('bootstrap.hook', 'Drush\Boot\BootstrapHook')
-          ->withArgument('bootstrap.manager');
-        $container->share('tildeExpansion.hook', 'Drush\Runtime\TildeExpansionHook');
-        $container->share('process.manager', ProcessManager::class)
-            ->withMethodCall('setConfig', ['config'])
-            ->withMethodCall('setConfigRuntime', ['config.runtime']);
-        $container->share('redispatch.hook', 'Drush\Runtime\RedispatchHook')
-            ->withArgument('process.manager');
-
-        // Robo does not manage the command discovery object in the container,
-        // but we will register and configure one for our use.
-        // TODO: Some old adapter code uses this, but the Symfony dispatcher does not.
-        // See Application::commandDiscovery().
-        $container->share('commandDiscovery', 'Consolidation\AnnotatedCommand\CommandFileDiscovery')
-            ->withMethodCall('addSearchLocation', ['CommandFiles'])
-            ->withMethodCall('setSearchPattern', ['#.*(Commands|CommandFile).php$#']);
 
         // Error and Shutdown handlers
         $container->share('errorHandler', 'Drush\Runtime\ErrorHandler');
