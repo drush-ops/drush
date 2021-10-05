@@ -1,173 +1,39 @@
 #
-# Examples of valid statements for a Drush runtime config (drush.yml) file.
+# A minimalist Drush config file.
+# See https://www.drush.org/latest/using-drush-configuration/ for lots more documentation.
 #
-# Use this file to cut down on typing out lengthy and repetitive command line
-# options in the Drush commands you use and to avoid mistakes.
-#
-# The Drush configuration system has been factored out and shared with
-# the world at https://github.com/consolidation/config. Feel free to use it
-# for your projects. Lots more usage information is there.
 
-# Directories and Discovery
-#
-# Rename this file to drush.yml and copy it to one of the places listed below
-# in order of precedence:
-#
-# 1.  Drupal site folder (e.g. sites/{default|example.com}/drush.yml).
-# 2.  Drupal /drush and sites/all/drush folders, or the /drush folder
-#       in the directory above the Drupal root.
-# 3.  In any location, as specified by the --config (-c) option.
-# 4.  User's .drush folder (i.e. ~/.drush/drush.yml).
-# 5.  System wide configuration folder (e.g. /etc/drush/drush.yml or C:\ProgramData\Drush\drush.yml).
-#
-# If a configuration file is found in any of the above locations, it will be
-# loaded and merged with other configuration files in the search list.
-#
-# Version-specific configuration
-#
-# Drush started using yml files for configuration in version 9; earlier versions
-# of Drush will never attempt to load a drush.yml file. It is also possible
-# to limit the version of Drush that will load a configuration file by placing
-# the Drush major version number in the filename, e.g. drush9.yml.
-
-# Environment variables
-#
-# Your Drush config file may reference environment variables using a syntax like ${env.HOME}.
-# For example see the drush.paths examples below.
-#
-# An alternative way to populate Drush configuration is to define environment variables that
-# correspond to config keys. For example, to populate the options.uri config item,
-# create an environment variable `DRUSH_OPTIONS_URI=http://example.com`.
-# As you can see, variable names should be uppercased, prefixed with `DRUSH_`, and periods
-# replaced with dashes.
-
+# Preflight configuration.
 drush:
+  include:
+    - '${env.HOME}/.drush/commands'
+    - /usr/share/drush/commands
   paths:
-    # Specify config files to load.
     config:
-      # Load any personal config files. Is silently skipped if not found. Filename must be drush.yml
+      # Load additional config files. Is silently skipped if not found. Filename must be drush.yml
       - ${env.HOME}/.drush/config/drush.yml
-
-
-    # Specify folders to search for Drush command files.  These locations
-    # are always merged with include paths defined on the command line or
-    # in other configuration files.  On the command line, paths may be separated
-    # by a colon (:) on Unix-based systems or a semi-colon (;) on Windows,
-    # or multiple --include options may be provided. Drush 8 and earlier did
-    # a deep search in ~/.drush and /usr/share/drush/commands when loading
-    # command files.
-    #
-    # For testing, specify the namespace component in the key. e.g.:
-    #
-    # drush:
-    #  include:
-    #    'Commands/example_drush_extension': '${env.PWD}'
-    include:
-      - '${env.HOME}/.drush/commands'
-      - /usr/share/drush/commands
-
-    # Specify the folders to search for Drush alias files (*.site.yml). These
-    # locations are always merged with alias paths defined on the command line
-    # or in other configuration files.  On the command line, paths may be
-    # separated by a colon (:) on Unix-based systems or a semi-colon (;) on
-    # Windows, or multiple --alias-path options may be provided. Note that
-    # Drush 8 and earlier did a deep search in ~/.drush and /etc/drush when
-    # loading alias files.
     alias-path:
       - '${env.HOME}/.drush/sites'
       - /etc/drush/sites
 
-    # Specify a folder where Drush should store its file based caches. If unspecified, defaults to $HOME/.drush.
-    #cache-directory: /tmp/.drush
-
-# This section is for setting global options.
+# Global options.
 options:
   # Specify the base_url that should be used when generating links.
-  # Not recommended if you have more than one Drupal site on your system.
 # uri: 'http://example.com/subdir'
 
-  # Specify your Drupal core base directory (useful if you use symlinks).
-  # Not recommended if you have more than one Drupal root on your system.
-# root: '/home/USER/workspace/drupal-6'
-
-  # Enable verbose mode.
-# verbose: true
-
-# This section is for setting command-specific options.
+# Command-specific options.
 command:
   sql:
     dump:
       options:
         # Uncomment to omit cache and similar tables (including during a sql:sync).
-#         structure-tables-key: common
-  php:
-    script:
-      options:
-        # Additional folders to search for scripts.
-#       script-path: 'sites/all/scripts:profiles/myprofile/scripts'
-  core:
-    rsync:
-      options:
-        # Ensure all rsync commands use verbose output.
-#       verbose: true
+#       structure-tables-key: common
 
-  site:
-    install:
-      options:
-        # Set a predetermined username and password when using site-install.
-#       account-name: 'alice'
-#       account-pass: 'secret'
-
-
-#
-# The sections below are configuration thats consulted by various commands, outside
-# of the option system.
-#
-
-sql:
-  # An explicit list of tables which should be included in sql-dump and sql-sync.
-  tables:
-    common:
-      - user
-      - permissions
-      - role_permissions
-      - role
-  # List of tables whose *data* is skipped by the 'sql-dump' and 'sql-sync'
-  # commands when the "--structure-tables-key=common" option is provided.
-  # You may add specific tables to the existing array or add a new element.
-  structure-tables:
-    common:
-      - cache
-      - 'cache_*'
-      - history
-      - 'search_*'
-      - 'sessions'
-      - 'watchdog'
-  # List of tables to be omitted entirely from SQL dumps made by the 'sql-dump'
-  # and 'sql-sync' commands when the "--skip-tables-key=common" option is
-  # provided on the command line.  This is useful if your database contains
-  # non-Drupal tables used by some other application or during a migration for
-  # example.  You may add new tables to the existing array or add a new element.
-  skip-tables:
-    common:
-      - 'migration_*'
-
+# Non-options.
 ssh:
-  # Specify options to pass to ssh in backend invoke.  The default is to prohibit
+  # Specify options to pass to ssh.  The default is to prohibit
   # password authentication, and is included here, so you may add additional
   # parameters without losing the default configuration.
   options: '-o PasswordAuthentication=no'
   # This string is valid for Bash shell. Override in case you need something different. See https://github.com/drush-ops/drush/issues/3816.
   pipefail: 'set -o pipefail; '
-
-notify:
-  # Notify when command takes more than 30 seconds.
-# duration: 30
-  # Specify a command to run. Defaults to Notification Center (OSX) or libnotify (Linux)
-# cmd: /path/to/program
-  # See src/Commands/core/NotifyCommands.php for more configuration settings.
-
-xh:
-  # Start profiling via xhprof/tideways and show a link to the run report.
-# link: http://xhprof.local
-  # See src/Commands/core/XhprofCommands.php for more configuration settings.

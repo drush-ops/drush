@@ -25,7 +25,7 @@ class SiteCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
      *
      * @command site:set
      *
-     * @param string $site Site specification to use, or "-" for previous site. Omit this argument to unset.
+     * @param string $site Site specification to use, or <info>-</info> for previous site. Omit this argument to unset.
      *
      * @throws \Exception
      * @handle-remote-commands
@@ -148,6 +148,7 @@ class SiteCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
      *   List the files to be converted but do not actually do anything.
      * @bootstrap max
      * @aliases sa-convert,sac
+     * @topics docs:aliases
      * @return array
      */
     public function siteAliasConvert($destination, $options = ['format' => 'yaml', 'sources' => self::REQ])

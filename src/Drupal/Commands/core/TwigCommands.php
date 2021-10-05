@@ -53,7 +53,7 @@ class TwigCommands extends DrushCommands
   /**
      * Find potentially unused Twig templates.
      *
-     * Immediately before running this command, crawl your entire web site. Or
+     * Immediately before running this command, web crawl your entire web site. Or
      * use your Production PHPStorage dir for comparison.
      *
      * @param $searchpaths A comma delimited list of paths to recursively search
@@ -125,8 +125,8 @@ class TwigCommands extends DrushCommands
         ->in($searchpaths);
         foreach ($files as $file) {
             $relative = Path::makeRelative($file->getRealPath(), Drush::bootstrapManager()->getRoot());
-            // @todo Dynamically disable twig debugging since there is no good info there anyway.
-            twig_render_template($relative, ['theme_hook_original' => '']);
+            // Loading the template ensures the compiled template is cached.
+            $this->getTwig()->loadTemplate($relative);
             $this->logger()->success(dt('Compiled twig template !path', ['!path' => $relative]));
         }
     }

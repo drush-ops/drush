@@ -6,6 +6,7 @@ use Consolidation\AnnotatedCommand\CommandData;
 use Drupal\Component\FileCache\FileCacheFactory;
 use Drupal\Core\Database\Database;
 use Drupal\Core\Installer\Exception\AlreadyInstalledException;
+use Drupal\Core\Site\Settings;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Drush\Exceptions\UserAbortException;
@@ -26,20 +27,20 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
      * Install Drupal along with modules/themes/configuration/profile.
      *
      * @command site:install
-     * @param $profile An install profile name. Defaults to 'standard' unless an install profile is marked as a distribution. Additional info for the install profile may also be provided with additional arguments. The key is in the form [form name].[parameter name]
+     * @param $profile An install profile name. Defaults to <info>standard</info> unless an install profile is marked as a distribution. Additional info for the install profile may also be provided with additional arguments. The key is in the form <info>[form name].[parameter name]</info>
      * @option db-url A Drupal 6 style database URL. Required for initial install, not re-install. If omitted and required, Drush prompts for this item.
      * @option db-prefix An optional table prefix to use for initial install.
      * @option db-su Account to use when creating a new database. Must have Grant permission (mysql only). Optional.
-     * @option db-su-pw Password for the "db-su" account. Optional.
-     * @option account-name uid1 name. Defaults to admin
+     * @option db-su-pw Password for the <info>db-su</info> account. Optional.
+     * @option account-name uid1 name.
      * @option account-pass uid1 pass. Defaults to a randomly generated password. If desired, set a fixed password in config.yml.
-     * @option account-mail uid1 email. Defaults to admin@example.com
+     * @option account-mail uid1 email.
      * @option locale A short language code. Sets the default site language. Language files must already be present.
-     * @option site-name Defaults to Site-Install
-     * @option site-mail From: for system mailings. Defaults to admin@example.com
-     * @option sites-subdir Name of directory under 'sites' which should be created.
+     * @option site-name
+     * @option site-mail <info>From:</info> for system mailings.
+     * @option sites-subdir Name of directory under <info>sites</info> which should be created.
      * @option config-dir Deprecated - only use with Drupal 8.5-. A path pointing to a full set of configuration which should be installed during installation.
-     * @option existing-config Configuration from "sync" directory should be imported during installation. Use with Drupal 8.6+.
+     * @option existing-config Configuration from <info>sync</info> directory should be imported during installation. Use with Drupal 8.6+.
      * @usage drush si expert --locale=uk
      *   (Re)install using the expert install profile. Set default language to Ukrainian.
      * @usage drush si --db-url=mysql://root:pass@localhost:port/dbname
@@ -83,7 +84,7 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
 
         // Was giving error during validate() so its here for now.
         if ($options['existing-config']) {
-            $existing_config_dir = drush_config_get_config_directory();
+            $existing_config_dir = Settings::get('config_sync_directory');
             if (!is_dir($existing_config_dir)) {
                 throw new \Exception(dt('Existing config directory @dir not found', ['@dir' => $existing_config_dir]));
             }
@@ -180,7 +181,7 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
         // @todo Arguably Drupal core [$boot->getKernel()->getInstallProfile()] could do this - https://github.com/drupal/drupal/blob/8.6.x/core/lib/Drupal/Core/DrupalKernel.php#L1606 reads from DB storage but not file storage.
         if (empty($profile) && $options['existing-config']) {
             FileCacheFactory::setConfiguration([FileCacheFactory::DISABLE_CACHE => true]);
-            $source_storage = new FileStorage(drush_config_get_config_directory());
+            $source_storage = new FileStorage(Settings::get('config_sync_directory'));
             if (!$source_storage->exists('core.extension')) {
                 throw new \Exception('Existing configuration directory not found or does not contain a core.extension.yml file.".');
             }
@@ -230,7 +231,7 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
         if ($config = $commandData->input()->getOption('config-dir') && Comparator::lessThan(self::getVersion(), '8.6')) {
             // Set the destination site UUID to match the source UUID, to bypass a core fail-safe.
             $source_storage = new FileStorage($config);
-            $options = ['yes' => true];
+            $options = array_merge(Drush::redispatchOptions(), ['yes' => true, 'strict' => 0]);
             $selfRecord = $this->siteAliasManager()->getSelf();
 
             $process = $this->processManager()->drush($selfRecord, 'config-set', ['system.site', 'uuid', $source_storage->read('system.site')['uuid']], $options);
@@ -342,24 +343,31 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
         $default = realpath(Path::join($root, 'sites/default'));
         $sitesfile_write = realpath($confPath) != $default && !file_exists($sitesfile);
 
+        $msg = [];
         if (!file_exists($settingsfile)) {
-            $msg[] = dt('create a @settingsfile file', ['@settingsfile' => $settingsfile]);
+            $msg[] = dt('Create a @settingsfile file', ['@settingsfile' => $settingsfile]);
         }
         if ($sitesfile_write) {
-            $msg[] = dt('create a @sitesfile file', ['@sitesfile' => $sitesfile]);
+            $msg[] = dt('Create a @sitesfile file', ['@sitesfile' => $sitesfile]);
         }
 
         $program = $sql ? $sql->command() : 'UNKNOWN';
         $program_exists = $this->programExists($program);
         if (!$program_exists) {
-            $msg[] = dt('Program @program not found. Proceed if you have already created or emptied the Drupal database.', ['@program' => $program]);
+            $this->logger()->warning(dt('Program @program not found. Proceed if you have already created or emptied the Drupal database.', ['@program' => $program]));
         } elseif ($sql->dbExists()) {
             $msg[] = dt("DROP all tables in your '@db' database.", ['@db' => $db_spec['database']]);
         } else {
             $msg[] = dt("CREATE the '@db' database.", ['@db' => $db_spec['database']]);
         }
 
-        if (!$this->io()->confirm(dt('You are about to ') . implode(dt(' and '), $msg) . ' Do you want to continue?')) {
+        if ($msg) {
+            $this->io()->text(dt('You are about to:'));
+            $this->io()->listing($msg);
+        }
+
+
+        if (!$this->io()->confirm(dt('Do you want to continue?'))) {
             throw new UserAbortException();
         }
 

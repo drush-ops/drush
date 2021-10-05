@@ -165,7 +165,7 @@ class LocaleCommands extends DrushCommands
      * @command locale:export
      * @param $langcode The language code of the exported translations.
      * @option template POT file output of extracted source texts to be translated.
-     * @option types String types to include, defaults to all types. Types: 'not-customized', 'customized', 'not-translated'.
+     * @option types String types to include, defaults to all types. Recognized values: <info>not-customized</info>, <info>customized</info>, </info>not-translated<info>.
      * @usage drush locale:export nl > nl.po
      *   Export the Dutch translations with all types.
      * @usage drush locale:export nl --types=customized,not-customized > nl.po
@@ -175,7 +175,7 @@ class LocaleCommands extends DrushCommands
      * @aliases locale-export
      * @validate-module-enabled locale
      */
-    public function export($langcode = null, $options = ['template' => false, 'types' => self::OPT])
+    public function export($langcode = null, $options = ['template' => false, 'types' => self::REQ])
     {
         $language = $this->getTranslatableLanguage($langcode);
         $poreader_options = [];
@@ -218,22 +218,22 @@ class LocaleCommands extends DrushCommands
      * @validate-module-enabled locale
      * @param $langcode The language code of the imported translations.
      * @param $file Path and file name of the gettext file.
-     * @option type The type of translations to be imported, defaults to 'not-customized'. Options:
-     *   - customized: Treat imported strings as custom translations.
-     *   - not-customized: Treat imported strings as not-custom translations.
-     * @option override Whether and how imported strings will override existing translations. Defaults to the Import behavior configurred in the admin interface. Options:
-     *  - none: Don't overwrite existing translations. Only append new translations.
-     *  - customized: Only override existing customized translations.
-     *  - not-customized: Only override non-customized translations, customized translations are kept.
-     *  - all: Override any existing translation.
+     * @option type The type of translations to be imported. Recognized values: <info>customized</info>, <info>not-customized</info>
+     * @option override Whether and how imported strings will override existing translations. Defaults to the Import behavior configured in the admin interface. Recognized values: <info>none</info>, <info>customized</info>, <info>not-customized</info>, <info>all</info>,
      * @usage drush locale-import nl drupal-8.4.2.nl.po
      *   Import the Dutch drupal core translation.
+     * @usage drush locale-import --type=customized nl drupal-8.4.2.nl.po
+     *   Import the Dutch drupal core translation. Treat imported strings as custom translations.
+     * @usage drush locale-import --override=none nl drupal-8.4.2.nl.po
+     *   Import the Dutch drupal core translation. Don't overwrite existing translations. Only append new translations.
+     * @usage drush locale-import --override=not-customized nl drupal-8.4.2.nl.po
+     *   Import the Dutch drupal core translation. Only override non-customized translations, customized translations are kept.
      * @usage drush locale-import nl custom-translations.po --type=customized --override=all
      *   Import customized Dutch translations and override any existing translation.
      * @aliases locale-import
      * @throws \Exception
      */
-    public function import($langcode, $file, $options = ['type' => self::OPT, 'override' => self::OPT])
+    public function import($langcode, $file, $options = ['type' => 'not-customized', 'override' => self::REQ])
     {
         if (!drush_file_not_empty($file)) {
             throw new \Exception(dt('File @file not found or empty.', ['@file' => $file]));
@@ -276,17 +276,7 @@ class LocaleCommands extends DrushCommands
      */
     private function convertCustomizedType($type)
     {
-        switch ($type) {
-            case 'customized':
-                $result = LOCALE_CUSTOMIZED;
-                break;
-
-            default:
-                $result = LOCALE_NOT_CUSTOMIZED;
-                break;
-        }
-
-        return $result;
+        return $type == 'customized' ? LOCALE_CUSTOMIZED : LOCALE_NOT_CUSTOMIZED;
     }
 
     /**

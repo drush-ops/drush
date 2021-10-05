@@ -20,7 +20,7 @@ class EnvironmentTest extends TestCase
     public function testDocsPath()
     {
         $docsPath = $this->environment()->docsPath();
-        $this->assertInternalType('string', $docsPath, 'A docsPath was found');
+        $this->assertIsString($docsPath, 'A docsPath was found');
         $this->assertFileExists("$docsPath/README.md", 'README.md exists at docsPath');
     }
 

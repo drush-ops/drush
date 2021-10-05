@@ -4,6 +4,8 @@ namespace Drush\Drupal\Commands\core;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Drupal\Core\CronInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
+use Drupal\Core\Routing\RouteProviderInterface;
+use Drupal\Core\Url;
 use Drush\Commands\DrushCommands;
 use Drush\Drupal\DrupalUtil;
 use Drush\Utils\StringUtils;
@@ -22,6 +24,11 @@ class DrupalCommands extends DrushCommands
     protected $moduleHandler;
 
     /**
+     * @var \Drupal\Core\Routing\RouteProviderInterface
+     */
+    protected $routeProvider;
+
+    /**
      * @return \Drupal\Core\CronInterface
      */
     public function getCron()
@@ -38,13 +45,23 @@ class DrupalCommands extends DrushCommands
     }
 
     /**
+     * @return \Drupal\Core\Routing\RouteProviderInterface
+     */
+    public function getRouteProvider()
+    {
+        return $this->routeProvider;
+    }
+
+    /**
      * @param \Drupal\Core\CronInterface $cron
      * @param ModuleHandlerInterface $moduleHandler
+     * @param RouteProviderInterface $routeProvider
      */
-    public function __construct(CronInterface $cron, ModuleHandlerInterface $moduleHandler)
+    public function __construct(CronInterface $cron, ModuleHandlerInterface $moduleHandler, RouteProviderInterface $routeProvider)
     {
         $this->cron = $cron;
         $this->moduleHandler = $moduleHandler;
+        $this->routeProvider = $routeProvider;
     }
 
     /**
@@ -116,11 +133,11 @@ class DrupalCommands extends DrushCommands
             $info += ['value' => '', 'description' => ''];
             $severity = array_key_exists('severity', $info) ? $info['severity'] : -1;
             $rows[$i] = [
-                'title' => (string) $info['title'],
-                'value' => (string) $info['value'],
-                'description' => DrupalUtil::drushRender($info['description']),
-                'sid' => $severity,
-                'severity' => @$severities[$severity]
+                'title' => self::styleRow((string) $info['title'], $options['format'], $severity),
+                'value' => self::styleRow(DrupalUtil::drushRender($info['value']), $options['format'], $severity),
+                'description' => self::styleRow(DrupalUtil::drushRender($info['description']), $options['format'], $severity),
+                'sid' => self::styleRow($severity, $options['format'], $severity),
+                'severity' => self::styleRow(@$severities[$severity], $options['format'], $severity)
             ];
             if ($severity < $min_severity) {
                 unset($rows[$i]);
@@ -129,5 +146,75 @@ class DrupalCommands extends DrushCommands
         }
         $result = new RowsOfFields($rows);
         return $result;
+    }
+
+    /**
+     * View information about all routes or one route.
+     *
+     * @command core:route
+     * @aliases route
+     * @usage drush route
+     *   View all routes.
+     * @usage drush route --name=update.status
+     *   View details about the <info>update.status</info> route.
+     * @usage drush route --path=user/1
+     *   View details about the <info>entity.user.canonical</info> route.
+     * @option name A route name.
+     * @option path An internal path.
+     */
+    public function route($options = ['name' => self::REQ, 'path' =>self::REQ, 'format' => 'yaml'])
+    {
+        $route = $items = null;
+        $provider = $this->getRouteProvider();
+        if ($path = $options['path']) {
+            $name = Url::fromUserInput($path)->getRouteName();
+            $route = $provider->getRouteByName($name);
+        } elseif ($name = $options['name']) {
+            $route = $provider->getRouteByName($name);
+        }
+        if ($route) {
+            $route = $provider->getRouteByName($name);
+            $return = [
+              'name' => $name,
+              'path' => $route->getPath(),
+              'defaults' => $route->getDefaults(),
+              'requirements' => $route->getRequirements(),
+              'options' => $route->getOptions(),
+                // Rarely useful parts are commented out.
+                //  'condition' => $route->getCondition(),
+                //  'methods' => $route->getMethods(),
+            ];
+            unset($return['options']['compiler_class'], $return['options']['utf8']);
+            return $return;
+        }
+
+        // Just show a list of all routes.
+        $routes = $provider->getAllRoutes();
+        foreach ($routes as $route_name => $route) {
+            $items[$route_name] = $route->getPath();
+        }
+        return $items;
+    }
+    
+    private static function styleRow($content, $format, $severity): ?string
+    {
+        if (!in_array($format, [
+            'sections',
+            'table',
+        ])) {
+            return $content;
+        }
+
+        switch ($severity) {
+            case REQUIREMENT_OK:
+                return '<info>' . $content . '</>';
+            case REQUIREMENT_WARNING:
+                return '<comment>' . $content . '</>';
+            case REQUIREMENT_ERROR:
+                return '<fg=red>' . $content . '</>';
+            case REQUIREMENT_INFO:
+            default:
+                return $content;
+        }
     }
 }

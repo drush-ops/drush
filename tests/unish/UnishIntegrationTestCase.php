@@ -202,6 +202,6 @@ abstract class UnishIntegrationTestCase extends UnishTestCase
         if (!empty($filter)) {
             $output = preg_replace($filter, '', $output);
         }
-        $this->assertContains($expected, $output);
+        $this->assertStringContainsString($expected, $output);
     }
 }

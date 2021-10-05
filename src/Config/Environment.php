@@ -5,6 +5,7 @@ use Composer\Autoload\ClassLoader;
 
 use Drush\Drush;
 use Drush\Utils\FsUtils;
+use Symfony\Component\Console\Terminal;
 use Webmozart\PathUtil\Path;
 
 /**
@@ -91,8 +92,9 @@ class Environment
             if (!$name = getenv("USER")) {
                 // If USER not defined, use posix
                 if (function_exists('posix_getpwuid')) {
-                    $processUser = posix_getpwuid(posix_geteuid());
-                    $name = $processUser['name'];
+                    if ($processUser = posix_getpwuid(posix_geteuid())) {
+                        $name = $processUser['name'];
+                    }
                 }
             }
         }
@@ -243,7 +245,7 @@ class Environment
     /**
      * Get the config file variant -- defined to be
      * the Drush major version number. This is for
-     * loading drush.yml and drush9.yml, etc.
+     * loading drush.yml and drush10.yml, etc.
      */
     public function getConfigFileVariant()
     {
@@ -441,43 +443,13 @@ class Environment
     }
 
     /**
-     * Calculate the terminal width used for wrapping table output.
-     * Normally this is exported using tput in the drush script.
-     * If this is not present we do an additional check using stty here.
-     * On Windows in CMD and PowerShell is this exported using mode con.
+     * Get terminal width.
      *
-     * @return integer
+     * @return int
      */
     public function calculateColumns()
     {
-        if ($columns = getenv('COLUMNS')) {
-            return $columns;
-        }
-
-        // Trying to export the columns using stty.
-        exec('stty size 2>&1', $columns_output, $columns_status);
-        $matched = false;
-        if (!$columns_status && $matched = preg_match('/^\d+\s(\d+)$/', $columns_output[0], $matches, 0)) {
-            $columns = $matches[1];
-        }
-
-        // If stty fails and Drush is running on Windows are we trying with mode con.
-        if (($columns_status || !$matched) && static::isWindows()) {
-            $columns_output = [];
-            exec('mode con', $columns_output, $columns_status);
-            if (!$columns_status && is_array($columns_output)) {
-                $columns = (int)preg_replace('/\D/', '', $columns_output[4], -1, $columns_count);
-            }
-            // TODO: else { 'Drush could not detect the console window width. Set a Windows Environment Variable of COLUMNS to the desired width.'
-        }
-
-        // Failling back to default columns value
-        if (empty($columns)) {
-            $columns = 80;
-        }
-
-        // TODO: should we deal with reserve-margin here, or adjust it later?
-        return $columns;
+        return (new Terminal())->getWidth();
     }
 
     /**

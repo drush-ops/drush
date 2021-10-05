@@ -33,13 +33,12 @@ class ValidatorsCommands
     }
 
     /**
-     * Validate that passed module names are enabled. We use pre-init phase because interact() methods run early and they
+     * Validate that passed module names are enabled. We use post-init phase because interact() methods run early and they
      * need to know that their module is enabled (e.g. image-flush).
      *
      * @see \Drush\Commands\core\WatchdogCommands::show for an example.
      *
-     * @hook pre-init @validate-module-enabled
-     * @param \Consolidation\AnnotatedCommand\CommandData $commandData
+     * @hook post-init @validate-module-enabled
      * @return \Consolidation\AnnotatedCommand\CommandError|null
      */
     public function validateModuleEnabled(Input $input, AnnotationData $annotationData)

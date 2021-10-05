@@ -146,8 +146,9 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
         $server = [
             'SCRIPT_FILENAME' => getcwd() . '/index.php',
             'SCRIPT_NAME' => isset($parsed_url['path']) ? $parsed_url['path'] . 'index.php' : '/index.php',
-        ];
+        ] + $_SERVER;
         $request = Request::create($uri, 'GET', [], [], [], $server);
+        $request->overrideGlobals();
         $this->setRequest($request);
         return true;
     }
@@ -189,7 +190,7 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
             $connection_options = $connection->getConnectionOptions();
             $connection->open($connection_options);
         } catch (\Exception $e) {
-            $this->logger->log(LogLevel::BOOTSTRAP, 'Unable to connect to database. More information may be available by running `drush status`. This may occur when Drush is trying to bootstrap a site that has not been installed or does not have a configured database. In this case you can select another site with a working database setup by specifying the URI to use with the --uri parameter on the command line. See `drush topic docs-aliases` for details.');
+            $this->logger->log(LogLevel::BOOTSTRAP, 'Unable to connect to database with message: ' . $e->getMessage() . '. More debug information is available by running `drush status`. This may occur when Drush is trying to bootstrap a site that has not been installed or does not have a configured database. In this case you can select another site with a working database setup by specifying the URI to use with the --uri parameter on the command line. See `drush topic docs-aliases` for details.');
             return false;
         }
         if (!$connection->schema()->tableExists('key_value')) {
@@ -220,7 +221,7 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
         $kernel_factory = Kernels::getKernelFactory($kernel);
         $allow_dumping = $kernel !== Kernels::UPDATE;
         /** @var \Drupal\Core\DrupalKernelInterface kernel */
-        $this->kernel = $kernel_factory($request, $classloader, 'prod', $allow_dumping);
+        $this->kernel = $kernel_factory($request, $classloader, 'prod', $allow_dumping, $manager->getRoot());
         // Include Drush services in the container.
         // @see Drush\Drupal\DrupalKernel::addServiceModifier()
         $this->kernel->addServiceModifier(new DrushServiceModifier());

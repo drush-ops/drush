@@ -46,6 +46,35 @@ abstract class CommandUnishTestCase extends UnishTestCase
     }
 
     /**
+     * Invoke drush command via startExecute(), and return the resulting process.
+     *
+     * Use this method when you need to interact with the Drush command under
+     * test while it is still running. Currently used to test 'watchdog:tail'.
+     *
+     * @param command
+     *   A defined drush command such as 'cron', 'status' or any of the available ones such as 'drush pm'.
+     * @param args
+     *   Command arguments.
+     * @param $options
+     *   An associative array containing options.
+     * @param $site_specification
+     *   A site alias or site specification. Include the '@' at start of a site alias.
+     * @param $cd
+     *   A directory to change into before executing.
+     * @param $suffix
+     *   Any code to append to the command. For example, redirection like 2>&1.
+     * @param array $env
+     *   Environment variables to pass along to the subprocess.
+     * @return Process
+     *   A Symfony Process object.
+     */
+    public function drushBackground($command, array $args = [], array $options = [], $site_specification = null, $cd = null, $suffix = null, $env = [])
+    {
+        list($cmd, ) = $this->prepareDrushCommand($command, $args, $options, $site_specification, $suffix);
+        return $this->startExecute($cmd, $cd, $env);
+    }
+
+    /**
      * Invoke drush in via execute().
      *
      * @param command
@@ -69,6 +98,22 @@ abstract class CommandUnishTestCase extends UnishTestCase
       */
     public function drush($command, array $args = [], array $options = [], $site_specification = null, $cd = null, $expected_return = self::EXIT_SUCCESS, $suffix = null, $env = [])
     {
+        list($cmd, $coverage_file) = $this->prepareDrushCommand($command, $args, $options, $site_specification, $suffix);
+        $return = $this->execute($cmd, $expected_return, $cd, $env);
+
+        // Save code coverage information.
+        if (!empty($coverage_file)) {
+            $data = unserialize(file_get_contents($coverage_file));
+            unlink($coverage_file);
+            // Save for appending after the test finishes.
+            $this->coverage_data[] = $data;
+        }
+
+        return $return;
+    }
+
+    protected function prepareDrushCommand($command, array $args = [], array $options = [], $site_specification = null, $suffix = null)
+    {
         // cd is added for the benefit of siteSshTest which tests a strict command.
         $global_option_list = ['simulate', 'root', 'uri', 'include', 'config', 'alias-path', 'ssh-options', 'cd'];
         $options += ['uri' => 'dev']; // Default value.
@@ -82,10 +127,12 @@ abstract class CommandUnishTestCase extends UnishTestCase
                 if ($key == 'uri' && $value == 'OMIT') {
                     continue;
                 }
+                $dashes = strlen($key) == 1 ? '-' : '--';
+                $equals = strlen($key) == 1 ? '' : '=';
                 if (!isset($value)) {
-                    $cmd[] = "--$key";
+                    $cmd[] = "$dashes$key";
                 } else {
-                    $cmd[] = "--$key=" . self::escapeshellarg($value);
+                    $cmd[] = "$dashes$key$equals" . self::escapeshellarg($value);
                 }
             }
         }
@@ -98,6 +145,7 @@ abstract class CommandUnishTestCase extends UnishTestCase
         // Insert code coverage argument before command, in order for it to be
         // parsed as a global option. This matters for commands like ssh and rsync
         // where options after the command are passed along to external commands.
+        $coverage_file = null;
         $result = $this->getTestResultObject();
         if ($result->getCollectCodeCoverageInformation()) {
             $coverage_file = tempnam($this->getSandbox(), 'drush_coverage');
@@ -116,10 +164,12 @@ abstract class CommandUnishTestCase extends UnishTestCase
         }
         // insert drush command options
         foreach ($options as $key => $value) {
+            $dashes = strlen($key) == 1 ? '-' : '--';
+            $equals = strlen($key) == 1 ? '' : '=';
             if (!isset($value)) {
-                $cmd[] = "--$key";
+                $cmd[] = "$dashes$key";
             } else {
-                $cmd[] = "--$key=" . self::escapeshellarg($value);
+                $cmd[] = "$dashes$key$equals" . self::escapeshellarg($value);
             }
         }
 
@@ -128,21 +178,8 @@ abstract class CommandUnishTestCase extends UnishTestCase
             $cmd[] = '2>' . $this->bitBucket();
         }
         $exec = array_filter($cmd, 'strlen'); // Remove NULLs
-        // Set sendmail_path to 'true' to disable any outgoing emails
-        // that tests might cause Drupal to send.
-
         $cmd = implode(' ', $exec);
-        $return = $this->execute($cmd, $expected_return, $cd, $env);
-
-        // Save code coverage information.
-        if (!empty($coverage_file)) {
-            $data = unserialize(file_get_contents($coverage_file));
-            unlink($coverage_file);
-            // Save for appending after the test finishes.
-            $this->coverage_data[] = $data;
-        }
-
-        return $return;
+        return [$cmd, $coverage_file];
     }
 
     protected function getLogMessage($entry)

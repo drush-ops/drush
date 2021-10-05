@@ -1,7 +1,9 @@
 # Migration configuration for {{ plugin_id }} content.
 id: {{ plugin_id }}
 label: {{ plugin_label }}
-migration_group: {{ migration_group }}
+migration_tags:
+  - Tag1
+  - Tag2
 source:
   plugin: {{ plugin_id }}
 destination:
@@ -44,11 +46,7 @@ process:
 # order.
 # The general rule of thumb is that any migrations referenced by migration
 # process plugins should be required here.
-migration_dependencies:
-  required:
-    - beer_term
-    - beer_user
-dependencies:
-  enforced:
-    module:
-      - migrate_example
+#migration_dependencies:
+#  required:
+#    - beer_term
+#    - beer_user

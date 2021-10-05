@@ -26,7 +26,7 @@ class SiteSshCase extends CommandUnishTestCase
         $this->drush('ssh', [], $options, 'user@server/path/to/drupal#sitename');
         $output = $this->getErrorOutput();
         $expected = "[notice] Simulating: ssh -t -o PasswordAuthentication=no user@server 'cd /path/to/drupal && bash -l'";
-        $this->assertContains($expected, $output);
+        $this->assertStringContainsString($expected, $output);
     }
 
     /**
@@ -40,7 +40,7 @@ class SiteSshCase extends CommandUnishTestCase
         $this->drush('ssh', ['time && date'], $options, 'user@server/path/to/drupal#sitename');
         $output = $this->getErrorOutput();
         $expected = "ssh -o PasswordAuthentication=no user@server 'cd /path/to/drupal && time && date'";
-        $this->assertContains($expected, $output);
+        $this->assertStringContainsString($expected, $output);
     }
 
     /**
@@ -54,7 +54,7 @@ class SiteSshCase extends CommandUnishTestCase
         $this->drush('ssh', ['ls', '/path1', '/path2'], $options, 'user@server/path/to/drupal#sitename');
         $output = $this->getSimplifiedErrorOutput();
         $expected = "[notice] Simulating: ssh -o PasswordAuthentication=no user@server 'cd /path/to/drupal && ls /path1 /path2'";
-        $this->assertContains($expected, $output);
+        $this->assertStringContainsString($expected, $output);
     }
 
     /**
@@ -67,6 +67,6 @@ class SiteSshCase extends CommandUnishTestCase
         ];
         $this->drush('ssh', ['ls /path1 /path2'], $options, 'user@server/path/to/drupal#sitename');
         $expected = "[notice] Simulating: ssh -o PasswordAuthentication=no user@server 'cd /path/to/drupal && ls /path1 /path2'";
-        $this->assertContains($expected, $this->getSimplifiedErrorOutput());
+        $this->assertStringContainsString($expected, $this->getSimplifiedErrorOutput());
     }
 }

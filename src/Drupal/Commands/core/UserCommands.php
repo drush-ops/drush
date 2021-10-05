@@ -39,6 +39,8 @@ class UserCommands extends DrushCommands
      *   Display information for a given email account.
      * @usage drush user:information --uid=5
      *   Display information for a given user id.
+     * @usage drush uinf --uid=$(drush sqlq "SELECT GROUP_CONCAT(entity_id) FROM user__roles WHERE roles_target_id = 'administrator'")
+     *   Display information for all administrators.
      * @field-labels
      *   uid: User ID
      *   name: User name
@@ -167,11 +169,11 @@ class UserCommands extends DrushCommands
      * @command user:role:add
      *
      * @validate-entity-load user_role role
-     * @param string $role The name of the role to add.
+     * @param string $role The machine name of the role to add.
      * @param string $names A comma delimited list of user names.
      * @aliases urol,user-add-role
-     * @usage drush user-add-role "power user" user3
-     *   Add the "power user" role to user3
+     * @usage drush user-add-role "editor" user3
+     *   Add the editor role to user3
      */
     public function addRole($role, $names)
     {
@@ -313,7 +315,7 @@ class UserCommands extends DrushCommands
      * @param string $password The new password for the account.
      * @aliases upwd,user-password
      * @usage drush user:password someuser "correct horse battery staple"
-     *   Set the password for the username someuser. @see xkcd.com/936
+     *   Set the password for the username someuser. See https://xkcd.com/936
      */
     public function password($name, $password)
     {

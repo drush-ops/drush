@@ -13,7 +13,7 @@ requires: &requires
     - check_mergable
     - code_style
 
-test_71_steps: &test71steps
+test_74_steps: &test74steps
   steps:
     - checkout
     - run: cp .docker/zz-php.ini /usr/local/etc/php/conf.d/
@@ -32,7 +32,7 @@ jobs:
   code_style:
     <<: *defaults
     docker:
-      - image: wodby/php:7.1
+      - image: wodby/php:7.4
     steps:
       - checkout
       - run: cp .docker/zz-php.ini /usr/local/etc/php/conf.d/
@@ -40,7 +40,7 @@ jobs:
       - run: composer cs
 
   # Mergeable test:
-  #   FAIL if merging test branch with master produces conflicts
+  #   FAIL if merging test branch with 11.x produces conflicts
   #   PASS if the test branch is out of date, but mergeable without conflicts
   check_mergable:
     <<: *defaults
@@ -50,31 +50,30 @@ jobs:
       - checkout
       - run: $HOME/drush/.circleci/mergable.sh
 
-  # PHP 7.1 test:
+  # PHP 7.4 test:
   #   Checks the most common configuration.
-  test_71_mysql:
+  test_74_drupal9_mysql:
     <<: *defaults
     docker:
-      - image: wodby/php:7.1
+      - image: wodby/php:7.4
         environment:
           - MYSQL_HOST=127.0.0.1
           - UNISH_DB_URL=mysql://root:@127.0.0.1
       - image: circleci/mysql:5.7.24
-    <<: *test71steps
+    <<: *test74steps
 
-  test_71_sqlite:
+  test_74_drupal9_sqlite:
     <<: *defaults
     docker:
-      # We use a custom image here because wodby/php does not ship with sqlite3 program.
-      - image: drush/php:7.1
+      - image: wodby/php:7.4
         environment:
           - UNISH_DB_URL=sqlite://sut/sites/dev/files/.ht.sqlite
-    <<: *test71steps
+    <<: *test74steps
 
-  test_71_postgres:
+  test_74_drupal9_postgres:
     <<: *defaults
     docker:
-      - image: wodby/php:7.1
+      - image: wodby/php:7.4
         environment:
           - UNISH_DB_URL=pgsql://unish:unish@127.0.0.1
       - image: wodby/postgres:10.5
@@ -82,17 +81,13 @@ jobs:
           POSTGRES_PASSWORD: unish
           POSTGRES_DB: unish_dev
           POSTGRES_USER: unish
-    <<: *test71steps
+    <<: *test74steps
 
-  # PHP 7.2 test with Drupal 8.9.x
-  #   Determines whether a newer version of a dependency has broken Drush.
-  test_72_drupal89:
+  # Drupal 9.1.0 for Security test coverage for drupal/core
+  test_74_drupal91_security:
     <<: *defaults
-    # override for just this image.
-    environment:
-      SYMFONY_DEPRECATIONS_HELPER: enabled
     docker:
-      - image: wodby/php:7.2
+      - image: wodby/php:7.4
         environment:
           - MYSQL_HOST=127.0.0.1
           - UNISH_DB_URL=mysql://root:@127.0.0.1
@@ -100,21 +95,17 @@ jobs:
     steps:
       - checkout
       - run: cp .docker/zz-php.ini /usr/local/etc/php/conf.d/
-      - run: composer require --dev drupal/core-recommended:8.9.x-dev --no-update
-      - run: composer config platform.php 7.2
-      - run: composer update --no-scripts
-      - run: composer install -n
-      - run: composer lint
-      - run: composer unit
-      - run: composer functional
-      - run: composer integration
+      - run: composer require --dev drupal/core-recommended:9.1.0 --no-update
+      - run: php --version
+      - run: composer update
+      - run: composer phpunit -- --testsuite integration --filter=testInsecureDrupalPackage --stop-on-skipped
 
-  # PHP 7.3 test with HIGHEST dependencies:
+  # PHP 8 test with Drupal tip
   #   Determines whether a newer version of a dependency has broken Drush.
-  test_73_drupal90:
+  test_80_drupal93_highest:
     <<: *defaults
     docker:
-      - image: wodby/php:7.3
+      - image: wodby/php:latest
         environment:
           - MYSQL_HOST=127.0.0.1
           - UNISH_DB_URL=mysql://root:@127.0.0.1
@@ -122,10 +113,10 @@ jobs:
     steps:
       - checkout
       - run: cp .docker/zz-php.ini /usr/local/etc/php/conf.d/
-      - run: composer require --dev drupal/core-recommended:9.0.x-dev --no-update
-      - run: composer config platform.php 7.3.0
-      - run: composer update --no-scripts
-      - run: composer install -n
+      - run: php --version
+      - run: composer config platform.php --unset
+      - run: composer require --dev drupal/core-recommended:9.3.x-dev --no-update
+      - run: composer update
       - run: composer lint
       - run: composer unit
       - run: composer functional
@@ -133,24 +124,17 @@ jobs:
 
 workflows:
   version: 2
-  # Drush test jobs:
-  #   - If the mergeable test fails, then skip all of the other tests
-  #     (except code style)
-  #   - If code style check fails, then run only the LOWEST test and skip
-  #     all of the others.
-  #   - If both the code style and mergeable checks pass, then run the
-  #     standard suites.
   drush:
     jobs:
       - code_style
       - check_mergable
-      - test_71_mysql:
+      - test_74_drupal91_security:
           <<: *requires
-      - test_72_drupal89:
+      - test_74_drupal9_mysql:
           <<: *requires
-      - test_73_drupal90:
+      - test_80_drupal93_highest:
           <<: *requires
-      - test_71_sqlite:
+      - test_74_drupal9_sqlite:
           <<: *requires
-      - test_71_postgres:
+      - test_74_drupal9_postgres:
           <<: *requires

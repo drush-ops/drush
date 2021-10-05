@@ -2,6 +2,7 @@
 namespace Drush\Commands\core;
 
 use Consolidation\Log\ConsoleLogLevel;
+use Drush\Drupal\DrupalUtil;
 use DrushBatchContext;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Consolidation\OutputFormatters\StructuredData\UnstructuredListData;
@@ -30,6 +31,7 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
      * @option entity-updates Run automatic entity schema updates at the end of any update hooks. Not supported in Drupal >= 8.7.0.
      * @option post-updates Run post updates after hook_update_n and entity updates.
      * @bootstrap full
+     * @topics docs:deploy
      * @kernel update
      * @aliases updb
      */
@@ -60,7 +62,13 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
             // @see https://github.com/drush-ops/drush/pull/3855.
             'no-entity-updates' => !$options['entity-updates'],
             'no-post-updates' => !$options['post-updates'],
+            'strict' => 0,
         ];
+        $status_options = array_merge(Drush::redispatchOptions(), $status_options);
+
+        // Since output needs to be checked, this option must be removed
+        unset($status_options['quiet']);
+
         $process = $this->processManager()->drush($this->siteAliasManager()->getSelf(), 'updatedb:status', [], $status_options);
         $process->mustRun();
         if ($output = $process->getOutput()) {
@@ -238,7 +246,10 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
             }
         } else {
             $ret['#abort'] = ['success' => false];
-            Drush::logger()->warning(dt('Update function @function not found', ['@function' => $function]));
+            Drush::logger()->warning(dt('Update function @function not found in file @filename', [
+                '@function' => $function,
+                '@filename' => "$module.install",
+            ]));
         }
 
         if (isset($context['sandbox']['#finished'])) {
@@ -268,7 +279,7 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
         }
 
         // Record the schema update if it was completed successfully.
-        if ($context['finished'] == 1 && empty($ret['#abort'])) {
+        if ($context['finished'] >= 1 && empty($ret['#abort'])) {
             drupal_set_installed_schema_version($module, $number);
             // Setting this value will output a success message.
             // @see \DrushBatchContext::offsetSet()
@@ -300,7 +311,8 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
         }
 
         list($module, $name) = explode('_post_update_', $function, 2);
-        module_load_include('php', $module, $module . '.post_update');
+        $filename = $module . '.post_update';
+        \Drupal::moduleHandler()->loadInclude($module, 'php', $filename);
         if (function_exists($function)) {
             if (empty($context['results'][$module][$name]['type'])) {
                 Drush::logger()->notice("Update started: $function");
@@ -327,6 +339,12 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
                     'query' => t('%type: @message in %function (line %line of %file).', $variables),
                 ];
             }
+        } else {
+            $ret['#abort'] = ['success' => false];
+            Drush::logger()->warning(dt('Post update function @function not found in file @filename', [
+                '@function' => $function,
+                '@filename' => "$filename.php",
+            ]));
         }
 
         if (isset($context['sandbox']['#finished'])) {
@@ -660,9 +678,9 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
             }
             foreach ($requirements as $requirement) {
                 if (isset($requirement['severity']) && $requirement['severity'] != REQUIREMENT_OK) {
-                    $message = isset($requirement['description']) ? $requirement['description'] : '';
+                    $message = isset($requirement['description']) ? DrupalUtil::drushRender($requirement['description']) : '';
                     if (isset($requirement['value']) && $requirement['value']) {
-                        $message .= ' (Currently using '. $requirement['title'] .' '. $requirement['value'] .')';
+                        $message .= ' (Currently using '. $requirement['title'] .' '. DrupalUtil::drushRender($requirement['value']) .')';
                     }
                     $log_level = $requirement['severity'] === REQUIREMENT_ERROR ? LogLevel::ERROR : LogLevel::WARNING;
                     $this->logger()->log($log_level, $message);

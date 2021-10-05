@@ -30,23 +30,26 @@
     }
   },
   "require": {
-    "php": ">=7.1.3",
+    "php": ">=7.4",
     "ext-dom": "*",
-    "chi-teck/drupal-code-generator": "dev-master",
-    "composer/semver": "^1.4",
+    "chi-teck/drupal-code-generator": "^2.0",
+    "composer/semver": "^1.4 || ^3",
+    "consolidation/annotated-command": "^4.4",
     "consolidation/config": "^1.2",
     "consolidation/filter-via-dot-access-data": "^1",
-    "consolidation/robo": "^1 || ^2",
+    "consolidation/robo": "^3",
     "consolidation/site-alias": "^3.0.0@stable",
-    "consolidation/site-process": "^2.1 || ^4",
+    "consolidation/site-process": "^4",
+    "enlightn/security-checker": "^1",
     "grasmash/yaml-expander": "^1.1.1",
-    "league/container": "~2",
+    "guzzlehttp/guzzle": "^6.3 || ^7.0",
+    "league/container": "^3.4",
     "psr/log": "~1.0",
     "psy/psysh": "~0.6",
-    "symfony/event-dispatcher": "^3.4 || ^4.0",
-    "symfony/finder": "^3.4 || ^4.0",
-    "symfony/var-dumper": "^3.4 || ^4.0 || ^5.0",
-    "symfony/yaml": "^3.4 || ^4.0",
+    "symfony/event-dispatcher": "^4.0",
+    "symfony/finder": "^4.0 || ^5",
+    "symfony/var-dumper": "^4.0 || ^5.0",
+    "symfony/yaml": "^4.0",
     "webflo/drupal-finder": "^1.2",
     "webmozart/path-util": "^2.1.0"
   },
@@ -54,13 +57,16 @@
     "composer/installers": "^1.7",
     "cweagans/composer-patches": "~1.0",
     "david-garcia/phpwhois": "4.3.0",
-    "drupal/core-recommended": "^8.8",
-    "drupal/alinks": "1.0.0",
-    "g1a/composer-test-scenarios": "^3",
-    "lox/xhprof": "dev-master",
-    "phpunit/phpunit": "^4.8.36 || ^6.1",
+    "drupal/core-recommended": "^9",
+    "drupal/semver_example": "2.2.0",
+    "phpunit/phpunit": ">=7.5.20",
+    "yoast/phpunit-polyfills": "^0.2.0",
     "squizlabs/php_codesniffer": "^2.7 || ^3",
     "vlucas/phpdotenv": "^2.4"
+  },
+  "conflict": {
+    "drupal/migrate_run": "*",
+    "drupal/migrate_tools": "<= 5"
   },
   "autoload": {
     "psr-4": {
@@ -70,8 +76,12 @@
   },
   "autoload-dev": {
     "psr-4": {
-      "Unish\\": "tests/unish"
+      "Unish\\": "tests/unish",
+      "Custom\\Library\\": "tests/fixtures/lib"
     },
+    "classmap": [
+        "sut/core/modules/migrate/src"
+    ],
     "files": ["tests/load.environment.php"]
   },
   "config": {
@@ -80,7 +90,7 @@
     "sort-packages": true,
     "process-timeout": 9600,
     "platform": {
-      "php": "7.1.3"
+      "php": "7.4"
     }
   },
   "scripts": {
@@ -88,7 +98,7 @@
     "cbf": "phpcbf",
     "lint": [
       "find includes -name '*.inc' -print0 | xargs -0 -n1 php -l",
-      "find src -name '*.php' -print0 | xargs -0 -n1 php -l",
+      "find src -name '*.php' -and ! -path 'src/Attributes/*' -print0 | xargs -0 -n1 php -l",
       "find tests -name '*.php' -print0 | xargs -0 -n1 php -l"
     ],
     "test": [
@@ -96,10 +106,11 @@
       "@phpunit",
       "@cs"
     ],
-    "api": "PATH=$HOME/bin:$PATH sami.phar --ansi update sami-config.php",
-    "sami-install": "mkdir -p $HOME/bin && curl --output $HOME/bin/sami.phar http://get.sensiolabs.org/sami.phar && chmod +x $HOME/bin/sami.phar",
+    "api": "php $HOME/bin/doctum.phar --ansi --ignore-parse-errors update doctum-config.php",
+    "doctum-install": "mkdir -p $HOME/bin && curl --output $HOME/bin/doctum.phar https://doctum.long-term.support/releases/latest/doctum.phar && chmod +x $HOME/bin/doctum.phar",
+    "mk:docs": "./drush --uri=dev -v mk:docs --destination=commands",
     "sut": "./drush --uri=dev",
-    "sut:si": "./drush site:install testing --uri=dev --sites-subdir=dev --db-url=${UNISH_DB_URL:-mysql://root:password@mariadb}/unish_dev -v",
+    "sut:si": "./drush --uri=dev site:install testing --sites-subdir=dev --db-url=${UNISH_DB_URL:-mysql://root:password@mariadb}/unish_dev -v",
     "phpunit": "php -d sendmail_path='true' vendor/bin/phpunit --colors=always --configuration tests",
     "unit": "composer phpunit -- --testsuite unit",
     "integration": "composer phpunit -- --testsuite integration",
@@ -115,9 +126,6 @@
       "sut/profiles/contrib/{$name}": ["type:drupal-profile"],
       "sut/themes/contrib/{$name}": ["type:drupal-theme"],
       "sut/drush/contrib/{$name}": ["type:drupal-drush"]
-    },
-    "branch-alias": {
-        "dev-master": "10.x-dev"
     }
   }
 }

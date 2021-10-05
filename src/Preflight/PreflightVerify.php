@@ -16,10 +16,10 @@ class PreflightVerify
      */
     public function verify(Environment $environment)
     {
-        // Fail fast if the PHP version is not at least 7.1.3.
+        // Fail fast if the PHP version is not at least 7.4.0.
         // We'll come back and check this again later, in case someone
         // set a higher value in a configuration file.
-        $this->confirmPhpVersion('7.1.3');
+        $this->confirmPhpVersion('7.4.0');
 
         // Fail if this is not a CLI php
         $this->confirmUsingCLI($environment);
@@ -61,7 +61,7 @@ class PreflightVerify
      */
     protected function checkPhpIni()
     {
-        $ini_checks = ['safe_mode' => '', 'open_basedir' => '', 'disable_functions' => ['exec', 'system'], 'disable_classes' => ''];
+        $ini_checks = ['safe_mode' => '', 'open_basedir' => ''];
 
         // Test to insure that certain php ini restrictions have not been enabled
         $prohibited_list = [];
@@ -108,9 +108,9 @@ class PreflightVerify
     protected function loadedPhpIniMessage()
     {
         if (function_exists('php_ini_loaded_file')) {
-            return StringUtils::interpolate('Please check your configuration settings in !phpini or in your drush.ini file; see examples/example.drush.ini for details.', ['!phpini' => php_ini_loaded_file()]);
+            return StringUtils::interpolate('Please check your configuration settings in !phpini.', ['!phpini' => php_ini_loaded_file()]);
         } else {
-            return StringUtils::interpolate('Please check your configuration settings in your php.ini file or in your drush.ini file; see examples/example.drush.ini for details.');
+            return StringUtils::interpolate('Please check your configuration settings in your php.ini file.');
         }
     }
 }

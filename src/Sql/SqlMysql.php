@@ -107,7 +107,10 @@ EOT;
             $user = sprintf("'%s'@'%s'", $dbSpec['username'], $domain);
             $sql[] = sprintf("DROP USER IF EXISTS %s;", $user);
             $sql[] = sprintf("CREATE USER %s IDENTIFIED WITH mysql_native_password;", $user);
-            $sql[] = sprintf("SET PASSWORD FOR %s = PASSWORD('%s');", $user, $dbSpec['password']);
+
+            // For MariaDB, ALTER USER was introduced in version 10.2. Support
+            // for 10.1 ended in October 2020.
+            $sql[] = sprintf("ALTER USER %s IDENTIFIED BY '%s';", $user, $dbSpec['password']);
             $sql[] = sprintf('GRANT ALL PRIVILEGES ON %s.* TO %s;', $dbname, $user);
             $sql[] = 'FLUSH PRIVILEGES;';
         }
@@ -129,6 +132,15 @@ EOT;
         $this->alwaysQuery('SHOW TABLES;');
         if ($out = trim($this->getProcess()->getOutput())) {
             $tables = explode(PHP_EOL, $out);
+        }
+        return $tables;
+    }
+
+    public function listTablesQuoted()
+    {
+        $tables = $this->listTables();
+        foreach ($tables as &$table) {
+            $table = "`$table`";
         }
         return $tables;
     }
