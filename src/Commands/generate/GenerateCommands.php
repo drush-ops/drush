@@ -7,7 +7,6 @@ use DrupalCodeGenerator\Command\Navigation;
 use DrupalCodeGenerator\GeneratorFactory;
 use DrupalCodeGenerator\Helper\DrupalContext;
 use DrupalCodeGenerator\Helper\Dumper;
-use DrupalCodeGenerator\Helper\LoggerFactory;
 use DrupalCodeGenerator\Helper\QuestionHelper;
 use DrupalCodeGenerator\Helper\Renderer;
 use DrupalCodeGenerator\Helper\ResultPrinter;
@@ -81,7 +80,7 @@ class GenerateCommands extends DrushCommands
             $argv[] = '--dry-run';
         }
 
-        return $application->run(new ArgvInput($argv));
+        return $application->run(new ArgvInput($argv), $this->output());
     }
 
     /**
@@ -92,16 +91,9 @@ class GenerateCommands extends DrushCommands
         $application = new Application('Drupal Code Generator', Drush::getVersion());
         $application->setAutoExit(false);
 
-        $replace = null;
-        if (Drush::affirmative()) {
-            $replace = true;
-        } elseif (Drush::negative()) {
-            $replace = false;
-        }
-
         $helper_set = new HelperSet([
             new QuestionHelper(),
-            new Dumper(new Filesystem(), $replace),
+            new Dumper(new Filesystem()),
             new Renderer(new TwigEnvironment(new FilesystemLoader())),
             new ResultPrinter(),
             new DrupalContext(\Drupal::getContainer())
@@ -109,7 +101,7 @@ class GenerateCommands extends DrushCommands
 
         $application->setHelperSet($helper_set);
 
-        $generator_factory = new GeneratorFactory(new Filesystem());
+        $generator_factory = new GeneratorFactory();
         // @todo Filter out DCG generators that do not make sense for Drush.
         $dcg_generators = $generator_factory->getGenerators([Application::ROOT . '/src/Command']);
         $drush_generators = $generator_factory->getGenerators([__DIR__ . '/Generators'], '\Drush\Commands\generate\Generators');
