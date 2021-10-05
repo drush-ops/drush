@@ -12,6 +12,7 @@ use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Config\FileStorage;
 use Drupal\Core\Config\StorageComparer;
 use Drupal\Core\Config\StorageInterface;
+use Drupal\Core\Site\Settings;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Drush\Exec\ExecTrait;
@@ -284,7 +285,6 @@ class ConfigCommands extends DrushCommands implements StdinAwareInterface, SiteA
      * @command config:status
      * @option state  A comma-separated list of states to filter results.
      * @option prefix Prefix The config prefix. For example, <info>system</info>. No prefix will return all names in the system.
-     * @option string $label A config directory label (i.e. a key in $config_directories array in settings.php).
      * @usage drush config:status
      *   Display configuration items that need to be synchronized.
      * @usage drush config:status --state=Identical
@@ -303,14 +303,14 @@ class ConfigCommands extends DrushCommands implements StdinAwareInterface, SiteA
      * @filter-default-field name
      * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
      */
-    public function status($options = ['state' => 'Only in DB,Only in sync dir,Different', 'prefix' => self::REQ, 'label' => self::REQ])
+    public function status($options = ['state' => 'Only in DB,Only in sync dir,Different', 'prefix' => self::REQ])
     {
         $config_list = array_fill_keys(
             $this->configFactory->listAll($options['prefix']),
             'Identical'
         );
 
-        $directory = $this->getDirectory($options['label']);
+        $directory = $this->getDirectory();
         $storage = $this->getStorage($directory);
         $state_map = [
             'create' => 'Only in DB',
@@ -375,15 +375,12 @@ class ConfigCommands extends DrushCommands implements StdinAwareInterface, SiteA
      *
      * Directory path is determined based on the following precedence:
      *   1. User-provided $directory.
-     *   2. Directory path corresponding to $label (mapped via $config_directories in settings.php).
-     *   3. Default sync directory
+     *   2. Default sync directory
      *
-     * @param string $label
-     *   A configuration directory label.
      * @param string $directory
      *   A configuration directory.
      */
-    public static function getDirectory($label, $directory = null)
+    public static function getDirectory($directory = null)
     {
         $return = null;
         // If the user provided a directory, use it.
@@ -398,7 +395,7 @@ class ConfigCommands extends DrushCommands implements StdinAwareInterface, SiteA
             }
         } else {
             // If a directory isn't specified, use the label argument or default sync directory.
-            $return = \drush_config_get_config_directory($label ?: 'sync');
+            $return = Settings::get('config_sync_directory');
         }
         return Path::canonicalize($return);
     }
@@ -492,29 +489,6 @@ class ConfigCommands extends DrushCommands implements StdinAwareInterface, SiteA
             $config_names = $this->getConfigFactory()->listAll();
             $choice = $this->io()->choice('Choose a configuration', drush_map_assoc($config_names));
             $input->setArgument('config_name', $choice);
-        }
-    }
-
-    /**
-     * @hook interact @interact-config-label
-     */
-    public function interactConfigLabel(InputInterface $input, ConsoleOutputInterface $output)
-    {
-        if (drush_drupal_major_version() >= 9) {
-            // Nothing to do.
-            return;
-        }
-
-        global $config_directories;
-
-        $option_name = $input->hasOption('destination') ? 'destination' : 'source';
-        if (empty($input->getArgument('label') && empty($input->getOption($option_name)))) {
-            $choices = drush_map_assoc(array_keys($config_directories));
-            unset($choices[CONFIG_ACTIVE_DIRECTORY]);
-            if (count($choices) >= 2) {
-                $label = $this->io()->choice('Choose a '. $option_name, $choices);
-                $input->setArgument('label', $label);
-            }
         }
     }
 
