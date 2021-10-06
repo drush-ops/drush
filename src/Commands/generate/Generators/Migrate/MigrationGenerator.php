@@ -19,7 +19,10 @@ class MigrationGenerator extends PluginGenerator
      */
     protected function generate(array &$vars): void
     {
-        // @todo Update it.
+        $this->collectDefault($vars);
+        $vars['destination_plugin'] = $this->ask('Destination plugin', 'entity:node');
+        $this->addFile('src/Plugin/migrate/source/{class}.php', 'migration.php.twig');
+        $this->addFile('migrations/{plugin_id}.yml', 'migration.yml.twig');
     }
 
 }
