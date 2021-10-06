@@ -96,13 +96,14 @@ class GenerateCommands extends DrushCommands
             new Dumper(new Filesystem()),
             new Renderer(new TwigEnvironment(new FilesystemLoader())),
             new ResultPrinter(),
+            // @todo Fetch container from Drush?
             new DrupalContext(\Drupal::getContainer())
         ]);
 
         $application->setHelperSet($helper_set);
 
         $generator_factory = new GeneratorFactory();
-        // @todo Filter out DCG generators that do not make sense for Drush.
+
         $dcg_generators = $generator_factory->getGenerators([Application::ROOT . '/src/Command']);
         $drush_generators = $generator_factory->getGenerators([__DIR__ . '/Generators'], '\Drush\Commands\generate\Generators');
         // @todo Implement generator discovery for this.
@@ -111,7 +112,7 @@ class GenerateCommands extends DrushCommands
         $theme_generators = [];
 
         $generators = array_merge(
-            $dcg_generators,
+            self::filterGenerators($dcg_generators),
             $drush_generators,
             $global_generators,
             $module_generators,
@@ -120,5 +121,13 @@ class GenerateCommands extends DrushCommands
         $application->addCommands($generators);
 
         return $application;
+    }
+
+    /**
+     * Filters DCG generators.
+     */
+    private static function filterGenerators(array $generators): array {
+        // @todo Filter out DCG generators that do not make sense for Drush.
+        return $generators;
     }
 }

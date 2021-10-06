@@ -4,9 +4,6 @@ namespace Drush\Commands\generate\Generators\Drush;
 
 use DrupalCodeGenerator\Command\ModuleGenerator;
 use DrupalCodeGenerator\Utils;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Question\Question;
 
 /**
  * Implements drush-command-file command.
