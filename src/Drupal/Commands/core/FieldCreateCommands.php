@@ -2,53 +2,56 @@
 
 namespace Drush\Drupal\Commands\core;
 
-use Consolidation\AnnotatedCommand\AnnotationData;
-use Consolidation\AnnotatedCommand\CommandData;
-use Drupal\Core\Entity\EntityFieldManager;
-use Drupal\Core\Entity\EntityReferenceSelection\SelectionPluginManager;
-use Drupal\Core\Entity\EntityTypeBundleInfo;
+use Consolidation\AnnotatedCommand\Events\CustomEventAwareInterface;
+use Consolidation\AnnotatedCommand\Events\CustomEventAwareTrait;
+use Drupal\content_translation\ContentTranslationManagerInterface;
+use Drupal\Core\Entity\Display\EntityDisplayInterface;
+use Drupal\Core\Entity\Display\EntityFormDisplayInterface;
+use Drupal\Core\Entity\EntityFieldManagerInterface;
+use Drupal\Core\Entity\EntityReferenceSelection\SelectionPluginManagerInterface;
+use Drupal\Core\Entity\EntityTypeBundleInfoInterface;
+use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
-use Drupal\Core\Extension\ModuleHandler;
+use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\Field\FieldStorageDefinitionInterface;
-use Drupal\Core\Field\FieldTypePluginManager;
-use Drupal\Core\Field\Plugin\Field\FieldType\EntityReferenceItem;
+use Drupal\Core\Field\FieldTypePluginManagerInterface;
 use Drupal\Core\Field\WidgetPluginManager;
 use Drupal\Core\Url;
-use Drupal\field\Entity\FieldConfig;
+use Drupal\field\FieldConfigInterface;
 use Drupal\field\FieldStorageConfigInterface;
 use Drush\Commands\DrushCommands;
-use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Question\ChoiceQuestion;
-use Symfony\Component\Console\Question\ConfirmationQuestion;
 
-class FieldCreateCommands extends DrushCommands
+class FieldCreateCommands extends DrushCommands implements CustomEventAwareInterface
 {
-    /** @var FieldTypePluginManager */
+    use CustomEventAwareTrait;
+
+    /** @var FieldTypePluginManagerInterface */
     protected $fieldTypePluginManager;
     /** @var WidgetPluginManager */
     protected $widgetPluginManager;
-    /** @var SelectionPluginManager */
+    /** @var SelectionPluginManagerInterface */
     protected $selectionPluginManager;
     /** @var EntityTypeManagerInterface */
     protected $entityTypeManager;
-    /** @var EntityTypeBundleInfo */
+    /** @var EntityTypeBundleInfoInterface */
     protected $entityTypeBundleInfo;
-    /** @var EntityFieldManager */
+    /** @var EntityFieldManagerInterface */
     protected $entityFieldManager;
-    /** @var ModuleHandler */
+    /** @var ModuleHandlerInterface */
     protected $moduleHandler;
+    /** @var ContentTranslationManagerInterface */
+    protected $contentTranslationManager;
 
     public function __construct(
-        FieldTypePluginManager $fieldTypePluginManager,
+        FieldTypePluginManagerInterface $fieldTypePluginManager,
         WidgetPluginManager $widgetPluginManager,
-        SelectionPluginManager $selectionPluginManager,
+        SelectionPluginManagerInterface $selectionPluginManager,
         EntityTypeManagerInterface $entityTypeManager,
-        EntityTypeBundleInfo $entityTypeBundleInfo,
-        ModuleHandler $moduleHandler,
-        EntityFieldManager $entityFieldManager
+        EntityTypeBundleInfoInterface $entityTypeBundleInfo,
+        ModuleHandlerInterface $moduleHandler,
+        EntityFieldManagerInterface $entityFieldManager
     ) {
         $this->fieldTypePluginManager = $fieldTypePluginManager;
         $this->widgetPluginManager = $widgetPluginManager;
@@ -59,25 +62,45 @@ class FieldCreateCommands extends DrushCommands
         $this->entityFieldManager = $entityFieldManager;
     }
 
+    public function setContentTranslationManager($manager): void
+    {
+        $this->contentTranslationManager = $manager;
+    }
+
     /**
      * Create a new field
      *
      * @command field:create
      * @aliases field-create,fc
      *
+     * @validate-entity-type-argument entityType
+     * @validate-optional-bundle-argument entityType bundle
+     *
      * @param string $entityType
-     *      Name of bundle to attach fields to.
+     *      The machine name of the entity type
      * @param string $bundle
-     *      Type of entity (e.g. node, user, comment).
+     *      The machine name of the bundle
      *
      * @option field-name
+     *      A unique machine-readable name containing letters, numbers, and underscores.
      * @option field-label
+     *      The field label
+     * @option field-description
+     *      Instructions to present to the user below this field on the editing form.
      * @option field-type
+     *      The field type
      * @option field-widget
+     *      The field widget
      * @option is-required
+     *      Whether the field is required
+     * @option is-translatable
+     *      Whether the field is translatable
      * @option cardinality
+     *      The allowed number of values
      * @option target-type
-     *      Only necessary for entity reference fields.
+     *      The target entity type. Only necessary for entity reference fields.
+     * @option target-bundle
+     *      The target bundle(s). Only necessary for entity reference fields.
      *
      * @option existing
      *      Re-use an existing field.
@@ -90,154 +113,130 @@ class FieldCreateCommands extends DrushCommands
      *      Create a field and fill in the remaining information through prompts.
      * @usage drush field-create taxonomy_term tag --field-name=field_tag_label --field-label=Label --field-type=string --field-widget=string_textfield --is-required=1 --cardinality=2
      *      Create a field in a completely non-interactive way.
+     *
+     * @see \Drupal\field_ui\Form\FieldConfigEditForm
+     * @see \Drupal\field_ui\Form\FieldStorageConfigEditForm
      */
-    public function create($entityType, $bundle, $options = [
+    public function create(string $entityType, ?string $bundle = null, array $options = [
         'field-name' => InputOption::VALUE_REQUIRED,
         'field-label' => InputOption::VALUE_REQUIRED,
+        'field-description' => InputOption::VALUE_OPTIONAL,
         'field-type' => InputOption::VALUE_REQUIRED,
         'field-widget' => InputOption::VALUE_REQUIRED,
-        'is-required' => InputOption::VALUE_REQUIRED,
+        'is-required' => InputOption::VALUE_OPTIONAL,
+        'is-translatable' => InputOption::VALUE_OPTIONAL,
         'cardinality' => InputOption::VALUE_REQUIRED,
         'target-type' => InputOption::VALUE_OPTIONAL,
+        'target-bundle' => InputOption::VALUE_OPTIONAL,
         'show-machine-names' => InputOption::VALUE_OPTIONAL,
         'existing' => false,
-    ])
+    ]): void
     {
-        $fieldName = $this->input->getOption('field-name');
-        $fieldLabel = $this->input->getOption('field-label');
-        $fieldType = $this->input->getOption('field-type');
-        $fieldWidget = $this->input->getOption('field-widget');
-        $isRequired = $this->input->getOption('is-required');
-        $cardinality = $this->input->getOption('cardinality');
-        $targetType = $this->input->getOption('target-type');
-
-        if (!$options['existing']) {
-            $this->createFieldStorage($fieldName, $fieldType, $entityType, $targetType, $cardinality);
-        }
-
-        $field = $this->createField($fieldName, $fieldLabel, $entityType, $bundle, $isRequired);
-        $this->createFieldFormDisplay($fieldName, $fieldWidget, $entityType, $bundle);
-        $this->createFieldViewDisplay($fieldName, $entityType, $bundle);
-
-        $this->logResult($field);
-    }
-
-    /**
-     * @hook interact field:create
-     */
-    public function interact(InputInterface $input, OutputInterface $output, AnnotationData $annotationData)
-    {
-        $entityType = $this->input->getArgument('entityType');
-        $bundle = $this->input->getArgument('bundle');
-
-        if (empty($bundle) || !$this->entityTypeBundleExists($entityType, $bundle)) {
-            $this->input->setArgument('bundle', $this->askBundle());
-        }
-
-        if ($this->input->getOption('existing')) {
-            $this->input->setOption(
-                'field-name',
-                $this->input->getOption('field-name') ?? $this->askExisting()
-            );
-            $this->input->setOption(
-                'field-label',
-                $this->input->getOption('field-label') ?? $this->askFieldLabel()
-            );
-            $this->input->setOption(
-                'is-required',
-                $this->input->getOption('is-required') ?? $this->askRequired()
-            );
-
-            /** @var \Drupal\Core\Entity\Entity\EntityFormDisplay $formDisplay */
-            $formDisplay = $this->entityTypeManager
-                ->getStorage('entity_form_display')
-                ->load("$entityType.$bundle.default");
-
-            if (!$formDisplay || $this->input->getOption('field-widget')) {
-                return;
-            }
-
-            $component = $formDisplay->getComponent($this->input->getOption('field-name'));
-            $this->input->setOption('field-widget', $component['type']);
-        } else {
-            $this->input->setOption(
-                'field-label',
-                $this->input->getOption('field-label') ?? $this->askFieldLabel()
-            );
-            $this->input->setOption(
-                'field-name',
-                $this->input->getOption('field-name') ?? $this->askFieldName()
-            );
-            $this->input->setOption(
-                'field-type',
-                $this->input->getOption('field-type') ?? $this->askFieldType()
-            );
-            $this->input->setOption(
-                'field-widget',
-                $this->input->getOption('field-widget') ?? $this->askFieldWidget()
-            );
-            $this->input->setOption(
-                'is-required',
-                (bool) ($this->input->getOption('is-required') ?? $this->askRequired())
-            );
-            $this->input->setOption(
-                'cardinality',
-                $this->input->getOption('cardinality') ?? $this->askCardinality()
-            );
-
-            if ($this->input->getOption('field-type') === 'entity_reference'
-                && !$this->input->getOption('target-type')
-            ) {
-                $this->input->setOption('target-type', $this->askReferencedEntityType());
-            }
-        }
-    }
-
-    /**
-     * @hook validate field:create
-     */
-    public function validateEntityType(CommandData $commandData)
-    {
-        $entityType = $this->input->getArgument('entityType');
-
         if (!$this->entityTypeManager->hasDefinition($entityType)) {
             throw new \InvalidArgumentException(
                 t('Entity type with id \':entityType\' does not exist.', [':entityType' => $entityType])
             );
         }
+
+        $bundle = $this->ensureArgument('bundle', [$this, 'askBundle']);
+
+        if (!$this->entityTypeBundleExists($entityType, $bundle)) {
+            throw new \InvalidArgumentException(
+                t('Bundle with id \':bundle\' does not exist on entity type \':entityType\'.', [
+                    ':bundle' => $bundle,
+                    ':entityType' => $entityType,
+                ])
+            );
+        }
+
+        if ($this->input->getOption('existing')) {
+            $fieldName = $this->ensureOption('field-name', [$this, 'askExisting']);
+
+            if (!$this->fieldStorageExists($fieldName, $entityType)) {
+                throw new \InvalidArgumentException(
+                    t('Field storage with name \':fieldName\' does not yet exist. Call this command without the --existing option first.', [
+                        ':fieldName' => $fieldName,
+                    ])
+                );
+            }
+
+            $fieldStorage = $this->entityFieldManager->getFieldStorageDefinitions($entityType)[$fieldName];
+
+            if ($this->fieldExists($fieldName, $entityType, $bundle)) {
+                throw new \InvalidArgumentException(
+                    t('Field with name \':fieldName\' already exists on bundle \':bundle\'.', [
+                        ':fieldName' => $fieldName,
+                        ':bundle' => $bundle,
+                    ])
+                );
+            }
+
+            $this->input->setOption('field-type', $fieldStorage->getType());
+            $this->input->setOption('target-type', $fieldStorage->getSetting('target_type'));
+
+            $this->ensureOption('field-label', [$this, 'askFieldLabel']);
+            $this->ensureOption('field-description', [$this, 'askFieldDescription']);
+            $this->ensureOption('field-widget', [$this, 'askFieldWidget']);
+            $this->ensureOption('is-required', [$this, 'askRequired']);
+            $this->ensureOption('is-translatable', [$this, 'askTranslatable']);
+        } else {
+            $this->ensureOption('field-label', [$this, 'askFieldLabel']);
+            $fieldName = $this->ensureOption('field-name', [$this, 'askFieldName']);
+
+            if ($this->fieldStorageExists($fieldName, $entityType)) {
+                throw new \InvalidArgumentException(
+                    t('Field storage with name \':fieldName\' already exists. Call this command with the --existing option to add an existing field to a bundle.', [
+                        ':fieldName' => $fieldName,
+                    ])
+                );
+            }
+
+            $this->ensureOption('field-description', [$this, 'askFieldDescription']);
+            $this->ensureOption('field-type', [$this, 'askFieldType']);
+            $this->ensureOption('field-widget', [$this, 'askFieldWidget']);
+            $this->ensureOption('is-required', [$this, 'askRequired']);
+            $this->ensureOption('is-translatable', [$this, 'askTranslatable']);
+            $this->ensureOption('cardinality', [$this, 'askCardinality']);
+
+            if ($this->input->getOption('field-type') === 'entity_reference') {
+                $this->ensureOption('target-type', [$this, 'askReferencedEntityType']);
+            }
+
+            $this->createFieldStorage();
+        }
+
+        // Command files may set additional options as desired.
+        $handlers = $this->getCustomEventHandlers('field-create-set-options');
+        foreach ($handlers as $handler) {
+            $handler($this->input);
+        }
+
+        $field = $this->createField();
+        $this->createFieldDisplay('form');
+        $this->createFieldDisplay('view');
+
+        $this->logResult($field);
     }
 
-    protected function askExisting()
+    protected function askExisting(): string
     {
         $entityType = $this->input->getArgument('entityType');
         $bundle = $this->input->getArgument('bundle');
         $choices = $this->getExistingFieldStorageOptions($entityType, $bundle);
-        return $this->choice('Choose an existing field', $choices);
+
+        return $this->io()->choice('Choose an existing field', $choices);
     }
 
-    protected function askBundle()
+    protected function askFieldName(): string
     {
         $entityType = $this->input->getArgument('entityType');
-        $bundleInfo = $this->entityTypeBundleInfo->getBundleInfo($entityType);
-        $choices = [];
-
-        foreach ($bundleInfo as $bundle => $data) {
-            $label = $this->input->getOption('show-machine-names') ? $bundle : $data['label'];
-            $choices[$bundle] = $label;
-        }
-
-        return $this->choice('Bundle', $choices);
-    }
-
-    protected function askFieldName()
-    {
-        $entityType = $this->input->getArgument('entityType');
+        $bundle = $this->input->getArgument('bundle');
         $fieldLabel = $this->input->getOption('field-label');
         $fieldName = null;
         $machineName = null;
 
         if (!empty($fieldLabel)) {
-            $machineName = $this->generateFieldName($fieldLabel);
+            $machineName = $this->generateFieldName($fieldLabel, $bundle);
         }
 
         while (!$fieldName) {
@@ -264,12 +263,17 @@ class FieldCreateCommands extends DrushCommands
         return $fieldName;
     }
 
-    protected function askFieldLabel()
+    protected function askFieldLabel(): string
     {
         return $this->io()->ask('Field label');
     }
 
-    protected function askFieldType()
+    protected function askFieldDescription(): ?string
+    {
+        return $this->optionalAsk('Field description');
+    }
+
+    protected function askFieldType(): string
     {
         $definitions = $this->fieldTypePluginManager->getDefinitions();
         $choices = [];
@@ -279,11 +283,21 @@ class FieldCreateCommands extends DrushCommands
             $choices[$definition['id']] = $label;
         }
 
-        return $this->choice('Field type', $choices);
+        return $this->io()->choice('Field type', $choices);
     }
 
-    protected function askFieldWidget()
+    protected function askFieldWidget(): string
     {
+        $formDisplay = $this->getEntityDisplay('form');
+
+        if ($formDisplay instanceof EntityFormDisplayInterface) {
+            $component = $formDisplay->getComponent($this->input->getOption('field-name'));
+
+            if (isset($component['type'])) {
+                return $component['type'];
+            }
+        }
+
         $choices = [];
         $fieldType = $this->input->getOption('field-type');
         $widgets = $this->widgetPluginManager->getOptions($fieldType);
@@ -293,45 +307,83 @@ class FieldCreateCommands extends DrushCommands
             $choices[$name] = $label;
         }
 
-        return $this->choice('Field widget', $choices, false, 0);
+        return $this->io()->choice('Field widget', $choices, 0);
     }
 
-    protected function askRequired()
+    protected function askRequired(): bool
     {
-        return $this->io()->askQuestion(new ConfirmationQuestion('Required', false));
+        return $this->io()->confirm('Required', false);
     }
 
-    protected function askCardinality()
+    protected function askTranslatable(): bool
+    {
+        if (!$this->hasContentTranslation()) {
+            return false;
+        }
+
+        return $this->io()->confirm('Translatable', false);
+    }
+
+    protected function askBundle(): ?string
+    {
+        $entityTypeId = $this->input->getArgument('entityType');
+        $entityTypeDefinition = $this->entityTypeManager->getDefinition($entityTypeId);
+        $bundleEntityType = $entityTypeDefinition->getBundleEntityType();
+        $bundleInfo = $this->entityTypeBundleInfo->getBundleInfo($entityTypeId);
+        $choices = [];
+
+        if (empty($bundleInfo)) {
+            if ($bundleEntityType) {
+                throw new \InvalidArgumentException(
+                    t('Entity type with id \':entityType\' does not have any bundles.', [':entityType' => $entityTypeId])
+                );
+            }
+
+            return null;
+        }
+
+        foreach ($bundleInfo as $bundle => $data) {
+            $label = $this->input->getOption('show-machine-names') ? $bundle : $data['label'];
+            $choices[$bundle] = $label;
+        }
+
+        if (!$answer = $this->io()->choice('Bundle', $choices)) {
+            throw new \InvalidArgumentException(t('The bundle argument is required.'));
+        }
+
+        return $answer;
+    }
+
+    protected function askCardinality(): int
     {
         $fieldType = $this->input->getOption('field-type');
-        $enforcedCardinality = $this->getEnforcedCardinality($fieldType);
+        $definition = $this->fieldTypePluginManager->getDefinition($fieldType);
 
-        if (!is_null($enforcedCardinality)) {
-            return $enforcedCardinality;
+        // Some field types choose to enforce a fixed cardinality.
+        if (isset($definition['cardinality'])) {
+            return $definition['cardinality'];
         }
 
         $choices = ['Limited', 'Unlimited'];
-        $cardinality = $this->choice(
+        $cardinality = $this->io()->choice(
             'Allowed number of values',
             array_combine($choices, $choices),
-            false,
             0
         );
 
         $limit = FieldStorageDefinitionInterface::CARDINALITY_UNLIMITED;
         while ($cardinality === 'Limited' && $limit < 1) {
-            $limit = $this->io()->ask('Allowed number of values', 1);
+            $limit = (int) $this->io()->ask('Allowed number of values', 1);
         }
 
-        return (int) $limit;
+        return $limit;
     }
 
-    protected function askReferencedEntityType()
+    protected function askReferencedEntityType(): string
     {
         $definitions = $this->entityTypeManager->getDefinitions();
         $choices = [];
 
-        /** @var \Drupal\Core\Config\Entity\ConfigEntityType $definition */
         foreach ($definitions as $name => $definition) {
             $label = $this->input->getOption('show-machine-names')
                 ? $name
@@ -339,10 +391,10 @@ class FieldCreateCommands extends DrushCommands
             $choices[$name] = $label;
         }
 
-        return $this->choice('Referenced entity type', $choices);
+        return $this->io()->choice('Referenced entity type', $choices);
     }
 
-    protected function askReferencedBundles(FieldDefinitionInterface $fieldDefinition)
+    protected function askReferencedBundles(FieldDefinitionInterface $fieldDefinition): array
     {
         $choices = [];
         $bundleInfo = $this->entityTypeBundleInfo->getBundleInfo(
@@ -350,7 +402,7 @@ class FieldCreateCommands extends DrushCommands
         );
 
         if (empty($bundleInfo)) {
-            return null;
+            return [];
         }
 
         foreach ($bundleInfo as $bundle => $info) {
@@ -358,61 +410,80 @@ class FieldCreateCommands extends DrushCommands
             $choices[$bundle] = $label;
         }
 
-        $answers = $this->choice('Referenced bundles', $choices, true, 0);
-
-        return [
-            'target_bundles' => array_combine($answers, $answers),
-            'sort' => [
-                'field' => '_none',
-                'direction' => 'ASC',
-            ],
-            'auto_create' => false,
-            'auto_create_bundle' => null,
-        ];
+        return $this->io()->choice('Referenced bundles', $choices, 0);
     }
 
-    protected function createField(string $fieldName, $fieldLabel, string $entityType, string $bundle, bool $isRequired)
+    protected function createField(): FieldConfigInterface
     {
         $values = [
-            'field_name' => $fieldName,
-            'entity_type' => $entityType,
-            'bundle' => $bundle,
-            'translatable' => false,
-            'required' => $isRequired,
+            'field_name' => $this->input->getOption('field-name'),
+            'entity_type' => $this->input->getArgument('entityType'),
+            'bundle' => $this->input->getArgument('bundle'),
+            'translatable' => $this->input->getOption('is-translatable'),
+            'required' => $this->input->getOption('is-required'),
+            'field_type' => $this->input->getOption('field-type'),
+            'description' => $this->input->getOption('field-description') ?? '',
+            'label' => $this->input->getOption('field-label'),
         ];
 
-        if (!empty($fieldLabel)) {
-            $values['label'] = $fieldLabel;
+        // Command files may customize $values as desired.
+        $handlers = $this->getCustomEventHandlers('field-create-field-config');
+        foreach ($handlers as $handler) {
+            $values = $handler($values, $this->input);
         }
 
-        /** @var FieldConfig $field */
         $field = $this->entityTypeManager
             ->getStorage('field_config')
             ->create($values);
 
-        $field->save();
+        if ($this->input->getOption('field-type') === 'entity_reference') {
+            $targetType = $this->input->getOption('target-type');
+            $targetTypeDefinition = $this->entityTypeManager->getDefinition($targetType);
+            // For the 'target_bundles' setting, a NULL value is equivalent to "allow
+            // entities from any bundle to be referenced" and an empty array value is
+            // equivalent to "no entities from any bundle can be referenced".
+            $targetBundles = null;
 
-        $fieldType = $this->getFieldType($fieldName, $entityType, $bundle);
-        if ($fieldType instanceof EntityReferenceItem && $handlerSettings = $this->askReferencedBundles($field)) {
-            $field->setSetting('handler_settings', $handlerSettings);
-            $field->save();
+            if ($targetTypeDefinition->hasKey('bundle')) {
+                if ($referencedBundle = $this->input->getOption('target-bundle')) {
+                    $referencedBundles = [$referencedBundle];
+                } else {
+                    $referencedBundles = $this->askReferencedBundles($field);
+                }
+
+                if (!empty($referencedBundles)) {
+                    $targetBundles = array_combine($referencedBundles, $referencedBundles);
+                }
+            }
+
+            $settings = $field->getSetting('handler_settings') ?? [];
+            $settings['target_bundles'] = $targetBundles;
+            $field->setSetting('handler_settings', $settings);
         }
+
+        $field->save();
 
         return $field;
     }
 
-    protected function createFieldStorage(string $fieldName, string $fieldType, string $entityType, $targetType, int $cardinality)
+    protected function createFieldStorage(): FieldStorageConfigInterface
     {
         $values = [
-            'field_name' => $fieldName,
-            'entity_type' => $entityType,
-            'type' => $fieldType,
-            'cardinality' => $cardinality,
-            // 'translatable' => false,
+            'field_name' => $this->input->getOption('field-name'),
+            'entity_type' => $this->input->getArgument('entityType'),
+            'type' => $this->input->getOption('field-type'),
+            'cardinality' => $this->input->getOption('cardinality'),
+            'translatable' => true,
         ];
 
-        if ($targetType) {
+        if ($targetType = $this->input->getOption('target-type')) {
             $values['settings']['target_type'] = $targetType;
+        }
+
+        // Command files may customize $values as desired.
+        $handlers = $this->getCustomEventHandlers('field-create-field-storage');
+        foreach ($handlers as $handler) {
+            $handler($values);
         }
 
         /** @var FieldStorageConfigInterface $fieldStorage */
@@ -425,68 +496,58 @@ class FieldCreateCommands extends DrushCommands
         return $fieldStorage;
     }
 
-    protected function createFieldFormDisplay(string $fieldName, $fieldWidget, string $entityType, string $bundle)
+    protected function createFieldDisplay(string $context): void
     {
+        $entityType = $this->input->getArgument('entityType');
+        $bundle = $this->input->getArgument('bundle');
+        $fieldName = $this->input->getOption('field-name');
+        $fieldWidget = $this->input->getOption('field-widget');
         $values = [];
 
-        if ($fieldWidget) {
+        if ($fieldWidget && $context === 'form') {
             $values['type'] = $fieldWidget;
         }
 
-        $storage = $this->entityTypeManager
-            ->getStorage('entity_form_display')
-            ->load("$entityType.$bundle.default");
+        // Command files may customize $values as desired.
+        $handlers = $this->getCustomEventHandlers("field-create-{$context}-display");
+        foreach ($handlers as $handler) {
+            $handler($values);
+        }
 
-        if (empty($storage)) {
+        $storage = $this->getEntityDisplay($context);
+
+        if (!$storage instanceof EntityDisplayInterface) {
             $this->logger()->info(
-                sprintf('Form display storage not found for %s type \'%s\', creating now.', $entityType, $bundle)
+                sprintf('\'%s\' display storage not found for %s type \'%s\', creating now.', $context, $entityType, $bundle)
             );
 
-            $storage = $this->createDisplayStorage('form', $entityType, $bundle);
+            $storage = $this->entityTypeManager
+                ->getStorage(sprintf('entity_%s_display', $context))
+                ->create([
+                    'id' => "$entityType.$bundle.default",
+                    'targetEntityType' => $entityType,
+                    'bundle' => $bundle,
+                    'mode' => 'default',
+                    'status' => true,
+                ]);
+
+            $storage->save();
         }
 
         $storage->setComponent($fieldName, $values)->save();
     }
 
-    protected function createFieldViewDisplay(string $fieldName, string $entityType, string $bundle)
+    protected function getEntityDisplay(string $context): ?EntityDisplayInterface
     {
-        $values = [];
+        $entityType = $this->input->getArgument('entityType');
+        $bundle = $this->input->getArgument('bundle');
 
-        $storage = $this->entityTypeManager
-            ->getStorage('entity_view_display')
-            ->load("$entityType.$bundle.default");
-
-        if (empty($storage)) {
-            $this->logger()->info(
-                sprintf('View display storage not found for %s type \'%s\', creating now.', $entityType, $bundle)
-            );
-
-            $storage = $this->createDisplayStorage('view', $entityType, $bundle);
-        }
-
-        $storage->setComponent($fieldName, $values)->save();
-    }
-
-    protected function createDisplayStorage(string $context, string $entityType, string $bundle)
-    {
-        $storageValues = [
-            'id' => "$entityType.$bundle.default",
-            'targetEntityType' => $entityType,
-            'bundle' => $bundle,
-            'mode' => 'default',
-            'status' => true,
-        ];
-
-        $storage = $this->entityTypeManager
+        return $this->entityTypeManager
             ->getStorage(sprintf('entity_%s_display', $context))
-            ->create($storageValues);
-
-        $storage->save();
-
-        return $storage;
+            ->load("$entityType.$bundle.default");
     }
 
-    protected function logResult(FieldConfig $field)
+    protected function logResult(FieldConfigInterface $field): void
     {
         $this->logger()->success(
             sprintf(
@@ -497,15 +558,14 @@ class FieldCreateCommands extends DrushCommands
             )
         );
 
-        $routeName = "entity.field_config.{$field->get('entity_type')}_field_edit_form";
+        /** @var EntityTypeInterface $entityType */
+        $entityType = $this->entityTypeManager->getDefinition($field->get('entity_type'));
+
+        $routeName = "entity.field_config.{$entityType->id()}_field_edit_form";
         $routeParams = [
             'field_config' => $field->id(),
-            "{$field->get('entity_type')}_type" => $field->get('bundle'),
+            $entityType->getBundleEntityType() => $field->get('bundle'),
         ];
-
-        if ($this->input->getArgument('entityType') === 'taxonomy_term') {
-            $routeParams['taxonomy_vocabulary'] = $field->get('bundle');
-        }
 
         if ($this->moduleHandler->moduleExists('field_ui')) {
             $this->logger()->success(
@@ -518,7 +578,7 @@ class FieldCreateCommands extends DrushCommands
         }
     }
 
-    protected function generateFieldName(string $source)
+    protected function generateFieldName(string $source, string $bundle): string
     {
         // Only lowercase alphanumeric characters and underscores
         $machineName = preg_replace('/[^_a-z0-9]/i', '_', $source);
@@ -529,30 +589,36 @@ class FieldCreateCommands extends DrushCommands
         // Only lowercase
         $machineName = strtolower($machineName);
         // Add the prefix
-        $machineName = sprintf('field_%s', $machineName);
+        $machineName = sprintf('field_%s_%s', $bundle, $machineName);
         // Maximum 32 characters
         $machineName = substr($machineName, 0, 32);
 
         return $machineName;
     }
 
-    protected function fieldStorageExists(string $fieldName, string $entityType)
+    protected function fieldExists(string $fieldName, string $entityType, string $bundle): bool
+    {
+        $fieldDefinitions = $this->entityFieldManager->getFieldDefinitions($entityType, $bundle);
+
+        return isset($fieldDefinitions[$fieldName]);
+    }
+
+    protected function fieldStorageExists(string $fieldName, string $entityType): bool
     {
         $fieldStorageDefinitions = $this->entityFieldManager->getFieldStorageDefinitions($entityType);
+
         return isset($fieldStorageDefinitions[$fieldName]);
     }
 
-    protected function entityTypeBundleExists(string $entityType, string $bundleName)
+    protected function entityTypeBundleExists(string $entityType, string $bundleName): bool
     {
         return isset($this->entityTypeBundleInfo->getBundleInfo($entityType)[$bundleName]);
     }
 
-    protected function getExistingFieldStorageOptions(string $entityType, string $bundle)
+    protected function getExistingFieldStorageOptions(string $entityType, string $bundle): array
     {
-        $options = [];
-
-        // Load the fieldStorages and build the list of options.
         $fieldTypes = $this->fieldTypePluginManager->getDefinitions();
+        $options = [];
 
         foreach ($this->entityFieldManager->getFieldStorageDefinitions($entityType) as $fieldName => $fieldStorage) {
             // Do not show:
@@ -565,7 +631,8 @@ class FieldCreateCommands extends DrushCommands
                 ? $fieldTypes[$fieldType]['id']
                 : $fieldTypes[$fieldType]['label'];
 
-            if ($fieldStorage instanceof FieldStorageConfigInterface
+            if (
+                $fieldStorage instanceof FieldStorageConfigInterface
                 && !$fieldStorage->isLocked()
                 && empty($fieldTypes[$fieldType]['no_ui'])
                 && !in_array($bundle, $fieldStorage->getBundles(), true)
@@ -579,66 +646,33 @@ class FieldCreateCommands extends DrushCommands
         return $options;
     }
 
-    /**
-     * Returns the cardinality enforced by the field type.
-     *
-     * Some field types choose to enforce a fixed cardinality. This method
-     * returns that cardinality or NULL if no cardinality has been enforced.
-     *
-     * @param string $entityType
-     * @return int|null
-     */
-    protected function getEnforcedCardinality(string $entityType)
+    protected function hasContentTranslation(): bool
     {
-        $definition = $this->fieldTypePluginManager->getDefinition($entityType);
-        return $definition['cardinality'] ?? null;
+        $entityType = $this->input->getArgument('entityType');
+        $bundle = $this->input->getArgument('bundle');
+
+        return $this->moduleHandler->moduleExists('content_translation')
+            && $this->contentTranslationManager->isEnabled($entityType, $bundle);
     }
 
-    /**
-     * @param string $fieldName
-     * @param string $entityType
-     * @param string $bundle
-     * @return \Drupal\Core\Field\FieldItemInterface
-     */
-    protected function getFieldType(string $fieldName, string $entityType, string $bundle)
+    protected function ensureArgument(string $name, callable $asker)
     {
-        $ids = (object) [
-            'entity_type' => $entityType,
-            'bundle' => $bundle,
-            'entity_id' => null,
-        ];
+        $value = $this->input->getArgument($name) ?? $asker();
+        $this->input->setArgument($name, $value);
 
-        $entity = _field_create_entity_from_ids($ids);
-        $items = $entity->get($fieldName);
-        $item = $items->first() ?: $items->appendItem();
-
-        return $item;
+        return $value;
     }
 
-    /**
-     * @param string $question
-     * @param array $choices
-     *   If an associative array is passed, the chosen *key* is returned.
-     * @param bool $multiSelect
-     * @param null $default
-     * @return mixed
-     */
-    protected function choice($question, array $choices, $multiSelect = false, $default = null)
+    protected function ensureOption(string $name, callable $asker)
     {
-        $choicesValues = array_values($choices);
-        $question = new ChoiceQuestion($question, $choicesValues, $default);
-        $question->setMultiselect($multiSelect);
-        $return = $this->io()->askQuestion($question);
+        $value = $this->input->getOption($name) ?? $asker();
+        $this->input->setOption($name, $value);
 
-        if ($multiSelect) {
-            return array_map(
-                function ($value) use ($choices) {
-                    return array_search($value, $choices);
-                },
-                $return
-            );
-        }
-
-        return array_search($return, $choices);
+        return $value;
+    }
+    
+    protected function optionalAsk(string $question)
+    {
+        return $this->io()->ask($question, null, function ($value) { return $value; });
     }
 }
