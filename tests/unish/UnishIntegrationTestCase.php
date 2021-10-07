@@ -114,16 +114,23 @@ abstract class UnishIntegrationTestCase extends UnishTestCase
         $cmd = [self::getDrush()];
 
         // Insert global options.
-        foreach ($options as $key => $value) {
-            if (in_array($key, $global_option_list)) {
-                unset($options[$key]);
-                if ($key == 'uri' && $value == 'OMIT') {
-                    continue;
-                }
-                if (!isset($value)) {
-                    $cmd[] = "--$key";
-                } else {
-                    $cmd[] = "--$key=" . $value;
+        foreach ($options as $key => $values) {
+            // Normalize to an array of values which is uncommon but is supported via
+            // multiple instances of the same option.
+            if (!is_iterable($values)) {
+                $values = [$values];
+            }
+            foreach ($values as $value) {
+                if (in_array($key, $global_option_list)) {
+                    unset($options[$key]);
+                    if ($key == 'uri' && $value == 'OMIT') {
+                        continue;
+                    }
+                    if (!isset($value)) {
+                        $cmd[] = "--$key";
+                    } else {
+                        $cmd[] = "--$key=" . $value;
+                    }
                 }
             }
         }

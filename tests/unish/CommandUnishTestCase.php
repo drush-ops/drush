@@ -121,18 +121,25 @@ abstract class CommandUnishTestCase extends UnishTestCase
         $cmd[] = self::getDrush();
 
         // Insert global options.
-        foreach ($options as $key => $value) {
-            if (in_array($key, $global_option_list)) {
-                unset($options[$key]);
-                if ($key == 'uri' && $value == 'OMIT') {
-                    continue;
-                }
-                $dashes = strlen($key) == 1 ? '-' : '--';
-                $equals = strlen($key) == 1 ? '' : '=';
-                if (!isset($value)) {
-                    $cmd[] = "$dashes$key";
-                } else {
-                    $cmd[] = "$dashes$key$equals" . self::escapeshellarg($value);
+        foreach ($options as $key => $values) {
+            // Normalize to an array of values which is uncommon but is supported via
+            // multiple instances of the same option.
+            if (!is_iterable($values)) {
+                $values = [$values];
+            }
+            foreach ($values as $value) {
+                if (in_array($key, $global_option_list)) {
+                    unset($options[$key]);
+                    if ($key == 'uri' && $value == 'OMIT') {
+                        continue;
+                    }
+                    $dashes = strlen($key) == 1 ? '-' : '--';
+                    $equals = strlen($key) == 1 ? '' : '=';
+                    if (!isset($value)) {
+                        $cmd[] = "$dashes$key";
+                    } else {
+                        $cmd[] = "$dashes$key$equals" . self::escapeshellarg($value);
+                    }
                 }
             }
         }
