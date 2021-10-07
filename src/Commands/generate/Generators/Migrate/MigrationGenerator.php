@@ -24,5 +24,4 @@ class MigrationGenerator extends PluginGenerator
         $this->addFile('src/Plugin/migrate/source/{class}.php', 'migration.php.twig');
         $this->addFile('migrations/{plugin_id}.yml', 'migration.yml.twig');
     }
-
 }

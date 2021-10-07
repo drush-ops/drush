@@ -47,7 +47,7 @@ class GenerateCommands extends DrushCommands
      *
      * @return int
      */
-    public function generate($generator = '', $options = ['answer' => [], 'destination' => self::REQ, 'dry-run' => FALSE])
+    public function generate($generator = '', $options = ['answer' => [], 'destination' => self::REQ, 'dry-run' => false])
     {
         // Disallow default Symfony console commands.
         if ($generator == 'help' || $generator == 'list') {
@@ -126,7 +126,8 @@ class GenerateCommands extends DrushCommands
     /**
      * Filters DCG generators.
      */
-    private static function filterGenerators(array $generators): array {
+    private static function filterGenerators(array $generators): array
+    {
         // @todo Filter out DCG generators that do not make sense for Drush.
         return $generators;
     }

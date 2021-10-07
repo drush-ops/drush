@@ -29,7 +29,7 @@ class DrushCommandFile extends ModuleGenerator
             }
             return $path;
         };
-        $vars['source'] = $this->ask('Absolute path to legacy Drush command file (optional - for porting)', NULL, $validator);
+        $vars['source'] = $this->ask('Absolute path to legacy Drush command file (optional - for porting)', null, $validator);
         $vars['class'] = '{machine_name|camelize}Commands';
 
         if ($vars['source']) {
@@ -43,7 +43,7 @@ class DrushCommandFile extends ModuleGenerator
             $vars['commands'] = $this->adjustCommands($commands);
         }
 
-        $this->addFile('src/Commands/{class}.php','drush-command-file.php');
+        $this->addFile('src/Commands/{class}.php', 'drush-command-file.php');
 
         $json = $this->getComposerJson($vars);
         $content = json_encode($json, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);

@@ -32,5 +32,4 @@ class DrushAliasFile extends Generator
 
         $this->addFile('drush/{prefix}.site.yml', 'drush-alias-file.yml.twig');
     }
-
 }
