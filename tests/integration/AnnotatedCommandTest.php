@@ -7,7 +7,7 @@ use Webmozart\PathUtil\Path;
 /**
  * @group base
  */
-class AnnotatedCommandCase extends UnishIntegrationTestCase
+class AnnotatedCommandTest extends UnishIntegrationTestCase
 {
     use TestModuleHelperTrait;
 
