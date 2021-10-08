@@ -1,8 +1,7 @@
 # https://circleci.com/docs/2.0/workflows/#using-workspaces-to-share-data-among-jobs
 defaults: &defaults
   working_directory: ~/drush
-# Got hangs - waiting due to concurrency limit
-#  resource_class: xlarge
+  resource_class: xlarge
   environment:
     TZ: "/usr/share/zoneinfo/America/Los_Angeles"
     TERM: dumb
