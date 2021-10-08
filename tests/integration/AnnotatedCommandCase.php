@@ -77,13 +77,11 @@ class AnnotatedCommandCase extends UnishIntegrationTestCase
         // $this->drush('cc', array('drush'), $options);
 
         // Make sure that modules can supply DCG Generators and they work.
-        $optionsExample['answers'] = json_encode([
+        $answers = [
             'name' => 'foo',
             'machine_name' => 'bar',
-        ]);
-        $optionsExample['directory'] = self::webrootSlashDrush();
-        $optionsExample['yes'] = null;
-        $this->drush('generate', ['woot-example'], $optionsExample, null, null, self::EXIT_SUCCESS, null, ['SHELL_INTERACTIVE' => 1]);
+        ];
+        $this->drush('generate', ['woot-example'], ['answer' => $answers, 'directory' => self::webrootSlashDrush()], null, null, self::EXIT_SUCCESS, null, ['SHELL_INTERACTIVE' => 1]);
         $target = Path::join($optionsExample['directory'], 'Commands/ExampleBarCommands.php');
         $actual = trim(file_get_contents($target));
         $this->assertEquals('ExampleBarCommands says Woot mightily.', $actual);
