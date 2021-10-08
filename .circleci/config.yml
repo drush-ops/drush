@@ -1,8 +1,7 @@
 # https://circleci.com/docs/2.0/workflows/#using-workspaces-to-share-data-among-jobs
 defaults: &defaults
   working_directory: ~/drush
-  # possible preventing 4 concurrent containers.
-  # resource_class: large
+  resource_class: large
   environment:
     TZ: "/usr/share/zoneinfo/America/Los_Angeles"
     TERM: dumb
