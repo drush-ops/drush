@@ -3296,11 +3296,11 @@
 <p>Drush's generators reuse classes provided by the excellent <a href="https://github.com/Chi-teck/drupal-code-generator">Drupal Code Generator</a> project. See its <a href="https://github.com/Chi-teck/drupal-code-generator/tree/10.x/src/Command">Commands directory</a> for inspiration.</p>
 <h2 id="writing-custom-generators">Writing Custom Generators<a class="headerlink" href="#writing-custom-generators" title="Permanent link">&para;</a></h2>
 <p>Drupal modules may supply their own Generators, just like they can supply Commands.</p>
-<p>See <a href="https://github.com/drush-ops/drush/blob/10.x/tests/functional/resources/modules/d8/woot">Woot module</a>, which Drush uses for testing. Specifically,</p>
+<p>See <a href="https://github.com/drush-ops/drush/blob/11.x/tests/functional/resources/modules/d8/woot">Woot module</a>, which Drush uses for testing. Specifically,</p>
 <ol>
-<li>Write a class similar to <a href="https://github.com/drush-ops/drush/tree/10.x/tests/functional/resources/modules/d8/woot/src/Generators/">ExampleGenerator</a>. Implement your custom logic in the interact() method. Typically this class is placed in the src/Generators directory.</li>
+<li>Write a class similar to <a href="https://github.com/drush-ops/drush/tree/11.x/tests/functional/resources/modules/d8/woot/src/Generators/">ExampleGenerator</a>. Implement your custom logic in the interact() method. Typically this class is placed in the src/Generators directory.</li>
 <li>Add a .twig file to the same directory. This template specifies what gets output from the generator.</li>
-<li>Add your class to your module's drush.services.yml file (<a href="https://github.com/drush-ops/drush/blob/10.x/tests/functional/resources/modules/d8/woot/drush.services.yml">example</a>). Use the tag <code>drush.generator</code> instead of <code>drush.command</code>.</li>
+<li>Add your class to your module's drush.services.yml file (<a href="https://github.com/drush-ops/drush/blob/11.x/tests/functional/resources/modules/d8/woot/drush.services.yml">example</a>). Use the tag <code>drush.generator</code> instead of <code>drush.command</code>.</li>
 <li>Perform a <code>drush cache-rebuild</code> to compile your drush.services.yml changes into the Drupal container.</li>
 </ol>
 <h2 id="global-generators">Global Generators<a class="headerlink" href="#global-generators" title="Permanent link">&para;</a></h2>

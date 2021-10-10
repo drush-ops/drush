@@ -3255,14 +3255,14 @@
                 
                 
                 <h1 id="site-alias-manager">Site Alias Manager<a class="headerlink" href="#site-alias-manager" title="Permanent link">&para;</a></h1>
-<p>The <a href="https://github.com/consolidation/site-alias/blob/10.x/src/SiteAliasManager.php">Site Alias Manager (SAM)</a> service is used to retrieve information about one or all of the site aliases for the current installation.</p>
+<p>The <a href="https://github.com/consolidation/site-alias/blob/11.x/src/SiteAliasManager.php">Site Alias Manager (SAM)</a> service is used to retrieve information about one or all of the site aliases for the current installation.</p>
 <ul>
-<li>An informative example is the <a href="https://github.com/drush-ops/drush/blob/10.x/src/Commands/core/BrowseCommands.php">browse command</a></li>
+<li>An informative example is the <a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/core/BrowseCommands.php">browse command</a></li>
 <li>A commandfile gets access to the SAM by implementing the SiteAliasManagerAwareInterface and <em>use</em>ing the SiteAliasManagerAwareTrait trait. Then you gain access via <code>$this-&gt;siteAliasManager()</code>.</li>
 <li>If an alias was used for the current request, it is available via <code>$this-&gt;siteAliasManager()-&gt;getself()</code>.</li>
 <li>The SAM generally deals in <a href="https://github.com/consolidation/site-alias/blob/main/src/SiteAlias.php">SiteAlias</a> objects. That is how any given site alias is represented. See its methods for determining things like whether the alias points to a local host or remote host.</li>
 <li><a href="../site-aliases/">Site alias docs</a>.</li>
-<li><a href="https://raw.githubusercontent.com/drush-ops/drush/10.x/examples/Commands/SiteAliasAlterCommands.php">Dynamically alter site aliases</a>.</li>
+<li><a href="https://raw.githubusercontent.com/drush-ops/drush/11.x/examples/Commands/SiteAliasAlterCommands.php">Dynamically alter site aliases</a>.</li>
 <li>The SAM is also available for as <a href="https://github.com/consolidation/site-alias">a standalone Composer project</a>. More information available in the README there.</li>
 </ul>
                 
