@@ -111,13 +111,13 @@ class GenerateCommands extends DrushCommands
         $module_generators = [];
         $theme_generators = [];
 
-        $generators = array_merge(
-            self::filterGenerators($dcg_generators),
-            $drush_generators,
-            $global_generators,
-            $module_generators,
-            $theme_generators
-        );
+        $generators = [
+            ...self::filterGenerators($dcg_generators),
+            ...$drush_generators,
+            ...$global_generators,
+            ...$module_generators,
+            ...$theme_generators
+        ];
         $application->addCommands($generators);
 
         return $application;
@@ -128,7 +128,11 @@ class GenerateCommands extends DrushCommands
      */
     private static function filterGenerators(array $generators): array
     {
-        // @todo Filter out DCG generators that do not make sense for Drush.
-        return $generators;
+        return array_filter(
+            $generators,
+            static fn ($generator) =>
+                !str_starts_with($generator->getName(), 'misc:d7:') &&
+                !str_starts_with($generator->getName(), 'console:'),
+        );
     }
 }
