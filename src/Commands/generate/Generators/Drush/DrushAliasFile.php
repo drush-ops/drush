@@ -11,10 +11,10 @@ use Drush\Drush;
 class DrushAliasFile extends Generator
 {
 
-    protected $name = 'drush-alias-file';
-    protected $description = 'Generates a Drush site alias file.';
-    protected $alias = 'daf';
-    protected $templatePath = __DIR__;
+    protected string $name = 'drush-alias-file';
+    protected string $description = 'Generates a Drush site alias file.';
+    protected string $alias = 'daf';
+    protected string $templatePath = __DIR__;
 
     /**
      * {@inheritdoc}

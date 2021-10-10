@@ -11,10 +11,10 @@ use DrupalCodeGenerator\Utils;
 class DrushCommandFile extends ModuleGenerator
 {
 
-    protected $name = 'drush-command-file';
-    protected $description = 'Generates a Drush command file.';
-    protected $alias = 'dcf';
-    protected $templatePath = __DIR__;
+    protected string $name = 'drush-command-file';
+    protected string $description = 'Generates a Drush command file.';
+    protected string $alias = 'dcf';
+    protected string $templatePath = __DIR__;
 
     /**
      * {@inheritdoc}
@@ -23,7 +23,7 @@ class DrushCommandFile extends ModuleGenerator
     {
         $this->collectDefault($vars);
 
-        $validator = function ($path): string {
+        $validator = static function ($path): string {
             if ($path && !is_file($path)) {
                 throw new \UnexpectedValueException(sprintf('Could not open file "%s".', $path));
             }
@@ -54,7 +54,7 @@ class DrushCommandFile extends ModuleGenerator
         $this->addFile('drush.services.yml', 'drush.services.yml');
     }
 
-    protected function getComposerJson(array $vars)
+    protected function getComposerJson(array $vars): array
     {
         $composer_json_template_path = __DIR__ . '/dcf-composer.json';
         // TODO: look up the path of the 'machine_name' module.
@@ -76,7 +76,7 @@ class DrushCommandFile extends ModuleGenerator
         return $composer_json_data;
     }
 
-    protected function getOwningModulePath(array $vars)
+    protected function getOwningModulePath(array $vars): string
     {
         $module_name = $vars['machine_name'];
 
@@ -90,7 +90,7 @@ class DrushCommandFile extends ModuleGenerator
         return $projects[$module_name]->getPath();
     }
 
-    protected function adjustCommands(array $commands)
+    protected function adjustCommands(array $commands): array
     {
         foreach ($commands as $name => &$command) {
             // Drush9 uses colons in command names. Replace first dash with colon.
