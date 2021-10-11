@@ -2,16 +2,14 @@
 
 namespace Custom\Library\Drush\Generators;
 
-use DrupalCodeGenerator\Command\BaseGenerator;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
+use DrupalCodeGenerator\Command\Generator;
 
-class CustomGenerator extends BaseGenerator
+class CustomGenerator extends Generator
 {
-    protected $name = 'custom-testing-generator';
-    protected $description = 'Custom testing generator';
+    protected string $name = 'custom-testing-generator';
+    protected string $description = 'Custom testing generator';
 
-    public function interact(InputInterface $input, OutputInterface $output)
+    public function generate(&$vars): void
     {
         $this->addFile('drush/foo.bar');
     }
