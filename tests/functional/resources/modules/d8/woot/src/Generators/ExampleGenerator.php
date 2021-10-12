@@ -5,13 +5,9 @@ namespace Drupal\woot\Generators;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use DrupalCodeGenerator\Command\ModuleGenerator;
 use Psr\Container\ContainerInterface;
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 
-class ExampleGenerator extends ModuleGenerator implements ContainerAwareInterface
+class ExampleGenerator extends ModuleGenerator
 {
-    use ContainerAwareTrait;
-
     protected string $name = 'woot-example';
     protected string $description = 'Generates a woot.';
     protected string $alias = 'wootex';
