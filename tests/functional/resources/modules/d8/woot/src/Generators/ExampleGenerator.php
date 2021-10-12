@@ -2,39 +2,56 @@
 
 namespace Drupal\woot\Generators;
 
-use DrupalCodeGenerator\Command\BaseGenerator;
-use DrupalCodeGenerator\Utils;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
+use Drupal\Core\Extension\ModuleHandlerInterface;
+use DrupalCodeGenerator\Command\ModuleGenerator;
+use Psr\Container\ContainerInterface;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 
-class ExampleGenerator extends BaseGenerator
+class ExampleGenerator extends ModuleGenerator implements ContainerAwareInterface
 {
-    protected $name = 'woot-example';
-    protected $description = 'Generates a woot.';
-    protected $alias = 'wootex';
-    protected $templatePath = __DIR__;
+    use ContainerAwareTrait;
 
-    // We don't actually use this service. This illustrates how to inject a dependency into a Generator.
+    protected string $name = 'woot-example';
+    protected string $description = 'Generates a woot.';
+    protected string $alias = 'wootex';
+    protected string $templatePath = __DIR__;
+
+    /**
+     * Illustrates how to inject a dependency into a Generator.
+     *
+     * @var ModuleHandlerInterface
+     */
     protected $moduleHandler;
 
-    public function __construct($moduleHandler = null, $name = null)
+    public function __construct(ModuleHandlerInterface $moduleHandler = null)
     {
-        parent::__construct($name);
+        parent::__construct($this->name);
         $this->moduleHandler = $moduleHandler;
+    }
+
+    /**
+     * An optional factory method. Useful in order to inject dependencies from the Drush or Drupal containers.
+     *
+     * @param ContainerInterface $combinedContainer
+     *   A super-container which checks Drush and then Drupal containers for services.
+     * @return static
+     */
+    public static function create(ContainerInterface $combinedContainer)
+    {
+        return new static(
+            $combinedContainer->get('module_handler'),
+        );
     }
 
     /**
      * {@inheritdoc}
      */
-    protected function interact(InputInterface $input, OutputInterface $output)
+    protected function generate(&$vars): void
     {
-        $questions = Utils::moduleQuestions();
-
-        $vars = &$this->collectVars($input, $output, $questions);
-        $vars['class'] = Utils::camelize('Example_' . $vars['machine_name'] . '_Commands');
-
-        $this->addFile()
-            ->path('Commands/{class}.php')
-            ->template('example-generator.twig');
+        $this->collectDefault($vars);
+        $vars['class'] = '{machine_name|camelize}Commands';
+        $vars['color'] = $this->ask('Favorite color', 'blue');
+        $this->addFile('Commands/{class}.php', 'example-generator.twig');
     }
 }
