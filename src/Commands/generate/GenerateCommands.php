@@ -222,7 +222,9 @@ class GenerateCommands extends DrushCommands implements AutoloaderAwareInterface
         return array_map(
             function (string $class): Generator {
                 if (method_exists($class, 'create')) {
-                    return $class::create(Drush::getContainer(), \Drupal::getContainer());
+                    // Make both containers available via delegation.
+                    $container = Drush::getContainer()->delegate(\Drupal::getContainer());
+                    return $class::create($container);
                 } else {
                     return new $class;
                 }
