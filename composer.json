@@ -48,7 +48,7 @@
     "psy/psysh": "~0.6",
     "symfony/event-dispatcher": "^4.0",
     "symfony/finder": "^4.0 || ^5",
-    "symfony/polyfill-php80": "^1.20",
+    "symfony/polyfill-php80": "^1.23",
     "symfony/var-dumper": "^4.0 || ^5.0",
     "symfony/yaml": "^4.0",
     "webflo/drupal-finder": "^1.2",

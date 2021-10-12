@@ -102,6 +102,7 @@ jobs:
       - checkout
       - run: cp .docker/zz-php.ini /usr/local/etc/php/conf.d/
       - run: composer require --dev drupal/core-recommended:9.1.0 --no-update
+      - run: composer require symfony/polyfill-php80:"1.23 as 1.20" --no-update
       - run: php --version
       - run: composer update
       - run: composer phpunit -- --testsuite integration --filter=testInsecureDrupalPackage --stop-on-skipped
