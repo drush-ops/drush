@@ -2,6 +2,7 @@
 
 namespace Drush\Commands\generate;
 
+use Consolidation\AnnotatedCommand\CommandFileDiscovery;
 use DrupalCodeGenerator\Application;
 use DrupalCodeGenerator\Command\Generator;
 use DrupalCodeGenerator\GeneratorFactory;
@@ -116,19 +117,11 @@ class GenerateCommands extends DrushCommands implements AutoloaderAwareInterface
         $application->setHelperSet($helper_set);
 
         $generator_factory = new GeneratorFactory();
-        $module_generators = [];
-
         $dcg_generators = $generator_factory->getGenerators([Application::ROOT . '/src/Command']);
         $drush_generators = $generator_factory->getGenerators([__DIR__ . '/Generators'], '\Drush\Commands\generate\Generators');
         $global_generators_deprecated = $generator_factory->getGenerators($this->discoverGlobalPathsDeprecated());
         $global_generators = $this->discoverGlobalGenerators();
-
-        if (Drush::bootstrapManager()->hasBootstrapped(DRUSH_BOOTSTRAP_DRUPAL_FULL)) {
-            $container = \Drupal::getContainer();
-            if ($container->has(DrushServiceModifier::DRUSH_GENERATOR_SERVICES)) {
-                $module_generators = $container->get(DrushServiceModifier::DRUSH_GENERATOR_SERVICES)->getCommandList();
-            }
-        }
+        $module_generators = $this->discoverModuleGenerators();
 
         $generators = [
             ...self::filterGenerators($dcg_generators),
@@ -170,9 +163,69 @@ class GenerateCommands extends DrushCommands implements AutoloaderAwareInterface
         $classes = (new RelativeNamespaceDiscovery($this->autoloader()))
             ->setRelativeNamespace('Drush\Generators')
             ->setSearchPattern('/.*Generator\.php$/')->getClasses();
+        $classes = $this->filterExists($classes);
+        return $this->getGenerators($classes);
+    }
+
+    /**
+     * Iterate over module directories and discover Generator classes.
+     *
+     * @return Generator[]
+     * @throws \ReflectionException
+     */
+    protected function discoverModuleGenerators()
+    {
+        $classes = [];
+        foreach (\Drupal::moduleHandler() ->getModuleList() as $name => $extension) {
+            $path = Path::join($extension->getPath(), 'src/Generators');
+            if (is_dir($path)) {
+                $name = $extension->getName();
+                $namespace = "Drupal\\{$name}\\Generators";
+                $classes = array_merge($classes, $this->discoverModuleClasses([$path], $namespace));
+            }
+        }
+        $classes = $this->filterExists(array_filter($classes));
+        return $this->getGenerators($classes);
+    }
+
+    /**
+     * Check each class for existence.
+     *
+     * @param array $classes
+     * @return array
+     */
+    protected function filterExists(array $classes): array
+    {
+        $exists = [];
+        foreach ($classes as $class) {
+            try {
+                // DCG v1 generators extend a non-existent class, so this check is needed.
+                if (class_exists($class)) {
+                    $exists[] = $class;
+                }
+            } catch (\Throwable $e) {
+                $this->logger()->notice($e->getMessage());
+            }
+        }
+        return $exists;
+    }
+
+    /**
+     * Validate and instantiate generator classes.
+     *
+     * @param array $classes
+     * @return Generator[]
+     * @throws \ReflectionException
+     */
+    protected function getGenerators(array $classes): array
+    {
         return array_map(
             function (string $class): Generator {
-                return new $class;
+                if (method_exists($class, 'create')) {
+                    return $class::create(Drush::getContainer(), \Drupal::getContainer());
+                } else {
+                    return new $class;
+                }
             },
             array_filter($classes, function (string $class): bool {
                 $reflectionClass = new \ReflectionClass($class);
@@ -182,5 +235,30 @@ class GenerateCommands extends DrushCommands implements AutoloaderAwareInterface
                     && !$reflectionClass->isTrait();
             })
         );
+    }
+
+    /**
+     * Discover classes. Same as \DrupalCodeGenerator\GeneratorFactory::getGenerators without
+     * class_exists() [it is done later) and instantiation.
+     *
+     * @param $directories
+     * @param $namespace
+     */
+    protected function discoverModuleClasses($directories, $namespace)
+    {
+        $classes = [];
+        foreach ($directories as $directory) {
+            $iterator = new \RecursiveIteratorIterator(
+                new \RecursiveDirectoryIterator($directory, \RecursiveDirectoryIterator::SKIP_DOTS),
+            );
+            foreach ($iterator as $file) {
+                if ($file->getExtension() == 'php') {
+                    $sub_path = $iterator->getInnerIterator()->getSubPath();
+                    $sub_namespace = $sub_path ? \str_replace(\DIRECTORY_SEPARATOR, '\\', $sub_path) . '\\' : '';
+                    $classes[] = $namespace . '\\' . $sub_namespace . $file->getBasename('.php');
+                }
+            }
+        }
+        return $classes;
     }
 }
