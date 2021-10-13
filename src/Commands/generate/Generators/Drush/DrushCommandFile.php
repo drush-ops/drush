@@ -10,6 +10,7 @@ use DrupalCodeGenerator\Utils;
  */
 class DrushCommandFile extends ModuleGenerator
 {
+    public const API = 2;
 
     protected string $name = 'drush-command-file';
     protected string $description = 'Generates a Drush command file.';

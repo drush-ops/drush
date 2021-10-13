@@ -3,6 +3,7 @@
 namespace Drush\Commands\generate;
 
 use DrupalCodeGenerator\Application;
+use DrupalCodeGenerator\ClassResolver\SimpleClassResolver;
 use DrupalCodeGenerator\Command\Generator;
 use DrupalCodeGenerator\GeneratorFactory;
 use DrupalCodeGenerator\Helper\DrupalContext;
@@ -114,12 +115,18 @@ class GenerateCommands extends DrushCommands implements AutoloaderAwareInterface
 
         $application->setHelperSet($helper_set);
 
-        $generator_factory = new GeneratorFactory();
-        $dcg_generators = $generator_factory->getGenerators([Application::ROOT . '/src/Command']);
-        $drush_generators = $generator_factory->getGenerators([__DIR__ . '/Generators'], '\Drush\Commands\generate\Generators');
-        $global_generators_deprecated = $generator_factory->getGenerators($this->discoverGlobalPathsDeprecated());
+        $generator_factory = new GeneratorFactory(new SimpleClassResolver(), $this->logger());
+        $dcg_generators = $generator_factory->getGenerators([Application::ROOT . '/src/Command'], Application::GENERATOR_NAMESPACE);
+        $drush_generators = $generator_factory->getGenerators([__DIR__ . '/Generators'], '\Drush\Commands\generate\Generators', Application::API);
+        $global_generators_deprecated = $generator_factory->getGenerators($this->discoverGlobalPathsDeprecated(), Application::GENERATOR_NAMESPACE);
         $global_generators = $this->discoverGlobalGenerators();
-        $module_generators = $this->discoverModuleGenerators();
+
+        foreach (\Drupal::moduleHandler()->getModuleList() as $name => $extension) {
+            $path = Path::join($extension->getPath(), 'src/Generator');
+            if (is_dir($path)) {
+                $module_generators = $generator_factory->getGenerators([$path], "Drupal\\$name\\Generator", Application::API);
+            }
+        }
 
         $generators = [
             ...self::filterGenerators($dcg_generators),
@@ -162,27 +169,6 @@ class GenerateCommands extends DrushCommands implements AutoloaderAwareInterface
             ->setRelativeNamespace('Drush\Generators')
             ->setSearchPattern('/.*Generator\.php$/')->getClasses();
         $classes = $this->filterExists($classes);
-        return $this->getGenerators($classes);
-    }
-
-    /**
-     * Iterate over module directories and discover Generator classes.
-     *
-     * @return Generator[]
-     * @throws \ReflectionException
-     */
-    protected function discoverModuleGenerators()
-    {
-        $classes = [];
-        foreach (\Drupal::moduleHandler() ->getModuleList() as $name => $extension) {
-            $path = Path::join($extension->getPath(), 'src/Generators');
-            if (is_dir($path)) {
-                $name = $extension->getName();
-                $namespace = "Drupal\\{$name}\\Generators";
-                $classes = array_merge($classes, $this->discoverModuleClasses([$path], $namespace));
-            }
-        }
-        $classes = $this->filterExists(array_filter($classes));
         return $this->getGenerators($classes);
     }
 
@@ -237,28 +223,4 @@ class GenerateCommands extends DrushCommands implements AutoloaderAwareInterface
         );
     }
 
-    /**
-     * Discover classes. Same as \DrupalCodeGenerator\GeneratorFactory::getGenerators without
-     * class_exists() [it is done later) and instantiation.
-     *
-     * @param $directories
-     * @param $namespace
-     */
-    protected function discoverModuleClasses($directories, $namespace)
-    {
-        $classes = [];
-        foreach ($directories as $directory) {
-            $iterator = new \RecursiveIteratorIterator(
-                new \RecursiveDirectoryIterator($directory, \RecursiveDirectoryIterator::SKIP_DOTS),
-            );
-            foreach ($iterator as $file) {
-                if ($file->getExtension() == 'php') {
-                    $sub_path = $iterator->getInnerIterator()->getSubPath();
-                    $sub_namespace = $sub_path ? \str_replace(\DIRECTORY_SEPARATOR, '\\', $sub_path) . '\\' : '';
-                    $classes[] = $namespace . '\\' . $sub_namespace . $file->getBasename('.php');
-                }
-            }
-        }
-        return $classes;
-    }
 }
