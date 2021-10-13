@@ -10,8 +10,8 @@ use Drush\Drush;
  */
 class DrushAliasFile extends Generator
 {
-    public const API = 2;
 
+    protected static int $api = 2;
     protected string $name = 'drush:alias-file';
     protected string $description = 'Generates a Drush site alias file.';
     protected string $alias = 'daf';

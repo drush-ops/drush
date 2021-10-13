@@ -9,8 +9,7 @@ use Psr\Container\ContainerInterface;
 
 class ExampleGenerator extends ModuleGenerator implements ContainerInjectionInterface
 {
-    public const API = 2;
-
+    protected static int $api = 2;
     protected string $name = 'woot:example';
     protected string $description = 'Generates a woot.';
     protected string $alias = 'wootex';
