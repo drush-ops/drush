@@ -2,7 +2,6 @@
 
 namespace Drush\Commands\generate;
 
-use Consolidation\AnnotatedCommand\CommandFileDiscovery;
 use DrupalCodeGenerator\Application;
 use DrupalCodeGenerator\Command\Generator;
 use DrupalCodeGenerator\GeneratorFactory;
@@ -15,7 +14,6 @@ use Drush\Boot\AutoloaderAwareInterface;
 use Drush\Boot\AutoloaderAwareTrait;
 use Drush\Commands\DrushCommands;
 use Drush\Commands\help\ListCommands;
-use Drush\Drupal\DrushServiceModifier;
 use Drush\Drush;
 use Robo\ClassDiscovery\RelativeNamespaceDiscovery;
 use Symfony\Component\Console\Helper\HelperSet;
