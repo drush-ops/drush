@@ -2,13 +2,16 @@
 
 namespace Drupal\woot\Generators;
 
+use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use DrupalCodeGenerator\Command\ModuleGenerator;
 use Psr\Container\ContainerInterface;
 
-class ExampleGenerator extends ModuleGenerator
+class ExampleGenerator extends ModuleGenerator implements ContainerInjectionInterface
 {
-    protected string $name = 'woot-example';
+    public const API = 2;
+
+    protected string $name = 'woot:example';
     protected string $description = 'Generates a woot.';
     protected string $alias = 'wootex';
     protected string $templatePath = __DIR__;
@@ -27,16 +30,16 @@ class ExampleGenerator extends ModuleGenerator
     }
 
     /**
-     * An optional factory method. Useful in order to inject dependencies from the Drush or Drupal containers.
+     * An optional factory method. Useful for injecting Drupal services. Remember to implement ContainerAwareInterface.
      *
-     * @param ContainerInterface $combinedContainer
-     *   A super-container which checks Drush and then Drupal containers for services.
+     * @param ContainerInterface $container
+     *   The Drupal container.
      * @return static
      */
-    public static function create(ContainerInterface $combinedContainer)
+    public static function create(ContainerInterface $container)
     {
         return new static(
-            $combinedContainer->get('module_handler'),
+            $container->get('module_handler'),
         );
     }
 

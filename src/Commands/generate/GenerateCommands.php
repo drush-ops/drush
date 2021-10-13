@@ -125,11 +125,11 @@ class GenerateCommands extends DrushCommands implements AutoloaderAwareInterface
 
         $module_generators = [];
         foreach (\Drupal::moduleHandler()->getModuleList() as $name => $extension) {
-            $path = Path::join($extension->getPath(), 'src/Generator');
+            $path = Path::join($extension->getPath(), 'src/Generators');
             if (is_dir($path)) {
                 $module_generators = [
                     ...$module_generators,
-                    ...$generator_factory->getGenerators([$path], "Drupal\\$name\\Generator", Application::API)
+                    ...$generator_factory->getGenerators([$path], "Drupal\\$name\\Generators", Application::API)
                 ];
             }
         }
