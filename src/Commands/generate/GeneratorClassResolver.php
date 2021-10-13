@@ -18,14 +18,16 @@ class GeneratorClassResolver implements ClassResolverInterface
     /**
      * Constructs the object.
      */
-    public function __construct(DrupalClassResolverInterface $drupalClassResolver) {
+    public function __construct(DrupalClassResolverInterface $drupalClassResolver)
+    {
         $this->drupalClassResolver = $drupalClassResolver;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getInstance(string $class): object {
+    public function getInstance(string $class): object
+    {
         return $this->drupalClassResolver->getInstanceFromDefinition($class);
     }
 }
