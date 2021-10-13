@@ -115,16 +115,22 @@ class GenerateCommands extends DrushCommands implements AutoloaderAwareInterface
 
         $application->setHelperSet($helper_set);
 
-        $generator_factory = new GeneratorFactory(new SimpleClassResolver(), $this->logger());
+        $class_resolver = new GeneratorClassResolver(\Drupal::getContainer()->get('class_resolver'));
+        $generator_factory = new GeneratorFactory($class_resolver, $this->logger());
+
         $dcg_generators = $generator_factory->getGenerators([Application::ROOT . '/src/Command'], Application::GENERATOR_NAMESPACE);
         $drush_generators = $generator_factory->getGenerators([__DIR__ . '/Generators'], '\Drush\Commands\generate\Generators', Application::API);
         $global_generators_deprecated = $generator_factory->getGenerators($this->discoverGlobalPathsDeprecated(), Application::GENERATOR_NAMESPACE);
         $global_generators = $this->discoverGlobalGenerators();
 
+        $module_generators = [];
         foreach (\Drupal::moduleHandler()->getModuleList() as $name => $extension) {
             $path = Path::join($extension->getPath(), 'src/Generator');
             if (is_dir($path)) {
-                $module_generators = $generator_factory->getGenerators([$path], "Drupal\\$name\\Generator", Application::API);
+                $module_generators = [
+                    ...$module_generators,
+                    ...$generator_factory->getGenerators([$path], "Drupal\\$name\\Generator", Application::API)
+                ];
             }
         }
 
