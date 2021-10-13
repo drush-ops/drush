@@ -338,6 +338,37 @@ DrushConfig as return type. Helps with IDE completion.</p></p>                </
                                             <p><p>Actual delete method.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    void
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_loadSave">loadSave</a>(string $entity_type, string $ids = null, array $options = [&#039;bundle&#039; =&gt; self::REQ, &#039;exclude&#039; =&gt; self::REQ, &#039;chunks&#039; =&gt; 50])
+        
+                                            <p><p>Load and save entities.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    void
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_doSave">doSave</a>(string $entity_type, array $ids)
+        
+                                            <p><p>Actual save method.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    <abbr title="Drupal\Core\Entity\Query\QueryInterface">QueryInterface</abbr>
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_getQuery">getQuery</a>(string $entity_type, string|null $ids, array $options)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
             </div>
 
 
@@ -800,7 +831,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_doDelete">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/EntityCommands.php#L98">at line 98</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/EntityCommands.php#L84">at line 84</a></div>
         <code>                    void
     <strong>doDelete</strong>(string $entity_type, array $ids)
         </code>
@@ -852,6 +883,197 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </tr>
                     <tr>
                 <td><abbr title="Drupal\Core\Entity\EntityStorageException">EntityStorageException</abbr></td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_loadSave">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/EntityCommands.php#L118">at line 118</a></div>
+        <code>                    void
+    <strong>loadSave</strong>(string $entity_type, string $ids = null, array $options = [&#039;bundle&#039; =&gt; self::REQ, &#039;exclude&#039; =&gt; self::REQ, &#039;chunks&#039; =&gt; 50])
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Load and save entities.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$entity_type</td>
+                <td><p>An entity machine name.</p></td>
+            </tr>
+                    <tr>
+                <td>string</td>
+                <td>$ids</td>
+                <td><p>A comma delimited list of Ids.</p></td>
+            </tr>
+                    <tr>
+                <td>array</td>
+                <td>$options</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>void</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+                            <h4>Exceptions</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><a target="_blank" rel="noopener" href="https://www.php.net/Exception">Exception</a></td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_doSave">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/EntityCommands.php#L146">at line 146</a></div>
+        <code>                    void
+    <strong>doSave</strong>(string $entity_type, array $ids)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Actual save method.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$entity_type</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>array</td>
+                <td>$ids</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>void</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+                            <h4>Exceptions</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException">InvalidPluginDefinitionException</abbr></td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><abbr title="Drupal\Component\Plugin\Exception\PluginNotFoundException">PluginNotFoundException</abbr></td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><abbr title="Drupal\Core\Entity\EntityStorageException">EntityStorageException</abbr></td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getQuery">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/EntityCommands.php#L163">at line 163</a></div>
+        <code>            protected        <abbr title="Drupal\Core\Entity\Query\QueryInterface">QueryInterface</abbr>
+    <strong>getQuery</strong>(string $entity_type, string|null $ids, array $options)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$entity_type</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>string|null</td>
+                <td>$ids</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>array</td>
+                <td>$options</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><abbr title="Drupal\Core\Entity\Query\QueryInterface">QueryInterface</abbr></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+                            <h4>Exceptions</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException">InvalidPluginDefinitionException</abbr></td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><abbr title="Drupal\Component\Plugin\Exception\PluginNotFoundException">PluginNotFoundException</abbr></td>
                 <td></td>
             </tr>
             </table>
