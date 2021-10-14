@@ -14,7 +14,7 @@ requires: &requires
     - check_mergable
     - code_style
 
-test_71_steps: &test71steps
+test_74_steps: &test74steps
   steps:
     - checkout
     - run: cp .docker/zz-php.ini /usr/local/etc/php/conf.d/
@@ -38,7 +38,7 @@ jobs:
   code_style:
     <<: *defaults
     docker:
-      - image: wodby/php:7.1
+      - image: wodby/php:7.4
     steps:
       - checkout
       - run: cp .docker/zz-php.ini /usr/local/etc/php/conf.d/
@@ -46,7 +46,7 @@ jobs:
       - run: composer cs
 
   # Mergeable test:
-  #   FAIL if merging test branch with 10.x produces conflicts
+  #   FAIL if merging test branch with 11.x produces conflicts
   #   PASS if the test branch is out of date, but mergeable without conflicts
   check_mergable:
     <<: *defaults
@@ -56,31 +56,30 @@ jobs:
       - checkout
       - run: $HOME/drush/.circleci/mergable.sh
 
-  # PHP 7.1 test:
+  # PHP 7.4 test:
   #   Checks the most common configuration.
-  test_71_drupal89_mysql:
+  test_74_drupal9_mysql:
     <<: *defaults
     docker:
-      - image: wodby/php:7.1
+      - image: wodby/php:7.4
         environment:
           - MYSQL_HOST=127.0.0.1
           - UNISH_DB_URL=mysql://root:@127.0.0.1
       - image: circleci/mysql:5.7.24
-    <<: *test71steps
+    <<: *test74steps
 
-  test_71_drupal89_sqlite:
+  test_74_drupal9_sqlite:
     <<: *defaults
     docker:
-      # We use a custom image here because wodby/php does not ship with sqlite3 program.
-      - image: drush/php:7.1
+      - image: wodby/php:7.4
         environment:
           - UNISH_DB_URL=sqlite://sut/sites/dev/files/.ht.sqlite
-    <<: *test71steps
+    <<: *test74steps
 
-  test_71_drupal89_postgres:
+  test_74_drupal9_postgres:
     <<: *defaults
     docker:
-      - image: wodby/php:7.1
+      - image: wodby/php:7.4
         environment:
           - UNISH_DB_URL=pgsql://unish:unish@127.0.0.1
       - image: wodby/postgres:10.5
@@ -88,13 +87,13 @@ jobs:
           POSTGRES_PASSWORD: unish
           POSTGRES_DB: unish_dev
           POSTGRES_USER: unish
-    <<: *test71steps
+    <<: *test74steps
 
   # Drupal 9.1.0 for Security test coverage for drupal/core
-  test_73_drupal91_security:
+  test_74_drupal91_security:
     <<: *defaults
     docker:
-      - image: wodby/php:7.3
+      - image: wodby/php:7.4
         environment:
           - MYSQL_HOST=127.0.0.1
           - UNISH_DB_URL=mysql://root:@127.0.0.1
@@ -103,50 +102,16 @@ jobs:
       - checkout
       - run: cp .docker/zz-php.ini /usr/local/etc/php/conf.d/
       - run: composer require --dev drupal/core-recommended:9.1.0 --no-update
-      # Replace alinks with semver for D9.
-      - run: composer remove --dev drupal/alinks --no-update
-      - run: composer require --dev drupal/semver_example:2.2.0 --no-update
       - run: php --version
-      - run: composer config platform.php 7.3.23
       - run: composer update
       - run: composer phpunit -- --testsuite integration --filter=testInsecureDrupalPackage --stop-on-skipped
 
-  # PHP 7.3 test with Drupal 9.1.x
-  #   Determines whether a newer version of a dependency has broken Drush.
-  test_73_drupal91:
-    <<: *defaults
-    docker:
-      - image: wodby/php:7.3
-        environment:
-          - MYSQL_HOST=127.0.0.1
-          - UNISH_DB_URL=mysql://root:@127.0.0.1
-      - image: circleci/mysql:5.7.24
-    steps:
-      - checkout
-      - run: cp .docker/zz-php.ini /usr/local/etc/php/conf.d/
-      - run: composer require --dev drupal/core-recommended:9.1.x-dev --no-update
-      # Replace alinks with semver for D9.
-      - run: composer remove --dev drupal/alinks --no-update
-      - run: composer require --dev drupal/semver_example:2.2.0 --no-update
-      - run: php --version
-      - run: composer config platform.php 7.3.23
-      - run: composer update
-      - run: composer lint
-      - run: composer unit -- --log-junit /tmp/results/unit.junit.xml
-      - run: composer functional -- --log-junit /tmp/results/functional.junit.xml
-      - run: composer integration -- --log-junit /tmp/results/integration.junit.xml
-      - store_test_results:
-         path: /tmp/results
-      - store_artifacts:
-         path: /tmp/results
-
-
   # PHP 8 test with Drupal tip
   #   Determines whether a newer version of a dependency has broken Drush.
-  test_80_drupal92:
+  test_80_drupal93_highest:
     <<: *defaults
     docker:
-      - image: wodby/php:8.0
+      - image: wodby/php:latest
         environment:
           - MYSQL_HOST=127.0.0.1
           - UNISH_DB_URL=mysql://root:@127.0.0.1
@@ -154,23 +119,15 @@ jobs:
     steps:
       - checkout
       - run: cp .docker/zz-php.ini /usr/local/etc/php/conf.d/
-      - run: composer require --dev drupal/core-recommended:9.2.x-dev --no-update
-      # Replace alinks with semver for D9.
-      - run: composer remove --dev drupal/alinks --no-update
-      - run: composer require --dev drupal/semver_example:2.2.0 --no-update
       - run: php --version
-      - run: composer config platform.php 8.0.0
+      - run: composer config platform.php --unset
+      - run: composer require --dev drupal/core-recommended:9.3.x-dev --no-update
       - run: composer update
-      - run: composer info composer/semver
-      - run: composer lint
       - run: mkdir -p /tmp/results
+      - run: composer lint
       - run: composer unit -- --log-junit /tmp/results/unit.junit.xml
       - run: composer functional -- --log-junit /tmp/results/functional.junit.xml
       - run: composer integration -- --log-junit /tmp/results/integration.junit.xml
-      - store_test_results:
-          path: /tmp/results
-      - store_artifacts:
-          path: /tmp/results
 
 workflows:
   version: 2
@@ -178,15 +135,13 @@ workflows:
     jobs:
       - code_style
       - check_mergable
-      - test_73_drupal91_security:
+      - test_74_drupal91_security:
           <<: *requires
-      - test_71_drupal89_mysql:
+      - test_74_drupal9_mysql:
           <<: *requires
-      - test_73_drupal91:
+      - test_80_drupal93_highest:
           <<: *requires
-      - test_80_drupal92:
+      - test_74_drupal9_sqlite:
           <<: *requires
-      - test_71_drupal89_sqlite:
-          <<: *requires
-      - test_71_drupal89_postgres:
+      - test_74_drupal9_postgres:
           <<: *requires

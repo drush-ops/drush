@@ -3,6 +3,7 @@
 namespace Drush\Commands\core;
 
 use Consolidation\OutputFormatters\StructuredData\PropertyList;
+use Drupal\Core\Site\Settings;
 use Drupal\Core\StreamWrapper\PrivateStream;
 use Drupal\Core\StreamWrapper\PublicStream;
 use Drush\Boot\BootstrapManager;
@@ -213,16 +214,7 @@ class StatusCommands extends DrushCommands implements SiteAliasManagerAwareInter
                 }
                 if ($boot_manager->hasBootstrapped(DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION)) {
                     try {
-                        // @todo Temporary Drupal 9 compat.
-                        if (drush_drupal_major_version() >= 9) {
-                            $GLOBALS['config_directories']['sync'] = 'UNUSED';
-                        }
-
-                        if (isset($GLOBALS['config_directories'])) {
-                            foreach ($GLOBALS['config_directories'] as $label => $unused) {
-                                $paths["%config-$label"] = drush_config_get_config_directory($label);
-                            }
-                        }
+                        $paths["%config-sync"] = Settings::get('config_sync_directory');
                     } catch (\Exception $e) {
                         // Nothing to do.
                     }
@@ -230,7 +222,7 @@ class StatusCommands extends DrushCommands implements SiteAliasManagerAwareInter
 
                 if ($boot_manager->hasBootstrapped(DRUSH_BOOTSTRAP_DRUPAL_FULL)) {
                     $paths['%files'] = PublicStream::basePath();
-                    $paths['%temp'] = drush_file_directory_temp();
+                    $paths['%temp'] = \Drupal::service('file_system')->getTempDirectory();
                     if ($private_path = PrivateStream::basePath()) {
                         $paths['%private'] = $private_path;
                     }

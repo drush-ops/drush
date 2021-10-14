@@ -5,7 +5,7 @@ high quality, our tests are run on every push. See [CircleCi](https://circleci.c
 1. `git clone https://github.com/drush-ops/drush.git`
 1. `cd drush`
 1. `composer install`
-1. Review the configuration settings in [tests/phpunit.xml.dist](https://github.com/drush-ops/drush/blob/10.x/tests/phpunit.xml.dist). If customization is needed, copy phpunit.xml.dist to phpunit.xml and edit away.
+1. Review the configuration settings in [tests/phpunit.xml.dist](https://github.com/drush-ops/drush/blob/11.x/tests/phpunit.xml.dist). If customization is needed, copy phpunit.xml.dist to phpunit.xml and edit away.
 1. Run all test suites: `composer test`
 
 ## Docker
@@ -14,7 +14,7 @@ Drush's own tests may be run within provided Docker containers (see docker-compo
 - Start containers: `docker-compose up -d`
 - Run a test: `docker-compose exec drupal composer functional -- --filter testUserRole`
 - To change configuration, copy `.env.example` to `.env`, edit to taste, and run `docker-compose up -d` again.
-- See the [.env.example file](https://github.com/drush-ops/drush/blob/10.x/.env.example) for help on enabling Xdebug.
+- See the [.env.example file](https://github.com/drush-ops/drush/blob/11.x/.env.example) for help on enabling Xdebug.
 
 ## Advanced usage
 - Run only one test suite

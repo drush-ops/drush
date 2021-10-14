@@ -17,6 +17,7 @@ use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Extension\ModuleInstallerInterface;
 use Drupal\Core\Extension\ThemeHandlerInterface;
 use Drupal\Core\Lock\LockBackendInterface;
+use Drupal\Core\Site\Settings;
 use Drupal\Core\StringTranslation\TranslationInterface;
 use Drush\Commands\DrushCommands;
 use Drush\Exceptions\UserAbortException;
@@ -233,11 +234,9 @@ class ConfigImportCommands extends DrushCommands
      *
      * @command config:import
      *
-     * @param string $label A config directory label (i.e. a key in \$config_directories array in settings.php).
      * @param array $options
      *
      * @return bool|void
-     * @interact-config-label
      * @option diff Show preview as a diff.
      * @option preview Deprecated. Format for displaying proposed changes. Recognized values: list, diff.
      * @option source An arbitrary directory that holds the configuration files. An alternative to label argument
@@ -249,14 +248,13 @@ class ConfigImportCommands extends DrushCommands
      * @throws \Drupal\Core\Config\StorageTransformerException
      * @throws \Drush\Exceptions\UserAbortException
      */
-    public function import($label = null, $options = ['preview' => 'list', 'source' => self::REQ, 'partial' => false, 'diff' => false])
+    public function import($options = ['preview' => 'list', 'source' => self::REQ, 'partial' => false, 'diff' => false])
     {
         // Determine source directory.
-
-        $source_storage_dir = ConfigCommands::getDirectory($label, $options['source']);
+        $source_storage_dir = ConfigCommands::getDirectory($options['source']);
 
         // Prepare the configuration storage for the import.
-        if ($source_storage_dir == Path::canonicalize(\drush_config_get_config_directory())) {
+        if ($source_storage_dir == Path::canonicalize(Settings::get('config_sync_directory'))) {
             $source_storage = $this->getConfigStorageSync();
         } else {
             $source_storage = new FileStorage($source_storage_dir);
