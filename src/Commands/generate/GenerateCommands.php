@@ -3,7 +3,6 @@
 namespace Drush\Commands\generate;
 
 use DrupalCodeGenerator\Application;
-use DrupalCodeGenerator\ClassResolver\SimpleClassResolver;
 use DrupalCodeGenerator\Command\Generator;
 use DrupalCodeGenerator\GeneratorFactory;
 use DrupalCodeGenerator\Helper\DrupalContext;

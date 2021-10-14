@@ -18,6 +18,6 @@ class CustomLibraryCommandsAndGeneratorsTest extends UnishIntegrationTestCase
         $this->assertStringContainsString('Hello world!', $this->getOutput());
         $this->drush('generate', ['list']);
         $this->assertStringContainsString('drush:testing-generator', $this->getOutput());
-        $this->assertStringContainsString('An internal generator used for tests', $this->getOutput());
+        $this->assertStringContainsString('An internal generator', $this->getOutput());
     }
 }

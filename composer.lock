@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Chi-teck/drupal-code-generator.git",
-                "reference": "1f1735220473c0c92b30555ef139a038621379fd"
+                "reference": "4f90650c5508dc4b3af91644b0b60d4ee5fd9f11"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Chi-teck/drupal-code-generator/zipball/1f1735220473c0c92b30555ef139a038621379fd",
-                "reference": "1f1735220473c0c92b30555ef139a038621379fd",
+                "url": "https://api.github.com/repos/Chi-teck/drupal-code-generator/zipball/4f90650c5508dc4b3af91644b0b60d4ee5fd9f11",
+                "reference": "4f90650c5508dc4b3af91644b0b60d4ee5fd9f11",
                 "shasum": ""
             },
             "require": {
@@ -67,7 +67,7 @@
                 "issues": "https://github.com/Chi-teck/drupal-code-generator/issues",
                 "source": "https://github.com/Chi-teck/drupal-code-generator/tree/master"
             },
-            "time": "2021-10-13T14:29:23+00:00"
+            "time": "2021-10-14T10:00:01+00:00"
         },
         {
             "name": "composer/semver",
