@@ -107,7 +107,7 @@ class GenerateCommands extends DrushCommands implements AutoloaderAwareInterface
         $helper_set = new HelperSet([
             new QuestionHelper(),
             new Dumper(new Filesystem()),
-            new Renderer(new TwigEnvironment(new FilesystemLoader())),
+            new Renderer(new TwigEnvironment(new FilesystemLoader([Application::TEMPLATE_PATH]))),
             new ResultPrinter(),
             // @todo Fetch container from Drush?
             new DrupalContext(\Drupal::getContainer())
