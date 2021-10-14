@@ -14,6 +14,7 @@ use Drush\Boot\AutoloaderAwareInterface;
 use Drush\Boot\AutoloaderAwareTrait;
 use Drush\Commands\DrushCommands;
 use Drush\Commands\help\ListCommands;
+use Drush\Drupal\DrushServiceModifier;
 use Drush\Drush;
 use Robo\ClassDiscovery\RelativeNamespaceDiscovery;
 use Symfony\Component\Console\Helper\HelperSet;
@@ -120,16 +121,13 @@ class GenerateCommands extends DrushCommands implements AutoloaderAwareInterface
         $dcg_generators = $generator_factory->getGenerators([Application::ROOT . '/src/Command'], Application::GENERATOR_NAMESPACE);
         $drush_generators = $generator_factory->getGenerators([__DIR__ . '/Generators'], '\Drush\Commands\generate\Generators', Application::API);
         $global_generators_deprecated = $generator_factory->getGenerators($this->discoverGlobalPathsDeprecated(), Application::GENERATOR_NAMESPACE);
-        $global_generators = $this->discoverGlobalGenerators();
+        $global_generators = $this->discoverPsr4Generators();
 
         $module_generators = [];
-        foreach (\Drupal::moduleHandler()->getModuleList() as $name => $extension) {
-            $path = Path::join($extension->getPath(), 'src/Generators');
-            if (is_dir($path)) {
-                $module_generators = [
-                    ...$module_generators,
-                    ...$generator_factory->getGenerators([$path], "Drupal\\$name\\Generators", Application::API)
-                ];
+        if (Drush::bootstrapManager()->hasBootstrapped(DRUSH_BOOTSTRAP_DRUPAL_FULL)) {
+            $container = \Drupal::getContainer();
+            if ($container->has(DrushServiceModifier::DRUSH_GENERATOR_SERVICES)) {
+                $module_generators = $container->get(DrushServiceModifier::DRUSH_GENERATOR_SERVICES)->getCommandList();
             }
         }
 
@@ -168,7 +166,7 @@ class GenerateCommands extends DrushCommands implements AutoloaderAwareInterface
         return array_filter($global_paths, 'file_exists');
     }
 
-    protected function discoverGlobalGenerators()
+    protected function discoverPsr4Generators()
     {
         $classes = (new RelativeNamespaceDiscovery($this->autoloader()))
             ->setRelativeNamespace('Drush\Generators')
@@ -210,13 +208,7 @@ class GenerateCommands extends DrushCommands implements AutoloaderAwareInterface
     {
         return array_map(
             function (string $class): Generator {
-                if (method_exists($class, 'create')) {
-                    // Make both containers available via delegation.
-                    $container = Drush::getContainer()->delegate(\Drupal::getContainer());
-                    return $class::create($container);
-                } else {
-                    return new $class;
-                }
+                return new $class;
             },
             array_filter($classes, function (string $class): bool {
                 $reflectionClass = new \ReflectionClass($class);

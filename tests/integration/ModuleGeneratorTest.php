@@ -14,7 +14,7 @@ class ModuleGeneratorTest extends UnishIntegrationTestCase
     /**
      * Tests that generators provided by modules are registered.
      */
-    public function testModuleAndGenerators(): void
+    public function testModuleGenerators(): void
     {
         $this->setupModulesForTests(['woot'], Path::join(__DIR__, '../functional/resources/modules/d8'));
         $this->drush('pm:enable', ['woot']);
