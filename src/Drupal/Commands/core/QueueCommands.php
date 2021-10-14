@@ -66,12 +66,14 @@ class QueueCommands extends DrushCommands
         $items_limit = (int) $options['items-limit'];
         $start = microtime(true);
         $worker = $this->getWorkerManager()->createInstance($name);
+        $info = $this->getWorkerManager()->getDefinition($name);
         $end = time() + $time_limit;
         $queue = $this->getQueue($name);
         $count = 0;
         $remaining = $time_limit;
+        $lease_time = $options['lease-time'] ?? $info['cron']['time'] ?? 30;
 
-        while ((!$time_limit || $remaining > 0) && (!$items_limit || $count < $items_limit) && ($item = $queue->claimItem($options['lease-time']))) {
+        while ((!$time_limit || $remaining > 0) && (!$items_limit || $count < $items_limit) && ($item = $queue->claimItem($lease_time))) {
             try {
                 $this->logger()->info(dt('Processing item @id from @name queue.', ['@name' => $name, '@id' => $item->item_id]));
                 $worker->processItem($item->data);

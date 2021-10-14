@@ -2,6 +2,8 @@
 
 namespace Drush\Drupal\Commands\core;
 
+use Consolidation\AnnotatedCommand\CommandData;
+use Consolidation\AnnotatedCommand\CommandError;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Drupal\Core\Datetime\DateFormatter;
 use Drupal\Core\KeyValueStore\KeyValueFactoryInterface;
@@ -395,8 +397,11 @@ class MigrateRunnerCommands extends DrushCommands
 
         // Include the file providing a migrate_prepare_row hook implementation.
         require_once Path::join(DRUSH_BASE_PATH, 'src/Drupal/Migrate/migrate_runner.inc');
+        // If the 'migrate_prepare_row' hook implementations are already cached,
+        // make sure that system_migrate_prepare_row() is picked-up.
+        \Drupal::moduleHandler()->resetImplementations();
 
-        foreach ($list as $tag => $migrations) {
+        foreach ($list as $migrations) {
             array_walk($migrations, [static::class, 'executeMigration'], $userData);
         }
     }
@@ -532,6 +537,7 @@ class MigrateRunnerCommands extends DrushCommands
      * @topics docs:migrate
      *
      * @validate-module-enabled migrate
+     * @validate-migration-id
      */
     public function stop(string $migrationId): void
     {
@@ -567,21 +573,18 @@ class MigrateRunnerCommands extends DrushCommands
      * @topics docs:migrate
      *
      * @validate-module-enabled migrate
+     * @validate-migration-id
      */
     public function resetStatus(string $migrationId): void
     {
         /** @var \Drupal\migrate\Plugin\MigrationInterface $migration */
         $migration = $this->getMigrationPluginManager()->createInstance($migrationId);
-        if ($migration) {
-            $status = $migration->getStatus();
-            if ($status == MigrationInterface::STATUS_IDLE) {
-                $this->logger()->warning(dt('Migration @id is already Idle', ['@id' => $migrationId]));
-            } else {
-                $migration->setStatus(MigrationInterface::STATUS_IDLE);
-                $this->logger()->success(dt('Migration @id reset to Idle', ['@id' => $migrationId]));
-            }
+        $status = $migration->getStatus();
+        if ($status == MigrationInterface::STATUS_IDLE) {
+            $this->logger()->warning(dt('Migration @id is already Idle', ['@id' => $migrationId]));
         } else {
-            throw new \InvalidArgumentException(dt('Migration @id does not exist', ['@id' => $migrationId]));
+            $migration->setStatus(MigrationInterface::STATUS_IDLE);
+            $this->logger()->success(dt('Migration @id reset to Idle', ['@id' => $migrationId]));
         }
     }
 
@@ -609,6 +612,7 @@ class MigrateRunnerCommands extends DrushCommands
      * @topics docs:migrate
      *
      * @validate-module-enabled migrate
+     * @validate-migration-id
      *
      * @field-labels
      *   level: Level
@@ -625,10 +629,6 @@ class MigrateRunnerCommands extends DrushCommands
     {
         /** @var \Drupal\migrate\Plugin\MigrationInterface $migration */
         $migration = $this->getMigrationPluginManager()->createInstance($migrationId);
-        if (!$migration) {
-            throw new \InvalidArgumentException(dt('Migration @id does not exist', ['@id' => $migrationId]));
-        }
-
         $idMap = $migration->getIdMap();
         $sourceIdKeys = $this->getSourceIdKeys($idMap);
         $table = [];
@@ -717,6 +717,7 @@ class MigrateRunnerCommands extends DrushCommands
      * @topics docs:migrate
      *
      * @validate-module-enabled migrate
+     * @validate-migration-id
      *
      * @field-labels
      *   machine_name: Field name
@@ -724,7 +725,7 @@ class MigrateRunnerCommands extends DrushCommands
      * @default-fields machine_name,description
      *
      * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
-     *   Migration messages status formatted as table.
+     *   Source fields of the given migration.
      */
     public function fieldsSource(string $migrationId): RowsOfFields
     {
@@ -860,5 +861,26 @@ class MigrateRunnerCommands extends DrushCommands
             return "src_{$id}";
         }, array_keys($columns));
         return array_combine($sourceIdKeys, $sourceIdKeys);
+    }
+
+    /**
+     * Validates a migration ID is valid.
+     *
+     * If the argument to be validated is not named migrationId, pass the
+     * argument name as the value of the annotation.
+     *
+     * @hook validate @validate-migration-id
+     *
+     * @param \Consolidation\AnnotatedCommand\CommandData $commandData
+     *
+     * @return \Consolidation\AnnotatedCommand\CommandError|null
+     */
+    public function validateMigrationId(CommandData $commandData)
+    {
+        $argName = $commandData->annotationData()->get('validate-migration-id') ?: 'migrationId';
+        $migrationId = $commandData->input()->getArgument($argName);
+        if (!$this->getMigrationPluginManager()->hasDefinition($migrationId)) {
+            return new CommandError(dt('Migration "@id" does not exist', ['@id' => $migrationId]));
+        }
     }
 }
