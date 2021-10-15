@@ -104,18 +104,19 @@ class GenerateCommands extends DrushCommands implements AutoloaderAwareInterface
         $application = new Application('Drupal Code Generator', Drush::getVersion());
         $application->setAutoExit(false);
 
+        $container = \Drupal::getContainer();
+
         $helper_set = new HelperSet([
             new QuestionHelper(),
             new Dumper(new Filesystem()),
             new Renderer(new TwigEnvironment(new FilesystemLoader([Application::TEMPLATE_PATH]))),
             new ResultPrinter(),
-            // @todo Fetch container from Drush?
-            new DrupalContext(\Drupal::getContainer())
+            new DrupalContext($container)
         ]);
 
         $application->setHelperSet($helper_set);
 
-        $class_resolver = new GeneratorClassResolver(\Drupal::getContainer()->get('class_resolver'));
+        $class_resolver = new GeneratorClassResolver($container->get('class_resolver'));
         $generator_factory = new GeneratorFactory($class_resolver, $this->logger());
 
         $dcg_generators = $generator_factory->getGenerators([Application::ROOT . '/src/Command'], Application::GENERATOR_NAMESPACE);
@@ -125,7 +126,6 @@ class GenerateCommands extends DrushCommands implements AutoloaderAwareInterface
 
         $module_generators = [];
         if (Drush::bootstrapManager()->hasBootstrapped(DRUSH_BOOTSTRAP_DRUPAL_FULL)) {
-            $container = \Drupal::getContainer();
             if ($container->has(DrushServiceModifier::DRUSH_GENERATOR_SERVICES)) {
                 $module_generators = $container->get(DrushServiceModifier::DRUSH_GENERATOR_SERVICES)->getCommandList();
             }
