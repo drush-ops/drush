@@ -3,6 +3,7 @@
 namespace Drush\Commands\generate;
 
 use DrupalCodeGenerator\Application;
+use DrupalCodeGenerator\ClassResolver\SimpleClassResolver;
 use DrupalCodeGenerator\Command\Generator;
 use DrupalCodeGenerator\GeneratorFactory;
 use DrupalCodeGenerator\Helper\DrupalContext;
@@ -12,6 +13,7 @@ use DrupalCodeGenerator\Helper\Renderer;
 use DrupalCodeGenerator\Helper\ResultPrinter;
 use Drush\Boot\AutoloaderAwareInterface;
 use Drush\Boot\AutoloaderAwareTrait;
+use Drush\Boot\DrupalBootLevels;
 use Drush\Commands\DrushCommands;
 use Drush\Commands\help\ListCommands;
 use Drush\Drupal\DrushServiceModifier;
@@ -103,7 +105,12 @@ class GenerateCommands extends DrushCommands implements AutoloaderAwareInterface
         $application = new Application('Drupal Code Generator', Drush::getVersion());
         $application->setAutoExit(false);
 
-        $container = \Drupal::getContainer();
+        $class_resolver = new SimpleClassResolver();
+        if (Drush::bootstrapManager()->hasBootstrapped(DrupalBootLevels::FULL)) {
+            $container = \Drupal::getContainer();
+            $class_resolver = new GeneratorClassResolver($container->get('class_resolver'));
+        }
+        $generator_factory = new GeneratorFactory($class_resolver, $this->logger());
 
         $helper_set = new HelperSet([
             new QuestionHelper(),
@@ -112,18 +119,14 @@ class GenerateCommands extends DrushCommands implements AutoloaderAwareInterface
             new ResultPrinter(),
             new DrupalContext($container)
         ]);
-
         $application->setHelperSet($helper_set);
-
-        $class_resolver = new GeneratorClassResolver($container->get('class_resolver'));
-        $generator_factory = new GeneratorFactory($class_resolver, $this->logger());
 
         $dcg_generators = $generator_factory->getGenerators([Application::ROOT . '/src/Command'], Application::GENERATOR_NAMESPACE);
         $drush_generators = $generator_factory->getGenerators([__DIR__ . '/Generators'], '\Drush\Commands\generate\Generators');
         $global_generators = $this->discoverPsr4Generators();
 
         $module_generators = [];
-        if (Drush::bootstrapManager()->hasBootstrapped(DRUSH_BOOTSTRAP_DRUPAL_FULL)) {
+        if (isset($container)) {
             if ($container->has(DrushServiceModifier::DRUSH_GENERATOR_SERVICES)) {
                 $module_generators = $container->get(DrushServiceModifier::DRUSH_GENERATOR_SERVICES)->getCommandList();
             }
