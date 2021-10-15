@@ -3,7 +3,6 @@
 namespace Drush\Boot;
 
 use Consolidation\AnnotatedCommand\AnnotationData;
-use Consolidation\Config\Loader\ConfigProcessor;
 use Drupal\Core\Database\Database;
 use Drupal\Core\DrupalKernel;
 use Drush\Config\ConfigLocator;
