@@ -74,7 +74,7 @@
 
     
     <p>        class
-    <strong>MigrationGenerator</strong>        extends <abbr title="DrupalCodeGenerator\Command\BaseGenerator">BaseGenerator</abbr>        (<a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/generate/Generators/Migrate/MigrationGenerator.php">View source</a>)
+    <strong>MigrationGenerator</strong>        extends <abbr title="DrupalCodeGenerator\Command\Plugin\PluginGenerator">PluginGenerator</abbr>        (<a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/generate/Generators/Migrate/MigrationGenerator.php">View source</a>)
 </p>
 
         
@@ -124,10 +124,10 @@
             <div class="container-fluid underlined">
                     <div class="row">
                 <div class="col-md-2 type">
-                    
+                    void
                 </div>
                 <div class="col-md-8">
-                    <a href="#method_interact">interact</a>(<abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr> $input, <abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr> $output)
+                    <a href="#method_generate">generate</a>(array $vars)
         
                                             <p><p>{@inheritdoc}</p></p>                </div>
                 <div class="col-md-2"></div>
@@ -139,10 +139,10 @@
 
             <div id="method-details">
                     <div class="method-item">
-                    <h3 id="method_interact">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/generate/Generators/Migrate/MigrationGenerator.php#L24">at line 24</a></div>
-        <code>            protected        
-    <strong>interact</strong>(<abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr> $input, <abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr> $output)
+                    <h3 id="method_generate">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/generate/Generators/Migrate/MigrationGenerator.php#L19">at line 19</a></div>
+        <code>            protected        void
+    <strong>generate</strong>(array $vars)
         </code>
     </h3>
     <div class="details">    
@@ -157,18 +157,22 @@
 
                     <table class="table table-condensed">
                     <tr>
-                <td><abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr></td>
-                <td>$input</td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td><abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr></td>
-                <td>$output</td>
+                <td>array</td>
+                <td>$vars</td>
                 <td></td>
             </tr>
             </table>
 
             
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>void</td>
+            <td></td>
+        </tr>
+    </table>
+
             
             
             
