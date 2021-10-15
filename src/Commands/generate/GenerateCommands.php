@@ -29,7 +29,6 @@ use Webmozart\PathUtil\Path;
  */
 class GenerateCommands extends DrushCommands implements AutoloaderAwareInterface
 {
-
     use AutoloaderAwareTrait;
 
     /**
@@ -121,7 +120,6 @@ class GenerateCommands extends DrushCommands implements AutoloaderAwareInterface
 
         $dcg_generators = $generator_factory->getGenerators([Application::ROOT . '/src/Command'], Application::GENERATOR_NAMESPACE);
         $drush_generators = $generator_factory->getGenerators([__DIR__ . '/Generators'], '\Drush\Commands\generate\Generators');
-        $global_generators_deprecated = $generator_factory->getGenerators($this->discoverGlobalPathsDeprecated(), Application::GENERATOR_NAMESPACE);
         $global_generators = $this->discoverPsr4Generators();
 
         $module_generators = [];
@@ -134,7 +132,6 @@ class GenerateCommands extends DrushCommands implements AutoloaderAwareInterface
         $generators = [
             ...self::filterGenerators($dcg_generators),
             ...$drush_generators,
-            ...$global_generators_deprecated,
             ...$global_generators,
             ...$module_generators,
         ];
