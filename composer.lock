@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a0aebac4cefb63d1eeb8c83277293f66",
+    "content-hash": "e861747a429a3355e28dc9a8867f906c",
     "packages": [
         {
             "name": "chi-teck/drupal-code-generator",
-            "version": "dev-master",
+            "version": "2.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Chi-teck/drupal-code-generator.git",
-                "reference": "4f90650c5508dc4b3af91644b0b60d4ee5fd9f11"
+                "reference": "d1ed04a01a6b013e228fd0523d12420bc5d108f6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Chi-teck/drupal-code-generator/zipball/4f90650c5508dc4b3af91644b0b60d4ee5fd9f11",
-                "reference": "4f90650c5508dc4b3af91644b0b60d4ee5fd9f11",
+                "url": "https://api.github.com/repos/Chi-teck/drupal-code-generator/zipball/d1ed04a01a6b013e228fd0523d12420bc5d108f6",
+                "reference": "d1ed04a01a6b013e228fd0523d12420bc5d108f6",
                 "shasum": ""
             },
             "require": {
@@ -43,7 +43,6 @@
                 "symfony/var-dumper": "^5.2",
                 "symfony/yaml": "^5.2"
             },
-            "default-branch": true,
             "bin": [
                 "bin/dcg"
             ],
@@ -65,9 +64,9 @@
             "description": "Drupal code generator",
             "support": {
                 "issues": "https://github.com/Chi-teck/drupal-code-generator/issues",
-                "source": "https://github.com/Chi-teck/drupal-code-generator/tree/master"
+                "source": "https://github.com/Chi-teck/drupal-code-generator/tree/2.2.0"
             },
-            "time": "2021-10-14T10:00:01+00:00"
+            "time": "2021-10-15T16:04:16+00:00"
         },
         {
             "name": "composer/semver",
@@ -8559,7 +8558,6 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
-        "chi-teck/drupal-code-generator": 20,
         "consolidation/site-alias": 0
     },
     "prefer-stable": true,
