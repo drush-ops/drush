@@ -6,7 +6,6 @@ use Consolidation\AnnotatedCommand\AnnotationData;
 use Drupal\Core\Database\Database;
 use Drupal\Core\DrupalKernel;
 use Drush\Config\ConfigLocator;
-use Drush\Config\Loader\YamlConfigLoader;
 use Drush\Drupal\DrushLoggerServiceProvider;
 use Drush\Drupal\DrushServiceModifier;
 use Drush\Drush;
