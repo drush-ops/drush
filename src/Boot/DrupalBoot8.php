@@ -164,20 +164,7 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
     {
         $siteConfig = $this->confPath() . '/drush.yml';
 
-        if (file_exists($siteConfig)) {
-            $loader = new YamlConfigLoader();
-            $processor = new ConfigProcessor();
-
-            $reference = Drush::config()->export();
-            $context = Drush::config()->getContext(ConfigLocator::SITE_CONTEXT);
-            $processor->add($context->export());
-            $processor->extend($loader->load($siteConfig));
-            $context->import($processor->export($reference));
-            Drush::config()->addContext(ConfigLocator::SITE_CONTEXT, $context);
-
-            $presetConfig = Drush::config()->get('runtime.config.paths');
-            Drush::config()->set('runtime.config.paths', array_merge($presetConfig, [$siteConfig]));
-
+        if (ConfigLocator::addSiteSpecificConfig(Drush::config(), $siteConfig)) {
             $this->logger->debug(dt("Loaded Drush config file at !file.", ['!file' => $siteConfig]));
         } else {
             $this->logger->debug(dt("Could not find a Drush config file at !file.", ['!file' => $siteConfig]));
