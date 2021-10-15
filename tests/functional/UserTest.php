@@ -115,22 +115,29 @@ class UserCase extends CommandUnishTestCase
 
     public function testUserCancel()
     {
-        // Create a content entity type and enable its module.
         $answers = [
-            'name' => 'UnishArticle',
+            'name' => 'Unish Article',
             'machine_name' => 'unish_article',
-            'package' => 'custom',
-            'version' => '8.x-1.0-dev',
-            'dependencies' => 'text',
+            'description' => 'A test module',
+            'package' => 'unish',
+            'dependencies' => 'drupal:text',
+        ];
+        $this->drush('generate', ['module'], ['v' => null, 'answer' => $answers, 'destination' => Path::join(self::webroot(), 'modules/contrib')], null, null, self::EXIT_SUCCESS, null, ['SHELL_INTERACTIVE' => 1]);
+        // Create a content entity type and enable its module.
+        // Note that only the values below are used. The keys are for documentation.
+        $answers = [
+            'name' => 'unish_article',
             'entity_type_label' => 'UnishArticle',
             'entity_type_id' => 'unish_article',
             'entity_base_path' => 'admin/content/unish_article',
             'fieldable' => 'no',
-            'translatable' => 'no',
             'revisionable' => 'no',
-            'template' => 'no',
-            'access_controller' => 'no',
-            'title_base_field' => 'yes',
+            'translatable' => 'no',
+            'bundle' => 'No',
+            'canonical page' => 'No',
+            'entity template' => 'No',
+            'CRUD permissions' => 'No',
+            'label base field' => 'Yes',
             'status_base_field' => 'yes',
             'created_base_field' => 'yes',
             'changed_base_field' => 'yes',
@@ -138,8 +145,7 @@ class UserCase extends CommandUnishTestCase
             'description_base_field' => 'no',
             'rest_configuration' => 'no',
         ];
-        $answers = json_encode($answers, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_NUMERIC_CHECK);
-        $this->drush('generate', ['content-entity'], ['answers' => $answers, 'directory' => Path::join(self::webroot(), 'modules/contrib')], null, null, self::EXIT_SUCCESS, null, ['SHELL_INTERACTIVE' => 1]);
+        $this->drush('generate', ['content-entity'], ['answer' => $answers, 'destination' => Path::join(self::webroot(), 'modules/contrib/unish_article')], null, null, self::EXIT_SUCCESS, null, ['SHELL_INTERACTIVE' => 1]);
         $this->drush('pm-enable', ['text,unish_article']);
         // Create one unish_article owned by our example user.
         $this->drush('php-script', ['create_unish_articles'], ['script-path' => Path::join(__DIR__, 'resources')]);

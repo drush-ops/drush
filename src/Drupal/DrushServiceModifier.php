@@ -32,7 +32,7 @@ class DrushServiceModifier implements ServiceModifierInterface
         $container->register(self::DRUSH_COMMAND_INFO_ALTERER_SERVICES, 'Drush\Command\ServiceCommandlist');
         $container->addCompilerPass(new FindCommandsCompilerPass(self::DRUSH_COMMAND_INFO_ALTERER_SERVICES, 'drush.command_info_alterer'));
         $container->register(self::DRUSH_GENERATOR_SERVICES, 'Drush\Command\ServiceCommandlist');
-        $container->addCompilerPass(new FindCommandsCompilerPass(self::DRUSH_GENERATOR_SERVICES, 'drush.generator'));
+        $container->addCompilerPass(new FindCommandsCompilerPass(self::DRUSH_GENERATOR_SERVICES, 'drush.generator.v' . \DrupalCodeGenerator\Application::API));
     }
 
     /**

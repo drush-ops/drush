@@ -20,7 +20,7 @@ services:
       class: Drupal\woot\Generators\ExampleGenerator
       arguments: ['@module_handler']
       tags:
-        -  { name: drush.generator }
+        -  { name: drush.generator.v2 }
   woot.command_info_alter:
     class: Drupal\woot\WootCommandInfoAlterer
     arguments: ['@logger.factory']
