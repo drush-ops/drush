@@ -168,7 +168,6 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
             $this->logger->debug(dt("Could not find a Drush config file at !file.", ['!file' => $siteConfig]));
         }
 
-
         // Note: this reports the 'default' site during site:install even if we eventually install to a different multisite.
         $this->logger->log(LogLevel::BOOTSTRAP, dt("Initialized Drupal site !site at !site_root", ['!site' => $this->getRequest()->getHttpHost(), '!site_root' => $this->confPath()]));
     }
