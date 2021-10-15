@@ -9,7 +9,6 @@ use DrupalCodeGenerator\Command\Plugin\PluginGenerator;
  */
 class MigrationGenerator extends PluginGenerator
 {
-    protected static int $api = 2;
     protected string $name = 'migration';
     protected string $description = 'Generates the yml and PHP class for a Migration';
     protected string $templatePath = __DIR__;

@@ -119,7 +119,7 @@ class GenerateCommands extends DrushCommands implements AutoloaderAwareInterface
         $generator_factory = new GeneratorFactory($class_resolver, $this->logger());
 
         $dcg_generators = $generator_factory->getGenerators([Application::ROOT . '/src/Command'], Application::GENERATOR_NAMESPACE);
-        $drush_generators = $generator_factory->getGenerators([__DIR__ . '/Generators'], '\Drush\Commands\generate\Generators', Application::API);
+        $drush_generators = $generator_factory->getGenerators([__DIR__ . '/Generators'], '\Drush\Commands\generate\Generators');
         $global_generators_deprecated = $generator_factory->getGenerators($this->discoverGlobalPathsDeprecated(), Application::GENERATOR_NAMESPACE);
         $global_generators = $this->discoverPsr4Generators();
 
