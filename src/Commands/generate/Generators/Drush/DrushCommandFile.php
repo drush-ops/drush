@@ -4,6 +4,7 @@ namespace Drush\Commands\generate\Generators\Drush;
 
 use DrupalCodeGenerator\Command\ModuleGenerator;
 use DrupalCodeGenerator\Utils;
+use Drush\Drush;
 
 /**
  * Implements drush-command-file command.
@@ -22,7 +23,7 @@ class DrushCommandFile extends ModuleGenerator
     {
         $this->collectDefault($vars);
 
-        $validator = static function ($path): string {
+        $validator = static function ($path) {
             if ($path && !is_file($path)) {
                 throw new \UnexpectedValueException(sprintf('Could not open file "%s".', $path));
             }
@@ -69,7 +70,7 @@ class DrushCommandFile extends ModuleGenerator
 
         // Add an entry for the Drush services file.
         $composer_json_data['extra']['drush']['services'] = [
-            'drush.services.yml' => '^10',
+            'drush.services.yml' => '^' . Drush::getMajorVersion(),
         ];
 
         return $composer_json_data;
