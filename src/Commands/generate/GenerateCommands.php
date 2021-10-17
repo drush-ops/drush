@@ -157,7 +157,7 @@ class GenerateCommands extends DrushCommands implements AutoloaderAwareInterface
                 !str_starts_with($generator->getName(), 'console:'),
         );
         $generators = array_map(
-            function (&$generator) {
+            function ($generator) {
                 if ($generator->getName() == 'theme-file') $generator->setName('theme:file');
                 if ($generator->getName() == 'theme-settings') $generator->setName('theme:settings');
                 if ($generator->getName() == 'theme-settings') $generator->setName('theme:settings');
