@@ -5,6 +5,7 @@ namespace Drush\Commands\generate;
 use DrupalCodeGenerator\Application;
 use DrupalCodeGenerator\ClassResolver\SimpleClassResolver;
 use DrupalCodeGenerator\Command\Generator;
+use DrupalCodeGenerator\Command\GeneratorInterface;
 use DrupalCodeGenerator\GeneratorFactory;
 use DrupalCodeGenerator\Helper\DrupalContext;
 use DrupalCodeGenerator\Helper\Dumper;
@@ -144,16 +145,32 @@ class GenerateCommands extends DrushCommands implements AutoloaderAwareInterface
     }
 
     /**
-     * Filters DCG generators.
+     * Filter and rename DCG generators.
+     * @param Generator[] $generators
+     * @return array
      */
     private static function filterGenerators(array $generators): array
     {
-        return array_filter(
+        $generators = array_filter(
             $generators,
             static fn ($generator) =>
                 !str_starts_with($generator->getName(), 'misc:d7:') &&
                 !str_starts_with($generator->getName(), 'console:'),
         );
+        $generators = array_map(
+            function (&$generator) {
+                if ($generator->getName() == 'theme-file') $generator->setName('theme:file');
+                if ($generator->getName() == 'theme-settings') $generator->setName('theme:settings');
+                if ($generator->getName() == 'theme-settings') $generator->setName('theme:settings');
+                if ($generator->getName() == 'plugin-manager') $generator->setName('plugin:manager');
+                // Remove the word 'module'.
+                if ($generator->getName() == 'configuration-entity') $generator->setDescription('Generates configuration entity');
+                if ($generator->getName() == 'content-entity') $generator->setDescription('Generates configuration entity');
+                return $generator;
+            },
+            $generators
+        );
+        return $generators;
     }
 
     protected function discoverGlobalPathsDeprecated()
