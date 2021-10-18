@@ -160,7 +160,6 @@ class GenerateCommands extends DrushCommands implements AutoloaderAwareInterface
             function ($generator) {
                 if ($generator->getName() == 'theme-file') $generator->setName('theme:file');
                 if ($generator->getName() == 'theme-settings') $generator->setName('theme:settings');
-                if ($generator->getName() == 'theme-settings') $generator->setName('theme:settings');
                 if ($generator->getName() == 'plugin-manager') $generator->setName('plugin:manager');
                 // Remove the word 'module'.
                 if ($generator->getName() == 'configuration-entity') $generator->setDescription('Generates configuration entity');
