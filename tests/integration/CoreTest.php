@@ -24,7 +24,7 @@ class CoreTest extends UnishIntegrationTestCase
         $output = $this->getOutput();
         $this->assertEquals('', $output);
 
-        $this->drush('core-requirements', [], $options + ['format' => 'json']);
+        $this->drush('core-requirements', [], $options + ['format' => 'json', 'fields' => 'sid']);
         $loaded = $this->getOutputFromJSON();
         // Pick a subset that are valid for D6/D7/D8.
         $expected = [
@@ -37,9 +37,7 @@ class CoreTest extends UnishIntegrationTestCase
         'settings.php' => -1,
         ];
         foreach ($expected as $key => $value) {
-            if (isset($loaded[$key])) {
-                $this->assertEquals("{$key}={$value}", "{$key}=" . $loaded[$key]['sid']);
-            }
+            $this->assertEquals("{$key}={$value}", "{$key}=" . $loaded[$key]['sid']);
         }
     }
 
