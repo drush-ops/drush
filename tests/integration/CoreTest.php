@@ -28,12 +28,8 @@ class CoreTest extends UnishIntegrationTestCase
         $loaded = $this->getOutputFromJSON();
         // Pick a subset that are valid for D6/D7/D8.
         $expected = [
-        // 'install_profile' => -1,
-        // 'node_access' => -1,
         'php' => -1,
-        // 'php_extensions' => -1,
         'php_memory_limit' => -1,
-        'php_register_globals' => -1,
         'settings.php' => -1,
         ];
         foreach ($expected as $key => $value) {
