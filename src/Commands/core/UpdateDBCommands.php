@@ -31,6 +31,7 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
      * @option entity-updates Run automatic entity schema updates at the end of any update hooks. Not supported in Drupal >= 8.7.0.
      * @option post-updates Run post updates after hook_update_n and entity updates.
      * @bootstrap full
+     * @topics docs:deploy
      * @kernel update
      * @aliases updb
      */
@@ -61,7 +62,13 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
             // @see https://github.com/drush-ops/drush/pull/3855.
             'no-entity-updates' => !$options['entity-updates'],
             'no-post-updates' => !$options['post-updates'],
+            'strict' => 0,
         ];
+        $status_options = array_merge(Drush::redispatchOptions(), $status_options);
+
+        // Since output needs to be checked, this option must be removed
+        unset($status_options['quiet']);
+
         $process = $this->processManager()->drush($this->siteAliasManager()->getSelf(), 'updatedb:status', [], $status_options);
         $process->mustRun();
         if ($output = $process->getOutput()) {
@@ -272,7 +279,7 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
         }
 
         // Record the schema update if it was completed successfully.
-        if ($context['finished'] == 1 && empty($ret['#abort'])) {
+        if ($context['finished'] >= 1 && empty($ret['#abort'])) {
             drupal_set_installed_schema_version($module, $number);
             // Setting this value will output a success message.
             // @see \DrushBatchContext::offsetSet()

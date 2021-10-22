@@ -108,11 +108,11 @@ Other fields in the output may be searched by using a simple expression in the `
 ```shell
 $ drush pm:list --filter='status=enabled'
 ```
-To search for fields that contain a string using the operator `*=`, or match a regular expression with the `~=` operator. For example, to find all views whose machine name contains the word "content":
+To search for fields that contain a string using the operator `*=`, or match a regular expression with the `~=` operator. For example, to find all views whose machine name contains the word *content*:
 ```shell
 drush views:list --filter='machine-name*=content'
 ```
-To use a regular expression to find any core requirement notice whose title contains either "php" or "gd"
+To use a regular expression to find any core requirement notice whose title contains either *php* or *gd*
 ```shell
 drush core:requirements --filter='title~=#(php|gd)#i'
 ```

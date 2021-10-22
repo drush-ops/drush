@@ -35,6 +35,15 @@ class SecurityUpdatesTest extends UnishIntegrationTestCase
     }
 
     /**
+     * Test that dev modules are correctly excluded.
+     */
+    public function testNoInsecureProductionDrupalPackage()
+    {
+        $this->drush('pm:security', [], ['format' => 'json', 'no-dev' => true], self::EXIT_SUCCESS);
+        $this->assertStringContainsString('There are no outstanding security updates for Drupal projects', $this->getErrorOutput());
+    }
+
+    /**
      * Test that insecure PHP packages are correctly identified.
      */
     public function testInsecurePhpPackage()
@@ -44,5 +53,14 @@ class SecurityUpdatesTest extends UnishIntegrationTestCase
         $this->assertStringContainsString('Run composer why david-garcia/phpwhois', $this->getErrorOutput());
         $security_advisories = $this->getOutputFromJSON();
         $this->arrayHasKey('david-garcia/phpwhois', $security_advisories);
+    }
+
+    /**
+     * Test that dev dependencies are correctly excluded.
+     */
+    public function testNoInsecureProductionPhpPackage()
+    {
+        $this->drush('pm:security-php', [], ['format' => 'json', 'no-dev' => true], self::EXIT_SUCCESS);
+        $this->assertStringContainsString('There are no outstanding security updates for your dependencies.', $this->getErrorOutput());
     }
 }

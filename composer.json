@@ -36,12 +36,13 @@
     "composer/semver": "^1.4 || ^3",
     "consolidation/config": "^1.2",
     "consolidation/filter-via-dot-access-data": "^1",
-    "consolidation/robo": "^1.4.11 || ^2",
+    "consolidation/robo": "^1.4.11 || ^2 || ^3",
     "consolidation/site-alias": "^3.0.0@stable",
     "consolidation/site-process": "^2.1 || ^4",
+    "enlightn/security-checker": "^1",
     "grasmash/yaml-expander": "^1.1.1",
     "guzzlehttp/guzzle": "^6.3 || ^7.0",
-    "league/container": "~2",
+    "league/container": "^2.5 || ^3.4",
     "psr/log": "~1.0",
     "psy/psysh": "~0.6",
     "symfony/event-dispatcher": "^3.4 || ^4.0",
@@ -57,7 +58,6 @@
     "david-garcia/phpwhois": "4.3.0",
     "drupal/core-recommended": "^8.8",
     "drupal/alinks": "1.0.0",
-    "lox/xhprof": "dev-master",
     "phpunit/phpunit": ">=7.5.20",
     "yoast/phpunit-polyfills": "^0.2.0",
     "squizlabs/php_codesniffer": "^2.7 || ^3",
@@ -75,7 +75,8 @@
   },
   "autoload-dev": {
     "psr-4": {
-      "Unish\\": "tests/unish"
+      "Unish\\": "tests/unish",
+      "Custom\\Library\\": "tests/fixtures/lib"
     },
     "classmap": [
         "sut/core/modules/migrate/src"

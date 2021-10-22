@@ -3,7 +3,7 @@ Defining and running migrations
 
 The Migrate API delivers services for migrating data from a source system to Drupal. This API is provided by the core `migrate` module. In order to migrate data to Drupal, you'll need to create migrations for each type of destination data.
 
-These commands are an alternative to https://www.drupal.org/project/migrate_tools. Don't use that module if you use these commands. Also, that module expects migrations to be defined as config entities whereas these commands expect migrations to be defined as YAML plugins (same as Drupal core).
+These commands are an alternative to https://www.drupal.org/project/migrate_tools. Don't use that module if you use these commands.
 
 Defining migrations
 -------------------

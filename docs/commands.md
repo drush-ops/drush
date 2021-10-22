@@ -4,7 +4,7 @@ Creating a new Drush command or porting a legacy command is easy. Follow the ste
 
 1. Run `drush generate drush-command-file`.
 1. Drush will prompt for the machine name of the module that should "own" the file.
-    1. (optional) Drush will also prompt for the path to a legacy command file to port. See [tips on porting command to Drush 9](https://weitzman.github.io/blog/port-to-drush9)
+    1. (optional) Drush will also prompt for the path to a legacy command file to port. See [tips on porting commands to Drush 10](https://weitzman.github.io/blog/port-to-drush9)
     1. The module selected must already exist and be enabled. Use `drush generate module-standard` to create a new module.
 1. Drush will then report that it created a commandfile, a drush.services.yml file and a composer.json file. Edit those files as needed.
 1. Use the classes for the core Drush commands at [/src/Drupal/Commands](https://github.com/drush-ops/drush/tree/10.x/src/Drupal/Commands) as inspiration and documentation.
@@ -86,7 +86,12 @@ Using `require` in place of `conflict` is not recommended.
 A site-wide commandfile should have tests that run with each (major) version of Drush that is supported. You may model your test suite after the [example drush extension](https://github.com/drush-ops/example-drush-extension) project, which works on Drush ^8.2 and ^9.6.
 
 ## Global Drush Commands
-Commandfiles that are not part of any Drupal site are called 'global' commandfiles. Global commandfiles are not supported by default; in order to enable them, you must configure your `drush.yml` configuration file to add an `include` search location.
+
+Commandfiles that are not part of any Drupal site are called 'global' commandfiles.
+
+### Commands discovered by configuration
+
+Global commandfiles discoverable by configuration are not supported by default; in order to enable them, you must configure your `drush.yml` configuration file to add an `include` search location.
 
 For example:
 
@@ -110,3 +115,21 @@ It is recommended that you avoid global Drush commands, and favor site-wide comm
 
 !!! warning "Symlinked packages"
     While it is good practice to make your custom commands into a Composer package, please beware that symlinked packages (by using the composer repository type [Path](https://getcomposer.org/doc/05-repositories.md#path)) will **not** be discovered by Drush. When in development, it is recommended to [specify your package's](https://github.com/drush-ops/drush/blob/10.x/examples/example.drush.yml#L52-L67) path in your `drush.yml` to have quick access to your commands.
+
+### Auto-discovered commands
+
+_Note_: Global commands auto-discovery is experimental until Drush 10.5.0. 
+
+Such commands are auto-discovered by their class PSR4 namespace and class/file name suffix. Drush will auto-discover commands if:
+
+* The commands class is PSR4 auto-loadable.
+* The commands class namespace, relative to base namespace, is `Drush\Commands`. For instance, if a Drush command provider third party library maps this PSR4 autoload entry:
+  ```json
+  "autoload": {
+    "psr-4": {
+      "My\\Custom\\Library\\": "src"
+    }
+  }
+  ```
+  then the Drush global commands class namespace should be `My\Custom\Library\Drush\Commands` and the class file should be located under the `src/Drush/Commands` directory.
+* The class and file name ends with `*DrushCommands`, e.g. `FooDrushCommands`.
