@@ -312,9 +312,9 @@ class MigrateRunnerTest extends CommandUnishTestCase
         $this->assertEquals(1, $output[1]['level']);
         $this->assertSame('9', $output[1]['source_ids']);
         $this->assertEmpty($output[0]['destination_ids']);
-        $this->assertSame('ID 9 should fail', $output[1]['message']);
+        $this->assertStringContainsString('ID 9 should fail', $output[1]['message']);
         $this->assertEquals(1, $output[2]['level']);
-        $this->assertSame('ID 17 should fail', $output[2]['message']);
+        $this->assertStringContainsString('ID 17 should fail', $output[2]['message']);
         $this->assertSame('17', $output[2]['source_ids']);
         $this->assertEmpty($output[0]['destination_ids']);
 
@@ -345,7 +345,7 @@ class MigrateRunnerTest extends CommandUnishTestCase
         $this->assertEquals(1, $output[1]['level']);
         $this->assertSame('9', $output[1]['source_ids']);
         $this->assertEmpty($output[0]['destination_ids']);
-        $this->assertSame('ID 9 should fail', $output[1]['message']);
+        $this->assertStringContainsString('ID 9 should fail', $output[1]['message']);
 
         $this->drush('migrate:fields-source', ['test_migration'], ['format' => 'json']);
         $output = $this->getOutputFromJSON();
