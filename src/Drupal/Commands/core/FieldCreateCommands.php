@@ -631,8 +631,7 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
                 ? $fieldTypes[$fieldType]['id']
                 : $fieldTypes[$fieldType]['label'];
 
-            if (
-                $fieldStorage instanceof FieldStorageConfigInterface
+            if ($fieldStorage instanceof FieldStorageConfigInterface
                 && !$fieldStorage->isLocked()
                 && empty($fieldTypes[$fieldType]['no_ui'])
                 && !in_array($bundle, $fieldStorage->getBundles(), true)
@@ -670,9 +669,11 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
 
         return $value;
     }
-    
+
     protected function optionalAsk(string $question)
     {
-        return $this->io()->ask($question, null, function ($value) { return $value; });
+        return $this->io()->ask($question, null, function ($value) {
+            return $value;
+        });
     }
 }
