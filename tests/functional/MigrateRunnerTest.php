@@ -308,7 +308,7 @@ class MigrateRunnerTest extends CommandUnishTestCase
         $this->assertEquals(1, $output[0]['level']);
         $this->assertSame('2', $output[0]['source_ids']);
         $this->assertEmpty($output[0]['destination_ids']);
-        $this->assertSame('ID 2 should fail', $output[0]['message']);
+        $this->assertStringContainsString('ID 2 should fail', $output[0]['message']);
         $this->assertEquals(1, $output[1]['level']);
         $this->assertSame('9', $output[1]['source_ids']);
         $this->assertEmpty($output[0]['destination_ids']);
@@ -331,7 +331,7 @@ class MigrateRunnerTest extends CommandUnishTestCase
         $this->assertEquals(1, $output[0]['level']);
         $this->assertSame('2', $output[0]['source_ids']);
         $this->assertEmpty($output[0]['destination_ids']);
-        $this->assertSame('ID 2 should fail', $output[0]['message']);
+        $this->assertStringContainsString('ID 2 should fail', $output[0]['message']);
 
         // Three valid IDs, two with data, one without, and one invalid ID.
         $this->drush('migrate:messages', ['test_migration'], ['format' => 'json', 'idlist' => '1,2,9,100']);
@@ -341,7 +341,7 @@ class MigrateRunnerTest extends CommandUnishTestCase
         $this->assertEquals(1, $output[0]['level']);
         $this->assertSame('2', $output[0]['source_ids']);
         $this->assertEmpty($output[0]['destination_ids']);
-        $this->assertSame('ID 2 should fail', $output[0]['message']);
+        $this->assertStringContainsString('ID 2 should fail', $output[0]['message']);
         $this->assertEquals(1, $output[1]['level']);
         $this->assertSame('9', $output[1]['source_ids']);
         $this->assertEmpty($output[0]['destination_ids']);
