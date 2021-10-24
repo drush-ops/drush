@@ -7,6 +7,9 @@
     <exclude-pattern>src/internal-forks</exclude-pattern>
     <rule ref="PSR2"/>
 
+<!--    Keep us sane-->
+    <rule ref="Generic.ControlStructures.InlineControlStructure.NotAllowed"><severity>0</severity></rule>
+
     <arg name="warning-severity" value="0"/>
     <arg value="s" />
 </ruleset>

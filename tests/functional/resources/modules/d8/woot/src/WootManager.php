@@ -45,7 +45,7 @@ class WootManager
    * Woof mightily. Note that we can include commands directly
    * inside a service class.
    *
-   * @command woof
+   * @command woot:woof
    * @aliases wf
    */
     public function woof()

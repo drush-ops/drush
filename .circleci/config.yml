@@ -1,6 +1,7 @@
 # https://circleci.com/docs/2.0/workflows/#using-workspaces-to-share-data-among-jobs
 defaults: &defaults
   working_directory: ~/drush
+  resource_class: large
   environment:
     TZ: "/usr/share/zoneinfo/America/Los_Angeles"
     TERM: dumb
@@ -18,11 +19,16 @@ test_74_steps: &test74steps
     - checkout
     - run: cp .docker/zz-php.ini /usr/local/etc/php/conf.d/
     - run: composer install -n
+    - run: mkdir -p /tmp/results
     - run: composer lint
-    - run: composer unit
-    - run: composer functional
+    - run: composer unit -- --log-junit /tmp/results/unit.junit.xml
+    - run: composer functional -- --log-junit /tmp/results/functional.junit.xml
     # @todo was getting missing key_value table failure when this comes before functional. See https://circleci.com/gh/drush-ops/drush/8828.
-    - run: composer integration
+    - run: composer integration -- --log-junit /tmp/results/integration.junit.xml
+    - store_test_results:
+        path: /tmp/results
+    - store_artifacts:
+        path: /tmp/results
 
 version: 2.1
 jobs:
@@ -96,6 +102,7 @@ jobs:
       - checkout
       - run: cp .docker/zz-php.ini /usr/local/etc/php/conf.d/
       - run: composer require --dev drupal/core-recommended:9.1.0 --no-update
+      - run: composer require symfony/polyfill-php80:"1.23 as 1.20" --no-update
       - run: php --version
       - run: composer update
       - run: composer phpunit -- --testsuite integration --filter=testInsecureDrupalPackage --stop-on-skipped
@@ -117,10 +124,11 @@ jobs:
       - run: composer config platform.php --unset
       - run: composer require --dev drupal/core-recommended:9.3.x-dev --no-update
       - run: composer update
+      - run: mkdir -p /tmp/results
       - run: composer lint
-      - run: composer unit
-      - run: composer functional
-      - run: composer integration
+      - run: composer unit -- --log-junit /tmp/results/unit.junit.xml
+      - run: composer functional -- --log-junit /tmp/results/functional.junit.xml
+      - run: composer integration -- --log-junit /tmp/results/integration.junit.xml
 
 workflows:
   version: 2
