@@ -109,10 +109,11 @@ jobs:
 
   # PHP 8 test with Drupal tip
   #   Determines whether a newer version of a dependency has broken Drush.
-  test_80_drupal93_highest:
+  test_81_drupal93_highest:
     <<: *defaults
     docker:
-      - image: wodby/php:latest
+#      @todo After release change to wodby/php:latest
+      - image: wodby/php:8.1-rc-dev
         environment:
           - MYSQL_HOST=127.0.0.1
           - UNISH_DB_URL=mysql://root:@127.0.0.1
@@ -140,7 +141,7 @@ workflows:
           <<: *requires
       - test_74_drupal9_mysql:
           <<: *requires
-      - test_80_drupal93_highest:
+      - test_81_drupal93_highest:
           <<: *requires
       - test_74_drupal9_sqlite:
           <<: *requires
