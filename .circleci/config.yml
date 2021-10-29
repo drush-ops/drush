@@ -113,7 +113,7 @@ jobs:
     <<: *defaults
     docker:
 #      @todo After release change to wodby/php:latest
-      - image: wodby/php:8.1-rc
+      - image: wodby/php:8.1-rc-dev
         environment:
           - MYSQL_HOST=127.0.0.1
           - UNISH_DB_URL=mysql://root:@127.0.0.1
