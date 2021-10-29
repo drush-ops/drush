@@ -223,7 +223,7 @@ class PreflightArgs extends Config implements PreflightArgsInterface
      */
     public function alias()
     {
-        return $this->get(self::ALIAS, '');
+        return $this->get(self::ALIAS);
     }
 
     /**
