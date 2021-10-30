@@ -121,7 +121,7 @@ abstract class DrupalBoot extends BaseBoot
     {
         $drupal_root = $manager->getRoot();
         chdir($drupal_root);
-        $this->logger->log(LogLevel::BOOTSTRAP, dt("Change working directory to !drupal_root", ['!drupal_root' => $drupal_root]));
+        $this->logger->info(dt("Change working directory to !drupal_root", ['!drupal_root' => $drupal_root]));
 
         $core = $this->bootstrapDrupalCore($manager, $drupal_root);
 
@@ -136,7 +136,7 @@ abstract class DrupalBoot extends BaseBoot
         // DRUSH_DRUPAL_CORE should point to the /core folder in Drupal 8+.
         define('DRUSH_DRUPAL_CORE', $core);
 
-        $this->logger->log(LogLevel::BOOTSTRAP, dt("Initialized Drupal !version root directory at !drupal_root", ["!version" => Drush::bootstrap()->getVersion($drupal_root), '!drupal_root' => $drupal_root]));
+        $this->logger->info(dt("Initialized Drupal !version root directory at !drupal_root", ["!version" => Drush::bootstrap()->getVersion($drupal_root), '!drupal_root' => $drupal_root]));
     }
 
     /**
@@ -185,7 +185,7 @@ abstract class DrupalBoot extends BaseBoot
     {
         // We presume that our derived classes will connect and then
         // either fail, or call us via parent::
-        $this->logger->log(LogLevel::BOOTSTRAP, dt("Successfully connected to the Drupal database."));
+        $this->logger->info(dt("Successfully connected to the Drupal database."));
     }
 
     /**
