@@ -7,4 +7,4 @@ Support
 * See www.drush.org for documentation.
 * Post support requests to [Drupal Answers](http://drupal.stackexchange.com/questions/tagged/drush). Tag question with 'drush'.
 * Report bugs and request features in the [GitHub Drush Issue Queue](https://github.com/drush-ops/drush/issues).
-* Use pull requests (PRs) to contribute to Drush.
+* Use pull requests (PRs) to contribute to Drush. 

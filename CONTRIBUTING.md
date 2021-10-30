@@ -11,7 +11,7 @@ Drush is built by people like you! Please [join us](https://github.com/drush-ops
 * We maintain branches named 11.x, 10.x, etc. These are release branches. From these branches, we make new tags for patch and minor versions.
 
 ## Development Environment
-* You may choose to use the docker-compose file in root directory for an optimized environment.
+* You may choose to use the [DDEV](https://ddev.readthedocs.io/) for a [standardized development environment](/.ddev/config.yaml).
 * See `composer run-script -l` for a list of helper scripts.
 
 ## Coding style
