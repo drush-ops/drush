@@ -10,7 +10,7 @@ use Drush\Boot\BootstrapManager;
 use Drush\Command\RemoteCommandProxy;
 use Drush\Commands\DrushCommands;
 use Drush\Config\ConfigAwareTrait;
-use Drush\Log\LogLevel;
+use Psr\Log\LogLevel;
 use Drush\Runtime\RedispatchHook;
 use Drush\Runtime\TildeExpansionHook;
 use Psr\Log\LoggerAwareInterface;
