@@ -3,8 +3,6 @@
 namespace Drush\Boot;
 
 use Drush\Drush;
-use Drush\Log\LogLevel;
-use Drush\Sql\SqlBase;
 use Webmozart\PathUtil\Path;
 
 abstract class DrupalBoot extends BaseBoot

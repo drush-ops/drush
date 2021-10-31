@@ -4,12 +4,11 @@ namespace Drush\Boot;
 
 use Consolidation\AnnotatedCommand\AnnotationData;
 use DrupalFinder\DrupalFinder;
-use Drush\Log\LogLevel;
+use Drush\Config\ConfigAwareTrait;
 use League\Container\ContainerAwareInterface;
 use League\Container\ContainerAwareTrait;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
-use Drush\Config\ConfigAwareTrait;
 use Robo\Contract\ConfigAwareInterface;
 
 class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface, ConfigAwareInterface, ContainerAwareInterface
@@ -478,7 +477,7 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
         }
 
         if ($max_phase_index >= count($phases)) {
-            $this->logger->log(LogLevel::DEBUG, 'Trying to bootstrap as far as we can');
+            $this->logger->debug('Trying to bootstrap as far as we can');
         }
 
         // Try to bootstrap to the maximum possible level, without generating errors.
@@ -496,7 +495,7 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
                 // $this->bootstrapValidate() only logs successful validations. For us,
                 // knowing what failed can also be important.
                 $previous = $this->getPhase();
-                $this->logger->log(LogLevel::DEBUG, 'Bootstrap phase {function}() failed to validate; continuing at {current}()', ['function' => $current_phase, 'current' => $phases[$previous]]);
+                $this->logger->debug('Bootstrap phase {function}() failed to validate; continuing at {current}()', ['function' => $current_phase, 'current' => $phases[$previous]]);
                 break;
             }
         }

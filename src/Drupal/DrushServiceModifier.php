@@ -3,7 +3,6 @@
 namespace Drush\Drupal;
 
 use Drush\Drush;
-use Drush\Log\LogLevel;
 use Drupal\Core\DependencyInjection\ServiceModifierInterface;
 use Drupal\Core\DependencyInjection\ContainerBuilder;
 

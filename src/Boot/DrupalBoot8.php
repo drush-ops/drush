@@ -8,11 +8,10 @@ use Drupal\Core\DrupalKernel;
 use Drush\Drupal\DrushLoggerServiceProvider;
 use Drush\Drupal\DrushServiceModifier;
 use Drush\Drush;
-use Drush\Log\LogLevel;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Webmozart\PathUtil\Path;
-use Psr\Log\LoggerInterface;
 
 class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
 {
