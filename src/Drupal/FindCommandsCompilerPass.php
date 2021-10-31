@@ -2,7 +2,6 @@
 namespace Drush\Drupal;
 
 use Drush\Drush;
-use Drush\Log\LogLevel;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\Reference;
