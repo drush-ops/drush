@@ -1,8 +1,5 @@
 <?php
 
-use Drush\Drush;
-use Drush\Log\LogLevel;
-
 /**
  * @deprecated see DrupalBootLevels::NONE
  */
