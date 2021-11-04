@@ -9,12 +9,11 @@ high quality, our tests are run on every push. See [CircleCi](https://circleci.c
 1. Run all test suites: `composer test`
 
 ## Docker
-Drush's own tests may be run within provided Docker containers (see docker-compose.yml):
+Drush's own tests may be run natively or within [DDEV](https://github.com/drush-ops/drush/tree/11.x/.ddev) ([docs](https://ddev.readthedocs.io/)):
 
-- Start containers: `docker-compose up -d`
-- Run a test: `docker-compose exec drupal composer functional -- --filter testUserRole`
-- To change configuration, copy `.env.example` to `.env`, edit to taste, and run `docker-compose up -d` again.
-- See the [.env.example file](https://github.com/drush-ops/drush/blob/11.x/.env.example) for help on enabling Xdebug.
+- Start containers: `ddev start`
+- Run a test: `ddev composer functional -- --filter testUserRole`
+- [Help with Xdebug](https://ddev.readthedocs.io/en/stable/users/step-debugging/).
 
 ## Advanced usage
 - Run only one test suite
