@@ -14,6 +14,39 @@ class ValidatorsCommands
 {
 
     /**
+     * Validate that the entity type passed as argument exists.
+     *
+     * @hook validate @validate-entity-type-argument
+     */
+    public function hookValidateEntityType(CommandData $commandData): void
+    {
+        $argumentName = $commandData->annotationData()->get('validate-entity-type-argument');
+        $entityType = $commandData->input()->getArgument($argumentName);
+
+        $this->validateEntityType($entityType);
+    }
+
+    /**
+     * Validate that the bundle passed as argument exists.
+     *
+     * @hook validate @validate-optional-bundle-argument
+     */
+    public function hookValidateOptionalBundle(CommandData $commandData): void
+    {
+        $annotation = $commandData->annotationData()->get('validate-optional-bundle-argument');
+        [$entityTypeArgumentName, $bundleArgumentName] = explode(' ', $annotation);
+
+        $entityType = $commandData->input()->getArgument($entityTypeArgumentName);
+        $bundle = $commandData->input()->getArgument($bundleArgumentName);
+
+        if (!$bundle) {
+            return;
+        }
+
+        $this->validateBundle($entityType, $bundle);
+    }
+
+    /**
      * Validate that passed entity names are valid.
      * @see \Drush\Commands\core\ViewsCommands::execute for an example.
      *
@@ -130,6 +163,35 @@ class ValidatorsCommands
         if ($missing) {
             $msg = dt('Permission(s) not found: !perms', ['!perms' => implode(', ', $missing)]);
             return new CommandError($msg);
+        }
+    }
+
+    public function validateEntityType(string $entityTypeId): void
+    {
+        if (!\Drupal::entityTypeManager()->hasDefinition($entityTypeId)) {
+            throw new \InvalidArgumentException(
+                t("Entity type with id ':entityType' does not exist.", [':entityType' => $entityTypeId])
+            );
+        }
+    }
+
+    public function validateBundle(string $entityTypeId, string $bundle): void
+    {
+        $entityTypeDefinition = \Drupal::entityTypeManager()->getDefinition($entityTypeId);
+
+        if ($entityTypeDefinition && $bundleEntityType = $entityTypeDefinition->getBundleEntityType()) {
+            $bundleDefinition = \Drupal::entityTypeManager()
+                ->getStorage($bundleEntityType)
+                ->load($bundle);
+        }
+
+        if (!isset($bundleDefinition)) {
+            throw new \InvalidArgumentException(
+                t("Bundle ':bundle' does not exist on entity type with id ':entityType'.", [
+                    ':bundle' => $bundle,
+                    ':entityType' => $entityTypeId,
+                ])
+            );
         }
     }
 }
