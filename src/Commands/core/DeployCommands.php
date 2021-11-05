@@ -38,7 +38,7 @@ class DeployCommands extends DrushCommands implements SiteAliasManagerAwareInter
         $this->cacheRebuild($manager, $self, $redispatchOptions);
 
         $this->logger()->success("Config import start.");
-        $process = $manager->drush($self, 'config:import', [], $redispatchOptions);
+        $process = $manager->drush($self, 'config:import --diff', [], $redispatchOptions);
         $process->mustRun($process->showRealtime());
 
         $this->cacheRebuild($manager, $self, $redispatchOptions);
