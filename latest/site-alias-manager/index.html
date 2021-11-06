@@ -106,9 +106,7 @@
     
       
 
-  
-
-<header class="md-header md-header--lifted" data-md-component="header">
+<header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
     <a href=".." title="Drush" class="md-header__button md-logo" aria-label="Drush" data-md-component="logo">
       
@@ -187,8 +185,14 @@
     
   </nav>
   
+</header>
     
-      <!--
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            <!--
   Copyright (c) 2016-2020 Martin Donath <martin.donath@squidfunk.com>
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -322,13 +326,7 @@
     </ul>
   </div>
 </nav>
-    
-  
-</header>
-    
-    <div class="md-container" data-md-component="container">
-      
-      
+          
         
       
       <main class="md-main" data-md-component="main">
@@ -1476,6 +1474,20 @@
   
   
     <li class="md-nav__item">
+      <a href="../commands/core_init/" class="md-nav__link">
+        core:init
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../commands/core_requirements/" class="md-nav__link">
         core:requirements
       </a>
@@ -1670,20 +1682,6 @@
     <li class="md-nav__item">
       <a href="../commands/entity_delete/" class="md-nav__link">
         entity:delete
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../commands/entity_save/" class="md-nav__link">
-        entity:save
       </a>
     </li>
   
@@ -3257,14 +3255,14 @@
                 
                 
                 <h1 id="site-alias-manager">Site Alias Manager<a class="headerlink" href="#site-alias-manager" title="Permanent link">&para;</a></h1>
-<p>The <a href="https://github.com/consolidation/site-alias/blob/11.x/src/SiteAliasManager.php">Site Alias Manager (SAM)</a> service is used to retrieve information about one or all of the site aliases for the current installation.</p>
+<p>The <a href="https://github.com/consolidation/site-alias/blob/10.x/src/SiteAliasManager.php">Site Alias Manager (SAM)</a> service is used to retrieve information about one or all of the site aliases for the current installation.</p>
 <ul>
-<li>An informative example is the <a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/core/BrowseCommands.php">browse command</a></li>
+<li>An informative example is the <a href="https://github.com/drush-ops/drush/blob/10.x/src/Commands/core/BrowseCommands.php">browse command</a></li>
 <li>A commandfile gets access to the SAM by implementing the SiteAliasManagerAwareInterface and <em>use</em>ing the SiteAliasManagerAwareTrait trait. Then you gain access via <code>$this-&gt;siteAliasManager()</code>.</li>
 <li>If an alias was used for the current request, it is available via <code>$this-&gt;siteAliasManager()-&gt;getself()</code>.</li>
 <li>The SAM generally deals in <a href="https://github.com/consolidation/site-alias/blob/main/src/SiteAlias.php">SiteAlias</a> objects. That is how any given site alias is represented. See its methods for determining things like whether the alias points to a local host or remote host.</li>
 <li><a href="../site-aliases/">Site alias docs</a>.</li>
-<li><a href="https://raw.githubusercontent.com/drush-ops/drush/11.x/examples/Commands/SiteAliasAlterCommands.php">Dynamically alter site aliases</a>.</li>
+<li><a href="https://raw.githubusercontent.com/drush-ops/drush/10.x/examples/Commands/SiteAliasAlterCommands.php">Dynamically alter site aliases</a>.</li>
 <li>The SAM is also available for as <a href="https://github.com/consolidation/site-alias">a standalone Composer project</a>. More information available in the README there.</li>
 </ul>
                 
@@ -3375,7 +3373,7 @@
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "..", "features": ["navigation.tabs", "navigation.tabs.sticky", "toc.integrate"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../assets/javascripts/workers/search.fcfe8b6d.min.js", "version": null}</script>
+    <script id="__config" type="application/json">{"base": "..", "features": ["navigation.tabs", "toc.integrate"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../assets/javascripts/workers/search.fcfe8b6d.min.js", "version": null}</script>
     
     
       <script src="../assets/javascripts/bundle.b1047164.min.js"></script>

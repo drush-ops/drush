@@ -100,7 +100,6 @@
 <abbr title="Drush\Application">Application</abbr>#aliasManager</a> &mdash; <em>Property in class <a href="Drush/Application.html"><abbr title="Drush\Application">Application</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Application.html#method_aliasManager">
 <abbr title="Drush\Application">Application</abbr>::aliasManager</a>() &mdash; <em>Method in class <a href="Drush/Application.html"><abbr title="Drush\Application">Application</abbr></a></em></dt>
-                    <dd></dd><dt><a href="Drush/Attributes/Argument.html"><abbr title="Drush\Attributes\Argument">Argument</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Attributes.html">Drush\Attributes</a></em></dt>
                     <dd></dd><dt><a href="Drush/Boot/AutoloaderAwareInterface.html"><abbr title="Drush\Boot\AutoloaderAwareInterface">AutoloaderAwareInterface</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Boot.html">Drush\Boot</a></em></dt>
                     <dd></dd><dt><a href="Drush/Boot/AutoloaderAwareInterface.html#method_autoloader">
 <abbr title="Drush\Boot\AutoloaderAwareInterface">AutoloaderAwareInterface</abbr>::autoloader</a>() &mdash; <em>Method in class <a href="Drush/Boot/AutoloaderAwareInterface.html"><abbr title="Drush\Boot\AutoloaderAwareInterface">AutoloaderAwareInterface</abbr></a></em></dt>
@@ -247,6 +246,8 @@ by the ArgsPreprocessor (anything not listed in optionsWithValues).</p></dd><dt>
                     <dd><p>Return any '@alias' that may have appeared before the argument
 holding the command name.</p></dd><dt><a href="Drush/Runtime/DependencyInjection.html#method_addDrushServices">
 <abbr title="Drush\Runtime\DependencyInjection">DependencyInjection</abbr>::addDrushServices</a>() &mdash; <em>Method in class <a href="Drush/Runtime/DependencyInjection.html"><abbr title="Drush\Runtime\DependencyInjection">DependencyInjection</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/Runtime/DependencyInjection.html#method_addDrushServicesToLegacyContainer">
+<abbr title="Drush\Runtime\DependencyInjection">DependencyInjection</abbr>::addDrushServicesToLegacyContainer</a>() &mdash; <em>Method in class <a href="Drush/Runtime/DependencyInjection.html"><abbr title="Drush\Runtime\DependencyInjection">DependencyInjection</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Runtime/DependencyInjection.html#method_alterServicesForDrush">
 <abbr title="Drush\Runtime\DependencyInjection">DependencyInjection</abbr>::alterServicesForDrush</a>() &mdash; <em>Method in class <a href="Drush/Runtime/DependencyInjection.html"><abbr title="Drush\Runtime\DependencyInjection">DependencyInjection</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Runtime/RedispatchHook.html#method_alterArgsForRedispatch">
@@ -272,8 +273,7 @@ holding the command name.</p></dd><dt><a href="Drush/Runtime/DependencyInjection
 <abbr title="Drush\Application">Application</abbr>::bootstrapManager</a>() &mdash; <em>Method in class <a href="Drush/Application.html"><abbr title="Drush\Application">Application</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Application.html#method_bootstrapAndFind">
 <abbr title="Drush\Application">Application</abbr>::bootstrapAndFind</a>() &mdash; <em>Method in class <a href="Drush/Application.html"><abbr title="Drush\Application">Application</abbr></a></em></dt>
-                    <dd><p>Look up a command. Bootstrap further if necessary.</p></dd><dt><a href="Drush/Attributes/Bootstrap.html"><abbr title="Drush\Attributes\Bootstrap">Bootstrap</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Attributes.html">Drush\Attributes</a></em></dt>
-                    <dd></dd><dt><a href="Drush/Backend/BackendPathEvaluator.html"><abbr title="Drush\Backend\BackendPathEvaluator">BackendPathEvaluator</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Backend.html">Drush\Backend</a></em></dt>
+                    <dd><p>Look up a command. Bootstrap further if necessary.</p></dd><dt><a href="Drush/Backend/BackendPathEvaluator.html"><abbr title="Drush\Backend\BackendPathEvaluator">BackendPathEvaluator</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Backend.html">Drush\Backend</a></em></dt>
                     <dd></dd><dt><a href="Drush/Boot/BaseBoot.html"><abbr title="Drush\Boot\BaseBoot">BaseBoot</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Boot.html">Drush\Boot</a></em></dt>
                     <dd></dd><dt><a href="Drush/Boot/BaseBoot.html#method_bootstrapPhases">
 <abbr title="Drush\Boot\BaseBoot">BaseBoot</abbr>::bootstrapPhases</a>() &mdash; <em>Method in class <a href="Drush/Boot/BaseBoot.html"><abbr title="Drush\Boot\BaseBoot">BaseBoot</abbr></a></em></dt>
@@ -302,7 +302,7 @@ phase.</p></dd><dt><a href="Drush/Boot/Boot.html#method_bootstrapPhaseMap">
 strings (e.g. &quot;full&quot;) to the corresponding bootstrap
 phase index constant (e.g. DRUSH_BOOTSTRAP_DRUPAL_FULL).</p></dd><dt><a href="Drush/Boot/BootstrapHook.html"><abbr title="Drush\Boot\BootstrapHook">BootstrapHook</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Boot.html">Drush\Boot</a></em></dt>
                     <dd><p>The BootstrapHook is installed as an init hook that runs before
-all commands. If there is a <code>@bootstrap</code> annotation/attribute, then we will
+all commands. If there is a <code>@bootstrap</code> annotation, then we will
 bootstrap Drupal to the requested phase.</p></dd><dt>$<a href="Drush/Boot/BootstrapHook.html#property_bootstrapManager">
 <abbr title="Drush\Boot\BootstrapHook">BootstrapHook</abbr>#bootstrapManager</a> &mdash; <em>Property in class <a href="Drush/Boot/BootstrapHook.html"><abbr title="Drush\Boot\BootstrapHook">BootstrapHook</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Boot/BootstrapManager.html"><abbr title="Drush\Boot\BootstrapManager">BootstrapManager</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Boot.html">Drush\Boot</a></em></dt>
@@ -389,6 +389,8 @@ phase.</p></dd><dt><a href="Drush/Boot/EmptyBoot.html#method_bootstrapInitPhases
 <abbr title="Drush\Commands\core\DocsCommands">DocsCommands</abbr>::bootstrap</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/DocsCommands.html"><abbr title="Drush\Commands\core\DocsCommands">DocsCommands</abbr></a></em></dt>
                     <dd><p>Bootstrap explanation: how Drush starts up and prepares the Drupal environment.</p></dd><dt><a href="Drush/Commands/core/EditCommands.html#method_bashFiles">
 <abbr title="Drush\Commands\core\EditCommands">EditCommands</abbr>::bashFiles</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/EditCommands.html"><abbr title="Drush\Commands\core\EditCommands">EditCommands</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/core/InitCommands.html#method_bashAddition">
+<abbr title="Drush\Commands\core\InitCommands">InitCommands</abbr>::bashAddition</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/InitCommands.html"><abbr title="Drush\Commands\core\InitCommands">InitCommands</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/help/ListCommands.html#method_buildDom">
 <abbr title="Drush\Commands\help\ListCommands">ListCommands</abbr>::buildDom</a>() &mdash; <em>Method in class <a href="Drush/Commands/help/ListCommands.html"><abbr title="Drush\Commands\help\ListCommands">ListCommands</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Config/DrushConfig.html#method_backend">
@@ -419,8 +421,7 @@ immediately; the command will not run, and no hooks will be called.</p></dd><dt>
                     <dd></dd><dt><a href="Drush/Application.html#method_configureAndRegisterCommands">
 <abbr title="Drush\Application">Application</abbr>::configureAndRegisterCommands</a>() &mdash; <em>Method in class <a href="Drush/Application.html"><abbr title="Drush\Application">Application</abbr></a></em></dt>
                     <dd><p>Configure the application object and register all of the commandfiles
-available in the search paths provided via Preflight</p></dd><dt><a href="Drush/Attributes/Command.html"><abbr title="Drush\Attributes\Command">Command</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Attributes.html">Drush\Attributes</a></em></dt>
-                    <dd></dd><dt><a href="Drush/Boot/BaseBoot.html#method_commandDefaults">
+available in the search paths provided via Preflight</p></dd><dt><a href="Drush/Boot/BaseBoot.html#method_commandDefaults">
 <abbr title="Drush\Boot\BaseBoot">BaseBoot</abbr>::commandDefaults</a>() &mdash; <em>Method in class <a href="Drush/Boot/BaseBoot.html"><abbr title="Drush\Boot\BaseBoot">BaseBoot</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Boot/DrupalBoot.html#method_confPath">
 <abbr title="Drush\Boot\DrupalBoot">DrupalBoot</abbr>::confPath</a>() &mdash; <em>Method in class <a href="Drush/Boot/DrupalBoot.html"><abbr title="Drush\Boot\DrupalBoot">DrupalBoot</abbr></a></em></dt>
@@ -479,7 +480,11 @@ entries will be cleared from all known cache bins.</p></dd><dt>$<a href="Drush/C
 <abbr title="Drush\Commands\core\UpdateDBCommands">UpdateDBCommands</abbr>#cache_clear</a> &mdash; <em>Property in class <a href="Drush/Commands/core/UpdateDBCommands.html"><abbr title="Drush\Commands\core\UpdateDBCommands">UpdateDBCommands</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/core/UpdateDBCommands.html#method_cacheRebuild">
 <abbr title="Drush\Commands\core\UpdateDBCommands">UpdateDBCommands</abbr>::cacheRebuild</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/UpdateDBCommands.html"><abbr title="Drush\Commands\core\UpdateDBCommands">UpdateDBCommands</abbr></a></em></dt>
-                    <dd><p>Clears caches and rebuilds the container.</p></dd><dt><a href="Drush/Commands/help/HelpCLIFormatter.html#method_cleanOptions">
+                    <dd><p>Clears caches and rebuilds the container.</p></dd><dt><a href="Drush/Commands/generate/GenerateCommands.html#method_createApplication">
+<abbr title="Drush\Commands\generate\GenerateCommands">GenerateCommands</abbr>::createApplication</a>() &mdash; <em>Method in class <a href="Drush/Commands/generate/GenerateCommands.html"><abbr title="Drush\Commands\generate\GenerateCommands">GenerateCommands</abbr></a></em></dt>
+                    <dd><p>Creates Drush generate application.</p></dd><dt><a href="Drush/Commands/generate/Helper/InputHandler.html#method_collectVars">
+<abbr title="Drush\Commands\generate\Helper\InputHandler">InputHandler</abbr>::collectVars</a>() &mdash; <em>Method in class <a href="Drush/Commands/generate/Helper/InputHandler.html"><abbr title="Drush\Commands\generate\Helper\InputHandler">InputHandler</abbr></a></em></dt>
+                    <dd><p>{@inheritdoc}</p></dd><dt><a href="Drush/Commands/help/HelpCLIFormatter.html#method_cleanOptions">
 <abbr title="Drush\Commands\help\HelpCLIFormatter">HelpCLIFormatter</abbr>::cleanOptions</a>() &mdash; <em>Method in class <a href="Drush/Commands/help/HelpCLIFormatter.html"><abbr title="Drush\Commands\help\HelpCLIFormatter">HelpCLIFormatter</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/help/ListCommands.html#method_categorize">
 <abbr title="Drush\Commands\help\ListCommands">ListCommands</abbr>::categorize</a>() &mdash; <em>Method in class <a href="Drush/Commands/help/ListCommands.html"><abbr title="Drush\Commands\help\ListCommands">ListCommands</abbr></a></em></dt>
@@ -731,9 +736,7 @@ may contain csv strings, into an array of items.</p></dd>        </dl><h2 id="le
 <abbr title="Drush\Application">Application</abbr>::discoverCommands</a>() &mdash; <em>Method in class <a href="Drush/Application.html"><abbr title="Drush\Application">Application</abbr></a></em></dt>
                     <dd><p>Discovers command classes.</p></dd><dt><a href="Drush/Application.html#method_discoverPsr4Commands">
 <abbr title="Drush\Application">Application</abbr>::discoverPsr4Commands</a>() &mdash; <em>Method in class <a href="Drush/Application.html"><abbr title="Drush\Application">Application</abbr></a></em></dt>
-                    <dd><p>Discovers commands that are PSR4 auto-loaded.</p></dd><dt><a href="Drush/Attributes/DefaultFields.html"><abbr title="Drush\Attributes\DefaultFields">DefaultFields</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Attributes.html">Drush\Attributes</a></em></dt>
-                    <dd></dd><dt><a href="Drush/Attributes/DefaultTableFields.html"><abbr title="Drush\Attributes\DefaultTableFields">DefaultTableFields</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Attributes.html">Drush\Attributes</a></em></dt>
-                    <dd></dd><dt>$<a href="Drush/Boot/BootstrapManager.html#property_drupalFinder">
+                    <dd><p>Discovers commands that are PSR4 auto-loaded.</p></dd><dt>$<a href="Drush/Boot/BootstrapManager.html#property_drupalFinder">
 <abbr title="Drush\Boot\BootstrapManager">BootstrapManager</abbr>#drupalFinder</a> &mdash; <em>Property in class <a href="Drush/Boot/BootstrapManager.html"><abbr title="Drush\Boot\BootstrapManager">BootstrapManager</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Boot/BootstrapManager.html#method_drupalFinder">
 <abbr title="Drush\Boot\BootstrapManager">BootstrapManager</abbr>::drupalFinder</a>() &mdash; <em>Method in class <a href="Drush/Boot/BootstrapManager.html"><abbr title="Drush\Boot\BootstrapManager">BootstrapManager</abbr></a></em></dt>
@@ -743,8 +746,7 @@ may contain csv strings, into an array of items.</p></dd>        </dl><h2 id="le
                     <dd></dd><dt><a href="Drush/Boot/DrupalBoot8.html"><abbr title="Drush\Boot\DrupalBoot8">DrupalBoot8</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Boot.html">Drush\Boot</a></em></dt>
                     <dd></dd><dt>$<a href="Drush/Boot/DrupalBoot8.html#property_drupalLoggerAdapter">
 <abbr title="Drush\Boot\DrupalBoot8">DrupalBoot8</abbr>#drupalLoggerAdapter</a> &mdash; <em>Property in class <a href="Drush/Boot/DrupalBoot8.html"><abbr title="Drush\Boot\DrupalBoot8">DrupalBoot8</abbr></a></em></dt>
-                    <dd></dd><dt><a href="Drush/Boot/DrupalBootLevels.html"><abbr title="Drush\Boot\DrupalBootLevels">DrupalBootLevels</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Boot.html">Drush\Boot</a></em></dt>
-                    <dd><p>A value class with bootstrap levels.</p></dd><dt><a href="Drush/Command/DrushCommandInfoAlterer.html"><abbr title="Drush\Command\DrushCommandInfoAlterer">DrushCommandInfoAlterer</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Command.html">Drush\Command</a></em></dt>
+                    <dd></dd><dt><a href="Drush/Command/DrushCommandInfoAlterer.html"><abbr title="Drush\Command\DrushCommandInfoAlterer">DrushCommandInfoAlterer</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Command.html">Drush\Command</a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/DrushCommands.html"><abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands.html">Drush\Commands</a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/LegacyCommands.html#method_disable">
 <abbr title="Drush\Commands\LegacyCommands">LegacyCommands</abbr>::disable</a>() &mdash; <em>Method in class <a href="Drush/Commands/LegacyCommands.html"><abbr title="Drush\Commands\LegacyCommands">LegacyCommands</abbr></a></em></dt>
@@ -766,13 +768,9 @@ may contain csv strings, into an array of items.</p></dd>        </dl><h2 id="le
 <abbr title="Drush\Commands\core\MkCommands">MkCommands</abbr>::docs</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/MkCommands.html"><abbr title="Drush\Commands\core\MkCommands">MkCommands</abbr></a></em></dt>
                     <dd><p>Build a Markdown document for each Drush command thats available on a site.</p></dd><dt><a href="Drush/Commands/core/SiteInstallCommands.html#method_determineProfile">
 <abbr title="Drush\Commands\core\SiteInstallCommands">SiteInstallCommands</abbr>::determineProfile</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/SiteInstallCommands.html"><abbr title="Drush\Commands\core\SiteInstallCommands">SiteInstallCommands</abbr></a></em></dt>
-                    <dd></dd><dt><a href="Drush/Commands/generate/GenerateCommands.html#method_discoverGlobalPathsDeprecated">
-<abbr title="Drush\Commands\generate\GenerateCommands">GenerateCommands</abbr>::discoverGlobalPathsDeprecated</a>() &mdash; <em>Method in class <a href="Drush/Commands/generate/GenerateCommands.html"><abbr title="Drush\Commands\generate\GenerateCommands">GenerateCommands</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/generate/GenerateCommands.html#method_discoverPsr4Generators">
 <abbr title="Drush\Commands\generate\GenerateCommands">GenerateCommands</abbr>::discoverPsr4Generators</a>() &mdash; <em>Method in class <a href="Drush/Commands/generate/GenerateCommands.html"><abbr title="Drush\Commands\generate\GenerateCommands">GenerateCommands</abbr></a></em></dt>
-                    <dd></dd><dt>$<a href="Drush/Commands/generate/GeneratorClassResolver.html#property_drupalClassResolver">
-<abbr title="Drush\Commands\generate\GeneratorClassResolver">GeneratorClassResolver</abbr>#drupalClassResolver</a> &mdash; <em>Property in class <a href="Drush/Commands/generate/GeneratorClassResolver.html"><abbr title="Drush\Commands\generate\GeneratorClassResolver">GeneratorClassResolver</abbr></a></em></dt>
-                    <dd><p>The decorated class resolver.</p></dd><dt><a href="Drush/Commands/generate/Generators/Drush/DrushAliasFile.html"><abbr title="Drush\Commands\generate\Generators\Drush\DrushAliasFile">DrushAliasFile</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands/generate/Generators/Drush.html">Drush\Commands\generate\Generators\Drush</a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/generate/Generators/Drush/DrushAliasFile.html"><abbr title="Drush\Commands\generate\Generators\Drush\DrushAliasFile">DrushAliasFile</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands/generate/Generators/Drush.html">Drush\Commands\generate\Generators\Drush</a></em></dt>
                     <dd><p>Implements drush-alias-file command.</p></dd><dt>$<a href="Drush/Commands/generate/Generators/Drush/DrushAliasFile.html#property_description">
 <abbr title="Drush\Commands\generate\Generators\Drush\DrushAliasFile">DrushAliasFile</abbr>#description</a> &mdash; <em>Property in class <a href="Drush/Commands/generate/Generators/Drush/DrushAliasFile.html"><abbr title="Drush\Commands\generate\Generators\Drush\DrushAliasFile">DrushAliasFile</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/generate/Generators/Drush/DrushCommandFile.html"><abbr title="Drush\Commands\generate\Generators\Drush\DrushCommandFile">DrushCommandFile</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands/generate/Generators/Drush.html">Drush\Commands\generate\Generators\Drush</a></em></dt>
@@ -820,9 +818,7 @@ elsewhere.</p></dd><dt><a href="Drush/Drupal/Commands/config/ConfigCommands.html
 <abbr title="Drush\Drupal\Commands\core\EntityCommands">EntityCommands</abbr>::delete</a>() &mdash; <em>Method in class <a href="Drush/Drupal/Commands/core/EntityCommands.html"><abbr title="Drush\Drupal\Commands\core\EntityCommands">EntityCommands</abbr></a></em></dt>
                     <dd><p>Delete content entities.</p></dd><dt><a href="Drush/Drupal/Commands/core/EntityCommands.html#method_doDelete">
 <abbr title="Drush\Drupal\Commands\core\EntityCommands">EntityCommands</abbr>::doDelete</a>() &mdash; <em>Method in class <a href="Drush/Drupal/Commands/core/EntityCommands.html"><abbr title="Drush\Drupal\Commands\core\EntityCommands">EntityCommands</abbr></a></em></dt>
-                    <dd><p>Actual delete method.</p></dd><dt><a href="Drush/Drupal/Commands/core/EntityCommands.html#method_doSave">
-<abbr title="Drush\Drupal\Commands\core\EntityCommands">EntityCommands</abbr>::doSave</a>() &mdash; <em>Method in class <a href="Drush/Drupal/Commands/core/EntityCommands.html"><abbr title="Drush\Drupal\Commands\core\EntityCommands">EntityCommands</abbr></a></em></dt>
-                    <dd><p>Actual save method.</p></dd><dt><a href="Drush/Drupal/Commands/core/ImageCommands.html#method_derive">
+                    <dd><p>Actual delete method.</p></dd><dt><a href="Drush/Drupal/Commands/core/ImageCommands.html#method_derive">
 <abbr title="Drush\Drupal\Commands\core\ImageCommands">ImageCommands</abbr>::derive</a>() &mdash; <em>Method in class <a href="Drush/Drupal/Commands/core/ImageCommands.html"><abbr title="Drush\Drupal\Commands\core\ImageCommands">ImageCommands</abbr></a></em></dt>
                     <dd><p>Create an image derivative.</p></dd><dt>$<a href="Drush/Drupal/Commands/core/MigrateRunnerCommands.html#property_dateFormatter">
 <abbr title="Drush\Drupal\Commands\core\MigrateRunnerCommands">MigrateRunnerCommands</abbr>#dateFormatter</a> &mdash; <em>Property in class <a href="Drush/Drupal/Commands/core/MigrateRunnerCommands.html"><abbr title="Drush\Drupal\Commands\core\MigrateRunnerCommands">MigrateRunnerCommands</abbr></a></em></dt>
@@ -1064,8 +1060,6 @@ that exist in the database.</p></dd><dt><a href="Drush/Sql/SqlTableSelectionTrai
                     <dd></dd>        </dl><h2 id="letterF">F</h2>
         <dl id="indexF"><dt><a href="Drush/Application.html#method_find">
 <abbr title="Drush\Application">Application</abbr>::find</a>() &mdash; <em>Method in class <a href="Drush/Application.html"><abbr title="Drush\Application">Application</abbr></a></em></dt>
-                    <dd></dd><dt><a href="Drush/Attributes/FieldLabels.html"><abbr title="Drush\Attributes\FieldLabels">FieldLabels</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Attributes.html">Drush\Attributes</a></em></dt>
-                    <dd></dd><dt><a href="Drush/Attributes/FilterDefaultField.html"><abbr title="Drush\Attributes\FilterDefaultField">FilterDefaultField</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Attributes.html">Drush\Attributes</a></em></dt>
                     <dd></dd><dt><a href="Drush/Boot/BaseBoot.html#method_findUri">
 <abbr title="Drush\Boot\BaseBoot">BaseBoot</abbr>::findUri</a>() &mdash; <em>Method in class <a href="Drush/Boot/BaseBoot.html"><abbr title="Drush\Boot\BaseBoot">BaseBoot</abbr></a></em></dt>
                     <dd><p>Select the best URI for the provided cwd. Only called
@@ -1080,9 +1074,12 @@ if the user did not explicitly specify a URI.</p></dd><dt><a href="Drush/Cache/F
 <abbr title="Drush\Commands\LegacyCommands">LegacyCommands</abbr>::field</a>() &mdash; <em>Method in class <a href="Drush/Commands/LegacyCommands.html"><abbr title="Drush\Commands\LegacyCommands">LegacyCommands</abbr></a></em></dt>
                     <dd><p>field-create has been removed. Please try <code>generate field</code> command.</p></dd><dt><a href="Drush/Commands/core/EditCommands.html#method_findBashrc">
 <abbr title="Drush\Commands\core\EditCommands">EditCommands</abbr>::findBashrc</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/EditCommands.html"><abbr title="Drush\Commands\core\EditCommands">EditCommands</abbr></a></em></dt>
-                    <dd><p>Determine which .bashrc file is best to use on this platform.</p></dd><dt><a href="Drush/Commands/generate/GenerateCommands.html#method_filterExists">
-<abbr title="Drush\Commands\generate\GenerateCommands">GenerateCommands</abbr>::filterExists</a>() &mdash; <em>Method in class <a href="Drush/Commands/generate/GenerateCommands.html"><abbr title="Drush\Commands\generate\GenerateCommands">GenerateCommands</abbr></a></em></dt>
-                    <dd><p>Check each class for existence.</p></dd><dt><a href="Drush/Commands/help/HelpCLIFormatter.html#method_formatOptionKeys">
+                    <dd><p>Determine which .bashrc file is best to use on this platform.</p></dd><dt><a href="Drush/Commands/core/InitCommands.html#method_findBashrc">
+<abbr title="Drush\Commands\core\InitCommands">InitCommands</abbr>::findBashrc</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/InitCommands.html"><abbr title="Drush\Commands\core\InitCommands">InitCommands</abbr></a></em></dt>
+                    <dd><p>Determine which .bashrc file is best to use on this platform.</p></dd><dt><a href="Drush/Commands/core/InitCommands.html#method_findPathToDrush">
+<abbr title="Drush\Commands\core\InitCommands">InitCommands</abbr>::findPathToDrush</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/InitCommands.html"><abbr title="Drush\Commands\core\InitCommands">InitCommands</abbr></a></em></dt>
+                    <dd><p>Determine where Drush is located, so that we can add
+that location to the $PATH.</p></dd><dt><a href="Drush/Commands/help/HelpCLIFormatter.html#method_formatOptionKeys">
 <abbr title="Drush\Commands\help\HelpCLIFormatter">HelpCLIFormatter</abbr>::formatOptionKeys</a>() &mdash; <em>Method in class <a href="Drush/Commands/help/HelpCLIFormatter.html"><abbr title="Drush\Commands\help\HelpCLIFormatter">HelpCLIFormatter</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/help/HelpCLIFormatter.html#method_formatOptionDescription">
 <abbr title="Drush\Commands\help\HelpCLIFormatter">HelpCLIFormatter</abbr>::formatOptionDescription</a>() &mdash; <em>Method in class <a href="Drush/Commands/help/HelpCLIFormatter.html"><abbr title="Drush\Commands\help\HelpCLIFormatter">HelpCLIFormatter</abbr></a></em></dt>
@@ -1167,9 +1164,7 @@ vendor directory.</p></dd><dt><a href="Drush/SiteAlias/LegacyAliasConverter.html
 <abbr title="Drush\Boot\DrupalBoot8">DrupalBoot8</abbr>::getKernel</a>() &mdash; <em>Method in class <a href="Drush/Boot/DrupalBoot8.html"><abbr title="Drush\Boot\DrupalBoot8">DrupalBoot8</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Boot/DrupalBoot8.html#method_getVersion">
 <abbr title="Drush\Boot\DrupalBoot8">DrupalBoot8</abbr>::getVersion</a>() &mdash; <em>Method in class <a href="Drush/Boot/DrupalBoot8.html"><abbr title="Drush\Boot\DrupalBoot8">DrupalBoot8</abbr></a></em></dt>
-                    <dd><p>Given a site root directory, determine the exact version of the software.</p></dd><dt><a href="Drush/Boot/DrupalBootLevels.html#method_getPhaseName">
-<abbr title="Drush\Boot\DrupalBootLevels">DrupalBootLevels</abbr>::getPhaseName</a>() &mdash; <em>Method in class <a href="Drush/Boot/DrupalBootLevels.html"><abbr title="Drush\Boot\DrupalBootLevels">DrupalBootLevels</abbr></a></em></dt>
-                    <dd></dd><dt><a href="Drush/Boot/Kernels.html#method_getKernelFactory">
+                    <dd><p>Given a site root directory, determine the exact version of the software.</p></dd><dt><a href="Drush/Boot/Kernels.html#method_getKernelFactory">
 <abbr title="Drush\Boot\Kernels">Kernels</abbr>::getKernelFactory</a>() &mdash; <em>Method in class <a href="Drush/Boot/Kernels.html"><abbr title="Drush\Boot\Kernels">Kernels</abbr></a></em></dt>
                     <dd><p>Returns the factory method that can be used to retrieve the given kernel.</p></dd><dt><a href="Drush/Cache/CacheInterface.html#method_get">
 <abbr title="Drush\Cache\CacheInterface">CacheInterface</abbr>::get</a>() &mdash; <em>Method in class <a href="Drush/Cache/CacheInterface.html"><abbr title="Drush\Cache\CacheInterface">CacheInterface</abbr></a></em></dt>
@@ -1219,22 +1214,13 @@ provided uri.</p></dd><dt><a href="Drush/Commands/core/SiteInstallCommands.html#
 </ul></dd><dt><a href="Drush/Commands/generate/GenerateCommands.html"><abbr title="Drush\Commands\generate\GenerateCommands">GenerateCommands</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands/generate.html">Drush\Commands\generate</a></em></dt>
                     <dd><p>Drush generate command.</p></dd><dt><a href="Drush/Commands/generate/GenerateCommands.html#method_generate">
 <abbr title="Drush\Commands\generate\GenerateCommands">GenerateCommands</abbr>::generate</a>() &mdash; <em>Method in class <a href="Drush/Commands/generate/GenerateCommands.html"><abbr title="Drush\Commands\generate\GenerateCommands">GenerateCommands</abbr></a></em></dt>
-                    <dd><p>Generate boilerplate code for modules/plugins/services etc.</p></dd><dt><a href="Drush/Commands/generate/GenerateCommands.html#method_getGenerators">
-<abbr title="Drush\Commands\generate\GenerateCommands">GenerateCommands</abbr>::getGenerators</a>() &mdash; <em>Method in class <a href="Drush/Commands/generate/GenerateCommands.html"><abbr title="Drush\Commands\generate\GenerateCommands">GenerateCommands</abbr></a></em></dt>
-                    <dd><p>Validate and instantiate generator classes.</p></dd><dt><a href="Drush/Commands/generate/GeneratorClassResolver.html"><abbr title="Drush\Commands\generate\GeneratorClassResolver">GeneratorClassResolver</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands/generate.html">Drush\Commands\generate</a></em></dt>
-                    <dd><p>A simple adapter to make Drupal class resolver compatible with DCG class resolver.</p></dd><dt><a href="Drush/Commands/generate/GeneratorClassResolver.html#method_getInstance">
-<abbr title="Drush\Commands\generate\GeneratorClassResolver">GeneratorClassResolver</abbr>::getInstance</a>() &mdash; <em>Method in class <a href="Drush/Commands/generate/GeneratorClassResolver.html"><abbr title="Drush\Commands\generate\GeneratorClassResolver">GeneratorClassResolver</abbr></a></em></dt>
-                    <dd><p>{@inheritdoc}</p></dd><dt><a href="Drush/Commands/generate/Generators/Drush/DrushAliasFile.html#method_generate">
-<abbr title="Drush\Commands\generate\Generators\Drush\DrushAliasFile">DrushAliasFile</abbr>::generate</a>() &mdash; <em>Method in class <a href="Drush/Commands/generate/Generators/Drush/DrushAliasFile.html"><abbr title="Drush\Commands\generate\Generators\Drush\DrushAliasFile">DrushAliasFile</abbr></a></em></dt>
-                    <dd><p>{@inheritdoc}</p></dd><dt><a href="Drush/Commands/generate/Generators/Drush/DrushCommandFile.html#method_generate">
-<abbr title="Drush\Commands\generate\Generators\Drush\DrushCommandFile">DrushCommandFile</abbr>::generate</a>() &mdash; <em>Method in class <a href="Drush/Commands/generate/Generators/Drush/DrushCommandFile.html"><abbr title="Drush\Commands\generate\Generators\Drush\DrushCommandFile">DrushCommandFile</abbr></a></em></dt>
-                    <dd><p>{@inheritdoc}</p></dd><dt><a href="Drush/Commands/generate/Generators/Drush/DrushCommandFile.html#method_getComposerJson">
+                    <dd><p>Generate boilerplate code for modules/plugins/services etc.</p></dd><dt><a href="Drush/Commands/generate/Generators/Drush/DrushCommandFile.html#method_getComposerJson">
 <abbr title="Drush\Commands\generate\Generators\Drush\DrushCommandFile">DrushCommandFile</abbr>::getComposerJson</a>() &mdash; <em>Method in class <a href="Drush/Commands/generate/Generators/Drush/DrushCommandFile.html"><abbr title="Drush\Commands\generate\Generators\Drush\DrushCommandFile">DrushCommandFile</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/generate/Generators/Drush/DrushCommandFile.html#method_getOwningModulePath">
 <abbr title="Drush\Commands\generate\Generators\Drush\DrushCommandFile">DrushCommandFile</abbr>::getOwningModulePath</a>() &mdash; <em>Method in class <a href="Drush/Commands/generate/Generators/Drush/DrushCommandFile.html"><abbr title="Drush\Commands\generate\Generators\Drush\DrushCommandFile">DrushCommandFile</abbr></a></em></dt>
-                    <dd></dd><dt><a href="Drush/Commands/generate/Generators/Migrate/MigrationGenerator.html#method_generate">
-<abbr title="Drush\Commands\generate\Generators\Migrate\MigrationGenerator">MigrationGenerator</abbr>::generate</a>() &mdash; <em>Method in class <a href="Drush/Commands/generate/Generators/Migrate/MigrationGenerator.html"><abbr title="Drush\Commands\generate\Generators\Migrate\MigrationGenerator">MigrationGenerator</abbr></a></em></dt>
-                    <dd><p>{@inheritdoc}</p></dd><dt><a href="Drush/Commands/help/DrushHelpDocument.html#method_generateBaseHelpDom">
+                    <dd></dd><dt><a href="Drush/Commands/generate/Helper/InputHandler.html#method_getDirectory">
+<abbr title="Drush\Commands\generate\Helper\InputHandler">InputHandler</abbr>::getDirectory</a>() &mdash; <em>Method in class <a href="Drush/Commands/generate/Helper/InputHandler.html"><abbr title="Drush\Commands\generate\Helper\InputHandler">InputHandler</abbr></a></em></dt>
+                    <dd><p>Defines the directory where generated files should be dumped.</p></dd><dt><a href="Drush/Commands/help/DrushHelpDocument.html#method_generateBaseHelpDom">
 <abbr title="Drush\Commands\help\DrushHelpDocument">DrushHelpDocument</abbr>::generateBaseHelpDom</a>() &mdash; <em>Method in class <a href="Drush/Commands/help/DrushHelpDocument.html"><abbr title="Drush\Commands\help\DrushHelpDocument">DrushHelpDocument</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/help/ListCommands.html#method_getTerminalWidth">
 <abbr title="Drush\Commands\help\ListCommands">ListCommands</abbr>::getTerminalWidth</a>() &mdash; <em>Method in class <a href="Drush/Commands/help/ListCommands.html"><abbr title="Drush\Commands\help\ListCommands">ListCommands</abbr></a></em></dt>
@@ -1330,8 +1316,6 @@ loading drush.yml and drush10.yml, etc.</p></dd><dt><a href="Drush/Config/Enviro
 <abbr title="Drush\Drupal\Commands\core\DrupalCommands">DrupalCommands</abbr>::getModuleHandler</a>() &mdash; <em>Method in class <a href="Drush/Drupal/Commands/core/DrupalCommands.html"><abbr title="Drush\Drupal\Commands\core\DrupalCommands">DrupalCommands</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Drupal/Commands/core/DrupalCommands.html#method_getRouteProvider">
 <abbr title="Drush\Drupal\Commands\core\DrupalCommands">DrupalCommands</abbr>::getRouteProvider</a>() &mdash; <em>Method in class <a href="Drush/Drupal/Commands/core/DrupalCommands.html"><abbr title="Drush\Drupal\Commands\core\DrupalCommands">DrupalCommands</abbr></a></em></dt>
-                    <dd></dd><dt><a href="Drush/Drupal/Commands/core/EntityCommands.html#method_getQuery">
-<abbr title="Drush\Drupal\Commands\core\EntityCommands">EntityCommands</abbr>::getQuery</a>() &mdash; <em>Method in class <a href="Drush/Drupal/Commands/core/EntityCommands.html"><abbr title="Drush\Drupal\Commands\core\EntityCommands">EntityCommands</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Drupal/Commands/core/JsonapiCommands.html#method_get">
 <abbr title="Drush\Drupal\Commands\core\JsonapiCommands">JsonapiCommands</abbr>::get</a>() &mdash; <em>Method in class <a href="Drush/Drupal/Commands/core/JsonapiCommands.html"><abbr title="Drush\Drupal\Commands\core\JsonapiCommands">JsonapiCommands</abbr></a></em></dt>
                     <dd><p>Execute a JSONAPI request.</p></dd><dt><a href="Drush/Drupal/Commands/core/LanguageCommands.html#method_getLanguageManager">
@@ -1546,25 +1530,7 @@ whitespace.</p></dd><dt><a href="Drush/TestTraits/OutputUtilsTrait.html#method_g
                     <dd><p>Determines the MIME content type of the specified file.</p></dd><dt><a href="Drush/Utils/StringUtils.html#method_generatePassword">
 <abbr title="Drush\Utils\StringUtils">StringUtils</abbr>::generatePassword</a>() &mdash; <em>Method in class <a href="Drush/Utils/StringUtils.html"><abbr title="Drush\Utils\StringUtils">StringUtils</abbr></a></em></dt>
                     <dd><p>Generate a random alphanumeric password.  Copied from user.module.</p></dd>        </dl><h2 id="letterH">H</h2>
-        <dl id="indexH"><dt><a href="Drush/Attributes/Bootstrap.html#method_handle">
-<abbr title="Drush\Attributes\Bootstrap">Bootstrap</abbr>::handle</a>() &mdash; <em>Method in class <a href="Drush/Attributes/Bootstrap.html"><abbr title="Drush\Attributes\Bootstrap">Bootstrap</abbr></a></em></dt>
-                    <dd></dd><dt><a href="Drush/Attributes/Help.html"><abbr title="Drush\Attributes\Help">Help</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Attributes.html">Drush\Attributes</a></em></dt>
-                    <dd></dd><dt><a href="Drush/Attributes/Hook.html"><abbr title="Drush\Attributes\Hook">Hook</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Attributes.html">Drush\Attributes</a></em></dt>
-                    <dd></dd><dt><a href="Drush/Attributes/Kernel.html#method_handle">
-<abbr title="Drush\Attributes\Kernel">Kernel</abbr>::handle</a>() &mdash; <em>Method in class <a href="Drush/Attributes/Kernel.html"><abbr title="Drush\Attributes\Kernel">Kernel</abbr></a></em></dt>
-                    <dd></dd><dt><a href="Drush/Attributes/NoArgumentsBase.html#method_handle">
-<abbr title="Drush\Attributes\NoArgumentsBase">NoArgumentsBase</abbr>::handle</a>() &mdash; <em>Method in class <a href="Drush/Attributes/NoArgumentsBase.html"><abbr title="Drush\Attributes\NoArgumentsBase">NoArgumentsBase</abbr></a></em></dt>
-                    <dd></dd><dt><a href="Drush/Attributes/ValidateEntityLoad.html#method_handle">
-<abbr title="Drush\Attributes\ValidateEntityLoad">ValidateEntityLoad</abbr>::handle</a>() &mdash; <em>Method in class <a href="Drush/Attributes/ValidateEntityLoad.html"><abbr title="Drush\Attributes\ValidateEntityLoad">ValidateEntityLoad</abbr></a></em></dt>
-                    <dd></dd><dt><a href="Drush/Attributes/ValidateFileExists.html#method_handle">
-<abbr title="Drush\Attributes\ValidateFileExists">ValidateFileExists</abbr>::handle</a>() &mdash; <em>Method in class <a href="Drush/Attributes/ValidateFileExists.html"><abbr title="Drush\Attributes\ValidateFileExists">ValidateFileExists</abbr></a></em></dt>
-                    <dd></dd><dt><a href="Drush/Attributes/ValidateModulesEnabled.html#method_handle">
-<abbr title="Drush\Attributes\ValidateModulesEnabled">ValidateModulesEnabled</abbr>::handle</a>() &mdash; <em>Method in class <a href="Drush/Attributes/ValidateModulesEnabled.html"><abbr title="Drush\Attributes\ValidateModulesEnabled">ValidateModulesEnabled</abbr></a></em></dt>
-                    <dd></dd><dt><a href="Drush/Attributes/ValidatePermissions.html#method_handle">
-<abbr title="Drush\Attributes\ValidatePermissions">ValidatePermissions</abbr>::handle</a>() &mdash; <em>Method in class <a href="Drush/Attributes/ValidatePermissions.html"><abbr title="Drush\Attributes\ValidatePermissions">ValidatePermissions</abbr></a></em></dt>
-                    <dd></dd><dt><a href="Drush/Attributes/ValidatePhpExtensions.html#method_handle">
-<abbr title="Drush\Attributes\ValidatePhpExtensions">ValidatePhpExtensions</abbr>::handle</a>() &mdash; <em>Method in class <a href="Drush/Attributes/ValidatePhpExtensions.html"><abbr title="Drush\Attributes\ValidatePhpExtensions">ValidatePhpExtensions</abbr></a></em></dt>
-                    <dd></dd><dt><a href="Drush/Boot/AutoloaderAwareInterface.html#method_hasAutoloader">
+        <dl id="indexH"><dt><a href="Drush/Boot/AutoloaderAwareInterface.html#method_hasAutoloader">
 <abbr title="Drush\Boot\AutoloaderAwareInterface">AutoloaderAwareInterface</abbr>::hasAutoloader</a>() &mdash; <em>Method in class <a href="Drush/Boot/AutoloaderAwareInterface.html"><abbr title="Drush\Boot\AutoloaderAwareInterface">AutoloaderAwareInterface</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Boot/AutoloaderAwareTrait.html#method_hasAutoloader">
 <abbr title="Drush\Boot\AutoloaderAwareTrait">AutoloaderAwareTrait</abbr>::hasAutoloader</a>() &mdash; <em>Method in class <a href="Drush/Boot/AutoloaderAwareTrait.html"><abbr title="Drush\Boot\AutoloaderAwareTrait">AutoloaderAwareTrait</abbr></a></em></dt>
@@ -1649,7 +1615,10 @@ by a label, and the label may be an @alias or a site specification.</p></dd><dt>
 <abbr title="Drush\Commands\LegacyCommands">LegacyCommands</abbr>::info</a>() &mdash; <em>Method in class <a href="Drush/Commands/LegacyCommands.html"><abbr title="Drush\Commands\LegacyCommands">LegacyCommands</abbr></a></em></dt>
                     <dd><p>The pm-info command was removed. Please see <code>drush pm:list</code> and <code>composer show</code></p></dd><dt><a href="Drush/Commands/core/CacheCommands.html#method_interact">
 <abbr title="Drush\Commands\core\CacheCommands">CacheCommands</abbr>::interact</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/CacheCommands.html"><abbr title="Drush\Commands\core\CacheCommands">CacheCommands</abbr></a></em></dt>
-                    <dd></dd><dt><a href="Drush/Commands/core/NotifyCommands.html#method_isAllowed">
+                    <dd></dd><dt><a href="Drush/Commands/core/InitCommands.html"><abbr title="Drush\Commands\core\InitCommands">InitCommands</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands/core.html">Drush\Commands\core</a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/core/InitCommands.html#method_initializeDrush">
+<abbr title="Drush\Commands\core\InitCommands">InitCommands</abbr>::initializeDrush</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/InitCommands.html"><abbr title="Drush\Commands\core\InitCommands">InitCommands</abbr></a></em></dt>
+                    <dd><p>Enrich the bash startup file with bash aliases and a smart command prompt.</p></dd><dt><a href="Drush/Commands/core/NotifyCommands.html#method_isAllowed">
 <abbr title="Drush\Commands\core\NotifyCommands">NotifyCommands</abbr>::isAllowed</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/NotifyCommands.html"><abbr title="Drush\Commands\core\NotifyCommands">NotifyCommands</abbr></a></em></dt>
                     <dd><p>Identify if the given Drush request should trigger a notification.</p></dd><dt><a href="Drush/Commands/core/RsyncCommands.html#method_injectAliasPathParameterOptions">
 <abbr title="Drush\Commands\core\RsyncCommands">RsyncCommands</abbr>::injectAliasPathParameterOptions</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/RsyncCommands.html"><abbr title="Drush\Commands\core\RsyncCommands">RsyncCommands</abbr></a></em></dt>
@@ -1659,7 +1628,14 @@ by a label, and the label may be an @alias or a site specification.</p></dd><dt>
 <abbr title="Drush\Commands\core\SiteInstallCommands">SiteInstallCommands</abbr>::install</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/SiteInstallCommands.html"><abbr title="Drush\Commands\core\SiteInstallCommands">SiteInstallCommands</abbr></a></em></dt>
                     <dd><p>Install Drupal along with modules/themes/configuration/profile.</p></dd><dt><a href="Drush/Commands/core/TopicCommands.html#method_interact">
 <abbr title="Drush\Commands\core\TopicCommands">TopicCommands</abbr>::interact</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/TopicCommands.html"><abbr title="Drush\Commands\core\TopicCommands">TopicCommands</abbr></a></em></dt>
-                    <dd></dd><dt><a href="Drush/Commands/help/HelpCLIFormatter.html#method_isGlobalOption">
+                    <dd></dd><dt><a href="Drush/Commands/generate/Generators/Drush/DrushAliasFile.html#method_interact">
+<abbr title="Drush\Commands\generate\Generators\Drush\DrushAliasFile">DrushAliasFile</abbr>::interact</a>() &mdash; <em>Method in class <a href="Drush/Commands/generate/Generators/Drush/DrushAliasFile.html"><abbr title="Drush\Commands\generate\Generators\Drush\DrushAliasFile">DrushAliasFile</abbr></a></em></dt>
+                    <dd><p>{@inheritdoc}</p></dd><dt><a href="Drush/Commands/generate/Generators/Drush/DrushCommandFile.html#method_interact">
+<abbr title="Drush\Commands\generate\Generators\Drush\DrushCommandFile">DrushCommandFile</abbr>::interact</a>() &mdash; <em>Method in class <a href="Drush/Commands/generate/Generators/Drush/DrushCommandFile.html"><abbr title="Drush\Commands\generate\Generators\Drush\DrushCommandFile">DrushCommandFile</abbr></a></em></dt>
+                    <dd><p>{@inheritdoc}</p></dd><dt><a href="Drush/Commands/generate/Generators/Migrate/MigrationGenerator.html#method_interact">
+<abbr title="Drush\Commands\generate\Generators\Migrate\MigrationGenerator">MigrationGenerator</abbr>::interact</a>() &mdash; <em>Method in class <a href="Drush/Commands/generate/Generators/Migrate/MigrationGenerator.html"><abbr title="Drush\Commands\generate\Generators\Migrate\MigrationGenerator">MigrationGenerator</abbr></a></em></dt>
+                    <dd><p>{@inheritdoc}</p></dd><dt><a href="Drush/Commands/generate/Helper/InputHandler.html"><abbr title="Drush\Commands\generate\Helper\InputHandler">InputHandler</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands/generate/Helper.html">Drush\Commands\generate\Helper</a></em></dt>
+                    <dd><p>Generators input handler.</p></dd><dt><a href="Drush/Commands/help/HelpCLIFormatter.html#method_isGlobalOption">
 <abbr title="Drush\Commands\help\HelpCLIFormatter">HelpCLIFormatter</abbr>::isGlobalOption</a>() &mdash; <em>Method in class <a href="Drush/Commands/help/HelpCLIFormatter.html"><abbr title="Drush\Commands\help\HelpCLIFormatter">HelpCLIFormatter</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/sql/SqlSyncCommands.html#method_import">
 <abbr title="Drush\Commands\sql\SqlSyncCommands">SqlSyncCommands</abbr>::import</a>() &mdash; <em>Method in class <a href="Drush/Commands/sql/SqlSyncCommands.html"><abbr title="Drush\Commands\sql\SqlSyncCommands">SqlSyncCommands</abbr></a></em></dt>
@@ -1679,6 +1655,8 @@ either directories or files.</p></dd><dt><a href="Drush/Config/ConfigLocator.htm
 <abbr title="Drush\Drupal\Commands\config\ConfigCommands">ConfigCommands</abbr>#importStorageTransformer</a> &mdash; <em>Property in class <a href="Drush/Drupal/Commands/config/ConfigCommands.html"><abbr title="Drush\Drupal\Commands\config\ConfigCommands">ConfigCommands</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Drupal/Commands/config/ConfigCommands.html#method_interactConfigName">
 <abbr title="Drush\Drupal\Commands\config\ConfigCommands">ConfigCommands</abbr>::interactConfigName</a>() &mdash; <em>Method in class <a href="Drush/Drupal/Commands/config/ConfigCommands.html"><abbr title="Drush\Drupal\Commands\config\ConfigCommands">ConfigCommands</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/Drupal/Commands/config/ConfigCommands.html#method_interactConfigLabel">
+<abbr title="Drush\Drupal\Commands\config\ConfigCommands">ConfigCommands</abbr>::interactConfigLabel</a>() &mdash; <em>Method in class <a href="Drush/Drupal/Commands/config/ConfigCommands.html"><abbr title="Drush\Drupal\Commands\config\ConfigCommands">ConfigCommands</abbr></a></em></dt>
                     <dd></dd><dt>$<a href="Drush/Drupal/Commands/config/ConfigImportCommands.html#property_importStorageTransformer">
 <abbr title="Drush\Drupal\Commands\config\ConfigImportCommands">ConfigImportCommands</abbr>#importStorageTransformer</a> &mdash; <em>Property in class <a href="Drush/Drupal/Commands/config/ConfigImportCommands.html"><abbr title="Drush\Drupal\Commands\config\ConfigImportCommands">ConfigImportCommands</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Drupal/Commands/config/ConfigImportCommands.html#method_import">
@@ -1771,8 +1749,7 @@ legacy systems.</p></dd><dt><a href="Drush/Preflight/PreflightArgs.html#method_i
         <dl id="indexJ"><dt><a href="Drush/Cache/JSONCache.html"><abbr title="Drush\Cache\JSONCache">JSONCache</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Cache.html">Drush\Cache</a></em></dt>
                     <dd><p>JSON cache storage backend.</p></dd><dt><a href="Drush/Drupal/Commands/core/JsonapiCommands.html"><abbr title="Drush\Drupal\Commands\core\JsonapiCommands">JsonapiCommands</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Drupal/Commands/core.html">Drush\Drupal\Commands\core</a></em></dt>
                     <dd></dd>        </dl><h2 id="letterK">K</h2>
-        <dl id="indexK"><dt><a href="Drush/Attributes/Kernel.html"><abbr title="Drush\Attributes\Kernel">Kernel</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Attributes.html">Drush\Attributes</a></em></dt>
-                    <dd></dd><dt>$<a href="Drush/Boot/DrupalBoot8.html#property_kernel">
+        <dl id="indexK"><dt>$<a href="Drush/Boot/DrupalBoot8.html#property_kernel">
 <abbr title="Drush\Boot\DrupalBoot8">DrupalBoot8</abbr>#kernel</a> &mdash; <em>Property in class <a href="Drush/Boot/DrupalBoot8.html"><abbr title="Drush\Boot\DrupalBoot8">DrupalBoot8</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Boot/Kernels.html"><abbr title="Drush\Boot\Kernels">Kernels</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Boot.html">Drush\Boot</a></em></dt>
                     <dd><p>Defines the available kernels that can be bootstrapped.</p></dd><dt>$<a href="Drush/Drupal/Commands/core/MigrateRunnerCommands.html#property_keyValue">
@@ -1824,9 +1801,7 @@ longer.</p></dd><dt><a href="Drush/Boot/BootstrapManager.html#method_logger">
 <abbr title="Drush\Config\Loader\YamlConfigLoader">YamlConfigLoader</abbr>::load</a>() &mdash; <em>Method in class <a href="Drush/Config/Loader/YamlConfigLoader.html"><abbr title="Drush\Config\Loader\YamlConfigLoader">YamlConfigLoader</abbr></a></em></dt>
                     <dd></dd><dt>$<a href="Drush/Drupal/Commands/config/ConfigImportCommands.html#property_lock">
 <abbr title="Drush\Drupal\Commands\config\ConfigImportCommands">ConfigImportCommands</abbr>#lock</a> &mdash; <em>Property in class <a href="Drush/Drupal/Commands/config/ConfigImportCommands.html"><abbr title="Drush\Drupal\Commands\config\ConfigImportCommands">ConfigImportCommands</abbr></a></em></dt>
-                    <dd></dd><dt><a href="Drush/Drupal/Commands/core/EntityCommands.html#method_loadSave">
-<abbr title="Drush\Drupal\Commands\core\EntityCommands">EntityCommands</abbr>::loadSave</a>() &mdash; <em>Method in class <a href="Drush/Drupal/Commands/core/EntityCommands.html"><abbr title="Drush\Drupal\Commands\core\EntityCommands">EntityCommands</abbr></a></em></dt>
-                    <dd><p>Load and save entities.</p></dd><dt><a href="Drush/Drupal/Commands/core/LanguageCommands.html"><abbr title="Drush\Drupal\Commands\core\LanguageCommands">LanguageCommands</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Drupal/Commands/core.html">Drush\Drupal\Commands\core</a></em></dt>
+                    <dd></dd><dt><a href="Drush/Drupal/Commands/core/LanguageCommands.html"><abbr title="Drush\Drupal\Commands\core\LanguageCommands">LanguageCommands</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Drupal/Commands/core.html">Drush\Drupal\Commands\core</a></em></dt>
                     <dd></dd><dt>$<a href="Drush/Drupal/Commands/core/LanguageCommands.html#property_languageManager">
 <abbr title="Drush\Drupal\Commands\core\LanguageCommands">LanguageCommands</abbr>#languageManager</a> &mdash; <em>Property in class <a href="Drush/Drupal/Commands/core/LanguageCommands.html"><abbr title="Drush\Drupal\Commands\core\LanguageCommands">LanguageCommands</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Drupal/Commands/core/LocaleCommands.html"><abbr title="Drush\Drupal\Commands\core\LocaleCommands">LocaleCommands</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Drupal/Commands/core.html">Drush\Drupal\Commands\core</a></em></dt>
@@ -1879,8 +1854,7 @@ is available or not.</p></dd><dt><a href="Drush/SiteAlias/LegacyAliasConverter.h
                     <dd><p>Extract the name of all existing tables in the given database.</p></dd><dt><a href="Drush/Symfony/LessStrictArgvInput.html"><abbr title="Drush\Symfony\LessStrictArgvInput">LessStrictArgvInput</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Symfony.html">Drush\Symfony</a></em></dt>
                     <dd><p>UnvalidatedArgvInput is an ArgvInput that never reports errors when
 extra options are provided.</p></dd>        </dl><h2 id="letterM">M</h2>
-        <dl id="indexM"><dt><a href="Drush/Attributes/Misc.html"><abbr title="Drush\Attributes\Misc">Misc</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Attributes.html">Drush\Attributes</a></em></dt>
-                    <dd></dd><dt><a href="Drush/Boot/BootstrapManager.html#method_maxPhaseLimit">
+        <dl id="indexM"><dt><a href="Drush/Boot/BootstrapManager.html#method_maxPhaseLimit">
 <abbr title="Drush\Boot\BootstrapManager">BootstrapManager</abbr>::maxPhaseLimit</a>() &mdash; <em>Method in class <a href="Drush/Boot/BootstrapManager.html"><abbr title="Drush\Boot\BootstrapManager">BootstrapManager</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/LegacyCommands.html#method_make">
 <abbr title="Drush\Commands\LegacyCommands">LegacyCommands</abbr>::make</a>() &mdash; <em>Method in class <a href="Drush/Commands/LegacyCommands.html"><abbr title="Drush\Commands\LegacyCommands">LegacyCommands</abbr></a></em></dt>
@@ -1958,8 +1932,7 @@ extra options are provided.</p></dd>        </dl><h2 id="letterM">M</h2>
                     <dd><p>Add multiple additional locations for alias paths.</p></dd><dt><a href="Drush/Preflight/PreflightArgs.html#method_mergeCommandPaths">
 <abbr title="Drush\Preflight\PreflightArgs">PreflightArgs</abbr>::mergeCommandPaths</a>() &mdash; <em>Method in class <a href="Drush/Preflight/PreflightArgs.html"><abbr title="Drush\Preflight\PreflightArgs">PreflightArgs</abbr></a></em></dt>
                     <dd><p>Add multiple paths where commandfiles might be found.</p></dd>        </dl><h2 id="letterN">N</h2>
-        <dl id="indexN"><dt><a href="Drush/Attributes/NoArgumentsBase.html"><abbr title="Drush\Attributes\NoArgumentsBase">NoArgumentsBase</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Attributes.html">Drush\Attributes</a></em></dt>
-                    <dd></dd><dt><a href="Drush/Commands/core/NotifyCommands.html"><abbr title="Drush\Commands\core\NotifyCommands">NotifyCommands</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands/core.html">Drush\Commands\core</a></em></dt>
+        <dl id="indexN"><dt><a href="Drush/Commands/core/NotifyCommands.html"><abbr title="Drush\Commands\core\NotifyCommands">NotifyCommands</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands/core.html">Drush\Commands\core</a></em></dt>
                     <dd></dd><dt>$<a href="Drush/Commands/generate/Generators/Drush/DrushAliasFile.html#property_name">
 <abbr title="Drush\Commands\generate\Generators\Drush\DrushAliasFile">DrushAliasFile</abbr>#name</a> &mdash; <em>Property in class <a href="Drush/Commands/generate/Generators/Drush/DrushAliasFile.html"><abbr title="Drush\Commands\generate\Generators\Drush\DrushAliasFile">DrushAliasFile</abbr></a></em></dt>
                     <dd></dd><dt>$<a href="Drush/Commands/generate/Generators/Drush/DrushCommandFile.html#property_name">
@@ -1974,13 +1947,7 @@ extra options are provided.</p></dd>        </dl><h2 id="letterM">M</h2>
 exists and does not begin with a <code>-</code>.</p></dd><dt><a href="Drush/Style/DrushStyle.html#method_note">
 <abbr title="Drush\Style\DrushStyle">DrushStyle</abbr>::note</a>() &mdash; <em>Method in class <a href="Drush/Style/DrushStyle.html"><abbr title="Drush\Style\DrushStyle">DrushStyle</abbr></a></em></dt>
                     <dd></dd>        </dl><h2 id="letterO">O</h2>
-        <dl id="indexO"><dt><a href="Drush/Attributes/Option.html"><abbr title="Drush\Attributes\Option">Option</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Attributes.html">Drush\Attributes</a></em></dt>
-                    <dd></dd><dt><a href="Drush/Attributes/OptionsetGetEditor.html"><abbr title="Drush\Attributes\OptionsetGetEditor">OptionsetGetEditor</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Attributes.html">Drush\Attributes</a></em></dt>
-                    <dd></dd><dt><a href="Drush/Attributes/OptionsetProcBuild.html"><abbr title="Drush\Attributes\OptionsetProcBuild">OptionsetProcBuild</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Attributes.html">Drush\Attributes</a></em></dt>
-                    <dd></dd><dt><a href="Drush/Attributes/OptionsetSql.html"><abbr title="Drush\Attributes\OptionsetSql">OptionsetSql</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Attributes.html">Drush\Attributes</a></em></dt>
-                    <dd></dd><dt><a href="Drush/Attributes/OptionsetSsh.html"><abbr title="Drush\Attributes\OptionsetSsh">OptionsetSsh</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Attributes.html">Drush\Attributes</a></em></dt>
-                    <dd></dd><dt><a href="Drush/Attributes/OptionsetTableSelection.html"><abbr title="Drush\Attributes\OptionsetTableSelection">OptionsetTableSelection</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Attributes.html">Drush\Attributes</a></em></dt>
-                    <dd></dd><dt><a href="Drush/Commands/OptionsCommands.html"><abbr title="Drush\Commands\OptionsCommands">OptionsCommands</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands.html">Drush\Commands</a></em></dt>
+        <dl id="indexO"><dt><a href="Drush/Commands/OptionsCommands.html"><abbr title="Drush\Commands\OptionsCommands">OptionsCommands</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands.html">Drush\Commands</a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/OptionsCommands.html#method_optionsetProcBuild">
 <abbr title="Drush\Commands\OptionsCommands">OptionsCommands</abbr>::optionsetProcBuild</a>() &mdash; <em>Method in class <a href="Drush/Commands/OptionsCommands.html"><abbr title="Drush\Commands\OptionsCommands">OptionsCommands</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/OptionsCommands.html#method_optionsetGetEditor">
@@ -2001,7 +1968,8 @@ exists and does not begin with a <code>-</code>.</p></dd><dt><a href="Drush/Styl
 <abbr title="Drush\Commands\core\NotifyCommands">NotifyCommands</abbr>::optionsetNotify</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/NotifyCommands.html"><abbr title="Drush\Commands\core\NotifyCommands">NotifyCommands</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/core/XhprofCommands.html#method_optionsetXhProf">
 <abbr title="Drush\Commands\core\XhprofCommands">XhprofCommands</abbr>::optionsetXhProf</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/XhprofCommands.html"><abbr title="Drush\Commands\core\XhprofCommands">XhprofCommands</abbr></a></em></dt>
-                    <dd></dd><dt>$<a href="Drush/Config/Environment.html#property_originalCwd">
+                    <dd></dd><dt><a href="Drush/Commands/generate/Helper/OutputHandler.html"><abbr title="Drush\Commands\generate\Helper\OutputHandler">OutputHandler</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands/generate/Helper.html">Drush\Commands\generate\Helper</a></em></dt>
+                    <dd><p>Output printer form generators.</p></dd><dt>$<a href="Drush/Config/Environment.html#property_originalCwd">
 <abbr title="Drush\Config\Environment">Environment</abbr>#originalCwd</a> &mdash; <em>Property in class <a href="Drush/Config/Environment.html"><abbr title="Drush\Config\Environment">Environment</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Drupal/Commands/sql/SanitizeUserFieldsCommands.html#method_options">
 <abbr title="Drush\Drupal\Commands\sql\SanitizeUserFieldsCommands">SanitizeUserFieldsCommands</abbr>::options</a>() &mdash; <em>Method in class <a href="Drush/Drupal/Commands/sql/SanitizeUserFieldsCommands.html"><abbr title="Drush\Drupal\Commands\sql\SanitizeUserFieldsCommands">SanitizeUserFieldsCommands</abbr></a></em></dt>
@@ -2097,7 +2065,11 @@ values may participate in configuration injection.</p></dd><dt><a href="Drush/Co
 <abbr title="Drush\Commands\core\StatusCommands">StatusCommands</abbr>::pathAliases</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/StatusCommands.html"><abbr title="Drush\Commands\core\StatusCommands">StatusCommands</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/core/UpdateDBCommands.html#method_process">
 <abbr title="Drush\Commands\core\UpdateDBCommands">UpdateDBCommands</abbr>::process</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/UpdateDBCommands.html"><abbr title="Drush\Commands\core\UpdateDBCommands">UpdateDBCommands</abbr></a></em></dt>
-                    <dd><p>Process operations in the specified batch set.</p></dd><dt>$<a href="Drush/Config/ConfigLocator.html#property_processedConfigPaths">
+                    <dd><p>Process operations in the specified batch set.</p></dd><dt><a href="Drush/Commands/generate/Helper/InputHandler.html#method_preprocessQuestions">
+<abbr title="Drush\Commands\generate\Helper\InputHandler">InputHandler</abbr>::preprocessQuestions</a>() &mdash; <em>Method in class <a href="Drush/Commands/generate/Helper/InputHandler.html"><abbr title="Drush\Commands\generate\Helper\InputHandler">InputHandler</abbr></a></em></dt>
+                    <dd><p>Modifies questions for better DX.</p></dd><dt><a href="Drush/Commands/generate/Helper/OutputHandler.html#method_printSummary">
+<abbr title="Drush\Commands\generate\Helper\OutputHandler">OutputHandler</abbr>::printSummary</a>() &mdash; <em>Method in class <a href="Drush/Commands/generate/Helper/OutputHandler.html"><abbr title="Drush\Commands\generate\Helper\OutputHandler">OutputHandler</abbr></a></em></dt>
+                    <dd><p>{@inheritdoc}</p></dd><dt>$<a href="Drush/Config/ConfigLocator.html#property_processedConfigPaths">
 <abbr title="Drush\Config\ConfigLocator">ConfigLocator</abbr>#processedConfigPaths</a> &mdash; <em>Property in class <a href="Drush/Config/ConfigLocator.html"><abbr title="Drush\Config\ConfigLocator">ConfigLocator</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Drupal/Commands/core/BatchCommands.html#method_process">
 <abbr title="Drush\Drupal\Commands\core\BatchCommands">BatchCommands</abbr>::process</a>() &mdash; <em>Method in class <a href="Drush/Drupal/Commands/core/BatchCommands.html"><abbr title="Drush\Drupal\Commands\core\BatchCommands">BatchCommands</abbr></a></em></dt>
@@ -2731,7 +2703,6 @@ methods to access the parts.</p></dd><dt><a href="Drush/SiteAlias/SiteSpecParser
                     <dd></dd>        </dl><h2 id="letterT">T</h2>
         <dl id="indexT"><dt>$<a href="Drush/Application.html#property_tildeExpansionHook">
 <abbr title="Drush\Application">Application</abbr>#tildeExpansionHook</a> &mdash; <em>Property in class <a href="Drush/Application.html"><abbr title="Drush\Application">Application</abbr></a></em></dt>
-                    <dd></dd><dt><a href="Drush/Attributes/Topics.html"><abbr title="Drush\Attributes\Topics">Topics</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Attributes.html">Drush\Attributes</a></em></dt>
                     <dd></dd><dt><a href="Drush/Boot/BaseBoot.html#method_terminate">
 <abbr title="Drush\Boot\BaseBoot">BaseBoot</abbr>::terminate</a>() &mdash; <em>Method in class <a href="Drush/Boot/BaseBoot.html"><abbr title="Drush\Boot\BaseBoot">BaseBoot</abbr></a></em></dt>
                     <dd><p>This method is called during the shutdown of drush.</p></dd><dt><a href="Drush/Boot/Boot.html#method_terminate">
@@ -2780,8 +2751,7 @@ to an absolute path.</p></dd><dt>$<a href="Drush/SiteAlias/LegacyAliasConverter.
                     <dd></dd><dt>$<a href="Drush/TestTraits/CliTestTrait.html#property_timeout">
 <abbr title="Drush\TestTraits\CliTestTrait">CliTestTrait</abbr>#timeout</a> &mdash; <em>Property in class <a href="Drush/TestTraits/CliTestTrait.html"><abbr title="Drush\TestTraits\CliTestTrait">CliTestTrait</abbr></a></em></dt>
                     <dd><p>Timeout for command.</p></dd>        </dl><h2 id="letterU">U</h2>
-        <dl id="indexU"><dt><a href="Drush/Attributes/Usage.html"><abbr title="Drush\Attributes\Usage">Usage</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Attributes.html">Drush\Attributes</a></em></dt>
-                    <dd></dd><dt>$<a href="Drush/Boot/BaseBoot.html#property_uri">
+        <dl id="indexU"><dt>$<a href="Drush/Boot/BaseBoot.html#property_uri">
 <abbr title="Drush\Boot\BaseBoot">BaseBoot</abbr>#uri</a> &mdash; <em>Property in class <a href="Drush/Boot/BaseBoot.html"><abbr title="Drush\Boot\BaseBoot">BaseBoot</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/LegacyCommands.html#method_updatestatus">
 <abbr title="Drush\Commands\LegacyCommands">LegacyCommands</abbr>::updatestatus</a>() &mdash; <em>Method in class <a href="Drush/Commands/LegacyCommands.html"><abbr title="Drush\Commands\LegacyCommands">LegacyCommands</abbr></a></em></dt>
@@ -2843,13 +2813,10 @@ YAML strings.</p></dd><dt><a href="Drush/Internal/Config/Yaml/Unescaper.html#met
 <abbr title="Drush\Internal\Config\Yaml\Unescaper">Unescaper</abbr>::unescapeDoubleQuotedString</a>() &mdash; <em>Method in class <a href="Drush/Internal/Config/Yaml/Unescaper.html"><abbr title="Drush\Internal\Config\Yaml\Unescaper">Unescaper</abbr></a></em></dt>
                     <dd><p>Unescapes a double quoted string.</p></dd><dt><a href="Drush/Preflight/PreflightArgs.html#method_uri">
 <abbr title="Drush\Preflight\PreflightArgs">PreflightArgs</abbr>::uri</a>() &mdash; <em>Method in class <a href="Drush/Preflight/PreflightArgs.html"><abbr title="Drush\Preflight\PreflightArgs">PreflightArgs</abbr></a></em></dt>
-                    <dd><p>Get the selected uri</p></dd>        </dl><h2 id="letterV">V</h2>
-        <dl id="indexV"><dt><a href="Drush/Attributes/ValidateEntityLoad.html"><abbr title="Drush\Attributes\ValidateEntityLoad">ValidateEntityLoad</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Attributes.html">Drush\Attributes</a></em></dt>
-                    <dd></dd><dt><a href="Drush/Attributes/ValidateFileExists.html"><abbr title="Drush\Attributes\ValidateFileExists">ValidateFileExists</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Attributes.html">Drush\Attributes</a></em></dt>
-                    <dd></dd><dt><a href="Drush/Attributes/ValidateModulesEnabled.html"><abbr title="Drush\Attributes\ValidateModulesEnabled">ValidateModulesEnabled</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Attributes.html">Drush\Attributes</a></em></dt>
-                    <dd></dd><dt><a href="Drush/Attributes/ValidatePermissions.html"><abbr title="Drush\Attributes\ValidatePermissions">ValidatePermissions</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Attributes.html">Drush\Attributes</a></em></dt>
-                    <dd></dd><dt><a href="Drush/Attributes/ValidatePhpExtensions.html"><abbr title="Drush\Attributes\ValidatePhpExtensions">ValidatePhpExtensions</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Attributes.html">Drush\Attributes</a></em></dt>
-                    <dd></dd><dt><a href="Drush/Boot/BaseBoot.html#method_validRoot">
+                    <dd><p>Get the selected uri</p></dd><dt><a href="Drush/Runtime/DependencyInjection.html#method_usingLegacyContainer">
+<abbr title="Drush\Runtime\DependencyInjection">DependencyInjection</abbr>::usingLegacyContainer</a>() &mdash; <em>Method in class <a href="Drush/Runtime/DependencyInjection.html"><abbr title="Drush\Runtime\DependencyInjection">DependencyInjection</abbr></a></em></dt>
+                    <dd></dd>        </dl><h2 id="letterV">V</h2>
+        <dl id="indexV"><dt><a href="Drush/Boot/BaseBoot.html#method_validRoot">
 <abbr title="Drush\Boot\BaseBoot">BaseBoot</abbr>::validRoot</a>() &mdash; <em>Method in class <a href="Drush/Boot/BaseBoot.html"><abbr title="Drush\Boot\BaseBoot">BaseBoot</abbr></a></em></dt>
                     <dd><p>This function determines if the specified path points to
 the root directory of a CMS that can be bootstrapped by
@@ -2876,7 +2843,7 @@ the specific subclass that implements it.</p></dd><dt><a href="Drush/Cache/Comma
 <abbr title="Drush\Commands\ValidatorsCommands">ValidatorsCommands</abbr>::validateEntityLoad</a>() &mdash; <em>Method in class <a href="Drush/Commands/ValidatorsCommands.html"><abbr title="Drush\Commands\ValidatorsCommands">ValidatorsCommands</abbr></a></em></dt>
                     <dd><p>Validate that passed entity names are valid.</p></dd><dt><a href="Drush/Commands/ValidatorsCommands.html#method_validateModuleEnabled">
 <abbr title="Drush\Commands\ValidatorsCommands">ValidatorsCommands</abbr>::validateModuleEnabled</a>() &mdash; <em>Method in class <a href="Drush/Commands/ValidatorsCommands.html"><abbr title="Drush\Commands\ValidatorsCommands">ValidatorsCommands</abbr></a></em></dt>
-                    <dd><p>Validate that passed module names are enabled. We use post-init phase because interact() methods run early and they
+                    <dd><p>Validate that passed module names are enabled. We use pre-init phase because interact() methods run early and they
 need to know that their module is enabled (e.g. image-flush).</p></dd><dt><a href="Drush/Commands/ValidatorsCommands.html#method_validateFileExists">
 <abbr title="Drush\Commands\ValidatorsCommands">ValidatorsCommands</abbr>::validateFileExists</a>() &mdash; <em>Method in class <a href="Drush/Commands/ValidatorsCommands.html"><abbr title="Drush\Commands\ValidatorsCommands">ValidatorsCommands</abbr></a></em></dt>
                     <dd><p>Validate that the file path exists.</p></dd><dt><a href="Drush/Commands/ValidatorsCommands.html#method_validatePHPExtension">
@@ -2979,21 +2946,7 @@ need to know that their module is enabled (e.g. image-flush).</p></dd><dt><a hre
                     <dd><p>Load configuration files, and fill in any property values that
 need to be expanded.</p></dd><dt><a href="Drush/Internal/Config/Yaml/Yaml.html"><abbr title="Drush\Internal\Config\Yaml\Yaml">Yaml</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Internal/Config/Yaml.html">Drush\Internal\Config\Yaml</a></em></dt>
                     <dd><p>Yaml offers convenience methods to load and dump YAML.</p></dd>        </dl><h2 id="letter_">_</h2>
-        <dl id="index_"><dt><a href="Drush/Attributes/Bootstrap.html#method___construct">
-<abbr title="Drush\Attributes\Bootstrap">Bootstrap</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/Attributes/Bootstrap.html"><abbr title="Drush\Attributes\Bootstrap">Bootstrap</abbr></a></em></dt>
-                    <dd></dd><dt><a href="Drush/Attributes/Kernel.html#method___construct">
-<abbr title="Drush\Attributes\Kernel">Kernel</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/Attributes/Kernel.html"><abbr title="Drush\Attributes\Kernel">Kernel</abbr></a></em></dt>
-                    <dd></dd><dt><a href="Drush/Attributes/ValidateEntityLoad.html#method___construct">
-<abbr title="Drush\Attributes\ValidateEntityLoad">ValidateEntityLoad</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/Attributes/ValidateEntityLoad.html"><abbr title="Drush\Attributes\ValidateEntityLoad">ValidateEntityLoad</abbr></a></em></dt>
-                    <dd></dd><dt><a href="Drush/Attributes/ValidateFileExists.html#method___construct">
-<abbr title="Drush\Attributes\ValidateFileExists">ValidateFileExists</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/Attributes/ValidateFileExists.html"><abbr title="Drush\Attributes\ValidateFileExists">ValidateFileExists</abbr></a></em></dt>
-                    <dd></dd><dt><a href="Drush/Attributes/ValidateModulesEnabled.html#method___construct">
-<abbr title="Drush\Attributes\ValidateModulesEnabled">ValidateModulesEnabled</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/Attributes/ValidateModulesEnabled.html"><abbr title="Drush\Attributes\ValidateModulesEnabled">ValidateModulesEnabled</abbr></a></em></dt>
-                    <dd></dd><dt><a href="Drush/Attributes/ValidatePermissions.html#method___construct">
-<abbr title="Drush\Attributes\ValidatePermissions">ValidatePermissions</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/Attributes/ValidatePermissions.html"><abbr title="Drush\Attributes\ValidatePermissions">ValidatePermissions</abbr></a></em></dt>
-                    <dd></dd><dt><a href="Drush/Attributes/ValidatePhpExtensions.html#method___construct">
-<abbr title="Drush\Attributes\ValidatePhpExtensions">ValidatePhpExtensions</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/Attributes/ValidatePhpExtensions.html"><abbr title="Drush\Attributes\ValidatePhpExtensions">ValidatePhpExtensions</abbr></a></em></dt>
-                    <dd></dd><dt><a href="Drush/Boot/BaseBoot.html#method___construct">
+        <dl id="index_"><dt><a href="Drush/Boot/BaseBoot.html#method___construct">
 <abbr title="Drush\Boot\BaseBoot">BaseBoot</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/Boot/BaseBoot.html"><abbr title="Drush\Boot\BaseBoot">BaseBoot</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Boot/BootstrapHook.html#method___construct">
 <abbr title="Drush\Boot\BootstrapHook">BootstrapHook</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/Boot/BootstrapHook.html"><abbr title="Drush\Boot\BootstrapHook">BootstrapHook</abbr></a></em></dt>
@@ -3011,9 +2964,7 @@ need to be expanded.</p></dd><dt><a href="Drush/Internal/Config/Yaml/Yaml.html">
 <abbr title="Drush\Commands\core\DrupalDirectoryCommands">DrupalDirectoryCommands</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/DrupalDirectoryCommands.html"><abbr title="Drush\Commands\core\DrupalDirectoryCommands">DrupalDirectoryCommands</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/core/RsyncCommands.html#method___construct">
 <abbr title="Drush\Commands\core\RsyncCommands">RsyncCommands</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/RsyncCommands.html"><abbr title="Drush\Commands\core\RsyncCommands">RsyncCommands</abbr></a></em></dt>
-                    <dd></dd><dt><a href="Drush/Commands/generate/GeneratorClassResolver.html#method___construct">
-<abbr title="Drush\Commands\generate\GeneratorClassResolver">GeneratorClassResolver</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/Commands/generate/GeneratorClassResolver.html"><abbr title="Drush\Commands\generate\GeneratorClassResolver">GeneratorClassResolver</abbr></a></em></dt>
-                    <dd><p>Constructs the object.</p></dd><dt><a href="Drush/Config/ConfigLocator.html#method___construct">
+                    <dd></dd><dt><a href="Drush/Config/ConfigLocator.html#method___construct">
 <abbr title="Drush\Config\ConfigLocator">ConfigLocator</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/Config/ConfigLocator.html"><abbr title="Drush\Config\ConfigLocator">ConfigLocator</abbr></a></em></dt>
                     <dd><p>ConfigLocator constructor</p></dd><dt><a href="Drush/Config/Environment.html#method___construct">
 <abbr title="Drush\Config\Environment">Environment</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/Config/Environment.html"><abbr title="Drush\Config\Environment">Environment</abbr></a></em></dt>

@@ -106,9 +106,7 @@
     
       
 
-  
-
-<header class="md-header md-header--lifted" data-md-component="header">
+<header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
     <a href="../.." title="Drush" class="md-header__button md-logo" aria-label="Drush" data-md-component="logo">
       
@@ -187,8 +185,14 @@
     
   </nav>
   
+</header>
     
-      <!--
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            <!--
   Copyright (c) 2016-2020 Martin Donath <martin.donath@squidfunk.com>
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -322,13 +326,7 @@
     </ul>
   </div>
 </nav>
-    
-  
-</header>
-    
-    <div class="md-container" data-md-component="container">
-      
-      
+          
         
       
       <main class="md-main" data-md-component="main">
@@ -1525,6 +1523,20 @@
   
   
     <li class="md-nav__item">
+      <a href="../../commands/core_init/" class="md-nav__link">
+        core:init
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../commands/core_requirements/" class="md-nav__link">
         core:requirements
       </a>
@@ -1719,20 +1731,6 @@
     <li class="md-nav__item">
       <a href="../../commands/entity_delete/" class="md-nav__link">
         entity:delete
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../commands/entity_save/" class="md-nav__link">
-        entity:save
       </a>
     </li>
   
@@ -3300,7 +3298,7 @@
             <article class="md-content__inner md-typeset">
               
                 
-                  <a href="https://github.com/drush-ops/drush/blob/11.x/CONTRIBUTING.md" title="Edit this page" class="md-content__button md-icon">
+                  <a href="https://github.com/drush-ops/drush/blob/10.x/CONTRIBUTING.md" title="Edit this page" class="md-content__button md-icon">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg>
                   </a>
                 
@@ -3311,14 +3309,14 @@
 <h2 id="git-and-pull-requests">Git and Pull requests<a class="headerlink" href="#git-and-pull-requests" title="Permanent link">&para;</a></h2>
 <ul>
 <li>Contributions are submitted, reviewed, and accepted using GitHub pull requests.</li>
-<li>The latest changes are in the <code>11.x</code> branch. PR's should initially target this branch.</li>
+<li>The latest changes are in the <code>10.x</code> branch. PR's should initially target this branch.</li>
 <li>Try to make clean commits that are easily readable (including descriptive commit messages!)</li>
-<li>See the test-specific <a href="https://github.com/drush-ops/drush/blob/11.x/docs/contribute/unish.md">README.md</a> for instructions on running the test suite. Test before you push. Get familiar with Unish, our test suite. Optionally run tests in the provided Docker containers.</li>
-<li>We maintain branches named 11.x, 10.x, etc. These are release branches. From these branches, we make new tags for patch and minor versions.</li>
+<li>See the test-specific <a href="https://github.com/drush-ops/drush/blob/10.x/docs/contribute/unish.md">README.md</a> for instructions on running the test suite. Test before you push. Get familiar with Unish, our test suite. Optionally run tests in the provided Docker containers.</li>
+<li>We maintain branches named 10.x, 9.x, etc. These are release branches. From these branches, we make new tags for patch and minor versions.</li>
 </ul>
 <h2 id="development-environment">Development Environment<a class="headerlink" href="#development-environment" title="Permanent link">&para;</a></h2>
 <ul>
-<li>You may choose to use the <a href="https://ddev.readthedocs.io/">DDEV</a> for a <a href="/.ddev/config.yaml">standardized development environment</a>.</li>
+<li>You may choose to use the docker-compose file in root directory for an optimized environment.</li>
 <li>See <code>composer run-script -l</code> for a list of helper scripts.</li>
 </ul>
 <h2 id="coding-style">Coding style<a class="headerlink" href="#coding-style" title="Permanent link">&para;</a></h2>
@@ -3442,7 +3440,7 @@
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "toc.integrate"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.fcfe8b6d.min.js", "version": null}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "toc.integrate"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.fcfe8b6d.min.js", "version": null}</script>
     
     
       <script src="../../assets/javascripts/bundle.b1047164.min.js"></script>
