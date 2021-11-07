@@ -1,7 +1,6 @@
 <?php
 namespace Drush\Commands;
 
-// Copy either of the lines below into your commandfile. It is a matter of taste.
 use Consolidation\AnnotatedCommand\Hooks\HookManager;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Drush\Attributes as CLI;
