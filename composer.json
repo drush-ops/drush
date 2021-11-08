@@ -67,6 +67,7 @@
     "yoast/phpunit-polyfills": "^0.2.0"
   },
   "conflict": {
+    "drupal/core": "<= 8",
     "drupal/migrate_run": "*",
     "drupal/migrate_tools": "<= 5"
   },
