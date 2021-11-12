@@ -32,7 +32,7 @@
   "require": {
     "php": ">=7.4",
     "ext-dom": "*",
-    "chi-teck/drupal-code-generator": "^1.32.1",
+    "chi-teck/drupal-code-generator": "^2.2",
     "composer/semver": "^1.4 || ^3",
     "consolidation/annotated-command": "^4.4",
     "consolidation/config": "^1.2",
@@ -48,6 +48,7 @@
     "psy/psysh": "~0.6",
     "symfony/event-dispatcher": "^4.0",
     "symfony/finder": "^4.0 || ^5",
+    "symfony/polyfill-php80": "^1.23",
     "symfony/var-dumper": "^4.0 || ^5.0",
     "symfony/yaml": "^4.0",
     "webflo/drupal-finder": "^1.2",
@@ -60,11 +61,13 @@
     "drupal/core-recommended": "^9",
     "drupal/semver_example": "2.2.0",
     "phpunit/phpunit": ">=7.5.20",
-    "yoast/phpunit-polyfills": "^0.2.0",
+    "rector/rector": "^0.11.58",
     "squizlabs/php_codesniffer": "^2.7 || ^3",
-    "vlucas/phpdotenv": "^2.4"
+    "vlucas/phpdotenv": "^2.4",
+    "yoast/phpunit-polyfills": "^0.2.0"
   },
   "conflict": {
+    "drupal/core": "<= 8",
     "drupal/migrate_run": "*",
     "drupal/migrate_tools": "<= 5"
   },
@@ -109,6 +112,7 @@
     "api": "php $HOME/bin/doctum.phar --ansi --ignore-parse-errors update doctum-config.php",
     "doctum-install": "mkdir -p $HOME/bin && curl --output $HOME/bin/doctum.phar https://doctum.long-term.support/releases/latest/doctum.phar && chmod +x $HOME/bin/doctum.phar",
     "mk:docs": "./drush --uri=dev -v mk:docs --destination=commands",
+    "rector": "rector process src/Boot src/Preflight src/Runtime src/SiteAlias src/Symfony src/Config",
     "sut": "./drush --uri=dev",
     "sut:si": "./drush --uri=dev site:install testing --sites-subdir=dev --db-url=${UNISH_DB_URL:-mysql://root:password@mariadb}/unish_dev -v",
     "phpunit": "php -d sendmail_path='true' vendor/bin/phpunit --colors=always --configuration tests",

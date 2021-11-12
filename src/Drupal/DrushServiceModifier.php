@@ -3,7 +3,6 @@
 namespace Drush\Drupal;
 
 use Drush\Drush;
-use Drush\Log\LogLevel;
 use Drupal\Core\DependencyInjection\ServiceModifierInterface;
 use Drupal\Core\DependencyInjection\ContainerBuilder;
 
@@ -23,7 +22,7 @@ class DrushServiceModifier implements ServiceModifierInterface
      */
     public function alter(ContainerBuilder $container)
     {
-        Drush::logger()->log(LogLevel::DEBUG_NOTIFY, dt("Service modifier alter."));
+        Drush::logger()->debug(dt("Service modifier alter."));
         // http://symfony.com/doc/2.7/components/dependency_injection/tags.html#register-the-pass-with-the-container
         $container->register(self::DRUSH_CONSOLE_SERVICES, 'Drush\Command\ServiceCommandlist');
         $container->addCompilerPass(new FindCommandsCompilerPass(self::DRUSH_CONSOLE_SERVICES, 'console.command'));
@@ -32,7 +31,7 @@ class DrushServiceModifier implements ServiceModifierInterface
         $container->register(self::DRUSH_COMMAND_INFO_ALTERER_SERVICES, 'Drush\Command\ServiceCommandlist');
         $container->addCompilerPass(new FindCommandsCompilerPass(self::DRUSH_COMMAND_INFO_ALTERER_SERVICES, 'drush.command_info_alterer'));
         $container->register(self::DRUSH_GENERATOR_SERVICES, 'Drush\Command\ServiceCommandlist');
-        $container->addCompilerPass(new FindCommandsCompilerPass(self::DRUSH_GENERATOR_SERVICES, 'drush.generator'));
+        $container->addCompilerPass(new FindCommandsCompilerPass(self::DRUSH_GENERATOR_SERVICES, 'drush.generator.v' . \DrupalCodeGenerator\Application::API));
     }
 
     /**

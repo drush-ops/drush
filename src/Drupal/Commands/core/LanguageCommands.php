@@ -49,7 +49,7 @@ class LanguageCommands extends DrushCommands
      *
      * @command language:add
      * @param $langcode A comma delimited list of language codes.
-     * @option skip-translations Prevent translations to be downloaded and/or imported.
+     * @option skip-translations Prevent translations from being downloaded and/or imported.
      * @usage drush language:add nl,fr
      *   Add Dutch and French language and import their translations.
      * @usage drush language:add nl --skip-translations

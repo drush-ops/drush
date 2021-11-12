@@ -128,11 +128,10 @@ class DrupalCommands extends DrushCommands
         ksort($requirements);
 
         $min_severity = $options['severity'];
-        $i = 0;
         foreach ($requirements as $key => $info) {
             $info += ['value' => '', 'description' => ''];
             $severity = array_key_exists('severity', $info) ? $info['severity'] : -1;
-            $rows[$i] = [
+            $rows[$key] = [
                 'title' => self::styleRow((string) $info['title'], $options['format'], $severity),
                 'value' => self::styleRow(DrupalUtil::drushRender($info['value']), $options['format'], $severity),
                 'description' => self::styleRow(DrupalUtil::drushRender($info['description']), $options['format'], $severity),
@@ -140,9 +139,8 @@ class DrupalCommands extends DrushCommands
                 'severity' => self::styleRow(@$severities[$severity], $options['format'], $severity)
             ];
             if ($severity < $min_severity) {
-                unset($rows[$i]);
+                unset($rows[$key]);
             }
-            $i++;
         }
         $result = new RowsOfFields($rows);
         return $result;

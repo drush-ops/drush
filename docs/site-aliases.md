@@ -75,10 +75,6 @@ drush:
       - /etc/drush/sites
 ```
 
-The command `drush core:init` will automatically configure your
-~/.drush/drush.yml configuration file to add `~/.drush/sites` and
-`/etc/drush/sites` as locations where alias files may be placed.
-
 A canonical alias named _example_ that points to a local
 Drupal site named at http://example.com like this:
 
