@@ -30,8 +30,10 @@ class EntityBundleClassesGenerator extends ModuleGenerator
     protected function generate(array &$vars): void
     {
         $this->collectDefault($vars);
-        $vars['infos'] = $this->bundleInfo->getAllBundleInfo();
-        $choices = array_keys($vars['infos']);
+        $vars['bundle_info'] = $this->bundleInfo->getAllBundleInfo();
+        $definitions = $this->entityTypeManager->getDefinitions();
+        $vars['entity_types'] = array_filter($definitions, [$this, 'isContentEntity']);
+        $choices = array_keys($vars['entity_types']);
         $question = new ChoiceQuestion('Entity type(s). Use comma to delimit.', $choices, 'node');
         $question->setValidator([static::class, 'validateRequired']);
         $question->setMultiselect(true);
@@ -42,16 +44,24 @@ class EntityBundleClassesGenerator extends ModuleGenerator
             ->headerTemplate('module.twig')
             ->appendIfExists()
             ->headerSize(7);
+        $vars['use_base_class'] = $this->confirm('Generate a base class? Respond no if you can easily modify the entity class.');
         foreach ($vars['entity_type_ids'] as $id) {
-            $base_class = $vars['base_class'] = Utils::camelize($id . 'BundleBase');
-            $vars['entity_class'] = $this->entityTypeManager->getStorage($id)->getEntityClass();
+            $vars['entity_class'] = $vars['parent_class'] = $this->entityTypeManager->getStorage($id)->getEntityClass();
             $vars['entity_type_id'] = $id;
-            $this->addFile("src/Bundle/$id/${base_class}.php", 'base_bundle_class.php.twig')->vars($vars);
-            foreach ($vars['infos'][$id] as $bundle => $info) {
+            if ($vars['use_base_class']) {
+                $base_class = $vars['base_class'] = $vars['parent_class'] = Utils::camelize($id . 'BundleBase');
+                $this->addFile("src/Bundle/$id/${base_class}.php", 'base_bundle_class.php.twig')->vars($vars);
+            }
+            foreach ($vars['bundle_info'][$id] as $bundle => $info) {
                 $bundle_class = $vars['bundle_class'] = Utils::camelize($bundle);
                 $this->addFile("src/Bundle/$id/${bundle_class}.php", 'bundle_class.php.twig')->vars($vars);
             }
         }
         $this->logger->warning('Run `drush cache:rebuild` so the bundle classes are recognized.');
+    }
+
+    protected function isContentEntity($definition)
+    {
+        return $definition->getGroup() == 'content';
     }
 }

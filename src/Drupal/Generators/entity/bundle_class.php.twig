@@ -1,9 +1,13 @@
 <?php
 namespace Drupal\{{ machine_name }}\Bundle\{{ entity_type_id }};
+{% if not use_base_class %}
+
+use {{ parent_class }};
+{% endif %}
 
 /**
  * A bundle class for {{ entity_type_id }} entities.
  */
-class {{ bundle_class }} extends {{ base_class }} {
+class {{ bundle_class }} extends {{ parent_class|split('\\')|last }} {
 
 }
