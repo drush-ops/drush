@@ -37,7 +37,8 @@ class EntityBundleClassesGenerator extends ModuleGenerator
         $question->setMultiselect(true);
         $vars['entity_type_ids'] = $this->io->askQuestion($question);
         $this->addFile($vars['machine_name'] . '.module', 'hook_bundle_info.php')
-            // @todo Get path to DCG so we use its templates/_lib/file-docs/module.twig instead of a copy of that file.
+            // @todo When we require 2.1, use https://getcomposer.org/doc/07-runtime.md#installed-versions
+            // to get path to DCG so we use its templates/_lib/file-docs/module.twig instead of a copy of that file.
             ->headerTemplate('module.twig')
             ->appendIfExists()
             ->headerSize(7);
