@@ -1,5 +1,5 @@
 <?php
-namespace Drush\Drupal\Generators;
+namespace Drush\Drupal\Generators\entity;
 
 use Drupal\Core\Entity\EntityTypeBundleInfoInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
@@ -36,20 +36,21 @@ class EntityBundleClassesGenerator extends ModuleGenerator
         $question->setValidator([static::class, 'validateRequired']);
         $question->setMultiselect(true);
         $vars['entity_type_ids'] = $this->io->askQuestion($question);
+        $this->addFile($vars['machine_name'] . '.module', 'hook_bundle_info.php')
+            // @todo Get path to DCG so we use its templates/_lib/file-docs/module.twig instead of a copy of that file.
+            ->headerTemplate('module.twig')
+            ->appendIfExists()
+            ->headerSize(7);
         foreach ($vars['entity_type_ids'] as $id) {
             $base_class = $vars['base_class'] = Utils::camelize($id . 'BundleBase');
-            $vars['entity_class'] = '\\' . $this->entityTypeManager->getStorage($id)->getEntityClass();
+            $vars['entity_class'] = $this->entityTypeManager->getStorage($id)->getEntityClass();
             $vars['entity_type_id'] = $id;
-            $this->addFile($vars['machine_name'] . '.module', 'hook_bundle_info.php')
-                // @todo Get path to DCG so we use its templates/_lib/file-docs/module.twig instead of a copy of that file.
-                ->headerTemplate('module.twig')
-                ->appendIfExists()
-                ->headerSize(7);
             $this->addFile("src/Bundle/$id/${base_class}.php", 'base_bundle_class.php.twig')->vars($vars);
             foreach ($vars['infos'][$id] as $bundle => $info) {
                 $bundle_class = $vars['bundle_class'] = Utils::camelize($bundle);
                 $this->addFile("src/Bundle/$id/${bundle_class}.php", 'bundle_class.php.twig')->vars($vars);
             }
         }
+        $this->logger->warning('Run `drush cache:rebuild` so the bundle classes are recognized.');
     }
 }

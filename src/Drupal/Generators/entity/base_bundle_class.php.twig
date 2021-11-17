@@ -1,9 +1,11 @@
 <?php
 namespace Drupal\{{ machine_name }}\Bundle\{{ entity_type_id }};
 
+use {{ entity_class }};
+
 /**
  * A base bundle class for {{ entity_type_id }} entities.
  */
-abstract class {{ base_class }} extends {{ entity_class }} {
+abstract class {{ base_class }} extends {{ entity_class|split('\\')|last }} {
 
 }
