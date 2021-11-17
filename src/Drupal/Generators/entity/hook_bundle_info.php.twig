@@ -4,7 +4,7 @@
 function drush_empty_module_entity_bundle_info_alter(array &$bundles): void {
 {% for id in entity_type_ids %}
   {% for bundle in bundle_info[id]|keys %}
-    $bundles['{{ id }}']['{{ bundle }}']['class'] = \Drupal\{{ machine_name }}\Bundle\{{ id }}\{{ bundle|camelize }}::class;
+    $bundles['{{ id }}']['{{ bundle }}']['class'] = \Drupal\{{ machine_name }}\Entity\Bundle\{{ id }}\{{ bundle|camelize }}::class;
   {% endfor %}
 {% endfor %}
 }

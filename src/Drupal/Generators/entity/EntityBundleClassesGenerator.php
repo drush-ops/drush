@@ -50,11 +50,11 @@ class EntityBundleClassesGenerator extends ModuleGenerator
             $vars['entity_type_id'] = $id;
             if ($vars['use_base_class']) {
                 $base_class = $vars['base_class'] = $vars['parent_class'] = Utils::camelize($id . 'BundleBase');
-                $this->addFile("src/Bundle/$id/${base_class}.php", 'base_bundle_class.php.twig')->vars($vars);
+                $this->addFile("src/Entity/Bundle/$id/${base_class}.php", 'base_bundle_class.php.twig')->vars($vars);
             }
             foreach ($vars['bundle_info'][$id] as $bundle => $info) {
                 $bundle_class = $vars['bundle_class'] = Utils::camelize($bundle);
-                $this->addFile("src/Bundle/$id/${bundle_class}.php", 'bundle_class.php.twig')->vars($vars);
+                $this->addFile("src/Entity/Bundle/$id/${bundle_class}.php", 'bundle_class.php.twig')->vars($vars);
             }
         }
         $this->logger->warning('Run `drush cache:rebuild` so the bundle classes are recognized.');
