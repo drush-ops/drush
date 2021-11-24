@@ -7,11 +7,9 @@ namespace Drush\Runtime;
  */
 
 use Drush\Drush;
-use Drush\Log\LogLevel;
-use Webmozart\PathUtil\Path;
-
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
+use Psr\Log\LogLevel;
 
 /**
  * Log PHP errors to the Drush log. This is in effect until Drupal's error

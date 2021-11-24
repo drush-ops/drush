@@ -13,7 +13,6 @@
 
 use Drush\Cache\JSONCache;
 use Drush\Drush;
-use Drush\Log\LogLevel;
 
 /**
  * Indicates that the item should never be removed unless explicitly selected.

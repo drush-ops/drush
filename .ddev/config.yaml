@@ -1,0 +1,20 @@
+name: drush
+type: php
+docroot: sut
+php_version: "7.4"
+webserver_type: nginx-fpm
+router_http_port: "87"
+router_https_port: "444"
+xdebug_enabled: false
+additional_hostnames: []
+additional_fqdns: []
+mariadb_version: "10.5"
+mysql_version: ""
+nfs_mount_enabled: false
+mutagen_enabled: false
+use_dns_when_possible: true
+composer_version: ""
+disable_settings_management: true
+web_environment:
+  - UNISH_DB_URL=mysql://root:root@db
+  - PHP_EXTENSIONS_DISABLE=uploadprogress
