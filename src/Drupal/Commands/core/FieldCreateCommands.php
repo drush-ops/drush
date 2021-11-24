@@ -717,7 +717,7 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
     {
         // FALSE is not considered as empty value because question helper use
         // it as negative answer on confirmation questions.
-        if ($value === NULL || $value === '') {
+        if ($value === null || $value === '') {
             throw new \UnexpectedValueException('This value is required.');
         }
 
