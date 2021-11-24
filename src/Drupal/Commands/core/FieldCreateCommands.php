@@ -22,6 +22,7 @@ use Drupal\field\FieldConfigInterface;
 use Drupal\field\FieldStorageConfigInterface;
 use Drush\Commands\DrushCommands;
 use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Question\ChoiceQuestion;
 
 class FieldCreateCommands extends DrushCommands implements CustomEventAwareInterface
 {
@@ -259,7 +260,7 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
             return null;
         }
 
-        return $this->choice('Choose an existing field', $choices);
+        return $this->io()->choice('Choose an existing field', $choices);
     }
 
     protected function askFieldName(): string
@@ -275,7 +276,7 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
         }
 
         while (!$fieldName) {
-            $answer = $this->io()->ask('Field name', $machineName);
+            $answer = $this->io()->ask('Field name', $machineName, [static::class, 'validateRequired']);
 
             if (!preg_match('/^[_a-z]+[_a-z0-9]*$/', $answer)) {
                 $this->logger()->error('Only lowercase alphanumeric characters and underscores are allowed, and only lowercase letters and underscore are allowed as the first character.');
@@ -300,12 +301,12 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
 
     protected function askFieldLabel(): string
     {
-        return $this->io()->ask('Field label');
+        return $this->io()->ask('Field label', null, [static::class, 'validateRequired']);
     }
 
     protected function askFieldDescription(): ?string
     {
-        return $this->optionalAsk('Field description');
+        return $this->io()->ask('Field description');
     }
 
     protected function askFieldType(): string
@@ -342,7 +343,7 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
             $choices[$name] = $label;
         }
 
-        return $this->io()->choice('Field widget', $choices, 0);
+        return $this->io()->choice('Field widget', $choices);
     }
 
     protected function askRequired(): bool
@@ -411,7 +412,7 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
         $cardinality = $this->io()->choice(
             'Allowed number of values',
             array_combine($choices, $choices),
-            0
+            1
         );
 
         $limit = FieldStorageDefinitionInterface::CARDINALITY_UNLIMITED;
@@ -453,7 +454,10 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
             $choices[$bundle] = $label;
         }
 
-        return $this->io()->choice('Referenced bundles', $choices, 0);
+        $question = (new ChoiceQuestion('Referenced bundles', $choices))
+            ->setMultiselect(true);
+
+        return $this->io()->askQuestion($question);
     }
 
     protected function createField(): FieldConfigInterface
@@ -709,10 +713,14 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
         $this->input->setOption($name, $value);
     }
 
-    protected function optionalAsk(string $question)
+    public static function validateRequired(?string $value): string
     {
-        return $this->io()->ask($question, null, function ($value) {
-            return $value;
-        });
+        // FALSE is not considered as empty value because question helper use
+        // it as negative answer on confirmation questions.
+        if ($value === NULL || $value === '') {
+            throw new \UnexpectedValueException('This value is required.');
+        }
+
+        return $value;
     }
 }
