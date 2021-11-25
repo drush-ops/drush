@@ -24,23 +24,13 @@ class DrushStyle extends SymfonyStyle
         return $return;
     }
 
-    /**
-     * @param string $question
-     * @param array $choices
-     *   If an associative array is passed, the chosen *key* is returned.
-     * @param null $default
-     * @return mixed
-     */
     public function choice($question, array $choices, $default = null)
     {
-        $choices = array_merge(['cancel' => 'Cancel'], $choices) ;
+        // Display the choices without their keys.
         $choices_values = array_values($choices);
         $return = parent::choice($question, $choices_values, $default);
-        if ($return == 'Cancel') {
-            throw new UserAbortException();
-        } else {
-            return array_search($return, $choices);
-        }
+
+        return array_search($return, $choices);
     }
 
     public function warning($message)
