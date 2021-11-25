@@ -62,7 +62,7 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
         $this->entityFieldManager = $entityFieldManager;
     }
 
-    public function setContentTranslationManager($manager): void
+    public function setContentTranslationManager(ContentTranslationManagerInterface $manager): void
     {
         $this->contentTranslationManager = $manager;
     }
@@ -72,9 +72,6 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
      *
      * @command field:create
      * @aliases field-create,fc
-     *
-     * @validate-entity-type-argument entityType
-     * @validate-optional-bundle-argument entityType bundle
      *
      * @param string $entityType
      *      The machine name of the entity type
@@ -104,6 +101,8 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
      *
      * @option existing
      *      Re-use an existing field.
+     * @option existing-field-name
+     *      The name of an existing field you want to re-use. Only used in non-interactive context.
      * @option show-machine-names
      *      Show machine names instead of labels in option lists.
      *
@@ -129,32 +128,27 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
         'target-type' => InputOption::VALUE_OPTIONAL,
         'target-bundle' => InputOption::VALUE_OPTIONAL,
         'show-machine-names' => InputOption::VALUE_OPTIONAL,
+        'existing-field-name' => InputOption::VALUE_OPTIONAL,
         'existing' => false,
     ]): void
     {
-        if (!$this->entityTypeManager->hasDefinition($entityType)) {
-            throw new \InvalidArgumentException(
-                t('Entity type with id \':entityType\' does not exist.', [':entityType' => $entityType])
-            );
-        }
+        $this->validateEntityType($entityType);
 
-        $bundle = $this->ensureArgument('bundle', [$this, 'askBundle']);
+        $this->input->setArgument('bundle', $bundle = $bundle ?? $this->askBundle());
+        $this->validateBundle($entityType, $bundle);
 
-        if (!$this->entityTypeBundleExists($entityType, $bundle)) {
-            throw new \InvalidArgumentException(
-                t('Bundle with id \':bundle\' does not exist on entity type \':entityType\'.', [
-                    ':bundle' => $bundle,
-                    ':entityType' => $entityType,
-                ])
-            );
-        }
+        if ($this->input->getOption('existing') || $this->input->getOption('existing-field-name')) {
+            $this->ensureOption('existing-field-name', [$this, 'askExistingFieldName'], false);
 
-        if ($this->input->getOption('existing')) {
-            $fieldName = $this->ensureOption('field-name', [$this, 'askExisting']);
+            if (!$fieldName = $this->input->getOption('existing-field-name')) {
+                throw new \InvalidArgumentException(
+                    t('There are no existing fields that can be added.')
+                );
+            }
 
             if (!$this->fieldStorageExists($fieldName, $entityType)) {
                 throw new \InvalidArgumentException(
-                    t('Field storage with name \':fieldName\' does not yet exist. Call this command without the --existing option first.', [
+                    t("Field storage with name ':fieldName' does not yet exist. Call this command without the --existing option first.", [
                         ':fieldName' => $fieldName,
                     ])
                 );
@@ -164,42 +158,44 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
 
             if ($this->fieldExists($fieldName, $entityType, $bundle)) {
                 throw new \InvalidArgumentException(
-                    t('Field with name \':fieldName\' already exists on bundle \':bundle\'.', [
+                    t("Field with name ':fieldName' already exists on bundle ':bundle'.", [
                         ':fieldName' => $fieldName,
                         ':bundle' => $bundle,
                     ])
                 );
             }
 
+            $this->input->setOption('field-name', $fieldName);
             $this->input->setOption('field-type', $fieldStorage->getType());
             $this->input->setOption('target-type', $fieldStorage->getSetting('target_type'));
 
-            $this->ensureOption('field-label', [$this, 'askFieldLabel']);
-            $this->ensureOption('field-description', [$this, 'askFieldDescription']);
-            $this->ensureOption('field-widget', [$this, 'askFieldWidget']);
-            $this->ensureOption('is-required', [$this, 'askRequired']);
-            $this->ensureOption('is-translatable', [$this, 'askTranslatable']);
+            $this->ensureOption('field-label', [$this, 'askFieldLabel'], true);
+            $this->ensureOption('field-description', [$this, 'askFieldDescription'], false);
+            $this->ensureOption('field-widget', [$this, 'askFieldWidget'], true);
+            $this->ensureOption('is-required', [$this, 'askRequired'], false);
+            $this->ensureOption('is-translatable', [$this, 'askTranslatable'], false);
         } else {
-            $this->ensureOption('field-label', [$this, 'askFieldLabel']);
-            $fieldName = $this->ensureOption('field-name', [$this, 'askFieldName']);
+            $this->ensureOption('field-label', [$this, 'askFieldLabel'], true);
+            $this->ensureOption('field-name', [$this, 'askFieldName'], true);
 
+            $fieldName = $this->input->getOption('field-name');
             if ($this->fieldStorageExists($fieldName, $entityType)) {
                 throw new \InvalidArgumentException(
-                    t('Field storage with name \':fieldName\' already exists. Call this command with the --existing option to add an existing field to a bundle.', [
+                    t("Field storage with name ':fieldName' already exists. Call this command with the --existing option to add an existing field to a bundle.", [
                         ':fieldName' => $fieldName,
                     ])
                 );
             }
 
-            $this->ensureOption('field-description', [$this, 'askFieldDescription']);
-            $this->ensureOption('field-type', [$this, 'askFieldType']);
-            $this->ensureOption('field-widget', [$this, 'askFieldWidget']);
-            $this->ensureOption('is-required', [$this, 'askRequired']);
-            $this->ensureOption('is-translatable', [$this, 'askTranslatable']);
-            $this->ensureOption('cardinality', [$this, 'askCardinality']);
+            $this->ensureOption('field-description', [$this, 'askFieldDescription'], false);
+            $this->ensureOption('field-type', [$this, 'askFieldType'], true);
+            $this->ensureOption('field-widget', [$this, 'askFieldWidget'], true);
+            $this->ensureOption('is-required', [$this, 'askRequired'], false);
+            $this->ensureOption('is-translatable', [$this, 'askTranslatable'], false);
+            $this->ensureOption('cardinality', [$this, 'askCardinality'], true);
 
             if ($this->input->getOption('field-type') === 'entity_reference') {
-                $this->ensureOption('target-type', [$this, 'askReferencedEntityType']);
+                $this->ensureOption('target-type', [$this, 'askReferencedEntityType'], true);
             }
 
             $this->createFieldStorage();
@@ -218,13 +214,52 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
         $this->logResult($field);
     }
 
-    protected function askExisting(): string
+    protected function validateEntityType(string $entityTypeId): void
+    {
+        if (!$this->entityTypeManager->hasDefinition($entityTypeId)) {
+            throw new \InvalidArgumentException(
+                t("Entity type with id ':entityType' does not exist.", [':entityType' => $entityTypeId])
+            );
+        }
+    }
+
+    protected function validateBundle(string $entityTypeId, string $bundle): void
+    {
+        if (!$entityTypeDefinition = $this->entityTypeManager->getDefinition($entityTypeId)) {
+            return;
+        }
+
+        $bundleEntityType = $entityTypeDefinition->getBundleEntityType();
+
+        if ($bundleEntityType === null && $bundle === $entityTypeId) {
+            return;
+        }
+
+        $bundleDefinition = $this->entityTypeManager
+            ->getStorage($bundleEntityType)
+            ->load($bundle);
+
+        if (!$bundleDefinition) {
+            throw new \InvalidArgumentException(
+                t("Bundle ':bundle' does not exist on entity type with id ':entityType'.", [
+                    ':bundle' => $bundle,
+                    ':entityType' => $entityTypeId,
+                ])
+            );
+        }
+    }
+
+    protected function askExistingFieldName(): ?string
     {
         $entityType = $this->input->getArgument('entityType');
         $bundle = $this->input->getArgument('bundle');
         $choices = $this->getExistingFieldStorageOptions($entityType, $bundle);
 
-        return $this->io()->choice('Choose an existing field', $choices);
+        if (empty($choices)) {
+            return null;
+        }
+
+        return $this->choice('Choose an existing field', $choices);
     }
 
     protected function askFieldName(): string
@@ -332,14 +367,22 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
         $bundleInfo = $this->entityTypeBundleInfo->getBundleInfo($entityTypeId);
         $choices = [];
 
-        if (empty($bundleInfo)) {
-            if ($bundleEntityType) {
-                throw new \InvalidArgumentException(
-                    t('Entity type with id \':entityType\' does not have any bundles.', [':entityType' => $entityTypeId])
-                );
-            }
+        // If the entity type has one fixed bundle (eg. user), return it.
+        if ($bundleEntityType === null && count($bundleInfo) === 1) {
+            return key($bundleInfo);
+        }
 
+        // If the entity type doesn't have bundles, return null
+        // TODO Find an example
+        if ($bundleEntityType === null && count($bundleInfo) === 0) {
             return null;
+        }
+
+        // If the entity type can have multiple bundles but it doesn't have any, throw an error
+        if ($bundleEntityType !== null && count($bundleInfo) === 0) {
+            throw new \InvalidArgumentException(
+                t("Entity type with id ':entityType' does not have any bundles.", [':entityType' => $entityTypeId])
+            );
         }
 
         foreach ($bundleInfo as $bundle => $data) {
@@ -347,7 +390,7 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
             $choices[$bundle] = $label;
         }
 
-        if (!$answer = $this->io()->choice('Bundle', $choices)) {
+        if (!$this->input->isInteractive() || !$answer = $this->io()->choice('Bundle', $choices)) {
             throw new \InvalidArgumentException(t('The bundle argument is required.'));
         }
 
@@ -509,7 +552,7 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
         }
 
         // Command files may customize $values as desired.
-        $handlers = $this->getCustomEventHandlers("field-create-{$context}-display");
+        $handlers = $this->getCustomEventHandlers(sprintf('field-create-%s-display', $context));
         foreach ($handlers as $handler) {
             $handler($values);
         }
@@ -518,13 +561,13 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
 
         if (!$storage instanceof EntityDisplayInterface) {
             $this->logger()->info(
-                sprintf('\'%s\' display storage not found for %s type \'%s\', creating now.', $context, $entityType, $bundle)
+                sprintf("'%s' display storage not found for %s type '%s', creating now.", $context, $entityType, $bundle)
             );
 
             $storage = $this->entityTypeManager
                 ->getStorage(sprintf('entity_%s_display', $context))
                 ->create([
-                    'id' => "$entityType.$bundle.default",
+                    'id' => sprintf('%s.%s.default', $entityType, $bundle),
                     'targetEntityType' => $entityType,
                     'bundle' => $bundle,
                     'mode' => 'default',
@@ -544,14 +587,14 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
 
         return $this->entityTypeManager
             ->getStorage(sprintf('entity_%s_display', $context))
-            ->load("$entityType.$bundle.default");
+            ->load(sprintf('%s.%s.default', $entityType, $bundle));
     }
 
     protected function logResult(FieldConfigInterface $field): void
     {
         $this->logger()->success(
             sprintf(
-                'Successfully created field \'%s\' on %s type with bundle \'%s\'',
+                "Successfully created field '%s' on %s type with bundle '%s'",
                 $field->get('field_name'),
                 $field->get('entity_type'),
                 $field->get('bundle')
@@ -561,7 +604,7 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
         /** @var EntityTypeInterface $entityType */
         $entityType = $this->entityTypeManager->getDefinition($field->get('entity_type'));
 
-        $routeName = "entity.field_config.{$entityType->id()}_field_edit_form";
+        $routeName = sprintf('entity.field_config.%s_field_edit_form', $entityType->id());
         $routeParams = [
             'field_config' => $field->id(),
             $entityType->getBundleEntityType() => $field->get('bundle'),
@@ -610,11 +653,6 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
         return isset($fieldStorageDefinitions[$fieldName]);
     }
 
-    protected function entityTypeBundleExists(string $entityType, string $bundleName): bool
-    {
-        return isset($this->entityTypeBundleInfo->getBundleInfo($entityType)[$bundleName]);
-    }
-
     protected function getExistingFieldStorageOptions(string $entityType, string $bundle): array
     {
         $fieldTypes = $this->fieldTypePluginManager->getDefinitions();
@@ -654,20 +692,21 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
             && $this->contentTranslationManager->isEnabled($entityType, $bundle);
     }
 
-    protected function ensureArgument(string $name, callable $asker)
+    protected function ensureOption(string $name, callable $asker, bool $required): void
     {
-        $value = $this->input->getArgument($name) ?? $asker();
-        $this->input->setArgument($name, $value);
+        $value = $this->input->getOption($name);
 
-        return $value;
-    }
+        if ($value === null && $this->input->isInteractive()) {
+            $value = $asker();
+        }
 
-    protected function ensureOption(string $name, callable $asker)
-    {
-        $value = $this->input->getOption($name) ?? $asker();
+        if ($required && $value === null) {
+            throw new \InvalidArgumentException(dt('The %optionName option is required.', [
+                '%optionName' => $name,
+            ]));
+        }
+
         $this->input->setOption($name, $value);
-
-        return $value;
     }
 
     protected function optionalAsk(string $question)
