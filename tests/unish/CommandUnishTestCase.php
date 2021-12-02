@@ -77,9 +77,9 @@ abstract class CommandUnishTestCase extends UnishTestCase
     /**
      * Invoke drush in via execute().
      *
-     * @param command
+     * @param $command
       *   A defined drush command such as 'cron', 'status' or any of the available ones such as 'drush pm'.
-      * @param args
+      * @param $args
       *   Command arguments.
       * @param $options
       *   An associative array containing options.
