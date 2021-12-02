@@ -457,7 +457,7 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
         $question = (new ChoiceQuestion('Referenced bundles', $choices))
             ->setMultiselect(true);
 
-        return $this->io()->askQuestion($question);
+        return $this->io()->askQuestion($question) ?: [];
     }
 
     protected function createField(): FieldConfigInterface
