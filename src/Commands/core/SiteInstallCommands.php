@@ -3,6 +3,7 @@ namespace Drush\Commands\core;
 
 use Composer\Semver\Comparator;
 use Consolidation\AnnotatedCommand\CommandData;
+use Consolidation\OutputFormatters\StructuredData\UnstructuredListData;
 use Drupal\Component\FileCache\FileCacheFactory;
 use Drupal\Core\Database\Database;
 use Drupal\Core\Installer\Exception\AlreadyInstalledException;
@@ -13,6 +14,8 @@ use Drush\Exceptions\UserAbortException;
 use Drupal\Core\Config\FileStorage;
 use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
 use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
+use Drupal\Core\KeyValueStore\MemoryStorage;
+use Drush\Exceptions\SiteInstallStepCompletedException;
 use Drush\Exec\ExecTrait;
 use Drush\Sql\SqlBase;
 use Drush\Utils\StringUtils;
@@ -41,6 +44,7 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
      * @option sites-subdir Name of directory under <info>sites</info> which should be created.
      * @option config-dir Deprecated - only use with Drupal 8.5-. A path pointing to a full set of configuration which should be installed during installation.
      * @option existing-config Configuration from <info>sync</info> directory should be imported during installation. Use with Drupal 8.6+.
+     * @option memory-efficient Use a more memory-efficient way of installing Drupal, which takes longer to execute.
      * @usage drush si expert --locale=uk
      *   (Re)install using the expert install profile. Set default language to Ukrainian.
      * @usage drush si --db-url=mysql://root:pass@localhost:port/dbname
@@ -58,7 +62,7 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
      * @aliases si,sin,site-install
      *
      */
-    public function install(array $profile, $options = ['db-url' => self::REQ, 'db-prefix' => self::REQ, 'db-su' => self::REQ, 'db-su-pw' => self::REQ, 'account-name' => 'admin', 'account-mail' => 'admin@example.com', 'site-mail' => 'admin@example.com', 'account-pass' => self::REQ, 'locale' => 'en', 'site-name' => 'Drush Site-Install', 'site-pass' => self::REQ, 'sites-subdir' => self::REQ, 'config-dir' => self::REQ, 'existing-config' => false])
+    public function install(array $profile, $options = ['db-url' => self::REQ, 'db-prefix' => self::REQ, 'db-su' => self::REQ, 'db-su-pw' => self::REQ, 'account-name' => 'admin', 'account-mail' => 'admin@example.com', 'site-mail' => 'admin@example.com', 'account-pass' => self::REQ, 'locale' => 'en', 'site-name' => 'Drush Site-Install', 'site-pass' => self::REQ, 'sites-subdir' => self::REQ, 'config-dir' => self::REQ, 'existing-config' => false, 'memory-efficient' => false])
     {
         $additional = $profile;
         $profile = array_shift($additional) ?: '';
@@ -140,14 +144,33 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
         $msg = 'Starting Drupal installation. This takes a while.';
         $this->logger()->notice(dt($msg));
 
-        // Define some functions which alter away the install_finished task.
-        require_once Path::join(DRUSH_BASE_PATH, 'includes/site_install.inc');
-
-        require_once DRUSH_DRUPAL_CORE . '/includes/install.core.inc';
-        // This can lead to an exit() in Drupal. See install_display_output() (e.g. config validation failure).
-        // @todo Get Drupal to not call that function when on the CLI.
         try {
-            drush_op('install_drupal', $class_loader, $settings, [$this, 'taskCallback']);
+            if ($options['memory-efficient']) {
+                $stepOptions = [
+                    'settings' => serialize($settings),
+                ];
+
+                do {
+                    $process = Drush::drush(Drush::aliasManager()->getSelf(), 'site:install:step', [], $stepOptions);
+                    $process->setTimeout(null);
+                    $process->run($process->showRealtime()->hideStdout());
+                    $result = $process->getOutputAsJson();
+                    if ($install_state = $result['install_state'] ?? NULL) {
+                        // print_r($install_state);
+                        $this->logger()->notice('Performed install task: {task}', ['task' => $install_state['active_task']]);
+                        $finished = $install_state['installation_finished'] ?? FALSE;
+                    }
+                    else if ($exception = $result['install_exception'] ?? NULL) {
+                        $exception = unserialize($exception);
+                        throw $exception;
+                    }
+                    else {
+                        throw new \Exception('Unknown error during installation. ' . $process->getOutput());
+                    }
+                } while (!$finished);
+            } else {
+                $this->runInstallDrupal($settings, [$this, 'taskCallback']);
+            }
         } catch (AlreadyInstalledException $e) {
             if ($sql && !$this->programExists($sql->command())) {
                 throw new \Exception(dt('Drush was unable to drop all tables because `@program` was not found, and therefore Drupal threw an AlreadyInstalledException. Ensure `@program` is available in your PATH.', ['@program' => $sql->command()]));
@@ -167,6 +190,61 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
         $this->logger()->notice('Performed install task: {task}', ['task' => $install_state['active_task']]);
     }
 
+    protected function runInstallDrupal($settings, $callback) {
+        $this->serverGlobals(Drush::bootstrapManager()->getUri());
+        $class_loader = Drush::service('loader');
+
+        // Define some functions which alter away the install_finished task.
+        require_once Path::join(DRUSH_BASE_PATH, 'includes/site_install.inc');
+
+        require_once DRUSH_DRUPAL_CORE . '/includes/install.core.inc';
+
+        // This can lead to an exit() in Drupal. See install_display_output() (e.g. config validation failure).
+        // @todo Get Drupal to not call that function when on the CLI.
+        drush_op('install_drupal', $class_loader, $settings, $callback);
+    }
+
+    /**
+     * Run a Drupal installation step.
+     *
+     * @command site:install:step
+     * @option settings A serialized settings array, that is passed to the install_drupal command.
+     * @bootstrap root
+     * @kernel installer
+     * @hidden
+     * 
+     * @return \Consolidation\OutputFormatters\StructuredData\UnstructuredListData
+     */
+    public function installStep($options = ['settings' => '', 'format' => 'json'])
+    {
+        $settings = unserialize($options['settings']);
+
+        try {
+            $this->runInstallDrupal($settings, [$this, 'stepTaskCallback']);
+        } catch (SiteInstallStepCompletedException $e) {
+            return new UnstructuredListData([
+                'install_state' => $e->installState
+            ]);
+        } catch (\Exception $e) {
+            return new UnstructuredListData([
+                'install_exception' => serialize($e),
+            ]);
+        }
+    }
+
+    public function stepTaskCallback($install_state)
+    {
+        $completed_task = \Drupal::state()->get('install_task');
+        if (\Drupal::keyValue('state') instanceof MemoryStorage) {
+            // The task completion wasn't actually saved, so clear the value.
+            $completed_task = NULL;
+        }
+        $shouldStartNewProcess = $completed_task === 'done' || $completed_task === $install_state['active_task'];
+        if ($shouldStartNewProcess) {
+            throw new SiteInstallStepCompletedException($install_state);
+        }
+        $this->taskCallback($install_state);
+    }
 
     protected function determineProfile($profile, $options, $class_loader)
     {
