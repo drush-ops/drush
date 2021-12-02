@@ -50,7 +50,7 @@ http://dev/admin/structure/unish_article_types/manage/alpha/fields/unish_article
         $this->assertSame('unish_article', $settings['target_type']);
         $this->assertEquals(['beta' => 'beta'], $settings['handler_settings']['target_bundles']);
         $this->drush('field:create', ['unish_article', 'alpha'], ['field-name' => 'field_test3', 'field-label' => 'Body'], null, null, self::EXIT_ERROR);
-        $this->assertStringContainsString('Field storage with name \'field_test3\' already exists. Call this command with the --existing option to add an existing field to a bundle.', $this->getSimplifiedErrorOutput());
+        $this->assertStringContainsString('--existing option', $this->getSimplifiedErrorOutput());
 
         // Existing storage
         $this->drush('field:create', ['unish_article', 'beta'], ['existing-field-name' => 'field_test3', 'field-label' => 'Body', 'field-widget' => 'text_textarea_with_summary']);
