@@ -129,7 +129,7 @@ abstract class UnishIntegrationTestCase extends UnishTestCase
                     if (!isset($value)) {
                         $cmd[] = "--$key";
                     } else {
-                        $cmd[] = "--$key=" . self::escapeshellarg($value);
+                        $cmd[] = "--$key=" . $value;
                     }
                 }
             }
@@ -157,7 +157,7 @@ abstract class UnishIntegrationTestCase extends UnishTestCase
                 if (!isset($value) || $value === true) {
                     $cmd[] = "--$key";
                 } else {
-                    $cmd[] = "--$key=" . self::escapeshellarg($value);
+                    $cmd[] = "--$key=" . $value;
                 }
             }
         }
