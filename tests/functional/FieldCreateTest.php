@@ -2,6 +2,8 @@
 
 namespace Unish;
 
+use Webmozart\PathUtil\Path;
+
 /**
  * @group commands
  */
@@ -16,7 +18,7 @@ class FieldCreateTest extends CommandUnishTestCase
             // Create a content entity with bundles.
             CreateEntityType::createContentEntity($this);
             $this->drush('pm-enable', ['text,field_ui,unish_article']);
-            $this->drush('php:script', ['tests/functional/resources/unish_article_bundles.php']);
+            $this->drush('php:script', ['create_unish_article_bundles'], ['script-path' => Path::join(__DIR__, 'resources')]);
         }
     }
 

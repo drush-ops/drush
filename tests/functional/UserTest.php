@@ -117,6 +117,7 @@ class UserCase extends CommandUnishTestCase
     {
         CreateEntityType::createContentEntity($this);
         $this->drush('pm-enable', ['text,unish_article']);
+        $this->drush('php:script', ['create_unish_article_bundles'], ['script-path' => Path::join(__DIR__, 'resources')]);
         // Create one unish_article owned by our example user.
         $this->drush('php-script', ['create_unish_articles'], ['script-path' => Path::join(__DIR__, 'resources')]);
         // Verify that content entity exists.
