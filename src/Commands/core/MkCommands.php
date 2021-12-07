@@ -181,7 +181,7 @@ command: {$command->getName()}
 EOT;
         $body .= "# {$command->getName()}\n\n";
         if ($command instanceof AnnotatedCommand && $version = $command->getAnnotationData()->get('version')) {
-           $body .= ":octicons-tag-24: $version+\n\n";
+            $body .= ":octicons-tag-24: $version+\n\n";
         }
         if ($command->getDescription()) {
             $body .= self::cliTextToMarkdown($command->getDescription()) . "\n\n";
