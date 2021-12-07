@@ -113,6 +113,7 @@ class MigrateRunnerCommands extends DrushCommands
      *
      * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
      *   Migrations status formatted as table.
+     * @version 10.4
      *
      * @throws \Exception
      *   If --names-only is used with --field having other value than 'id'.
@@ -364,6 +365,8 @@ class MigrateRunnerCommands extends DrushCommands
      *
      * @validate-module-enabled migrate
      *
+     * @version 10.4
+     *
      * @throws \Exception
      *   When not enough options were provided or no migration was found.
      */
@@ -493,6 +496,8 @@ class MigrateRunnerCommands extends DrushCommands
      *
      * @validate-module-enabled migrate
      *
+     * @version 10.4
+     *
      * @throws \Exception
      *   When not enough options were provided.
      */
@@ -538,6 +543,7 @@ class MigrateRunnerCommands extends DrushCommands
      *
      * @validate-module-enabled migrate
      * @validate-migration-id
+     * @version 10.4
      */
     public function stop(string $migrationId): void
     {
@@ -574,6 +580,7 @@ class MigrateRunnerCommands extends DrushCommands
      *
      * @validate-module-enabled migrate
      * @validate-migration-id
+     * @version 10.4
      */
     public function resetStatus(string $migrationId): void
     {
@@ -613,6 +620,7 @@ class MigrateRunnerCommands extends DrushCommands
      *
      * @validate-module-enabled migrate
      * @validate-migration-id
+     * @version 10.4
      *
      * @field-labels
      *   level: Level
@@ -723,6 +731,7 @@ class MigrateRunnerCommands extends DrushCommands
      *   machine_name: Field name
      *   description: Description
      * @default-fields machine_name,description
+     * @version 10.4
      *
      * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
      *   Source fields of the given migration.
