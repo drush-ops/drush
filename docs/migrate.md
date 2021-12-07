@@ -1,5 +1,6 @@
 Defining and running migrations
 ===============================
+:octicons-tag-24: 10.4+
 
 The Migrate API delivers services for migrating data from a source system to Drupal. This API is provided by the core `migrate` module. In order to migrate data to Drupal, you'll need to create migrations for each type of destination data.
 

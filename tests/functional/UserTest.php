@@ -115,38 +115,9 @@ class UserCase extends CommandUnishTestCase
 
     public function testUserCancel()
     {
-        $answers = [
-            'name' => 'Unish Article',
-            'machine_name' => 'unish_article',
-            'description' => 'A test module',
-            'package' => 'unish',
-            'dependencies' => 'drupal:text',
-        ];
-        $this->drush('generate', ['module'], ['v' => null, 'answer' => $answers, 'destination' => Path::join(self::webroot(), 'modules/contrib')], null, null, self::EXIT_SUCCESS, null, ['SHELL_INTERACTIVE' => 1]);
-        // Create a content entity type and enable its module.
-        // Note that only the values below are used. The keys are for documentation.
-        $answers = [
-            'name' => 'unish_article',
-            'entity_type_label' => 'UnishArticle',
-            'entity_type_id' => 'unish_article',
-            'entity_base_path' => 'admin/content/unish_article',
-            'fieldable' => 'no',
-            'revisionable' => 'no',
-            'translatable' => 'no',
-            'bundle' => 'No',
-            'canonical page' => 'No',
-            'entity template' => 'No',
-            'CRUD permissions' => 'No',
-            'label base field' => 'Yes',
-            'status_base_field' => 'yes',
-            'created_base_field' => 'yes',
-            'changed_base_field' => 'yes',
-            'author_base_field' => 'yes',
-            'description_base_field' => 'no',
-            'rest_configuration' => 'no',
-        ];
-        $this->drush('generate', ['content-entity'], ['answer' => $answers, 'destination' => Path::join(self::webroot(), 'modules/contrib/unish_article')], null, null, self::EXIT_SUCCESS, null, ['SHELL_INTERACTIVE' => 1]);
+        CreateEntityType::createContentEntity($this);
         $this->drush('pm-enable', ['text,unish_article']);
+        $this->drush('php:script', ['create_unish_article_bundles'], ['script-path' => Path::join(__DIR__, 'resources')]);
         // Create one unish_article owned by our example user.
         $this->drush('php-script', ['create_unish_articles'], ['script-path' => Path::join(__DIR__, 'resources')]);
         // Verify that content entity exists.

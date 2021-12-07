@@ -110,6 +110,7 @@ class EntityCommands extends DrushCommands
      *   Re-save all users.
      * @usage drush entity:save node --chunks=5
      *   Re-save all node entities in steps of 5.
+     * @version 11.0
      *
      * @command entity:save
      * @aliases esav,entity-save

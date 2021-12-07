@@ -87,6 +87,7 @@ class DeployHookCommands extends DrushCommands implements SiteAliasManagerAwareI
      *
      * @command deploy:hook
      * @topics docs:deploy
+     * @version 10.3
      */
     public function run()
     {
@@ -262,6 +263,7 @@ class DeployHookCommands extends DrushCommands implements SiteAliasManagerAwareI
      *
      * @command deploy:mark-complete
      * @topics docs:deploy
+     * @version 10.6.1
      */
     public function markComplete()
     {
