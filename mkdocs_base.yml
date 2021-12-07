@@ -52,6 +52,9 @@ markdown_extensions:
             startinline: true
   - pymdownx.inlinehilite: { }
   - pymdownx.superfences: { }
+  - pymdownx.emoji:
+      emoji_index: '!!python/name:materialx.emoji.twemoji'
+      emoji_generator: '!!python/name:materialx.emoji.to_svg'
 nav:
   - Use:
     - Introduction: index.md

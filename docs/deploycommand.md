@@ -1,4 +1,5 @@
 # Deploy
+:octicons-tag-24: 10.3+
 
 The [deploy command](commands/deploy.md) standardizes how Drupal deployments work. The intent is your 
 deployment script updates the codebase for the target site and then this command 
