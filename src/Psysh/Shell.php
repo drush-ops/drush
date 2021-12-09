@@ -20,7 +20,7 @@ class Shell extends BaseShell
      *
      * @return null|string
      */
-    protected function getCommand($input)
+    protected function getCommand(string $input)
     {
         if ($name = $this->getCommandFromInput($input)) {
             return $this->get($name);
@@ -34,7 +34,7 @@ class Shell extends BaseShell
      *
      * @return bool True if the shell has a command for the given input.
      */
-    protected function hasCommand($input)
+    protected function hasCommand(string $input): bool
     {
         if ($name = $this->getCommandFromInput($input)) {
             return $this->has($name);
@@ -52,7 +52,7 @@ class Shell extends BaseShell
      * @return string|NULL
      *   The current command.
      */
-    protected function getCommandFromInput($input)
+    protected function getCommandFromInput(string $input)
     {
         // Remove the alias from the start of the string before parsing and
         // returning the command. Essentially, when choosing a command, we're
