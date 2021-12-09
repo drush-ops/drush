@@ -44,7 +44,7 @@
     "guzzlehttp/guzzle": "^6.3 || ^7.0",
     "league/container": "^2.5 || ^3.4",
     "psr/log": "~1.0",
-    "psy/psysh": "~0.6",
+    "psy/psysh": ">=0.6 <0.11",
     "symfony/event-dispatcher": "^3.4 || ^4.0",
     "symfony/finder": "^3.4 || ^4.0 || ^5",
     "symfony/var-dumper": "^3.4 || ^4.0 || ^5.0",
