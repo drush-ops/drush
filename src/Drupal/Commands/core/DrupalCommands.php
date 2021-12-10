@@ -159,6 +159,7 @@ class DrupalCommands extends DrushCommands
      *   View details about the <info>entity.user.canonical</info> route.
      * @option name A route name.
      * @option path An internal path.
+     * @version 10.5
      */
     public function route($options = ['name' => self::REQ, 'path' =>self::REQ, 'format' => 'yaml'])
     {

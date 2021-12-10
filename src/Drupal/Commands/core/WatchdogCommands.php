@@ -134,6 +134,7 @@ class WatchdogCommands extends DrushCommands
      *   username: Username
      * @default-fields wid,date,type,severity,message
      * @filter-default-field message
+     * @version 10.6
      */
     public function tail(OutputInterface $output, $substring = '', $options = ['format' => 'table', 'severity' => self::REQ, 'type' => self::REQ, 'extended' => false])
     {

@@ -114,6 +114,7 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
      * @usage drush field-create taxonomy_term tag --field-name=field_tag_label --field-label=Label --field-type=string --field-widget=string_textfield --is-required=1 --cardinality=2
      *      Create a field in a completely non-interactive way.
      *
+     * @version 11.0
      * @see \Drupal\field_ui\Form\FieldConfigEditForm
      * @see \Drupal\field_ui\Form\FieldStorageConfigEditForm
      */
