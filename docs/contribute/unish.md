@@ -10,6 +10,7 @@ high quality, our tests are run on every push. See [CircleCi](https://circleci.c
 
 ## DDEV
 :octicons-tag-24: 11.0+
+
 Drush's own tests may be run within provided Docker containers via [DDEV](https://ddev.readthedocs.io/en/stable/)
 
 - Start containers: `ddev start`
@@ -25,7 +26,7 @@ Drush's own tests may be run within provided Docker containers via [DDEV](https:
 - Skip slow tests (usually those with network usage): `composer functional -- --exclude-group slow`
 - XML results: `composer functional -- --log-junit results.xml`
 - Ad-hoc testing with the SUT
-  - `composer sut:si`. See composer.json for details.
+  - `composer sut:si`. [See composer.json for details](https://github.com/drush-ops/drush/blob/dde2793453ed96cc8b9e5bbc1b66e3d8d26be1f6/composer.json#L117).
   - `UNISH_DIRTY=1 composer functional -- --filter testUserRole`
   - `./drush @sut.dev status`
 
