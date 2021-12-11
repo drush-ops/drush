@@ -9,6 +9,7 @@ high quality, our tests are run on every push. See [CircleCi](https://circleci.c
 1. Run all test suites: `composer test`
 
 ## DDEV
+:octicons-tag-24: 11.0+
 Drush's own tests may be run within provided Docker containers via [DDEV](https://ddev.readthedocs.io/en/stable/:
 
 - Start containers: `ddev start`
