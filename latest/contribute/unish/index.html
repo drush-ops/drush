@@ -15,7 +15,7 @@
         <link rel="canonical" href="https://www.drush.org/latest/contribute/unish/">
       
       <link rel="icon" href="../../img/favicon.ico">
-      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.0.5">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.1.0">
     
     
       
@@ -23,7 +23,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.a617204b.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.82f3c0b9.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.9204c3b2.min.css">
@@ -975,8 +975,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#docker" class="md-nav__link">
-    Docker
+  <a href="#ddev" class="md-nav__link">
+    DDEV
   </a>
   
 </li>
@@ -3332,13 +3332,12 @@ high quality, our tests are run on every push. See <a href="https://circleci.com
 <li>Review the configuration settings in <a href="https://github.com/drush-ops/drush/blob/11.x/tests/phpunit.xml.dist">tests/phpunit.xml.dist</a>. If customization is needed, copy phpunit.xml.dist to phpunit.xml and edit away.</li>
 <li>Run all test suites: <code>composer test</code></li>
 </ol>
-<h2 id="docker">Docker<a class="headerlink" href="#docker" title="Permanent link">&para;</a></h2>
-<p>Drush's own tests may be run within provided Docker containers (see docker-compose.yml):</p>
+<h2 id="ddev">DDEV<a class="headerlink" href="#ddev" title="Permanent link">&para;</a></h2>
+<p>Drush's own tests may be run within provided Docker containers via [DDEV](<a href="https://ddev.readthedocs.io/en/stable/">https://ddev.readthedocs.io/en/stable/</a>:</p>
 <ul>
-<li>Start containers: <code>docker-compose up -d</code></li>
-<li>Run a test: <code>docker-compose exec drupal composer functional -- --filter testUserRole</code></li>
-<li>To change configuration, copy <code>.env.example</code> to <code>.env</code>, edit to taste, and run <code>docker-compose up -d</code> again.</li>
-<li>See the <a href="https://github.com/drush-ops/drush/blob/11.x/.env.example">.env.example file</a> for help on enabling Xdebug.</li>
+<li>Start containers: <code>ddev start</code></li>
+<li>Run a test: <code>ddev exec drupal composer functional -- --filter testUserRole</code></li>
+<li>See the <a href="https://ddev.readthedocs.io/en/stable/users/step-debugging/">DDEV's XDebug docs</a> for help on enabling Xdebug.</li>
 </ul>
 <h2 id="advanced-usage">Advanced usage<a class="headerlink" href="#advanced-usage" title="Permanent link">&para;</a></h2>
 <ul>
@@ -3474,7 +3473,7 @@ high quality, our tests are run on every push. See <a href="https://circleci.com
     <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "toc.integrate"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.cefbb252.min.js"}</script>
     
     
-      <script src="../../assets/javascripts/bundle.a5f8ea78.min.js"></script>
+      <script src="../../assets/javascripts/bundle.17f42bbf.min.js"></script>
       
     
   </body>
