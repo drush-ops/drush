@@ -74,7 +74,7 @@
 
     
     <p>        class
-    <strong>DrushCommandFile</strong>        extends <abbr title="DrupalCodeGenerator\Command\ModuleGenerator">ModuleGenerator</abbr>        (<a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/generate/Generators/Drush/DrushCommandFile.php">View source</a>)
+    <strong>DrushCommandFile</strong>        extends <abbr title="DrupalCodeGenerator\Command\BaseGenerator">BaseGenerator</abbr>        (<a href="https://github.com/drush-ops/drush/blob/10.x/src/Commands/generate/Generators/Drush/DrushCommandFile.php">View source</a>)
 </p>
 
         
@@ -133,17 +133,17 @@
             <div class="container-fluid underlined">
                     <div class="row">
                 <div class="col-md-2 type">
-                    void
+                    
                 </div>
                 <div class="col-md-8">
-                    <a href="#method_generate">generate</a>(array $vars)
+                    <a href="#method_interact">interact</a>(<abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr> $input, <abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr> $output)
         
                                             <p><p>{@inheritdoc}</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    array
+                    
                 </div>
                 <div class="col-md-8">
                     <a href="#method_getComposerJson">getComposerJson</a>(array $vars)
@@ -154,7 +154,7 @@
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    string
+                    
                 </div>
                 <div class="col-md-8">
                     <a href="#method_getOwningModulePath">getOwningModulePath</a>(array $vars)
@@ -165,7 +165,7 @@
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    array
+                    
                 </div>
                 <div class="col-md-8">
                     <a href="#method_adjustCommands">adjustCommands</a>(array $commands)
@@ -181,10 +181,10 @@
 
             <div id="method-details">
                     <div class="method-item">
-                    <h3 id="method_generate">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/generate/Generators/Drush/DrushCommandFile.php#L22">at line 22</a></div>
-        <code>            protected        void
-    <strong>generate</strong>(array $vars)
+                    <h3 id="method_interact">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Commands/generate/Generators/Drush/DrushCommandFile.php#L25">at line 25</a></div>
+        <code>            protected        
+    <strong>interact</strong>(<abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr> $input, <abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr> $output)
         </code>
     </h3>
     <div class="details">    
@@ -199,22 +199,18 @@
 
                     <table class="table table-condensed">
                     <tr>
-                <td>array</td>
-                <td>$vars</td>
+                <td><abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr></td>
+                <td>$input</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr></td>
+                <td>$output</td>
                 <td></td>
             </tr>
             </table>
 
             
-                            <h4>Return Value</h4>
-
-                    <table class="table table-condensed">
-        <tr>
-            <td>void</td>
-            <td></td>
-        </tr>
-    </table>
-
             
             
             
@@ -224,8 +220,8 @@
             </div>
                     <div class="method-item">
                     <h3 id="method_getComposerJson">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/generate/Generators/Drush/DrushCommandFile.php#L57">at line 57</a></div>
-        <code>            protected        array
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Commands/generate/Generators/Drush/DrushCommandFile.php#L65">at line 65</a></div>
+        <code>            protected        
     <strong>getComposerJson</strong>(array $vars)
         </code>
     </h3>
@@ -249,15 +245,6 @@
             </table>
 
             
-                            <h4>Return Value</h4>
-
-                    <table class="table table-condensed">
-        <tr>
-            <td>array</td>
-            <td></td>
-        </tr>
-    </table>
-
             
             
             
@@ -267,8 +254,8 @@
             </div>
                     <div class="method-item">
                     <h3 id="method_getOwningModulePath">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/generate/Generators/Drush/DrushCommandFile.php#L79">at line 79</a></div>
-        <code>            protected        string
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Commands/generate/Generators/Drush/DrushCommandFile.php#L87">at line 87</a></div>
+        <code>            protected        
     <strong>getOwningModulePath</strong>(array $vars)
         </code>
     </h3>
@@ -292,15 +279,6 @@
             </table>
 
             
-                            <h4>Return Value</h4>
-
-                    <table class="table table-condensed">
-        <tr>
-            <td>string</td>
-            <td></td>
-        </tr>
-    </table>
-
             
             
             
@@ -310,8 +288,8 @@
             </div>
                     <div class="method-item">
                     <h3 id="method_adjustCommands">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/generate/Generators/Drush/DrushCommandFile.php#L93">at line 93</a></div>
-        <code>            protected        array
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/10.x/src/Commands/generate/Generators/Drush/DrushCommandFile.php#L101">at line 101</a></div>
+        <code>            protected        
     <strong>adjustCommands</strong>(array $commands)
         </code>
     </h3>
@@ -335,15 +313,6 @@
             </table>
 
             
-                            <h4>Return Value</h4>
-
-                    <table class="table table-condensed">
-        <tr>
-            <td>array</td>
-            <td></td>
-        </tr>
-    </table>
-
             
             
             
