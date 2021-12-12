@@ -49,7 +49,7 @@ services:
       - '@entity_type.bundle.info'
     tags:
       -  { name: drush.command }
-  base-field-override.create.commands:
+  base-field.override-create.commands:
     class: \Drush\Drupal\Commands\core\BaseFieldOverrideCreateCommands
     arguments:
       - '@entity_type.manager'

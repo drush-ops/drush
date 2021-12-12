@@ -36,7 +36,7 @@ class BaseFieldOverrideCreateCommands extends DrushCommands
     /**
      * Create a new base field override
      *
-     * @command base-field-override:create
+     * @command base-field:override-create
      * @aliases base-field-override-create,bfoc
      *
      * @param string $entityType
@@ -56,11 +56,11 @@ class BaseFieldOverrideCreateCommands extends DrushCommands
      * @option show-machine-names
      *      Show machine names instead of labels in option lists.
      *
-     * @usage drush base-field-override:create
+     * @usage drush base-field:override-create
      *      Create a base field override by answering the prompts.
-     * @usage drush base-field-override:create taxonomy_term tag
+     * @usage drush base-field:override-create taxonomy_term tag
      *      Create a base field override and fill in the remaining information through prompts.
-     * @usage drush base-field-override:create taxonomy_term tag --field-name=name --field-label=Label --is-required=1
+     * @usage drush base-field:override-create taxonomy_term tag --field-name=name --field-label=Label --is-required=1
      *      Create a base field override in a completely non-interactive way.
      *
      * @see \Drupal\field_ui\Form\FieldConfigEditForm
