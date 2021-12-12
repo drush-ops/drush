@@ -66,6 +66,12 @@ class FieldDeleteCommands extends DrushCommands
         $fieldName = $this->input->getOption('field-name') ?? $this->askExisting($entityType, $bundle);
         $this->input->setOption('field-name', $fieldName);
 
+        if ($fieldName === '') {
+            throw new \InvalidArgumentException(dt('The %optionName option is required.', [
+                '%optionName' => 'field-name',
+            ]));
+        }
+
         /** @var FieldConfig[] $results */
         $results = $this->entityTypeManager
             ->getStorage('field_config')
