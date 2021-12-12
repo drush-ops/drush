@@ -172,9 +172,9 @@ class BaseFieldOverrideCreateCommands extends DrushCommands
     {
         $this->logger()->success(
             sprintf(
-                'Successfully created base field override \'%s\' on %s type with bundle \'%s\'',
+                'Successfully created base field override \'%s\' on %s with bundle \'%s\'',
                 $baseFieldOverride->getName(),
-                $baseFieldOverride->getEntityTypeId(),
+                $baseFieldOverride->getTargetEntityTypeId(),
                 $baseFieldOverride->getTargetBundle()
             )
         );
