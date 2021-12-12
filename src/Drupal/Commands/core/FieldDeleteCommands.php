@@ -81,6 +81,15 @@ class FieldDeleteCommands extends DrushCommands
                 'bundle' => $bundle,
             ]);
 
+        if ($results === []) {
+            throw new \InvalidArgumentException(
+                t("Field with name ':fieldName' does not exist on bundle ':bundle'.", [
+                    ':fieldName' => $fieldName,
+                    ':bundle' => $bundle,
+                ])
+            );
+        }
+
         $this->deleteFieldConfig(reset($results));
 
         // Fields are purged on cron. However field module prevents disabling modules
