@@ -104,9 +104,7 @@
     
       
 
-  
-
-<header class="md-header md-header--lifted" data-md-component="header">
+<header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
     <a href=".." title="Drush" class="md-header__button md-logo" aria-label="Drush" data-md-component="logo">
       
@@ -183,8 +181,14 @@
     
   </nav>
   
+</header>
     
-      <!--
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            <!--
   Copyright (c) 2016-2020 Martin Donath <martin.donath@squidfunk.com>
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -318,13 +322,7 @@
     </ul>
   </div>
 </nav>
-    
-  
-</header>
-    
-    <div class="md-container" data-md-component="container">
-      
-      
+          
         
       
       <main class="md-main" data-md-component="main">
@@ -1158,20 +1156,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../commands/field_create/" class="md-nav__link">
-        field:create
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../commands/generate/" class="md-nav__link">
         generate
       </a>
@@ -1579,6 +1563,20 @@
   
   
     <li class="md-nav__item">
+      <a href="../commands/core_init/" class="md-nav__link">
+        core:init
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../commands/core_requirements/" class="md-nav__link">
         core:requirements
       </a>
@@ -1773,20 +1771,6 @@
     <li class="md-nav__item">
       <a href="../commands/entity_delete/" class="md-nav__link">
         entity:delete
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../commands/entity_save/" class="md-nav__link">
-        entity:save
       </a>
     </li>
   
@@ -3421,6 +3405,9 @@ in your <code>~/.drush/drush.yml</code> configuration file:</p>
       - &#39;${env.HOME}/.drush/sites&#39;
       - /etc/drush/sites
 </code></pre></div>
+<p>The command <code>drush core:init</code> will automatically configure your
+~/.drush/drush.yml configuration file to add <code>~/.drush/sites</code> and
+<code>/etc/drush/sites</code> as locations where alias files may be placed.</p>
 <p>A canonical alias named <em>example</em> that points to a local
 Drupal site named at <a href="http://example.com">http://example.com</a> like this:</p>
 <div class="highlight"><pre><span></span><code># File: example.site.yml
@@ -3557,7 +3544,7 @@ environment name wherever it appears.</p>
 match. This is not desirable in instances where the specified environment
 does not exist (e.g. if the user made a typo). An alias alter hook in a
 policy file may be used to catch these mistakes and report an error.
-See <a href="https://www.drush.org/latest/examples/SiteAliasAlterCommands.php/">SiteAliasAlterCommands</a> for an example on how to do this.</p>
+See <a href="../examples/Commands/SiteAliasAlterCommands.php">SiteAliasAlterCommands</a> for an example on how to do this.</p>
 <h3 id="docker-compose-and-other-transports">Docker Compose and other transports<a class="headerlink" href="#docker-compose-and-other-transports" title="Permanent link">&para;</a></h3>
 <p>The example below shows drush calling into a Docker hosted site. See the <a href="https://github.com/consolidation/site-alias">https://github.com/consolidation/site-alias</a> and <a href="https://github.com/consolidation/site-process">https://github.com/consolidation/site-process</a> projects for more developer
 information about transports. </p>
@@ -3701,7 +3688,7 @@ may be specified in an alias record, as shown below.</p>
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "..", "features": ["navigation.tabs", "navigation.tabs.sticky", "toc.integrate"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../assets/javascripts/workers/search.cefbb252.min.js"}</script>
+    <script id="__config" type="application/json">{"base": "..", "features": ["navigation.tabs", "toc.integrate"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../assets/javascripts/workers/search.cefbb252.min.js"}</script>
     
     
       <script src="../assets/javascripts/bundle.17f42bbf.min.js"></script>

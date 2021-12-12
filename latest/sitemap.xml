@@ -176,6 +176,11 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
+         <loc>https://www.drush.org/latest/commands/core_init/</loc>
+         <lastmod>2021-12-12</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>https://www.drush.org/latest/commands/core_requirements/</loc>
          <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
@@ -231,17 +236,7 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/commands/entity_save/</loc>
-         <lastmod>2021-12-12</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
          <loc>https://www.drush.org/latest/commands/entity_updates/</loc>
-         <lastmod>2021-12-12</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
-         <loc>https://www.drush.org/latest/commands/field_create/</loc>
          <lastmod>2021-12-12</lastmod>
          <changefreq>daily</changefreq>
     </url>

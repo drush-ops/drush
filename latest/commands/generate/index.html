@@ -104,9 +104,7 @@
     
       
 
-  
-
-<header class="md-header md-header--lifted" data-md-component="header">
+<header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
     <a href="../.." title="Drush" class="md-header__button md-logo" aria-label="Drush" data-md-component="logo">
       
@@ -183,8 +181,14 @@
     
   </nav>
   
+</header>
     
-      <!--
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            <!--
   Copyright (c) 2016-2020 Martin Donath <martin.donath@squidfunk.com>
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -318,13 +322,7 @@
     </ul>
   </div>
 </nav>
-    
-  
-</header>
-    
-    <div class="md-container" data-md-component="container">
-      
-      
+          
         
       
       <main class="md-main" data-md-component="main">
@@ -1054,20 +1052,6 @@
               
   
   
-  
-    <li class="md-nav__item">
-      <a href="../field_create/" class="md-nav__link">
-        field:create
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
     
   
   
@@ -1546,6 +1530,20 @@
   
   
     <li class="md-nav__item">
+      <a href="../core_init/" class="md-nav__link">
+        core:init
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../core_requirements/" class="md-nav__link">
         core:requirements
       </a>
@@ -1740,20 +1738,6 @@
     <li class="md-nav__item">
       <a href="../entity_delete/" class="md-nav__link">
         entity:delete
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../entity_save/" class="md-nav__link">
-        entity:save
       </a>
     </li>
   
@@ -3342,9 +3326,8 @@ generating, Drush lists the files that were created.</p>
 </ul>
 <h4 id="options">Options<a class="headerlink" href="#options" title="Permanent link">&para;</a></h4>
 <ul>
-<li><strong> --answer=ANSWER</strong>. Answer to generator question.</li>
-<li><strong> --destination=DESTINATION</strong>. Absolute path to a base directory for file writing.</li>
-<li><strong> --dry-run</strong>. Output the generated code but not save it to file system.</li>
+<li><strong> --answers=ANSWERS</strong>. A JSON string containing pairs of question and answers.</li>
+<li><strong> --directory=DIRECTORY</strong>. Absolute path to a base directory for file writing.</li>
 </ul>
 <h4 id="topics">Topics<a class="headerlink" href="#topics" title="Permanent link">&para;</a></h4>
 <ul>
@@ -3375,7 +3358,7 @@ generating, Drush lists the files that were created.</p>
     <nav class="md-footer__inner md-grid" aria-label="Footer">
       
         
-        <a href="../field_create/" class="md-footer__link md-footer__link--prev" aria-label="Previous: field:create" rel="prev">
+        <a href="../drupal_directory/" class="md-footer__link md-footer__link--prev" aria-label="Previous: drupal:directory" rel="prev">
           <div class="md-footer__button md-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
           </div>
@@ -3384,7 +3367,7 @@ generating, Drush lists the files that were created.</p>
               <span class="md-footer__direction">
                 Previous
               </span>
-              field:create
+              drupal:directory
             </div>
           </div>
         </a>
@@ -3458,7 +3441,7 @@ generating, Drush lists the files that were created.</p>
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "toc.integrate"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.cefbb252.min.js"}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "toc.integrate"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.cefbb252.min.js"}</script>
     
     
       <script src="../../assets/javascripts/bundle.17f42bbf.min.js"></script>
