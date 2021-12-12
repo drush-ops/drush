@@ -99,7 +99,9 @@
     
       
 
-<header class="md-header" data-md-component="header">
+  
+
+<header class="md-header md-header--lifted" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
     <a href="../.." title="Drush" class="md-header__button md-logo" aria-label="Drush" data-md-component="logo">
       
@@ -176,14 +178,8 @@
     
   </nav>
   
-</header>
     
-    <div class="md-container" data-md-component="container">
-      
-      
-        
-          
-            <!--
+      <!--
   Copyright (c) 2016-2020 Martin Donath <martin.donath@squidfunk.com>
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -317,7 +313,13 @@
     </ul>
   </div>
 </nav>
-          
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
         
       
       <main class="md-main" data-md-component="main">
@@ -1055,6 +1057,20 @@
   
   
     <li class="md-nav__item">
+      <a href="../../commands/field_create/" class="md-nav__link">
+        field:create
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../commands/generate/" class="md-nav__link">
         generate
       </a>
@@ -1462,20 +1478,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../../commands/core_init/" class="md-nav__link">
-        core:init
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../../commands/core_requirements/" class="md-nav__link">
         core:requirements
       </a>
@@ -1670,6 +1672,20 @@
     <li class="md-nav__item">
       <a href="../../commands/entity_delete/" class="md-nav__link">
         entity:delete
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../commands/entity_save/" class="md-nav__link">
+        entity:save
       </a>
     </li>
   
@@ -3237,7 +3253,7 @@
             <article class="md-content__inner md-typeset">
               
                 
-<a href="https://github.com/drush-ops/drush/blob/10.x/examples/Commands/XkcdCommands.php" title="Edit this page" class="md-content__button md-icon">
+<a href="https://github.com/drush-ops/drush/blob/11.x/examples/Commands/XkcdCommands.php" title="Edit this page" class="md-content__button md-icon">
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg>
 </a>
 
@@ -3247,6 +3263,11 @@
 <div class="highlight"><pre><span></span><code><span class="o">&lt;?</span><span class="nx">php</span>
 <span class="k">namespace</span> <span class="nx">Drush\Commands</span><span class="p">;</span>
 
+<span class="k">use</span> <span class="nx">Drush\Attributes\Command</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Drush\Attributes\Help</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Drush\Attributes\Option</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Drush\Attributes\Argument</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Drush\Attributes\Usage</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Drush\Exec\ExecTrait</span><span class="p">;</span>
 
 <span class="sd">/**</span>
@@ -3279,6 +3300,36 @@
 <span class="sd">     * @aliases xkcd</span>
 <span class="sd">     */</span>
     <span class="k">public</span> <span class="k">function</span> <span class="nf">fetch</span><span class="p">(</span><span class="nv">$search</span> <span class="o">=</span> <span class="k">null</span><span class="p">,</span> <span class="nv">$options</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;image-viewer&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;open&#39;</span><span class="p">,</span> <span class="s1">&#39;google-custom-search-api-key&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;AIzaSyDpE01VDNNT73s6CEeJRdSg5jukoG244ek&#39;</span><span class="p">])</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">doFetch</span><span class="p">(</span><span class="nv">$search</span><span class="p">,</span> <span class="nv">$options</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="sd">/**</span>
+<span class="sd">     * This command uses PHP8 Attributes instead of annotations. This</span>
+<span class="sd">     * is recommended for commandfiles that only need to run on PHP8+. All</span>
+<span class="sd">     * Attributes provided by Drush core are listed at</span>
+<span class="sd">     * https://www.drush.org/latest/api/Drush/Attributes.html</span>
+<span class="sd">     */</span>
+    <span class="c1">#[Command(name: &#39;xkcd:fetch-attributes&#39;, aliases: [&#39;xkcd-attributes&#39;])]</span>
+    <span class="c1">#[Argument(name: &#39;search&#39;, description: &#39;Optional argument to retrieve the cartoons matching an index number, keyword search or &quot;random&quot;. If omitted the latest cartoon will be retrieved.&#39;)]</span>
+    <span class="c1">#[Option(name: &#39;image-viewer&#39;, description: &#39;Command to use to view images (e.g. xv, firefox). Defaults to &quot;display&quot; (from ImageMagick).&#39;)]</span>
+    <span class="c1">#[Option(name: &#39;google-custom-search-api-key&#39;, description: &#39;Google Custom Search API Key, available from https://code.google.com/apis/console/. Default key limited to 100 queries/day globally.&#39;)]</span>
+    <span class="c1">#[Help(description: &#39;Retrieve and display xkcd cartoons (attribute variant).&#39;)]</span>
+    <span class="c1">#[Usage(name: &#39;drush xkcd&#39;, description: &#39;Retrieve and display the latest cartoon&#39;)]</span>
+    <span class="c1">#[Usage(name: &#39;drush xkcd sandwich&#39;, description: &#39;Retrieve and display cartoons about sandwiches.&#39;)]</span>
+    <span class="c1">#[Usage(name: &#39;drush xkcd 123 --image-viewer=eog&#39;, description: &#39;Retrieve and display cartoon #123 in eog.&#39;)]</span>
+    <span class="c1">#[Usage(name: &#39;drush xkcd random --image-viewer=firefox&#39;, description: &#39;Retrieve and display a random cartoon in Firefox.&#39;)]</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">fetchAttributes</span><span class="p">(</span><span class="nv">$search</span> <span class="o">=</span> <span class="k">null</span><span class="p">,</span> <span class="nv">$options</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;image-viewer&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;open&#39;</span><span class="p">,</span> <span class="s1">&#39;google-custom-search-api-key&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;AIzaSyDpE01VDNNT73s6CEeJRdSg5jukoG244ek&#39;</span><span class="p">])</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">doFetch</span><span class="p">(</span><span class="nv">$search</span><span class="p">,</span> <span class="nv">$options</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="sd">/**</span>
+<span class="sd">     * @param $search</span>
+<span class="sd">     * @param array $options</span>
+<span class="sd">     * @throws \Exception</span>
+<span class="sd">     */</span>
+    <span class="k">protected</span> <span class="k">function</span> <span class="nf">doFetch</span><span class="p">(</span><span class="nv">$search</span><span class="p">,</span> <span class="k">array</span> <span class="nv">$options</span><span class="p">)</span><span class="o">:</span> <span class="nx">void</span>
     <span class="p">{</span>
         <span class="k">if</span> <span class="p">(</span><span class="k">empty</span><span class="p">(</span><span class="nv">$search</span><span class="p">))</span> <span class="p">{</span>
             <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">startBrowser</span><span class="p">(</span><span class="s1">&#39;http://xkcd.com&#39;</span><span class="p">);</span>
@@ -3399,7 +3450,7 @@
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "toc.integrate"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.cefbb252.min.js"}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "toc.integrate"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.cefbb252.min.js"}</script>
     
     
       <script src="../../assets/javascripts/bundle.17f42bbf.min.js"></script>
