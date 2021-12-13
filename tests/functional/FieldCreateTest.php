@@ -43,7 +43,7 @@ class FieldCreateTest extends CommandUnishTestCase
         $this->drush('field:create', ['unish_article', 'alpha'], ['field-label' => 'Test', 'field-name' => 'field_test3', 'field-type' => 'entity_reference', 'field-widget' => 'entity_reference_autocomplete', 'cardinality' => '-1', 'target-type' => 'unish_article', 'target-bundle' => 'beta']);
         $this->assertStringContainsString("Successfully created field 'field_test3' on unish_article type with bundle 'alpha'", $this->getErrorOutputRaw());
         $this->assertStringContainsString("Further customisation can be done at the following url:
-http://dev/admin/structure/unish_article_types/manage/alpha/fields/unish_article.alpha.field_test3", $this->getErrorOutputRaw());
+http://dev/admin/structure/unish_article_types/manage/alpha/fields/unish_article.alpha.field_test3", $this->getSimplifiedErrorOutput());
         $php = "return Drupal::entityTypeManager()->getStorage('field_config')->load('unish_article.alpha.field_test3')->getSettings()";
         $this->drush('php:eval', [$php], ['format' => 'json']);
         $settings = $this->getOutputFromJSON();
