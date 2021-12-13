@@ -104,7 +104,9 @@
     
       
 
-<header class="md-header" data-md-component="header">
+  
+
+<header class="md-header md-header--lifted" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
     <a href="../.." title="Drush" class="md-header__button md-logo" aria-label="Drush" data-md-component="logo">
       
@@ -181,14 +183,8 @@
     
   </nav>
   
-</header>
     
-    <div class="md-container" data-md-component="container">
-      
-      
-        
-          
-            <!--
+      <!--
   Copyright (c) 2016-2020 Martin Donath <martin.donath@squidfunk.com>
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -322,7 +318,13 @@
     </ul>
   </div>
 </nav>
-          
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
         
       
       <main class="md-main" data-md-component="main">
@@ -973,8 +975,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#docker" class="md-nav__link">
-    Docker
+  <a href="#ddev" class="md-nav__link">
+    DDEV
   </a>
   
 </li>
@@ -1105,6 +1107,20 @@
     <li class="md-nav__item">
       <a href="../../commands/drupal_directory/" class="md-nav__link">
         drupal:directory
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../commands/field_create/" class="md-nav__link">
+        field:create
       </a>
     </li>
   
@@ -1524,20 +1540,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../../commands/core_init/" class="md-nav__link">
-        core:init
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../../commands/core_requirements/" class="md-nav__link">
         core:requirements
       </a>
@@ -1732,6 +1734,20 @@
     <li class="md-nav__item">
       <a href="../../commands/entity_delete/" class="md-nav__link">
         entity:delete
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../commands/entity_save/" class="md-nav__link">
+        entity:save
       </a>
     </li>
   
@@ -3313,16 +3329,16 @@ high quality, our tests are run on every push. See <a href="https://circleci.com
 <li><code>git clone https://github.com/drush-ops/drush.git</code></li>
 <li><code>cd drush</code></li>
 <li><code>composer install</code></li>
-<li>Review the configuration settings in <a href="https://github.com/drush-ops/drush/blob/10.x/tests/phpunit.xml.dist">tests/phpunit.xml.dist</a>. If customization is needed, copy phpunit.xml.dist to phpunit.xml and edit away.</li>
+<li>Review the configuration settings in <a href="https://github.com/drush-ops/drush/blob/11.x/tests/phpunit.xml.dist">tests/phpunit.xml.dist</a>. If customization is needed, copy phpunit.xml.dist to phpunit.xml and edit away.</li>
 <li>Run all test suites: <code>composer test</code></li>
 </ol>
-<h2 id="docker">Docker<a class="headerlink" href="#docker" title="Permanent link">&para;</a></h2>
-<p>Drush's own tests may be run within provided Docker containers (see docker-compose.yml):</p>
+<h2 id="ddev">DDEV<a class="headerlink" href="#ddev" title="Permanent link">&para;</a></h2>
+<p><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7.75 6.5a1.25 1.25 0 1 0 0 2.5 1.25 1.25 0 0 0 0-2.5z"/><path fill-rule="evenodd" d="M2.5 1A1.5 1.5 0 0 0 1 2.5v8.44c0 .397.158.779.44 1.06l10.25 10.25a1.5 1.5 0 0 0 2.12 0l8.44-8.44a1.5 1.5 0 0 0 0-2.12L12 1.44A1.5 1.5 0 0 0 10.94 1H2.5zm0 1.5h8.44l10.25 10.25-8.44 8.44L2.5 10.94V2.5z"/></svg></span> 11.0+</p>
+<p>Drush's own tests may be run within provided Docker containers via <a href="https://ddev.readthedocs.io/en/stable/">DDEV</a></p>
 <ul>
-<li>Start containers: <code>docker-compose up -d</code></li>
-<li>Run a test: <code>docker-compose exec drupal composer functional -- --filter testUserRole</code></li>
-<li>To change configuration, copy <code>.env.example</code> to <code>.env</code>, edit to taste, and run <code>docker-compose up -d</code> again.</li>
-<li>See the <a href="https://github.com/drush-ops/drush/blob/10.x/.env.example">.env.example file</a> for help on enabling Xdebug.</li>
+<li>Start containers: <code>ddev start</code></li>
+<li>Run a test: <code>ddev exec drupal composer functional -- --filter testUserRole</code></li>
+<li>See the <a href="https://ddev.readthedocs.io/en/stable/users/step-debugging/">DDEV's XDebug docs</a> for help on enabling Xdebug.</li>
 </ul>
 <h2 id="advanced-usage">Advanced usage<a class="headerlink" href="#advanced-usage" title="Permanent link">&para;</a></h2>
 <ul>
@@ -3336,7 +3352,7 @@ high quality, our tests are run on every push. See <a href="https://circleci.com
 <li>Skip slow tests (usually those with network usage): <code>composer functional -- --exclude-group slow</code></li>
 <li>XML results: <code>composer functional -- --log-junit results.xml</code></li>
 <li>Ad-hoc testing with the SUT</li>
-<li><code>composer sut:si</code>. See composer.json for details.</li>
+<li><code>composer sut:si</code>. <a href="https://github.com/drush-ops/drush/blob/dde2793453ed96cc8b9e5bbc1b66e3d8d26be1f6/composer.json#L117">See composer.json for details</a>.</li>
 <li><code>UNISH_DIRTY=1 composer functional -- --filter testUserRole</code></li>
 <li><code>./drush @sut.dev status</code></li>
 </ul>
@@ -3455,7 +3471,7 @@ high quality, our tests are run on every push. See <a href="https://circleci.com
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "toc.integrate"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.cefbb252.min.js"}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "toc.integrate"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.cefbb252.min.js"}</script>
     
     
       <script src="../../assets/javascripts/bundle.17f42bbf.min.js"></script>

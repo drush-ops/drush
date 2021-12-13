@@ -104,7 +104,9 @@
     
       
 
-<header class="md-header" data-md-component="header">
+  
+
+<header class="md-header md-header--lifted" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
     <a href=".." title="Drush" class="md-header__button md-logo" aria-label="Drush" data-md-component="logo">
       
@@ -181,14 +183,8 @@
     
   </nav>
   
-</header>
     
-    <div class="md-container" data-md-component="container">
-      
-      
-        
-          
-            <!--
+      <!--
   Copyright (c) 2016-2020 Martin Donath <martin.donath@squidfunk.com>
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -322,7 +318,13 @@
     </ul>
   </div>
 </nav>
-          
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
         
       
       <main class="md-main" data-md-component="main">
@@ -1100,6 +1102,20 @@
   
   
     <li class="md-nav__item">
+      <a href="../commands/field_create/" class="md-nav__link">
+        field:create
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../commands/generate/" class="md-nav__link">
         generate
       </a>
@@ -1507,20 +1523,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../commands/core_init/" class="md-nav__link">
-        core:init
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../commands/core_requirements/" class="md-nav__link">
         core:requirements
       </a>
@@ -1715,6 +1717,20 @@
     <li class="md-nav__item">
       <a href="../commands/entity_delete/" class="md-nav__link">
         entity:delete
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../commands/entity_save/" class="md-nav__link">
+        entity:save
       </a>
     </li>
   
@@ -3292,11 +3308,11 @@
 <p>Drush's generators reuse classes provided by the excellent <a href="https://github.com/Chi-teck/drupal-code-generator">Drupal Code Generator</a> project. See its <a href="https://github.com/Chi-teck/drupal-code-generator/tree/10.x/src/Command">Commands directory</a> for inspiration.</p>
 <h2 id="writing-custom-generators">Writing Custom Generators<a class="headerlink" href="#writing-custom-generators" title="Permanent link">&para;</a></h2>
 <p>Drupal modules may supply their own Generators, just like they can supply Commands.</p>
-<p>See <a href="https://github.com/drush-ops/drush/blob/10.x/tests/functional/resources/modules/d8/woot">Woot module</a>, which Drush uses for testing. Specifically,</p>
+<p>See <a href="https://github.com/drush-ops/drush/blob/11.x/tests/functional/resources/modules/d8/woot">Woot module</a>, which Drush uses for testing. Specifically,</p>
 <ol>
-<li>Write a class similar to <a href="https://github.com/drush-ops/drush/tree/10.x/tests/functional/resources/modules/d8/woot/src/Generators/">ExampleGenerator</a>. Implement your custom logic in the interact() method. Typically this class is placed in the src/Generators directory.</li>
+<li>Write a class similar to <a href="https://github.com/drush-ops/drush/tree/11.x/tests/functional/resources/modules/d8/woot/src/Generators/">ExampleGenerator</a>. Implement your custom logic in the generate() method. Typically this class is placed under the src/Generators directory.</li>
 <li>Add a .twig file to the same directory. This template specifies what gets output from the generator.</li>
-<li>Add your class to your module's drush.services.yml file (<a href="https://github.com/drush-ops/drush/blob/10.x/tests/functional/resources/modules/d8/woot/drush.services.yml">example</a>). Use the tag <code>drush.generator</code> instead of <code>drush.command</code>.</li>
+<li>Add your class to your module's drush.services.yml file (<a href="https://github.com/drush-ops/drush/blob/11.x/tests/functional/resources/modules/d8/woot/drush.services.yml">example</a>). Use the tag <code>drush.generator.v2</code> instead of <code>drush.command</code>.</li>
 <li>Perform a <code>drush cache-rebuild</code> to compile your drush.services.yml changes into the Drupal container.</li>
 </ol>
 <h2 id="global-generators">Global Generators<a class="headerlink" href="#global-generators" title="Permanent link">&para;</a></h2>
@@ -3415,7 +3431,7 @@
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "..", "features": ["navigation.tabs", "toc.integrate"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../assets/javascripts/workers/search.cefbb252.min.js"}</script>
+    <script id="__config" type="application/json">{"base": "..", "features": ["navigation.tabs", "navigation.tabs.sticky", "toc.integrate"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../assets/javascripts/workers/search.cefbb252.min.js"}</script>
     
     
       <script src="../assets/javascripts/bundle.17f42bbf.min.js"></script>
