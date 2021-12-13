@@ -61,7 +61,8 @@ class MkCommands extends DrushCommands implements SiteAliasManagerAwareInterface
         $this->writeYml($nav_commands, $nav_generators, $dir_root);
     }
 
-    public function createAnnotatedCommands(Application $application_generate, Application $application_drush): array {
+    public function createAnnotatedCommands(Application $application_generate, Application $application_drush): array
+    {
         $application = new Application('temp');
         $definition = $application_drush->get('generate')->getDefinition();
         foreach ($application_generate->all() as $command) {
@@ -344,5 +345,4 @@ EOT;
         }
         return [$nav, $pages_all];
     }
-
 }
