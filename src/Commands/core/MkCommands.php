@@ -40,6 +40,7 @@ class MkCommands extends DrushCommands implements SiteAliasManagerAwareInterface
         $dir_root = Drush::bootstrapManager()->getComposerRoot();
         $destination = 'commands';
         $destination_path = Path::join($dir_root, 'docs', $destination);
+        $this->prepare($destination_path);
 
         $application = Drush::getApplication();
         $all = $application->all();
