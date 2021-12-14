@@ -80,7 +80,10 @@ class MkCommands extends DrushCommands implements SiteAliasManagerAwareInterface
                 $values['version'] = '11.x';
             }
             $annotated->setAnnotationData(new AnnotationData($values));
-            $annotated->addUsageOrExample('drush generate ' . $command->getName(), $command->getDescription());
+            // Hack, until we have https://github.com/consolidation/annotated-command/pull/247
+            $method = new \ReflectionMethod($annotated, 'addUsageOrExample');
+            $method->setAccessible(true);
+            $method->invoke($annotated, 'drush generate ' . $command->getName(), $command->getDescription());
             $commands[$command->getName()] = $annotated;
         }
         unset($commands['list'], $commands['help']);
