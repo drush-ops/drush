@@ -77,8 +77,8 @@ class MkCommands extends DrushCommands implements SiteAliasManagerAwareInterface
             $annotated->setAliases($command->getAliases());
             $annotated->setTopics(['docs:generators']);
             $values = [];
-            if ($command->getName() == 'entity:bundle-class') {
-                $values['version'] = '11.x';
+            if (in_array($command->getName(), ['entity:bundle-class'])) {
+                $values['version'] = '11.0';
             }
             $annotated->setAnnotationData(new AnnotationData($values));
             // Hack, until we have https://github.com/consolidation/annotated-command/pull/247
