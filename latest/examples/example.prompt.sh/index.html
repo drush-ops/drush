@@ -99,7 +99,9 @@
     
       
 
-<header class="md-header" data-md-component="header">
+  
+
+<header class="md-header md-header--lifted" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
     <a href="../.." title="Drush" class="md-header__button md-logo" aria-label="Drush" data-md-component="logo">
       
@@ -176,14 +178,8 @@
     
   </nav>
   
-</header>
     
-    <div class="md-container" data-md-component="container">
-      
-      
-        
-          
-            <!--
+      <!--
   Copyright (c) 2016-2020 Martin Donath <martin.donath@squidfunk.com>
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -306,6 +302,29 @@
   
 
       
+      
+  
+  
+
+
+  
+  
+  
+    
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../generators/all/" class="md-tabs__link">
+        Generators
+      </a>
+    </li>
+  
+
+  
+
+      
 
       <!-- MW: Add link built outside of mkdocs -->
       <!-- This can now be done in 'nav' without an override but I'd have to hard code the domain https://github.com/squidfunk/mkdocs-material/issues/2072 and https://github.com/squidfunk/mkdocs-material/issues/1884 -->
@@ -317,7 +336,13 @@
     </ul>
   </div>
 </nav>
-          
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
         
       
       <main class="md-main" data-md-component="main">
@@ -1462,20 +1487,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../../commands/core_init/" class="md-nav__link">
-        core:init
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../../commands/core_requirements/" class="md-nav__link">
         core:requirements
       </a>
@@ -1682,6 +1693,20 @@
   
   
     <li class="md-nav__item">
+      <a href="../../commands/entity_save/" class="md-nav__link">
+        entity:save
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../commands/entity_updates/" class="md-nav__link">
         entity:updates
       </a>
@@ -1712,12 +1737,73 @@
       
       
         <label class="md-nav__link" for="__nav_5_7">
+          field
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="field" data-md-level="2">
+        <label class="md-nav__title" for="__nav_5_7">
+          <span class="md-nav__icon md-icon"></span>
+          field
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../commands/field_create/" class="md-nav__link">
+        field:create
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../commands/field_info/" class="md-nav__link">
+        field:info
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5_8" type="checkbox" id="__nav_5_8" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_5_8">
           image
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="image" data-md-level="2">
-        <label class="md-nav__title" for="__nav_5_7">
+        <label class="md-nav__title" for="__nav_5_8">
           <span class="md-nav__icon md-icon"></span>
           image
         </label>
@@ -1767,18 +1853,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5_8" type="checkbox" id="__nav_5_8" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5_9" type="checkbox" id="__nav_5_9" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_5_8">
+        <label class="md-nav__link" for="__nav_5_9">
           locale
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="locale" data-md-level="2">
-        <label class="md-nav__title" for="__nav_5_8">
+        <label class="md-nav__title" for="__nav_5_9">
           <span class="md-nav__icon md-icon"></span>
           locale
         </label>
@@ -1856,18 +1942,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5_9" type="checkbox" id="__nav_5_9" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5_10" type="checkbox" id="__nav_5_10" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_5_9">
+        <label class="md-nav__link" for="__nav_5_10">
           migrate
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="migrate" data-md-level="2">
-        <label class="md-nav__title" for="__nav_5_9">
+        <label class="md-nav__title" for="__nav_5_10">
           <span class="md-nav__icon md-icon"></span>
           migrate
         </label>
@@ -1987,18 +2073,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5_10" type="checkbox" id="__nav_5_10" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5_11" type="checkbox" id="__nav_5_11" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_5_10">
+        <label class="md-nav__link" for="__nav_5_11">
           php
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="php" data-md-level="2">
-        <label class="md-nav__title" for="__nav_5_10">
+        <label class="md-nav__title" for="__nav_5_11">
           <span class="md-nav__icon md-icon"></span>
           php
         </label>
@@ -2062,18 +2148,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5_11" type="checkbox" id="__nav_5_11" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5_12" type="checkbox" id="__nav_5_12" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_5_11">
+        <label class="md-nav__link" for="__nav_5_12">
           pm
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="pm" data-md-level="2">
-        <label class="md-nav__title" for="__nav_5_11">
+        <label class="md-nav__title" for="__nav_5_12">
           <span class="md-nav__icon md-icon"></span>
           pm
         </label>
@@ -2165,18 +2251,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5_12" type="checkbox" id="__nav_5_12" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5_13" type="checkbox" id="__nav_5_13" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_5_12">
+        <label class="md-nav__link" for="__nav_5_13">
           queue
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="queue" data-md-level="2">
-        <label class="md-nav__title" for="__nav_5_12">
+        <label class="md-nav__title" for="__nav_5_13">
           <span class="md-nav__icon md-icon"></span>
           queue
         </label>
@@ -2240,18 +2326,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5_13" type="checkbox" id="__nav_5_13" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5_14" type="checkbox" id="__nav_5_14" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_5_13">
+        <label class="md-nav__link" for="__nav_5_14">
           role
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="role" data-md-level="2">
-        <label class="md-nav__title" for="__nav_5_13">
+        <label class="md-nav__title" for="__nav_5_14">
           <span class="md-nav__icon md-icon"></span>
           role
         </label>
@@ -2343,18 +2429,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5_14" type="checkbox" id="__nav_5_14" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5_15" type="checkbox" id="__nav_5_15" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_5_14">
+        <label class="md-nav__link" for="__nav_5_15">
           site
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="site" data-md-level="2">
-        <label class="md-nav__title" for="__nav_5_14">
+        <label class="md-nav__title" for="__nav_5_15">
           <span class="md-nav__icon md-icon"></span>
           site
         </label>
@@ -2446,18 +2532,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5_15" type="checkbox" id="__nav_5_15" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5_16" type="checkbox" id="__nav_5_16" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_5_15">
+        <label class="md-nav__link" for="__nav_5_16">
           sql
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="sql" data-md-level="2">
-        <label class="md-nav__title" for="__nav_5_15">
+        <label class="md-nav__title" for="__nav_5_16">
           <span class="md-nav__icon md-icon"></span>
           sql
         </label>
@@ -2591,18 +2677,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5_16" type="checkbox" id="__nav_5_16" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5_17" type="checkbox" id="__nav_5_17" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_5_16">
+        <label class="md-nav__link" for="__nav_5_17">
           state
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="state" data-md-level="2">
-        <label class="md-nav__title" for="__nav_5_16">
+        <label class="md-nav__title" for="__nav_5_17">
           <span class="md-nav__icon md-icon"></span>
           state
         </label>
@@ -2666,18 +2752,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5_17" type="checkbox" id="__nav_5_17" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5_18" type="checkbox" id="__nav_5_18" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_5_17">
+        <label class="md-nav__link" for="__nav_5_18">
           theme
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="theme" data-md-level="2">
-        <label class="md-nav__title" for="__nav_5_17">
+        <label class="md-nav__title" for="__nav_5_18">
           <span class="md-nav__icon md-icon"></span>
           theme
         </label>
@@ -2727,18 +2813,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5_18" type="checkbox" id="__nav_5_18" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5_19" type="checkbox" id="__nav_5_19" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_5_18">
+        <label class="md-nav__link" for="__nav_5_19">
           twig
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="twig" data-md-level="2">
-        <label class="md-nav__title" for="__nav_5_18">
+        <label class="md-nav__title" for="__nav_5_19">
           <span class="md-nav__icon md-icon"></span>
           twig
         </label>
@@ -2788,18 +2874,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5_19" type="checkbox" id="__nav_5_19" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5_20" type="checkbox" id="__nav_5_20" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_5_19">
+        <label class="md-nav__link" for="__nav_5_20">
           updatedb
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="updatedb" data-md-level="2">
-        <label class="md-nav__title" for="__nav_5_19">
+        <label class="md-nav__title" for="__nav_5_20">
           <span class="md-nav__icon md-icon"></span>
           updatedb
         </label>
@@ -2849,18 +2935,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5_20" type="checkbox" id="__nav_5_20" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5_21" type="checkbox" id="__nav_5_21" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_5_20">
+        <label class="md-nav__link" for="__nav_5_21">
           user
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="user" data-md-level="2">
-        <label class="md-nav__title" for="__nav_5_20">
+        <label class="md-nav__title" for="__nav_5_21">
           <span class="md-nav__icon md-icon"></span>
           user
         </label>
@@ -3008,18 +3094,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5_21" type="checkbox" id="__nav_5_21" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5_22" type="checkbox" id="__nav_5_22" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_5_21">
+        <label class="md-nav__link" for="__nav_5_22">
           views
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="views" data-md-level="2">
-        <label class="md-nav__title" for="__nav_5_21">
+        <label class="md-nav__title" for="__nav_5_22">
           <span class="md-nav__icon md-icon"></span>
           views
         </label>
@@ -3125,18 +3211,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5_22" type="checkbox" id="__nav_5_22" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5_23" type="checkbox" id="__nav_5_23" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_5_22">
+        <label class="md-nav__link" for="__nav_5_23">
           watchdog
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="watchdog" data-md-level="2">
-        <label class="md-nav__title" for="__nav_5_22">
+        <label class="md-nav__title" for="__nav_5_23">
           <span class="md-nav__icon md-icon"></span>
           watchdog
         </label>
@@ -3225,6 +3311,1518 @@
   
 
     
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6" type="checkbox" id="__nav_6" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_6">
+          Generators
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Generators" data-md-level="1">
+        <label class="md-nav__title" for="__nav_6">
+          <span class="md-nav__icon md-icon"></span>
+          Generators
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_1" type="checkbox" id="__nav_6_1" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_6_1">
+          _global
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="_global" data-md-level="2">
+        <label class="md-nav__title" for="__nav_6_1">
+          <span class="md-nav__icon md-icon"></span>
+          _global
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../generators/all/" class="md-nav__link">
+        all
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../generators/composer/" class="md-nav__link">
+        composer
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../generators/controller/" class="md-nav__link">
+        controller
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../generators/field/" class="md-nav__link">
+        field
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../generators/hook/" class="md-nav__link">
+        hook
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../generators/install-file/" class="md-nav__link">
+        install-file
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../generators/javascript/" class="md-nav__link">
+        javascript
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../generators/layout/" class="md-nav__link">
+        layout
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../generators/migration/" class="md-nav__link">
+        migration
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../generators/module/" class="md-nav__link">
+        module
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../generators/module-file/" class="md-nav__link">
+        module-file
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../generators/phpstorm-metadata/" class="md-nav__link">
+        phpstorm-metadata
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../generators/render-element/" class="md-nav__link">
+        render-element
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../generators/service-provider/" class="md-nav__link">
+        service-provider
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_2" type="checkbox" id="__nav_6_2" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_6_2">
+          drush
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="drush" data-md-level="2">
+        <label class="md-nav__title" for="__nav_6_2">
+          <span class="md-nav__icon md-icon"></span>
+          drush
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../generators/drush_alias-file/" class="md-nav__link">
+        drush:alias-file
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../generators/drush_command-file/" class="md-nav__link">
+        drush:command-file
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../generators/drush_testing-generator/" class="md-nav__link">
+        drush:testing-generator
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_3" type="checkbox" id="__nav_6_3" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_6_3">
+          entity
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="entity" data-md-level="2">
+        <label class="md-nav__title" for="__nav_6_3">
+          <span class="md-nav__icon md-icon"></span>
+          entity
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../generators/entity_bundle-class/" class="md-nav__link">
+        entity:bundle-class
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../generators/entity_configuration/" class="md-nav__link">
+        entity:configuration
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../generators/entity_content/" class="md-nav__link">
+        entity:content
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_4" type="checkbox" id="__nav_6_4" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_6_4">
+          form
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="form" data-md-level="2">
+        <label class="md-nav__title" for="__nav_6_4">
+          <span class="md-nav__icon md-icon"></span>
+          form
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../generators/form_config/" class="md-nav__link">
+        form:config
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../generators/form_confirm/" class="md-nav__link">
+        form:confirm
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../generators/form_simple/" class="md-nav__link">
+        form:simple
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_5" type="checkbox" id="__nav_6_5" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_6_5">
+          misc
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="misc" data-md-level="2">
+        <label class="md-nav__title" for="__nav_6_5">
+          <span class="md-nav__icon md-icon"></span>
+          misc
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../generators/misc_apache-virtual-host/" class="md-nav__link">
+        misc:apache-virtual-host
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../generators/misc_html-page/" class="md-nav__link">
+        misc:html-page
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../generators/misc_nginx-virtual-host/" class="md-nav__link">
+        misc:nginx-virtual-host
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../generators/misc_project/" class="md-nav__link">
+        misc:project
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_6" type="checkbox" id="__nav_6_6" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_6_6">
+          plugin
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="plugin" data-md-level="2">
+        <label class="md-nav__title" for="__nav_6_6">
+          <span class="md-nav__icon md-icon"></span>
+          plugin
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../generators/plugin_action/" class="md-nav__link">
+        plugin:action
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../generators/plugin_block/" class="md-nav__link">
+        plugin:block
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../generators/plugin_ckeditor/" class="md-nav__link">
+        plugin:ckeditor
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../generators/plugin_condition/" class="md-nav__link">
+        plugin:condition
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../generators/plugin_constraint/" class="md-nav__link">
+        plugin:constraint
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../generators/plugin_entity-reference-selection/" class="md-nav__link">
+        plugin:entity-reference-selection
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../generators/plugin_field_formatter/" class="md-nav__link">
+        plugin:field:formatter
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../generators/plugin_field_type/" class="md-nav__link">
+        plugin:field:type
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../generators/plugin_field_widget/" class="md-nav__link">
+        plugin:field:widget
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../generators/plugin_filter/" class="md-nav__link">
+        plugin:filter
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../generators/plugin_manager/" class="md-nav__link">
+        plugin:manager
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../generators/plugin_menu-link/" class="md-nav__link">
+        plugin:menu-link
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../generators/plugin_migrate_destination/" class="md-nav__link">
+        plugin:migrate:destination
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../generators/plugin_migrate_process/" class="md-nav__link">
+        plugin:migrate:process
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../generators/plugin_migrate_source/" class="md-nav__link">
+        plugin:migrate:source
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../generators/plugin_queue-worker/" class="md-nav__link">
+        plugin:queue-worker
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../generators/plugin_rest-resource/" class="md-nav__link">
+        plugin:rest-resource
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../generators/plugin_views_argument-default/" class="md-nav__link">
+        plugin:views:argument-default
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../generators/plugin_views_field/" class="md-nav__link">
+        plugin:views:field
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../generators/plugin_views_style/" class="md-nav__link">
+        plugin:views:style
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_7" type="checkbox" id="__nav_6_7" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_6_7">
+          service
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="service" data-md-level="2">
+        <label class="md-nav__title" for="__nav_6_7">
+          <span class="md-nav__icon md-icon"></span>
+          service
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../generators/service_access-checker/" class="md-nav__link">
+        service:access-checker
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../generators/service_breadcrumb-builder/" class="md-nav__link">
+        service:breadcrumb-builder
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../generators/service_cache-context/" class="md-nav__link">
+        service:cache-context
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../generators/service_custom/" class="md-nav__link">
+        service:custom
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../generators/service_event-subscriber/" class="md-nav__link">
+        service:event-subscriber
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../generators/service_logger/" class="md-nav__link">
+        service:logger
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../generators/service_middleware/" class="md-nav__link">
+        service:middleware
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../generators/service_param-converter/" class="md-nav__link">
+        service:param-converter
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../generators/service_path-processor/" class="md-nav__link">
+        service:path-processor
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../generators/service_request-policy/" class="md-nav__link">
+        service:request-policy
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../generators/service_response-policy/" class="md-nav__link">
+        service:response-policy
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../generators/service_route-subscriber/" class="md-nav__link">
+        service:route-subscriber
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../generators/service_theme-negotiator/" class="md-nav__link">
+        service:theme-negotiator
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../generators/service_twig-extension/" class="md-nav__link">
+        service:twig-extension
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../generators/service_uninstall-validator/" class="md-nav__link">
+        service:uninstall-validator
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_8" type="checkbox" id="__nav_6_8" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_6_8">
+          test
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="test" data-md-level="2">
+        <label class="md-nav__title" for="__nav_6_8">
+          <span class="md-nav__icon md-icon"></span>
+          test
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../generators/test_browser/" class="md-nav__link">
+        test:browser
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../generators/test_kernel/" class="md-nav__link">
+        test:kernel
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../generators/test_nightwatch/" class="md-nav__link">
+        test:nightwatch
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../generators/test_unit/" class="md-nav__link">
+        test:unit
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../generators/test_webdriver/" class="md-nav__link">
+        test:webdriver
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_9" type="checkbox" id="__nav_6_9" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_6_9">
+          theme
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="theme" data-md-level="2">
+        <label class="md-nav__title" for="__nav_6_9">
+          <span class="md-nav__icon md-icon"></span>
+          theme
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../generators/theme/" class="md-nav__link">
+        theme
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../generators/theme_file/" class="md-nav__link">
+        theme:file
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../generators/theme_settings/" class="md-nav__link">
+        theme:settings
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_10" type="checkbox" id="__nav_6_10" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_6_10">
+          yml
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="yml" data-md-level="2">
+        <label class="md-nav__title" for="__nav_6_10">
+          <span class="md-nav__icon md-icon"></span>
+          yml
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../generators/yml_breakpoints/" class="md-nav__link">
+        yml:breakpoints
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../generators/yml_links_action/" class="md-nav__link">
+        yml:links:action
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../generators/yml_links_contextual/" class="md-nav__link">
+        yml:links:contextual
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../generators/yml_links_menu/" class="md-nav__link">
+        yml:links:menu
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../generators/yml_links_task/" class="md-nav__link">
+        yml:links:task
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../generators/yml_module-info/" class="md-nav__link">
+        yml:module-info
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../generators/yml_module-libraries/" class="md-nav__link">
+        yml:module-libraries
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../generators/yml_permissions/" class="md-nav__link">
+        yml:permissions
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../generators/yml_routing/" class="md-nav__link">
+        yml:routing
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../generators/yml_services/" class="md-nav__link">
+        yml:services
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../generators/yml_theme-info/" class="md-nav__link">
+        yml:theme-info
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../generators/yml_theme-libraries/" class="md-nav__link">
+        yml:theme-libraries
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
   </ul>
 </nav>
                   </div>
@@ -3237,7 +4835,7 @@
             <article class="md-content__inner md-typeset">
               
                 
-<a href="https://github.com/drush-ops/drush/blob/10.x/examples/example.prompt.sh" title="Edit this page" class="md-content__button md-icon">
+<a href="https://github.com/drush-ops/drush/blob/11.x/examples/example.prompt.sh" title="Edit this page" class="md-content__button md-icon">
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg>
 </a>
 
@@ -3250,14 +4848,13 @@
 <span class="c1">#</span>
 <span class="c1"># Note: This file does a lot, and is designed for Bash. If you want to show the</span>
 <span class="c1"># currently set alias in your prompt, use the first 2 values below as an example.</span>
-<span class="c1"># This example can be used directly for the POWERLEVEL9K theme for Oh My Zsh.</span>
+
+<span class="c1"># This section can be used for the POWERLEVEL9K theme for Oh My Zsh.</span>
 <span class="c1">#FILE=&quot;${TMPDIR:-/tmp/}/drush-env-${USER}/drush-drupal-site-$$&quot;</span>
 <span class="c1">#POWERLEVEL9K_CUSTOM_DRUSH=&quot;[ -r $FILE ] &amp;&amp; cat $FILE&quot;</span>
 <span class="c1">#POWERLEVEL9K_CUSTOM_DRUSH_BACKGROUND=&quot;green&quot;</span>
 <span class="c1">#POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(context dir vcs custom_drush)</span>
-<span class="c1">#</span>
-<span class="c1"># Use `drush init` to copy this to ~/.drush/drush.prompt.sh, and source it in</span>
-<span class="c1"># ~/.bashrc or ~/.bash_profile.</span>
+
 <span class="c1">#</span>
 <span class="c1"># Note that your Bash session must already have the __git_ps1 function available.</span>
 <span class="c1"># Typically this is provided by git-prompt.sh, see instructions for downloading</span>
@@ -3449,7 +5046,7 @@ __drush_ps1<span class="o">()</span> <span class="o">{</span>
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "toc.integrate"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.0bbba5b5.min.js"}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "toc.integrate"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.0bbba5b5.min.js"}</script>
     
     
       <script src="../../assets/javascripts/bundle.649a939e.min.js"></script>
