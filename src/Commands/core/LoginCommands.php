@@ -70,7 +70,7 @@ class LoginCommands extends DrushCommands implements SiteAliasManagerAwareInterf
             }
 
             if ($account->isBlocked()) {
-                throw new \InvalidArgumentException(dt('Account !name is blocked and thus cannot login. The user:unblock command may be helpful.'));
+                throw new \InvalidArgumentException(dt('Account !name is blocked and thus cannot login. The user:unblock command may be helpful.', ['!name' => $account->getAccountName()]));
             }
 
             $timestamp = \Drupal::time()->getRequestTime();
