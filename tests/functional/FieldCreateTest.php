@@ -60,7 +60,8 @@ http://dev/admin/structure/unish_article_types/manage/alpha/fields/unish_article
         $this->assertStringContainsString('Field with name \'field_test3\' already exists on bundle \'beta\'', $this->getErrorOutputRaw());
     }
 
-    public function testFieldInfo() {
+    public function testFieldInfo()
+    {
         $this->drush('field:create', ['unish_article', 'alpha'], ['field-label' => 'Test', 'field-name' => 'field_test4', 'field-description' => 'baz', 'field-type' => 'entity_reference', 'is-required' => true, 'field-widget' => 'entity_reference_autocomplete', 'cardinality' => FieldStorageDefinitionInterface::CARDINALITY_UNLIMITED, 'target-type' => 'unish_article', 'target-bundle' => 'beta']);
         $this->assertStringContainsString("Successfully created field 'field_test4' on unish_article type with bundle 'alpha'", $this->getSimplifiedErrorOutput());
 
