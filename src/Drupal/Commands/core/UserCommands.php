@@ -136,7 +136,7 @@ class UserCommands extends DrushCommands
     }
 
     /**
-     * UnBlock the specified user(s).
+     * Unblock the specified user(s).
      *
      * @command user:unblock
      *
