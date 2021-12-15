@@ -4,7 +4,7 @@ name: Build static sites
 # events but only for the 10.x branch
 on:
   push:
-    branches: [10.x]
+    branches: [N0NE]
 #  pull_request:
 #    branches: [10.x]
 
