@@ -22,9 +22,9 @@ Is there another way to do the desired action?
 ### System Configuration
 | Q               | A
 | --------------- | ---
-| Drush version?  | 10.x/9.x/8.x (please be specific, and try latest release)
+| Drush version?  | 11.x/10.x/8.x (please be specific, and try latest release)
 | Drupal version? | 9.x/8.x/7.x
-| PHP version     | 7.x,5.x
+| PHP version     | 8.x/7.x
 | OS?             | Mac/Linux/Windows
 
 **Additional information**

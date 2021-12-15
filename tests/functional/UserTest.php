@@ -14,7 +14,7 @@ class UserCase extends CommandUnishTestCase
     const NAME = 'example';
     const MAIL = 'example@example.com';
 
-    public function setUp()
+    public function setup(): void
     {
         if (!$this->getSites()) {
             $this->setUpDrupal(1, true);
@@ -132,21 +132,21 @@ class UserCase extends CommandUnishTestCase
         $this->drush('user-login', [], $user_login_options + ['debug' => null]);
         $logOutput = $this->getErrorOutput();
         $url = parse_url($this->getOutput());
-        $this->assertContains('/user/reset/1', $url['path'], 'Login returned a reset URL for uid 1 by default');
-        $this->assertContains('Opening browser unish at http://', $logOutput);
+        $this->assertStringContainsString('/user/reset/1', $url['path'], 'Login returned a reset URL for uid 1 by default');
+        $this->assertStringContainsString('Opening browser unish at http://', $logOutput);
         // Check specific user with a path argument.
         $uid = 2;
         $this->drush('user-login', ['node/add'], $user_login_options + ['name' => self::NAME]);
         $output = $this->getOutput();
         $url = parse_url($output);
         $query = $url['query'];
-        $this->assertContains('/user/reset/' . $uid, $url['path'], 'Login with user argument returned a valid reset URL');
+        $this->assertStringContainsString('/user/reset/' . $uid, $url['path'], 'Login with user argument returned a valid reset URL');
         $this->assertEquals('destination=node/add', $query, 'Login included destination path in URL');
         // Check path used as only argument when using uid option.
         $this->drush('user-login', ['node/add'], $user_login_options + ['name' => self::NAME]);
         $output = $this->getOutput();
         $url = parse_url($output);
-        $this->assertContains('/user/reset/' . $uid, $url['path'], 'Login with uid option returned a valid reset URL');
+        $this->assertStringContainsString('/user/reset/' . $uid, $url['path'], 'Login with uid option returned a valid reset URL');
         $query = $url['query'];
         $this->assertEquals('destination=node/add', $query, 'Login included destination path in URL');
         // Test specific user by uid.
@@ -154,44 +154,21 @@ class UserCase extends CommandUnishTestCase
         $this->drush('user-login', [], $user_login_options + ['uid' => $uid]);
         $output = $this->getOutput();
         $url = parse_url($output);
-        $this->assertContains('/user/reset/' . $uid, $url['path'], 'Login with uid option returned a valid reset URL');
+        $this->assertStringContainsString('/user/reset/' . $uid, $url['path'], 'Login with uid option returned a valid reset URL');
         // Test specific user by mail.
         $uid = 2;
         $mail = self::MAIL;
         $this->drush('user-login', [], $user_login_options + ['mail' => $mail]);
         $output = $this->getOutput();
         $url = parse_url($output);
-        $this->assertContains('/user/reset/' . $uid, $url['path'], 'Login with mail option returned a valid reset URL');
+        $this->assertStringContainsString('/user/reset/' . $uid, $url['path'], 'Login with mail option returned a valid reset URL');
     }
 
     public function testUserCancel()
     {
-        // Create a content entity type and enable its module.
-        $answers = [
-            'name' => 'UnishArticle',
-            'machine_name' => 'unish_article',
-            'package' => 'custom',
-            'version' => '8.x-1.0-dev',
-            'dependencies' => 'text',
-            'entity_type_label' => 'UnishArticle',
-            'entity_type_id' => 'unish_article',
-            'entity_base_path' => 'admin/content/unish_article',
-            'fieldable' => 'no',
-            'translatable' => 'no',
-            'revisionable' => 'no',
-            'template' => 'no',
-            'access_controller' => 'no',
-            'title_base_field' => 'yes',
-            'status_base_field' => 'yes',
-            'created_base_field' => 'yes',
-            'changed_base_field' => 'yes',
-            'author_base_field' => 'yes',
-            'description_base_field' => 'no',
-            'rest_configuration' => 'no',
-        ];
-        $answers = json_encode($answers, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_NUMERIC_CHECK);
-        $this->drush('generate', ['content-entity'], ['answers' => $answers, 'directory' => Path::join(self::webroot(), 'modules/contrib')], null, null, self::EXIT_SUCCESS, null, ['SHELL_INTERACTIVE' => 1]);
+        CreateEntityType::createContentEntity($this);
         $this->drush('pm-enable', ['text,unish_article']);
+        $this->drush('php:script', ['create_unish_article_bundles'], ['script-path' => Path::join(__DIR__, 'resources')]);
         // Create one unish_article owned by our example user.
         $this->drush('php-script', ['create_unish_articles'], ['script-path' => Path::join(__DIR__, 'resources')]);
         // Verify that content entity exists.

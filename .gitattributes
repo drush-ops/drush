@@ -2,6 +2,6 @@
 /.circleci					export-ignore
 /.docker						export-ignore
 /build              export-ignore
-/scenarios          export-ignore
 /sut			          export-ignore
 /tests							export-ignore
+/doctum-config.php export-ignore

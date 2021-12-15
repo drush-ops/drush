@@ -17,7 +17,7 @@ class LocaleTest extends CommandUnishTestCase
      */
     protected $sourceFile;
 
-    public function setUp()
+    public function setup(): void
     {
         if (!$this->getSites()) {
             $this->setUpDrupal(1, true);
@@ -31,7 +31,7 @@ class LocaleTest extends CommandUnishTestCase
         $this->assertTranslation('Drush Empty Module', 'NL Drush Empty Module', 'nl', 0);
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         // Disable the locale module to make sure the database tables of locale module are emptied between tests.
         $this->drush('pm:uninstall', ['language', 'locale']);
@@ -108,7 +108,7 @@ class LocaleTest extends CommandUnishTestCase
         $this->drush('sql:query', ["SELECT ls.source, ls.context, lt.translation, lt.language, lt.customized FROM locales_source ls JOIN locales_target lt ON ls.lid = lt.lid WHERE ls.source = '$source' AND ls.context = '$context' AND lt.language = '$langcode'"]);
         $output = $this->getOutputAsList();
         $expected = "/$source.*$context.*$translation.*$langcode.*$custom/";
-        $this->assertRegExp($expected, array_pop($output));
+        $this->assertMatchesRegularExpression($expected, array_pop($output));
     }
 
     /**

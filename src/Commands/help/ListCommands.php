@@ -195,12 +195,13 @@ class ListCommands extends DrushCommands
         foreach ($all as $key => $command) {
             if (!in_array($key, $command->getAliases()) && !$command->isHidden()) {
                 $parts = explode($separator, $key);
-                $namespace = count($parts) >= 2 ? array_shift($parts) : '_global';
+                $namespace = array_shift($parts);
                 $namespaced[$namespace][$key] = $command;
             }
         }
 
         // Avoid solo namespaces.
+        $namespaced['_global'] = [];
         foreach ($namespaced as $namespace => $commands) {
             if (count($commands) == 1) {
                 $namespaced['_global'] += $commands;

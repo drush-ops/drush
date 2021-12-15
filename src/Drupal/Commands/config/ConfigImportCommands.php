@@ -17,10 +17,10 @@ use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Extension\ModuleInstallerInterface;
 use Drupal\Core\Extension\ThemeHandlerInterface;
 use Drupal\Core\Lock\LockBackendInterface;
+use Drupal\Core\Site\Settings;
 use Drupal\Core\StringTranslation\TranslationInterface;
 use Drush\Commands\DrushCommands;
 use Drush\Exceptions\UserAbortException;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Webmozart\PathUtil\Path;
 
 class ConfigImportCommands extends DrushCommands
@@ -104,6 +104,8 @@ class ConfigImportCommands extends DrushCommands
     }
 
     /**
+     * Note that type hint is changing https://www.drupal.org/project/drupal/issues/3161983
+     *
      * @return \Symfony\Component\EventDispatcher\EventDispatcherInterface
      */
     public function getEventDispatcher()
@@ -189,7 +191,7 @@ class ConfigImportCommands extends DrushCommands
      * @param StorageInterface $configStorageSync
      * @param \Drupal\Core\Cache\CacheBackendInterface $configCache
      * @param \Drupal\Core\Extension\ModuleHandlerInterface $moduleHandler
-     * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface $eventDispatcher
+     * @param $eventDispatcher
      * @param \Drupal\Core\Lock\LockBackendInterface $lock
      * @param \Drupal\Core\Config\TypedConfigManagerInterface $configTyped
      * @param \Drupal\Core\Extension\ModuleInstallerInterface $moduleInstaller
@@ -203,7 +205,8 @@ class ConfigImportCommands extends DrushCommands
         StorageInterface $configStorageSync,
         CacheBackendInterface $configCache,
         ModuleHandlerInterface $moduleHandler,
-        EventDispatcherInterface $eventDispatcher,
+        // Omit type hint as it changed in https://www.drupal.org/project/drupal/issues/3161983
+        $eventDispatcher,
         LockBackendInterface $lock,
         TypedConfigManagerInterface $configTyped,
         ModuleInstallerInterface $moduleInstaller,
@@ -231,29 +234,27 @@ class ConfigImportCommands extends DrushCommands
      *
      * @command config:import
      *
-     * @param string $label A config directory label (i.e. a key in \$config_directories array in settings.php).
      * @param array $options
      *
      * @return bool|void
-     * @interact-config-label
      * @option diff Show preview as a diff.
      * @option preview Deprecated. Format for displaying proposed changes. Recognized values: list, diff.
      * @option source An arbitrary directory that holds the configuration files. An alternative to label argument
      * @option partial Allows for partial config imports from the source directory. Only updates and new configs will be processed with this flag (missing configs will not be deleted). No config transformation happens.
      * @aliases cim,config-import
+     * @topics docs:deploy
      * @bootstrap full
      *
      * @throws \Drupal\Core\Config\StorageTransformerException
      * @throws \Drush\Exceptions\UserAbortException
      */
-    public function import($label = null, $options = ['preview' => 'list', 'source' => self::REQ, 'partial' => false, 'diff' => false])
+    public function import($options = ['preview' => 'list', 'source' => self::REQ, 'partial' => false, 'diff' => false])
     {
         // Determine source directory.
-
-        $source_storage_dir = ConfigCommands::getDirectory($label, $options['source']);
+        $source_storage_dir = ConfigCommands::getDirectory($options['source']);
 
         // Prepare the configuration storage for the import.
-        if ($source_storage_dir == Path::canonicalize(\drush_config_get_config_directory())) {
+        if ($source_storage_dir == Path::canonicalize(Settings::get('config_sync_directory'))) {
             $source_storage = $this->getConfigStorageSync();
         } else {
             $source_storage = new FileStorage($source_storage_dir);

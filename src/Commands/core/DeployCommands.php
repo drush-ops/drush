@@ -20,6 +20,8 @@ class DeployCommands extends DrushCommands implements SiteAliasManagerAwareInter
      * @usage drush deploy -v -y
      *   Run updates with verbose logging and accept all prompts.
      *
+     * @version 10.3
+     *
      * @topics docs:deploy
      *
      * @throws \Exception

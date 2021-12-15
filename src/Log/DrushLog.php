@@ -23,6 +23,7 @@ use Drush\Drush;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
+use Psr\Log\LogLevel;
 
 /**
  * Redirects Drupal logging messages to Drush log.
@@ -94,7 +95,7 @@ class DrushLog implements LoggerInterface, LoggerAwareInterface
                 $error_type = LogLevel::NOTICE;
                 break;
             // Unknown log levels that are not defined
-            // in Psr\Log\LogLevel or Drush\Log\LogLevel SHOULD NOT be used.  See
+            // in Psr\Log\LogLevel SHOULD NOT be used.  See
             // https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-3-logger-interface.md
             default:
                 $error_type = $level;

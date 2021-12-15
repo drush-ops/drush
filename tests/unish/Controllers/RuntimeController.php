@@ -153,7 +153,7 @@ class RuntimeController
         // Configure the application object and register all of the commandfiles
         // from the search paths we found above.  After this point, the input
         // and output objects are ready & we can start using the logger, etc.
-        $this->application->configureAndRegisterCommands($this->input, $this->output, $commandfileSearchpath);
+        $this->application->configureAndRegisterCommands($this->input, $this->output, $commandfileSearchpath, $loader);
     }
 
     protected function handleBootstrap()

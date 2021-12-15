@@ -8,9 +8,10 @@ gh-pages
 mkdocs.yml
 #The Commands site output directory.
 docs/commands
-#The sami output directories
+docs/generators
+#The Doctum output directories
 api
-.sami-cache
+.doctum-cache
 # IDE config
 .idea/
 sut/*
@@ -20,3 +21,4 @@ sut/drush/sites/*test.site.yml
 .env
 # Test fixtures
 sut/drush/sites/synctest.site.yml
+/tests/.phpunit.result.cache

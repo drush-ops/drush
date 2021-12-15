@@ -38,6 +38,6 @@ class ContainerTest extends CommandUnishTestCase
         // If the event was registered successfully, then upon a config import, we
         // should get the error message.
         $this->drush('config-import', [], [], null, null, CommandUnishTestCase::EXIT_ERROR);
-        $this->assertContains("woot config error", $this->getErrorOutput(), 'Event was successfully registered.');
+        $this->assertStringContainsString("woot config error", $this->getErrorOutput(), 'Event was successfully registered.');
     }
 }

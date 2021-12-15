@@ -100,7 +100,7 @@ class SqlCommands extends DrushCommands implements StdinAwareInterface
         }
 
         if (!$sql->createdb(true)) {
-            throw new \Exception('Unable to create database. Rerun with --debug to see any error message.');
+            throw new \Exception('Unable to create database. Rerun with --debug to see any error message.  ' . $sql->getProcess()->getErrorOutput());
         }
     }
 
@@ -122,7 +122,7 @@ class SqlCommands extends DrushCommands implements StdinAwareInterface
         }
         $tables = $sql->listTablesQuoted();
         if (!$sql->drop($tables)) {
-            throw new \Exception('Unable to drop all tables. Rerun with --debug to see any error message.');
+            throw new \Exception('Unable to drop all tables: ' . $sql->getProcess()->getErrorOutput());
         }
     }
 
@@ -175,7 +175,7 @@ class SqlCommands extends DrushCommands implements StdinAwareInterface
      *   Import sql statements from a file into the current database.
      * @usage drush sql:query --file=example.sql
      *   Alternate way to import sql statements from a file.
-     * @usage drush @d8 ev "return db_query('SELECT * FROM users')->fetchAll()" --format=json
+     * @usage drush ev "return db_query('SELECT * FROM users')->fetchAll()" --format=json
      *   Get data back in JSON format. See https://github.com/drush-ops/drush/issues/3071#issuecomment-347929777.
      * @bootstrap max configuration
      *
@@ -197,7 +197,7 @@ class SqlCommands extends DrushCommands implements StdinAwareInterface
             $sql = SqlBase::create($options);
             $result = $sql->query($query, $filename, $options['result-file']);
             if (!$result) {
-                throw new \Exception(dt('Query failed.'));
+                throw new \Exception('Query failed. Rerun with --debug to see any error message. ' . $sql->getProcess()->getErrorOutput());
             }
             $this->output()->writeln($sql->getProcess()->getOutput());
         }
@@ -221,7 +221,7 @@ class SqlCommands extends DrushCommands implements StdinAwareInterface
      * @usage drush sql:dump --result-file=../18.sql
      *   Save SQL dump to the directory above Drupal root.
      * @usage drush sql:dump --skip-tables-key=common
-     *   Skip standard tables. See examples/example.drush.yml
+     *   Skip standard tables. See [Drush configuration](../using-drush-configuration)
      * @usage drush sql:dump --extra-dump=--no-data
      *   Pass extra option to <info>mysqldump</info> command.
      * @hidden-options create-db

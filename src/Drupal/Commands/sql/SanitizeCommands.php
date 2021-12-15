@@ -17,8 +17,10 @@ class SanitizeCommands extends DrushCommands implements CustomEventAwareInterfac
      *
      * Commandfiles may add custom operations by implementing:
      *
-     *     - `@hook_on-event sql-sanitize-message`. Display summary to user before confirmation.
+     *     - `@hook on-event sql-sanitize-confirms`. Display summary to user before confirmation.
      *     - `@hook post-command sql-sanitize`. Run queries or call APIs to perform sanitizing
+     *
+     * Several working commandfiles may be found at https://github.com/drush-ops/drush/tree/10.x/src/Drupal/Commands/sql
      *
      * @command sql:sanitize
      * @aliases sqlsan,sql-sanitize

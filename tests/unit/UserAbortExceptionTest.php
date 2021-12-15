@@ -14,10 +14,10 @@ class UserAbortExceptionTest extends TestCase
 {
     /**
      * @covers \Drush\Exceptions\UserAbortException
-     * @expectedException \Drush\Exceptions\UserAbortException
      */
     public function testUserAbortException()
     {
+        $this->expectException('\Drush\Exceptions\UserAbortException');
         throw new \Drush\Exceptions\UserAbortException('This is an exception');
     }
 
@@ -40,7 +40,6 @@ class UserAbortExceptionTest extends TestCase
 
     /**
      * Catch and re-throw a throwable
-     * @expectedException \Drush\Exceptions\UserAbortException
      */
     public function testRethrow()
     {
@@ -52,6 +51,7 @@ class UserAbortExceptionTest extends TestCase
         try {
             throw new \Exception('This is the original exception');
         } catch (\Throwable $e) {
+            $this->expectException('\Drush\Exceptions\UserAbortException');
             // There really isn't any use-case for this, but our API allows it.
             throw new \Drush\Exceptions\UserAbortException('Abort after failure', 1, $e);
         }
@@ -59,17 +59,17 @@ class UserAbortExceptionTest extends TestCase
 
     /**
      * Catch and re-throw an exception
-     * @expectedException \Drush\Exceptions\UserAbortException
      */
     public function testRethrowException()
     {
         try {
             throw new \Exception('This is the original exception');
-        } catch (\Throwable $e) {
-            throw new \Drush\Exceptions\UserAbortException('We should never get here', 1, $e);
         } catch (\Exception $e) {
+            $this->expectException('\Drush\Exceptions\UserAbortException');
             // There really isn't any use-case for this, but our API allows it.
             throw new \Drush\Exceptions\UserAbortException('Abort after failure', 1, $e);
+        } catch (\Throwable $e) {
+            throw new \Drush\Exceptions\UserAbortException('We should never get here', 1, $e);
         }
     }
 }

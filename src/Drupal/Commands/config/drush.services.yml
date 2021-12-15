@@ -5,6 +5,7 @@ services:
     arguments: ['@config.factory', '@config.storage']
     calls:
       - [setExportStorage, ['@?config.storage.export']]
+      - [setImportTransformer, ['@?config.import_transformer']]
     tags:
       -  { name: drush.command }
   config.export.commands:

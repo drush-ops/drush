@@ -534,9 +534,6 @@ class SqlBase implements ConfigAwareInterface
     /**
      * Adjust DB connection with superuser credentials if provided.
      *
-     * The options 'db-su' and 'db-su-pw' will be retrieved from the
-     * specified site alias record.
-     *
      * @return null
      */
     public function su()

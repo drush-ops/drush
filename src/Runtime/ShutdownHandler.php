@@ -6,11 +6,8 @@ namespace Drush\Runtime;
  * Drush's error handler
  */
 
-use Drush\Drush;
-use Drush\Log\LogLevel;
 use Drush\Commands\DrushCommands;
-use Webmozart\PathUtil\Path;
-
+use Drush\Drush;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 
