@@ -86,6 +86,7 @@ class UserCase extends CommandUnishTestCase
         $expected = ['authenticated', 'test role'];
         $this->assertEquals($expected, array_values($output['roles']), 'User (id) has test role.');
 
+        // user-remove-role by uid
         $this->drush('user-remove-role', ['test role'], ['uid' => $uid]);
         $this->drush('user-information', [self::NAME], ['format' => 'json']);
         $output = $this->getOutputFromJSON($uid);
@@ -99,6 +100,7 @@ class UserCase extends CommandUnishTestCase
         $expected = ['authenticated', 'test role'];
         $this->assertEquals($expected, array_values($output['roles']), 'User (mail) has test role.');
 
+        // user-remove-role by mail.
         $this->drush('user-remove-role', ['test role'], ['mail' => self::MAIL]);
         $this->drush('user-information', [self::NAME], ['format' => 'json']);
         $output = $this->getOutputFromJSON($uid);
