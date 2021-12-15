@@ -246,6 +246,11 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
+         <loc>https://www.drush.org/latest/commands/field_info/</loc>
+         <lastmod>2021-12-15</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>https://www.drush.org/latest/commands/generate/</loc>
          <lastmod>2021-12-15</lastmod>
          <changefreq>daily</changefreq>
