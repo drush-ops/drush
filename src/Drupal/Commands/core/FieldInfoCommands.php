@@ -28,7 +28,7 @@ class FieldInfoCommands extends DrushCommands
     }
 
     /**
-     * List all fields of an entity bundle
+     * List all configurable fields of an entity bundle
      *
      * @command field:info
      * @aliases field-info,fi
@@ -63,6 +63,8 @@ class FieldInfoCommands extends DrushCommands
      *      List all fields.
      * @usage drush field:info
      *      List all fields and fill in the remaining information through prompts.
+     *
+     * @version 11.0
      */
     public function info(string $entityType, ?string $bundle = null, array $options = [
         'format' => 'table',
