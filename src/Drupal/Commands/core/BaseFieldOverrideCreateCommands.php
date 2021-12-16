@@ -2,8 +2,8 @@
 
 namespace Drush\Drupal\Commands\core;
 
-use Drupal\Core\Entity\EntityFieldManager;
-use Drupal\Core\Entity\EntityTypeBundleInfo;
+use Drupal\Core\Entity\EntityFieldManagerInterface;
+use Drupal\Core\Entity\EntityTypeBundleInfoInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Field\BaseFieldDefinition;
 use Drupal\Core\Field\Entity\BaseFieldOverride;
@@ -18,15 +18,15 @@ class BaseFieldOverrideCreateCommands extends DrushCommands
 
     /** @var EntityTypeManagerInterface */
     protected $entityTypeManager;
-    /** @var EntityTypeBundleInfo */
+    /** @var EntityTypeBundleInfoInterface */
     protected $entityTypeBundleInfo;
-    /** @var EntityFieldManager */
+    /** @var EntityFieldManagerInterface */
     protected $entityFieldManager;
 
     public function __construct(
         EntityTypeManagerInterface $entityTypeManager,
-        EntityTypeBundleInfo $entityTypeBundleInfo,
-        EntityFieldManager $entityFieldManager
+        EntityTypeBundleInfoInterface $entityTypeBundleInfo,
+        EntityFieldManagerInterface $entityFieldManager
     ) {
         $this->entityTypeManager = $entityTypeManager;
         $this->entityTypeBundleInfo = $entityTypeBundleInfo;
