@@ -49,7 +49,7 @@ class FieldDeleteCommands extends DrushCommands
      * @usage drush field-delete taxonomy_term tag
      *      Delete a field and fill in the remaining information through prompts.
      * @usage drush field-delete taxonomy_term tag --field-name=field_tag_label
-     *      Delete a field in a completely non-interactive way.
+     *      Delete a field in a non-interactive way.
      *
      * @version 11.0
      */
@@ -138,7 +138,7 @@ class FieldDeleteCommands extends DrushCommands
                 $fieldStorage->delete();
             }
 
-            $message = 'The field :field has been deleted from the :type content type.';
+            $message = 'The field :field has been deleted from the :type bundle.';
         } else {
             $message = 'There was a problem removing the :field from the :type content type.';
         }
