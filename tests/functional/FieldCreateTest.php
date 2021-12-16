@@ -27,11 +27,11 @@ class FieldCreateTest extends CommandUnishTestCase
     {
         // Arguments.
         $this->drush('field:create', [], [], null, null, self::EXIT_ERROR);
-        $this->assertStringContainsString('Not enough arguments (missing: "entityType")', $this->getErrorOutputRaw());
+        $this->assertStringContainsString('The entityType argument is required', $this->getErrorOutputRaw());
         $this->drush('field:create', ['foo'], [], null, null, self::EXIT_ERROR);
         $this->assertStringContainsString('Entity type with id \'foo\' does not exist.', $this->getErrorOutputRaw());
         $this->drush('field:create', ['user'], [], null, null, self::EXIT_ERROR);
-        $this->assertStringNotContainsString('The bundle argument is required.', $this->getErrorOutputRaw());
+        $this->assertStringContainsString('The bundle argument is required.', $this->getErrorOutputRaw());
         $this->drush('field:create', ['user', 'user'], [], null, null, self::EXIT_ERROR);
         $this->assertStringNotContainsString('bundle', $this->getErrorOutputRaw());
 
@@ -75,5 +75,21 @@ class FieldCreateTest extends CommandUnishTestCase
         $this->assertSame(FieldStorageDefinitionInterface::CARDINALITY_UNLIMITED, $json['cardinality']);
         $this->assertFalse($json['translatable']);
         $this->assertArrayHasKey('beta', $json['target_bundles']);
+    }
+
+    public function testFieldDelete()
+    {
+        $this->drush('field:create', ['unish_article', 'alpha'], ['field-label' => 'Test', 'field-name' => 'field_test5', 'field-description' => 'baz', 'field-type' => 'entity_reference', 'is-required' => true, 'field-widget' => 'entity_reference_autocomplete', 'cardinality' => FieldStorageDefinitionInterface::CARDINALITY_UNLIMITED, 'target-type' => 'unish_article', 'target-bundle' => 'beta']);
+        $this->assertStringContainsString("Successfully created field 'field_test5' on unish_article type with bundle 'alpha'", $this->getSimplifiedErrorOutput());
+
+        $this->drush('field:delete', ['unish_article'], [], null, null, self::EXIT_ERROR);
+        $this->assertStringContainsString('The bundle argument is required.', $this->getErrorOutputRaw());
+        $this->drush('field:delete', ['unish_article', 'alpha'], [], null, null, self::EXIT_ERROR);
+        $this->assertStringContainsString('The field-name option is required.', $this->getErrorOutputRaw());
+
+        $this->drush('field:delete', ['unish_article', 'alpha'], ['field-name' => 'field_testZZZZZ'], null, null, self::EXIT_ERROR);
+        $this->assertStringContainsString("Field with name 'field_testZZZZZ' does not exist on bundle 'alpha'", $this->getErrorOutputRaw());
+        $this->drush('field:delete', ['unish_article', 'alpha'], ['field-name' => 'field_test5']);
+        $this->assertStringContainsString(" The field Test has been deleted from the Alpha bundle.", $this->getErrorOutputRaw());
     }
 }

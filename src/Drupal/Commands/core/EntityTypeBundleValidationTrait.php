@@ -7,7 +7,7 @@ use Drupal\Core\Entity\EntityTypeManagerInterface;
 /**
  * @property EntityTypeManagerInterface $entityTypeManager
  */
-trait ValidateEntityTypeTrait
+trait EntityTypeBundleValidationTrait
 {
     protected function validateEntityType(string $entityTypeId): void
     {
