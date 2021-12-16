@@ -26,9 +26,9 @@ use Symfony\Component\Console\Question\ChoiceQuestion;
 
 class FieldCreateCommands extends DrushCommands implements CustomEventAwareInterface
 {
-    use AskBundleTrait;
+    use EntityTypeBundleAskTrait;
     use CustomEventAwareTrait;
-    use ValidateEntityTypeTrait;
+    use EntityTypeBundleValidationTrait;
 
     /** @var FieldTypePluginManagerInterface */
     protected $fieldTypePluginManager;
@@ -120,7 +120,7 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
      * @see \Drupal\field_ui\Form\FieldConfigEditForm
      * @see \Drupal\field_ui\Form\FieldStorageConfigEditForm
      */
-    public function create(string $entityType, ?string $bundle = null, array $options = [
+    public function create(?string $entityType = null, ?string $bundle = null, array $options = [
         'field-name' => InputOption::VALUE_REQUIRED,
         'field-label' => InputOption::VALUE_REQUIRED,
         'field-description' => InputOption::VALUE_OPTIONAL,
@@ -136,6 +136,7 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
         'existing' => false,
     ]): void
     {
+        $this->input->setArgument('entityType', $entityType = $entityType ?? $this->askEntityType());
         $this->validateEntityType($entityType);
 
         $this->input->setArgument('bundle', $bundle = $bundle ?? $this->askBundle());

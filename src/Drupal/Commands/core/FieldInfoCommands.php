@@ -10,9 +10,9 @@ use Drush\Commands\DrushCommands;
 
 class FieldInfoCommands extends DrushCommands
 {
-    use AskBundleTrait;
+    use EntityTypeBundleAskTrait;
+    use EntityTypeBundleValidationTrait;
     use FieldDefinitionRowsOfFieldsTrait;
-    use ValidateEntityTypeTrait;
 
     /** @var EntityTypeManagerInterface */
     protected $entityTypeManager;
@@ -66,10 +66,11 @@ class FieldInfoCommands extends DrushCommands
      *
      * @version 11.0
      */
-    public function info(string $entityType, ?string $bundle = null, array $options = [
+    public function info(?string $entityType = null, ?string $bundle = null, array $options = [
         'format' => 'table',
     ]): RowsOfFields
     {
+        $this->input->setArgument('entityType', $entityType = $entityType ?? $this->askEntityType());
         $this->validateEntityType($entityType);
 
         $this->input->setArgument('bundle', $bundle = $bundle ?? $this->askBundle());

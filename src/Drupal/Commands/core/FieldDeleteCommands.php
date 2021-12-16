@@ -11,8 +11,8 @@ use Symfony\Component\Console\Input\InputOption;
 
 class FieldDeleteCommands extends DrushCommands
 {
-    use AskBundleTrait;
-    use ValidateEntityTypeTrait;
+    use EntityTypeBundleAskTrait;
+    use EntityTypeBundleValidationTrait;
 
     /** @var EntityTypeManagerInterface */
     protected $entityTypeManager;
@@ -52,12 +52,14 @@ class FieldDeleteCommands extends DrushCommands
      *      Delete a field in a non-interactive way.
      *
      * @version 11.0
+     * @see \Drupal\field_ui\Form\FieldConfigDeleteForm
      */
-    public function delete(string $entityType, ?string $bundle = null, array $options = [
+    public function delete(?string $entityType = null, ?string $bundle = null, array $options = [
         'field-name' => InputOption::VALUE_REQUIRED,
         'show-machine-names' => InputOption::VALUE_OPTIONAL,
     ]): void
     {
+        $this->input->setArgument('entityType', $entityType = $entityType ?? $this->askEntityType());
         $this->validateEntityType($entityType);
 
         $this->input->setArgument('bundle', $bundle = $bundle ?? $this->askBundle());
@@ -118,6 +120,14 @@ class FieldDeleteCommands extends DrushCommands
                 : $fieldConfig->get('label');
 
             $choices[$fieldConfig->get('field_name')] = $label;
+        }
+
+        if ($choices === []) {
+            throw new \InvalidArgumentException(
+                t("Bundle ':bundle' has no fields.", [
+                    ':bundle' => $bundle,
+                ])
+            );
         }
 
         return $this->io()->choice('Choose a field to delete', $choices);
