@@ -8,7 +8,7 @@ use Webmozart\PathUtil\Path;
 /**
  * @group commands
  */
-class FieldCreateTest extends CommandUnishTestCase
+class FieldTest extends CommandUnishTestCase
 {
 
     public function setup(): void
