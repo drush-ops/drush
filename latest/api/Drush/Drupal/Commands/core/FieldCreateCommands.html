@@ -89,7 +89,17 @@
     <div class="container-fluid underlined">
                     <div class="row">
                 <div class="col-md-6">
+                    <a href="../../../../Drush/Drupal/Commands/core/EntityTypeBundleAskTrait.html"><abbr title="Drush\Drupal\Commands\core\EntityTypeBundleAskTrait">EntityTypeBundleAskTrait</abbr></a>    </div>
+                <div class="col-md-6"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-6">
                     <abbr title="Consolidation\AnnotatedCommand\Events\CustomEventAwareTrait">CustomEventAwareTrait</abbr>    </div>
+                <div class="col-md-6"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-6">
+                    <a href="../../../../Drush/Drupal/Commands/core/EntityTypeBundleValidationTrait.html"><abbr title="Drush\Drupal\Commands\core\EntityTypeBundleValidationTrait">EntityTypeBundleValidationTrait</abbr></a>    </div>
                 <div class="col-md-6"></div>
             </div>
                     <div class="row">
@@ -187,6 +197,34 @@
 <abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a></small></td>
             </tr>
                     <tr>
+                <td class="type" id="property_input">
+                                                                                <abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr>
+                                                                                
+                                    </td>
+                <td>$input</td>
+                <td class="last"></td>
+                <td><small>from&nbsp;<a href="../../../../Drush/Drupal/Commands/core/EntityTypeBundleAskTrait.html#property_input">
+<abbr title="Drush\Drupal\Commands\core\EntityTypeBundleAskTrait">EntityTypeBundleAskTrait</abbr></a></small></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_entityTypeBundleInfo">
+                                        protected                                        <abbr title="Drupal\Core\Entity\EntityTypeBundleInfoInterface">EntityTypeBundleInfoInterface</abbr>
+                                                                                
+                                    </td>
+                <td>$entityTypeBundleInfo</td>
+                <td class="last"></td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_entityTypeManager">
+                                        protected                                        <abbr title="Drupal\Core\Entity\EntityTypeManagerInterface">EntityTypeManagerInterface</abbr>
+                                                                                
+                                    </td>
+                <td>$entityTypeManager</td>
+                <td class="last"></td>
+                <td></td>
+            </tr>
+                    <tr>
                 <td class="type" id="property_fieldTypePluginManager">
                                         protected                                        <abbr title="Drupal\Core\Field\FieldTypePluginManagerInterface">FieldTypePluginManagerInterface</abbr>
                                                                                 
@@ -210,24 +248,6 @@
                                                                                 
                                     </td>
                 <td>$selectionPluginManager</td>
-                <td class="last"></td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td class="type" id="property_entityTypeManager">
-                                        protected                                        <abbr title="Drupal\Core\Entity\EntityTypeManagerInterface">EntityTypeManagerInterface</abbr>
-                                                                                
-                                    </td>
-                <td>$entityTypeManager</td>
-                <td class="last"></td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td class="type" id="property_entityTypeBundleInfo">
-                                        protected                                        <abbr title="Drupal\Core\Entity\EntityTypeBundleInfoInterface">EntityTypeBundleInfoInterface</abbr>
-                                                                                
-                                    </td>
-                <td>$entityTypeBundleInfo</td>
                 <td class="last"></td>
                 <td></td>
             </tr>
@@ -390,6 +410,54 @@ DrushConfig as return type. Helps with IDE completion.</p></p>                </
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
+                    string|null
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_askEntityType">askEntityType</a>()
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../../../Drush/Drupal/Commands/core/EntityTypeBundleAskTrait.html#method_askEntityType">
+<abbr title="Drush\Drupal\Commands\core\EntityTypeBundleAskTrait">EntityTypeBundleAskTrait</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    string|null
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_askBundle">askBundle</a>()
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../../../Drush/Drupal/Commands/core/EntityTypeBundleAskTrait.html#method_askBundle">
+<abbr title="Drush\Drupal\Commands\core\EntityTypeBundleAskTrait">EntityTypeBundleAskTrait</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    void
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_validateEntityType">validateEntityType</a>(string $entityTypeId)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../../../Drush/Drupal/Commands/core/EntityTypeBundleValidationTrait.html#method_validateEntityType">
+<abbr title="Drush\Drupal\Commands\core\EntityTypeBundleValidationTrait">EntityTypeBundleValidationTrait</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    void
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_validateBundle">validateBundle</a>(string $entityTypeId, string $bundle)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../../../Drush/Drupal/Commands/core/EntityTypeBundleValidationTrait.html#method_validateBundle">
+<abbr title="Drush\Drupal\Commands\core\EntityTypeBundleValidationTrait">EntityTypeBundleValidationTrait</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
                     void
                 </div>
                 <div class="col-md-8">
@@ -404,31 +472,9 @@ DrushConfig as return type. Helps with IDE completion.</p></p>                </
                     void
                 </div>
                 <div class="col-md-8">
-                    <a href="#method_create">create</a>(string $entityType, string|null $bundle = null, array $options = [&#039;field-name&#039; =&gt; InputOption::VALUE_REQUIRED, &#039;field-label&#039; =&gt; InputOption::VALUE_REQUIRED, &#039;field-description&#039; =&gt; InputOption::VALUE_OPTIONAL, &#039;field-type&#039; =&gt; InputOption::VALUE_REQUIRED, &#039;field-widget&#039; =&gt; InputOption::VALUE_REQUIRED, &#039;is-required&#039; =&gt; InputOption::VALUE_OPTIONAL, &#039;is-translatable&#039; =&gt; InputOption::VALUE_OPTIONAL, &#039;cardinality&#039; =&gt; InputOption::VALUE_REQUIRED, &#039;target-type&#039; =&gt; InputOption::VALUE_OPTIONAL, &#039;target-bundle&#039; =&gt; InputOption::VALUE_OPTIONAL, &#039;show-machine-names&#039; =&gt; InputOption::VALUE_OPTIONAL, &#039;existing-field-name&#039; =&gt; InputOption::VALUE_OPTIONAL, &#039;existing&#039; =&gt; false])
+                    <a href="#method_create">create</a>(string|null $entityType = null, string|null $bundle = null, array $options = [&#039;field-name&#039; =&gt; InputOption::VALUE_REQUIRED, &#039;field-label&#039; =&gt; InputOption::VALUE_REQUIRED, &#039;field-description&#039; =&gt; InputOption::VALUE_OPTIONAL, &#039;field-type&#039; =&gt; InputOption::VALUE_REQUIRED, &#039;field-widget&#039; =&gt; InputOption::VALUE_REQUIRED, &#039;is-required&#039; =&gt; InputOption::VALUE_OPTIONAL, &#039;is-translatable&#039; =&gt; InputOption::VALUE_OPTIONAL, &#039;cardinality&#039; =&gt; InputOption::VALUE_REQUIRED, &#039;target-type&#039; =&gt; InputOption::VALUE_OPTIONAL, &#039;target-bundle&#039; =&gt; InputOption::VALUE_OPTIONAL, &#039;show-machine-names&#039; =&gt; InputOption::VALUE_OPTIONAL, &#039;existing-field-name&#039; =&gt; InputOption::VALUE_OPTIONAL, &#039;existing&#039; =&gt; false])
         
                                             <p><p>Create a new field</p></p>                </div>
-                <div class="col-md-2"></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    void
-                </div>
-                <div class="col-md-8">
-                    <a href="#method_validateEntityType">validateEntityType</a>(string $entityTypeId)
-        
-                                            <p class="no-description">No description</p>
-                                    </div>
-                <div class="col-md-2"></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    void
-                </div>
-                <div class="col-md-8">
-                    <a href="#method_validateBundle">validateBundle</a>(string $entityTypeId, string $bundle)
-        
-                                            <p class="no-description">No description</p>
-                                    </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -514,17 +560,6 @@ DrushConfig as return type. Helps with IDE completion.</p></p>                </
                 </div>
                 <div class="col-md-8">
                     <a href="#method_askTranslatable">askTranslatable</a>()
-        
-                                            <p class="no-description">No description</p>
-                                    </div>
-                <div class="col-md-2"></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    string|null
-                </div>
-                <div class="col-md-8">
-                    <a href="#method_askBundle">askBundle</a>()
         
                                             <p class="no-description">No description</p>
                                     </div>
@@ -869,7 +904,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method___construct">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/FieldCreateCommands.php#L48">at line 48</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/FieldCreateCommands.php#L50">at line 50</a></div>
         <code>                    
     <strong>__construct</strong>(<abbr title="Drupal\Core\Field\FieldTypePluginManagerInterface">FieldTypePluginManagerInterface</abbr> $fieldTypePluginManager, <abbr title="Drupal\Core\Field\WidgetPluginManager">WidgetPluginManager</abbr> $widgetPluginManager, <abbr title="Drupal\Core\Entity\EntityReferenceSelection\SelectionPluginManagerInterface">SelectionPluginManagerInterface</abbr> $selectionPluginManager, <abbr title="Drupal\Core\Entity\EntityTypeManagerInterface">EntityTypeManagerInterface</abbr> $entityTypeManager, <abbr title="Drupal\Core\Entity\EntityTypeBundleInfoInterface">EntityTypeBundleInfoInterface</abbr> $entityTypeBundleInfo, <abbr title="Drupal\Core\Extension\ModuleHandlerInterface">ModuleHandlerInterface</abbr> $moduleHandler, <abbr title="Drupal\Core\Entity\EntityFieldManagerInterface">EntityFieldManagerInterface</abbr> $entityFieldManager)
         </code>
@@ -1135,8 +1170,169 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
 
             </div>
                     <div class="method-item">
+                    <h3 id="method_askEntityType">
+        <div class="location">in <a href="../../../../Drush/Drupal/Commands/core/EntityTypeBundleAskTrait.html#method_askEntityType">
+<abbr title="Drush\Drupal\Commands\core\EntityTypeBundleAskTrait">EntityTypeBundleAskTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/EntityTypeBundleAskTrait.php#L16">at line 16</a></div>
+        <code>            protected        string|null
+    <strong>askEntityType</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string|null</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_askBundle">
+        <div class="location">in <a href="../../../../Drush/Drupal/Commands/core/EntityTypeBundleAskTrait.html#method_askBundle">
+<abbr title="Drush\Drupal\Commands\core\EntityTypeBundleAskTrait">EntityTypeBundleAskTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/EntityTypeBundleAskTrait.php#L34">at line 34</a></div>
+        <code>            protected        string|null
+    <strong>askBundle</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string|null</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_validateEntityType">
+        <div class="location">in <a href="../../../../Drush/Drupal/Commands/core/EntityTypeBundleValidationTrait.html#method_validateEntityType">
+<abbr title="Drush\Drupal\Commands\core\EntityTypeBundleValidationTrait">EntityTypeBundleValidationTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/EntityTypeBundleValidationTrait.php#L12">at line 12</a></div>
+        <code>            protected        void
+    <strong>validateEntityType</strong>(string $entityTypeId)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$entityTypeId</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>void</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_validateBundle">
+        <div class="location">in <a href="../../../../Drush/Drupal/Commands/core/EntityTypeBundleValidationTrait.html#method_validateBundle">
+<abbr title="Drush\Drupal\Commands\core\EntityTypeBundleValidationTrait">EntityTypeBundleValidationTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/EntityTypeBundleValidationTrait.php#L21">at line 21</a></div>
+        <code>            protected        void
+    <strong>validateBundle</strong>(string $entityTypeId, string $bundle)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$entityTypeId</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>string</td>
+                <td>$bundle</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>void</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
                     <h3 id="method_setContentTranslationManager">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/FieldCreateCommands.php#L66">at line 66</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/FieldCreateCommands.php#L68">at line 68</a></div>
         <code>                    void
     <strong>setContentTranslationManager</strong>(<abbr title="Drupal\content_translation\ContentTranslationManagerInterface">ContentTranslationManagerInterface</abbr> $manager)
         </code>
@@ -1179,9 +1375,9 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_create">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/FieldCreateCommands.php#L121">at line 121</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/FieldCreateCommands.php#L123">at line 123</a></div>
         <code>                    void
-    <strong>create</strong>(string $entityType, string|null $bundle = null, array $options = [&#039;field-name&#039; =&gt; InputOption::VALUE_REQUIRED, &#039;field-label&#039; =&gt; InputOption::VALUE_REQUIRED, &#039;field-description&#039; =&gt; InputOption::VALUE_OPTIONAL, &#039;field-type&#039; =&gt; InputOption::VALUE_REQUIRED, &#039;field-widget&#039; =&gt; InputOption::VALUE_REQUIRED, &#039;is-required&#039; =&gt; InputOption::VALUE_OPTIONAL, &#039;is-translatable&#039; =&gt; InputOption::VALUE_OPTIONAL, &#039;cardinality&#039; =&gt; InputOption::VALUE_REQUIRED, &#039;target-type&#039; =&gt; InputOption::VALUE_OPTIONAL, &#039;target-bundle&#039; =&gt; InputOption::VALUE_OPTIONAL, &#039;show-machine-names&#039; =&gt; InputOption::VALUE_OPTIONAL, &#039;existing-field-name&#039; =&gt; InputOption::VALUE_OPTIONAL, &#039;existing&#039; =&gt; false])
+    <strong>create</strong>(string|null $entityType = null, string|null $bundle = null, array $options = [&#039;field-name&#039; =&gt; InputOption::VALUE_REQUIRED, &#039;field-label&#039; =&gt; InputOption::VALUE_REQUIRED, &#039;field-description&#039; =&gt; InputOption::VALUE_OPTIONAL, &#039;field-type&#039; =&gt; InputOption::VALUE_REQUIRED, &#039;field-widget&#039; =&gt; InputOption::VALUE_REQUIRED, &#039;is-required&#039; =&gt; InputOption::VALUE_OPTIONAL, &#039;is-translatable&#039; =&gt; InputOption::VALUE_OPTIONAL, &#039;cardinality&#039; =&gt; InputOption::VALUE_REQUIRED, &#039;target-type&#039; =&gt; InputOption::VALUE_OPTIONAL, &#039;target-bundle&#039; =&gt; InputOption::VALUE_OPTIONAL, &#039;show-machine-names&#039; =&gt; InputOption::VALUE_OPTIONAL, &#039;existing-field-name&#039; =&gt; InputOption::VALUE_OPTIONAL, &#039;existing&#039; =&gt; false])
         </code>
     </h3>
     <div class="details">    
@@ -1196,7 +1392,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
 
                     <table class="table table-condensed">
                     <tr>
-                <td>string</td>
+                <td>string|null</td>
                 <td>$entityType</td>
                 <td><p>The machine name of the entity type</p></td>
             </tr>
@@ -1247,99 +1443,8 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
 
             </div>
                     <div class="method-item">
-                    <h3 id="method_validateEntityType">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/FieldCreateCommands.php#L219">at line 219</a></div>
-        <code>            protected        void
-    <strong>validateEntityType</strong>(string $entityTypeId)
-        </code>
-    </h3>
-    <div class="details">    
-    
-            
-
-        <div class="method-description">
-                            <p class="no-description">No description</p>
-                    
-        </div>
-        <div class="tags">
-                            <h4>Parameters</h4>
-
-                    <table class="table table-condensed">
-                    <tr>
-                <td>string</td>
-                <td>$entityTypeId</td>
-                <td></td>
-            </tr>
-            </table>
-
-            
-                            <h4>Return Value</h4>
-
-                    <table class="table table-condensed">
-        <tr>
-            <td>void</td>
-            <td></td>
-        </tr>
-    </table>
-
-            
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
-                    <h3 id="method_validateBundle">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/FieldCreateCommands.php#L228">at line 228</a></div>
-        <code>            protected        void
-    <strong>validateBundle</strong>(string $entityTypeId, string $bundle)
-        </code>
-    </h3>
-    <div class="details">    
-    
-            
-
-        <div class="method-description">
-                            <p class="no-description">No description</p>
-                    
-        </div>
-        <div class="tags">
-                            <h4>Parameters</h4>
-
-                    <table class="table table-condensed">
-                    <tr>
-                <td>string</td>
-                <td>$entityTypeId</td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td>string</td>
-                <td>$bundle</td>
-                <td></td>
-            </tr>
-            </table>
-
-            
-                            <h4>Return Value</h4>
-
-                    <table class="table table-condensed">
-        <tr>
-            <td>void</td>
-            <td></td>
-        </tr>
-    </table>
-
-            
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
                     <h3 id="method_askExistingFieldName">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/FieldCreateCommands.php#L254">at line 254</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/FieldCreateCommands.php#L222">at line 222</a></div>
         <code>            protected        string|null
     <strong>askExistingFieldName</strong>()
         </code>
@@ -1372,7 +1477,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_askFieldName">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/FieldCreateCommands.php#L267">at line 267</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/FieldCreateCommands.php#L235">at line 235</a></div>
         <code>            protected        string
     <strong>askFieldName</strong>()
         </code>
@@ -1405,7 +1510,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_askFieldLabel">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/FieldCreateCommands.php#L303">at line 303</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/FieldCreateCommands.php#L271">at line 271</a></div>
         <code>            protected        string
     <strong>askFieldLabel</strong>()
         </code>
@@ -1438,7 +1543,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_askFieldDescription">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/FieldCreateCommands.php#L308">at line 308</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/FieldCreateCommands.php#L276">at line 276</a></div>
         <code>            protected        string|null
     <strong>askFieldDescription</strong>()
         </code>
@@ -1471,7 +1576,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_askFieldType">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/FieldCreateCommands.php#L313">at line 313</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/FieldCreateCommands.php#L281">at line 281</a></div>
         <code>            protected        string
     <strong>askFieldType</strong>()
         </code>
@@ -1504,7 +1609,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_askFieldWidget">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/FieldCreateCommands.php#L326">at line 326</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/FieldCreateCommands.php#L294">at line 294</a></div>
         <code>            protected        string
     <strong>askFieldWidget</strong>()
         </code>
@@ -1537,7 +1642,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_askRequired">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/FieldCreateCommands.php#L350">at line 350</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/FieldCreateCommands.php#L318">at line 318</a></div>
         <code>            protected        bool
     <strong>askRequired</strong>()
         </code>
@@ -1570,7 +1675,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_askTranslatable">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/FieldCreateCommands.php#L355">at line 355</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/FieldCreateCommands.php#L323">at line 323</a></div>
         <code>            protected        bool
     <strong>askTranslatable</strong>()
         </code>
@@ -1602,41 +1707,8 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
 
             </div>
                     <div class="method-item">
-                    <h3 id="method_askBundle">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/FieldCreateCommands.php#L364">at line 364</a></div>
-        <code>            protected        string|null
-    <strong>askBundle</strong>()
-        </code>
-    </h3>
-    <div class="details">    
-    
-            
-
-        <div class="method-description">
-                            <p class="no-description">No description</p>
-                    
-        </div>
-        <div class="tags">
-            
-                            <h4>Return Value</h4>
-
-                    <table class="table table-condensed">
-        <tr>
-            <td>string|null</td>
-            <td></td>
-        </tr>
-    </table>
-
-            
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
                     <h3 id="method_askCardinality">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/FieldCreateCommands.php#L402">at line 402</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/FieldCreateCommands.php#L332">at line 332</a></div>
         <code>            protected        int
     <strong>askCardinality</strong>()
         </code>
@@ -1669,7 +1741,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_askReferencedEntityType">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/FieldCreateCommands.php#L427">at line 427</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/FieldCreateCommands.php#L357">at line 357</a></div>
         <code>            protected        string
     <strong>askReferencedEntityType</strong>()
         </code>
@@ -1702,7 +1774,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_askReferencedBundles">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/FieldCreateCommands.php#L442">at line 442</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/FieldCreateCommands.php#L372">at line 372</a></div>
         <code>            protected        array
     <strong>askReferencedBundles</strong>(<abbr title="Drupal\Core\Field\FieldDefinitionInterface">FieldDefinitionInterface</abbr> $fieldDefinition)
         </code>
@@ -1745,7 +1817,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_createField">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/FieldCreateCommands.php#L464">at line 464</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/FieldCreateCommands.php#L394">at line 394</a></div>
         <code>            protected        <abbr title="Drupal\field\FieldConfigInterface">FieldConfigInterface</abbr>
     <strong>createField</strong>()
         </code>
@@ -1778,7 +1850,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_createFieldStorage">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/FieldCreateCommands.php#L517">at line 517</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/FieldCreateCommands.php#L447">at line 447</a></div>
         <code>            protected        <abbr title="Drupal\field\FieldStorageConfigInterface">FieldStorageConfigInterface</abbr>
     <strong>createFieldStorage</strong>()
         </code>
@@ -1811,7 +1883,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_createFieldDisplay">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/FieldCreateCommands.php#L547">at line 547</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/FieldCreateCommands.php#L477">at line 477</a></div>
         <code>            protected        void
     <strong>createFieldDisplay</strong>(string $context)
         </code>
@@ -1854,7 +1926,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_getEntityDisplay">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/FieldCreateCommands.php#L588">at line 588</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/FieldCreateCommands.php#L518">at line 518</a></div>
         <code>            protected        <abbr title="Drush\Drupal\Commands\core\Drupal\Core\Entity\Display\EntityDisplayInterface">EntityDisplayInterface</abbr>|null
     <strong>getEntityDisplay</strong>(string $context)
         </code>
@@ -1897,7 +1969,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_logResult">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/FieldCreateCommands.php#L598">at line 598</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/FieldCreateCommands.php#L528">at line 528</a></div>
         <code>            protected        void
     <strong>logResult</strong>(<abbr title="Drupal\field\FieldConfigInterface">FieldConfigInterface</abbr> $field)
         </code>
@@ -1940,7 +2012,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_generateFieldName">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/FieldCreateCommands.php#L629">at line 629</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/FieldCreateCommands.php#L559">at line 559</a></div>
         <code>            protected        string
     <strong>generateFieldName</strong>(string $source, string $bundle)
         </code>
@@ -1988,7 +2060,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_fieldExists">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/FieldCreateCommands.php#L647">at line 647</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/FieldCreateCommands.php#L577">at line 577</a></div>
         <code>            protected        bool
     <strong>fieldExists</strong>(string $fieldName, string $entityType, string $bundle)
         </code>
@@ -2041,7 +2113,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_fieldStorageExists">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/FieldCreateCommands.php#L654">at line 654</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/FieldCreateCommands.php#L584">at line 584</a></div>
         <code>            protected        bool
     <strong>fieldStorageExists</strong>(string $fieldName, string $entityType)
         </code>
@@ -2089,7 +2161,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_getExistingFieldStorageOptions">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/FieldCreateCommands.php#L661">at line 661</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/FieldCreateCommands.php#L591">at line 591</a></div>
         <code>            protected        array
     <strong>getExistingFieldStorageOptions</strong>(string $entityType, string $bundle)
         </code>
@@ -2137,7 +2209,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_hasContentTranslation">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/FieldCreateCommands.php#L691">at line 691</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/FieldCreateCommands.php#L621">at line 621</a></div>
         <code>            protected        bool
     <strong>hasContentTranslation</strong>()
         </code>
@@ -2170,7 +2242,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_ensureOption">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/FieldCreateCommands.php#L700">at line 700</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/FieldCreateCommands.php#L630">at line 630</a></div>
         <code>            protected        void
     <strong>ensureOption</strong>(string $name, callable $asker, bool $required)
         </code>
@@ -2223,7 +2295,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_validateRequired">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/FieldCreateCommands.php#L717">at line 717</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/FieldCreateCommands.php#L647">at line 647</a></div>
         <code>        static            string
     <strong>validateRequired</strong>(string|null $value)
         </code>
