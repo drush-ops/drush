@@ -49,8 +49,8 @@ services:
       - '@entity_type.bundle.info'
     tags:
       -  { name: drush.command }
-  base-field.override-create.commands:
-    class: \Drush\Drupal\Commands\core\BaseFieldOverrideCreateCommands
+  field.base-override-create.commands:
+    class: \Drush\Drupal\Commands\core\FieldBaseOverrideCreateCommands
     arguments:
       - '@entity_type.manager'
       - '@entity_type.bundle.info'

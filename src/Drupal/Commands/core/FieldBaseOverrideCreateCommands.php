@@ -11,10 +11,10 @@ use Drush\Commands\DrushCommands;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 
-class BaseFieldOverrideCreateCommands extends DrushCommands
+class FieldBaseOverrideCreateCommands extends DrushCommands
 {
-    use AskBundleTrait;
-    use ValidateEntityTypeTrait;
+    use EntityTypeBundleAskTrait;
+    use EntityTypeBundleValidationTrait;
 
     /** @var EntityTypeManagerInterface */
     protected $entityTypeManager;
@@ -36,8 +36,8 @@ class BaseFieldOverrideCreateCommands extends DrushCommands
     /**
      * Create a new base field override
      *
-     * @command field:base-field-override-create
-     * @aliases field-base-field-override-create,base-field-override-create,bfoc
+     * @command field:base-override-create
+     * @aliases field-base-override-create,base-field-override-create,bfoc
      *
      * @param string $entityType
      *      The machine name of the entity type
@@ -66,7 +66,7 @@ class BaseFieldOverrideCreateCommands extends DrushCommands
      * @see \Drupal\field_ui\Form\FieldConfigEditForm
      * @see \Drupal\field_ui\Form\FieldStorageConfigEditForm
      */
-    public function create(string $entityType, ?string $bundle = null, array $options = [
+    public function create(?string $entityType = null, ?string $bundle = null, array $options = [
         'field-name' => InputOption::VALUE_REQUIRED,
         'field-label' => InputOption::VALUE_REQUIRED,
         'field-description' => InputOption::VALUE_REQUIRED,
@@ -74,6 +74,7 @@ class BaseFieldOverrideCreateCommands extends DrushCommands
         'show-machine-names' => InputOption::VALUE_OPTIONAL,
     ]): void
     {
+        $this->input->setArgument('entityType', $entityType = $entityType ?? $this->askEntityType());
         $this->validateEntityType($entityType);
 
         $this->input->setArgument('bundle', $bundle = $bundle ?? $this->askBundle());
