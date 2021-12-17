@@ -132,7 +132,7 @@ class FieldBaseOverrideCreateCommands extends DrushCommands
         $choices = [];
 
         foreach ($definitions as $definition) {
-            $label = $this->input->getOption('show-machine-names') ? $definition->getName() : $definition->getLabel()->render();
+            $label = $this->input->getOption('show-machine-names') ? $definition->getName() : (string) $definition->getLabel();
             $choices[$definition->getName()] = $label;
         }
 
