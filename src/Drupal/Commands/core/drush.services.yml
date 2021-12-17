@@ -49,14 +49,14 @@ services:
       - '@entity_type.bundle.info'
     tags:
       -  { name: drush.command }
-  field.base-override-create.commands:
-    class: \Drush\Drupal\Commands\core\FieldBaseOverrideCreateCommands
+  field.base-info.commands:
+    class: \Drush\Drupal\Commands\core\FieldBaseInfoCommands
     arguments:
       - '@entity_type.manager'
       - '@entity_type.bundle.info'
       - '@entity_field.manager'
     tags:
-      -  { name: drush.command }
+      - { name: drush.command }
   link.hooks:
     class: \Drush\Drupal\Commands\core\LinkHooks
     arguments:
