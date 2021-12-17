@@ -92,4 +92,12 @@ class FieldTest extends CommandUnishTestCase
         $this->drush('field:delete', ['unish_article', 'alpha'], ['field-name' => 'field_test5']);
         $this->assertStringContainsString(" The field Test has been deleted from the Alpha bundle.", $this->getErrorOutputRaw());
     }
+
+    public function testFieldBaseInfo()
+    {
+        $this->drush('field:base-info', ['user'], ['format' => 'json', 'fields' => '*']);
+        $json = $this->getOutputFromJSON();
+        $this->assertArrayHasKey('name', $json);
+        $this->assertSame('Name', $json['name']['label']);
+    }
 }
