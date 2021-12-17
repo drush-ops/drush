@@ -92,4 +92,20 @@ class FieldTest extends CommandUnishTestCase
         $this->drush('field:delete', ['unish_article', 'alpha'], ['field-name' => 'field_test5']);
         $this->assertStringContainsString(" The field Test has been deleted from the Alpha bundle.", $this->getErrorOutputRaw());
     }
+
+    public function testBaseFieldInfo()
+    {
+        // $this->drush('field:create', ['unish_article', 'alpha'], ['field-label' => 'Test', 'field-name' => 'field_test4', 'field-description' => 'baz', 'field-type' => 'entity_reference', 'is-required' => true, 'field-widget' => 'entity_reference_autocomplete', 'cardinality' => FieldStorageDefinitionInterface::CARDINALITY_UNLIMITED, 'target-type' => 'unish_article', 'target-bundle' => 'beta']);
+        // $this->assertStringContainsString("Successfully created field 'field_test4' on unish_article type with bundle 'alpha'", $this->getSimplifiedErrorOutput());
+
+//        $this->drush('base-field:info', ['user'], ['format' => 'json', 'fields' => '*']);
+//        $json = $this->getOutputFromJSON();
+//        $this->assertSame('field_test4', $json['field_name']);
+//        $this->assertTrue($json['required']);
+//        $this->assertSame('entity_reference', $json['field_type']);
+//        $this->assertSame('baz', $json['description']);
+//        $this->assertSame(FieldStorageDefinitionInterface::CARDINALITY_UNLIMITED, $json['cardinality']);
+//        $this->assertFalse($json['translatable']);
+//        $this->assertArrayHasKey('beta', $json['target_bundles']);
+    }
 }

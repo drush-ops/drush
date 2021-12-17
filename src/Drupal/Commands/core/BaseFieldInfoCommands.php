@@ -64,6 +64,8 @@ class BaseFieldInfoCommands extends DrushCommands
      *      List all base fields.
      * @usage drush base-field:info
      *      List all base fields and fill in the remaining information through prompts.
+     *
+     * @version 11.0
      */
     public function info(string $entityType, array $options = [
         'format' => 'table',
