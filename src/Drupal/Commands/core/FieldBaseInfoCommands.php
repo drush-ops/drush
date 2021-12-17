@@ -2,27 +2,28 @@
 
 namespace Drush\Drupal\Commands\core;
 
+use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Drupal\Core\Entity\EntityFieldManagerInterface;
-use Drupal\Core\Entity\EntityTypeBundleInfo;
+use Drupal\Core\Entity\EntityTypeBundleInfoInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drush\Commands\DrushCommands;
 
-class BaseFieldInfoCommands extends DrushCommands
+class FieldBaseInfoCommands extends DrushCommands
 {
-    use AskBundleTrait;
+    use EntityTypeBundleAskTrait;
+    use EntityTypeBundleValidationTrait;
     use FieldDefinitionRowsOfFieldsTrait;
-    use ValidateEntityTypeTrait;
 
     /** @var EntityTypeManagerInterface */
     protected $entityTypeManager;
-    /** @var EntityTypeBundleInfo */
+    /** @var EntityTypeBundleInfoInterface */
     protected $entityTypeBundleInfo;
     /** @var EntityFieldManagerInterface */
     protected $entityFieldManager;
 
     public function __construct(
         EntityTypeManagerInterface $entityTypeManager,
-        EntityTypeBundleInfo $entityTypeBundleInfo,
+        EntityTypeBundleInfoInterface $entityTypeBundleInfo,
         EntityFieldManagerInterface $entityFieldManager
     ) {
         $this->entityTypeManager = $entityTypeManager;
@@ -33,8 +34,8 @@ class BaseFieldInfoCommands extends DrushCommands
     /**
      * List all base fields of an entity type
      *
-     * @command base-field:info
-     * @aliases base-field-info,bfi
+     * @command field:base-info
+     * @aliases field-base-info,fbi
      *
      * @param string $entityType
      *      The machine name of the entity type
@@ -60,17 +61,20 @@ class BaseFieldInfoCommands extends DrushCommands
      * @filter-default-field field_name
      * @table-style default
      *
-     * @usage drush base-field-info taxonomy_term
+     * @usage drush field:base-info taxonomy_term
      *      List all base fields.
-     * @usage drush base-field:info
+     * @usage drush field:base-info
      *      List all base fields and fill in the remaining information through prompts.
      *
      * @version 11.0
      */
-    public function info(string $entityType, array $options = [
+    public function info(?string $entityType = null, array $options = [
         'format' => 'table',
     ]): RowsOfFields
     {
+        $this->input->setArgument('entityType', $entityType = $entityType ?? $this->askEntityType());
+        $this->validateEntityType($entityType);
+
         $fieldDefinitions = $this->entityFieldManager->getBaseFieldDefinitions($entityType);
 
         return $this->getRowsOfFieldsByFieldDefinitions($fieldDefinitions);
