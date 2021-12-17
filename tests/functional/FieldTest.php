@@ -100,4 +100,19 @@ class FieldTest extends CommandUnishTestCase
         $this->assertArrayHasKey('name', $json);
         $this->assertSame('Name', $json['name']['label']);
     }
+
+    public function testFieldBaseCreateOverride()
+    {
+        $options = [
+          'field-name' => 'name',
+          'field-label' => 'Handle',
+          'field-description' => 'The way this person wishes to called',
+          'is-required' => true,
+        ];
+        $this->drush('field:base-override-create', ['user', 'user'], $options);
+        $this->drush('config:get', ['core.base_field_override.user.user.name'], ['format' => 'json']);
+        $json = $this->getOutputFromJSON();
+        $this->assertSame('Handle', $json['label']);
+        $this->assertSame(true, $json['required']);
+    }
 }
