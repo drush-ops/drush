@@ -40,9 +40,23 @@ services:
     arguments: ['@language_manager', '@module_handler']
     tags:
       -  { name: drush.command }
+  language.hooks:
+    class: \Drush\Drupal\Commands\core\LanguageHooks
+    arguments:
+      - '@module_handler'
+      - '@language_manager'
+    tags:
+      - { name: drush.command }
   locale.commands:
     class: \Drush\Drupal\Commands\core\LocaleCommands
     arguments: ['@language_manager', '@config.factory', '@module_handler', '@state']
+    tags:
+      -  { name: drush.command }
+  menu_ui.hooks:
+    class: \Drush\Drupal\Commands\core\MenuUiHooks
+    arguments:
+      - '@module_handler'
+      - '@menu.parent_form_selector'
     tags:
       -  { name: drush.command }
   messenger.commands:
@@ -53,6 +67,13 @@ services:
   migrate_runner.commands:
     class: Drush\Drupal\Commands\core\MigrateRunnerCommands
     arguments: ['@date.formatter', '@keyvalue']
+    tags:
+      -  { name: drush.command }
+  nodetype-create.commands:
+    class: \Drush\Drupal\Commands\core\NodeTypeCreateCommands
+    arguments:
+      - '@entity_type.manager'
+      - '@entity_field.manager'
     tags:
       -  { name: drush.command }
   queue.commands:
