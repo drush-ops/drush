@@ -93,11 +93,23 @@ class FieldTest extends CommandUnishTestCase
         $this->assertStringContainsString(" The field Test has been deleted from the Alpha bundle.", $this->getErrorOutputRaw());
     }
 
-    public function testFieldBaseInfo()
+    public function testFieldBaseCreateAndInfo()
     {
         $this->drush('field:base-info', ['user'], ['format' => 'json', 'fields' => '*']);
         $json = $this->getOutputFromJSON();
         $this->assertArrayHasKey('name', $json);
         $this->assertSame('Name', $json['name']['label']);
+
+        $options = [
+          'field-name' => 'name',
+          'field-label' => 'Handle',
+          'field-description' => 'The way this person wishes to called',
+          'is-required' => true,
+        ];
+        $this->drush('field:base-override-create', ['user', 'user'], $options);
+        $this->drush('config:get', ['core.base_field_override.user.user.name'], ['format' => 'json']);
+        $json = $this->getOutputFromJSON();
+        $this->assertSame('Handle', $json['label']);
+        $this->assertSame(true, $json['required']);
     }
 }
