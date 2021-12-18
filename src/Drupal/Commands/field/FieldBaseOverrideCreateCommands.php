@@ -40,7 +40,7 @@ class FieldBaseOverrideCreateCommands extends DrushCommands
      * Create a new base field override
      *
      * @command field:base-override-create
-     * @aliases field-base-override-create,base-field-override-create,bfoc
+     * @aliases bfoc
      *
      * @param string $entityType
      *      The machine name of the entity type

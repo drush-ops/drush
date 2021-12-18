@@ -13,33 +13,33 @@ services:
       - [ setContentTranslationManager, [ '@?content_translation.manager' ] ]
     tags:
       -  { name: drush.command }
-    field.info.commands:
-      class: \Drush\Drupal\Commands\field\FieldInfoCommands
-      arguments:
-        - '@entity_type.manager'
-        - '@entity_type.bundle.info'
-      tags:
-        -  { name: drush.command }
-    field.delete.commands:
-      class: \Drush\Drupal\Commands\field\FieldDeleteCommands
-      arguments:
-        - '@entity_type.manager'
-        - '@entity_type.bundle.info'
-      tags:
-        -  { name: drush.command }
-    field.base-override-create.commands:
-      class: \Drush\Drupal\Commands\field\FieldBaseOverrideCreateCommands
-      arguments:
-        - '@entity_type.manager'
-        - '@entity_type.bundle.info'
-        - '@entity_field.manager'
-      tags:
-        - { name: drush.command }
-    field.base-info.commands:
-      class: \Drush\Drupal\Commands\field\FieldBaseInfoCommands
-      arguments:
-        - '@entity_type.manager'
-        - '@entity_type.bundle.info'
-        - '@entity_field.manager'
-      tags:
-        - { name: drush.command }
+  field.info.commands:
+    class: \Drush\Drupal\Commands\field\FieldInfoCommands
+    arguments:
+      - '@entity_type.manager'
+      - '@entity_type.bundle.info'
+    tags:
+      -  { name: drush.command }
+  field.delete.commands:
+    class: \Drush\Drupal\Commands\field\FieldDeleteCommands
+    arguments:
+      - '@entity_type.manager'
+      - '@entity_type.bundle.info'
+    tags:
+      -  { name: drush.command }
+  field.base-override-create.commands:
+    class: \Drush\Drupal\Commands\field\FieldBaseOverrideCreateCommands
+    arguments:
+      - '@entity_type.manager'
+      - '@entity_type.bundle.info'
+      - '@entity_field.manager'
+    tags:
+      - { name: drush.command }
+  field.base-info.commands:
+    class: \Drush\Drupal\Commands\field\FieldBaseInfoCommands
+    arguments:
+      - '@entity_type.manager'
+      - '@entity_type.bundle.info'
+      - '@entity_field.manager'
+    tags:
+      - { name: drush.command }
