@@ -454,6 +454,9 @@ class Drush
         // Remove anything in $options that was not on the cli
         $options = array_intersect_key($options, array_flip($optionNamesFromCommandline));
 
+        // Don't suppress output as it is usually needed in redispatches. See https://github.com/drush-ops/drush/issues/4805 and https://github.com/drush-ops/drush/issues/4933
+        unset($options['quiet']);
+
         // Add in the 'runtime.context' items, which includes --include, --alias-path et. al.
         return $options + array_filter(self::config()->get(PreflightArgs::DRUSH_RUNTIME_CONTEXT_NAMESPACE));
     }
