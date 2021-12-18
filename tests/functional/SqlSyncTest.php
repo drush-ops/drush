@@ -34,9 +34,7 @@ class SqlSyncTest extends CommandUnishTestCase
             'uri' => 'OMIT',
             'simulate' => null,
             'alias-path' => __DIR__ . '/resources/alias-fixtures',
-            // Ensure that shortcuts are normalized to long option names https://github.com/drush-ops/drush/pull/4515.
-            'q' => null,
-            // This option is needed in order to "override" -q and get error output from Drush.
+            // @todo Ensure that shortcuts are normalized to long option names https://github.com/drush-ops/drush/pull/4515.
             'verbose' => null,
         ];
 
@@ -59,7 +57,7 @@ class SqlSyncTest extends CommandUnishTestCase
         // Test simulated remote invoke with a remote runner.
         $this->drush('sql:sync', ['@synctest.remote', '@synctest.local'], $options, 'user@server/path/to/drupal#sitename');
         $output = $this->getSimplifiedErrorOutput();
-        $this->assertStringContainsString("[notice] Simulating: ssh -o PasswordAuthentication=no user@server 'drush --no-interaction sql:sync @synctest.remote @synctest.local -q --uri=sitename --root=/path/to/drupal'", $output);
+        $this->assertStringContainsString("[notice] Simulating: ssh -o PasswordAuthentication=no user@server 'drush --no-interaction sql:sync @synctest.remote @synctest.local --uri=sitename --root=/path/to/drupal'", $output);
     }
 
     /**
