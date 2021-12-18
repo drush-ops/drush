@@ -14,7 +14,8 @@ jobs:
 workflows:
   my-custom-workflow:
     jobs:
-      - placeholder:
-          filters:
-            branches:
-              only: not-happenning
+      - placeholder
+          # The filter makes the workflow look like an error so lets omit it.
+          # filters:
+          #   branches:
+          #     only: not-happenning
