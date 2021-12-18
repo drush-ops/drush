@@ -29,7 +29,54 @@ class LanguageHooks extends DrushCommands
     }
 
     /** @hook option nodetype:create */
-    public function hookOption(Command $command, AnnotationData $annotationData): void
+    public function hookNodeTypeOptions(Command $command, AnnotationData $annotationData): void
+    {
+        $this->doAddOptions($command);
+    }
+
+    /** @hook option vocabulary:create */
+    public function hookVocabularyOptions(Command $command, AnnotationData $annotationData): void
+    {
+        $this->doAddOptions($command);
+    }
+
+    /** @hook on-event node-type-set-options */
+    public function hookNodeTypeSetOptions(InputInterface $input): void
+    {
+        $this->doSetOptions();
+    }
+
+    /** @hook on-event vocabulary-set-options */
+    public function hookVocabularySetOptions(InputInterface $input): void
+    {
+        $this->doSetOptions();
+    }
+
+    /** @hook on-event nodetype-create */
+    public function hookNodeTypeCreate(array &$values): void
+    {
+        $this->doSetValues($values);
+    }
+
+    /** @hook on-event vocabulary-create */
+    public function hookVocabularyCreate(array &$values): void
+    {
+        $this->doSetValues($values);
+    }
+
+    /** @hook post-command nodetype:create */
+    public function hookPostNodeTypeCreate($result, CommandData $commandData): void
+    {
+        $this->doCreateContentLanguageSettings('node');
+    }
+
+    /** @hook post-command vocabulary:create */
+    public function hookPostVocabularyCreate($result, CommandData $commandData): void
+    {
+        $this->doCreateContentLanguageSettings('taxonomy_vocabulary');
+    }
+
+    protected function doAddOptions(Command $command): void
     {
         if (!$this->isInstalled()) {
             return;
@@ -39,7 +86,7 @@ class LanguageHooks extends DrushCommands
             'default-language',
             '',
             InputOption::VALUE_OPTIONAL,
-            'The default language of new nodes.'
+            'The default language of new entities.'
         );
 
         $command->addOption(
@@ -50,8 +97,7 @@ class LanguageHooks extends DrushCommands
         );
     }
 
-    /** @hook on-event node-type-set-options */
-    public function hookSetOptions(InputInterface $input): void
+    protected function doSetOptions(): void
     {
         if (!$this->isInstalled()) {
             return;
@@ -61,19 +107,19 @@ class LanguageHooks extends DrushCommands
         $this->ensureOption('show-language-selector', [$this, 'askLanguageShowSelector'], true);
     }
 
-    /** @hook on-event nodetype-create */
-    public function hookCreate(array &$values): void
+    protected function doSetValues(array &$values): array
     {
         if (!$this->isInstalled()) {
-            return;
+            return $values;
         }
 
         $values['langcode'] = $this->input->getOption('default-language');
         $values['dependencies']['module'][] = 'language';
+
+        return $values;
     }
 
-    /** @hook post-command nodetype:create */
-    public function hookPostFieldCreate($result, CommandData $commandData): void
+    protected function doCreateContentLanguageSettings(string $entityTypeId): void
     {
         if (!$this->isInstalled()) {
             return;
@@ -83,7 +129,7 @@ class LanguageHooks extends DrushCommands
         $defaultLanguage = $this->input->getOption('default-language');
         $showLanguageSelector = (bool) $this->input->getOption('show-language-selector');
 
-        $config = ContentLanguageSettings::loadByEntityTypeBundle('node', $bundle);
+        $config = ContentLanguageSettings::loadByEntityTypeBundle($entityTypeId, $bundle);
         $config->setDefaultLangcode($defaultLanguage)
             ->setLanguageAlterable($showLanguageSelector)
             ->save();
