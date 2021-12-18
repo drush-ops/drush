@@ -1,8 +1,10 @@
 <?php
 
-namespace Drush\Drupal\Commands\core;
+namespace Drush\Drupal\Commands\field;
 
 use Drupal\Core\Entity\EntityTypeManagerInterface;
+
+use function t;
 
 /**
  * @property EntityTypeManagerInterface $entityTypeManager

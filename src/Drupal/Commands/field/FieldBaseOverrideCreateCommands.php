@@ -1,6 +1,6 @@
 <?php
 
-namespace Drush\Drupal\Commands\core;
+namespace Drush\Drupal\Commands\field;
 
 use Drupal\Core\Entity\EntityFieldManagerInterface;
 use Drupal\Core\Entity\EntityTypeBundleInfoInterface;
@@ -10,6 +10,9 @@ use Drupal\Core\Field\Entity\BaseFieldOverride;
 use Drush\Commands\DrushCommands;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
+
+use function dt;
+use function t;
 
 class FieldBaseOverrideCreateCommands extends DrushCommands
 {
