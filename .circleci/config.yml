@@ -14,4 +14,7 @@ jobs:
 workflows:
   my-custom-workflow:
     jobs:
-      - placeholder
+      - placeholder:
+          filters:
+            branches:
+              only: not-happenning
