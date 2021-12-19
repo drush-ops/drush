@@ -90,7 +90,7 @@
                                                 <li><a href="#letterV">V</a></li>
                                                 <li><a href="#letterW">W</a></li>
                                                 <li><a href="#letterX">X</a></li>
-                                                <li><a href="#letterY">Y</a></li>
+                                                <li class="disabled"><a href="#letterY">Y</a></li>
                                                 <li class="disabled"><a href="#letterZ">Z</a></li>
                         </ul>
 
@@ -938,9 +938,7 @@ elsewhere.</p></dd><dt><a href="Drush/Drupal/Commands/config/ConfigCommands.html
                     <dd><p>Run a Drush command on a site alias (or @self).</p></dd><dt><a href="Drush/Drush.html#method_debug">
 <abbr title="Drush\Drush">Drush</abbr>::debug</a>() &mdash; <em>Method in class <a href="Drush/Drush.html"><abbr title="Drush\Drush">Drush</abbr></a></em></dt>
                     <dd><p>Return 'true' if we are in debug mode</p></dd><dt><a href="Drush/Formatters/DrushFormatterManager.html"><abbr title="Drush\Formatters\DrushFormatterManager">DrushFormatterManager</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Formatters.html">Drush\Formatters</a></em></dt>
-                    <dd><p>Our own output formatter</p></dd><dt><a href="Drush/Internal/Config/Yaml/Inline.html#method_dump">
-<abbr title="Drush\Internal\Config\Yaml\Inline">Inline</abbr>::dump</a>() &mdash; <em>Method in class <a href="Drush/Internal/Config/Yaml/Inline.html"><abbr title="Drush\Internal\Config\Yaml\Inline">Inline</abbr></a></em></dt>
-                    <dd><p>Dumps a given PHP variable to a YAML string.</p></dd><dt><a href="Drush/Log/DrushLog.html"><abbr title="Drush\Log\DrushLog">DrushLog</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Log.html">Drush\Log</a></em></dt>
+                    <dd><p>Our own output formatter</p></dd><dt><a href="Drush/Log/DrushLog.html"><abbr title="Drush\Log\DrushLog">DrushLog</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Log.html">Drush\Log</a></em></dt>
                     <dd><p>Redirects Drupal logging messages to Drush log.</p></dd><dt><a href="Drush/Preflight/LegacyPreflight.html#method_defineConstants">
 <abbr title="Drush\Preflight\LegacyPreflight">LegacyPreflight</abbr>::defineConstants</a>() &mdash; <em>Method in class <a href="Drush/Preflight/LegacyPreflight.html"><abbr title="Drush\Preflight\LegacyPreflight">LegacyPreflight</abbr></a></em></dt>
                     <dd><p>Define legacy constants.</p></dd><dt>$<a href="Drush/Preflight/Preflight.html#property_drupalFinder">
@@ -1126,15 +1124,6 @@ array.</p></dd><dt><a href="Drush/Drupal/Commands/config/ConfigCommands.html#met
                     <dd></dd><dt>$<a href="Drush/Drupal/Migrate/MigrateExecutable.html#property_exposeProgressBar">
 <abbr title="Drush\Drupal\Migrate\MigrateExecutable">MigrateExecutable</abbr>#exposeProgressBar</a> &mdash; <em>Property in class <a href="Drush/Drupal/Migrate/MigrateExecutable.html"><abbr title="Drush\Drupal\Migrate\MigrateExecutable">MigrateExecutable</abbr></a></em></dt>
                     <dd><p>If the execution exposes an progress bar.</p></dd><dt><a href="Drush/Exec/ExecTrait.html"><abbr title="Drush\Exec\ExecTrait">ExecTrait</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Exec.html">Drush\Exec</a></em></dt>
-                    <dd></dd><dt><a href="Drush/Internal/Config/Yaml/Escaper.html"><abbr title="Drush\Internal\Config\Yaml\Escaper">Escaper</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Internal/Config/Yaml.html">Drush\Internal\Config\Yaml</a></em></dt>
-                    <dd><p>Escaper encapsulates escaping rules for single and double-quoted
-YAML strings.</p></dd><dt><a href="Drush/Internal/Config/Yaml/Escaper.html#method_escapeWithDoubleQuotes">
-<abbr title="Drush\Internal\Config\Yaml\Escaper">Escaper</abbr>::escapeWithDoubleQuotes</a>() &mdash; <em>Method in class <a href="Drush/Internal/Config/Yaml/Escaper.html"><abbr title="Drush\Internal\Config\Yaml\Escaper">Escaper</abbr></a></em></dt>
-                    <dd><p>Escapes and surrounds a PHP value with double quotes.</p></dd><dt><a href="Drush/Internal/Config/Yaml/Escaper.html#method_escapeWithSingleQuotes">
-<abbr title="Drush\Internal\Config\Yaml\Escaper">Escaper</abbr>::escapeWithSingleQuotes</a>() &mdash; <em>Method in class <a href="Drush/Internal/Config/Yaml/Escaper.html"><abbr title="Drush\Internal\Config\Yaml\Escaper">Escaper</abbr></a></em></dt>
-                    <dd><p>Escapes and surrounds a PHP value with single quotes.</p></dd><dt><a href="Drush/Internal/Config/Yaml/Exception/ExceptionInterface.html"><abbr title="Drush\Internal\Config\Yaml\Exception\ExceptionInterface">ExceptionInterface</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Internal/Config/Yaml/Exception.html">Drush\Internal\Config\Yaml\Exception</a></em></dt>
-                    <dd><p>Exception interface for all exceptions thrown by the component.</p></dd><dt><a href="Drush/Internal/Config/Yaml/Inline.html#method_evaluateBinaryScalar">
-<abbr title="Drush\Internal\Config\Yaml\Inline">Inline</abbr>::evaluateBinaryScalar</a>() &mdash; <em>Method in class <a href="Drush/Internal/Config/Yaml/Inline.html"><abbr title="Drush\Internal\Config\Yaml\Inline">Inline</abbr></a></em></dt>
                     <dd></dd><dt>$<a href="Drush/Preflight/Preflight.html#property_environment">
 <abbr title="Drush\Preflight\Preflight">Preflight</abbr>#environment</a> &mdash; <em>Property in class <a href="Drush/Preflight/Preflight.html"><abbr title="Drush\Preflight\Preflight">Preflight</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Preflight/Preflight.html#method_environment">
@@ -1571,16 +1560,6 @@ loading drush.yml and drush10.yml, etc.</p></dd><dt><a href="Drush/Config/Enviro
 <abbr title="Drush\Drush">Drush</abbr>::getApplication</a>() &mdash; <em>Method in class <a href="Drush/Drush.html"><abbr title="Drush\Drush">Drush</abbr></a></em></dt>
                     <dd><p>Get the current Symfony Console Application.</p></dd><dt><a href="Drush/Exec/ExecTrait.html#method_getEditor">
 <abbr title="Drush\Exec\ExecTrait">ExecTrait</abbr>::getEditor</a>() &mdash; <em>Method in class <a href="Drush/Exec/ExecTrait.html"><abbr title="Drush\Exec\ExecTrait">ExecTrait</abbr></a></em></dt>
-                    <dd></dd><dt><a href="Drush/Internal/Config/Yaml/Exception/ParseException.html#method_getSnippet">
-<abbr title="Drush\Internal\Config\Yaml\Exception\ParseException">ParseException</abbr>::getSnippet</a>() &mdash; <em>Method in class <a href="Drush/Internal/Config/Yaml/Exception/ParseException.html"><abbr title="Drush\Internal\Config\Yaml\Exception\ParseException">ParseException</abbr></a></em></dt>
-                    <dd><p>Gets the snippet of code near the error.</p></dd><dt><a href="Drush/Internal/Config/Yaml/Exception/ParseException.html#method_getParsedFile">
-<abbr title="Drush\Internal\Config\Yaml\Exception\ParseException">ParseException</abbr>::getParsedFile</a>() &mdash; <em>Method in class <a href="Drush/Internal/Config/Yaml/Exception/ParseException.html"><abbr title="Drush\Internal\Config\Yaml\Exception\ParseException">ParseException</abbr></a></em></dt>
-                    <dd><p>Gets the filename where the error occurred.</p></dd><dt><a href="Drush/Internal/Config/Yaml/Exception/ParseException.html#method_getParsedLine">
-<abbr title="Drush\Internal\Config\Yaml\Exception\ParseException">ParseException</abbr>::getParsedLine</a>() &mdash; <em>Method in class <a href="Drush/Internal/Config/Yaml/Exception/ParseException.html"><abbr title="Drush\Internal\Config\Yaml\Exception\ParseException">ParseException</abbr></a></em></dt>
-                    <dd><p>Gets the line where the error occurred.</p></dd><dt><a href="Drush/Internal/Config/Yaml/Tag/TaggedValue.html#method_getTag">
-<abbr title="Drush\Internal\Config\Yaml\Tag\TaggedValue">TaggedValue</abbr>::getTag</a>() &mdash; <em>Method in class <a href="Drush/Internal/Config/Yaml/Tag/TaggedValue.html"><abbr title="Drush\Internal\Config\Yaml\Tag\TaggedValue">TaggedValue</abbr></a></em></dt>
-                    <dd></dd><dt><a href="Drush/Internal/Config/Yaml/Tag/TaggedValue.html#method_getValue">
-<abbr title="Drush\Internal\Config\Yaml\Tag\TaggedValue">TaggedValue</abbr>::getValue</a>() &mdash; <em>Method in class <a href="Drush/Internal/Config/Yaml/Tag/TaggedValue.html"><abbr title="Drush\Internal\Config\Yaml\Tag\TaggedValue">TaggedValue</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Preflight/Preflight.html#method_getCommandFilePaths">
 <abbr title="Drush\Preflight\Preflight">Preflight</abbr>::getCommandFilePaths</a>() &mdash; <em>Method in class <a href="Drush/Preflight/Preflight.html"><abbr title="Drush\Preflight\Preflight">Preflight</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Preflight/PreflightArgs.html#method_getOptionNameList">
@@ -1856,10 +1835,7 @@ either directories or files.</p></dd><dt><a href="Drush/Config/ConfigLocator.htm
 <abbr title="Drush\Drupal\Migrate\MigrateExecutable">MigrateExecutable</abbr>::initProgressBar</a>() &mdash; <em>Method in class <a href="Drush/Drupal/Migrate/MigrateExecutable.html"><abbr title="Drush\Drupal\Migrate\MigrateExecutable">MigrateExecutable</abbr></a></em></dt>
                     <dd><p>Initializes the command progress bar if possible.</p></dd><dt><a href="Drush/Drush.html#method_input">
 <abbr title="Drush\Drush">Drush</abbr>::input</a>() &mdash; <em>Method in class <a href="Drush/Drush.html"><abbr title="Drush\Drush">Drush</abbr></a></em></dt>
-                    <dd><p>Return the input object</p></dd><dt><a href="Drush/Internal/Config/Yaml/Inline.html"><abbr title="Drush\Internal\Config\Yaml\Inline">Inline</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Internal/Config/Yaml.html">Drush\Internal\Config\Yaml</a></em></dt>
-                    <dd><p>Inline implements a YAML parser/dumper for the YAML inline syntax.</p></dd><dt><a href="Drush/Internal/Config/Yaml/Inline.html#method_isHash">
-<abbr title="Drush\Internal\Config\Yaml\Inline">Inline</abbr>::isHash</a>() &mdash; <em>Method in class <a href="Drush/Internal/Config/Yaml/Inline.html"><abbr title="Drush\Internal\Config\Yaml\Inline">Inline</abbr></a></em></dt>
-                    <dd><p>Check if given array is hash or just normal indexed array.</p></dd><dt><a href="Drush/Preflight/ArgsPreprocessor.html#method_isAliasOrSiteSpec">
+                    <dd><p>Return the input object</p></dd><dt><a href="Drush/Preflight/ArgsPreprocessor.html#method_isAliasOrSiteSpec">
 <abbr title="Drush\Preflight\ArgsPreprocessor">ArgsPreprocessor</abbr>::isAliasOrSiteSpec</a>() &mdash; <em>Method in class <a href="Drush/Preflight/ArgsPreprocessor.html"><abbr title="Drush\Preflight\ArgsPreprocessor">ArgsPreprocessor</abbr></a></em></dt>
                     <dd><p>Determine whether the provided argument is an alias or
 a site specification.</p></dd><dt><a href="Drush/Preflight/LegacyPreflight.html#method_includeCode">
@@ -2286,22 +2262,7 @@ values may participate in configuration injection.</p></dd><dt><a href="Drush/Co
 <abbr title="Drush\Drush">Drush</abbr>::process</a>() &mdash; <em>Method in class <a href="Drush/Drush.html"><abbr title="Drush\Drush">Drush</abbr></a></em></dt>
                     <dd><p>Run a bash fragment locally.</p></dd><dt><a href="Drush/Exec/ExecTrait.html#method_programExists">
 <abbr title="Drush\Exec\ExecTrait">ExecTrait</abbr>::programExists</a>() &mdash; <em>Method in class <a href="Drush/Exec/ExecTrait.html"><abbr title="Drush\Exec\ExecTrait">ExecTrait</abbr></a></em></dt>
-                    <dd></dd><dt><a href="Drush/Internal/Config/Yaml/Exception/ParseException.html"><abbr title="Drush\Internal\Config\Yaml\Exception\ParseException">ParseException</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Internal/Config/Yaml/Exception.html">Drush\Internal\Config\Yaml\Exception</a></em></dt>
-                    <dd><p>Exception class thrown when an error occurs during parsing.</p></dd><dt>$<a href="Drush/Internal/Config/Yaml/Inline.html#property_parsedLineNumber">
-<abbr title="Drush\Internal\Config\Yaml\Inline">Inline</abbr>#parsedLineNumber</a> &mdash; <em>Property in class <a href="Drush/Internal/Config/Yaml/Inline.html"><abbr title="Drush\Internal\Config\Yaml\Inline">Inline</abbr></a></em></dt>
-                    <dd></dd><dt><a href="Drush/Internal/Config/Yaml/Inline.html#method_parse">
-<abbr title="Drush\Internal\Config\Yaml\Inline">Inline</abbr>::parse</a>() &mdash; <em>Method in class <a href="Drush/Internal/Config/Yaml/Inline.html"><abbr title="Drush\Internal\Config\Yaml\Inline">Inline</abbr></a></em></dt>
-                    <dd><p>Converts a YAML string to a PHP value.</p></dd><dt><a href="Drush/Internal/Config/Yaml/Inline.html#method_parseScalar">
-<abbr title="Drush\Internal\Config\Yaml\Inline">Inline</abbr>::parseScalar</a>() &mdash; <em>Method in class <a href="Drush/Internal/Config/Yaml/Inline.html"><abbr title="Drush\Internal\Config\Yaml\Inline">Inline</abbr></a></em></dt>
-                    <dd><p>Parses a YAML scalar.</p></dd><dt><a href="Drush/Internal/Config/Yaml/Parser.html"><abbr title="Drush\Internal\Config\Yaml\Parser">Parser</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Internal/Config/Yaml.html">Drush\Internal\Config\Yaml</a></em></dt>
-                    <dd><p>Parser parses YAML strings to convert them to PHP arrays.</p></dd><dt><a href="Drush/Internal/Config/Yaml/Parser.html#method_parse">
-<abbr title="Drush\Internal\Config\Yaml\Parser">Parser</abbr>::parse</a>() &mdash; <em>Method in class <a href="Drush/Internal/Config/Yaml/Parser.html"><abbr title="Drush\Internal\Config\Yaml\Parser">Parser</abbr></a></em></dt>
-                    <dd><p>Parses a YAML string to a PHP value.</p></dd><dt><a href="Drush/Internal/Config/Yaml/Parser.html#method_pregMatch">
-<abbr title="Drush\Internal\Config\Yaml\Parser">Parser</abbr>::pregMatch</a>() &mdash; <em>Method in class <a href="Drush/Internal/Config/Yaml/Parser.html"><abbr title="Drush\Internal\Config\Yaml\Parser">Parser</abbr></a></em></dt>
-                    <dd><p>A local wrapper for <code>preg_match</code> which will throw a ParseException if there
-is an internal error in the PCRE engine.</p></dd><dt><a href="Drush/Internal/Config/Yaml/Yaml.html#method_parse">
-<abbr title="Drush\Internal\Config\Yaml\Yaml">Yaml</abbr>::parse</a>() &mdash; <em>Method in class <a href="Drush/Internal/Config/Yaml/Yaml.html"><abbr title="Drush\Internal\Config\Yaml\Yaml">Yaml</abbr></a></em></dt>
-                    <dd><p>Parses YAML into a PHP value.</p></dd><dt>$<a href="Drush/Log/DrushLog.html#property_parser">
+                    <dd></dd><dt>$<a href="Drush/Log/DrushLog.html#property_parser">
 <abbr title="Drush\Log\DrushLog">DrushLog</abbr>#parser</a> &mdash; <em>Property in class <a href="Drush/Log/DrushLog.html"><abbr title="Drush\Log\DrushLog">DrushLog</abbr></a></em></dt>
                     <dd><p>The message's placeholders parser.</p></dd><dt><a href="Drush/Preflight/ArgsPreprocessor.html#method_parse">
 <abbr title="Drush\Preflight\ArgsPreprocessor">ArgsPreprocessor</abbr>::parse</a>() &mdash; <em>Method in class <a href="Drush/Preflight/ArgsPreprocessor.html"><abbr title="Drush\Preflight\ArgsPreprocessor">ArgsPreprocessor</abbr></a></em></dt>
@@ -2483,12 +2444,7 @@ command was found, but did not meet requirements.</p></dd><dt>$<a href="Drush/Bo
 <abbr title="Drush\Drush">Drush</abbr>::runner</a>() &mdash; <em>Method in class <a href="Drush/Drush.html"><abbr title="Drush\Drush">Drush</abbr></a></em></dt>
                     <dd><p>Return the Robo runner.</p></dd><dt><a href="Drush/Drush.html#method_redispatchOptions">
 <abbr title="Drush\Drush">Drush</abbr>::redispatchOptions</a>() &mdash; <em>Method in class <a href="Drush/Drush.html"><abbr title="Drush\Drush">Drush</abbr></a></em></dt>
-                    <dd></dd><dt><a href="Drush/Internal/Config/Yaml/Escaper.html#method_requiresDoubleQuoting">
-<abbr title="Drush\Internal\Config\Yaml\Escaper">Escaper</abbr>::requiresDoubleQuoting</a>() &mdash; <em>Method in class <a href="Drush/Internal/Config/Yaml/Escaper.html"><abbr title="Drush\Internal\Config\Yaml\Escaper">Escaper</abbr></a></em></dt>
-                    <dd><p>Determines if a PHP value would require double quoting in YAML.</p></dd><dt><a href="Drush/Internal/Config/Yaml/Escaper.html#method_requiresSingleQuoting">
-<abbr title="Drush\Internal\Config\Yaml\Escaper">Escaper</abbr>::requiresSingleQuoting</a>() &mdash; <em>Method in class <a href="Drush/Internal/Config/Yaml/Escaper.html"><abbr title="Drush\Internal\Config\Yaml\Escaper">Escaper</abbr></a></em></dt>
-                    <dd><p>Determines if a PHP value would require single quoting in YAML.</p></dd><dt><a href="Drush/Internal/Config/Yaml/Exception/RuntimeException.html"><abbr title="Drush\Internal\Config\Yaml\Exception\RuntimeException">RuntimeException</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Internal/Config/Yaml/Exception.html">Drush\Internal\Config\Yaml\Exception</a></em></dt>
-                    <dd><p>Exception class thrown when an error occurs during parsing.</p></dd><dt>$<a href="Drush/Preflight/ArgsPreprocessor.html#property_remapper">
+                    <dd></dd><dt>$<a href="Drush/Preflight/ArgsPreprocessor.html#property_remapper">
 <abbr title="Drush\Preflight\ArgsPreprocessor">ArgsPreprocessor</abbr>#remapper</a> &mdash; <em>Property in class <a href="Drush/Preflight/ArgsPreprocessor.html"><abbr title="Drush\Preflight\ArgsPreprocessor">ArgsPreprocessor</abbr></a></em></dt>
                     <dd></dd><dt>$<a href="Drush/Preflight/ArgsRemapper.html#property_remapOptions">
 <abbr title="Drush\Preflight\ArgsRemapper">ArgsRemapper</abbr>#remapOptions</a> &mdash; <em>Property in class <a href="Drush/Preflight/ArgsRemapper.html"><abbr title="Drush\Preflight\ArgsRemapper">ArgsRemapper</abbr></a></em></dt>
@@ -2774,13 +2730,7 @@ database sanitizer for sql-sync.</p></dd><dt>$<a href="Drush/Drupal/DrupalKernel
 <abbr title="Drush\Drush">Drush</abbr>::simulate</a>() &mdash; <em>Method in class <a href="Drush/Drush.html"><abbr title="Drush\Drush">Drush</abbr></a></em></dt>
                     <dd><p>Return 'true' if we are in simulated mode</p></dd><dt><a href="Drush/Exec/ExecTrait.html#method_startBrowser">
 <abbr title="Drush\Exec\ExecTrait">ExecTrait</abbr>::startBrowser</a>() &mdash; <em>Method in class <a href="Drush/Exec/ExecTrait.html"><abbr title="Drush\Exec\ExecTrait">ExecTrait</abbr></a></em></dt>
-                    <dd><p>Starts a background browser/tab for the current site or a specified URL.</p></dd><dt><a href="Drush/Internal/Config/Yaml/Exception/ParseException.html#method_setSnippet">
-<abbr title="Drush\Internal\Config\Yaml\Exception\ParseException">ParseException</abbr>::setSnippet</a>() &mdash; <em>Method in class <a href="Drush/Internal/Config/Yaml/Exception/ParseException.html"><abbr title="Drush\Internal\Config\Yaml\Exception\ParseException">ParseException</abbr></a></em></dt>
-                    <dd><p>Sets the snippet of code near the error.</p></dd><dt><a href="Drush/Internal/Config/Yaml/Exception/ParseException.html#method_setParsedFile">
-<abbr title="Drush\Internal\Config\Yaml\Exception\ParseException">ParseException</abbr>::setParsedFile</a>() &mdash; <em>Method in class <a href="Drush/Internal/Config/Yaml/Exception/ParseException.html"><abbr title="Drush\Internal\Config\Yaml\Exception\ParseException">ParseException</abbr></a></em></dt>
-                    <dd><p>Sets the filename where the error occurred.</p></dd><dt><a href="Drush/Internal/Config/Yaml/Exception/ParseException.html#method_setParsedLine">
-<abbr title="Drush\Internal\Config\Yaml\Exception\ParseException">ParseException</abbr>::setParsedLine</a>() &mdash; <em>Method in class <a href="Drush/Internal/Config/Yaml/Exception/ParseException.html"><abbr title="Drush\Internal\Config\Yaml\Exception\ParseException">ParseException</abbr></a></em></dt>
-                    <dd><p>Sets the line where the error occurred.</p></dd><dt>$<a href="Drush/Preflight/ArgsPreprocessor.html#property_specParser">
+                    <dd><p>Starts a background browser/tab for the current site or a specified URL.</p></dd><dt>$<a href="Drush/Preflight/ArgsPreprocessor.html#property_specParser">
 <abbr title="Drush\Preflight\ArgsPreprocessor">ArgsPreprocessor</abbr>#specParser</a> &mdash; <em>Property in class <a href="Drush/Preflight/ArgsPreprocessor.html"><abbr title="Drush\Preflight\ArgsPreprocessor">ArgsPreprocessor</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Preflight/ArgsPreprocessor.html#method_setArgsRemapper">
 <abbr title="Drush\Preflight\ArgsPreprocessor">ArgsPreprocessor</abbr>::setArgsRemapper</a>() &mdash; <em>Method in class <a href="Drush/Preflight/ArgsPreprocessor.html"><abbr title="Drush\Preflight\ArgsPreprocessor">ArgsPreprocessor</abbr></a></em></dt>
@@ -2933,7 +2883,6 @@ methods to access the parts.</p></dd><dt><a href="Drush/SiteAlias/SiteSpecParser
 <abbr title="Drush\Drupal\Commands\pm\ThemeCommands">ThemeCommands</abbr>#themeInstaller</a> &mdash; <em>Property in class <a href="Drush/Drupal/Commands/pm/ThemeCommands.html"><abbr title="Drush\Drupal\Commands\pm\ThemeCommands">ThemeCommands</abbr></a></em></dt>
                     <dd></dd><dt>$<a href="Drush/Drupal/FindCommandsCompilerPass.html#property_tagId">
 <abbr title="Drush\Drupal\FindCommandsCompilerPass">FindCommandsCompilerPass</abbr>#tagId</a> &mdash; <em>Property in class <a href="Drush/Drupal/FindCommandsCompilerPass.html"><abbr title="Drush\Drupal\FindCommandsCompilerPass">FindCommandsCompilerPass</abbr></a></em></dt>
-                    <dd></dd><dt><a href="Drush/Internal/Config/Yaml/Tag/TaggedValue.html"><abbr title="Drush\Internal\Config\Yaml\Tag\TaggedValue">TaggedValue</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Internal/Config/Yaml/Tag.html">Drush\Internal\Config\Yaml\Tag</a></em></dt>
                     <dd></dd><dt><a href="Drush/Runtime/TildeExpansionHook.html"><abbr title="Drush\Runtime\TildeExpansionHook">TildeExpansionHook</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Runtime.html">Drush\Runtime</a></em></dt>
                     <dd><p>The TildeExpansionHook is installed as a preValidate hook that runs before
 all commands. Argument or option values containing a leading tilde will be expanded
@@ -2997,13 +2946,7 @@ the finished page.</p></dd><dt><a href="Drush/Commands/core/UpdateDBCommands.htm
                     <dd><p>Overridden version of UpdateKernel adapted to the needs of Drush.</p></dd><dt><a href="Drush/Drush.html#method_unsetContainer">
 <abbr title="Drush\Drush">Drush</abbr>::unsetContainer</a>() &mdash; <em>Method in class <a href="Drush/Drush.html"><abbr title="Drush\Drush">Drush</abbr></a></em></dt>
                     <dd><p>Unsets the global container.</p></dd><dt><a href="Drush/Exceptions/UserAbortException.html"><abbr title="Drush\Exceptions\UserAbortException">UserAbortException</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Exceptions.html">Drush\Exceptions</a></em></dt>
-                    <dd><p>Throw an exception indicating that the user cancelled the operation.</p></dd><dt><a href="Drush/Internal/Config/Yaml/Unescaper.html"><abbr title="Drush\Internal\Config\Yaml\Unescaper">Unescaper</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Internal/Config/Yaml.html">Drush\Internal\Config\Yaml</a></em></dt>
-                    <dd><p>Unescaper encapsulates unescaping rules for single and double-quoted
-YAML strings.</p></dd><dt><a href="Drush/Internal/Config/Yaml/Unescaper.html#method_unescapeSingleQuotedString">
-<abbr title="Drush\Internal\Config\Yaml\Unescaper">Unescaper</abbr>::unescapeSingleQuotedString</a>() &mdash; <em>Method in class <a href="Drush/Internal/Config/Yaml/Unescaper.html"><abbr title="Drush\Internal\Config\Yaml\Unescaper">Unescaper</abbr></a></em></dt>
-                    <dd><p>Unescapes a single quoted string.</p></dd><dt><a href="Drush/Internal/Config/Yaml/Unescaper.html#method_unescapeDoubleQuotedString">
-<abbr title="Drush\Internal\Config\Yaml\Unescaper">Unescaper</abbr>::unescapeDoubleQuotedString</a>() &mdash; <em>Method in class <a href="Drush/Internal/Config/Yaml/Unescaper.html"><abbr title="Drush\Internal\Config\Yaml\Unescaper">Unescaper</abbr></a></em></dt>
-                    <dd><p>Unescapes a double quoted string.</p></dd><dt><a href="Drush/Preflight/PreflightArgs.html#method_uri">
+                    <dd><p>Throw an exception indicating that the user cancelled the operation.</p></dd><dt><a href="Drush/Preflight/PreflightArgs.html#method_uri">
 <abbr title="Drush\Preflight\PreflightArgs">PreflightArgs</abbr>::uri</a>() &mdash; <em>Method in class <a href="Drush/Preflight/PreflightArgs.html"><abbr title="Drush\Preflight\PreflightArgs">PreflightArgs</abbr></a></em></dt>
                     <dd><p>Get the selected uri</p></dd>        </dl><h2 id="letterV">V</h2>
         <dl id="indexV"><dt><a href="Drush/Attributes/ValidateEntityLoad.html"><abbr title="Drush\Attributes\ValidateEntityLoad">ValidateEntityLoad</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Attributes.html">Drush\Attributes</a></em></dt>
@@ -3149,8 +3092,7 @@ need to know that their module is enabled (e.g. image-flush).</p></dd><dt><a hre
                     <dd><p>Disable profiling and save results.</p></dd>        </dl><h2 id="letterY">Y</h2>
         <dl id="indexY"><dt><a href="Drush/Config/Loader/YamlConfigLoader.html"><abbr title="Drush\Config\Loader\YamlConfigLoader">YamlConfigLoader</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Config/Loader.html">Drush\Config\Loader</a></em></dt>
                     <dd><p>Load configuration files, and fill in any property values that
-need to be expanded.</p></dd><dt><a href="Drush/Internal/Config/Yaml/Yaml.html"><abbr title="Drush\Internal\Config\Yaml\Yaml">Yaml</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Internal/Config/Yaml.html">Drush\Internal\Config\Yaml</a></em></dt>
-                    <dd><p>Yaml offers convenience methods to load and dump YAML.</p></dd>        </dl><h2 id="letter_">_</h2>
+need to be expanded.</p></dd>        </dl><h2 id="letter_">_</h2>
         <dl id="index_"><dt><a href="Drush/Attributes/Bootstrap.html#method___construct">
 <abbr title="Drush\Attributes\Bootstrap">Bootstrap</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/Attributes/Bootstrap.html"><abbr title="Drush\Attributes\Bootstrap">Bootstrap</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Attributes/Kernel.html#method___construct">
@@ -3259,12 +3201,6 @@ need to be expanded.</p></dd><dt><a href="Drush/Internal/Config/Yaml/Yaml.html">
 <abbr title="Drush\Exceptions\CommandFailedException">CommandFailedException</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/Exceptions/CommandFailedException.html"><abbr title="Drush\Exceptions\CommandFailedException">CommandFailedException</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Exceptions/UserAbortException.html#method___construct">
 <abbr title="Drush\Exceptions\UserAbortException">UserAbortException</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/Exceptions/UserAbortException.html"><abbr title="Drush\Exceptions\UserAbortException">UserAbortException</abbr></a></em></dt>
-                    <dd></dd><dt><a href="Drush/Internal/Config/Yaml/Exception/ParseException.html#method___construct">
-<abbr title="Drush\Internal\Config\Yaml\Exception\ParseException">ParseException</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/Internal/Config/Yaml/Exception/ParseException.html"><abbr title="Drush\Internal\Config\Yaml\Exception\ParseException">ParseException</abbr></a></em></dt>
-                    <dd></dd><dt><a href="Drush/Internal/Config/Yaml/Parser.html#method___construct">
-<abbr title="Drush\Internal\Config\Yaml\Parser">Parser</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/Internal/Config/Yaml/Parser.html"><abbr title="Drush\Internal\Config\Yaml\Parser">Parser</abbr></a></em></dt>
-                    <dd></dd><dt><a href="Drush/Internal/Config/Yaml/Tag/TaggedValue.html#method___construct">
-<abbr title="Drush\Internal\Config\Yaml\Tag\TaggedValue">TaggedValue</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/Internal/Config/Yaml/Tag/TaggedValue.html"><abbr title="Drush\Internal\Config\Yaml\Tag\TaggedValue">TaggedValue</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Log/DrushLog.html#method___construct">
 <abbr title="Drush\Log\DrushLog">DrushLog</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/Log/DrushLog.html"><abbr title="Drush\Log\DrushLog">DrushLog</abbr></a></em></dt>
                     <dd><p>Constructs a DrushLog object.</p></dd><dt><a href="Drush/Log/Logger.html#method___construct">
