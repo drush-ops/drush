@@ -11,7 +11,7 @@ use Webmozart\PathUtil\Path;
  * @group commands
  * @group config
  */
-class ConfigCase extends CommandUnishTestCase
+class ConfigTest extends CommandUnishTestCase
 {
     use TestModuleHelperTrait;
 

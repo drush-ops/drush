@@ -11,7 +11,7 @@ use Webmozart\PathUtil\Path;
  * @group slow
  *  @group pm
  */
-class PmEnLocaleImportCase extends CommandUnishTestCase
+class PmEnLocaleImportTest extends CommandUnishTestCase
 {
 
     public function testBatchImportTranslations()

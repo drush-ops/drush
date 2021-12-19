@@ -9,7 +9,7 @@ use Webmozart\PathUtil\Path;
  * @group slow
  * @group config
  */
-class ConfigPullCase extends CommandUnishTestCase
+class ConfigPullTest extends CommandUnishTestCase
 {
 
     public function setup(): void
