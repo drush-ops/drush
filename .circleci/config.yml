@@ -130,6 +130,10 @@ jobs:
       - run: composer unit -- --log-junit /tmp/results/unit.junit.xml
       - run: composer functional -- --log-junit /tmp/results/functional.junit.xml
       - run: composer integration -- --log-junit /tmp/results/integration.junit.xml
+      - store_test_results:
+        path: /tmp/results
+      - store_artifacts:
+        path: /tmp/results
 
 workflows:
   version: 2
