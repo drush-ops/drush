@@ -1,0 +1,36 @@
+# https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+#
+# We are always looking for more maintainers! Please submit a couple PRs in an
+# area and then submit a PR to add yourself to this file :).
+#
+
+# These owners will be the default owners for everything in
+# the repo. Unless a later match takes precedence,
+# @global-owner1 and @global-owner2 will be requested for
+# review when someone opens a pull request.
+*       @weitzman @greg-1-anderson
+
+/src/Commands/Config/ @bircher
+/src/Drupal/Commands/config/ @bircher
+
+/src/Drupal/Commands/core/MigrateRunnerCommands.php @claudiu-cristea
+/src/Drupal/Migrate/ @claudiu-cristea
+
+/src/Drupal/Commands/field/ @DieterHolvoet
+
+/src/Commands/core/RunServerCommands.php @grugnog
+
+/includes/batch.inc @jonhattan
+/src/Drupal/Commands/core/BatchCommands.php @jonhattan
+
+/src/Drupal/Commands/core/CLICommands.php @damiankloip
+/src/Psysh @damiankloip
+
+/src/Commands/core/UpdateDBCommands.php @pfrenssen
+
+/src/Drupal/Commands/core/LocaleCommands.php @Sutharsan
+
+/src/Drupal/Commands/core/QueueCommands.php @davereid
+
+
