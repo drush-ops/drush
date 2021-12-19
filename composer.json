@@ -73,8 +73,7 @@
   },
   "autoload": {
     "psr-4": {
-      "Drush\\":            "src/",
-      "Drush\\Internal\\":  "src/internal-forks"
+      "Drush\\":            "src/"
     }
   },
   "autoload-dev": {

@@ -1,7 +1,7 @@
 <?php
 namespace Drush\SiteAlias\Util;
 
-use Drush\Internal\Config\Yaml\Yaml;
+use Symfony\Component\Yaml\Yaml;
 use Consolidation\SiteAlias\DataFileLoaderInterface;
 
 class InternalYamlDataFileLoader implements DataFileLoaderInterface

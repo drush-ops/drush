@@ -4,7 +4,6 @@
     <file>src</file>
     <file>examples</file>
     <file>tests</file>
-    <exclude-pattern>src/internal-forks</exclude-pattern>
     <rule ref="PSR2"/>
 
 <!--    Keep us sane-->
