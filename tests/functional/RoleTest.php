@@ -8,7 +8,7 @@ use Webmozart\PathUtil\Path;
  *  @group slow
  *  @group commands
  */
-class RoleCase extends CommandUnishTestCase
+class RoleTest extends CommandUnishTestCase
 {
     use TestModuleHelperTrait;
 

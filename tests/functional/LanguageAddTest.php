@@ -10,7 +10,7 @@ use Webmozart\PathUtil\Path;
  *  @group slow
  *  @group pm
  */
-class LanguageAddCase extends CommandUnishTestCase
+class LanguageAddTest extends CommandUnishTestCase
 {
     protected function setup(): void
     {
