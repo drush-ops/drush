@@ -1,6 +1,6 @@
 <?php
 
-namespace Drush\Drupal\Commands\core;
+namespace Drush\Drupal\Commands\field;
 
 use Consolidation\OutputFormatters\Options\FormatterOptions;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;

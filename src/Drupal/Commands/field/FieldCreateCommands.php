@@ -1,6 +1,6 @@
 <?php
 
-namespace Drush\Drupal\Commands\core;
+namespace Drush\Drupal\Commands\field;
 
 use Consolidation\AnnotatedCommand\Events\CustomEventAwareInterface;
 use Consolidation\AnnotatedCommand\Events\CustomEventAwareTrait;
@@ -23,6 +23,9 @@ use Drupal\field\FieldStorageConfigInterface;
 use Drush\Commands\DrushCommands;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Question\ChoiceQuestion;
+
+use function dt;
+use function t;
 
 class FieldCreateCommands extends DrushCommands implements CustomEventAwareInterface
 {

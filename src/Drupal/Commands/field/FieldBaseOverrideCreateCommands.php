@@ -1,6 +1,6 @@
 <?php
 
-namespace Drush\Drupal\Commands\core;
+namespace Drush\Drupal\Commands\field;
 
 use Drupal\Core\Entity\EntityFieldManagerInterface;
 use Drupal\Core\Entity\EntityTypeBundleInfoInterface;
@@ -10,6 +10,9 @@ use Drupal\Core\Field\Entity\BaseFieldOverride;
 use Drush\Commands\DrushCommands;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
+
+use function dt;
+use function t;
 
 class FieldBaseOverrideCreateCommands extends DrushCommands
 {
@@ -37,7 +40,7 @@ class FieldBaseOverrideCreateCommands extends DrushCommands
      * Create a new base field override
      *
      * @command field:base-override-create
-     * @aliases field-base-override-create,base-field-override-create,bfoc
+     * @aliases bfoc
      *
      * @param string $entityType
      *      The machine name of the entity type

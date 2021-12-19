@@ -1,13 +1,14 @@
 <?php
 
-namespace Drush\Drupal\Commands\core;
+namespace Drush\Drupal\Commands\field;
 
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
+use Drupal\Core\Entity\EntityFieldManagerInterface;
 use Drupal\Core\Entity\EntityTypeBundleInfoInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drush\Commands\DrushCommands;
 
-class FieldInfoCommands extends DrushCommands
+class FieldBaseInfoCommands extends DrushCommands
 {
     use EntityTypeBundleAskTrait;
     use EntityTypeBundleValidationTrait;
@@ -17,25 +18,27 @@ class FieldInfoCommands extends DrushCommands
     protected $entityTypeManager;
     /** @var EntityTypeBundleInfoInterface */
     protected $entityTypeBundleInfo;
+    /** @var EntityFieldManagerInterface */
+    protected $entityFieldManager;
 
     public function __construct(
         EntityTypeManagerInterface $entityTypeManager,
-        EntityTypeBundleInfoInterface $entityTypeBundleInfo
+        EntityTypeBundleInfoInterface $entityTypeBundleInfo,
+        EntityFieldManagerInterface $entityFieldManager
     ) {
         $this->entityTypeManager = $entityTypeManager;
         $this->entityTypeBundleInfo = $entityTypeBundleInfo;
+        $this->entityFieldManager = $entityFieldManager;
     }
 
     /**
-     * List all configurable fields of an entity bundle
+     * List all base fields of an entity type
      *
-     * @command field:info
-     * @aliases field-info,fi
+     * @command field:base-info
+     * @aliases field-base-info,fbi
      *
      * @param string $entityType
      *      The machine name of the entity type
-     * @param string $bundle
-     *      The machine name of the bundle
      *
      * @option show-machine-names
      *      Show machine names instead of labels in option lists.
@@ -58,29 +61,21 @@ class FieldInfoCommands extends DrushCommands
      * @filter-default-field field_name
      * @table-style default
      *
-     * @usage drush field-info taxonomy_term tag
-     *      List all fields.
-     * @usage drush field:info
-     *      List all fields and fill in the remaining information through prompts.
+     * @usage drush field:base-info taxonomy_term
+     *      List all base fields.
+     * @usage drush field:base-info
+     *      List all base fields and fill in the remaining information through prompts.
      *
      * @version 11.0
      */
-    public function info(?string $entityType = null, ?string $bundle = null, array $options = [
+    public function info(?string $entityType = null, array $options = [
         'format' => 'table',
     ]): RowsOfFields
     {
         $this->input->setArgument('entityType', $entityType = $entityType ?? $this->askEntityType());
         $this->validateEntityType($entityType);
 
-        $this->input->setArgument('bundle', $bundle = $bundle ?? $this->askBundle());
-        $this->validateBundle($entityType, $bundle);
-
-        $fieldDefinitions = $this->entityTypeManager
-            ->getStorage('field_config')
-            ->loadByProperties([
-                'entity_type' => $entityType,
-                'bundle' => $bundle,
-            ]);
+        $fieldDefinitions = $this->entityFieldManager->getBaseFieldDefinitions($entityType);
 
         return $this->getRowsOfFieldsByFieldDefinitions($fieldDefinitions);
     }

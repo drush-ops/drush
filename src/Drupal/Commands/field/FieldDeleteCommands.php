@@ -1,6 +1,6 @@
 <?php
 
-namespace Drush\Drupal\Commands\core;
+namespace Drush\Drupal\Commands\field;
 
 use Drupal\Core\Entity\EntityTypeBundleInfo;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
@@ -8,6 +8,11 @@ use Drupal\field\Entity\FieldConfig;
 use Drupal\field\FieldConfigInterface;
 use Drush\Commands\DrushCommands;
 use Symfony\Component\Console\Input\InputOption;
+
+use function count;
+use function dt;
+use function field_purge_batch;
+use function t;
 
 class FieldDeleteCommands extends DrushCommands
 {
