@@ -109,7 +109,7 @@ jobs:
 
   # PHP 8 test with Drupal tip
   #   Determines whether a newer version of a dependency has broken Drush.
-  test_81_drupal93_highest:
+  test_81_drupal94_highest:
     <<: *defaults
     docker:
 #      @todo After release change to wodby/php:latest
@@ -123,7 +123,7 @@ jobs:
       - run: cp .docker/zz-php.ini /usr/local/etc/php/conf.d/
       - run: php --version
       - run: composer config platform.php --unset
-      - run: composer require --dev drupal/core-recommended:9.3.x-dev --no-update
+      - run: composer require --dev drupal/core-recommended:9.4.x-dev --no-update
       - run: composer update
       - run: mkdir -p /tmp/results
       - run: composer lint
@@ -145,7 +145,7 @@ workflows:
           <<: *requires
       - test_74_drupal9_mysql:
           <<: *requires
-      - test_81_drupal93_highest:
+      - test_81_drupal94_highest:
           <<: *requires
       - test_74_drupal9_sqlite:
           <<: *requires
