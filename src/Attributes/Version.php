@@ -10,7 +10,7 @@ class Version
 {
     /**
      * @param $version
-     *   The version when this command was introduced.
+     *  The version when this command was introduced.
      */
     public function __construct(
         public string $version,
