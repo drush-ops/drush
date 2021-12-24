@@ -4,24 +4,22 @@ namespace Drush\Attributes;
 
 use Attribute;
 use Consolidation\AnnotatedCommand\Parser\CommandInfo;
-use Drush\Boot\DrupalBootLevels;
-use JetBrains\PhpStorm\ExpectedValues;
 
 #[Attribute(Attribute::TARGET_METHOD)]
-class Bootstrap
+class Version
 {
     /**
-     * @param $level
-     *   The level to bootstrap to.
+     * @param $version
+     *  The version when this command was introduced.
      */
     public function __construct(
-        #[ExpectedValues(valuesFromClass: DrupalBootLevels::class)] public string $level,
+        public string $version,
     ) {
     }
 
     public static function handle(\ReflectionAttribute $attribute, CommandInfo $commandInfo)
     {
         $args = $attribute->getArguments();
-        $commandInfo->addAnnotation('bootstrap', $args['level']);
+        $commandInfo->addAnnotation('version', $args['version']);
     }
 }
