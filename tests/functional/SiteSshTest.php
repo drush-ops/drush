@@ -8,7 +8,7 @@ namespace Unish;
  *
  * @group commands
  */
-class SiteSshCase extends CommandUnishTestCase
+class SiteSshTest extends CommandUnishTestCase
 {
 
     /**

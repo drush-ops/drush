@@ -16,6 +16,7 @@ class ExampleAttributesCommands extends DrushCommands
     #[CLI\Argument(name: 'two', description: 'The other parameter')]
     #[CLI\Option(name: 'flip', description: 'Whether or not the second parameter should come first in the result.')]
     #[CLI\Usage(name: 'bet alpha --flip', description: 'Concatenate "alpha" and "bet".')]
+    #[CLI\Version(version: '11.0')]
     public function myEcho($one, $two = '', array $options = ['flip' => false])
     {
         if ($options['flip']) {

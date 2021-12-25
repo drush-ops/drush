@@ -17,4 +17,4 @@ composer_version: ""
 disable_settings_management: true
 web_environment:
   - UNISH_DB_URL=mysql://root:root@db
-  - PHP_EXTENSIONS_DISABLE=uploadprogress
+  - DRUSH_OPTIONS_URI=$DDEV_PRIMARY_URL

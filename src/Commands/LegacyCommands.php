@@ -130,18 +130,6 @@ class LegacyCommands extends DrushCommands
     }
 
     /**
-     * field-create has been removed. Please try `generate field` command.
-     *
-     * @command field:create
-     * @aliases field-create
-     * @hidden
-     * @obsolete
-     */
-    public function field()
-    {
-    }
-
-    /**
      * core:execute has been removed. Please try `site:ssh` command.
      *
      * @command core:execute

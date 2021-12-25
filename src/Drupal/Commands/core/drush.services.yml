@@ -21,6 +21,12 @@ services:
       arguments: ['@entity_type.manager']
       tags:
         -  { name: drush.command }
+  link.hooks:
+    class: \Drush\Drupal\Commands\core\LinkHooks
+    arguments:
+      - '@module_handler'
+    tags:
+      -  { name: drush.command }
   image.commands:
     class: \Drush\Drupal\Commands\core\ImageCommands
     tags:

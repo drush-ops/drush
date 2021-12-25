@@ -12,7 +12,6 @@ use Symfony\Component\Console\Input\Input;
  */
 class ValidatorsCommands
 {
-
     /**
      * Validate that passed entity names are valid.
      * @see \Drush\Commands\core\ViewsCommands::execute for an example.
