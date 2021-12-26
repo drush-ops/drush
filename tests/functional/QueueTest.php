@@ -7,7 +7,7 @@ use Webmozart\PathUtil\Path;
 /**
  * @group commands
  */
-class QueueCase extends CommandUnishTestCase
+class QueueTest extends CommandUnishTestCase
 {
     use TestModuleHelperTrait;
 

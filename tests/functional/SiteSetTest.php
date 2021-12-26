@@ -6,7 +6,7 @@ namespace Unish;
  * @group base
  * @group slow
  */
-class SiteSetCommandCase extends CommandUnishTestCase
+class SiteSetTest extends CommandUnishTestCase
 {
 
     /**

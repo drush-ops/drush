@@ -1,17 +1,14 @@
 <?php
 namespace Drush\SiteAlias;
 
-use Consolidation\SiteProcess\ProcessManager as ConsolidationProcessManager;
-
-use Consolidation\SiteProcess\Util\Escape;
-use Psr\Log\LoggerInterface;
 use Consolidation\SiteAlias\SiteAliasInterface;
-use Consolidation\SiteProcess\Factory\TransportFactoryInterface;
-use Symfony\Component\Process\Process;
+use Consolidation\SiteProcess\ProcessBase;
+use Consolidation\SiteProcess\ProcessManager as ConsolidationProcessManager;
+use Consolidation\SiteProcess\SiteProcess;
 use Drush\Drush;
 use Drush\Style\DrushStyle;
-use Consolidation\SiteProcess\ProcessBase;
-use Consolidation\SiteProcess\SiteProcess;
+use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Process\Process;
 use Webmozart\PathUtil\Path;
 
 /**
@@ -150,14 +147,9 @@ class ProcessManager extends ConsolidationProcessManager
     {
         $process->setSimulated(Drush::simulate());
         $process->setVerbose(Drush::verbose());
-        // Handle BC method of making env variables inherited. The default in
-        // later versions is always inherit and this method disappears.
-        // @todo Remove this if() block once Symfony 3 support is dropped.
-        if (method_exists($process, 'inheritEnvironmentVariables')) {
-            set_error_handler(null);
-            $process->inheritEnvironmentVariables();
-            restore_error_handler();
-        }
+        // Don't let sub-process inherit the verbosity of its parent.
+        putenv('SHELL_VERBOSITY=' . OutputInterface::VERBOSITY_NORMAL);
+        $_ENV['SHELL_VERBOSITY'] = OutputInterface::VERBOSITY_NORMAL;
         $process->setLogger(Drush::logger());
         $process->setRealtimeOutput(new DrushStyle(Drush::input(), Drush::output()));
         $process->setTimeout(Drush::getTimeout());

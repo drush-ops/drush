@@ -7,7 +7,7 @@ namespace Unish;
  *
  * @group commands
  */
-class CacheCommandCase extends UnishIntegrationTestCase
+class CacheCommandTest extends UnishIntegrationTestCase
 {
     public function testCacheGet()
     {

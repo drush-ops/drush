@@ -66,9 +66,6 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
         ];
         $status_options = array_merge(Drush::redispatchOptions(), $status_options);
 
-        // Since output needs to be checked, this option must be removed
-        unset($status_options['quiet']);
-
         $process = $this->processManager()->drush($this->siteAliasManager()->getSelf(), 'updatedb:status', [], $status_options);
         $process->mustRun();
         if ($output = $process->getOutput()) {

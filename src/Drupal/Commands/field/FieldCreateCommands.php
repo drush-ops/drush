@@ -1,6 +1,6 @@
 <?php
 
-namespace Drush\Drupal\Commands\core;
+namespace Drush\Drupal\Commands\field;
 
 use Consolidation\AnnotatedCommand\Events\CustomEventAwareInterface;
 use Consolidation\AnnotatedCommand\Events\CustomEventAwareTrait;
@@ -24,9 +24,14 @@ use Drush\Commands\DrushCommands;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Question\ChoiceQuestion;
 
+use function dt;
+use function t;
+
 class FieldCreateCommands extends DrushCommands implements CustomEventAwareInterface
 {
+    use EntityTypeBundleAskTrait;
     use CustomEventAwareTrait;
+    use EntityTypeBundleValidationTrait;
 
     /** @var FieldTypePluginManagerInterface */
     protected $fieldTypePluginManager;
@@ -118,7 +123,7 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
      * @see \Drupal\field_ui\Form\FieldConfigEditForm
      * @see \Drupal\field_ui\Form\FieldStorageConfigEditForm
      */
-    public function create(string $entityType, ?string $bundle = null, array $options = [
+    public function create(?string $entityType = null, ?string $bundle = null, array $options = [
         'field-name' => InputOption::VALUE_REQUIRED,
         'field-label' => InputOption::VALUE_REQUIRED,
         'field-description' => InputOption::VALUE_OPTIONAL,
@@ -134,6 +139,7 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
         'existing' => false,
     ]): void
     {
+        $this->input->setArgument('entityType', $entityType = $entityType ?? $this->askEntityType());
         $this->validateEntityType($entityType);
 
         $this->input->setArgument('bundle', $bundle = $bundle ?? $this->askBundle());
@@ -214,41 +220,6 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
         $this->createFieldDisplay('view');
 
         $this->logResult($field);
-    }
-
-    protected function validateEntityType(string $entityTypeId): void
-    {
-        if (!$this->entityTypeManager->hasDefinition($entityTypeId)) {
-            throw new \InvalidArgumentException(
-                t("Entity type with id ':entityType' does not exist.", [':entityType' => $entityTypeId])
-            );
-        }
-    }
-
-    protected function validateBundle(string $entityTypeId, string $bundle): void
-    {
-        if (!$entityTypeDefinition = $this->entityTypeManager->getDefinition($entityTypeId)) {
-            return;
-        }
-
-        $bundleEntityType = $entityTypeDefinition->getBundleEntityType();
-
-        if ($bundleEntityType === null && $bundle === $entityTypeId) {
-            return;
-        }
-
-        $bundleDefinition = $this->entityTypeManager
-            ->getStorage($bundleEntityType)
-            ->load($bundle);
-
-        if (!$bundleDefinition) {
-            throw new \InvalidArgumentException(
-                t("Bundle ':bundle' does not exist on entity type with id ':entityType'.", [
-                    ':bundle' => $bundle,
-                    ':entityType' => $entityTypeId,
-                ])
-            );
-        }
     }
 
     protected function askExistingFieldName(): ?string
@@ -359,44 +330,6 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
         }
 
         return $this->io()->confirm('Translatable', false);
-    }
-
-    protected function askBundle(): ?string
-    {
-        $entityTypeId = $this->input->getArgument('entityType');
-        $entityTypeDefinition = $this->entityTypeManager->getDefinition($entityTypeId);
-        $bundleEntityType = $entityTypeDefinition->getBundleEntityType();
-        $bundleInfo = $this->entityTypeBundleInfo->getBundleInfo($entityTypeId);
-        $choices = [];
-
-        // If the entity type has one fixed bundle (eg. user), return it.
-        if ($bundleEntityType === null && count($bundleInfo) === 1) {
-            return key($bundleInfo);
-        }
-
-        // If the entity type doesn't have bundles, return null
-        // TODO Find an example
-        if ($bundleEntityType === null && count($bundleInfo) === 0) {
-            return null;
-        }
-
-        // If the entity type can have multiple bundles but it doesn't have any, throw an error
-        if ($bundleEntityType !== null && count($bundleInfo) === 0) {
-            throw new \InvalidArgumentException(
-                t("Entity type with id ':entityType' does not have any bundles.", [':entityType' => $entityTypeId])
-            );
-        }
-
-        foreach ($bundleInfo as $bundle => $data) {
-            $label = $this->input->getOption('show-machine-names') ? $bundle : $data['label'];
-            $choices[$bundle] = $label;
-        }
-
-        if (!$this->input->isInteractive() || !$answer = $this->io()->choice('Bundle', $choices)) {
-            throw new \InvalidArgumentException(t('The bundle argument is required.'));
-        }
-
-        return $answer;
     }
 
     protected function askCardinality(): int

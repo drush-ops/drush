@@ -3,77 +3,92 @@
 namespace Drush\Commands\core;
 
 use Consolidation\AnnotatedCommand\AnnotatedCommand;
+use Consolidation\AnnotatedCommand\AnnotationData;
 use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
+use Drush\Boot\AutoloaderAwareInterface;
+use Drush\Boot\AutoloaderAwareTrait;
 use Drush\Commands\DrushCommands;
+use Drush\Commands\generate\ApplicationFactory;
 use Drush\Commands\help\HelpCLIFormatter;
 use Drush\Commands\help\ListCommands;
 use Drush\Drush;
 use Drush\SiteAlias\SiteAliasManagerAwareInterface;
+use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Yaml\Yaml;
 use Webmozart\PathUtil\Path;
 
-class MkCommands extends DrushCommands implements SiteAliasManagerAwareInterface
+class MkCommands extends DrushCommands implements SiteAliasManagerAwareInterface, AutoloaderAwareInterface
 {
     use SiteAliasManagerAwareTrait;
+    use AutoloaderAwareTrait;
 
     /**
-     * Build a Markdown document for each Drush command thats available on a site.
+     * Build a Markdown document for each Drush command/generator that is available on a site.
      *
      * This command is an early step when building the www.drush.org static site. Adapt it to build a similar site listing the commands that are available on your site. Also see Drush's [Github Actions workflow](https://github.com/drush-ops/drush/blob/10.x/.github/workflows/main.yml).
      *
-     * @option destination The path, relative to 'docs' dir, where command docs should be written.
-     *
      * @command mk:docs
      * @bootstrap max
-     * @usage drush mk:docs --destination=commands
-     *   Build many .md files in the docs/commands directory.
+     * @usage drush mk:docs
+     *   Build many .md files in the docs/commands and docs/generators directories.
      */
-    public function docs($options = ['destination' => self::REQ])
+    public function docs()
     {
         $dir_root = Drush::bootstrapManager()->getComposerRoot();
-        $dir_commands = Path::join($dir_root, 'docs', $options['destination']);
-        $this->prepare($dir_commands);
+        $destination = 'commands';
+        $destination_path = Path::join($dir_root, 'docs', $destination);
+        $this->prepare($destination_path);
 
         $application = Drush::getApplication();
         $all = $application->all();
         $namespaced = ListCommands::categorize($all);
+        [$nav_commands, $pages_commands] = $this->writeContentFilesAndAddToNav($namespaced, $destination, $dir_root, $destination_path);
+        $this->writeAllMd($pages_commands, $destination_path);
 
-        // Write content files
-        $pages = $pages_all = $nav = [];
-        foreach ($namespaced as $category => $commands) {
-            foreach ($commands as $command) {
-                // Special case a single page
-                if (empty($pages_all)) {
-                    $pages['all'] = $options['destination'] . '/all.md';
-                }
+        $destination = 'generators';
+        $destination_path = Path::join($dir_root, 'docs', $destination);
+        $this->prepare($destination_path);
+        $factory = new ApplicationFactory($this->logger(), $this->getConfig());
+        $factory->setAutoloader($this->autoloader());
+        $application_generate = $factory->create();
+        $all = $this->createAnnotatedCommands($application_generate, Drush::getApplication());
+        $namespaced = ListCommands::categorize($all);
+        [$nav_generators, $pages_generators] = $this->writeContentFilesAndAddToNav($namespaced, $destination, $dir_root, $destination_path);
+        $this->writeAllMd($pages_generators, $destination_path);
 
-                if ($command instanceof AnnotatedCommand) {
-                    $command->optionsHook();
-                }
-                $body = self::appendPreamble($command, $dir_root);
-                $body .= self::appendUsages($command);
-                $body .= self::appendArguments($command);
-                $body .= self::appendOptions($command);
-                if ($command instanceof AnnotatedCommand) {
-                    $body .= self::appendTopics($command, $dir_commands);
-                }
-                $body .= self::appendAliases($command);
-                $body .= self::appendPostAmble();
-                $filename = str_replace(':', '_', $command->getName())  . '.md';
-                $pages[$command->getName()] = $options['destination'] . "/$filename";
-                file_put_contents(Path::join($dir_commands, $filename), $body);
+        $this->writeYml($nav_commands, $nav_generators, $dir_root);
+    }
+
+    public function createAnnotatedCommands(Application $application_generate, Application $application_drush): array
+    {
+        $application = new Application('temp');
+        $definition = $application_drush->get('generate')->getDefinition();
+        foreach ($application_generate->all() as $command) {
+            $annotated = new AnnotatedCommand($command->getName());
+            foreach (['answer', 'destination', 'dry-run'] as $key) {
+                $options[$key] = $definition->getOption($key);
             }
-            $this->logger()->info('Found {pages} pages in {cat}', ['pages' => count($pages), 'cat' => $category]);
-            $nav[] = [$category => $pages];
-            $pages_all = array_merge($pages_all, $pages);
-            unset($pages);
+            $annotated->addOptions($options);
+            $annotated->setDescription($command->getDescription());
+            $annotated->setHelp($command->getHelp());
+            $annotated->setAliases($command->getAliases());
+            $annotated->setTopics(['docs:generators']);
+            $values = [];
+            if (in_array($command->getName(), ['entity:bundle-class'])) {
+                $values['version'] = '11.0';
+            }
+            $annotated->setAnnotationData(new AnnotationData($values));
+            // Hack, until we have https://github.com/consolidation/annotated-command/pull/247
+            $method = new \ReflectionMethod($annotated, 'addUsageOrExample');
+            $method->setAccessible(true);
+            $method->invoke($annotated, 'drush generate ' . $command->getName(), $command->getDescription());
+            $commands[$command->getName()] = $annotated;
         }
-
-        $this->writeYml($nav, $dir_root);
-        $this->writeAllMd($pages_all, $dir_commands);
+        unset($commands['list'], $commands['help']);
+        return $commands;
     }
 
     protected static function appendPostAmble(): string
@@ -159,9 +174,9 @@ EOT;
 
     protected static function appendUsages(AnnotatedCommand $command): string
     {
-        if ($examples = $command->getExampleUsages()) {
+        if ($usages = $command->getExampleUsages()) {
             $body = "#### Examples\n\n";
-            foreach ($examples as $key => $value) {
+            foreach ($usages as $key => $value) {
                 $body .= '- <code>' . $key . '</code>. ' . self::cliTextToMarkdown($value) . "\n";
             }
             return "$body\n";
@@ -172,9 +187,10 @@ EOT;
     protected static function appendPreamble(AnnotatedCommand $command, $root): string
     {
         $path = Path::makeRelative($command->getAnnotationData()->get('_path'), $root);
+        $edit_url = $path ? "https://github.com/drush-ops/drush/blob/11.x/$path" : '';
         $body = <<<EOT
 ---
-edit_url: https://github.com/drush-ops/drush/blob/10.x/$path
+edit_url: $edit_url
 command: {$command->getName()}
 ---
 
@@ -192,10 +208,11 @@ EOT;
         return $body;
     }
 
-    protected function writeYml(array $nav, string $dest): void
+    protected function writeYml(array $nav_commands, $nav_generators, string $dest): void
     {
         $base = Yaml::parseFile(Path::join($dest, 'mkdocs_base.yml'));
-        $base['nav'][] = ['Commands' => $nav];
+        $base['nav'][] = ['Commands' => $nav_commands];
+        $base['nav'][] = ['Generators' => $nav_generators];
         $yaml_nav = Yaml::dump($base, PHP_INT_MAX, 2);
 
         // Remove invalid quotes that Symfony YAML adds/needs. https://github.com/symfony/symfony/blob/6.1/src/Symfony/Component/Yaml/Inline.php#L624
@@ -205,7 +222,7 @@ EOT;
         file_put_contents(Path::join($dest, 'mkdocs.yml'), $yaml_nav);
     }
 
-    protected function writeAllMd(array $pages_all, string $dest): void
+    protected function writeAllMd(array $pages_all, string $destination_path): void
     {
         unset($pages_all['all']);
         foreach ($pages_all as $name => $page) {
@@ -220,7 +237,7 @@ EOT;
     Press the ++slash++ key to Search for a command. Or use your browser's *Find in Page* feature.
 
 EOT;
-        file_put_contents(Path::join($dest, 'all.md'), $preamble . implode("\n", $items));
+        file_put_contents(Path::join($destination_path, 'all.md'), $preamble . implode("\n", $items));
     }
 
     /**
@@ -286,5 +303,50 @@ EOT;
     public static function cliTextToMarkdown(string $text): string
     {
         return str_replace(['<info>', '</info>'], '*', $text);
+    }
+
+    /**
+     * @param array $namespaced
+     * @param string $destination
+     * @param string $dir_root
+     * @param string $destination_path
+     *
+     * @return array
+     */
+    public function writeContentFilesAndAddToNav(array $namespaced, string $destination, string $dir_root, string $destination_path): array
+    {
+        // Write content files and add to nav.
+        $pages = $pages_all = $nav = [];
+        foreach ($namespaced as $category => $commands) {
+            foreach ($commands as $command) {
+                // Special case a single page
+                if (empty($pages_all)) {
+                    $pages['all'] = $destination . '/all.md';
+                }
+
+                if ($command instanceof AnnotatedCommand) {
+                    $command->optionsHook();
+                }
+                $body = self::appendPreamble($command, $dir_root);
+                $body .= self::appendUsages($command);
+                $body .= self::appendArguments($command);
+                $body .= self::appendOptions($command);
+                if ($command instanceof AnnotatedCommand) {
+                    $body .= self::appendTopics($command, $destination_path);
+                }
+                $body .= self::appendAliases($command);
+                if ($destination == 'commands') {
+                    $body .= self::appendPostAmble();
+                }
+                $filename = str_replace(':', '_', $command->getName()) . '.md';
+                $pages[$command->getName()] = $destination . "/$filename";
+                file_put_contents(Path::join($destination_path, $filename), $body);
+            }
+            $this->logger()->info('Found {pages} pages in {cat}', ['pages' => count($pages), 'cat' => $category]);
+            $nav[] = [$category => $pages];
+            $pages_all = array_merge($pages_all, $pages);
+            unset($pages);
+        }
+        return [$nav, $pages_all];
     }
 }

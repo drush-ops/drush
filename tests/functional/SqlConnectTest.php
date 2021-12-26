@@ -10,7 +10,7 @@ namespace Unish;
  * @group commands
  * @group sql
  */
-class SqlConnectCase extends CommandUnishTestCase
+class SqlConnectTest extends CommandUnishTestCase
 {
 
     public function testSqlConnect()

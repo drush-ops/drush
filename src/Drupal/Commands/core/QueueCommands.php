@@ -4,6 +4,8 @@ namespace Drush\Drupal\Commands\core;
 use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\AnnotatedCommand\CommandError;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
+use Drupal\Core\Queue\DelayableQueueInterface;
+use Drupal\Core\Queue\DelayedRequeueException;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\Core\Queue\QueueWorkerManagerInterface;
 use Drupal\Core\Queue\RequeueException;
@@ -87,6 +89,17 @@ class QueueCommands extends DrushCommands
                 // release the item.
                 $queue->releaseItem($item);
                 throw new \Exception($e->getMessage());
+            } catch (DelayedRequeueException $e) {
+                // The worker requested the task not be immediately re-queued.
+                // - If the queue doesn't support ::delayItem(), we should leave the
+                // item's current expiry time alone.
+                // - If the queue does support ::delayItem(), we should allow the
+                // queue to update the item's expiry using the requested delay.
+                if ($queue instanceof DelayableQueueInterface) {
+                    // This queue can handle a custom delay; use the duration provided
+                    // by the exception.
+                    $queue->delayItem($item, $e->getDelay());
+                }
             } catch (\Exception $e) {
                 // In case of any other kind of exception, log it and leave the
                 // item in the queue to be processed again later.
