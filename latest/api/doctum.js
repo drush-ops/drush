@@ -1527,7 +1527,7 @@
             
                                                 {"type":"Class","fromName":"Drush\\Style","fromLink":"Drush/Style.html","link":"Drush/Style/DrushStyle.html","name":"Drush\\Style\\DrushStyle","doc":null},
                                 {"type":"Method","fromName":"Drush\\Style\\DrushStyle","fromLink":"Drush/Style/DrushStyle.html","link":"Drush/Style/DrushStyle.html#method_confirm","name":"Drush\\Style\\DrushStyle::confirm","doc":null},
-        {"type":"Method","fromName":"Drush\\Style\\DrushStyle","fromLink":"Drush/Style/DrushStyle.html","link":"Drush/Style/DrushStyle.html#method_choice","name":"Drush\\Style\\DrushStyle::choice","doc":""},
+        {"type":"Method","fromName":"Drush\\Style\\DrushStyle","fromLink":"Drush/Style/DrushStyle.html","link":"Drush/Style/DrushStyle.html#method_choice","name":"Drush\\Style\\DrushStyle::choice","doc":null},
         {"type":"Method","fromName":"Drush\\Style\\DrushStyle","fromLink":"Drush/Style/DrushStyle.html","link":"Drush/Style/DrushStyle.html#method_warning","name":"Drush\\Style\\DrushStyle::warning","doc":null},
         {"type":"Method","fromName":"Drush\\Style\\DrushStyle","fromLink":"Drush/Style/DrushStyle.html","link":"Drush/Style/DrushStyle.html#method_note","name":"Drush\\Style\\DrushStyle::note","doc":null},
         {"type":"Method","fromName":"Drush\\Style\\DrushStyle","fromLink":"Drush/Style/DrushStyle.html","link":"Drush/Style/DrushStyle.html#method_caution","name":"Drush\\Style\\DrushStyle::caution","doc":null},
