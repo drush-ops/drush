@@ -346,7 +346,7 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
         $cardinality = $this->io()->choice(
             'Allowed number of values',
             array_combine($choices, $choices),
-            1
+            0
         );
 
         $limit = FieldStorageDefinitionInterface::CARDINALITY_UNLIMITED;
