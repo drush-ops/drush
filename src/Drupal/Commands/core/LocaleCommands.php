@@ -220,6 +220,7 @@ class LocaleCommands extends DrushCommands
      * @param $file Path and file name of the gettext file.
      * @option type The type of translations to be imported. Recognized values: <info>customized</info>, <info>not-customized</info>
      * @option override Whether and how imported strings will override existing translations. Defaults to the Import behavior configured in the admin interface. Recognized values: <info>none</info>, <info>customized</info>, <info>not-customized</info>, <info>all</info>,
+     * @option autocreate-language Create the language in addition to import.
      * @usage drush locale-import nl drupal-8.4.2.nl.po
      *   Import the Dutch drupal core translation.
      * @usage drush locale-import --type=customized nl drupal-8.4.2.nl.po
@@ -233,13 +234,13 @@ class LocaleCommands extends DrushCommands
      * @aliases locale-import
      * @throws \Exception
      */
-    public function import($langcode, $file, $options = ['type' => 'not-customized', 'override' => self::REQ])
+    public function import($langcode, $file, $options = ['type' => 'not-customized', 'override' => self::REQ, 'autocreate-language' => false])
     {
         if (!drush_file_not_empty($file)) {
             throw new \Exception(dt('File @file not found or empty.', ['@file' => $file]));
         }
 
-        $language = $this->getTranslatableLanguage($langcode, true);
+        $language = $this->getTranslatableLanguage($langcode, $options['autocreate-language']);
 
         $this->getModuleHandler()->loadInclude('locale', 'translation.inc');
         $this->getModuleHandler()->loadInclude('locale', 'bulk.inc');
