@@ -5,6 +5,7 @@ namespace Drush\Boot;
 use Consolidation\AnnotatedCommand\AnnotationData;
 use Drupal\Core\Database\Database;
 use Drupal\Core\DrupalKernel;
+use Drush\Config\ConfigLocator;
 use Drush\Drupal\DrushLoggerServiceProvider;
 use Drush\Drupal\DrushServiceModifier;
 use Drush\Drush;
@@ -158,7 +159,15 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
      */
     public function bootstrapDoDrupalSite(BootstrapManager $manager)
     {
-        // Note: this reports the'default' during site:install even if we eventually install to a different multisite.
+        $siteConfig = $this->confPath() . '/drush.yml';
+
+        if (ConfigLocator::addSiteSpecificConfig(Drush::config(), $siteConfig)) {
+            $this->logger->debug(dt("Loaded Drush config file at !file.", ['!file' => $siteConfig]));
+        } else {
+            $this->logger->debug(dt("Could not find a Drush config file at !file.", ['!file' => $siteConfig]));
+        }
+
+        // Note: this reports the 'default' site during site:install even if we eventually install to a different multisite.
         $this->logger->info(dt("Initialized Drupal site !site at !site_root", ['!site' => $this->getRequest()->getHttpHost(), '!site_root' => $this->confPath()]));
     }
 

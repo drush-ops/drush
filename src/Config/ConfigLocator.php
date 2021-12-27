@@ -106,7 +106,7 @@ class ConfigLocator
         }
         $this->config->addPlaceholder(self::USER_CONTEXT);
         $this->config->addPlaceholder(self::DRUPAL_CONTEXT);
-        $this->config->addPlaceholder(self::SITE_CONTEXT); // not implemented yet (multisite)
+        $this->config->addPlaceholder(self::SITE_CONTEXT);
         $this->config->addPlaceholder(self::ALIAS_CONTEXT);
         $this->config->addPlaceholder(self::PREFLIGHT_CONTEXT);
         $this->config->addPlaceholder(self::ENVIRONMENT_CONTEXT);
@@ -553,5 +553,35 @@ class ConfigLocator
         $config_files = array_merge($discovered_config_files, $files);
 
         return $config_files;
+    }
+
+    /**
+     * Attempt to load site specific configuration.
+     *
+     * @param DrushConfig $config
+     *   The config object.
+     * @param $siteConfig
+     *   The site-specific config file.
+     *
+     * @return bool
+     *   Whether the config exists and was processed.
+     */
+    public static function addSiteSpecificConfig(DrushConfig $config, $siteConfig): bool
+    {
+        if (file_exists($siteConfig)) {
+            $loader = new YamlConfigLoader();
+            $processor = new ConfigProcessor();
+            $reference = $config->export();
+            $context = $config->getContext(ConfigLocator::SITE_CONTEXT);
+            $processor->add($context->export());
+            $processor->extend($loader->load($siteConfig));
+            $context->import($processor->export($reference));
+            $config->addContext(ConfigLocator::SITE_CONTEXT, $context);
+            $presetConfig = $config->get('runtime.config.paths');
+            $config->set('runtime.config.paths', array_merge($presetConfig, [$siteConfig]));
+            return true;
+        } else {
+            return false;
+        }
     }
 }

@@ -171,4 +171,42 @@ class CoreTest extends CommandUnishTestCase
         $this->assertContains($b_drush_config_file, $output['drush-conf'], "Loaded drush config files are: " . $drush_conf_as_string);
         $this->assertEquals($test_uri, $output['uri']);
     }
+
+    public function testSiteSpecificConfigLoading()
+    {
+        $sandbox = $this->getSandbox();
+
+        foreach (['default', 'dev', 'stage'] as $site) {
+            $site_cache_dir = "{$sandbox}/tmp/{$site}";
+            $drush_config_file = Path::join($this->webroot(), "/sites/{$site}/drush.yml");
+
+            $drush_config_yml = [
+                'drush' => [
+                    'paths' => [
+                        'cache-directory' => $site_cache_dir,
+                    ]
+                ]
+            ];
+
+            file_put_contents($drush_config_file, Yaml::dump($drush_config_yml, PHP_INT_MAX, 2));
+
+            // Don't use the uri option for the default site.
+            $options = [
+                'uri' => ($site == 'default') ? 'OMIT' : $site,
+                'format' => 'json',
+            ];
+
+            // Test that the config file is loaded.
+            $this->drush('core-status', [], $options);
+            $output = $this->getOutputFromJSON();
+            $loaded = array_flip($output['drush-conf']);
+            $this->assertArrayHasKey("sites/{$site}/drush.yml", $loaded);
+
+            // Test that the cache directory config is set. The field option
+            // forces format to string.
+            $this->drush('core-status', [], $options + ['field' => 'drush-cache-directory']);
+            $output = $this->getOutput();
+            $this->assertEquals($site_cache_dir, $output);
+        }
+    }
 }
