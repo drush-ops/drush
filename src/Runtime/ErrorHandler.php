@@ -7,11 +7,9 @@ namespace Drush\Runtime;
  */
 
 use Drush\Drush;
-use Drush\Log\LogLevel;
-use Webmozart\PathUtil\Path;
-
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
+use Psr\Log\LogLevel;
 
 /**
  * Log PHP errors to the Drush log. This is in effect until Drupal's error
@@ -56,7 +54,7 @@ class ErrorHandler implements LoggerAwareInterface, HandlerInterface
             $this->logger->log($type, $message . ' ' . basename($filename) . ':' . $line);
 
             if ($errno == E_RECOVERABLE_ERROR && $halt_on_error) {
-                $this->logger->error(dt('E_RECOVERABLE_ERROR encountered; aborting. To ignore recoverable errors, run again with --no-halt-on-error'));
+                $this->logger->error(dt('E_RECOVERABLE_ERROR encountered; aborting. To ignore recoverable errors, run again with --halt-on-error=0'));
                 exit(DRUSH_APPLICATION_ERROR);
             }
 

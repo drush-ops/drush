@@ -29,7 +29,7 @@ Set up and test for a valid Drupal root, either through the --root options, or e
 
 @bootstrap site
 ------------------------------
-Set up a Drupal site directory and the correct environment variables to allow Drupal to find the configuration file. If no site is specified with the --uri options, Drush will assume the site is 'default', which mimics Drupal's behaviour.  Note that it is necessary to specify a full URI, e.g. --uri=http://example.com, in order for certain Drush commands and Drupal modules to behave correctly. See the [example Config file](https://github.com/drush-ops/drush/blob/10.x/examples/example.drush.yml) for more information. Any code that needs to modify or interact with a specific Drupal site's settings.php file should bootstrap to this phase.
+Set up a Drupal site directory and the correct environment variables to allow Drupal to find the configuration file. If no site is specified with the --uri options, Drush will assume the site is 'default', which mimics Drupal's behaviour.  Note that it is necessary to specify a full URI, e.g. --uri=http://example.com, in order for certain Drush commands and Drupal modules to behave correctly. See the [Drush configuration](using-drush-configuration.md) for more information. Any code that needs to modify or interact with a specific Drupal site's settings.php file should bootstrap to this phase.
 
 @bootstrap configuration
 ---------------------------------------
@@ -45,5 +45,5 @@ Fully initialize Drupal. This is analogous to the DRUPAL\_BOOTSTRAP\_FULL bootst
 
 @bootstrap max
 ---------------------
-This is not an actual bootstrap phase. Commands that use the "max" bootstrap level will cause Drush to bootstrap as far as possible, and then run the command regardless of the bootstrap phase that was reached. This is useful for Drush commands that work without a bootstrapped site, but that provide additional information or capabilities in the presence of a bootstrapped site. For example, [`drush status`](commands/10.x/core_status.md) will show progressively more information the farther the site bootstraps.
+This is not an actual bootstrap phase. Commands that use the "max" bootstrap level will cause Drush to bootstrap as far as possible, and then run the command regardless of the bootstrap phase that was reached. This is useful for Drush commands that work without a bootstrapped site, but that provide additional information or capabilities in the presence of a bootstrapped site. For example, [`drush status`](commands/core_status.md) will show progressively more information the farther the site bootstraps.
 

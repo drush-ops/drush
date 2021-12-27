@@ -3,6 +3,7 @@
 namespace Unish;
 
 use Drush\Commands\core\XhprofCommands;
+use Drush\Config\DrushConfig;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -20,7 +21,11 @@ class XhProfTest extends TestCase
    */
     public function testFlags($name, $options, $expected)
     {
-        $this->assertEquals($expected, XhprofCommands::xhprofFlags($options), $name);
+        $config = new DrushConfig();
+        foreach ($options as $key => $value) {
+            $config->set('xh.' . $key, $value);
+        }
+        $this->assertEquals($expected, XhprofCommands::xhprofFlags($config), $name);
     }
 
   /**

@@ -32,3 +32,13 @@
     <meta name="twitter:image" content="https://raw.githubusercontent.com/drush-ops/drush/10.x/drush_logo-black.png" />
 {% endblock %}
 
+{% block disqus %}
+<script src="https://cdn.fastcomments.com/js/embed.min.js"></script>
+<div id="fastcomments-widget"></div>
+<script>
+    window.FastCommentsUI(document.getElementById('fastcomments-widget'), {
+        tenantId: '7tG3defply',
+        urlId: '{{ page.url }}'
+    });
+</script>
+{% endblock %}

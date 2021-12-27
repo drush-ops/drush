@@ -1,19 +1,19 @@
 name: Build static sites
 
 # Controls when the action will run. Triggers the workflow on push or pull request
-# events but only for the 10.x branch
+# events but only for the 11.x branch
 on:
   push:
-    branches: [10.x]
+    branches: [11.x]
 #  pull_request:
-#    branches: [10.x]
+#    branches: [11.x]
 
 jobs:
   build:
     name: Build and Push
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout 10.x
+      - name: Checkout 11.x
         uses: actions/checkout@v2
 
       - name: Checkout gh-pages branch
@@ -35,13 +35,13 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: 7.3
-          extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite
+          php-version: 7.4
+          extensions: dom, curl, gd, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite
           coverage: none
           tools: composer:v2
 
       - name: Install Composer dependencies
-        run: composer install --prefer-dist --no-interaction --no-suggest
+        run: composer install --prefer-dist --no-interaction
 
       - name: Install Drupal
         run: composer sut:si
@@ -55,20 +55,20 @@ jobs:
         run: composer mk:docs
 
       - name: Mkdocs build
-        run: mkdocs build -v --site-dir gh-pages
+        run: mkdocs build -v --site-dir gh-pages/latest
 
       - name: Install Doctum
         run: composer doctum-install
 
       - name: Doctum build
         run: |
-          rm -rf gh-pages/api
+          rm -rf gh-pages/latest/api
           composer api
 
-      - name: Checkout CNAME file
-        # It got wiped and its needed.
+      - name: Checkout CNAME+redirect+404 files
+        # They got wiped and are needed.
         run: |
-          cd gh-pages && git checkout -- CNAME
+          cd gh-pages && git checkout -- CNAME index.html 404.html
 
       - name: Commit static site to gh-pages
         run: |

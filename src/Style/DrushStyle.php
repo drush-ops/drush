@@ -4,6 +4,7 @@ namespace Drush\Style;
 
 use Drush\Drush;
 use Drush\Exceptions\UserAbortException;
+use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 class DrushStyle extends SymfonyStyle
@@ -24,23 +25,13 @@ class DrushStyle extends SymfonyStyle
         return $return;
     }
 
-    /**
-     * @param string $question
-     * @param array $choices
-     *   If an associative array is passed, the chosen *key* is returned.
-     * @param null $default
-     * @return mixed
-     */
     public function choice($question, array $choices, $default = null)
     {
-        $choices = array_merge(['cancel' => 'Cancel'], $choices) ;
+        // Display the choices without their keys.
         $choices_values = array_values($choices);
         $return = parent::choice($question, $choices_values, $default);
-        if ($return == 'Cancel') {
-            throw new UserAbortException();
-        } else {
-            return array_search($return, $choices);
-        }
+
+        return array_search($return, $choices);
     }
 
     public function warning($message)
@@ -56,5 +47,24 @@ class DrushStyle extends SymfonyStyle
     public function caution($message)
     {
         $this->block($message, 'CAUTION', 'fg=black;bg=yellow', ' ! ', true);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function askRequired($question)
+    {
+        $question = new Question($question);
+        $question->setValidator(function (?string $value) {
+            // FALSE is not considered as empty value because question helper use
+            // it as negative answer on confirmation questions.
+            if ($value === null || $value === '') {
+                throw new \UnexpectedValueException('This value is required.');
+            }
+
+            return $value;
+        });
+
+        return $this->askQuestion($question);
     }
 }

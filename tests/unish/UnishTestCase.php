@@ -5,7 +5,7 @@ namespace Unish;
 use Composer\Semver\Comparator;
 use Consolidation\SiteAlias\SiteAlias;
 use Consolidation\SiteProcess\SiteProcess;
-use PHPUnit\Framework\TestCase;
+use Yoast\PHPUnitPolyfills\TestCases\TestCase;
 use Symfony\Component\Yaml\Yaml;
 use Webmozart\PathUtil\Path;
 use Consolidation\SiteProcess\ProcessManager;
@@ -190,7 +190,7 @@ abstract class UnishTestCase extends TestCase
      * We used to assure that each class starts with an empty sandbox directory and
      * a clean environment except for the SUT. History: http://drupal.org/node/1103568.
      */
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         self::cleanDirs();
 
@@ -211,7 +211,7 @@ abstract class UnishTestCase extends TestCase
     /**
      * Runs after all tests in a class are run.
      */
-    public static function tearDownAfterClass()
+    public static function tearDownAfterClass(): void
     {
         self::cleanDirs();
         self::$sites = [];
@@ -525,7 +525,7 @@ abstract class UnishTestCase extends TestCase
      * @param array $sites key=site_subdir value=array of extra alias data
      * @param string $aliasGroup Write aliases into a file named group.alias.yml
      */
-    public function setUpSettings(array $sites, $aliasGroup = 'fixture')
+    public function setupSettings(array $sites, $aliasGroup = 'fixture')
     {
         foreach ($sites as $subdir => $extra) {
             $this->createSettings($subdir);
@@ -565,7 +565,7 @@ EOT;
      *
      * It is no longer supported to pass alternative versions of Drupal or an alternative install_profile.
      */
-    public function setUpDrupal($num_sites = 1, $install = false, $options = [])
+    public function setupDrupal($num_sites = 1, $install = false, $options = [])
     {
         $sites_subdirs_all = ['dev', 'stage', 'prod'];
         $sites_subdirs = array_slice($sites_subdirs_all, 0, $num_sites);

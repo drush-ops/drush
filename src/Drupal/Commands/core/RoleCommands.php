@@ -64,12 +64,10 @@ class RoleCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
      * @validate-permissions permissions
      * @param $machine_name The role to modify.
      * @param $permissions The list of permission to grant, delimited by commas.
-     * @usage  drush role-add-perm anonymous 'post comments'
+     * @usage  drush role:perm:add anonymous 'post comments'
      *   Allow anon users to post comments.
-     * @usage drush role:add-perm anonymous "'post comments','access content'"
+     * @usage drush role:perm:add anonymous 'post comments,access content'
      *   Allow anon users to post comments and access content.
-     * @usage drush pm:info --fields=permissions --format=csv aggregator
-     *   Discover the permissions associated with  given module (then use this command as needed).
      * @aliases rap,role-add-perm
      */
     public function roleAddPerm($machine_name, $permissions)
@@ -88,8 +86,8 @@ class RoleCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
      * @validate-permissions permissions
      * @param $machine_name The role to modify.
      * @param $permissions The list of permission to grant, delimited by commas.
-     * @usage drush role:remove-perm anonymous 'access content'
-     *   Hide content from anon users.
+     * @usage drush role:remove-perm anonymous 'post comments,access content'
+     *   Remove 2 permissions from anon users.
      * @aliases rmp,role-remove-perm
      */
     public function roleRemovePerm($machine_name, $permissions)

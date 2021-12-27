@@ -8,12 +8,13 @@ use Webmozart\PathUtil\Path;
  *  @group slow
  *  @group commands
  */
-class UserCase extends CommandUnishTestCase
+class UserTest extends CommandUnishTestCase
 {
 
     const NAME = 'example';
+    const MAIL = 'example@example.com';
 
-    public function setUp()
+    public function setup(): void
     {
         if (!$this->getSites()) {
             $this->setUpDrupal(1, true);
@@ -23,9 +24,10 @@ class UserCase extends CommandUnishTestCase
 
     public function testBlockUnblock()
     {
+        $uid = 2;
+
         $this->drush('user-block', [self::NAME]);
         $this->drush('user-information', [self::NAME], ['format' => 'json']);
-        $uid = 2;
         $output = $this->getOutputFromJSON($uid);
         $this->assertEquals(0, $output['user_status'], 'User is blocked.');
 
@@ -34,15 +36,38 @@ class UserCase extends CommandUnishTestCase
         $this->drush('user-information', [self::NAME], ['format' => 'json']);
         $output = $this->getOutputFromJSON($uid);
         $this->assertEquals(1, $output['user_status'], 'User is unblocked.');
+
+        // user-block user by uid.
+        $this->drush('user-block', [], ['uid' => $uid]);
+        $this->drush('user-information', [self::NAME], ['format' => 'json']);
+        $output = $this->getOutputFromJSON($uid);
+        $this->assertEquals(0, $output['user_status'], 'User (id) is blocked.');
+
+        $this->drush('user-unblock', [], ['uid' => $uid]);
+        $this->drush('user-information', [self::NAME], ['format' => 'json']);
+        $output = $this->getOutputFromJSON($uid);
+        $this->assertEquals(1, $output['user_status'], 'User (id) is unblocked.');
+
+
+        // user-block user by mail.
+        $this->drush('user-block', [], ['mail' => self::MAIL]);
+        $this->drush('user-information', [self::NAME], ['format' => 'json']);
+        $output = $this->getOutputFromJSON($uid);
+        $this->assertEquals(0, $output['user_status'], 'User (mail) is blocked.');
+
+        $this->drush('user-unblock', [], ['uid' => $uid]);
+        $this->drush('user-information', [self::NAME], ['format' => 'json']);
+        $output = $this->getOutputFromJSON($uid);
+        $this->assertEquals(1, $output['user_status'], 'User (mail) is unblocked.');
     }
 
     public function testUserRole()
     {
+        $uid = 2;
         // First, create the role since we use testing install profile.
         $this->drush('role-create', ['test role']);
         $this->drush('user-add-role', ['test role', self::NAME]);
         $this->drush('user-information', [self::NAME], ['format' => 'json']);
-        $uid = 2;
         $output = $this->getOutputFromJSON($uid);
         $expected = ['authenticated', 'test role'];
         $this->assertEquals($expected, array_values($output['roles']), 'User has test role.');
@@ -53,6 +78,34 @@ class UserCase extends CommandUnishTestCase
         $output = $this->getOutputFromJSON($uid);
         $expected = ['authenticated'];
         $this->assertEquals($expected, array_values($output['roles']), 'User removed test role.');
+
+        // user-add-role by uid.
+        $this->drush('user-add-role', ['test role'], ['uid' => $uid]);
+        $this->drush('user-information', [self::NAME], ['format' => 'json']);
+        $output = $this->getOutputFromJSON($uid);
+        $expected = ['authenticated', 'test role'];
+        $this->assertEquals($expected, array_values($output['roles']), 'User (id) has test role.');
+
+        // user-remove-role by uid
+        $this->drush('user-remove-role', ['test role'], ['uid' => $uid]);
+        $this->drush('user-information', [self::NAME], ['format' => 'json']);
+        $output = $this->getOutputFromJSON($uid);
+        $expected = ['authenticated'];
+        $this->assertEquals($expected, array_values($output['roles']), 'User (id) removed test role.');
+
+        // user-add-role by mail.
+        $this->drush('user-add-role', ['test role'], ['mail' => self::MAIL]);
+        $this->drush('user-information', [self::NAME], ['format' => 'json']);
+        $output = $this->getOutputFromJSON($uid);
+        $expected = ['authenticated', 'test role'];
+        $this->assertEquals($expected, array_values($output['roles']), 'User (mail) has test role.');
+
+        // user-remove-role by mail.
+        $this->drush('user-remove-role', ['test role'], ['mail' => self::MAIL]);
+        $this->drush('user-information', [self::NAME], ['format' => 'json']);
+        $output = $this->getOutputFromJSON($uid);
+        $expected = ['authenticated'];
+        $this->assertEquals($expected, array_values($output['roles']), 'User (mail) removed test role.');
     }
 
     public function testUserPassword()
@@ -81,21 +134,21 @@ class UserCase extends CommandUnishTestCase
         $this->drush('user-login', [], $user_login_options + ['debug' => null]);
         $logOutput = $this->getErrorOutput();
         $url = parse_url($this->getOutput());
-        $this->assertContains('/user/reset/1', $url['path'], 'Login returned a reset URL for uid 1 by default');
-        $this->assertContains('Opening browser unish at http://', $logOutput);
+        $this->assertStringContainsString('/user/reset/1', $url['path'], 'Login returned a reset URL for uid 1 by default');
+        $this->assertStringContainsString('Opening browser unish at http://', $logOutput);
         // Check specific user with a path argument.
         $uid = 2;
         $this->drush('user-login', ['node/add'], $user_login_options + ['name' => self::NAME]);
         $output = $this->getOutput();
         $url = parse_url($output);
         $query = $url['query'];
-        $this->assertContains('/user/reset/' . $uid, $url['path'], 'Login with user argument returned a valid reset URL');
+        $this->assertStringContainsString('/user/reset/' . $uid, $url['path'], 'Login with user argument returned a valid reset URL');
         $this->assertEquals('destination=node/add', $query, 'Login included destination path in URL');
         // Check path used as only argument when using uid option.
         $this->drush('user-login', ['node/add'], $user_login_options + ['name' => self::NAME]);
         $output = $this->getOutput();
         $url = parse_url($output);
-        $this->assertContains('/user/reset/' . $uid, $url['path'], 'Login with uid option returned a valid reset URL');
+        $this->assertStringContainsString('/user/reset/' . $uid, $url['path'], 'Login with uid option returned a valid reset URL');
         $query = $url['query'];
         $this->assertEquals('destination=node/add', $query, 'Login included destination path in URL');
         // Test specific user by uid.
@@ -103,44 +156,21 @@ class UserCase extends CommandUnishTestCase
         $this->drush('user-login', [], $user_login_options + ['uid' => $uid]);
         $output = $this->getOutput();
         $url = parse_url($output);
-        $this->assertContains('/user/reset/' . $uid, $url['path'], 'Login with uid option returned a valid reset URL');
+        $this->assertStringContainsString('/user/reset/' . $uid, $url['path'], 'Login with uid option returned a valid reset URL');
         // Test specific user by mail.
         $uid = 2;
-        $mail = 'example@example.com';
+        $mail = self::MAIL;
         $this->drush('user-login', [], $user_login_options + ['mail' => $mail]);
         $output = $this->getOutput();
         $url = parse_url($output);
-        $this->assertContains('/user/reset/' . $uid, $url['path'], 'Login with mail option returned a valid reset URL');
+        $this->assertStringContainsString('/user/reset/' . $uid, $url['path'], 'Login with mail option returned a valid reset URL');
     }
 
     public function testUserCancel()
     {
-        // Create a content entity type and enable its module.
-        $answers = [
-            'name' => 'UnishArticle',
-            'machine_name' => 'unish_article',
-            'package' => 'custom',
-            'version' => '8.x-1.0-dev',
-            'dependencies' => 'text',
-            'entity_type_label' => 'UnishArticle',
-            'entity_type_id' => 'unish_article',
-            'entity_base_path' => 'admin/content/unish_article',
-            'fieldable' => 'no',
-            'translatable' => 'no',
-            'revisionable' => 'no',
-            'template' => 'no',
-            'access_controller' => 'no',
-            'title_base_field' => 'yes',
-            'status_base_field' => 'yes',
-            'created_base_field' => 'yes',
-            'changed_base_field' => 'yes',
-            'author_base_field' => 'yes',
-            'description_base_field' => 'no',
-            'rest_configuration' => 'no',
-        ];
-        $answers = json_encode($answers, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_NUMERIC_CHECK);
-        $this->drush('generate', ['content-entity'], ['answers' => $answers, 'directory' => Path::join(self::webroot(), 'modules/contrib')], null, null, self::EXIT_SUCCESS, null, ['SHELL_INTERACTIVE' => 1]);
+        CreateEntityType::createContentEntity($this);
         $this->drush('pm-enable', ['text,unish_article']);
+        $this->drush('php:script', ['create_unish_article_bundles'], ['script-path' => Path::join(__DIR__, 'resources')]);
         // Create one unish_article owned by our example user.
         $this->drush('php-script', ['create_unish_articles'], ['script-path' => Path::join(__DIR__, 'resources')]);
         // Verify that content entity exists.
@@ -161,11 +191,11 @@ class UserCase extends CommandUnishTestCase
 
     public function userCreate()
     {
-        $this->drush('user-create', [self::NAME], ['password' => 'password', 'mail' => "example@example.com"]);
+        $this->drush('user-create', [self::NAME], ['password' => 'password', 'mail' => self::MAIL]);
         $this->drush('user-information', [self::NAME], ['format' => 'json']);
         $uid = 2;
         $output = $this->getOutputFromJSON($uid);
-        $this->assertEquals('example@example.com', $output['mail']);
+        $this->assertEquals(self::MAIL, $output['mail']);
         $this->assertEquals(self::NAME, $output['name']);
         $this->assertEquals(1, $output['user_status'], 'Newly created user is Active.');
         $expected = ['authenticated'];

@@ -10,9 +10,9 @@ use Webmozart\PathUtil\Path;
  *
  * @group commands
  */
-class CoreCase extends CommandUnishTestCase
+class CoreTest extends CommandUnishTestCase
 {
-    public function setUp()
+    public function setup(): void
     {
         if (!$this->getSites()) {
             $this->setUpDrupal(2, true);
@@ -32,8 +32,8 @@ class CoreCase extends CommandUnishTestCase
             $this->drush('core-status', [], $options);
             $output = $this->getOutput();
             $output = preg_replace('#  *#', ' ', $output);
-            $this->assertContains('Database : Connected', $output);
-            $this->assertContains("Site path : sites/$uri", $output);
+            $this->assertStringContainsString('Database : Connected', $output);
+            $this->assertStringContainsString("Site path : sites/$uri", $output);
         }
         chdir($cwd);
     }

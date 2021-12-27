@@ -2,39 +2,37 @@
 
 namespace Drupal\woot\Generators;
 
-use DrupalCodeGenerator\Command\BaseGenerator;
-use DrupalCodeGenerator\Utils;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
+use Drupal\Core\Extension\ModuleHandlerInterface;
+use DrupalCodeGenerator\Command\ModuleGenerator;
 
-class ExampleGenerator extends BaseGenerator
+class ExampleGenerator extends ModuleGenerator
 {
-    protected $name = 'woot-example';
-    protected $description = 'Generates a woot.';
-    protected $alias = 'wootex';
-    protected $templatePath = __DIR__;
+    protected string $name = 'woot:example';
+    protected string $description = 'Generates a woot.';
+    protected string $alias = 'wootex';
+    protected string $templatePath = __DIR__;
 
-    // We don't actually use this service. This illustrates how to inject a dependency into a Generator.
+    /**
+     * Illustrates how to inject a dependency into a Generator.
+     *
+     * @var ModuleHandlerInterface
+     */
     protected $moduleHandler;
 
-    public function __construct($moduleHandler = null, $name = null)
+    public function __construct(ModuleHandlerInterface $moduleHandler = null)
     {
-        parent::__construct($name);
+        parent::__construct($this->name);
         $this->moduleHandler = $moduleHandler;
     }
 
     /**
      * {@inheritdoc}
      */
-    protected function interact(InputInterface $input, OutputInterface $output)
+    protected function generate(&$vars): void
     {
-        $questions = Utils::moduleQuestions();
-
-        $vars = &$this->collectVars($input, $output, $questions);
-        $vars['class'] = Utils::camelize('Example_' . $vars['machine_name'] . '_Commands');
-
-        $this->addFile()
-            ->path('Commands/{class}.php')
-            ->template('example-generator.twig');
+        $this->collectDefault($vars);
+        $vars['class'] = '{machine_name|camelize}Commands';
+        $vars['color'] = $this->ask('Favorite color', 'blue');
+        $this->addFile('Commands/{class}.php', 'example-generator.twig');
     }
 }

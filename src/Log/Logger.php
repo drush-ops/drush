@@ -39,28 +39,6 @@ class Logger extends RoboLogger
 
     public function log($level, $message, array $context = [])
     {
-        // @todo Get rid of custom log levels entirely? See \Drush\Log\LogLevel.
-
-        // Save the original level, then map it to a standard log level.
-        $context['_level'] = $level;
-        switch ($level) {
-            case LogLevel::CANCEL:
-                $level = LogLevel::WARNING;
-                break;
-            case LogLevel::SUCCESS:
-            case LogLevel::OK:
-                $level = LogLevel::NOTICE;
-                break;
-            case LogLevel::PREFLIGHT:
-            case LogLevel::BOOTSTRAP:
-            case LogLevel::DEBUG_NOTIFY:
-                $level = LogLevel::DEBUG;
-                break;
-            default:
-                $level = LogLevel::DEBUG;
-                break;
-        }
-
         // Append timer and memory values.
         if (Drush::debug()) {
             $timer = round(microtime(true) - DRUSH_REQUEST_TIME, 2);
@@ -68,7 +46,7 @@ class Logger extends RoboLogger
             $message .= $suffix;
         }
 
-      // consolidation/log handles formatting and verbosity level check.
+        // consolidation/log handles formatting and verbosity level check.
         parent::log($level, $message, $context);
     }
 

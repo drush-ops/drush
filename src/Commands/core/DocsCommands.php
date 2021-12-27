@@ -53,12 +53,12 @@ class DocsCommands extends DrushCommands
     }
 
     /**
-     * Drush configuration example.
+     * Drush configuration.
      *
      * @command docs:configuration
      * @aliases docs-configuration
      * @hidden
-     * @topic ../../../examples/example.drush.yml
+     * @topic ../../../docs/using-drush-configuration.md
      */
     public function config()
     {
@@ -111,7 +111,7 @@ class DocsCommands extends DrushCommands
      * @command docs:aliases
      * @aliases docs-aliases
      * @hidden
-     * @topic ../../../examples/example.site.yml
+     * @topic ../../../docs/site-aliases.md
      */
     public function siteAliases()
     {
@@ -137,7 +137,7 @@ class DocsCommands extends DrushCommands
      * @command docs:bootstrap
      * @aliases docs-bootstrap
      * @hidden
-     * @topic ../../..//docs/bootstrap.md
+     * @topic ../../../docs/bootstrap.md
      */
     public function bootstrap()
     {
@@ -192,6 +192,18 @@ class DocsCommands extends DrushCommands
      * @topic ../../../examples/Commands/ArtCommands.php
      */
     public function exampleCommand()
+    {
+        self::printFileTopic($this->commandData);
+    }
+
+    /**
+     * Defining and running migrations.
+     *
+     * @command docs:migrate
+     * @hidden
+     * @topic ../../../docs/migrate.md
+     */
+    public function migrate()
     {
         self::printFileTopic($this->commandData);
     }

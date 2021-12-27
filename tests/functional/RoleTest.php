@@ -8,7 +8,7 @@ use Webmozart\PathUtil\Path;
  *  @group slow
  *  @group commands
  */
-class RoleCase extends CommandUnishTestCase
+class RoleTest extends CommandUnishTestCase
 {
     use TestModuleHelperTrait;
 
@@ -26,18 +26,18 @@ class RoleCase extends CommandUnishTestCase
 
         $this->drush('role-list');
         $output = $this->getOutput();
-        $this->assertNotContains('cancel other accounts', $output);
+        $this->assertStringNotContainsString('cancel other accounts', $output);
 
         $this->drush('role-list', [], ['filter' => 'cancel other accounts']);
         $output = $this->getOutput();
-        $this->assertNotContains('authenticated', $output);
-        $this->assertNotContains('anonymous', $output);
+        $this->assertStringNotContainsString('authenticated', $output);
+        $this->assertStringNotContainsString('anonymous', $output);
 
         // Create the role foo.
         $rid = 'foo';
         $this->drush('role-create', [$rid]);
         $this->drush('role-list');
-        $this->assertContains($rid, $this->getOutput());
+        $this->assertStringContainsString($rid, $this->getOutput());
 
         // Assert that anon user starts without 'cancel other accounts' perm.
         $perm = 'cancel other accounts';
@@ -60,6 +60,6 @@ class RoleCase extends CommandUnishTestCase
         // Delete the foo role
         $this->drush('role-delete', [$rid]);
         $this->drush('role-list');
-        $this->assertNotContains($rid, $this->getOutput());
+        $this->assertStringNotContainsString($rid, $this->getOutput());
     }
 }

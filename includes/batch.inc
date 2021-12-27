@@ -26,7 +26,6 @@
 
 use Drupal\Core\Database\Database;
 use Drush\Drush;
-use Drush\Log\LogLevel;
 
 /**
  * Class extending ArrayObject to allow the batch API to perform logging when
@@ -38,6 +37,7 @@ use Drush\Log\LogLevel;
  * @see _drush_batch_worker().
  */
 class DrushBatchContext extends ArrayObject {
+  #[\ReturnTypeWillChange]
   function offsetSet($name, $value) {
     if ($name == 'message') {
       Drush::logger()->notice(strip_tags($value));
@@ -150,12 +150,19 @@ function _drush_backend_batch_process($command = 'batch-process', $args = [], $o
 
     while (!$finished) {
       $process = Drush::drush(Drush::aliasManager()->getSelf(), $command, $args);
+      // We already re-spawn when memory is low so no need for timeout.
+      $process->setTimeout(null);
       // Suppress printing stdout since a JSON array is returned to us here.
       $process->run($process->showRealtime()->hideStdout());
       $result = $process->getOutputAsJson();
       $finished = !$process->isSuccessful() || (isset($result['drush_batch_process_finished']) && $result['drush_batch_process_finished'] === TRUE);
     }
   }
+
+  // An attempt to clear the batch is performed in "_drush_batch_finished",
+  // however when that is run in a separate process, static cache changes need
+  // to be replayed.
+  $batch = NULL;
 
   return $result;
 }

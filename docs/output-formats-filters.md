@@ -7,7 +7,7 @@ Drush utilizes a powerful formatting and filtering system that provides the user
 * Output filters may be used to limit which data rows are printed based on logical expressions.
 
 ## Output Formats
-The `--format` option may be used to select the data format used to print the output of a command. Most commands that produce informative output about some object or system can transform their data into different formats. For example, the [version command](commands/10.x/version.md) may be printed in a human-readable table (the default), or in a json array:
+The `--format` option may be used to select the data format used to print the output of a command. Most commands that produce informative output about some object or system can transform their data into different formats. For example, the [version command](commands/version.md) may be printed in a human-readable table (the default), or in a json array:
 ```shell
 $ drush version
  Drush version : 10.3.1
@@ -86,7 +86,7 @@ glossary
 ## Output Filters
 A number of Drush commands that output tabular data support a `--filter` option that allows rows from the output to be selected with simple logic expressions.
 
-In its simplest form, the `--filter` option takes a string that indicates the value to filter by in the command's *default filter field*. For example, the [role:list command](commands/10.x/role_list.md) specifies `perms` as its default filter; the output of the `role:list` command may be limited to only those roles that have a specified permission:
+In its simplest form, the `--filter` option takes a string that indicates the value to filter by in the command's *default filter field*. For example, the [role:list command](commands/role_list.md) specifies `perms` as its default filter; the output of the `role:list` command may be limited to only those roles that have a specified permission:
 ```shell
 $ drush role:list --filter='post comments'
 authenticated:
@@ -108,11 +108,11 @@ Other fields in the output may be searched by using a simple expression in the `
 ```shell
 $ drush pm:list --filter='status=enabled'
 ```
-To search for fields that contain a string using the operator `*=`, or match a regular expression with the `~=` operator. For example, to find all views whose machine name contains the word "content":
+To search for fields that contain a string using the operator `*=`, or match a regular expression with the `~=` operator. For example, to find all views whose machine name contains the word *content*:
 ```shell
 drush views:list --filter='machine-name*=content'
 ```
-To use a regular expression to find any core requirement notice whose title contains either "php" or "gd"
+To use a regular expression to find any core requirement notice whose title contains either *php* or *gd*
 ```shell
 drush core:requirements --filter='title~=#(php|gd)#i'
 ```

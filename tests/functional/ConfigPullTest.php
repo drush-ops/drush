@@ -9,10 +9,10 @@ use Webmozart\PathUtil\Path;
  * @group slow
  * @group config
  */
-class ConfigPullCase extends CommandUnishTestCase
+class ConfigPullTest extends CommandUnishTestCase
 {
 
-    public function setUp()
+    public function setup(): void
     {
         $this->setUpDrupal(2, true);
     }

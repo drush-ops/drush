@@ -6,7 +6,7 @@ namespace Unish;
  * @group base
  * @group slow
  */
-class SiteInstallCommandCase extends CommandUnishTestCase
+class SiteInstallTest extends CommandUnishTestCase
 {
 
     /**
@@ -23,12 +23,12 @@ class SiteInstallCommandCase extends CommandUnishTestCase
             // Run 'core-status' and insure that we can bootstrap Drupal.
             $this->drush('core-status', [], ['fields' => 'bootstrap']);
             $output = $this->getOutput();
-            $this->assertContains('Successful', $output);
+            $this->assertStringContainsString('Successful', $output);
 
             // Issue a query and check the result to verify the connection.
             $this->drush('sql:query', ["SELECT uid FROM drupal_users where uid = 1;"]);
             $output = $this->getOutput();
-            $this->assertContains('1', $output);
+            $this->assertStringContainsString('1', $output);
         }
     }
 }
