@@ -524,6 +524,16 @@ file or a 'Commands' or 'src/Commands' directory.</p></p>                </div>
                                             <p><p>Given an array of paths, separates files and directories.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    static&nbsp;bool
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_addSiteSpecificConfig">addSiteSpecificConfig</a>(<a href="../../Drush/Config/DrushConfig.html"><abbr title="Drush\Config\DrushConfig">DrushConfig</abbr></a> $config, $siteConfig)
+        
+                                            <p><p>Attempt to load site specific configuration.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
             </div>
 
 
@@ -1531,6 +1541,53 @@ containing config files.</p></td>
             <td>array</td>
             <td><p>An array. The first row is an array of files, the second row is an
 array of dirs.</p></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_addSiteSpecificConfig">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Config/ConfigLocator.php#L569">at line 569</a></div>
+        <code>        static            bool
+    <strong>addSiteSpecificConfig</strong>(<a href="../../Drush/Config/DrushConfig.html"><abbr title="Drush\Config\DrushConfig">DrushConfig</abbr></a> $config, $siteConfig)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Attempt to load site specific configuration.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><a href="../../Drush/Config/DrushConfig.html"><abbr title="Drush\Config\DrushConfig">DrushConfig</abbr></a></td>
+                <td>$config</td>
+                <td><p>The config object.</p></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$siteConfig</td>
+                <td><p>The site-specific config file.</p></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>bool</td>
+            <td><p>Whether the config exists and was processed.</p></td>
         </tr>
     </table>
 

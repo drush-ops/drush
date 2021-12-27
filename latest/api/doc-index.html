@@ -172,7 +172,9 @@ selected site.</p></dd><dt><a href="Drush/Config/ConfigLocator.html#method_addCo
 provided location, and the directory <code>config</code> inside each provided location
 is searched for a drush.yml file.</p></dd><dt><a href="Drush/Config/ConfigLocator.html#method_addConfigFiles">
 <abbr title="Drush\Config\ConfigLocator">ConfigLocator</abbr>::addConfigFiles</a>() &mdash; <em>Method in class <a href="Drush/Config/ConfigLocator.html"><abbr title="Drush\Config\ConfigLocator">ConfigLocator</abbr></a></em></dt>
-                    <dd><p>Adds $configFiles config files.</p></dd><dt><a href="Drush/Config/Environment.html#method_applyEnvironment">
+                    <dd><p>Adds $configFiles config files.</p></dd><dt><a href="Drush/Config/ConfigLocator.html#method_addSiteSpecificConfig">
+<abbr title="Drush\Config\ConfigLocator">ConfigLocator</abbr>::addSiteSpecificConfig</a>() &mdash; <em>Method in class <a href="Drush/Config/ConfigLocator.html"><abbr title="Drush\Config\ConfigLocator">ConfigLocator</abbr></a></em></dt>
+                    <dd><p>Attempt to load site specific configuration.</p></dd><dt><a href="Drush/Config/Environment.html#method_applyEnvironment">
 <abbr title="Drush\Config\Environment">Environment</abbr>::applyEnvironment</a>() &mdash; <em>Method in class <a href="Drush/Config/Environment.html"><abbr title="Drush\Config\Environment">Environment</abbr></a></em></dt>
                     <dd><p>Alter our default locations based on the value of environment variables</p></dd><dt><a href="Drush/Drupal/Commands/core/LanguageCommands.html#method_add">
 <abbr title="Drush\Drupal\Commands\core\LanguageCommands">LanguageCommands</abbr>::add</a>() &mdash; <em>Method in class <a href="Drush/Drupal/Commands/core/LanguageCommands.html"><abbr title="Drush\Drupal\Commands\core\LanguageCommands">LanguageCommands</abbr></a></em></dt>
@@ -300,7 +302,9 @@ holding the command name.</p></dd><dt><a href="Drush/Runtime/DependencyInjection
 <abbr title="Drush\Sql\SqlBase">SqlBase</abbr>::alwaysQuery</a>() &mdash; <em>Method in class <a href="Drush/Sql/SqlBase.html"><abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a></em></dt>
                     <dd><p>Execute a SQL query. Always execute regardless of simulate mode.</p></dd><dt><a href="Drush/Sql/SqlBase.html#method_alwaysQueryCommand">
 <abbr title="Drush\Sql\SqlBase">SqlBase</abbr>::alwaysQueryCommand</a>() &mdash; <em>Method in class <a href="Drush/Sql/SqlBase.html"><abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a></em></dt>
-                    <dd><p>Start building the command to run a query.</p></dd><dt>$<a href="Drush/Symfony/LessStrictArgvInput.html#property_additionalOptions">
+                    <dd><p>Start building the command to run a query.</p></dd><dt><a href="Drush/Style/DrushStyle.html#method_askRequired">
+<abbr title="Drush\Style\DrushStyle">DrushStyle</abbr>::askRequired</a>() &mdash; <em>Method in class <a href="Drush/Style/DrushStyle.html"><abbr title="Drush\Style\DrushStyle">DrushStyle</abbr></a></em></dt>
+                    <dd></dd><dt>$<a href="Drush/Symfony/LessStrictArgvInput.html#property_additionalOptions">
 <abbr title="Drush\Symfony\LessStrictArgvInput">LessStrictArgvInput</abbr>#additionalOptions</a> &mdash; <em>Property in class <a href="Drush/Symfony/LessStrictArgvInput.html"><abbr title="Drush\Symfony\LessStrictArgvInput">LessStrictArgvInput</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/TestTraits/CliTestTrait.html#method_assertOutputEquals">
 <abbr title="Drush\TestTraits\CliTestTrait">CliTestTrait</abbr>::assertOutputEquals</a>() &mdash; <em>Method in class <a href="Drush/TestTraits/CliTestTrait.html"><abbr title="Drush\TestTraits\CliTestTrait">CliTestTrait</abbr></a></em></dt>
@@ -3034,8 +3038,6 @@ need to know that their module is enabled (e.g. image-flush).</p></dd><dt><a hre
 <abbr title="Drush\Drupal\Commands\field\EntityTypeBundleValidationTrait">EntityTypeBundleValidationTrait</abbr>::validateEntityType</a>() &mdash; <em>Method in class <a href="Drush/Drupal/Commands/field/EntityTypeBundleValidationTrait.html"><abbr title="Drush\Drupal\Commands\field\EntityTypeBundleValidationTrait">EntityTypeBundleValidationTrait</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Drupal/Commands/field/EntityTypeBundleValidationTrait.html#method_validateBundle">
 <abbr title="Drush\Drupal\Commands\field\EntityTypeBundleValidationTrait">EntityTypeBundleValidationTrait</abbr>::validateBundle</a>() &mdash; <em>Method in class <a href="Drush/Drupal/Commands/field/EntityTypeBundleValidationTrait.html"><abbr title="Drush\Drupal\Commands\field\EntityTypeBundleValidationTrait">EntityTypeBundleValidationTrait</abbr></a></em></dt>
-                    <dd></dd><dt><a href="Drush/Drupal/Commands/field/FieldCreateCommands.html#method_validateRequired">
-<abbr title="Drush\Drupal\Commands\field\FieldCreateCommands">FieldCreateCommands</abbr>::validateRequired</a>() &mdash; <em>Method in class <a href="Drush/Drupal/Commands/field/FieldCreateCommands.html"><abbr title="Drush\Drupal\Commands\field\FieldCreateCommands">FieldCreateCommands</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Drupal/Commands/pm/PmCommands.html#method_validateEnableModules">
 <abbr title="Drush\Drupal\Commands\pm\PmCommands">PmCommands</abbr>::validateEnableModules</a>() &mdash; <em>Method in class <a href="Drush/Drupal/Commands/pm/PmCommands.html"><abbr title="Drush\Drupal\Commands\pm\PmCommands">PmCommands</abbr></a></em></dt>
                     <dd><p>Run requirements checks on the module installation.</p></dd><dt><a href="Drush/Drupal/Commands/pm/PmCommands.html#method_validateUninstall">
