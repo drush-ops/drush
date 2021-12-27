@@ -248,7 +248,7 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
         }
 
         while (!$fieldName) {
-            $answer = $this->io()->ask('Field name', $machineName, [static::class, 'validateRequired']);
+            $answer = $this->io()->ask('Field name', $machineName);
 
             if (!preg_match('/^[_a-z]+[_a-z0-9]*$/', $answer)) {
                 $this->logger()->error('Only lowercase alphanumeric characters and underscores are allowed, and only lowercase letters and underscore are allowed as the first character.');
@@ -273,7 +273,7 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
 
     protected function askFieldLabel(): string
     {
-        return $this->io()->ask('Field label', null, [static::class, 'validateRequired']);
+        return $this->io()->askRequired('Field label');
     }
 
     protected function askFieldDescription(): ?string
@@ -645,16 +645,5 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
         }
 
         $this->input->setOption($name, $value);
-    }
-
-    public static function validateRequired(?string $value): string
-    {
-        // FALSE is not considered as empty value because question helper use
-        // it as negative answer on confirmation questions.
-        if ($value === null || $value === '') {
-            throw new \UnexpectedValueException('This value is required.');
-        }
-
-        return $value;
     }
 }

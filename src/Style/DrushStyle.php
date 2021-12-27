@@ -4,6 +4,7 @@ namespace Drush\Style;
 
 use Drush\Drush;
 use Drush\Exceptions\UserAbortException;
+use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 class DrushStyle extends SymfonyStyle
@@ -46,5 +47,24 @@ class DrushStyle extends SymfonyStyle
     public function caution($message)
     {
         $this->block($message, 'CAUTION', 'fg=black;bg=yellow', ' ! ', true);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function askRequired($question)
+    {
+        $question = new Question($question);
+        $question->setValidator(function (?string $value) {
+            // FALSE is not considered as empty value because question helper use
+            // it as negative answer on confirmation questions.
+            if ($value === null || $value === '') {
+                throw new \UnexpectedValueException('This value is required.');
+            }
+
+            return $value;
+        });
+
+        return $this->askQuestion($question);
     }
 }
