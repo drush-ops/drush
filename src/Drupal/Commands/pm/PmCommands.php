@@ -150,8 +150,8 @@ class PmCommands extends DrushCommands
         }
 
         if ($error) {
-            // Let the user confirm the installation if the requirements are unmet.
-            if (!$this->io()->confirm(dt('The module install requirements failed. Do you wish to continue?'))) {
+            // Allow the user to bypass the install requirements.
+            if (!$this->io()->confirm(dt('The module install requirements failed. Do you wish to continue?'), false)) {
                 throw new UserAbortException();
             }
         }
@@ -353,7 +353,7 @@ class PmCommands extends DrushCommands
 
         // Add dependent modules to the list. The new modules will be processed as
         // the while loop continues.
-        $profile = drush_drupal_get_profile();
+        $profile = \Drupal::installProfile();
         foreach (array_keys($module_list) as $module) {
             foreach (array_keys($module_data[$module]->required_by) as $dependent) {
                 if (!isset($module_data[$dependent])) {

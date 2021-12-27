@@ -1,9 +1,5 @@
 <?php
 
-use Drush\Drush;
-use Drush\Log\LogLevel;
-use Webmozart\PathUtil\Path;
-
 /**
  * Check if the operating system is OS X.
  * This will return TRUE for Mac OS X (Darwin).

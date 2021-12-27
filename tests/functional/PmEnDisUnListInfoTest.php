@@ -13,7 +13,7 @@ use Composer\Semver\Comparator;
  *  @group slow
  *  @group pm
  */
-class EnDisUnListInfoCase extends CommandUnishTestCase
+class EnDisUnListInfoTest extends CommandUnishTestCase
 {
 
     public function testEnDisUnList()
@@ -27,7 +27,7 @@ class EnDisUnListInfoCase extends CommandUnishTestCase
 
         // Test that pm-enable does not install a module if the install
         // requirements are not met.
-        $this->drush('pm-enable', ['drush_empty_module'], ['no' => null], null, null, self::EXIT_ERROR, null, [
+        $this->drush('pm-enable', ['drush_empty_module'], [], null, null, self::EXIT_ERROR, null, [
           'UNISH_FAIL_INSTALL_REQUIREMENTS' => 'drush_empty_module',
         ]);
         $err = $this->getErrorOutput();

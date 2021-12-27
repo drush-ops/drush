@@ -5,16 +5,17 @@ high quality, our tests are run on every push. See [CircleCi](https://circleci.c
 1. `git clone https://github.com/drush-ops/drush.git`
 1. `cd drush`
 1. `composer install`
-1. Review the configuration settings in [tests/phpunit.xml.dist](https://github.com/drush-ops/drush/blob/10.x/tests/phpunit.xml.dist). If customization is needed, copy phpunit.xml.dist to phpunit.xml and edit away.
+1. Review the configuration settings in [tests/phpunit.xml.dist](https://github.com/drush-ops/drush/blob/11.x/tests/phpunit.xml.dist). If customization is needed, copy phpunit.xml.dist to phpunit.xml and edit away.
 1. Run all test suites: `composer test`
 
-## Docker
-Drush's own tests may be run within provided Docker containers (see docker-compose.yml):
+## DDEV
+:octicons-tag-24: 11.0+
 
-- Start containers: `docker-compose up -d`
-- Run a test: `docker-compose exec drupal composer functional -- --filter testUserRole`
-- To change configuration, copy `.env.example` to `.env`, edit to taste, and run `docker-compose up -d` again.
-- See the [.env.example file](https://github.com/drush-ops/drush/blob/10.x/.env.example) for help on enabling Xdebug.
+Drush's own tests may be run within provided Docker containers via [DDEV](https://ddev.readthedocs.io/en/stable/)
+
+- Start containers: `ddev start`
+- Run a test: `ddev exec drupal composer functional -- --filter testUserRole`
+- See the [DDEV's XDebug docs](https://ddev.readthedocs.io/en/stable/users/step-debugging/) for help on enabling Xdebug.
 
 ## Advanced usage
 - Run only one test suite
@@ -25,7 +26,7 @@ Drush's own tests may be run within provided Docker containers (see docker-compo
 - Skip slow tests (usually those with network usage): `composer functional -- --exclude-group slow`
 - XML results: `composer functional -- --log-junit results.xml`
 - Ad-hoc testing with the SUT
-  - `composer sut:si`. See composer.json for details.
+  - `composer sut:si`. [See composer.json for details](https://github.com/drush-ops/drush/blob/dde2793453ed96cc8b9e5bbc1b66e3d8d26be1f6/composer.json#L117).
   - `UNISH_DIRTY=1 composer functional -- --filter testUserRole`
   - `./drush @sut.dev status`
 

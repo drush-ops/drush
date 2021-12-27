@@ -50,21 +50,7 @@ class EntityCommands extends DrushCommands
      */
     public function delete($entity_type, $ids = null, $options = ['bundle' => self::REQ, 'exclude' => self::REQ, 'chunks' => 50])
     {
-        $storage = $this->entityTypeManager->getStorage($entity_type);
-        $query = $storage->getQuery();
-        if ($ids = StringUtils::csvToArray($ids)) {
-            $idKey = $this->entityTypeManager->getDefinition($entity_type)->getKey('id');
-            $query = $query->condition($idKey, $ids, 'IN');
-        } elseif ($options['bundle'] || $options['exclude']) {
-            if ($exclude = StringUtils::csvToArray($options['exclude'])) {
-                $idKey = $this->entityTypeManager->getDefinition($entity_type)->getKey('id');
-                $query = $query->condition($idKey, $exclude, 'NOT IN');
-            }
-            if ($bundle = $options['bundle']) {
-                $bundleKey = $this->entityTypeManager->getDefinition($entity_type)->getKey('bundle');
-                $query = $query->condition($bundleKey, $bundle);
-            }
-        }
+        $query = $this->getQuery($entity_type, $ids, $options);
         $result = $query->execute();
 
         // Don't delete uid=1, uid=0.
@@ -81,7 +67,7 @@ class EntityCommands extends DrushCommands
                 $this->io()->progressAdvance($options['chunks']);
             }
             $this->io()->progressFinish();
-            $this->logger()->success(dt("\nDeleted !type entity Ids: !ids", ['!type' => $entity_type, '!ids' => implode(', ', array_values($result))]));
+            $this->logger()->success(dt("Deleted !type entity Ids: !ids", ['!type' => $entity_type, '!ids' => implode(', ', array_values($result))]));
         }
     }
 
@@ -100,5 +86,98 @@ class EntityCommands extends DrushCommands
         $storage = $this->entityTypeManager->getStorage($entity_type);
         $entities = $storage->loadMultiple($ids);
         $storage->delete($entities);
+    }
+
+    /**
+     * Load and save entities.
+     *
+     * @param string $entity_type An entity machine name.
+     * @param string $ids A comma delimited list of Ids.
+     * @param array $options
+     *
+     * @option bundle Restrict to the specified bundle. Ignored when ids is specified.
+     * @option exclude Exclude certain entities. Ignored when ids is specified.
+     * @option chunks Define how many entities will be loaded in the same step.
+     * @usage drush entity:save node --bundle=article
+     *   Re-save all article entities.
+     * @usage drush entity:save shortcut
+     *   Re-save all shortcut entities.
+     * @usage drush entity:save node 22,24
+     *   Re-save nodes 22 and 24.
+     * @usage drush entity:save node --exclude=9,14,81
+     *   Re-save all nodes except node 9, 14 and 81.
+     * @usage drush entity:save user
+     *   Re-save all users.
+     * @usage drush entity:save node --chunks=5
+     *   Re-save all node entities in steps of 5.
+     * @version 11.0
+     *
+     * @command entity:save
+     * @aliases esav,entity-save
+     * @throws \Exception
+     */
+    public function loadSave(string $entity_type, $ids = null, array $options = ['bundle' => self::REQ, 'exclude' => self::REQ, 'chunks' => 50]): void
+    {
+        $query = $this->getQuery($entity_type, $ids, $options);
+        $result = $query->execute();
+
+        if (empty($result)) {
+            $this->logger()->success(dt('No matching entities found.'));
+        } else {
+            $this->io()->progressStart(count($result));
+            foreach (array_chunk($result, $options['chunks'], true) as $chunk) {
+                drush_op([$this, 'doSave'], $entity_type, $chunk);
+                $this->io()->progressAdvance($options['chunks']);
+            }
+            $this->io()->progressFinish();
+            $this->logger()->success(dt("Saved !type entity ids: !ids", ['!type' => $entity_type, '!ids' => implode(', ', array_values($result))]));
+        }
+    }
+
+    /**
+     * Actual save method.
+     *
+     * @param string $entity_type
+     * @param array $ids
+     *
+     * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
+     * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
+     * @throws \Drupal\Core\Entity\EntityStorageException
+     */
+    public function doSave(string $entity_type, array $ids): void
+    {
+        $storage = $this->entityTypeManager->getStorage($entity_type);
+        $entities = $storage->loadMultiple($ids);
+        foreach ($entities as $entity) {
+            $entity->save();
+        }
+    }
+
+    /**
+     * @param string $entity_type
+     * @param string|null $ids
+     * @param array $options
+     * @return \Drupal\Core\Entity\Query\QueryInterface
+     * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
+     * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
+     */
+    protected function getQuery(string $entity_type, ?string $ids, array $options): \Drupal\Core\Entity\Query\QueryInterface
+    {
+        $storage = $this->entityTypeManager->getStorage($entity_type);
+        $query = $storage->getQuery();
+        if ($ids = StringUtils::csvToArray($ids)) {
+            $idKey = $this->entityTypeManager->getDefinition($entity_type)->getKey('id');
+            $query = $query->condition($idKey, $ids, 'IN');
+        } elseif ($options['bundle'] || $options['exclude']) {
+            if ($exclude = StringUtils::csvToArray($options['exclude'])) {
+                $idKey = $this->entityTypeManager->getDefinition($entity_type)->getKey('id');
+                $query = $query->condition($idKey, $exclude, 'NOT IN');
+            }
+            if ($bundle = $options['bundle']) {
+                $bundleKey = $this->entityTypeManager->getDefinition($entity_type)->getKey('bundle');
+                $query = $query->condition($bundleKey, $bundle);
+            }
+        }
+        return $query;
     }
 }

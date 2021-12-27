@@ -3,7 +3,6 @@
 namespace Drush\Sql;
 
 use Drush\Drush;
-use Drush\Log\LogLevel;
 use mysql_xdevapi\Exception;
 
 class SqlSqlite extends SqlBase

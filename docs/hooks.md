@@ -7,7 +7,7 @@ All commandfiles may implement methods that are called by Drush at various times
 
 ## Custom Hooks
 
-Drush commands can define custom events that other command files can hook. You can find examples in [CacheCommands](https://github.com/drush-ops/drush/blob/10.x/src/Commands/core/CacheCommands.php) and [SanitizeCommands](https://github.com/drush-ops/drush/blob/10.x/src/Drupal/Commands/sql/SanitizeCommands.php)
+Drush commands can define custom events that other command files can hook. You can find examples in [CacheCommands](https://github.com/drush-ops/drush/blob/11.x/src/Commands/core/CacheCommands.php) and [SanitizeCommands](https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/sql/SanitizeCommands.php)
 
 First, the command must implement CustomEventAwareInterface and use CustomEventAwareTrait, as described in the [dependency injection](dependency-injection.md) documentation.
 
@@ -33,7 +33,7 @@ Then, the command may ask the provided hook manager to return a list of handlers
     }
 ```
 
-Other command handlers may provide implementations by implementing `@hook on-event my-event`.
+Other command handlers may provide implementations by implementing `@hook on-event my-event` or `#[CLI/Hook(type: 'on-event', target: 'my-event')]`.
 
 ```php
     /**

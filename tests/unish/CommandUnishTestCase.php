@@ -77,9 +77,9 @@ abstract class CommandUnishTestCase extends UnishTestCase
     /**
      * Invoke drush in via execute().
      *
-     * @param command
+     * @param $command
       *   A defined drush command such as 'cron', 'status' or any of the available ones such as 'drush pm'.
-      * @param args
+      * @param $args
       *   Command arguments.
       * @param $options
       *   An associative array containing options.
@@ -121,18 +121,25 @@ abstract class CommandUnishTestCase extends UnishTestCase
         $cmd[] = self::getDrush();
 
         // Insert global options.
-        foreach ($options as $key => $value) {
-            if (in_array($key, $global_option_list)) {
-                unset($options[$key]);
-                if ($key == 'uri' && $value == 'OMIT') {
-                    continue;
-                }
-                $dashes = strlen($key) == 1 ? '-' : '--';
-                $equals = strlen($key) == 1 ? '' : '=';
-                if (!isset($value)) {
-                    $cmd[] = "$dashes$key";
-                } else {
-                    $cmd[] = "$dashes$key$equals" . self::escapeshellarg($value);
+        foreach ($options as $key => $values) {
+            // Normalize to an array of values which is uncommon but is supported via
+            // multiple instances of the same option.
+            if (!is_iterable($values)) {
+                $values = [$values];
+            }
+            foreach ($values as $value) {
+                if (in_array($key, $global_option_list)) {
+                    unset($options[$key]);
+                    if ($key == 'uri' && $value == 'OMIT') {
+                        continue;
+                    }
+                    $dashes = strlen($key) == 1 ? '-' : '--';
+                    $equals = strlen($key) == 1 ? '' : '=';
+                    if (!isset($value)) {
+                        $cmd[] = "$dashes$key";
+                    } else {
+                        $cmd[] = "$dashes$key$equals" . self::escapeshellarg($value);
+                    }
                 }
             }
         }
@@ -163,13 +170,20 @@ abstract class CommandUnishTestCase extends UnishTestCase
             $cmd[] = self::escapeshellarg($arg);
         }
         // insert drush command options
-        foreach ($options as $key => $value) {
-            $dashes = strlen($key) == 1 ? '-' : '--';
-            $equals = strlen($key) == 1 ? '' : '=';
-            if (!isset($value)) {
-                $cmd[] = "$dashes$key";
-            } else {
-                $cmd[] = "$dashes$key$equals" . self::escapeshellarg($value);
+        foreach ($options as $key => $values) {
+            // Normalize to an array of values which is uncommon but is supported via
+            // multiple instances of the same option.
+            if (!is_iterable($values)) {
+                $values = [$values];
+            }
+            foreach ($values as $value) {
+                $dashes = strlen($key) == 1 ? '-' : '--';
+                $equals = strlen($key) == 1 ? '' : '=';
+                if (!isset($value)) {
+                    $cmd[] = "$dashes$key";
+                } else {
+                    $cmd[] = "$dashes$key$equals" . self::escapeshellarg($value);
+                }
             }
         }
 

@@ -2,7 +2,6 @@
 namespace Drush\Drupal;
 
 use Drush\Drush;
-use Drush\Log\LogLevel;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\Reference;
@@ -61,7 +60,7 @@ class FindCommandsCompilerPass implements CompilerPassInterface
             $this->tagId
         );
         foreach ($taggedServices as $id => $tags) {
-            Drush::logger()->log(LogLevel::DEBUG_NOTIFY, dt("Found tagged service !id", ['!id' => $id]));
+            Drush::logger()->debug(dt("Found tagged service !id", ['!id' => $id]));
             $definition->addMethodCall(
                 'addCommandReference',
                 [new Reference($id)]

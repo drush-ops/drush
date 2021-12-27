@@ -1,7 +1,7 @@
 set -e
 
 # No need to check for mergability on commits that are already merged.
-if [ "$CIRCLE_BRANCH" == "10.x" ] || [ "$CIRCLE_BRANCH" == "9.x" ] ; then
+if [ "$CIRCLE_BRANCH" == "11.x" ] || [ "$CIRCLE_BRANCH" == "10.x" ] ; then
 	exit 0
 fi
 

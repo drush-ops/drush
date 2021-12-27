@@ -82,7 +82,6 @@ class PreflightArgs extends Config implements PreflightArgsInterface
             '--root=' => 'setSelectedSite',
             '--debug' => 'setDebug',
             '-d' => 'setDebug',
-            '-vv' => 'setDebug',
             '-vvv' => 'setDebug',
             '-l=' => 'setUri',
             '--uri=' => 'setUri',
