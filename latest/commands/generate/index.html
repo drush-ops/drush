@@ -4957,8 +4957,9 @@ generating, Drush lists the files that were created.</p>
 <h4 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h4>
 <ul>
 <li><code>drush generate</code>. Pick from available generators and then run it.</li>
-<li><code>drush generate controller</code>. Generate a controller class for your module.</li>
 <li><code>drush generate drush-command-file</code>. Generate a Drush commandfile for your module.</li>
+<li><code>drush generate controller --answer=Example --answer=example</code>. Generate a controller class and pre-fill the first two questions in the wizard.</li>
+<li><code>drush generate controller -vvv --dry-run</code>. Learn all the potential answers so you can re-run with several --answer options.</li>
 </ul>
 <h4 id="arguments">Arguments<a class="headerlink" href="#arguments" title="Permanent link">&para;</a></h4>
 <ul>
