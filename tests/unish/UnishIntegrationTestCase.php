@@ -98,8 +98,9 @@ abstract class UnishIntegrationTestCase extends UnishTestCase
         $this->stderr = $output->getErrorOutput()->fetch();
 
         // Undo the env variable and verbosity property that Process unhelpfully persists.
+        // https://github.com/symfony/console/blob/3.4/Application.php#L970-L972
         putenv('SHELL_VERBOSITY');
-        unset($_ENV['SHELL_VERBOSITY']);
+        unset($_ENV['SHELL_VERBOSITY'], $_SERVER['SHELL_VERBOSITY']);
         $output->setVerbosity(OutputInterface::VERBOSITY_NORMAL);
 
         $this->assertEquals($expected_return, $return, "Command failed: \n\n" . $this->getErrorOutput());

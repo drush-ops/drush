@@ -146,9 +146,9 @@ class ProcessManager extends ConsolidationProcessManager
     {
         $process->setSimulated(Drush::simulate());
         $process->setVerbose(Drush::verbose());
-        // Don't let sub-process inherit the verbosity of its parent.
+        // Don't let sub-process inherit the verbosity of its parent https://github.com/symfony/console/blob/3.4/Application.php#L970-L972
         putenv('SHELL_VERBOSITY');
-        unset($_ENV['SHELL_VERBOSITY']);
+        unset($_ENV['SHELL_VERBOSITY'], $_SERVER['SHELL_VERBOSITY']);
         $process->setLogger(Drush::logger());
         $process->setRealtimeOutput(new DrushStyle(Drush::input(), Drush::output()));
         $process->setTimeout(Drush::getTimeout());
