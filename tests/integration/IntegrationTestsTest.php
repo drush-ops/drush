@@ -13,9 +13,10 @@ class IntegrationTestsTest extends UnishIntegrationTestCase
      */
     public function testStdErr(): void
     {
+        // Ensure that a verbose run does not affect subsequent runs.
         $this->drush('version', [], ['debug' => null]);
-        $this->assertStringContainsString('[debug] Starting bootstrap to none', $this->getErrorOutputRaw());
+        $this->assertStringContainsString('[info] Starting bootstrap to none', $this->getErrorOutputRaw());
         $this->drush('version');
-        $this->assertStringNotContainsString('[debug] Starting bootstrap to none', $this->getErrorOutputRaw());
+        $this->assertStringNotContainsString('[info] Starting bootstrap to none', $this->getErrorOutputRaw());
     }
 }
