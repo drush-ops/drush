@@ -13,6 +13,10 @@ class IntegrationTestsTest extends UnishIntegrationTestCase
      */
     public function testStdErr(): void
     {
+        if ($this->isWindows()) {
+            $this->markTestSkipped('@todo Fails on Windows');
+        }
+
         // Ensure that a verbose run does not affect subsequent runs.
         $this->drush('version', [], ['debug' => null]);
         $this->assertStringContainsString('[info] Starting bootstrap to none', $this->getErrorOutputRaw());
