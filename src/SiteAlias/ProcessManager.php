@@ -7,7 +7,6 @@ use Consolidation\SiteProcess\ProcessManager as ConsolidationProcessManager;
 use Consolidation\SiteProcess\SiteProcess;
 use Drush\Drush;
 use Drush\Style\DrushStyle;
-use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Process\Process;
 use Webmozart\PathUtil\Path;
 
@@ -148,8 +147,8 @@ class ProcessManager extends ConsolidationProcessManager
         $process->setSimulated(Drush::simulate());
         $process->setVerbose(Drush::verbose());
         // Don't let sub-process inherit the verbosity of its parent.
-        putenv('SHELL_VERBOSITY=' . OutputInterface::VERBOSITY_NORMAL);
-        $_ENV['SHELL_VERBOSITY'] = OutputInterface::VERBOSITY_NORMAL;
+        putenv('SHELL_VERBOSITY');
+        unset($_ENV['SHELL_VERBOSITY']);
         $process->setLogger(Drush::logger());
         $process->setRealtimeOutput(new DrushStyle(Drush::input(), Drush::output()));
         $process->setTimeout(Drush::getTimeout());
