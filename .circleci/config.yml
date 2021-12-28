@@ -140,7 +140,7 @@ workflows:
     jobs:
       - code_style
       - check_mergable
-      - test_74_drupal91_security:
+      - test_74_drupal92_security:
           <<: *requires
       - test_74_drupal9_mysql:
           <<: *requires
