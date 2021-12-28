@@ -100,7 +100,7 @@ class MkCommands extends DrushCommands implements SiteAliasManagerAwareInterface
 EOT;
     }
 
-    protected static function appendAliases(AnnotatedCommand $command): string
+    protected static function appendAliases($command): string
     {
         if ($aliases = $command->getAliases()) {
             $body = "#### Aliases\n\n";
@@ -141,7 +141,7 @@ EOT;
         return '';
     }
 
-    protected static function appendOptions(AnnotatedCommand $command): string
+    protected static function appendOptions($command): string
     {
         if ($opts = $command->getDefinition()->getOptions()) {
             $body = '';
@@ -159,7 +159,7 @@ EOT;
         return '';
     }
 
-    protected static function appendArguments(AnnotatedCommand $command): string
+    protected static function appendArguments($command): string
     {
         if ($args = $command->getDefinition()->getArguments()) {
             $body = "#### Arguments\n\n";
@@ -184,9 +184,12 @@ EOT;
         return '';
     }
 
-    protected static function appendPreamble(AnnotatedCommand $command, $root): string
+    protected static function appendPreamble($command, $root): string
     {
-        $path = Path::makeRelative($command->getAnnotationData()->get('_path'), $root);
+        $path = '';
+        if ($command instanceof AnnotatedCommand) {
+            $path = Path::makeRelative($command->getAnnotationData()->get('_path'), $root);
+        }
         $edit_url = $path ? "https://github.com/drush-ops/drush/blob/11.x/$path" : '';
         $body = <<<EOT
 ---
@@ -328,7 +331,9 @@ EOT;
                     $command->optionsHook();
                 }
                 $body = self::appendPreamble($command, $dir_root);
-                $body .= self::appendUsages($command);
+                if ($command instanceof AnnotatedCommand) {
+                    $body .= self::appendUsages($command);
+                }
                 $body .= self::appendArguments($command);
                 $body .= self::appendOptions($command);
                 if ($command instanceof AnnotatedCommand) {
