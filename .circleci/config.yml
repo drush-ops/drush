@@ -89,8 +89,8 @@ jobs:
           POSTGRES_USER: unish
     <<: *test74steps
 
-  # Drupal 9.1.0 for Security test coverage for drupal/core
-  test_74_drupal91_security:
+  # Drupal 9.2.8 for Security test coverage for drupal/core
+  test_74_drupal92_security:
     <<: *defaults
     docker:
       - image: wodby/php:7.4
@@ -101,7 +101,7 @@ jobs:
     steps:
       - checkout
       - run: cp .docker/zz-php.ini /usr/local/etc/php/conf.d/
-      - run: composer require --dev drupal/core-recommended:9.1.0 --no-update
+      - run: composer require --dev drupal/core-recommended:9.2.8 --no-update
       - run: composer require symfony/polyfill-php80:"1.23 as 1.20" --no-update
       - run: php --version
       - run: composer update
