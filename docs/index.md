@@ -12,6 +12,41 @@ Resources
 * Drush expects all participants to abide by the [Drupal Code of Conduct](https://www.drupal.org/dcoc).
 * Drush 8 is no longer supported, but [here are its docs](https://docs.drush.org/en/8.x/install/).
 
+Examples
+-------------
+
+=== "field:create"
+
+<div class="termy">
+$ drush pm:list
+
+<code>
+----------- -------------------------------------------- ---------
+  Package     Names                              Status     Version
+ ----------- --------------------------------- ---------- --------
+  Core        Actions (action)                  Disabled   8.9.6
+  Core        Aggregator (aggregator)           Enabled    8.9.6
+  Core        Automated Cron (automated_cron)   Disabled   8.9.6
+  Core        Ban (ban)                         Disabled   8.9.6
+</code>
+
+</div>
+
+=== "deploy"
+
+<div class="termy">
+```console
+$ drush pm:list
+----------- -------------------------------------------- ---------
+  Package     Name                              Status     Version
+ ----------- --------------------------------- ---------- --------
+  Core        Actions (action)                  Disabled   8.9.6
+  Core        Aggregator (aggregator)           Enabled    8.9.6
+  Core        Automated Cron (automated_cron)   Disabled   8.9.6
+  Core        Ban (ban)                         Disabled   8.9.6
+```
+</div>
+
 Support
 -----------
 * Post support requests to [Drupal Answers](http://drupal.stackexchange.com/questions/tagged/drush). Tag question with _drush_.
