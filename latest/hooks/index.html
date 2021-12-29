@@ -4954,15 +4954,31 @@
         <span class="k">return</span> <span class="nb">implode</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="nv">$result</span><span class="p">);</span>
     <span class="p">}</span>
 </code></pre></div></p>
-<p>Other command handlers may provide implementations by implementing <code>@hook on-event my-event</code> or <code>#[CLI/Hook(type: 'on-event', target: 'my-event')]</code>.</p>
-<div class="highlight"><pre><span></span><code>    <span class="sd">/**</span>
-<span class="sd">     * @hook on-event my-event</span>
-<span class="sd">     */</span>
-    <span class="k">public</span> <span class="k">function</span> <span class="nf">hookOne</span><span class="p">()</span>
-    <span class="p">{</span>
-        <span class="k">return</span> <span class="s1">&#39;one&#39;</span><span class="p">;</span>
-    <span class="p">}</span>
+<p>Other commandfiles may provide implementations via a PHP8 Attribute or an Annotation.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">PHP8 Attributes</label><label for="__tabbed_1_2">Annotations</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="sd">/**</span>
+<span class="sd"> * #[CLI/Hook(type: &#39;on-event&#39;, target: &#39;my-event&#39;)]</span>
+<span class="sd"> */</span>
+<span class="k">public</span> <span class="k">function</span> <span class="nf">hookOne</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="k">return</span> <span class="s1">&#39;one&#39;</span><span class="p">;</span>
+<span class="p">}</span>
 </code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="sd">/**</span>
+<span class="sd"> * @hook on-event my-event</span>
+<span class="sd"> */</span>
+<span class="k">public</span> <span class="k">function</span> <span class="nf">hookOne</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="k">return</span> <span class="s1">&#39;one&#39;</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+</div>
+</div>
+</div>
 
               
             </article>

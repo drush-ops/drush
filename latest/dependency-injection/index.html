@@ -4974,8 +4974,9 @@ See the <a href="https://www.drupal.org/docs/8/api/services-and-dependency-injec
 <span class="k">class</span> <span class="nc">MyModuleCommands</span> <span class="k">extends</span> <span class="nx">DrushCommands</span> <span class="k">implements</span> <span class="nx">SiteAliasManagerAwareInterface</span>
 <span class="p">{</span>
   <span class="k">use</span> <span class="nx">SiteAliasManagerAwareTrait</span><span class="p">;</span>
+
   <span class="sd">/**</span>
-<span class="sd">   * Prints the currenbt alias name and info.</span>
+<span class="sd">   * Prints the current alias name and info.</span>
 <span class="sd">   *</span>
 <span class="sd">   * @command mymodule:myAlias</span>
 <span class="sd">   * @return \Consolidation\OutputFormatters\StructuredData\ListDataFromKeys</span>

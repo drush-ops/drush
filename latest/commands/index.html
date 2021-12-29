@@ -647,6 +647,13 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#attributes-or-annotations" class="md-nav__link">
+    Attributes or Annotations
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#specifying-the-services-file" class="md-nav__link">
     Specifying the Services File
   </a>
@@ -4980,10 +4987,49 @@
 <li>Drush will then report that it created a commandfile, a drush.services.yml file and a composer.json file. Edit those files as needed.</li>
 <li>Use the classes for the core Drush commands at <a href="https://github.com/drush-ops/drush/tree/11.x/src/Drupal/Commands">/src/Drupal/Commands</a> as inspiration and documentation.</li>
 <li>See the <a href="../dependency-injection/">dependency injection docs</a> for interfaces you can implement to gain access to Drush config, Drupal site aliases, etc.</li>
-<li>A commandfile that will only be used on PHP8+ can <a href="https://github.com/drush-ops/drush/pull/4821">use Attributes</a> instead of Annotations.</li>
 <li>Write PHPUnit tests based on <a href="https://github.com/drush-ops/drush/blob/11.x/docs/contribute/unish.md#drush-test-traits">Drush Test Traits</a>.</li>
-<li>Once your two files are ready, run <code>drush cr</code> to get your command recognized by the Drupal container.</li>
+<li>Once your drush.services.yml files is ready, run <code>drush cr</code> to get your command recognized by the Drupal container.</li>
 </ol>
+<h2 id="attributes-or-annotations">Attributes or Annotations<a class="headerlink" href="#attributes-or-annotations" title="Permanent link">&para;</a></h2>
+<p>The following are both valid ways to declare a command:</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">PHP8 Attributes</label><label for="__tabbed_1_2">Annotations</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>#[Command(name: &#39;xkcd:fetch-attributes&#39;, aliases: [&#39;xkcd-attributes&#39;])]
+#[Argument(name: &#39;search&#39;, description: &#39;Optional argument to retrieve the cartoons matching an index number, keyword search or &quot;random&quot;. If omitted the latest cartoon will be retrieved.&#39;)]
+#[Option(name: &#39;image-viewer&#39;, description: &#39;Command to use to view images (e.g. xv, firefox). Defaults to &quot;display&quot; (from ImageMagick).&#39;)]
+#[Option(name: &#39;google-custom-search-api-key&#39;, description: &#39;Google Custom Search API Key, available from https://code.google.com/apis/console/. Default key limited to 100 queries/day globally.&#39;)]
+#[Help(description: &#39;Retrieve and display xkcd cartoons (attribute variant).&#39;)]
+#[Usage(name: &#39;drush xkcd&#39;, description: &#39;Retrieve and display the latest cartoon&#39;)]
+#[Usage(name: &#39;drush xkcd sandwich&#39;, description: &#39;Retrieve and display cartoons about sandwiches.&#39;)]
+public function fetch($search = null, $options = [&#39;image-viewer&#39; =&gt; &#39;open&#39;, &#39;google-custom-search-api-key&#39; =&gt; &#39;AIzaSyDpE01VDNNT73s6CEeJRdSg5jukoG244ek&#39;]) {
+    $this-&gt;doFetch($search, $options);
+}
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="sd">/**</span>
+<span class="sd"> * @command xkcd:fetch</span>
+<span class="sd"> * @param $search Optional argument to retrieve the cartoons matching an index number, keyword search or &quot;random&quot;. If omitted the latest cartoon will be retrieved.</span>
+<span class="sd"> * @option image-viewer Command to use to view images (e.g. xv, firefox). Defaults to &quot;display&quot; (from ImageMagick).</span>
+<span class="sd"> * @option google-custom-search-api-key Google Custom Search API Key, available from https://code.google.com/apis/console/. Default key limited to 100 queries/day globally.</span>
+<span class="sd"> * @usage drush xkcd</span>
+<span class="sd"> *   Retrieve and display the latest cartoon.</span>
+<span class="sd"> * @usage drush xkcd sandwich</span>
+<span class="sd"> *   Retrieve and display cartoons about sandwiches.</span>
+<span class="sd"> * @aliases xkcd</span>
+<span class="sd">*/</span>
+<span class="k">public</span> <span class="k">function</span> <span class="nf">fetch</span><span class="p">(</span><span class="nv">$search</span> <span class="o">=</span> <span class="k">null</span><span class="p">,</span> <span class="nv">$options</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;image-viewer&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;open&#39;</span><span class="p">,</span> <span class="s1">&#39;google-custom-search-api-key&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;AIzaSyDpE01VDNNT73s6CEeJRdSg5jukoG244ek&#39;</span><span class="p">])</span> <span class="p">{</span>
+    <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">doFetch</span><span class="p">(</span><span class="nv">$search</span><span class="p">,</span> <span class="nv">$options</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+<ul>
+<li>A commandfile that will only be used on PHP8+ should <a href="https://github.com/drush-ops/drush/pull/4821">use PHP Attributes</a> instead of Annotations.</li>
+<li><a href="https://www.drush.org/latest/api/Drush/Attributes.html">See all Attributes provided by Drush core</a>.</li>
+</ul>
 <h2 id="specifying-the-services-file">Specifying the Services File<a class="headerlink" href="#specifying-the-services-file" title="Permanent link">&para;</a></h2>
 <p>A module's composer.json file stipulates the filename where the Drush services (e.g. the Drush command files) are defined. The default services file is <code>drush.services.yml</code>, which is defined in the extra section of the composer.json file as follows:
 <div class="highlight"><pre><span></span><code>  <span class="nt">&quot;extra&quot;</span><span class="p">:</span> <span class="p">{</span>
