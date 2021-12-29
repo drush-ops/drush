@@ -33,9 +33,23 @@ Then, the command may ask the provided hook manager to return a list of handlers
     }
 ```
 
-Other command handlers may provide implementations by implementing `@hook on-event my-event` or `#[CLI/Hook(type: 'on-event', target: 'my-event')]`.
+Other commandfiles may provide implementations via a PHP8 Attribute or an Annotation.
 
-```php
+=== "PHP8 Attributes"
+
+    ```php
+    /**
+     * #[CLI/Hook(type: 'on-event', target: 'my-event')]
+     */
+    public function hookOne()
+    {
+        return 'one';
+    }
+    ```
+
+=== "Annotations"
+
+    ```php
     /**
      * @hook on-event my-event
      */
@@ -43,4 +57,4 @@ Other command handlers may provide implementations by implementing `@hook on-eve
     {
         return 'one';
     }
-```
+    ```
