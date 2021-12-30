@@ -17,15 +17,17 @@ The following are both valid ways to declare a command:
 
 === "PHP8 Attributes"
     
-    ```php8
-    #[Command(name: 'xkcd:fetch-attributes', aliases: ['xkcd-attributes'])]
-    #[Argument(name: 'search', description: 'Optional argument to retrieve the cartoons matching an index number, keyword search or "random". If omitted the latest cartoon will be retrieved.')]
-    #[Option(name: 'image-viewer', description: 'Command to use to view images (e.g. xv, firefox). Defaults to "display" (from ImageMagick).')]
-    #[Option(name: 'google-custom-search-api-key', description: 'Google Custom Search API Key, available from https://code.google.com/apis/console/. Default key limited to 100 queries/day globally.')]
-    #[Help(description: 'Retrieve and display xkcd cartoons (attribute variant).')]
-    #[Usage(name: 'drush xkcd', description: 'Retrieve and display the latest cartoon')]
-    #[Usage(name: 'drush xkcd sandwich', description: 'Retrieve and display cartoons about sandwiches.')]
-    public function fetch($search = null, $options = ['image-viewer' => 'open', 'google-custom-search-api-key' => 'AIzaSyDpE01VDNNT73s6CEeJRdSg5jukoG244ek']) {
+    ```php
+    use Drush\Attributes as CLI;
+
+    #[CLI\Command(name: 'xkcd:fetch-attributes', aliases: ['xkcd-attributes'])]
+    #[CLI\Argument(name: 'search', description: 'Optional argument to retrieve the cartoons matching an index, keyword keyword, or "random".')]
+    #[CLI\Option(name: 'image-viewer', description: 'Command to use to view images (e.g. xv, firefox).')]
+    #[CLI\Option(name: 'google-custom-search-api-key', description: 'Google Custom Search API Key')]
+    #[CLI\Help(description: 'Retrieve and display xkcd cartoons (attribute variant).')]
+    #[CLI\Usage(name: 'drush xkcd', description: 'Retrieve and display the latest cartoon')]
+    #[CLI\Usage(name: 'drush xkcd sandwich', description: 'Retrieve and display cartoons about sandwiches.')]
+    public function fetch($search = null, $options = ['image-viewer' => 'open', 'google-custom-search-api-key' => 'AIza']) {
         $this->doFetch($search, $options);
     }
     ```
@@ -35,16 +37,16 @@ The following are both valid ways to declare a command:
     ```php
     /**
      * @command xkcd:fetch
-     * @param $search Optional argument to retrieve the cartoons matching an index number, keyword search or "random". If omitted the latest cartoon will be retrieved.
-     * @option image-viewer Command to use to view images (e.g. xv, firefox). Defaults to "display" (from ImageMagick).
-     * @option google-custom-search-api-key Google Custom Search API Key, available from https://code.google.com/apis/console/. Default key limited to 100 queries/day globally.
+     * @param $search Optional argument to retrieve the cartoons matching an index number, keyword, or "random".
+     * @option image-viewer Command to use to view images (e.g. xv, firefox).
+     * @option google-custom-search-api-key Google Custom Search API Key.
      * @usage drush xkcd
      *   Retrieve and display the latest cartoon.
      * @usage drush xkcd sandwich
      *   Retrieve and display cartoons about sandwiches.
      * @aliases xkcd
     */
-    public function fetch($search = null, $options = ['image-viewer' => 'open', 'google-custom-search-api-key' => 'AIzaSyDpE01VDNNT73s6CEeJRdSg5jukoG244ek']) {
+    public function fetch($search = null, $options = ['image-viewer' => 'open', 'google-custom-search-api-key' => 'AIza']) {
         $this->doFetch($search, $options);
     }
     ```

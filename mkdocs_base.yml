@@ -24,6 +24,11 @@ extra_css:
 plugins:
   - edit_url
   - search
+  - git-revision-date-localized
+  - git-authors:
+      exclude:
+        - commands/*
+        - generators/*
 extra:
   social:
     - icon: fontawesome/brands/twitter
