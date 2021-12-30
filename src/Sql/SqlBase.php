@@ -222,12 +222,13 @@ abstract class SqlBase implements ConfigAwareInterface
      *
      * @param array $table_selection
      *   Supported keys: 'skip', 'structure', 'tables'.
-     * @return string
+     * @return
      *   One or more mysqldump/pg_dump/sqlite3/etc statements that are ready for executing.
      *   If multiple statements are needed, enclose in parenthesis.
      */
     public function dumpCmd($table_selection): string
     {
+        return '';
     }
 
     /*
@@ -364,6 +365,7 @@ abstract class SqlBase implements ConfigAwareInterface
      */
     public function silent(): ?string
     {
+        return null;
     }
 
 
@@ -413,6 +415,7 @@ abstract class SqlBase implements ConfigAwareInterface
      */
     public function createdbSql($dbname, bool $quoted = false): string
     {
+        return '';
     }
 
     /**
@@ -449,11 +452,10 @@ abstract class SqlBase implements ConfigAwareInterface
 
     /*
      * Determine if the specified DB already exists.
-     *
-     * @return
      */
     public function dbExists(): bool
     {
+        return false;
     }
 
     /**
@@ -465,6 +467,7 @@ abstract class SqlBase implements ConfigAwareInterface
      */
     public function creds(bool $hide_password = true): string
     {
+        return '';
     }
 
     /**
@@ -480,6 +483,7 @@ abstract class SqlBase implements ConfigAwareInterface
      */
     public function listTables(): array
     {
+        return [];
     }
 
     /**
