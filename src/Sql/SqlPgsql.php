@@ -41,24 +41,26 @@ class SqlPgsql extends SqlBase
         return $this->password_file;
     }
 
-    public function command()
+    public function command(): string
     {
         return 'psql -q';
     }
 
-    public function getEnv()
+    public function getEnv(): array
     {
+        $return = [];
         $pw_file = $this->createPasswordFile();
         if (isset($pw_file)) {
-            return ['PGPASSFILE' => $pw_file];
+            $return = ['PGPASSFILE' => $pw_file];
         }
+        return $return;
     }
 
     /*
      * @param $hide_password
      *   Not used in postgres. We always hide via a .pgpass file.
      */
-    public function creds($hide_password = true)
+    public function creds($hide_password = true): string
     {
         $dbSpec = $this->getDbSpec();
         // Some drush commands (e.g. site-install) want to connect to the
@@ -78,7 +80,7 @@ class SqlPgsql extends SqlBase
         return $this->paramsToOptions($parameters);
     }
 
-    public function createdbSql($dbname, $quoted = false)
+    public function createdbSql($dbname, $quoted = false): string
     {
         if ($quoted) {
             $dbname = '"' . $dbname . '"';
@@ -88,7 +90,7 @@ class SqlPgsql extends SqlBase
         return implode(' ', $sql);
     }
 
-    public function dbExists()
+    public function dbExists(): bool
     {
         $dbSpec = $this->getDbSpec();
         $database = $dbSpec['database'];
@@ -111,14 +113,14 @@ class SqlPgsql extends SqlBase
         return $query;
     }
 
-    public function listTables()
+    public function listTables(): array
     {
         $return = $this->alwaysQuery(PSQL_SHOW_TABLES);
         $tables = explode(PHP_EOL, trim($this->getProcess()->getOutput()));
         return array_filter($tables);
     }
 
-    public function dumpCmd($table_selection)
+    public function dumpCmd($table_selection): string
     {
         $parens = false;
         $skip_tables = $table_selection['skip'];
@@ -171,10 +173,7 @@ class SqlPgsql extends SqlBase
         return $parens ? "($exec)" : $exec;
     }
 
-    /**
-     * @return string|null
-     */
-    public function getPasswordFile()
+    public function getPasswordFile(): ?string
     {
         return $this->password_file;
     }

@@ -31,18 +31,12 @@ class PreflightArgs extends Config implements PreflightArgsInterface
 
     protected $commandName;
 
-    /**
-     * @return string
-     */
-    public function homeDir()
+    public function homeDir(): string
     {
         return $this->homeDir;
     }
 
-    /**
-     * @param string $homeDir
-     */
-    public function setHomeDir($homeDir)
+    public function setHomeDir(string $homeDir): void
     {
         $this->homeDir = $homeDir;
     }
@@ -75,7 +69,7 @@ class PreflightArgs extends Config implements PreflightArgsInterface
     /**
      * @inheritdoc
      */
-    public function optionsWithValues()
+    public function optionsWithValues(): array
     {
         return [
             '-r=' => 'setSelectedSite',
@@ -105,7 +99,7 @@ class PreflightArgs extends Config implements PreflightArgsInterface
      * option away and add a 'help' command to the beginning
      * of the argument list.
      */
-    public function adjustHelpOption()
+    public function adjustHelpOption(): void
     {
         $drushPath = array_shift($this->args);
         array_unshift($this->args, $drushPath, 'help');
@@ -116,7 +110,7 @@ class PreflightArgs extends Config implements PreflightArgsInterface
      * preflight option in. The values of the config items in this map
      * must be BOOLEANS or STRINGS.
      */
-    protected function optionConfigMap()
+    protected function optionConfigMap(): array
     {
         return [
             self::SIMULATE =>       \Robo\Config\Config::SIMULATE,
@@ -130,7 +124,7 @@ class PreflightArgs extends Config implements PreflightArgsInterface
      * preflight option in. The values of the items in this map must be
      * STRINGS or ARRAYS OF STRINGS.
      */
-    protected function optionConfigPathMap()
+    protected function optionConfigPathMap(): array
     {
         return [
             self::ALIAS_PATH =>     self::DRUSH_CONFIG_PATH_NAMESPACE . '.' . self::ALIAS_PATH,
@@ -144,7 +138,7 @@ class PreflightArgs extends Config implements PreflightArgsInterface
      *
      * @see Environment::exportConfigData(), which also exports information to config.
      */
-    public function applyToConfig(ConfigInterface $config)
+    public function applyToConfig(ConfigInterface $config): void
     {
         // Copy the relevant preflight options to the applicable configuration namespace
         foreach ($this->optionConfigMap() as $option_key => $config_key) {
@@ -171,7 +165,7 @@ class PreflightArgs extends Config implements PreflightArgsInterface
     /**
      * @inheritdoc
      */
-    public function args()
+    public function args(): array
     {
         return $this->args;
     }
@@ -195,14 +189,14 @@ class PreflightArgs extends Config implements PreflightArgsInterface
     /**
      * @inheritdoc
      */
-    public function setCommandName($commandName)
+    public function setCommandName($commandName): void
     {
         $this->commandName = $commandName;
     }
     /**
      * @inheritdoc
      */
-    public function addArg($arg)
+    public function addArg($arg): self
     {
         $this->args[] = $arg;
         return $this;
@@ -211,7 +205,7 @@ class PreflightArgs extends Config implements PreflightArgsInterface
     /**
      * @inheritdoc
      */
-    public function passArgs($args)
+    public function passArgs($args): self
     {
         $this->args = array_merge($this->args, $args);
         return $this;
@@ -228,7 +222,7 @@ class PreflightArgs extends Config implements PreflightArgsInterface
     /**
      * @inheritdoc
      */
-    public function hasAlias()
+    public function hasAlias(): bool
     {
         return $this->has(self::ALIAS);
     }
@@ -236,7 +230,7 @@ class PreflightArgs extends Config implements PreflightArgsInterface
     /**
      * @inheritdoc
      */
-    public function setAlias($alias)
+    public function setAlias($alias): self
     {
         // Treat `drush @self ...` as if an alias had not been used at all.
         if ($alias == '@self') {
@@ -253,7 +247,7 @@ class PreflightArgs extends Config implements PreflightArgsInterface
         return $this->get(self::ROOT, $default);
     }
 
-    public function setDebug($value)
+    public function setDebug($value): void
     {
         $this->set(self::DEBUG, $value);
         $this->addArg('-vvv');
@@ -262,7 +256,7 @@ class PreflightArgs extends Config implements PreflightArgsInterface
     /**
      * Set the selected site.
      */
-    public function setSelectedSite($root)
+    public function setSelectedSite($root): self
     {
         return $this->set(self::ROOT, StringUtils::replaceTilde($root, $this->homeDir()));
     }
@@ -275,7 +269,7 @@ class PreflightArgs extends Config implements PreflightArgsInterface
         return $this->get(self::URI, $default);
     }
 
-    public function hasUri()
+    public function hasUri(): bool
     {
         return $this->has(self::URI);
     }
@@ -283,7 +277,7 @@ class PreflightArgs extends Config implements PreflightArgsInterface
     /**
      * Set the uri option
      */
-    public function setUri($uri)
+    public function setUri($uri): self
     {
         return $this->set(self::URI, $uri);
     }
@@ -298,10 +292,8 @@ class PreflightArgs extends Config implements PreflightArgsInterface
 
     /**
      * Add another location where drush.yml files may be found
-     *
-     * @param string $path
      */
-    public function addConfigPath($path)
+    public function addConfigPath(string $path): self
     {
         $paths = $this->configPaths();
         $paths[] = StringUtils::replaceTilde($path, $this->homeDir());
@@ -313,7 +305,7 @@ class PreflightArgs extends Config implements PreflightArgsInterface
      *
      * @param string[] $configPaths
      */
-    public function mergeConfigPaths($configPaths)
+    public function mergeConfigPaths(array $configPaths): self
     {
         $paths = $this->configPaths();
         $merged_paths = array_merge($paths, $configPaths);
@@ -330,10 +322,8 @@ class PreflightArgs extends Config implements PreflightArgsInterface
 
     /**
      * Set one more path where aliases may be found.
-     *
-     * @param string $path
      */
-    public function addAliasPath($path)
+    public function addAliasPath(string $path): self
     {
         $paths = $this->aliasPaths();
         $paths[] = StringUtils::replaceTilde($path, $this->homeDir());
@@ -342,10 +332,8 @@ class PreflightArgs extends Config implements PreflightArgsInterface
 
     /**
      * Add multiple additional locations for alias paths.
-     *
-     * @param string $aliasPaths
      */
-    public function mergeAliasPaths($aliasPaths)
+    public function mergeAliasPaths(string $aliasPaths): self
     {
         $aliasPaths = array_map(
             function ($item) {
@@ -368,10 +356,8 @@ class PreflightArgs extends Config implements PreflightArgsInterface
 
     /**
      * Add one more path where commandfiles might be found.
-     *
-     * @param string $path
      */
-    public function addCommandPath($path)
+    public function addCommandPath(string $path): self
     {
         $paths = $this->commandPaths();
         $paths[] = StringUtils::replaceTilde($path, $this->homeDir());
@@ -383,7 +369,7 @@ class PreflightArgs extends Config implements PreflightArgsInterface
      *
      * @param $commanPaths
      */
-    public function mergeCommandPaths($commandPaths)
+    public function mergeCommandPaths($commandPaths): self
     {
         $paths = $this->commandPaths();
         $merged_paths = array_merge($paths, $commandPaths);
@@ -395,15 +381,13 @@ class PreflightArgs extends Config implements PreflightArgsInterface
      */
     public function isLocal()
     {
-        return $this->get(self::LOCAL);
+        return $this->get(self::LOCAL, false);
     }
 
     /**
      * Set local mode
-     *
-     * @param bool $isLocal
      */
-    public function setLocal($isLocal)
+    public function setLocal(bool $isLocal): self
     {
         return $this->set(self::LOCAL, $isLocal);
     }
@@ -421,7 +405,7 @@ class PreflightArgs extends Config implements PreflightArgsInterface
      *
      * @param bool $simulated
      */
-    public function setSimulate($simulate)
+    public function setSimulate($simulate): self
     {
         return $this->set(self::SIMULATE, $simulate);
     }
@@ -436,10 +420,8 @@ class PreflightArgs extends Config implements PreflightArgsInterface
 
     /**
      * Set backend mode
-     *
-     * @param bool $backend
      */
-    public function setBackend($backend)
+    public function setBackend(bool $backend)
     {
         if ($backend == 'json') {
             // Remap to --format. See \Drush\Commands\sql\SqlSyncCommands::dump.
@@ -462,7 +444,7 @@ class PreflightArgs extends Config implements PreflightArgsInterface
      *
      * @param string
      */
-    public function setCoverageFile($coverageFile)
+    public function setCoverageFile($coverageFile): self
     {
         return $this->set(self::COVERAGE_FILE, StringUtils::replaceTilde($coverageFile, $this->homeDir()));
     }
@@ -477,10 +459,8 @@ class PreflightArgs extends Config implements PreflightArgsInterface
 
     /**
      * Set strict mode.
-     *
-     * @param bool $strict
      */
-    public function setStrict($strict)
+    public function setStrict(bool $strict): self
     {
         return $this->set(self::STRICT, $strict);
     }
@@ -492,7 +472,7 @@ class PreflightArgs extends Config implements PreflightArgsInterface
      * @param array $argv e.g. ['foo', '--bar=baz', 'boz']
      * @return string[] e.g. ['bar']
      */
-    protected function getOptionNameList($argv)
+    protected function getOptionNameList(array $argv): array
     {
         return array_filter(
             array_map(
@@ -516,7 +496,7 @@ class PreflightArgs extends Config implements PreflightArgsInterface
     /**
      * Create a Symfony Input object.
      */
-    public function createInput()
+    public function createInput(): \Symfony\Component\Console\Input\InputInterface
     {
         // In strict mode (the default), create an ArgvInput. When
         // strict mode is disabled, create a more forgiving input object.

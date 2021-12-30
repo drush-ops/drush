@@ -36,7 +36,7 @@ final class Kernels
     /**
      * Returns the available kernels.
      */
-    public static function availableKernels()
+    public static function availableKernels(): array
     {
         return [
             static::DRUPAL,
@@ -51,10 +51,9 @@ final class Kernels
      * @param string $kernel
      *   The kernel to retrieve.
      *
-     * @return callable
      *   The factory method.
      */
-    public static function getKernelFactory($kernel)
+    public static function getKernelFactory(string $kernel): array
     {
         $factories = [
             Kernels::DRUPAL => [DrushDrupalKernel::class, 'createFromRequest'],

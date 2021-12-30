@@ -52,7 +52,7 @@ class Shell extends BaseShell
      * @return string|NULL
      *   The current command.
      */
-    protected function getCommandFromInput(string $input)
+    protected function getCommandFromInput(string $input): ?string
     {
         // Remove the alias from the start of the string before parsing and
         // returning the command. Essentially, when choosing a command, we're

@@ -29,7 +29,7 @@ class BufferedConsoleOutput extends BufferedOutput implements ConsoleOutputInter
     /**
      * {@inheritdoc}
      */
-    public function getErrorOutput()
+    public function getErrorOutput(): \Symfony\Component\Console\Output\BufferedOutput
     {
         return $this->stderr;
     }
@@ -37,7 +37,7 @@ class BufferedConsoleOutput extends BufferedOutput implements ConsoleOutputInter
     /**
      * {@inheritdoc}
      */
-    public function setErrorOutput(OutputInterface $error)
+    public function setErrorOutput(OutputInterface $error): void
     {
         $this->stderr = $error;
     }

@@ -12,7 +12,7 @@ class GlobalOptionsEventListener implements EventSubscriberInterface
     /**
      * @{@inheritdoc}
      */
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         // Register our 'setGlobalOptions' command to run prior to
         // command dispatch.
@@ -26,7 +26,7 @@ class GlobalOptionsEventListener implements EventSubscriberInterface
      *
      * @param ConsoleCommandEvent $event
      */
-    public function setGlobalOptions(ConsoleCommandEvent $event)
+    public function setGlobalOptions(ConsoleCommandEvent $event): void
     {
         /* @var Input $input */
         $input = $event->getInput();

@@ -19,7 +19,7 @@ class ErrorHandler implements LoggerAwareInterface, HandlerInterface
 {
     use LoggerAwareTrait;
 
-    public function installHandler()
+    public function installHandler(): void
     {
         set_error_handler([$this, 'errorHandler']);
     }
