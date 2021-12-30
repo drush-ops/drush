@@ -42,7 +42,7 @@ class RemoteCommandProxy extends Command
         );
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): void
     {
         $this->redispatchHook->redispatchIfRemote($input);
         $name = $this->getName();

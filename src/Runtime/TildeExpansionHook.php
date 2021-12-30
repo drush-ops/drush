@@ -21,7 +21,7 @@ class TildeExpansionHook implements ValidatorInterface, ConfigAwareInterface
 {
     use ConfigAwareTrait;
 
-    public function validate(CommandData $commandData)
+    public function validate(CommandData $commandData): void
     {
         $input = $commandData->input();
         $args = $input->getArguments();

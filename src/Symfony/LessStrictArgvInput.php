@@ -59,7 +59,7 @@ class LessStrictArgvInput extends ArgvInput
         return false;
     }
 
-    protected function setTokens(array $tokens)
+    protected function setTokens(array $tokens): void
     {
         $this->tokens = $tokens;
     }
@@ -67,7 +67,7 @@ class LessStrictArgvInput extends ArgvInput
     /**
      * {@inheritdoc}
      */
-    protected function parse()
+    protected function parse(): void
     {
         $parseOptions = true;
         $this->parsed = $this->tokens;
@@ -93,7 +93,7 @@ class LessStrictArgvInput extends ArgvInput
      *
      * @param string $token The current token
      */
-    private function parseShortOption($token)
+    private function parseShortOption($token): void
     {
         $name = substr($token, 1);
 
@@ -114,7 +114,7 @@ class LessStrictArgvInput extends ArgvInput
      *
      * @param string $name The current token
      */
-    private function parseShortOptionSet($name)
+    private function parseShortOptionSet($name): void
     {
         $len = strlen($name);
         for ($i = 0; $i < $len; ++$i) {
@@ -138,7 +138,7 @@ class LessStrictArgvInput extends ArgvInput
      *
      * @param string $token The current token
      */
-    private function parseLongOption($token)
+    private function parseLongOption($token): void
     {
         $name = substr($token, 2);
 
@@ -164,7 +164,7 @@ class LessStrictArgvInput extends ArgvInput
      *
      * @throws RuntimeException When too many arguments are given
      */
-    private function parseArgument($token)
+    private function parseArgument($token): void
     {
         $c = count($this->arguments);
 
@@ -197,7 +197,7 @@ class LessStrictArgvInput extends ArgvInput
      *
      * @throws RuntimeException When option given doesn't exist
      */
-    private function addShortOption($shortcut, $value)
+    private function addShortOption($shortcut, $value): void
     {
         if (!$this->definition->hasShortcut($shortcut)) {
             // Hard to know what to do with unknown short options. Maybe
@@ -210,7 +210,7 @@ class LessStrictArgvInput extends ArgvInput
         $this->addLongOption($this->definition->getOptionForShortcut($shortcut)->getName(), $value);
     }
 
-    public function injectAdditionalOptions($additionalOptions)
+    public function injectAdditionalOptions($additionalOptions): void
     {
         $this->additionalOptions += $additionalOptions;
         $this->options += $additionalOptions;
@@ -224,7 +224,7 @@ class LessStrictArgvInput extends ArgvInput
      *
      * @throws RuntimeException When option given doesn't exist
      */
-    private function addLongOption($name, $value)
+    private function addLongOption($name, $value): void
     {
         if (!$this->definition->hasOption($name)) {
             // If we don't know anything about this option, then we'll
@@ -284,7 +284,7 @@ class LessStrictArgvInput extends ArgvInput
     /**
      * {@inheritdoc}
      */
-    public function hasParameterOption($values, $onlyParams = false)
+    public function hasParameterOption($values, $onlyParams = false): bool
     {
         $values = (array) $values;
 

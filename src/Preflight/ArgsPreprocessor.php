@@ -27,7 +27,7 @@ class ArgsPreprocessor
         $this->specParser = new SiteSpecParser();
     }
 
-    public function setArgsRemapper(ArgsRemapper $remapper)
+    public function setArgsRemapper(ArgsRemapper $remapper): void
     {
         $this->remapper = $remapper;
     }
@@ -38,11 +38,10 @@ class ArgsPreprocessor
      * @param string[] $argv
      *   Commandline arguments. The first element is
      *   the path to the application, which we will ignore.
-     * @param PreflightArgsInterface $storage
      *   A storage object to hold the arguments we remove
      *   from argv, plus the remaining argv arguments.
      */
-    public function parse($argv, PreflightArgsInterface $storage)
+    public function parse(array $argv, PreflightArgsInterface $storage)
     {
         $sawArg = false;
 
@@ -94,7 +93,7 @@ class ArgsPreprocessor
      * nextCouldBeValue determines whether there is a next argument that
      * exists and does not begin with a `-`.
      */
-    protected static function nextCouldBeValue($argv)
+    protected static function nextCouldBeValue($argv): bool
     {
         if (empty($argv)) {
             return false;
@@ -108,9 +107,8 @@ class ArgsPreprocessor
      *
      * @param string $arg
      *   Argument to test.
-     * @return bool
      */
-    protected function isAliasOrSiteSpec($arg)
+    protected function isAliasOrSiteSpec(string $arg): bool
     {
         if (SiteAliasName::isAliasName($arg)) {
             return true;
@@ -157,7 +155,7 @@ class ArgsPreprocessor
      *   to 'true'.
      * @return [$methodName, $optionValue, $acceptsValueFromNextArg]
      */
-    protected function checkMatchingOption($opt, $keyParam, $methodName)
+    protected function checkMatchingOption($opt, $keyParam, $methodName): array
     {
         // Test to see if $key ends in '='; remove the character if present.
         // If the char is removed, it means the option accepts a value.

@@ -6,7 +6,7 @@ use Consolidation\AnnotatedCommand\Parser\CommandInfo;
 
 class DrushCommandInfoAlterer implements CommandInfoAltererInterface
 {
-    public function alterCommandInfo(CommandInfo $commandInfo, $commandFileInstance)
+    public function alterCommandInfo(CommandInfo $commandInfo, $commandFileInstance): void
     {
         // If a command has a @filter-default-field annotation, that
         // implies that it also has an implicit @filter-output annotation.

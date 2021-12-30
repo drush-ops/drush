@@ -9,12 +9,12 @@ class ServiceCommandlist
 {
     protected $commandList = [];
 
-    public function addCommandReference($command)
+    public function addCommandReference($command): void
     {
         $this->commandList[] = $command;
     }
 
-    public function getCommandList()
+    public function getCommandList(): array
     {
         return $this->commandList;
     }

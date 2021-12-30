@@ -66,7 +66,7 @@ class DrushArgvInput extends ArgvInput
         parent::__construct($definition);
     }
 
-    protected function setTokens(array $tokens)
+    protected function setTokens(array $tokens): void
     {
         $this->tokens = $tokens;
     }
@@ -74,7 +74,7 @@ class DrushArgvInput extends ArgvInput
     /**
      * {@inheritdoc}
      */
-    protected function parse()
+    protected function parse(): void
     {
         $parseOptions = true;
         $this->parsed = $this->tokens;
@@ -98,7 +98,7 @@ class DrushArgvInput extends ArgvInput
      *
      * @param string $token The current token
      */
-    private function parseShortOption($token)
+    private function parseShortOption($token): void
     {
         $name = substr($token, 1);
 
@@ -121,7 +121,7 @@ class DrushArgvInput extends ArgvInput
      *
      * @throws RuntimeException When option given doesn't exist
      */
-    private function parseShortOptionSet($name)
+    private function parseShortOptionSet($name): void
     {
         $len = strlen($name);
         for ($i = 0; $i < $len; ++$i) {
@@ -145,7 +145,7 @@ class DrushArgvInput extends ArgvInput
      *
      * @param string $token The current token
      */
-    private function parseLongOption($token)
+    private function parseLongOption($token): void
     {
         $name = substr($token, 2);
 
@@ -171,7 +171,7 @@ class DrushArgvInput extends ArgvInput
      *
      * @throws RuntimeException When too many arguments are given
      */
-    private function parseArgument($token)
+    private function parseArgument($token): void
     {
         $c = count($this->arguments);
 
@@ -204,7 +204,7 @@ class DrushArgvInput extends ArgvInput
      *
      * @throws RuntimeException When option given doesn't exist
      */
-    private function addShortOption($shortcut, $value)
+    private function addShortOption($shortcut, $value): void
     {
         if (!$this->definition->hasShortcut($shortcut)) {
             throw new RuntimeException(sprintf('The "-%s" option does not exist.', $shortcut));
@@ -221,7 +221,7 @@ class DrushArgvInput extends ArgvInput
      *
      * @throws RuntimeException When option given doesn't exist
      */
-    private function addLongOption($name, $value)
+    private function addLongOption($name, $value): void
     {
         if (!$this->definition->hasOption($name)) {
             throw new RuntimeException(sprintf('The "--%s" option does not exist.', $name));
@@ -278,7 +278,7 @@ class DrushArgvInput extends ArgvInput
     /**
      * {@inheritdoc}
      */
-    public function hasParameterOption($values, $onlyParams = false)
+    public function hasParameterOption($values, $onlyParams = false): bool
     {
         $values = (array) $values;
 

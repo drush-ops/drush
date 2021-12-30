@@ -9,12 +9,12 @@ class SqlMysql extends SqlBase
 
     public $queryExtra = '-A';
 
-    public function command()
+    public function command(): string
     {
         return 'mysql';
     }
 
-    public function creds($hide_password = true)
+    public function creds($hide_password = true): string
     {
         $dbSpec = $this->getDbSpec();
         if ($hide_password) {
@@ -84,12 +84,12 @@ EOT;
         return $this->paramsToOptions($parameters);
     }
 
-    public function silent()
+    public function silent(): string
     {
         return '--silent';
     }
 
-    public function createdbSql($dbname, $quoted = false)
+    public function createdbSql($dbname, $quoted = false): string
     {
         $dbSpec = $this->getDbSpec();
         if ($quoted) {
@@ -120,13 +120,13 @@ EOT;
     /**
      * @inheritdoc
      */
-    public function dbExists()
+    public function dbExists(): bool
     {
         // Suppress output. We only care about return value.
         return $this->alwaysQuery("SELECT 1;");
     }
 
-    public function listTables()
+    public function listTables(): array
     {
         $tables = [];
         $this->alwaysQuery('SHOW TABLES;');
@@ -136,7 +136,7 @@ EOT;
         return $tables;
     }
 
-    public function listTablesQuoted()
+    public function listTablesQuoted(): ?array
     {
         $tables = $this->listTables();
         foreach ($tables as &$table) {
@@ -145,7 +145,7 @@ EOT;
         return $tables;
     }
 
-    public function dumpCmd($table_selection)
+    public function dumpCmd($table_selection): string
     {
         $dbSpec = $this->getDbSpec();
         $parens = false;

@@ -11,7 +11,7 @@ use Consolidation\Config\Loader\ConfigLoader;
  */
 class YamlConfigLoader extends ConfigLoader
 {
-    public function load($path)
+    public function load($path): self
     {
         $this->setSourceName($path);
 

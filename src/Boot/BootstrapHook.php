@@ -20,7 +20,7 @@ class BootstrapHook implements InitializeHookInterface
         $this->bootstrapManager = $bootstrapManager;
     }
 
-    public function initialize(InputInterface $input, AnnotationData $annotationData)
+    public function initialize(InputInterface $input, AnnotationData $annotationData): void
     {
         // Get the @bootstrap annotation/attribute. If there isn't one, then assume NONE.
         $phase_long = $annotationData->get('bootstrap', 'none');

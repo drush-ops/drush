@@ -34,7 +34,7 @@ class PreflightSiteLocator
      *
      * @return \Consolidation\SiteAlias\SiteAlias|false
      */
-    public function findSite(PreflightArgsInterface $preflightArgs, Environment $environment, $root)
+    public function findSite(PreflightArgsInterface $preflightArgs, Environment $environment, string $root): \Consolidation\SiteAlias\SiteAlias
     {
         $self = $this->determineSelf($preflightArgs, $environment, $root);
 
@@ -55,10 +55,8 @@ class PreflightSiteLocator
      * @param \Drush\Preflight\PreflightArgsInterface $preflightArgs
      * @param \Drush\Config\Environment $environment
      * @param $root
-     *
-     * @return \Consolidation\SiteAlias\SiteAlias
      */
-    protected function determineSelf(PreflightArgsInterface $preflightArgs, Environment $environment, $root)
+    protected function determineSelf(PreflightArgsInterface $preflightArgs, Environment $environment, $root): \Consolidation\SiteAlias\SiteAlias
     {
         if ($preflightArgs->hasAlias()) {
             $aliasName = $preflightArgs->alias();
@@ -98,10 +96,8 @@ class PreflightSiteLocator
      *
      * @param \Drush\Preflight\PreflightArgsInterface $preflightArgs
      * @param $root
-     *
-     * @return \Consolidation\SiteAlias\SiteAlias
      */
-    protected function buildSelf(PreflightArgsInterface $preflightArgs, $root)
+    protected function buildSelf(PreflightArgsInterface $preflightArgs, $root): \Consolidation\SiteAlias\SiteAlias
     {
         // If there is no root, then return '@none'
         if (!$root) {
