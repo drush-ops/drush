@@ -129,7 +129,7 @@
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    
+                    void
                 </div>
                 <div class="col-md-8">
                     <a href="#method_setArgsRemapper">setArgsRemapper</a>(<a href="../../Drush/Preflight/ArgsRemapper.html"><abbr title="Drush\Preflight\ArgsRemapper">ArgsRemapper</abbr></a> $remapper)
@@ -143,14 +143,14 @@
                     
                 </div>
                 <div class="col-md-8">
-                    <a href="#method_parse">parse</a>(string[] $argv, <a href="../../Drush/Preflight/PreflightArgsInterface.html"><abbr title="Drush\Preflight\PreflightArgsInterface">PreflightArgsInterface</abbr></a> $storage)
+                    <a href="#method_parse">parse</a>(array $argv, <a href="../../Drush/Preflight/PreflightArgsInterface.html"><abbr title="Drush\Preflight\PreflightArgsInterface">PreflightArgsInterface</abbr></a> $storage)
         
                                             <p><p>Parse the argv array.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    static&nbsp;
+                    static&nbsp;bool
                 </div>
                 <div class="col-md-8">
                     <a href="#method_nextCouldBeValue">nextCouldBeValue</a>($argv)
@@ -183,7 +183,7 @@ that takes a value.</p></p>                </div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    
+                    array
                 </div>
                 <div class="col-md-8">
                     <a href="#method_checkMatchingOption">checkMatchingOption</a>($opt, $keyParam, $methodName)
@@ -224,7 +224,7 @@ option table.</p></p>                </div>
                     <div class="method-item">
                     <h3 id="method_setArgsRemapper">
         <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Preflight/ArgsPreprocessor.php#L30">at line 30</a></div>
-        <code>                    
+        <code>                    void
     <strong>setArgsRemapper</strong>(<a href="../../Drush/Preflight/ArgsRemapper.html"><abbr title="Drush\Preflight\ArgsRemapper">ArgsRemapper</abbr></a> $remapper)
         </code>
     </h3>
@@ -248,6 +248,15 @@ option table.</p></p>                </div>
             </table>
 
             
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>void</td>
+            <td></td>
+        </tr>
+    </table>
+
             
             
             
@@ -257,9 +266,9 @@ option table.</p></p>                </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_parse">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Preflight/ArgsPreprocessor.php#L45">at line 45</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Preflight/ArgsPreprocessor.php#L44">at line 44</a></div>
         <code>                    
-    <strong>parse</strong>(string[] $argv, <a href="../../Drush/Preflight/PreflightArgsInterface.html"><abbr title="Drush\Preflight\PreflightArgsInterface">PreflightArgsInterface</abbr></a> $storage)
+    <strong>parse</strong>(array $argv, <a href="../../Drush/Preflight/PreflightArgsInterface.html"><abbr title="Drush\Preflight\PreflightArgsInterface">PreflightArgsInterface</abbr></a> $storage)
         </code>
     </h3>
     <div class="details">    
@@ -274,16 +283,17 @@ option table.</p></p>                </div>
 
                     <table class="table table-condensed">
                     <tr>
-                <td>string[]</td>
+                <td>array</td>
                 <td>$argv</td>
                 <td><p>Commandline arguments. The first element is
-the path to the application, which we will ignore.</p></td>
+the path to the application, which we will ignore.
+A storage object to hold the arguments we remove
+from argv, plus the remaining argv arguments.</p></td>
             </tr>
                     <tr>
                 <td><a href="../../Drush/Preflight/PreflightArgsInterface.html"><abbr title="Drush\Preflight\PreflightArgsInterface">PreflightArgsInterface</abbr></a></td>
                 <td>$storage</td>
-                <td><p>A storage object to hold the arguments we remove
-from argv, plus the remaining argv arguments.</p></td>
+                <td></td>
             </tr>
             </table>
 
@@ -297,8 +307,8 @@ from argv, plus the remaining argv arguments.</p></td>
             </div>
                     <div class="method-item">
                     <h3 id="method_nextCouldBeValue">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Preflight/ArgsPreprocessor.php#L97">at line 97</a></div>
-        <code>        static    protected        
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Preflight/ArgsPreprocessor.php#L96">at line 96</a></div>
+        <code>        static    protected        bool
     <strong>nextCouldBeValue</strong>($argv)
         </code>
     </h3>
@@ -322,6 +332,15 @@ exists and does not begin with a <code>-</code>.</p></p>
             </table>
 
             
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>bool</td>
+            <td></td>
+        </tr>
+    </table>
+
             
             
             
@@ -331,7 +350,7 @@ exists and does not begin with a <code>-</code>.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_isAliasOrSiteSpec">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Preflight/ArgsPreprocessor.php#L113">at line 113</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Preflight/ArgsPreprocessor.php#L111">at line 111</a></div>
         <code>            protected        bool
     <strong>isAliasOrSiteSpec</strong>(string $arg)
         </code>
@@ -374,7 +393,7 @@ a site specification.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_findMethodForOptionWithValues">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Preflight/ArgsPreprocessor.php#L130">at line 130</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Preflight/ArgsPreprocessor.php#L128">at line 128</a></div>
         <code>            protected        
     <strong>findMethodForOptionWithValues</strong>($optionsTable, $opt)
         </code>
@@ -414,8 +433,8 @@ method that should be called to process that option.</p></td>
             </div>
                     <div class="method-item">
                     <h3 id="method_checkMatchingOption">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Preflight/ArgsPreprocessor.php#L160">at line 160</a></div>
-        <code>            protected        
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Preflight/ArgsPreprocessor.php#L158">at line 158</a></div>
+        <code>            protected        array
     <strong>checkMatchingOption</strong>($opt, $keyParam, $methodName)
         </code>
     </h3>
@@ -449,6 +468,15 @@ option table.</p></p>
             </table>
 
             
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>array</td>
+            <td></td>
+        </tr>
+    </table>
+
             
             
             

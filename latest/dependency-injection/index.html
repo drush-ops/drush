@@ -4954,11 +4954,11 @@
 A class should use one or the other of these methods. The code that is responsible for providing the dependencies a class need is usually an object called the dependency injection container.</p>
 <h2 id="services-files">Services Files<a class="headerlink" href="#services-files" title="Permanent link">&para;</a></h2>
 <p>Drush command files can request that Drupal inject services by using a drush.services.yml file. See <a href="../commands/">creating commands</a> for instructions on how to use the Drupal Code Generator to create a simple command file starter with a drush.services.yml file. An initial services file will look something like this:
-<div class="highlight"><pre><span></span><code><span class="nt">services</span><span class="p">:</span>
-  <span class="nt">my_module.commands</span><span class="p">:</span>
-    <span class="nt">class</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">\Drupal\my_module\Commands\MyModuleiCommands</span>
-    <span class="nt">tags</span><span class="p">:</span>
-      <span class="p p-Indicator">-</span> <span class="p p-Indicator">{</span><span class="nt"> name</span><span class="p">:</span> <span class="nv">drush.command</span> <span class="p p-Indicator">}</span>
+<div class="highlight"><pre><span></span><code><span class="nt">services</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">my_module.commands</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">class</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">\Drupal\my_module\Commands\MyModuleiCommands</span><span class="w"></span>
+<span class="w">    </span><span class="nt">tags</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt"> name</span><span class="p">:</span><span class="w"> </span><span class="nv">drush.command</span><span class="w"> </span><span class="p p-Indicator">}</span><span class="w"></span>
 </code></pre></div>
 See the <a href="https://www.drupal.org/docs/8/api/services-and-dependency-injection/services-and-dependency-injection-in-drupal-8">Drupal Documentation</a> for details on how to inject Drupal services into your command file. The process is exactly the same as using a Drupal services.yml file to inject services into your module classes.</p>
 <h2 id="inflection">Inflection<a class="headerlink" href="#inflection" title="Permanent link">&para;</a></h2>

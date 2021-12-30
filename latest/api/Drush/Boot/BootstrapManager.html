@@ -231,7 +231,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>                </
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    
+                    void
                 </div>
                 <div class="col-md-8">
                     <a href="#method_setPhase">setPhase</a>(int $phase)
@@ -242,7 +242,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>                </
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    
+                    void
                 </div>
                 <div class="col-md-8">
                     <a href="#method_add">add</a>($candidateList)
@@ -252,7 +252,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>                </
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    
+                    <abbr title="DrupalFinder\DrupalFinder">DrupalFinder</abbr>
                 </div>
                 <div class="col-md-8">
                     <a href="#method_drupalFinder">drupalFinder</a>()
@@ -263,7 +263,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>                </
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    
+                    void
                 </div>
                 <div class="col-md-8">
                     <a href="#method_setDrupalFinder">setDrupalFinder</a>(<abbr title="DrupalFinder\DrupalFinder">DrupalFinder</abbr> $drupalFinder)
@@ -294,7 +294,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>                </
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    
+                    void
                 </div>
                 <div class="col-md-8">
                     <a href="#method_locateRoot">locateRoot</a>($root, $start_path = null)
@@ -326,7 +326,7 @@ did not explicitly provide a URI.</p></p>                </div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    
+                    void
                 </div>
                 <div class="col-md-8">
                     <a href="#method_setUri">setUri</a>($uri)
@@ -350,10 +350,10 @@ object is best for the selected root.</p></p>                </div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    
+                    void
                 </div>
                 <div class="col-md-8">
-                    <a href="#method_injectBootstrap">injectBootstrap</a>($bootstrap)
+                    <a href="#method_injectBootstrap">injectBootstrap</a>(<a href="../../Drush/Boot/Boot.html"><abbr title="Drush\Boot\Boot">Boot</abbr></a> $bootstrap)
         
                                             <p><p>For use in testing</p></p>                </div>
                 <div class="col-md-2"></div>
@@ -371,7 +371,7 @@ from the set of available candidates.</p></p>                </div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    
+                    <a href="../../Drush/Boot/Boot.html"><abbr title="Drush\Boot\Boot">Boot</abbr></a>
                 </div>
                 <div class="col-md-8">
                     <a href="#method_selectBootstrapClass">selectBootstrapClass</a>()
@@ -386,10 +386,10 @@ will always return the same object.</p></p>                </div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    
+                    void
                 </div>
                 <div class="col-md-8">
-                    <a href="#method_latch">latch</a>($bootstrap)
+                    <a href="#method_latch">latch</a>(<a href="../../Drush/Boot/Boot.html"><abbr title="Drush\Boot\Boot">Boot</abbr></a> $bootstrap)
         
                                             <p><p>Once bootstrapping has started, we stash the bootstrap
 object being used, and do not allow it to change any
@@ -419,7 +419,7 @@ are necessary to bootstrap the CMS.</p></p>                </div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    
+                    bool
                 </div>
                 <div class="col-md-8">
                     <a href="#method_hasBootstrap">hasBootstrap</a>()
@@ -490,7 +490,7 @@ are necessary to bootstrap the CMS.</p></p>                </div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    
+                    <abbr title="Drush\Boot\Psr\Log\LoggerInterface">LoggerInterface</abbr>|null
                 </div>
                 <div class="col-md-8">
                     <a href="#method_logger">logger</a>()
@@ -500,7 +500,7 @@ are necessary to bootstrap the CMS.</p></p>                </div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    
+                    void
                 </div>
                 <div class="col-md-8">
                     <a href="#method_inflect">inflect</a>($object)
@@ -680,8 +680,8 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_setPhase">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Boot/BootstrapManager.php#L55">at line 55</a></div>
-        <code>            protected        
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Boot/BootstrapManager.php#L52">at line 52</a></div>
+        <code>            protected        void
     <strong>setPhase</strong>(int $phase)
         </code>
     </h3>
@@ -705,6 +705,15 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </table>
 
             
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>void</td>
+            <td></td>
+        </tr>
+    </table>
+
             
             
             
@@ -714,8 +723,8 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_add">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Boot/BootstrapManager.php#L68">at line 68</a></div>
-        <code>                    
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Boot/BootstrapManager.php#L65">at line 65</a></div>
+        <code>                    void
     <strong>add</strong>($candidateList)
         </code>
     </h3>
@@ -738,6 +747,15 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </table>
 
             
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>void</td>
+            <td></td>
+        </tr>
+    </table>
+
             
             
             
@@ -747,8 +765,8 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_drupalFinder">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Boot/BootstrapManager.php#L75">at line 75</a></div>
-        <code>                    
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Boot/BootstrapManager.php#L72">at line 72</a></div>
+        <code>                    <abbr title="DrupalFinder\DrupalFinder">DrupalFinder</abbr>
     <strong>drupalFinder</strong>()
         </code>
     </h3>
@@ -762,6 +780,15 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
         </div>
         <div class="tags">
             
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><abbr title="DrupalFinder\DrupalFinder">DrupalFinder</abbr></td>
+            <td></td>
+        </tr>
+    </table>
+
             
             
             
@@ -771,8 +798,8 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_setDrupalFinder">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Boot/BootstrapManager.php#L83">at line 83</a></div>
-        <code>                    
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Boot/BootstrapManager.php#L80">at line 80</a></div>
+        <code>                    void
     <strong>setDrupalFinder</strong>(<abbr title="DrupalFinder\DrupalFinder">DrupalFinder</abbr> $drupalFinder)
         </code>
     </h3>
@@ -796,6 +823,15 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </table>
 
             
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>void</td>
+            <td></td>
+        </tr>
+    </table>
+
             
             
             
@@ -805,7 +841,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_getRoot">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Boot/BootstrapManager.php#L91">at line 91</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Boot/BootstrapManager.php#L88">at line 88</a></div>
         <code>                    
     <strong>getRoot</strong>()
         </code>
@@ -828,7 +864,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_getComposerRoot">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Boot/BootstrapManager.php#L99">at line 99</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Boot/BootstrapManager.php#L96">at line 96</a></div>
         <code>                    
     <strong>getComposerRoot</strong>()
         </code>
@@ -851,8 +887,8 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_locateRoot">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Boot/BootstrapManager.php#L104">at line 104</a></div>
-        <code>                    
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Boot/BootstrapManager.php#L101">at line 101</a></div>
+        <code>                    void
     <strong>locateRoot</strong>($root, $start_path = null)
         </code>
     </h3>
@@ -881,6 +917,15 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </table>
 
             
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>void</td>
+            <td></td>
+        </tr>
+    </table>
+
             
             
             
@@ -890,7 +935,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_getUri">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Boot/BootstrapManager.php#L117">at line 117</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Boot/BootstrapManager.php#L114">at line 114</a></div>
         <code>                    
     <strong>getUri</strong>()
         </code>
@@ -913,7 +958,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_selectUri">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Boot/BootstrapManager.php#L129">at line 129</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Boot/BootstrapManager.php#L126">at line 126</a></div>
         <code>                    
     <strong>selectUri</strong>($cwd)
         </code>
@@ -947,8 +992,8 @@ did not explicitly provide a URI.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_setUri">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Boot/BootstrapManager.php#L136">at line 136</a></div>
-        <code>                    
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Boot/BootstrapManager.php#L133">at line 133</a></div>
+        <code>                    void
     <strong>setUri</strong>($uri)
         </code>
     </h3>
@@ -972,6 +1017,15 @@ did not explicitly provide a URI.</p></p>
             </table>
 
             
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>void</td>
+            <td></td>
+        </tr>
+    </table>
+
             
             
             
@@ -981,7 +1035,7 @@ did not explicitly provide a URI.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_bootstrap">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Boot/BootstrapManager.php#L151">at line 151</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Boot/BootstrapManager.php#L146">at line 146</a></div>
         <code>                    <a href="../../Drush/Boot/Boot.html"><abbr title="Drush\Boot\Boot">Boot</abbr></a>
     <strong>bootstrap</strong>()
         </code>
@@ -1016,9 +1070,9 @@ object is best for the selected root.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_injectBootstrap">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Boot/BootstrapManager.php#L162">at line 162</a></div>
-        <code>                    
-    <strong>injectBootstrap</strong>($bootstrap)
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Boot/BootstrapManager.php#L157">at line 157</a></div>
+        <code>                    void
+    <strong>injectBootstrap</strong>(<a href="../../Drush/Boot/Boot.html"><abbr title="Drush\Boot\Boot">Boot</abbr></a> $bootstrap)
         </code>
     </h3>
     <div class="details">    
@@ -1033,13 +1087,22 @@ object is best for the selected root.</p></p>
 
                     <table class="table table-condensed">
                     <tr>
-                <td></td>
+                <td><a href="../../Drush/Boot/Boot.html"><abbr title="Drush\Boot\Boot">Boot</abbr></a></td>
                 <td>$bootstrap</td>
                 <td></td>
             </tr>
             </table>
 
             
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>void</td>
+            <td></td>
+        </tr>
+    </table>
+
             
             
             
@@ -1049,7 +1112,7 @@ object is best for the selected root.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_bootstrapObjectForRoot">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Boot/BootstrapManager.php#L178">at line 178</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Boot/BootstrapManager.php#L171">at line 171</a></div>
         <code>                    <a href="../../Drush/Boot/Boot.html"><abbr title="Drush\Boot\Boot">Boot</abbr></a>
     <strong>bootstrapObjectForRoot</strong>($path)
         </code>
@@ -1092,8 +1155,8 @@ from the set of available candidates.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_selectBootstrapClass">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Boot/BootstrapManager.php#L201">at line 201</a></div>
-        <code>            protected        
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Boot/BootstrapManager.php#L194">at line 194</a></div>
+        <code>            protected        <a href="../../Drush/Boot/Boot.html"><abbr title="Drush\Boot\Boot">Boot</abbr></a>
     <strong>selectBootstrapClass</strong>()
         </code>
     </h3>
@@ -1111,6 +1174,15 @@ will always return the same object.</p></p>
         </div>
         <div class="tags">
             
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><a href="../../Drush/Boot/Boot.html"><abbr title="Drush\Boot\Boot">Boot</abbr></a></td>
+            <td></td>
+        </tr>
+    </table>
+
             
             
             
@@ -1120,9 +1192,9 @@ will always return the same object.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_latch">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Boot/BootstrapManager.php#L213">at line 213</a></div>
-        <code>                    
-    <strong>latch</strong>($bootstrap)
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Boot/BootstrapManager.php#L206">at line 206</a></div>
+        <code>                    void
+    <strong>latch</strong>(<a href="../../Drush/Boot/Boot.html"><abbr title="Drush\Boot\Boot">Boot</abbr></a> $bootstrap)
         </code>
     </h3>
     <div class="details">    
@@ -1139,13 +1211,22 @@ longer.</p></p>
 
                     <table class="table table-condensed">
                     <tr>
-                <td></td>
+                <td><a href="../../Drush/Boot/Boot.html"><abbr title="Drush\Boot\Boot">Boot</abbr></a></td>
                 <td>$bootstrap</td>
                 <td></td>
             </tr>
             </table>
 
             
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>void</td>
+            <td></td>
+        </tr>
+    </table>
+
             
             
             
@@ -1155,7 +1236,7 @@ longer.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_bootstrapPhases">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Boot/BootstrapManager.php#L230">at line 230</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Boot/BootstrapManager.php#L222">at line 222</a></div>
         <code>                    array
     <strong>bootstrapPhases</strong>(bool $function_names = false)
         </code>
@@ -1211,7 +1292,7 @@ corresponding phase values. Otherwise return an array of phase values.</p></td>
             </div>
                     <div class="method-item">
                     <h3 id="method_doBootstrap">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Boot/BootstrapManager.php#L264">at line 264</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Boot/BootstrapManager.php#L254">at line 254</a></div>
         <code>                    bool
     <strong>doBootstrap</strong>(int $phase, int|bool $phase_max = false, <abbr title="Consolidation\AnnotatedCommand\AnnotationData">AnnotationData</abbr> $annotationData = null)
         </code>
@@ -1244,7 +1325,8 @@ specified level. If specified, it should never be lower than $phase.</p></td>
                     <tr>
                 <td><abbr title="Consolidation\AnnotatedCommand\AnnotationData">AnnotationData</abbr></td>
                 <td>$annotationData</td>
-                <td><p>Optional annotation data from the command.</p></td>
+                <td><p>Optional annotation data from the command.</p>
+<p>TRUE if the specified bootstrap phase has completed.</p></td>
             </tr>
             </table>
 
@@ -1254,7 +1336,7 @@ specified level. If specified, it should never be lower than $phase.</p></td>
                     <table class="table table-condensed">
         <tr>
             <td>bool</td>
-            <td><p>TRUE if the specified bootstrap phase has completed.</p></td>
+            <td></td>
         </tr>
     </table>
 
@@ -1279,8 +1361,8 @@ specified level. If specified, it should never be lower than $phase.</p></td>
             </div>
                     <div class="method-item">
                     <h3 id="method_hasBootstrap">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Boot/BootstrapManager.php#L304">at line 304</a></div>
-        <code>                    
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Boot/BootstrapManager.php#L294">at line 294</a></div>
+        <code>                    bool
     <strong>hasBootstrap</strong>()
         </code>
     </h3>
@@ -1293,6 +1375,15 @@ specified level. If specified, it should never be lower than $phase.</p></td>
         </div>
         <div class="tags">
             
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>bool</td>
+            <td></td>
+        </tr>
+    </table>
+
             
             
             
@@ -1302,7 +1393,7 @@ specified level. If specified, it should never be lower than $phase.</p></td>
             </div>
                     <div class="method-item">
                     <h3 id="method_hasBootstrapped">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Boot/BootstrapManager.php#L318">at line 318</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Boot/BootstrapManager.php#L307">at line 307</a></div>
         <code>                    bool
     <strong>hasBootstrapped</strong>(int $phase)
         </code>
@@ -1321,7 +1412,8 @@ specified level. If specified, it should never be lower than $phase.</p></td>
                     <tr>
                 <td>int</td>
                 <td>$phase</td>
-                <td><p>The bootstrap phase to test</p></td>
+                <td><p>The bootstrap phase to test</p>
+<p>TRUE if the specified bootstrap phase has completed.</p></td>
             </tr>
             </table>
 
@@ -1331,7 +1423,7 @@ specified level. If specified, it should never be lower than $phase.</p></td>
                     <table class="table table-condensed">
         <tr>
             <td>bool</td>
-            <td><p>TRUE if the specified bootstrap phase has completed.</p></td>
+            <td></td>
         </tr>
     </table>
 
@@ -1344,7 +1436,7 @@ specified level. If specified, it should never be lower than $phase.</p></td>
             </div>
                     <div class="method-item">
                     <h3 id="method_bootstrapValidate">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Boot/BootstrapManager.php#L342">at line 342</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Boot/BootstrapManager.php#L329">at line 329</a></div>
         <code>                    bool
     <strong>bootstrapValidate</strong>(int $phase)
         </code>
@@ -1368,7 +1460,8 @@ validating phases multiple times.</p></p>
                     <tr>
                 <td>int</td>
                 <td>$phase</td>
-                <td><p>The bootstrap phase to validate to.</p></td>
+                <td><p>The bootstrap phase to validate to.</p>
+<p>TRUE if bootstrap is possible, FALSE if the validation failed.</p></td>
             </tr>
             </table>
 
@@ -1378,7 +1471,7 @@ validating phases multiple times.</p></p>
                     <table class="table table-condensed">
         <tr>
             <td>bool</td>
-            <td><p>TRUE if bootstrap is possible, FALSE if the validation failed.</p></td>
+            <td></td>
         </tr>
     </table>
 
@@ -1403,7 +1496,7 @@ validating phases multiple times.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_bootstrapToPhase">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Boot/BootstrapManager.php#L383">at line 383</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Boot/BootstrapManager.php#L367">at line 367</a></div>
         <code>                    bool
     <strong>bootstrapToPhase</strong>(string $bootstrapPhase, <abbr title="Consolidation\AnnotatedCommand\AnnotationData">AnnotationData</abbr> $annotationData = null)
         </code>
@@ -1422,12 +1515,14 @@ validating phases multiple times.</p></p>
                     <tr>
                 <td>string</td>
                 <td>$bootstrapPhase</td>
-                <td><p>Name of phase to bootstrap to. Will be converted to appropriate index.</p></td>
+                <td><p>Name of phase to bootstrap to. Will be converted to appropriate index.
+Optional annotation data from the command.</p>
+<p>TRUE if the specified bootstrap phase has completed.</p></td>
             </tr>
                     <tr>
                 <td><abbr title="Consolidation\AnnotatedCommand\AnnotationData">AnnotationData</abbr></td>
                 <td>$annotationData</td>
-                <td><p>Optional annotation data from the command.</p></td>
+                <td></td>
             </tr>
             </table>
 
@@ -1437,7 +1532,7 @@ validating phases multiple times.</p></p>
                     <table class="table table-condensed">
         <tr>
             <td>bool</td>
-            <td><p>TRUE if the specified bootstrap phase has completed.</p></td>
+            <td></td>
         </tr>
     </table>
 
@@ -1460,7 +1555,7 @@ data.</p></td>
             </div>
                     <div class="method-item">
                     <h3 id="method_maxPhaseLimit">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Boot/BootstrapManager.php#L398">at line 398</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Boot/BootstrapManager.php#L382">at line 382</a></div>
         <code>            protected        
     <strong>maxPhaseLimit</strong>($bootstrap_str)
         </code>
@@ -1494,7 +1589,7 @@ data.</p></td>
             </div>
                     <div class="method-item">
                     <h3 id="method_bootstrapToPhaseIndex">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Boot/BootstrapManager.php#L420">at line 420</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Boot/BootstrapManager.php#L401">at line 401</a></div>
         <code>                    bool
     <strong>bootstrapToPhaseIndex</strong>(int $max_phase_index, <abbr title="Consolidation\AnnotatedCommand\AnnotationData">AnnotationData</abbr> $annotationData = null)
         </code>
@@ -1513,12 +1608,14 @@ data.</p></td>
                     <tr>
                 <td>int</td>
                 <td>$max_phase_index</td>
-                <td><p>Only attempt bootstrap to the specified level.</p></td>
+                <td><p>Only attempt bootstrap to the specified level.
+Optional annotation data from the command.
+TRUE if the specified bootstrap phase has completed.</p></td>
             </tr>
                     <tr>
                 <td><abbr title="Consolidation\AnnotatedCommand\AnnotationData">AnnotationData</abbr></td>
                 <td>$annotationData</td>
-                <td><p>Optional annotation data from the command.</p></td>
+                <td></td>
             </tr>
             </table>
 
@@ -1528,7 +1625,7 @@ data.</p></td>
                     <table class="table table-condensed">
         <tr>
             <td>bool</td>
-            <td><p>TRUE if the specified bootstrap phase has completed.</p></td>
+            <td></td>
         </tr>
     </table>
 
@@ -1541,7 +1638,7 @@ data.</p></td>
             </div>
                     <div class="method-item">
                     <h3 id="method_bootstrapMax">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Boot/BootstrapManager.php#L469">at line 469</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Boot/BootstrapManager.php#L449">at line 449</a></div>
         <code>                    int
     <strong>bootstrapMax</strong>(int $max_phase_index = false, <abbr title="Consolidation\AnnotatedCommand\AnnotationData">AnnotationData</abbr> $annotationData = null)
         </code>
@@ -1565,7 +1662,8 @@ data.</p></td>
                     <tr>
                 <td><abbr title="Consolidation\AnnotatedCommand\AnnotationData">AnnotationData</abbr></td>
                 <td>$annotationData</td>
-                <td><p>Optional annotation data from the command.</p></td>
+                <td><p>Optional annotation data from the command.</p>
+<p>The maximum phase to which we bootstrapped.</p></td>
             </tr>
             </table>
 
@@ -1575,7 +1673,7 @@ data.</p></td>
                     <table class="table table-condensed">
         <tr>
             <td>int</td>
-            <td><p>The maximum phase to which we bootstrapped.</p></td>
+            <td></td>
         </tr>
     </table>
 
@@ -1588,8 +1686,8 @@ data.</p></td>
             </div>
                     <div class="method-item">
                     <h3 id="method_logger">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Boot/BootstrapManager.php#L509">at line 509</a></div>
-        <code>                    
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Boot/BootstrapManager.php#L489">at line 489</a></div>
+        <code>                    <abbr title="Drush\Boot\Psr\Log\LoggerInterface">LoggerInterface</abbr>|null
     <strong>logger</strong>()
         </code>
     </h3>
@@ -1602,6 +1700,15 @@ data.</p></td>
         </div>
         <div class="tags">
             
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><abbr title="Drush\Boot\Psr\Log\LoggerInterface">LoggerInterface</abbr>|null</td>
+            <td></td>
+        </tr>
+    </table>
+
             
             
             
@@ -1611,8 +1718,8 @@ data.</p></td>
             </div>
                     <div class="method-item">
                     <h3 id="method_inflect">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Boot/BootstrapManager.php#L514">at line 514</a></div>
-        <code>                    
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Boot/BootstrapManager.php#L494">at line 494</a></div>
+        <code>                    void
     <strong>inflect</strong>($object)
         </code>
     </h3>
@@ -1636,6 +1743,15 @@ data.</p></td>
             </table>
 
             
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>void</td>
+            <td></td>
+        </tr>
+    </table>
+
             
             
             

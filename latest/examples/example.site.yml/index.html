@@ -4885,33 +4885,33 @@
 
   <h1>site.yml</h1>
 
-<div class="highlight"><pre><span></span><code><span class="c1">#</span>
-<span class="c1"># A minimalist Drush site alias file.</span>
-<span class="c1"># See https://www.drush.org/latest/site-aliases/ for lots more documentation.</span>
-<span class="c1">#</span>
-<span class="c1"># File: self.site.yml</span>
-<span class="nt">live</span><span class="p">:</span>
-  <span class="nt">host</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">www.domain.com</span>
-  <span class="nt">user</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">www-admin</span>
-  <span class="nt">root</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">/other/path/to/drupal</span>
-  <span class="nt">uri</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">http://www.example.com</span>
-  <span class="nt">ssh</span><span class="p">:</span>
-    <span class="nt">options</span><span class="p">:</span> <span class="s">&#39;-p</span><span class="nv"> </span><span class="s">100&#39;</span>
-  <span class="nt">paths</span><span class="p">:</span>
-    <span class="nt">drush-script</span><span class="p">:</span> <span class="s">&#39;/path/to/drush&#39;</span>
-  <span class="nt">env-vars</span><span class="p">:</span>
-    <span class="nt">PATH</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">/bin:/usr/bin:/home/www-admin/.composer/vendor/bin</span>
-    <span class="nt">DRUPAL_ENV</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">live</span>
-  <span class="nt">command</span><span class="p">:</span>
-    <span class="nt">site</span><span class="p">:</span>
-      <span class="nt">install</span><span class="p">:</span>
-        <span class="nt">options</span><span class="p">:</span>
-          <span class="nt">admin-password</span><span class="p">:</span> <span class="s">&#39;secret-secret&#39;</span>
-<span class="nt">stage</span><span class="p">:</span>
-  <span class="nt">host</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">stage.domain.com</span>
-  <span class="nt">user</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">www-admin</span>
-  <span class="nt">root</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">/other/path/to/drupal</span>
-  <span class="nt">uri</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">http://stage.example.com</span>
+<div class="highlight"><pre><span></span><code><span class="c1">#</span><span class="w"></span>
+<span class="c1"># A minimalist Drush site alias file.</span><span class="w"></span>
+<span class="c1"># See https://www.drush.org/latest/site-aliases/ for lots more documentation.</span><span class="w"></span>
+<span class="c1">#</span><span class="w"></span>
+<span class="c1"># File: self.site.yml</span><span class="w"></span>
+<span class="nt">live</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">host</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">www.domain.com</span><span class="w"></span>
+<span class="w">  </span><span class="nt">user</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">www-admin</span><span class="w"></span>
+<span class="w">  </span><span class="nt">root</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/other/path/to/drupal</span><span class="w"></span>
+<span class="w">  </span><span class="nt">uri</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">http://www.example.com</span><span class="w"></span>
+<span class="w">  </span><span class="nt">ssh</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">options</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;-p</span><span class="nv"> </span><span class="s">100&#39;</span><span class="w"></span>
+<span class="w">  </span><span class="nt">paths</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">drush-script</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;/path/to/drush&#39;</span><span class="w"></span>
+<span class="w">  </span><span class="nt">env-vars</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">PATH</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/bin:/usr/bin:/home/www-admin/.composer/vendor/bin</span><span class="w"></span>
+<span class="w">    </span><span class="nt">DRUPAL_ENV</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">live</span><span class="w"></span>
+<span class="w">  </span><span class="nt">command</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">site</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">install</span><span class="p">:</span><span class="w"></span>
+<span class="w">        </span><span class="nt">options</span><span class="p">:</span><span class="w"></span>
+<span class="w">          </span><span class="nt">admin-password</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;secret-secret&#39;</span><span class="w"></span>
+<span class="nt">stage</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">host</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">stage.domain.com</span><span class="w"></span>
+<span class="w">  </span><span class="nt">user</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">www-admin</span><span class="w"></span>
+<span class="w">  </span><span class="nt">root</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/other/path/to/drupal</span><span class="w"></span>
+<span class="w">  </span><span class="nt">uri</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">http://stage.example.com</span><span class="w"></span>
 </code></pre></div>
 
   <hr>

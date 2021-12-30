@@ -4945,11 +4945,11 @@
 <ol>
 <li>The generator class should be PSR4 auto-loadable.</li>
 <li>The generator class namespace, relative to base namespace, should be <code>Drush\Generators</code>. For instance, if a Drush generator provider third party library maps this PSR4 autoload entry:
-   <div class="highlight"><pre><span></span><code><span class="nt">&quot;autoload&quot;</span><span class="p">:</span> <span class="p">{</span>
-  <span class="nt">&quot;psr-4&quot;</span><span class="p">:</span> <span class="p">{</span>
-    <span class="nt">&quot;My\\Custom\\Library\\&quot;</span><span class="p">:</span> <span class="s2">&quot;src&quot;</span>
-  <span class="p">}</span>
-<span class="p">}</span>
+   <div class="highlight"><pre><span></span><code><span class="nt">&quot;autoload&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="nt">&quot;psr-4&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;My\\Custom\\Library\\&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;src&quot;</span><span class="w"></span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 </code></pre></div>
    then the Drush global generator class namespace should be <code>My\Custom\Library\Drush\Generators</code> and the class file should be located under the <code>src/Drush/Generators</code> directory.</li>
 <li>The global generator namespace should start with <code>\Drush\Generators</code> but this might be subject to change in the following release.</li>

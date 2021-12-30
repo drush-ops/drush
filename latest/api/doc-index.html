@@ -158,7 +158,7 @@ obtained by commands et. al. as needed.</p></dd><dt><a href="Drush/Config/Config
                     <dd><p>Add config paths defined in preflight configuration.</p></dd><dt><a href="Drush/Config/ConfigLocator.html#method_addAliasConfig">
 <abbr title="Drush\Config\ConfigLocator">ConfigLocator</abbr>::addAliasConfig</a>() &mdash; <em>Method in class <a href="Drush/Config/ConfigLocator.html"><abbr title="Drush\Config\ConfigLocator">ConfigLocator</abbr></a></em></dt>
                     <dd><p>Take any configuration from the active alias record, and add it
-to our configuratino.</p></dd><dt><a href="Drush/Config/ConfigLocator.html#method_addUserConfig">
+to our configuration.</p></dd><dt><a href="Drush/Config/ConfigLocator.html#method_addUserConfig">
 <abbr title="Drush\Config\ConfigLocator">ConfigLocator</abbr>::addUserConfig</a>() &mdash; <em>Method in class <a href="Drush/Config/ConfigLocator.html"><abbr title="Drush\Config\ConfigLocator">ConfigLocator</abbr></a></em></dt>
                     <dd><p>Given the path provided via --config and the user's home directory,
 add all of the user configuration paths.</p></dd><dt><a href="Drush/Config/ConfigLocator.html#method_addDrushConfig">
@@ -172,11 +172,11 @@ selected site.</p></dd><dt><a href="Drush/Config/ConfigLocator.html#method_addCo
 provided location, and the directory <code>config</code> inside each provided location
 is searched for a drush.yml file.</p></dd><dt><a href="Drush/Config/ConfigLocator.html#method_addConfigFiles">
 <abbr title="Drush\Config\ConfigLocator">ConfigLocator</abbr>::addConfigFiles</a>() &mdash; <em>Method in class <a href="Drush/Config/ConfigLocator.html"><abbr title="Drush\Config\ConfigLocator">ConfigLocator</abbr></a></em></dt>
-                    <dd><p>Adds $configFiles config files.</p></dd><dt><a href="Drush/Config/ConfigLocator.html#method_addSiteSpecificConfig">
+                    <dd><p>Adds $configFiles to the list of config files.</p></dd><dt><a href="Drush/Config/ConfigLocator.html#method_addSiteSpecificConfig">
 <abbr title="Drush\Config\ConfigLocator">ConfigLocator</abbr>::addSiteSpecificConfig</a>() &mdash; <em>Method in class <a href="Drush/Config/ConfigLocator.html"><abbr title="Drush\Config\ConfigLocator">ConfigLocator</abbr></a></em></dt>
                     <dd><p>Attempt to load site specific configuration.</p></dd><dt><a href="Drush/Config/Environment.html#method_applyEnvironment">
 <abbr title="Drush\Config\Environment">Environment</abbr>::applyEnvironment</a>() &mdash; <em>Method in class <a href="Drush/Config/Environment.html"><abbr title="Drush\Config\Environment">Environment</abbr></a></em></dt>
-                    <dd><p>Alter our default locations based on the value of environment variables</p></dd><dt><a href="Drush/Drupal/Commands/core/LanguageCommands.html#method_add">
+                    <dd><p>Alter our default locations based on the value of environment variables.</p></dd><dt><a href="Drush/Drupal/Commands/core/LanguageCommands.html#method_add">
 <abbr title="Drush\Drupal\Commands\core\LanguageCommands">LanguageCommands</abbr>::add</a>() &mdash; <em>Method in class <a href="Drush/Drupal/Commands/core/LanguageCommands.html"><abbr title="Drush\Drupal\Commands\core\LanguageCommands">LanguageCommands</abbr></a></em></dt>
                     <dd><p>Add a configurable language.</p></dd><dt><a href="Drush/Drupal/Commands/core/LinkHooks.html#method_askLinkType">
 <abbr title="Drush\Drupal\Commands\core\LinkHooks">LinkHooks</abbr>::askLinkType</a>() &mdash; <em>Method in class <a href="Drush/Drupal/Commands/core/LinkHooks.html"><abbr title="Drush\Drupal\Commands\core\LinkHooks">LinkHooks</abbr></a></em></dt>
@@ -755,23 +755,23 @@ notify the user that a setting change is needed and abort.</p></dd><dt><a href="
 <abbr title="Drush\Sql\SqlBase">SqlBase</abbr>::createdb</a>() &mdash; <em>Method in class <a href="Drush/Sql/SqlBase.html"><abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a></em></dt>
                     <dd><p>Create a new database.</p></dd><dt><a href="Drush/Sql/SqlBase.html#method_creds">
 <abbr title="Drush\Sql\SqlBase">SqlBase</abbr>::creds</a>() &mdash; <em>Method in class <a href="Drush/Sql/SqlBase.html"><abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a></em></dt>
-                    <dd><p>Build a fragment connection parameters.</p></dd><dt><a href="Drush/Sql/SqlMysql.html#method_command">
+                    <dd><p>Build a string containing connection credentials.</p></dd><dt><a href="Drush/Sql/SqlMysql.html#method_command">
 <abbr title="Drush\Sql\SqlMysql">SqlMysql</abbr>::command</a>() &mdash; <em>Method in class <a href="Drush/Sql/SqlMysql.html"><abbr title="Drush\Sql\SqlMysql">SqlMysql</abbr></a></em></dt>
                     <dd><p>The unix command used to connect to the database.</p></dd><dt><a href="Drush/Sql/SqlMysql.html#method_creds">
 <abbr title="Drush\Sql\SqlMysql">SqlMysql</abbr>::creds</a>() &mdash; <em>Method in class <a href="Drush/Sql/SqlMysql.html"><abbr title="Drush\Sql\SqlMysql">SqlMysql</abbr></a></em></dt>
-                    <dd><p>Build a fragment connection parameters.</p></dd><dt><a href="Drush/Sql/SqlMysql.html#method_createdbSql">
+                    <dd><p>Build a string containing connection credentials.</p></dd><dt><a href="Drush/Sql/SqlMysql.html#method_createdbSql">
 <abbr title="Drush\Sql\SqlMysql">SqlMysql</abbr>::createdbSql</a>() &mdash; <em>Method in class <a href="Drush/Sql/SqlMysql.html"><abbr title="Drush\Sql\SqlMysql">SqlMysql</abbr></a></em></dt>
                     <dd><p>Build a SQL string for dropping and creating a database.</p></dd><dt><a href="Drush/Sql/SqlPgsql.html#method_command">
 <abbr title="Drush\Sql\SqlPgsql">SqlPgsql</abbr>::command</a>() &mdash; <em>Method in class <a href="Drush/Sql/SqlPgsql.html"><abbr title="Drush\Sql\SqlPgsql">SqlPgsql</abbr></a></em></dt>
                     <dd><p>The unix command used to connect to the database.</p></dd><dt><a href="Drush/Sql/SqlPgsql.html#method_creds">
 <abbr title="Drush\Sql\SqlPgsql">SqlPgsql</abbr>::creds</a>() &mdash; <em>Method in class <a href="Drush/Sql/SqlPgsql.html"><abbr title="Drush\Sql\SqlPgsql">SqlPgsql</abbr></a></em></dt>
-                    <dd><p>Build a fragment connection parameters.</p></dd><dt><a href="Drush/Sql/SqlPgsql.html#method_createdbSql">
+                    <dd><p>Build a string containing connection credentials.</p></dd><dt><a href="Drush/Sql/SqlPgsql.html#method_createdbSql">
 <abbr title="Drush\Sql\SqlPgsql">SqlPgsql</abbr>::createdbSql</a>() &mdash; <em>Method in class <a href="Drush/Sql/SqlPgsql.html"><abbr title="Drush\Sql\SqlPgsql">SqlPgsql</abbr></a></em></dt>
                     <dd><p>Build a SQL string for dropping and creating a database.</p></dd><dt><a href="Drush/Sql/SqlSqlite.html#method_command">
 <abbr title="Drush\Sql\SqlSqlite">SqlSqlite</abbr>::command</a>() &mdash; <em>Method in class <a href="Drush/Sql/SqlSqlite.html"><abbr title="Drush\Sql\SqlSqlite">SqlSqlite</abbr></a></em></dt>
                     <dd><p>The unix command used to connect to the database.</p></dd><dt><a href="Drush/Sql/SqlSqlite.html#method_creds">
 <abbr title="Drush\Sql\SqlSqlite">SqlSqlite</abbr>::creds</a>() &mdash; <em>Method in class <a href="Drush/Sql/SqlSqlite.html"><abbr title="Drush\Sql\SqlSqlite">SqlSqlite</abbr></a></em></dt>
-                    <dd><p>Build a fragment connection parameters.</p></dd><dt><a href="Drush/Sql/SqlSqlite.html#method_createdbSql">
+                    <dd><p>Build a string containing connection credentials.</p></dd><dt><a href="Drush/Sql/SqlSqlite.html#method_createdbSql">
 <abbr title="Drush\Sql\SqlSqlite">SqlSqlite</abbr>::createdbSql</a>() &mdash; <em>Method in class <a href="Drush/Sql/SqlSqlite.html"><abbr title="Drush\Sql\SqlSqlite">SqlSqlite</abbr></a></em></dt>
                     <dd><p>Build a SQL string for dropping and creating a database.</p></dd><dt><a href="Drush/Sql/SqlSqlite.html#method_createdb">
 <abbr title="Drush\Sql\SqlSqlite">SqlSqlite</abbr>::createdb</a>() &mdash; <em>Method in class <a href="Drush/Sql/SqlSqlite.html"><abbr title="Drush\Sql\SqlSqlite">SqlSqlite</abbr></a></em></dt>
@@ -992,8 +992,6 @@ alias.</p></dd><dt><a href="Drush/SiteAlias/ProcessManager.html#method_drush">
 <abbr title="Drush\Sql\SqlBase">SqlBase</abbr>::dropOrCreate</a>() &mdash; <em>Method in class <a href="Drush/Sql/SqlBase.html"><abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a></em></dt>
                     <dd><p>Drop all tables (if DB exists) or CREATE target database.</p></dd><dt><a href="Drush/Sql/SqlBase.html#method_dbExists">
 <abbr title="Drush\Sql\SqlBase">SqlBase</abbr>::dbExists</a>() &mdash; <em>Method in class <a href="Drush/Sql/SqlBase.html"><abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a></em></dt>
-                    <dd></dd><dt><a href="Drush/Sql/SqlBase.html#method_db_spec">
-<abbr title="Drush\Sql\SqlBase">SqlBase</abbr>::db_spec</a>() &mdash; <em>Method in class <a href="Drush/Sql/SqlBase.html"><abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Sql/SqlBase.html#method_dbSpecFromDbUrl">
 <abbr title="Drush\Sql\SqlBase">SqlBase</abbr>::dbSpecFromDbUrl</a>() &mdash; <em>Method in class <a href="Drush/Sql/SqlBase.html"><abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a></em></dt>
                     <dd><p>Convert from an old-style database URL to an array of database settings.</p></dd><dt><a href="Drush/Sql/SqlMysql.html#method_dbExists">
@@ -1886,7 +1884,8 @@ legacy systems.</p></dd><dt><a href="Drush/Preflight/PreflightArgs.html#method_i
 <abbr title="Drush\TestTraits\CliTestTrait">CliTestTrait</abbr>::isWindows</a>() &mdash; <em>Method in class <a href="Drush/TestTraits/CliTestTrait.html"><abbr title="Drush\TestTraits\CliTestTrait">CliTestTrait</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Utils/FsUtils.html#method_isUsableDirectory">
 <abbr title="Drush\Utils\FsUtils">FsUtils</abbr>::isUsableDirectory</a>() &mdash; <em>Method in class <a href="Drush/Utils/FsUtils.html"><abbr title="Drush\Utils\FsUtils">FsUtils</abbr></a></em></dt>
-                    <dd><p>Description</p></dd><dt><a href="Drush/Utils/FsUtils.html#method_isTarball">
+                    <dd><p>Determine if the specified location is writable, or if a writable
+directory could be created at that path.</p></dd><dt><a href="Drush/Utils/FsUtils.html#method_isTarball">
 <abbr title="Drush\Utils\FsUtils">FsUtils</abbr>::isTarball</a>() &mdash; <em>Method in class <a href="Drush/Utils/FsUtils.html"><abbr title="Drush\Utils\FsUtils">FsUtils</abbr></a></em></dt>
                     <dd><p>Check whether a file is a supported tarball.</p></dd><dt><a href="Drush/Utils/StringUtils.html#method_interpolate">
 <abbr title="Drush\Utils\StringUtils">StringUtils</abbr>::interpolate</a>() &mdash; <em>Method in class <a href="Drush/Utils/StringUtils.html"><abbr title="Drush\Utils\StringUtils">StringUtils</abbr></a></em></dt>
@@ -1945,7 +1944,7 @@ longer.</p></dd><dt><a href="Drush/Boot/BootstrapManager.html#method_logger">
 <abbr title="Drush\Config\Environment">Environment</abbr>#loader</a> &mdash; <em>Property in class <a href="Drush/Config/Environment.html"><abbr title="Drush\Config\Environment">Environment</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Config/Environment.html#method_loadSiteAutoloader">
 <abbr title="Drush\Config\Environment">Environment</abbr>::loadSiteAutoloader</a>() &mdash; <em>Method in class <a href="Drush/Config/Environment.html"><abbr title="Drush\Config\Environment">Environment</abbr></a></em></dt>
-                    <dd><p>Load the autoloader for the selected Drupal site</p></dd><dt><a href="Drush/Config/Environment.html#method_loader">
+                    <dd><p>Load the autoloader for the selected Drupal site.</p></dd><dt><a href="Drush/Config/Environment.html#method_loader">
 <abbr title="Drush\Config\Environment">Environment</abbr>::loader</a>() &mdash; <em>Method in class <a href="Drush/Config/Environment.html"><abbr title="Drush\Config\Environment">Environment</abbr></a></em></dt>
                     <dd><p>The class loader returned when the autoload.php file is included.</p></dd><dt><a href="Drush/Config/Loader/YamlConfigLoader.html#method_load">
 <abbr title="Drush\Config\Loader\YamlConfigLoader">YamlConfigLoader</abbr>::load</a>() &mdash; <em>Method in class <a href="Drush/Config/Loader/YamlConfigLoader.html"><abbr title="Drush\Config\Loader\YamlConfigLoader">YamlConfigLoader</abbr></a></em></dt>
@@ -2645,10 +2644,10 @@ prior to loading configuration files.</p></dd><dt><a href="Drush/Config/ConfigLo
                     <dd><p>Set the class loader from the autload.php file, if available.</p></dd><dt><a href="Drush/Config/Environment.html#method_setEtcPrefix">
 <abbr title="Drush\Config\Environment">Environment</abbr>::setEtcPrefix</a>() &mdash; <em>Method in class <a href="Drush/Config/Environment.html"><abbr title="Drush\Config\Environment">Environment</abbr></a></em></dt>
                     <dd><p>Set the directory prefix to locate the directory that Drush will
-use as /etc (e.g. during the functional tests)</p></dd><dt><a href="Drush/Config/Environment.html#method_setSharePrefix">
+use as /etc (e.g. during the functional tests).</p></dd><dt><a href="Drush/Config/Environment.html#method_setSharePrefix">
 <abbr title="Drush\Config\Environment">Environment</abbr>::setSharePrefix</a>() &mdash; <em>Method in class <a href="Drush/Config/Environment.html"><abbr title="Drush\Config\Environment">Environment</abbr></a></em></dt>
                     <dd><p>Set the directory prefix to locate the directory that Drush will
-use as /user/share (e.g. during the functional tests)</p></dd><dt><a href="Drush/Config/Environment.html#method_systemPathPrefix">
+use as /user/share (e.g. during the functional tests).</p></dd><dt><a href="Drush/Config/Environment.html#method_systemPathPrefix">
 <abbr title="Drush\Config\Environment">Environment</abbr>::systemPathPrefix</a>() &mdash; <em>Method in class <a href="Drush/Config/Environment.html"><abbr title="Drush\Config\Environment">Environment</abbr></a></em></dt>
                     <dd><p>Return the appropriate system path prefix, unless an override is provided.</p></dd><dt><a href="Drush/Config/Environment.html#method_systemConfigPath">
 <abbr title="Drush\Config\Environment">Environment</abbr>::systemConfigPath</a>() &mdash; <em>Method in class <a href="Drush/Config/Environment.html"><abbr title="Drush\Config\Environment">Environment</abbr></a></em></dt>

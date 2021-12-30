@@ -5035,23 +5035,23 @@
 </ul>
 <h2 id="specifying-the-services-file">Specifying the Services File<a class="headerlink" href="#specifying-the-services-file" title="Permanent link">&para;</a></h2>
 <p>A module's composer.json file stipulates the filename where the Drush services (e.g. the Drush command files) are defined. The default services file is <code>drush.services.yml</code>, which is defined in the extra section of the composer.json file as follows:
-<div class="highlight"><pre><span></span><code>  <span class="nt">&quot;extra&quot;</span><span class="p">:</span> <span class="p">{</span>
-    <span class="nt">&quot;drush&quot;</span><span class="p">:</span> <span class="p">{</span>
-      <span class="nt">&quot;services&quot;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="nt">&quot;drush.services.yml&quot;</span><span class="p">:</span> <span class="s2">&quot;^9&quot;</span>
-      <span class="p">}</span>
-    <span class="p">}</span>
-  <span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="w">  </span><span class="nt">&quot;extra&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;drush&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;services&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="nt">&quot;drush.services.yml&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^9&quot;</span><span class="w"></span>
+<span class="w">      </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
 </code></pre></div>
 If for some reason you need to load different services for different versions of Drush, simply define multiple services files in the <code>services</code> section. The first one found will be used. For example:
-<div class="highlight"><pre><span></span><code>  <span class="nt">&quot;extra&quot;</span><span class="p">:</span> <span class="p">{</span>
-    <span class="nt">&quot;drush&quot;</span><span class="p">:</span> <span class="p">{</span>
-      <span class="nt">&quot;services&quot;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="nt">&quot;drush-9-99.services.yml&quot;</span><span class="p">:</span> <span class="s2">&quot;^9.99&quot;</span><span class="p">,</span>
-        <span class="nt">&quot;drush.services.yml&quot;</span><span class="p">:</span> <span class="s2">&quot;^9&quot;</span>
-      <span class="p">}</span>
-    <span class="p">}</span>
-  <span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="w">  </span><span class="nt">&quot;extra&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;drush&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;services&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="nt">&quot;drush-9-99.services.yml&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^9.99&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="nt">&quot;drush.services.yml&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^9&quot;</span><span class="w"></span>
+<span class="w">      </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
 </code></pre></div>
 In this example, the file <code>drush-9-99.services.yml</code> loads commandfile classes that require features only available in Drush 9.99 and later, and drush.services.yml loads an older commandfile implementation for earlier versions of Drush.</p>
 <p>It is also possible to use <a href="https://getcomposer.org/doc/articles/versions.md#version-range">version ranges</a> to exactly specify which version of Drush the services file should be used with (e.g. <code>"drush.services.yml": "&gt;=9 &lt;9.99"</code>).</p>
@@ -5091,9 +5091,9 @@ In this example, the file <code>drush-9-99.services.yml</code> loads commandfile
 <p>Note: Make sure you do <em>not</em> include <code>src</code> in the path to your command. Your command may not be discovered and have additional problems.</p>
 <p>Installing commands as part of a Composer project requires that the project's type be <code>drupal-drush</code>, and that the <code>installer-paths</code> in the Drupal site's composer.json file contains <code>"drush/Commands/contrib/{$name}": ["type:drupal-drush"]</code>. It is also possible to commit projects with a similar layout using a directory named <code>custom</code> in place of <code>contrib</code>; if this is done, then the directory <code>custom</code> will not be considered to be part of the commandfile's namespace.</p>
 <p>If a site-wide commandfile is added via a Composer package, then it may declare any dependencies that it may need in its composer.json file. Site-wide commandfiles that are committed directly to a site's repository only have access to the dependencies already available in the site. Site-wide commandfiles should declare their Drush version compatibility via a <code>conflict</code> directive. For example, a Composer-managed site-wide command that works with both Drush 8 and Drush 9 might contain something similar to the following in its composer.json file:
-<div class="highlight"><pre><span></span><code>    <span class="nt">&quot;conflict&quot;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="nt">&quot;drush/drush&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;8.2 || &gt;=9.0 &lt;9.6 || &gt;=10.0&quot;</span><span class="p">,</span>
-    <span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="w">    </span><span class="nt">&quot;conflict&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="nt">&quot;drush/drush&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&lt;8.2 || &gt;=9.0 &lt;9.6 || &gt;=10.0&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
 </code></pre></div>
 Using <code>require</code> in place of <code>conflict</code> is not recommended.</p>
 <p>A site-wide commandfile should have tests that run with each (major) version of Drush that is supported. You may model your test suite after the <a href="https://github.com/drush-ops/example-drush-extension">example drush extension</a> project, which works on Drush ^8.2 and ^9.6.</p>
@@ -5102,10 +5102,10 @@ Using <code>require</code> in place of <code>conflict</code> is not recommended.
 <h3 id="commands-discovered-by-configuration">Commands discovered by configuration<a class="headerlink" href="#commands-discovered-by-configuration" title="Permanent link">&para;</a></h3>
 <p>Global commandfiles discoverable by configuration are not supported by default; in order to enable them, you must configure your <code>drush.yml</code> configuration file to add an <code>include</code> search location.</p>
 <p>For example:</p>
-<p><div class="highlight"><pre><span></span><code><span class="nt">drush</span><span class="p">:</span>
-  <span class="nt">paths</span><span class="p">:</span>
-    <span class="nt">include</span><span class="p">:</span>
-      <span class="p p-Indicator">-</span> <span class="s">&#39;${env.home}/.drush/commands&#39;</span>
+<p><div class="highlight"><pre><span></span><code><span class="nt">drush</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">paths</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">include</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;${env.home}/.drush/commands&#39;</span><span class="w"></span>
 </code></pre></div>
 With this configuration in place, global commands may be placed as described in the Site-Wide Drush Commands section above. Global commandfiles may not declare any dependencies of their own; they may only use those dependencies already available via the autoloader.</p>
 <div class="admonition tip">
@@ -5134,11 +5134,11 @@ With this configuration in place, global commands may be placed as described in 
 <ul>
 <li>The commands class is PSR4 auto-loadable.</li>
 <li>The commands class namespace, relative to base namespace, is <code>Drush\Commands</code>. For instance, if a Drush command provider third party library maps this PSR4 autoload entry:
-  <div class="highlight"><pre><span></span><code><span class="nt">&quot;autoload&quot;</span><span class="p">:</span> <span class="p">{</span>
-  <span class="nt">&quot;psr-4&quot;</span><span class="p">:</span> <span class="p">{</span>
-    <span class="nt">&quot;My\\Custom\\Library\\&quot;</span><span class="p">:</span> <span class="s2">&quot;src&quot;</span>
-  <span class="p">}</span>
-<span class="p">}</span>
+  <div class="highlight"><pre><span></span><code><span class="nt">&quot;autoload&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="nt">&quot;psr-4&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;My\\Custom\\Library\\&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;src&quot;</span><span class="w"></span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 </code></pre></div>
   then the Drush global commands class namespace should be <code>My\Custom\Library\Drush\Commands</code> and the class file should be located under the <code>src/Drush/Commands</code> directory.</li>
 <li>The class and file name ends with <code>*DrushCommands</code>, e.g. <code>FooDrushCommands</code>.</li>

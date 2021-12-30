@@ -125,10 +125,10 @@
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    
+                    array
                 </div>
                 <div class="col-md-8">
-                    <a href="#method_remap">remap</a>(string[] $argv)
+                    <a href="#method_remap">remap</a>(array $argv)
         
                                             <p><p>Given an $argv array, apply all remap operations on each item
 within it.</p></p>                </div>
@@ -224,8 +224,8 @@ it does, then the remapping is performed.</p></p>                </div>
                     <div class="method-item">
                     <h3 id="method_remap">
         <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Preflight/ArgsRemapper.php#L27">at line 27</a></div>
-        <code>                    
-    <strong>remap</strong>(string[] $argv)
+        <code>                    array
+    <strong>remap</strong>(array $argv)
         </code>
     </h3>
     <div class="details">    
@@ -241,13 +241,22 @@ within it.</p></p>
 
                     <table class="table table-condensed">
                     <tr>
-                <td>string[]</td>
+                <td>array</td>
                 <td>$argv</td>
                 <td></td>
             </tr>
             </table>
 
             
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>array</td>
+            <td></td>
+        </tr>
+    </table>
+
             
             
             
@@ -373,7 +382,7 @@ it does, then the remapping is performed.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_matches">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Preflight/ArgsRemapper.php#L85">at line 85</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Preflight/ArgsRemapper.php#L82">at line 82</a></div>
         <code>            protected        bool
     <strong>matches</strong>(string $arg, string $candidate)
         </code>

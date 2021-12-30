@@ -137,7 +137,7 @@ may contain csv strings, into an array of items.</p></p>                </div>
             <div id="method-details">
                     <div class="method-item">
                     <h3 id="method_csvToArray">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Utils/StringUtils.php#L20">at line 20</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Utils/StringUtils.php#L17">at line 17</a></div>
         <code>        static            array
     <strong>csvToArray</strong>($args)
         </code>
@@ -159,7 +159,7 @@ may contain csv strings, into an array of items.</p></p>
                 <td>$args</td>
                 <td><p>A simple csv string; e.g. 'a,b,c'
 or a simple list of items; e.g. array('a','b','c')
-or some combination; e.g. array('a,b','c') or array('a,','b,','c,')</p></td>
+or some combination; e.g. array('a,b','c') or array('a,','b,','c,').</p></td>
             </tr>
             </table>
 
@@ -169,7 +169,7 @@ or some combination; e.g. array('a,b','c') or array('a,','b,','c,')</p></td>
                     <table class="table table-condensed">
         <tr>
             <td>array</td>
-            <td><p>A simple list of items (e.g. array('a','b','c')</p></td>
+            <td></td>
         </tr>
     </table>
 
@@ -182,7 +182,7 @@ or some combination; e.g. array('a,b','c') or array('a,','b,','c,')</p></td>
             </div>
                     <div class="method-item">
                     <h3 id="method_interpolate">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Utils/StringUtils.php#L46">at line 46</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Utils/StringUtils.php#L42">at line 42</a></div>
         <code>        static            string
     <strong>interpolate</strong>(string $message, array $context = [])
         </code>
@@ -208,7 +208,8 @@ interpolate('Do !what', ['!what' =&gt; 'work'])    ==&gt; 'Do work'</p></p>
                     <tr>
                 <td>array</td>
                 <td>$context</td>
-                <td><p>An associative array of values to be inserted into the message.</p></td>
+                <td><p>An associative array of values to be inserted into the message.
+The resulting string with all placeholders filled in.</p></td>
             </tr>
             </table>
 
@@ -218,7 +219,7 @@ interpolate('Do !what', ['!what' =&gt; 'work'])    ==&gt; 'Do work'</p></p>
                     <table class="table table-condensed">
         <tr>
             <td>string</td>
-            <td><p>The resulting string with all placeholders filled in.</p></td>
+            <td></td>
         </tr>
     </table>
 
@@ -231,7 +232,7 @@ interpolate('Do !what', ['!what' =&gt; 'work'])    ==&gt; 'Do work'</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_replaceTilde">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Utils/StringUtils.php#L93">at line 93</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Utils/StringUtils.php#L88">at line 88</a></div>
         <code>        static            string
     <strong>replaceTilde</strong>($path, $home)
         </code>
@@ -279,7 +280,7 @@ The path with tilde replaced, if applicable.</p></td>
             </div>
                     <div class="method-item">
                     <h3 id="method_generatePassword">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Utils/StringUtils.php#L110">at line 110</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Utils/StringUtils.php#L103">at line 103</a></div>
         <code>        static            string
     <strong>generatePassword</strong>(int $length = 10)
         </code>
