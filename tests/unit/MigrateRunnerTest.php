@@ -167,9 +167,13 @@ class MigrateRunnerTest extends TestCase
 
         // Create the table and load it with data.
         $mapTableSchema = $this->getMapTableSchema();
-        $connection->schema()->createTable('migrate_map_test_migration', $mapTableSchema);
+        $table = 'migrate_map_test_migration';
+        if ($connection->schema()->tableExists($table)) {
+            $connection->schema()->dropTable($table);
+        }
+        $connection->schema()->createTable($table, $mapTableSchema);
         $fields = array_keys($mapTableSchema['fields']);
-        $insert = $connection->insert('migrate_map_test_migration')->fields($fields);
+        $insert = $connection->insert($table)->fields($fields);
         $mapTableData = $this->getMapTableData();
 
         $mapTableData = array_map(function (array $row): array {
