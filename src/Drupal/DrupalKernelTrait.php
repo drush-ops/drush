@@ -203,7 +203,7 @@ trait DrupalKernelTrait
     /**
      * Add a services.yml file if it exists.
      */
-    protected function addDrushServiceProvider($serviceProviderName, $serviceYmlPath)
+    protected function addDrushServiceProvider($serviceProviderName, $serviceYmlPath = '')
     {
         if (file_exists($serviceYmlPath)) {
             $this->serviceYamls['app'][$serviceProviderName] = $serviceYmlPath;

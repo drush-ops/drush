@@ -2,11 +2,13 @@
 
 namespace Drush\Drupal\Migrate;
 
+use Composer\Semver\Comparator;
 use Drupal\Core\Database\Driver\sqlite\Connection;
 use Drupal\migrate\Plugin\MigrationInterface;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Unish\TestSqlIdMap;
+use Webmozart\PathUtil\Path;
 
 class MigrateRunnerTest extends TestCase
 {
@@ -149,20 +151,29 @@ class MigrateRunnerTest extends TestCase
         $this->assertEquals($expectedRows, $actualRows);
     }
 
-    protected function getDatabaseConnection(): \Drupal\Core\Database\Connection
+    protected function getDatabaseConnection()
     {
         if (!extension_loaded('pdo_sqlite')) {
             $this->markTestSkipped('The pdo_sqlite extension is not available.');
         }
         $options['database'] = ':memory:';
-        $pdo = Connection::open($options);
+        $pdo = new \PDO("sqlite::memory:");
+        if (Comparator::greaterThanOrEqualTo(\Drupal::VERSION, '9.4')) {
+            /** @var \Composer\Autoload\ClassLoader $loader */
+            $loader = require PHPUNIT_COMPOSER_INSTALL;
+            $loader->addPsr4('Drupal\sqlite\\', Path::join([dirname(__DIR__, 2), 'sut/core/modules/sqlite/src']));
+        }
         $connection = new Connection($pdo, $options);
 
         // Create the table and load it with data.
         $mapTableSchema = $this->getMapTableSchema();
-        $connection->schema()->createTable('migrate_map_test_migration', $mapTableSchema);
+        $table = 'migrate_map_test_migration';
+        if ($connection->schema()->tableExists($table)) {
+            $connection->schema()->dropTable($table);
+        }
+        $connection->schema()->createTable($table, $mapTableSchema);
         $fields = array_keys($mapTableSchema['fields']);
-        $insert = $connection->insert('migrate_map_test_migration')->fields($fields);
+        $insert = $connection->insert($table)->fields($fields);
         $mapTableData = $this->getMapTableData();
 
         $mapTableData = array_map(function (array $row): array {
