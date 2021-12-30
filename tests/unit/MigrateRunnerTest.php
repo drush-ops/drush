@@ -157,7 +157,7 @@ class MigrateRunnerTest extends TestCase
             $this->markTestSkipped('The pdo_sqlite extension is not available.');
         }
         $options['database'] = ':memory:';
-        $pdo = new \PDO("sqlite::memory");
+        $pdo = new \PDO("sqlite::memory:");
         if (Comparator::greaterThanOrEqualTo(\Drupal::VERSION, '9.4')) {
             /** @var \Composer\Autoload\ClassLoader $loader */
             $loader = require PHPUNIT_COMPOSER_INSTALL;
