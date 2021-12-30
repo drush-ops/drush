@@ -149,10 +149,7 @@ class MigrateRunnerTest extends TestCase
         $this->assertEquals($expectedRows, $actualRows);
     }
 
-    /**
-     * @return \Drupal\Core\Database\Driver\sqlite\Connection
-     */
-    protected function getDatabaseConnection(): Connection
+    protected function getDatabaseConnection(): \Drupal\Core\Database\Connection
     {
         if (!extension_loaded('pdo_sqlite')) {
             $this->markTestSkipped('The pdo_sqlite extension is not available.');
