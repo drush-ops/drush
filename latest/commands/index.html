@@ -4969,6 +4969,7 @@
           <div class="md-content" data-md-component="content">
             <article class="md-content__inner md-typeset">
               
+    
                 
 <a href="https://github.com/drush-ops/drush/blob/10.x/docs/commands.md" title="Edit this page" class="md-content__button md-icon">
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg>
@@ -4995,31 +4996,33 @@
 <div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">PHP8 Attributes</label><label for="__tabbed_1_2">Annotations</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
-<div class="highlight"><pre><span></span><code>#[Command(name: &#39;xkcd:fetch-attributes&#39;, aliases: [&#39;xkcd-attributes&#39;])]
-#[Argument(name: &#39;search&#39;, description: &#39;Optional argument to retrieve the cartoons matching an index number, keyword search or &quot;random&quot;. If omitted the latest cartoon will be retrieved.&#39;)]
-#[Option(name: &#39;image-viewer&#39;, description: &#39;Command to use to view images (e.g. xv, firefox). Defaults to &quot;display&quot; (from ImageMagick).&#39;)]
-#[Option(name: &#39;google-custom-search-api-key&#39;, description: &#39;Google Custom Search API Key, available from https://code.google.com/apis/console/. Default key limited to 100 queries/day globally.&#39;)]
-#[Help(description: &#39;Retrieve and display xkcd cartoons (attribute variant).&#39;)]
-#[Usage(name: &#39;drush xkcd&#39;, description: &#39;Retrieve and display the latest cartoon&#39;)]
-#[Usage(name: &#39;drush xkcd sandwich&#39;, description: &#39;Retrieve and display cartoons about sandwiches.&#39;)]
-public function fetch($search = null, $options = [&#39;image-viewer&#39; =&gt; &#39;open&#39;, &#39;google-custom-search-api-key&#39; =&gt; &#39;AIzaSyDpE01VDNNT73s6CEeJRdSg5jukoG244ek&#39;]) {
-    $this-&gt;doFetch($search, $options);
-}
+<div class="highlight"><pre><span></span><code><span class="k">use</span> <span class="nx">Drush\Attributes</span> <span class="k">as</span> <span class="nx">CLI</span><span class="p">;</span>
+
+<span class="c1">#[CLI\Command(name: &#39;xkcd:fetch-attributes&#39;, aliases: [&#39;xkcd-attributes&#39;])]</span>
+<span class="c1">#[CLI\Argument(name: &#39;search&#39;, description: &#39;Optional argument to retrieve the cartoons matching an index, keyword keyword, or &quot;random&quot;.&#39;)]</span>
+<span class="c1">#[CLI\Option(name: &#39;image-viewer&#39;, description: &#39;Command to use to view images (e.g. xv, firefox).&#39;)]</span>
+<span class="c1">#[CLI\Option(name: &#39;google-custom-search-api-key&#39;, description: &#39;Google Custom Search API Key&#39;)]</span>
+<span class="c1">#[CLI\Help(description: &#39;Retrieve and display xkcd cartoons (attribute variant).&#39;)]</span>
+<span class="c1">#[CLI\Usage(name: &#39;drush xkcd&#39;, description: &#39;Retrieve and display the latest cartoon&#39;)]</span>
+<span class="c1">#[CLI\Usage(name: &#39;drush xkcd sandwich&#39;, description: &#39;Retrieve and display cartoons about sandwiches.&#39;)]</span>
+<span class="k">public</span> <span class="k">function</span> <span class="nf">fetch</span><span class="p">(</span><span class="nv">$search</span> <span class="o">=</span> <span class="k">null</span><span class="p">,</span> <span class="nv">$options</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;image-viewer&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;open&#39;</span><span class="p">,</span> <span class="s1">&#39;google-custom-search-api-key&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;AIza&#39;</span><span class="p">])</span> <span class="p">{</span>
+    <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">doFetch</span><span class="p">(</span><span class="nv">$search</span><span class="p">,</span> <span class="nv">$options</span><span class="p">);</span>
+<span class="p">}</span>
 </code></pre></div>
 </div>
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="sd">/**</span>
 <span class="sd"> * @command xkcd:fetch</span>
-<span class="sd"> * @param $search Optional argument to retrieve the cartoons matching an index number, keyword search or &quot;random&quot;. If omitted the latest cartoon will be retrieved.</span>
-<span class="sd"> * @option image-viewer Command to use to view images (e.g. xv, firefox). Defaults to &quot;display&quot; (from ImageMagick).</span>
-<span class="sd"> * @option google-custom-search-api-key Google Custom Search API Key, available from https://code.google.com/apis/console/. Default key limited to 100 queries/day globally.</span>
+<span class="sd"> * @param $search Optional argument to retrieve the cartoons matching an index number, keyword, or &quot;random&quot;.</span>
+<span class="sd"> * @option image-viewer Command to use to view images (e.g. xv, firefox).</span>
+<span class="sd"> * @option google-custom-search-api-key Google Custom Search API Key.</span>
 <span class="sd"> * @usage drush xkcd</span>
 <span class="sd"> *   Retrieve and display the latest cartoon.</span>
 <span class="sd"> * @usage drush xkcd sandwich</span>
 <span class="sd"> *   Retrieve and display cartoons about sandwiches.</span>
 <span class="sd"> * @aliases xkcd</span>
 <span class="sd">*/</span>
-<span class="k">public</span> <span class="k">function</span> <span class="nf">fetch</span><span class="p">(</span><span class="nv">$search</span> <span class="o">=</span> <span class="k">null</span><span class="p">,</span> <span class="nv">$options</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;image-viewer&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;open&#39;</span><span class="p">,</span> <span class="s1">&#39;google-custom-search-api-key&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;AIzaSyDpE01VDNNT73s6CEeJRdSg5jukoG244ek&#39;</span><span class="p">])</span> <span class="p">{</span>
+<span class="k">public</span> <span class="k">function</span> <span class="nf">fetch</span><span class="p">(</span><span class="nv">$search</span> <span class="o">=</span> <span class="k">null</span><span class="p">,</span> <span class="nv">$options</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;image-viewer&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;open&#39;</span><span class="p">,</span> <span class="s1">&#39;google-custom-search-api-key&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;AIza&#39;</span><span class="p">])</span> <span class="p">{</span>
     <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">doFetch</span><span class="p">(</span><span class="nv">$search</span><span class="p">,</span> <span class="nv">$options</span><span class="p">);</span>
 <span class="p">}</span>
 </code></pre></div>
@@ -5141,7 +5144,27 @@ With this configuration in place, global commands may be placed as described in 
 <li>The class and file name ends with <code>*DrushCommands</code>, e.g. <code>FooDrushCommands</code>.</li>
 </ul>
 
+  <hr>
+<div class="md-source-file">
+  <small>
+    
+      Last update:
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">December 30, 2021</span>
+      
+    
+  </small>
+</div>
+
               
+
+    
+        <div class="md-source-date">
+            <small>
+                Authors: <span class='git-page-authors git-authors'><a href='mailto:weitzman@tejasa.com'>Moshe Weitzman</a></span>
+            </small>
+        </div>
+    
+
             </article>
           </div>
         </div>

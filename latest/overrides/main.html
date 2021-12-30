@@ -32,6 +32,19 @@
     <meta name="twitter:image" content="https://raw.githubusercontent.com/drush-ops/drush/10.x/drush_logo-black.png" />
 {% endblock %}
 
+<!-- https://timvink.github.io/mkdocs-git-authors-plugin/usage.html -->
+{% block content %}
+    {{ super() }}
+
+    {% if git_page_authors %}
+        <div class="md-source-date">
+            <small>
+                Authors: {{ git_page_authors | default('enable mkdocs-git-authors-plugin') }}
+            </small>
+        </div>
+    {% endif %}
+{% endblock %}
+
 {% block disqus %}
 <script src="https://cdn.fastcomments.com/js/embed.min.js"></script>
 <div id="fastcomments-widget"></div>
