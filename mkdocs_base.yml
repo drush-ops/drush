@@ -24,7 +24,7 @@ extra_css:
 plugins:
   - edit_url
   - search
-  - git-revision-date-localized
+  - git-revision-date-localized:
       exclude:
         - commands/*
         - generators/*
