@@ -9,9 +9,9 @@ defaults: &defaults
 version: 2.1
 
 executors:
-  linux81:
+  linux80:
     docker:
-      - image: circleci/php:8.1-apache-node
+      - image: circleci/php:8.0-apache-node
       - image: circleci/mysql:5.7.31
   linux74:
     docker:
@@ -69,12 +69,10 @@ workflows:
       - test:
           matrix:
             parameters:
-              os: [linux81, linux74, linux56]
+              os: [linux80, linux74, linux56]
               drupal: ["9.3.0","9.1.15", "7"]
             exclude:
               - os: linux56
                 drupal: "9.3.0"
               - os: linux56
                 drupal: "9.1.15"
-              - os: linux81
-                drupal: "7"
