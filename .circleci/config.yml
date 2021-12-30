@@ -69,14 +69,12 @@ workflows:
       - test:
           matrix:
             parameters:
-              os: [linux74, linux56]
-              drupal: ["9.3.0","9.1.15", "8.9.13", "7"]
+              os: [linux81, linux74, linux56]
+              drupal: ["9.3.0","9.1.15", "7"]
             exclude:
               - os: linux56
                 drupal: "9.3.0"
               - os: linux56
                 drupal: "9.1.15"
-              - os: linux56
-                drupal: "8.9.13"
               - os: linux81
                 drupal: "7"
