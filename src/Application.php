@@ -1,6 +1,7 @@
 <?php
 namespace Drush;
 
+use Robo\Runner;
 use Composer\Autoload\ClassLoader;
 use Consolidation\AnnotatedCommand\AnnotatedCommand;
 use Consolidation\AnnotatedCommand\CommandFileDiscovery;
@@ -50,7 +51,7 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
     /**
      * Add global options to the Application and their default values to Config.
      */
-    public function configureGlobalOptions()
+    public function configureGlobalOptions(): void
     {
         $this->getDefinition()
             ->addOption(
@@ -106,32 +107,32 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
             );
     }
 
-    public function bootstrapManager()
+    public function bootstrapManager(): BootstrapManager
     {
         return $this->bootstrapManager;
     }
 
-    public function setBootstrapManager(BootstrapManager $bootstrapManager)
+    public function setBootstrapManager(BootstrapManager $bootstrapManager): void
     {
         $this->bootstrapManager = $bootstrapManager;
     }
 
-    public function aliasManager()
+    public function aliasManager(): SiteAliasManager
     {
         return $this->aliasManager;
     }
 
-    public function setAliasManager($aliasManager)
+    public function setAliasManager(SiteAliasManager $aliasManager): void
     {
         $this->aliasManager = $aliasManager;
     }
 
-    public function setRedispatchHook(RedispatchHook $redispatchHook)
+    public function setRedispatchHook(RedispatchHook $redispatchHook): void
     {
         $this->redispatchHook = $redispatchHook;
     }
 
-    public function setTildeExpansionHook(TildeExpansionHook $tildeExpansionHook)
+    public function setTildeExpansionHook(TildeExpansionHook $tildeExpansionHook): void
     {
         $this->tildeExpansionHook = $tildeExpansionHook;
     }
@@ -151,7 +152,7 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
      * If the user did not explicitly select a site URI,
      * then pick an appropriate site from the cwd.
      */
-    public function refineUriSelection($cwd)
+    public function refineUriSelection($cwd): void
     {
         if (!$this->bootstrapManager || !$this->aliasManager) {
             return;
@@ -257,7 +258,7 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
      * If a command is annotated @obsolete, then we will throw an exception
      * immediately; the command will not run, and no hooks will be called.
      */
-    protected function checkObsolete($command)
+    protected function checkObsolete($command): void
     {
         if (!$command instanceof AnnotatedCommand) {
             return;
@@ -281,7 +282,7 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
      * second call. At the moment, the work done here is trivial, so we let
      * it happen twice.
      */
-    protected function configureIO(InputInterface $input, OutputInterface $output)
+    protected function configureIO(InputInterface $input, OutputInterface $output): void
     {
         // Do default Symfony confguration.
         parent::configureIO($input, $output);
@@ -310,7 +311,7 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
      * Configure the application object and register all of the commandfiles
      * available in the search paths provided via Preflight
      */
-    public function configureAndRegisterCommands(InputInterface $input, OutputInterface $output, $commandfileSearchpath, ClassLoader $classLoader)
+    public function configureAndRegisterCommands(InputInterface $input, OutputInterface $output, $commandfileSearchpath, ClassLoader $classLoader): void
     {
         // Symfony will call this method for us in run() (it will be
         // called again), but we want to call it up-front, here, so that
@@ -333,11 +334,11 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
         // Use the robo runner to register commands with Symfony application.
         // This method could / should be refactored in Robo so that we can use
         // it without creating a Runner object that we would not otherwise need.
-        $runner = new \Robo\Runner();
+        $runner = new Runner();
         $runner->registerCommandClasses($this, $commandClasses);
     }
 
-    protected function discoverCommandsFromConfiguration()
+    protected function discoverCommandsFromConfiguration(): array
     {
         $commandList = [];
         foreach ($this->config->get('drush.commands', []) as $key => $value) {
@@ -357,7 +358,7 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
      * Ensure that any discovered class that is not part of the autoloader
      * is, in fact, included.
      */
-    protected function loadCommandClasses($commandClasses)
+    protected function loadCommandClasses($commandClasses): void
     {
         foreach ($commandClasses as $file => $commandClass) {
             if (!class_exists($commandClass)) {
@@ -408,7 +409,7 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
     /**
      * Renders a caught exception. Omits the command docs at end.
      */
-    public function renderException(\Exception $e, OutputInterface $output)
+    public function renderException(\Exception $e, OutputInterface $output): void
     {
         $output->writeln('', OutputInterface::VERBOSITY_QUIET);
 

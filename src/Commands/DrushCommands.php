@@ -1,6 +1,7 @@
 <?php
 namespace Drush\Commands;
 
+use Symfony\Component\Console\Style\SymfonyStyle;
 use Consolidation\AnnotatedCommand\CommandData;
 use Drush\Drush;
 use Drush\Style\DrushStyle;
@@ -53,7 +54,7 @@ abstract class DrushCommands implements IOAwareInterface, LoggerAwareInterface, 
     /**
      * Override Robo's IO function with our custom style.
      */
-    protected function io(): \Symfony\Component\Console\Style\SymfonyStyle
+    protected function io(): SymfonyStyle
     {
         if (!$this->io) {
             // Specify our own Style class when needed.
@@ -65,7 +66,7 @@ abstract class DrushCommands implements IOAwareInterface, LoggerAwareInterface, 
     /**
      * Returns a logger object.
      */
-    protected function logger(): ?\Psr\Log\LoggerInterface
+    protected function logger(): ?LoggerInterface
     {
         return $this->logger;
     }
@@ -100,7 +101,7 @@ abstract class DrushCommands implements IOAwareInterface, LoggerAwareInterface, 
      *
      * @hook pre-command *
      *
-     * @param \Consolidation\AnnotatedCommand\CommandData $commandData
+     * @param CommandData $commandData
      */
     public function preHook(CommandData $commandData)
     {
@@ -124,7 +125,7 @@ abstract class DrushCommands implements IOAwareInterface, LoggerAwareInterface, 
      *
      * @see https://stackoverflow.com/questions/32681165/how-do-you-log-all-api-calls-using-guzzle-6.
      */
-    protected function getStack(): \GuzzleHttp\HandlerStack
+    protected function getStack(): HandlerStack
     {
         $stack = HandlerStack::create();
         $stack->push(Middleware::log($this->logger(), new MessageFormatter(Drush::debug() ? MessageFormatter::DEBUG : MessageFormatter::SHORT)));

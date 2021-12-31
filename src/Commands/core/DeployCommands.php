@@ -51,8 +51,8 @@ class DeployCommands extends DrushCommands implements SiteAliasManagerAwareInter
     }
 
     /**
-     * @param \Consolidation\SiteProcess\ProcessManager $manager
-     * @param \Consolidation\SiteAlias\SiteAlias $self
+     * @param ProcessManager $manager
+     * @param SiteAlias $self
      * @param array $redispatchOptions
      */
     public function cacheRebuild(ProcessManager $manager, SiteAlias $self, array $redispatchOptions): void

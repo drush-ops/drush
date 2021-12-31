@@ -54,7 +54,7 @@ interface CacheInterface
      * @return
      *   The cache or FALSE on failure.
      */
-    public function get($cid);
+    public function get(string $cid);
 
     /**
      * Return data from the persistent cache when given an array of cache IDs.
@@ -67,7 +67,7 @@ interface CacheInterface
      * @return
      *   An array of the items successfully returned from cache indexed by cid.
      */
-    public function getMultiple(&$cids);
+    public function getMultiple(array &$cids);
 
     /**
      * Store data in the persistent cache.
@@ -85,7 +85,7 @@ interface CacheInterface
      *   - A Unix timestamp: Indicates that the item should be kept at least until
      *     the given time, after which it behaves like CACHE_TEMPORARY.
      */
-    public function set($cid, $data, $expire = DRUSH_CACHE_PERMANENT);
+    public function set(string $cid, array $data, $expire = DRUSH_CACHE_PERMANENT);
 
     /**
      * Expire data from the cache. If called without arguments, expirable
@@ -99,7 +99,7 @@ interface CacheInterface
      *   to match rather than a complete ID. The match is a right hand
      *   match. If '*' is given as $cid, the bin $bin will be emptied.
      */
-    public function clear($cid = null, $wildcard = false);
+    public function clear(?string $cid = null, bool $wildcard = false);
 
     /**
      * Check if a cache bin is empty.
@@ -107,8 +107,8 @@ interface CacheInterface
      * A cache bin is considered empty if it does not contain any valid data for
      * any cache ID.
      *
-     * @return
+     * @return bool
      *   TRUE if the cache bin specified is empty.
      */
-    public function isEmpty();
+    public function isEmpty(): bool;
 }

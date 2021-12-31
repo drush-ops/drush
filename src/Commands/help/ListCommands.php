@@ -1,6 +1,7 @@
 <?php
 namespace Drush\Commands\help;
 
+use Symfony\Component\Console\Application;
 use Consolidation\AnnotatedCommand\Help\HelpDocument;
 use Consolidation\OutputFormatters\FormatterManager;
 use Consolidation\OutputFormatters\Options\FormatterOptions;
@@ -117,7 +118,7 @@ class ListCommands extends DrushCommands
         return $dom;
     }
 
-    public static function renderListCLI(\Symfony\Component\Console\Application $application, array $namespaced, \Symfony\Component\Console\Output\OutputInterface $output, string $preamble): void
+    public static function renderListCLI(Application $application, array $namespaced, OutputInterface $output, string $preamble): void
     {
         $output->writeln($application->getHelp());
         $output->writeln('');

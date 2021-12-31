@@ -37,20 +37,20 @@ class FileCache implements CacheInterface
      *
      * @param string $bin
      */
-    public function cacheDirectory($bin = null)
+    public function cacheDirectory($bin = null): string
     {
         $bin = $bin ? $bin : $this->bin;
         return Path::join(Drush::config()->cache(), $bin);
     }
 
-    public function get($cid)
+    public function get(string $cid)
     {
         $cids = [$cid];
         $cache = $this->getMultiple($cids);
         return reset($cache);
     }
 
-    public function getMultiple(&$cids)
+    public function getMultiple(array &$cids)
     {
         try {
             $cache = [];
@@ -78,13 +78,13 @@ class FileCache implements CacheInterface
      * @param string $filename
      *   Absolute path to filename to read contents from.
      */
-    public function readFile($filename)
+    public function readFile(string $filename)
     {
         $item = file_get_contents($filename);
         return $item ? unserialize($item) : false;
     }
 
-    public function set($cid, $data, $expire = DRUSH_CACHE_PERMANENT)
+    public function set(string $cid, array $data, $expire = DRUSH_CACHE_PERMANENT)
     {
         $created = time();
 
@@ -118,12 +118,12 @@ class FileCache implements CacheInterface
      * @param $cache
      *   Cache data to serialize and write to $filename.
      */
-    public function writeFile($filename, $cache)
+    public function writeFile(string $filename, $cache)
     {
         return file_put_contents($filename, serialize($cache));
     }
 
-    public function clear($cid = null, $wildcard = false)
+    public function clear(?string $cid = null, bool $wildcard = false): void
     {
         $fs = new Filesystem();
         $bin_dir = $this->cacheDirectory();
@@ -148,7 +148,7 @@ class FileCache implements CacheInterface
         }
     }
 
-    public function isEmpty()
+    public function isEmpty(): bool
     {
         $files = Finder::create()
           ->files()
@@ -168,7 +168,7 @@ class FileCache implements CacheInterface
      * @return
      *   The full path to the cache file.
      */
-    protected function getFilePath($cid)
+    protected function getFilePath($cid): string
     {
         return $this->directory . '/' . str_replace([':', '\\', '/'], '.', $cid) . self::EXTENSION;
     }

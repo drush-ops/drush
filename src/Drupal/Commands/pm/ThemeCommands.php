@@ -20,7 +20,7 @@ class ThemeCommands extends DrushCommands
     /**
      * @return mixed
      */
-    public function getThemeInstaller(): \Drupal\Core\Extension\ThemeInstallerInterface
+    public function getThemeInstaller(): ThemeInstallerInterface
     {
         return $this->themeInstaller;
     }

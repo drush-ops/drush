@@ -2,6 +2,8 @@
 
 namespace Drush\Drupal\Commands\core;
 
+use Drupal\Core\KeyValueStore\KeyValueStoreInterface;
+use Drupal\Component\Plugin\Exception\PluginException;
 use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\AnnotatedCommand\CommandError;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
@@ -28,37 +30,37 @@ class MigrateRunnerCommands extends DrushCommands
     /**
      * Migration plugin manager service.
      *
-     * @var \Drupal\migrate\Plugin\MigrationPluginManagerInterface
+     * @var MigrationPluginManagerInterface
      */
     protected $migrationPluginManager;
 
     /**
      * Date formatter service.
      *
-     * @var \Drupal\Core\Datetime\DateFormatter
+     * @var DateFormatter
      */
     protected $dateFormatter;
 
     /**
      * The key-value store service.
      *
-     * @var \Drupal\Core\KeyValueStore\KeyValueStoreInterface
+     * @var KeyValueStoreInterface
      */
     protected $keyValue;
 
     /**
      * Migrate message service.
      *
-     * @var \Drupal\migrate\MigrateMessageInterface
+     * @var MigrateMessageInterface
      */
     protected $migrateMessage;
 
     /**
      * Constructs a new class instance.
      *
-     * @param \Drupal\Core\Datetime\DateFormatter $dateFormatter
+     * @param DateFormatter $dateFormatter
      *   Date formatter service.
-     * @param \Drupal\Core\KeyValueStore\KeyValueFactoryInterface $keyValueFactory
+     * @param KeyValueFactoryInterface $keyValueFactory
      *   The key-value factory service.
      */
     public function __construct(DateFormatter $dateFormatter, KeyValueFactoryInterface $keyValueFactory)
@@ -111,7 +113,7 @@ class MigrateRunnerCommands extends DrushCommands
      *   last_imported: Last Imported
      * @default-fields id,status,total,imported,unprocessed,last_imported
      *
-     * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
+     * @return RowsOfFields
      *   Migrations status formatted as table.
      * @version 10.4
      *
@@ -202,7 +204,7 @@ class MigrateRunnerCommands extends DrushCommands
     /**
      * Returns the migration source rows count.
      *
-     * @param \Drupal\migrate\Plugin\MigrationInterface $migration
+     * @param MigrationInterface $migration
      *   The migration plugin instance.
      * @return int|null
      *   The migration source rows count or null if the source is uncountable or
@@ -230,7 +232,7 @@ class MigrateRunnerCommands extends DrushCommands
     /**
      * Returns the number or items that needs update.
      *
-     * @param \Drupal\migrate\Plugin\MigrationInterface $migration
+     * @param MigrationInterface $migration
      *   The migration plugin instance.
      *
      * @return int|null
@@ -245,7 +247,7 @@ class MigrateRunnerCommands extends DrushCommands
     /**
      * Returns the number of unprocessed items.
      *
-     * @param \Drupal\migrate\Plugin\MigrationInterface $migration
+     * @param MigrationInterface $migration
      *   The migration plugin instance.
      *
      * @return int|null
@@ -263,7 +265,7 @@ class MigrateRunnerCommands extends DrushCommands
     /**
      * Returns the number of imported items.
      *
-     * @param \Drupal\migrate\Plugin\MigrationInterface $migration
+     * @param MigrationInterface $migration
      *   The migration plugin instance.
      *
      * @return int|null
@@ -286,7 +288,7 @@ class MigrateRunnerCommands extends DrushCommands
     /**
      * Returns the last imported date/time if any.
      *
-     * @param \Drupal\migrate\Plugin\MigrationInterface $migration
+     * @param MigrationInterface $migration
      *   The migration plugin instance.
      *
      * @return string
@@ -415,7 +417,7 @@ class MigrateRunnerCommands extends DrushCommands
      * If the --execute-dependencies option was given, the migration's
      * dependencies will also be executed first.
      *
-     * @param \Drupal\migrate\Plugin\MigrationInterface $migration
+     * @param MigrationInterface $migration
      *   The migration to execute.
      * @param string $migrationId
      *   The migration ID (not used, just an artifact of array_walk()).
@@ -547,7 +549,7 @@ class MigrateRunnerCommands extends DrushCommands
      */
     public function stop(string $migrationId): void
     {
-        /** @var \Drupal\migrate\Plugin\MigrationInterface $migration */
+        /** @var MigrationInterface $migration */
         $migration = $this->getMigrationPluginManager()->createInstance($migrationId);
         switch ($migration->getStatus()) {
             case MigrationInterface::STATUS_IDLE:
@@ -584,7 +586,7 @@ class MigrateRunnerCommands extends DrushCommands
      */
     public function resetStatus(string $migrationId): void
     {
-        /** @var \Drupal\migrate\Plugin\MigrationInterface $migration */
+        /** @var MigrationInterface $migration */
         $migration = $this->getMigrationPluginManager()->createInstance($migrationId);
         $status = $migration->getStatus();
         if ($status == MigrationInterface::STATUS_IDLE) {
@@ -630,12 +632,12 @@ class MigrateRunnerCommands extends DrushCommands
      *   hash: Source IDs hash
      * @default-fields level,source_ids,destination_ids,message,hash
      *
-     * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
+     * @return RowsOfFields
      *   Migration messages status formatted as table.
      */
     public function messages(string $migrationId, array $options = ['idlist' => self::REQ]): RowsOfFields
     {
-        /** @var \Drupal\migrate\Plugin\MigrationInterface $migration */
+        /** @var MigrationInterface $migration */
         $migration = $this->getMigrationPluginManager()->createInstance($migrationId);
         $idMap = $migration->getIdMap();
         $sourceIdKeys = $this->getSourceIdKeys($idMap);
@@ -733,12 +735,12 @@ class MigrateRunnerCommands extends DrushCommands
      * @default-fields machine_name,description
      * @version 10.4
      *
-     * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
+     * @return RowsOfFields
      *   Source fields of the given migration.
      */
     public function fieldsSource(string $migrationId): RowsOfFields
     {
-        /** @var \Drupal\migrate\Plugin\MigrationInterface $migration */
+        /** @var MigrationInterface $migration */
         $migration = $this->getMigrationPluginManager()->createInstance($migrationId);
         $source = $migration->getSourcePlugin();
         $table = [];
@@ -759,11 +761,11 @@ class MigrateRunnerCommands extends DrushCommands
      * @param string|null $tags
      *   A comma separated list of tags.
      *
-     * @return \Drupal\migrate\Plugin\MigrationInterface[][]
+     * @return MigrationInterface[][]
      *   An array keyed by migration tag, each value containing an array of
      *   migrations or an empty array if no migrations match the input criteria.
      *
-     * @throws \Drupal\Component\Plugin\Exception\PluginException
+     * @throws PluginException
      */
     protected function getMigrationList(?string $migrationIds, ?string $tags): array
     {
@@ -814,7 +816,7 @@ class MigrateRunnerCommands extends DrushCommands
     /**
      * Returns the migrate message logger.
      *
-     * @return \Drupal\migrate\MigrateMessageInterface
+     * @return MigrateMessageInterface
      *   The migrate message logger.
      */
     protected function getMigrateMessage(): MigrateMessageInterface
@@ -828,7 +830,7 @@ class MigrateRunnerCommands extends DrushCommands
     /**
      * Returns the migration plugin manager service.
      *
-     * @return \Drupal\migrate\Plugin\MigrationPluginManagerInterface
+     * @return MigrationPluginManagerInterface
      *   The migration plugin manager service.
      *
      * @todo This service cannot be injected as the 'migrate' module might not
@@ -851,7 +853,7 @@ class MigrateRunnerCommands extends DrushCommands
     /**
      * Get the source ID keys.
      *
-     * @param \Drupal\migrate\Plugin\MigrateIdMapInterface $idMap
+     * @param MigrateIdMapInterface $idMap
      *   The migration ID map.
      *
      * @return string[]
@@ -880,9 +882,9 @@ class MigrateRunnerCommands extends DrushCommands
      *
      * @hook validate @validate-migration-id
      *
-     * @param \Consolidation\AnnotatedCommand\CommandData $commandData
+     * @param CommandData $commandData
      *
-     * @return \Consolidation\AnnotatedCommand\CommandError|null
+     * @return CommandError|null
      */
     public function validateMigrationId(CommandData $commandData)
     {

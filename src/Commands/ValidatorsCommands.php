@@ -17,8 +17,8 @@ class ValidatorsCommands
      * @see \Drush\Commands\core\ViewsCommands::execute for an example.
      *
      * @hook validate @validate-entity-load
-     * @param \Consolidation\AnnotatedCommand\CommandData $commandData
-     * @return \Consolidation\AnnotatedCommand\CommandError|null
+     * @param CommandData $commandData
+     * @return CommandError|null
      */
     public function validateEntityLoad(CommandData $commandData)
     {
@@ -38,7 +38,7 @@ class ValidatorsCommands
      * @see \Drush\Commands\core\WatchdogCommands::show for an example.
      *
      * @hook post-init @validate-module-enabled
-     * @return \Consolidation\AnnotatedCommand\CommandError|null
+     * @return CommandError|null
      */
     public function validateModuleEnabled(Input $input, AnnotationData $annotationData): void
     {
@@ -56,8 +56,8 @@ class ValidatorsCommands
      * Annotation value should be the name of the argument containing the path.
      *
      * @hook validate @validate-file-exists
-     * @param \Consolidation\AnnotatedCommand\CommandData $commandData
-     * @return \Consolidation\AnnotatedCommand\CommandError|null
+     * @param CommandData $commandData
+     * @return CommandError|null
      */
     public function validateFileExists(CommandData $commandData)
     {
@@ -87,8 +87,8 @@ class ValidatorsCommands
      * Annotation value should be extension name. If multiple, delimit by a comma.
      *
      * @hook validate @validate-php-extension
-     * @param \Consolidation\AnnotatedCommand\CommandData $commandData
-     * @return \Consolidation\AnnotatedCommand\CommandError|null
+     * @param CommandData $commandData
+     * @return CommandError|null
      */
     public function validatePHPExtension(CommandData $commandData)
     {
@@ -112,8 +112,8 @@ class ValidatorsCommands
      * Annotation value should be the name of the argument/option containing the permission(s).
      *
      * @hook validate @validate-permissions
-     * @param \Consolidation\AnnotatedCommand\CommandData $commandData
-     * @return \Consolidation\AnnotatedCommand\CommandError|null
+     * @param CommandData $commandData
+     * @return CommandError|null
      */
     public function validatePermissions(CommandData $commandData)
     {

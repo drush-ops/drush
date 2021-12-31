@@ -1,6 +1,7 @@
 <?php
 namespace Drush\Drupal\Commands\core;
 
+use Drupal\Core\Datetime\DateFormatterInterface;
 use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\AnnotatedCommand\CommandError;
 use Consolidation\OutputFormatters\Options\FormatterOptions;
@@ -14,7 +15,7 @@ class UserCommands extends DrushCommands
 {
 
     /**
-     * @var \Drupal\Core\Datetime\DateFormatterInterface
+     * @var DateFormatterInterface
      */
     protected $dateFormatter;
 
@@ -69,7 +70,7 @@ class UserCommands extends DrushCommands
      *
      * @filter-default-field name
      */
-    public function information(string $names = '', $options = ['format' => 'table', 'uid' => self::REQ, 'mail' => self::REQ]): \Consolidation\OutputFormatters\StructuredData\RowsOfFields
+    public function information(string $names = '', $options = ['format' => 'table', 'uid' => self::REQ, 'mail' => self::REQ]): RowsOfFields
     {
         $accounts = [];
         if ($mails = StringUtils::csvToArray($options['mail'])) {

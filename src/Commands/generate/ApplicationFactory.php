@@ -29,7 +29,7 @@ class ApplicationFactory implements AutoloaderAwareInterface
     use AutoloaderAwareTrait;
 
     /**
-     * @var \Psr\Log\LoggerInterface
+     * @var LoggerInterface
      */
     protected $logger;
 
@@ -41,7 +41,7 @@ class ApplicationFactory implements AutoloaderAwareInterface
         $this->config = $config;
     }
 
-    public function logger(): \Psr\Log\LoggerInterface
+    public function logger(): LoggerInterface
     {
         return $this->logger;
     }

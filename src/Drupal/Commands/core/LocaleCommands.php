@@ -26,17 +26,17 @@ class LocaleCommands extends DrushCommands
 
     protected $state;
 
-    protected function getLanguageManager(): \Drupal\Core\Language\LanguageManagerInterface
+    protected function getLanguageManager(): LanguageManagerInterface
     {
         return $this->languageManager;
     }
 
-    protected function getConfigFactory(): \Drupal\Core\Config\ConfigFactoryInterface
+    protected function getConfigFactory(): ConfigFactoryInterface
     {
         return $this->configFactory;
     }
 
-    public function getModuleHandler(): \Drupal\Core\Extension\ModuleHandlerInterface
+    public function getModuleHandler(): ModuleHandlerInterface
     {
         return $this->moduleHandler;
     }
@@ -44,7 +44,7 @@ class LocaleCommands extends DrushCommands
     /**
      * @return mixed
      */
-    public function getState(): \Drupal\Core\State\StateInterface
+    public function getState(): StateInterface
     {
         return $this->state;
     }

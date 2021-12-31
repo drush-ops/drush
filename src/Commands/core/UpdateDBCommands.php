@@ -142,7 +142,7 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
      *   type: Type
      * @default-fields module,update_id,type,description
      * @filter-default-field type
-     * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
+     * @return RowsOfFields
      */
     public function updatedbStatus($options = ['format'=> 'table', 'entity-updates' => true, 'post-updates' => true])
     {
@@ -165,7 +165,7 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
      * @kernel update
      * @hidden
      */
-    public function process(string $batch_id, $options = ['format' => 'json']): \Consolidation\OutputFormatters\StructuredData\UnstructuredListData
+    public function process(string $batch_id, $options = ['format' => 'json']): UnstructuredListData
     {
         $result = drush_batch_command($batch_id);
         return new UnstructuredListData($result);

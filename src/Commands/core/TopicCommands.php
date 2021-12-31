@@ -1,6 +1,7 @@
 <?php
 namespace Drush\Commands\core;
 
+use Consolidation\AnnotatedCommand\AnnotationData;
 use Consolidation\AnnotatedCommand\AnnotatedCommand;
 use Consolidation\AnnotatedCommand\CommandData;
 use Drush\Commands\DrushCommands;
@@ -86,7 +87,7 @@ class TopicCommands extends DrushCommands
         $all = $application->all();
         foreach ($all as $key => $command) {
             if ($command instanceof AnnotatedCommand) {
-                /** @var \Consolidation\AnnotatedCommand\AnnotationData $annotationData */
+                /** @var AnnotationData $annotationData */
                 $annotationData = $command->getAnnotationData();
                 if ($annotationData->has('topic')) {
                     $topics[$command->getName()] = $command;

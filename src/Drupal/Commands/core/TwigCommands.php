@@ -15,29 +15,29 @@ use Webmozart\PathUtil\Path;
 class TwigCommands extends DrushCommands
 {
   /**
-   * @var \Drupal\Core\Template\TwigEnvironment
-   */
+     * @var TwigEnvironment
+     */
     protected $twig;
 
   /**
-   * @var \Drupal\Core\Extension\ModuleHandlerInterface
-   */
+     * @var ModuleHandlerInterface
+     */
     protected $moduleHandler;
 
-    public function getTwig(): \Drupal\Core\Template\TwigEnvironment
+    public function getTwig(): TwigEnvironment
     {
         return $this->twig;
     }
 
-    public function getModuleHandler(): \Drupal\Core\Extension\ModuleHandlerInterface
+    public function getModuleHandler(): ModuleHandlerInterface
     {
         return $this->moduleHandler;
     }
 
   /**
-   * @param \Drupal\Core\Template\TwigEnvironment $twig
-   * @param ModuleHandlerInterface $moduleHandler
-   */
+     * @param TwigEnvironment $twig
+     * @param ModuleHandlerInterface $moduleHandler
+     */
     public function __construct(TwigEnvironment $twig, ModuleHandlerInterface $moduleHandler)
     {
         $this->twig = $twig;
@@ -62,7 +62,7 @@ class TwigCommands extends DrushCommands
      *
      * @command twig:unused
      */
-    public function unused($searchpaths): \Consolidation\OutputFormatters\StructuredData\RowsOfFields
+    public function unused($searchpaths): RowsOfFields
     {
         $unused = [];
         $phpstorage = PhpStorageFactory::get('twig');

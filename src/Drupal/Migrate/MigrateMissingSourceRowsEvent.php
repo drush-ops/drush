@@ -13,7 +13,7 @@ class MigrateMissingSourceRowsEvent extends Event
     /**
      * The migration plugin instance.
      *
-     * @var \Drupal\migrate\Plugin\MigrationInterface
+     * @var MigrationInterface
      */
     protected $migration;
 
@@ -27,7 +27,7 @@ class MigrateMissingSourceRowsEvent extends Event
     /**
      * Constructs a new event instance.
      *
-     * @param \Drupal\migrate\Plugin\MigrationInterface $migration
+     * @param MigrationInterface $migration
      *   The migration plugin instance.
      * @param array[] $destinationIds
      *   Values representing the destination ID.
@@ -41,7 +41,7 @@ class MigrateMissingSourceRowsEvent extends Event
     /**
      * Gets the migration plugin instance.
      *
-     * @return \Drupal\migrate\Plugin\MigrationInterface
+     * @return MigrationInterface
      *   The migration being rolled back.
      */
     public function getMigration(): MigrationInterface

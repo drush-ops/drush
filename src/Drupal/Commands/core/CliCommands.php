@@ -2,6 +2,7 @@
 
 namespace Drush\Drupal\Commands\core;
 
+use Consolidation\AnnotatedCommand\AnnotatedCommand;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Drush\Psysh\DrushCommand;
@@ -118,7 +119,7 @@ class CliCommands extends DrushCommands
         ];
         $php_keywords = $this->getPhpKeywords();
 
-        /** @var \Consolidation\AnnotatedCommand\AnnotatedCommand $command */
+        /** @var AnnotatedCommand $command */
         foreach ($commands as $name => $command) {
             $definition = $command->getDefinition();
 

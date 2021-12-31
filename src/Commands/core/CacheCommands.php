@@ -1,6 +1,7 @@
 <?php
 namespace Drush\Commands\core;
 
+use Drupal\Core\Routing\RouteBuilderInterface;
 use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\AnnotatedCommand\Events\CustomEventAwareInterface;
 use Consolidation\AnnotatedCommand\Events\CustomEventAwareTrait;
@@ -49,7 +50,7 @@ class CacheCommands extends DrushCommands implements CustomEventAwareInterface, 
      *   valid: Valid
      * @default-fields cid,data,created,expire,tags
      */
-    public function get($cid, $bin = 'default', $options = ['format' => 'json']): \Consolidation\OutputFormatters\StructuredData\PropertyList
+    public function get($cid, $bin = 'default', $options = ['format' => 'json']): PropertyList
     {
         $result = \Drupal::cache($bin)->get($cid);
         if (empty($result)) {
@@ -327,7 +328,7 @@ class CacheCommands extends DrushCommands implements CustomEventAwareInterface, 
 
     public static function clearRouter(): void
     {
-        /** @var \Drupal\Core\Routing\RouteBuilderInterface $router_builder */
+        /** @var RouteBuilderInterface $router_builder */
         $router_builder = \Drupal::service('router.builder');
         $router_builder->rebuild();
     }

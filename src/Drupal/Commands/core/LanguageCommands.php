@@ -13,21 +13,21 @@ class LanguageCommands extends DrushCommands
 {
 
     /**
-     * @var \Drupal\Core\Language\LanguageManagerInterface
+     * @var LanguageManagerInterface
      */
     protected $languageManager;
 
     /**
-     * @var \Drupal\Core\Extension\ModuleHandlerInterface
+     * @var ModuleHandlerInterface
      */
     protected $moduleHandler;
 
-    public function getLanguageManager(): \Drupal\Core\Language\LanguageManagerInterface
+    public function getLanguageManager(): LanguageManagerInterface
     {
         return $this->languageManager;
     }
 
-    public function getModuleHandler(): \Drupal\Core\Extension\ModuleHandlerInterface
+    public function getModuleHandler(): ModuleHandlerInterface
     {
         return $this->moduleHandler;
     }
@@ -97,7 +97,7 @@ class LanguageCommands extends DrushCommands
      * @default-fields language,direction,default
      * @filter-default-field language
      */
-    public function info(): \Consolidation\OutputFormatters\StructuredData\RowsOfFields
+    public function info(): RowsOfFields
     {
         $rows = [];
         $languages = $this->getLanguageManager()->getLanguages();

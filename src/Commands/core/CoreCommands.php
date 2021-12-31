@@ -28,7 +28,7 @@ class CoreCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
      *
      * @filter-default-field name
      */
-    public function globalOptions($options = ['format' => 'table']): \Consolidation\OutputFormatters\StructuredData\RowsOfFields
+    public function globalOptions($options = ['format' => 'table']): RowsOfFields
     {
         $application = Drush::getApplication();
         $def = $application->getDefinition();
@@ -69,7 +69,7 @@ class CoreCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
      *
      *
      */
-    public function version($options = ['format' => 'table']): \Consolidation\OutputFormatters\StructuredData\PropertyList
+    public function version($options = ['format' => 'table']): PropertyList
     {
         return new PropertyList(['drush-version' => Drush::getVersion()]);
     }

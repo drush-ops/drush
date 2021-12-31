@@ -17,7 +17,7 @@ class ValidatePhpExtensions
     ) {
     }
 
-    public static function handle(\ReflectionAttribute $attribute, CommandInfo $commandInfo)
+    public static function handle(\ReflectionAttribute $attribute, CommandInfo $commandInfo): void
     {
         $args = $attribute->getArguments();
         $commandInfo->addAnnotation('validate-php-extension', $args['extensions'] ?? $args[0]);

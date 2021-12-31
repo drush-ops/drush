@@ -233,7 +233,7 @@ class SqlCommands extends DrushCommands implements StdinAwareInterface
      * @notes
      *   --createdb is used by sql-sync, since including the DROP TABLE statements interferes with the import when the database is created.
      */
-    public function dump($options = ['result-file' => self::REQ, 'create-db' => false, 'data-only' => false, 'ordered-dump' => false, 'gzip' => false, 'extra' => self::REQ, 'extra-dump' => self::REQ, 'format' => 'null']): \Consolidation\OutputFormatters\StructuredData\PropertyList
+    public function dump($options = ['result-file' => self::REQ, 'create-db' => false, 'data-only' => false, 'ordered-dump' => false, 'gzip' => false, 'extra' => self::REQ, 'extra-dump' => self::REQ, 'format' => 'null']): PropertyList
     {
         $sql = SqlBase::create($options);
         $return = $sql->dump();

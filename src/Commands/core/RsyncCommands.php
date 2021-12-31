@@ -153,7 +153,7 @@ class RsyncCommands extends DrushCommands implements SiteAliasManagerAwareInterf
      * Validate that passed aliases are valid.
      *
      * @hook validate core-rsync
-     * @param \Consolidation\AnnotatedCommand\CommandData $commandData
+     * @param CommandData $commandData
      * @throws \Exception
      */
     public function validate(CommandData $commandData): void

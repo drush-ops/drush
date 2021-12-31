@@ -1,6 +1,7 @@
 <?php
 namespace Drush\Config;
 
+use Robo\Config\Config;
 use Consolidation\Config\Util\ConfigOverlay;
 use Symfony\Component\Filesystem\Exception\IOException;
 use Symfony\Component\Filesystem\Filesystem;
@@ -54,7 +55,7 @@ class DrushConfig extends ConfigOverlay
      */
     public function simulate()
     {
-        return $this->get(\Robo\Config\Config::SIMULATE);
+        return $this->get(Config::SIMULATE);
     }
 
     /**

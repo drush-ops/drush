@@ -20,7 +20,7 @@ class StateCommands extends DrushCommands implements StdinAwareInterface
         $this->state = $state;
     }
 
-    public function getState(): \Drupal\Core\State\StateInterface
+    public function getState(): StateInterface
     {
         return $this->state;
     }
@@ -37,7 +37,7 @@ class StateCommands extends DrushCommands implements StdinAwareInterface
      *   Displays an array of css files in yaml format.
      * @aliases sget,state-get
      */
-    public function get(string $key, $options = ['format' => 'string']): \Consolidation\OutputFormatters\StructuredData\PropertyList
+    public function get(string $key, $options = ['format' => 'string']): PropertyList
     {
         $value = $this->getState()->get($key);
         return new PropertyList([$key => $value]);

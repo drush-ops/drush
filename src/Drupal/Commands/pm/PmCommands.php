@@ -37,27 +37,27 @@ class PmCommands extends DrushCommands
         $this->extensionListModule = $extensionListModule;
     }
 
-    public function getConfigFactory(): \Drupal\Core\Config\ConfigFactoryInterface
+    public function getConfigFactory(): ConfigFactoryInterface
     {
         return $this->configFactory;
     }
 
-    public function getModuleInstaller(): \Drupal\Core\Extension\ModuleInstallerInterface
+    public function getModuleInstaller(): ModuleInstallerInterface
     {
         return $this->moduleInstaller;
     }
 
-    public function getModuleHandler(): \Drupal\Core\Extension\ModuleHandlerInterface
+    public function getModuleHandler(): ModuleHandlerInterface
     {
         return $this->moduleHandler;
     }
 
-    public function getThemeHandler(): \Drupal\Core\Extension\ThemeHandlerInterface
+    public function getThemeHandler(): ThemeHandlerInterface
     {
         return $this->themeHandler;
     }
 
-    public function getExtensionListModule(): \Drupal\Core\Extension\ModuleExtensionList
+    public function getExtensionListModule(): ModuleExtensionList
     {
         return $this->extensionListModule;
     }
@@ -99,8 +99,8 @@ class PmCommands extends DrushCommands
      *
      * @hook validate pm:enable
      *
-     * @throws \Drush\Exceptions\UserAbortException
-     * @throws \Drupal\Core\Extension\MissingDependencyException
+     * @throws UserAbortException
+     * @throws MissingDependencyException
      *
      * @see \drupal_check_module()
      */
@@ -205,7 +205,7 @@ class PmCommands extends DrushCommands
      * @aliases pml,pm-list
      * @filter-default-field display_name
      */
-    public function pmList($options = ['format' => 'table', 'type' => 'module,theme', 'status' => 'enabled,disabled', 'package' => self::REQ, 'core' => false, 'no-core' => false]): \Consolidation\OutputFormatters\StructuredData\RowsOfFields
+    public function pmList($options = ['format' => 'table', 'type' => 'module,theme', 'status' => 'enabled,disabled', 'package' => self::REQ, 'core' => false, 'no-core' => false]): RowsOfFields
     {
         $rows = [];
 

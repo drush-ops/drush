@@ -74,7 +74,7 @@ class XhprofCommands extends DrushCommands
     /**
      * Determines if any profiler could be enabled.
      *
-     * @param \Drush\Config\DrushConfig $config
+     * @param DrushConfig $config
      *
      *   TRUE when xh.link configured, FALSE otherwise.
      *

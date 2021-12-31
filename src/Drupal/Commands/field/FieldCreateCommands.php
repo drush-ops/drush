@@ -394,7 +394,7 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
         return $this->io()->askQuestion($question) ?: [];
     }
 
-    protected function createField(): \Drupal\Core\Entity\EntityInterface
+    protected function createField(): FieldConfigInterface
     {
         $values = [
             'field_name' => $this->input->getOption('field-name'),

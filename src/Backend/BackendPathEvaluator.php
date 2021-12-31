@@ -15,7 +15,7 @@ class BackendPathEvaluator
      *
      * @param HostPath $path The host and path to evaluate aliases on.
      */
-    public function evaluate(HostPath $path)
+    public function evaluate(HostPath $path): void
     {
         $resolvedPath = $this->resolve($path);
         if (!$resolvedPath) {
@@ -50,10 +50,9 @@ class BackendPathEvaluator
      * the value of a path alias.
      *
      * @param SiteAlias $aliasRecord the host to use for lookups
-     * @param $pathAlias the alias to look up (`files`, not `%files`)
-     * @return string
+     * @param string $pathAlias the alias to look up (`files`, not `%files`)
      */
-    public function lookup(SiteAlias $aliasRecord, $pathAlias)
+    public function lookup(SiteAlias $aliasRecord, string $pathAlias): string
     {
         if ($aliasRecord->has("paths.$pathAlias")) {
             return $aliasRecord->get("paths.$pathAlias");
@@ -68,9 +67,8 @@ class BackendPathEvaluator
      *
      * @param SiteAlias $aliasRecord the host to use for lookups
      * @param string $pathAlias the alias to look up (`files`, not `%files`)
-     * @return string
      */
-    public function request(SiteAlias $aliasRecord, $pathAlias)
+    public function request(SiteAlias $aliasRecord, string $pathAlias): string
     {
         // The drupal:directory command uses a path evaluator, which
         // calls this function, so we cannot use dd here, as that

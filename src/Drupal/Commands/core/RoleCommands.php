@@ -116,7 +116,7 @@ class RoleCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
      *
      * @filter-default-field perms
      */
-    public function roleList($options = ['format' => 'yaml']): \Consolidation\OutputFormatters\StructuredData\RowsOfFields
+    public function roleList($options = ['format' => 'yaml']): RowsOfFields
     {
         $rows = [];
         $roles = Role::loadMultiple();

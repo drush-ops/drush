@@ -25,7 +25,7 @@ class HelpCommands extends DrushCommands
      * @bootstrap max
      * @topics docs:readme
      */
-    public function help($command_name = '', $options = ['format' => 'helpcli', 'include-field-labels' => false, 'table-style' => 'compact']): \Drush\Commands\help\DrushHelpDocument
+    public function help($command_name = '', $options = ['format' => 'helpcli', 'include-field-labels' => false, 'table-style' => 'compact']): DrushHelpDocument
     {
         $application = Drush::getApplication();
         $command = $application->get($command_name);

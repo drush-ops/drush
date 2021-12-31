@@ -1,6 +1,7 @@
 <?php
 namespace Drush\Drupal;
 
+use Drupal\Core\Mail\MailFormatHelper;
 class DrupalUtil
 {
 
@@ -18,7 +19,7 @@ class DrupalUtil
             $data = \Drupal::service('renderer')->renderRoot($data);
         }
 
-        $data = \Drupal\Core\Mail\MailFormatHelper::htmlToText($data);
+        $data = MailFormatHelper::htmlToText($data);
         return $data;
     }
 }

@@ -35,22 +35,22 @@ class ViewsCommands extends DrushCommands
         $this->configFactory = $configFactory;
     }
 
-    public function getConfigFactory(): \Drupal\Core\Config\ConfigFactoryInterface
+    public function getConfigFactory(): ConfigFactoryInterface
     {
         return $this->configFactory;
     }
 
-    public function getModuleHandler(): \Drupal\Core\Extension\ModuleHandlerInterface
+    public function getModuleHandler(): ModuleHandlerInterface
     {
         return $this->moduleHandler;
     }
 
-    public function getEntityTypeManager(): \Drupal\Core\Entity\EntityTypeManagerInterface
+    public function getEntityTypeManager(): EntityTypeManagerInterface
     {
         return $this->entityTypeManager;
     }
 
-    public function getRenderer(): \Drupal\Core\Render\RendererInterface
+    public function getRenderer(): RendererInterface
     {
         return $this->renderer;
     }
@@ -129,7 +129,7 @@ class ViewsCommands extends DrushCommands
      * @validate-module-enabled views
      *
      * @filter-default-field machine-name
-     * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
+     * @return RowsOfFields
      */
     public function vlist($options = ['name' => self::REQ, 'tags' => self::REQ, 'status' => self::REQ, 'format' => 'table'])
     {
@@ -256,7 +256,7 @@ class ViewsCommands extends DrushCommands
      * @aliases va,views-analyze
      * @validate-module-enabled views
      *
-     * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
+     * @return RowsOfFields
      */
     public function analyze()
     {

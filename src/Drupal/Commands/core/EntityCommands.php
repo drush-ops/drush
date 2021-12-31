@@ -2,6 +2,10 @@
 
 namespace Drush\Drupal\Commands\core;
 
+use Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException;
+use Drupal\Component\Plugin\Exception\PluginNotFoundException;
+use Drupal\Core\Entity\EntityStorageException;
+use Drupal\Core\Entity\Query\QueryInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drush\Commands\DrushCommands;
 use Drush\Utils\StringUtils;
@@ -77,9 +81,9 @@ class EntityCommands extends DrushCommands
      * @param string $entity_type
      * @param array $ids
      *
-     * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
-     * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
-     * @throws \Drupal\Core\Entity\EntityStorageException
+     * @throws InvalidPluginDefinitionException
+     * @throws PluginNotFoundException
+     * @throws EntityStorageException
      */
     public function doDelete(string $entity_type, array $ids): void
     {
@@ -140,9 +144,9 @@ class EntityCommands extends DrushCommands
      * @param string $entity_type
      * @param array $ids
      *
-     * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
-     * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
-     * @throws \Drupal\Core\Entity\EntityStorageException
+     * @throws InvalidPluginDefinitionException
+     * @throws PluginNotFoundException
+     * @throws EntityStorageException
      */
     public function doSave(string $entity_type, array $ids): void
     {
@@ -157,11 +161,11 @@ class EntityCommands extends DrushCommands
      * @param string $entity_type
      * @param string|null $ids
      * @param array $options
-     * @return \Drupal\Core\Entity\Query\QueryInterface
-     * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
-     * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
+     * @return QueryInterface
+     * @throws InvalidPluginDefinitionException
+     * @throws PluginNotFoundException
      */
-    protected function getQuery(string $entity_type, ?string $ids, array $options): \Drupal\Core\Entity\Query\QueryInterface
+    protected function getQuery(string $entity_type, ?string $ids, array $options): \QueryInterface
     {
         $storage = $this->entityTypeManager->getStorage($entity_type);
         $query = $storage->getQuery();

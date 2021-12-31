@@ -1,6 +1,7 @@
 <?php
 namespace Drush\Drupal\Commands\config;
 
+use Drupal\Core\Config\ImportStorageTransformer;
 use Consolidation\AnnotatedCommand\CommandError;
 use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\AnnotatedCommand\Input\StdinAwareInterface;
@@ -42,11 +43,11 @@ class ConfigCommands extends DrushCommands implements StdinAwareInterface, SiteA
     protected $configStorageExport;
 
     /**
-     * @var \Drupal\Core\Config\ImportStorageTransformer
+     * @var ImportStorageTransformer
      */
     protected $importStorageTransformer;
 
-    public function getConfigFactory(): \Drupal\Core\Config\ConfigFactoryInterface
+    public function getConfigFactory(): ConfigFactoryInterface
     {
         return $this->configFactory;
     }
@@ -55,7 +56,7 @@ class ConfigCommands extends DrushCommands implements StdinAwareInterface, SiteA
     /**
      * ConfigCommands constructor.
      * @param ConfigFactoryInterface $configFactory
-     * @param \Drupal\Core\Config\StorageInterface $configStorage
+     * @param StorageInterface $configStorage
      */
     public function __construct($configFactory, StorageInterface $configStorage)
     {
@@ -65,7 +66,7 @@ class ConfigCommands extends DrushCommands implements StdinAwareInterface, SiteA
     }
 
     /**
-     * @param \Drupal\Core\Config\StorageInterface $exportStorage
+     * @param StorageInterface $exportStorage
      */
     public function setExportStorage(StorageInterface $exportStorage): void
     {
@@ -83,7 +84,7 @@ class ConfigCommands extends DrushCommands implements StdinAwareInterface, SiteA
         return $this->configStorage;
     }
 
-    public function setImportTransformer(\Drupal\Core\Config\ImportStorageTransformer $importStorageTransformer): void
+    public function setImportTransformer(ImportStorageTransformer $importStorageTransformer): void
     {
         $this->importStorageTransformer = $importStorageTransformer;
     }
@@ -93,7 +94,7 @@ class ConfigCommands extends DrushCommands implements StdinAwareInterface, SiteA
         return isset($this->importStorageTransformer);
     }
 
-    public function getImportTransformer(): \Drupal\Core\Config\ImportStorageTransformer
+    public function getImportTransformer(): ImportStorageTransformer
     {
         return $this->importStorageTransformer;
     }
@@ -290,7 +291,7 @@ class ConfigCommands extends DrushCommands implements StdinAwareInterface, SiteA
      * @aliases cst,config-status
      * @filter-default-field name
      */
-    public function status($options = ['state' => 'Only in DB,Only in sync dir,Different', 'prefix' => self::REQ]): ?\Consolidation\OutputFormatters\StructuredData\RowsOfFields
+    public function status($options = ['state' => 'Only in DB,Only in sync dir,Different', 'prefix' => self::REQ]): ?RowsOfFields
     {
         $config_list = array_fill_keys(
             $this->configFactory->listAll($options['prefix']),
@@ -427,7 +428,7 @@ class ConfigCommands extends DrushCommands implements StdinAwareInterface, SiteA
      *
      * @return Table A Symfony table object.
      */
-    public static function configChangesTable(array $config_changes, OutputInterface $output, $use_color = true): \Symfony\Component\Console\Helper\Table
+    public static function configChangesTable(array $config_changes, OutputInterface $output, $use_color = true): Table
     {
         $rows = [];
         foreach ($config_changes as $collection => $changes) {
@@ -486,8 +487,8 @@ class ConfigCommands extends DrushCommands implements StdinAwareInterface, SiteA
      * argument name as the value of the annotation.
      *
      * @hook validate @validate-config-name
-     * @param \Consolidation\AnnotatedCommand\CommandData $commandData
-     * @return \Consolidation\AnnotatedCommand\CommandError|null
+     * @param CommandData $commandData
+     * @return CommandError|null
      */
     public function validateConfigName(CommandData $commandData)
     {

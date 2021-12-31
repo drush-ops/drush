@@ -1,6 +1,8 @@
 <?php
 namespace Drush\Drupal\Commands\core;
 
+use Drupal\Core\Queue\QueueWorkerManager;
+use Drupal\Core\Queue\QueueInterface;
 use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\AnnotatedCommand\CommandError;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
@@ -16,7 +18,7 @@ class QueueCommands extends DrushCommands
 {
 
     /**
-     * @var \Drupal\Core\Queue\QueueWorkerManager
+     * @var QueueWorkerManager
      */
     protected $workerManager;
 
@@ -28,12 +30,12 @@ class QueueCommands extends DrushCommands
         $this->queueService = $queueService;
     }
 
-    public function getWorkerManager(): \Drupal\Core\Queue\QueueWorkerManager
+    public function getWorkerManager(): QueueWorkerManager
     {
         return $this->workerManager;
     }
 
-    public function getQueueService(): \Drupal\Core\Queue\QueueFactory
+    public function getQueueService(): QueueFactory
     {
         return $this->queueService;
     }
@@ -117,7 +119,7 @@ class QueueCommands extends DrushCommands
      *
      * @filter-default-field queue
      */
-    public function qList($options = ['format' => 'table']): \Consolidation\OutputFormatters\StructuredData\RowsOfFields
+    public function qList($options = ['format' => 'table']): RowsOfFields
     {
         $result = [];
         foreach (array_keys($this->getQueues()) as $name) {
@@ -152,8 +154,8 @@ class QueueCommands extends DrushCommands
      * Annotation value should be the name of the argument/option containing the name.
      *
      * @hook validate @validate-queue
-     * @param \Consolidation\AnnotatedCommand\CommandData $commandData
-     * @return \Consolidation\AnnotatedCommand\CommandError|null
+     * @param CommandData $commandData
+     * @return CommandError|null
      */
     public function validateQueueName(CommandData $commandData)
     {
@@ -183,7 +185,7 @@ class QueueCommands extends DrushCommands
     /**
      * {@inheritdoc}
      */
-    public function getQueue($name): \Drupal\Core\Queue\QueueInterface
+    public function getQueue($name): QueueInterface
     {
         return $this->getQueueService()->get($name);
     }

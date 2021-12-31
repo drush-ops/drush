@@ -261,7 +261,7 @@ EOT;
     /**
      * Build an array since that's what HelpCLIFormatter expects.
      *
-     * @param \Symfony\Component\Console\Input\InputArgument $arg
+     * @param InputArgument $arg
      *
      * @return iterable
      */
@@ -277,7 +277,7 @@ EOT;
     /**
      * Build an array since that's what HelpCLIFormatter expects.
      *
-     * @param \Symfony\Component\Console\Input\InputOption $opt
+     * @param InputOption $opt
      *
      * @return iterable
      */

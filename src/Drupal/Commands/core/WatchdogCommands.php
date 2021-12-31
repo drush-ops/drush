@@ -48,7 +48,7 @@ class WatchdogCommands extends DrushCommands
      *   username: Username
      * @default-fields wid,date,type,severity,message
      * @filter-default-field message
-     * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
+     * @return RowsOfFields
      */
     public function show($substring = '', $options = ['format' => 'table', 'count' => 10, 'severity' => self::REQ, 'type' => self::REQ, 'extended' => false])
     {
@@ -98,7 +98,7 @@ class WatchdogCommands extends DrushCommands
      *   username: Username
      * @default-fields wid,date,type,severity,message
      */
-    public function watchdogList($substring = '', $options = ['format' => 'table', 'count' => 10, 'extended' => false]): \Consolidation\OutputFormatters\StructuredData\RowsOfFields
+    public function watchdogList($substring = '', $options = ['format' => 'table', 'count' => 10, 'extended' => false]): RowsOfFields
     {
         return $this->show($substring, $options);
     }
@@ -175,7 +175,7 @@ class WatchdogCommands extends DrushCommands
 
     /**
      * @hook interact watchdog-list
-     * @throws \Drush\Exceptions\UserAbortException
+     * @throws UserAbortException
      */
     public function interactList($input, $output): void
     {
@@ -263,7 +263,7 @@ class WatchdogCommands extends DrushCommands
      * @aliases wd-one,watchdog-show-one
      * @validate-module-enabled dblog
      */
-    public function showOne($id, $options = ['format' => 'yaml']): \Consolidation\OutputFormatters\StructuredData\PropertyList
+    public function showOne($id, $options = ['format' => 'yaml']): PropertyList
     {
         $rsc = Database::getConnection()->select('watchdog', 'w')
             ->fields('w')

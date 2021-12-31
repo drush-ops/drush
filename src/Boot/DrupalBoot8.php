@@ -2,6 +2,7 @@
 
 namespace Drush\Boot;
 
+use Drupal\Core\DrupalKernelInterface;
 use Consolidation\AnnotatedCommand\AnnotationData;
 use Drupal\Core\Database\Database;
 use Drupal\Core\DrupalKernel;
@@ -24,26 +25,26 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
     protected $drupalLoggerAdapter;
 
     /**
-     * @var \Drupal\Core\DrupalKernelInterface
+     * @var DrupalKernelInterface
      */
     protected $kernel;
 
     /**
-     * @var \Symfony\Component\HttpFoundation\Request
+     * @var Request
      */
     protected $request;
 
-    public function getRequest(): \Symfony\Component\HttpFoundation\Request
+    public function getRequest(): Request
     {
         return $this->request;
     }
 
-    public function setRequest(\Symfony\Component\HttpFoundation\Request $request): void
+    public function setRequest(Request $request): void
     {
         $this->request = $request;
     }
 
-    public function getKernel(): \Drupal\Core\DrupalKernelInterface
+    public function getKernel(): DrupalKernelInterface
     {
         return $this->kernel;
     }
@@ -219,7 +220,7 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
         $request = $this->getRequest();
         $kernel_factory = Kernels::getKernelFactory($kernel);
         $allow_dumping = $kernel !== Kernels::UPDATE;
-        /** @var \Drupal\Core\DrupalKernelInterface kernel */
+        /** @var DrupalKernelInterface kernel */
         $this->kernel = $kernel_factory($request, $classloader, 'prod', $allow_dumping, $manager->getRoot());
         // Include Drush services in the container.
         // @see Drush\Drupal\DrupalKernel::addServiceModifier()

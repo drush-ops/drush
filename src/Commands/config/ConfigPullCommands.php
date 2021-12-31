@@ -36,7 +36,7 @@ class ConfigPullCommands extends DrushCommands implements SiteAliasManagerAwareI
      * @field-labels
      *  path: Path
      */
-    public function pull(string $source, string $destination, array $options = ['safe' => false, 'label' => 'sync', 'runner' => null, 'format' => 'null']): \Consolidation\OutputFormatters\StructuredData\PropertyList
+    public function pull(string $source, string $destination, array $options = ['safe' => false, 'label' => 'sync', 'runner' => null, 'format' => 'null']): PropertyList
     {
         $global_options = Drush::redispatchOptions()  + ['strict' => 0];
         $sourceRecord = $this->siteAliasManager()->get($source);

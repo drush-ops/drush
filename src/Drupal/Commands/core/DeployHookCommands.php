@@ -57,7 +57,7 @@ class DeployHookCommands extends DrushCommands implements SiteAliasManagerAwareI
      *
      * @filter-default-field hook
      */
-    public function status(): \Consolidation\OutputFormatters\StructuredData\RowsOfFields
+    public function status(): RowsOfFields
     {
         $updates = self::getRegistry()->getPendingUpdateInformation();
         $rows = [];
@@ -148,7 +148,7 @@ class DeployHookCommands extends DrushCommands implements SiteAliasManagerAwareI
      * @bootstrap full
      * @hidden
      */
-    public function process(string $batch_id, $options = ['format' => 'json']): \Consolidation\OutputFormatters\StructuredData\UnstructuredListData
+    public function process(string $batch_id, $options = ['format' => 'json']): UnstructuredListData
     {
         $result = drush_batch_command($batch_id);
         return new UnstructuredListData($result);

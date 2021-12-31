@@ -35,20 +35,20 @@ class ConfigExportCommands extends DrushCommands
      */
     protected $configStorageExport;
 
-    public function getConfigManager(): \Drupal\Core\Config\ConfigManagerInterface
+    public function getConfigManager(): ConfigManagerInterface
     {
         return $this->configManager;
     }
 
     /**
-     * @param \Drupal\Core\Config\StorageInterface $exportStorage
+     * @param StorageInterface $exportStorage
      */
     public function setExportStorage(StorageInterface $exportStorage): void
     {
         $this->configStorageExport = $exportStorage;
     }
 
-    public function getConfigStorageExport(): \Drupal\Core\Config\StorageInterface
+    public function getConfigStorageExport(): StorageInterface
     {
         if (isset($this->configStorageExport)) {
             return $this->configStorageExport;
@@ -56,13 +56,13 @@ class ConfigExportCommands extends DrushCommands
         return $this->configStorage;
     }
 
-    public function getConfigStorage(): \Drupal\Core\Config\StorageInterface
+    public function getConfigStorage(): StorageInterface
     {
         // @todo: deprecate this method.
         return $this->getConfigStorageExport();
     }
 
-    public function getConfigStorageSync(): \Drupal\Core\Config\StorageInterface
+    public function getConfigStorageSync(): StorageInterface
     {
         return $this->configStorageSync;
     }
@@ -188,7 +188,7 @@ class ConfigExportCommands extends DrushCommands
 
     /**
      * @hook validate config-export
-     * @param \Consolidation\AnnotatedCommand\CommandData $commandData
+     * @param CommandData $commandData
      */
     public function validate(CommandData $commandData): void
     {

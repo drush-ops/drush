@@ -1,6 +1,9 @@
 <?php
 namespace Drush\Drupal\Commands\config;
 
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Drupal\Core\Config\ImportStorageTransformer;
+use Drupal\Core\Config\StorageTransformerException;
 use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\AnnotatedCommand\CommandError;
 use Drupal\config\StorageReplaceDataWrapper;
@@ -52,38 +55,38 @@ class ConfigImportCommands extends DrushCommands
     protected $importStorageTransformer;
 
     /**
-     * @var \Drupal\Core\Extension\ModuleHandlerInterface
+     * @var ModuleHandlerInterface
      */
     protected $moduleHandler;
 
     /**
      * The module extension list.
      *
-     * @var \Drupal\Core\Extension\ModuleExtensionList
+     * @var ModuleExtensionList
      */
     protected $moduleExtensionList;
 
-    public function getConfigManager(): \Drupal\Core\Config\ConfigManagerInterface
+    public function getConfigManager(): ConfigManagerInterface
     {
         return $this->configManager;
     }
 
-    public function getConfigStorage(): \Drupal\Core\Config\StorageInterface
+    public function getConfigStorage(): StorageInterface
     {
         return $this->configStorage;
     }
 
-    public function getConfigStorageSync(): \Drupal\Core\Config\StorageInterface
+    public function getConfigStorageSync(): StorageInterface
     {
         return $this->configStorageSync;
     }
 
-    public function getConfigCache(): \Drupal\Core\Cache\CacheBackendInterface
+    public function getConfigCache(): CacheBackendInterface
     {
         return $this->configCache;
     }
 
-    public function getModuleHandler(): \Drupal\Core\Extension\ModuleHandlerInterface
+    public function getModuleHandler(): ModuleHandlerInterface
     {
         return $this->moduleHandler;
     }
@@ -91,37 +94,37 @@ class ConfigImportCommands extends DrushCommands
     /**
      * Note that type hint is changing https://www.drupal.org/project/drupal/issues/3161983
      */
-    public function getEventDispatcher(): \Symfony\Component\EventDispatcher\EventDispatcherInterface
+    public function getEventDispatcher(): EventDispatcherInterface
     {
         return $this->eventDispatcher;
     }
 
-    public function getLock(): \Drupal\Core\Lock\LockBackendInterface
+    public function getLock(): LockBackendInterface
     {
         return $this->lock;
     }
 
-    public function getConfigTyped(): \Drupal\Core\Config\TypedConfigManagerInterface
+    public function getConfigTyped(): TypedConfigManagerInterface
     {
         return $this->configTyped;
     }
 
-    public function getModuleInstaller(): \Drupal\Core\Extension\ModuleInstallerInterface
+    public function getModuleInstaller(): ModuleInstallerInterface
     {
         return $this->moduleInstaller;
     }
 
-    public function getThemeHandler(): \Drupal\Core\Extension\ThemeHandlerInterface
+    public function getThemeHandler(): ThemeHandlerInterface
     {
         return $this->themeHandler;
     }
 
-    public function getStringTranslation(): \Drupal\Core\StringTranslation\TranslationInterface
+    public function getStringTranslation(): TranslationInterface
     {
         return $this->stringTranslation;
     }
 
-    public function setImportTransformer(\Drupal\Core\Config\ImportStorageTransformer $importStorageTransformer): void
+    public function setImportTransformer(ImportStorageTransformer $importStorageTransformer): void
     {
         $this->importStorageTransformer = $importStorageTransformer;
     }
@@ -131,15 +134,15 @@ class ConfigImportCommands extends DrushCommands
         return isset($this->importStorageTransformer);
     }
 
-    public function getImportTransformer(): ?\Drupal\Core\Config\ImportStorageTransformer
+    public function getImportTransformer(): ?ImportStorageTransformer
     {
         return $this->importStorageTransformer;
     }
 
     /**
-     * @return \Drupal\Core\Extension\ModuleExtensionList
+     * @return ModuleExtensionList
      */
-    public function getModuleExtensionList(): \Drupal\Core\Extension\ModuleExtensionList
+    public function getModuleExtensionList(): ModuleExtensionList
     {
         return $this->moduleExtensionList;
     }
@@ -148,15 +151,15 @@ class ConfigImportCommands extends DrushCommands
      * @param ConfigManagerInterface $configManager
      * @param StorageInterface $configStorage
      * @param StorageInterface $configStorageSync
-     * @param \Drupal\Core\Cache\CacheBackendInterface $configCache
-     * @param \Drupal\Core\Extension\ModuleHandlerInterface $moduleHandler
+     * @param CacheBackendInterface $configCache
+     * @param ModuleHandlerInterface $moduleHandler
      * @param $eventDispatcher
-     * @param \Drupal\Core\Lock\LockBackendInterface $lock
-     * @param \Drupal\Core\Config\TypedConfigManagerInterface $configTyped
-     * @param \Drupal\Core\Extension\ModuleInstallerInterface $moduleInstaller
-     * @param \Drupal\Core\Extension\ThemeHandlerInterface $themeHandler
-     * @param \Drupal\Core\StringTranslation\TranslationInterface $stringTranslation
-     * @param \Drupal\Core\Extension\ModuleExtensionList $moduleExtensionList
+     * @param LockBackendInterface $lock
+     * @param TypedConfigManagerInterface $configTyped
+     * @param ModuleInstallerInterface $moduleInstaller
+     * @param ThemeHandlerInterface $themeHandler
+     * @param TranslationInterface $stringTranslation
+     * @param ModuleExtensionList $moduleExtensionList
      */
     public function __construct(
         ConfigManagerInterface $configManager,
@@ -203,8 +206,8 @@ class ConfigImportCommands extends DrushCommands
      * @topics docs:deploy
      * @bootstrap full
      *
-     * @throws \Drupal\Core\Config\StorageTransformerException
-     * @throws \Drush\Exceptions\UserAbortException
+     * @throws StorageTransformerException
+     * @throws UserAbortException
      */
     public function import(array $options = ['preview' => 'list', 'source' => self::REQ, 'partial' => false, 'diff' => false])
     {
@@ -320,8 +323,8 @@ class ConfigImportCommands extends DrushCommands
 
     /**
      * @hook validate config:import
-     * @param \Consolidation\AnnotatedCommand\CommandData $commandData
-     * @return \Consolidation\AnnotatedCommand\CommandError|null
+     * @param CommandData $commandData
+     * @return CommandError|null
      */
     public function validate(CommandData $commandData)
     {

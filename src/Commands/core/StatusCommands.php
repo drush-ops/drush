@@ -76,7 +76,7 @@ class StatusCommands extends DrushCommands implements SiteAliasManagerAwareInter
      * @bootstrap max
      * @topics docs:readme
      */
-    public function status($filter = '', $options = ['project' => self::REQ, 'format' => 'table']): \Consolidation\OutputFormatters\StructuredData\PropertyList
+    public function status($filter = '', $options = ['project' => self::REQ, 'format' => 'table']): PropertyList
     {
         $data = $this->getPropertyList($options);
 

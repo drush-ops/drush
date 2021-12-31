@@ -102,7 +102,7 @@ class SiteCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
      *
      * @param string $site Site alias or site specification.
      *
-     * @return \Consolidation\OutputFormatters\StructuredData\UnstructuredListData
+     * @return UnstructuredListData
      * @throws \Exception
      * @aliases sa
      * @filter-default-field id
@@ -111,7 +111,6 @@ class SiteCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
      * @usage drush site:alias @dev
      *   Print an alias record for the alias 'dev'.
      * @topics docs:aliases
-     *
      */
     public function siteAlias($site = null, array $options = ['format' => 'yaml'])
     {
