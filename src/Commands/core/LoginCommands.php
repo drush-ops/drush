@@ -38,7 +38,7 @@ class LoginCommands extends DrushCommands implements SiteAliasManagerAwareInterf
      * @usage drush user:login --mail=foo@bar.com
      *   Open browser and login as user with mail "foo@bar.com".
      */
-    public function login($path = '', $options = ['name' => null, 'uid' => null, 'mail' => null, 'browser' => true, 'redirect-port' => self::REQ])
+    public function login(string $path = '', $options = ['name' => null, 'uid' => null, 'mail' => null, 'browser' => true, 'redirect-port' => self::REQ])
     {
         // Redispatch if called against a remote-host so a browser is started on the
         // the *local* machine.

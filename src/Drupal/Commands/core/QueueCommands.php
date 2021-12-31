@@ -1,6 +1,8 @@
 <?php
 namespace Drush\Drupal\Commands\core;
 
+use Drupal\Core\Queue\QueueWorkerManager;
+use Drupal\Core\Queue\QueueInterface;
 use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\AnnotatedCommand\CommandError;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
@@ -16,7 +18,7 @@ class QueueCommands extends DrushCommands
 {
 
     /**
-     * @var \Drupal\Core\Queue\QueueWorkerManager
+     * @var QueueWorkerManager
      */
     protected $workerManager;
 
@@ -28,18 +30,12 @@ class QueueCommands extends DrushCommands
         $this->queueService = $queueService;
     }
 
-    /**
-     * @return \Drupal\Core\Queue\QueueWorkerManager
-     */
-    public function getWorkerManager()
+    public function getWorkerManager(): QueueWorkerManager
     {
         return $this->workerManager;
     }
 
-    /**
-     * @return \Drupal\Core\Queue\QueueFactory
-     */
-    public function getQueueService()
+    public function getQueueService(): QueueFactory
     {
         return $this->queueService;
     }
@@ -62,7 +58,7 @@ class QueueCommands extends DrushCommands
      * @option items-limit The maximum number of items allowed to run the queue.
      * @option lease-time The maximum number of seconds that an item remains claimed.
      */
-    public function run($name, $options = ['time-limit' => self::REQ, 'items-limit' => self::REQ, 'lease-time' => self::REQ])
+    public function run(string $name, $options = ['time-limit' => self::REQ, 'items-limit' => self::REQ, 'lease-time' => self::REQ]): void
     {
         $time_limit = (int) $options['time-limit'];
         $items_limit = (int) $options['items-limit'];
@@ -122,9 +118,8 @@ class QueueCommands extends DrushCommands
      *   class: Class
      *
      * @filter-default-field queue
-     * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
      */
-    public function qList($options = ['format' => 'table'])
+    public function qList($options = ['format' => 'table']): RowsOfFields
     {
         $result = [];
         foreach (array_keys($this->getQueues()) as $name) {
@@ -146,7 +141,7 @@ class QueueCommands extends DrushCommands
      * @param $name The name of the queue to run, as defined in either hook_queue_info or hook_cron_queue_info.
      * @validate-queue name
      */
-    public function delete($name)
+    public function delete($name): void
     {
         $queue = $this->getQueue($name);
         $queue->deleteQueue();
@@ -159,8 +154,8 @@ class QueueCommands extends DrushCommands
      * Annotation value should be the name of the argument/option containing the name.
      *
      * @hook validate @validate-queue
-     * @param \Consolidation\AnnotatedCommand\CommandData $commandData
-     * @return \Consolidation\AnnotatedCommand\CommandError|null
+     * @param CommandData $commandData
+     * @return CommandError|null
      */
     public function validateQueueName(CommandData $commandData)
     {
@@ -176,7 +171,7 @@ class QueueCommands extends DrushCommands
     /**
      * {@inheritdoc}
      */
-    public function getQueues()
+    public function getQueues(): array
     {
         if (!isset(static::$queues)) {
             static::$queues = [];
@@ -189,10 +184,8 @@ class QueueCommands extends DrushCommands
 
     /**
      * {@inheritdoc}
-     *
-     * @return \Drupal\Core\Queue\QueueInterface
      */
-    public function getQueue($name)
+    public function getQueue($name): QueueInterface
     {
         return $this->getQueueService()->get($name);
     }

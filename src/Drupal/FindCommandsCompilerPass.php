@@ -41,7 +41,7 @@ class FindCommandsCompilerPass implements CompilerPassInterface
         $this->tagId = $tagId;
     }
 
-    public function process(ContainerBuilder $container)
+    public function process(ContainerBuilder $container): void
     {
         Drush::logger()->debug(dt("process !storage !tag", ['!storage' => $this->storageClassId, '!tag' => $this->tagId]));
         // We expect that our called registered the storage

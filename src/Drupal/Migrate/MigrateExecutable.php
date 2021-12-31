@@ -2,6 +2,7 @@
 
 namespace Drush\Drupal\Migrate;
 
+use Drupal\migrate\MigrateException;
 use Drupal\Component\Utility\Timer;
 use Drupal\migrate\Event\MigrateEvents;
 use Drupal\migrate\Event\MigrateImportEvent;
@@ -25,7 +26,7 @@ class MigrateExecutable extends MigrateExecutableBase
     /**
      * The Symfony console output.
      *
-     * @var \Symfony\Component\Console\Output\OutputInterface
+     * @var OutputInterface
      */
     protected $output;
 
@@ -122,7 +123,7 @@ class MigrateExecutable extends MigrateExecutableBase
     /**
      * Static cached ID map.
      *
-     * @var \Drush\Drupal\Migrate\MigrateIdMapFilter
+     * @var MigrateIdMapFilter
      */
     protected $idMap;
 
@@ -136,19 +137,19 @@ class MigrateExecutable extends MigrateExecutableBase
     /**
      * The Symfony progress bar.
      *
-     * @var \Symfony\Component\Console\Helper\ProgressBar
+     * @var ProgressBar
      */
     protected $progressBar;
 
     /**
      * Constructs a new migrate executable instance.
      *
-     * @param \Drupal\migrate\Plugin\MigrationInterface $migration
-     * @param \Drupal\migrate\MigrateMessageInterface $message
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @param MigrationInterface $migration
+     * @param MigrateMessageInterface $message
+     * @param OutputInterface $output
      * @param array $options
      *
-     * @throws \Drupal\migrate\MigrateException
+     * @throws MigrateException
      */
     public function __construct(MigrationInterface $migration, MigrateMessageInterface $message, OutputInterface $output, array $options = [])
     {
@@ -207,7 +208,7 @@ class MigrateExecutable extends MigrateExecutableBase
     /**
      * Counts up any map save events.
      *
-     * @param \Drupal\migrate\Event\MigrateMapSaveEvent $event
+     * @param MigrateMapSaveEvent $event
      *   The map event.
      */
     public function onMapSave(MigrateMapSaveEvent $event): void
@@ -227,7 +228,7 @@ class MigrateExecutable extends MigrateExecutableBase
     /**
      * Counts up any rollback events.
      *
-     * @param \Drupal\migrate\Event\MigrateMapDeleteEvent $event
+     * @param MigrateMapDeleteEvent $event
      *   The map event.
      */
     public function onMapDelete(MigrateMapDeleteEvent $event): void
@@ -239,7 +240,7 @@ class MigrateExecutable extends MigrateExecutableBase
     /**
      * Reacts when the import is about to start.
      *
-     * @param \Drupal\migrate\Event\MigrateImportEvent $event
+     * @param MigrateImportEvent $event
      *   The import event.
      */
     public function onPreImport(MigrateImportEvent $event): void
@@ -264,7 +265,7 @@ class MigrateExecutable extends MigrateExecutableBase
      * propagation, thus avoiding the destination object rollback, even when
      * the`--delete` option has been passed.
      *
-     * @param \Drupal\migrate\Plugin\MigrationInterface $migration
+     * @param MigrationInterface $migration
      *
      * @see \Drush\Drupal\Migrate\MigrateExecutable::onMissingSourceRows()
      */
@@ -297,7 +298,7 @@ class MigrateExecutable extends MigrateExecutableBase
      * destination entity and then stopping the event propagation, thus avoiding
      * the destination object deletion, even the `--delete` option was passed.
      *
-     * @param \Drush\Drupal\Migrate\MigrateMissingSourceRowsEvent $event
+     * @param MigrateMissingSourceRowsEvent $event
      *   The event object.
      */
     public function onMissingSourceRows(MigrateMissingSourceRowsEvent $event): void
@@ -326,7 +327,7 @@ class MigrateExecutable extends MigrateExecutableBase
     /**
      * Reacts to migration completion.
      *
-     * @param \Drupal\migrate\Event\MigrateImportEvent $event
+     * @param MigrateImportEvent $event
      *   The map event.
      */
     public function onPostImport(MigrateImportEvent $event): void
@@ -341,10 +342,8 @@ class MigrateExecutable extends MigrateExecutableBase
 
     /**
      * Emits information on the import progress.
-     *
-     * @param bool $done
      */
-    protected function importFeedbackMessage($done = true): void
+    protected function importFeedbackMessage(bool $done = true): void
     {
         $processed = $this->getProcessedCount();
         $timer = Timer::read('migrate:' . $this->migration->getPluginId());
@@ -392,7 +391,7 @@ class MigrateExecutable extends MigrateExecutableBase
     /**
      * Reacts when the rollback is about to starts.
      *
-     * @param \Drupal\migrate\Event\MigrateRollbackEvent $event
+     * @param MigrateRollbackEvent $event
      *   The map event.
      */
     public function onPreRollback(MigrateRollbackEvent $event): void
@@ -403,7 +402,7 @@ class MigrateExecutable extends MigrateExecutableBase
     /**
      * Reacts to rollback completion.
      *
-     * @param \Drupal\migrate\Event\MigrateRollbackEvent $event
+     * @param MigrateRollbackEvent $event
      *   The map event.
      */
     public function onPostRollback(MigrateRollbackEvent $event): void
@@ -423,10 +422,8 @@ class MigrateExecutable extends MigrateExecutableBase
 
     /**
      * Emits information on the rollback execution  progress.
-     *
-     * @param bool $done
      */
-    protected function rollbackFeedbackMessage($done = true): void
+    protected function rollbackFeedbackMessage(bool $done = true): void
     {
         $rolledBack = $this->getRollbackCount();
         if ($done) {
@@ -452,7 +449,7 @@ class MigrateExecutable extends MigrateExecutableBase
     /**
      * Reacts to an item about to be imported.
      *
-     * @param \Drupal\migrate\Event\MigratePreRowSaveEvent $event
+     * @param MigratePreRowSaveEvent $event
      *   The pre-save event.
      */
     public function onPreRowSave(MigratePreRowSaveEvent $event): void
@@ -468,7 +465,7 @@ class MigrateExecutable extends MigrateExecutableBase
     /**
      * Reacts aftre a row has been deleted.
      *
-     * @param \Drupal\migrate\Event\MigratePostRowSaveEvent $event
+     * @param MigratePostRowSaveEvent $event
      *   The event.
      */
     public function onPostRowSave(MigratePostRowSaveEvent $event): void
@@ -479,7 +476,7 @@ class MigrateExecutable extends MigrateExecutableBase
     /**
      * Reacts to item rollback.
      *
-     * @param \Drupal\migrate\Event\MigrateRowDeleteEvent $event
+     * @param MigrateRowDeleteEvent $event
      *   The post-save event.
      */
     public function onPostRowDelete(MigrateRowDeleteEvent $event): void
@@ -493,10 +490,10 @@ class MigrateExecutable extends MigrateExecutableBase
     /**
      * Reacts to a new row being prepared.
      *
-     * @param \Drush\Drupal\Migrate\MigratePrepareRowEvent $event
+     * @param MigratePrepareRowEvent $event
      *   The prepare-row event.
      *
-     * @throws \Drupal\migrate\MigrateSkipRowException
+     * @throws MigrateSkipRowException
      */
     public function onPrepareRow(MigratePrepareRowEvent $event): void
     {
@@ -621,7 +618,7 @@ class MigrateExecutable extends MigrateExecutableBase
     /**
      * Initializes the command progress bar if possible.
      *
-     * @param \Drupal\migrate\Plugin\MigrationInterface $migration
+     * @param MigrationInterface $migration
      *   The migration.
      */
     protected function initProgressBar(MigrationInterface $migration): void

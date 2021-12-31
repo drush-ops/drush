@@ -1,6 +1,7 @@
 <?php
 namespace Drush\Commands\core;
 
+use Drupal\Core\Routing\RouteBuilderInterface;
 use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\AnnotatedCommand\Events\CustomEventAwareInterface;
 use Consolidation\AnnotatedCommand\Events\CustomEventAwareTrait;
@@ -48,9 +49,8 @@ class CacheCommands extends DrushCommands implements CustomEventAwareInterface, 
      *   checksum: Checksum
      *   valid: Valid
      * @default-fields cid,data,created,expire,tags
-     * @return \Consolidation\OutputFormatters\StructuredData\PropertyList
      */
-    public function get($cid, $bin = 'default', $options = ['format' => 'json'])
+    public function get($cid, $bin = 'default', $options = ['format' => 'json']): PropertyList
     {
         $result = \Drupal::cache($bin)->get($cid);
         if (empty($result)) {
@@ -69,7 +69,7 @@ class CacheCommands extends DrushCommands implements CustomEventAwareInterface, 
      * @usage drush cache:tag node:12,user:4
      *   Purge content associated with two cache tags.
      */
-    public function tags($tags)
+    public function tags(string $tags): void
     {
         $tags = StringUtils::csvToArray($tags);
         Cache::invalidateTags($tags);
@@ -92,7 +92,7 @@ class CacheCommands extends DrushCommands implements CustomEventAwareInterface, 
      * @usage drush cc bin entity,bootstrap
      *   Clear the entity and bootstrap cache bins.
      */
-    public function clear($type, array $args, $options = ['cache-clear' => true])
+    public function clear(string $type, array $args, $options = ['cache-clear' => true])
     {
         $boot_manager = Drush::bootstrapManager();
 
@@ -114,7 +114,7 @@ class CacheCommands extends DrushCommands implements CustomEventAwareInterface, 
     /**
      * @hook interact cache-clear
      */
-    public function interact($input, $output)
+    public function interact($input, $output): void
     {
         $boot_manager = Drush::bootstrapManager();
         if (empty($input->getArgument('type'))) {
@@ -242,7 +242,7 @@ class CacheCommands extends DrushCommands implements CustomEventAwareInterface, 
     /**
      * @hook validate cache-clear
      */
-    public function validate(CommandData $commandData)
+    public function validate(CommandData $commandData): void
     {
         $boot_manager = Drush::bootstrapManager();
         $types = $this->getTypes($boot_manager->hasBootstrapped(DRUSH_BOOTSTRAP_DRUPAL_FULL));
@@ -270,7 +270,7 @@ class CacheCommands extends DrushCommands implements CustomEventAwareInterface, 
     /**
      * Types of caches available for clearing. Contrib commands can hook in their own.
      */
-    public function getTypes($include_bootstrapped_types = false)
+    public function getTypes($include_bootstrapped_types = false): array
     {
         $types = [
             'drush' => [$this, 'clearDrush'],
@@ -297,7 +297,7 @@ class CacheCommands extends DrushCommands implements CustomEventAwareInterface, 
     /**
      * Clear caches internal to Drush core.
      */
-    public static function clearDrush()
+    public static function clearDrush(): void
     {
         try {
             drush_cache_clear_all(null, 'default');// No longer used by Drush core, but still cleared for backward compat.
@@ -312,7 +312,7 @@ class CacheCommands extends DrushCommands implements CustomEventAwareInterface, 
     /**
      * Clear one or more cache bins.
      */
-    public static function clearBins($args = ['default'])
+    public static function clearBins($args = ['default']): void
     {
         $bins = StringUtils::csvToArray($args);
         foreach ($bins as $bin) {
@@ -321,19 +321,19 @@ class CacheCommands extends DrushCommands implements CustomEventAwareInterface, 
         }
     }
 
-    public static function clearThemeRegistry()
+    public static function clearThemeRegistry(): void
     {
         \Drupal::service('theme.registry')->reset();
     }
 
-    public static function clearRouter()
+    public static function clearRouter(): void
     {
-        /** @var \Drupal\Core\Routing\RouteBuilderInterface $router_builder */
+        /** @var RouteBuilderInterface $router_builder */
         $router_builder = \Drupal::service('router.builder');
         $router_builder->rebuild();
     }
 
-    public static function clearCssJs()
+    public static function clearCssJs(): void
     {
         _drupal_flush_css_js();
         \Drupal::service('asset.css.collection_optimizer')->deleteAll();
@@ -343,12 +343,12 @@ class CacheCommands extends DrushCommands implements CustomEventAwareInterface, 
     /**
      * Clears the render cache entries.
      */
-    public static function clearRender()
+    public static function clearRender(): void
     {
         Cache::invalidateTags(['rendered']);
     }
 
-    public static function clearPlugin()
+    public static function clearPlugin(): void
     {
         \Drupal::getContainer()->get('plugin.cache_clearer')->clearCachedDefinitions();
     }

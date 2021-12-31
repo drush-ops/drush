@@ -20,10 +20,7 @@ class StateCommands extends DrushCommands implements StdinAwareInterface
         $this->state = $state;
     }
 
-    /**
-     * @return \Drupal\Core\State\StateInterface
-     */
-    public function getState()
+    public function getState(): StateInterface
     {
         return $this->state;
     }
@@ -39,10 +36,8 @@ class StateCommands extends DrushCommands implements StdinAwareInterface
      * @usage drush state:get drupal_css_cache_files --format=yaml
      *   Displays an array of css files in yaml format.
      * @aliases sget,state-get
-     *
-     * @return \Consolidation\OutputFormatters\StructuredData\PropertyList
      */
-    public function get($key, $options = ['format' => 'string'])
+    public function get(string $key, $options = ['format' => 'string']): PropertyList
     {
         $value = $this->getState()->get($key);
         return new PropertyList([$key => $value]);
@@ -65,10 +60,8 @@ class StateCommands extends DrushCommands implements StdinAwareInterface
      * @usage php -r "print json_encode(array(\'drupal\', \'simpletest\'));"  | drush state-set --input-format=json foo.name -
      *   Set a key to a complex value (e.g. array)
      * @aliases sset,state-set
-     *
-     * @return void
      */
-    public function set($key, $value, $options = ['input-format' => 'auto', 'value' => self::REQ])
+    public function set(string $key, $value, $options = ['input-format' => 'auto', 'value' => self::REQ]): void
     {
         // A convenient way to pass a multiline value within a backend request.
         $value = $options['value'] ?: $value;
@@ -100,10 +93,8 @@ class StateCommands extends DrushCommands implements StdinAwareInterface
      * @usage drush state:del system.cron_last
      *   Delete state entry for system.cron_last.
      * @aliases sdel,state-delete
-     *
-     * @return void
      */
-    public function delete($key)
+    public function delete(string $key): void
     {
         $this->getState()->delete($key);
     }

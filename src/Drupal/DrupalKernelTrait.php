@@ -2,6 +2,7 @@
 
 namespace Drush\Drupal;
 
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Composer\Semver\Semver;
 use Drupal\Core\DependencyInjection\ServiceModifierInterface;
 use Drupal\Core\Site\Settings;
@@ -44,7 +45,7 @@ trait DrupalKernelTrait
     /**
      * Initializes the service container.
      *
-     * @return \Symfony\Component\DependencyInjection\ContainerInterface
+     * @return ContainerInterface
      */
     protected function initializeContainer()
     {

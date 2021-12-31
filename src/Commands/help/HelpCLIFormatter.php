@@ -17,7 +17,7 @@ class HelpCLIFormatter implements FormatterInterface
     /**
      * @inheritdoc
      */
-    public function write(OutputInterface $output, $data, FormatterOptions $options)
+    public function write(OutputInterface $output, $data, FormatterOptions $options): void
     {
         $formatterManager = new FormatterManager();
 
@@ -82,11 +82,7 @@ class HelpCLIFormatter implements FormatterInterface
         }
     }
 
-    /**
-     * @param iterable $option
-     * @return string
-     */
-    public static function formatOptionKeys($option)
+    public static function formatOptionKeys(iterable $option): string
     {
         // Remove leading dashes.
         $option['name'] = substr($option['name'], 2);
@@ -108,7 +104,7 @@ class HelpCLIFormatter implements FormatterInterface
         return $synopsis;
     }
 
-    public static function formatOptionDescription($option)
+    public static function formatOptionDescription($option): string
     {
         $defaults = '';
         if (array_key_exists('defaults', $option)) {
@@ -138,7 +134,7 @@ class HelpCLIFormatter implements FormatterInterface
         return $element;
     }
 
-    protected function cleanOptions(&$data)
+    protected function cleanOptions(&$data): void
     {
         if (array_key_exists('options', $data)) {
             foreach ($data['options'] as $key => $option) {
@@ -149,7 +145,7 @@ class HelpCLIFormatter implements FormatterInterface
         }
     }
 
-    public static function isGlobalOption($name)
+    public static function isGlobalOption($name): bool
     {
         $application = Drush::getApplication();
         $def = $application->getDefinition();

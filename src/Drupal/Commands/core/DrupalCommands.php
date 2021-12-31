@@ -14,46 +14,37 @@ class DrupalCommands extends DrushCommands
 {
 
     /**
-     * @var \Drupal\Core\CronInterface
+     * @var CronInterface
      */
     protected $cron;
 
     /**
-     * @var \Drupal\Core\Extension\ModuleHandlerInterface
+     * @var ModuleHandlerInterface
      */
     protected $moduleHandler;
 
     /**
-     * @var \Drupal\Core\Routing\RouteProviderInterface
+     * @var RouteProviderInterface
      */
     protected $routeProvider;
 
-    /**
-     * @return \Drupal\Core\CronInterface
-     */
-    public function getCron()
+    public function getCron(): CronInterface
     {
         return $this->cron;
     }
 
-    /**
-     * @return \Drupal\Core\Extension\ModuleHandlerInterface
-     */
-    public function getModuleHandler()
+    public function getModuleHandler(): ModuleHandlerInterface
     {
         return $this->moduleHandler;
     }
 
-    /**
-     * @return \Drupal\Core\Routing\RouteProviderInterface
-     */
-    public function getRouteProvider()
+    public function getRouteProvider(): RouteProviderInterface
     {
         return $this->routeProvider;
     }
 
     /**
-     * @param \Drupal\Core\CronInterface $cron
+     * @param CronInterface $cron
      * @param ModuleHandlerInterface $moduleHandler
      * @param RouteProviderInterface $routeProvider
      */
@@ -71,7 +62,7 @@ class DrupalCommands extends DrushCommands
      * @aliases cron,core-cron
      * @topics docs:cron
      */
-    public function cron()
+    public function cron(): void
     {
         $this->getCron()->run();
     }
@@ -96,9 +87,8 @@ class DrupalCommands extends DrushCommands
      *   value: Summary
      * @default-fields title,severity,value
      * @filter-default-field severity
-     * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
      */
-    public function requirements($options = ['format' => 'table', 'severity' => -1, 'ignore' => ''])
+    public function requirements($options = ['format' => 'table', 'severity' => -1, 'ignore' => '']): RowsOfFields
     {
         include_once DRUSH_DRUPAL_CORE . '/includes/install.inc';
         $severities = [

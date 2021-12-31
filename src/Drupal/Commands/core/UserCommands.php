@@ -1,6 +1,7 @@
 <?php
 namespace Drush\Drupal\Commands\core;
 
+use Drupal\Core\Datetime\DateFormatterInterface;
 use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\AnnotatedCommand\CommandError;
 use Consolidation\OutputFormatters\Options\FormatterOptions;
@@ -14,7 +15,7 @@ class UserCommands extends DrushCommands
 {
 
     /**
-     * @var \Drupal\Core\Datetime\DateFormatterInterface
+     * @var DateFormatterInterface
      */
     protected $dateFormatter;
 
@@ -68,9 +69,8 @@ class UserCommands extends DrushCommands
      * @default-fields uid,name,mail,roles,user_status
      *
      * @filter-default-field name
-     * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
      */
-    public function information($names = '', $options = ['format' => 'table', 'uid' => self::REQ, 'mail' => self::REQ])
+    public function information(string $names = '', $options = ['format' => 'table', 'uid' => self::REQ, 'mail' => self::REQ]): RowsOfFields
     {
         $accounts = [];
         if ($mails = StringUtils::csvToArray($options['mail'])) {
@@ -125,7 +125,7 @@ class UserCommands extends DrushCommands
      * @usage drush user:block user3
      *   Block the users whose name is user3
      */
-    public function block($names = '', $options = ['uid' => self::REQ, 'mail' => self::REQ])
+    public function block(string $names = '', $options = ['uid' => self::REQ, 'mail' => self::REQ]): void
     {
         $accounts = $this->getAccounts($names, $options);
         foreach ($accounts as $id => $account) {
@@ -147,7 +147,7 @@ class UserCommands extends DrushCommands
      * @usage drush user:unblock user3
      *   Unblock the users with name user3
      */
-    public function unblock($names = '', $options = ['uid' => self::REQ, 'mail' => self::REQ])
+    public function unblock(string $names = '', $options = ['uid' => self::REQ, 'mail' => self::REQ]): void
     {
         $accounts = $this->getAccounts($names, $options);
         foreach ($accounts as $id => $account) {
@@ -171,7 +171,7 @@ class UserCommands extends DrushCommands
      * @usage drush user-add-role "editor" user3
      *   Add the editor role to user3
      */
-    public function addRole($role, $names = '', $options = ['uid' => self::REQ, 'mail' => self::REQ])
+    public function addRole(string $role, string $names = '', $options = ['uid' => self::REQ, 'mail' => self::REQ]): void
     {
         $accounts = $this->getAccounts($names, $options);
         foreach ($accounts as $id => $account) {
@@ -198,7 +198,7 @@ class UserCommands extends DrushCommands
      * @usage drush user:remove-role "power user" user3
      *   Remove the "power user" role from user3
      */
-    public function removeRole($role, $names = '', $options = ['uid' => self::REQ, 'mail' => self::REQ])
+    public function removeRole(string $role, string $names = '', $options = ['uid' => self::REQ, 'mail' => self::REQ]): void
     {
         $accounts = $this->getAccounts($names, $options);
         foreach ($accounts as $id => $account) {
@@ -223,7 +223,7 @@ class UserCommands extends DrushCommands
      * @usage drush user:create newuser --mail="person@example.com" --password="letmein"
      *   Create a new user account with the name newuser, the email address person@example.com, and the password letmein
      */
-    public function create($name, $options = ['password' => self::REQ, 'mail' => self::REQ])
+    public function create(string $name, $options = ['password' => self::REQ, 'mail' => self::REQ])
     {
         $new_user = [
             'name' => $name,
@@ -247,7 +247,7 @@ class UserCommands extends DrushCommands
      *
      * @hook validate user-create
      */
-    public function createValidate(CommandData $commandData)
+    public function createValidate(CommandData $commandData): void
     {
         if ($mail = $commandData->input()->getOption('mail')) {
             if (user_load_by_mail($mail)) {
@@ -275,7 +275,7 @@ class UserCommands extends DrushCommands
      * @usage drush user:cancel --delete-content username
      *   Delete the user account with the name username and delete all content created by that user.
      */
-    public function cancel($names, $options = ['delete-content' => false, 'uid' => self::REQ, 'mail' => self::REQ])
+    public function cancel(string $names, $options = ['delete-content' => false, 'uid' => self::REQ, 'mail' => self::REQ]): void
     {
         $accounts = $this->getAccounts($names, $options);
         foreach ($accounts as $id => $account) {
@@ -302,7 +302,7 @@ class UserCommands extends DrushCommands
      * @usage drush user:password someuser "correct horse battery staple"
      *   Set the password for the username someuser. See https://xkcd.com/936
      */
-    public function password($name, $password)
+    public function password(string $name, string $password): void
     {
         if ($account = user_load_by_name($name)) {
             if (!$this->getConfig()->simulate()) {
@@ -319,9 +319,8 @@ class UserCommands extends DrushCommands
      * A flatter and simpler array presentation of a Drupal $user object.
      *
      * @param $account A user account
-     * @return array
      */
-    public function infoArray($account)
+    public function infoArray($account): array
     {
         return [
             'uid' => $account->id(),
@@ -349,11 +348,10 @@ class UserCommands extends DrushCommands
      * @param string $names
      * @param array $options
      *
-     * @return array
      *   A array of loaded accounts.
      * @throws \Exception
      */
-    protected function getAccounts($names = '', $options = [])
+    protected function getAccounts(string $names = '', array $options = []): array
     {
         $accounts = [];
         if ($mails = StringUtils::csvToArray($options['mail'])) {

@@ -34,7 +34,7 @@ class EditCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
      *  Edit the second file in the choice list.
      * @aliases conf,config,core-edit
      */
-    public function edit($filter = null)
+    public function edit($filter = null): void
     {
         $all = $this->load();
 
@@ -66,7 +66,7 @@ class EditCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
         $process->mustRun();
     }
 
-    public function load($headers = true)
+    public function load($headers = true): array
     {
         $php_header = $php = $rcs_header = $rcs = $aliases_header = $aliases = $drupal_header = $drupal = [];
         $php = $this->phpIniFiles();
@@ -118,13 +118,13 @@ class EditCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
         return array_merge($php_header, $php, $bash_header, $bash, $rcs_header, $rcs, $aliases_header, $aliases, $drupal_header, $drupal);
     }
 
-    public static function phpIniFiles()
+    public static function phpIniFiles(): array
     {
         $paths[] = php_ini_loaded_file();
         return $paths;
     }
 
-    public function bashFiles()
+    public function bashFiles(): array
     {
         $bashFiles = [];
         $home = $this->getConfig()->home();
@@ -144,12 +144,12 @@ class EditCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
      * TODO: Also exists as InitCommands::findBashrc. Decide on class-based
      * way to share code like this.
      */
-    public static function findBashrc($home)
+    public static function findBashrc($home): string
     {
         return $home . "/.bashrc";
     }
 
-    public function complete()
+    public function complete(): array
     {
         return ['values' => $this->load(false)];
     }

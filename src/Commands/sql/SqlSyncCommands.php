@@ -40,7 +40,7 @@ class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwareInte
      * @topics docs:aliases,docs:policy,docs:configuration,docs:example-sync-via-http
      * @throws \Exception
      */
-    public function sqlsync($source, $target, $options = ['no-dump' => false, 'no-sync' => false, 'runner' => self::REQ, 'create-db' => false, 'db-su' => self::REQ, 'db-su-pw' => self::REQ, 'target-dump' => self::REQ, 'source-dump' => self::OPT, 'extra-dump' => self::REQ])
+    public function sqlsync($source, $target, $options = ['no-dump' => false, 'no-sync' => false, 'runner' => self::REQ, 'create-db' => false, 'db-su' => self::REQ, 'db-su-pw' => self::REQ, 'target-dump' => self::REQ, 'source-dump' => self::OPT, 'extra-dump' => self::REQ]): void
     {
         $manager = $this->siteAliasManager();
         $sourceRecord = $manager->get($source);
@@ -67,7 +67,7 @@ class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwareInte
      * @hook validate sql-sync
      * @throws \Exception
      */
-    public function validate(CommandData $commandData)
+    public function validate(CommandData $commandData): void
     {
         $source = $commandData->input()->getArgument('source');
         $target = $commandData->input()->getArgument('target');
@@ -107,7 +107,7 @@ class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwareInte
         }
     }
 
-    public function databaseName(SiteAlias $record)
+    public function databaseName(SiteAlias $record): string
     {
         if ($this->processManager()->hasTransport($record) && $this->getConfig()->simulate()) {
             return 'simulated_db';
@@ -130,11 +130,10 @@ class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwareInte
      * @param $global_options
      * @param $sourceRecord
      *
-     * @return string
      *   Path to the source dump file.
      * @throws \Exception
      */
-    public function dump($options, $global_options, $sourceRecord)
+    public function dump($options, $global_options, $sourceRecord): string
     {
         $dump_options = $global_options + [
             'gzip' => true,
@@ -172,14 +171,11 @@ class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwareInte
 
     /**
      * @param array $options
-     * @param SiteAlias $sourceRecord
-     * @param SiteAlias $targetRecord
      * @param $source_dump_path
-     * @return string
      *   Path to the target file.
      * @throws \Exception
      */
-    public function rsync($options, SiteAlias $sourceRecord, SiteAlias $targetRecord, $source_dump_path)
+    public function rsync(array $options, SiteAlias $sourceRecord, SiteAlias $targetRecord, $source_dump_path): string
     {
         $do_rsync = !$options['no-sync'];
         // Determine path/to/dump on target.
@@ -230,7 +226,7 @@ class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwareInte
      * @param $target_dump_path
      * @param $targetRecord
      */
-    public function import($global_options, $target_dump_path, $targetRecord)
+    public function import($global_options, $target_dump_path, $targetRecord): void
     {
         $this->logger()->notice(dt('Starting to import dump file onto target database.'));
         $query_options = $global_options + [

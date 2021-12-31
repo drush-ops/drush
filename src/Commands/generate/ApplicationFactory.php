@@ -29,7 +29,7 @@ class ApplicationFactory implements AutoloaderAwareInterface
     use AutoloaderAwareTrait;
 
     /**
-     * @var \Psr\Log\LoggerInterface
+     * @var LoggerInterface
      */
     protected $logger;
 
@@ -41,7 +41,7 @@ class ApplicationFactory implements AutoloaderAwareInterface
         $this->config = $config;
     }
 
-    public function logger()
+    public function logger(): LoggerInterface
     {
         return $this->logger;
     }
@@ -124,7 +124,7 @@ class ApplicationFactory implements AutoloaderAwareInterface
         return $generators;
     }
 
-    protected function discoverGlobalPathsDeprecated()
+    protected function discoverGlobalPathsDeprecated(): array
     {
         $config_paths = $this->getConfig()->get('runtime.commandfile.paths', []);
         foreach ($config_paths as $path) {
@@ -134,7 +134,7 @@ class ApplicationFactory implements AutoloaderAwareInterface
         return array_filter($global_paths, 'file_exists');
     }
 
-    protected function discoverPsr4Generators()
+    protected function discoverPsr4Generators(): array
     {
         $classes = (new RelativeNamespaceDiscovery($this->autoloader()))
             ->setRelativeNamespace('Drush\Generators')

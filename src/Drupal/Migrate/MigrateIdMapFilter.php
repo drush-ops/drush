@@ -25,7 +25,7 @@ class MigrateIdMapFilter extends \FilterIterator
     protected $destinationIdList;
 
     /**
-     * @param \Drupal\migrate\Plugin\MigrateIdMapInterface $idMap
+     * @param MigrateIdMapInterface $idMap
      *   The ID map.
      * @param array|null $sourceIdList
      *   The source ID list to filter on.
@@ -49,7 +49,7 @@ class MigrateIdMapFilter extends \FilterIterator
             return true;
         }
 
-        /** @var \Drupal\migrate\Plugin\MigrateIdMapInterface $idMap */
+        /** @var MigrateIdMapInterface $idMap */
         $idMap = $this->getInnerIterator();
 
         $acceptedBySourceIdList = $this->sourceIdList && in_array(array_values($idMap->currentSource()), $this->sourceIdList);

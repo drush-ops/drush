@@ -35,7 +35,7 @@ class MkCommands extends DrushCommands implements SiteAliasManagerAwareInterface
      * @usage drush mk:docs
      *   Build many .md files in the docs/commands and docs/generators directories.
      */
-    public function docs()
+    public function docs(): void
     {
         $dir_root = Drush::bootstrapManager()->getComposerRoot();
         $destination = 'commands';
@@ -261,7 +261,7 @@ EOT;
     /**
      * Build an array since that's what HelpCLIFormatter expects.
      *
-     * @param \Symfony\Component\Console\Input\InputArgument $arg
+     * @param InputArgument $arg
      *
      * @return iterable
      */
@@ -277,7 +277,7 @@ EOT;
     /**
      * Build an array since that's what HelpCLIFormatter expects.
      *
-     * @param \Symfony\Component\Console\Input\InputOption $opt
+     * @param InputOption $opt
      *
      * @return iterable
      */

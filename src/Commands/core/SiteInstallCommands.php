@@ -58,7 +58,7 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
      * @aliases si,sin,site-install
      *
      */
-    public function install(array $profile, $options = ['db-url' => self::REQ, 'db-prefix' => self::REQ, 'db-su' => self::REQ, 'db-su-pw' => self::REQ, 'account-name' => 'admin', 'account-mail' => 'admin@example.com', 'site-mail' => 'admin@example.com', 'account-pass' => self::REQ, 'locale' => 'en', 'site-name' => 'Drush Site-Install', 'site-pass' => self::REQ, 'sites-subdir' => self::REQ, 'config-dir' => self::REQ, 'existing-config' => false])
+    public function install(array $profile, $options = ['db-url' => self::REQ, 'db-prefix' => self::REQ, 'db-su' => self::REQ, 'db-su-pw' => self::REQ, 'account-name' => 'admin', 'account-mail' => 'admin@example.com', 'site-mail' => 'admin@example.com', 'account-pass' => self::REQ, 'locale' => 'en', 'site-name' => 'Drush Site-Install', 'site-pass' => self::REQ, 'sites-subdir' => self::REQ, 'config-dir' => self::REQ, 'existing-config' => false]): void
     {
         $additional = $profile;
         $profile = array_shift($additional) ?: '';
@@ -162,7 +162,7 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
         }
     }
 
-    public function taskCallback($install_state)
+    public function taskCallback($install_state): void
     {
         $this->logger()->notice('Performed install task: {task}', ['task' => $install_state['active_task']]);
     }
@@ -226,7 +226,7 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
      *
      * @hook post-command site-install
      */
-    public function post($result, CommandData $commandData)
+    public function post($result, CommandData $commandData): void
     {
         if ($config = $commandData->input()->getOption('config-dir') && Comparator::lessThan(self::getVersion(), '8.6')) {
             // Set the destination site UUID to match the source UUID, to bypass a core fail-safe.
@@ -245,7 +245,7 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
     /**
      * Check to see if there are any .yml files in the provided config directory.
      */
-    protected function hasConfigFiles($config)
+    protected function hasConfigFiles($config): bool
     {
         $files = glob("$config/*.yml");
         return !empty($files);
@@ -254,7 +254,7 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
     /**
      * @hook validate site-install
      */
-    public function validate(CommandData $commandData)
+    public function validate(CommandData $commandData): void
     {
         $bootstrapManager = Drush::bootstrapManager();
         if ($sites_subdir = $commandData->input()->getOption('sites-subdir')) {
@@ -311,7 +311,7 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
      *
      * @hook pre-command site-install
      */
-    public function pre(CommandData $commandData)
+    public function pre(CommandData $commandData): void
     {
         $db_spec = [];
         if ($sql = SqlBase::create($commandData->input()->getOptions())) {
@@ -436,7 +436,7 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
         return false;
     }
 
-    public static function getVersion()
+    public static function getVersion(): ?string
     {
         $drupal_root = Drush::bootstrapManager()->getRoot();
         return Drush::bootstrap()->getVersion($drupal_root);
@@ -446,7 +446,7 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
      * Fake the necessary HTTP headers that the Drupal installer still needs:
      * @see https://github.com/drupal/drupal/blob/d260101f1ea8a6970df88d2f1899248985c499fc/core/includes/install.core.inc#L287
      */
-    public function serverGlobals($drupal_base_url)
+    public function serverGlobals($drupal_base_url): void
     {
         $drupal_base_url = parse_url($drupal_base_url);
 
@@ -487,7 +487,7 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
      * @param $directory
      * @throws \Exception
      */
-    protected function validateConfigDir(CommandData $commandData, $directory)
+    protected function validateConfigDir(CommandData $commandData, $directory): void
     {
         if (!file_exists($directory)) {
             throw new \Exception(dt('The config source directory @config does not exist.', ['@config' => $directory]));

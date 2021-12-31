@@ -2,6 +2,7 @@
 
 namespace Drush\Drupal;
 
+use DrupalCodeGenerator\Application;
 use Drush\Drush;
 use Drupal\Core\DependencyInjection\ServiceModifierInterface;
 use Drupal\Core\DependencyInjection\ContainerBuilder;
@@ -20,7 +21,7 @@ class DrushServiceModifier implements ServiceModifierInterface
     /**
      * @inheritdoc
      */
-    public function alter(ContainerBuilder $container)
+    public function alter(ContainerBuilder $container): void
     {
         Drush::logger()->debug(dt("Service modifier alter."));
         // http://symfony.com/doc/2.7/components/dependency_injection/tags.html#register-the-pass-with-the-container
@@ -31,7 +32,7 @@ class DrushServiceModifier implements ServiceModifierInterface
         $container->register(self::DRUSH_COMMAND_INFO_ALTERER_SERVICES, 'Drush\Command\ServiceCommandlist');
         $container->addCompilerPass(new FindCommandsCompilerPass(self::DRUSH_COMMAND_INFO_ALTERER_SERVICES, 'drush.command_info_alterer'));
         $container->register(self::DRUSH_GENERATOR_SERVICES, 'Drush\Command\ServiceCommandlist');
-        $container->addCompilerPass(new FindCommandsCompilerPass(self::DRUSH_GENERATOR_SERVICES, 'drush.generator.v' . \DrupalCodeGenerator\Application::API));
+        $container->addCompilerPass(new FindCommandsCompilerPass(self::DRUSH_GENERATOR_SERVICES, 'drush.generator.v' . Application::API));
     }
 
     /**
@@ -39,9 +40,8 @@ class DrushServiceModifier implements ServiceModifierInterface
      *
      * @param $container_definition
      *   Cached container definition
-     * @return bool
      */
-    public function check($container_definition)
+    public function check($container_definition): bool
     {
         return
             isset($container_definition['services'][self::DRUSH_CONSOLE_SERVICES]) &&

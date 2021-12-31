@@ -30,7 +30,7 @@ class SanitizeCommands extends DrushCommands implements CustomEventAwareInterfac
      *   Sanitizes database but exempts two user fields from modification.
      * @topics docs:hooks
      */
-    public function sanitize()
+    public function sanitize(): void
     {
      /**
      * In order to present only one prompt, collect all confirmations from

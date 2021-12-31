@@ -46,7 +46,7 @@ class SanitizeUserFieldsCommands extends DrushCommands implements SanitizePlugin
      *
      * @inheritdoc
      */
-    public function sanitize($result, CommandData $commandData)
+    public function sanitize($result, CommandData $commandData): void
     {
         $options = $commandData->options();
         $conn = $this->getDatabase();
@@ -128,7 +128,7 @@ class SanitizeUserFieldsCommands extends DrushCommands implements SanitizePlugin
      *
      * @inheritdoc
      */
-    public function messages(&$messages, InputInterface $input)
+    public function messages(&$messages, InputInterface $input): void
     {
         $messages[] = dt('Sanitize text fields associated with users.');
     }
@@ -138,7 +138,7 @@ class SanitizeUserFieldsCommands extends DrushCommands implements SanitizePlugin
      * @option whitelist-fields Deprecated. Use allowlist-fields instead.
      * @option allowlist-fields A comma delimited list of fields exempt from sanitization.
      */
-    public function options($options = ['whitelist-fields' => '', 'allowlist-fields' => ''])
+    public function options($options = ['whitelist-fields' => '', 'allowlist-fields' => '']): void
     {
     }
 }

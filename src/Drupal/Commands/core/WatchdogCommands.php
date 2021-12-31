@@ -48,7 +48,7 @@ class WatchdogCommands extends DrushCommands
      *   username: Username
      * @default-fields wid,date,type,severity,message
      * @filter-default-field message
-     * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
+     * @return RowsOfFields
      */
     public function show($substring = '', $options = ['format' => 'table', 'count' => 10, 'severity' => self::REQ, 'type' => self::REQ, 'extended' => false])
     {
@@ -97,9 +97,8 @@ class WatchdogCommands extends DrushCommands
      *   date: Date
      *   username: Username
      * @default-fields wid,date,type,severity,message
-     * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
      */
-    public function watchdogList($substring = '', $options = ['format' => 'table', 'count' => 10, 'extended' => false])
+    public function watchdogList($substring = '', $options = ['format' => 'table', 'count' => 10, 'extended' => false]): RowsOfFields
     {
         return $this->show($substring, $options);
     }
@@ -136,7 +135,7 @@ class WatchdogCommands extends DrushCommands
      * @filter-default-field message
      * @version 10.6
      */
-    public function tail(OutputInterface $output, $substring = '', $options = ['format' => 'table', 'severity' => self::REQ, 'type' => self::REQ, 'extended' => false])
+    public function tail(OutputInterface $output, $substring = '', $options = ['format' => 'table', 'severity' => self::REQ, 'type' => self::REQ, 'extended' => false]): void
     {
         $where = $this->where($options['type'], $options['severity'], $substring);
         if (empty($where['where'])) {
@@ -176,9 +175,9 @@ class WatchdogCommands extends DrushCommands
 
     /**
      * @hook interact watchdog-list
-     * @throws \Drush\Exceptions\UserAbortException
+     * @throws UserAbortException
      */
-    public function interactList($input, $output)
+    public function interactList($input, $output): void
     {
 
         $choices['-- types --'] = dt('== message types ==');
@@ -219,9 +218,8 @@ class WatchdogCommands extends DrushCommands
      *   Delete all messages of type cron.
      * @aliases wd-del,wd-delete,wd,watchdog-delete
      * @validate-module-enabled dblog
-     * @return void
      */
-    public function delete($substring = '', $options = ['severity' => self::REQ, 'type' => self::REQ])
+    public function delete($substring = '', $options = ['severity' => self::REQ, 'type' => self::REQ]): void
     {
         if ($substring == 'all') {
             $this->output()->writeln(dt('All watchdog messages will be deleted.'));
@@ -264,10 +262,8 @@ class WatchdogCommands extends DrushCommands
      * @param $id Watchdog Id
      * @aliases wd-one,watchdog-show-one
      * @validate-module-enabled dblog
-     *
-     * @return \Consolidation\OutputFormatters\StructuredData\PropertyList
      */
-    public function showOne($id, $options = ['format' => 'yaml'])
+    public function showOne($id, $options = ['format' => 'yaml']): PropertyList
     {
         $rsc = Database::getConnection()->select('watchdog', 'w')
             ->fields('w')
@@ -295,7 +291,7 @@ class WatchdogCommands extends DrushCommands
      * @return
      *   An array with structure ('where' => string, 'args' => array())
      */
-    protected function where($type = null, $severity = null, $filter = null, $criteria = 'AND')
+    protected function where($type = null, $severity = null, $filter = null, $criteria = 'AND'): array
     {
         $args = [];
         $conditions = [];

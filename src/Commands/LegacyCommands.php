@@ -12,7 +12,7 @@ class LegacyCommands extends DrushCommands
      * @hidden
      * @obsolete
      */
-    public function disable()
+    public function disable(): void
     {
     }
 
@@ -24,7 +24,7 @@ class LegacyCommands extends DrushCommands
      * @hidden
      * @obsolete
      */
-    public function info()
+    public function info(): void
     {
     }
 
@@ -37,7 +37,7 @@ class LegacyCommands extends DrushCommands
      * @hidden
      * @obsolete
      */
-    public function projectInfo()
+    public function projectInfo(): void
     {
     }
 
@@ -49,7 +49,7 @@ class LegacyCommands extends DrushCommands
      * @hidden
      * @obsolete
      */
-    public function refresh()
+    public function refresh(): void
     {
     }
 
@@ -63,7 +63,7 @@ class LegacyCommands extends DrushCommands
      * @hidden
      * @obsolete
      */
-    public function updatestatus()
+    public function updatestatus(): void
     {
     }
 
@@ -77,7 +77,7 @@ class LegacyCommands extends DrushCommands
      * @hidden
      * @obsolete
      */
-    public function updatecode()
+    public function updatecode(): void
     {
     }
 
@@ -89,7 +89,7 @@ class LegacyCommands extends DrushCommands
      * @hidden
      * @obsolete
      */
-    public function releaseNotes()
+    public function releaseNotes(): void
     {
     }
 
@@ -101,7 +101,7 @@ class LegacyCommands extends DrushCommands
      * @hidden
      * @obsolete
      */
-    public function releases()
+    public function releases(): void
     {
     }
 
@@ -113,7 +113,7 @@ class LegacyCommands extends DrushCommands
      * @hidden
      * @obsolete
      */
-    public function make()
+    public function make(): void
     {
     }
 
@@ -125,7 +125,7 @@ class LegacyCommands extends DrushCommands
      * @hidden
      * @obsolete
      */
-    public function download()
+    public function download(): void
     {
     }
 
@@ -137,7 +137,7 @@ class LegacyCommands extends DrushCommands
      * @hidden
      * @obsolete
      */
-    public function execute()
+    public function execute(): void
     {
     }
 }

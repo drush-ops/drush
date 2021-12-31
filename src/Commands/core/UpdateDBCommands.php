@@ -35,7 +35,7 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
      * @kernel update
      * @aliases updb
      */
-    public function updatedb($options = ['cache-clear' => true, 'entity-updates' => false, 'post-updates' => true])
+    public function updatedb($options = ['cache-clear' => true, 'entity-updates' => false, 'post-updates' => true]): int
     {
         $this->cache_clear = $options['cache-clear'];
         require_once DRUPAL_ROOT . '/core/includes/install.inc';
@@ -103,7 +103,7 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
      *   Use updatedb:status to detect pending updates.
      *
      */
-    public function entityUpdates($options = ['cache-clear' => true])
+    public function entityUpdates($options = ['cache-clear' => true]): void
     {
         if ($this->getConfig()->simulate()) {
             throw new \Exception(dt('entity-updates command does not support --simulate option.'));
@@ -142,7 +142,7 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
      *   type: Type
      * @default-fields module,update_id,type,description
      * @filter-default-field type
-     * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
+     * @return RowsOfFields
      */
     public function updatedbStatus($options = ['format'=> 'table', 'entity-updates' => true, 'post-updates' => true])
     {
@@ -164,10 +164,8 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
      * @bootstrap full
      * @kernel update
      * @hidden
-     *
-     * @return \Consolidation\OutputFormatters\StructuredData\UnstructuredListData
      */
-    public function process($batch_id, $options = ['format' => 'json'])
+    public function process(string $batch_id, $options = ['format' => 'json']): UnstructuredListData
     {
         $result = drush_batch_command($batch_id);
         return new UnstructuredListData($result);
@@ -195,7 +193,7 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
      * @param DrushBatchContext $context
      *   The batch context object.
      */
-    public static function updateDoOne($module, $number, array $dependency_map, DrushBatchContext $context)
+    public static function updateDoOne(string $module, int $number, array $dependency_map, DrushBatchContext $context): void
     {
         $function = $module . '_update_' . $number;
 
@@ -289,10 +287,9 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
      *
      * @param string $function
      *   The post-update function to execute.
-     * @param DrushBatchContext $context
      *   The batch context object.
      */
-    public static function updateDoOnePostUpdate($function, DrushBatchContext $context)
+    public static function updateDoOnePostUpdate(string $function, DrushBatchContext $context): void
     {
         $ret = [];
 
@@ -375,10 +372,8 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
      * Batch finished callback.
      *
      * @param boolean $success Whether the batch ended without a fatal error.
-     * @param array $results
-     * @param array $operations
      */
-    public function updateFinished($success, $results, $operations)
+    public function updateFinished(bool $success, array $results, array $operations): void
     {
         if ($this->cache_clear) {
             // Flush all caches at the end of the batch operation. When Drupal
@@ -392,9 +387,8 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
     /**
      * Start the database update batch process.
      * @param $options
-     * @return bool
      */
-    public function updateBatch($options)
+    public function updateBatch($options): bool
     {
         $start = $this->getUpdateList();
         // Resolve any update dependencies to determine the actual updates that will
@@ -485,7 +479,7 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
         return $success;
     }
 
-    public static function restoreMaintMode($status)
+    public static function restoreMaintMode($status): void
     {
         \Drupal::service('state')->set('system.maintenance_mode', $status);
     }
@@ -493,7 +487,7 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
     /**
      * Apply entity schema updates.
      */
-    public function updateEntityDefinitions(&$context)
+    public function updateEntityDefinitions(&$context): void
     {
         try {
             \Drupal::entityDefinitionUpdateManager()->applyupdates();
@@ -511,7 +505,7 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
     }
 
     // Copy of protected \Drupal\system\Controller\DbUpdateController::getModuleUpdates.
-    public function getUpdateList()
+    public function getUpdateList(): array
     {
         $return = [];
         $updates = update_get_update_list();
@@ -535,7 +529,7 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
      *
      * @see \Drupal\system\Controller\DbUpdateController::triggerBatch()
      */
-    public static function cacheRebuild()
+    public static function cacheRebuild(): void
     {
         drupal_flush_all_caches();
         \Drupal::service('kernel')->rebuildContainer();
@@ -551,7 +545,7 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
      *  - an array where each item is a 4 item associative array describing a pending update.
      *  - an array listing the first update to run, keyed by module.
      */
-    public function getUpdatedbStatus(array $options)
+    public function getUpdatedbStatus(array $options): array
     {
         require_once DRUPAL_ROOT . '/core/includes/update.inc';
         $pending = \update_get_update_list();
@@ -618,7 +612,7 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
     /**
      * Apply pending entity schema updates.
      */
-    public function entityUpdatesMain()
+    public function entityUpdatesMain(): void
     {
         $change_summary = \Drupal::entityDefinitionUpdateManager()->getChangeSummary();
         if (!empty($change_summary)) {
@@ -660,7 +654,7 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
     /**
      * Log messages for any requirements warnings/errors.
      */
-    public function updateCheckRequirements()
+    public function updateCheckRequirements(): bool
     {
         $return = true;
 
