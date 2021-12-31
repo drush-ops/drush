@@ -29,5 +29,4 @@ class ModuleGeneratorTest extends UnishIntegrationTestCase
         $this->drush('pm:uninstall', ['woot']);
         parent::tearDown();
     }
-
 }
