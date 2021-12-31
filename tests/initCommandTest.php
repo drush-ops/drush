@@ -28,7 +28,7 @@ class initCommandCase extends CommandUnishTestCase {
     // Check to see if the .bashrc file sources our drush.bashrc file,
     // and whether it adds the path to UNISH_DRUSH to the $PATH
     $bashrc_contents = file_get_contents("$home/.bashrc");
-    $this->assertContains('drush.bashrc', $bashrc_contents);
-    $this->assertContains(dirname(UNISH_DRUSH), $bashrc_contents);
+    $this->assertStringContainsString('drush.bashrc', $bashrc_contents);
+    $this->assertStringContainsString(dirname(UNISH_DRUSH), $bashrc_contents);
   }
 }

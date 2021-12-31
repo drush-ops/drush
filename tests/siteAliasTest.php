@@ -132,11 +132,11 @@ EOD;
     //   Simulating backend invoke: /path/to/php  -d sendmail_path='true' /path/to/drush.php --php=/path/to/php --php-options=' -d sendmail_path='\''true'\'''  --backend=2 --alias-path=/path/to/site-alias-directory --nocolor --root=/fake/path/to/root --uri=default  core-rsync '@remote.one:files' /path/to/tmpdir 2>&1
     //   Simulating backend invoke: /path/to/php  -d sendmail_path='true' /path/to/drush.php --php=/path/to/php --php-options=' -d sendmail_path='\''true'\'''  --backend=2 --alias-path=/path/to/site-alias-directory --nocolor --root=/fake/path/to/root --uri=default  core-rsync /path/to/tmpdir/files '@remote.two:tmp' 2>&1'
     // Since there are a lot of variable items in the output (e.g. path
-    // to a temporary folder), so we will use 'assertContains' to
+    // to a temporary folder), so we will use 'assertStringContainsString' to
     // assert on portions of the output that does not vary.
-    $this->assertContains('Simulating backend invoke', $output);
-    $this->assertContains("core-rsync '@remote.one:files' /", $output);
-    $this->assertContains("/files '@remote.two:tmp'", $output);
+    $this->assertStringContainsString('Simulating backend invoke', $output);
+    $this->assertStringContainsString("core-rsync '@remote.one:files' /", $output);
+    $this->assertStringContainsString("/files '@remote.two:tmp'", $output);
   }
 
   /**
@@ -213,11 +213,11 @@ EOD;
 
     // Test a standard remote dispatch.
     $this->drush('core-status', array(), array('uri' => 'http://example.com', 'simulate' => NULL), 'user@server/path/to/drupal#sitename');
-    $this->assertContains('--uri=http://example.com', $this->getOutput());
+    $this->assertStringContainsString('--uri=http://example.com', $this->getOutput());
 
     // Test a local-handling command which uses drush_redispatch_get_options().
     $this->drush('browse', array(), array('uri' => 'http://example.com', 'simulate' => NULL), 'user@server/path/to/drupal#sitename');
-    $this->assertContains('--uri=http://example.com', $this->getOutput());
+    $this->assertStringContainsString('--uri=http://example.com', $this->getOutput());
 
     // Test a command which uses drush_invoke_process('@self') internally.
     $sites = $this->setUpDrupal(1, TRUE);
@@ -226,7 +226,7 @@ EOD;
     @mkdir($sites[$name]['root'] . '/sites');
     file_put_contents($sites[$name]['root'] . '/sites/sites.php', $sites_php, FILE_APPEND);
     $this->drush('pm-updatecode', array(), array('uri' => 'http://example.com', 'no' => NULL, 'no-core' => NULL, 'verbose' => NULL), '@' . $name);
-    $this->assertContains('--uri=http://example.com', $this->getErrorOutput());
+    $this->assertStringContainsString('--uri=http://example.com', $this->getErrorOutput());
 
     // Test a remote alias that does not have a 'root' element
     $aliasPath = UNISH_SANDBOX . '/site-alias-directory';
@@ -243,15 +243,15 @@ EOD;
     file_put_contents("$aliasPath/rootlessremote.aliases.drushrc.php", $aliasContents);
     $this->drush('core-status', array(), array('uri' => 'http://example.com', 'simulate' => NULL, 'alias-path' => $aliasPath), '@rootlessremote');
     $output = $this->getOutput();
-    $this->assertContains(' ssh ', $output);
-    $this->assertContains('--uri=http://example.com', $output);
+    $this->assertStringContainsString(' ssh ', $output);
+    $this->assertStringContainsString('--uri=http://example.com', $output);
 
     // Test a remote alias that does not have a 'root' element with cwd inside a Drupal root directory
     $root = $this->webroot();
     $this->drush('core-status', array(), array('uri' => 'http://example.com', 'simulate' => NULL, 'alias-path' => $aliasPath), '@rootlessremote', $root);
     $output = $this->getOutput();
-    $this->assertContains(' ssh ', $output);
-    $this->assertContains('--uri=http://example.com', $output);
+    $this->assertStringContainsString(' ssh ', $output);
+    $this->assertStringContainsString('--uri=http://example.com', $output);
   }
 
   /**

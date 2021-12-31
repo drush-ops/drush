@@ -44,7 +44,7 @@ class EnDisUnListInfoCase extends CommandUnishTestCase {
     $this->drush('pm-enable', array($moduleToTest), $options_no_pipe);
     $output = $this->getOutput();
     if ($moduleToTest == 'devel') {
-      $this->assertContains('access devel information', $output);
+      $this->assertStringContainsString('access devel information', $output);
     }
 
     // Test pm-list shows the module as enabled.
@@ -102,7 +102,7 @@ class EnDisUnListInfoCase extends CommandUnishTestCase {
     if (UNISH_DRUPAL_MAJOR_VERSION >= 9) {
       $themeToCheck = 'stark';
     }
-    $this->assertContains($themeToCheck, $list, 'Themes are in the pm-list');
+    $this->assertStringContainsString($themeToCheck, $list, 'Themes are in the pm-list');
 
     // Test cache was cleared after enabling a module.
     $table = UNISH_DRUPAL_MAJOR_VERSION >= 8 ? 'router' : 'menu_router';

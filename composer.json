@@ -54,8 +54,10 @@
     "symfony/event-dispatcher": "~2.7",
     "symfony/finder": "~2.7",
     "symfony/yaml": "~2.3",
-    "phpunit/phpunit": "4.*",
-    "symfony/process": "2.7.*"
+    "symfony/process": "2.7.*",
+    "phpunit/phpunit": "^4 || ^7.5.20 || ^9",
+    "squizlabs/php_codesniffer": "^3",
+    "yoast/phpunit-polyfills": "^1"
   },
   "suggest": {
       "ext-pcntl": "*",

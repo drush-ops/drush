@@ -59,7 +59,7 @@ class shellAliasesCase extends CommandUnishTestCase {
     );
     $this->drush('glopts', array(), $options);
     $output = $this->getOutput();
-    $this->assertContains('These options are applicable to most drush commands.', $output, 'Successfully executed local shell alias to drush command');
+    $this->assertStringContainsString('These options are applicable to most drush commands.', $output, 'Successfully executed local shell alias to drush command');
   }
 
   /**
@@ -74,7 +74,7 @@ class shellAliasesCase extends CommandUnishTestCase {
     );
     $this->drush('pull', array('origin'), $options, NULL, NULL, self::EXIT_SUCCESS, '2>&1');
     $output = $this->getOutput();
-    $this->assertContains('Calling proc_open(git pull origin --rebase);', $output);
+    $this->assertStringContainsString('Calling proc_open(git pull origin --rebase);', $output);
   }
 
   public function testShellAliasDrushRemote() {

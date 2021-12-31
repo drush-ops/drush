@@ -54,7 +54,7 @@ class SqlDumpTest extends CommandUnishTestCase {
     $this->assertFileExists($full_dump_file_path);
     $full_dump_file = file_get_contents($full_dump_file_path);
     // Test that we have sane contents.
-    $this->assertContains('queue', $full_dump_file);
+    $this->assertStringContainsString('queue', $full_dump_file);
     // Test skip-files-list and wildcard expansion.
     $this->assertNotContains($table_to_check, $full_dump_file);
     // Next, set up an alias file and run a couple of simulated
@@ -66,9 +66,9 @@ class SqlDumpTest extends CommandUnishTestCase {
     $this->assertFileExists($full_dump_file_path);
     $full_dump_file = file_get_contents($full_dump_file_path);
     // Test that we have sane contents.
-    $this->assertContains('queue', $full_dump_file);
+    $this->assertStringContainsString('queue', $full_dump_file);
     // Test skip-files-list and wildcard expansion.
-    $this->assertContains($table_to_check, $full_dump_file);
+    $this->assertStringContainsString($table_to_check, $full_dump_file);
 
     $aliasPath = UNISH_SANDBOX . '/aliases';
     mkdir($aliasPath);
@@ -95,7 +95,7 @@ EOD;
     $this->assertFileExists($full_dump_file_path);
     $full_dump_file = file_get_contents($full_dump_file_path);
     // Test that we have sane contents.
-    $this->assertContains('queue', $full_dump_file);
+    $this->assertStringContainsString('queue', $full_dump_file);
     // Test skip-files-list and wildcard expansion.
     $this->assertNotContains($table_to_check, $full_dump_file);
     // Repeat control test:  options not recovered in absence of an alias.
@@ -104,9 +104,9 @@ EOD;
     $this->assertFileExists($full_dump_file_path);
     $full_dump_file = file_get_contents($full_dump_file_path);
     // Test that we have sane contents.
-    $this->assertContains('queue', $full_dump_file);
+    $this->assertStringContainsString('queue', $full_dump_file);
     // Test skip-files-list and wildcard expansion.
-    $this->assertContains($table_to_check, $full_dump_file);
+    $this->assertStringContainsString($table_to_check, $full_dump_file);
     // Now run yet with @self, and test to see that Drush can recover the option
     // --skip-tables-list, defined in @test.
     unlink($full_dump_file_path);
@@ -114,7 +114,7 @@ EOD;
     $this->assertFileExists($full_dump_file_path);
     $full_dump_file = file_get_contents($full_dump_file_path);
     // Test that we have sane contents.
-    $this->assertContains('queue', $full_dump_file);
+    $this->assertStringContainsString('queue', $full_dump_file);
     // Test skip-files-list and wildcard expansion.
     $this->assertNotContains($table_to_check, $full_dump_file);
   }

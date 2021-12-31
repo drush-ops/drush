@@ -64,7 +64,7 @@ class ConfigCase extends CommandUnishTestCase {
     $this->drush('config-import', array(), $options);
     $this->drush('config-get', array('system.site', 'page'), $options + array('format' => 'json'));
     $page = $this->getOutputFromJSON('system.site:page');
-    $this->assertContains('unish', $page->front, 'Config was successfully imported.');
+    $this->assertStringContainsString('unish', $page->front, 'Config was successfully imported.');
 
     // Similar, but this time via --partial option.
     $contents = file_get_contents($system_site_yml);
@@ -75,7 +75,7 @@ class ConfigCase extends CommandUnishTestCase {
     $this->drush('config-import', array(), $options + array('partial' => NULL, 'source' => $partial_path));
     $this->drush('config-get', array('system.site', 'page'), $options + array('format' => 'json'));
     $page = $this->getOutputFromJSON('system.site:page');
-    $this->assertContains('unish partial', $page->front, '--partial was successfully imported.');
+    $this->assertStringContainsString('unish partial', $page->front, '--partial was successfully imported.');
   }
 
   function options() {

@@ -31,7 +31,7 @@ class SqlConnectCase extends CommandUnishTestCase {
       $this->assertRegExp('/^mysql --user=[^\s]+ --password=.* --database=[^\s]+ --host=[^\s]+/', $connectionString);
     }
     elseif ($db_driver == 'sqlite') {
-      $this->assertContains('sqlite3', $connectionString);
+      $this->assertStringContainsString('sqlite3', $connectionString);
       $shell_options = '';
     }
     elseif ($db_driver == 'pgsql') {
@@ -44,12 +44,12 @@ class SqlConnectCase extends CommandUnishTestCase {
     // Issue a query and check the result to verify the connection.
     $this->execute($connectionString . ' ' . $shell_options . ' "SELECT uid FROM users where uid = 1;"');
     $output = $this->getOutput();
-    $this->assertContains('1', $output);
+    $this->assertStringContainsString('1', $output);
 
     // Run 'core-status' and insure that we can bootstrap Drupal.
     $this->drush('core-status', array("Drupal bootstrap"), $options);
     $output = $this->getOutput();
-    $this->assertContains('Successful', $output);
+    $this->assertStringContainsString('Successful', $output);
 
     // Test to see if 'sql-create' can erase the database.
     // The only output is a confirmation string, so we'll run
