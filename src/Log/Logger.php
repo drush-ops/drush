@@ -9,11 +9,6 @@
  *
  * This logger is designed such that it can be provided to
  * other libraries that log to a Psr\Log\LoggerInterface.
- * As such, it takes responsibility for passing log messages
- * to backend invoke, as necessary (c.f. drush_backend_packet()).
- *
- * Drush supports all of the required log levels from Psr\Log\LogLevel,
- * and also defines its own. See Drush\Log\LogLevel.
  *
  * Those who may wish to change the way logging works in Drush
  * should therefore NOT attempt to replace this logger with their

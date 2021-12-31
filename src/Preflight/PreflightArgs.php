@@ -19,6 +19,7 @@ use Drush\Symfony\LessStrictArgvInput;
  */
 class PreflightArgs extends Config implements PreflightArgsInterface
 {
+
     /**
      * @var array $args Remaining arguments not handled by the preprocessor
      */
@@ -42,18 +43,29 @@ class PreflightArgs extends Config implements PreflightArgsInterface
     }
 
     const DRUSH_CONFIG_PATH_NAMESPACE = 'drush.paths';
+
     const DRUSH_RUNTIME_CONTEXT_NAMESPACE = 'runtime.contxt';
+
     const ALIAS = 'alias';
+
     const ALIAS_PATH = 'alias-path';
+
     const COMMAND_PATH = 'include';
+
     const CONFIG_PATH = 'config';
+
     const COVERAGE_FILE = 'coverage-file';
+
     const LOCAL = 'local';
+
     const ROOT = 'root';
+
     const URI = 'uri';
+
     const SIMULATE = 'simulate';
-    const BACKEND = 'backend';
+
     const STRICT = 'strict';
+
     const DEBUG = 'preflight-debug';
 
     /**
@@ -86,7 +98,6 @@ class PreflightArgs extends Config implements PreflightArgsInterface
             '--local' => 'setLocal',
             '--simulate' => 'setSimulate',
             '-s' => 'setSimulate',
-            '--backend=' => 'setBackend',
             '--drush-coverage=' => 'setCoverageFile',
             '--strict=' => 'setStrict',
             '--help' => 'adjustHelpOption',
@@ -113,9 +124,8 @@ class PreflightArgs extends Config implements PreflightArgsInterface
     protected function optionConfigMap(): array
     {
         return [
-            self::SIMULATE =>       \Robo\Config\Config::SIMULATE,
-            self::BACKEND =>        self::BACKEND,
-            self::LOCAL =>          self::DRUSH_RUNTIME_CONTEXT_NAMESPACE . '.' . self::LOCAL,
+            self::SIMULATE => \Robo\Config\Config::SIMULATE,
+            self::LOCAL => self::DRUSH_RUNTIME_CONTEXT_NAMESPACE . '.' . self::LOCAL,
         ];
     }
 
@@ -127,9 +137,9 @@ class PreflightArgs extends Config implements PreflightArgsInterface
     protected function optionConfigPathMap(): array
     {
         return [
-            self::ALIAS_PATH =>     self::DRUSH_CONFIG_PATH_NAMESPACE . '.' . self::ALIAS_PATH,
-            self::CONFIG_PATH =>    self::DRUSH_CONFIG_PATH_NAMESPACE . '.' . self::CONFIG_PATH,
-            self::COMMAND_PATH =>   self::DRUSH_CONFIG_PATH_NAMESPACE . '.' . self::COMMAND_PATH,
+            self::ALIAS_PATH => self::DRUSH_CONFIG_PATH_NAMESPACE . '.' . self::ALIAS_PATH,
+            self::CONFIG_PATH => self::DRUSH_CONFIG_PATH_NAMESPACE . '.' . self::CONFIG_PATH,
+            self::COMMAND_PATH => self::DRUSH_CONFIG_PATH_NAMESPACE . '.' . self::COMMAND_PATH,
         ];
     }
 
@@ -147,7 +157,7 @@ class PreflightArgs extends Config implements PreflightArgsInterface
         // Merging as they are lists.
         foreach ($this->optionConfigPathMap() as $option_key => $config_key) {
             $cli_paths = $this->get($option_key, []);
-            $config_paths = (array) $config->get($config_key, []);
+            $config_paths = (array)$config->get($config_key, []);
 
             $merged_paths = array_unique(array_merge($cli_paths, $config_paths));
             $config->set($config_key, $merged_paths);
@@ -193,6 +203,7 @@ class PreflightArgs extends Config implements PreflightArgsInterface
     {
         $this->commandName = $commandName;
     }
+
     /**
      * @inheritdoc
      */
@@ -411,27 +422,6 @@ class PreflightArgs extends Config implements PreflightArgsInterface
     }
 
     /**
-     * Determine whether Drush was placed in simulated mode.
-     */
-    public function isBackend()
-    {
-        return $this->get(self::BACKEND);
-    }
-
-    /**
-     * Set backend mode
-     */
-    public function setBackend(bool $backend)
-    {
-        if ($backend == 'json') {
-            // Remap to --format. See \Drush\Commands\sql\SqlSyncCommands::dump.
-            $this->addArg('--format=json');
-        } else {
-            return $this->set(self::BACKEND, true);
-        }
-    }
-
-    /**
      * Get the path to the coverage file.
      */
     public function coverageFile()
@@ -470,6 +460,7 @@ class PreflightArgs extends Config implements PreflightArgsInterface
      * just the option name of any item that is an option.
      *
      * @param array $argv e.g. ['foo', '--bar=baz', 'boz']
+     *
      * @return string[] e.g. ['bar']
      */
     protected function getOptionNameList(array $argv): array
@@ -500,81 +491,11 @@ class PreflightArgs extends Config implements PreflightArgsInterface
     {
         // In strict mode (the default), create an ArgvInput. When
         // strict mode is disabled, create a more forgiving input object.
-        if ($this->isStrict() && !$this->isBackend()) {
+        if ($this->isStrict()) {
             return new DrushArgvInput($this->args());
         }
 
-        // If in backend mode, read additional options from stdin.
-        // TODO: Maybe reading stdin options should be the responsibility of some
-        // backend manager class? Could be called from preflight and injected here.
         $input = new LessStrictArgvInput($this->args());
-        $input->injectAdditionalOptions($this->readStdinOptions());
-
         return $input;
-    }
-
-    /**
-     * Read options fron STDIN during POST requests.
-     *
-     * This function will read any text from the STDIN pipe,
-     * and attempts to generate an associative array if valid
-     * JSON was received.
-     *
-     * @return
-     *   An associative array of options, if successfull. Otherwise an empty array.
-     */
-    protected function readStdinOptions()
-    {
-        // If we move this method to a backend manager, then testing for
-        // backend mode will be the responsibility of the caller.
-        if (!$this->isBackend()) {
-            return [];
-        }
-
-        $fp = fopen('php://stdin', 'r');
-        // Windows workaround: we cannot count on stream_get_contents to
-        // return if STDIN is reading from the keyboard.  We will therefore
-        // check to see if there are already characters waiting on the
-        // stream (as there always should be, if this is a backend call),
-        // and if there are not, then we will exit.
-        // This code prevents drush from hanging forever when called with
-        // --backend from the commandline; however, overall it is still
-        // a futile effort, as it does not seem that backend invoke can
-        // successfully write data to that this function can read,
-        // so the argument list and command always come out empty. :(
-        // Perhaps stream_get_contents is the problem, and we should use
-        // the technique described here:
-        //   http://bugs.php.net/bug.php?id=30154
-        // n.b. the code in that issue passes '0' for the timeout in stream_select
-        // in a loop, which is not recommended.
-        // Note that the following DOES work:
-        //   drush ev 'print(json_encode(array("test" => "XYZZY")));' | drush status --backend
-        // So, redirecting input is okay, it is just the proc_open that is a problem.
-        if (drush_is_windows()) {
-            // Note that stream_select uses reference parameters, so we need variables (can't pass a constant NULL)
-            $read = [$fp];
-            $write = null;
-            $except = null;
-            // Question: might we need to wait a bit for STDIN to be ready,
-            // even if the process that called us immediately writes our parameters?
-            // Passing '100' for the timeout here causes us to hang indefinitely
-            // when called from the shell.
-            $changed_streams = stream_select($read, $write, $except, 0);
-            // Return on error or no changed streams (0).
-            // Oh, according to http://php.net/manual/en/function.stream-select.php,
-            // stream_select will return FALSE for streams returned by proc_open.
-            // That is not applicable to us, is it? Our stream is connected to a stream
-            // created by proc_open, but is not a stream returned by proc_open.
-            if ($changed_streams < 1) {
-                return [];
-            }
-        }
-        stream_set_blocking($fp, false);
-        $string = stream_get_contents($fp);
-        fclose($fp);
-        if (trim($string)) {
-            return json_decode($string, true);
-        }
-        return [];
     }
 }
