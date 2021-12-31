@@ -24,7 +24,7 @@ class CliCommands extends DrushCommands
      * @hidden
      * @topic ../../../../docs/repl.md
      */
-    public function docs()
+    public function docs(): void
     {
         self::printFileTopic($this->commandData);
     }
@@ -39,7 +39,7 @@ class CliCommands extends DrushCommands
      * @topics docs:repl
      * @remote-tty
      */
-    public function cli(array $options = ['version-history' => false, 'cwd' => self::REQ])
+    public function cli(array $options = ['version-history' => false, 'cwd' => self::REQ]): void
     {
         $configuration = new Configuration();
 
@@ -99,10 +99,8 @@ class CliCommands extends DrushCommands
 
     /**
      * Returns a filtered list of Drush commands used for CLI commands.
-     *
-     * @return array
      */
-    protected function getDrushCommands()
+    protected function getDrushCommands(): array
     {
         $application = Drush::getApplication();
         $commands = $application->all();
@@ -152,7 +150,7 @@ class CliCommands extends DrushCommands
      * @return array.
      *   An array of caster callbacks keyed by class or interface.
      */
-    protected function getCasters()
+    protected function getCasters(): array
     {
         return [
         'Drupal\Core\Entity\ContentEntityInterface' => 'Drush\Psysh\Caster::castContentEntity',
@@ -174,7 +172,7 @@ class CliCommands extends DrushCommands
      *
      * @return string.
      */
-    protected function historyPath(array $options)
+    protected function historyPath(array $options): string
     {
         $cli_directory = Path::join($this->getConfig()->cache(), 'cli');
         $drupal_major_version = Drush::getMajorVersion();
@@ -213,10 +211,8 @@ class CliCommands extends DrushCommands
      * Returns a list of PHP keywords.
      *
      * This will act as a blocklist for command and alias names.
-     *
-     * @return array
      */
-    protected function getPhpKeywords()
+    protected function getPhpKeywords(): array
     {
         return [
         '__halt_compiler',

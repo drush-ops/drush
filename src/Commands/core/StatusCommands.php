@@ -75,10 +75,8 @@ class StatusCommands extends DrushCommands implements SiteAliasManagerAwareInter
      * @hidden-options project
      * @bootstrap max
      * @topics docs:readme
-     *
-     * @return \Consolidation\OutputFormatters\StructuredData\PropertyList
      */
-    public function status($filter = '', $options = ['project' => self::REQ, 'format' => 'table'])
+    public function status($filter = '', $options = ['project' => self::REQ, 'format' => 'table']): \Consolidation\OutputFormatters\StructuredData\PropertyList
     {
         $data = $this->getPropertyList($options);
 
@@ -88,7 +86,7 @@ class StatusCommands extends DrushCommands implements SiteAliasManagerAwareInter
         return $result;
     }
 
-    public function getPropertyList($options)
+    public function getPropertyList($options): array
     {
         $boot_manager = Drush::bootstrapManager();
         $boot_object = Drush::bootstrap();
@@ -180,7 +178,7 @@ class StatusCommands extends DrushCommands implements SiteAliasManagerAwareInter
     /**
      * @hook pre-command core-status
      */
-    public function adjustStatusOptions(CommandData $commandData)
+    public function adjustStatusOptions(CommandData $commandData): void
     {
         $input = $commandData->input();
         $args = $input->getArguments();
@@ -192,9 +190,8 @@ class StatusCommands extends DrushCommands implements SiteAliasManagerAwareInter
     /**
      * @param array $options
      * @param BootstrapManager $boot_manager
-     * @return array
      */
-    public static function pathAliases(array $options, BootstrapManager $boot_manager, $boot)
+    public static function pathAliases(array $options, BootstrapManager $boot_manager, $boot): array
     {
         $paths = [];
         $site_wide = 'sites/all';

@@ -10,10 +10,9 @@ class DrupalUtil
      * @param string|array $data
      *   Data to render.
      *
-     * @return string
      *   The plain-text representation of the input.
      */
-    public static function drushRender($data)
+    public static function drushRender($data): string
     {
         if (is_array($data)) {
             $data = \Drupal::service('renderer')->renderRoot($data);

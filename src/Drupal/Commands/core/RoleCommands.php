@@ -47,7 +47,7 @@ class RoleCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
      *   Delete the role 'test role'.
      * @aliases rdel,role-delete
      */
-    public function delete($machine_name)
+    public function delete($machine_name): void
     {
         $role = Role::load($machine_name);
         $role->delete();
@@ -70,7 +70,7 @@ class RoleCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
      *   Allow anon users to post comments and access content.
      * @aliases rap,role-add-perm
      */
-    public function roleAddPerm($machine_name, $permissions)
+    public function roleAddPerm($machine_name, $permissions): void
     {
         $perms = StringUtils::csvToArray($permissions);
         user_role_grant_permissions($machine_name, $perms);
@@ -90,7 +90,7 @@ class RoleCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
      *   Remove 2 permissions from anon users.
      * @aliases rmp,role-remove-perm
      */
-    public function roleRemovePerm($machine_name, $permissions)
+    public function roleRemovePerm($machine_name, $permissions): void
     {
         $perms = StringUtils::csvToArray($permissions);
         user_role_revoke_permissions($machine_name, $perms);
@@ -115,9 +115,8 @@ class RoleCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
      *   perms: Permissions
      *
      * @filter-default-field perms
-     * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
      */
-    public function roleList($options = ['format' => 'yaml'])
+    public function roleList($options = ['format' => 'yaml']): \Consolidation\OutputFormatters\StructuredData\RowsOfFields
     {
         $rows = [];
         $roles = Role::loadMultiple();

@@ -37,42 +37,27 @@ class PmCommands extends DrushCommands
         $this->extensionListModule = $extensionListModule;
     }
 
-    /**
-     * @return \Drupal\Core\Config\ConfigFactoryInterface
-     */
-    public function getConfigFactory()
+    public function getConfigFactory(): \Drupal\Core\Config\ConfigFactoryInterface
     {
         return $this->configFactory;
     }
 
-    /**
-     * @return \Drupal\Core\Extension\ModuleInstallerInterface
-     */
-    public function getModuleInstaller()
+    public function getModuleInstaller(): \Drupal\Core\Extension\ModuleInstallerInterface
     {
         return $this->moduleInstaller;
     }
 
-    /**
-     * @return \Drupal\Core\Extension\ModuleHandlerInterface
-     */
-    public function getModuleHandler()
+    public function getModuleHandler(): \Drupal\Core\Extension\ModuleHandlerInterface
     {
         return $this->moduleHandler;
     }
 
-    /**
-     * @return \Drupal\Core\Extension\ThemeHandlerInterface
-     */
-    public function getThemeHandler()
+    public function getThemeHandler(): \Drupal\Core\Extension\ThemeHandlerInterface
     {
         return $this->themeHandler;
     }
 
-    /**
-     * @return \Drupal\Core\Extension\ModuleExtensionList
-     */
-    public function getExtensionListModule()
+    public function getExtensionListModule(): \Drupal\Core\Extension\ModuleExtensionList
     {
         return $this->extensionListModule;
     }
@@ -85,7 +70,7 @@ class PmCommands extends DrushCommands
      * @aliases en,pm-enable
      * @bootstrap root
      */
-    public function enable(array $modules)
+    public function enable(array $modules): void
     {
         $modules = StringUtils::csvToArray($modules);
         $todo = $this->addInstallDependencies($modules);
@@ -119,7 +104,7 @@ class PmCommands extends DrushCommands
      *
      * @see \drupal_check_module()
      */
-    public function validateEnableModules(CommandData $commandData)
+    public function validateEnableModules(CommandData $commandData): void
     {
         $modules = $commandData->input()->getArgument('modules');
         $modules = StringUtils::csvToArray($modules);
@@ -164,7 +149,7 @@ class PmCommands extends DrushCommands
      * @param $modules A comma delimited list of modules.
      * @aliases pmu,pm-uninstall
      */
-    public function uninstall(array $modules)
+    public function uninstall(array $modules): void
     {
         $modules = StringUtils::csvToArray($modules);
         $list = $this->addUninstallDependencies($modules);
@@ -183,7 +168,7 @@ class PmCommands extends DrushCommands
     /**
      * @hook validate pm-uninstall
      */
-    public function validateUninstall(CommandData $commandData)
+    public function validateUninstall(CommandData $commandData): void
     {
         if ($modules = $commandData->input()->getArgument('modules')) {
             $modules = StringUtils::csvToArray($modules);
@@ -219,9 +204,8 @@ class PmCommands extends DrushCommands
      * @default-fields package,display_name,status,version
      * @aliases pml,pm-list
      * @filter-default-field display_name
-     * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
      */
-    public function pmList($options = ['format' => 'table', 'type' => 'module,theme', 'status' => 'enabled,disabled', 'package' => self::REQ, 'core' => false, 'no-core' => false])
+    public function pmList($options = ['format' => 'table', 'type' => 'module,theme', 'status' => 'enabled,disabled', 'package' => self::REQ, 'core' => false, 'no-core' => false]): \Consolidation\OutputFormatters\StructuredData\RowsOfFields
     {
         $rows = [];
 
@@ -302,12 +286,12 @@ class PmCommands extends DrushCommands
      * @return
      *   String describing extension status. Values: enabled|disabled.
      */
-    public function extensionStatus($extension)
+    public function extensionStatus($extension): string
     {
         return $extension->status == 1 ? 'enabled' : 'disabled';
     }
 
-    public function addInstallDependencies($modules)
+    public function addInstallDependencies($modules): array
     {
         $module_data = $this->getExtensionListModule()->reset()->getList();
         $module_list  = array_combine($modules, $modules);

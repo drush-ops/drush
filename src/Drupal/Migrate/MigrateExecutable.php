@@ -341,10 +341,8 @@ class MigrateExecutable extends MigrateExecutableBase
 
     /**
      * Emits information on the import progress.
-     *
-     * @param bool $done
      */
-    protected function importFeedbackMessage($done = true): void
+    protected function importFeedbackMessage(bool $done = true): void
     {
         $processed = $this->getProcessedCount();
         $timer = Timer::read('migrate:' . $this->migration->getPluginId());
@@ -423,10 +421,8 @@ class MigrateExecutable extends MigrateExecutableBase
 
     /**
      * Emits information on the rollback execution  progress.
-     *
-     * @param bool $done
      */
-    protected function rollbackFeedbackMessage($done = true): void
+    protected function rollbackFeedbackMessage(bool $done = true): void
     {
         $rolledBack = $this->getRollbackCount();
         if ($done) {

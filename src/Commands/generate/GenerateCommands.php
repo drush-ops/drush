@@ -40,10 +40,8 @@ class GenerateCommands extends DrushCommands implements AutoloaderAwareInterface
      *  Learn all the potential answers so you can re-run with several --answer options.
      * @topics docs:generators
      * @bootstrap max
-     *
-     * @return int
      */
-    public function generate($generator = '', $options = ['answer' => [], 'destination' => self::REQ, 'dry-run' => false])
+    public function generate(string $generator = '', $options = ['answer' => [], 'destination' => self::REQ, 'dry-run' => false]): int
     {
         // Disallow default Symfony console commands.
         if ($generator == 'help' || $generator == 'list') {

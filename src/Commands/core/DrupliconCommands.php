@@ -12,7 +12,7 @@ class DrupliconCommands extends DrushCommands
      * @hook option *
      * @option druplicon Shows the druplicon as glorious ASCII art.
      */
-    public function optionset($options = ['druplicon' => false])
+    public function optionset($options = ['druplicon' => false]): void
     {
     }
 
@@ -21,7 +21,7 @@ class DrupliconCommands extends DrushCommands
      *
      * @hook post-command *
      */
-    public function druplicon($result, CommandData $commandData)
+    public function druplicon($result, CommandData $commandData): void
     {
         // If one command does a Drush::drush() to another command,
         // then this hook will be called multiple times. Only print

@@ -35,7 +35,7 @@ class MkCommands extends DrushCommands implements SiteAliasManagerAwareInterface
      * @usage drush mk:docs
      *   Build many .md files in the docs/commands and docs/generators directories.
      */
-    public function docs()
+    public function docs(): void
     {
         $dir_root = Drush::bootstrapManager()->getComposerRoot();
         $destination = 'commands';

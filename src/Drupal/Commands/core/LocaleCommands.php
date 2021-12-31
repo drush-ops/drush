@@ -26,26 +26,17 @@ class LocaleCommands extends DrushCommands
 
     protected $state;
 
-    /**
-     * @return \Drupal\Core\Language\LanguageManagerInterface
-     */
-    protected function getLanguageManager()
+    protected function getLanguageManager(): \Drupal\Core\Language\LanguageManagerInterface
     {
         return $this->languageManager;
     }
 
-    /**
-     * @return \Drupal\Core\Config\ConfigFactoryInterface
-     */
-    protected function getConfigFactory()
+    protected function getConfigFactory(): \Drupal\Core\Config\ConfigFactoryInterface
     {
         return $this->configFactory;
     }
 
-    /**
-     * @return \Drupal\Core\Extension\ModuleHandlerInterface
-     */
-    public function getModuleHandler()
+    public function getModuleHandler(): \Drupal\Core\Extension\ModuleHandlerInterface
     {
         return $this->moduleHandler;
     }
@@ -53,7 +44,7 @@ class LocaleCommands extends DrushCommands
     /**
      * @return mixed
      */
-    public function getState()
+    public function getState(): \Drupal\Core\State\StateInterface
     {
         return $this->state;
     }
@@ -73,7 +64,7 @@ class LocaleCommands extends DrushCommands
      * @aliases locale-check
      * @validate-module-enabled locale
      */
-    public function check()
+    public function check(): void
     {
         $this->getModuleHandler()->loadInclude('locale', 'inc', 'locale.compare');
 
@@ -105,7 +96,7 @@ class LocaleCommands extends DrushCommands
      * @option langcodes A comma-separated list of language codes to update. If omitted, all translations will be updated.
      * @validate-module-enabled locale
      */
-    public function update($options = ['langcodes' => self::REQ])
+    public function update($options = ['langcodes' => self::REQ]): void
     {
         $module_handler = $this->getModuleHandler();
         $module_handler->loadInclude('locale', 'fetch.inc');
@@ -175,7 +166,7 @@ class LocaleCommands extends DrushCommands
      * @aliases locale-export
      * @validate-module-enabled locale
      */
-    public function export($langcode = null, $options = ['template' => false, 'types' => self::REQ])
+    public function export($langcode = null, $options = ['template' => false, 'types' => self::REQ]): void
     {
         $language = $this->getTranslatableLanguage($langcode);
         $poreader_options = [];
@@ -197,7 +188,7 @@ class LocaleCommands extends DrushCommands
      *
      * @hook validate locale:export
      */
-    public function exportValidate(CommandData $commandData)
+    public function exportValidate(CommandData $commandData): void
     {
         $langcode = $commandData->input()->getArgument('langcode');
         $template = $commandData->input()->getOption('template');
@@ -234,7 +225,7 @@ class LocaleCommands extends DrushCommands
      * @aliases locale-import
      * @throws \Exception
      */
-    public function import($langcode, $file, $options = ['type' => 'not-customized', 'override' => self::REQ, 'autocreate-language' => false])
+    public function import($langcode, $file, $options = ['type' => 'not-customized', 'override' => self::REQ, 'autocreate-language' => false]): void
     {
         if (!drush_file_not_empty($file)) {
             throw new \Exception(dt('File @file not found or empty.', ['@file' => $file]));
@@ -273,9 +264,8 @@ class LocaleCommands extends DrushCommands
      * Converts input of translation type.
      *
      * @param $type
-     * @return integer
      */
-    private function convertCustomizedType($type)
+    private function convertCustomizedType($type): int
     {
         return $type == 'customized' ? LOCALE_CUSTOMIZED : LOCALE_NOT_CUSTOMIZED;
     }
@@ -284,9 +274,8 @@ class LocaleCommands extends DrushCommands
      * Converts input of override option.
      *
      * @param $override
-     * @return array
      */
-    private function convertOverrideOption($override)
+    private function convertOverrideOption($override): array
     {
         $result = [];
 
@@ -331,7 +320,7 @@ class LocaleCommands extends DrushCommands
      * @return LanguageInterface|null
      * @throws \Exception
      */
-    private function getTranslatableLanguage($langcode, $addLanguage = false)
+    private function getTranslatableLanguage(string $langcode, bool $addLanguage = false)
     {
         if (!$langcode) {
             return null;
@@ -367,9 +356,8 @@ class LocaleCommands extends DrushCommands
      * Check if language is translatable.
      *
      * @param LanguageInterface $language
-     * @return bool
      */
-    private function isTranslatable(LanguageInterface $language)
+    private function isTranslatable(LanguageInterface $language): bool
     {
         if ($language->isLocked()) {
             return false;
@@ -388,12 +376,11 @@ class LocaleCommands extends DrushCommands
      * Get PODatabaseReader options for given types.
      *
      * @param array $types
-     * @return array
      *   Options list with value 'true'.
      * @throws \Exception
      *   Triggered with incorrect types.
      */
-    private function convertTypesToPoDbReaderOptions(array $types = [])
+    private function convertTypesToPoDbReaderOptions(array $types = []): array
     {
         $valid_convertions = [
             'not_customized' => 'not-customized',
@@ -426,7 +413,7 @@ class LocaleCommands extends DrushCommands
      * @param array $options The export options for PoDatabaseReader.
      * @return bool True if successful.
      */
-    private function writePoFile($file_uri, LanguageInterface $language = null, array $options = [])
+    private function writePoFile(string $file_uri, LanguageInterface $language = null, array $options = []): bool
     {
         $reader = new PoDatabaseReader();
 

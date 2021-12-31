@@ -12,7 +12,7 @@ class DrushLoggerServiceProvider implements ServiceProviderInterface
     /**
      * @inheritDoc
      */
-    public function register(ContainerBuilder $container)
+    public function register(ContainerBuilder $container): void
     {
         $container->register('logger.drupaltodrush', \Drush\Log\DrushLog::class)
             ->addArgument(new Reference('logger.log_message_parser'))

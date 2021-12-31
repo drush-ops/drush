@@ -79,7 +79,7 @@ class SecurityUpdateCommands extends DrushCommands
     /**
      * Emit suggested Composer command for security updates.
      */
-    public function suggestComposerCommand($updates)
+    public function suggestComposerCommand($updates): void
     {
         $suggested_command = 'composer require ';
         foreach ($updates as $package) {
@@ -110,11 +110,10 @@ class SecurityUpdateCommands extends DrushCommands
     /**
      * Loads the contents of the local Drupal application's composer.lock file.
      *
-     * @return array
      *
      * @throws \Exception
      */
-    protected function loadSiteComposerLock()
+    protected function loadSiteComposerLock(): array
     {
         $composer_lock_file_path = self::composerLockPath();
         $composer_lock_contents = file_get_contents($composer_lock_file_path);
@@ -132,10 +131,8 @@ class SecurityUpdateCommands extends DrushCommands
      *   The contents of the local Drupal application's composer.lock file.
      * @param array $security_advisories_composer_json
      *   The composer.json array from drupal-security-advisories.
-     *
-     * @return array
      */
-    protected function calculateSecurityUpdates($composer_lock_data, $security_advisories_composer_json, bool $excludeDev = false)
+    protected function calculateSecurityUpdates(array $composer_lock_data, array $security_advisories_composer_json, bool $excludeDev = false): array
     {
         $updates = [];
         $packages = $composer_lock_data['packages'];
@@ -176,7 +173,7 @@ class SecurityUpdateCommands extends DrushCommands
      * @usage HTTP_PROXY=tcp://localhost:8125 pm:security
      *   Proxy Guzzle requests through an http proxy.
      */
-    public function securityPhp($options = ['format' => 'yaml', 'no-dev' => false])
+    public function securityPhp(array $options = ['format' => 'yaml', 'no-dev' => false])
     {
         $result = (new SecurityChecker())->check(self::composerLockPath(), $options['no-dev']);
         if ($result) {

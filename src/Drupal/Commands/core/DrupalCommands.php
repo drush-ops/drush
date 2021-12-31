@@ -28,26 +28,17 @@ class DrupalCommands extends DrushCommands
      */
     protected $routeProvider;
 
-    /**
-     * @return \Drupal\Core\CronInterface
-     */
-    public function getCron()
+    public function getCron(): \Drupal\Core\CronInterface
     {
         return $this->cron;
     }
 
-    /**
-     * @return \Drupal\Core\Extension\ModuleHandlerInterface
-     */
-    public function getModuleHandler()
+    public function getModuleHandler(): \Drupal\Core\Extension\ModuleHandlerInterface
     {
         return $this->moduleHandler;
     }
 
-    /**
-     * @return \Drupal\Core\Routing\RouteProviderInterface
-     */
-    public function getRouteProvider()
+    public function getRouteProvider(): \Drupal\Core\Routing\RouteProviderInterface
     {
         return $this->routeProvider;
     }
@@ -71,7 +62,7 @@ class DrupalCommands extends DrushCommands
      * @aliases cron,core-cron
      * @topics docs:cron
      */
-    public function cron()
+    public function cron(): void
     {
         $this->getCron()->run();
     }
@@ -96,9 +87,8 @@ class DrupalCommands extends DrushCommands
      *   value: Summary
      * @default-fields title,severity,value
      * @filter-default-field severity
-     * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
      */
-    public function requirements($options = ['format' => 'table', 'severity' => -1, 'ignore' => ''])
+    public function requirements($options = ['format' => 'table', 'severity' => -1, 'ignore' => '']): \Consolidation\OutputFormatters\StructuredData\RowsOfFields
     {
         include_once DRUSH_DRUPAL_CORE . '/includes/install.inc';
         $severities = [

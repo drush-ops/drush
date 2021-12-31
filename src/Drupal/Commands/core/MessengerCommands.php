@@ -21,7 +21,7 @@ class MessengerCommands extends DrushCommands
     /**
      * @hook pre-command *
      */
-    public function pre()
+    public function pre(): void
     {
         self::log();
     }
@@ -29,12 +29,12 @@ class MessengerCommands extends DrushCommands
     /**
      * @hook post-command *
      */
-    public function post()
+    public function post(): void
     {
         self::log();
     }
 
-    public function log()
+    public function log(): void
     {
         if (!\Drupal::hasService('messenger')) {
             return;

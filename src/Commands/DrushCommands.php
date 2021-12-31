@@ -53,7 +53,7 @@ abstract class DrushCommands implements IOAwareInterface, LoggerAwareInterface, 
     /**
      * Override Robo's IO function with our custom style.
      */
-    protected function io()
+    protected function io(): \Symfony\Component\Console\Style\SymfonyStyle
     {
         if (!$this->io) {
             // Specify our own Style class when needed.
@@ -64,10 +64,8 @@ abstract class DrushCommands implements IOAwareInterface, LoggerAwareInterface, 
 
     /**
      * Returns a logger object.
-     *
-     * @return LoggerInterface
      */
-    protected function logger()
+    protected function logger(): ?\Psr\Log\LoggerInterface
     {
         return $this->logger;
     }
@@ -78,7 +76,7 @@ abstract class DrushCommands implements IOAwareInterface, LoggerAwareInterface, 
      * @param string $file
      *   Full path to a file.
      */
-    protected function printFile($file)
+    protected function printFile(string $file): void
     {
         if ((substr($file, -4) == ".htm") || (substr($file, -5) == ".html")) {
             $tmp_file = drush_tempnam(basename($file));

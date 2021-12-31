@@ -33,7 +33,7 @@ class SanitizeSessionsCommands extends DrushCommands implements SanitizePluginIn
      *
      * @inheritdoc
      */
-    public function sanitize($result, CommandData $commandData)
+    public function sanitize($result, CommandData $commandData): void
     {
         $this->getDatabase()->truncate('sessions')->execute();
         $this->logger()->success(dt('Sessions table truncated.'));
@@ -44,7 +44,7 @@ class SanitizeSessionsCommands extends DrushCommands implements SanitizePluginIn
      *
      * @inheritdoc
      */
-    public function messages(&$messages, InputInterface $input)
+    public function messages(&$messages, InputInterface $input): void
     {
         $messages[] = dt('Truncate sessions table.');
     }

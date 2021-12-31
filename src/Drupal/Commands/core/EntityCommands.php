@@ -48,7 +48,7 @@ class EntityCommands extends DrushCommands
      * @aliases edel,entity-delete
      * @throws \Exception
      */
-    public function delete($entity_type, $ids = null, $options = ['bundle' => self::REQ, 'exclude' => self::REQ, 'chunks' => 50])
+    public function delete(string $entity_type, $ids = null, array $options = ['bundle' => self::REQ, 'exclude' => self::REQ, 'chunks' => 50]): void
     {
         $query = $this->getQuery($entity_type, $ids, $options);
         $result = $query->execute();

@@ -29,5 +29,5 @@ interface SanitizePluginInterface
      * @return String[]
      *   An array of messages.
      */
-    public function messages(&$messages, InputInterface $input);
+    public function messages(array &$messages, InputInterface $input);
 }

@@ -39,7 +39,7 @@ class DrupalDirectoryCommands extends DrushCommands implements SiteAliasManagerA
      *   Open devel module in your editor
      * @aliases dd,drupal-directory
      */
-    public function drupalDirectory($target = 'root', $options = ['local-only' => false])
+    public function drupalDirectory(string $target = 'root', $options = ['local-only' => false])
     {
         $path = $this->getPath($target, $options['local-only']);
 

@@ -20,7 +20,7 @@ class DrushServiceModifier implements ServiceModifierInterface
     /**
      * @inheritdoc
      */
-    public function alter(ContainerBuilder $container)
+    public function alter(ContainerBuilder $container): void
     {
         Drush::logger()->debug(dt("Service modifier alter."));
         // http://symfony.com/doc/2.7/components/dependency_injection/tags.html#register-the-pass-with-the-container
@@ -39,9 +39,8 @@ class DrushServiceModifier implements ServiceModifierInterface
      *
      * @param $container_definition
      *   Cached container definition
-     * @return bool
      */
-    public function check($container_definition)
+    public function check($container_definition): bool
     {
         return
             isset($container_definition['services'][self::DRUSH_CONSOLE_SERVICES]) &&

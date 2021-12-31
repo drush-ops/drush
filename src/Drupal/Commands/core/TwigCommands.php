@@ -24,18 +24,12 @@ class TwigCommands extends DrushCommands
    */
     protected $moduleHandler;
 
-  /**
-   * @return \Drupal\Core\Template\TwigEnvironment
-   */
-    public function getTwig()
+  public function getTwig(): \Drupal\Core\Template\TwigEnvironment
     {
         return $this->twig;
     }
 
-  /**
-   * @return \Drupal\Core\Extension\ModuleHandlerInterface
-   */
-    public function getModuleHandler()
+  public function getModuleHandler(): \Drupal\Core\Extension\ModuleHandlerInterface
     {
         return $this->moduleHandler;
     }
@@ -65,11 +59,10 @@ class TwigCommands extends DrushCommands
      *   compiled: Compiled
      * @default-fields template,compiled
      * @filter-output
-     * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
      *
      * @command twig:unused
      */
-    public function unused($searchpaths)
+    public function unused($searchpaths): \Consolidation\OutputFormatters\StructuredData\RowsOfFields
     {
         $unused = [];
         $phpstorage = PhpStorageFactory::get('twig');
@@ -104,7 +97,7 @@ class TwigCommands extends DrushCommands
    * @command twig:compile
    * @aliases twigc,twig-compile
    */
-    public function twigCompile()
+    public function twigCompile(): void
     {
         require_once DRUSH_DRUPAL_CORE . "/themes/engines/twig/twig.engine";
         // Scan all enabled modules and themes.

@@ -79,9 +79,8 @@ class ListCommands extends DrushCommands
     /**
      * @param $namespaced
      * @param $application
-     * @return \DOMDocument
      */
-    public function buildDom($namespaced, $application)
+    public function buildDom($namespaced, $application): \DOMDocument
     {
         $dom = new \DOMDocument('1.0', 'UTF-8');
         $rootXml = $dom->createElement('symfony');
@@ -118,13 +117,7 @@ class ListCommands extends DrushCommands
         return $dom;
     }
 
-    /**
-     * @param \Symfony\Component\Console\Application $application
-     * @param array $namespaced
-     * @param OutputInterface $output
-     * @param string $preamble
-     */
-    public static function renderListCLI($application, $namespaced, $output, $preamble)
+    public static function renderListCLI(\Symfony\Component\Console\Application $application, array $namespaced, \Symfony\Component\Console\Output\OutputInterface $output, string $preamble): void
     {
         $output->writeln($application->getHelp());
         $output->writeln('');
@@ -163,16 +156,13 @@ class ListCommands extends DrushCommands
         $formatterManager->write($output, 'table', new RowsOfFields($rows), $formatterOptions);
     }
 
-    public static function getTerminalWidth()
+    public static function getTerminalWidth(): int
     {
         $term = new Terminal();
         return $term->getWidth();
     }
 
-    /**
-     * @param array $namespaced
-     */
-    public function renderListRaw($namespaced)
+    public function renderListRaw(array $namespaced): void
     {
         $table = new Table($this->output());
         $table->setStyle('compact');
@@ -186,11 +176,10 @@ class ListCommands extends DrushCommands
 
     /**
      * @param Command[] $all
-     * @param string $separator
      *
      * @return Command[]
      */
-    public static function categorize($all, $separator = ':')
+    public static function categorize(array $all, string $separator = ':'): array
     {
         foreach ($all as $key => $command) {
             if (!in_array($key, $command->getAliases()) && !$command->isHidden()) {

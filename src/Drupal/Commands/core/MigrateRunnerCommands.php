@@ -687,7 +687,7 @@ class MigrateRunnerCommands extends DrushCommands
      *
      * @see \Drupal\migrate\Plugin\MigrateIdMapInterface::getMessages()
      */
-    protected function preprocessMessageRow(\StdClass $row, array $sourceIdKeys)
+    protected function preprocessMessageRow(\StdClass $row, array $sourceIdKeys): array
     {
         unset($row->msgid);
         $row = (array) $row;

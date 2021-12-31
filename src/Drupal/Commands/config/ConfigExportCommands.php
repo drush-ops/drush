@@ -35,10 +35,7 @@ class ConfigExportCommands extends DrushCommands
      */
     protected $configStorageExport;
 
-    /**
-     * @return ConfigManagerInterface
-     */
-    public function getConfigManager()
+    public function getConfigManager(): \Drupal\Core\Config\ConfigManagerInterface
     {
         return $this->configManager;
     }
@@ -46,15 +43,12 @@ class ConfigExportCommands extends DrushCommands
     /**
      * @param \Drupal\Core\Config\StorageInterface $exportStorage
      */
-    public function setExportStorage(StorageInterface $exportStorage)
+    public function setExportStorage(StorageInterface $exportStorage): void
     {
         $this->configStorageExport = $exportStorage;
     }
 
-    /**
-     * @return StorageInterface
-     */
-    public function getConfigStorageExport()
+    public function getConfigStorageExport(): \Drupal\Core\Config\StorageInterface
     {
         if (isset($this->configStorageExport)) {
             return $this->configStorageExport;
@@ -62,19 +56,13 @@ class ConfigExportCommands extends DrushCommands
         return $this->configStorage;
     }
 
-    /**
-     * @return StorageInterface
-     */
-    public function getConfigStorage()
+    public function getConfigStorage(): \Drupal\Core\Config\StorageInterface
     {
         // @todo: deprecate this method.
         return $this->getConfigStorageExport();
     }
 
-    /**
-     * @return StorageInterface
-     */
-    public function getConfigStorageSync()
+    public function getConfigStorageSync(): \Drupal\Core\Config\StorageInterface
     {
         return $this->configStorageSync;
     }
@@ -107,7 +95,7 @@ class ConfigExportCommands extends DrushCommands
      *   Export configuration; Save files in a backup directory named config-export.
      * @aliases cex,config-export
      */
-    public function export($options = ['add' => false, 'commit' => false, 'message' => self::REQ, 'destination' => self::OPT, 'diff' => false, 'format' => null])
+    public function export($options = ['add' => false, 'commit' => false, 'message' => self::REQ, 'destination' => self::OPT, 'diff' => false, 'format' => null]): array
     {
         // Get destination directory.
         $destination_dir = ConfigCommands::getDirectory($options['destination']);
@@ -177,7 +165,7 @@ class ConfigExportCommands extends DrushCommands
         return isset($preview) ? $preview : 'No existing configuration to diff against.';
     }
 
-    public function doAddCommit($options, $destination_dir, $preview)
+    public function doAddCommit($options, $destination_dir, $preview): void
     {
         // Commit or add exported configuration if requested.
         if ($options['commit']) {
@@ -202,7 +190,7 @@ class ConfigExportCommands extends DrushCommands
      * @hook validate config-export
      * @param \Consolidation\AnnotatedCommand\CommandData $commandData
      */
-    public function validate(CommandData $commandData)
+    public function validate(CommandData $commandData): void
     {
         $destination = $commandData->input()->getOption('destination');
 

@@ -35,34 +35,22 @@ class ViewsCommands extends DrushCommands
         $this->configFactory = $configFactory;
     }
 
-    /**
-     * @return \Drupal\Core\Config\ConfigFactoryInterface
-     */
-    public function getConfigFactory()
+    public function getConfigFactory(): \Drupal\Core\Config\ConfigFactoryInterface
     {
         return $this->configFactory;
     }
 
-    /**
-     * @return \Drupal\Core\Extension\ModuleHandlerInterface
-     */
-    public function getModuleHandler()
+    public function getModuleHandler(): \Drupal\Core\Extension\ModuleHandlerInterface
     {
         return $this->moduleHandler;
     }
 
-    /**
-     * @return \Drupal\Core\Entity\EntityTypeManagerInterface
-     */
-    public function getEntityTypeManager()
+    public function getEntityTypeManager(): \Drupal\Core\Entity\EntityTypeManagerInterface
     {
         return $this->entityTypeManager;
     }
 
-    /**
-     * @return \Drupal\Core\Render\RendererInterface
-     */
-    public function getRenderer()
+    public function getRenderer(): \Drupal\Core\Render\RendererInterface
     {
         return $this->renderer;
     }
@@ -75,7 +63,7 @@ class ViewsCommands extends DrushCommands
      * @validate-module-enabled views
      * @aliases vd,views-dev
      */
-    public function dev()
+    public function dev(): void
     {
         $settings = [
             'ui.show.listing_filters' => true,
@@ -233,7 +221,7 @@ class ViewsCommands extends DrushCommands
      *
      * @return string
      */
-    public function execute($view_name, $display = null, $view_args = null, $options = ['count' => 0, 'show-admin-links' => false])
+    public function execute(string $view_name, $display = null, $view_args = null, $options = ['count' => 0, 'show-admin-links' => false])
     {
 
         $view = Views::getView($view_name);
@@ -305,7 +293,7 @@ class ViewsCommands extends DrushCommands
      *   Enable the frontpage and taxonomy_term views.
      * @aliases ven,views-enable
      */
-    public function enable($views)
+    public function enable(string $views): void
     {
         $view_names = StringUtils::csvToArray($views);
         if ($views = $this->getEntityTypeManager()->getStorage('view')->loadMultiple($view_names)) {
@@ -327,7 +315,7 @@ class ViewsCommands extends DrushCommands
      *   Disable the frontpage and taxonomy_term views.
      * @aliases vdis,views-disable
      */
-    public function disable($views)
+    public function disable(string $views): void
     {
         $view_names = StringUtils::csvToArray($views);
         if ($views = $this->getEntityTypeManager()->getStorage('view')->loadMultiple($view_names)) {
@@ -344,7 +332,7 @@ class ViewsCommands extends DrushCommands
      *
      * @hook on-event cache-clear
      */
-    public function cacheClear(&$types, $include_bootstrapped_types)
+    public function cacheClear(&$types, $include_bootstrapped_types): void
     {
         if ($include_bootstrapped_types && $this->getModuleHandler()->moduleExists('views')) {
             $types['views'] = 'views_invalidate_cache';

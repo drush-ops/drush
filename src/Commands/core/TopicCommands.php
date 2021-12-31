@@ -30,7 +30,7 @@ class TopicCommands extends DrushCommands
      * @bootstrap max
      * @topics docs:readme
      */
-    public function topic($topic_name)
+    public function topic($topic_name): int
     {
         $application = Drush::getApplication();
         $input = new ArrayInput([$topic_name], null);
@@ -40,7 +40,7 @@ class TopicCommands extends DrushCommands
     /**
      * @hook interact topic
      */
-    public function interact(InputInterface $input, OutputInterface $output)
+    public function interact(InputInterface $input, OutputInterface $output): void
     {
         $topics = self::getAllTopics();
         $topic_name = $input->getArgument('topic_name');
@@ -66,7 +66,7 @@ class TopicCommands extends DrushCommands
     /**
      * @hook validate topic
      */
-    public function validate(CommandData $commandData)
+    public function validate(CommandData $commandData): void
     {
         $topic_name = $commandData->input()->getArgument('topic_name');
         if (!in_array($topic_name, array_keys(self::getAllTopics()))) {
@@ -79,7 +79,7 @@ class TopicCommands extends DrushCommands
      *
      * @return Command[]
      */
-    public static function getAllTopics()
+    public static function getAllTopics(): array
     {
         /** @var Application $application */
         $application = Drush::getApplication();

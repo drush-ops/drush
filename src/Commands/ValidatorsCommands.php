@@ -40,7 +40,7 @@ class ValidatorsCommands
      * @hook post-init @validate-module-enabled
      * @return \Consolidation\AnnotatedCommand\CommandError|null
      */
-    public function validateModuleEnabled(Input $input, AnnotationData $annotationData)
+    public function validateModuleEnabled(Input $input, AnnotationData $annotationData): void
     {
         $names = StringUtils::csvToArray($annotationData->get('validate-module-enabled'));
         $loaded = \Drupal::moduleHandler()->getModuleList();

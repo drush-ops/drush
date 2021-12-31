@@ -11,7 +11,7 @@ class DrushHelpDocument extends HelpDocument
     /**
      * @inheritdoc
      */
-    public function generateBaseHelpDom(Command $command)
+    public function generateBaseHelpDom(Command $command): \DomDocument
     {
         // Global options should not appear in our help output.
         $command->setApplication(null);
@@ -19,7 +19,7 @@ class DrushHelpDocument extends HelpDocument
         return parent::generateBaseHelpDom($command);
     }
 
-    protected function alterHelpDocument(Command $command, \DomDocument $dom)
+    protected function alterHelpDocument(Command $command, \DomDocument $dom): \DomDocument
     {
         return parent::alterHelpDocument($command, $dom);
     }

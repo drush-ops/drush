@@ -21,10 +21,8 @@ class JsonapiCommands extends DrushCommands
      * @usage drush jn:get jsonapi/node/article | jq
      *   Pretty print JSON by piping to jq. See https://stedolan.github.io/jq/ for lots more jq features.
      * @validate-module-enabled jsonapi
-     *
-     * @return UnstructuredData
      */
-    public function get($url, $options = ['format' => 'json'])
+    public function get($url, $options = ['format' => 'json']): \Consolidation\OutputFormatters\StructuredData\UnstructuredData
     {
         $kernel = Drush::bootstrap()->getKernel();
         $sub_request = Request::create($url, 'GET');
