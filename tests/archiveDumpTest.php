@@ -72,7 +72,8 @@ class archiveDumpCase extends CommandUnishTestCase {
     $untar_dest = $this->unTar($dump_dest);
 
     if (strpos(UNISH_DB_URL, 'mysql') !== FALSE) {
-      $this->execute(sprintf('head %s/unish_%s.sql | grep "MySQL dump"', $untar_dest, self::uri));
+      $this->assertFileExists($untar_dest . '/unish_' . self::uri . '.sql');
+      $this->execute(sprintf('head %s/unish_%s.sql | grep " dump"', $untar_dest, self::uri));
     }
     $this->assertFileExists($untar_dest . '/MANIFEST.ini');
     $this->assertFileExists($untar_dest . '/' . $docroot);
