@@ -125,7 +125,7 @@ class ArgsPreprocessor
      * @param $opt The option string to check
      * @return [$methodName, $optionValue, $acceptsValueFromNextArg]
      */
-    protected function findMethodForOptionWithValues($optionsTable, $opt): array
+    protected function findMethodForOptionWithValues($optionsTable, $opt)
     {
         // Skip $opt if it is empty, or if it is not an option.
         if (empty($opt) || ($opt[0] != '-')) {

@@ -1,9 +1,6 @@
 <?php
 namespace Drush\Preflight;
 
-use Symfony\Component\Console\Input\InputInterface;
-use Composer\Autoload\ClassLoader;
-use Drush\SiteAlias\SiteAliasFileLoader;
 use Drush\Config\DrushConfig;
 use Drush\Config\Environment;
 use Drush\Config\ConfigLocator;
@@ -69,7 +66,7 @@ class Preflight
         $this->logger = $preflightLog ?: new PreflightLog();
     }
 
-    public function logger(): PreflightLog
+    public function logger(): \Drush\Preflight\PreflightLog
     {
         return $this->logger;
     }
@@ -151,7 +148,7 @@ class Preflight
      * Arguments and options not used during preflight will be processed
      * with an ArgvInput.
      */
-    public function preflightArgs($argv): PreflightArgs
+    public function preflightArgs($argv): \Drush\Preflight\PreflightArgs
     {
         $argProcessor = new ArgsPreprocessor();
         $remapper = new ArgsRemapper($this->remapOptions(), $this->remapCommandAliases());
@@ -177,7 +174,7 @@ class Preflight
         $this->configLocator->addDrushConfig($environment->drushBasePath());
     }
 
-    public function createInput(): InputInterface
+    public function createInput(): \Symfony\Component\Console\Input\InputInterface
     {
         return $this->preflightArgs->createInput();
     }
@@ -193,7 +190,7 @@ class Preflight
         return $this->configLocator->getCommandFilePaths(array_merge($commandlinePaths, $configPaths), $this->drupalFinder()->getDrupalRoot());
     }
 
-    public function loadSiteAutoloader(): ClassLoader
+    public function loadSiteAutoloader(): \Composer\Autoload\ClassLoader
     {
         return $this->environment()->loadSiteAutoloader($this->drupalFinder()->getDrupalRoot());
     }
@@ -240,7 +237,7 @@ class Preflight
         $paths = $this->configLocator->getSiteAliasPaths($this->preflightArgs->aliasPaths(), $this->environment);
 
         // Configure alias manager.
-        $aliasFileLoader = new SiteAliasFileLoader();
+        $aliasFileLoader = new \Drush\SiteAlias\SiteAliasFileLoader();
         $this->aliasManager = (new SiteAliasManager($aliasFileLoader))->addSearchLocations($paths);
         $this->aliasManager->setReferenceData($config->export());
 
@@ -348,7 +345,7 @@ class Preflight
     /**
      * Return the Drupal Finder
      */
-    public function drupalFinder(): DrupalFinder
+    public function drupalFinder(): \DrupalFinder\DrupalFinder
     {
         return $this->drupalFinder;
     }
@@ -356,7 +353,7 @@ class Preflight
     /**
      * Return the alias manager
      */
-    public function aliasManager(): SiteAliasManager
+    public function aliasManager(): \Consolidation\SiteAlias\SiteAliasManager
     {
         return $this->aliasManager;
     }
@@ -364,7 +361,7 @@ class Preflight
     /**
      * Return the environment
      */
-    public function environment(): Environment
+    public function environment(): \Drush\Config\Environment
     {
         return $this->environment;
     }

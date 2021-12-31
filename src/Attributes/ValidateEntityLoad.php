@@ -20,7 +20,7 @@ class ValidateEntityLoad
     ) {
     }
 
-    public static function handle(\ReflectionAttribute $attribute, CommandInfo $commandInfo): void
+    public static function handle(\ReflectionAttribute $attribute, CommandInfo $commandInfo)
     {
         $args = $attribute->getArguments();
         $commandInfo->addAnnotation('validate-entity-load', "{$args['entityType']} {$args['argumentName']}");

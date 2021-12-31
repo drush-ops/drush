@@ -17,7 +17,7 @@ class ValidatePermissions
     ) {
     }
 
-    public static function handle(\ReflectionAttribute $attribute, CommandInfo $commandInfo): void
+    public static function handle(\ReflectionAttribute $attribute, CommandInfo $commandInfo)
     {
         $args = $attribute->getArguments();
         $commandInfo->addAnnotation('validate-permissions', $args['argName']);

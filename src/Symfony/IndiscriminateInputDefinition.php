@@ -37,7 +37,7 @@ class IndiscriminateInputDefinition extends InputDefinition
     /**
      * @inheritdoc
      */
-    public function getOption($name): InputOption
+    public function getOption($name): \Symfony\Component\Console\Input\InputOption
     {
         if (parent::hasOption($name)) {
             return parent::getOption($name);

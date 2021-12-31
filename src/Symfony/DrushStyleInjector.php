@@ -8,7 +8,7 @@ use Drush\Style\DrushStyle;
 
 class DrushStyleInjector implements ParameterInjector
 {
-    public function get(CommandData $commandData, $interfaceName): DrushStyle
+    public function get(CommandData $commandData, $interfaceName): \Drush\Style\DrushStyle
     {
         return new DrushStyle($commandData->input(), $commandData->output());
     }

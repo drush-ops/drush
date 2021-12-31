@@ -23,8 +23,9 @@ class CommandCache implements SimpleCacheInterface
     /**
      * Test for an entry from the cache
      * @param string $key
+     * @return boolean
      */
-    public function has($key): bool
+    public function has($key)
     {
         $cacheItem = $this->cacheBackend->get($key);
         return $this->valid($cacheItem);
@@ -32,8 +33,9 @@ class CommandCache implements SimpleCacheInterface
     /**
      * Get an entry from the cache
      * @param string $key
+     * @return array
      */
-    public function get($key): array
+    public function get($key)
     {
         $cacheItem = $this->cacheBackend->get($key);
         if (!$this->valid($cacheItem)) {
@@ -50,12 +52,12 @@ class CommandCache implements SimpleCacheInterface
      * @param string $key
      * @param array $data
      */
-    public function set($key, $data): void
+    public function set($key, $data)
     {
         $this->cacheBackend->set($key, $data);
     }
 
-    protected function valid($cacheItem): bool
+    protected function valid($cacheItem)
     {
         return is_object($cacheItem) && isset($cacheItem->data);
     }

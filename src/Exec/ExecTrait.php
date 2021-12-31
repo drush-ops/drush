@@ -23,7 +23,7 @@ trait ExecTrait
      *   TRUE if browser was opened. FALSE if browser was disabled by the user or a
      *   default browser could not be found.
      */
-    public function startBrowser($uri = null, int $sleep = 0, bool $port = false, bool $browser = true)
+    public function startBrowser($uri = null, $sleep = 0, $port = false, $browser = true)
     {
         if ($browser) {
             // We can only open a browser if we have a DISPLAY environment variable on

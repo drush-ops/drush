@@ -9,7 +9,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 class DrushStyle extends SymfonyStyle
 {
-    public function confirm($question, $default = true): bool
+    public function confirm($question, $default = true)
     {
         // Automatically accept confirmations if the --yes argument was supplied.
         if (Drush::affirmative()) {
@@ -34,17 +34,17 @@ class DrushStyle extends SymfonyStyle
         return array_search($return, $choices);
     }
 
-    public function warning($message): void
+    public function warning($message)
     {
         $this->block($message, 'WARNING', 'fg=black;bg=yellow', ' ! ', true);
     }
 
-    public function note($message): void
+    public function note($message)
     {
         $this->block($message, 'NOTE', 'fg=black;bg=yellow', ' ! ');
     }
 
-    public function caution($message): void
+    public function caution($message)
     {
         $this->block($message, 'CAUTION', 'fg=black;bg=yellow', ' ! ', true);
     }

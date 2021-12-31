@@ -1,14 +1,6 @@
 <?php
 namespace Drush\Runtime;
 
-use League\Container\Container;
-use Symfony\Component\Console\Input\StringInput;
-use Symfony\Component\Console\Output\ConsoleOutput;
-use Robo\Robo;
-use Drush\Formatters\DrushFormatterManager;
-use Drush\Boot\AutoloaderAwareInterface;
-use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
-use Consolidation\SiteProcess\ProcessManagerAwareInterface;
 use Drush\Command\GlobalOptionsEventListener;
 use Drush\Drush;
 use Drush\Symfony\DrushStyleInjector;
@@ -49,23 +41,23 @@ class DependencyInjection
         ClassLoader $loader,
         DrupalFinder $drupalFinder,
         SiteAliasManager $aliasManager
-    ): Container {
+    ): \League\Container\Container {
 
         // Create default input and output objects if they were not provided
         if (!$input) {
-            $input = new StringInput('');
+            $input = new \Symfony\Component\Console\Input\StringInput('');
         }
         if (!$output) {
-            $output = new ConsoleOutput();
+            $output = new \Symfony\Component\Console\Output\ConsoleOutput();
         }
         // Set up our dependency injection container.
-        $container = new Container();
+        $container = new \League\Container\Container();
 
         // With league/container 3.x, first call wins, so add Drush services first.
         $this->addDrushServices($container, $loader, $drupalFinder, $aliasManager, $config);
 
         // Robo has the same signature for configureContainer in 1.x, 2.x and 3.x.
-        Robo::configureContainer($container, $application, $config, $input, $output);
+        \Robo\Robo::configureContainer($container, $application, $config, $input, $output);
         $container->add('container', $container);
 
         // Store the container in the \Drush object
@@ -108,7 +100,7 @@ class DependencyInjection
 
         // Override Robo's formatter manager with our own
         // @todo not sure that we'll use this. Maybe remove it.
-        $container->share('formatterManager', DrushFormatterManager::class)
+        $container->share('formatterManager', \Drush\Formatters\DrushFormatterManager::class)
             ->addMethodCall('addDefaultFormatters', [])
             ->addMethodCall('addDefaultSimplifiers', []);
 
@@ -141,11 +133,11 @@ class DependencyInjection
         $container->share('shutdownHandler', 'Drush\Runtime\ShutdownHandler');
 
         // Add inflectors. @see \Drush\Boot\BaseBoot::inflect
-        $container->inflector(AutoloaderAwareInterface::class)
+        $container->inflector(\Drush\Boot\AutoloaderAwareInterface::class)
             ->invokeMethod('setAutoloader', ['loader']);
-        $container->inflector(SiteAliasManagerAwareInterface::class)
+        $container->inflector(\Consolidation\SiteAlias\SiteAliasManagerAwareInterface::class)
             ->invokeMethod('setSiteAliasManager', ['site.alias.manager']);
-        $container->inflector(ProcessManagerAwareInterface::class)
+        $container->inflector(\Consolidation\SiteProcess\ProcessManagerAwareInterface::class)
             ->invokeMethod('setProcessManager', ['process.manager']);
     }
 

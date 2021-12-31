@@ -16,7 +16,6 @@
 
 namespace Drush\Log;
 
-use Robo\Robo;
 use Drupal\Core\Logger\LogMessageParserInterface;
 use Drupal\Core\Logger\RfcLoggerTrait;
 use Drupal\Core\Logger\RfcLogLevel;
@@ -42,14 +41,14 @@ class DrushLog implements LoggerInterface, LoggerAwareInterface
     /**
      * The message's placeholders parser.
      *
-     * @var LogMessageParserInterface
+     * @var \Drupal\Core\Logger\LogMessageParserInterface
      */
     protected $parser;
 
     /**
      * Constructs a DrushLog object.
      *
-     * @param LogMessageParserInterface $parser
+     * @param \Drupal\Core\Logger\LogMessageParserInterface $parser
      *   The parser to use when extracting message variables.
      */
     public function __construct(LogMessageParserInterface $parser)
@@ -60,10 +59,10 @@ class DrushLog implements LoggerInterface, LoggerAwareInterface
     /**
      * {@inheritdoc}
      */
-    public function log($level, $message, array $context = []): void
+    public function log($level, $message, array $context = [])
     {
         // Only log during Drush requests, not web requests.
-        if (!Robo::hasContainer()) {
+        if (!\Robo\Robo::hasContainer()) {
             return;
         }
 

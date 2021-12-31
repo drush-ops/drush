@@ -30,7 +30,7 @@ use Webmozart\PathUtil\Path;
 class ConfigLocator
 {
     /**
-     * @var ConfigInterface
+     * @var \Robo\Config
      */
     protected $config;
 

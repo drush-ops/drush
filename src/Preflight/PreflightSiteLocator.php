@@ -29,12 +29,12 @@ class PreflightSiteLocator
      * provided on the commandline that is either missing or invalid.
      *
      * @param PreflightArgsInterface $preflightArgs An alias name or site specification
-     * @param Environment $environment
+     * @param \Drush\Config\Environment $environment
      * @param string $root The default Drupal root (from site:set, --root or cwd)
      *
-     * @return SiteAlias|false
+     * @return \Consolidation\SiteAlias\SiteAlias|false
      */
-    public function findSite(PreflightArgsInterface $preflightArgs, Environment $environment, string $root): SiteAlias
+    public function findSite(PreflightArgsInterface $preflightArgs, Environment $environment, string $root): \Consolidation\SiteAlias\SiteAlias
     {
         $self = $this->determineSelf($preflightArgs, $environment, $root);
 
@@ -52,11 +52,11 @@ class PreflightSiteLocator
      * or, if those are invalid, then generate one from
      * the provided root and URI.
      *
-     * @param PreflightArgsInterface $preflightArgs
-     * @param Environment $environment
+     * @param \Drush\Preflight\PreflightArgsInterface $preflightArgs
+     * @param \Drush\Config\Environment $environment
      * @param $root
      */
-    protected function determineSelf(PreflightArgsInterface $preflightArgs, Environment $environment, $root): SiteAlias
+    protected function determineSelf(PreflightArgsInterface $preflightArgs, Environment $environment, $root): \Consolidation\SiteAlias\SiteAlias
     {
         if ($preflightArgs->hasAlias()) {
             $aliasName = $preflightArgs->alias();
@@ -94,10 +94,10 @@ class PreflightSiteLocator
     /**
      * Generate @self from the provided root and URI.
      *
-     * @param PreflightArgsInterface $preflightArgs
+     * @param \Drush\Preflight\PreflightArgsInterface $preflightArgs
      * @param $root
      */
-    protected function buildSelf(PreflightArgsInterface $preflightArgs, $root): SiteAlias
+    protected function buildSelf(PreflightArgsInterface $preflightArgs, $root): \Consolidation\SiteAlias\SiteAlias
     {
         // If there is no root, then return '@none'
         if (!$root) {

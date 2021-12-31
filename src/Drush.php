@@ -6,11 +6,6 @@
  */
 namespace Drush;
 
-use Robo\Runner;
-use Robo\Robo;
-use Drush\Config\DrushConfig;
-use Drush\Boot\BootstrapManager;
-use Drush\Boot\Boot;
 use Consolidation\AnnotatedCommand\AnnotatedCommandFactory;
 use Consolidation\SiteAlias\SiteAliasInterface;
 use Consolidation\SiteAlias\SiteAliasManager;
@@ -64,7 +59,7 @@ class Drush
     /**
      * The Robo Runner -- manages and constructs all commandfile classes
      *
-     * @var Runner
+     * @var \Robo\Runner
      */
     protected static $runner;
 
@@ -95,7 +90,7 @@ class Drush
         return self::$version;
     }
 
-    public static function getMajorVersion(): string
+    public static function getMajorVersion()
     {
         if (!self::$majorVersion) {
             $drush_version = self::getVersion();
@@ -105,7 +100,7 @@ class Drush
         return self::$majorVersion;
     }
 
-    public static function getMinorVersion(): string
+    public static function getMinorVersion()
     {
         if (!self::$minorVersion) {
             $drush_version = self::getVersion();
@@ -118,17 +113,17 @@ class Drush
     /**
      * Sets a new global container.
      */
-    public static function setContainer($container): void
+    public static function setContainer($container)
     {
-        Robo::setContainer($container);
+        \Robo\Robo::setContainer($container);
     }
 
     /**
      * Unsets the global container.
      */
-    public static function unsetContainer(): void
+    public static function unsetContainer()
     {
-        Robo::unsetContainer();
+        \Robo\Robo::unsetContainer();
     }
 
     /**
@@ -136,12 +131,12 @@ class Drush
      *
      * @throws RuntimeException
      */
-    public static function getContainer(): \Psr\Container\ContainerInterface
+    public static function getContainer()
     {
-        if (!Robo::hasContainer()) {
+        if (!\Robo\Robo::hasContainer()) {
             throw new RuntimeException('Drush::$container is not initialized yet. \Drush::setContainer() must be called with a real container.');
         }
-        return Robo::getContainer();
+        return \Robo\Robo::getContainer();
     }
 
     /**
@@ -149,7 +144,7 @@ class Drush
      */
     public static function hasContainer(): bool
     {
-        return Robo::hasContainer();
+        return \Robo\Robo::hasContainer();
     }
 
     /**
@@ -163,10 +158,10 @@ class Drush
     /**
      * Return the Robo runner.
      */
-    public static function runner(): Runner
+    public static function runner(): \Robo\Runner
     {
         if (!isset(self::$runner)) {
-            self::$runner = new Runner();
+            self::$runner = new \Robo\Runner();
         }
         return self::$runner;
     }
@@ -218,7 +213,7 @@ class Drush
      *
      * @internal Commands should use $this->config() instead.
      */
-    public static function config(): DrushConfig
+    public static function config(): Config\DrushConfig
     {
         return self::service('config');
     }
@@ -361,7 +356,7 @@ class Drush
      * @return
      *   A wrapper around Symfony Process.
      */
-    public static function shell(string $command, $cwd = null, array $env = null, $input = null, $timeout = 60): ProcessBase
+    public static function shell($command, $cwd = null, array $env = null, $input = null, $timeout = 60): Process
     {
         return self::processManager()->shell($command, $cwd, $env, $input, $timeout);
     }
@@ -423,7 +418,7 @@ class Drush
     /**
      * Return the Bootstrap Manager.
      */
-    public static function bootstrapManager(): BootstrapManager
+    public static function bootstrapManager(): Boot\BootstrapManager
     {
         return self::service('bootstrap.manager');
     }
@@ -431,7 +426,7 @@ class Drush
     /**
      * Return the Bootstrap object.
      */
-    public static function bootstrap(): Boot
+    public static function bootstrap(): Boot\Boot
     {
         return self::bootstrapManager()->bootstrap();
     }
