@@ -499,4 +499,3 @@ class PreflightArgs extends Config implements PreflightArgsInterface
         return $input;
     }
 }
-
