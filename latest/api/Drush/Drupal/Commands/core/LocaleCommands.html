@@ -282,7 +282,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>                </
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    
+                    <abbr title="Symfony\Component\Console\Style\SymfonyStyle">SymfonyStyle</abbr>
                 </div>
                 <div class="col-md-8">
                     <a href="#method_io">io</a>()
@@ -293,7 +293,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>                </
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    <abbr title="Psr\Log\LoggerInterface">LoggerInterface</abbr>
+                    <abbr title="Drush\Commands\Psr\Log\LoggerInterface">LoggerInterface</abbr>|null
                 </div>
                 <div class="col-md-8">
                     <a href="#method_logger">logger</a>()
@@ -304,7 +304,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>                </
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    
+                    void
                 </div>
                 <div class="col-md-8">
                     <a href="#method_printFile">printFile</a>(string $file)
@@ -381,7 +381,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>                </
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    mixed
+                    <abbr title="Drupal\Core\State\StateInterface">StateInterface</abbr>
                 </div>
                 <div class="col-md-8">
                     <a href="#method_getState">getState</a>()
@@ -392,7 +392,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>                </
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    
+                    void
                 </div>
                 <div class="col-md-8">
                     <a href="#method_check">check</a>()
@@ -402,7 +402,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>                </
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    
+                    void
                 </div>
                 <div class="col-md-8">
                     <a href="#method_update">update</a>($options = [&#039;langcodes&#039; =&gt; self::REQ])
@@ -412,7 +412,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>                </
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    
+                    void
                 </div>
                 <div class="col-md-8">
                     <a href="#method_export">export</a>($langcode = null, $options = [&#039;template&#039; =&gt; false, &#039;types&#039; =&gt; self::REQ])
@@ -422,7 +422,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>                </
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    
+                    void
                 </div>
                 <div class="col-md-8">
                     <a href="#method_exportValidate">exportValidate</a>(<abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr> $commandData)
@@ -432,7 +432,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>                </
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    
+                    void
                 </div>
                 <div class="col-md-8">
                     <a href="#method_import">import</a>($langcode, $file, $options = [&#039;type&#039; =&gt; &#039;not-customized&#039;, &#039;override&#039; =&gt; self::REQ, &#039;autocreate-language&#039; =&gt; false])
@@ -614,7 +614,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method___construct">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/LocaleCommands.php#L61">at line 61</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/LocaleCommands.php#L52">at line 52</a></div>
         <code>                    
     <strong>__construct</strong>(<abbr title="Drupal\Core\Language\LanguageManagerInterface">LanguageManagerInterface</abbr> $languageManager, <abbr title="Drupal\Core\Config\ConfigFactoryInterface">ConfigFactoryInterface</abbr> $configFactory, <abbr title="Drupal\Core\Extension\ModuleHandlerInterface">ModuleHandlerInterface</abbr> $moduleHandler, <abbr title="Drupal\Core\State\StateInterface">StateInterface</abbr> $state)
         </code>
@@ -664,8 +664,8 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
                     <div class="method-item">
                     <h3 id="method_io">
         <div class="location">in <a href="../../../../Drush/Commands/DrushCommands.html#method_io">
-<abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a> <a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/DrushCommands.php#L56">at line 56</a></div>
-        <code>            protected        
+<abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a> <a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/DrushCommands.php#L57">at line 57</a></div>
+        <code>            protected        <abbr title="Symfony\Component\Console\Style\SymfonyStyle">SymfonyStyle</abbr>
     <strong>io</strong>()
         </code>
     </h3>
@@ -678,6 +678,15 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
         </div>
         <div class="tags">
             
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><abbr title="Symfony\Component\Console\Style\SymfonyStyle">SymfonyStyle</abbr></td>
+            <td></td>
+        </tr>
+    </table>
+
             
             
             
@@ -688,8 +697,8 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
                     <div class="method-item">
                     <h3 id="method_logger">
         <div class="location">in <a href="../../../../Drush/Commands/DrushCommands.html#method_logger">
-<abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a> <a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/DrushCommands.php#L70">at line 70</a></div>
-        <code>            protected        <abbr title="Psr\Log\LoggerInterface">LoggerInterface</abbr>
+<abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a> <a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/DrushCommands.php#L69">at line 69</a></div>
+        <code>            protected        <abbr title="Drush\Commands\Psr\Log\LoggerInterface">LoggerInterface</abbr>|null
     <strong>logger</strong>()
         </code>
     </h3>
@@ -706,7 +715,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
 
                     <table class="table table-condensed">
         <tr>
-            <td><abbr title="Psr\Log\LoggerInterface">LoggerInterface</abbr></td>
+            <td><abbr title="Drush\Commands\Psr\Log\LoggerInterface">LoggerInterface</abbr>|null</td>
             <td></td>
         </tr>
     </table>
@@ -721,8 +730,8 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
                     <div class="method-item">
                     <h3 id="method_printFile">
         <div class="location">in <a href="../../../../Drush/Commands/DrushCommands.html#method_printFile">
-<abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a> <a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/DrushCommands.php#L81">at line 81</a></div>
-        <code>            protected        
+<abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a> <a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/DrushCommands.php#L80">at line 80</a></div>
+        <code>            protected        void
     <strong>printFile</strong>(string $file)
         </code>
     </h3>
@@ -745,6 +754,15 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </table>
 
             
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>void</td>
+            <td></td>
+        </tr>
+    </table>
+
             
             
             
@@ -755,7 +773,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
                     <div class="method-item">
                     <h3 id="method_preHook">
         <div class="location">in <a href="../../../../Drush/Commands/DrushCommands.html#method_preHook">
-<abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a> <a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/DrushCommands.php#L107">at line 107</a></div>
+<abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a> <a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/DrushCommands.php#L106">at line 106</a></div>
         <code>                    
     <strong>preHook</strong>(<abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr> $commandData)
         </code>
@@ -789,7 +807,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
                     <div class="method-item">
                     <h3 id="method_printFileTopic">
         <div class="location">in <a href="../../../../Drush/Commands/DrushCommands.html#method_printFileTopic">
-<abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a> <a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/DrushCommands.php#L118">at line 118</a></div>
+<abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a> <a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/DrushCommands.php#L117">at line 117</a></div>
         <code>            protected        
     <strong>printFileTopic</strong>(<abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr> $commandData)
         </code>
@@ -823,7 +841,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
                     <div class="method-item">
                     <h3 id="method_getStack">
         <div class="location">in <a href="../../../../Drush/Commands/DrushCommands.html#method_getStack">
-<abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a> <a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/DrushCommands.php#L129">at line 129</a></div>
+<abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a> <a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/DrushCommands.php#L128">at line 128</a></div>
         <code>            protected        <abbr title="GuzzleHttp\HandlerStack">HandlerStack</abbr>
     <strong>getStack</strong>()
         </code>
@@ -866,7 +884,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_getLanguageManager">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/LocaleCommands.php#L32">at line 32</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/LocaleCommands.php#L29">at line 29</a></div>
         <code>            protected        <abbr title="Drupal\Core\Language\LanguageManagerInterface">LanguageManagerInterface</abbr>
     <strong>getLanguageManager</strong>()
         </code>
@@ -899,7 +917,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_getConfigFactory">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/LocaleCommands.php#L40">at line 40</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/LocaleCommands.php#L34">at line 34</a></div>
         <code>            protected        <abbr title="Drupal\Core\Config\ConfigFactoryInterface">ConfigFactoryInterface</abbr>
     <strong>getConfigFactory</strong>()
         </code>
@@ -932,7 +950,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_getModuleHandler">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/LocaleCommands.php#L48">at line 48</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/LocaleCommands.php#L39">at line 39</a></div>
         <code>                    <abbr title="Drupal\Core\Extension\ModuleHandlerInterface">ModuleHandlerInterface</abbr>
     <strong>getModuleHandler</strong>()
         </code>
@@ -965,8 +983,8 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_getState">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/LocaleCommands.php#L56">at line 56</a></div>
-        <code>                    mixed
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/LocaleCommands.php#L47">at line 47</a></div>
+        <code>                    <abbr title="Drupal\Core\State\StateInterface">StateInterface</abbr>
     <strong>getState</strong>()
         </code>
     </h3>
@@ -984,7 +1002,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
 
                     <table class="table table-condensed">
         <tr>
-            <td>mixed</td>
+            <td><abbr title="Drupal\Core\State\StateInterface">StateInterface</abbr></td>
             <td></td>
         </tr>
     </table>
@@ -998,8 +1016,8 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_check">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/LocaleCommands.php#L76">at line 76</a></div>
-        <code>                    
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/LocaleCommands.php#L67">at line 67</a></div>
+        <code>                    void
     <strong>check</strong>()
         </code>
     </h3>
@@ -1012,6 +1030,15 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
         </div>
         <div class="tags">
             
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>void</td>
+            <td></td>
+        </tr>
+    </table>
+
             
             
             
@@ -1021,8 +1048,8 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_update">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/LocaleCommands.php#L108">at line 108</a></div>
-        <code>                    
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/LocaleCommands.php#L99">at line 99</a></div>
+        <code>                    void
     <strong>update</strong>($options = [&#039;langcodes&#039; =&gt; self::REQ])
         </code>
     </h3>
@@ -1053,6 +1080,15 @@ in Drupal core.</td>
             </table>
 
             
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>void</td>
+            <td></td>
+        </tr>
+    </table>
+
             
             
                             <h4>See also</h4>
@@ -1085,8 +1121,8 @@ in Drupal core.</td>
             </div>
                     <div class="method-item">
                     <h3 id="method_export">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/LocaleCommands.php#L178">at line 178</a></div>
-        <code>                    
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/LocaleCommands.php#L169">at line 169</a></div>
+        <code>                    void
     <strong>export</strong>($langcode = null, $options = [&#039;template&#039; =&gt; false, &#039;types&#039; =&gt; self::REQ])
         </code>
     </h3>
@@ -1114,6 +1150,15 @@ in Drupal core.</td>
             </table>
 
             
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>void</td>
+            <td></td>
+        </tr>
+    </table>
+
             
                             <h4>Exceptions</h4>
 
@@ -1132,8 +1177,8 @@ in Drupal core.</td>
             </div>
                     <div class="method-item">
                     <h3 id="method_exportValidate">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/LocaleCommands.php#L200">at line 200</a></div>
-        <code>                    
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/LocaleCommands.php#L191">at line 191</a></div>
+        <code>                    void
     <strong>exportValidate</strong>(<abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr> $commandData)
         </code>
     </h3>
@@ -1156,6 +1201,15 @@ in Drupal core.</td>
             </table>
 
             
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>void</td>
+            <td></td>
+        </tr>
+    </table>
+
             
             
             
@@ -1165,8 +1219,8 @@ in Drupal core.</td>
             </div>
                     <div class="method-item">
                     <h3 id="method_import">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/LocaleCommands.php#L237">at line 237</a></div>
-        <code>                    
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/LocaleCommands.php#L228">at line 228</a></div>
+        <code>                    void
     <strong>import</strong>($langcode, $file, $options = [&#039;type&#039; =&gt; &#039;not-customized&#039;, &#039;override&#039; =&gt; self::REQ, &#039;autocreate-language&#039; =&gt; false])
         </code>
     </h3>
@@ -1199,6 +1253,15 @@ in Drupal core.</td>
             </table>
 
             
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>void</td>
+            <td></td>
+        </tr>
+    </table>
+
             
                             <h4>Exceptions</h4>
 

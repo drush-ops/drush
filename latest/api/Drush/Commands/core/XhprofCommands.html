@@ -276,7 +276,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>                </
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    
+                    <abbr title="Symfony\Component\Console\Style\SymfonyStyle">SymfonyStyle</abbr>
                 </div>
                 <div class="col-md-8">
                     <a href="#method_io">io</a>()
@@ -287,7 +287,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>                </
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    <abbr title="Psr\Log\LoggerInterface">LoggerInterface</abbr>
+                    <abbr title="Drush\Commands\Psr\Log\LoggerInterface">LoggerInterface</abbr>|null
                 </div>
                 <div class="col-md-8">
                     <a href="#method_logger">logger</a>()
@@ -298,7 +298,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>                </
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    
+                    void
                 </div>
                 <div class="col-md-8">
                     <a href="#method_printFile">printFile</a>(string $file)
@@ -342,7 +342,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>                </
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    
+                    void
                 </div>
                 <div class="col-md-8">
                     <a href="#method_optionsetXhProf">optionsetXhProf</a>($options = [&#039;xh-link&#039; =&gt; self::REQ])
@@ -353,7 +353,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>                </
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    
+                    void
                 </div>
                 <div class="col-md-8">
                     <a href="#method_xhprofPost">xhprofPost</a>($result, <abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr> $commandData)
@@ -363,7 +363,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>                </
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    
+                    void
                 </div>
                 <div class="col-md-8">
                     <a href="#method_xhprofInitialize">xhprofInitialize</a>(<abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr> $input, <abbr title="Consolidation\AnnotatedCommand\AnnotationData">AnnotationData</abbr> $annotationData)
@@ -383,7 +383,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>                </
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    static&nbsp;
+                    static&nbsp;int
                 </div>
                 <div class="col-md-8">
                     <a href="#method_xhprofFlags">xhprofFlags</a>(<a href="../../../Drush/Config/DrushConfig.html"><abbr title="Drush\Config\DrushConfig">DrushConfig</abbr></a> $config)
@@ -393,7 +393,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>                </
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    static&nbsp;
+                    static&nbsp;void
                 </div>
                 <div class="col-md-8">
                     <a href="#method_xhprofEnable">xhprofEnable</a>($flags)
@@ -586,7 +586,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
                     <div class="method-item">
                     <h3 id="method___construct">
         <div class="location">in <a href="../../../Drush/Commands/DrushCommands.html#method___construct">
-<abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a> <a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/DrushCommands.php#L49">at line 49</a></div>
+<abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a> <a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/DrushCommands.php#L50">at line 50</a></div>
         <code>                    
     <strong>__construct</strong>()
         </code>
@@ -611,8 +611,8 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
                     <div class="method-item">
                     <h3 id="method_io">
         <div class="location">in <a href="../../../Drush/Commands/DrushCommands.html#method_io">
-<abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a> <a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/DrushCommands.php#L56">at line 56</a></div>
-        <code>            protected        
+<abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a> <a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/DrushCommands.php#L57">at line 57</a></div>
+        <code>            protected        <abbr title="Symfony\Component\Console\Style\SymfonyStyle">SymfonyStyle</abbr>
     <strong>io</strong>()
         </code>
     </h3>
@@ -625,6 +625,15 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
         </div>
         <div class="tags">
             
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><abbr title="Symfony\Component\Console\Style\SymfonyStyle">SymfonyStyle</abbr></td>
+            <td></td>
+        </tr>
+    </table>
+
             
             
             
@@ -635,8 +644,8 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
                     <div class="method-item">
                     <h3 id="method_logger">
         <div class="location">in <a href="../../../Drush/Commands/DrushCommands.html#method_logger">
-<abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a> <a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/DrushCommands.php#L70">at line 70</a></div>
-        <code>            protected        <abbr title="Psr\Log\LoggerInterface">LoggerInterface</abbr>
+<abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a> <a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/DrushCommands.php#L69">at line 69</a></div>
+        <code>            protected        <abbr title="Drush\Commands\Psr\Log\LoggerInterface">LoggerInterface</abbr>|null
     <strong>logger</strong>()
         </code>
     </h3>
@@ -653,7 +662,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
 
                     <table class="table table-condensed">
         <tr>
-            <td><abbr title="Psr\Log\LoggerInterface">LoggerInterface</abbr></td>
+            <td><abbr title="Drush\Commands\Psr\Log\LoggerInterface">LoggerInterface</abbr>|null</td>
             <td></td>
         </tr>
     </table>
@@ -668,8 +677,8 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
                     <div class="method-item">
                     <h3 id="method_printFile">
         <div class="location">in <a href="../../../Drush/Commands/DrushCommands.html#method_printFile">
-<abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a> <a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/DrushCommands.php#L81">at line 81</a></div>
-        <code>            protected        
+<abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a> <a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/DrushCommands.php#L80">at line 80</a></div>
+        <code>            protected        void
     <strong>printFile</strong>(string $file)
         </code>
     </h3>
@@ -692,6 +701,15 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </table>
 
             
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>void</td>
+            <td></td>
+        </tr>
+    </table>
+
             
             
             
@@ -702,7 +720,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
                     <div class="method-item">
                     <h3 id="method_preHook">
         <div class="location">in <a href="../../../Drush/Commands/DrushCommands.html#method_preHook">
-<abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a> <a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/DrushCommands.php#L107">at line 107</a></div>
+<abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a> <a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/DrushCommands.php#L106">at line 106</a></div>
         <code>                    
     <strong>preHook</strong>(<abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr> $commandData)
         </code>
@@ -736,7 +754,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
                     <div class="method-item">
                     <h3 id="method_printFileTopic">
         <div class="location">in <a href="../../../Drush/Commands/DrushCommands.html#method_printFileTopic">
-<abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a> <a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/DrushCommands.php#L118">at line 118</a></div>
+<abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a> <a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/DrushCommands.php#L117">at line 117</a></div>
         <code>            protected        
     <strong>printFileTopic</strong>(<abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr> $commandData)
         </code>
@@ -770,7 +788,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
                     <div class="method-item">
                     <h3 id="method_getStack">
         <div class="location">in <a href="../../../Drush/Commands/DrushCommands.html#method_getStack">
-<abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a> <a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/DrushCommands.php#L129">at line 129</a></div>
+<abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a> <a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/DrushCommands.php#L128">at line 128</a></div>
         <code>            protected        <abbr title="GuzzleHttp\HandlerStack">HandlerStack</abbr>
     <strong>getStack</strong>()
         </code>
@@ -814,7 +832,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
                     <div class="method-item">
                     <h3 id="method_optionsetXhProf">
         <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/core/XhprofCommands.php#L40">at line 40</a></div>
-        <code>                    
+        <code>                    void
     <strong>optionsetXhProf</strong>($options = [&#039;xh-link&#039; =&gt; self::REQ])
         </code>
     </h3>
@@ -838,6 +856,15 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </table>
 
             
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>void</td>
+            <td></td>
+        </tr>
+    </table>
+
             
             
             
@@ -848,7 +875,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
                     <div class="method-item">
                     <h3 id="method_xhprofPost">
         <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/core/XhprofCommands.php#L49">at line 49</a></div>
-        <code>                    
+        <code>                    void
     <strong>xhprofPost</strong>($result, <abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr> $commandData)
         </code>
     </h3>
@@ -876,6 +903,15 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </table>
 
             
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>void</td>
+            <td></td>
+        </tr>
+    </table>
+
             
             
             
@@ -886,7 +922,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
                     <div class="method-item">
                     <h3 id="method_xhprofInitialize">
         <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/core/XhprofCommands.php#L65">at line 65</a></div>
-        <code>                    
+        <code>                    void
     <strong>xhprofInitialize</strong>(<abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr> $input, <abbr title="Consolidation\AnnotatedCommand\AnnotationData">AnnotationData</abbr> $annotationData)
         </code>
     </h3>
@@ -914,6 +950,15 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </table>
 
             
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>void</td>
+            <td></td>
+        </tr>
+    </table>
+
             
             
             
@@ -923,7 +968,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_xhprofIsEnabled">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/core/XhprofCommands.php#L85">at line 85</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/core/XhprofCommands.php#L84">at line 84</a></div>
         <code>        static            bool
     <strong>xhprofIsEnabled</strong>(<a href="../../../Drush/Config/DrushConfig.html"><abbr title="Drush\Config\DrushConfig">DrushConfig</abbr></a> $config)
         </code>
@@ -942,7 +987,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
                     <tr>
                 <td><a href="../../../Drush/Config/DrushConfig.html"><abbr title="Drush\Config\DrushConfig">DrushConfig</abbr></a></td>
                 <td>$config</td>
-                <td></td>
+                <td><p>TRUE when xh.link configured, FALSE otherwise.</p></td>
             </tr>
             </table>
 
@@ -952,7 +997,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
                     <table class="table table-condensed">
         <tr>
             <td>bool</td>
-            <td><p>TRUE when xh.link configured, FALSE otherwise.</p></td>
+            <td></td>
         </tr>
     </table>
 
@@ -974,8 +1019,8 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_xhprofFlags">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/core/XhprofCommands.php#L103">at line 103</a></div>
-        <code>        static            
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/core/XhprofCommands.php#L102">at line 102</a></div>
+        <code>        static            int
     <strong>xhprofFlags</strong>(<a href="../../../Drush/Config/DrushConfig.html"><abbr title="Drush\Config\DrushConfig">DrushConfig</abbr></a> $config)
         </code>
     </h3>
@@ -998,6 +1043,15 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </table>
 
             
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>int</td>
+            <td></td>
+        </tr>
+    </table>
+
             
             
             
@@ -1007,8 +1061,8 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_xhprofEnable">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/core/XhprofCommands.php#L135">at line 135</a></div>
-        <code>        static            
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/core/XhprofCommands.php#L134">at line 134</a></div>
+        <code>        static            void
     <strong>xhprofEnable</strong>($flags)
         </code>
     </h3>
@@ -1031,6 +1085,15 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </table>
 
             
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>void</td>
+            <td></td>
+        </tr>
+    </table>
+
             
             
             
@@ -1040,7 +1103,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_xhprofFinishRun">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/core/XhprofCommands.php#L147">at line 147</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/core/XhprofCommands.php#L146">at line 146</a></div>
         <code>                    
     <strong>xhprofFinishRun</strong>($namespace)
         </code>
