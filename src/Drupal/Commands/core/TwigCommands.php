@@ -24,12 +24,12 @@ class TwigCommands extends DrushCommands
    */
     protected $moduleHandler;
 
-  public function getTwig(): \Drupal\Core\Template\TwigEnvironment
+    public function getTwig(): \Drupal\Core\Template\TwigEnvironment
     {
         return $this->twig;
     }
 
-  public function getModuleHandler(): \Drupal\Core\Extension\ModuleHandlerInterface
+    public function getModuleHandler(): \Drupal\Core\Extension\ModuleHandlerInterface
     {
         return $this->moduleHandler;
     }
