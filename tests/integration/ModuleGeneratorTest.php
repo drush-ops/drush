@@ -23,4 +23,11 @@ class ModuleGeneratorTest extends UnishIntegrationTestCase
         $this->assertStringContainsString('woot:example', $this->getOutput());
         $this->assertStringContainsString('Generates a woot.', $this->getOutput());
     }
+
+    public function tearDown(): void
+    {
+        $this->drush('pm:uninstall', ['woot']);
+        parent::tearDown();
+    }
+
 }
