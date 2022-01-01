@@ -96,7 +96,6 @@ nav:
       - examples/SiteAliasAlterCommands.php.md
       - examples/SyncViaHttpCommands.php.md
       - examples/XkcdCommands.php.md
-      - .bashrc: examples/example.bashrc.md
       - prompt.sh: examples/example.prompt.sh.md
       - git-bisect.sh: examples/git-bisect.example.sh.md
   - Contribute:
