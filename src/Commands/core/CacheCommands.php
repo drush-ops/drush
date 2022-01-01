@@ -300,8 +300,7 @@ class CacheCommands extends DrushCommands implements CustomEventAwareInterface, 
     public static function clearDrush(): void
     {
         try {
-            drush_cache_clear_all(null, 'default');// No longer used by Drush core, but still cleared for backward compat.
-            drush_cache_clear_all(null, 'factory'); // command info from annotated-command library (i.e. parsed annotations)
+            // No longer anything to do here. Left because some commandfiles may try to call this.
         } catch (IOException $e) {
             // Sometimes another process writes files into a bin dir and \Drush\Cache\FileCache::clear fails.
             // That is not considered an error. https://github.com/drush-ops/drush/pull/4535.

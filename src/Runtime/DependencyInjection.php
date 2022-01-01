@@ -153,15 +153,9 @@ class DependencyInjection
         $hookManager->addInitializeHook($container->get('bootstrap.hook'));
         $hookManager->addPreValidator($container->get('tildeExpansion.hook'));
 
-        // Install our command cache into the command factory
-        // TODO: Create class-based implementation of our cache management functions.
-        $cacheBackend = _drush_cache_get_object('factory');
-        $commandCacheDataStore = new CommandCache($cacheBackend);
-
         $factory = $container->get('commandFactory');
         $factory->setIncludeAllPublicMethods(false);
         $factory->setIgnoreCommandsInTraits(true);
-        $factory->setDataStore($commandCacheDataStore);
         $factory->addCommandInfoAlterer(new DrushCommandInfoAlterer());
 
         $commandProcessor = $container->get('commandProcessor');
