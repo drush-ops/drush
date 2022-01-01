@@ -10,7 +10,7 @@ class completeCase extends CommandUnishTestCase {
    * Write a config file that contains our configuration file.
    */
   static function set_up_before_class() {
-    parent::setUpBeforeClass();
+    parent::set_up_before_class();
     $contents = "
       <?php
 

@@ -43,7 +43,7 @@ class contextCase extends CommandUnishTestCase {
    * write a sites/dev/aliases.drushrc.php file to the sandbox.
    */
   function set_up() {
-    parent::setUp();
+    parent::set_up();
 
     if (!$this->getSites()) {
       $this->setUpDrupal();

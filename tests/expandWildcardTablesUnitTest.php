@@ -12,7 +12,7 @@ namespace Unish;
 class WildcardUnitCase extends UnitUnishTestCase {
 
   public static function set_up_before_class() {
-    parent::setUpBeforeClass();
+    parent::set_up_before_class();
     require_once(dirname(__FILE__) . '/../commands/sql/sql.drush.inc');
   }
 

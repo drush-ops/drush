@@ -17,7 +17,7 @@ class commandSpecificCase extends CommandUnishTestCase {
    * write a sites/dev/aliases.drushrc.php file to the sandbox.
    */
   function set_up() {
-    parent::setUp();
+    parent::set_up();
 
     $path = UNISH_SANDBOX . '/aliases.drushrc.php';
     $aliases['site1'] = array(
