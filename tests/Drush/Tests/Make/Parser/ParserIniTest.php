@@ -4,10 +4,12 @@ namespace Drush\Tests\Make\Parser;
 
 use Drush\Make\Parser\ParserIni;
 
+use Yoast\PHPUnitPolyfills\TestCases\TestCase;
+
 /**
  * @coversDefaultClass \Drush\Make\Parser\ParserIni
  */
-class ParserIniTest extends \PHPUnit_Framework_TestCase {
+class ParserIniTest extends TestCase {
 
   /**
    * @covers ::supportedFile
