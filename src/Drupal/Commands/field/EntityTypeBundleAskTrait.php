@@ -3,7 +3,9 @@
 namespace Drush\Drupal\Commands\field;
 
 use Drupal\Core\Entity\EntityTypeBundleInfoInterface;
+use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Core\Entity\FieldableEntityInterface;
 use Symfony\Component\Console\Input\InputInterface;
 
 use function t;
@@ -17,7 +19,12 @@ trait EntityTypeBundleAskTrait
 {
     protected function askEntityType(): ?string
     {
-        $entityTypeDefinitions = $this->entityTypeManager->getDefinitions();
+        $entityTypeDefinitions = array_filter(
+            $this->entityTypeManager->getDefinitions(),
+            function (EntityTypeInterface $entityType) {
+                return $entityType->entityClassImplements(FieldableEntityInterface::class);
+            }
+        );
         $choices = [];
 
         foreach ($entityTypeDefinitions as $entityTypeDefinition) {
