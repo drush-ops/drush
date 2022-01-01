@@ -2,7 +2,9 @@
 
 namespace Unish;
 
-abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
+use Yoast\PHPUnitPolyfills\TestCases\TestCase;
+
+abstract class UnishTestCase extends TestCase {
 
   /**
    * A list of Drupal sites that have been recently installed. They key is the
