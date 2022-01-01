@@ -72,7 +72,6 @@ class LegacyPreflight
         require_once $drushBasePath . '/includes/environment.inc';
         require_once $drushBasePath . '/includes/drush.inc';
         require_once $drushBasePath . '/includes/batch.inc';
-        require_once $drushBasePath . '/includes/drupal.inc';
         require_once $drushBasePath . '/includes/output.inc';
         require_once $drushBasePath . '/includes/filesystem.inc';
         require_once $drushBasePath . '/includes/legacy.inc';
