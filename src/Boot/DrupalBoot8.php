@@ -83,13 +83,9 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
     {
         // Are the class constants available?
         if (!$this->hasAutoloader()) {
-            throw new \Exception('Cannot access Drupal 8 class constants - Drupal autoloader not loaded yet.');
+            throw new \Exception('Cannot access Drupal class constants - Drupal autoloader not loaded yet.');
         }
-        // Drush depends on bootstrap being loaded at this point.
-        require_once $drupal_root .'/core/includes/bootstrap.inc';
-        if (defined('\Drupal::VERSION')) {
-            return \Drupal::VERSION;
-        }
+        return \Drupal::VERSION;
     }
 
     /**

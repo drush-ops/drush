@@ -37,7 +37,7 @@ class ErrorHandler implements LoggerAwareInterface, HandlerInterface
         if ($errno & error_reporting()) {
             // By default we log notices.
             $type = Drush::config()->get('runtime.php.notices', LogLevel::INFO);
-            $halt_on_error = Drush::config()->get('runtime.php.halt-on-error', (drush_drupal_major_version() != 6));
+            $halt_on_error = Drush::config()->get('runtime.php.halt-on-error', true);
 
             // Bitmask value that constitutes an error needing to be logged.
             $error = E_ERROR | E_PARSE | E_CORE_ERROR | E_COMPILE_ERROR | E_USER_ERROR | E_RECOVERABLE_ERROR;
