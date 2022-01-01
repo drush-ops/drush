@@ -56,7 +56,7 @@ abstract class UnishTestCase extends TestCase {
   /**
    * Runs after all tests in a class are run. Remove sandbox directory.
    */
-  public static function tearDownAfterClass(): void {
+  public static function tear_down_after_class() {
     chdir(dirname(UNISH_SANDBOX));
     $dirty = getenv('UNISH_DIRTY');
     if (file_exists(UNISH_SANDBOX) && empty($dirty)) {
