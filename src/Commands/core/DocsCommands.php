@@ -40,19 +40,6 @@ class DocsCommands extends DrushCommands
     }
 
     /**
-     * Bashrc customization examples for Drush.
-     *
-     * @command docs:bashrc
-     * @aliases docs-bashrc
-     * @hidden
-     * @topic ../../../examples/example.bashrc
-     */
-    public function bashrc(): void
-    {
-        self::printFileTopic($this->commandData);
-    }
-
-    /**
      * Drush configuration.
      *
      * @command docs:configuration
