@@ -9,6 +9,7 @@ class completeCase extends CommandUnishTestCase {
   /**
    * Write a config file that contains our configuration file.
    */
+  #[\ReturnTypeWillChange]
   static function setUpBeforeClass() {
     parent::setUpBeforeClass();
     $contents = "

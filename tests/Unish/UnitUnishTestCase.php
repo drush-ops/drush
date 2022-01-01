@@ -23,6 +23,7 @@ abstract class UnitUnishTestCase extends UnishTestCase {
    *
    * @see drush_bootstrap()
    */
+  #[\ReturnTypeWillChange]
   public static function setUpBeforeClass() {
     parent::setUpBeforeClass();
     require_once(__DIR__ . '/../../includes/preflight.inc');
@@ -31,7 +32,8 @@ abstract class UnitUnishTestCase extends UnishTestCase {
     define('DRUSH_COMMAND', UNISH_DRUSH);
   }
 
-  public static function tearDownAfterClass() {
+  #[\ReturnTypeWillChange]
+  public static function tearDownAfterClass(): void {
     parent::tearDownAfterClass();
     \drush_postflight();
   }

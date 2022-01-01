@@ -12,6 +12,7 @@ class shellAliasesCase extends CommandUnishTestCase {
   /**
    * Write a config file that contains the shell-aliases array.
    */
+  #[\ReturnTypeWillChange]
   function setUp() {
     parent::setUp();
     $contents = "

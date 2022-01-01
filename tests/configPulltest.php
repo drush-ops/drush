@@ -10,6 +10,7 @@ namespace Unish;
  */
 class ConfigPullCase extends CommandUnishTestCase {
 
+  #[\ReturnTypeWillChange]
   function setUp() {
     if (UNISH_DRUPAL_MAJOR_VERSION < 8) {
       $this->markTestSkipped('Config only available on D8+.');

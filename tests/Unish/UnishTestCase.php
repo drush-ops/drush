@@ -22,6 +22,7 @@ abstract class UnishTestCase extends TestCase {
    * Assure that each class starts with an empty sandbox directory and
    * a clean environment - http://drupal.org/node/1103568.
    */
+  #[\ReturnTypeWillChange]
   public static function setUpBeforeClass() {
     self::setUpFreshSandBox();
   }
@@ -56,7 +57,7 @@ abstract class UnishTestCase extends TestCase {
   /**
    * Runs after all tests in a class are run. Remove sandbox directory.
    */
-  public static function tearDownAfterClass() {
+  public static function tearDownAfterClass(): void {
     chdir(dirname(UNISH_SANDBOX));
     $dirty = getenv('UNISH_DIRTY');
     if (file_exists(UNISH_SANDBOX) && empty($dirty)) {

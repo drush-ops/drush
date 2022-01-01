@@ -16,6 +16,7 @@ class commandSpecificCase extends CommandUnishTestCase {
    * Try to write a tiny drushrc.php to each place that drush checks. Also
    * write a sites/dev/aliases.drushrc.php file to the sandbox.
    */
+  #[\ReturnTypeWillChange]
   function setUp() {
     parent::setUp();
 

@@ -9,6 +9,7 @@ namespace Unish;
   */
 class cacheCommandCase extends CommandUnishTestCase {
 
+  #[\ReturnTypeWillChange]
   function setUp() {
     if (!$this->getSites()) {
       $this->setUpDrupal(1, TRUE);
