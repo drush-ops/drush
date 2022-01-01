@@ -9,6 +9,10 @@ defaults: &defaults
 version: 2.1
 
 executors:
+  linux80:
+    docker:
+      - image: circleci/php:8.0-apache-node
+      - image: circleci/mysql:5.7.31
   linux74:
     docker:
       - image: circleci/php:7.4-apache-node
@@ -56,6 +60,9 @@ jobs:
       - checkout
       - prepare_php
       - run: composer install --prefer-dist --no-interaction
+      - run: composer config --unset platform.php
+      - run: composer remove --dev --no-update symfony/var-dumper symfony/console symfony/event-dispatcher symfony/finder symfony/yaml symfony/process
+      - run: composer update symfony/* phpunit/phpunit --with-dependencies
       - run: ./unish.sh
 
 workflows:
@@ -65,7 +72,7 @@ workflows:
       - test:
           matrix:
             parameters:
-              os: [linux74, linux56]
+              os: [linux80, linux74, linux56]
               drupal: ["9.3.0","9.1.15", "7"]
             exclude:
               - os: linux56
