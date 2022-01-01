@@ -24,7 +24,7 @@ abstract class UnitUnishTestCase extends UnishTestCase {
    * @see drush_bootstrap()
    */
   public static function set_up_before_class() {
-    parent::function();
+    parent::set_up_before_class();
     require_once(__DIR__ . '/../../includes/preflight.inc');
     drush_preflight_prepare();
     // Need to set DRUSH_COMMAND so that drush will be called and not phpunit
