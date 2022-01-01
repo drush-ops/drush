@@ -183,7 +183,7 @@ class CoreTest extends CommandUnishTestCase
             $drush_config_yml = [
                 'drush' => [
                     'paths' => [
-                        'cache-directory' => $site_cache_dir,
+                        'config-sync' => $site_cache_dir,
                     ]
                 ]
             ];
@@ -204,7 +204,7 @@ class CoreTest extends CommandUnishTestCase
 
             // Test that the cache directory config is set. The field option
             // forces format to string.
-            $this->drush('core-status', [], $options + ['field' => 'drush-cache-directory']);
+            $this->drush('core-status', [], $options + ['field' => 'config-sync']);
             $output = $this->getOutput();
             $this->assertEquals($site_cache_dir, $output);
         }

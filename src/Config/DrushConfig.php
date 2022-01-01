@@ -65,24 +65,4 @@ class DrushConfig extends ConfigOverlay
     {
         return $this->get('runtime.config.paths', []);
     }
-
-    public function cache()
-    {
-        $candidates = [
-            $this->get('drush.paths.cache-directory'),
-            Path::join($this->home(), '.drush/cache'),
-            Path::join($this->tmp(), 'drush-' . $this->user() . '/cache'),
-        ];
-
-        $fs = new Filesystem();
-        foreach (array_filter($candidates) as $candidate) {
-            try {
-                $fs->mkdir($candidate);
-                return $candidate;
-            } catch (IOException $ioException) {
-                // Do nothing. Jump to the next candidate.
-            }
-        }
-        throw new \Exception('Cannot create the Drush cache directory. Tried next candidates: ' . implode(', ', $candidates));
-    }
 }

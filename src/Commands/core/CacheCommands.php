@@ -233,10 +233,6 @@ class CacheCommands extends DrushCommands implements CustomEventAwareInterface, 
         // drupal_rebuild() calls drupal_flush_all_caches() itself, so we don't do it manually.
         drupal_rebuild($autoloader, $request);
         $this->logger()->success(dt('Cache rebuild complete.'));
-
-        // As this command replaces `drush cache-clear all` for Drupal 8 users, clear
-        // the Drush cache as well, for consistency with that behavior.
-        CacheCommands::clearDrush();
     }
 
     /**
@@ -300,7 +296,7 @@ class CacheCommands extends DrushCommands implements CustomEventAwareInterface, 
     public static function clearDrush(): void
     {
         try {
-            // No longer anything to do here. Left because some commandfiles may try to call this.
+            Drush::logger()->info(dt('Deprecation notice - Drush no longer caches anything.'));
         } catch (IOException $e) {
             // Sometimes another process writes files into a bin dir and \Drush\Cache\FileCache::clear fails.
             // That is not considered an error. https://github.com/drush-ops/drush/pull/4535.
