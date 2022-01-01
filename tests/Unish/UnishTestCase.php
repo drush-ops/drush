@@ -22,8 +22,7 @@ abstract class UnishTestCase extends TestCase {
    * Assure that each class starts with an empty sandbox directory and
    * a clean environment - http://drupal.org/node/1103568.
    */
-  #[\ReturnTypeWillChange]
-  public static function setUpBeforeClass() {
+  public static function set_up_before_class() {
     self::setUpFreshSandBox();
   }
 

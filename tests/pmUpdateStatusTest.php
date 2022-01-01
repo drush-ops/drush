@@ -27,8 +27,7 @@ class pmUpdateStatus extends CommandUnishTestCase {
    *  - Drupal 6 will start to be unsupported at some point
    *  - Drupal 8 still has not enough variety to cover the tests
    */
-  #[\ReturnTypeWillChange]
-  function setUp() {
+  function set_up() {
     if (UNISH_DRUPAL_MAJOR_VERSION == '6') {
       $this->markTestSkipped("pm-update* no longer supported with Drupal 6; drupal.org does not allow stable releases for Drupal 6 contrib modules.");
     }

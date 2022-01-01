@@ -9,8 +9,7 @@ namespace Unish;
  */
 class siteInstallD6Case extends CommandUnishTestCase {
 
-  #[\ReturnTypeWillChange]
-  function setUp() {
+  function set_up() {
     if (UNISH_DRUPAL_MAJOR_VERSION != 6) {
       $this->markTestSkipped('This test class is designed for Drupal 6.');
       return;

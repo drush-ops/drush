@@ -12,8 +12,7 @@ class userCase extends CommandUnishTestCase {
   private static $authenticated;
   private static $status_prop;
 
-  #[\ReturnTypeWillChange]
-  function setUp() {
+  function set_up() {
     if (!$this->getSites()) {
       $this->setUpDrupal(1, TRUE);
       self::$authenticated = 'authenticated';

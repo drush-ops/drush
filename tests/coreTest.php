@@ -9,8 +9,7 @@ namespace Unish;
  */
 class coreCase extends CommandUnishTestCase {
 
-  #[\ReturnTypeWillChange]
-  function setUp() {
+  function set_up() {
     if (!$this->getSites()) {
       $this->setUpDrupal(1, TRUE);
     }
