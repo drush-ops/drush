@@ -74,13 +74,6 @@ drush:
 ```
 - View all loaded site aliases: `drush site:alias`
 
-#### Cache directory 
-Specify a folder where Drush should store its file based caches. If unspecified, defaults to `$HOME/.drush`.
-```yml
-drush:  
-  cache-directory: /tmp/.drush
-```
-
 #### Backup directory
 Specify a folder where Drush should store backup files, including
 temporary sql dump files created during [sql:sync](https://www.drush.org/latest/commands/sql_sync/). If unspecified,
