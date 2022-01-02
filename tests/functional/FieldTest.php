@@ -30,7 +30,7 @@ class FieldTest extends CommandUnishTestCase
         $this->assertStringContainsString('The entityType argument is required', $this->getErrorOutputRaw());
         $this->drush('field:create', ['foo'], [], null, null, self::EXIT_ERROR);
         $this->assertStringContainsString('Entity type with id \'foo\' does not exist.', $this->getErrorOutputRaw());
-        $this->drush('field:create', ['user'], [], null, null, self::EXIT_ERROR);
+        $this->drush('field:create', ['unish_article'], [], null, null, self::EXIT_ERROR);
         $this->assertStringContainsString('The bundle argument is required.', $this->getErrorOutputRaw());
         $this->drush('field:create', ['user', 'user'], [], null, null, self::EXIT_ERROR);
         $this->assertStringNotContainsString('bundle', $this->getErrorOutputRaw());
