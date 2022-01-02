@@ -584,7 +584,7 @@ class makeMakefileCase extends CommandUnishTestCase {
     $this->assertStringContainsString('eb9f05e', $contents);
 
     // Test cck_signup .git/HEAD file does not exist.
-    $this->assertFileNotExists($install_directory . '/sites/all/modules/cck_signup/.git/HEAD');
+    $this->assertFileDoesNotExist($install_directory . '/sites/all/modules/cck_signup/.git/HEAD');
 
     // Test caption_filter .git/HEAD file.
     $this->assertFileExists($install_directory . '/sites/all/modules/contrib/caption_filter/.git/HEAD');
@@ -668,7 +668,7 @@ class makeMakefileCase extends CommandUnishTestCase {
 
         if (!empty($details['notexists'])) {
           foreach ($details['notexists'] as $file) {
-            $this->assertFileNotExists($dir . DIRECTORY_SEPARATOR . $file);
+            $this->assertFileDoesNotExist($dir . DIRECTORY_SEPARATOR . $file);
           }
         }
       }
