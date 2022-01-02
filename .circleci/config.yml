@@ -60,9 +60,7 @@ jobs:
       - checkout
       - prepare_php
       - run: composer install --prefer-dist --no-interaction
-      - run: composer config --unset platform.php
-      - run: composer remove --dev --no-update symfony/var-dumper symfony/console symfony/event-dispatcher symfony/finder symfony/yaml symfony/process
-      - run: composer update symfony/* phpunit/phpunit --with-dependencies
+      - run: if [[ -n "$(php --version | grep 'PHP 8')" ]] ; then composer config --unset platform.php && composer remove --dev --no-update symfony/var-dumper && composer update symfony/var-dumper phpunit/phpunit --with-dependencies ; fi
       - run: ./unish.sh
 
 workflows:
