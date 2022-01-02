@@ -539,7 +539,7 @@ class makeMakefileCase extends CommandUnishTestCase {
 
     $install_directory = UNISH_SANDBOX . DIRECTORY_SEPARATOR . 'norecursion';
     $this->drush('make', array('--no-core', '--no-recursion', $makefile, $install_directory));
-    $this->assertNotContains("ctools", $this->getOutput(), "Make with --no-recursion does not recurse into drupal_forum to download ctools.");
+    $this->assertStringNotContainsString("ctools", $this->getOutput(), "Make with --no-recursion does not recurse into drupal_forum to download ctools.");
   }
 
   /**

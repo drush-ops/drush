@@ -62,23 +62,23 @@ class commandSpecificCase extends CommandUnishTestCase {
     $output = trim($this->getOutput());
     $this->assertStringContainsString('sites/default/files', $output);
     $this->assertStringContainsString('excluded_by_target', $output);
-    $this->assertNotContains('include-vcs', $output);
-    $this->assertNotContains('exclude-paths', $output);
-    $this->assertNotContains('exclude-files-processed', $output);
+    $this->assertStringNotContainsString('include-vcs', $output);
+    $this->assertStringNotContainsString('exclude-paths', $output);
+    $this->assertStringNotContainsString('exclude-files-processed', $output);
     $this->drush('core-rsync', array('@site1', '/tmp'), $options, NULL, NULL, self::EXIT_SUCCESS, '2>&1');
     $output = trim($this->getOutput());
     $this->assertStringContainsString('sites/default/files', $output);
 // This one does not work. @see drush_sitealias_evaluate_path
 //    $this->assertStringContainsString('excluded_by_source', $output);
-    $this->assertNotContains('include-vcs', $output);
-    $this->assertNotContains('exclude-paths', $output);
-    $this->assertNotContains('exclude-files-processed', $output);
+    $this->assertStringNotContainsString('include-vcs', $output);
+    $this->assertStringNotContainsString('exclude-paths', $output);
+    $this->assertStringNotContainsString('exclude-files-processed', $output);
     $this->drush('core-rsync', array('@site1', '@site1'), $options, NULL, NULL, self::EXIT_SUCCESS, '2>&1');
     $output = trim($this->getOutput());
     $this->assertStringContainsString('sites/default/files', $output);
     $this->assertStringContainsString('excluded_by_target', $output);
-    $this->assertNotContains('include-vcs', $output);
-    $this->assertNotContains('exclude-paths', $output);
-    $this->assertNotContains('exclude-files-processed', $output);
+    $this->assertStringNotContainsString('include-vcs', $output);
+    $this->assertStringNotContainsString('exclude-paths', $output);
+    $this->assertStringNotContainsString('exclude-files-processed', $output);
   }
 }
