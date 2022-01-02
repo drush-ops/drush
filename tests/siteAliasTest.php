@@ -168,7 +168,8 @@ EOD;
    * Ensure that requesting a non-existent alias throws an error.
    */
   public function testBadAlias() {
-    $this->drush('sa', array('@badalias'), array(), NULL, NULL, self::EXIT_ERROR);
+    $return = $this->drush('sa', array('@badalias'), array(), NULL, NULL, self::EXIT_ERROR);
+    $this->assertEquals(self::EXIT_ERROR, $return);
   }
 
   /**
@@ -301,9 +302,12 @@ EOD;
     file_put_contents($root . "/../drush/site-aliases/aboveroot.aliases.drushrc.php", $aliasContents);
 
     // Ensure that none of these 'sa' commands return an error
-    $this->drush('sa', array('@atroot'), array(), '@dev');
-    $this->drush('sa', array('@insitefolder'), array(), '@dev');
-    $this->drush('sa', array('@aboveroot'), array(), '@dev');
+    $return = $this->drush('sa', array('@atroot'), array(), '@dev');
+    $this->assertEquals(self::EXIT_SUCCESS, $return);
+    $return = $this->drush('sa', array('@insitefolder'), array(), '@dev');
+    $this->assertEquals(self::EXIT_SUCCESS, $return);
+    $return = $this->drush('sa', array('@aboveroot'), array(), '@dev');
+    $this->assertEquals(self::EXIT_SUCCESS, $return);
   }
 
 
@@ -366,6 +370,7 @@ EOD;
     );
 
     // This should not find the '@nope' alias.
-    $this->drush('sa', array('@nope'), $options, NULL, NULL, self::EXIT_ERROR);
+    $return = $this->drush('sa', array('@nope'), $options, NULL, NULL, self::EXIT_ERROR);
+    $this->assertEquals(self::EXIT_ERROR, $return);
   }
 }

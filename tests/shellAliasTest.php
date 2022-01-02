@@ -136,7 +136,8 @@ class shellAliasesCase extends CommandUnishTestCase {
       'config' => UNISH_SANDBOX,
     );
     // echo test has replacements that are not satisfied, so this is expected to return an error.
-    $this->drush('echotest', array(), $options, NULL, NULL, self::EXIT_ERROR);
+    $return = $this->drush('echotest', array(), $options, NULL, NULL, self::EXIT_ERROR);
+    $this->assertEquals(self::EXIT_ERROR, $return);
   }
 
   /**
