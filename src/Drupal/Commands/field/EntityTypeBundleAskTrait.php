@@ -48,14 +48,15 @@ trait EntityTypeBundleAskTrait
         $bundleInfo = $this->entityTypeBundleInfo->getBundleInfo($entityTypeId);
         $choices = [];
 
-        if (empty($bundleInfo)) {
-            if ($bundleEntityType) {
-                throw new \InvalidArgumentException(
-                    t('Entity type with id \':entityType\' does not have any bundles.', [':entityType' => $entityTypeId])
-                );
-            }
+        if ($bundleEntityType && $bundleInfo === []) {
+            throw new \InvalidArgumentException(
+                t('Entity type with id \':entityType\' does not have any bundles.', [':entityType' => $entityTypeId])
+            );
+        }
 
-            return null;
+        if (!$bundleEntityType && count($bundleInfo) === 1) {
+            // eg. User
+            return $entityTypeId;
         }
 
         foreach ($bundleInfo as $bundle => $data) {
