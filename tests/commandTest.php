@@ -50,7 +50,7 @@ class commandCase extends CommandUnishTestCase {
     $this->assertEquals(self::EXIT_SUCCESS, $return);
     // Add an unknown option --magic=1234 and insure it fails
     $return = $this->drush('version', array(), array('pipe' => NULL, 'magic' => 1234), NULL, NULL, self::EXIT_ERROR);
-    $this->assertEquals(self::EXIT_SUCCESS, $return);
+    $this->assertEquals(self::EXIT_ERROR, $return);
     // Finally, add in a hook that uses hook_drush_help_alter to allow the 'magic' option.
     // We need to run 'drush cc drush' to clear the commandfile cache; otherwise, our include will not be found.
     $include_path = dirname(__FILE__) . '/hooks/magic_help_alter';
