@@ -206,7 +206,7 @@ trait DrupalKernelTrait
      */
     protected function addDrushServiceProvider($serviceProviderName, $serviceYmlPath = '')
     {
-        if ($serviceYmlPath !== null && file_exists($serviceYmlPath)) {
+        if (($serviceYmlPath !== null) && file_exists($serviceYmlPath)) {
             $this->serviceYamls['app'][$serviceProviderName] = $serviceYmlPath;
         }
     }
