@@ -63,6 +63,6 @@ class SqlConnectCase extends CommandUnishTestCase {
     // error, although Drupal should not bootstrap any longer.
     $this->drush('core-status', array("Drupal bootstrap"), $options);
     $output = $this->getOutput();
-    $this->assertNotContains('Successful', $output);
+    $this->assertStringNotContainsString('Successful', $output);
   }
 }

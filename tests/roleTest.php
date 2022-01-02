@@ -45,6 +45,6 @@ class roleCase extends CommandUnishTestCase {
     $this->drush('role-remove-perm', array($anonymous, 'administer nodes'), $options );
     $this->drush('role-list', array($anonymous), $options + array('pipe' => NULL) );
     $output = $this->getOutput();
-    $this->assertNotContains('administer nodes', $output);
+    $this->assertStringNotContainsString('administer nodes', $output);
   }
 }
