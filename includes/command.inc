@@ -1015,7 +1015,7 @@ function drush_adjust_args_if_shebang_script(&$args) {
       array_splice($args, $base_arg_number, 0, array('php-script'));
       drush_set_context('DRUSH_SHEBANG_SCRIPT', TRUE);
     }
-    elseif (((strpos($args[$base_arg_number], ' ') !== FALSE) || (!ctype_alnum($args[$base_arg_number][0]))) && (_drush_is_drush_shebang_script($args[$base_arg_number + 1]))) {
+    elseif (((strpos($args[$base_arg_number], ' ') !== FALSE) || (!ctype_alnum($args[$base_arg_number][0]))) && (($base_arg_number + 1 < count($args)) && (_drush_is_drush_shebang_script($args[$base_arg_number + 1])))) {
       // If $args[2] is a drush "shebang" script, we will insert
       // the space-exploded $arg[1] in place of $arg[1], so the
       // command line args become:
