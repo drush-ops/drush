@@ -288,11 +288,18 @@ abstract class UnishTestCase extends TestCase {
 
     $cache_keys = array($num_sites, $install ? 'install' : 'noinstall', $version_string, $profile, $db_driver);
     $source = $this->directory_cache('environments') . '/' . implode('-', $cache_keys) . '.tar.gz';
+    $fetchAndInstall = true;
     if (file_exists($source)) {
       $this->log('Cache HIT. Environment: ' . $source, 'verbose');
-      $this->drush('archive-restore', array($source), array('destination' => $root, 'overwrite' => NULL));
+      try {
+        $this->drush('archive-restore', array($source), array('destination' => $root, 'overwrite' => NULL));
+        $fetchAndInstall = false;
+      }
+      catch (\Exception $e) {
+        $this->log('Unexpected error restoring saved environment. Re-installing instead.', 'warning');
+      }
     }
-    else {
+    if ($fetchAndInstall) {
       $this->log('Cache MISS. Environment: ' . $source, 'verbose');
       // Build the site(s), install (if needed), then cache.
       foreach ($sites_subdirs as $subdir) {
