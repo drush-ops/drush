@@ -12,7 +12,7 @@
   "files": ["drush.complete.sh", "drush.info", "drush.launcher", "drush.php"],
   "finder": [
     {
-      "name": "*.php",
+      "name": ["*.php", "*.php8"],
       "exclude": [
         "examples",
         "isolation",
