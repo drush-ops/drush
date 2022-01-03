@@ -12,6 +12,11 @@ use Webmozart\PathUtil\Path;
  */
 class CoreTest extends UnishIntegrationTestCase
 {
+    public function testCircleExitCode()
+    {
+        $this->assertTrue(false);
+    }
+
     public function testCoreRequirements()
     {
         $root = $this->webroot();
