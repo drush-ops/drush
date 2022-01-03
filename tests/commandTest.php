@@ -6,6 +6,12 @@ namespace Unish;
  * @group base
  */
 class commandCase extends CommandUnishTestCase {
+
+  public function testPhpunitExitCode() {
+    // Is CircleCI catching our exit code correctly?
+    $this->assertTrue(false);
+  }
+
   public function testInvoke() {
     $expected = array(
       'unit_drush_init',
