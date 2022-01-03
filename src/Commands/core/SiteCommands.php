@@ -166,7 +166,7 @@ class SiteCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
         }
 
         // Configure legacy converter.
-        $discovery = new SiteAliasFileDiscovery([], '<= 1', '');
+        $discovery = new SiteAliasFileDiscovery();
         array_map([$discovery, 'addSearchLocation'], $paths);
         $discovery->depth('< 9');
         $legacyAliasConverter = new LegacyAliasConverter($discovery);
