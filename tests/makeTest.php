@@ -35,7 +35,8 @@ class makeMakefileCase extends CommandUnishTestCase {
     $options = array_merge($config['options'], $default_options);
     $makefile = $this->makefile_path . DIRECTORY_SEPARATOR . $config['makefile'];
     $return = !empty($config['fail']) ? self::EXIT_ERROR : self::EXIT_SUCCESS;
-    $this->drush('make', array($makefile), $options, NULL, NULL, $return);
+    $result = $this->drush('make', array($makefile), $options, NULL, NULL, $return);
+    $this->assertEquals($return, $result);
 
     // Check the log for the build hash if this test should pass.
     if (empty($config['fail'])) {

@@ -104,6 +104,7 @@ class commandCase extends CommandUnishTestCase {
       'backend' => NULL, // To obtain and parse the error log.
     );
     // Assert that this has an error.
-    $this->drush('devel-reinstall', array(), $options, NULL, NULL, self::EXIT_ERROR);
+    $result = $this->drush('devel-reinstall', array(), $options, NULL, NULL, self::EXIT_ERROR);
+    $this->assertEquals(self::EXIT_ERROR, $result);
   }
 }
