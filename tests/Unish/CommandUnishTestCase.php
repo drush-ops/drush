@@ -286,7 +286,7 @@ abstract class CommandUnishTestCase extends UnishTestCase {
     if ($hide_stderr) {
       $cmd[] = '2>' . $this->bit_bucket();
     }
-    $exec = array_filter($cmd, 'strlen'); // Remove NULLs
+    $exec = array_filter($cmd, function ($item) { return !empty($item); }); // Remove NULLs
     // Set sendmail_path to 'true' to disable any outgoing emails
     // that tests might cause Drupal to send.
 
