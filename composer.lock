@@ -8,16 +8,16 @@
     "packages": [
         {
             "name": "consolidation/annotated-command",
-            "version": "2.12.1",
+            "version": "2.12.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/consolidation/annotated-command.git",
-                "reference": "0ee361762df2274f360c085e3239784a53f850b5"
+                "reference": "2472a23610cba1d86dcb783a81a21259473b059e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/consolidation/annotated-command/zipball/0ee361762df2274f360c085e3239784a53f850b5",
-                "reference": "0ee361762df2274f360c085e3239784a53f850b5",
+                "url": "https://api.github.com/repos/consolidation/annotated-command/zipball/2472a23610cba1d86dcb783a81a21259473b059e",
+                "reference": "2472a23610cba1d86dcb783a81a21259473b059e",
                 "shasum": ""
             },
             "require": {
@@ -112,9 +112,9 @@
             "description": "Initialize Symfony Console commands from annotated command class methods.",
             "support": {
                 "issues": "https://github.com/consolidation/annotated-command/issues",
-                "source": "https://github.com/consolidation/annotated-command/tree/2.12.1"
+                "source": "https://github.com/consolidation/annotated-command/tree/2.12.2"
             },
-            "time": "2020-10-11T04:30:03+00:00"
+            "time": "2022-01-03T00:23:44+00:00"
         },
         {
             "name": "consolidation/output-formatters",
