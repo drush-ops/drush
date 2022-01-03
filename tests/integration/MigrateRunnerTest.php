@@ -2,6 +2,7 @@
 
 namespace Unish;
 
+use Drupal\migrate\Plugin\MigrationInterface;
 use Webmozart\PathUtil\Path;
 
 /**
@@ -20,26 +21,6 @@ class MigrateRunnerTest extends UnishIntegrationTestCase
         parent::setUp();
         $this->setupModulesForTests(['woot'], Path::join(__DIR__, '/../fixtures/modules/d8'));
         $this->drush('pm:enable', ['migrate', 'node', 'woot']);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function tearDown(): void
-    {
-        // Cleanup any created content.
-        $this->drush('php:eval', ['$storage = Drupal::entityTypeManager()->getStorage("node"); $storage->delete($storage->loadMultiple());']);
-
-        // Uninstall test modules.
-        $this->drush('pm:uninstall', ['migrate', 'node', 'woot']);
-        // Uninstalling Migrate module doesn't automatically drop the tables.
-        // @see https://www.drupal.org/project/drupal/issues/2713327
-        $this->dropMigrateTables();
-        \Drupal::keyValue('migrate:high_water')->deleteAll();
-        \Drupal::keyValue('migrate_last_imported')->deleteAll();
-        \Drupal::keyValue('migrate_status')->deleteAll();
-
-        parent::tearDown();
     }
 
     /**
@@ -278,18 +259,25 @@ class MigrateRunnerTest extends UnishIntegrationTestCase
         // @todo Find a way to reset a migration that is not idle.
         $this->assertStringContainsString('Migration test_migration is already Idle', $this->getErrorOutput());
     }
-
     /**
-     * Drops the migration tables.
+     * {@inheritdoc}
      */
-    protected function dropMigrateTables(): void
+    protected function tearDown(): void
     {
-        $this->drush('sql:query', ["SHOW TABLES LIKE 'migrate_map_%'"]);
-        $tables = $this->getOutputAsList();
-        $this->drush('sql:query', ["SHOW TABLES LIKE 'migrate_message_%'"]);
-        $tables = array_filter(array_merge($tables, $this->getOutputAsList()));
-        foreach ($tables as $table) {
-            $this->drush('sql:query', ["DROP TABLE $table"]);
-        }
+        // Cleanup any created content.
+        $storage = \Drupal::entityTypeManager()->getStorage('node');
+        $storage->delete($storage->loadMultiple());
+
+        // Uninstalling Migrate module doesn't automatically drop the tables.
+        // @see https://www.drupal.org/project/drupal/issues/2713327
+        $migrations = \Drupal::service('plugin.manager.migration')->createInstances([]);
+        array_walk($migrations, function (MigrationInterface $migration): void {
+            $migration->getIdMap()->destroy();
+        });
+
+        // Uninstall test modules.
+        $this->drush('pm:uninstall', ['migrate', 'node', 'woot']);
+
+        parent::tearDown();
     }
 }
