@@ -103,7 +103,7 @@ XML
         $options = [
             'include' => __DIR__,
         ];
-        $this->setupModulesForTests(['woot'], Path::join(__DIR__, '/../fixtures/modules/d8'));
+        $this->setupModulesForTests(['woot'], Path::join(__DIR__, '/../fixtures/modules'));
         $this->drush('pm-enable', ['woot'], $options);
 
         // Export the configuration.
