@@ -258,7 +258,7 @@ class MigrateRunnerTest extends UnishIntegrationTestCase
         $this->assertSame(['Item 1', 'Item 2', 'Item 3', 'Item 4', 'Item 5'], $this->getOutputAsList());
 
         $this->drush('state:set', ['woot.migrate_runner.removed_source_rows', '2,4']);
-        // Get fresh source plugin definition.
+        // Get fresh plugin definitions.
         drupal_flush_all_caches();
 
         $this->drush('migrate:import', ['test_migration'], ['delete' => null]);
