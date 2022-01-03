@@ -61,12 +61,8 @@ class archiveDumpCase extends CommandUnishTestCase {
     $dump_dest = $this->archiveDump(FALSE);
     $docroot = basename($this->webroot());
 
-    // Check the dump file is a gzip file.
-    $exec = sprintf('file %s', $dump_dest);
-    $this->execute($exec);
-    $output = $this->getOutput();
-    $expected = '%sgzip compressed data%s';
-    $this->assertStringMatchesFormat($expected, $output);
+    // Confirm that the dump exists
+    $this->assertFileExists($dump_dest);
 
     // Untar the archive and make sure it looks right.
     $untar_dest = $this->unTar($dump_dest);
