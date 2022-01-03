@@ -69,7 +69,7 @@ class QueueTest extends CommandUnishTestCase
         $sites = $this->setUpDrupal(1, true);
 
         // Copy the 'woot' module over to the Drupal site we just set up.
-        $this->setupModulesForTests(['woot'], Path::join(__DIR__, 'resources/modules/d8'));
+        $this->setupModulesForTests(['woot'], Path::join(__DIR__, '/../fixtures/modules'));
 
         // Enable woot module, which contains a queue worker that throws a
         // RequeueException.
@@ -110,7 +110,7 @@ class QueueTest extends CommandUnishTestCase
         $this->setUpDrupal(1, true);
 
         // Copy the 'woot' module over to the Drupal site we just set up.
-        $this->setupModulesForTests(['woot'], Path::join(__DIR__, 'resources/modules/d8'));
+        $this->setupModulesForTests(['woot'], Path::join(__DIR__, '/../fixtures/modules'));
 
         // Enable woot module, which contains a queue worker that throws a
         // custom exception.

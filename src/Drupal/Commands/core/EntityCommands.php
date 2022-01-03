@@ -165,7 +165,7 @@ class EntityCommands extends DrushCommands
      * @throws InvalidPluginDefinitionException
      * @throws PluginNotFoundException
      */
-    protected function getQuery(string $entity_type, ?string $ids, array $options): \QueryInterface
+    protected function getQuery(string $entity_type, ?string $ids, array $options): QueryInterface
     {
         $storage = $this->entityTypeManager->getStorage($entity_type);
         $query = $storage->getQuery();

@@ -509,7 +509,7 @@ class MigrateExecutable extends MigrateExecutableBase
                 }
             }
             if ($skip) {
-                throw new MigrateSkipRowException(null, false);
+                throw new MigrateSkipRowException('', false);
             }
         }
 

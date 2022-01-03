@@ -769,7 +769,7 @@ class MigrateRunnerCommands extends DrushCommands
      */
     protected function getMigrationList(?string $migrationIds, ?string $tags): array
     {
-        $migrationIds = StringUtils::csvToArray($migrationIds);
+        $migrationIds = StringUtils::csvToArray((string) $migrationIds);
         $migrations = $this->getMigrationPluginManager()->createInstances($migrationIds);
 
         // Check for invalid migration IDs.

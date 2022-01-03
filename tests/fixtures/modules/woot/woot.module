@@ -49,7 +49,7 @@ function woot_get_taxonomy_term_entity_type_id()
 function woot_migration_plugins_alter(array &$migration_plugins): void
 {
     // Dynamically create the test_migration source data.
-    $size = \Drupal::state()->get('woot.test_migration_source_data_amount', 2);
+    $size = \Drupal::state()->get('woot.migrate_runner.source_data_amount', 2);
     foreach (range(1, $size) as $id) {
         $migration_plugins['test_migration']['source']['data_rows'][] = [
           'id' => $id,
@@ -58,7 +58,7 @@ function woot_migration_plugins_alter(array &$migration_plugins): void
     }
 
     // Allow tests to remove rows from the source.
-    if ($removedRows = \Drupal::state()->get('woot.test_migration_source_removed_rows')) {
+    if ($removedRows = \Drupal::state()->get('woot.migrate_runner.removed_source_rows')) {
         $removedRows = explode(',', $removedRows);
         $migration_plugins['test_migration']['source']['data_rows'] = array_filter(
           $migration_plugins['test_migration']['source']['data_rows'],
@@ -69,7 +69,7 @@ function woot_migration_plugins_alter(array &$migration_plugins): void
         $migration_plugins['test_migration']['source']['data_rows'] = array_values($migration_plugins['test_migration']['source']['data_rows']);
     }
 
-    if (\Drupal::state()->get('woot.test_command_progress_bar.skip_count')) {
+    if (\Drupal::state()->get('woot.migrate_runner.progress_bar_skip_count')) {
         // Test the command progress bar for sources that skip count.
         // @see \Unish\MigrateRunnerTest::testCommandProgressBar()
         $migration_plugins['test_migration']['source']['skip_count'] = true;

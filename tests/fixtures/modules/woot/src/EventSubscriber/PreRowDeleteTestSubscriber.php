@@ -24,7 +24,7 @@ class PreRowDeleteTestSubscriber implements EventSubscriberInterface
     public function onPreRowDelete(MigrateRowDeleteEvent $event): void
     {
         // @see \Unish\MigrateRunnerTest::testMigrateImportAndRollback()
-        if (\Drupal::state()->get('woot.test_migrate_trigger_failures')) {
+        if (\Drupal::state()->get('woot.migrate_runner.trigger_failures')) {
             throw new \RuntimeException('Earthquake while rolling back');
         }
     }
