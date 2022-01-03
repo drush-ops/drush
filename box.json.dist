@@ -2,16 +2,24 @@
   "alias": "drush.phar",
   "chmod": "0755",
   "compactors": [],
-  "directories": ["commands", "docs", "examples", "includes", "lib", "src", "misc"],
-  "files": ["drush.api.php", "drush.complete.sh", "drush.info", "drush.launcher", "drush.php", "drush_logo-black.png", "README.md"],
+  "compression": "GZ",
+  "directories": ["commands", "includes", "lib", "src", "misc"],
+  "blacklist": [
+    "windrush_build/",
+    "Internal/Symfony/",
+    "TestTraits/"
+  ],
+  "files": ["drush.complete.sh", "drush.info", "drush.launcher", "drush.php"],
   "finder": [
     {
       "name": "*.php",
       "exclude": [
+        "examples",
         "isolation",
         "phing",
         "test",
         "tests",
+        "test_old",
         "Test",
         "Tests",
         "Tester"
