@@ -5051,9 +5051,9 @@ In this example, the file <code>drush-9-99.services.yml</code> loads commandfile
 <li>In that class, implement the alteration logic in the <code>alterCommandInfo()</code> method.</li>
 <li>Along with the alter code, it's strongly recommended to log a debug message explaining what exactly was altered. This makes things easier on others who may need to debug the interaction of the alter code with other modules. Also it's a good practice to inject the the logger in the class constructor.</li>
 </ol>
-<p>For an example, see the alterer class provided by the testing 'woot' module: <code>tests/functional/resources/modules/d8/woot/src/WootCommandInfoAlterer.php</code>.</p>
+<p>For an example, see the alterer class provided by the testing 'woot' module: <code>tests/fixtures/modules/woot/src/WootCommandInfoAlterer.php</code>.</p>
 <h2 id="symfony-console-commands">Symfony Console Commands<a class="headerlink" href="#symfony-console-commands" title="Permanent link">&para;</a></h2>
-<p>Drush lists and runs Symfony Console commands, in addition to more typical annotated commands. See <a href="https://github.com/drush-ops/drush/blob/eed106ae4510d5a2df89f8e7fd54b41ffb0aa5fa/tests/integration/AnnotatedCommandCase.php#L178-L180">this test</a> and this <a href="https://github.com/drush-ops/drush/blob/049d2a4b36338178c0c7cf89b8e7caf9769524c9/tests/functional/resources/modules/d8/woot/src/Commands/GreetCommand.php">commandfile</a>. </p>
+<p>Drush lists and runs Symfony Console commands, in addition to more typical annotated commands. See <a href="https://github.com/drush-ops/drush/blob/eed106ae4510d5a2df89f8e7fd54b41ffb0aa5fa/tests/integration/AnnotatedCommandCase.php#L178-L180">this test</a> and this <a href="https://github.com/drush-ops/drush/tree/HEAD/tests/fixtures/modules/woot/src/Commands/GreetCommand.php">commandfile</a>.</p>
 <h2 id="site-wide-drush-commands">Site-Wide Drush Commands<a class="headerlink" href="#site-wide-drush-commands" title="Permanent link">&para;</a></h2>
 <p>Commandfiles that are installed in a Drupal site and are not bundled inside a Drupal module are called 'site-wide' commandfiles. Site-wide commands may either be added directly to the Drupal site's repository (e.g. for site-specific policy files), or via <code>composer require</code>. See the <a href="https://github.com/drush-ops/drush/tree/11.x/examples/Commands">examples/Commands</a> folder for examples. In general, it's better to use modules to carry your Drush commands, as module-based commands may <a href="#specifying-the-services-file">participate in Drupal's dependency injection via the drush.services.yml</a>.</p>
 <p>If you still prefer using site-wide commandfiles, here are some examples of valid commandfile names and namespaces:</p>
@@ -5135,7 +5135,7 @@ With this configuration in place, global commands may be placed as described in 
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">December 30, 2021</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">January 3, 2022</span>
       
     
   </small>
@@ -5146,7 +5146,7 @@ With this configuration in place, global commands may be placed as described in 
     
         <div class="md-source-date">
             <small>
-                Authors: <span class='git-page-authors git-authors'><a href='mailto:clau.cristea@gmail.com'>Claudiu Cristea</a>, <a href='mailto:danepowell@users.noreply.github.com'>Dane Powell</a>, <a href='mailto:greg.1.anderson@greenknowe.org'>Greg Anderson</a>, <a href='mailto:neclimdul@gmail.com'>James Gilliland</a>, <a href='mailto:jonhattan@faita.net'>Jonathan Araña Cruz</a>, <a href='mailto:weitzman@tejasa.com'>Moshe Weitzman</a>, <a href='mailto:nelus87@gmail.com'>Niels van Aken</a></span>
+                Authors: <span class='git-page-authors git-authors'><a href='mailto:clau.cristea@gmail.com'>Claudiu Cristea</a>, <a href='mailto:danepowell@users.noreply.github.com'>Dane Powell</a>, <a href='mailto:greg.1.anderson@greenknowe.org'>Greg Anderson</a>, <a href='mailto:neclimdul@gmail.com'>James Gilliland</a>, <a href='mailto:weitzman@tejasa.com'>Moshe Weitzman</a>, <a href='mailto:nelus87@gmail.com'>Niels van Aken</a></span>
             </small>
         </div>
     
