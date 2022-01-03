@@ -90,7 +90,7 @@ class RsyncCommands extends DrushCommands implements SiteAliasManagerAwareInterf
         foreach (['include', 'exclude'] as $include_exclude) {
             // Get the option --include-paths or --exclude-paths and explode to an array of paths
             // that we will translate into an --include or --exclude option to pass to rsync
-            $inc_ex_path = explode(PATH_SEPARATOR, @$options[$include_exclude . '-paths']);
+            $inc_ex_path = explode(PATH_SEPARATOR, (string) @$options[$include_exclude . '-paths']);
             foreach ($inc_ex_path as $one_path_to_inc_ex) {
                 if (!empty($one_path_to_inc_ex)) {
                     $paths .= ' --' . $include_exclude . '="' . $one_path_to_inc_ex . '"';

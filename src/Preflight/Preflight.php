@@ -1,6 +1,7 @@
 <?php
 namespace Drush\Preflight;
 
+use Consolidation\SiteAlias\SiteAliasFileDiscovery;
 use Drush\Config\DrushConfig;
 use Drush\Config\Environment;
 use Drush\Config\ConfigLocator;
@@ -237,7 +238,7 @@ class Preflight
         $paths = $this->configLocator->getSiteAliasPaths($this->preflightArgs->aliasPaths(), $this->environment);
 
         // Configure alias manager.
-        $aliasFileLoader = new \Drush\SiteAlias\SiteAliasFileLoader();
+        $aliasFileLoader = new \Drush\SiteAlias\SiteAliasFileLoader(new SiteAliasFileDiscovery([], '<= 1', ''));
         $this->aliasManager = (new SiteAliasManager($aliasFileLoader))->addSearchLocations($paths);
         $this->aliasManager->setReferenceData($config->export());
 
