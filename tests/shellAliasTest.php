@@ -92,7 +92,7 @@ class shellAliasesCase extends CommandUnishTestCase {
     // Remove any coverage arguments. The filename changes, so it's not possible
     // to create a string for assertEquals, and the need for both shell escaping
     // and regexp escaping different parts of the expected output for
-    // assertRegexp makes it easier just to remove the argument before checking
+    // assertMatchesRegularExpression makes it easier just to remove the argument before checking
     // the output.
     $output = preg_replace('{--drush-coverage=[^ ]+ }', '', $output);
     $output = preg_replace('{--config=[^ ]+ +}', '--config=drush-sandbox ', $output);
