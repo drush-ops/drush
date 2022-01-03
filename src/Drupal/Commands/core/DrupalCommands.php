@@ -119,7 +119,6 @@ class DrupalCommands extends DrushCommands
 
         $min_severity = $options['severity'];
         foreach ($requirements as $key => $info) {
-//            $info += ['value' => '', 'description' => ''];
             $severity = array_key_exists('severity', $info) ? $info['severity'] : -1;
             $rows[$key] = [
                 'title' => self::styleRow((string) $info['title'], $options['format'], $severity),
