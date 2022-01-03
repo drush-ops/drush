@@ -1,7 +1,6 @@
 <?php
 namespace Drush\Preflight;
 
-use Consolidation\SiteAlias\SiteAliasFileDiscovery;
 use Drush\Config\DrushConfig;
 use Drush\Config\Environment;
 use Drush\Config\ConfigLocator;
