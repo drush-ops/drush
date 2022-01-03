@@ -100,7 +100,9 @@ function drush_main() {
  * @see drush.php
  */
 function drush_preflight_prepare() {
-  define('DRUSH_BASE_PATH', dirname(dirname(__FILE__)));
+  if (!defined('DRUSH_BASE_PATH')) {
+    define('DRUSH_BASE_PATH', dirname(dirname(__FILE__)));
+  }
   // Local means that autoload.php is inside of Drush. That is, Drush is its own Composer project.
   // Global means autoload.php is outside of Drush. That is, Drush is a dependency of a bigger project.
   $local_vendor_path = DRUSH_BASE_PATH . '/vendor/autoload.php';
@@ -161,7 +163,9 @@ function drush_preflight_prepare() {
   // PHP_VERSION, such as drush_json_encode(), runserver/runserver.drush.inc, and also
   // adjust _drush_environment_check_php_ini() and the php_prohibited_options
   // list in the drush script.  See http://drupal.org/node/1748228
-  define('DRUSH_MINIMUM_PHP', '5.4.5');
+  if (!defined('DRUSH_MINIMUM_PHP')) {
+    define('DRUSH_MINIMUM_PHP', '5.4.5');
+  }
   if (version_compare(phpversion(), DRUSH_MINIMUM_PHP) < 0 && !getenv('DRUSH_NO_MIN_PHP')) {
     return drush_set_error('DRUSH_REQUIREMENTS_ERROR', dt('Your command line PHP installation is too old. Drush requires at least PHP !version. To suppress this check, set the environment variable DRUSH_NO_MIN_PHP=1', array('!version' => DRUSH_MINIMUM_PHP)));
   }
@@ -171,11 +175,13 @@ function drush_preflight_prepare() {
   }
 
   // For backwards compatibility. Prefer the static accessors.
-  define('DRUSH_VERSION', Drush::getVersion());
-  define('DRUSH_MAJOR_VERSION', Drush::getMajorVersion());
-  define('DRUSH_MINOR_VERSION', Drush::getMinorVersion());
+  if (!defined('DRUSH_VERSION')) {
+    define('DRUSH_VERSION', Drush::getVersion());
+    define('DRUSH_MAJOR_VERSION', Drush::getMajorVersion());
+    define('DRUSH_MINOR_VERSION', Drush::getMinorVersion());
 
-  define('DRUSH_REQUEST_TIME', microtime(TRUE));
+    define('DRUSH_REQUEST_TIME', microtime(TRUE));
+  }
 
   drush_set_context('argc', $GLOBALS['argc']);
   drush_set_context('argv', $GLOBALS['argv']);
@@ -230,7 +236,9 @@ function drush_preflight() {
   drush_log(dt('Starting Drush preflight.'), LogLevel::PREFLIGHT);
 
   // Statically define a way to call drush again.
-  define('DRUSH_COMMAND', drush_find_drush());
+  if (!defined('DRUSH_COMMAND')) {
+    define('DRUSH_COMMAND', drush_find_drush());
+  }
 
   // prime the CWD cache
   drush_cwd();
