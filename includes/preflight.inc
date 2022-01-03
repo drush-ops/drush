@@ -832,7 +832,9 @@ function drush_shutdown() {
 
   // This way drush_return_status() will always be the last shutdown function (unless other shutdown functions register shutdown functions...)
   // and won't prevent other registered shutdown functions (IE from numerous cron methods) from running by calling exit() before they get a chance.
-  register_shutdown_function('drush_return_status');
+  if (!defined('UNISH_DRUSH_TESTS_RUNNING')) {
+    register_shutdown_function('drush_return_status');
+  }
 }
 
 /**

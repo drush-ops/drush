@@ -5,6 +5,8 @@
  *   Initialize a sandboxed environment. Starts with call unish_init() at bottom.
  */
 
+define('UNISH_DRUSH_TESTS_RUNNING', true);
+
 // This code copied from drush_bootstrap_prepare() except for 1st line.
 $drush_base_path = dirname(__DIR__);
 $local_vendor_path = $drush_base_path . '/vendor/autoload.php';
