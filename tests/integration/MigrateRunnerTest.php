@@ -20,7 +20,7 @@ class MigrateRunnerTest extends UnishIntegrationTestCase
     {
         parent::setUp();
         $this->setupModulesForTests(['woot'], Path::join(__DIR__, '/../fixtures/modules'));
-        \Drupal::service('module_installer')->install(['migrate', 'node', 'woot']);
+        $this->drush('pm:enable', ['migrate', 'node', 'woot']);
     }
 
     /**
