@@ -12,7 +12,7 @@ class userCase extends CommandUnishTestCase {
   private static $authenticated;
   private static $status_prop;
 
-  function setUp() {
+  function set_up() {
     if (!$this->getSites()) {
       $this->setUpDrupal(1, TRUE);
       self::$authenticated = 'authenticated';
@@ -92,7 +92,7 @@ class userCase extends CommandUnishTestCase {
     $this->drush('user-login', array(), $user_login_options + array('backend' => NULL));
     $parsed = $this->parse_backend_output($this->getOutput());
     $url = parse_url($parsed['output']);
-    $this->assertContains('/user/reset/1', $url['path'], 'Login returned a reset URL for uid 1 by default');
+    $this->assertStringContainsString('/user/reset/1', $url['path'], 'Login returned a reset URL for uid 1 by default');
     $browser = FALSE;
     foreach ($parsed['log'] as $key => $log) {
       // Regarding 'strip_tags', see https://github.com/drush-ops/drush/issues/1637
@@ -111,13 +111,13 @@ class userCase extends CommandUnishTestCase {
     if (UNISH_DRUPAL_MAJOR_VERSION < 7) {
       $query = urldecode($query);
     }
-    $this->assertContains('/user/reset/' . $uid, $url['path'], 'Login with user argument returned a valid reset URL');
+    $this->assertStringContainsString('/user/reset/' . $uid, $url['path'], 'Login with user argument returned a valid reset URL');
     $this->assertEquals('destination=node/add', $query, 'Login included destination path in URL');
     // Check path used as only argument when using uid option.
     $this->drush('user-login', array('node/add'), $user_login_options + array('uid' => $uid));
     $output = $this->getOutput();
     $url = parse_url($output);
-    $this->assertContains('/user/reset/' . $uid, $url['path'], 'Login with uid option returned a valid reset URL');
+    $this->assertStringContainsString('/user/reset/' . $uid, $url['path'], 'Login with uid option returned a valid reset URL');
     $query = $url['query'];
     if (UNISH_DRUPAL_MAJOR_VERSION < 7) {
       $query = urldecode($query);

@@ -124,6 +124,10 @@ class Logger extends AbstractLogger {
       }
 
       $columns = drush_get_context('DRUSH_COLUMNS', 80);
+      // Defensive: if 'DRUSH_COLUMNS' is not explicitly set, it might default to an array.
+      if (is_array($columns)) {
+        $columns = 80;
+      }
 
       $width[1] = 11;
       // Append timer and memory values.

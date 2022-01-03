@@ -9,7 +9,7 @@ namespace Unish;
   */
 class cacheCommandCase extends CommandUnishTestCase {
 
-  function setUp() {
+  function set_up() {
     if (!$this->getSites()) {
       $this->setUpDrupal(1, TRUE);
     }
@@ -63,7 +63,8 @@ class cacheCommandCase extends CommandUnishTestCase {
     else {
       $this->drush('cache-clear', array('all'), $options);
     }
-    $this->drush('cache-get', array('cache-test-cid'), $options + array('format' => 'json'), NULL, NULL, self::EXIT_ERROR);
+    $result = $this->drush('cache-get', array('cache-test-cid'), $options + array('format' => 'json'), NULL, NULL, self::EXIT_ERROR);
+    $this->assertEquals(self::EXIT_ERROR, $result);
   }
 
   function getOptions() {

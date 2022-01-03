@@ -62,13 +62,13 @@ EOD;
     $bash = $this->escapeshellarg('drush  --uri=sitename --root=/path/to/drupal  version arg1 arg2 2>&1');
     $expected = "Simulating backend invoke: ssh -i mysite_dsa user@server $bash 2>&1";
     $output = $this->getOutput();
-    $this->assertContains($expected, $output, 'Expected ssh command was built');
+    $this->assertStringContainsString($expected, $output, 'Expected ssh command was built');
 
     // Assure that arguments and options are passed along to a command thats not recognized locally.
     $this->drush('non-existent-command', array('foo'), array('bar' => 'baz', 'simulate' => NULL), $site_specification);
     $output = $this->getOutput();
-    $this->assertContains('foo', $output);
-    $this->assertContains('--bar=baz', $output);
+    $this->assertStringContainsString('foo', $output);
+    $this->assertStringContainsString('--bar=baz', $output);
   }
 
   /**

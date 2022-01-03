@@ -27,12 +27,12 @@ class pmUpdateStatus extends CommandUnishTestCase {
    *  - Drupal 6 will start to be unsupported at some point
    *  - Drupal 8 still has not enough variety to cover the tests
    */
-  function setUp() {
+  function set_up() {
     if (UNISH_DRUPAL_MAJOR_VERSION == '6') {
       $this->markTestSkipped("pm-update* no longer supported with Drupal 6; drupal.org does not allow stable releases for Drupal 6 contrib modules.");
     }
 
-    $sites = $this->setUpDrupal(1, TRUE, "7.30");
+    $sites = $this->setUpDrupal(1, TRUE, "7.81");
     $options = array(
       'root' => $this->webroot(),
       'uri' => key($sites),
@@ -104,7 +104,7 @@ class pmUpdateStatus extends CommandUnishTestCase {
     );
     foreach ($expected as $module => $status_msg) {
       $this->assertArrayHasKey($module, $data, "$module module present in pm-updatestatus output");
-      $this->assertEquals($data[$module]['status_msg'], $status_msg, "$module status is '$status_msg'");
+      $this->assertEquals($status_msg, $data[$module]['status_msg'], "$module status is '$status_msg'");
     }
 
 

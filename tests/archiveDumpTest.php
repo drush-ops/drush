@@ -111,7 +111,7 @@ class archiveDumpCase extends CommandUnishTestCase {
     $this->assertFileExists($untar_dest . '/MANIFEST.ini');
     $this->assertFileExists($untar_dest . '/' . $docroot);
     $modules_dir = UNISH_DRUPAL_MAJOR_VERSION >= 8 ? '/core/modules' : '/modules';
-    $this->assertFileNotExists($untar_dest . '/' . $docroot . $modules_dir, 'No modules directory should exist with --no-core');
+    $this->assertFileDoesNotExist($untar_dest . '/' . $docroot . $modules_dir, 'No modules directory should exist with --no-core');
 
     return $dump_dest;
   }

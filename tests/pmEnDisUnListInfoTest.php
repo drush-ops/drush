@@ -44,7 +44,7 @@ class EnDisUnListInfoCase extends CommandUnishTestCase {
     $this->drush('pm-enable', array($moduleToTest), $options_no_pipe);
     $output = $this->getOutput();
     if ($moduleToTest == 'devel') {
-      $this->assertContains('access devel information', $output);
+      $this->assertStringContainsString('access devel information', $output);
     }
 
     // Test pm-list shows the module as enabled.

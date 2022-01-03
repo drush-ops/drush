@@ -27,11 +27,11 @@ class WatchdogCase extends CommandUnishTestCase {
     $this->drush('php-eval', array($eval1), $options);
     $this->drush('watchdog-show', array(), $options + array('count' => 50));
     $output = $this->getOutput();
-    $this->assertContains('Unish rocks.', $output);
+    $this->assertStringContainsString('Unish rocks.', $output);
 
     // Add a new entry with a long message with the letter 'd' and verify that watchdog-show does
     // not print it completely in the listing unless --full is given.
-    // As the output is formatted so lines may be splitted, assertContains does not work
+    // As the output is formatted so lines may be splitted, assertStringContainsString does not work
     // in this scenario. Therefore, we will count the number of times a character is present.
     $message_chars = 300;
     $char = '*';

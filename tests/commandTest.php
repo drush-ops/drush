@@ -38,6 +38,7 @@ class commandCase extends CommandUnishTestCase {
   public function testRequirementBootstrapPhase() {
     // Assure that core-cron fails when run outside of a Drupal site.
     $return = $this->drush('core-cron', array(), array('quiet' => NULL), NULL, NULL, self::EXIT_ERROR);
+    $this->assertEquals(self::EXIT_ERROR, $return);
   }
 
   /**
@@ -46,12 +47,15 @@ class commandCase extends CommandUnishTestCase {
   public function testUnknownOptions() {
     // Make sure an ordinary 'version' command works
     $return = $this->drush('version', array(), array('pipe' => NULL));
+    $this->assertEquals(self::EXIT_SUCCESS, $return);
     // Add an unknown option --magic=1234 and insure it fails
     $return = $this->drush('version', array(), array('pipe' => NULL, 'magic' => 1234), NULL, NULL, self::EXIT_ERROR);
+    $this->assertEquals(self::EXIT_ERROR, $return);
     // Finally, add in a hook that uses hook_drush_help_alter to allow the 'magic' option.
     // We need to run 'drush cc drush' to clear the commandfile cache; otherwise, our include will not be found.
     $include_path = dirname(__FILE__) . '/hooks/magic_help_alter';
-    $this->drush('version', array(), array('include' => $include_path, 'pipe' => NULL, 'magic' => '1234', 'strict' => NULL));
+    $return = $this->drush('version', array(), array('include' => $include_path, 'pipe' => NULL, 'magic' => '1234', 'strict' => NULL));
+    $this->assertEquals(self::EXIT_SUCCESS, $return);
   }
 
   /**
@@ -62,7 +66,8 @@ class commandCase extends CommandUnishTestCase {
       'include' => dirname(__FILE__), // Find unit.drush.inc commandfile.
       //'show-invoke' => TRUE,
     );
-    $this->drush('missing-callback', array(), $options, NULL, NULL, self::EXIT_ERROR);
+    $return = $this->drush('missing-callback', array(), $options, NULL, NULL, self::EXIT_ERROR);
+    $this->assertEquals(self::EXIT_ERROR, $return);
   }
 
   /**
@@ -99,6 +104,7 @@ class commandCase extends CommandUnishTestCase {
       'backend' => NULL, // To obtain and parse the error log.
     );
     // Assert that this has an error.
-    $this->drush('devel-reinstall', array(), $options, NULL, NULL, self::EXIT_ERROR);
+    $result = $this->drush('devel-reinstall', array(), $options, NULL, NULL, self::EXIT_ERROR);
+    $this->assertEquals(self::EXIT_ERROR, $result);
   }
 }

@@ -12,8 +12,8 @@ class shellAliasesCase extends CommandUnishTestCase {
   /**
    * Write a config file that contains the shell-aliases array.
    */
-  function setUp() {
-    parent::setUp();
+  function set_up() {
+    parent::set_up();
     $contents = "
       <?php
 
@@ -59,7 +59,7 @@ class shellAliasesCase extends CommandUnishTestCase {
     );
     $this->drush('glopts', array(), $options);
     $output = $this->getOutput();
-    $this->assertContains('These options are applicable to most drush commands.', $output, 'Successfully executed local shell alias to drush command');
+    $this->assertStringContainsString('These options are applicable to most drush commands.', $output, 'Successfully executed local shell alias to drush command');
   }
 
   /**
@@ -74,7 +74,7 @@ class shellAliasesCase extends CommandUnishTestCase {
     );
     $this->drush('pull', array('origin'), $options, NULL, NULL, self::EXIT_SUCCESS, '2>&1');
     $output = $this->getOutput();
-    $this->assertContains('Calling proc_open(git pull origin --rebase);', $output);
+    $this->assertStringContainsString('Calling proc_open(git pull origin --rebase);', $output);
   }
 
   public function testShellAliasDrushRemote() {
@@ -92,7 +92,7 @@ class shellAliasesCase extends CommandUnishTestCase {
     // Remove any coverage arguments. The filename changes, so it's not possible
     // to create a string for assertEquals, and the need for both shell escaping
     // and regexp escaping different parts of the expected output for
-    // assertRegexp makes it easier just to remove the argument before checking
+    // assertMatchesRegularExpression makes it easier just to remove the argument before checking
     // the output.
     $output = preg_replace('{--drush-coverage=[^ ]+ }', '', $output);
     $output = preg_replace('{--config=[^ ]+ +}', '--config=drush-sandbox ', $output);
@@ -136,7 +136,8 @@ class shellAliasesCase extends CommandUnishTestCase {
       'config' => UNISH_SANDBOX,
     );
     // echo test has replacements that are not satisfied, so this is expected to return an error.
-    $this->drush('echotest', array(), $options, NULL, NULL, self::EXIT_ERROR);
+    $return = $this->drush('echotest', array(), $options, NULL, NULL, self::EXIT_ERROR);
+    $this->assertEquals(self::EXIT_ERROR, $return);
   }
 
   /**

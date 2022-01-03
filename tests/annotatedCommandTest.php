@@ -65,13 +65,13 @@ class annotatedCommandCase extends CommandUnishTestCase {
     // drush woot --help
     $this->drush('woot', array(), $options + ['help' => NULL]);
     $output = $this->getOutput();
-    $this->assertContains('Woot mightily.', $output);
-    $this->assertContains('Aliases: wt', $output);
+    $this->assertStringContainsString('Woot mightily.', $output);
+    $this->assertStringContainsString('Aliases: wt', $output);
 
     // drush help woot
     $this->drush('help', array('woot'), $options);
     $output = $this->getOutput();
-    $this->assertContains('Woot mightily.', $output);
+    $this->assertStringContainsString('Woot mightily.', $output);
 
     // drush woot
     $this->drush('woot', array(), $options);
@@ -81,17 +81,17 @@ class annotatedCommandCase extends CommandUnishTestCase {
     // drush my-cat --help
     $this->drush('my-cat', array(), $options + ['help' => NULL]);
     $output = $this->getOutput();
-    $this->assertContains('This is the my-cat command', $output);
-    $this->assertContains('bet alpha --flip', $output);
-    $this->assertContains('The first parameter', $output);
-    $this->assertContains('The other parameter', $output);
-    $this->assertContains('Whether or not the second parameter', $output);
-    $this->assertContains('Aliases: c', $output);
+    $this->assertStringContainsString('This is the my-cat command', $output);
+    $this->assertStringContainsString('bet alpha --flip', $output);
+    $this->assertStringContainsString('The first parameter', $output);
+    $this->assertStringContainsString('The other parameter', $output);
+    $this->assertStringContainsString('Whether or not the second parameter', $output);
+    $this->assertStringContainsString('Aliases: c', $output);
 
     // drush help my-cat
     $this->drush('help', array('my-cat'), $options);
     $output = $this->getOutput();
-    $this->assertContains('This is the my-cat command', $output);
+    $this->assertStringContainsString('This is the my-cat command', $output);
 
     // drush my-cat bet alpha --flip
     $this->drush('my-cat', array('bet', 'alpha'), $options + ['flip' => NULL]);
@@ -147,14 +147,14 @@ EOT;
     // drush try-formatters --help
     $this->drush('try-formatters', array(), $options + ['help' => NULL], NULL, NULL, self::EXIT_SUCCESS);
     $output = $this->getOutput();
-    $this->assertContains('Demonstrate formatters', $output);
-    $this->assertContains('try:formatters --fields=first,third', $output);
-    $this->assertContains('try:formatters --fields=III,II', $output);
-    $this->assertContains('--fields=<first, second, third>', $output);
-    $this->assertContains('Fields to output. All available', $output);
-    $this->assertContains('--format=<table>', $output);
-    $this->assertContains('Select output format. Available:', $output);
-    $this->assertContains('Aliases: try-formatters', $output);
+    $this->assertStringContainsString('Demonstrate formatters', $output);
+    $this->assertStringContainsString('try:formatters --fields=first,third', $output);
+    $this->assertStringContainsString('try:formatters --fields=III,II', $output);
+    $this->assertStringContainsString('--fields=<first, second, third>', $output);
+    $this->assertStringContainsString('Fields to output. All available', $output);
+    $this->assertStringContainsString('--format=<table>', $output);
+    $this->assertStringContainsString('Select output format. Available:', $output);
+    $this->assertStringContainsString('Aliases: try-formatters', $output);
 
     // If we are running Drupal version 8 or later, then also check to
     // see if the demo:greet and annotated:greet commands are available.

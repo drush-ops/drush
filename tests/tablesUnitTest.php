@@ -8,7 +8,7 @@ namespace Unish;
   * @group base
   */
 class tablesUnitTest extends UnitUnishTestCase {
-  function setUp() {
+  function set_up() {
     // Bootstrap to ensure the auto-loaded is running so that Console_Table is found.
     drush_preflight();
     $this->original_columns = drush_get_context('DRUSH_COLUMNS');
@@ -25,7 +25,7 @@ class tablesUnitTest extends UnitUnishTestCase {
     );
   }
 
-  function tearDown() {
+  function tear_down() {
     drush_set_context('DRUSH_COLUMNS', $this->original_columns);
   }
 

@@ -2,7 +2,9 @@
 
 namespace Unish;
 
-abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
+use Yoast\PHPUnitPolyfills\TestCases\TestCase;
+
+abstract class UnishTestCase extends TestCase {
 
   /**
    * A list of Drupal sites that have been recently installed. They key is the
@@ -20,7 +22,7 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
    * Assure that each class starts with an empty sandbox directory and
    * a clean environment - http://drupal.org/node/1103568.
    */
-  public static function setUpBeforeClass() {
+  public static function set_up_before_class() {
     self::setUpFreshSandBox();
   }
 
@@ -54,7 +56,7 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
   /**
    * Runs after all tests in a class are run. Remove sandbox directory.
    */
-  public static function tearDownAfterClass() {
+  public static function tear_down_after_class() {
     chdir(dirname(UNISH_SANDBOX));
     $dirty = getenv('UNISH_DIRTY');
     if (file_exists(UNISH_SANDBOX) && empty($dirty)) {

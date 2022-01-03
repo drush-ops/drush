@@ -32,7 +32,7 @@ class ImageCase extends CommandUnishTestCase {
 
     // Test that "drush image-flush thumbnail" deletes derivatives created by the thumbnail image style.
     $this->drush('image-flush', array($style_name), $options);
-    $this->assertFileNotExists($thumbnail);
+    $this->assertFileDoesNotExist($thumbnail);
 
     // Check that "drush image-flush --all" deletes all image styles by creating two different ones and testing its
     // existance afterwards.
@@ -41,7 +41,7 @@ class ImageCase extends CommandUnishTestCase {
     $this->drush('image-derive', array('medium', $logo), $options);
     $this->assertFileExists($medium);
     $this->drush('image-flush', array(), array('all' => TRUE) + $options);
-    $this->assertFileNotExists($thumbnail);
-    $this->assertFileNotExists($medium);
+    $this->assertFileDoesNotExist($thumbnail);
+    $this->assertFileDoesNotExist($medium);
   }
 }

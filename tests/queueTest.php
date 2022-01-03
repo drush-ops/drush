@@ -31,7 +31,7 @@ class QueueCase extends CommandUnishTestCase {
 
     $this->drush('queue-list', array(), $options);
     $output = $this->getOutput();
-    $this->assertContains('aggregator_feeds', $output, 'Queue list shows the declared queue.');
+    $this->assertStringContainsString('aggregator_feeds', $output, 'Queue list shows the declared queue.');
 
     $this->drush('php-script', array('queue_script-D' . UNISH_DRUPAL_MAJOR_VERSION), $options + array('script-path' => dirname(__FILE__) . '/resources'));
     $this->drush('queue-list', array(), $options + array('pipe' => TRUE));

@@ -16,8 +16,8 @@ class commandSpecificCase extends CommandUnishTestCase {
    * Try to write a tiny drushrc.php to each place that drush checks. Also
    * write a sites/dev/aliases.drushrc.php file to the sandbox.
    */
-  function setUp() {
-    parent::setUp();
+  function set_up() {
+    parent::set_up();
 
     $path = UNISH_SANDBOX . '/aliases.drushrc.php';
     $aliases['site1'] = array(
@@ -49,36 +49,36 @@ class commandSpecificCase extends CommandUnishTestCase {
     );
     $this->drush('core-rsync', array('/tmp', '@site1'), $options, NULL, NULL, self::EXIT_SUCCESS, '2>&1');
     $output = trim($this->getOutput());
-    $this->assertContains('excluded_by_target', $output);
+    $this->assertStringContainsString('excluded_by_target', $output);
     $this->drush('core-rsync', array('@site1', '/tmp'), $options, NULL, NULL, self::EXIT_SUCCESS, '2>&1');
     $output = trim($this->getOutput());
-    $this->assertContains('excluded_by_source', $output);
+    $this->assertStringContainsString('excluded_by_source', $output);
     $this->drush('core-rsync', array('@site1', '@site1'), $options, NULL, NULL, self::EXIT_SUCCESS, '2>&1');
     $output = trim($this->getOutput());
-    $this->assertContains('excluded_by_target', $output);
+    $this->assertStringContainsString('excluded_by_target', $output);
     // Now do that all again with 'exclude-files'
     $options['exclude-files'] = NULL;
     $this->drush('core-rsync', array('/tmp', '@site1'), $options, NULL, NULL, self::EXIT_SUCCESS, '2>&1');
     $output = trim($this->getOutput());
-    $this->assertContains('sites/default/files', $output);
-    $this->assertContains('excluded_by_target', $output);
-    $this->assertNotContains('include-vcs', $output);
-    $this->assertNotContains('exclude-paths', $output);
-    $this->assertNotContains('exclude-files-processed', $output);
+    $this->assertStringContainsString('sites/default/files', $output);
+    $this->assertStringContainsString('excluded_by_target', $output);
+    $this->assertStringNotContainsString('include-vcs', $output);
+    $this->assertStringNotContainsString('exclude-paths', $output);
+    $this->assertStringNotContainsString('exclude-files-processed', $output);
     $this->drush('core-rsync', array('@site1', '/tmp'), $options, NULL, NULL, self::EXIT_SUCCESS, '2>&1');
     $output = trim($this->getOutput());
-    $this->assertContains('sites/default/files', $output);
+    $this->assertStringContainsString('sites/default/files', $output);
 // This one does not work. @see drush_sitealias_evaluate_path
-//    $this->assertContains('excluded_by_source', $output);
-    $this->assertNotContains('include-vcs', $output);
-    $this->assertNotContains('exclude-paths', $output);
-    $this->assertNotContains('exclude-files-processed', $output);
+//    $this->assertStringContainsString('excluded_by_source', $output);
+    $this->assertStringNotContainsString('include-vcs', $output);
+    $this->assertStringNotContainsString('exclude-paths', $output);
+    $this->assertStringNotContainsString('exclude-files-processed', $output);
     $this->drush('core-rsync', array('@site1', '@site1'), $options, NULL, NULL, self::EXIT_SUCCESS, '2>&1');
     $output = trim($this->getOutput());
-    $this->assertContains('sites/default/files', $output);
-    $this->assertContains('excluded_by_target', $output);
-    $this->assertNotContains('include-vcs', $output);
-    $this->assertNotContains('exclude-paths', $output);
-    $this->assertNotContains('exclude-files-processed', $output);
+    $this->assertStringContainsString('sites/default/files', $output);
+    $this->assertStringContainsString('excluded_by_target', $output);
+    $this->assertStringNotContainsString('include-vcs', $output);
+    $this->assertStringNotContainsString('exclude-paths', $output);
+    $this->assertStringNotContainsString('exclude-files-processed', $output);
   }
 }

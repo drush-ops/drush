@@ -125,6 +125,6 @@ EOD;
     // Generate a makefile with version numbers (in .ini format).
     $this->drush('generate-makefile', array($makefile), array('format' => 'ini') + $options);
     $actual = file_get_contents($makefile);
-    $this->assertContains('projects[' . $module . '][version] = "', $actual);
+    $this->assertStringContainsString('projects[' . $module . '][version] = "', $actual);
   }
 }

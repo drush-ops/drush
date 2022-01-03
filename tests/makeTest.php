@@ -16,7 +16,7 @@ class makeMakefileCase extends CommandUnishTestCase {
   /**
    * Initialize $makefile_path.
    */
-  function __construct() {
+  function set_up() {
     $this->makefile_path =  dirname(__FILE__) . DIRECTORY_SEPARATOR . 'makefiles';
   }
 
@@ -35,12 +35,13 @@ class makeMakefileCase extends CommandUnishTestCase {
     $options = array_merge($config['options'], $default_options);
     $makefile = $this->makefile_path . DIRECTORY_SEPARATOR . $config['makefile'];
     $return = !empty($config['fail']) ? self::EXIT_ERROR : self::EXIT_SUCCESS;
-    $this->drush('make', array($makefile), $options, NULL, NULL, $return);
+    $result = $this->drush('make', array($makefile), $options, NULL, NULL, $return);
+    $this->assertEquals($return, $result);
 
     // Check the log for the build hash if this test should pass.
     if (empty($config['fail'])) {
       $output = $this->getOutput();
-      $this->assertContains($config['md5'], $output, $config['name'] . ' - build md5 matches expected value: ' . $config['md5']);
+      $this->assertStringContainsString($config['md5'], $output, $config['name'] . ' - build md5 matches expected value: ' . $config['md5']);
     }
   }
 
@@ -313,9 +314,9 @@ class makeMakefileCase extends CommandUnishTestCase {
     // Test cck_signup.info file.
     $this->assertFileExists(UNISH_SANDBOX . '/test-build/sites/all/modules/cck_signup/cck_signup.info');
     $contents = file_get_contents(UNISH_SANDBOX . '/test-build/sites/all/modules/cck_signup/cck_signup.info');
-    $this->assertContains('; Information added by drush on 2011-07-27', $contents);
-    $this->assertContains('version = "2fe932c"', $contents);
-    $this->assertContains('project = "cck_signup"', $contents);
+    $this->assertStringContainsString('; Information added by drush on 2011-07-27', $contents);
+    $this->assertStringContainsString('version = "2fe932c"', $contents);
+    $this->assertStringContainsString('project = "cck_signup"', $contents);
 
     // Verify that a reference cache was created.
     $cache_dir = UNISH_CACHE . DIRECTORY_SEPARATOR . 'cache';
@@ -324,9 +325,9 @@ class makeMakefileCase extends CommandUnishTestCase {
     // Test context_admin.info file.
     $this->assertFileExists(UNISH_SANDBOX . '/test-build/sites/all/modules/context_admin/context_admin.info');
     $contents = file_get_contents(UNISH_SANDBOX . '/test-build/sites/all/modules/context_admin/context_admin.info');
-    $this->assertContains('; Information added by drush on 2011-10-27', $contents);
-    $this->assertContains('version = "eb9f05e"', $contents);
-    $this->assertContains('project = "context_admin"', $contents);
+    $this->assertStringContainsString('; Information added by drush on 2011-10-27', $contents);
+    $this->assertStringContainsString('version = "eb9f05e"', $contents);
+    $this->assertStringContainsString('project = "context_admin"', $contents);
 
     // Verify git reference cache exists.
     $this->assertFileExists($cache_dir . '/git/context_admin-' . md5('https://git.drupalcode.org/project/context_admin.git'));
@@ -334,9 +335,9 @@ class makeMakefileCase extends CommandUnishTestCase {
     // Text caption_filter .info rewrite.
     $this->assertFileExists(UNISH_SANDBOX . '/test-build/sites/all/modules/contrib/caption_filter/caption_filter.info');
     $contents = file_get_contents(UNISH_SANDBOX . '/test-build/sites/all/modules/contrib/caption_filter/caption_filter.info');
-    $this->assertContains('; Information added by drush on 2011-09-20', $contents);
-    $this->assertContains('version = "7.x-1.2+0-dev"', $contents);
-    $this->assertContains('project = "caption_filter"', $contents);
+    $this->assertStringContainsString('; Information added by drush on 2011-09-20', $contents);
+    $this->assertStringContainsString('version = "7.x-1.2+0-dev"', $contents);
+    $this->assertStringContainsString('project = "caption_filter"', $contents);
   }
 
   /**
@@ -353,9 +354,9 @@ class makeMakefileCase extends CommandUnishTestCase {
 
     $this->assertFileExists(UNISH_SANDBOX . '/test-build/modules/honeypot/honeypot.info.yml');
     $contents = file_get_contents(UNISH_SANDBOX . '/test-build/modules/honeypot/honeypot.info.yml');
-    $this->assertContains('# Information added by drush on 2015-09-03', $contents);
-    $this->assertContains("version: '8.x-1.x-dev'", $contents);
-    $this->assertContains("project: 'honeypot'", $contents);
+    $this->assertStringContainsString('# Information added by drush on 2015-09-03', $contents);
+    $this->assertStringContainsString("version: '8.x-1.x-dev'", $contents);
+    $this->assertStringContainsString("project: 'honeypot'", $contents);
   }
 
   function testMakeBzr() {
@@ -539,7 +540,7 @@ class makeMakefileCase extends CommandUnishTestCase {
 
     $install_directory = UNISH_SANDBOX . DIRECTORY_SEPARATOR . 'norecursion';
     $this->drush('make', array('--no-core', '--no-recursion', $makefile, $install_directory));
-    $this->assertNotContains("ctools", $this->getOutput(), "Make with --no-recursion does not recurse into drupal_forum to download ctools.");
+    $this->assertStringNotContainsString("ctools", $this->getOutput(), "Make with --no-recursion does not recurse into drupal_forum to download ctools.");
   }
 
   /**
@@ -557,12 +558,12 @@ class makeMakefileCase extends CommandUnishTestCase {
     // Test cck_signup .git/HEAD file.
     $this->assertFileExists($install_directory . '/sites/all/modules/cck_signup/.git/HEAD');
     $contents = file_get_contents($install_directory . '/sites/all/modules/cck_signup/.git/HEAD');
-    $this->assertContains('2fe932c', $contents);
+    $this->assertStringContainsString('2fe932c', $contents);
 
     // Test context_admin .git/HEAD file.
     $this->assertFileExists($install_directory . '/sites/all/modules/context_admin/.git/HEAD');
     $contents = file_get_contents($install_directory . '/sites/all/modules/context_admin/.git/HEAD');
-    $this->assertContains('eb9f05e', $contents);
+    $this->assertStringContainsString('eb9f05e', $contents);
   }
 
   /**
@@ -581,15 +582,15 @@ class makeMakefileCase extends CommandUnishTestCase {
     // Test context_admin .git/HEAD file.
     $this->assertFileExists($install_directory . '/sites/all/modules/context_admin/.git/HEAD');
     $contents = file_get_contents($install_directory . '/sites/all/modules/context_admin/.git/HEAD');
-    $this->assertContains('eb9f05e', $contents);
+    $this->assertStringContainsString('eb9f05e', $contents);
 
     // Test cck_signup .git/HEAD file does not exist.
-    $this->assertFileNotExists($install_directory . '/sites/all/modules/cck_signup/.git/HEAD');
+    $this->assertFileDoesNotExist($install_directory . '/sites/all/modules/cck_signup/.git/HEAD');
 
     // Test caption_filter .git/HEAD file.
     $this->assertFileExists($install_directory . '/sites/all/modules/contrib/caption_filter/.git/HEAD');
     $contents = file_get_contents($install_directory . '/sites/all/modules/contrib//caption_filter/.git/HEAD');
-    $this->assertContains('c9794cf', $contents);
+    $this->assertStringContainsString('c9794cf', $contents);
   }
 
   function testMakePatch() {
@@ -668,7 +669,7 @@ class makeMakefileCase extends CommandUnishTestCase {
 
         if (!empty($details['notexists'])) {
           foreach ($details['notexists'] as $file) {
-            $this->assertFileNotExists($dir . DIRECTORY_SEPARATOR . $file);
+            $this->assertFileDoesNotExist($dir . DIRECTORY_SEPARATOR . $file);
           }
         }
       }
