@@ -102,7 +102,7 @@ class EnDisUnListInfoCase extends CommandUnishTestCase {
     if (UNISH_DRUPAL_MAJOR_VERSION >= 9) {
       $themeToCheck = 'stark';
     }
-    $this->assertStringContainsString($themeToCheck, $list, 'Themes are in the pm-list');
+    $this->assertContains($themeToCheck, $list, 'Themes are in the pm-list');
 
     // Test cache was cleared after enabling a module.
     $table = UNISH_DRUPAL_MAJOR_VERSION >= 8 ? 'router' : 'menu_router';

@@ -33,10 +33,10 @@ EOD;
     drush_set_context('DRUSH_INCLUDE', array($path));
     drush_preflight();
     $loaded = drush_commandfile_list();
-    $this->assertStringContainsString($files[0], $loaded); //Loaded a version-specific command file.
-    $this->assertStringContainsString($files[1], $loaded); //Loaded a version-specific command directory.
-    $this->assertStringNotContainsString($files[2], $loaded); //Did not load a mismatched version-specific command file.
-    $this->assertStringNotContainsString($files[3], $loaded); //Did not load a a mismatched version-specific command directory.
+    $this->assertContains($files[0], $loaded); //Loaded a version-specific command file.
+    $this->assertContains($files[1], $loaded); //Loaded a version-specific command directory.
+    $this->assertNotContains($files[2], $loaded); //Did not load a mismatched version-specific command file.
+    $this->assertNotContains($files[3], $loaded); //Did not load a a mismatched version-specific command directory.
   }
 
   /**
