@@ -7,12 +7,11 @@ namespace Drush\Drupal\Migrate;
  */
 class MigrateUtils
 {
-
     /**
      * Parses as an array the list of IDs received from console.
      *
      * IDs are delimited by comma. Each ID consists in one are many ID columns,
-     * separated by a colon (:).
+     * separated by a colon (":").
      *
      * @param string|null $idlist
      *

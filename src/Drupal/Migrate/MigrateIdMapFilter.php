@@ -12,17 +12,13 @@ class MigrateIdMapFilter extends \FilterIterator
 
     /**
      * List of specific source IDs to filter on.
-     *
-     * @var array
      */
-    protected $sourceIdList;
+    protected array $sourceIdList;
 
     /**
      * List of specific destination IDs to filter on.
-     *
-     * @var array
      */
-    protected $destinationIdList;
+    protected array $destinationIdList;
 
     /**
      * @param MigrateIdMapInterface $idMap

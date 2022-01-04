@@ -169,7 +169,7 @@ class EntityCommands extends DrushCommands
     {
         $storage = $this->entityTypeManager->getStorage($entity_type);
         $query = $storage->getQuery();
-        if ($ids = StringUtils::csvToArray($ids)) {
+        if ($ids = StringUtils::csvToArray((string) $ids)) {
             $idKey = $this->entityTypeManager->getDefinition($entity_type)->getKey('id');
             $query = $query->condition($idKey, $ids, 'IN');
         } elseif ($options['bundle'] || $options['exclude']) {
