@@ -5,7 +5,7 @@ namespace Drush\Drupal\Migrate;
 use Drupal\migrate\Plugin\MigrationInterface;
 use Drupal\migrate\Plugin\MigrateSourceInterface;
 use Drupal\migrate\Row;
-use Symfony\Component\EventDispatcher\Event;
+use Symfony\Contracts\EventDispatcher\Event;
 
 /**
  * Wraps a prepare-row event for event listeners.
@@ -19,24 +19,18 @@ final class MigratePrepareRowEvent extends Event
 {
     /**
      * Row object.
-     *
-     * @var Row
      */
-    protected $row;
+    protected Row $row;
 
     /**
      * Migration source plugin.
-     *
-     * @var MigrateSourceInterface
      */
-    protected $source;
+    protected MigrateSourceInterface $source;
 
     /**
      * Migration plugin.
-     *
-     * @var MigrationInterface
      */
-    protected $migration;
+    protected MigrationInterface $migration;
 
     /**
      * Constructs a prepare-row event object.
@@ -69,8 +63,8 @@ final class MigratePrepareRowEvent extends Event
     /**
     * Gets the source plugin.
     *
-     * @return MigrateSourceInterface $source
-      The source plugin firing the event.
+    * @return MigrateSourceInterface $source
+    *   The source plugin firing the event.
     */
     public function getSource(): MigrateSourceInterface
     {

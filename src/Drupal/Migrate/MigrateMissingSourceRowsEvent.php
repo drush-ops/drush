@@ -3,7 +3,7 @@
 namespace Drush\Drupal\Migrate;
 
 use Drupal\migrate\Plugin\MigrationInterface;
-use Symfony\Component\EventDispatcher\Event;
+use Symfony\Contracts\EventDispatcher\Event;
 
 /**
  * Missing source rows event.
@@ -12,17 +12,15 @@ class MigrateMissingSourceRowsEvent extends Event
 {
     /**
      * The migration plugin instance.
-     *
-     * @var MigrationInterface
      */
-    protected $migration;
+    protected MigrationInterface $migration;
 
     /**
      * Values representing the destination IDs.
      *
      * @var array[]
      */
-    protected $destinationIds;
+    protected array $destinationIds;
 
     /**
      * Constructs a new event instance.

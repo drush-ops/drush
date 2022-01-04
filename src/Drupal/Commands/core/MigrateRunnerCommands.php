@@ -29,31 +29,23 @@ class MigrateRunnerCommands extends DrushCommands
 {
     /**
      * Migration plugin manager service.
-     *
-     * @var MigrationPluginManagerInterface
      */
-    protected $migrationPluginManager;
+    protected ?MigrationPluginManagerInterface $migrationPluginManager;
 
     /**
      * Date formatter service.
-     *
-     * @var DateFormatter
      */
-    protected $dateFormatter;
+    protected DateFormatter $dateFormatter;
 
     /**
      * The key-value store service.
-     *
-     * @var KeyValueStoreInterface
      */
-    protected $keyValue;
+    protected KeyValueStoreInterface $keyValue;
 
     /**
      * Migrate message service.
-     *
-     * @var MigrateMessageInterface
      */
-    protected $migrateMessage;
+    protected MigrateMessageInterface $migrateMessage;
 
     /**
      * Constructs a new class instance.
@@ -233,13 +225,13 @@ class MigrateRunnerCommands extends DrushCommands
     }
 
     /**
-     * Returns the number or items that needs update.
+     * Returns the number of items that needs update.
      *
      * @param MigrationInterface $migration
      *   The migration plugin instance.
      *
      * @return int|null
-     *   The number or items that needs update.
+     *   The number of items that needs update.
      */
     protected function getMigrationNeedingUpdateCount(MigrationInterface $migration): int
     {
@@ -549,6 +541,8 @@ class MigrateRunnerCommands extends DrushCommands
      * @validate-module-enabled migrate
      * @validate-migration-id
      * @version 10.4
+     *
+     * @throws \Drupal\Component\Plugin\Exception\PluginException
      */
     public function stop(string $migrationId): void
     {
@@ -586,6 +580,8 @@ class MigrateRunnerCommands extends DrushCommands
      * @validate-module-enabled migrate
      * @validate-migration-id
      * @version 10.4
+     *
+     * @throws \Drupal\Component\Plugin\Exception\PluginException
      */
     public function resetStatus(string $migrationId): void
     {
@@ -608,16 +604,20 @@ class MigrateRunnerCommands extends DrushCommands
      * @param string $migrationId
      *   The ID of the migration.
      *
-     * @option idlist Comma-separated list of IDs to import. As an ID may have more than one column, concatenate the columns with the colon ':' separator.
+     * @option idlist Comma-separated list of IDs to import. As an ID may have
+     *   more than one column, concatenate the columns with the colon ':'
+     *   separator.
      *
      * @usage migrate:messages article
      *   Show all messages for the <info>article</info> migration
      * @usage migrate:messages article --idlist=5
      *   Show messages related to article record with source ID 5.
      * @usage migrate:messages node_revision --idlist=1:2,2:3,3:5
-     *   Show messages related to node revision records with source IDs [1,2], [2,3], and [3,5].
+     *   Show messages related to node revision records with source IDs [1,2],
+     *   [2,3], and [3,5].
      * @usage migrate:messages custom_node_revision --idlist=1:"r:1",2:"r:3"
-     *   Show messages related to node revision records with source IDs [1,"r:1"], and [2,"r:3"].
+     *   Show messages related to node revision records with source IDs
+     *   [1,"r:1"], and [2,"r:3"].
      *
      * @aliases mmsg,migrate-messages
      *
@@ -637,6 +637,8 @@ class MigrateRunnerCommands extends DrushCommands
      *
      * @return RowsOfFields
      *   Migration messages status formatted as table.
+     *
+     * @throws \Drupal\Component\Plugin\Exception\PluginException
      */
     public function messages(string $migrationId, array $options = ['idlist' => self::REQ]): RowsOfFields
     {
@@ -651,20 +653,18 @@ class MigrateRunnerCommands extends DrushCommands
             return new RowsOfFields($table);
         }
         if (!empty($options['idlist'])) {
-            // There is not way to retreive a filtered set of messages from an
-            // ID map on Drupal core, right now.
-            // Even if using \Drush\Drupal\Migrate\MigrateIdMapFilter does the
-            // right thing filtering the data on the ID map, sadly its
-            // getMessages() method does not take it into account the iterator,
-            // and retrieves data directly, e.g. at SQL ID map plugin.
-            // On the other side Drupal core's
-            // \Drupal\migrate\Plugin\MigrateIdMapInterface only allows to
-            // filter by one source IDs set, and not by multiple, on
-            // getMessages().
-            // For now, go over known IDs passed directly, one at a time a
-            // work-around, at the cost of more queries in the usual SQL ID map,
-            // which is likely OK for its use, to show only few source IDs
-            // messages.
+            // There is no way to retrieve a filtered set of messages from an ID
+            // map on Drupal core, right now. Even if using
+            // \Drush\Drupal\Migrate\MigrateIdMapFilter does the right thing
+            // filtering the data on the ID map, sadly its getMessages() method
+            // does not take it into account the iterator, and retrieves data
+            // directly, e.g. at SQL ID map plugin. On the other side Drupal
+            // core's \Drupal\migrate\Plugin\MigrateIdMapInterface only allows
+            // to filter by one source IDs set, and not by multiple, on
+            // getMessages(). For now, go over known IDs passed directly, one at
+            // a time a workaround, at the cost of more queries in the usual SQL
+            // ID map, which is likely OK for its use, to show only few source
+            // IDs messages.
             foreach (MigrateUtils::parseIdList($options['idlist']) as $sourceIdValues) {
                 foreach ($idMap->getMessages($sourceIdValues) as $row) {
                     $table[] = $this->preprocessMessageRow($row, $sourceIdKeys);
@@ -672,7 +672,6 @@ class MigrateRunnerCommands extends DrushCommands
             }
             return new RowsOfFields($table);
         }
-        $table = [];
         foreach ($idMap->getMessages() as $row) {
             $table[] = $this->preprocessMessageRow($row, $sourceIdKeys);
         }
@@ -702,10 +701,10 @@ class MigrateRunnerCommands extends DrushCommands
         }
         $sourceIds = $destinationIds = [];
         foreach ($row as $key => $value) {
-            if (substr($key, 0, 4) === 'src_') {
+            if (str_starts_with($key, 'src_')) {
                 $sourceIds[$key] = $value;
             }
-            if (substr($key, 0, 5) === 'dest_') {
+            if (str_starts_with($key, 'dest_')) {
                 $destinationIds[$key] = $value;
             }
         }
@@ -740,6 +739,8 @@ class MigrateRunnerCommands extends DrushCommands
      *
      * @return RowsOfFields
      *   Source fields of the given migration.
+     *
+     * @throws \Drupal\Component\Plugin\Exception\PluginException
      */
     public function fieldsSource(string $migrationId): RowsOfFields
     {
@@ -787,7 +788,7 @@ class MigrateRunnerCommands extends DrushCommands
                     $sourcePlugin->checkRequirements();
                 }
             } catch (RequirementsException $exception) {
-                $this->logger()->debug("Migration '{$migrationId}' is skipped as its source plugin has missed requirements: " . $exception->getRequirementsString());
+                $this->logger()->debug("Migration '$migrationId' is skipped as its source plugin has missed requirements: {$exception->getRequirementsString()}");
                 unset($migrations[$migrationId]);
             }
         }
@@ -801,7 +802,7 @@ class MigrateRunnerCommands extends DrushCommands
 
         $list = [];
         foreach ($migrations as $migrationId => $migration) {
-            $migrationTags = (array)$migration->getMigrationTags();
+            $migrationTags = $migration->getMigrationTags();
             $commonTags = array_intersect($tags, $migrationTags);
             if (!$commonTags) {
                 // Skip if migration is not tagged with any of the passed tags.
@@ -849,7 +850,7 @@ class MigrateRunnerCommands extends DrushCommands
         $idMap->rewind();
         $columns = $idMap->currentSource();
         $sourceIdKeys = array_map(static function ($id) {
-            return "src_{$id}";
+            return "src_$id";
         }, array_keys($columns));
         return array_combine($sourceIdKeys, $sourceIdKeys);
     }
@@ -866,12 +867,13 @@ class MigrateRunnerCommands extends DrushCommands
      *
      * @return CommandError|null
      */
-    public function validateMigrationId(CommandData $commandData)
+    public function validateMigrationId(CommandData $commandData): ?CommandError
     {
         $argName = $commandData->annotationData()->get('validate-migration-id') ?: 'migrationId';
         $migrationId = $commandData->input()->getArgument($argName);
         if (!$this->migrationPluginManager->hasDefinition($migrationId)) {
             return new CommandError(dt('Migration "@id" does not exist', ['@id' => $migrationId]));
         }
+        return null;
     }
 }

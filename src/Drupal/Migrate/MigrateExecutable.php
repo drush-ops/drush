@@ -25,18 +25,13 @@ class MigrateExecutable extends MigrateExecutableBase
 {
     /**
      * The Symfony console output.
-     *
-     * @var OutputInterface
      */
-    protected $output;
+    protected OutputInterface $output;
 
     /**
      * Counters of map statuses.
-     *
-     * @var array
-     *   Set of counters, keyed by MigrateIdMapInterface::STATUS_* constant.
      */
-    protected $saveCounters = [
+    protected array $saveCounters = [
         MigrateIdMapInterface::STATUS_FAILED => 0,
         MigrateIdMapInterface::STATUS_IGNORED => 0,
         MigrateIdMapInterface::STATUS_IMPORTED => 0,
@@ -45,10 +40,8 @@ class MigrateExecutable extends MigrateExecutableBase
 
     /**
      * Counter of map deletions.
-     *
-     * @var int
      */
-    protected $deleteCounter = 0;
+    protected int $deleteCounter = 0;
 
     /**
      * Maximum number of items to process in this migration.
@@ -66,80 +59,60 @@ class MigrateExecutable extends MigrateExecutableBase
 
     /**
      * Show timestamp in progress message.
-     *
-     * @var bool
      */
-    protected $showTimestamp;
+    protected bool $showTimestamp;
 
     /**
      * Show internal counter in progress message.
-     *
-     * @var bool
      */
-    protected $showTotal;
+    protected bool $showTotal;
 
     /**
      * List of specific source IDs to import.
-     *
-     * @var array
      */
-    protected $idlist;
+    protected array $idlist;
 
     /**
      * List of all source IDs that are found in source during this migration.
-     *
-     * @var array
      */
-    protected $allSourceIdValues = [];
+    protected array $allSourceIdValues = [];
 
     /**
      * Count of number of items processed so far in this migration.
-     *
-     * @var int
      */
-    protected $counter = 0;
+    protected int $counter = 0;
 
     /**
      * Whether the destination item exists before saving.
-     *
-     * @var bool
      */
-    protected $preExistingItem = false;
+    protected bool $preExistingItem = false;
 
     /**
      * List of event listeners we have registered.
      *
      * @var callable[]
      */
-    protected $listeners = [];
+    protected array $listeners = [];
 
     /**
      * Whether to delete rows missing from source after an import.
-     *
-     * @var bool
      */
-    protected $deleteMissingSourceRows;
+    protected bool $deleteMissingSourceRows;
 
     /**
      * Static cached ID map.
-     *
-     * @var MigrateIdMapFilter
      */
-    protected $idMap;
+    protected ?MigrateIdMapFilter $idMap;
 
     /**
-     * If the execution exposes an progress bar.
-     *
-     * @var bool
+     * If the execution exposes a progress bar.
      */
-    protected $exposeProgressBar;
+    protected bool $exposeProgressBar;
 
     /**
      * The Symfony progress bar.
-     *
-     * @var ProgressBar
      */
-    protected $progressBar;
+    protected ?ProgressBar $progressBar;
 
     /**
      * Constructs a new migrate executable instance.
@@ -185,7 +158,7 @@ class MigrateExecutable extends MigrateExecutableBase
         // Cannot use the progress bar when:
         // - `--no-progress` option is used,
         // - `--feedback` option is used,
-        // - The migration source plugin is configured to skips count.
+        // - The migration source plugin is configured to skip count.
         $this->exposeProgressBar = $options['progress'] && !$this->feedback && empty($migration->getSourceConfiguration()['skip_count']);
 
         $this->listeners[MigrateEvents::MAP_SAVE] = [$this, 'onMapSave'];
@@ -286,7 +259,7 @@ class MigrateExecutable extends MigrateExecutableBase
 
         if ($destinationIds) {
             $missingSourceEvent = new MigrateMissingSourceRowsEvent($migration, $destinationIds);
-            $this->getEventDispatcher()->dispatch(MigrateMissingSourceRowsEvent::class, $missingSourceEvent);
+            $this->getEventDispatcher()->dispatch($missingSourceEvent, MigrateMissingSourceRowsEvent::class);
         }
     }
 
