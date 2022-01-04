@@ -292,7 +292,7 @@ class MigrateRunnerCommands extends DrushCommands
     protected function getMigrationLastImportedTime(MigrationInterface $migration): string
     {
         if ($lastImported = $this->keyValue->get($migration->id(), '')) {
-            $lastImported = $this->dateFormatter->format($lastImported / 1000, 'custom', 'Y-m-d H:i:s');
+            $lastImported = $this->dateFormatter->format(round($lastImported / 1000), 'custom', 'Y-m-d H:i:s');
         }
         return $lastImported;
     }
