@@ -2,13 +2,13 @@
 
 namespace Drush\Drupal\Commands\core;
 
-use Drupal\Core\KeyValueStore\KeyValueStoreInterface;
-use Drupal\Component\Plugin\Exception\PluginException;
 use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\AnnotatedCommand\CommandError;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
+use Drupal\Component\Plugin\Exception\PluginException;
 use Drupal\Core\Datetime\DateFormatter;
 use Drupal\Core\KeyValueStore\KeyValueFactoryInterface;
+use Drupal\Core\KeyValueStore\KeyValueStoreInterface;
 use Drupal\migrate\Exception\RequirementsException;
 use Drupal\migrate\MigrateMessageInterface;
 use Drupal\migrate\Plugin\MigrateIdMapInterface;
@@ -62,12 +62,15 @@ class MigrateRunnerCommands extends DrushCommands
      *   Date formatter service.
      * @param KeyValueFactoryInterface $keyValueFactory
      *   The key-value factory service.
+     * @param MigrationPluginManagerInterface|null $migrationPluginManager
+     *   The migration plugin manager service.
      */
-    public function __construct(DateFormatter $dateFormatter, KeyValueFactoryInterface $keyValueFactory)
+    public function __construct(DateFormatter $dateFormatter, KeyValueFactoryInterface $keyValueFactory, ?MigrationPluginManagerInterface $migrationPluginManager = NULL)
     {
         parent::__construct();
         $this->dateFormatter = $dateFormatter;
         $this->keyValue = $keyValueFactory->get('migrate_last_imported');
+        $this->migrationPluginManager = $migrationPluginManager;
     }
 
     /**
@@ -436,7 +439,7 @@ class MigrateRunnerCommands extends DrushCommands
             // Remove already executed migrations.
             $dependencies = array_diff($dependencies, $executedMigrations);
             if ($dependencies) {
-                $requiredMigrations = $this->getMigrationPluginManager()->createInstances($dependencies);
+                $requiredMigrations = $this->migrationPluginManager->createInstances($dependencies);
                 array_walk($requiredMigrations, [static::class, __FUNCTION__], $userData);
             }
         }
@@ -550,7 +553,7 @@ class MigrateRunnerCommands extends DrushCommands
     public function stop(string $migrationId): void
     {
         /** @var MigrationInterface $migration */
-        $migration = $this->getMigrationPluginManager()->createInstance($migrationId);
+        $migration = $this->migrationPluginManager->createInstance($migrationId);
         switch ($migration->getStatus()) {
             case MigrationInterface::STATUS_IDLE:
                 $this->logger()->warning(dt('Migration @id is idle', ['@id' => $migrationId]));
@@ -587,7 +590,7 @@ class MigrateRunnerCommands extends DrushCommands
     public function resetStatus(string $migrationId): void
     {
         /** @var MigrationInterface $migration */
-        $migration = $this->getMigrationPluginManager()->createInstance($migrationId);
+        $migration = $this->migrationPluginManager->createInstance($migrationId);
         $status = $migration->getStatus();
         if ($status == MigrationInterface::STATUS_IDLE) {
             $this->logger()->warning(dt('Migration @id is already Idle', ['@id' => $migrationId]));
@@ -638,7 +641,7 @@ class MigrateRunnerCommands extends DrushCommands
     public function messages(string $migrationId, array $options = ['idlist' => self::REQ]): RowsOfFields
     {
         /** @var MigrationInterface $migration */
-        $migration = $this->getMigrationPluginManager()->createInstance($migrationId);
+        $migration = $this->migrationPluginManager->createInstance($migrationId);
         $idMap = $migration->getIdMap();
         $sourceIdKeys = $this->getSourceIdKeys($idMap);
         $table = [];
@@ -741,7 +744,7 @@ class MigrateRunnerCommands extends DrushCommands
     public function fieldsSource(string $migrationId): RowsOfFields
     {
         /** @var MigrationInterface $migration */
-        $migration = $this->getMigrationPluginManager()->createInstance($migrationId);
+        $migration = $this->migrationPluginManager->createInstance($migrationId);
         $source = $migration->getSourcePlugin();
         $table = [];
         foreach ($source->fields() as $machineName => $description) {
@@ -770,7 +773,7 @@ class MigrateRunnerCommands extends DrushCommands
     protected function getMigrationList(?string $migrationIds, ?string $tags): array
     {
         $migrationIds = StringUtils::csvToArray((string) $migrationIds);
-        $migrations = $this->getMigrationPluginManager()->createInstances($migrationIds);
+        $migrations = $this->migrationPluginManager->createInstances($migrationIds);
 
         // Check for invalid migration IDs.
         if ($invalidMigrations = array_diff_key(array_flip($migrationIds), $migrations)) {
@@ -828,29 +831,6 @@ class MigrateRunnerCommands extends DrushCommands
     }
 
     /**
-     * Returns the migration plugin manager service.
-     *
-     * @return MigrationPluginManagerInterface
-     *   The migration plugin manager service.
-     *
-     * @todo This service cannot be injected as the 'migrate' module might not
-     *   be enabled and will throw the following exception:
-     *   > Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException
-     *   > The service "migrate_runner.commands" has a dependency on a
-     *   > non-existent service "plugin.manager.migration".
-     *   Unfortunately, we cannot avoid the class instantiation, via an
-     *   annotation (as @validate-module-enabled for methods), if a specific
-     *   module is not installed. Open a followup to tackle this issue.
-     */
-    protected function getMigrationPluginManager(): MigrationPluginManagerInterface
-    {
-        if (!isset($this->migrationPluginManager)) {
-            $this->migrationPluginManager = \Drupal::service('plugin.manager.migration');
-        }
-        return $this->migrationPluginManager;
-    }
-
-    /**
      * Get the source ID keys.
      *
      * @param MigrateIdMapInterface $idMap
@@ -890,7 +870,7 @@ class MigrateRunnerCommands extends DrushCommands
     {
         $argName = $commandData->annotationData()->get('validate-migration-id') ?: 'migrationId';
         $migrationId = $commandData->input()->getArgument($argName);
-        if (!$this->getMigrationPluginManager()->hasDefinition($migrationId)) {
+        if (!$this->migrationPluginManager->hasDefinition($migrationId)) {
             return new CommandError(dt('Migration "@id" does not exist', ['@id' => $migrationId]));
         }
     }

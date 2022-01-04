@@ -52,7 +52,7 @@ services:
         -  { name: drush.command }
   migrate_runner.commands:
     class: Drush\Drupal\Commands\core\MigrateRunnerCommands
-    arguments: ['@date.formatter', '@keyvalue']
+    arguments: ['@date.formatter', '@keyvalue', '@?plugin.manager.migration']
     tags:
       -  { name: drush.command }
   queue.commands:
