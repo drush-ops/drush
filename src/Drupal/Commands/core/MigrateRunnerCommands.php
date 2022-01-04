@@ -57,7 +57,7 @@ class MigrateRunnerCommands extends DrushCommands
      * @param MigrationPluginManagerInterface|null $migrationPluginManager
      *   The migration plugin manager service.
      */
-    public function __construct(DateFormatter $dateFormatter, KeyValueFactoryInterface $keyValueFactory, ?MigrationPluginManagerInterface $migrationPluginManager = NULL)
+    public function __construct(DateFormatter $dateFormatter, KeyValueFactoryInterface $keyValueFactory, ?MigrationPluginManagerInterface $migrationPluginManager = null)
     {
         parent::__construct();
         $this->dateFormatter = $dateFormatter;
