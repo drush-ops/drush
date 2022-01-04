@@ -259,7 +259,7 @@ class MigrateExecutable extends MigrateExecutableBase
 
         if ($destinationIds) {
             $missingSourceEvent = new MigrateMissingSourceRowsEvent($migration, $destinationIds);
-            $this->getEventDispatcher()->dispatch($missingSourceEvent, MigrateMissingSourceRowsEvent::class);
+            $this->getEventDispatcher()->dispatch($missingSourceEvent);
         }
     }
 
