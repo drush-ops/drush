@@ -1,8 +1,8 @@
 <?php
 namespace Drush\Config;
 
-use Robo\Config;
 use Consolidation\Config\ConfigInterface;
+use Robo\Config\Config;
 use Consolidation\Config\Loader\ConfigLoaderInterface;
 use Drush\Config\Loader\YamlConfigLoader;
 use Consolidation\Config\Loader\ConfigProcessor;
@@ -179,7 +179,7 @@ class ConfigLocator
      * Return the configuration object. Create it and load it with
      * all identified configuration if necessary.
      */
-    public function config(): Config
+    public function config(): ConfigInterface
     {
         return $this->config;
     }
@@ -373,7 +373,7 @@ class ConfigLocator
     /**
      * Get the site aliases according to preflight arguments and environment.
      *
-     * @param $preflightArgs
+     * @param $paths
      * @param Environment $environment
      */
     public function getSiteAliasPaths($paths, Environment $environment): array
@@ -401,7 +401,8 @@ class ConfigLocator
     /**
      * Get the commandfile paths according to preflight arguments.
      *
-     * @param $preflightArgs
+     * @param $commandPaths
+     * @param $root
      */
     public function getCommandFilePaths($commandPaths, $root): array
     {
