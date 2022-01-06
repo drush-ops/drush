@@ -4931,22 +4931,25 @@
 
 
 <h1 id="configset">config:set<a class="headerlink" href="#configset" title="Permanent link">&para;</a></h1>
-<p>Set config value directly. Does not perform a config import.</p>
+<p>Save a config value directly. Does not perform a config import.</p>
 <h4 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h4>
 <ul>
+<li><code>drush config:set system.site name MySite</code>. Sets a value for the key <em>name</em> of <em>system.site</em> config object.</li>
 <li><code>drush config:set system.site page.front '/path/to/page'</code>. Sets the given URL path as value for the config item with key <em>page.front</em> of <em>system.site</em> config object.</li>
 <li><code>drush config:set system.site '[]'</code>. Sets the given key to an empty array.</li>
+<li><code>drush config:set --input-format=yaml user.role.authenticated permissions [foo,bar]</code>. Use a sequence as value for the key <em>permissions</em> of <em>user.role.authenticated</em> config object.</li>
+<li><code>drush config:set --input-format=yaml system.site page {403: '403', front: home}</code>. Use a mapping as value for the key <em>page</em> of <em>system.site</em> config object.</li>
+<li><code>drush config:set --input-format=yaml user.role.authenticated ? "{label: 'Auth user', weight: 5}"</code>. Update two top level keys (label, weight) in the <em>system.site</em> config object.</li>
 </ul>
 <h4 id="arguments">Arguments<a class="headerlink" href="#arguments" title="Permanent link">&para;</a></h4>
 <ul>
 <li><strong>config_name</strong>. The config object name, for example <em>system.site</em>.</li>
-<li><strong>key</strong>. The config key, for example <em>page.front</em>.</li>
+<li><strong>key</strong>. The config key, for example <em>page.front</em>. Use <em>?</em> if you are updating multiple keys.</li>
 <li><strong>[value]</strong>. The value to assign to the config key. Use <em>-</em> to read from STDIN.</li>
 </ul>
 <h4 id="options">Options<a class="headerlink" href="#options" title="Permanent link">&para;</a></h4>
 <ul>
-<li><strong> --input-format[=INPUT-FORMAT]</strong>. Format to parse the object. Recognized values: <em>string</em>, <em>yaml</em> [default: <em>string</em>]</li>
-<li><strong> --value=VALUE</strong>. The value to assign to the config key (if any).</li>
+<li><strong> --input-format[=INPUT-FORMAT]</strong>. Format to parse the object. Recognized values: <em>string</em>, <em>yaml</em>. Since JSON is a subset of YAML, $value may be in JSON format. [default: <em>string</em>]</li>
 </ul>
 <h4 id="aliases">Aliases<a class="headerlink" href="#aliases" title="Permanent link">&para;</a></h4>
 <ul>
