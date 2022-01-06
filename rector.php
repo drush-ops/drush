@@ -11,9 +11,6 @@ return function (ContainerConfigurator $containerConfigurator): void {
     $parameters = $containerConfigurator->parameters();
     $parameters->set(Option::AUTO_IMPORT_NAMES, true);
     $parameters->set(Option::IMPORT_SHORT_CLASSES, false);
-    $parameters->set(Option::PATHS, [
-        __DIR__ . '/src',
-    ]);
 
     $services = $containerConfigurator->services();
     $services->set(ParamTypeDeclarationRector::class);

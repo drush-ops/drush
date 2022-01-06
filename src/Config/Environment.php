@@ -260,7 +260,7 @@ class Environment
     /**
      * The class loader returned when the autoload.php file is included.
      */
-    public function loader(): ?\Composer\Autoload\ClassLoader
+    public function loader(): ?ClassLoader
     {
         return $this->loader;
     }
@@ -268,7 +268,7 @@ class Environment
     /**
      * Set the class loader from the autload.php file, if available.
      *
-     * @param \Composer\Autoload\ClassLoader $loader
+     * @param ClassLoader $loader
      */
     public function setLoader(ClassLoader $loader): void
     {

@@ -1,6 +1,7 @@
 <?php
 namespace Drush\Config;
 
+use Robo\Config;
 use Consolidation\Config\ConfigInterface;
 use Consolidation\Config\Loader\ConfigLoaderInterface;
 use Drush\Config\Loader\YamlConfigLoader;
@@ -30,7 +31,7 @@ use Webmozart\PathUtil\Path;
 class ConfigLocator
 {
     /**
-     * @var \Robo\Config
+     * @var Config
      */
     protected $config;
 
@@ -178,7 +179,7 @@ class ConfigLocator
      * Return the configuration object. Create it and load it with
      * all identified configuration if necessary.
      */
-    public function config(): ConfigInterface
+    public function config(): Config
     {
         return $this->config;
     }
