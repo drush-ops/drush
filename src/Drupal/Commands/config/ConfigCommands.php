@@ -126,59 +126,64 @@ class ConfigCommands extends DrushCommands implements StdinAwareInterface, SiteA
     }
 
     /**
-     * Set config value directly. Does not perform a config import.
+     * Save a config value directly. Does not perform a config import.
      *
      * @command config:set
      * @validate-config-name
      * @todo @interact-config-name deferred until we have interaction for key.
      * @param $config_name The config object name, for example <info>system.site</info>.
-     * @param $key The config key, for example <info>page.front</info>.
+     * @param $key The config key, for example <info>page.front</info>. Use <info>?</info> if you are updating multiple keys.
      * @param $value The value to assign to the config key. Use <info>-</info> to read from STDIN.
-     * @option input-format Format to parse the object. Recognized values: <info>string</info>, <info>yaml</info>
-     * @option value The value to assign to the config key (if any).
-     * @hidden-options value
+     * @option input-format Format to parse the object. Recognized values: <info>string</info>, <info>yaml</info>. Since JSON is a subset of YAML, $value may be in JSON format.
+     * @usage drush config:set system.site name MySite
+     *   Sets a value for the key <info>name</info> of <info>system.site</info> config object.
      * @usage drush config:set system.site page.front '/path/to/page'
      *   Sets the given URL path as value for the config item with key <info>page.front</info> of <info>system.site</info> config object.
      * @usage drush config:set system.site '[]'
      *   Sets the given key to an empty array.
+     * @usage drush config:set --input-format=yaml user.role.authenticated permissions [foo,bar]
+     *   Use a sequence as value for the key <info>permissions</info> of <info>user.role.authenticated</info> config object.
+     * @usage drush config:set --input-format=yaml system.site page {403: '403', front: home}
+     *   Use a mapping as value for the key <info>page</info> of <info>system.site</info> config object.
+     * @usage drush config:set --input-format=yaml user.role.authenticated ? "{label: 'Auth user', weight: 5}"
+     *   Update two top level keys (label, weight) in the <info>system.site</info> config object.
      * @aliases cset,config-set
      */
-    public function set($config_name, $key, $value = null, $options = ['input-format' => 'string', 'value' => self::REQ])
+    public function set($config_name, $key, $value = null, $options = ['input-format' => 'string'])
     {
-        // This hidden option is a convenient way to pass a value without passing a key.
-        $data = $options['value'] ?: $value;
+        $data = $value;
 
         if (!isset($data)) {
             throw new \Exception(dt('No config value specified.'));
         }
-
-        $config = $this->getConfigFactory()->getEditable($config_name);
-        // Check to see if config key already exists.
-        $new_key = $config->get($key) === null;
 
         // Special flag indicating that the value has been passed via STDIN.
         if ($data === '-') {
             $data = $this->stdin()->contents();
         }
 
-
         // Special handling for empty array.
         if ($data == '[]') {
             $data = [];
         }
 
-        // Now, we parse the value.
+        // Parse the value if needed.
         switch ($options['input-format']) {
             case 'yaml':
                 $parser = new Parser();
                 $data = $parser->parse($data, true);
         }
 
-        if (is_array($data) && !empty($data) && $this->io()->confirm(dt('Do you want to update or set multiple keys on !name config.', ['!name' => $config_name]))) {
-            foreach ($data as $data_key => $value) {
-                $config->set("$key.$data_key", $value);
+        $config = $this->getConfigFactory()->getEditable($config_name);
+        // Check to see if config key already exists.
+        $new_key = $config->get($key) === null;
+        $simulate = $this->getConfig()->simulate();
+
+        if ($key == '?' && !empty($data) && $this->io()->confirm(dt('Do you want to update or set multiple keys on !name config.', ['!name' => $config_name]))) {
+            foreach ($data as $data_key => $val) {
+                $config->set($data_key, $val);
             }
-            return $config->save();
+            return $simulate ? self::EXIT_SUCCESS : $config->save();
         } else {
             $confirmed = false;
             if ($config->isNew() && $this->io()->confirm(dt('!name config does not exist. Do you want to create a new config object?', ['!name' => $config_name]))) {
@@ -188,7 +193,7 @@ class ConfigCommands extends DrushCommands implements StdinAwareInterface, SiteA
             } elseif ($this->io()->confirm(dt('Do you want to update !key key in !name config?', ['!key' => $key, '!name' => $config_name]))) {
                 $confirmed = true;
             }
-            if ($confirmed && !$this->getConfig()->simulate()) {
+            if ($confirmed && !$simulate) {
                 return $config->set($key, $data)->save();
             }
         }
