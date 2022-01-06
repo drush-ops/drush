@@ -25,11 +25,38 @@ class ConfigTest extends CommandUnishTestCase
         }
     }
 
+    /**
+     * @todo If this becomes an integration test, add test for stdin handling.
+     */
     public function testConfigGetSet()
     {
+        // Simple value
         $this->drush('config:set', ['system.site', 'name', 'config_test']);
         $this->drush('config:get', ['system.site', 'name']);
-        $this->assertEquals("'system.site:name': config_test", $this->getOutput(), 'Config was successfully set and get.');
+        $this->assertEquals("'system.site:name': config_test", $this->getOutput());
+
+        // Nested value
+        $this->drush('config:set', ['system.site', 'page.front', 'llama']);
+        $this->drush('config:get', ['system.site', 'page.front']);
+        $this->assertEquals("'system.site:page.front': llama", $this->getOutput());
+
+        // Simple sequence value
+        $this->drush('config:set', ['user.role.authenticated', 'permissions', '[foo,bar]'], ['input-format' => 'yaml']);
+        $this->drush('config:get', ['user.role.authenticated', 'permissions'], ['format' => 'json']);
+        $output = $this->getOutputFromJSON('user.role.authenticated:permissions');
+
+        // Mapping value
+        $this->drush('config:set', ['system.site', 'page', "{403: '403', front: home}"], ['input-format' => 'yaml']);
+        $this->drush('config:get', ['system.site', 'page'], ['format' => 'json']);
+        $output = $this->getOutputFromJSON('system.site:page');
+        $this->assertSame(['403' => '403', 'front' => 'home'], $output);
+
+        // Multiple top-level keys
+        $this->drush('config:set', ['user.role.authenticated', '?', "{label: 'Auth user', weight: 5}"], ['input-format' => 'yaml']);
+        $this->drush('config:get', ['user.role.authenticated'], ['format' => 'json']);
+        $output = $this->getOutputFromJSON();
+        $this->assertSame('Auth user', $output['label']);
+        $this->assertSame(5, $output['weight']);
     }
 
     public function testConfigExportImportStatusExistingConfig()

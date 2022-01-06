@@ -51,8 +51,6 @@ class StateCommands extends DrushCommands implements StdinAwareInterface
      * @param string $key The state key, for example: <info>system.cron_last</info>.
      * @param mixed $value The value to assign to the state key. Use <info>-</info> to read from STDIN.
      * @option input-format Type for the value. Other recognized values: string, integer, float, boolean, json, yaml.
-     * @option value For internal use only.
-     * @hidden-options value
      * @usage drush sset system.maintenance_mode 1 --input-format=integer
      *  Put site into Maintenance mode.
      * @usage drush state:set system.cron_last 1406682882 --input-format=integer
@@ -61,10 +59,8 @@ class StateCommands extends DrushCommands implements StdinAwareInterface
      *   Set a key to a complex value (e.g. array)
      * @aliases sset,state-set
      */
-    public function set(string $key, $value, $options = ['input-format' => 'auto', 'value' => self::REQ]): void
+    public function set(string $key, $value, $options = ['input-format' => 'auto']): void
     {
-        // A convenient way to pass a multiline value within a backend request.
-        $value = $options['value'] ?: $value;
 
         if (!isset($value)) {
             throw new \Exception(dt('No state value specified.'));
