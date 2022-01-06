@@ -136,7 +136,7 @@ EOT;
         return $tables;
     }
 
-    public function listTablesQuoted(): ?array
+    public function listTablesQuoted(): array
     {
         $tables = $this->listTables();
         foreach ($tables as &$table) {
