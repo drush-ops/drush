@@ -433,7 +433,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>                </
                     
                 </div>
                 <div class="col-md-8">
-                    <a href="#method_set">set</a>($config_name, $key, $value = null, $options = [&#039;input-format&#039; =&gt; &#039;string&#039;])
+                    <a href="#method_set">set</a>($config_name, $key, $value, $options = [&#039;input-format&#039; =&gt; &#039;string&#039;])
         
                                             <p><p>Save a config value directly. Does not perform a config import.</p></p>                </div>
                 <div class="col-md-2"></div>
@@ -1245,7 +1245,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
                     <h3 id="method_set">
         <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/config/ConfigCommands.php#L152">at line 152</a></div>
         <code>                    
-    <strong>set</strong>($config_name, $key, $value = null, $options = [&#039;input-format&#039; =&gt; &#039;string&#039;])
+    <strong>set</strong>($config_name, $key, $value, $options = [&#039;input-format&#039; =&gt; &#039;string&#039;])
         </code>
     </h3>
     <div class="details">    
@@ -1274,12 +1274,12 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
                     <tr>
                 <td></td>
                 <td>$key</td>
-                <td><p>The config key, for example <info>page.front</info>. Use <info>?</info> if you are updating multiple keys.</p></td>
+                <td><p>The config key, for example <info>page.front</info>. Use <info>?</info> if you are updating multiple top-level keys.</p></td>
             </tr>
                     <tr>
                 <td></td>
                 <td>$value</td>
-                <td><p>The value to assign to the config key. Use <info>-</info> to read from STDIN.</p></td>
+                <td><p>The value to assign to the config key. Use <info>-</info> to read from Stdin.</p></td>
             </tr>
                     <tr>
                 <td></td>
