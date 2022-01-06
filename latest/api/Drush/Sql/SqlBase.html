@@ -306,7 +306,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>                </
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    array|null
+                    array
                 </div>
                 <div class="col-md-8">
                     <a href="#method_getDbSpec">getDbSpec</a>()
@@ -453,7 +453,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>                </
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    bool
+                    bool|null
                 </div>
                 <div class="col-md-8">
                     <a href="#method_drop">drop</a>(array $tables)
@@ -473,7 +473,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>                </
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    bool
+                    bool|null
                 </div>
                 <div class="col-md-8">
                     <a href="#method_createdb">createdb</a>(bool $quoted = false)
@@ -534,7 +534,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>                </
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    array|null
+                    array
                 </div>
                 <div class="col-md-8">
                     <a href="#method_listTablesQuoted">listTablesQuoted</a>()
@@ -1183,7 +1183,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
                     <div class="method-item">
                     <h3 id="method_getDbSpec">
         <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Sql/SqlBase.php#L120">at line 120</a></div>
-        <code>                    array|null
+        <code>                    array
     <strong>getDbSpec</strong>()
         </code>
     </h3>
@@ -1201,7 +1201,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
 
                     <table class="table table-condensed">
         <tr>
-            <td>array|null</td>
+            <td>array</td>
             <td></td>
         </tr>
     </table>
@@ -1753,7 +1753,7 @@ provide a $result_file whose value can be drush_bit_bucket().</p></p>
                     <div class="method-item">
                     <h3 id="method_drop">
         <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Sql/SqlBase.php#L397">at line 397</a></div>
-        <code>                    bool
+        <code>                    bool|null
     <strong>drop</strong>(array $tables)
         </code>
     </h3>
@@ -1781,7 +1781,7 @@ True if successful, FALSE if failed.</p></td>
 
                     <table class="table table-condensed">
         <tr>
-            <td>bool</td>
+            <td>bool|null</td>
             <td></td>
         </tr>
     </table>
@@ -1844,7 +1844,7 @@ in a Windows shell. Set TRUE if the CREATE is not running on the bash command li
                     <div class="method-item">
                     <h3 id="method_createdb">
         <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Sql/SqlBase.php#L429">at line 429</a></div>
-        <code>                    bool
+        <code>                    bool|null
     <strong>createdb</strong>(bool $quoted = false)
         </code>
     </h3>
@@ -1873,7 +1873,7 @@ True if successful, FALSE otherwise.</p></td>
 
                     <table class="table table-condensed">
         <tr>
-            <td>bool</td>
+            <td>bool|null</td>
             <td></td>
         </tr>
     </table>
@@ -2061,7 +2061,7 @@ On mysql, that means using --defaults-file to supply the user+password.</p></td>
                     <div class="method-item">
                     <h3 id="method_listTablesQuoted">
         <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Sql/SqlBase.php#L496">at line 496</a></div>
-        <code>                    array|null
+        <code>                    array
     <strong>listTablesQuoted</strong>()
         </code>
     </h3>
@@ -2078,7 +2078,7 @@ On mysql, that means using --defaults-file to supply the user+password.</p></td>
 
                     <table class="table table-condensed">
         <tr>
-            <td>array|null</td>
+            <td>array</td>
             <td><p>array of table names which exist in the current database,
 appropriately quoted for the RDMS.</p></td>
         </tr>
