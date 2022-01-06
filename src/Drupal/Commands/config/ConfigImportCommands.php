@@ -199,7 +199,6 @@ class ConfigImportCommands extends DrushCommands
      *
      * @return bool|void
      * @option diff Show preview as a diff.
-     * @option preview Deprecated. Format for displaying proposed changes. Recognized values: list, diff.
      * @option source An arbitrary directory that holds the configuration files. An alternative to label argument
      * @option partial Allows for partial config imports from the source directory. Only updates and new configs will be processed with this flag (missing configs will not be deleted). No config transformation happens.
      * @aliases cim,config-import
@@ -209,7 +208,7 @@ class ConfigImportCommands extends DrushCommands
      * @throws StorageTransformerException
      * @throws UserAbortException
      */
-    public function import(array $options = ['preview' => 'list', 'source' => self::REQ, 'partial' => false, 'diff' => false])
+    public function import(array $options = ['source' => self::REQ, 'partial' => false, 'diff' => false])
     {
         // Determine source directory.
         $source_storage_dir = ConfigCommands::getDirectory($options['source']);
@@ -247,7 +246,7 @@ class ConfigImportCommands extends DrushCommands
             return;
         }
 
-        if ($options['preview'] == 'list' && !$options['diff']) {
+        if (!$options['diff']) {
             $change_list = [];
             foreach ($storage_comparer->getAllCollectionNames() as $collection) {
                 $change_list[$collection] = $storage_comparer->getChangelist(null, $collection);
