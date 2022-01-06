@@ -13,7 +13,7 @@ trait ConfigAwareTrait
      *
      * @see https://stackoverflow.com/a/37687295.
      *
-     * @return \Drush\Config\DrushConfig
+     * @return DrushConfig
      */
     public function getConfig()
     {

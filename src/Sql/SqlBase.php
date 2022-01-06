@@ -56,12 +56,12 @@ abstract class SqlBase implements ConfigAwareInterface
     /**
      * Get the last used Process.
      */
-    public function getProcess(): \Symfony\Component\Process\Process
+    public function getProcess(): Process
     {
         return $this->process;
     }
 
-    public function setProcess(\Symfony\Component\Process\Process $process): void
+    public function setProcess(Process $process): void
     {
         $this->process = $process;
     }
@@ -117,7 +117,7 @@ abstract class SqlBase implements ConfigAwareInterface
     /*
      * Get the current $db_spec.
      */
-    public function getDbSpec(): ?array
+    public function getDbSpec(): array
     {
         return $this->dbSpec;
     }
@@ -394,7 +394,7 @@ abstract class SqlBase implements ConfigAwareInterface
      *   An array of table names
      *   True if successful, FALSE if failed.
      */
-    public function drop(array $tables): bool
+    public function drop(array $tables): ?bool
     {
         $return = true;
         if ($tables) {
@@ -426,7 +426,7 @@ abstract class SqlBase implements ConfigAwareInterface
      *   in a Windows shell. Set TRUE if the CREATE is not running on the bash command line.
      *   True if successful, FALSE otherwise.
      */
-    public function createdb(bool $quoted = false): bool
+    public function createdb(bool $quoted = false): ?bool
     {
         $dbname = $this->getDbSpec()['database'];
         $sql = $this->createdbSql($dbname, $quoted);
@@ -493,7 +493,7 @@ abstract class SqlBase implements ConfigAwareInterface
      *   An array of table names which exist in the current database,
      *   appropriately quoted for the RDMS.
      */
-    public function listTablesQuoted(): ?array
+    public function listTablesQuoted(): array
     {
         return $this->listTables();
     }

@@ -1,6 +1,7 @@
 <?php
 namespace Drush\Preflight;
 
+use Symfony\Component\Console\Input\InputInterface;
 use Consolidation\Config\Config;
 use Consolidation\Config\ConfigInterface;
 
@@ -487,7 +488,7 @@ class PreflightArgs extends Config implements PreflightArgsInterface
     /**
      * Create a Symfony Input object.
      */
-    public function createInput(): \Symfony\Component\Console\Input\InputInterface
+    public function createInput(): InputInterface
     {
         // In strict mode (the default), create an ArgvInput. When
         // strict mode is disabled, create a more forgiving input object.

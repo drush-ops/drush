@@ -2,6 +2,7 @@
 namespace Drush\Config;
 
 use Consolidation\Config\ConfigInterface;
+use Robo\Config\Config;
 use Consolidation\Config\Loader\ConfigLoaderInterface;
 use Drush\Config\Loader\YamlConfigLoader;
 use Consolidation\Config\Loader\ConfigProcessor;
@@ -30,7 +31,7 @@ use Webmozart\PathUtil\Path;
 class ConfigLocator
 {
     /**
-     * @var \Robo\Config
+     * @var Config
      */
     protected $config;
 
@@ -372,7 +373,7 @@ class ConfigLocator
     /**
      * Get the site aliases according to preflight arguments and environment.
      *
-     * @param $preflightArgs
+     * @param $paths
      * @param Environment $environment
      */
     public function getSiteAliasPaths($paths, Environment $environment): array
@@ -400,7 +401,8 @@ class ConfigLocator
     /**
      * Get the commandfile paths according to preflight arguments.
      *
-     * @param $preflightArgs
+     * @param $commandPaths
+     * @param $root
      */
     public function getCommandFilePaths($commandPaths, $root): array
     {
