@@ -49,7 +49,7 @@ class StateCommands extends DrushCommands implements StdinAwareInterface
      * @command state:set
      *
      * @param string $key The state key, for example: <info>system.cron_last</info>.
-     * @param mixed $value The value to assign to the state key. Use <info>-</info> to read from STDIN.
+     * @param mixed $value The value to assign to the state key. Use <info>-</info> to read from Stdin.
      * @option input-format Type for the value. Other recognized values: string, integer, float, boolean, json, yaml.
      * @usage drush sset system.maintenance_mode 1 --input-format=integer
      *  Put site into Maintenance mode.

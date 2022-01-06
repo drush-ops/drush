@@ -132,8 +132,8 @@ class ConfigCommands extends DrushCommands implements StdinAwareInterface, SiteA
      * @validate-config-name
      * @todo @interact-config-name deferred until we have interaction for key.
      * @param $config_name The config object name, for example <info>system.site</info>.
-     * @param $key The config key, for example <info>page.front</info>. Use <info>?</info> if you are updating multiple keys.
-     * @param $value The value to assign to the config key. Use <info>-</info> to read from STDIN.
+     * @param $key The config key, for example <info>page.front</info>. Use <info>?</info> if you are updating multiple top-level keys.
+     * @param $value The value to assign to the config key. Use <info>-</info> to read from Stdin.
      * @option input-format Format to parse the object. Recognized values: <info>string</info>, <info>yaml</info>. Since JSON is a subset of YAML, $value may be in JSON format.
      * @usage drush config:set system.site name MySite
      *   Sets a value for the key <info>name</info> of <info>system.site</info> config object.
@@ -149,7 +149,7 @@ class ConfigCommands extends DrushCommands implements StdinAwareInterface, SiteA
      *   Update two top level keys (label, weight) in the <info>system.site</info> config object.
      * @aliases cset,config-set
      */
-    public function set($config_name, $key, $value = null, $options = ['input-format' => 'string'])
+    public function set($config_name, $key, $value, $options = ['input-format' => 'string'])
     {
         $data = $value;
 
