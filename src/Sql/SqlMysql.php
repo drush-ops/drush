@@ -19,7 +19,7 @@ class SqlMysql extends SqlBase
         $dbSpec = $this->getDbSpec();
         if ($hide_password) {
             // Default to unix socket if configured.
-            $unixSocket = !empty($dbSpec['unix_socket']) ? 'socket="' . $dbSpec['unix_socket'] . '"' : '';
+            $unixSocket = empty($dbSpec['unix_socket']) ? '' : 'socket="' . $dbSpec['unix_socket'] . '"';
 
             // EMPTY password is not the same as NO password, and is valid.
             $contents = <<<EOT

@@ -349,11 +349,7 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
                 }
                 if ($phase_index > $validated_phase) {
                     $current_phase .= 'Validate';
-                    if (method_exists($bootstrap, $current_phase)) {
-                        $result_cache[$phase_index] = $bootstrap->{$current_phase}($this);
-                    } else {
-                        $result_cache[$phase_index] = true;
-                    }
+                    $result_cache[$phase_index] = method_exists($bootstrap, $current_phase) ? $bootstrap->{$current_phase}($this) : true;
                     $validated_phase = $phase_index;
                 }
             }

@@ -94,7 +94,7 @@ class FsUtils
     public static function isUsableDirectory(?string $dir)
     {
         // This directory is not usable if it is empty or if it is the root.
-        if (empty($dir) || (dirname($dir) == $dir)) {
+        if (empty($dir) || (dirname($dir) === $dir)) {
             return false;
         }
 

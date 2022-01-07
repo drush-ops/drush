@@ -41,7 +41,7 @@ class RedispatchToSiteLocal
 
         // Do another special check to detect symlinked Drush folder similar
         // to what the SUT sets up for Drush functional tests.
-        if (dirname($vendor) == dirname($siteLocalDrush)) {
+        if (dirname($vendor) === dirname($siteLocalDrush)) {
             return false;
         }
 

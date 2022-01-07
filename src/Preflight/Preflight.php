@@ -266,7 +266,7 @@ class Preflight
         // NOTE: termination handlers have not been set yet, so it is okay
         // to exit early without taking special action.
         $status = RedispatchToSiteLocal::redispatchIfSiteLocalDrush($argv, $root, $this->environment->vendorPath(), $this->logger());
-        if ($status !== false) {
+        if ($status) {
             return $status;
         }
 

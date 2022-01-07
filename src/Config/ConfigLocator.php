@@ -31,7 +31,7 @@ use Webmozart\PathUtil\Path;
 class ConfigLocator
 {
     /**
-     * @var Config
+     * @var ConfigInterface
      */
     protected $config;
 
@@ -393,9 +393,8 @@ class ConfigLocator
             },
             array_unique($base_dirs)
         );
-        $paths = array_merge($paths, $site_local_paths);
 
-        return $paths;
+        return array_merge($paths, $site_local_paths);
     }
 
     /**

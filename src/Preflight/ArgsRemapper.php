@@ -85,7 +85,7 @@ class ArgsRemapper
             return false;
         }
 
-        if (strlen($arg) == strlen($candidate)) {
+        if (strlen($arg) === strlen($candidate)) {
             return true;
         }
 

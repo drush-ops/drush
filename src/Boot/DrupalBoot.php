@@ -36,7 +36,7 @@ abstract class DrupalBoot extends BaseBoot
                 return false;
             }
             $scan = $next;
-            if ($scan == $root) {
+            if ($scan === $root) {
                 return false;
             }
         }

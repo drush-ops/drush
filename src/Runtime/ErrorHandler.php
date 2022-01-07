@@ -29,7 +29,7 @@ class ErrorHandler implements LoggerAwareInterface, HandlerInterface
         // E_DEPRECATED was added in PHP 5.3. Drupal 6 will not fix all the
         // deprecated errors, but suppresses them. So we suppress them as well.
         if (defined('E_DEPRECATED')) {
-            $errno = $errno & ~E_DEPRECATED;
+            $errno &= ~E_DEPRECATED;
         }
 
         // "error_reporting" is usually set in php.ini, but may be changed by
