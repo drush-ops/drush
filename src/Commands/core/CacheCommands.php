@@ -221,8 +221,6 @@ class CacheCommands extends DrushCommands implements CustomEventAwareInterface, 
         require_once DRUSH_DRUPAL_CORE . '/includes/utility.inc';
 
         $request = Drush::bootstrap()->getRequest();
-        // Manually resemble early bootstrap of DrupalKernel::boot().
-        require_once DRUSH_DRUPAL_CORE . '/includes/bootstrap.inc';
         DrupalKernel::bootEnvironment();
 
         // Avoid 'Only variables should be passed by reference'
