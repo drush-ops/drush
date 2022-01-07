@@ -16,14 +16,14 @@ trait ExecTrait
      *   Optional URI or site path to open in browser. If omitted, or if a site path
      *   is specified, the current site home page uri will be prepended if the site's
      *   hostname resolves.
-     * @param int $sleep
-     * @param bool $port
-     * @param bool $browser
-     * @return bool
+     * @param $sleep
+     * @param $port
+     * @param string|bool $browser
+     * @return
      *   TRUE if browser was opened. FALSE if browser was disabled by the user or a
      *   default browser could not be found.
      */
-    public function startBrowser($uri = null, $sleep = 0, $port = false, $browser = true)
+    public function startBrowser($uri = null, int $sleep = 0, ?int $port = null, $browser = false): bool
     {
         if ($browser) {
             // We can only open a browser if we have a DISPLAY environment variable on
@@ -54,9 +54,9 @@ trait ExecTrait
                 // See if we can find an OS helper to open URLs in default browser.
                 if (self::programExists('xdg-open')) {
                     $browser = 'xdg-open';
-                } else if (self::programExists('open')) {
+                } elseif (self::programExists('open')) {
                     $browser = 'open';
-                } else if (self::programExists('start')) {
+                } elseif (self::programExists('start')) {
                     $browser = 'start';
                 } else {
                     // Can't find a valid browser.

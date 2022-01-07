@@ -32,7 +32,7 @@ class Logger extends RoboLogger
         parent::__construct($output);
     }
 
-    public function log($level, $message, array $context = [])
+    public function log($level, $message, array $context = []): void
     {
         // Append timer and memory values.
         if (Drush::debug()) {
@@ -52,7 +52,7 @@ class Logger extends RoboLogger
             // format_plural() not always available.
             return dt('@count bytes', ['@count' => $size]);
         } else {
-            $size = $size / DRUSH_KILOBYTE; // Convert bytes to kilobytes.
+            $size /= DRUSH_KILOBYTE; // Convert bytes to kilobytes.
             $units = [
                 dt('@size KB', []),
                 dt('@size MB', []),
@@ -65,7 +65,7 @@ class Logger extends RoboLogger
             ];
             foreach ($units as $unit) {
                 if (round($size, 2) >= DRUSH_KILOBYTE) {
-                    $size = $size / DRUSH_KILOBYTE;
+                    $size /= DRUSH_KILOBYTE;
                 } else {
                     break;
                 }
