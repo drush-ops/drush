@@ -423,9 +423,10 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
         // Find the dir from sites.php file
         $sites_file = $root . '/sites/sites.php';
         if (file_exists($sites_file)) {
-            include $sites_file;
             /** @var array $sites */
-            if (isset($sites) && array_key_exists($uri, $sites)) {
+            $sites = [];
+            include $sites_file;
+            if (!empty($sites) && array_key_exists($uri, $sites)) {
                 return $sites[$uri];
             }
         }
