@@ -224,7 +224,7 @@
                     bool
                 </div>
                 <div class="col-md-8">
-                    <a href="#method_startBrowser">startBrowser</a>($uri = null, int $sleep = 0, bool $port = false, bool $browser = true)
+                    <a href="#method_startBrowser">startBrowser</a>($uri = null, int $sleep = 0, int|null $port = null, string|bool $browser = false)
         
                                             <p><p>Starts a background browser/tab for the current site or a specified URL.</p></p>                </div>
                 <div class="col-md-2"><small>from&nbsp;<a href="../../../Drush/Exec/ExecTrait.html#method_startBrowser">
@@ -410,7 +410,7 @@ values may participate in configuration injection.</p></p>                </div>
         <div class="location">in <a href="../../../Drush/Exec/ExecTrait.html#method_startBrowser">
 <abbr title="Drush\Exec\ExecTrait">ExecTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/11.x/src/Exec/ExecTrait.php#L26">at line 26</a></div>
         <code>                    bool
-    <strong>startBrowser</strong>($uri = null, int $sleep = 0, bool $port = false, bool $browser = true)
+    <strong>startBrowser</strong>($uri = null, int $sleep = 0, int|null $port = null, string|bool $browser = false)
         </code>
     </h3>
     <div class="details">    
@@ -437,12 +437,12 @@ hostname resolves.</p></td>
                 <td></td>
             </tr>
                     <tr>
-                <td>bool</td>
+                <td>int|null</td>
                 <td>$port</td>
                 <td></td>
             </tr>
                     <tr>
-                <td>bool</td>
+                <td>string|bool</td>
                 <td>$browser</td>
                 <td></td>
             </tr>
@@ -454,7 +454,7 @@ hostname resolves.</p></td>
                     <table class="table table-condensed">
         <tr>
             <td>bool</td>
-            <td><p>TRUE if browser was opened. FALSE if browser was disabled by the user or a
+            <td><p>if browser was opened. FALSE if browser was disabled by the user or a
 default browser could not be found.</p></td>
         </tr>
     </table>
