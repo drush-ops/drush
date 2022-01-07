@@ -542,7 +542,7 @@ class MigrateRunnerCommands extends DrushCommands
      * @validate-migration-id
      * @version 10.4
      *
-     * @throws \Drupal\Component\Plugin\Exception\PluginException
+     * @throws PluginException
      */
     public function stop(string $migrationId): void
     {
@@ -581,7 +581,7 @@ class MigrateRunnerCommands extends DrushCommands
      * @validate-migration-id
      * @version 10.4
      *
-     * @throws \Drupal\Component\Plugin\Exception\PluginException
+     * @throws PluginException
      */
     public function resetStatus(string $migrationId): void
     {
@@ -638,7 +638,7 @@ class MigrateRunnerCommands extends DrushCommands
      * @return RowsOfFields
      *   Migration messages status formatted as table.
      *
-     * @throws \Drupal\Component\Plugin\Exception\PluginException
+     * @throws PluginException
      */
     public function messages(string $migrationId, array $options = ['idlist' => self::REQ]): RowsOfFields
     {
@@ -740,7 +740,7 @@ class MigrateRunnerCommands extends DrushCommands
      * @return RowsOfFields
      *   Source fields of the given migration.
      *
-     * @throws \Drupal\Component\Plugin\Exception\PluginException
+     * @throws PluginException
      */
     public function fieldsSource(string $migrationId): RowsOfFields
     {

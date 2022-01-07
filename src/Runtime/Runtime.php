@@ -68,7 +68,7 @@ class Runtime
         $status = $this->preflight->preflight($argv);
 
         // If preflight signals that we are done, then exit early.
-        if ($status !== false) {
+        if ($status) {
             return $status;
         }
 

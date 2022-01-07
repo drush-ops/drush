@@ -109,7 +109,7 @@ class StateCommands extends DrushCommands implements StdinAwareInterface
     {
         if ($format == 'auto') {
             if (is_numeric($value)) {
-                $value = $value + 0; // http://php.net/manual/en/function.is-numeric.php#107326
+                $value += 0; // http://php.net/manual/en/function.is-numeric.php#107326
                 $format = gettype($value);
             } elseif (($value == 'TRUE') || ($value == 'FALSE')) {
                 $format = 'bool';
@@ -141,7 +141,7 @@ class StateCommands extends DrushCommands implements StdinAwareInterface
                 $value = json_decode($value, true);
                 break;
             case 'yaml':
-                $value = Yaml::parse($value, false, true);
+                $value = Yaml::parse($value, false);
                 break;
         }
         return $value;

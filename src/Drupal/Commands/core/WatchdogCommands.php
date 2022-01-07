@@ -228,7 +228,7 @@ class WatchdogCommands extends DrushCommands
             }
             $ret = Database::getConnection()->truncate('watchdog')->execute();
             $this->logger()->success(dt('All watchdog messages have been deleted.'));
-        } else if (is_numeric($substring)) {
+        } elseif (is_numeric($substring)) {
             $this->output()->writeln(dt('Watchdog message #!wid will be deleted.', ['!wid' => $substring]));
             if (!$this->io()->confirm(dt('Do you want to continue?'))) {
                 throw new UserAbortException();
@@ -297,7 +297,7 @@ class WatchdogCommands extends DrushCommands
         $conditions = [];
         if ($type) {
             $types = $this->messageTypes();
-            if (array_search($type, $types) === false) {
+            if (!in_array($type, $types)) {
                 $msg = "Unrecognized message type: !type.\nRecognized types are: !types.";
                 throw new \Exception(dt($msg, ['!type' => $type, '!types' => implode(', ', $types)]));
             }
@@ -374,11 +374,7 @@ class WatchdogCommands extends DrushCommands
                 unset($result->referer);
             }
             // Username.
-            if ($account = User::load($result->uid)) {
-                $result->username = $account->name;
-            } else {
-                $result->username = dt('Anonymous');
-            }
+            $result->username = ($account = User::load($result->uid)) ? $account->name : dt('Anonymous');
             unset($result->uid);
             $message_length = PHP_INT_MAX;
         }

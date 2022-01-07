@@ -140,11 +140,11 @@ class ViewsCommands extends DrushCommands
 
         // Get the --name option.
         $name = StringUtils::csvToArray($options['name']);
-        $with_name = !empty($name) ? true : false;
+        $with_name = !empty($name);
 
         // Get the --tags option.
         $tags =  StringUtils::csvToArray($options['tags']);
-        $with_tags = !empty($tags) ? true : false;
+        $with_tags = !empty($tags);
 
         // Get the --status option. Store user input apart to reuse it after.
         $status = $options['status'];

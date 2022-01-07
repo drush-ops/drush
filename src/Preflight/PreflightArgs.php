@@ -495,8 +495,6 @@ class PreflightArgs extends Config implements PreflightArgsInterface
         if ($this->isStrict()) {
             return new DrushArgvInput($this->args());
         }
-
-        $input = new LessStrictArgvInput($this->args());
-        return $input;
+        return new LessStrictArgvInput($this->args());
     }
 }

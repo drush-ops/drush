@@ -564,11 +564,7 @@ abstract class SqlBase implements ConfigAwareInterface
     {
         $db_spec = [];
 
-        if (is_array($db_url)) {
-            $db_url_default = $db_url['default'];
-        } else {
-            $db_url_default = $db_url;
-        }
+        $db_url_default = is_array($db_url) ? $db_url['default'] : $db_url;
 
         // If it's a sqlite database, pick the database path and we're done.
         if (strpos($db_url_default, 'sqlite://') === 0) {

@@ -142,19 +142,18 @@ class LegacyAliasConverter
     {
         if (!empty($data)) {
             $indent = 2;
-            return Yaml::dump($data, PHP_INT_MAX, $indent, false, true);
+            return Yaml::dump($data, PHP_INT_MAX, $indent, false);
         }
 
         $recoverSource = $this->recoverLegacyFile($path);
         if (!$recoverSource) {
             $recoverSource = 'the source alias file';
         }
-        $contents = <<<EOT
+
+        return <<<EOT
 # This is a placeholder file used to track when $recoverSource was converted.
 # If you delete $recoverSource, then you may delete this file.
 EOT;
-
-        return $contents;
     }
 
     protected function writeOne($path, $contents): void
@@ -205,7 +204,7 @@ EOT;
         // the checksum we cached in the checksum file, then there has
         // been no user modification of this file, and it is safe to
         // overwrite it.
-        return $previousChecksum == $previousWrittenChecksum;
+        return $previousChecksum === $previousWrittenChecksum;
     }
 
     public function saveChecksum($checksumPath, $path, $contents): void

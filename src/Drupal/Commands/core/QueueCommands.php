@@ -84,7 +84,7 @@ class QueueCommands extends DrushCommands
                 // If the worker indicates there is a problem with the whole queue,
                 // release the item.
                 $queue->releaseItem($item);
-                throw new \Exception($e->getMessage());
+                throw new \Exception($e->getMessage(), $e->getCode(), $e);
             } catch (DelayedRequeueException $e) {
                 // The worker requested the task not be immediately re-queued.
                 // - If the queue doesn't support ::delayItem(), we should leave the
@@ -161,8 +161,7 @@ class QueueCommands extends DrushCommands
     {
         $arg_name = $commandData->annotationData()->get('validate-queue', null);
         $name = $commandData->input()->getArgument($arg_name);
-        $all = array_keys(self::getQueues());
-        if (!in_array($name, $all)) {
+        if (!array_key_exists($name, self::getQueues())) {
             $msg = dt('Queue not found: !name', ['!name' => $name]);
             return new CommandError($msg);
         }

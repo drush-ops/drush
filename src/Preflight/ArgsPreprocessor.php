@@ -164,7 +164,7 @@ class ArgsPreprocessor
         $acceptsValueFromNextArg = $keyParam[strlen($keyParam) - 1] != '~';
 
         // If $opt does not begin with $key, then it cannot be a match.
-        if ($key != substr($opt, 0, strlen($key))) {
+        if ($key !== substr($opt, 0, strlen($key))) {
             return [false, false, false];
         }
 
@@ -173,7 +173,7 @@ class ArgsPreprocessor
         // a value; in this case, the value will be provided from the next
         // argument in the calling function. If this option does not take a
         // supplied value, then we set its value to 'true'
-        if (strlen($key) == strlen($opt)) {
+        if (strlen($key) === strlen($opt)) {
             return [$methodName, $acceptsValue ? null: true, $acceptsValueFromNextArg];
         }
 
