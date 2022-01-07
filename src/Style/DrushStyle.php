@@ -9,7 +9,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 class DrushStyle extends SymfonyStyle
 {
-    public function confirm($question, $default = true)
+    public function confirm($question, $default = true): bool
     {
         // Automatically accept confirmations if the --yes argument was supplied.
         if (Drush::affirmative()) {
@@ -20,9 +20,7 @@ class DrushStyle extends SymfonyStyle
             $this->warning($question . ': no.');
             return false;
         }
-
-        $return = parent::confirm($question, $default);
-        return $return;
+        return parent::confirm($question, $default);
     }
 
     public function choice($question, array $choices, $default = null)
@@ -34,17 +32,17 @@ class DrushStyle extends SymfonyStyle
         return array_search($return, $choices);
     }
 
-    public function warning($message)
+    public function warning($message): void
     {
         $this->block($message, 'WARNING', 'fg=black;bg=yellow', ' ! ', true);
     }
 
-    public function note($message)
+    public function note($message): void
     {
         $this->block($message, 'NOTE', 'fg=black;bg=yellow', ' ! ');
     }
 
-    public function caution($message)
+    public function caution($message): void
     {
         $this->block($message, 'CAUTION', 'fg=black;bg=yellow', ' ! ', true);
     }
