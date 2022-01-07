@@ -16,14 +16,14 @@ trait ExecTrait
      *   Optional URI or site path to open in browser. If omitted, or if a site path
      *   is specified, the current site home page uri will be prepended if the site's
      *   hostname resolves.
-     * @param int $sleep
-     * @param bool $port
-     * @param bool $browser
-     * @return bool
+     * @param $sleep
+     * @param $port
+     * @param string|bool $browser
+     * @return
      *   TRUE if browser was opened. FALSE if browser was disabled by the user or a
      *   default browser could not be found.
      */
-    public function startBrowser($uri = null, int $sleep = 0, bool $port = false, bool $browser = true)
+    public function startBrowser($uri = null, int $sleep = 0, ?int $port = null, $browser = false): bool
     {
         if ($browser) {
             // We can only open a browser if we have a DISPLAY environment variable on
