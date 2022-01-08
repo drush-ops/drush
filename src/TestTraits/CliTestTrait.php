@@ -30,6 +30,8 @@ trait CliTestTrait
      */
     private int $defaultIdleTimeout = 0;
 
+    protected $process = null;
+
     /**
      * Idle timeouts for commands.
      *

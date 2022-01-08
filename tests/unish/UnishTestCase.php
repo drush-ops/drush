@@ -4,8 +4,6 @@ namespace Unish;
 
 use Composer\Semver\Comparator;
 use Consolidation\SiteAlias\SiteAlias;
-use Consolidation\SiteProcess\SiteProcess;
-use Symfony\Component\Process\Process;
 use Yoast\PHPUnitPolyfills\TestCases\TestCase;
 use Symfony\Component\Yaml\Yaml;
 use Webmozart\PathUtil\Path;
@@ -25,7 +23,7 @@ abstract class UnishTestCase extends TestCase
     /**
      * Process of last executed command.
      */
-    protected Process $process;
+    protected $process;
 
     /**
      * A list of Drupal sites that have been recently installed. They key is the
