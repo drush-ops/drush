@@ -1,4 +1,5 @@
 <?php
+
 namespace Drush\Drupal\Commands\pm;
 
 use Consolidation\AnnotatedCommand\CommandData;
@@ -16,7 +17,6 @@ use Drush\Utils\StringUtils;
 
 class PmCommands extends DrushCommands
 {
-
     protected $configFactory;
 
     protected $moduleInstaller;
@@ -263,7 +263,7 @@ class PmCommands extends DrushCommands
             $row = [
                 'package' => $extension->info['package'],
                 'project' => isset($extension->info['project']) ? $extension->info['project'] : '',
-                'display_name' => $extension->info['name']. ' ('. $extension->getName(). ')',
+                'display_name' => $extension->info['name'] . ' (' . $extension->getName() . ')',
                 'name' => $extension->getName(),
                 'type' => $extension->getType(),
                 'path' => $extension->getPath(),

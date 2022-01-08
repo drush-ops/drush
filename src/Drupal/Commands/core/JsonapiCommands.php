@@ -1,4 +1,5 @@
 <?php
+
 namespace Drush\Drupal\Commands\core;
 
 use Consolidation\OutputFormatters\StructuredData\UnstructuredData;
@@ -9,7 +10,6 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 class JsonapiCommands extends DrushCommands
 {
-
     /**
      * Execute a JSONAPI request.
      *

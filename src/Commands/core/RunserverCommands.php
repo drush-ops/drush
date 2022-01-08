@@ -1,4 +1,5 @@
 <?php
+
 namespace Drush\Commands\core;
 
 use Consolidation\SiteProcess\Util\Tty;
@@ -10,7 +11,6 @@ use Webmozart\PathUtil\Path;
 
 class RunserverCommands extends DrushCommands
 {
-
     use ExecTrait;
 
     protected $uri;

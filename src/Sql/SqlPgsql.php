@@ -8,7 +8,6 @@ define('PSQL_SHOW_TABLES', "SELECT tablename FROM pg_tables WHERE schemaname='pu
 
 class SqlPgsql extends SqlBase
 {
-
     public $queryExtra = "--no-align --field-separator=\"\t\" --pset tuples_only=on";
 
     public $queryFile = "--file";
@@ -158,7 +157,7 @@ class SqlPgsql extends SqlBase
             foreach ($skip_tables as $table) {
                 $ignores[] = "--exclude-table=$table";
             }
-            $exec .= ' '. implode(' ', $ignores);
+            $exec .= ' ' . implode(' ', $ignores);
             // Run pg_dump again and append output if we need some structure only tables.
             if (!empty($structure_tables)) {
                 $parens = true;

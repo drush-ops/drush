@@ -7,7 +7,6 @@ namespace Unish;
  */
 class DeployTest extends UnishIntegrationTestCase
 {
-
     /**
      * A simple test since all the sub-commands are tested elsewhere.
      */
@@ -15,7 +14,7 @@ class DeployTest extends UnishIntegrationTestCase
     {
         // Prep a config directory that will be imported later.
         $this->drush('config:export');
-        
+
         $this->drush('deploy');
         $expecteds = ["Database updates start.", 'Config import start.', 'Deploy hook start.', 'Cache rebuild start.'];
         foreach ($expecteds as $expected) {

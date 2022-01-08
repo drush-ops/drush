@@ -1,4 +1,5 @@
 <?php
+
 namespace Drush\Runtime;
 
 use League\Container\Container;

@@ -6,7 +6,6 @@ use PDO;
 
 class SqlMysql extends SqlBase
 {
-
     public $queryExtra = '-A';
 
     public function command(): string
@@ -186,7 +185,7 @@ EOT;
                 $ignores[] = '--ignore-table=' . $dbSpec['database'] . '.' . $table;
                 $parens = true;
             }
-            $exec .= ' '. implode(' ', $ignores);
+            $exec .= ' ' . implode(' ', $ignores);
 
             // Run mysqldump again and append output if we need some structure only tables.
             if (!empty($structure_tables)) {

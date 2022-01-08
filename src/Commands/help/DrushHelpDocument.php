@@ -7,7 +7,6 @@ use Symfony\Component\Console\Command\Command;
 
 class DrushHelpDocument extends HelpDocument
 {
-
     /**
      * @inheritdoc
      */

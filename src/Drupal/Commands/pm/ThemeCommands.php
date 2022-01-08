@@ -1,4 +1,5 @@
 <?php
+
 namespace Drush\Drupal\Commands\pm;
 
 use Drupal\Core\Extension\ThemeInstallerInterface;
@@ -8,7 +9,6 @@ use Drush\Utils\StringUtils;
 
 class ThemeCommands extends DrushCommands
 {
-
     protected $themeInstaller;
 
     public function __construct(ThemeInstallerInterface $themeInstaller)

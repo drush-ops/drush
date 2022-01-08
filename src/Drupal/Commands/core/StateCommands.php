@@ -119,7 +119,7 @@ class StateCommands extends DrushCommands implements StdinAwareInterface
         // Now, we parse the object.
         switch ($format) {
             case 'integer':
-                $value = (integer)$value;
+                $value = (int)$value;
                 break;
             // from: http://php.net/gettype
             // for historical reasons "double" is returned in case of a float, and not simply "float"

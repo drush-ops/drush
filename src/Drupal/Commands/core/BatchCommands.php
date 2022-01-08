@@ -1,4 +1,5 @@
 <?php
+
 namespace Drush\Drupal\Commands\core;
 
 use Consolidation\OutputFormatters\StructuredData\UnstructuredListData;
@@ -6,7 +7,6 @@ use Drush\Commands\DrushCommands;
 
 class BatchCommands extends DrushCommands
 {
-
     /**
      * Process operations in the specified batch set.
      *

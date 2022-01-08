@@ -1,4 +1,5 @@
 <?php
+
 namespace Drush\SiteAlias;
 
 use PHPUnit\Framework\TestCase;

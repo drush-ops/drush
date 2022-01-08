@@ -1,4 +1,5 @@
 <?php
+
 namespace Drush\Commands;
 
 /**
@@ -8,7 +9,6 @@ namespace Drush\Commands;
 
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Consolidation\OutputFormatters\Options\FormatterOptions;
-
 use Consolidation\AnnotatedCommand\CommandData;
 
 class ExampleCommands extends DrushCommands

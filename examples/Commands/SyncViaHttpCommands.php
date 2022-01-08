@@ -1,4 +1,5 @@
 <?php
+
 namespace Drush\Commands;
 
 use Consolidation\AnnotatedCommand\CommandData;
@@ -13,7 +14,6 @@ use Symfony\Component\Filesystem\Filesystem;
 
 class SyncViaHttpCommands extends DrushCommands
 {
-
   /**
    * When a hook extends a command with additional options, it must
    * implement declare those option(s) in a @hook option like this one.  Doing so will add

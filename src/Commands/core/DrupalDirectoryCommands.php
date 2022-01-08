@@ -1,16 +1,15 @@
 <?php
+
 namespace Drush\Commands\core;
 
 use Drush\Commands\DrushCommands;
 use Consolidation\SiteAlias\HostPath;
 use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
 use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
-
 use Drush\Backend\BackendPathEvaluator;
 
 class DrupalDirectoryCommands extends DrushCommands implements SiteAliasManagerAwareInterface
 {
-
     use SiteAliasManagerAwareTrait;
 
     /** @var BackendPathEvaluator */

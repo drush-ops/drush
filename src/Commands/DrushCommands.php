@@ -1,4 +1,5 @@
 <?php
+
 namespace Drush\Commands;
 
 use Symfony\Component\Console\Style\SymfonyStyle;
@@ -27,8 +28,8 @@ abstract class DrushCommands implements IOAwareInterface, LoggerAwareInterface, 
     use ExecTrait;
 
     // This is more readable.
-    const REQ=InputOption::VALUE_REQUIRED;
-    const OPT=InputOption::VALUE_OPTIONAL;
+    const REQ = InputOption::VALUE_REQUIRED;
+    const OPT = InputOption::VALUE_OPTIONAL;
 
     // Common exit codes.
     const EXIT_SUCCESS = 0;

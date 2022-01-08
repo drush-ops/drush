@@ -4,6 +4,7 @@
  * @file
  *   Commands which are useful for unit tests.
  */
+
 namespace Drush\Commands;
 
 use Drupal\Core\DrupalKernel;
@@ -14,7 +15,6 @@ use Drush\Drush;
 
 class TestFixtureCommands extends DrushCommands implements AutoloaderAwareInterface
 {
-
     use AutoloaderAwareTrait;
 
   // Obsolete:
@@ -126,7 +126,7 @@ class TestFixtureCommands extends DrushCommands implements AutoloaderAwareInterf
     {
         static $autoloader = false;
 
-        $autoloadFilePath = $drupal_root .'/autoload.php';
+        $autoloadFilePath = $drupal_root . '/autoload.php';
         if (!$autoloader && file_exists($autoloadFilePath)) {
             $autoloader = require $autoloadFilePath;
         }

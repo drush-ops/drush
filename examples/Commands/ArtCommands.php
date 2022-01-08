@@ -1,4 +1,5 @@
 <?php
+
 namespace Drush\Commands;
 
 use Consolidation\AnnotatedCommand\AnnotationData;
@@ -9,7 +10,6 @@ use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
-
 use Drush\Style\DrushStyle;
 use Drush\Utils\StringUtils;
 

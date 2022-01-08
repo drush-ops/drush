@@ -10,7 +10,6 @@ namespace Unish;
  */
 class SiteSshTest extends CommandUnishTestCase
 {
-
     /**
      * Test drush ssh --simulate. No additional bash passed.
      */

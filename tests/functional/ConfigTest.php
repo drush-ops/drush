@@ -118,7 +118,7 @@ XML
         $contents = preg_replace('/front: .*/', 'front: unish partial', $contents);
         $partial_path = self::getSandbox() . '/partial';
         $this->mkdir($partial_path);
-        $contents = file_put_contents($partial_path. '/system.site.yml', $contents);
+        $contents = file_put_contents($partial_path . '/system.site.yml', $contents);
         $this->drush('config-import', [], ['partial' => null, 'source' => $partial_path]);
         $this->drush('config-get', ['system.site', 'page'], ['format' => 'json']);
         $page = $this->getOutputFromJSON('system.site:page');
@@ -186,6 +186,6 @@ YAML_FRAGMENT;
     protected function getConfigSyncDir()
     {
         $this->drush('core:status', [], ['format' => 'json', 'fields' => 'config-sync']);
-        return $this->webroot().'/'.$this->getOutputFromJSON('config-sync');
+        return $this->webroot() . '/' . $this->getOutputFromJSON('config-sync');
     }
 }

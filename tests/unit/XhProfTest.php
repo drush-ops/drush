@@ -13,7 +13,6 @@ use PHPUnit\Framework\TestCase;
  */
 class XhProfTest extends TestCase
 {
-
   /**
    * Test various combinations of XHProf flag options.
    *

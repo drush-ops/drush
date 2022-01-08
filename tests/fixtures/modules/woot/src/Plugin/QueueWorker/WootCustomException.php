@@ -15,7 +15,6 @@ use Drupal\Core\Queue\QueueWorkerBase;
  */
 class WootCustomException extends QueueWorkerBase
 {
-
   /**
    * {@inheritdoc}
    */

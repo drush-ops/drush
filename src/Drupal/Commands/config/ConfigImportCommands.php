@@ -1,4 +1,5 @@
 <?php
+
 namespace Drush\Drupal\Commands\config;
 
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -28,7 +29,6 @@ use Webmozart\PathUtil\Path;
 
 class ConfigImportCommands extends DrushCommands
 {
-
     /**
      * @var ConfigManagerInterface
      */

@@ -1,4 +1,5 @@
 <?php
+
 namespace Drupal\woot\Commands;
 
 use Symfony\Component\Console\Command\Command;
@@ -38,7 +39,7 @@ class GreetCommand extends Command
     {
         $name = $input->getArgument('name');
         if ($name) {
-            $text = 'Hello '.$name;
+            $text = 'Hello ' . $name;
         } else {
             $text = 'Hello';
         }

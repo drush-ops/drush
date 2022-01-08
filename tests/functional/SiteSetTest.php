@@ -8,7 +8,6 @@ namespace Unish;
  */
 class SiteSetTest extends CommandUnishTestCase
 {
-
     /**
      * Test functionality of site set.
      */

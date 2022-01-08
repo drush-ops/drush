@@ -1,4 +1,5 @@
 <?php
+
 namespace Drush\Commands\core;
 
 use Consolidation\AnnotatedCommand\AnnotationData;
@@ -14,7 +15,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class TopicCommands extends DrushCommands
 {
-
     /**
      * Read detailed documentation on a given topic.
      *

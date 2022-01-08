@@ -1,4 +1,5 @@
 <?php
+
 namespace Drush\SiteAlias;
 
 use Drush\SiteAlias\Util\InternalYamlDataFileLoader;

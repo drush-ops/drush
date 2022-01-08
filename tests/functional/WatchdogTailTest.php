@@ -11,7 +11,6 @@ namespace Unish;
  */
 class WatchdogTailTest extends CommandUnishTestCase
 {
-
     /**
      * Test that watchdog tail works.
      */

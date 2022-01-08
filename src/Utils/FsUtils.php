@@ -10,7 +10,6 @@ use Webmozart\PathUtil\Path;
 
 class FsUtils
 {
-
     /**
      * Decide where our backup directory should go
      *

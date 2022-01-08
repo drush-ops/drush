@@ -1,4 +1,5 @@
 <?php
+
 namespace Drush\Drupal;
 
 use Drush\Drush;

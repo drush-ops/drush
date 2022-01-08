@@ -10,7 +10,6 @@ use Symfony\Component\Console\Input\InputInterface;
 
 class ImageCommands extends DrushCommands
 {
-
     /**
      * Flush all derived images for a given style.
      *

@@ -23,7 +23,6 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class DrushHelpCommand extends BaseCommand
 {
-
     /**
      * Label for PsySH commands.
      */

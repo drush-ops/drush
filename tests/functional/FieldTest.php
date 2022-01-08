@@ -10,7 +10,6 @@ use Webmozart\PathUtil\Path;
  */
 class FieldTest extends CommandUnishTestCase
 {
-
     public function setup(): void
     {
         parent::setup();

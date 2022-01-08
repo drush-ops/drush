@@ -1,4 +1,5 @@
 <?php
+
 namespace Drush\Drupal\Commands\core;
 
 use Consolidation\OutputFormatters\Options\FormatterOptions;

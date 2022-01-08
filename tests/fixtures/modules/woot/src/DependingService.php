@@ -21,7 +21,6 @@ use Drupal\drush_empty_module\MuchServiceManyWow;
  */
 class DependingService
 {
-
     /**
      * @var \Drupal\drush_empty_module\MuchServiceManyWow
      */

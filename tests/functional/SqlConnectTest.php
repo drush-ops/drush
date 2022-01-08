@@ -12,7 +12,6 @@ namespace Unish;
  */
 class SqlConnectTest extends CommandUnishTestCase
 {
-
     public function testSqlConnect()
     {
         $this->setUpDrupal(1, true);

@@ -13,7 +13,6 @@ use Webmozart\PathUtil\Path;
  */
 class SqlDumpTest extends CommandUnishTestCase
 {
-
   /**
    * Test that a dump file is created successfully.
    */

@@ -1,11 +1,11 @@
 <?php
+
 namespace Drush\Drupal;
 
 use Drupal\Core\Mail\MailFormatHelper;
 
 class DrupalUtil
 {
-
     /**
      * Output a Drupal render array, object or string as plain text.
      *

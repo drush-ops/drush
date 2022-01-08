@@ -9,7 +9,6 @@ namespace Unish;
  */
 class SecurityUpdatesTest extends UnishIntegrationTestCase
 {
-
   /**
    * Test that insecure Drupal packages are correctly identified.
    */

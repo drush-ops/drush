@@ -16,7 +16,6 @@ use Drupal\Core\Queue\RequeueException;
  */
 class WootRequeueException extends QueueWorkerBase
 {
-
   /**
    * {@inheritdoc}
    */

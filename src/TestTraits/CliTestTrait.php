@@ -1,4 +1,5 @@
 <?php
+
 namespace Drush\TestTraits;
 
 use Symfony\Component\Process\Process;

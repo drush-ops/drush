@@ -1,4 +1,5 @@
 <?php
+
 namespace Drush\Commands\core;
 
 use Drupal\user\Entity\User;
@@ -11,7 +12,6 @@ use Drupal\Core\Url;
 
 class LoginCommands extends DrushCommands implements SiteAliasManagerAwareInterface
 {
-
     use SiteAliasManagerAwareTrait;
     use ExecTrait;
 

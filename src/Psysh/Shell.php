@@ -12,7 +12,6 @@ use Symfony\Component\Console\Input\StringInput;
 
 class Shell extends BaseShell
 {
-
     /**
      * Get a command (if one exists) for the current input string.
      *

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * Contains \Drush\Psysh\DrushCommand.
@@ -22,7 +23,6 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class DrushCommand extends BaseCommand
 {
-
     /**
      * @var \Symfony\Component\Console\Command\Command
      */

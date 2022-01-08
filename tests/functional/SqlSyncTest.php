@@ -1,4 +1,5 @@
 <?php
+
 namespace Unish;
 
 /**
@@ -8,7 +9,6 @@ namespace Unish;
  */
 class SqlSyncTest extends CommandUnishTestCase
 {
-
     public function testSimulatedSqlSync()
     {
         if ($this->isWindows()) {

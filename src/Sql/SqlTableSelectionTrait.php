@@ -1,4 +1,5 @@
 <?php
+
 namespace Drush\Sql;
 
 use Drush\Utils\StringUtils;
@@ -10,7 +11,6 @@ use Drush\Utils\StringUtils;
  */
 trait SqlTableSelectionTrait
 {
-
     /**
      * Given a list of all tables, expand the convert the wildcards in the
      * option-provided lists into a list of actual table names.

@@ -1,4 +1,5 @@
 <?php
+
 namespace Drush;
 
 use Composer\Autoload\ClassLoader;

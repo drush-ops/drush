@@ -1,4 +1,5 @@
 <?php
+
 namespace Drush\Commands\help;
 
 use Consolidation\OutputFormatters\FormatterManager;
@@ -13,7 +14,6 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class HelpCLIFormatter implements FormatterInterface
 {
-
     /**
      * @inheritdoc
      */
@@ -89,10 +89,10 @@ class HelpCLIFormatter implements FormatterInterface
 
         $value = '';
         if ($option['accept_value']) {
-            $value = '='.strtoupper($option['name']);
+            $value = '=' . strtoupper($option['name']);
 
             if (!$option['is_value_required']) {
-                $value = '['.$value.']';
+                $value = '[' . $value . ']';
             }
         }
 
@@ -122,9 +122,9 @@ class HelpCLIFormatter implements FormatterInterface
     {
         $element = $argument['name'];
         if (!$argument['is_required']) {
-            $element = '['.$element.']';
+            $element = '[' . $element . ']';
         } elseif ($argument['is_array']) {
-            $element = $element.' ('.$element.')';
+            $element = $element . ' (' . $element . ')';
         }
 
         if ($argument['is_array']) {

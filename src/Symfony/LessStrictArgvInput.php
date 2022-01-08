@@ -3,7 +3,6 @@
 namespace Drush\Symfony;
 
 use Symfony\Component\Console\Input\ArgvInput;
-
 use Symfony\Component\Console\Exception\RuntimeException;
 
 /**
@@ -293,7 +292,7 @@ class LessStrictArgvInput extends ArgvInput
                 return false;
             }
             foreach ($values as $value) {
-                if ($token === $value || 0 === strpos($token, $value.'=')) {
+                if ($token === $value || 0 === strpos($token, $value . '=')) {
                     return true;
                 }
             }
@@ -317,7 +316,7 @@ class LessStrictArgvInput extends ArgvInput
             }
 
             foreach ($values as $value) {
-                if ($token === $value || 0 === strpos($token, $value.'=')) {
+                if ($token === $value || 0 === strpos($token, $value . '=')) {
                     if (false !== $pos = strpos($token, '=')) {
                         return substr($token, $pos + 1);
                     }
@@ -339,7 +338,7 @@ class LessStrictArgvInput extends ArgvInput
     {
         $tokens = array_map(function ($token) {
             if (preg_match('{^(-[^=]+=)(.+)}', $token, $match)) {
-                return $match[1].$this->escapeToken($match[2]);
+                return $match[1] . $this->escapeToken($match[2]);
             }
 
             if ($token && $token[0] !== '-') {

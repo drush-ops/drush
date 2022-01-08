@@ -1,10 +1,10 @@
 <?php
+
 namespace Drush\Preflight;
 
 use Symfony\Component\Console\Input\InputInterface;
 use Consolidation\Config\Config;
 use Consolidation\Config\ConfigInterface;
-
 use Drush\Symfony\DrushArgvInput;
 use Drush\Utils\StringUtils;
 use Drush\Symfony\LessStrictArgvInput;
@@ -20,7 +20,6 @@ use Drush\Symfony\LessStrictArgvInput;
  */
 class PreflightArgs extends Config implements PreflightArgsInterface
 {
-
     /**
      * @var array $args Remaining arguments not handled by the preprocessor
      */

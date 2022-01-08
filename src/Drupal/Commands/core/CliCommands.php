@@ -16,7 +16,6 @@ use Webmozart\PathUtil\Path;
 
 class CliCommands extends DrushCommands
 {
-
     /**
      * Drush's PHP Shell.
      *

@@ -26,7 +26,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class Logger extends RoboLogger
 {
-
     public function __construct(OutputInterface $output)
     {
         parent::__construct($output);

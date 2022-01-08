@@ -10,7 +10,6 @@ use Webmozart\PathUtil\Path;
  */
 class SiteAliasConvertTest extends UnishIntegrationTestCase
 {
-
   /**
    * Test functionality of site:alias-convert.
    */

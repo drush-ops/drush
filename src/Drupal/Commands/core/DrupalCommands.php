@@ -1,4 +1,5 @@
 <?php
+
 namespace Drush\Drupal\Commands\core;
 
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
@@ -12,7 +13,6 @@ use Drush\Utils\StringUtils;
 
 class DrupalCommands extends DrushCommands
 {
-
     /**
      * @var CronInterface
      */
@@ -149,7 +149,7 @@ class DrupalCommands extends DrushCommands
      * @option path An internal path.
      * @version 10.5
      */
-    public function route($options = ['name' => self::REQ, 'path' =>self::REQ, 'format' => 'yaml'])
+    public function route($options = ['name' => self::REQ, 'path' => self::REQ, 'format' => 'yaml'])
     {
         $route = $items = null;
         $provider = $this->getRouteProvider();
@@ -182,13 +182,15 @@ class DrupalCommands extends DrushCommands
         }
         return $items;
     }
-    
+
     private static function styleRow($content, $format, $severity): ?string
     {
-        if (!in_array($format, [
+        if (
+            !in_array($format, [
             'sections',
             'table',
-        ])) {
+            ])
+        ) {
             return $content;
         }
 
