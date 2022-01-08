@@ -1,4 +1,5 @@
 <?php
+
 namespace Drush\Preflight;
 
 use Consolidation\SiteAlias\SiteAliasName;
@@ -174,7 +175,7 @@ class ArgsPreprocessor
         // argument in the calling function. If this option does not take a
         // supplied value, then we set its value to 'true'
         if (strlen($key) === strlen($opt)) {
-            return [$methodName, $acceptsValue ? null: true, $acceptsValueFromNextArg];
+            return [$methodName, $acceptsValue ? null : true, $acceptsValueFromNextArg];
         }
 
         // If the option is not an exact match for the key, then the next

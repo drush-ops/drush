@@ -2,7 +2,7 @@
 
 namespace Unish;
 
-use \Drush\Preflight\ArgsRemapper;
+use Drush\Preflight\ArgsRemapper;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -12,7 +12,6 @@ use PHPUnit\Framework\TestCase;
  */
 class ArgsRemapperTest extends TestCase
 {
-
     /**
      * @covers argsRemapper::ArgsRemapper
      * @dataProvider argsProvider

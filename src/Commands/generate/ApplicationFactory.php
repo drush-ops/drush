@@ -176,7 +176,7 @@ class ApplicationFactory implements AutoloaderAwareInterface
     {
         return array_map(
             function (string $class): Generator {
-                return new $class;
+                return new $class();
             },
             array_filter($classes, function (string $class): bool {
                 $reflectionClass = new \ReflectionClass($class);

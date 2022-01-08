@@ -13,7 +13,6 @@ use Symfony\Component\Console\Input\ArgvInput;
  */
 class GenerateCommands extends DrushCommands implements AutoloaderAwareInterface
 {
-
     use AutoloaderAwareTrait;
 
     /**

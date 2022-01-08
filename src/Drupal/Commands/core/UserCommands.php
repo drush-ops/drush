@@ -1,4 +1,5 @@
 <?php
+
 namespace Drush\Drupal\Commands\core;
 
 use Drupal\Core\Datetime\DateFormatterInterface;
@@ -13,7 +14,6 @@ use Drush\Utils\StringUtils;
 
 class UserCommands extends DrushCommands
 {
-
     /**
      * @var DateFormatterInterface
      */

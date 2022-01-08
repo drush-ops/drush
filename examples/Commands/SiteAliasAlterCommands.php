@@ -1,4 +1,5 @@
 <?php
+
 namespace Drush\Commands;
 
 use Consolidation\AnnotatedCommand\AnnotationData;
@@ -11,7 +12,6 @@ use Symfony\Component\Console\Input\InputInterface;
  */
 class SiteAliasAlterCommands extends DrushCommands implements SiteAliasManagerAwareInterface
 {
-
     use SiteAliasManagerAwareTrait;
 
     /**

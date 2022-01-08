@@ -1,4 +1,5 @@
 <?php
+
 namespace Drush\Commands\help;
 
 use Consolidation\AnnotatedCommand\AnnotatedCommand;
@@ -8,7 +9,6 @@ use Drush\Drush;
 
 class HelpCommands extends DrushCommands
 {
-
     /**
      * Display usage details for a command.
      *

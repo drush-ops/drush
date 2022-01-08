@@ -741,7 +741,7 @@ EOT;
         foreach ($vars as $k => $v) {
             putenv($k . '=' . $v);
             // Value must be a string. See \Symfony\Component\Process\Process::getDefaultEnv.
-            $_SERVER[$k]= (string) $v;
+            $_SERVER[$k] = (string) $v;
         }
     }
 

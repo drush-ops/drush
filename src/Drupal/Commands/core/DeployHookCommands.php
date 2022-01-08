@@ -24,7 +24,7 @@ class DeployHookCommands extends DrushCommands implements SiteAliasManagerAwareI
      */
     public static function getRegistry(): UpdateRegistry
     {
-        $registry = new class(
+        $registry = new class (
             \Drupal::service('app.root'),
             \Drupal::service('site.path'),
             array_keys(\Drupal::service('module_handler')->getModuleList()),

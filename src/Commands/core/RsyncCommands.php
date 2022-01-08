@@ -1,4 +1,5 @@
 <?php
+
 namespace Drush\Commands\core;
 
 use Consolidation\AnnotatedCommand\CommandData;
@@ -74,7 +75,7 @@ class RsyncCommands extends DrushCommands implements SiteAliasManagerAwareInterf
         $parameters[] = Escape::shellArg($this->targetEvaluatedPath->fullyQualifiedPath());
 
         $ssh_options = $this->getConfig()->get('ssh.options', '');
-        $exec = "rsync -e 'ssh $ssh_options'". ' '. implode(' ', array_filter($parameters));
+        $exec = "rsync -e 'ssh $ssh_options'" . ' ' . implode(' ', array_filter($parameters));
         $process = $this->processManager()->shell($exec);
         $process->run($process->showRealtime());
 
@@ -98,7 +99,7 @@ class RsyncCommands extends DrushCommands implements SiteAliasManagerAwareInterf
             }
         }
 
-        $mode = '-'. $options['mode'];
+        $mode = '-' . $options['mode'];
         if ($this->output()->isVerbose()) {
             $mode .= 'v';
             $verbose = ' --stats --progress';

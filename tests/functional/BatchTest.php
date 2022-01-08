@@ -9,7 +9,6 @@ namespace Unish;
  */
 class BatchTest extends CommandUnishTestCase
 {
-
     public function testBatch()
     {
         $this->setUpDrupal(1, true);

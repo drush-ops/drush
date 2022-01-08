@@ -1,4 +1,5 @@
 <?php
+
 namespace Drush\Drupal\Commands\core;
 
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
@@ -12,7 +13,6 @@ use Drush\Utils\StringUtils;
 
 class ViewsCommands extends DrushCommands
 {
-
     protected $configFactory;
 
     protected $moduleHandler;

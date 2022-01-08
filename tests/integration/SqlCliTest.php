@@ -16,7 +16,6 @@ use Webmozart\PathUtil\Path;
  */
 class SqlCliTest extends UnishIntegrationTestCase
 {
-
     public function testSqlCli()
     {
         if ($this->isWindows()) {

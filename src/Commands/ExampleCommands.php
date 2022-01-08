@@ -1,14 +1,9 @@
 <?php
-namespace Drush\Commands;
 
-/**
- * @file
- *   Set up local Drush configuration.
- */
+namespace Drush\Commands;
 
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Consolidation\OutputFormatters\Options\FormatterOptions;
-
 use Consolidation\AnnotatedCommand\CommandData;
 
 class ExampleCommands extends DrushCommands

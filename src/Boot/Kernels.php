@@ -11,7 +11,6 @@ use Drush\Drupal\InstallerKernel as DrushInstallerKernel;
  */
 final class Kernels
 {
-
     /**
      * The default kernel that is used on standard requests.
      *

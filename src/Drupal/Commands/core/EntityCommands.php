@@ -12,7 +12,6 @@ use Drush\Utils\StringUtils;
 
 class EntityCommands extends DrushCommands
 {
-
     protected $entityTypeManager;
 
     /**

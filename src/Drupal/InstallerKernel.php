@@ -1,4 +1,5 @@
 <?php
+
 namespace Drush\Drupal;
 
 use Drupal\Core\Installer\InstallerKernel as DrupalInstallerKernel;

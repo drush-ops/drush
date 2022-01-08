@@ -1,4 +1,5 @@
 <?php
+
 namespace Drush\Drupal\Commands\core;
 
 use Consolidation\OutputFormatters\StructuredData\PropertyList;
@@ -15,7 +16,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class WatchdogCommands extends DrushCommands
 {
-
     /**
      * Show watchdog messages.
      *
@@ -240,7 +240,7 @@ class WatchdogCommands extends DrushCommands
                 throw new \Exception(dt('Watchdog message #!wid does not exist.', ['!wid' => $substring]));
             }
         } else {
-            if ((empty($substring))&&(!isset($options['type']))&&(!isset($options['severity']))) {
+            if ((empty($substring)) && (!isset($options['type'])) && (!isset($options['severity']))) {
                 throw new \Exception(dt('No options provided.'));
             }
             $where = $this->where($options['type'], $options['severity'], $substring, 'OR');
@@ -325,7 +325,7 @@ class WatchdogCommands extends DrushCommands
         }
         if ($filter) {
             $conditions[] = "message LIKE :filter";
-            $args[':filter'] = '%'.$filter.'%';
+            $args[':filter'] = '%' . $filter . '%';
         }
 
         $where = implode(" $criteria ", $conditions);

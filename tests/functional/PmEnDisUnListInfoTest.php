@@ -15,7 +15,6 @@ use Composer\Semver\Comparator;
  */
 class EnDisUnListInfoTest extends CommandUnishTestCase
 {
-
     public function testEnDisUnList()
     {
         $sites = $this->setUpDrupal(1, true);

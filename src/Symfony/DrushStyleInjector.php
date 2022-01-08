@@ -1,4 +1,5 @@
 <?php
+
 namespace Drush\Symfony;
 
 use Consolidation\AnnotatedCommand\CommandData;

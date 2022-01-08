@@ -1,4 +1,5 @@
 <?php
+
 namespace Unish\Utils;
 
 // We want to avoid using symfony/filesystem in the isolation tests.

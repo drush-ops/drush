@@ -1,4 +1,5 @@
 <?php
+
 namespace Drush\Config;
 
 use Robo\Config\Config;
@@ -6,7 +7,6 @@ use Consolidation\Config\Util\ConfigOverlay;
 use Symfony\Component\Filesystem\Exception\IOException;
 use Symfony\Component\Filesystem\Filesystem;
 use Webmozart\PathUtil\Path;
-
 // TODO: Not sure if we should have a reference to PreflightArgs here.
 // Maybe these constants should be in config, and PreflightArgs can
 // reference them from there as well.

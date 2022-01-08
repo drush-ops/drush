@@ -9,7 +9,6 @@ use Drupal\migrate\Plugin\MigrateIdMapInterface;
  */
 class MigrateIdMapFilter extends \FilterIterator
 {
-
     /**
      * List of specific source IDs to filter on.
      */

@@ -1,4 +1,5 @@
 <?php
+
 namespace Drush\Commands;
 
 use Symfony\Component\Console\Style\SymfonyStyle;
@@ -25,22 +26,21 @@ abstract class DrushCommands implements IOAwareInterface, LoggerAwareInterface, 
 {
     use ProcessManagerAwareTrait;
     use ExecTrait;
+    use ConfigAwareTrait;
+    use LoggerAwareTrait;
+    use IO {
+        io as roboIo;
+    }
 
     // This is more readable.
-    const REQ=InputOption::VALUE_REQUIRED;
-    const OPT=InputOption::VALUE_OPTIONAL;
+    const REQ = InputOption::VALUE_REQUIRED;
+    const OPT = InputOption::VALUE_OPTIONAL;
 
     // Common exit codes.
     const EXIT_SUCCESS = 0;
     const EXIT_FAILURE = 1;
     // Used to signal that the command completed successfully, but we still want to indicate a failure to the caller.
     const EXIT_FAILURE_WITH_CLARITY = 3;
-
-    use LoggerAwareTrait;
-    use ConfigAwareTrait;
-    use IO {
-        io as roboIo;
-    }
 
     /**
      * @var CommandData

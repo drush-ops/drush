@@ -607,7 +607,8 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
                 ? $fieldTypes[$fieldType]['id']
                 : $fieldTypes[$fieldType]['label'];
 
-            if ($fieldStorage instanceof FieldStorageConfigInterface
+            if (
+                $fieldStorage instanceof FieldStorageConfigInterface
                 && !$fieldStorage->isLocked()
                 && empty($fieldTypes[$fieldType]['no_ui'])
                 && !in_array($bundle, $fieldStorage->getBundles(), true)

@@ -4,7 +4,6 @@ namespace Drush\Utils;
 
 class StringUtils
 {
-
     /**
      * Convert a csv string, or an array of items which
      * may contain csv strings, into an array of items.

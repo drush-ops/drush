@@ -13,7 +13,6 @@ use Webmozart\PathUtil\Path;
  */
 class RedispatchToSiteLocal
 {
-
     /**
      * Determine if a local redispatch is needed, and do so if it is.
      *

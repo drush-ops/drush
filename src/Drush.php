@@ -4,6 +4,7 @@
  * @file
  * Contains \Drush.
  */
+
 namespace Drush;
 
 use Robo\Runner;
@@ -24,7 +25,6 @@ use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Exception\InvalidArgumentException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-
 // TODO: Not sure if we should have a reference to PreflightArgs here.
 // Maybe these constants should be in config, and PreflightArgs can
 // reference them from there as well.
@@ -51,7 +51,6 @@ use Symfony\Component\Process\Process;
  */
 class Drush
 {
-
     /**
      * The version of Drush from the drush.info file, or FALSE if not read yet.
      *

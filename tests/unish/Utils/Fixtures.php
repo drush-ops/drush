@@ -1,7 +1,8 @@
 <?php
+
 namespace Unish\Utils;
 
-use \Drush\Config\Environment;
+use Drush\Config\Environment;
 use Webmozart\PathUtil\Path;
 
 trait Fixtures

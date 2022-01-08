@@ -10,7 +10,6 @@ use Webmozart\PathUtil\Path;
  */
 class UserTest extends CommandUnishTestCase
 {
-
     const NAME = 'example';
     const MAIL = 'example@example.com';
 

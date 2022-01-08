@@ -1,4 +1,5 @@
 <?php
+
 namespace Drush\Commands\sql;
 
 use Consolidation\AnnotatedCommand\CommandData;

@@ -1,4 +1,5 @@
 <?php
+
 namespace Drush\Preflight;
 
 use Symfony\Component\Console\Input\InputInterface;

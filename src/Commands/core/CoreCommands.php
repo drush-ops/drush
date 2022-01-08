@@ -1,4 +1,5 @@
 <?php
+
 namespace Drush\Commands\core;
 
 use Consolidation\OutputFormatters\StructuredData\PropertyList;
@@ -10,7 +11,6 @@ use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
 
 class CoreCommands extends DrushCommands implements SiteAliasManagerAwareInterface
 {
-
     use SiteAliasManagerAwareTrait;
 
     /**
@@ -33,7 +33,7 @@ class CoreCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
         $application = Drush::getApplication();
         $def = $application->getDefinition();
         foreach ($def->getOptions() as $key => $value) {
-            $name = '--'. $key;
+            $name = '--' . $key;
             if ($value->getShortcut()) {
                 $name = '-' . $value->getShortcut() . ', ' . $name;
             }

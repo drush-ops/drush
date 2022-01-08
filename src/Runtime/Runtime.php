@@ -1,4 +1,5 @@
 <?php
+
 namespace Drush\Runtime;
 
 use Symfony\Component\Console\Output\ConsoleOutput;

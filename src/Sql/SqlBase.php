@@ -15,7 +15,6 @@ use Consolidation\Config\Util\Interpolator;
 
 abstract class SqlBase implements ConfigAwareInterface
 {
-
     use SqlTableSelectionTrait;
     use ConfigAwareTrait;
 
@@ -105,7 +104,7 @@ abstract class SqlBase implements ConfigAwareInterface
     public static function getInstance($db_spec, $options): ?self
     {
         $driver = $db_spec['driver'];
-        $class_name = 'Drush\Sql\Sql'. ucfirst($driver);
+        $class_name = 'Drush\Sql\Sql' . ucfirst($driver);
         if (class_exists($class_name)) {
             $instance = new $class_name($db_spec, $options);
             // Inject config
@@ -325,7 +324,7 @@ abstract class SqlBase implements ConfigAwareInterface
         $exec = implode(' ', $parts);
 
         if ($result_file) {
-            $exec .= ' > '. Escape::shellArg($result_file);
+            $exec .= ' > ' . Escape::shellArg($result_file);
         }
 
         // In --verbose mode, Process will show the call to mysql/psql/sqlite,
@@ -398,7 +397,7 @@ abstract class SqlBase implements ConfigAwareInterface
     {
         $return = true;
         if ($tables) {
-            $sql = 'DROP TABLE '. implode(', ', $tables);
+            $sql = 'DROP TABLE ' . implode(', ', $tables);
             $return = $this->query($sql);
         }
         return $return;

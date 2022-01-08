@@ -1,4 +1,5 @@
 <?php
+
 namespace Drush\Drupal\Commands\core;
 
 use Drupal\Core\Queue\QueueWorkerManager;
@@ -16,7 +17,6 @@ use Drush\Commands\DrushCommands;
 
 class QueueCommands extends DrushCommands
 {
-
     /**
      * @var QueueWorkerManager
      */

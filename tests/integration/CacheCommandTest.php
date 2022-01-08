@@ -39,7 +39,7 @@ class CacheCommandTest extends UnishIntegrationTestCase
 
         // Test cache-set using all arguments and many options.
         $expected = ['key' => 'value'];
-        $stdin = json_encode(['data'=> $expected]);
+        $stdin = json_encode(['data' => $expected]);
         $bin = 'default';
 
         $this->drush('cache-set', ['my_cache_id', '-', $bin, 'CACHE_PERMANENT'], ['input-format' => 'json', 'cache-get' => true], self::EXIT_SUCCESS, $stdin);

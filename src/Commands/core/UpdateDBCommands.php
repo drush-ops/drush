@@ -1,4 +1,5 @@
 <?php
+
 namespace Drush\Commands\core;
 
 use Consolidation\Log\ConsoleLogLevel;
@@ -144,7 +145,7 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
      * @filter-default-field type
      * @return RowsOfFields
      */
-    public function updatedbStatus($options = ['format'=> 'table', 'entity-updates' => true, 'post-updates' => true])
+    public function updatedbStatus($options = ['format' => 'table', 'entity-updates' => true, 'post-updates' => true])
     {
         require_once DRUSH_DRUPAL_CORE . '/includes/install.inc';
         drupal_load_updates();
@@ -563,7 +564,7 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
                         'module' => $module,
                         'update_id' => $update_id,
                         'description' => $description,
-                        'type'=> 'hook_update_n'
+                        'type' => 'hook_update_n'
                     ];
                 }
                 if (isset($updates['start'])) {
@@ -574,8 +575,10 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
 
         // Append row(s) for pending entity definition updates.
         if ($options['entity-updates']) {
-            foreach (\Drupal::entityDefinitionUpdateManager()
-                         ->getChangeSummary() as $entity_type_id => $changes) {
+            foreach (
+                \Drupal::entityDefinitionUpdateManager()
+                         ->getChangeSummary() as $entity_type_id => $changes
+            ) {
                 foreach ($changes as $change) {
                     $return[] = [
                         'module' => dt('@type entity type', ['@type' => $entity_type_id]),
@@ -671,7 +674,7 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
                 if (isset($requirement['severity']) && $requirement['severity'] != REQUIREMENT_OK) {
                     $message = isset($requirement['description']) ? DrupalUtil::drushRender($requirement['description']) : '';
                     if (isset($requirement['value']) && $requirement['value']) {
-                        $message .= ' (Currently using '. $requirement['title'] .' '. DrupalUtil::drushRender($requirement['value']) .')';
+                        $message .= ' (Currently using ' . $requirement['title'] . ' ' . DrupalUtil::drushRender($requirement['value']) . ')';
                     }
                     $log_level = $requirement['severity'] === REQUIREMENT_ERROR ? LogLevel::ERROR : LogLevel::WARNING;
                     $this->logger()->log($log_level, $message);

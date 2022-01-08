@@ -7,7 +7,7 @@
 
 namespace Drush\Formatters;
 
-use \Consolidation\OutputFormatters\FormatterManager;
+use Consolidation\OutputFormatters\FormatterManager;
 
 /**
  * Our own output formatter

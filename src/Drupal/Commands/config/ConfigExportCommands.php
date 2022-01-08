@@ -1,4 +1,5 @@
 <?php
+
 namespace Drush\Drupal\Commands\config;
 
 use Consolidation\AnnotatedCommand\CommandData;
@@ -177,7 +178,7 @@ class ConfigExportCommands extends DrushCommands
             if (!empty($uncommitted_changes)) {
                 $process = $this->processManager()->process(['git', 'add', '-A', '.'], $destination_dir);
                 $process->mustRun();
-                $comment_file = drush_save_data_to_temp_file($options['message'] ?: 'Exported configuration.'. $preview);
+                $comment_file = drush_save_data_to_temp_file($options['message'] ?: 'Exported configuration.' . $preview);
                 $process = $this->processManager()->process(['git', 'commit', "--file=$comment_file"], $destination_dir);
                 $process->mustRun();
             }

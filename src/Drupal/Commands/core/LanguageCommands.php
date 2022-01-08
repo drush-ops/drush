@@ -11,7 +11,6 @@ use Drush\Utils\StringUtils;
 
 class LanguageCommands extends DrushCommands
 {
-
     /**
      * @var LanguageManagerInterface
      */

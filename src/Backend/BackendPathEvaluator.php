@@ -1,4 +1,5 @@
 <?php
+
 namespace Drush\Backend;
 
 use Consolidation\SiteAlias\SiteAlias;

@@ -47,7 +47,8 @@ class CoreTest extends CommandUnishTestCase
         'format' => 'json',
         'uri' => 'OMIT', // A special value which causes --uri to not be specified.
         ];
-        foreach ([
+        foreach (
+            [
                    'test.uri' => ['http://test.uri', 'sites/dev'],
                    'test.uri/' => ['http://test.uri/', 'sites/dev'],
                    'test.uri/subpath' => ['http://test.uri/subpath', 'sites/stage'],
@@ -60,7 +61,8 @@ class CoreTest extends CommandUnishTestCase
                    'https://test.uri/' => ['https://test.uri/', 'sites/dev'],
                    'https://test.uri/subpath' => ['https://test.uri/subpath', 'sites/stage'],
                    'https://test.uri/subpath/' => ['https://test.uri/subpath/', 'sites/stage'],
-                 ] as $test_uri => $expected) {
+                 ] as $test_uri => $expected
+        ) {
             // Put a yml file in the drush folder.
             $config_options = [
               'options' => [
@@ -84,7 +86,8 @@ class CoreTest extends CommandUnishTestCase
         $command_options = [
         'uri' => 'OMIT', // A special value which causes --uri to not be specified.
         ];
-        foreach ([
+        foreach (
+            [
                    'test.uri' => 'http://test.uri',
                    'test.uri/' => 'http://test.uri',
                    'test.uri/subpath' => 'http://test.uri/subpath',
@@ -97,7 +100,8 @@ class CoreTest extends CommandUnishTestCase
                    'https://test.uri/' => 'https://test.uri',
                    'https://test.uri/subpath' => 'https://test.uri/subpath',
                    'https://test.uri/subpath/' => 'https://test.uri/subpath',
-                 ] as $test_uri => $expected) {
+                 ] as $test_uri => $expected
+        ) {
             // Put a yml file in the drush folder.
             $config_options = [
               'options' => [
@@ -109,7 +113,7 @@ class CoreTest extends CommandUnishTestCase
             unlink($drush_config_file);
             $output = $this->getOutputRaw();
             // Include the test URI, for some context in errors.
-            $i=10;
+            $i = 10;
             $this->assertEquals([$test_uri => $expected], [$test_uri => trim($output)]);
         }
     }

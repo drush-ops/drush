@@ -1,4 +1,5 @@
 <?php
+
 namespace Drush\Commands\core;
 
 use Drupal\Core\Routing\RouteBuilderInterface;
@@ -23,7 +24,6 @@ use Symfony\Component\Filesystem\Exception\IOException;
  */
 class CacheCommands extends DrushCommands implements CustomEventAwareInterface, AutoloaderAwareInterface, StdinAwareInterface
 {
-
     use CustomEventAwareTrait;
     use AutoloaderAwareTrait;
     use StdinAwareTrait;
@@ -353,7 +353,7 @@ class CacheCommands extends DrushCommands implements CustomEventAwareInterface, 
     {
         static $autoloader = false;
 
-        $autoloadFilePath = $drupal_root .'/autoload.php';
+        $autoloadFilePath = $drupal_root . '/autoload.php';
         if (!$autoloader && file_exists($autoloadFilePath)) {
             $autoloader = require $autoloadFilePath;
         }

@@ -1,4 +1,5 @@
 <?php
+
 namespace Drush\Commands;
 
 /*
@@ -8,8 +9,7 @@ use Symfony\Component\Console\Input\InputOption;
 
 class OptionsCommands
 {
-
-    const REQ=InputOption::VALUE_REQUIRED;
+    const REQ = InputOption::VALUE_REQUIRED;
 
     /**
      * @hook option @optionset_proc_build

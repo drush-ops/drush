@@ -9,7 +9,6 @@ use Drush\Exceptions\UserAbortException;
 
 class SanitizeCommands extends DrushCommands implements CustomEventAwareInterface
 {
-
     use CustomEventAwareTrait;
 
     /**

@@ -17,7 +17,6 @@ use Drush\Utils\StringUtils;
 
 class LocaleCommands extends DrushCommands
 {
-
     protected $languageManager;
 
     protected $configFactory;

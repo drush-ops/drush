@@ -11,7 +11,6 @@ use Drupal\Core\Config\ConfigImportValidateEventSubscriberBase;
  */
 class ConfigSubscriber extends ConfigImportValidateEventSubscriberBase
 {
-
   /**
    * {@inheritdoc}
    */

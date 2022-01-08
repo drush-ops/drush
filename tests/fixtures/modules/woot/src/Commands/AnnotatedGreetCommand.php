@@ -1,4 +1,5 @@
 <?php
+
 namespace Drupal\woot\Commands;
 
 use Consolidation\AnnotatedCommand\AnnotatedCommand;
@@ -27,7 +28,7 @@ class AnnotatedGreetCommand extends AnnotatedCommand
     {
         $name = $input->getArgument('name');
         if ($name) {
-            $text = 'Hello '.$name;
+            $text = 'Hello ' . $name;
         } else {
             $text = 'Hello';
         }

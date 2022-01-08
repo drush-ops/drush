@@ -1,4 +1,5 @@
 <?php
+
 namespace Drush\Commands\pm;
 
 use GuzzleHttp\Client;
@@ -17,7 +18,6 @@ use Webmozart\PathUtil\Path;
  */
 class SecurityUpdateCommands extends DrushCommands
 {
-
     /**
      * Return path to composer.lock
      *

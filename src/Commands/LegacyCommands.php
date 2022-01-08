@@ -1,9 +1,9 @@
 <?php
+
 namespace Drush\Commands;
 
 class LegacyCommands extends DrushCommands
 {
-
     /**
      * Drupal 8 does not support disabling modules. See pm:uninstall command.
      *

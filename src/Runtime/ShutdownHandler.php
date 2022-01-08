@@ -1,10 +1,6 @@
 <?php
-namespace Drush\Runtime;
 
-/**
- * @file
- * Drush's error handler
- */
+namespace Drush\Runtime;
 
 use Drush\Commands\DrushCommands;
 use Drush\Drush;

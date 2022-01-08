@@ -23,7 +23,6 @@ use Drush\Commands\DrushCommands;
  */
 class XhprofCommands extends DrushCommands
 {
-
     const XH_PROFILE_MEMORY = false;
     const XH_PROFILE_CPU = false;
     const XH_PROFILE_BUILTINS = true;

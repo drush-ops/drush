@@ -1,4 +1,5 @@
 <?php
+
 namespace Unish;
 
 use Webmozart\PathUtil\Path;
@@ -11,7 +12,6 @@ use Webmozart\PathUtil\Path;
  */
 class ConfigPullTest extends CommandUnishTestCase
 {
-
     public function setup(): void
     {
         $this->setUpDrupal(2, true);
