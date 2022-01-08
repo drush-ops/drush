@@ -15,50 +15,32 @@ trait CliTestTrait
 
     /**
      * Default timeout for commands. By default, there is no timeout.
-     *
-     * @var int
      */
-    private $defaultTimeout = 0;
+    private int $defaultTimeout = 0;
 
     /**
      * Timeout for command.
      *
      * Reset to $defaultTimeout after executing a command.
-     *
-     * @var int
      */
-    protected $timeout = 0;
+    protected int $timeout = 0;
 
     /**
      * Default idle timeout for commands.
-     *
-     * @var int
      */
-    private $defaultIdleTimeout = 0;
+    private int $defaultIdleTimeout = 0;
 
     /**
      * Idle timeouts for commands.
      *
      * Reset to $defaultIdleTimeout after executing a command.
-     *
-     * @var int
      */
-    protected $idleTimeout = 0;
-
-    /**
-     * @var Process
-     */
-    protected $process = null;
+    protected int $idleTimeout = 0;
 
     /**
      * Accessor for the last output, non-trimmed.
-     *
-     * @return string
-     *   Raw output as text.
-     *
-     * @access public
      */
-    public function getOutputRaw()
+    public function getOutputRaw(): string
     {
         return $this->process ? $this->process->getOutput() : '';
     }
@@ -66,12 +48,9 @@ trait CliTestTrait
     /**
      * Accessor for the last stderr output, non-trimmed.
      *
-     * @return string
-     *   Raw stderr as text.
-     *
      * @access public
      */
-    public function getErrorOutputRaw()
+    public function getErrorOutputRaw(): string
     {
         return $this->process ? $this->process->getErrorOutput() : '';
     }
@@ -126,7 +105,7 @@ trait CliTestTrait
      * @param string $input
      *   A string representing the STDIN that is piped to the command.
      */
-    public function execute($command, int $expected_return = 0, $cd = null, $env = null, $input = null)
+    public function execute($command, int $expected_return = 0, $cd = null, $env = null, $input = null): void
     {
         try {
             // Process uses a default timeout of 60 seconds, set it to 0 (none).
@@ -171,7 +150,7 @@ trait CliTestTrait
         }
     }
 
-    public static function escapeshellarg($arg)
+    public static function escapeshellarg(string $arg): string
     {
         // Short-circuit escaping for simple params (keep stuff readable)
         if (preg_match('|^[a-zA-Z0-9.:/_-]*$|', $arg)) {
@@ -185,7 +164,7 @@ trait CliTestTrait
 
     public static function isWindows()
     {
-        return strtoupper(substr(PHP_OS, 0, 3)) === 'WIN';
+        return PHP_OS_FAMILY === 'Windows';
     }
 
     public static function _escapeshellargWindows($arg)
@@ -207,10 +186,8 @@ trait CliTestTrait
 
     /**
      * Borrowed from \Symfony\Component\Process\Exception\ProcessTimedOutException
-     *
-     * @return string
      */
-    public function buildProcessMessage()
+    public function buildProcessMessage(): string
     {
         $error = sprintf(
             "%s\n\nExit Code: %s(%s)\n\nWorking directory: %s",
@@ -238,13 +215,13 @@ trait CliTestTrait
      * absolute paths and duplicate whitespace removed, to avoid false negatives
      * on minor differences.
      *
-     * @param string $expected
+     * @param $expected
      *   The expected output.
-     * @param string $filter
+     * @param $filter
      *   Optional regular expression that should be ignored in the error output.
      */
 
-    protected function assertOutputEquals(string $expected, string $filter = '')
+    protected function assertOutputEquals(string $expected, string $filter = ''): void
     {
         $output = $this->getSimplifiedOutput();
         if (!empty($filter)) {
@@ -260,12 +237,12 @@ trait CliTestTrait
      * absolute paths and duplicate whitespace removed, to avoid false negatives
      * on minor differences.
      *
-     * @param string $expected
+     * @param $expected
      *   The expected output.
-     * @param string $filter
+     * @param $filter
      *   Optional regular expression that should be ignored in the error output.
      */
-    protected function assertErrorOutputEquals(string $expected, string $filter = '')
+    protected function assertErrorOutputEquals(string $expected, string $filter = ''): void
     {
         $output = $this->getSimplifiedErrorOutput();
         if (!empty($filter)) {
