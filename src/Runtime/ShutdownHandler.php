@@ -2,11 +2,6 @@
 
 namespace Drush\Runtime;
 
-/**
- * @file
- * Drush's error handler
- */
-
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Psr\Log\LoggerAwareInterface;
