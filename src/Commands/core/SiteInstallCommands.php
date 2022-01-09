@@ -7,6 +7,7 @@ use Consolidation\AnnotatedCommand\CommandData;
 use Drupal\Component\FileCache\FileCacheFactory;
 use Drupal\Core\Database\Database;
 use Drupal\Core\Installer\Exception\AlreadyInstalledException;
+use Drupal\Core\Installer\Exception\InstallerException;
 use Drupal\Core\Site\Settings;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
@@ -149,14 +150,19 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
         // @todo Get Drupal to not call that function when on the CLI.
         try {
             drush_op('install_drupal', $class_loader, $settings, [$this, 'taskCallback']);
+            $success = TRUE;
         } catch (AlreadyInstalledException $e) {
             if ($sql && !$this->programExists($sql->command())) {
                 throw new \Exception(dt('Drush was unable to drop all tables because `@program` was not found, and therefore Drupal threw an AlreadyInstalledException. Ensure `@program` is available in your PATH.', ['@program' => $sql->command()]));
             }
             throw $e;
+        } catch (InstallerException $e) {
+            $this->logger()->error(dt('The Drupal installer reported the following problems: @messages.', ['@messages' => $e->getMessage()]));
         }
 
-        if (empty($options['account-pass'])) {
+        if (!isset($success)) {
+            $this->logger()->error(dt('Installation failed.'));
+        } elseif (empty($options['account-pass'])) {
             $this->logger()->success(dt('Installation complete.  User name: @name  User password: @pass', ['@name' => $options['account-name'], '@pass' => $account_pass]));
         } else {
             $this->logger()->success(dt('Installation complete.'));
