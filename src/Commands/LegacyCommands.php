@@ -5,6 +5,18 @@ namespace Drush\Commands;
 class LegacyCommands extends DrushCommands
 {
     /**
+     * The core:init command was removed. Please edit your .bashrc manually.
+     *
+     * @command core:init
+     * @aliases init
+     * @hidden
+     * @obsolete
+     */
+    public function init(): void
+    {
+    }
+
+    /**
      * Drupal 8 does not support disabling modules. See pm:uninstall command.
      *
      * @command pm:disable
