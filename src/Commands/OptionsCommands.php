@@ -2,11 +2,11 @@
 
 namespace Drush\Commands;
 
+use Symfony\Component\Console\Input\InputOption;
+
 /*
  * Common options providers. Use them by adding an annotation to your method.
  */
-use Symfony\Component\Console\Input\InputOption;
-
 class OptionsCommands
 {
     const REQ = InputOption::VALUE_REQUIRED;
