@@ -47,13 +47,13 @@ class FsUtils
     }
 
     /**
-     * Get the base dir where our backup directories will be stored
+     * Get the base dir where our backup directories will be stored. Also stores CLI history file.
      *
      * @return
      *   A path to the backup directory parent
      * @throws \Exception
      */
-    protected static function getBackupDirParent()
+    public static function getBackupDirParent()
     {
         // Try in order:
         //  1. The user-specified backup directory from drush.yml config file

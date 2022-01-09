@@ -29,7 +29,7 @@ trait ExecTrait
         if ($browser) {
             // We can only open a browser if we have a DISPLAY environment variable on
             // POSIX or are running Windows or OS X.
-            if (!Drush::simulate() && !getenv('DISPLAY') && !drush_is_windows() && !drush_is_osx()) {
+            if (!Drush::simulate() && !getenv('DISPLAY') && !in_array(PHP_OS_FAMILY, ['Windows', 'Darwin'])) {
                 $this->logger()->info(dt('No graphical display appears to be available, not starting browser.'));
                 return false;
             }

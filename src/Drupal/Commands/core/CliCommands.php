@@ -10,9 +10,9 @@ use Drush\Psysh\DrushHelpCommand;
 use Drupal\Component\Assertion\Handle;
 use Drush\Psysh\Shell;
 use Drush\Runtime\Runtime;
+use Drush\Utils\FsUtils;
 use Psy\Configuration;
 use Psy\VersionUpdater\Checker;
-use Webmozart\PathUtil\Path;
 
 class CliCommands extends DrushCommands
 {
@@ -174,7 +174,7 @@ class CliCommands extends DrushCommands
      */
     protected function historyPath(array $options): string
     {
-        $cli_directory = Path::join($this->getConfig()->cache(), 'cli');
+        $cli_directory = FsUtils::getBackupDirParent();
         $drupal_major_version = Drush::getMajorVersion();
 
         // If there is no drupal version (and thus no root). Just use the current
