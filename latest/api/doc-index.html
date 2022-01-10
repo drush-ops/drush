@@ -10,25 +10,37 @@
         <link rel="stylesheet" type="text/css" href="css/doctum.css">
         <link rel="stylesheet" type="text/css" href="fonts/doctum-font.css">
         <script src="js/jquery-3.5.1.slim.min.js"></script>
+        <script async defer src="doctum.js"></script>
         <script async defer src="js/bootstrap.min.js"></script>
-        <script src="js/typeahead.min.js"></script>
-        <script src="doctum.js"></script>
+        <script async defer src="js/autocomplete.min.js"></script>
         <meta name="MobileOptimized" content="width">
         <meta name="HandheldFriendly" content="true">
         <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
 
     </head>
 
-    <body id="doc-index" data-name="" data-root-path="">
+    <body id="doc-index" data-name="" data-root-path="" data-search-index-url="doctum-search.json">
             <div id="content">
         <div id="left-column">
                 <div id="control-panel">
-                <form id="search-form" action="search.html">
+                <div class="search-bar hidden" id="search-progress-bar-container">
+            <div class="progress">
+                <div class="progress-bar" role="progressbar" id="search-progress-bar"
+                    aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%"></div>
+            </div>
+        </div>
+        <form id="search-form" action="search.html">
             <span class="icon icon-search"></span>
             <input name="search"
+                   id="doctum-search-auto-complete"
                    class="typeahead form-control"
                    type="search"
-                   placeholder="Search">
+                   placeholder="Search"
+                   spellcheck="false"
+                   autocorrect="off"
+                   autocomplete="off"
+                   autocapitalize="off">
+            <div class="auto-complete-results" id="auto-complete-results"></div>
         </form>
     </div>
 
@@ -241,7 +253,7 @@ for this version of Drush.</p></dd><dt><a href="Drush/Drupal/DrupalKernelTrait.h
 <abbr title="Drush\Drupal\Migrate\MigrateExecutable">MigrateExecutable</abbr>#allSourceIdValues</a> &mdash; <em>Property in class <a href="Drush/Drupal/Migrate/MigrateExecutable.html"><abbr title="Drush\Drupal\Migrate\MigrateExecutable">MigrateExecutable</abbr></a></em></dt>
                     <dd><p>List of all source IDs that are found in source during this migration.</p></dd><dt><a href="Drush/Drupal/Migrate/MigrateIdMapFilter.html#method_accept">
 <abbr title="Drush\Drupal\Migrate\MigrateIdMapFilter">MigrateIdMapFilter</abbr>::accept</a>() &mdash; <em>Method in class <a href="Drush/Drupal/Migrate/MigrateIdMapFilter.html"><abbr title="Drush\Drupal\Migrate\MigrateIdMapFilter">MigrateIdMapFilter</abbr></a></em></dt>
-                    <dd><p>{@inheritdoc}</p></dd><dt><a href="Drush/Drush.html#method_aliasManager">
+                    <dd>{@inheritdoc}</dd><dt><a href="Drush/Drush.html#method_aliasManager">
 <abbr title="Drush\Drush">Drush</abbr>::aliasManager</a>() &mdash; <em>Method in class <a href="Drush/Drush.html"><abbr title="Drush\Drush">Drush</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Drush.html#method_affirmative">
 <abbr title="Drush\Drush">Drush</abbr>::affirmative</a>() &mdash; <em>Method in class <a href="Drush/Drush.html"><abbr title="Drush\Drush">Drush</abbr></a></em></dt>
@@ -687,11 +699,11 @@ notify the user that a setting change is needed and abort.</p></dd><dt><a href="
 <abbr title="Drush\Psysh\Caster">Caster</abbr>::castMarkup</a>() &mdash; <em>Method in class <a href="Drush/Psysh/Caster.html"><abbr title="Drush\Psysh\Caster">Caster</abbr></a></em></dt>
                     <dd><p>Casts \Drupal\Component\Render\MarkupInterface classes.</p></dd><dt><a href="Drush/Psysh/DrushCommand.html#method_configure">
 <abbr title="Drush\Psysh\DrushCommand">DrushCommand</abbr>::configure</a>() &mdash; <em>Method in class <a href="Drush/Psysh/DrushCommand.html"><abbr title="Drush\Psysh\DrushCommand">DrushCommand</abbr></a></em></dt>
-                    <dd><p>{@inheritdoc}</p></dd><dt>$<a href="Drush/Psysh/DrushHelpCommand.html#property_command">
+                    <dd>{@inheritdoc}</dd><dt>$<a href="Drush/Psysh/DrushHelpCommand.html#property_command">
 <abbr title="Drush\Psysh\DrushHelpCommand">DrushHelpCommand</abbr>#command</a> &mdash; <em>Property in class <a href="Drush/Psysh/DrushHelpCommand.html"><abbr title="Drush\Psysh\DrushHelpCommand">DrushHelpCommand</abbr></a></em></dt>
                     <dd><p>The currently set subcommand.</p></dd><dt><a href="Drush/Psysh/DrushHelpCommand.html#method_configure">
 <abbr title="Drush\Psysh\DrushHelpCommand">DrushHelpCommand</abbr>::configure</a>() &mdash; <em>Method in class <a href="Drush/Psysh/DrushHelpCommand.html"><abbr title="Drush\Psysh\DrushHelpCommand">DrushHelpCommand</abbr></a></em></dt>
-                    <dd><p>{@inheritdoc}</p></dd><dt>$<a href="Drush/SiteAlias/LegacyAliasConverter.html#property_converted">
+                    <dd>{@inheritdoc}</dd><dt>$<a href="Drush/SiteAlias/LegacyAliasConverter.html#property_converted">
 <abbr title="Drush\SiteAlias\LegacyAliasConverter">LegacyAliasConverter</abbr>#converted</a> &mdash; <em>Property in class <a href="Drush/SiteAlias/LegacyAliasConverter.html"><abbr title="Drush\SiteAlias\LegacyAliasConverter">LegacyAliasConverter</abbr></a></em></dt>
                     <dd></dd><dt>$<a href="Drush/SiteAlias/LegacyAliasConverter.html#property_convertedFileMap">
 <abbr title="Drush\SiteAlias\LegacyAliasConverter">LegacyAliasConverter</abbr>#convertedFileMap</a> &mdash; <em>Property in class <a href="Drush/SiteAlias/LegacyAliasConverter.html"><abbr title="Drush\SiteAlias\LegacyAliasConverter">LegacyAliasConverter</abbr></a></em></dt>
@@ -901,7 +913,7 @@ elsewhere.</p></dd><dt><a href="Drush/Drupal/Commands/config/ConfigCommands.html
                     <dd><p>Overridden version of DrupalKernel adapted to the needs of Drush.</p></dd><dt><a href="Drush/Drupal/DrupalKernelTrait.html"><abbr title="Drush\Drupal\DrupalKernelTrait">DrupalKernelTrait</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Drupal.html">Drush\Drupal</a></em></dt>
                     <dd><p>Common functionality for overridden kernels.</p></dd><dt><a href="Drush/Drupal/DrupalKernelTrait.html#method_discoverServiceProviders">
 <abbr title="Drush\Drupal\DrupalKernelTrait">DrupalKernelTrait</abbr>::discoverServiceProviders</a>() &mdash; <em>Method in class <a href="Drush/Drupal/DrupalKernelTrait.html"><abbr title="Drush\Drupal\DrupalKernelTrait">DrupalKernelTrait</abbr></a></em></dt>
-                    <dd><p>{@inheritdoc}</p></dd><dt><a href="Drush/Drupal/DrupalUtil.html"><abbr title="Drush\Drupal\DrupalUtil">DrupalUtil</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Drupal.html">Drush\Drupal</a></em></dt>
+                    <dd>{@inheritdoc}</dd><dt><a href="Drush/Drupal/DrupalUtil.html"><abbr title="Drush\Drupal\DrupalUtil">DrupalUtil</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Drupal.html">Drush\Drupal</a></em></dt>
                     <dd></dd><dt><a href="Drush/Drupal/DrupalUtil.html#method_drushRender">
 <abbr title="Drush\Drupal\DrupalUtil">DrupalUtil</abbr>::drushRender</a>() &mdash; <em>Method in class <a href="Drush/Drupal/DrupalUtil.html"><abbr title="Drush\Drupal\DrupalUtil">DrupalUtil</abbr></a></em></dt>
                     <dd><p>Output a Drupal render array, object or string as plain text.</p></dd><dt><a href="Drush/Drupal/DrushLoggerServiceProvider.html"><abbr title="Drush\Drupal\DrushLoggerServiceProvider">DrushLoggerServiceProvider</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Drupal.html">Drush\Drupal</a></em></dt>
@@ -1112,9 +1124,9 @@ array.</p></dd><dt><a href="Drush/Drupal/Commands/config/ConfigCommands.html#met
 <abbr title="Drush\Preflight\Preflight">Preflight</abbr>::environment</a>() &mdash; <em>Method in class <a href="Drush/Preflight/Preflight.html"><abbr title="Drush\Preflight\Preflight">Preflight</abbr></a></em></dt>
                     <dd><p>Return the environment</p></dd><dt><a href="Drush/Psysh/DrushCommand.html#method_execute">
 <abbr title="Drush\Psysh\DrushCommand">DrushCommand</abbr>::execute</a>() &mdash; <em>Method in class <a href="Drush/Psysh/DrushCommand.html"><abbr title="Drush\Psysh\DrushCommand">DrushCommand</abbr></a></em></dt>
-                    <dd><p>{@inheritdoc}</p></dd><dt><a href="Drush/Psysh/DrushHelpCommand.html#method_execute">
+                    <dd>{@inheritdoc}</dd><dt><a href="Drush/Psysh/DrushHelpCommand.html#method_execute">
 <abbr title="Drush\Psysh\DrushHelpCommand">DrushHelpCommand</abbr>::execute</a>() &mdash; <em>Method in class <a href="Drush/Psysh/DrushHelpCommand.html"><abbr title="Drush\Psysh\DrushHelpCommand">DrushHelpCommand</abbr></a></em></dt>
-                    <dd><p>{@inheritdoc}</p></dd><dt><a href="Drush/Runtime/ErrorHandler.html"><abbr title="Drush\Runtime\ErrorHandler">ErrorHandler</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Runtime.html">Drush\Runtime</a></em></dt>
+                    <dd>{@inheritdoc}</dd><dt><a href="Drush/Runtime/ErrorHandler.html"><abbr title="Drush\Runtime\ErrorHandler">ErrorHandler</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Runtime.html">Drush\Runtime</a></em></dt>
                     <dd><p>Log PHP errors to the Drush log. This is in effect until Drupal's error
 handler takes over.</p></dd><dt><a href="Drush/Runtime/ErrorHandler.html#method_errorHandler">
 <abbr title="Drush\Runtime\ErrorHandler">ErrorHandler</abbr>::errorHandler</a>() &mdash; <em>Method in class <a href="Drush/Runtime/ErrorHandler.html"><abbr title="Drush\Runtime\ErrorHandler">ErrorHandler</abbr></a></em></dt>
@@ -1295,17 +1307,17 @@ provided uri.</p></dd><dt><a href="Drush/Commands/core/SiteInstallCommands.html#
                     <dd><p>Generate boilerplate code for modules/plugins/services etc.</p></dd><dt><a href="Drush/Commands/generate/GeneratorClassResolver.html"><abbr title="Drush\Commands\generate\GeneratorClassResolver">GeneratorClassResolver</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands/generate.html">Drush\Commands\generate</a></em></dt>
                     <dd><p>A simple adapter to make Drupal class resolver compatible with DCG class resolver.</p></dd><dt><a href="Drush/Commands/generate/GeneratorClassResolver.html#method_getInstance">
 <abbr title="Drush\Commands\generate\GeneratorClassResolver">GeneratorClassResolver</abbr>::getInstance</a>() &mdash; <em>Method in class <a href="Drush/Commands/generate/GeneratorClassResolver.html"><abbr title="Drush\Commands\generate\GeneratorClassResolver">GeneratorClassResolver</abbr></a></em></dt>
-                    <dd><p>{@inheritdoc}</p></dd><dt><a href="Drush/Commands/generate/Generators/Drush/DrushAliasFile.html#method_generate">
+                    <dd>{@inheritdoc}</dd><dt><a href="Drush/Commands/generate/Generators/Drush/DrushAliasFile.html#method_generate">
 <abbr title="Drush\Commands\generate\Generators\Drush\DrushAliasFile">DrushAliasFile</abbr>::generate</a>() &mdash; <em>Method in class <a href="Drush/Commands/generate/Generators/Drush/DrushAliasFile.html"><abbr title="Drush\Commands\generate\Generators\Drush\DrushAliasFile">DrushAliasFile</abbr></a></em></dt>
-                    <dd><p>{@inheritdoc}</p></dd><dt><a href="Drush/Commands/generate/Generators/Drush/DrushCommandFile.html#method_generate">
+                    <dd>{@inheritdoc}</dd><dt><a href="Drush/Commands/generate/Generators/Drush/DrushCommandFile.html#method_generate">
 <abbr title="Drush\Commands\generate\Generators\Drush\DrushCommandFile">DrushCommandFile</abbr>::generate</a>() &mdash; <em>Method in class <a href="Drush/Commands/generate/Generators/Drush/DrushCommandFile.html"><abbr title="Drush\Commands\generate\Generators\Drush\DrushCommandFile">DrushCommandFile</abbr></a></em></dt>
-                    <dd><p>{@inheritdoc}</p></dd><dt><a href="Drush/Commands/generate/Generators/Drush/DrushCommandFile.html#method_getComposerJson">
+                    <dd>{@inheritdoc}</dd><dt><a href="Drush/Commands/generate/Generators/Drush/DrushCommandFile.html#method_getComposerJson">
 <abbr title="Drush\Commands\generate\Generators\Drush\DrushCommandFile">DrushCommandFile</abbr>::getComposerJson</a>() &mdash; <em>Method in class <a href="Drush/Commands/generate/Generators/Drush/DrushCommandFile.html"><abbr title="Drush\Commands\generate\Generators\Drush\DrushCommandFile">DrushCommandFile</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/generate/Generators/Drush/DrushCommandFile.html#method_getOwningModulePath">
 <abbr title="Drush\Commands\generate\Generators\Drush\DrushCommandFile">DrushCommandFile</abbr>::getOwningModulePath</a>() &mdash; <em>Method in class <a href="Drush/Commands/generate/Generators/Drush/DrushCommandFile.html"><abbr title="Drush\Commands\generate\Generators\Drush\DrushCommandFile">DrushCommandFile</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/generate/Generators/Migrate/MigrationGenerator.html#method_generate">
 <abbr title="Drush\Commands\generate\Generators\Migrate\MigrationGenerator">MigrationGenerator</abbr>::generate</a>() &mdash; <em>Method in class <a href="Drush/Commands/generate/Generators/Migrate/MigrationGenerator.html"><abbr title="Drush\Commands\generate\Generators\Migrate\MigrationGenerator">MigrationGenerator</abbr></a></em></dt>
-                    <dd><p>{@inheritdoc}</p></dd><dt><a href="Drush/Commands/help/DrushHelpDocument.html#method_generateBaseHelpDom">
+                    <dd>{@inheritdoc}</dd><dt><a href="Drush/Commands/help/DrushHelpDocument.html#method_generateBaseHelpDom">
 <abbr title="Drush\Commands\help\DrushHelpDocument">DrushHelpDocument</abbr>::generateBaseHelpDom</a>() &mdash; <em>Method in class <a href="Drush/Commands/help/DrushHelpDocument.html"><abbr title="Drush\Commands\help\DrushHelpDocument">DrushHelpDocument</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/help/ListCommands.html#method_getTerminalWidth">
 <abbr title="Drush\Commands\help\ListCommands">ListCommands</abbr>::getTerminalWidth</a>() &mdash; <em>Method in class <a href="Drush/Commands/help/ListCommands.html"><abbr title="Drush\Commands\help\ListCommands">ListCommands</abbr></a></em></dt>
@@ -1439,9 +1451,9 @@ loading drush.yml and drush10.yml, etc.</p></dd><dt><a href="Drush/Config/Enviro
 <abbr title="Drush\Drupal\Commands\core\QueueCommands">QueueCommands</abbr>::getQueueService</a>() &mdash; <em>Method in class <a href="Drush/Drupal/Commands/core/QueueCommands.html"><abbr title="Drush\Drupal\Commands\core\QueueCommands">QueueCommands</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Drupal/Commands/core/QueueCommands.html#method_getQueues">
 <abbr title="Drush\Drupal\Commands\core\QueueCommands">QueueCommands</abbr>::getQueues</a>() &mdash; <em>Method in class <a href="Drush/Drupal/Commands/core/QueueCommands.html"><abbr title="Drush\Drupal\Commands\core\QueueCommands">QueueCommands</abbr></a></em></dt>
-                    <dd><p>{@inheritdoc}</p></dd><dt><a href="Drush/Drupal/Commands/core/QueueCommands.html#method_getQueue">
+                    <dd>{@inheritdoc}</dd><dt><a href="Drush/Drupal/Commands/core/QueueCommands.html#method_getQueue">
 <abbr title="Drush\Drupal\Commands\core\QueueCommands">QueueCommands</abbr>::getQueue</a>() &mdash; <em>Method in class <a href="Drush/Drupal/Commands/core/QueueCommands.html"><abbr title="Drush\Drupal\Commands\core\QueueCommands">QueueCommands</abbr></a></em></dt>
-                    <dd><p>{@inheritdoc}</p></dd><dt><a href="Drush/Drupal/Commands/core/StateCommands.html#method_getState">
+                    <dd>{@inheritdoc}</dd><dt><a href="Drush/Drupal/Commands/core/StateCommands.html#method_getState">
 <abbr title="Drush\Drupal\Commands\core\StateCommands">StateCommands</abbr>::getState</a>() &mdash; <em>Method in class <a href="Drush/Drupal/Commands/core/StateCommands.html"><abbr title="Drush\Drupal\Commands\core\StateCommands">StateCommands</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Drupal/Commands/core/StateCommands.html#method_get">
 <abbr title="Drush\Drupal\Commands\core\StateCommands">StateCommands</abbr>::get</a>() &mdash; <em>Method in class <a href="Drush/Drupal/Commands/core/StateCommands.html"><abbr title="Drush\Drupal\Commands\core\StateCommands">StateCommands</abbr></a></em></dt>
@@ -1491,7 +1503,7 @@ loading drush.yml and drush10.yml, etc.</p></dd><dt><a href="Drush/Config/Enviro
 <abbr title="Drush\Drupal\DrupalKernelTrait">DrupalKernelTrait</abbr>::getContainerBuilder</a>() &mdash; <em>Method in class <a href="Drush/Drupal/DrupalKernelTrait.html"><abbr title="Drush\Drupal\DrupalKernelTrait">DrupalKernelTrait</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Drupal/Migrate/MigrateExecutable.html#method_getIdMap">
 <abbr title="Drush\Drupal\Migrate\MigrateExecutable">MigrateExecutable</abbr>::getIdMap</a>() &mdash; <em>Method in class <a href="Drush/Drupal/Migrate/MigrateExecutable.html"><abbr title="Drush\Drupal\Migrate\MigrateExecutable">MigrateExecutable</abbr></a></em></dt>
-                    <dd><p>{@inheritdoc}</p></dd><dt><a href="Drush/Drupal/Migrate/MigrateExecutable.html#method_getCreatedCount">
+                    <dd>{@inheritdoc}</dd><dt><a href="Drush/Drupal/Migrate/MigrateExecutable.html#method_getCreatedCount">
 <abbr title="Drush\Drupal\Migrate\MigrateExecutable">MigrateExecutable</abbr>::getCreatedCount</a>() &mdash; <em>Method in class <a href="Drush/Drupal/Migrate/MigrateExecutable.html"><abbr title="Drush\Drupal\Migrate\MigrateExecutable">MigrateExecutable</abbr></a></em></dt>
                     <dd><p>Returns the number of items created.</p></dd><dt><a href="Drush/Drupal/Migrate/MigrateExecutable.html#method_getUpdatedCount">
 <abbr title="Drush\Drupal\Migrate\MigrateExecutable">MigrateExecutable</abbr>::getUpdatedCount</a>() &mdash; <em>Method in class <a href="Drush/Drupal/Migrate/MigrateExecutable.html"><abbr title="Drush\Drupal\Migrate\MigrateExecutable">MigrateExecutable</abbr></a></em></dt>
@@ -1569,21 +1581,21 @@ for structure only, or have structure and data dumped.</p></dd><dt><a href="Drus
 <abbr title="Drush\Sql\SqlTableSelectionTrait">SqlTableSelectionTrait</abbr>::getRawTableList</a>() &mdash; <em>Method in class <a href="Drush/Sql/SqlTableSelectionTrait.html"><abbr title="Drush\Sql\SqlTableSelectionTrait">SqlTableSelectionTrait</abbr></a></em></dt>
                     <dd><p>Consult the specified options and return the list of tables specified.</p></dd><dt><a href="Drush/Symfony/BufferedConsoleOutput.html#method_getErrorOutput">
 <abbr title="Drush\Symfony\BufferedConsoleOutput">BufferedConsoleOutput</abbr>::getErrorOutput</a>() &mdash; <em>Method in class <a href="Drush/Symfony/BufferedConsoleOutput.html"><abbr title="Drush\Symfony\BufferedConsoleOutput">BufferedConsoleOutput</abbr></a></em></dt>
-                    <dd><p>{@inheritdoc}</p></dd><dt><a href="Drush/Symfony/DrushArgvInput.html#method_getFirstArgument">
+                    <dd>{@inheritdoc}</dd><dt><a href="Drush/Symfony/DrushArgvInput.html#method_getFirstArgument">
 <abbr title="Drush\Symfony\DrushArgvInput">DrushArgvInput</abbr>::getFirstArgument</a>() &mdash; <em>Method in class <a href="Drush/Symfony/DrushArgvInput.html"><abbr title="Drush\Symfony\DrushArgvInput">DrushArgvInput</abbr></a></em></dt>
-                    <dd><p>{@inheritdoc}</p></dd><dt><a href="Drush/Symfony/DrushArgvInput.html#method_getParameterOption">
+                    <dd>{@inheritdoc}</dd><dt><a href="Drush/Symfony/DrushArgvInput.html#method_getParameterOption">
 <abbr title="Drush\Symfony\DrushArgvInput">DrushArgvInput</abbr>::getParameterOption</a>() &mdash; <em>Method in class <a href="Drush/Symfony/DrushArgvInput.html"><abbr title="Drush\Symfony\DrushArgvInput">DrushArgvInput</abbr></a></em></dt>
-                    <dd><p>{@inheritdoc}</p></dd><dt><a href="Drush/Symfony/DrushStyleInjector.html#method_get">
+                    <dd>{@inheritdoc}</dd><dt><a href="Drush/Symfony/DrushStyleInjector.html#method_get">
 <abbr title="Drush\Symfony\DrushStyleInjector">DrushStyleInjector</abbr>::get</a>() &mdash; <em>Method in class <a href="Drush/Symfony/DrushStyleInjector.html"><abbr title="Drush\Symfony\DrushStyleInjector">DrushStyleInjector</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Symfony/IndiscriminateInputDefinition.html#method_getOption">
 <abbr title="Drush\Symfony\IndiscriminateInputDefinition">IndiscriminateInputDefinition</abbr>::getOption</a>() &mdash; <em>Method in class <a href="Drush/Symfony/IndiscriminateInputDefinition.html"><abbr title="Drush\Symfony\IndiscriminateInputDefinition">IndiscriminateInputDefinition</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Symfony/LessStrictArgvInput.html#method_getOption">
 <abbr title="Drush\Symfony\LessStrictArgvInput">LessStrictArgvInput</abbr>::getOption</a>() &mdash; <em>Method in class <a href="Drush/Symfony/LessStrictArgvInput.html"><abbr title="Drush\Symfony\LessStrictArgvInput">LessStrictArgvInput</abbr></a></em></dt>
-                    <dd><p>{@inheritdoc}</p></dd><dt><a href="Drush/Symfony/LessStrictArgvInput.html#method_getFirstArgument">
+                    <dd>{@inheritdoc}</dd><dt><a href="Drush/Symfony/LessStrictArgvInput.html#method_getFirstArgument">
 <abbr title="Drush\Symfony\LessStrictArgvInput">LessStrictArgvInput</abbr>::getFirstArgument</a>() &mdash; <em>Method in class <a href="Drush/Symfony/LessStrictArgvInput.html"><abbr title="Drush\Symfony\LessStrictArgvInput">LessStrictArgvInput</abbr></a></em></dt>
-                    <dd><p>{@inheritdoc}</p></dd><dt><a href="Drush/Symfony/LessStrictArgvInput.html#method_getParameterOption">
+                    <dd>{@inheritdoc}</dd><dt><a href="Drush/Symfony/LessStrictArgvInput.html#method_getParameterOption">
 <abbr title="Drush\Symfony\LessStrictArgvInput">LessStrictArgvInput</abbr>::getParameterOption</a>() &mdash; <em>Method in class <a href="Drush/Symfony/LessStrictArgvInput.html"><abbr title="Drush\Symfony\LessStrictArgvInput">LessStrictArgvInput</abbr></a></em></dt>
-                    <dd><p>{@inheritdoc}</p></dd><dt><a href="Drush/TestTraits/CliTestTrait.html#method_getOutputRaw">
+                    <dd>{@inheritdoc}</dd><dt><a href="Drush/TestTraits/CliTestTrait.html#method_getOutputRaw">
 <abbr title="Drush\TestTraits\CliTestTrait">CliTestTrait</abbr>::getOutputRaw</a>() &mdash; <em>Method in class <a href="Drush/TestTraits/CliTestTrait.html"><abbr title="Drush\TestTraits\CliTestTrait">CliTestTrait</abbr></a></em></dt>
                     <dd><p>Accessor for the last output, non-trimmed.</p></dd><dt><a href="Drush/TestTraits/CliTestTrait.html#method_getErrorOutputRaw">
 <abbr title="Drush\TestTraits\CliTestTrait">CliTestTrait</abbr>::getErrorOutputRaw</a>() &mdash; <em>Method in class <a href="Drush/TestTraits/CliTestTrait.html"><abbr title="Drush\TestTraits\CliTestTrait">CliTestTrait</abbr></a></em></dt>
@@ -1703,13 +1715,13 @@ handler, the shutdown handler) that may be globally installed.</p></dd><dt><a hr
                     <dd><p>A host path is a path on some machine. The machine may be specified
 by a label, and the label may be an @alias or a site specification.</p></dd><dt><a href="Drush/Symfony/DrushArgvInput.html#method_hasParameterOption">
 <abbr title="Drush\Symfony\DrushArgvInput">DrushArgvInput</abbr>::hasParameterOption</a>() &mdash; <em>Method in class <a href="Drush/Symfony/DrushArgvInput.html"><abbr title="Drush\Symfony\DrushArgvInput">DrushArgvInput</abbr></a></em></dt>
-                    <dd><p>{@inheritdoc}</p></dd><dt><a href="Drush/Symfony/IndiscriminateInputDefinition.html#method_hasShortcut">
+                    <dd>{@inheritdoc}</dd><dt><a href="Drush/Symfony/IndiscriminateInputDefinition.html#method_hasShortcut">
 <abbr title="Drush\Symfony\IndiscriminateInputDefinition">IndiscriminateInputDefinition</abbr>::hasShortcut</a>() &mdash; <em>Method in class <a href="Drush/Symfony/IndiscriminateInputDefinition.html"><abbr title="Drush\Symfony\IndiscriminateInputDefinition">IndiscriminateInputDefinition</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Symfony/IndiscriminateInputDefinition.html#method_hasOption">
 <abbr title="Drush\Symfony\IndiscriminateInputDefinition">IndiscriminateInputDefinition</abbr>::hasOption</a>() &mdash; <em>Method in class <a href="Drush/Symfony/IndiscriminateInputDefinition.html"><abbr title="Drush\Symfony\IndiscriminateInputDefinition">IndiscriminateInputDefinition</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Symfony/LessStrictArgvInput.html#method_hasParameterOption">
 <abbr title="Drush\Symfony\LessStrictArgvInput">LessStrictArgvInput</abbr>::hasParameterOption</a>() &mdash; <em>Method in class <a href="Drush/Symfony/LessStrictArgvInput.html"><abbr title="Drush\Symfony\LessStrictArgvInput">LessStrictArgvInput</abbr></a></em></dt>
-                    <dd><p>{@inheritdoc}</p></dd>        </dl><h2 id="letterI">I</h2>
+                    <dd>{@inheritdoc}</dd>        </dl><h2 id="letterI">I</h2>
         <dl id="indexI"><dt><a href="Drush/Boot/BootstrapHook.html#method_initialize">
 <abbr title="Drush\Boot\BootstrapHook">BootstrapHook</abbr>::initialize</a>() &mdash; <em>Method in class <a href="Drush/Boot/BootstrapHook.html"><abbr title="Drush\Boot\BootstrapHook">BootstrapHook</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Boot/BootstrapManager.html#method_injectBootstrap">
@@ -1929,7 +1941,7 @@ longer.</p></dd><dt><a href="Drush/Boot/BootstrapManager.html#method_logger">
 <abbr title="Drush\Drush">Drush</abbr>::logger</a>() &mdash; <em>Method in class <a href="Drush/Drush.html"><abbr title="Drush\Drush">Drush</abbr></a></em></dt>
                     <dd><p>Return the Drush logger object.</p></dd><dt><a href="Drush/Log/DrushLog.html#method_log">
 <abbr title="Drush\Log\DrushLog">DrushLog</abbr>::log</a>() &mdash; <em>Method in class <a href="Drush/Log/DrushLog.html"><abbr title="Drush\Log\DrushLog">DrushLog</abbr></a></em></dt>
-                    <dd><p>{@inheritdoc}</p></dd><dt><a href="Drush/Log/LogLevel.html"><abbr title="Drush\Log\LogLevel">LogLevel</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Log.html">Drush\Log</a></em></dt>
+                    <dd>{@inheritdoc}</dd><dt><a href="Drush/Log/LogLevel.html"><abbr title="Drush\Log\LogLevel">LogLevel</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Log.html">Drush\Log</a></em></dt>
                     <dd><p>Additional log levels that Drush uses for historical reasons.</p></dd><dt><a href="Drush/Log/Logger.html"><abbr title="Drush\Log\Logger">Logger</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Log.html">Drush\Log</a></em></dt>
                     <dd></dd><dt><a href="Drush/Log/Logger.html#method_log">
 <abbr title="Drush\Log\Logger">Logger</abbr>::log</a>() &mdash; <em>Method in class <a href="Drush/Log/Logger.html"><abbr title="Drush\Log\Logger">Logger</abbr></a></em></dt>
@@ -2261,9 +2273,9 @@ settings, paths and so on into it.</p></dd><dt><a href="Drush/Preflight/Prefligh
 <abbr title="Drush\Symfony\BootstrapCompilerPass">BootstrapCompilerPass</abbr>::process</a>() &mdash; <em>Method in class <a href="Drush/Symfony/BootstrapCompilerPass.html"><abbr title="Drush\Symfony\BootstrapCompilerPass">BootstrapCompilerPass</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Symfony/DrushArgvInput.html#method_parse">
 <abbr title="Drush\Symfony\DrushArgvInput">DrushArgvInput</abbr>::parse</a>() &mdash; <em>Method in class <a href="Drush/Symfony/DrushArgvInput.html"><abbr title="Drush\Symfony\DrushArgvInput">DrushArgvInput</abbr></a></em></dt>
-                    <dd><p>{@inheritdoc}</p></dd><dt><a href="Drush/Symfony/LessStrictArgvInput.html#method_parse">
+                    <dd>{@inheritdoc}</dd><dt><a href="Drush/Symfony/LessStrictArgvInput.html#method_parse">
 <abbr title="Drush\Symfony\LessStrictArgvInput">LessStrictArgvInput</abbr>::parse</a>() &mdash; <em>Method in class <a href="Drush/Symfony/LessStrictArgvInput.html"><abbr title="Drush\Symfony\LessStrictArgvInput">LessStrictArgvInput</abbr></a></em></dt>
-                    <dd><p>{@inheritdoc}</p></dd><dt>$<a href="Drush/TestTraits/CliTestTrait.html#property_process">
+                    <dd>{@inheritdoc}</dd><dt>$<a href="Drush/TestTraits/CliTestTrait.html#property_process">
 <abbr title="Drush\TestTraits\CliTestTrait">CliTestTrait</abbr>#process</a> &mdash; <em>Property in class <a href="Drush/TestTraits/CliTestTrait.html"><abbr title="Drush\TestTraits\CliTestTrait">CliTestTrait</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/TestTraits/OutputUtilsTrait.html#method_pathsToSimplify">
 <abbr title="Drush\TestTraits\OutputUtilsTrait">OutputUtilsTrait</abbr>::pathsToSimplify</a>() &mdash; <em>Method in class <a href="Drush/TestTraits/OutputUtilsTrait.html"><abbr title="Drush\TestTraits\OutputUtilsTrait">OutputUtilsTrait</abbr></a></em></dt>
@@ -2334,7 +2346,7 @@ command was found, but did not meet requirements.</p></dd><dt>$<a href="Drush/Bo
 <abbr title="Drush\Commands\core\CacheCommands">CacheCommands</abbr>::rebuild</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/CacheCommands.html"><abbr title="Drush\Commands\core\CacheCommands">CacheCommands</abbr></a></em></dt>
                     <dd><p>Rebuild a Drupal 8 site.</p></dd><dt><a href="Drush/Commands/core/DocsCommands.html#method_readme">
 <abbr title="Drush\Commands\core\DocsCommands">DocsCommands</abbr>::readme</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/DocsCommands.html"><abbr title="Drush\Commands\core\DocsCommands">DocsCommands</abbr></a></em></dt>
-                    <dd><p>README.md</p></dd><dt><a href="Drush/Commands/core/NotifyCommands.html#method_registerShutdown">
+                    <dd>README.md</dd><dt><a href="Drush/Commands/core/NotifyCommands.html#method_registerShutdown">
 <abbr title="Drush\Commands\core\NotifyCommands">NotifyCommands</abbr>::registerShutdown</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/NotifyCommands.html"><abbr title="Drush\Commands\core\NotifyCommands">NotifyCommands</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/core/RsyncCommands.html"><abbr title="Drush\Commands\core\RsyncCommands">RsyncCommands</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands/core.html">Drush\Commands\core</a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/core/RsyncCommands.html#method_rsync">
@@ -2679,7 +2691,12 @@ database sanitizer for sql-sync.</p></dd><dt>$<a href="Drush/Drupal/DrupalKernel
 <abbr title="Drush\Drush">Drush</abbr>::simulate</a>() &mdash; <em>Method in class <a href="Drush/Drush.html"><abbr title="Drush\Drush">Drush</abbr></a></em></dt>
                     <dd><p>Return 'true' if we are in simulated mode</p></dd><dt><a href="Drush/Exec/ExecTrait.html#method_startBrowser">
 <abbr title="Drush\Exec\ExecTrait">ExecTrait</abbr>::startBrowser</a>() &mdash; <em>Method in class <a href="Drush/Exec/ExecTrait.html"><abbr title="Drush\Exec\ExecTrait">ExecTrait</abbr></a></em></dt>
-                    <dd><p>Starts a background browser/tab for the current site or a specified URL.</p></dd><dt>$<a href="Drush/Preflight/ArgsPreprocessor.html#property_specParser">
+                    <dd><p>Starts a background browser/tab for the current site or a specified URL.</p></dd><dt><a href="Drush/Log/Logger.html#method_success">
+<abbr title="Drush\Log\Logger">Logger</abbr>::success</a>() &mdash; <em>Method in class <a href="Drush/Log/Logger.html"><abbr title="Drush\Log\Logger">Logger</abbr></a></em></dt>
+                    <dd><p>Log a 'success' message.</p></dd><dt><a href="Drush/Log/SuccessInterface.html"><abbr title="Drush\Log\SuccessInterface">SuccessInterface</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Log.html">Drush\Log</a></em></dt>
+                    <dd></dd><dt><a href="Drush/Log/SuccessInterface.html#method_success">
+<abbr title="Drush\Log\SuccessInterface">SuccessInterface</abbr>::success</a>() &mdash; <em>Method in class <a href="Drush/Log/SuccessInterface.html"><abbr title="Drush\Log\SuccessInterface">SuccessInterface</abbr></a></em></dt>
+                    <dd><p>Log a 'success' message.</p></dd><dt>$<a href="Drush/Preflight/ArgsPreprocessor.html#property_specParser">
 <abbr title="Drush\Preflight\ArgsPreprocessor">ArgsPreprocessor</abbr>#specParser</a> &mdash; <em>Property in class <a href="Drush/Preflight/ArgsPreprocessor.html"><abbr title="Drush\Preflight\ArgsPreprocessor">ArgsPreprocessor</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Preflight/ArgsPreprocessor.html#method_setArgsRemapper">
 <abbr title="Drush\Preflight\ArgsPreprocessor">ArgsPreprocessor</abbr>::setArgsRemapper</a>() &mdash; <em>Method in class <a href="Drush/Preflight/ArgsPreprocessor.html"><abbr title="Drush\Preflight\ArgsPreprocessor">ArgsPreprocessor</abbr></a></em></dt>
@@ -2771,7 +2788,7 @@ methods to access the parts.</p></dd><dt><a href="Drush/SiteAlias/SiteSpecParser
 <abbr title="Drush\Symfony\BufferedConsoleOutput">BufferedConsoleOutput</abbr>#stderr</a> &mdash; <em>Property in class <a href="Drush/Symfony/BufferedConsoleOutput.html"><abbr title="Drush\Symfony\BufferedConsoleOutput">BufferedConsoleOutput</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Symfony/BufferedConsoleOutput.html#method_setErrorOutput">
 <abbr title="Drush\Symfony\BufferedConsoleOutput">BufferedConsoleOutput</abbr>::setErrorOutput</a>() &mdash; <em>Method in class <a href="Drush/Symfony/BufferedConsoleOutput.html"><abbr title="Drush\Symfony\BufferedConsoleOutput">BufferedConsoleOutput</abbr></a></em></dt>
-                    <dd><p>{@inheritdoc}</p></dd><dt><a href="Drush/Symfony/DrushArgvInput.html#method_setTokens">
+                    <dd>{@inheritdoc}</dd><dt><a href="Drush/Symfony/DrushArgvInput.html#method_setTokens">
 <abbr title="Drush\Symfony\DrushArgvInput">DrushArgvInput</abbr>::setTokens</a>() &mdash; <em>Method in class <a href="Drush/Symfony/DrushArgvInput.html"><abbr title="Drush\Symfony\DrushArgvInput">DrushArgvInput</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Symfony/LessStrictArgvInput.html#method_setTokens">
 <abbr title="Drush\Symfony\LessStrictArgvInput">LessStrictArgvInput</abbr>::setTokens</a>() &mdash; <em>Method in class <a href="Drush/Symfony/LessStrictArgvInput.html"><abbr title="Drush\Symfony\LessStrictArgvInput">LessStrictArgvInput</abbr></a></em></dt>
@@ -3166,7 +3183,7 @@ need to be expanded.</p></dd>        </dl><h2 id="letter_">_</h2>
 <abbr title="Drush\Symfony\DrushArgvInput">DrushArgvInput</abbr>::__toString</a>() &mdash; <em>Method in class <a href="Drush/Symfony/DrushArgvInput.html"><abbr title="Drush\Symfony\DrushArgvInput">DrushArgvInput</abbr></a></em></dt>
                     <dd><p>Returns a stringified representation of the args passed to the command.</p></dd><dt><a href="Drush/Symfony/LessStrictArgvInput.html#method___construct">
 <abbr title="Drush\Symfony\LessStrictArgvInput">LessStrictArgvInput</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/Symfony/LessStrictArgvInput.html"><abbr title="Drush\Symfony\LessStrictArgvInput">LessStrictArgvInput</abbr></a></em></dt>
-                    <dd><p>Constructor.</p></dd><dt><a href="Drush/Symfony/LessStrictArgvInput.html#method___toString">
+                    <dd>Constructor.</dd><dt><a href="Drush/Symfony/LessStrictArgvInput.html#method___toString">
 <abbr title="Drush\Symfony\LessStrictArgvInput">LessStrictArgvInput</abbr>::__toString</a>() &mdash; <em>Method in class <a href="Drush/Symfony/LessStrictArgvInput.html"><abbr title="Drush\Symfony\LessStrictArgvInput">LessStrictArgvInput</abbr></a></em></dt>
                     <dd><p>Returns a stringified representation of the args passed to the command.</p></dd><dt><a href="Drush/TestTraits/CliTestTrait.html#method__escapeshellargWindows">
 <abbr title="Drush\TestTraits\CliTestTrait">CliTestTrait</abbr>::_escapeshellargWindows</a>() &mdash; <em>Method in class <a href="Drush/TestTraits/CliTestTrait.html"><abbr title="Drush\TestTraits\CliTestTrait">CliTestTrait</abbr></a></em></dt>
