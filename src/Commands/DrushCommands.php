@@ -2,6 +2,7 @@
 
 namespace Drush\Commands;
 
+use Drush\Log\Logger;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Consolidation\AnnotatedCommand\CommandData;
 use Drush\Drush;
@@ -11,7 +12,6 @@ use GuzzleHttp\MessageFormatter;
 use GuzzleHttp\Middleware;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
-use Psr\Log\LoggerInterface;
 use Drush\Config\ConfigAwareTrait;
 use Drush\Exec\ExecTrait;
 use Robo\Contract\ConfigAwareInterface;
@@ -63,7 +63,7 @@ abstract class DrushCommands implements IOAwareInterface, LoggerAwareInterface, 
     /**
      * Returns a logger object.
      */
-    protected function logger(): ?LoggerInterface
+    protected function logger(): ?Logger
     {
         return $this->logger;
     }
