@@ -199,7 +199,7 @@ class ConfigImportCommands extends DrushCommands
      *
      * @return bool|void
      * @option diff Show preview as a diff.
-     * @option source An arbitrary directory that holds the configuration files. An alternative to label argument
+     * @option source An arbitrary directory that holds the configuration files.
      * @option partial Allows for partial config imports from the source directory. Only updates and new configs will be processed with this flag (missing configs will not be deleted). No config transformation happens.
      * @aliases cim,config-import
      * @topics docs:deploy
