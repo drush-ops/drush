@@ -36,7 +36,7 @@ Drupal Compatibility
     <td> Drush 10 </td>
     <td> 7.1+ </td>
     <!-- Released Oct 2019 -->
-    <td> Nov 2021 </td>
+    <td> Jan 2022 </td>
     <td></td> <td></td> <td>✓</td> <td><b>✓</b></td>
   </tr>
   <tr>
