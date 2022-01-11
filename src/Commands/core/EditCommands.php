@@ -35,7 +35,7 @@ class EditCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
      *  Edit the second file in the choice list.
      * @aliases conf,config,core-edit
      */
-    public function edit($filter = null): void
+    public function edit($filter = null, array $options = []): void
     {
         $all = $this->load();
 
@@ -48,7 +48,7 @@ class EditCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
             }
         }
 
-        $editor = self::getEditor();
+        $editor = self::getEditor($options['editor']);
         if (count($all) == 1) {
             $filepath = current($all);
         } else {

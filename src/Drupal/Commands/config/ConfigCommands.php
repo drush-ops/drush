@@ -232,7 +232,7 @@ class ConfigCommands extends DrushCommands implements StdinAwareInterface, SiteA
 
         // Note that `getEditor()` returns a string that contains a
         // %s placeholder for the config file path.
-        $exec = self::getEditor();
+        $exec = self::getEditor($options['editor']);
         $cmd = sprintf($exec, Escape::shellArg($temp_storage->getFilePath($config_name)));
         $process = $this->processManager()->shell($cmd);
         $process->setTty(true);
