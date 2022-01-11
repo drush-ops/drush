@@ -100,9 +100,9 @@ trait ExecTrait
         return $process->isSuccessful();
     }
 
-    public static function getEditor()
+    public static function getEditor(?string $editor)
     {
         // See http://drupal.org/node/1740294
-        return '${VISUAL-${EDITOR-vi}} %s';
+        return $editor ? "$editor %s" : '${VISUAL-${EDITOR-vi}} %s';
     }
 }
