@@ -48,6 +48,8 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
      *   Install using the specified DB params.
      * @usage drush si --db-url=sqlite://sites/example.com/files/.ht.sqlite
      *   Install using SQLite
+     * @usage drush si --db-url=sqlite://:memory:
+     *   Install using SQLite in-memory database.
      * @usage drush si --account-pass=mom
      *   Re-install with specified uid1 password.
      * @usage drush si --existing-config

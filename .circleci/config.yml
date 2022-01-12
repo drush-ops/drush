@@ -73,7 +73,7 @@ jobs:
     docker:
       - image: wodby/php:7.4
         environment:
-          - UNISH_DB_URL=sqlite://sut/sites/dev/files/.ht.sqlite
+          - UNISH_DB_URL=sqlite://:memory:
     <<: *test74steps
 
   test_74_drupal9_postgres:

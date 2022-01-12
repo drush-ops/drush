@@ -233,13 +233,14 @@ abstract class SqlBase implements ConfigAwareInterface
     /*
      * Generate a path to an output file for a SQL dump when needed.
      *
-     * @param string|bool @file
+     * @param string|bool|null @file
      *   If TRUE, generate a path based on usual backup directory and current date.
      *   Otherwise, just return the path that was provided.
      */
-    public function dumpFile($file)
+    public function dumpFile($file): ?string
     {
-        $database = $this->dbSpec['database'];
+        // basename() is needed for sqlite as $database is a path. Harmless otherwise.
+        $database = basename($this->dbSpec['database']);
 
         // $file is passed in to us usually via --result-file.  If the user
         // has set $options['result-file'] = 'auto', then we
