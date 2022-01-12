@@ -107,7 +107,7 @@ class MigrateRunnerCommands extends DrushCommands
      *   unprocessed: Unprocessed
      *   last_imported: Last Imported
      * @default-fields id,status,total,imported,unprocessed,last_imported
-     *
+     * @filter-default-field status
      * @return RowsOfFields
      *   Migrations status formatted as table.
      * @version 10.4
