@@ -4937,6 +4937,7 @@
 <li><code>drush si expert --locale=uk</code>. (Re)install using the expert install profile. Set default language to Ukrainian.</li>
 <li><code>drush si --db-url=mysql://root:pass@localhost:port/dbname</code>. Install using the specified DB params.</li>
 <li><code>drush si --db-url=sqlite://sites/example.com/files/.ht.sqlite</code>. Install using SQLite</li>
+<li><code>drush si --db-url=sqlite://:memory:</code>. Install using SQLite in-memory database.</li>
 <li><code>drush si --account-pass=mom</code>. Re-install with specified uid1 password.</li>
 <li><code>drush si --existing-config</code>. Install based on the yml files stored in the config export/import directory.</li>
 <li><code>drush si standard install_configure_form.enable_update_status_emails=NULL</code>. Disable email notification during install and later. If your server has no mail transfer agent, this gets rid of an error during install.</li>

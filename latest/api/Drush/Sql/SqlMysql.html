@@ -405,7 +405,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>                </
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    
+                    string|null
                 </div>
                 <div class="col-md-8">
                     <a href="#method_dumpFile">dumpFile</a>($file)
@@ -1510,7 +1510,7 @@ in 'bash -c', since pipefail is a bash feature.</p></td>
                     <h3 id="method_dumpFile">
         <div class="location">in <a href="../../Drush/Sql/SqlBase.html#method_dumpFile">
 <abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a> <a href="https://github.com/drush-ops/drush/blob/11.x/src/Sql/SqlBase.php#L240">at line 240</a></div>
-        <code>                    
+        <code>                    string|null
     <strong>dumpFile</strong>($file)
         </code>
     </h3>
@@ -1534,6 +1534,15 @@ in 'bash -c', since pipefail is a bash feature.</p></td>
             </table>
 
             
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string|null</td>
+            <td></td>
+        </tr>
+    </table>
+
             
             
             
@@ -1544,7 +1553,7 @@ in 'bash -c', since pipefail is a bash feature.</p></td>
                     <div class="method-item">
                     <h3 id="method_query">
         <div class="location">in <a href="../../Drush/Sql/SqlBase.html#method_query">
-<abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a> <a href="https://github.com/drush-ops/drush/blob/11.x/src/Sql/SqlBase.php#L276">at line 276</a></div>
+<abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a> <a href="https://github.com/drush-ops/drush/blob/11.x/src/Sql/SqlBase.php#L277">at line 277</a></div>
         <code>                    bool|null
     <strong>query</strong>(string $query, $input_file = null, $result_file = &#039;&#039;)
         </code>
@@ -1598,7 +1607,7 @@ provide a $result_file whose value can be drush_bit_bucket().</p></p>
                     <div class="method-item">
                     <h3 id="method_alwaysQuery">
         <div class="location">in <a href="../../Drush/Sql/SqlBase.html#method_alwaysQuery">
-<abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a> <a href="https://github.com/drush-ops/drush/blob/11.x/src/Sql/SqlBase.php#L300">at line 300</a></div>
+<abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a> <a href="https://github.com/drush-ops/drush/blob/11.x/src/Sql/SqlBase.php#L301">at line 301</a></div>
         <code>                    bool
     <strong>alwaysQuery</strong>(string $query, $input_file = null, string|null $result_file = &#039;&#039;)
         </code>
@@ -1652,7 +1661,7 @@ provide a $result_file whose value can be drush_bit_bucket().</p></p>
                     <div class="method-item">
                     <h3 id="method_logQueryInDebugMode">
         <div class="location">in <a href="../../Drush/Sql/SqlBase.html#method_logQueryInDebugMode">
-<abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a> <a href="https://github.com/drush-ops/drush/blob/11.x/src/Sql/SqlBase.php#L352">at line 352</a></div>
+<abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a> <a href="https://github.com/drush-ops/drush/blob/11.x/src/Sql/SqlBase.php#L353">at line 353</a></div>
         <code>            protected        void
     <strong>logQueryInDebugMode</strong>($query, $input_file_original)
         </code>
@@ -1733,7 +1742,7 @@ provide a $result_file whose value can be drush_bit_bucket().</p></p>
                     <div class="method-item">
                     <h3 id="method_queryPrefix">
         <div class="location">in <a href="../../Drush/Sql/SqlBase.html#method_queryPrefix">
-<abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a> <a href="https://github.com/drush-ops/drush/blob/11.x/src/Sql/SqlBase.php#L371">at line 371</a></div>
+<abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a> <a href="https://github.com/drush-ops/drush/blob/11.x/src/Sql/SqlBase.php#L372">at line 372</a></div>
         <code>                    string|null
     <strong>queryPrefix</strong>($query)
         </code>
@@ -1777,7 +1786,7 @@ provide a $result_file whose value can be drush_bit_bucket().</p></p>
                     <div class="method-item">
                     <h3 id="method_queryFormat">
         <div class="location">in <a href="../../Drush/Sql/SqlBase.html#method_queryFormat">
-<abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a> <a href="https://github.com/drush-ops/drush/blob/11.x/src/Sql/SqlBase.php#L384">at line 384</a></div>
+<abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a> <a href="https://github.com/drush-ops/drush/blob/11.x/src/Sql/SqlBase.php#L385">at line 385</a></div>
         <code>                    
     <strong>queryFormat</strong>($query)
         </code>
@@ -1812,7 +1821,7 @@ provide a $result_file whose value can be drush_bit_bucket().</p></p>
                     <div class="method-item">
                     <h3 id="method_drop">
         <div class="location">in <a href="../../Drush/Sql/SqlBase.html#method_drop">
-<abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a> <a href="https://github.com/drush-ops/drush/blob/11.x/src/Sql/SqlBase.php#L396">at line 396</a></div>
+<abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a> <a href="https://github.com/drush-ops/drush/blob/11.x/src/Sql/SqlBase.php#L397">at line 397</a></div>
         <code>                    bool|null
     <strong>drop</strong>(array $tables)
         </code>
@@ -1904,7 +1913,7 @@ in a Windows shell. Set TRUE if the CREATE is not running on the bash command li
                     <div class="method-item">
                     <h3 id="method_createdb">
         <div class="location">in <a href="../../Drush/Sql/SqlBase.html#method_createdb">
-<abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a> <a href="https://github.com/drush-ops/drush/blob/11.x/src/Sql/SqlBase.php#L428">at line 428</a></div>
+<abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a> <a href="https://github.com/drush-ops/drush/blob/11.x/src/Sql/SqlBase.php#L429">at line 429</a></div>
         <code>                    bool|null
     <strong>createdb</strong>(bool $quoted = false)
         </code>
@@ -1949,7 +1958,7 @@ True if successful, FALSE otherwise.</p></td>
                     <div class="method-item">
                     <h3 id="method_dropOrCreate">
         <div class="location">in <a href="../../Drush/Sql/SqlBase.html#method_dropOrCreate">
-<abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a> <a href="https://github.com/drush-ops/drush/blob/11.x/src/Sql/SqlBase.php#L443">at line 443</a></div>
+<abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a> <a href="https://github.com/drush-ops/drush/blob/11.x/src/Sql/SqlBase.php#L444">at line 444</a></div>
         <code>                    bool
     <strong>dropOrCreate</strong>()
         </code>
@@ -2059,7 +2068,7 @@ On mysql, that means using --defaults-file to supply the user+password.</p></td>
                     <div class="method-item">
                     <h3 id="method_scheme">
         <div class="location">in <a href="../../Drush/Sql/SqlBase.html#method_scheme">
-<abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a> <a href="https://github.com/drush-ops/drush/blob/11.x/src/Sql/SqlBase.php#L475">at line 475</a></div>
+<abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a> <a href="https://github.com/drush-ops/drush/blob/11.x/src/Sql/SqlBase.php#L476">at line 476</a></div>
         <code>                    string
     <strong>scheme</strong>()
         </code>
@@ -2157,7 +2166,7 @@ appropriately quoted for the RDMS.</p></td>
                     <div class="method-item">
                     <h3 id="method_paramsToOptions">
         <div class="location">in <a href="../../Drush/Sql/SqlBase.html#method_paramsToOptions">
-<abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a> <a href="https://github.com/drush-ops/drush/blob/11.x/src/Sql/SqlBase.php#L506">at line 506</a></div>
+<abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a> <a href="https://github.com/drush-ops/drush/blob/11.x/src/Sql/SqlBase.php#L507">at line 507</a></div>
         <code>                    string
     <strong>paramsToOptions</strong>($parameters)
         </code>
@@ -2201,7 +2210,7 @@ appropriately quoted for the RDMS.</p></td>
                     <div class="method-item">
                     <h3 id="method_su">
         <div class="location">in <a href="../../Drush/Sql/SqlBase.html#method_su">
-<abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a> <a href="https://github.com/drush-ops/drush/blob/11.x/src/Sql/SqlBase.php#L523">at line 523</a></div>
+<abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a> <a href="https://github.com/drush-ops/drush/blob/11.x/src/Sql/SqlBase.php#L524">at line 524</a></div>
         <code>                    void
     <strong>su</strong>()
         </code>
@@ -2234,7 +2243,7 @@ appropriately quoted for the RDMS.</p></td>
                     <div class="method-item">
                     <h3 id="method_getOptions">
         <div class="location">in <a href="../../Drush/Sql/SqlBase.html#method_getOptions">
-<abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a> <a href="https://github.com/drush-ops/drush/blob/11.x/src/Sql/SqlBase.php#L543">at line 543</a></div>
+<abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a> <a href="https://github.com/drush-ops/drush/blob/11.x/src/Sql/SqlBase.php#L544">at line 544</a></div>
         <code>                    array
     <strong>getOptions</strong>()
         </code>
@@ -2268,7 +2277,7 @@ appropriately quoted for the RDMS.</p></td>
                     <div class="method-item">
                     <h3 id="method_getOption">
         <div class="location">in <a href="../../Drush/Sql/SqlBase.html#method_getOption">
-<abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a> <a href="https://github.com/drush-ops/drush/blob/11.x/src/Sql/SqlBase.php#L548">at line 548</a></div>
+<abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a> <a href="https://github.com/drush-ops/drush/blob/11.x/src/Sql/SqlBase.php#L549">at line 549</a></div>
         <code>                    
     <strong>getOption</strong>($name, $default = null)
         </code>
@@ -2308,7 +2317,7 @@ appropriately quoted for the RDMS.</p></td>
                     <div class="method-item">
                     <h3 id="method_dbSpecFromDbUrl">
         <div class="location">in <a href="../../Drush/Sql/SqlBase.html#method_dbSpecFromDbUrl">
-<abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a> <a href="https://github.com/drush-ops/drush/blob/11.x/src/Sql/SqlBase.php#L562">at line 562</a></div>
+<abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a> <a href="https://github.com/drush-ops/drush/blob/11.x/src/Sql/SqlBase.php#L563">at line 563</a></div>
         <code>        static            array
     <strong>dbSpecFromDbUrl</strong>($db_url)
         </code>
@@ -2351,7 +2360,7 @@ appropriately quoted for the RDMS.</p></td>
                     <div class="method-item">
                     <h3 id="method_alwaysQueryCommand">
         <div class="location">in <a href="../../Drush/Sql/SqlBase.html#method_alwaysQueryCommand">
-<abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a> <a href="https://github.com/drush-ops/drush/blob/11.x/src/Sql/SqlBase.php#L608">at line 608</a></div>
+<abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a> <a href="https://github.com/drush-ops/drush/blob/11.x/src/Sql/SqlBase.php#L609">at line 609</a></div>
         <code>                    array
     <strong>alwaysQueryCommand</strong>($input_file)
         </code>
