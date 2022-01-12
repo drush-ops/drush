@@ -17,7 +17,6 @@ composer_version: ""
 disable_settings_management: true
 web_environment:
   - UNISH_DB_URL=mysql://root:root@db
-#  - "UNISH_DB_URL=sqlite://:memory:"
+#  - UNISH_DB_URL="sqlite://:memory:"
 #  - UNISH_DB_URL=pgsql://postgres:@localhost
   - DRUSH_OPTIONS_URI=$DDEV_PRIMARY_URL
- 
