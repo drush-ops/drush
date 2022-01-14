@@ -119,12 +119,12 @@ class RunserverCommands extends DrushCommands
     /**
      * Parse a URI or partial URI (including just a port, host IP or path).
      *
-     * @param string $uri
+     * @param $uri
      *   String that can contain partial URI.
      *
      *   URI array as returned by parse_url.
      */
-    public function parseUri(string $uri): array
+    public function parseUri(?string $uri): array
     {
         if (empty($uri)) {
             return [];
