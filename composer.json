@@ -88,7 +88,7 @@
   },
   "config": {
     "allow-plugins": {
-      "composer/installers": true,
+      "composer/installers": true
     },
     "optimize-autoloader": true,
     "preferred-install": "dist",
