@@ -362,7 +362,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>                </
                     array
                 </div>
                 <div class="col-md-8">
-                    <a href="#method_parseUri">parseUri</a>(string $uri)
+                    <a href="#method_parseUri">parseUri</a>(string|null $uri)
         
                                             <p><p>Parse a URI or partial URI (including just a port, host IP or path).</p></p>                </div>
                 <div class="col-md-2"></div>
@@ -888,7 +888,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
                     <h3 id="method_parseUri">
         <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/core/RunserverCommands.php#L127">at line 127</a></div>
         <code>                    array
-    <strong>parseUri</strong>(string $uri)
+    <strong>parseUri</strong>(string|null $uri)
         </code>
     </h3>
     <div class="details">    
@@ -903,7 +903,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
 
                     <table class="table table-condensed">
                     <tr>
-                <td>string</td>
+                <td>string|null</td>
                 <td>$uri</td>
                 <td><p>String that can contain partial URI.</p>
 <p>URI array as returned by parse_url.</p></td>
