@@ -2,6 +2,7 @@
 
 namespace Drush\Runtime;
 
+use Drush\Log\Logger;
 use League\Container\Container;
 use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Output\ConsoleOutput;
@@ -63,7 +64,7 @@ class DependencyInjection
         $container = new Container();
 
         // With league/container 3.x, first call wins, so add Drush services first.
-        $this->addDrushServices($container, $loader, $drupalFinder, $aliasManager, $config);
+        $this->addDrushServices($container, $loader, $drupalFinder, $aliasManager, $config, $output);
 
         // Robo has the same signature for configureContainer in 1.x, 2.x and 3.x.
         Robo::configureContainer($container, $application, $config, $input, $output);
@@ -93,12 +94,12 @@ class DependencyInjection
     }
 
     // Add Drush Services to league/container 3.x
-    protected function addDrushServices($container, ClassLoader $loader, DrupalFinder $drupalFinder, SiteAliasManager $aliasManager, DrushConfig $config): void
+    protected function addDrushServices($container, ClassLoader $loader, DrupalFinder $drupalFinder, SiteAliasManager $aliasManager, DrushConfig $config, OutputInterface $output): void
     {
-        // Override Robo's logger with our own
-        $container->share('logger', 'Drush\Log\Logger')
-          ->addArgument('output')
-          ->addMethodCall('setLogOutputStyler', ['logStyler']);
+        // Override Robo's logger with a LoggerManager that delegates to the Drush logger.
+        $container->share('logger', '\Drush\Log\DrushLoggerManager')
+          ->addMethodCall('setLogOutputStyler', ['logStyler'])
+          ->addMethodCall('add', ['drush', new Logger($output)]);
 
         $container->share('loader', $loader);
         $container->share('site.alias.manager', $aliasManager);

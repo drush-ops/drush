@@ -2,11 +2,15 @@
 
 namespace Drush\Runtime;
 
+use Consolidation\Log\ConsoleLogLevel;
+use Psr\Log\LogLevel;
+use Symfony\Component\Console\Logger\ConsoleLogger;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Drush\Application;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Drush\Preflight\Preflight;
+use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Control the Drush runtime environment
@@ -94,6 +98,12 @@ class Runtime
             $this->preflight->drupalFinder(),
             $this->preflight->aliasManager()
         );
+
+        // Just as an example of a custom logger.
+        $loggerManager = $container->get('logger');
+        $verbosityLevelMap = [ConsoleLogLevel::SUCCESS => OutputInterface::VERBOSITY_NORMAL];
+        $formatLevelMap = [ConsoleLogLevel::SUCCESS => LogLevel::INFO];
+        $loggerManager->reset()->add('foo', new ConsoleLogger($output, $verbosityLevelMap, $formatLevelMap));
 
         // Our termination handlers are set up via dependency injection,
         // as they require classes that are set up in the DI container.
