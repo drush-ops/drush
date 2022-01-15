@@ -413,6 +413,6 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
     {
         $output->writeln('', OutputInterface::VERBOSITY_QUIET);
 
-        $this->doRenderException($e, $output);
+        $this->doRenderThrowable($e, $output);
     }
 }
