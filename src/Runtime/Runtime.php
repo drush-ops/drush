@@ -99,11 +99,11 @@ class Runtime
             $this->preflight->aliasManager()
         );
 
-        // Just as an example of a custom logger.
-        $loggerManager = $container->get('logger');
-        $verbosityLevelMap = [ConsoleLogLevel::SUCCESS => OutputInterface::VERBOSITY_NORMAL];
-        $formatLevelMap = [ConsoleLogLevel::SUCCESS => LogLevel::INFO];
-        $loggerManager->reset()->add('foo', new ConsoleLogger($output, $verbosityLevelMap, $formatLevelMap));
+//        Just as an example of a custom logger.
+//        $loggerManager = $container->get('logger');
+//        $verbosityLevelMap = [ConsoleLogLevel::SUCCESS => OutputInterface::VERBOSITY_NORMAL];
+//        $formatLevelMap = [ConsoleLogLevel::SUCCESS => LogLevel::INFO];
+//        $loggerManager->reset()->add('foo', new ConsoleLogger($output, $verbosityLevelMap, $formatLevelMap));
 
         // Our termination handlers are set up via dependency injection,
         // as they require classes that are set up in the DI container.
