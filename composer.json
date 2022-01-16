@@ -88,7 +88,8 @@
   },
   "config": {
     "allow-plugins": {
-      "composer/installers": true
+      "composer/installers": true,
+      "cweagans/composer-patches": true
     },
     "optimize-autoloader": true,
     "preferred-install": "dist",
