@@ -5,8 +5,12 @@ use Consolidation\AnnotatedCommand\AnnotationData;
 use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\AnnotatedCommand\Events\CustomEventAwareInterface;
 use Consolidation\AnnotatedCommand\Events\CustomEventAwareTrait;
+use Consolidation\Log\ConsoleLogLevel;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
+use Drush\Drush;
+use Drush\Symfony\DrushArgvInput;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Logger\ConsoleLogger;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Drush\Commands\DrushCommands;
@@ -30,4 +34,23 @@ class SimpleSutCommands extends DrushCommands
     {
         $this->logger()->notice(dt("This is an example site-wide command committed to the repository in the SUT inside of the 'drush/Commands' directory."));
     }
+
+    /**
+     * Replace Drush logger with a custom one.
+     *
+     * In a real-world implementation, you would likely use `@hook *` instead of `@hook sut:simple`.
+     *
+     * @hook init sut:simple
+     */
+    public function customLogger(DrushArgvInput $argv, AnnotationData $annotationData): void
+    {
+        $verbosityLevelMap = [ConsoleLogLevel::SUCCESS => OutputInterface::VERBOSITY_NORMAL];
+        $formatLevelMap = [ConsoleLogLevel::SUCCESS => \Psr\Log\LogLevel::INFO];
+        // One could use Monolog if desired.
+        // Drush expects custom loggers to log to stderr.
+        $newLogger = new ConsoleLogger(Drush::output(), $verbosityLevelMap, $formatLevelMap);
+        $drushLoggerManager = $this->logger();
+        $drushLoggerManager->reset()->add('foo', $newLogger);
+    }
 }
+
