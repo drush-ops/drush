@@ -2,6 +2,7 @@
 
 namespace Drush\Commands;
 
+use Drush\Log\DrushLoggerManager;
 use Drush\Log\Logger;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Consolidation\AnnotatedCommand\CommandData;
@@ -63,7 +64,7 @@ abstract class DrushCommands implements IOAwareInterface, LoggerAwareInterface, 
     /**
      * Returns a logger object.
      */
-    protected function logger(): ?Logger
+    protected function logger(): ?DrushLoggerManager
     {
         return $this->logger;
     }
