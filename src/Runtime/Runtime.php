@@ -2,15 +2,11 @@
 
 namespace Drush\Runtime;
 
-use Consolidation\Log\ConsoleLogLevel;
-use Psr\Log\LogLevel;
-use Symfony\Component\Console\Logger\ConsoleLogger;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Drush\Application;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Drush\Preflight\Preflight;
-use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Control the Drush runtime environment
