@@ -46,7 +46,7 @@ class MkCommands extends DrushCommands implements SiteAliasManagerAwareInterface
         $all = $application->all();
         $namespaced = ListCommands::categorize($all);
         [$nav_commands, $pages_commands] = $this->writeContentFilesAndAddToNav($namespaced, $destination, $dir_root, $destination_path);
-        $this->writeAllMd($pages_commands, $destination_path);
+        $this->writeAllMd($pages_commands, $destination_path, 'All commands');
 
         $destination = 'generators';
         $destination_path = Path::join($dir_root, 'docs', $destination);
@@ -57,7 +57,7 @@ class MkCommands extends DrushCommands implements SiteAliasManagerAwareInterface
         $all = $this->createAnnotatedCommands($application_generate, Drush::getApplication());
         $namespaced = ListCommands::categorize($all);
         [$nav_generators, $pages_generators] = $this->writeContentFilesAndAddToNav($namespaced, $destination, $dir_root, $destination_path);
-        $this->writeAllMd($pages_generators, $destination_path);
+        $this->writeAllMd($pages_generators, $destination_path, 'All generators');
 
         $this->writeYml($nav_commands, $nav_generators, $dir_root);
     }
@@ -225,7 +225,7 @@ EOT;
         file_put_contents(Path::join($dest, 'mkdocs.yml'), $yaml_nav);
     }
 
-    protected function writeAllMd(array $pages_all, string $destination_path): void
+    protected function writeAllMd(array $pages_all, string $destination_path, string $title): void
     {
         unset($pages_all['all']);
         foreach ($pages_all as $name => $page) {
@@ -233,7 +233,7 @@ EOT;
             $items[] = "* [$name]($basename)";
         }
         $preamble = <<<EOT
-# All commands
+# $title
 
 !!! tip
 
