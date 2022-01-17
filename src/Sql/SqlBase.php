@@ -111,6 +111,7 @@ abstract class SqlBase implements ConfigAwareInterface
             $instance->setConfig(Drush::config());
             return $instance;
         }
+        return null;
     }
 
     /*
