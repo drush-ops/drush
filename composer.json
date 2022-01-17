@@ -58,7 +58,7 @@
     "composer/installers": "^1.7",
     "cweagans/composer-patches": "~1.0",
     "david-garcia/phpwhois": "4.3.0",
-    "drupal/core-recommended": "^9",
+    "drupal/core-recommended": "^9 || ^10",
     "drupal/semver_example": "2.2.0",
     "phpunit/phpunit": ">=7.5.20",
     "rector/rector": "^0.12",
