@@ -144,7 +144,7 @@ workflows:
           <<: *requires
       - test_74_drupal9_mysql:
           <<: *requires
-      - test_81_drupal94_highest:
+      - test_81_drupal10_highest:
           <<: *requires
       - test_74_drupal9_sqlite:
           <<: *requires
