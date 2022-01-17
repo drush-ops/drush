@@ -20,12 +20,11 @@
 
 namespace Drush\Log;
 
-use Consolidation\Log\ConsoleLogLevel;
 use Drush\Drush;
 use Robo\Log\RoboLogger;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class Logger extends RoboLogger implements SuccessInterface
+class Logger extends RoboLogger
 {
     public function __construct(OutputInterface $output)
     {
@@ -72,10 +71,5 @@ class Logger extends RoboLogger implements SuccessInterface
             }
             return str_replace('@size', round($size, 2), $unit);
         }
-    }
-
-    public function success($message, array $context = array())
-    {
-        $this->log(ConsoleLogLevel::SUCCESS, $message, $context);
     }
 }
