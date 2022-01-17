@@ -15,7 +15,8 @@ class CreateEntityType
             'name' => 'Unish Article',
             'machine_name' => 'unish_article',
             'description' => 'A test module',
-            'package' => 'unish',
+            // See https://www.drupal.org/project/drupal/issues/3096609.
+            'package' => 'Testing',
             'dependencies' => 'drupal:text',
         ];
         $testCase->drush('generate', ['module'], ['verbose' => null, 'answer' => $answers, 'destination' => Path::join($testCase->webroot(), 'modules/contrib')], null, null, $testCase::EXIT_SUCCESS, null, ['SHELL_INTERACTIVE' => 1]);
