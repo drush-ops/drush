@@ -25,7 +25,7 @@ use Drush\Utils\StringUtils;
 class SimpleSutCommands extends DrushCommands
 {
     /**
-     * Show a fabulous picture.
+     * Show a message.
      *
      * @command sut:simple
      * @hidden
@@ -47,7 +47,7 @@ class SimpleSutCommands extends DrushCommands
         $verbosityLevelMap = [ConsoleLogLevel::SUCCESS => OutputInterface::VERBOSITY_NORMAL];
         $formatLevelMap = [ConsoleLogLevel::SUCCESS => \Psr\Log\LogLevel::INFO];
         // One could use Monolog if desired.
-        // Drush expects custom loggers to log to stderr.
+        // Drush expects custom loggers to always write to stderr, so dont use ConsoleLogger directly,
         $newLogger = new ConsoleLogger(Drush::output(), $verbosityLevelMap, $formatLevelMap);
         $drushLoggerManager = $this->logger();
         $drushLoggerManager->reset()->add('foo', $newLogger);
