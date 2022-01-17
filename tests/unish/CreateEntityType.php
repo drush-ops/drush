@@ -15,10 +15,17 @@ class CreateEntityType
             'name' => 'Unish Article',
             'machine_name' => 'unish_article',
             'description' => 'A test module',
-            'package' => 'unish',
+            // See https://www.drupal.org/project/drupal/issues/3096609.
+            'package' => 'Testing',
             'dependencies' => 'drupal:text',
         ];
         $testCase->drush('generate', ['module'], ['verbose' => null, 'answer' => $answers, 'destination' => Path::join($testCase->webroot(), 'modules/contrib')], null, null, $testCase::EXIT_SUCCESS, null, ['SHELL_INTERACTIVE' => 1]);
+        // Currently needed for Drush 10.x tests. Harmless on other versions.
+        $path = Path::join($testCase->webroot(), 'modules/contrib/unish_article/unish_article.info.yml');
+        $contents = file_get_contents($path);
+        file_put_contents($path, str_replace('^8 || ^9', '^8 || ^9 || ^10', $contents));
+
+
         // Create a content entity type and enable its module.
         // Note that only the values below are used. The keys are for documentation.
         $answers = [
