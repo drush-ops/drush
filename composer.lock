@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ae1eb0419aef16c09a7f6ec6c34b0051",
+    "content-hash": "101833872d33f2b7c5702a49c06577b8",
     "packages": [
         {
             "name": "chi-teck/drupal-code-generator",
@@ -8719,5 +8719,5 @@
     "platform-overrides": {
         "php": "7.4"
     },
-    "plugin-api-version": "2.2.0"
+    "plugin-api-version": "2.1.0"
 }
