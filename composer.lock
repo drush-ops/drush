@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "8ba272546279a9c366d810659d25c2a2",
+    "content-hash": "7278bfee8f4740f6d4197054d6443858",
     "packages": [
         {
             "name": "chi-teck/drupal-code-generator",
-            "version": "2.3.1",
+            "version": "2.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Chi-teck/drupal-code-generator.git",
-                "reference": "69f7a9cdbf0ef7021f1f960d237d3b224f6864d3"
+                "reference": "872086aeeee1c933adc403d98c35dc029e26ae7c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Chi-teck/drupal-code-generator/zipball/69f7a9cdbf0ef7021f1f960d237d3b224f6864d3",
-                "reference": "69f7a9cdbf0ef7021f1f960d237d3b224f6864d3",
+                "url": "https://api.github.com/repos/Chi-teck/drupal-code-generator/zipball/872086aeeee1c933adc403d98c35dc029e26ae7c",
+                "reference": "872086aeeee1c933adc403d98c35dc029e26ae7c",
                 "shasum": ""
             },
             "require": {
@@ -64,9 +64,9 @@
             "description": "Drupal code generator",
             "support": {
                 "issues": "https://github.com/Chi-teck/drupal-code-generator/issues",
-                "source": "https://github.com/Chi-teck/drupal-code-generator/tree/2.3.1"
+                "source": "https://github.com/Chi-teck/drupal-code-generator/tree/2.4.0"
             },
-            "time": "2021-12-09T10:20:43+00:00"
+            "time": "2022-01-18T04:19:55+00:00"
         },
         {
             "name": "composer/semver",
