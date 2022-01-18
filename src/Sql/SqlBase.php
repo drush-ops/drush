@@ -71,7 +71,7 @@ abstract class SqlBase implements ConfigAwareInterface
      * @param $options
      *   An options array as handed to a command callback.
      */
-    public static function create(array $options = []): SqlBase
+    public static function create(array $options = []): ?SqlBase
     {
         // Set defaults in the unfortunate event that caller doesn't provide values.
         $options += [
