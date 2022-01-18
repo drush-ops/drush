@@ -10,7 +10,6 @@ use Consolidation\OutputFormatters\StructuredData\UnstructuredListData;
 use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
 use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
 use Drupal\Core\Utility\Error;
-use Drupal\Core\Entity\EntityStorageException;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Drush\Exceptions\UserAbortException;
@@ -29,24 +28,18 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
      *
      * @command updatedb
      * @option cache-clear Clear caches upon completion.
-     * @option entity-updates Run automatic entity schema updates at the end of any update hooks. Not supported in Drupal >= 8.7.0.
      * @option post-updates Run post updates after hook_update_n and entity updates.
      * @bootstrap full
      * @topics docs:deploy
      * @kernel update
      * @aliases updb
      */
-    public function updatedb($options = ['cache-clear' => true, 'entity-updates' => false, 'post-updates' => true]): int
+    public function updatedb($options = ['cache-clear' => true, 'post-updates' => true]): int
     {
         $this->cache_clear = $options['cache-clear'];
         require_once DRUPAL_ROOT . '/core/includes/install.inc';
         require_once DRUPAL_ROOT . '/core/includes/update.inc';
         drupal_load_updates();
-
-        if ($options['entity-updates'] && version_compare(drush_drupal_version(), '8.7.0', '>=')) {
-            $this->logger()->warning(dt('Drupal removed its automatic entity-updates API in 8.7. See https://www.drupal.org/node/3034742.'));
-            $options['entity-updates'] = false;
-        }
 
         // Disables extensions that have a lower Drupal core major version, or too high of a PHP requirement.
         // Those are rare, and this function does a full rebuild. So commenting it out for now.
@@ -60,8 +53,6 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
         }
 
         $status_options = [
-            // @see https://github.com/drush-ops/drush/pull/3855.
-            'no-entity-updates' => !$options['entity-updates'],
             'no-post-updates' => !$options['post-updates'],
             'strict' => 0,
         ];
@@ -93,45 +84,9 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
     }
 
     /**
-     * Apply pending entity schema updates.
-     *
-     * @command entity:updates
-     * @option cache-clear Set to 0 to suppress normal cache clearing; the caller should then clear if needed.
-     * @bootstrap full
-     * @kernel update
-     * @aliases entup,entity-updates
-     * @usage drush updatedb:status --entity-updates | grep entity-update
-     *   Use updatedb:status to detect pending updates.
-     *
-     */
-    public function entityUpdates($options = ['cache-clear' => true]): void
-    {
-        if ($this->getConfig()->simulate()) {
-            throw new \Exception(dt('entity-updates command does not support --simulate option.'));
-        }
-
-        // @todo - Do same check for updatedb as well.
-        if (version_compare(drush_drupal_version(), '8.7.0', '>=')) {
-            throw new \Exception(dt('Drupal removed its automatic entity-updates API in 8.7. See https://www.drupal.org/node/3034742.'));
-        }
-
-        if ($this->entityUpdatesMain() === false) {
-            throw new \Exception('Entity updates not run.');
-        }
-
-        if ($options['cache-clear']) {
-            $process = $this->processManager()->drush($this->siteAliasManager()->getSelf(), 'cache-rebuild');
-            $process->mustrun();
-        }
-
-        $this->logger()->success(dt('Finished performing updates.'));
-    }
-
-    /**
      * List any pending database updates.
      *
      * @command updatedb:status
-     * @option entity-updates Show entity schema updates.
      * @option post-updates Show post updates.
      * @bootstrap full
      * @kernel update
@@ -145,7 +100,7 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
      * @filter-default-field type
      * @return RowsOfFields
      */
-    public function updatedbStatus($options = ['format' => 'table', 'entity-updates' => true, 'post-updates' => true])
+    public function updatedbStatus($options = ['format' => 'table', 'post-updates' => true])
     {
         require_once DRUSH_DRUPAL_CORE . '/includes/install.inc';
         drupal_load_updates();
@@ -422,16 +377,6 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
             }
         }
 
-        // Perform entity definition updates, which will update storage
-        // schema if needed. If module update functions need to work with specific
-        // entity schema they should call the entity update service for the specific
-        // update themselves.
-        // @see \Drupal\Core\Entity\EntityDefinitionUpdateManagerInterface::applyEntityUpdate()
-        // @see \Drupal\Core\Entity\EntityDefinitionUpdateManagerInterface::applyFieldUpdate()
-        if ($options['entity-updates'] && \Drupal::entityDefinitionUpdateManager()->needsUpdates()) {
-            $operations[] = [[$this, 'updateEntityDefinitions'], []];
-        }
-
         // Lastly, apply post update hooks if specified.
         if ($options['post-updates']) {
             $post_updates = \Drupal::service('update.post_update_registry')->getPendingUpdateFunctions();
@@ -483,26 +428,6 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
     public static function restoreMaintMode($status): void
     {
         \Drupal::service('state')->set('system.maintenance_mode', $status);
-    }
-
-    /**
-     * Apply entity schema updates.
-     */
-    public function updateEntityDefinitions(&$context): void
-    {
-        try {
-            \Drupal::entityDefinitionUpdateManager()->applyupdates();
-        } catch (EntityStorageException $e) {
-            watchdog_exception('update', $e);
-            $variables = Error::decodeException($e);
-            unset($variables['backtrace']);
-            // The exception message is run through
-            // \Drupal\Component\Utility\SafeMarkup::checkPlain() by
-            // \Drupal\Core\Utility\Error::decodeException().
-            $ret['#abort'] = ['success' => false, 'query' => t('%type: !message in %function (line %line of %file).', $variables)];
-            $context['results']['core']['update_entity_definitions'] = $ret;
-            $context['results']['#abort'][] = 'update_entity_definitions';
-        }
     }
 
     // Copy of protected \Drupal\system\Controller\DbUpdateController::getModuleUpdates.
@@ -573,23 +498,6 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
             }
         }
 
-        // Append row(s) for pending entity definition updates.
-        if ($options['entity-updates']) {
-            foreach (
-                \Drupal::entityDefinitionUpdateManager()
-                         ->getChangeSummary() as $entity_type_id => $changes
-            ) {
-                foreach ($changes as $change) {
-                    $return[] = [
-                        'module' => dt('@type entity type', ['@type' => $entity_type_id]),
-                        'update_id' => '',
-                        'description' => strip_tags($change),
-                        'type' => 'entity-update'
-                    ];
-                }
-            }
-        }
-
         // Pending hook_post_update_X() implementations.
         $post_updates = \Drupal::service('update.post_update_registry')->getPendingUpdateInformation();
         if ($options['post-updates']) {
@@ -610,48 +518,6 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
         }
 
         return [$return, $start];
-    }
-
-    /**
-     * Apply pending entity schema updates.
-     */
-    public function entityUpdatesMain(): void
-    {
-        $change_summary = \Drupal::entityDefinitionUpdateManager()->getChangeSummary();
-        if (!empty($change_summary)) {
-            $this->output()->writeln(dt('The following updates are pending:'));
-            $this->io()->newLine();
-
-            foreach ($change_summary as $entity_type_id => $changes) {
-                $this->output()->writeln($entity_type_id . ' entity type : ');
-                foreach ($changes as $change) {
-                    $this->output()->writeln(strip_tags($change), 2);
-                }
-            }
-
-            if (!$this->io()->confirm(dt('Do you wish to run all pending updates?'))) {
-                throw new UserAbortException();
-            }
-
-            $operations[] = [[$this, 'updateEntityDefinitions'], []];
-
-
-            $batch['operations'] = $operations;
-            $batch += [
-                'title' => 'Updating',
-                'init_message' => 'Starting updates',
-                'error_message' => 'An unrecoverable error has occurred. You can find the error message below. It is advised to copy it to the clipboard for reference.',
-                'finished' => [$this, 'updateFinished'],
-            ];
-            batch_set($batch);
-
-            // See updateFinished() for the restore of maint mode.
-            $this->maintenanceModeOriginalState = \Drupal::service('state')->get('system.maintenance_mode');
-            \Drupal::service('state')->set('system.maintenance_mode', true);
-            drush_backend_batch_process();
-        } else {
-            $this->logger()->success(dt("No entity schema updates required"));
-        }
     }
 
     /**
