@@ -1023,7 +1023,9 @@ is no site at --root, or when no root is specified.</p></dd><dt><a href="Drush/C
                     <dd></dd><dt><a href="Drush/Commands/ExampleCommands.html"><abbr title="Drush\Commands\ExampleCommands">ExampleCommands</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands.html">Drush\Commands</a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/ExampleCommands.html#method_exampleTable">
 <abbr title="Drush\Commands\ExampleCommands">ExampleCommands</abbr>::exampleTable</a>() &mdash; <em>Method in class <a href="Drush/Commands/ExampleCommands.html"><abbr title="Drush\Commands\ExampleCommands">ExampleCommands</abbr></a></em></dt>
-                    <dd><p>Demonstrate output formatters.  Default format is 'table'.</p></dd><dt><a href="Drush/Commands/LegacyCommands.html#method_execute">
+                    <dd><p>Demonstrate output formatters.  Default format is 'table'.</p></dd><dt><a href="Drush/Commands/LegacyCommands.html#method_entityUpdates">
+<abbr title="Drush\Commands\LegacyCommands">LegacyCommands</abbr>::entityUpdates</a>() &mdash; <em>Method in class <a href="Drush/Commands/LegacyCommands.html"><abbr title="Drush\Commands\LegacyCommands">LegacyCommands</abbr></a></em></dt>
+                    <dd><p>Drupal removed its automatic entity-updates API in 8.7. See <a href="https://www.drupal.org/node/3034742">https://www.drupal.org/node/3034742</a>.</p></dd><dt><a href="Drush/Commands/LegacyCommands.html#method_execute">
 <abbr title="Drush\Commands\LegacyCommands">LegacyCommands</abbr>::execute</a>() &mdash; <em>Method in class <a href="Drush/Commands/LegacyCommands.html"><abbr title="Drush\Commands\LegacyCommands">LegacyCommands</abbr></a></em></dt>
                     <dd><p>core:execute has been removed. Please try <code>site:ssh</code> command.</p></dd><dt><a href="Drush/Commands/core/DocsCommands.html#method_exampleCommand">
 <abbr title="Drush\Commands\core\DocsCommands">DocsCommands</abbr>::exampleCommand</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/DocsCommands.html"><abbr title="Drush\Commands\core\DocsCommands">DocsCommands</abbr></a></em></dt>
@@ -1032,11 +1034,7 @@ is no site at --root, or when no root is specified.</p></dd><dt><a href="Drush/C
 <abbr title="Drush\Commands\core\EditCommands">EditCommands</abbr>::edit</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/EditCommands.html"><abbr title="Drush\Commands\core\EditCommands">EditCommands</abbr></a></em></dt>
                     <dd><p>Edit drush.yml, site alias, and Drupal settings.php files.</p></dd><dt><a href="Drush/Commands/core/PhpCommands.html#method_evaluate">
 <abbr title="Drush\Commands\core\PhpCommands">PhpCommands</abbr>::evaluate</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/PhpCommands.html"><abbr title="Drush\Commands\core\PhpCommands">PhpCommands</abbr></a></em></dt>
-                    <dd><p>Evaluate arbitrary php code after bootstrapping Drupal (if available).</p></dd><dt><a href="Drush/Commands/core/UpdateDBCommands.html#method_entityUpdates">
-<abbr title="Drush\Commands\core\UpdateDBCommands">UpdateDBCommands</abbr>::entityUpdates</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/UpdateDBCommands.html"><abbr title="Drush\Commands\core\UpdateDBCommands">UpdateDBCommands</abbr></a></em></dt>
-                    <dd><p>Apply pending entity schema updates.</p></dd><dt><a href="Drush/Commands/core/UpdateDBCommands.html#method_entityUpdatesMain">
-<abbr title="Drush\Commands\core\UpdateDBCommands">UpdateDBCommands</abbr>::entityUpdatesMain</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/UpdateDBCommands.html"><abbr title="Drush\Commands\core\UpdateDBCommands">UpdateDBCommands</abbr></a></em></dt>
-                    <dd><p>Apply pending entity schema updates.</p></dd><dt><a href="Drush/Config/ConfigLocator.html#method_expandCandidates">
+                    <dd><p>Evaluate arbitrary php code after bootstrapping Drupal (if available).</p></dd><dt><a href="Drush/Config/ConfigLocator.html#method_expandCandidates">
 <abbr title="Drush\Config\ConfigLocator">ConfigLocator</abbr>::expandCandidates</a>() &mdash; <em>Method in class <a href="Drush/Config/ConfigLocator.html"><abbr title="Drush\Config\ConfigLocator">ConfigLocator</abbr></a></em></dt>
                     <dd><p>Double the candidates, adding '$prefix' before each existing one.</p></dd><dt><a href="Drush/Config/Environment.html"><abbr title="Drush\Config\Environment">Environment</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Config.html">Drush\Config</a></em></dt>
                     <dd><p>Store information about the environment</p></dd><dt>$<a href="Drush/Config/Environment.html#property_etcPrefix">
@@ -2877,9 +2875,7 @@ the finished page.</p></dd><dt><a href="Drush/Commands/core/UpdateDBCommands.htm
 <abbr title="Drush\Commands\core\UpdateDBCommands">UpdateDBCommands</abbr>::updateFinished</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/UpdateDBCommands.html"><abbr title="Drush\Commands\core\UpdateDBCommands">UpdateDBCommands</abbr></a></em></dt>
                     <dd><p>Batch finished callback.</p></dd><dt><a href="Drush/Commands/core/UpdateDBCommands.html#method_updateBatch">
 <abbr title="Drush\Commands\core\UpdateDBCommands">UpdateDBCommands</abbr>::updateBatch</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/UpdateDBCommands.html"><abbr title="Drush\Commands\core\UpdateDBCommands">UpdateDBCommands</abbr></a></em></dt>
-                    <dd><p>Start the database update batch process.</p></dd><dt><a href="Drush/Commands/core/UpdateDBCommands.html#method_updateEntityDefinitions">
-<abbr title="Drush\Commands\core\UpdateDBCommands">UpdateDBCommands</abbr>::updateEntityDefinitions</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/UpdateDBCommands.html"><abbr title="Drush\Commands\core\UpdateDBCommands">UpdateDBCommands</abbr></a></em></dt>
-                    <dd><p>Apply entity schema updates.</p></dd><dt><a href="Drush/Commands/core/UpdateDBCommands.html#method_updateCheckRequirements">
+                    <dd><p>Start the database update batch process.</p></dd><dt><a href="Drush/Commands/core/UpdateDBCommands.html#method_updateCheckRequirements">
 <abbr title="Drush\Commands\core\UpdateDBCommands">UpdateDBCommands</abbr>::updateCheckRequirements</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/UpdateDBCommands.html"><abbr title="Drush\Commands\core\UpdateDBCommands">UpdateDBCommands</abbr></a></em></dt>
                     <dd><p>Log messages for any requirements warnings/errors.</p></dd><dt><a href="Drush/Config/DrushConfig.html#method_user">
 <abbr title="Drush\Config\DrushConfig">DrushConfig</abbr>::user</a>() &mdash; <em>Method in class <a href="Drush/Config/DrushConfig.html"><abbr title="Drush\Config\DrushConfig">DrushConfig</abbr></a></em></dt>

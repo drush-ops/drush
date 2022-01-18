@@ -351,19 +351,9 @@ DrushConfig as return type. Helps with IDE completion.</p></p>                </
                     int
                 </div>
                 <div class="col-md-8">
-                    <a href="#method_updatedb">updatedb</a>($options = [&#039;cache-clear&#039; =&gt; true, &#039;entity-updates&#039; =&gt; false, &#039;post-updates&#039; =&gt; true])
+                    <a href="#method_updatedb">updatedb</a>($options = [&#039;cache-clear&#039; =&gt; true, &#039;post-updates&#039; =&gt; true])
         
                                             <p><p>Apply any database updates required (as with running update.php).</p></p>                </div>
-                <div class="col-md-2"></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    void
-                </div>
-                <div class="col-md-8">
-                    <a href="#method_entityUpdates">entityUpdates</a>($options = [&#039;cache-clear&#039; =&gt; true])
-        
-                                            <p><p>Apply pending entity schema updates.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -371,7 +361,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>                </
                     <abbr title="Consolidation\OutputFormatters\StructuredData\RowsOfFields">RowsOfFields</abbr>
                 </div>
                 <div class="col-md-8">
-                    <a href="#method_updatedbStatus">updatedbStatus</a>($options = [&#039;format&#039; =&gt; &#039;table&#039;, &#039;entity-updates&#039; =&gt; true, &#039;post-updates&#039; =&gt; true])
+                    <a href="#method_updatedbStatus">updatedbStatus</a>($options = [&#039;format&#039; =&gt; &#039;table&#039;, &#039;post-updates&#039; =&gt; true])
         
                                             <p><p>List any pending database updates.</p></p>                </div>
                 <div class="col-md-2"></div>
@@ -440,16 +430,6 @@ the finished page.</p></p>                </div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    void
-                </div>
-                <div class="col-md-8">
-                    <a href="#method_updateEntityDefinitions">updateEntityDefinitions</a>($context)
-        
-                                            <p><p>Apply entity schema updates.</p></p>                </div>
-                <div class="col-md-2"></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
                     array
                 </div>
                 <div class="col-md-8">
@@ -480,16 +460,6 @@ the finished page.</p></p>                </div>
 <ul>
 <li>an array where each item is a 4 item associative array describing a pending update.</li>
 </ul></p>                </div>
-                <div class="col-md-2"></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    void
-                </div>
-                <div class="col-md-8">
-                    <a href="#method_entityUpdatesMain">entityUpdatesMain</a>()
-        
-                                            <p><p>Apply pending entity schema updates.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -932,9 +902,9 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_updatedb">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/core/UpdateDBCommands.php#L39">at line 39</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/core/UpdateDBCommands.php#L37">at line 37</a></div>
         <code>                    int
-    <strong>updatedb</strong>($options = [&#039;cache-clear&#039; =&gt; true, &#039;entity-updates&#039; =&gt; false, &#039;post-updates&#039; =&gt; true])
+    <strong>updatedb</strong>($options = [&#039;cache-clear&#039; =&gt; true, &#039;post-updates&#039; =&gt; true])
         </code>
     </h3>
     <div class="details">    
@@ -973,52 +943,10 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
 
             </div>
                     <div class="method-item">
-                    <h3 id="method_entityUpdates">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/core/UpdateDBCommands.php#L107">at line 107</a></div>
-        <code>                    void
-    <strong>entityUpdates</strong>($options = [&#039;cache-clear&#039; =&gt; true])
-        </code>
-    </h3>
-    <div class="details">    
-    
-            
-
-        <div class="method-description">
-                            <p><p>Apply pending entity schema updates.</p></p>                        
-        </div>
-        <div class="tags">
-                            <h4>Parameters</h4>
-
-                    <table class="table table-condensed">
-                    <tr>
-                <td></td>
-                <td>$options</td>
-                <td></td>
-            </tr>
-            </table>
-
-            
-                            <h4>Return Value</h4>
-
-                    <table class="table table-condensed">
-        <tr>
-            <td>void</td>
-            <td></td>
-        </tr>
-    </table>
-
-            
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
                     <h3 id="method_updatedbStatus">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/core/UpdateDBCommands.php#L148">at line 148</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/core/UpdateDBCommands.php#L103">at line 103</a></div>
         <code>                    <abbr title="Consolidation\OutputFormatters\StructuredData\RowsOfFields">RowsOfFields</abbr>
-    <strong>updatedbStatus</strong>($options = [&#039;format&#039; =&gt; &#039;table&#039;, &#039;entity-updates&#039; =&gt; true, &#039;post-updates&#039; =&gt; true])
+    <strong>updatedbStatus</strong>($options = [&#039;format&#039; =&gt; &#039;table&#039;, &#039;post-updates&#039; =&gt; true])
         </code>
     </h3>
     <div class="details">    
@@ -1058,7 +986,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_process">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/core/UpdateDBCommands.php#L169">at line 169</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/core/UpdateDBCommands.php#L124">at line 124</a></div>
         <code>                    <abbr title="Consolidation\OutputFormatters\StructuredData\UnstructuredListData">UnstructuredListData</abbr>
     <strong>process</strong>(string $batch_id, $options = [&#039;format&#039; =&gt; &#039;json&#039;])
         </code>
@@ -1105,7 +1033,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_updateDoOne">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/core/UpdateDBCommands.php#L197">at line 197</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/core/UpdateDBCommands.php#L152">at line 152</a></div>
         <code>        static            void
     <strong>updateDoOne</strong>(string $module, int $number, array $dependency_map, DrushBatchContext $context)
         </code>
@@ -1169,7 +1097,7 @@ have not yet been run.</p>
             </div>
                     <div class="method-item">
                     <h3 id="method_updateDoOnePostUpdate">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/core/UpdateDBCommands.php#L293">at line 293</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/core/UpdateDBCommands.php#L248">at line 248</a></div>
         <code>        static            void
     <strong>updateDoOnePostUpdate</strong>(string $function, DrushBatchContext $context)
         </code>
@@ -1217,7 +1145,7 @@ The batch context object.</p></td>
             </div>
                     <div class="method-item">
                     <h3 id="method_updateFinished">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/core/UpdateDBCommands.php#L377">at line 377</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/core/UpdateDBCommands.php#L332">at line 332</a></div>
         <code>                    void
     <strong>updateFinished</strong>(bool $success, array $results, array $operations)
         </code>
@@ -1269,7 +1197,7 @@ The batch context object.</p></td>
             </div>
                     <div class="method-item">
                     <h3 id="method_updateBatch">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/core/UpdateDBCommands.php#L392">at line 392</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/core/UpdateDBCommands.php#L347">at line 347</a></div>
         <code>                    bool
     <strong>updateBatch</strong>($options)
         </code>
@@ -1311,7 +1239,7 @@ The batch context object.</p></td>
             </div>
                     <div class="method-item">
                     <h3 id="method_restoreMaintMode">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/core/UpdateDBCommands.php#L483">at line 483</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/core/UpdateDBCommands.php#L428">at line 428</a></div>
         <code>        static            void
     <strong>restoreMaintMode</strong>($status)
         </code>
@@ -1353,50 +1281,8 @@ The batch context object.</p></td>
 
             </div>
                     <div class="method-item">
-                    <h3 id="method_updateEntityDefinitions">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/core/UpdateDBCommands.php#L491">at line 491</a></div>
-        <code>                    void
-    <strong>updateEntityDefinitions</strong>($context)
-        </code>
-    </h3>
-    <div class="details">    
-    
-            
-
-        <div class="method-description">
-                            <p><p>Apply entity schema updates.</p></p>                        
-        </div>
-        <div class="tags">
-                            <h4>Parameters</h4>
-
-                    <table class="table table-condensed">
-                    <tr>
-                <td></td>
-                <td>$context</td>
-                <td></td>
-            </tr>
-            </table>
-
-            
-                            <h4>Return Value</h4>
-
-                    <table class="table table-condensed">
-        <tr>
-            <td>void</td>
-            <td></td>
-        </tr>
-    </table>
-
-            
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
                     <h3 id="method_getUpdateList">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/core/UpdateDBCommands.php#L509">at line 509</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/core/UpdateDBCommands.php#L434">at line 434</a></div>
         <code>                    array
     <strong>getUpdateList</strong>()
         </code>
@@ -1429,7 +1315,7 @@ The batch context object.</p></td>
             </div>
                     <div class="method-item">
                     <h3 id="method_cacheRebuild">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/core/UpdateDBCommands.php#L533">at line 533</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/core/UpdateDBCommands.php#L458">at line 458</a></div>
         <code>        static            void
     <strong>cacheRebuild</strong>()
         </code>
@@ -1477,7 +1363,7 @@ HTTP request of the batch.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_getUpdatedbStatus">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/core/UpdateDBCommands.php#L549">at line 549</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/core/UpdateDBCommands.php#L474">at line 474</a></div>
         <code>                    array
     <strong>getUpdatedbStatus</strong>(array $options)
         </code>
@@ -1523,40 +1409,8 @@ HTTP request of the batch.</p></p>
 
             </div>
                     <div class="method-item">
-                    <h3 id="method_entityUpdatesMain">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/core/UpdateDBCommands.php#L618">at line 618</a></div>
-        <code>                    void
-    <strong>entityUpdatesMain</strong>()
-        </code>
-    </h3>
-    <div class="details">    
-    
-            
-
-        <div class="method-description">
-                            <p><p>Apply pending entity schema updates.</p></p>                        
-        </div>
-        <div class="tags">
-            
-                            <h4>Return Value</h4>
-
-                    <table class="table table-condensed">
-        <tr>
-            <td>void</td>
-            <td></td>
-        </tr>
-    </table>
-
-            
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
                     <h3 id="method_updateCheckRequirements">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/core/UpdateDBCommands.php#L660">at line 660</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/core/UpdateDBCommands.php#L526">at line 526</a></div>
         <code>                    bool
     <strong>updateCheckRequirements</strong>()
         </code>
