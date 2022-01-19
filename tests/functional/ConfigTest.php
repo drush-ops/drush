@@ -111,9 +111,6 @@ XML
         }
 
         // Similar, but this time via --partial option.
-        if ($this->isDrupalGreaterThanOrEqualTo('8.8.0')) {
-            $this->markTestSkipped('Partial config import not yet working on 8.8.0');
-        }
         $contents = file_get_contents($system_site_yml);
         $contents = preg_replace('/front: .*/', 'front: unish partial', $contents);
         $partial_path = self::getSandbox() . '/partial';
