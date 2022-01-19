@@ -2,7 +2,6 @@
 
 namespace Drush\Commands\core;
 
-use Composer\Semver\Comparator;
 use Consolidation\AnnotatedCommand\CommandData;
 use Drupal\Component\FileCache\FileCacheFactory;
 use Drupal\Core\Database\Database;
