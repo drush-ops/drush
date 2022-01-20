@@ -5,18 +5,6 @@ namespace Drush\Commands;
 class LegacyCommands extends DrushCommands
 {
     /**
-     * Drupal removed its automatic entity-updates API in 8.7. See https://www.drupal.org/node/3034742.
-     *
-     * @command entity:updates
-     * @aliases entup,entity-updates
-     * @hidden
-     * @obsolete
-     */
-    public function entityUpdates(): void
-    {
-    }
-
-    /**
      * The core:init command was removed. Please edit your .bashrc manually.
      *
      * @command core:init
