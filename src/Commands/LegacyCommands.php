@@ -4,7 +4,6 @@ namespace Drush\Commands;
 
 class LegacyCommands extends DrushCommands
 {
-
     /**
      * The core:init command was removed. Please edit your .bashrc manually.
      *
