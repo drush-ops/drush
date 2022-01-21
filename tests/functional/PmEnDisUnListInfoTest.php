@@ -47,13 +47,7 @@ class EnDisUnListInfoTest extends CommandUnishTestCase
         $drupal_version = $this->getOutputRaw();
 
         // Test the testing install profile theme is installed.
-        // Since Drupal 8.8, stark is the default testing theme.
-        // https://www.drupal.org/node/3083055.
-        // TODO: Replace once Drupal 8.7 is no longer supported.
         $active_theme = 'stark';
-        if (Comparator::lessThan($drupal_version, '8.8')) {
-            $active_theme = 'classy';
-        }
         $this->assertStringContainsString($active_theme, $out, 'Themes are in the pm-list');
 
         // Test cache was cleared after enabling a module.
