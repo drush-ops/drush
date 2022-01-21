@@ -16,7 +16,7 @@ class SecurityUpdatesTest extends UnishIntegrationTestCase
    */
     public function testInsecureDrupalPackage()
     {
-        list($expected_package, $expected_version) = ['drupal/semver_example', '2.2.0'];
+        list($expected_package, $expected_version) = ['drupal/semver_example', '2.3.0'];
         $this->drush('pm:security', [], ['format' => 'json'], self::EXIT_ERROR_WITH_CLARITY);
         $this->assertStringContainsString('One or more of your dependencies has an outstanding security update.', $this->getErrorOutput());
         $this->assertStringContainsString("$expected_package", $this->getErrorOutput());
