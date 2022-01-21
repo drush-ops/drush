@@ -351,7 +351,7 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
             }
         }
         $this->loadCommandClasses($commandList);
-        return array_keys($commandList);
+        return array_values($commandList);
     }
 
     /**
