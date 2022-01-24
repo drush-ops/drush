@@ -15,10 +15,17 @@ class ArchiveCommands extends DrushCommands
      * @command archive:dump
      * @aliases ard
      *
+     * @option description Describe the archive contents.
+     * @option tags Add tags to the archive manifest. Delimit several by commas.
+     * @option destination The full path and filename in which the archive should be stored. If omitted, it will be saved to the drush-backups directory and a filename will be generated.
+     * @option overwrite Do not fail if the destination file exists; overwrite it instead. Default is --no-overwrite.
+     *
      * @optionset_sql
      * @optionset_table_selection
      *
      * @bootstrap max configuration
+     *
+     * @param array $options
      *
      * @throws \Exception
      */
