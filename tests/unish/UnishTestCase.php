@@ -71,6 +71,7 @@ abstract class UnishTestCase extends TestCase
         self::setEnv(['ETC_PREFIX' => $unish_sandbox]);
         self::setEnv(['SHARE_PREFIX' => $unish_sandbox]);
         self::setEnv(['TEMP' => Path::join($unish_sandbox, 'tmp')]);
+        self::setEnv(['FIXTURES_DIR' => Path::join(dirname(__DIR__), 'fixtures')]);
     }
 
     /**
