@@ -13,7 +13,7 @@ class CommandsFromConfigurationTest extends UnishIntegrationTestCase
     public function testCommandsFromConfiguration(): void
     {
         $this->drush('drush-extensions-hello', [], ['help' => null], self::EXIT_ERROR);
-        $this->assertStringContainsString('Command drush-extensions-hello was not found.', $this->getErrorOutput());
+        $this->assertStringContainsString('Command drush-extensions-hello is not defined.', $this->getErrorOutput());
         $this->drush('drush-extensions-hello', [], [
             'help' => null,
             'config' => '/Users/kporras07/development/pantheon/drush/tests/fixtures/drush-extensions/drush.yml',
