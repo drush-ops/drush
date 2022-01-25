@@ -45,11 +45,18 @@ class CoreCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
 
         // Also document the keys that are recognized by PreflightArgs. It would be possible to redundantly declare
         // those as global options. We don't do that for now, to avoid confusion.
-        $ancient = drush_get_global_options();
-        foreach (['config', 'alias-path', 'include', 'local', 'strict', 'ssh-options'] as $name) {
+        $ancient = [
+            'config' => 'Specify an additional config file to load. See example.drush.yml. Example: /path/file',
+            'alias-path' => 'Specifies additional paths where Drush will search for alias files. Example: /path/alias1:/path/alias2',
+            'include' => 'Additional directories to search for Drush commands. Commandfiles should be placed in a subdirectory called <info>Commands</info>. Example: path/dir',
+            'local' => 'Don\'t look outside the Composer project for Drush config.',
+            'strict' => 'Return an error on unrecognized options. --strict=0 allows unrecognized options.',
+            'ssh-options' => 'A string of extra options that will be passed to the ssh command. Example: -p 100',
+        ];
+        foreach ($ancient as $name => $description) {
             $rows[] = [
                 'name' => '--' . $name,
-                'description' => $ancient[$name]['description'],
+                'description' => $description,
             ];
         }
         usort($rows, function ($a, $b) {
