@@ -179,6 +179,7 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
      */
     private function createManifestFile(array $options): string
     {
+        $this->logger()->info(dt('Creating !manifest file...', ['!manifest' => self::MANIFEST_FILE_NAME]));
         $manifest = [
             'datestamp' => time(),
             'formatversion' => self::MANIFEST_FORMAT_VERSION,
@@ -197,8 +198,9 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
             $manifestFilePath,
             Yaml::dump($manifest)
         );
+        $this->logger()->info(dt('Manifest file has been created: !path', ['!path' => $manifestFilePath]));
 
-        return$manifestFilePath;
+        return $manifestFilePath;
     }
 
     /**
