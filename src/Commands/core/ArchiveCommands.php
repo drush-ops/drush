@@ -116,9 +116,9 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
         $archive = new PharData($archivePath);
 
         foreach ($archiveComponents as $localName => $fileName) {
-            $this->logger()->info(dt('Adding !file to archive...', ['!file' => $fileName]));
+            $this->logger()->info(dt('Adding !file file to archive...', ['!file' => $fileName]));
             $archive->addFile($fileName, $localName);
-            $this->logger()->info(dt('!file has been added.', ['!file' => $fileName]));
+            $this->logger()->info(dt('!file file has been added.', ['!file' => $fileName]));
         }
 
         $archive->addFile($this->createManifestFile($options), self::MANIFEST_FILE_NAME);
@@ -151,7 +151,7 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
 
         $this->logger()->info(
             dt(
-                'Moving master archive from !from to !to',
+                'Moving master archive file from !from to !to',
                 ['!from' => $archivePath, '!to' => $options['destination']]
             )
         );
