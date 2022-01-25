@@ -125,16 +125,15 @@ class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwareInte
     }
 
     /**
-     * Perform sql-dump on source unless told otherwise.
+     * Perform sql-dump on source unless told otherwise. Returns the path to the dump file.
      *
      * @param $options
      * @param $global_options
      * @param $sourceRecord
      *
-     *   Path to the source dump file.
      * @throws \Exception
      */
-    public function dump($options, $global_options, $sourceRecord): string
+    public function dump(array $options, array $global_options, SiteAlias $sourceRecord): string
     {
         $dump_options = $global_options + [
             'gzip' => true,
@@ -148,17 +147,8 @@ class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwareInte
             if ($this->getConfig()->simulate()) {
                 $source_dump_path = '/simulated/path/to/dump.tgz';
             } else {
-                // First try a Drush 9.6+ return format.
                 $json = $process->getOutputAsJson();
-                if (!empty($json['path'])) {
-                    $source_dump_path = $json['path'];
-                } else {
-                    // Next, try 9.5- format.
-                    $return = drush_backend_parse_output($process->getOutput());
-                    if (!$return['error_status'] || !empty($return['object'])) {
-                        $source_dump_path = $return['object'];
-                    }
-                }
+                $source_dump_path = $json['path'];
             }
         } else {
             $source_dump_path = $options['source-dump'];
