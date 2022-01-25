@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "0741387fd6370a7498f593fd139d63e3",
+    "content-hash": "7e54876426a30fe150ea012e9d53de25",
     "packages": [
         {
             "name": "chi-teck/drupal-code-generator",
@@ -4284,26 +4284,26 @@
         },
         {
             "name": "drupal/semver_example",
-            "version": "2.2.0",
+            "version": "2.3.0",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/semver_example.git",
-                "reference": "2.2.0"
+                "reference": "2.3.0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/semver_example-2.2.0.zip",
-                "reference": "2.2.0",
-                "shasum": "8cb04baee5ca950a96ef825434b1da3b5bc985a2"
+                "url": "https://ftp.drupal.org/files/projects/semver_example-2.3.0.zip",
+                "reference": "2.3.0",
+                "shasum": "3de7ff51a8ce4bdf71c2f32059631f5bd8d71458"
             },
             "require": {
-                "drupal/core": "^8 || ^9"
+                "drupal/core": ">=8"
             },
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "2.2.0",
-                    "datestamp": "1593188229",
+                    "version": "2.3.0",
+                    "datestamp": "1642787442",
                     "security-coverage": {
                         "status": "not-covered",
                         "message": "Project has not opted into security advisory coverage!"
@@ -4322,6 +4322,10 @@
                 {
                     "name": "dww",
                     "homepage": "https://www.drupal.org/user/46549"
+                },
+                {
+                    "name": "moshe weitzman",
+                    "homepage": "https://www.drupal.org/user/23"
                 },
                 {
                     "name": "tedbow",
