@@ -149,7 +149,7 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
             ],
             'description' => $options['description'] ?? null,
             'tags' => $options['tags'] ?? null,
-            'generator' => $options['generator' ] ?? 'Drush archive-dump',
+            'generator' => $options['generator'] ?? 'Drush archive:dump',
             'generatorversion' => $options['generatorversion'] ?? Drush::getVersion(),
         ];
         $manifestFilePath = $this->archiveDir . DIRECTORY_SEPARATOR . self::MANIFEST_FILE_NAME;
