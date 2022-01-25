@@ -40,7 +40,7 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
      *
      * @option code Archive codebase.
      * @option files Archive Drupal files.
-     * @option db_dump Archive database SQL dump.
+     * @option db Archive database SQL dump.
      * @option destination The full path and filename in which the archive should be stored. If omitted, it will be saved to the drush-backups directory and a filename will be generated.
      * @option description Describe the archive contents.
      * @option tags Add tags to the archive manifest. Delimit several by commas.
@@ -60,7 +60,7 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
     public function dump(array $options = [
         'code' => false,
         'files' => false,
-        'db_dump' => false,
+        'db' => false,
         'description' => null,
         'tags' => null,
         'generator' => null,
@@ -69,8 +69,8 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
     {
         $this->archiveDir = FsUtils::prepareBackupDir('archives');
 
-        if (!$options['code'] && !$options['files'] && !$options['db_dump']) {
-            $options['code'] = $options['files'] = $options['db_dump'] = true;
+        if (!$options['code'] && !$options['files'] && !$options['db']) {
+            $options['code'] = $options['files'] = $options['db'] = true;
         }
 
         $archiveComponents = [];
@@ -86,7 +86,7 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
             $archiveComponents[self::DRUPAL_FILES_ARCHIVE_FILE_NAME] = $drupalFilesArchiveFilePath;
         }
 
-        if ($options['db_dump']) {
+        if ($options['db']) {
             $sqlDumpArchiveFilePath = $this->createSqlDumpArchive($options);
             $archiveComponents[self::SQL_DUMP_ARCHIVE_FILE_NAME] = $sqlDumpArchiveFilePath;
         }
@@ -145,7 +145,7 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
             'components' => [
                 'code' => $options['code'],
                 'files' => $options['files'],
-                'database' => $options['db_dump'],
+                'database' => $options['db'],
             ],
             'description' => $options['description'] ?? null,
             'tags' => $options['tags'] ?? null,
