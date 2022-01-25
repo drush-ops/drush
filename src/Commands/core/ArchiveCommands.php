@@ -28,18 +28,6 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
     private const ARCHIVE_FILE_NAME = 'archive.tar';
 
     /**
-     * ArchiveCommands constructor.
-     *
-     * @throws \Exception
-     */
-    public function __construct()
-    {
-        parent::__construct();
-
-        $this->archiveDir = FsUtils::prepareBackupDir('archives');
-    }
-
-    /**
      * Backup your code, files, and database into a single file.
      *
      * @command archive:dump
@@ -61,22 +49,50 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
      */
     public function dump(array $options = []): void
     {
-        // Create SQL dump (database.tar) file.
+        $this->archiveDir = FsUtils::prepareBackupDir('archives');
+
+        $archiveComponents = [];
+
         $sqlDumpArchiveFilePath = $this->createSqlDumpArchive($options);
+        $archiveComponents[self::SQL_DUMP_ARCHIVE_FILE_NAME] = $sqlDumpArchiveFilePath;
 
-        // Create "files" archive.
         $drupalFilesArchiveFilePath = $this->createDrupalFilesArchive();
+        $archiveComponents[self::DRUPAL_FILES_ARCHIVE_FILE_NAME] = $drupalFilesArchiveFilePath;
 
-        // Create the final archive.tar.gz file
+        $this->createMasterArchive($archiveComponents);
+    }
+
+    /**
+     * Creates the master archive file.
+     *
+     * @param array $archiveComponents
+     *   The list of components (files) to include into the master archive file.
+     *
+     * @throws \Exception
+     */
+    private function createMasterArchive(array $archiveComponents): void
+    {
+        if (!$archiveComponents) {
+            throw new Exception(dt('Nothing to archive'));
+        }
+
+        $this->logger()->info(dt('Creating master archive...'));
         $archivePath = implode([$this->archiveDir, DIRECTORY_SEPARATOR, self::ARCHIVE_FILE_NAME]);
         $archive = new PharData($archivePath);
-        $archive->addFile($drupalFilesArchiveFilePath, self::DRUPAL_FILES_ARCHIVE_FILE_NAME);
-        $archive->addFile($sqlDumpArchiveFilePath, self::SQL_DUMP_ARCHIVE_FILE_NAME);
-        $archive->compress(Phar::GZ, 'tar.gz');
+
+        foreach ($archiveComponents as $localName => $fileName) {
+            $this->logger()->info(dt('Adding !file to archive...', ['!file' => $fileName]));
+            $archive->addFile($fileName, $localName);
+            $this->logger()->info(dt('!file has been added.', ['!file' => $fileName]));
+        }
+
+        // @todo: include MANIFEST file.
+
+        $archive->compress(Phar::GZ);
         unset($archive);
         Phar::unlinkArchive($archivePath);
 
-        $this->logger()->info(dt('Archive path: !path', ['!path' => $archivePath . '.gz']));
+        $this->logger()->success(dt('Master archive has been created: !path', ['!path' => $archivePath . '.gz']));
     }
 
     /**
