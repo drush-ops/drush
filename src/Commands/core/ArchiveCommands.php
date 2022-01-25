@@ -18,6 +18,28 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
     use SiteAliasManagerAwareTrait;
 
     /**
+     * @var string
+     */
+    private string $archiveDir;
+
+    private const SQL_DUMP_FILE_NAME = 'database.sql';
+    private const SQL_DUMP_ARCHIVE_FILE_NAME = 'database.tar';
+    private const DRUPAL_FILES_ARCHIVE_FILE_NAME = 'files.tar';
+    private const ARCHIVE_FILE_NAME = 'archive.tar';
+
+    /**
+     * ArchiveCommands constructor.
+     *
+     * @throws \Exception
+     */
+    public function __construct()
+    {
+        parent::__construct();
+
+        $this->archiveDir = FsUtils::prepareBackupDir('archives');
+    }
+
+    /**
      * Backup your code, files, and database into a single file.
      *
      * @command archive:dump
@@ -39,84 +61,85 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
      */
     public function dump(array $options = []): void
     {
-        // Prepare "archives" directory.
-        $archiveDir = FsUtils::prepareBackupDir('archives');
-        $this->logger()->success(dt('Archive dir: !path', ['!path' => $archiveDir]));
-
         // Create SQL dump (database.tar) file.
-        [ $sqlDumpFilePath, $sqlDumpFileName ] = $this->createSqlDump($archiveDir, $options);
-        $this->logger()->success(dt('Database dump saved to !path', ['!path' => $sqlDumpFilePath]));
-        $databaseArchivePath = $archiveDir . '/' . 'database.tar';
-        $archive = new PharData($databaseArchivePath);
-        $archive->addFile($sqlDumpFilePath, $sqlDumpFileName);
-        $this->logger()->success(dt('Database archive path: !path', ['!path' => $databaseArchivePath]));
-        unlink($sqlDumpFilePath);
+        $sqlDumpArchiveFilePath = $this->createSqlDumpArchive($options);
 
         // Create "files" archive.
-        $filesDirPath = $this->getDrupalFilesDir();
-        $this->logger()->success(dt('Files dir: !path', ['!path' => $filesDirPath]));
-        $filesArchivePath = $archiveDir . '/' . 'files.tar';
-        $archive = new PharData($filesArchivePath);
-        $archive->buildFromDirectory($filesDirPath);
-        $this->logger()->success(dt('Files archive path: !path', ['!path' => $filesArchivePath]));
+        $drupalFilesArchiveFilePath = $this->createDrupalFilesArchive();
 
         // Create the final archive.tar.gz file
-        $archivePath = $archiveDir . '/' . 'archive.tar';
+        $archivePath = implode([$this->archiveDir, DIRECTORY_SEPARATOR, self::ARCHIVE_FILE_NAME]);
         $archive = new PharData($archivePath);
-        $archive->addFile($filesArchivePath, 'files.tar');
-        $archive->addFile($databaseArchivePath, 'database.tar');
+        $archive->addFile($drupalFilesArchiveFilePath, self::DRUPAL_FILES_ARCHIVE_FILE_NAME);
+        $archive->addFile($sqlDumpArchiveFilePath, self::SQL_DUMP_ARCHIVE_FILE_NAME);
         $archive->compress(Phar::GZ, 'tar.gz');
         unset($archive);
         Phar::unlinkArchive($archivePath);
 
-        $this->logger()->success(dt('Archive path: !path', ['!path' => $archivePath . '.gz']));
+        $this->logger()->info(dt('Archive path: !path', ['!path' => $archivePath . '.gz']));
     }
 
     /**
-     * Returns the path to Drupal "files" directory
+     * Create an archive of site's Drupal files.
      *
      * @return string
      *
      * @throws \Exception
      */
-    private function getDrupalFilesDir(): string
+    private function createDrupalFilesArchive(): string
     {
-      $evaluatedPath = HostPath::create($this->siteAliasManager(), '%files');
-      $pathEvaluator = new BackendPathEvaluator();
-      $pathEvaluator->evaluate($evaluatedPath);
+        $evaluatedPath = HostPath::create($this->siteAliasManager(), '%files');
+        $pathEvaluator = new BackendPathEvaluator();
+        $pathEvaluator->evaluate($evaluatedPath);
+        $drupalFilesDir = $evaluatedPath->fullyQualifiedPath();
 
-      return $evaluatedPath->fullyQualifiedPath();
+        $this->logger()->info(dt('Archiving files !dir...', ['!dir' => $drupalFilesDir]));
+        $drupalFilesArchiveFilePath = implode(
+            [$this->archiveDir, DIRECTORY_SEPARATOR, self::DRUPAL_FILES_ARCHIVE_FILE_NAME]
+        );
+        $archive = new PharData($drupalFilesArchiveFilePath);
+        $archive->buildFromDirectory($drupalFilesDir);
+        $this->logger()->success(
+            dt('Files archive has been created: !path', ['!path' => $drupalFilesArchiveFilePath])
+        );
+
+        return $drupalFilesArchiveFilePath;
     }
 
     /**
-     * Executes an SQL dump and returns the path to the resulting dump file.
+     * Creates an archive with SQL dump file and returns the path to the resulting archive file.
      *
-     * @param string $archiveDir
      * @param array $options
      *
-     * @return array
-     *  [0] - the full path to the SQl dump file;
-     *  [1] - the SQL dump file name.
+     * @return string
+     *   The full path to the SQl dump file.
      *
      * @throws \Exception
      *
      * @see \Drush\Commands\sql\SqlCommands::dump()
      */
-    private function createSqlDump(string $archiveDir, array $options): array
+    private function createSqlDumpArchive(array $options): string
     {
-        $sql = SqlBase::create();
-        $dbName = $sql->getDbSpec()['database'];
-
-        $sqlDumpFileName = sprintf('%s.sql', $dbName);
-        $options['result-file'] = implode(
-          [$archiveDir, DIRECTORY_SEPARATOR, $sqlDumpFileName]
-        );
+        $this->logger()->info(dt('Creating database SQL dump file...'));
+        $options['result-file'] = implode([$this->archiveDir, DIRECTORY_SEPARATOR, self::SQL_DUMP_FILE_NAME]);
         $sql = SqlBase::create($options);
-        $sqlDumpPath = $sql->dump();
-        if (false === $sqlDumpPath) {
+        $sqlDumpFilePath = $sql->dump();
+        if (false === $sqlDumpFilePath) {
             throw new Exception('Unable to dump database. Rerun with --debug to see any error message.');
         }
 
-        return [ $sqlDumpPath, $sqlDumpFileName ];
+        $this->logger()->info(dt('Archiving database SQL dump file...'));
+        $sqlDumpArchiveFilePath = implode(
+            [$this->archiveDir, DIRECTORY_SEPARATOR,  self::SQL_DUMP_ARCHIVE_FILE_NAME]
+        );
+        $archive = new PharData($sqlDumpArchiveFilePath);
+        $archive->addFile($sqlDumpFilePath, self::SQL_DUMP_FILE_NAME);
+        unlink($sqlDumpFilePath);
+
+        $this->logger()->success(
+            dt('Database SQL dump archive file has been created: !path', ['!path' => $sqlDumpArchiveFilePath])
+        );
+
+        return $sqlDumpArchiveFilePath;
     }
 }
