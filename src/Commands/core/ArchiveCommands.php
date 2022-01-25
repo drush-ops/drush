@@ -41,7 +41,8 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
      * @option code Archive codebase.
      * @option files Archive Drupal files.
      * @option db Archive database SQL dump.
-     * @option destination The full path and filename in which the archive should be stored. If omitted, it will be saved to the drush-backups directory and a filename will be generated.
+     * @option destination The full path and filename in which the archive should be stored. If omitted, it will be saved to the drush-backups directory.
+     * @option overwrite Overwrite destination file if exists.
      * @option description Describe the archive contents.
      * @option tags Add tags to the archive manifest. Delimit several by commas.
      * @option overwrite Do not fail if the destination file exists; overwrite it instead. Default is --no-overwrite.
@@ -61,6 +62,8 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
         'code' => false,
         'files' => false,
         'db' => false,
+        'destination' => null,
+        'overwrite' => false,
         'description' => null,
         'tags' => null,
         'generator' => null,
@@ -123,10 +126,47 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
         $archive->compress(Phar::GZ);
         unset($archive);
         Phar::unlinkArchive($archivePath);
+        $archivePath .= '.gz';
 
-        // @todo: account for --destination options
+        if (!$options['destination']) {
+            $this->logger()->success(
+                dt('Master archive has been created: !path', ['!path' => $archivePath])
+            );
+
+            return;
+        }
+
+        if (is_file($options['destination'])) {
+            if (!$options['overwrite']) {
+                throw new Exception(
+                    sprintf(
+                        'The destination file %s already exists. Use "--overwrite" option for overwriting an existing file.',
+                        $options['destination']
+                    )
+                );
+            }
+
+            unlink($options['destination']);
+        }
+
+        $this->logger()->info(
+            dt(
+                'Moving master archive from !from to !to',
+                ['!from' => $archivePath, '!to' => $options['destination']]
+            )
+        );
+        if (!rename($archivePath, $options['destination'])) {
+            throw new Exception(
+                sprintf(
+                    'Failed moving master archive from %s to %s.',
+                    $archivePath,
+                    $options['destination']
+                )
+            );
+        }
+
         $this->logger()->success(
-            dt('Master archive has been created: !path', ['!path' => $archivePath . '.gz'])
+            dt('Master archive has been created: !path', ['!path' => $options['destination']])
         );
     }
 
