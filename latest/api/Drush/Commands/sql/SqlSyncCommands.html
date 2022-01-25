@@ -365,9 +365,9 @@ DrushConfig as return type. Helps with IDE completion.</p></p>                </
                     string
                 </div>
                 <div class="col-md-8">
-                    <a href="#method_dump">dump</a>($options, $global_options, $sourceRecord)
+                    <a href="#method_dump">dump</a>(array $options, array $global_options, <abbr title="Consolidation\SiteAlias\SiteAlias">SiteAlias</abbr> $sourceRecord)
         
-                                            <p><p>Perform sql-dump on source unless told otherwise.</p></p>                </div>
+                                            <p><p>Perform sql-dump on source unless told otherwise. Returns the path to the dump file.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -977,9 +977,9 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_dump">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/sql/SqlSyncCommands.php#L137">at line 137</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/sql/SqlSyncCommands.php#L136">at line 136</a></div>
         <code>                    string
-    <strong>dump</strong>($options, $global_options, $sourceRecord)
+    <strong>dump</strong>(array $options, array $global_options, <abbr title="Consolidation\SiteAlias\SiteAlias">SiteAlias</abbr> $sourceRecord)
         </code>
     </h3>
     <div class="details">    
@@ -987,26 +987,26 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             
 
         <div class="method-description">
-                            <p><p>Perform sql-dump on source unless told otherwise.</p></p>                        
+                            <p><p>Perform sql-dump on source unless told otherwise. Returns the path to the dump file.</p></p>                        
         </div>
         <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
-                <td></td>
+                <td>array</td>
                 <td>$options</td>
                 <td></td>
             </tr>
                     <tr>
-                <td></td>
+                <td>array</td>
                 <td>$global_options</td>
                 <td></td>
             </tr>
                     <tr>
-                <td></td>
+                <td><abbr title="Consolidation\SiteAlias\SiteAlias">SiteAlias</abbr></td>
                 <td>$sourceRecord</td>
-                <td><p>Path to the source dump file.</p></td>
+                <td></td>
             </tr>
             </table>
 
@@ -1038,7 +1038,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_rsync">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/sql/SqlSyncCommands.php#L179">at line 179</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/sql/SqlSyncCommands.php#L169">at line 169</a></div>
         <code>                    string
     <strong>rsync</strong>(array $options, <abbr title="Consolidation\SiteAlias\SiteAlias">SiteAlias</abbr> $sourceRecord, <abbr title="Consolidation\SiteAlias\SiteAlias">SiteAlias</abbr> $targetRecord, $source_dump_path)
         </code>
@@ -1105,7 +1105,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_import">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/sql/SqlSyncCommands.php#L230">at line 230</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/sql/SqlSyncCommands.php#L220">at line 220</a></div>
         <code>                    void
     <strong>import</strong>($global_options, $target_dump_path, $targetRecord)
         </code>
