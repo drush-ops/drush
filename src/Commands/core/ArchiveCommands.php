@@ -2,13 +2,21 @@
 
 namespace Drush\Commands\core;
 
+use Consolidation\SiteAlias\HostPath;
+use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
+use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
+use Drush\Backend\BackendPathEvaluator;
 use Drush\Commands\DrushCommands;
-use Drush\Drush;
 use Drush\Sql\SqlBase;
+use Drush\Utils\FsUtils;
 use Exception;
+use Phar;
+use PharData;
 
-class ArchiveCommands extends DrushCommands
+class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInterface
 {
+    use SiteAliasManagerAwareTrait;
+
     /**
      * Backup your code, files, and database into a single file.
      *
@@ -31,45 +39,84 @@ class ArchiveCommands extends DrushCommands
      */
     public function dump(array $options = []): void
     {
-        $sqlDumpFilePath = $this->performSqlDump($options);
+        // Prepare "archives" directory.
+        $archiveDir = FsUtils::prepareBackupDir('archives');
+        $this->logger()->success(dt('Archive dir: !path', ['!path' => $archiveDir]));
 
+        // Create SQL dump (database.tar) file.
+        [ $sqlDumpFilePath, $sqlDumpFileName ] = $this->createSqlDump($archiveDir, $options);
         $this->logger()->success(dt('Database dump saved to !path', ['!path' => $sqlDumpFilePath]));
+        $databaseArchivePath = $archiveDir . '/' . 'database.tar';
+        $archive = new PharData($databaseArchivePath);
+        $archive->addFile($sqlDumpFilePath, $sqlDumpFileName);
+        $this->logger()->success(dt('Database archive path: !path', ['!path' => $databaseArchivePath]));
+        unlink($sqlDumpFilePath);
+
+        // Create "files" archive.
+        $filesDirPath = $this->getDrupalFilesDir();
+        $this->logger()->success(dt('Files dir: !path', ['!path' => $filesDirPath]));
+        $filesArchivePath = $archiveDir . '/' . 'files.tar';
+        $archive = new PharData($filesArchivePath);
+        $archive->buildFromDirectory($filesDirPath);
+        $this->logger()->success(dt('Files archive path: !path', ['!path' => $filesArchivePath]));
+
+        // Create the final archive.tar.gz file
+        $archivePath = $archiveDir . '/' . 'archive.tar';
+        $archive = new PharData($archivePath);
+        $archive->addFile($filesArchivePath, 'files.tar');
+        $archive->addFile($databaseArchivePath, 'database.tar');
+        $archive->compress(Phar::GZ, 'tar.gz');
+        unset($archive);
+        Phar::unlinkArchive($archivePath);
+
+        $this->logger()->success(dt('Archive path: !path', ['!path' => $archivePath . '.gz']));
+    }
+
+    /**
+     * Returns the path to Drupal "files" directory
+     *
+     * @return string
+     *
+     * @throws \Exception
+     */
+    private function getDrupalFilesDir(): string
+    {
+      $evaluatedPath = HostPath::create($this->siteAliasManager(), '%files');
+      $pathEvaluator = new BackendPathEvaluator();
+      $pathEvaluator->evaluate($evaluatedPath);
+
+      return $evaluatedPath->fullyQualifiedPath();
     }
 
     /**
      * Executes an SQL dump and returns the path to the resulting dump file.
      *
+     * @param string $archiveDir
      * @param array $options
      *
-     * @return string
+     * @return array
+     *  [0] - the full path to the SQl dump file;
+     *  [1] - the SQL dump file name.
      *
      * @throws \Exception
      *
      * @see \Drush\Commands\sql\SqlCommands::dump()
      */
-    private function performSqlDump(array $options): string
+    private function createSqlDump(string $archiveDir, array $options): array
     {
+        $sql = SqlBase::create();
+        $dbName = $sql->getDbSpec()['database'];
+
+        $sqlDumpFileName = sprintf('%s.sql', $dbName);
         $options['result-file'] = implode(
-          [$this->getProjectPath(), DIRECTORY_SEPARATOR, 'archive_sql_dump.sql']
+          [$archiveDir, DIRECTORY_SEPARATOR, $sqlDumpFileName]
         );
         $sql = SqlBase::create($options);
-        $sqlDumpResult = $sql->dump();
-        if (false === $sqlDumpResult) {
+        $sqlDumpPath = $sql->dump();
+        if (false === $sqlDumpPath) {
             throw new Exception('Unable to dump database. Rerun with --debug to see any error message.');
         }
 
-        return $sqlDumpResult;
-    }
-
-    /**
-     * Returns the path to the site's Composer project.
-     *
-     * The site's Composer project is one level up since the Drupal root is in the "web" directory.
-     *
-     * @return string
-     */
-    private function getProjectPath(): string
-    {
-        return dirname(Drush::bootstrapManager()->getRoot());
+        return [ $sqlDumpPath, $sqlDumpFileName ];
     }
 }
