@@ -137,8 +137,6 @@ function drush_get_global_options($brief = FALSE) {
     $options['confirm-rollback']    = ['description' => 'Wait for confirmation before doing a rollback when something goes wrong.'];
     $options['php-options']         = ['hidden' => TRUE, 'description' => "Options to pass to `php` when running drush.  Only effective when specified in a site alias definition.", 'never-propagate' => TRUE, 'example-value' => '-d error_reporting="E_ALL"'];
     $options['halt-on-error']       = ['propagate-cli-value' => TRUE, 'description' => "Manage recoverable errors. Values: 1=Execution halted. 0=Execution continues."];
-    $options['remote-host']         = ['hidden' => TRUE, 'description' => 'Remote site to execute drush command on. Managed by site alias.', 'example-value' => 'http://example.com'];
-    $options['remote-user']         = ['hidden' => TRUE, 'description' => 'User account to use with a remote drush command. Managed by site alias.', 'example-value' => 'www-data'];
     $options['remote-os']           = ['hidden' => TRUE, 'description' => 'The operating system used on the remote host. Managed by site alias.', 'example-value' => 'linux'];
     $options['strict']              = ['propagate' => TRUE, 'description' => 'Return an error on unrecognized options. --strict=0: Allow unrecognized options.'];
     $options['command-specific']    = ['hidden' => TRUE, 'merge-associative' => TRUE, 'description' => 'Command-specific options.'];

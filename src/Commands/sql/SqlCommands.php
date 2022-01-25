@@ -90,12 +90,8 @@ class SqlCommands extends DrushCommands implements StdinAwareInterface
     {
         $sql = SqlBase::create($options);
         $db_spec = $sql->getDbSpec();
-        // Prompt for confirmation.
 
-        // @todo odd - maybe for sql-sync.
-        $txt_destination = (isset($db_spec['remote-host']) ? $db_spec['remote-host'] . '/' : '') . $db_spec['database'];
-        $this->output()->writeln(dt("Creating database !target. Any existing database will be dropped!", ['!target' => $txt_destination]));
-
+        $this->output()->writeln(dt("Creating database !target. Any existing database will be dropped!", ['!target' => $db_spec['database']]));
         if (!$this->getConfig()->simulate() && !$this->io()->confirm(dt('Do you really want to continue?'))) {
             throw new UserAbortException();
         }
