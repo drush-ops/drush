@@ -111,7 +111,7 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
             throw new Exception(dt('Nothing to archive'));
         }
 
-        $this->logger()->info(dt('Creating master archive...'));
+        $this->logger()->info(dt('Creating archive...'));
         $archivePath = implode([$this->archiveDir, DIRECTORY_SEPARATOR, self::ARCHIVE_FILE_NAME]);
         $archive = new PharData($archivePath);
 
@@ -130,7 +130,7 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
 
         if (!$options['destination']) {
             $this->logger()->success(
-                dt('Master archive has been created: !path', ['!path' => $archivePath])
+                dt('Archive file has been created: !path', ['!path' => $archivePath])
             );
 
             return;
@@ -151,14 +151,14 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
 
         $this->logger()->info(
             dt(
-                'Moving master archive file from !from to !to',
+                'Moving archive file from !from to !to',
                 ['!from' => $archivePath, '!to' => $options['destination']]
             )
         );
         if (!rename($archivePath, $options['destination'])) {
             throw new Exception(
                 sprintf(
-                    'Failed moving master archive from %s to %s.',
+                    'Failed moving archive from %s to %s.',
                     $archivePath,
                     $options['destination']
                 )
@@ -166,7 +166,7 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
         }
 
         $this->logger()->success(
-            dt('Master archive has been created: !path', ['!path' => $options['destination']])
+            dt('Archive file has been created: !path', ['!path' => $options['destination']])
         );
     }
 
@@ -223,7 +223,7 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
         );
         $archive = new PharData($drupalFilesArchiveFilePath);
         $archive->buildFromDirectory($drupalFilesDir);
-        $this->logger()->success(
+        $this->logger()->info(
             dt('Files archive has been created: !path', ['!path' => $drupalFilesArchiveFilePath])
         );
 
@@ -260,7 +260,7 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
         $archive->addFile($sqlDumpFilePath, self::SQL_DUMP_FILE_NAME);
         unlink($sqlDumpFilePath);
 
-        $this->logger()->success(
+        $this->logger()->info(
             dt('Database SQL dump archive file has been created: !path', ['!path' => $sqlDumpArchiveFilePath])
         );
 
