@@ -7,11 +7,13 @@ use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
 use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
 use Drush\Backend\BackendPathEvaluator;
 use Drush\Commands\DrushCommands;
+use Drush\Drush;
 use Drush\Sql\SqlBase;
 use Drush\Utils\FsUtils;
 use Exception;
 use Phar;
 use PharData;
+use Symfony\Component\Yaml\Yaml;
 
 class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInterface
 {
@@ -22,10 +24,13 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
      */
     private string $archiveDir;
 
+    private const CODE_ARCHIVE_FILE_NAME = 'code.tar';
+    private const DRUPAL_FILES_ARCHIVE_FILE_NAME = 'files.tar';
     private const SQL_DUMP_FILE_NAME = 'database.sql';
     private const SQL_DUMP_ARCHIVE_FILE_NAME = 'database.tar';
-    private const DRUPAL_FILES_ARCHIVE_FILE_NAME = 'files.tar';
     private const ARCHIVE_FILE_NAME = 'archive.tar';
+    private const MANIFEST_FORMAT_VERSION = '1.0';
+    private const MANIFEST_FILE_NAME = 'MANIFEST.yml';
 
     /**
      * Backup your code, files, and database into a single file.
@@ -33,11 +38,16 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
      * @command archive:dump
      * @aliases ard
      *
+     * @option code Archive codebase.
+     * @option files Archive Drupal files.
+     * @option db_dump Archive database SQL dump.
+     * @option destination The full path and filename in which the archive should be stored. If omitted, it will be saved to the drush-backups directory and a filename will be generated.
      * @option description Describe the archive contents.
      * @option tags Add tags to the archive manifest. Delimit several by commas.
-     * @option destination The full path and filename in which the archive should be stored. If omitted, it will be saved to the drush-backups directory and a filename will be generated.
      * @option overwrite Do not fail if the destination file exists; overwrite it instead. Default is --no-overwrite.
-     *
+     * @option generator The generator name to store in the MANIFEST.yml file. The default is "Drush archive-dump".
+     * @option generatorversion The generator version number to store in the MANIFEST file. The default is Drush version.
+     * 
      * @optionset_sql
      * @optionset_table_selection
      *
@@ -47,19 +57,41 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
      *
      * @throws \Exception
      */
-    public function dump(array $options = []): void
+    public function dump(array $options = [
+        'code' => false,
+        'files' => false,
+        'db_dump' => false,
+        'description' => null,
+        'tags' => null,
+        'generator' => null,
+        'generatorversion' => null,
+    ]): void
     {
         $this->archiveDir = FsUtils::prepareBackupDir('archives');
 
+        if (!$options['code'] && !$options['files'] && !$options['db_dump']) {
+            $options['code'] = $options['files'] = $options['db_dump'] = true;
+        }
+
         $archiveComponents = [];
 
-        $sqlDumpArchiveFilePath = $this->createSqlDumpArchive($options);
-        $archiveComponents[self::SQL_DUMP_ARCHIVE_FILE_NAME] = $sqlDumpArchiveFilePath;
+        if ($options['code']) {
+            // @todo: implement
+            // $codeArchiveFilePath = $this->createCodeArchive();
+            // $archiveComponents[self::CODE_ARCHIVE_FILE_NAME] = $codeArchiveFilePath;
+        }
 
-        $drupalFilesArchiveFilePath = $this->createDrupalFilesArchive();
-        $archiveComponents[self::DRUPAL_FILES_ARCHIVE_FILE_NAME] = $drupalFilesArchiveFilePath;
+        if ($options['files']) {
+            $drupalFilesArchiveFilePath = $this->createDrupalFilesArchive();
+            $archiveComponents[self::DRUPAL_FILES_ARCHIVE_FILE_NAME] = $drupalFilesArchiveFilePath;
+        }
 
-        $this->createMasterArchive($archiveComponents);
+        if ($options['db_dump']) {
+            $sqlDumpArchiveFilePath = $this->createSqlDumpArchive($options);
+            $archiveComponents[self::SQL_DUMP_ARCHIVE_FILE_NAME] = $sqlDumpArchiveFilePath;
+        }
+
+        $this->createMasterArchive($archiveComponents, $options);
     }
 
     /**
@@ -70,7 +102,7 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
      *
      * @throws \Exception
      */
-    private function createMasterArchive(array $archiveComponents): void
+    private function createMasterArchive(array $archiveComponents, array $options): void
     {
         if (!$archiveComponents) {
             throw new Exception(dt('Nothing to archive'));
@@ -86,13 +118,47 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
             $this->logger()->info(dt('!file has been added.', ['!file' => $fileName]));
         }
 
-        // @todo: include MANIFEST file.
+        $archive->addFile($this->createManifestFile($options), self::MANIFEST_FILE_NAME);
 
         $archive->compress(Phar::GZ);
         unset($archive);
         Phar::unlinkArchive($archivePath);
 
-        $this->logger()->success(dt('Master archive has been created: !path', ['!path' => $archivePath . '.gz']));
+        // @todo: account for --destination options
+        $this->logger()->success(
+            dt('Master archive has been created: !path', ['!path' => $archivePath . '.gz'])
+        );
+    }
+
+    /**
+     * Creates the MANIFEST file.
+     *
+     * @param array $options
+     *
+     * @return string
+     */
+    private function createManifestFile(array $options): string
+    {
+        $manifest = [
+            'datestamp' => time(),
+            'formatversion' => self::MANIFEST_FORMAT_VERSION,
+            'components' => [
+                'code' => $options['code'],
+                'files' => $options['files'],
+                'database' => $options['db_dump'],
+            ],
+            'description' => $options['description'] ?? null,
+            'tags' => $options['tags'] ?? null,
+            'generator' => $options['generator' ] ?? 'Drush archive-dump',
+            'generatorversion' => $options['generatorversion'] ?? Drush::getVersion(),
+        ];
+        $manifestFilePath = $this->archiveDir . DIRECTORY_SEPARATOR . self::MANIFEST_FILE_NAME;
+        file_put_contents(
+            $manifestFilePath,
+            Yaml::dump($manifest)
+        );
+
+        return$manifestFilePath;
     }
 
     /**
