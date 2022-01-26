@@ -117,9 +117,17 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
 
         if ($options['files']) {
             $drupalFilesComponentPath = $this->getDrupalFilesComponentPath();
+            $excludes = $this->getExcludesByPaths([
+                'css',
+                'js',
+                'styles',
+                'php',
+            ]);
+
             $archiveComponents[] = [
                 'name' => 'files',
                 'path' => $drupalFilesComponentPath,
+                'excludes' => $excludes,
             ];
         }
 
