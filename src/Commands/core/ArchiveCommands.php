@@ -11,8 +11,11 @@ use Drush\Drush;
 use Drush\Sql\SqlBase;
 use Drush\Utils\FsUtils;
 use Exception;
+use FilesystemIterator;
 use Phar;
 use PharData;
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
 use Symfony\Component\Yaml\Yaml;
 
 class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInterface
@@ -25,9 +28,15 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
     private string $archiveDir;
 
     private const CODE_ARCHIVE_FILE_NAME = 'code.tar';
+
+    private const DRUPAL_FILES_ARCHIVE_ROOT_DIR = 'files';
     private const DRUPAL_FILES_ARCHIVE_FILE_NAME = 'files.tar';
+
     private const SQL_DUMP_FILE_NAME = 'database.sql';
-    private const SQL_DUMP_ARCHIVE_FILE_NAME = 'database.tar';
+    private const DATABASE_ARCHIVE_ROOT_DIR = 'database';
+    private const DATABASE_ARCHIVE_FILE_NAME = 'database.tar';
+
+    private const ARCHIVE_DIR_NAME = 'archive';
     private const ARCHIVE_FILE_NAME = 'archive.tar';
     private const MANIFEST_FORMAT_VERSION = '1.0';
     private const MANIFEST_FILE_NAME = 'MANIFEST.yml';
@@ -70,7 +79,8 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
         'generatorversion' => null,
     ]): void
     {
-        $this->archiveDir = FsUtils::prepareBackupDir('archives');
+        $this->archiveDir = implode([FsUtils::prepareBackupDir('archives'), DIRECTORY_SEPARATOR, self::ARCHIVE_DIR_NAME]);
+        mkdir($this->archiveDir);
 
         if (!$options['code'] && !$options['files'] && !$options['db']) {
             $options['code'] = $options['files'] = $options['db'] = true;
@@ -85,27 +95,27 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
         }
 
         if ($options['files']) {
-            $drupalFilesArchiveFilePath = $this->createDrupalFilesArchive();
-            $archiveComponents[self::DRUPAL_FILES_ARCHIVE_FILE_NAME] = $drupalFilesArchiveFilePath;
+            $drupalFilesComponentPath = $this->getDrupalFilesComponentPath();
+            $archiveComponents['files'] = $drupalFilesComponentPath;
         }
 
         if ($options['db']) {
-            $sqlDumpArchiveFilePath = $this->createSqlDumpArchive($options);
-            $archiveComponents[self::SQL_DUMP_ARCHIVE_FILE_NAME] = $sqlDumpArchiveFilePath;
+            $databaseComponentPath = $this->getDatabaseComponentPath($options);
+            $archiveComponents['database'] = $databaseComponentPath;
         }
 
-        $this->createMasterArchive($archiveComponents, $options);
+        $this->createArchiveFile($archiveComponents, $options);
     }
 
     /**
-     * Creates the master archive file.
+     * Creates the archive file.
      *
      * @param array $archiveComponents
-     *   The list of components (files) to include into the master archive file.
+     *   The list of components (files) to include into the archive file.
      *
      * @throws \Exception
      */
-    private function createMasterArchive(array $archiveComponents, array $options): void
+    private function createArchiveFile(array $archiveComponents, array $options): void
     {
         if (!$archiveComponents) {
             throw new Exception(dt('Nothing to archive'));
@@ -115,10 +125,17 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
         $archivePath = implode([$this->archiveDir, DIRECTORY_SEPARATOR, self::ARCHIVE_FILE_NAME]);
         $archive = new PharData($archivePath);
 
-        foreach ($archiveComponents as $localName => $fileName) {
-            $this->logger()->info(dt('Adding !file file to archive...', ['!file' => $fileName]));
-            $archive->addFile($fileName, $localName);
-            $this->logger()->info(dt('!file file has been added.', ['!file' => $fileName]));
+        foreach ($archiveComponents as $directory) {
+            $this->logger()->info(dt('Adding !directory directory to archive...', ['!directory' => $directory]));
+            $archive->buildFromIterator(new RecursiveIteratorIterator(
+                new RecursiveDirectoryIterator(
+                    $directory,
+                    FilesystemIterator::KEY_AS_PATHNAME|FilesystemIterator::CURRENT_AS_FILEINFO|FilesystemIterator::SKIP_DOTS
+                )),
+                dirname($directory)
+            );
+
+            $this->logger()->info(dt('!directory directory has been added.', ['!directory' => $directory]));
         }
 
         $archive->addFile($this->createManifestFile($options), self::MANIFEST_FILE_NAME);
@@ -204,66 +221,48 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
     }
 
     /**
-     * Create an archive of site's Drupal files.
+     * Returns the path to the site's Drupal files directory.
      *
      * @return string
+     *  The full path to the site's Drupal files directory.
      *
      * @throws \Exception
      */
-    private function createDrupalFilesArchive(): string
+    private function getDrupalFilesComponentPath(): string
     {
         $evaluatedPath = HostPath::create($this->siteAliasManager(), '%files');
         $pathEvaluator = new BackendPathEvaluator();
         $pathEvaluator->evaluate($evaluatedPath);
-        $drupalFilesDir = $evaluatedPath->fullyQualifiedPath();
 
-        $this->logger()->info(dt('Archiving files !dir...', ['!dir' => $drupalFilesDir]));
-        $drupalFilesArchiveFilePath = implode(
-            [$this->archiveDir, DIRECTORY_SEPARATOR, self::DRUPAL_FILES_ARCHIVE_FILE_NAME]
-        );
-        $archive = new PharData($drupalFilesArchiveFilePath);
-        $archive->buildFromDirectory($drupalFilesDir);
-        $this->logger()->info(
-            dt('Files archive has been created: !path', ['!path' => $drupalFilesArchiveFilePath])
-        );
-
-        return $drupalFilesArchiveFilePath;
+        return $evaluatedPath->fullyQualifiedPath();
     }
 
     /**
-     * Creates an archive with SQL dump file and returns the path to the resulting archive file.
+     * Creates a database archive (SQL dump) and returns the path the database archive component directory.
      *
      * @param array $options
      *
      * @return string
-     *   The full path to the SQl dump file.
+     *   The full path to the database archive component directory.
      *
      * @throws \Exception
      *
      * @see \Drush\Commands\sql\SqlCommands::dump()
      */
-    private function createSqlDumpArchive(array $options): string
+    private function getDatabaseComponentPath(array $options): string
     {
         $this->logger()->info(dt('Creating database SQL dump file...'));
-        $options['result-file'] = implode([$this->archiveDir, DIRECTORY_SEPARATOR, self::SQL_DUMP_FILE_NAME]);
+        $databaseArchiveDir = implode([$this->archiveDir, DIRECTORY_SEPARATOR, self::DATABASE_ARCHIVE_ROOT_DIR]);
+        if (!mkdir($databaseArchiveDir)) {
+            throw new Exception(sprintf('Failed to created directory %s for database archive', $databaseArchiveDir));
+        }
+
+        $options['result-file'] = implode([$databaseArchiveDir, DIRECTORY_SEPARATOR, self::SQL_DUMP_FILE_NAME]);
         $sql = SqlBase::create($options);
-        $sqlDumpFilePath = $sql->dump();
-        if (false === $sqlDumpFilePath) {
+        if (false === $sql->dump()) {
             throw new Exception('Unable to dump database. Rerun with --debug to see any error message.');
         }
 
-        $this->logger()->info(dt('Archiving database SQL dump file...'));
-        $sqlDumpArchiveFilePath = implode(
-            [$this->archiveDir, DIRECTORY_SEPARATOR,  self::SQL_DUMP_ARCHIVE_FILE_NAME]
-        );
-        $archive = new PharData($sqlDumpArchiveFilePath);
-        $archive->addFile($sqlDumpFilePath, self::SQL_DUMP_FILE_NAME);
-        unlink($sqlDumpFilePath);
-
-        $this->logger()->info(
-            dt('Database SQL dump archive file has been created: !path', ['!path' => $sqlDumpArchiveFilePath])
-        );
-
-        return $sqlDumpArchiveFilePath;
+        return $databaseArchiveDir;
     }
 }
