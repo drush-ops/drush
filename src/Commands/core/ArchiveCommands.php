@@ -58,6 +58,7 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
      * @option overwrite Do not fail if the destination file exists; overwrite it instead. Default is --no-overwrite.
      * @option generator The generator name to store in the MANIFEST.yml file. The default is "Drush archive-dump".
      * @option generatorversion The generator version number to store in the MANIFEST file. The default is Drush version.
+     * @option exclude-code-paths Comma-separated list of paths to exclude from the code archive.
      * 
      * @optionset_sql
      * @optionset_table_selection
@@ -78,6 +79,7 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
         'tags' => null,
         'generator' => null,
         'generatorversion' => null,
+        'exclude-code-paths' => null,
     ]): void
     {
         $this->archiveDir = implode([FsUtils::prepareBackupDir('archives'), DIRECTORY_SEPARATOR, self::ARCHIVE_DIR_NAME]);
@@ -91,17 +93,42 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
 
         if ($options['code']) {
              $codeComponentPath = $this->getCodeComponentComponentPath();
-             $archiveComponents['code'] = $codeComponentPath;
+
+             $excludes = $this->getExcludesByPaths([
+                 '.git',
+                 'vendor',
+                 'files',
+                 'web' . DIRECTORY_SEPARATOR . 'core',
+                 'web' . DIRECTORY_SEPARATOR . 'sites' . DIRECTORY_SEPARATOR . 'default' . DIRECTORY_SEPARATOR . 'files',
+             ]);
+             if ($options['exclude-code-paths']) {
+                 $excludes = array_merge(
+                     $excludes,
+                     $this->getExcludesByPaths(explode(',', $options['exclude-code-paths']))
+                 );
+             }
+
+             $archiveComponents[] = [
+                 'name' => 'code',
+                 'path' => $codeComponentPath,
+                 'excludes' => $excludes,
+             ];
         }
 
         if ($options['files']) {
             $drupalFilesComponentPath = $this->getDrupalFilesComponentPath();
-            $archiveComponents['files'] = $drupalFilesComponentPath;
+            $archiveComponents[] = [
+                'name' => 'files',
+                'path' => $drupalFilesComponentPath,
+            ];
         }
 
         if ($options['db']) {
             $databaseComponentPath = $this->getDatabaseComponentPath($options);
-            $archiveComponents['database'] = $databaseComponentPath;
+            $archiveComponents[] = [
+                'name' => 'database',
+                'path' => $databaseComponentPath,
+            ];
         }
 
         $this->createArchiveFile($archiveComponents, $options);
@@ -114,13 +141,10 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
      *   The list of components (files) to include into the archive file.
      * @param array $options
      *   The command options.
-     * @param array $excludes
-     *   An optional list of PCRE regular expressions that is used to filter out the
-     *   list of files.
      *
      * @throws \Exception
      */
-    private function createArchiveFile(array $archiveComponents, array $options, array $excludes = []): void
+    private function createArchiveFile(array $archiveComponents, array $options): void
     {
         if (!$archiveComponents) {
             throw new Exception(dt('Nothing to archive'));
@@ -130,18 +154,21 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
         $archivePath = implode([$this->archiveDir, DIRECTORY_SEPARATOR, self::ARCHIVE_FILE_NAME]);
         $archive = new PharData($archivePath);
 
-        foreach ($archiveComponents as $component => $directory) {
-            $this->logger()->info(dt('Adding !directory directory to archive...', ['!directory' => $directory]));
+        foreach ($archiveComponents as $component) {
+            $path = $component['path'];
+            $name = $component['name'];
+            $excludes = $component['excludes'] ?? [];
+
+            $this->logger()->info(dt('Adding !path to archive...', ['!path' => $path]));
 
             $iterator = new RecursiveIteratorIterator(
                 new RecursiveCallbackFilterIterator(
                     new RecursiveDirectoryIterator(
-                        $directory,
+                        $path,
                         FilesystemIterator::SKIP_DOTS | FilesystemIterator::CURRENT_AS_PATHNAME
                     ),
-                    function ($file) use ($excludes, $directory) {
-                        $localFileName = str_replace($directory . DIRECTORY_SEPARATOR, '', $file);
-
+                    function ($file) use ($excludes, $path) {
+                        $localFileName = str_replace($path . DIRECTORY_SEPARATOR, '', $file);
                         foreach ($excludes as $exclude) {
                             if (preg_match($exclude, $localFileName)) {
                                 $this->logger()->info(dt(
@@ -158,13 +185,15 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
                 )
             );
 
-            $archive->addEmptyDir($component);
+            $archive->addEmptyDir($name);
             foreach ($iterator as $file) {
-                $localFileName = str_replace($directory . DIRECTORY_SEPARATOR, '', $file);
-                $archive->addFile($file, $component . DIRECTORY_SEPARATOR . $localFileName);
+                $localFileName = str_replace($path . DIRECTORY_SEPARATOR, '', $file);
+                $archive->addFile($file, $name . DIRECTORY_SEPARATOR . $localFileName);
             }
 
-            $this->logger()->info(dt('!directory directory has been added to archive.', ['!directory' => $directory]));
+            $this->logger()->info(
+                dt('!path has been added to archive.', ['!path' => $path])
+            );
         }
 
         $archive->addFile($this->createManifestFile($options), self::MANIFEST_FILE_NAME);
