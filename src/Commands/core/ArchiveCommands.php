@@ -14,6 +14,7 @@ use Exception;
 use FilesystemIterator;
 use Phar;
 use PharData;
+use RecursiveCallbackFilterIterator;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use Symfony\Component\Yaml\Yaml;
@@ -89,9 +90,8 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
         $archiveComponents = [];
 
         if ($options['code']) {
-            // @todo: implement
-            // $codeArchiveFilePath = $this->createCodeArchive();
-            // $archiveComponents[self::CODE_ARCHIVE_FILE_NAME] = $codeArchiveFilePath;
+             $codeComponentPath = $this->getCodeComponentComponentPath();
+             $archiveComponents['code'] = $codeComponentPath;
         }
 
         if ($options['files']) {
@@ -112,10 +112,15 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
      *
      * @param array $archiveComponents
      *   The list of components (files) to include into the archive file.
+     * @param array $options
+     *   The command options.
+     * @param array $excludes
+     *   An optional list of PCRE regular expressions that is used to filter out the
+     *   list of files.
      *
      * @throws \Exception
      */
-    private function createArchiveFile(array $archiveComponents, array $options): void
+    private function createArchiveFile(array $archiveComponents, array $options, array $excludes = []): void
     {
         if (!$archiveComponents) {
             throw new Exception(dt('Nothing to archive'));
@@ -125,17 +130,41 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
         $archivePath = implode([$this->archiveDir, DIRECTORY_SEPARATOR, self::ARCHIVE_FILE_NAME]);
         $archive = new PharData($archivePath);
 
-        foreach ($archiveComponents as $directory) {
+        foreach ($archiveComponents as $component => $directory) {
             $this->logger()->info(dt('Adding !directory directory to archive...', ['!directory' => $directory]));
-            $archive->buildFromIterator(new RecursiveIteratorIterator(
-                new RecursiveDirectoryIterator(
-                    $directory,
-                    FilesystemIterator::KEY_AS_PATHNAME|FilesystemIterator::CURRENT_AS_FILEINFO|FilesystemIterator::SKIP_DOTS
-                )),
-                dirname($directory)
+
+            $iterator = new RecursiveIteratorIterator(
+                new RecursiveCallbackFilterIterator(
+                    new RecursiveDirectoryIterator(
+                        $directory,
+                        FilesystemIterator::SKIP_DOTS | FilesystemIterator::CURRENT_AS_PATHNAME
+                    ),
+                    function ($file) use ($excludes, $directory) {
+                        $localFileName = str_replace($directory . DIRECTORY_SEPARATOR, '', $file);
+
+                        foreach ($excludes as $exclude) {
+                            if (preg_match($exclude, $localFileName)) {
+                                $this->logger()->info(dt(
+                                    'Path excluded (!exclude): !path',
+                                    ['!exclude' => $exclude, '!path' => $localFileName]
+                                ));
+
+                                return false;
+                            }
+                        }
+
+                        return true;
+                    }
+                )
             );
 
-            $this->logger()->info(dt('!directory directory has been added.', ['!directory' => $directory]));
+            $archive->addEmptyDir($component);
+            foreach ($iterator as $file) {
+                $localFileName = str_replace($directory . DIRECTORY_SEPARATOR, '', $file);
+                $archive->addFile($file, $component . DIRECTORY_SEPARATOR . $localFileName);
+            }
+
+            $this->logger()->info(dt('!directory directory has been added to archive.', ['!directory' => $directory]));
         }
 
         $archive->addFile($this->createManifestFile($options), self::MANIFEST_FILE_NAME);
@@ -191,6 +220,7 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
      * Creates the MANIFEST file.
      *
      * @param array $options
+     *   The command options.
      *
      * @return string
      */
@@ -218,6 +248,17 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
         $this->logger()->info(dt('Manifest file has been created: !path', ['!path' => $manifestFilePath]));
 
         return $manifestFilePath;
+    }
+
+    /**
+     * Returns the path to the site's project directory.
+     *
+     * @return string
+     *  The full path to the site's project directory.
+     */
+    private function getCodeComponentComponentPath(): string
+    {
+        return dirname(Drush::bootstrapManager()->getRoot());
     }
 
     /**
