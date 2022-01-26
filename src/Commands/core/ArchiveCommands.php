@@ -306,4 +306,21 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
 
         return $databaseArchiveDir;
     }
+
+    /**
+     * Returns the list of PCRE regular expressions to match paths.
+     *
+     * @param array $paths
+     *
+     * @return array
+     */
+    private function getExcludesByPaths(array $paths): array
+    {
+        $regexps = [];
+        foreach ($paths as $path) {
+            $regexps[] = sprintf('#^%s$#', addslashes(trim($path)));
+        }
+
+        return $regexps;
+    }
 }
