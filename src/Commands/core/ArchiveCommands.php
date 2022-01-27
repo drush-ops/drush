@@ -92,10 +92,6 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
         $archiveComponents = [];
 
         if ($options['code']) {
-             $codeComponentPath = $this->getCodeComponentComponentPath();
-
-             // @todo: detect database creds are not in sites/*/settings.php
-
              $excludes = array_merge($this->getExcludesByPaths([
                      '.git',
                      'vendor',
@@ -113,13 +109,12 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
 
              $archiveComponents[] = [
                  'name' => 'code',
-                 'path' => $codeComponentPath,
+                 'path' => $this->getCodeComponentComponentPath(),
                  'excludes' => $excludes,
              ];
         }
 
         if ($options['files']) {
-            $drupalFilesComponentPath = $this->getDrupalFilesComponentPath();
             $excludes = $this->getExcludesByPaths([
                 'css',
                 'js',
@@ -129,16 +124,15 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
 
             $archiveComponents[] = [
                 'name' => 'files',
-                'path' => $drupalFilesComponentPath,
+                'path' => $this->getDrupalFilesComponentPath(),
                 'excludes' => $excludes,
             ];
         }
 
         if ($options['db']) {
-            $databaseComponentPath = $this->getDatabaseComponentPath($options);
             $archiveComponents[] = [
                 'name' => 'database',
-                'path' => $databaseComponentPath,
+                'path' => $this->getDatabaseComponentPath($options),
             ];
         }
 
