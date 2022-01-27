@@ -94,13 +94,16 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
         if ($options['code']) {
              $codeComponentPath = $this->getCodeComponentComponentPath();
 
-             $excludes = $this->getExcludesByPaths([
-                 '.git',
-                 'vendor',
-                 'files',
-                 'web' . DIRECTORY_SEPARATOR . 'core',
-                 'web' . DIRECTORY_SEPARATOR . 'sites' . DIRECTORY_SEPARATOR . 'default' . DIRECTORY_SEPARATOR . 'files',
-             ]);
+             $excludes = array_merge($this->getExcludesByPaths([
+                     '.git',
+                     'vendor',
+                     'files',
+                ]),
+                [
+                    // @todo: DIRECTORY_SEPARATOR
+                    '#^(web\/(?!modules|themes|profiles)|web\/modules\/contrib$|web\/themes\/contrib$|web\/profiles\/contrib$).*#',
+                ]
+             );
              if ($options['exclude-code-paths']) {
                  $excludes = array_merge(
                      $excludes,
