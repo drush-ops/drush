@@ -98,11 +98,9 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
                      '.git',
                      'vendor',
                      'files',
+                     'web' . DIRECTORY_SEPARATOR . 'sites' . DIRECTORY_SEPARATOR . 'default' . DIRECTORY_SEPARATOR . 'files',
                 ]),
-                [
-                    // @todo: DIRECTORY_SEPARATOR
-                    '#^(web\/(?!modules|themes|profiles)|web\/modules\/contrib$|web\/themes\/contrib$|web\/profiles\/contrib$).*#',
-                ]
+                $this->getDrupalContribExcludes()
              );
              if ($options['exclude-code-paths']) {
                  $excludes = array_merge(
@@ -348,7 +346,7 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
     }
 
     /**
-     * Returns the list of PCRE regular expressions to match paths.
+     * Returns the list of regular expressions to match paths.
      *
      * @param array $paths
      *
@@ -362,5 +360,21 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
         }
 
         return $regexps;
+    }
+
+    /**
+     * Returns the list of regular expressions to match Drupal contrib projects paths: modules, themes and profiles.
+     *
+     * @return array
+     */
+    private function getDrupalContribExcludes(): array
+    {
+        $excludes = [
+            '#^(web\/(?!modules|themes|profiles|sites)|web\/modules\/contrib$|web\/sites\/all\/modules\/contrib$).*#',
+            '#^(web\/(?!modules|themes|profiles|sites)|web\/themes\/contrib$|web\/sites\/all\/themes\/contrib$).*#',
+            '#^(web\/(?!modules|themes|profiles|sites)|web\/profiles\/contrib$|web\/sites\/all\/profiles\/contrib$).*#',
+        ];
+
+        return str_replace('/', DIRECTORY_SEPARATOR, $excludes);
     }
 }
