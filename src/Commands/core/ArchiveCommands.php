@@ -94,6 +94,8 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
         if ($options['code']) {
              $codeComponentPath = $this->getCodeComponentComponentPath();
 
+             // @todo: detect database creds are not in sites/*/settings.php
+
              $excludes = array_merge($this->getExcludesByPaths([
                      '.git',
                      'vendor',
@@ -178,6 +180,7 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
                     ),
                     function ($file) use ($excludes, $path) {
                         $localFileName = str_replace($path . DIRECTORY_SEPARATOR, '', $file);
+
                         foreach ($excludes as $exclude) {
                             if (preg_match($exclude, $localFileName)) {
                                 $this->logger()->info(dt(
@@ -188,6 +191,8 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
                                 return false;
                             }
                         }
+
+                        $this->validateSensitiveData($file, $localFileName);
 
                         return true;
                     }
@@ -378,5 +383,41 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
         ];
 
         return str_replace('/', DIRECTORY_SEPARATOR, $excludes);
+    }
+
+    /**
+     * Validates files for sensitive data (database connection).
+     *
+     * Prevents creating a code archive containing a web/sites/@/settings.php file with database connection settings
+     * defined.
+     *
+     * @param string $file
+     *   The absolute path to the file.
+     * @param string $localFileName
+     *   The local (project-base) path to the file.
+     *
+     * @throws \Exception
+     */
+    private function validateSensitiveData(string $file, string $localFileName): void
+    {
+        $regexp = str_replace('/', DIRECTORY_SEPARATOR, '#^web\/sites\/.*\/settings\.php$#');
+        if (!preg_match($regexp, $localFileName)) {
+            return;
+        }
+
+        if (!@include($file)) {
+            throw new Exception(sprintf('Failed opening %s for validation', $file));
+        }
+
+        /** @var array $databases */
+        if ($databases) {
+            throw new Exception(
+                sprintf(
+                    'Found database connection settings in %s. It is risky to include them to the archive. Please move the database connection settings into setting.local.php file or exclude them with "--exclude-code-paths=%s".',
+                    $localFileName,
+                    $localFileName
+                )
+            );
+        }
     }
 }
