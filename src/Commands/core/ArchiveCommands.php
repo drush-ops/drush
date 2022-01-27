@@ -100,7 +100,7 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
                      'files',
                      'web' . DIRECTORY_SEPARATOR . 'sites' . DIRECTORY_SEPARATOR . 'default' . DIRECTORY_SEPARATOR . 'files',
                 ]),
-                $this->getDrupalContribExcludes()
+                $this->getDrupalExcludes()
              );
              if ($options['exclude-code-paths']) {
                  $excludes = array_merge(
@@ -363,16 +363,18 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
     }
 
     /**
-     * Returns the list of regular expressions to match Drupal contrib projects paths: modules, themes and profiles.
+     * Returns the list of regular expressions to match Drupal contrib projects paths (modules, themes and profiles)
+     * and sites/[site]/settings.local.php files.
      *
      * @return array
      */
-    private function getDrupalContribExcludes(): array
+    private function getDrupalExcludes(): array
     {
         $excludes = [
             '#^(web\/(?!modules|themes|profiles|sites)|web\/modules\/contrib$|web\/sites\/all\/modules\/contrib$).*#',
             '#^(web\/(?!modules|themes|profiles|sites)|web\/themes\/contrib$|web\/sites\/all\/themes\/contrib$).*#',
             '#^(web\/(?!modules|themes|profiles|sites)|web\/profiles\/contrib$|web\/sites\/all\/profiles\/contrib$).*#',
+            '#web\/sites\/.*\/settings\.local\.php$#'
         ];
 
         return str_replace('/', DIRECTORY_SEPARATOR, $excludes);
