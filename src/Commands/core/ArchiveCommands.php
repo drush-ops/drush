@@ -292,10 +292,12 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
      *
      * @return string
      *  The full path to the site's project directory.
+     *
+     * @throws \Exception
      */
     private function getCodeComponentPath(): string
     {
-        return dirname(Drush::bootstrapManager()->getRoot());
+        return dirname($this->siteAliasManager()->getSelf()->root());
     }
 
     /**
