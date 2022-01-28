@@ -161,7 +161,7 @@ class StatusCommands extends DrushCommands implements SiteAliasManagerAwareInter
         // Store the paths into the '%paths' index; this will be
         // used by other code, but will not be included in the default output
         // of the drush status command.
-        $status_table['%paths'] = array_map('Webmozart\PathUtil\Path::canonicalize', $paths);
+        $status_table['%paths'] = array_map('Webmozart\PathUtil\Path::canonicalize', array_filter($paths));
 
         return $status_table;
     }
