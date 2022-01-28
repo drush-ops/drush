@@ -45,6 +45,25 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
     /**
      * Backup your code, files, and database into a single file.
      *
+     * The following directories are excluded from a code archive:
+     *  - .git
+     *  - vendor
+     *  - web/site directory except for web/modules, web/themes, web/profiles and web/sites directories but still excluding the following subdirectories:
+     *    -- web/modules/contrib
+     *    -- web/themes/contrib
+     *    -- web/profiles/contrib
+     *    -- web/sites/@/modules/contrib
+     *    -- web/sites/@/themes/contrib
+     *    -- web/sites/@/profiles/contrib
+     *    -- web/sites/default/files
+     *    -- web/sites/@/settings.local.php
+     *
+     * The following directories are excluded from a file archive:
+     * - css
+     * - js
+     * - styles
+     * - php
+     *
      * @command archive:dump
      * @aliases ard
      *
