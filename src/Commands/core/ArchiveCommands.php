@@ -318,7 +318,7 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
     private function validateSite(): void
     {
         if (!is_file($this->getProjectPath() . DIRECTORY_SEPARATOR . 'composer.json')
-            || is_dir($this->getProjectPath() . self::ARCHIVE_DIR_NAME . 'web')) {
+            || !is_dir($this->getProjectPath() . self::ARCHIVE_DIR_NAME . 'web')) {
             throw new Exception('Not a Composer-managed site with "web" docroot.');
         }
     }
