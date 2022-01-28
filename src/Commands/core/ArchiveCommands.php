@@ -78,7 +78,7 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
      * @option generator The generator name to store in the MANIFEST.yml file. The default is "Drush archive-dump".
      * @option generatorversion The generator version number to store in the MANIFEST file. The default is Drush version.
      * @option exclude-code-paths Comma-separated list of paths to exclude from the code archive.
-     * 
+     *
      * @optionset_sql
      * @optionset_table_selection
      *
@@ -113,26 +113,29 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
         $archiveComponents = [];
 
         if ($options['code']) {
-             $excludes = array_merge($this->getExcludesByPaths([
-                     '.git',
-                     'vendor',
-                     'files',
-                     'web' . DIRECTORY_SEPARATOR . 'sites' . DIRECTORY_SEPARATOR . 'default' . DIRECTORY_SEPARATOR . 'files',
-                ]),
+            $excludes = array_merge(
+                $this->getExcludesByPaths(
+                    [
+                        '.git',
+                        'vendor',
+                        'files',
+                        'web' . DIRECTORY_SEPARATOR . 'sites' . DIRECTORY_SEPARATOR . 'default' . DIRECTORY_SEPARATOR . 'files',
+                    ]
+                ),
                 $this->getDrupalExcludes()
-             );
-             if ($options['exclude-code-paths']) {
-                 $excludes = array_merge(
-                     $excludes,
-                     $this->getExcludesByPaths(explode(',', $options['exclude-code-paths']))
-                 );
-             }
+            );
+            if ($options['exclude-code-paths']) {
+                $excludes = array_merge(
+                    $excludes,
+                    $this->getExcludesByPaths(explode(',', $options['exclude-code-paths']))
+                );
+            }
 
-             $archiveComponents[] = [
-                 'name' => 'code',
-                 'path' => $this->getProjectPath(),
-                 'excludes' => $excludes,
-             ];
+            $archiveComponents[] = [
+                'name' => 'code',
+                'path' => $this->getProjectPath(),
+                'excludes' => $excludes,
+            ];
         }
 
         if ($options['files']) {
@@ -317,8 +320,10 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
      */
     private function validateSite(): void
     {
-        if (!is_file($this->getProjectPath() . DIRECTORY_SEPARATOR . 'composer.json')
-            || !is_dir($this->getProjectPath() . self::ARCHIVE_DIR_NAME . 'web')) {
+        if (
+            !is_file($this->getProjectPath() . DIRECTORY_SEPARATOR . 'composer.json')
+            || !is_dir($this->getProjectPath() . self::ARCHIVE_DIR_NAME . 'web')
+        ) {
             throw new Exception('Not a Composer-managed site with "web" docroot.');
         }
     }
