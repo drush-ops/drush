@@ -82,6 +82,8 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
         'exclude-code-paths' => null,
     ]): void
     {
+        $this->validateSite();
+
         $this->archiveDir = implode([FsUtils::prepareBackupDir('archives'), DIRECTORY_SEPARATOR, self::ARCHIVE_DIR_NAME]);
         mkdir($this->archiveDir);
 
@@ -285,6 +287,21 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
         $this->logger()->info(dt('Manifest file has been created: !path', ['!path' => $manifestFilePath]));
 
         return $manifestFilePath;
+    }
+
+    /**
+     * Validates the requirements for the site.
+     *
+     * The site must be a Composer-managed one with "web" docroot.
+     *
+     * @throws \Exception
+     */
+    private function validateSite(): void
+    {
+        if (!is_file($this->getProjectPath() . DIRECTORY_SEPARATOR . 'composer.json')
+            || is_dir($this->getProjectPath() . self::ARCHIVE_DIR_NAME . 'web')) {
+            throw new Exception('Not a Composer-managed site with "web" docroot.');
+        }
     }
 
     /**
