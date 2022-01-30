@@ -40,6 +40,9 @@ class RemoteCommandProxy extends Command
             InputArgument::IS_ARRAY,
             'Proxy for command arguments'
         );
+
+        // The above should be enough but isn't in Drupal 10.
+        $this->ignoreValidationErrors();
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): void
