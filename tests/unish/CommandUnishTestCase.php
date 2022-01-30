@@ -71,7 +71,7 @@ abstract class CommandUnishTestCase extends UnishTestCase
     public function drushBackground($command, array $args = [], array $options = [], $site_specification = null, $cd = null, $suffix = null, $env = [])
     {
         list($cmd, ) = $this->prepareDrushCommand($command, $args, $options, $site_specification, $suffix);
-        return $this->startExecute($cmd, $cd, $env);
+        return $this->startExecute(explode(' ', $cmd), $cd, $env);
     }
 
     /**
@@ -191,7 +191,8 @@ abstract class CommandUnishTestCase extends UnishTestCase
         if ($hide_stderr) {
             $cmd[] = '2>' . $this->bitBucket();
         }
-        $exec = array_filter($cmd, 'strlen'); // Remove NULLs
+        // Remove NULLs
+        $exec = @array_filter($cmd, 'strlen');
         $cmd = implode(' ', $exec);
         return [$cmd, $coverage_file];
     }

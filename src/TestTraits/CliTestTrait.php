@@ -79,7 +79,7 @@ trait CliTestTrait
     /**
      * Run a command and return the process without waiting for it to finish.
      *
-     * @param string $command
+     * @param string|array $command
      *   The actual command line to run.
      * @param sting cd
      *   The directory to run the command in.
@@ -88,12 +88,11 @@ trait CliTestTrait
      * @param string $input
      *   A string representing the STDIN that is piped to the command.
      */
-    public function startExecute(string $command, $cd = null, $env = null, $input = null)
+    public function startExecute($command, $cd = null, $env = null, $input = null)
     {
         try {
             // Process uses a default timeout of 60 seconds, set it to 0 (none).
             $this->process = new Process($command, $cd, $env, $input, 0);
-            $this->process->inheritEnvironmentVariables(true);
             if ($this->timeout) {
                 $this->process->setTimeout($this->timeout)
                 ->setIdleTimeout($this->idleTimeout);
