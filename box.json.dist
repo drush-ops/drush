@@ -6,7 +6,6 @@
   "directories": ["commands", "includes", "lib", "src", "misc"],
   "blacklist": [
     "windrush_build/",
-    "Internal/Symfony/",
     "TestTraits/"
   ],
   "files": ["drush.complete.sh", "drush.info", "drush.launcher", "drush.php"],
