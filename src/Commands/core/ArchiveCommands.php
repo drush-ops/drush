@@ -19,6 +19,9 @@ use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use Symfony\Component\Yaml\Yaml;
 
+/**
+ * Class ArchiveCommands.
+ */
 class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInterface
 {
     use SiteAliasManagerAwareTrait;
@@ -27,6 +30,8 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
      * @var string
      */
     private string $archiveDir;
+
+    private const WEB_DOCROOT = 'web';
 
     private const CODE_ARCHIVE_FILE_NAME = 'code.tar';
 
@@ -45,20 +50,26 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
     /**
      * Backup your code, files, and database into a single file.
      *
-     * The following directories are excluded from a code archive:
-     *  - .git
-     *  - vendor
-     *  - web/site directory except for web/modules, web/themes, web/profiles and web/sites directories but still excluding the following subdirectories:
-     *    -- web/modules/contrib
-     *    -- web/themes/contrib
-     *    -- web/profiles/contrib
-     *    -- web/sites/@/modules/contrib
-     *    -- web/sites/@/themes/contrib
-     *    -- web/sites/@/profiles/contrib
-     *    -- web/sites/default/files
-     *    -- web/sites/@/settings.local.php
+     * The following root-level directories would be excluded from a code archive:
+     *  - "[docroot]/.git"
+     *  - "[docroot]/vendor"
+     *  - "[docroot]/modules/contrib"
+     *  - "[docroot]/themes/contrib"
+     *  - "[docroot]/profiles/contrib"
+     *  - "[docroot]/sites/@/modules/contrib"
+     *  - "[docroot]/sites/@/themes/contrib"
+     *  - "[docroot]/sites/@/profiles/contrib"
+     *  - "[docroot]/sites/@/files"
+     *  - "[docroot]/sites/@/settings.local.php"
      *
-     * The following directories are excluded from a file archive:
+     * In addition, the following directories would be excluded from code archive of a "web" docroot-based site:
+     *  - "web" directory contents except for the following subdirectories:
+     *  -- "web/modules"
+     *  -- "web/themes"
+     *  -- "web/profiles"
+     *  -- "web/sites"
+     *
+     * The following directories would be excluded from a file archive:
      * - css
      * - js
      * - styles
@@ -101,8 +112,6 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
         'exclude-code-paths' => null,
     ]): void
     {
-        $this->validateSite();
-
         $this->archiveDir = implode([FsUtils::prepareBackupDir('archives'), DIRECTORY_SEPARATOR, self::ARCHIVE_DIR_NAME]);
         mkdir($this->archiveDir);
 
@@ -113,21 +122,25 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
         $archiveComponents = [];
 
         if ($options['code']) {
+            $excludes = $options['exclude-code-paths']
+                ? $this->getExcludesByPaths(explode(',', $options['exclude-code-paths']))
+                : [];
+
             $excludes = array_merge(
+                $excludes,
                 $this->getExcludesByPaths(
                     [
                         '.git',
                         'vendor',
-                        'files',
-                        'web' . DIRECTORY_SEPARATOR . 'sites' . DIRECTORY_SEPARATOR . 'default' . DIRECTORY_SEPARATOR . 'files',
                     ]
                 ),
                 $this->getDrupalExcludes()
             );
-            if ($options['exclude-code-paths']) {
+
+            if ($this->isWebRootSite()) {
                 $excludes = array_merge(
                     $excludes,
-                    $this->getExcludesByPaths(explode(',', $options['exclude-code-paths']))
+                    $this->getWebDocrootDrupalExcludes()
                 );
             }
 
@@ -312,20 +325,15 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
     }
 
     /**
-     * Validates the requirements for the site.
+     * Returns TRUE is the site is a "web" docroot site.
      *
-     * The site must be a Composer-managed one with "web" docroot.
+     * @return bool
      *
      * @throws \Exception
      */
-    private function validateSite(): void
+    private function isWebRootSite(): bool
     {
-        if (
-            !is_file($this->getProjectPath() . DIRECTORY_SEPARATOR . 'composer.json')
-            || !is_dir($this->getProjectPath() . self::ARCHIVE_DIR_NAME . 'web')
-        ) {
-            throw new Exception('Not a Composer-managed site with "web" docroot.');
-        }
+        return self::WEB_DOCROOT === basename($this->siteAliasManager()->getSelf()->root());
     }
 
     /**
@@ -338,7 +346,21 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
      */
     private function getProjectPath(): string
     {
-        return dirname($this->siteAliasManager()->getSelf()->root());
+        return $this->isWebRootSite()
+            ? dirname($this->siteAliasManager()->getSelf()->root())
+            : $this->siteAliasManager()->getSelf()->root();
+    }
+
+    /**
+     * Returns site's docroot name.
+     *
+     * @return string
+     *
+     * @throws \Exception
+     */
+    private function getDocrootName(): string
+    {
+        return $this->isWebRootSite() ? self::WEB_DOCROOT : '';
     }
 
     /**
@@ -405,18 +427,55 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
     }
 
     /**
-     * Returns the list of regular expressions to match Drupal contrib projects paths (modules, themes and profiles)
-     * and sites/[site]/settings.local.php files.
+     * Returns the list of regular expressions to match Drupal files paths and sites/@/settings.local.php files.
      *
      * @return array
+     *
+     * @throws \Exception
      */
     private function getDrupalExcludes(): array
     {
         $excludes = [
-            '#^(web\/(?!modules|themes|profiles|sites)|web\/modules\/contrib$|web\/sites\/all\/modules\/contrib$).*#',
-            '#^(web\/(?!modules|themes|profiles|sites)|web\/themes\/contrib$|web\/sites\/all\/themes\/contrib$).*#',
-            '#^(web\/(?!modules|themes|profiles|sites)|web\/profiles\/contrib$|web\/sites\/all\/profiles\/contrib$).*#',
-            '#web\/sites\/.*\/settings\.local\.php$#'
+            str_replace(
+                '%docroot%',
+                $this->getDocrootName(),
+                '#%docroot%\/sites\/.+\/files$#'
+            ),
+            str_replace(
+                '%docroot%',
+                $this->getDocrootName(),
+                '#%docroot%\/sites\/.+\/settings\.local\.php$#'
+            ),
+        ];
+
+        return str_replace('/', DIRECTORY_SEPARATOR, $excludes);
+    }
+
+    /**
+     * Returns the list of regular expressions to match Drupal contrib projects paths (modules, themes and profiles).
+     *
+     * @return array
+     *
+     * @throws \Exception
+     */
+    private function getWebDocrootDrupalExcludes(): array
+    {
+        $excludes = [
+            str_replace(
+                '%docroot%',
+                $this->getDocrootName(),
+                '#^(%docroot%\/(?!modules|themes|profiles|sites)|%docroot%\/modules\/contrib$|%docroot%\/sites\/.+\/modules\/contrib$)#'
+            ),
+            str_replace(
+                '%docroot%',
+                $this->getDocrootName(),
+                '#^(%docroot%\/(?!modules|themes|profiles|sites)|%docroot%\/themes\/contrib$|%docroot%\/sites\/.+\/themes\/contrib$)#'
+            ),
+            str_replace(
+                '%docroot%',
+                $this->getDocrootName(),
+                '#^(%docroot%\/(?!modules|themes|profiles|sites)|%docroot%\/profiles\/contrib$|%docroot%\/sites\/.+\/profiles\/contrib$)#'
+            ),
         ];
 
         return str_replace('/', DIRECTORY_SEPARATOR, $excludes);
@@ -425,7 +484,7 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
     /**
      * Validates files for sensitive data (database connection).
      *
-     * Prevents creating a code archive containing a web/sites/@/settings.php file with database connection settings
+     * Prevents creating a code archive containing a [docroot]/sites/@/settings.php file with database connection settings
      * defined.
      *
      * @param string $file
@@ -437,7 +496,11 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
      */
     private function validateSensitiveData(string $file, string $localFileName): void
     {
-        $regexp = str_replace('/', DIRECTORY_SEPARATOR, '#^web\/sites\/.*\/settings\.php$#');
+        $regexp = str_replace(
+            '/',
+            DIRECTORY_SEPARATOR,
+            sprintf('#^%s\/sites\/.*\/settings\.php$#', $this->getDocrootName())
+        );
         if (!preg_match($regexp, $localFileName)) {
             return;
         }
