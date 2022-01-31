@@ -85,6 +85,12 @@ class PmCommands extends DrushCommands
             $this->output()->writeln(dt('The following module(s) will be enabled: !list', $todo_str));
             return;
         } elseif (array_values($todo) !== $modules) {
+            if(!in_array($modules, $todo_str)) {
+                $this->output()->writeln(dt('Requested module is lready enabled: !list', ['!list' => implode(', ', $modules)]));
+                foreach($todo_str as $todo_module) {
+                    $this->enable([$todo_module]);
+                }
+            }
             $this->output()->writeln(dt('The following module(s) will be enabled: !list', $todo_str));
             if (!$this->io()->confirm(dt('Do you want to continue?'))) {
                 throw new UserAbortException();
