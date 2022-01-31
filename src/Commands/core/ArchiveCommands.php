@@ -427,6 +427,18 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
     }
 
     /**
+     * Returns docroot directory name with trailing escaped slash for a "web" docroot site for use in regular expressions, otherwise - empty string.
+     *
+     * @return string
+     *
+     * @throws \Exception
+     */
+    private function getDocrootRegexpPrefix(): string
+    {
+        return $this->getDocrootName() ? $this->getDocrootName() . '\/' : '';
+    }
+
+    /**
      * Returns the list of regular expressions to match Drupal files paths and sites/@/settings.local.php files.
      *
      * @return array
@@ -438,13 +450,13 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
         $excludes = [
             str_replace(
                 '%docroot%',
-                $this->getDocrootName(),
-                '#%docroot%\/sites\/.+\/files$#'
+                $this->getDocrootRegexpPrefix(),
+                '#^%docroot%sites\/.+\/files$#'
             ),
             str_replace(
                 '%docroot%',
-                $this->getDocrootName(),
-                '#%docroot%\/sites\/.+\/settings\.local\.php$#'
+                $this->getDocrootRegexpPrefix(),
+                '#^%docroot%sites\/.+\/settings\.local\.php$#'
             ),
         ];
 
@@ -463,18 +475,18 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
         $excludes = [
             str_replace(
                 '%docroot%',
-                $this->getDocrootName(),
-                '#^(%docroot%\/(?!modules|themes|profiles|sites)|%docroot%\/modules\/contrib$|%docroot%\/sites\/.+\/modules\/contrib$)#'
+                $this->getDocrootRegexpPrefix(),
+                '#^(%docroot%(?!modules|themes|profiles|sites)|%docroot%modules\/contrib$|%docroot%sites\/.+\/modules\/contrib$)#'
             ),
             str_replace(
                 '%docroot%',
-                $this->getDocrootName(),
-                '#^(%docroot%\/(?!modules|themes|profiles|sites)|%docroot%\/themes\/contrib$|%docroot%\/sites\/.+\/themes\/contrib$)#'
+                $this->getDocrootRegexpPrefix(),
+                '#^(%docroot%(?!modules|themes|profiles|sites)|%docroot%themes\/contrib$|%docroot%sites\/.+\/themes\/contrib$)#'
             ),
             str_replace(
                 '%docroot%',
-                $this->getDocrootName(),
-                '#^(%docroot%\/(?!modules|themes|profiles|sites)|%docroot%\/profiles\/contrib$|%docroot%\/sites\/.+\/profiles\/contrib$)#'
+                $this->getDocrootRegexpPrefix(),
+                '#^(%docroot%(?!modules|themes|profiles|sites)|%docroot%profiles\/contrib$|%docroot%sites\/.+\/profiles\/contrib$)#'
             ),
         ];
 
@@ -499,7 +511,7 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
         $regexp = str_replace(
             '/',
             DIRECTORY_SEPARATOR,
-            sprintf('#^%s\/sites\/.*\/settings\.php$#', $this->getDocrootName())
+            sprintf('#^%ssites\/.*\/settings\.php$#', $this->getDocrootRegexpPrefix())
         );
         if (!preg_match($regexp, $localFileName)) {
             return;
