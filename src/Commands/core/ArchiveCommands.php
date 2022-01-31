@@ -60,7 +60,7 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
      *  - "[docroot]/sites/@/themes/contrib"
      *  - "[docroot]/sites/@/profiles/contrib"
      *  - "[docroot]/sites/@/files"
-     *  - "[docroot]/sites/@/settings.local.php"
+     *  - "[docroot]/sites/@/settings.@.php"
      *
      * In addition, the following directories would be excluded from code archive of a "web" docroot-based site:
      *  - "web" directory contents except for the following subdirectories:
@@ -439,7 +439,7 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
     }
 
     /**
-     * Returns the list of regular expressions to match Drupal files paths and sites/@/settings.local.php files.
+     * Returns the list of regular expressions to match Drupal files paths and sites/@/settings.@.php files.
      *
      * @return array
      *
@@ -456,7 +456,7 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
             str_replace(
                 '%docroot%',
                 $this->getDocrootRegexpPrefix(),
-                '#^%docroot%sites\/.+\/settings\.local\.php$#'
+                '#^%docroot%sites\/.+\/settings\..+\.php$#'
             ),
         ];
 
@@ -525,7 +525,7 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
         if ($databases) {
             throw new Exception(
                 sprintf(
-                    'Found database connection settings in %s. It is risky to include them to the archive. Please move the database connection settings into setting.local.php file or exclude them with "--exclude-code-paths=%s".',
+                    'Found database connection settings in %s. It is risky to include them to the archive. Please move the database connection settings into a setting.*.php file or exclude them from the archive with "--exclude-code-paths=%s".',
                     $localFileName,
                     $localFileName
                 )
