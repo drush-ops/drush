@@ -5,6 +5,7 @@ namespace Drush\Symfony;
 use Symfony\Component\Console\Formatter\OutputFormatterInterface;
 use Symfony\Component\Console\Output\BufferedOutput;
 use Symfony\Component\Console\Output\ConsoleOutputInterface;
+use Symfony\Component\Console\Output\ConsoleSectionOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
@@ -13,6 +14,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 class BufferedConsoleOutput extends BufferedOutput implements ConsoleOutputInterface
 {
     protected $stderr;
+    private array $consoleSectionOutputs = [];
 
     /**
      * @param int                           $verbosity The verbosity level (one of the VERBOSITY constants in OutputInterface)
@@ -40,5 +42,10 @@ class BufferedConsoleOutput extends BufferedOutput implements ConsoleOutputInter
     public function setErrorOutput(OutputInterface $error): void
     {
         $this->stderr = $error;
+    }
+
+    public function section(): ConsoleSectionOutput
+    {
+        // @todo
     }
 }
