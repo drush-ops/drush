@@ -167,7 +167,7 @@ class EntityCommands extends DrushCommands
     protected function getQuery(string $entity_type, ?string $ids, array $options): QueryInterface
     {
         $storage = $this->entityTypeManager->getStorage($entity_type);
-        $query = $storage->getQuery();
+        $query = $storage->getQuery()->accessCheck(false);
         if ($ids = StringUtils::csvToArray((string) $ids)) {
             $idKey = $this->entityTypeManager->getDefinition($entity_type)->getKey('id');
             $query = $query->condition($idKey, $ids, 'IN');
