@@ -86,7 +86,7 @@ class PmCommands extends DrushCommands
             return;
         } elseif (array_values($todo) !== $modules) {
             if(!in_array($modules, $todo_str)) {
-                $this->output()->writeln(dt('Requested module is lready enabled: !list', ['!list' => implode(', ', $modules)]));
+                $this->output()->writeln(dt('Requested module is already enabled: !list', ['!list' => implode(', ', $modules)]));
                 foreach($todo_str as $todo_module) {
                     $this->enable([$todo_module]);
                 }
