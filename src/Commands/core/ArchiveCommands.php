@@ -171,7 +171,7 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
 
             $archiveComponents[] = [
                 'name' => 'code',
-                'path' => $this->getProjectPath(),
+                'path' => $this->getCodeComponentPath(),
                 'excludes' => $excludes,
             ];
         }
@@ -361,21 +361,6 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
     }
 
     /**
-     * Returns the path to the site's project directory.
-     *
-     * @return string
-     *  The full path to the site's project directory.
-     *
-     * @throws \Exception
-     */
-    private function getProjectPath(): string
-    {
-        return $this->isWebRootSite()
-            ? dirname($this->siteAliasManager()->getSelf()->root())
-            : $this->siteAliasManager()->getSelf()->root();
-    }
-
-    /**
      * Returns site's docroot name.
      *
      * @return string
@@ -385,6 +370,32 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
     private function getDocrootName(): string
     {
         return $this->isWebRootSite() ? self::WEB_DOCROOT : '';
+    }
+
+    /**
+     * Copies code into a temporary archive directory and returns the absolute path.
+     *
+     * @return string
+     *  The full path to the code archive component directory.
+     *
+     * @throws \Exception
+     */
+    private function getCodeComponentPath(): string
+    {
+        $codePath = $this->isWebRootSite()
+            ? dirname($this->siteAliasManager()->getSelf()->root())
+            : $this->siteAliasManager()->getSelf()->root();
+        $codeArchiveComponentPath = $this->archiveDir . DIRECTORY_SEPARATOR . self::CODE_ARCHIVE_ROOT_DIR;
+
+        $this->logger()->info(
+            dt(
+                'Copying code from !from_path to !to_path...',
+                ['!from_path' => $codePath, '!to_path' => $codeArchiveComponentPath]
+            )
+        );
+        $this->filesystem->mirror($codePath, $codeArchiveComponentPath);
+
+        return $codeArchiveComponentPath;
     }
 
     /**
@@ -402,14 +413,14 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
         $pathEvaluator->evaluate($evaluatedPath);
 
         $drupalFilesPath = $evaluatedPath->fullyQualifiedPath();
-        $drupalFilesArchivePath = $this->archiveDir . DIRECTORY_SEPARATOR . self::DRUPAL_FILES_ARCHIVE_ROOT_DIR;
+        $drupalFilesArchiveComponentPath = $this->archiveDir . DIRECTORY_SEPARATOR . self::DRUPAL_FILES_ARCHIVE_ROOT_DIR;
         $this->logger()->info(
             dt(
                 'Copying Drupal files from !from_path to !to_path...',
-                ['!from_path' => $drupalFilesPath, '!to_path' => $drupalFilesArchivePath]
+                ['!from_path' => $drupalFilesPath, '!to_path' => $drupalFilesArchiveComponentPath]
             )
         );
-        $this->filesystem->mirror($drupalFilesPath, $drupalFilesArchivePath);
+        $this->filesystem->mirror($drupalFilesPath, $drupalFilesArchiveComponentPath);
 
         return $this->archiveDir . DIRECTORY_SEPARATOR . 'files';
     }
