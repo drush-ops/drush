@@ -21,6 +21,7 @@ use Symfony\Component\Filesystem\Exception\IOException;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Yaml\Yaml;
 use Traversable;
+use Webmozart\PathUtil\Path;
 
 /**
  * Class ArchiveCommands.
@@ -68,9 +69,7 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
 
         $this->filesystem = new Filesystem();
 
-        $this->archiveDir = implode(
-            [FsUtils::prepareBackupDir(self::ARCHIVES_DIR_NAME), DIRECTORY_SEPARATOR, self::ARCHIVE_SUBDIR_NAME]
-        );
+        $this->archiveDir = Path::join(FsUtils::prepareBackupDir(self::ARCHIVES_DIR_NAME), self::ARCHIVE_SUBDIR_NAME);
         $this->filesystem->mkdir($this->archiveDir);
 
         register_shutdown_function([$this, 'cleanUp']);
@@ -188,7 +187,7 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
         }
 
         $this->logger()->info(dt('Creating archive...'));
-        $archivePath = implode([dirname($this->archiveDir), DIRECTORY_SEPARATOR, self::ARCHIVE_FILE_NAME]);
+        $archivePath = Path::join(dirname($this->archiveDir), self::ARCHIVE_FILE_NAME);
 
         $archive = new PharData($archivePath);
         $archive->buildFromDirectory($this->archiveDir);
@@ -259,7 +258,7 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
             'generator' => $options['generator'] ?? 'Drush archive:dump',
             'generatorversion' => $options['generatorversion'] ?? Drush::getVersion(),
         ];
-        $manifestFilePath = $this->archiveDir . DIRECTORY_SEPARATOR . self::MANIFEST_FILE_NAME;
+        $manifestFilePath = Path::join($this->archiveDir, self::MANIFEST_FILE_NAME);
         file_put_contents(
             $manifestFilePath,
             Yaml::dump($manifest)
@@ -308,11 +307,11 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
         $codePath = $this->isWebRootSite()
             ? dirname($this->siteAliasManager()->getSelf()->root())
             : $this->siteAliasManager()->getSelf()->root();
-        $codeArchiveComponentPath = $this->archiveDir . DIRECTORY_SEPARATOR . self::COMPONENT_CODE;
+        $codeArchiveComponentPath = Path::join($this->archiveDir, self::COMPONENT_CODE);
 
         $this->logger()->info(
             dt(
-                'Copying code from !from_path to !to_path...',
+                'Copying code files from !from_path to !to_path...',
                 ['!from_path' => $codePath, '!to_path' => $codeArchiveComponentPath]
             )
         );
@@ -362,7 +361,7 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
         $pathEvaluator->evaluate($evaluatedPath);
 
         $drupalFilesPath = $evaluatedPath->fullyQualifiedPath();
-        $drupalFilesArchiveComponentPath = $this->archiveDir . DIRECTORY_SEPARATOR . self::COMPONENT_FILES;
+        $drupalFilesArchiveComponentPath = Path::join($this->archiveDir, self::COMPONENT_FILES);
         $this->logger()->info(
             dt(
                 'Copying Drupal files from !from_path to !to_path...',
@@ -445,10 +444,10 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
     private function getDatabaseComponentPath(array $options): string
     {
         $this->logger()->info(dt('Creating database SQL dump file...'));
-        $databaseArchiveDir = implode([$this->archiveDir, DIRECTORY_SEPARATOR, self::COMPONENT_DATABASE]);
+        $databaseArchiveDir = Path::join($this->archiveDir, self::COMPONENT_DATABASE);
         $this->filesystem->mkdir($databaseArchiveDir);
 
-        $options['result-file'] = implode([$databaseArchiveDir, DIRECTORY_SEPARATOR, self::SQL_DUMP_FILE_NAME]);
+        $options['result-file'] = Path::join($databaseArchiveDir, self::SQL_DUMP_FILE_NAME);
         $sql = SqlBase::create($options);
         if (false === $sql->dump()) {
             throw new Exception('Unable to dump database. Rerun with --debug to see any error message.');
@@ -496,20 +495,10 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
      */
     private function getDrupalExcludes(): array
     {
-        $excludes = [
-            str_replace(
-                '%docroot%',
-                $this->getDocrootRegexpPrefix(),
-                '#^%docroot%sites\/.+\/files$#'
-            ),
-            str_replace(
-                '%docroot%',
-                $this->getDocrootRegexpPrefix(),
-                '#^%docroot%sites\/.+\/settings\..+\.php$#'
-            ),
+        return [
+            '#^' . $this->getDocrootRegexpPrefix() . 'sites\/.+\/files$#',
+            '#^' . $this->getDocrootRegexpPrefix() . 'sites\/.+\/settings\..+\.php$#',
         ];
-
-        return str_replace('/', DIRECTORY_SEPARATOR, $excludes);
     }
 
     /**
@@ -521,7 +510,7 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
      */
     private function getWebDocrootDrupalExcludes(): array
     {
-        $excludes = [
+        return [
             str_replace(
                 '%docroot%',
                 $this->getDocrootRegexpPrefix(),
@@ -538,8 +527,6 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
                 '#^(%docroot%(?!modules|themes|profiles|sites)|%docroot%profiles\/contrib$|%docroot%sites\/.+\/profiles\/contrib$)#'
             ),
         ];
-
-        return str_replace('/', DIRECTORY_SEPARATOR, $excludes);
     }
 
     /**
@@ -557,11 +544,7 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
      */
     private function validateSensitiveData(string $file, string $localFileName): void
     {
-        $regexp = str_replace(
-            '/',
-            DIRECTORY_SEPARATOR,
-            sprintf('#^%ssites\/.*\/settings\.php$#', $this->getDocrootRegexpPrefix())
-        );
+        $regexp = '#^' . $this->getDocrootRegexpPrefix() . 'sites\/.*\/settings\.php$#';
         if (!preg_match($regexp, $localFileName)) {
             return;
         }
