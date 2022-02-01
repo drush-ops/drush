@@ -318,12 +318,12 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
         );
 
         $excludes = $options['exclude-code-paths']
-            ? $this->getExcludesByPaths(explode(',', $options['exclude-code-paths']))
+            ? $this->getRegexpsForPaths(explode(',', $options['exclude-code-paths']))
             : [];
 
         $excludes = array_merge(
             $excludes,
-            $this->getExcludesByPaths(
+            $this->getRegexpsForPaths(
                 [
                     '.git',
                     'vendor',
@@ -371,7 +371,7 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
             )
         );
 
-        $excludes = $this->getExcludesByPaths([
+        $excludes = $this->getRegexpsForPaths([
             'css',
             'js',
             'styles',
@@ -464,7 +464,7 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
      *
      * @return array
      */
-    private function getExcludesByPaths(array $paths): array
+    private function getRegexpsForPaths(array $paths): array
     {
         $regexps = [];
         foreach ($paths as $path) {
