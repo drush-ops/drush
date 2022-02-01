@@ -340,7 +340,7 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
         $this->filesystem->mirror(
             $codePath,
             $codeArchiveComponentPath,
-            $this->getIterator($codePath, $excludes)
+            $this->getFileIterator($codePath, $excludes)
         );
 
         return $codeArchiveComponentPath;
@@ -379,7 +379,7 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
         $this->filesystem->mirror(
             $drupalFilesPath,
             $drupalFilesArchiveComponentPath,
-            $this->getIterator($drupalFilesPath, $excludes)
+            $this->getFileIterator($drupalFilesPath, $excludes)
         );
 
         return $drupalFilesArchiveComponentPath;
@@ -398,7 +398,7 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
      *
      * @return \Traversable
      */
-    private function getIterator(string $path, array $excludes): Traversable
+    private function getFileIterator(string $path, array $excludes): Traversable
     {
         return new RecursiveIteratorIterator(
             new RecursiveCallbackFilterIterator(
