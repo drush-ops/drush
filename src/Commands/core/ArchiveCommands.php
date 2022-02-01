@@ -170,7 +170,7 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
             }
 
             $archiveComponents[] = [
-                'name' => 'code',
+                'name' => self::CODE_ARCHIVE_ROOT_DIR,
                 'path' => $this->getCodeComponentPath(),
                 'excludes' => $excludes,
             ];
@@ -185,7 +185,7 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
             ]);
 
             $archiveComponents[] = [
-                'name' => 'files',
+                'name' => self::DRUPAL_FILES_ARCHIVE_ROOT_DIR,
                 'path' => $this->getDrupalFilesComponentPath(),
                 'excludes' => $excludes,
             ];
@@ -193,7 +193,7 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
 
         if ($options['db']) {
             $archiveComponents[] = [
-                'name' => 'database',
+                'name' => self::DATABASE_ARCHIVE_ROOT_DIR,
                 'path' => $this->getDatabaseComponentPath($options),
             ];
         }
