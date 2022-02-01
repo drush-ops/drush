@@ -20,6 +20,7 @@ use RecursiveIteratorIterator;
 use Symfony\Component\Filesystem\Exception\IOException;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Yaml\Yaml;
+use Traversable;
 
 /**
  * Class ArchiveCommands.
@@ -147,47 +148,16 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
         $archiveComponents = [];
 
         if ($options['code']) {
-            $excludes = $options['exclude-code-paths']
-                ? $this->getExcludesByPaths(explode(',', $options['exclude-code-paths']))
-                : [];
-
-            $excludes = array_merge(
-                $excludes,
-                $this->getExcludesByPaths(
-                    [
-                        '.git',
-                        'vendor',
-                    ]
-                ),
-                $this->getDrupalExcludes()
-            );
-
-            if ($this->isWebRootSite()) {
-                $excludes = array_merge(
-                    $excludes,
-                    $this->getWebDocrootDrupalExcludes()
-                );
-            }
-
             $archiveComponents[] = [
                 'name' => self::CODE_ARCHIVE_ROOT_DIR,
-                'path' => $this->getCodeComponentPath(),
-                'excludes' => $excludes,
+                'path' => $this->getCodeComponentPath($options),
             ];
         }
 
         if ($options['files']) {
-            $excludes = $this->getExcludesByPaths([
-                'css',
-                'js',
-                'styles',
-                'php',
-            ]);
-
             $archiveComponents[] = [
                 'name' => self::DRUPAL_FILES_ARCHIVE_ROOT_DIR,
                 'path' => $this->getDrupalFilesComponentPath(),
-                'excludes' => $excludes,
             ];
         }
 
@@ -218,56 +188,14 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
         }
 
         $this->logger()->info(dt('Creating archive...'));
-        $archivePath = implode([$this->archiveDir, DIRECTORY_SEPARATOR, self::ARCHIVE_FILE_NAME]);
+        $archivePath = implode([dirname($this->archiveDir), DIRECTORY_SEPARATOR, self::ARCHIVE_FILE_NAME]);
+
         $archive = new PharData($archivePath);
+        $archive->buildFromDirectory($this->archiveDir);
 
-        foreach ($archiveComponents as $component) {
-            $path = $component['path'];
-            $name = $component['name'];
-            $excludes = $component['excludes'] ?? [];
+        $this->createManifestFile($options);
 
-            $this->logger()->info(dt('Adding !path to archive...', ['!path' => $path]));
-
-            $iterator = new RecursiveIteratorIterator(
-                new RecursiveCallbackFilterIterator(
-                    new RecursiveDirectoryIterator(
-                        $path,
-                        FilesystemIterator::SKIP_DOTS | FilesystemIterator::CURRENT_AS_PATHNAME
-                    ),
-                    function ($file) use ($excludes, $path) {
-                        $localFileName = str_replace($path . DIRECTORY_SEPARATOR, '', $file);
-
-                        foreach ($excludes as $exclude) {
-                            if (preg_match($exclude, $localFileName)) {
-                                $this->logger()->info(dt(
-                                    'Path excluded (!exclude): !path',
-                                    ['!exclude' => $exclude, '!path' => $localFileName]
-                                ));
-
-                                return false;
-                            }
-                        }
-
-                        $this->validateSensitiveData($file, $localFileName);
-
-                        return true;
-                    }
-                )
-            );
-
-            $archive->addEmptyDir($name);
-            foreach ($iterator as $file) {
-                $localFileName = str_replace($path . DIRECTORY_SEPARATOR, '', $file);
-                $archive->addFile($file, $name . DIRECTORY_SEPARATOR . $localFileName);
-            }
-
-            $this->logger()->info(
-                dt('!path has been added to archive.', ['!path' => $path])
-            );
-        }
-
-        $archive->addFile($this->createManifestFile($options), self::MANIFEST_FILE_NAME);
-
+        $this->logger()->info(dt('Compressing archive...'));
         $archive->compress(Phar::GZ);
         unset($archive);
         Phar::unlinkArchive($archivePath);
@@ -300,15 +228,7 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
                 ['!from' => $archivePath, '!to' => $options['destination']]
             )
         );
-        if (!rename($archivePath, $options['destination'])) {
-            throw new Exception(
-                sprintf(
-                    'Failed moving archive from %s to %s.',
-                    $archivePath,
-                    $options['destination']
-                )
-            );
-        }
+        $this->filesystem->rename($archivePath, $options['destination']);
 
         $this->logger()->success(
             dt('Archive file has been created: !path', ['!path' => $options['destination']])
@@ -375,12 +295,15 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
     /**
      * Copies code into a temporary archive directory and returns the absolute path.
      *
+     * @param array $options
+     *  Command's options.
+     *
      * @return string
      *  The full path to the code archive component directory.
      *
      * @throws \Exception
      */
-    private function getCodeComponentPath(): string
+    private function getCodeComponentPath(array $options): string
     {
         $codePath = $this->isWebRootSite()
             ? dirname($this->siteAliasManager()->getSelf()->root())
@@ -393,7 +316,34 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
                 ['!from_path' => $codePath, '!to_path' => $codeArchiveComponentPath]
             )
         );
-        $this->filesystem->mirror($codePath, $codeArchiveComponentPath);
+
+        $excludes = $options['exclude-code-paths']
+            ? $this->getExcludesByPaths(explode(',', $options['exclude-code-paths']))
+            : [];
+
+        $excludes = array_merge(
+            $excludes,
+            $this->getExcludesByPaths(
+                [
+                    '.git',
+                    'vendor',
+                ]
+            ),
+            $this->getDrupalExcludes()
+        );
+
+        if ($this->isWebRootSite()) {
+            $excludes = array_merge(
+                $excludes,
+                $this->getWebDocrootDrupalExcludes()
+            );
+        }
+
+        $this->filesystem->mirror(
+            $codePath,
+            $codeArchiveComponentPath,
+            $this->getIterator($codePath, $excludes)
+        );
 
         return $codeArchiveComponentPath;
     }
@@ -420,9 +370,64 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
                 ['!from_path' => $drupalFilesPath, '!to_path' => $drupalFilesArchiveComponentPath]
             )
         );
-        $this->filesystem->mirror($drupalFilesPath, $drupalFilesArchiveComponentPath);
 
-        return $this->archiveDir . DIRECTORY_SEPARATOR . 'files';
+        $excludes = $this->getExcludesByPaths([
+            'css',
+            'js',
+            'styles',
+            'php',
+        ]);
+
+        $this->filesystem->mirror(
+            $drupalFilesPath,
+            $drupalFilesArchiveComponentPath,
+            $this->getIterator($drupalFilesPath, $excludes)
+        );
+
+        return $drupalFilesArchiveComponentPath;
+    }
+
+    /**
+     * Returns file iterator.
+     *
+     * Excludes paths according to the list of excludes provides.
+     * Validates for sensitive data present.
+     *
+     * @param string $path
+     *   Directory.
+     * @param array $excludes
+     *  The list of file exclude rules (regular expressions).
+     *
+     * @return \Traversable
+     */
+    private function getIterator(string $path, array $excludes): Traversable
+    {
+        return new RecursiveIteratorIterator(
+            new RecursiveCallbackFilterIterator(
+                new RecursiveDirectoryIterator(
+                    $path,
+                    FilesystemIterator::SKIP_DOTS
+                ),
+                function ($file) use ($excludes, $path) {
+                    $localFileName = str_replace($path . DIRECTORY_SEPARATOR, '', $file);
+
+                    foreach ($excludes as $exclude) {
+                        if (preg_match($exclude, $localFileName)) {
+                            $this->logger()->info(dt(
+                                'Path excluded (!exclude): !path',
+                                ['!exclude' => $exclude, '!path' => $localFileName]
+                            ));
+
+                            return false;
+                        }
+                    }
+
+                    $this->validateSensitiveData($file, $localFileName);
+
+                    return true;
+                }
+            )
+        );
     }
 
     /**
