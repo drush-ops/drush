@@ -41,14 +41,14 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
 
     private const WEB_DOCROOT = 'web';
 
-    private const CODE_ARCHIVE_ROOT_DIR = 'code';
+    private const COMPONENT_CODE = 'code';
     private const CODE_ARCHIVE_FILE_NAME = 'code.tar';
 
-    private const DRUPAL_FILES_ARCHIVE_ROOT_DIR = 'files';
+    private const COMPONENT_FILES = 'files';
     private const DRUPAL_FILES_ARCHIVE_FILE_NAME = 'files.tar';
 
+    private const COMPONENT_DATABASE = 'database';
     private const SQL_DUMP_FILE_NAME = 'database.sql';
-    private const DATABASE_ARCHIVE_ROOT_DIR = 'database';
     private const DATABASE_ARCHIVE_FILE_NAME = 'database.tar';
 
     private const ARCHIVES_DIR_NAME = 'archives';
@@ -149,21 +149,21 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
 
         if ($options['code']) {
             $archiveComponents[] = [
-                'name' => self::CODE_ARCHIVE_ROOT_DIR,
+                'name' => self::COMPONENT_CODE,
                 'path' => $this->getCodeComponentPath($options),
             ];
         }
 
         if ($options['files']) {
             $archiveComponents[] = [
-                'name' => self::DRUPAL_FILES_ARCHIVE_ROOT_DIR,
+                'name' => self::COMPONENT_FILES,
                 'path' => $this->getDrupalFilesComponentPath(),
             ];
         }
 
         if ($options['db']) {
             $archiveComponents[] = [
-                'name' => self::DATABASE_ARCHIVE_ROOT_DIR,
+                'name' => self::COMPONENT_DATABASE,
                 'path' => $this->getDatabaseComponentPath($options),
             ];
         }
@@ -250,9 +250,9 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
             'datestamp' => time(),
             'formatversion' => self::MANIFEST_FORMAT_VERSION,
             'components' => [
-                'code' => $options['code'],
-                'files' => $options['files'],
-                'database' => $options['db'],
+                self::COMPONENT_CODE => $options['code'],
+                self::COMPONENT_FILES => $options['files'],
+                self::COMPONENT_DATABASE => $options['db'],
             ],
             'description' => $options['description'] ?? null,
             'tags' => $options['tags'] ?? null,
@@ -308,7 +308,7 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
         $codePath = $this->isWebRootSite()
             ? dirname($this->siteAliasManager()->getSelf()->root())
             : $this->siteAliasManager()->getSelf()->root();
-        $codeArchiveComponentPath = $this->archiveDir . DIRECTORY_SEPARATOR . self::CODE_ARCHIVE_ROOT_DIR;
+        $codeArchiveComponentPath = $this->archiveDir . DIRECTORY_SEPARATOR . self::COMPONENT_CODE;
 
         $this->logger()->info(
             dt(
@@ -363,7 +363,7 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
         $pathEvaluator->evaluate($evaluatedPath);
 
         $drupalFilesPath = $evaluatedPath->fullyQualifiedPath();
-        $drupalFilesArchiveComponentPath = $this->archiveDir . DIRECTORY_SEPARATOR . self::DRUPAL_FILES_ARCHIVE_ROOT_DIR;
+        $drupalFilesArchiveComponentPath = $this->archiveDir . DIRECTORY_SEPARATOR . self::COMPONENT_FILES;
         $this->logger()->info(
             dt(
                 'Copying Drupal files from !from_path to !to_path...',
@@ -445,7 +445,7 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
     private function getDatabaseComponentPath(array $options): string
     {
         $this->logger()->info(dt('Creating database SQL dump file...'));
-        $databaseArchiveDir = implode([$this->archiveDir, DIRECTORY_SEPARATOR, self::DATABASE_ARCHIVE_ROOT_DIR]);
+        $databaseArchiveDir = implode([$this->archiveDir, DIRECTORY_SEPARATOR, self::COMPONENT_DATABASE]);
         $this->filesystem->mkdir($databaseArchiveDir);
 
         $options['result-file'] = implode([$databaseArchiveDir, DIRECTORY_SEPARATOR, self::SQL_DUMP_FILE_NAME]);
