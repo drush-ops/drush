@@ -466,12 +466,10 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
      */
     private function getRegexpsForPaths(array $paths): array
     {
-        $regexps = [];
-        foreach ($paths as $path) {
-            $regexps[] = sprintf('#^%s$#', addslashes(trim($path)));
-        }
-
-        return $regexps;
+        return array_map(
+            fn($path) => sprintf('#^%s$#', addslashes(trim($path))),
+            $paths
+        );
     }
 
     /**
