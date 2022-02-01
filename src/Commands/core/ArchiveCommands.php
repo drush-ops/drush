@@ -293,10 +293,10 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
     }
 
     /**
-     * Copies code into a temporary archive directory and returns the absolute path.
+     * Creates "code" archive component and returns the absolute path.
      *
      * @param array $options
-     *  Command's options.
+     *  The command options.
      *
      * @return string
      *  The full path to the code archive component directory.
@@ -320,7 +320,6 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
         $excludes = $options['exclude-code-paths']
             ? $this->getRegexpsForPaths(explode(',', $options['exclude-code-paths']))
             : [];
-
         $excludes = array_merge(
             $excludes,
             $this->getRegexpsForPaths(
@@ -349,7 +348,7 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
     }
 
     /**
-     * Copies Drupal files into a temporary archive directory and returns the absolute path.
+     * Creates "Drupal files" archive component and returns the absolute path.
      *
      * @return string
      *  The full path to the Drupal files archive component directory.
@@ -396,7 +395,7 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
      * @param string $path
      *   Directory.
      * @param array $excludes
-     *  The list of file exclude rules (regular expressions).
+     *   The list of file exclude rules (regular expressions).
      *
      * @return \Traversable
      */
@@ -431,9 +430,10 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
     }
 
     /**
-     * Creates a database archive (SQL dump) and returns the path the database archive component directory.
+     * Creates "database" archive component and returns the absolute path.
      *
      * @param array $options
+     *   The command options.
      *
      * @return string
      *   The full path to the database archive component directory.
@@ -461,6 +461,7 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
      * Returns the list of regular expressions to match paths.
      *
      * @param array $paths
+     *   The list of paths to match.
      *
      * @return array
      */
@@ -582,7 +583,9 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
     }
 
     /**
-     * Performs clean-up tasks - deletes temporary files.
+     * Performs clean-up tasks.
+     *
+     * Deletes temporary archive components.
      */
     public function cleanUp(): void
     {
