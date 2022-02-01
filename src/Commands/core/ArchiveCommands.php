@@ -145,30 +145,30 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
             $options['code'] = $options['files'] = $options['db'] = true;
         }
 
-        $archiveComponents = [];
+        $components = [];
 
         if ($options['code']) {
-            $archiveComponents[] = [
+            $components[] = [
                 'name' => self::COMPONENT_CODE,
                 'path' => $this->getCodeComponentPath($options),
             ];
         }
 
         if ($options['files']) {
-            $archiveComponents[] = [
+            $components[] = [
                 'name' => self::COMPONENT_FILES,
                 'path' => $this->getDrupalFilesComponentPath(),
             ];
         }
 
         if ($options['db']) {
-            $archiveComponents[] = [
+            $components[] = [
                 'name' => self::COMPONENT_DATABASE,
                 'path' => $this->getDatabaseComponentPath($options),
             ];
         }
 
-        $this->createArchiveFile($archiveComponents, $options);
+        $this->createArchiveFile($components, $options);
     }
 
     /**
