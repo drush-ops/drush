@@ -586,30 +586,14 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
      */
     public function cleanUp(): void
     {
-        $fs = new Filesystem();
-
-        $pathsToDelete = [
-            self::CODE_ARCHIVE_ROOT_DIR,
-            self::DRUPAL_FILES_ARCHIVE_ROOT_DIR,
-            self::DATABASE_ARCHIVE_ROOT_DIR,
-            self::MANIFEST_FILE_NAME,
-        ];
-
         try {
-            foreach ($pathsToDelete as $dirToDelete) {
-                $pathToDelete = $this->archiveDir . DIRECTORY_SEPARATOR . $dirToDelete;
-                if (!$fs->exists($pathToDelete)) {
-                    continue;
-                }
-
-                $this->logger()->info(dt('Deleting !path...', ['!path' => $pathToDelete]));
-                $fs->remove($pathToDelete);
-            }
+            $this->logger()->info(dt('Deleting !path...', ['!path' => $this->archiveDir]));
+            $this->filesystem->remove($this->archiveDir);
         } catch (IOException $e) {
             $this->logger()->info(
                 dt(
                     'Failed deleting !path: !message',
-                    ['!path' => $pathToDelete, '!message' => $e->getMessage()]
+                    ['!path' => $this->archiveDir, '!message' => $e->getMessage()]
                 )
             );
         }
