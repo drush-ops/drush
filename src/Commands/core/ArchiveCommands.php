@@ -17,6 +17,8 @@ use PharData;
 use RecursiveCallbackFilterIterator;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
+use Symfony\Component\Filesystem\Exception\IOException;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Yaml\Yaml;
 
 /**
@@ -27,12 +29,18 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
     use SiteAliasManagerAwareTrait;
 
     /**
+     * @var \Symfony\Component\Filesystem\Filesystem
+     */
+    private Filesystem $filesystem;
+
+    /**
      * @var string
      */
     private string $archiveDir;
 
     private const WEB_DOCROOT = 'web';
 
+    private const CODE_ARCHIVE_ROOT_DIR = 'code';
     private const CODE_ARCHIVE_FILE_NAME = 'code.tar';
 
     private const DRUPAL_FILES_ARCHIVE_ROOT_DIR = 'files';
@@ -42,10 +50,30 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
     private const DATABASE_ARCHIVE_ROOT_DIR = 'database';
     private const DATABASE_ARCHIVE_FILE_NAME = 'database.tar';
 
-    private const ARCHIVE_DIR_NAME = 'archive';
+    private const ARCHIVES_DIR_NAME = 'archives';
+    private const ARCHIVE_SUBDIR_NAME = 'archive';
     private const ARCHIVE_FILE_NAME = 'archive.tar';
     private const MANIFEST_FORMAT_VERSION = '1.0';
     private const MANIFEST_FILE_NAME = 'MANIFEST.yml';
+
+    /**
+     * ArchiveCommands constructor.
+     *
+     * @throws \Exception
+     */
+    public function __construct()
+    {
+        parent::__construct();
+
+        $this->filesystem = new Filesystem();
+
+        $this->archiveDir = implode(
+            [FsUtils::prepareBackupDir(self::ARCHIVES_DIR_NAME), DIRECTORY_SEPARATOR, self::ARCHIVE_SUBDIR_NAME]
+        );
+        $this->filesystem->mkdir($this->archiveDir);
+
+        register_shutdown_function([$this, 'cleanUp']);
+    }
 
     /**
      * Backup your code, files, and database into a single file.
@@ -112,9 +140,6 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
         'exclude-code-paths' => null,
     ]): void
     {
-        $this->archiveDir = implode([FsUtils::prepareBackupDir('archives'), DIRECTORY_SEPARATOR, self::ARCHIVE_DIR_NAME]);
-        mkdir($this->archiveDir);
-
         if (!$options['code'] && !$options['files'] && !$options['db']) {
             $options['code'] = $options['files'] = $options['db'] = true;
         }
@@ -256,7 +281,7 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
             return;
         }
 
-        if (is_file($options['destination'])) {
+        if ($this->filesystem->exists($options['destination'])) {
             if (!$options['overwrite']) {
                 throw new Exception(
                     sprintf(
@@ -266,7 +291,7 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
                 );
             }
 
-            unlink($options['destination']);
+            $this->filesystem->remove($options['destination']);
         }
 
         $this->logger()->info(
@@ -319,7 +344,6 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
             $manifestFilePath,
             Yaml::dump($manifest)
         );
-        $this->logger()->info(dt('Manifest file has been created: !path', ['!path' => $manifestFilePath]));
 
         return $manifestFilePath;
     }
@@ -364,10 +388,10 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
     }
 
     /**
-     * Returns the path to the site's Drupal files directory.
+     * Copies Drupal files into a temporary archive directory and returns the absolute path.
      *
      * @return string
-     *  The full path to the site's Drupal files directory.
+     *  The full path to the Drupal files archive component directory.
      *
      * @throws \Exception
      */
@@ -377,7 +401,17 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
         $pathEvaluator = new BackendPathEvaluator();
         $pathEvaluator->evaluate($evaluatedPath);
 
-        return $evaluatedPath->fullyQualifiedPath();
+        $drupalFilesPath = $evaluatedPath->fullyQualifiedPath();
+        $drupalFilesArchivePath = $this->archiveDir . DIRECTORY_SEPARATOR . self::DRUPAL_FILES_ARCHIVE_ROOT_DIR;
+        $this->logger()->info(
+            dt(
+                'Copying Drupal files from !from_path to !to_path...',
+                ['!from_path' => $drupalFilesPath, '!to_path' => $drupalFilesArchivePath]
+            )
+        );
+        $this->filesystem->mirror($drupalFilesPath, $drupalFilesArchivePath);
+
+        return $this->archiveDir . DIRECTORY_SEPARATOR . 'files';
     }
 
     /**
@@ -396,9 +430,7 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
     {
         $this->logger()->info(dt('Creating database SQL dump file...'));
         $databaseArchiveDir = implode([$this->archiveDir, DIRECTORY_SEPARATOR, self::DATABASE_ARCHIVE_ROOT_DIR]);
-        if (!mkdir($databaseArchiveDir)) {
-            throw new Exception(sprintf('Failed to created directory %s for database archive', $databaseArchiveDir));
-        }
+        $this->filesystem->mkdir($databaseArchiveDir);
 
         $options['result-file'] = implode([$databaseArchiveDir, DIRECTORY_SEPARATOR, self::SQL_DUMP_FILE_NAME]);
         $sql = SqlBase::create($options);
@@ -528,6 +560,40 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
                     'Found database connection settings in %s. It is risky to include them to the archive. Please move the database connection settings into a setting.*.php file or exclude them from the archive with "--exclude-code-paths=%s".',
                     $localFileName,
                     $localFileName
+                )
+            );
+        }
+    }
+
+    /**
+     * Performs clean-up tasks - deletes temporary files.
+     */
+    public function cleanUp(): void
+    {
+        $fs = new Filesystem();
+
+        $pathsToDelete = [
+            self::CODE_ARCHIVE_ROOT_DIR,
+            self::DRUPAL_FILES_ARCHIVE_ROOT_DIR,
+            self::DATABASE_ARCHIVE_ROOT_DIR,
+            self::MANIFEST_FILE_NAME,
+        ];
+
+        try {
+            foreach ($pathsToDelete as $dirToDelete) {
+                $pathToDelete = $this->archiveDir . DIRECTORY_SEPARATOR . $dirToDelete;
+                if (!$fs->exists($pathToDelete)) {
+                    continue;
+                }
+
+                $this->logger()->info(dt('Deleting !path...', ['!path' => $pathToDelete]));
+                $fs->remove($pathToDelete);
+            }
+        } catch (IOException $e) {
+            $this->logger()->info(
+                dt(
+                    'Failed deleting !path: !message',
+                    ['!path' => $pathToDelete, '!message' => $e->getMessage()]
                 )
             );
         }
