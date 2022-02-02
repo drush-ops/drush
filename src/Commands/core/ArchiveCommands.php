@@ -138,7 +138,7 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
         'generator' => null,
         'generatorversion' => null,
         'exclude-code-paths' => null,
-    ]): void
+    ]): string
     {
         if (!$options['code'] && !$options['files'] && !$options['db']) {
             $options['code'] = $options['files'] = $options['db'] = true;
@@ -167,20 +167,23 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
             ];
         }
 
-        $this->createArchiveFile($components, $options);
+        return $this->createArchiveFile($components, $options);
     }
 
     /**
-     * Creates the archive file.
+     * Creates the archive file and returns the absolute path.
      *
      * @param array $archiveComponents
      *   The list of components (files) to include into the archive file.
      * @param array $options
      *   The command options.
      *
+     * @return string
+     *   The full path to archive file.
+     *
      * @throws \Exception
      */
-    private function createArchiveFile(array $archiveComponents, array $options): void
+    private function createArchiveFile(array $archiveComponents, array $options): string
     {
         if (!$archiveComponents) {
             throw new Exception(dt('Nothing to archive'));
@@ -201,20 +204,14 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
         $archivePath .= '.gz';
 
         if (!$options['destination']) {
-            $this->logger()->success(
-                dt('Archive file has been created: !path', ['!path' => $archivePath])
-            );
 
-            return;
+            return $archivePath;
         }
 
         if ($this->filesystem->exists($options['destination'])) {
             if (!$options['overwrite']) {
                 throw new Exception(
-                    sprintf(
-                        'The destination file %s already exists. Use "--overwrite" option for overwriting an existing file.',
-                        $options['destination']
-                    )
+                'The destination file already exists. Use "--overwrite" option for overwriting an existing file.'
                 );
             }
 
@@ -229,9 +226,7 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
         );
         $this->filesystem->rename($archivePath, $options['destination']);
 
-        $this->logger()->success(
-            dt('Archive file has been created: !path', ['!path' => $options['destination']])
-        );
+        return $options['destination'];
     }
 
     /**
