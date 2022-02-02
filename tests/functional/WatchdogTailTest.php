@@ -17,7 +17,7 @@ class WatchdogTailTest extends CommandUnishTestCase
     public function testWatchdogTail()
     {
         $this->setUpDrupal(1, true);
-        $ret = $this->drush('pm-enable', ['dblog']);
+        $ret = $this->drush('pm-install', ['dblog']);
         $this->assertEquals($ret, 0);
         $options = [];
         $childDrushProcess = $this->drushBackground('watchdog-tail', [], $options + ['simulate' => null]);

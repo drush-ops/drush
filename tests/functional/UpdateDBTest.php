@@ -64,7 +64,7 @@ class UpdateDBTest extends CommandUnishTestCase
             'yes' => null,
         ];
         $this->setupModulesForTests(['woot'], Path::join(__DIR__, '/../fixtures/modules'));
-        $this->drush('pm-enable', ['woot'], $options);
+        $this->drush('pm-install', ['woot'], $options);
 
         // Force a pending update.
         $this->drush('php-script', ['updatedb_script'], ['script-path' => __DIR__ . '/resources']);
@@ -148,7 +148,7 @@ class UpdateDBTest extends CommandUnishTestCase
             'yes' => null,
         ];
         $this->setupModulesForTests(['woot'], Path::join(__DIR__, '/../fixtures/modules'));
-        $this->drush('pm-enable', ['woot'], $options);
+        $this->drush('pm-install', ['woot'], $options);
 
         // Force re-run of woot_update_8104().
         $this->drush('php:eval', array('drupal_set_installed_schema_version("woot", 8103)'), $options);
@@ -198,7 +198,7 @@ class UpdateDBTest extends CommandUnishTestCase
             'include' => __DIR__,
         ];
         $this->setupModulesForTests(['woot'], Path::join(__DIR__, '/../fixtures/modules'));
-        $this->drush('pm-enable', ['woot'], $options);
+        $this->drush('pm-install', ['woot'], $options);
 
         // Force re-run of the post-update woot_post_update_install_drush_empty_module().
         $this->forcePostUpdate('woot_post_update_install_drush_empty_module', $options);
@@ -244,7 +244,7 @@ YAML_FRAGMENT;
             'yes' => null,
         ];
         $this->setupModulesForTests(['woot'], Path::join(__DIR__, '/../fixtures/modules'));
-        $this->drush('pm-enable', ['woot'], $options);
+        $this->drush('pm-install', ['woot'], $options);
 
         // Force re-run of woot_update_8104() which is expected to be completed successfully.
         $this->drush('php:eval', array('drupal_set_installed_schema_version("woot", 8103)'), $options);

@@ -17,7 +17,7 @@ class FieldTest extends CommandUnishTestCase
             $this->setUpDrupal(1, true);
             // Create a content entity with bundles.
             CreateEntityType::createContentEntity($this);
-            $this->drush('pm-enable', ['text,field_ui,unish_article']);
+            $this->drush('pm-install', ['text,field_ui,unish_article']);
             $this->drush('php:script', ['create_unish_article_bundles'], ['script-path' => Path::join(__DIR__, 'resources')]);
         }
     }

@@ -17,7 +17,7 @@ class QueueTest extends CommandUnishTestCase
         $sites = $this->setUpDrupal(1, true);
 
         // Enable aggregator since it declares a queue.
-        $this->drush('pm-enable', ['aggregator']);
+        $this->drush('pm-install', ['aggregator']);
 
         $this->drush('queue-list');
         $output = $this->getOutput();
@@ -46,7 +46,7 @@ class QueueTest extends CommandUnishTestCase
         $sites = $this->setUpDrupal(1, true);
 
         // Enable aggregator since it declares a queue.
-        $this->drush('pm-enable', ['aggregator']);
+        $this->drush('pm-install', ['aggregator']);
 
         // Add another item to the queue and make sure it was deleted.
         $this->drush('php-script', ['queue_script'], ['script-path' => __DIR__ . '/resources']);
@@ -73,7 +73,7 @@ class QueueTest extends CommandUnishTestCase
 
         // Enable woot module, which contains a queue worker that throws a
         // RequeueException.
-        $this->drush('pm-enable', ['woot'], [], null, null, self::EXIT_SUCCESS);
+        $this->drush('pm-install', ['woot'], [], null, null, self::EXIT_SUCCESS);
 
         // Add an item to the queue.
         $this->drush('php-script', ['requeue_script'], ['script-path' => __DIR__ . '/resources']);
@@ -114,7 +114,7 @@ class QueueTest extends CommandUnishTestCase
 
         // Enable woot module, which contains a queue worker that throws a
         // custom exception.
-        $this->drush('pm-enable', ['woot'], [], null, null, self::EXIT_SUCCESS);
+        $this->drush('pm-install', ['woot'], [], null, null, self::EXIT_SUCCESS);
 
         // Add a couple of items to the queue.
         $this->drush('php-script', ['queue_custom_exception_script'], ['script-path' => __DIR__ . '/resources']);

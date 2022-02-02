@@ -126,7 +126,7 @@ XML
             'include' => __DIR__,
         ];
         $this->setupModulesForTests(['woot'], Path::join(__DIR__, '/../fixtures/modules'));
-        $this->drush('pm-enable', ['woot'], $options);
+        $this->drush('pm-install', ['woot'], $options);
 
         // Export the configuration.
         $this->drush('config:export');
