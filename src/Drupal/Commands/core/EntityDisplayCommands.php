@@ -14,8 +14,8 @@ class EntityDisplayCommands extends DrushCommands
      *
      * @command entity:rebuild-displays
      *
-     * @param string $entity_type_option Entity-type machine-name.
-     * @param string $bundle_option Bundle machine-name.
+     * @param string $entity_type_arg Entity-type.
+     * @param string $bundle_arg Bundle.
      *
      * @usage drush entity:rebuild-displays
      *   Rebuild form and display configurations for all bundles in all entity-types.
@@ -31,7 +31,7 @@ class EntityDisplayCommands extends DrushCommands
      * @usage drush entity:rebuild-displays node all
      *   Alias for `drush entity:rebuild-displays node`.
      */
-    public function rebuildDisplays(string $entity_type_option = 'all', string $bundle_option = 'all')
+    public function rebuildDisplays(string $entity_type_arg = 'all', string $bundle_arg = 'all')
     {
         $this->output()->writeln(dt('Form and display configurations will be rebuild for the following bundles:'));
         $this->io()->newLine();
@@ -39,13 +39,13 @@ class EntityDisplayCommands extends DrushCommands
         /** @var \Drupal\Core\Entity\EntityTypeBundleInfoInterface $bundle_info */
         $bundle_info = \Drupal::service('entity_type.bundle.info')->getAllBundleInfo();
         foreach ($bundle_info as $entity_type => $bundles) {
-            if ($entity_type !== $entity_type_option && $entity_type_option !== 'all') {
+            if ($entity_type !== $entity_type_arg && $entity_type_arg !== 'all') {
                 unset($bundle_info[$entity_type]);
                 continue;
             }
 
             foreach ($bundles as $bundle => $bundle_settings) {
-                if ($bundle !== $bundle_option && $bundle_option !== 'all') {
+                if ($bundle !== $bundle_arg && $bundle_arg !== 'all') {
                     unset($bundle_info[$entity_type][$bundle]);
                     continue;
                 }
