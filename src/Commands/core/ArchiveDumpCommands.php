@@ -358,7 +358,6 @@ class ArchiveDumpCommands extends DrushCommands implements SiteAliasManagerAware
             [],
             ['fields' => 'files', 'format' => 'json']
         );
-        $process->setSimulated(false);
         $process->mustRun();
         $status = $process->getOutputAsJson();
         if (!isset($status['files'])) {
