@@ -48,6 +48,7 @@ install:
   - echo extension=php_pgsql.dll >> php.ini
   - echo extension=php_gd2.dll >> php.ini
   - echo extension=php_fileinfo.dll >> php.ini
+  - echo memory_limit=256M >> php.ini
   - SET PATH=C:\tools\php74;%PATH%
   #Install Composer
   - cd %APPVEYOR_BUILD_FOLDER%
