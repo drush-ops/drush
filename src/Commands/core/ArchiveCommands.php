@@ -190,9 +190,9 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
         $archivePath = Path::join(dirname($this->archiveDir), self::ARCHIVE_FILE_NAME);
 
         $archive = new PharData($archivePath);
-        $archive->buildFromDirectory($this->archiveDir);
 
         $this->createManifestFile($options);
+        $archive->buildFromDirectory($this->archiveDir);
 
         $this->logger()->info(dt('Compressing archive...'));
         $archive->compress(Phar::GZ);
