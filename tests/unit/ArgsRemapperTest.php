@@ -20,7 +20,7 @@ class ArgsRemapperTest extends TestCase
     {
         $remapOptions = [];
         $remapCommandAliases = [
-            'en' => 'pm:enable'
+            'install' => 'pm:install'
         ];
         $sut = new ArgsRemapper($remapOptions, $remapCommandAliases);
         $result = $sut->remap($argv);
@@ -35,8 +35,8 @@ class ArgsRemapperTest extends TestCase
     {
         return [
             [
-                ['en', 'en'],
-                ['pm:enable', 'en'],
+                ['install', 'install'],
+                ['pm:install', 'install'],
             ],
         ];
     }

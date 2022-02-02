@@ -17,7 +17,7 @@ class UpdateDBTest extends CommandUnishTestCase
     public function testUpdateDBStatus()
     {
         $this->setUpDrupal(1, true);
-        $this->drush('pm:enable', ['drush_empty_module']);
+        $this->drush('pm:install', ['drush_empty_module']);
         $this->drush('updatedb:status');
         $err = $this->getErrorOutput();
         $this->assertStringContainsString('[success] No database updates required.', $err);
@@ -275,7 +275,7 @@ YAML_FRAGMENT;
         ];
         $this->setUpDrupal(1, true);
         $this->setupModulesForTests(['woot'], Path::join(__DIR__, '/../fixtures/modules'));
-        $this->drush('pm:enable', ['woot'], $options);
+        $this->drush('pm:install', ['woot'], $options);
 
         // Force re-run of woot_update_8105().
         $this->drush('php:eval', ['drupal_set_installed_schema_version("woot", 8104)'], $options);
@@ -318,7 +318,7 @@ POST_UPDATE;
         ];
         $this->setUpDrupal(1, true);
         $this->setupModulesForTests(['woot'], Path::join(__DIR__, '/../fixtures/modules'));
-        $this->drush('pm:enable', ['woot'], $options);
+        $this->drush('pm:install', ['woot'], $options);
 
         // Force re-run of woot_update_8106().
         $this->drush('php:eval', ['drupal_set_installed_schema_version("woot", 8105)'], $options);
@@ -344,7 +344,7 @@ POST_UPDATE;
         ];
         $this->setUpDrupal(1, true);
         $this->setupModulesForTests(['woot'], Path::join(__DIR__, '/../fixtures/modules'));
-        $this->drush('pm:enable', ['woot'], $options);
+        $this->drush('pm:install', ['woot'], $options);
 
         // Force re-run of woot_post_update_install_taxonomy().
         $this->forcePostUpdate('woot_post_update_install_taxonomy', $options);

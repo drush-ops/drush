@@ -21,7 +21,7 @@ class ConfigTest extends CommandUnishTestCase
             $this->setUpDrupal(1, true);
             // Field module is needed for now for --existing-config. It is not actually
             // enabled after testing profile is installed. Its required by file and update though.
-            $this->drush('pm:enable', ['config, field']);
+            $this->drush('pm:install', ['config, field']);
         }
     }
 
