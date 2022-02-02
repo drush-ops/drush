@@ -198,7 +198,9 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
         $archive->buildFromDirectory($this->archiveDir);
 
         $this->logger()->info(dt('Compressing archive...'));
+        $this->filesystem->remove($archivePath . '.gz');
         $archive->compress(Phar::GZ);
+
         unset($archive);
         Phar::unlinkArchive($archivePath);
         $archivePath .= '.gz';
