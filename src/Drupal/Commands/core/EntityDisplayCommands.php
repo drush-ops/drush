@@ -14,17 +14,17 @@ class EntityDisplayCommands extends DrushCommands
      *
      * @command entity:rebuild-displays
      *
-     * @param string $entity_type_arg Entity-type.
+     * @param string $entity_type_arg Entity type.
      * @param string $bundle_arg Bundle.
      *
      * @usage drush entity:rebuild-displays
-     *   Rebuild form and display configurations for all bundles in all entity-types.
+     *   Rebuild form and display configurations for all bundles in all entity types.
      * @usage drush entity:rebuild-displays node
-     *   Rebuild form and display configurations for all bundles in entity-type node.
+     *   Rebuild form and display configurations for all bundles in entity type node.
      * @usage drush entity:rebuild-displays node article
-     *   Rebuild form and display configurations for article bundle in entity-type node.
+     *   Rebuild form and display configurations for article bundle in entity type node.
      * @usage drush entity:rebuild-displays all article
-     *   Rebuild form and display configurations for article bundle in all entity-types.
+     *   Rebuild form and display configurations for article bundle in all entity types.
      *
      * @usage drush entity:rebuild-displays all all
      *   Alias for `drush entity:rebuild-displays`.
