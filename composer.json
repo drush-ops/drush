@@ -32,25 +32,24 @@
   "require": {
     "php": ">=7.4",
     "ext-dom": "*",
-    "chi-teck/drupal-code-generator": "^2.3",
+    "chi-teck/drupal-code-generator": "^2.4",
     "composer/semver": "^1.4 || ^3",
-    "consolidation/annotated-command": "^4.4",
+    "consolidation/annotated-command": "^4.5",
     "consolidation/config": "^1.2",
     "consolidation/filter-via-dot-access-data": "^1",
     "consolidation/robo": "^3",
-    "consolidation/site-alias": "^3.0.0@stable",
-    "consolidation/site-process": "^4",
+    "consolidation/site-alias": "^3.1.3",
+    "consolidation/site-process": "^4.1.3",
     "enlightn/security-checker": "^1",
-    "grasmash/yaml-expander": "^1.1.1",
     "guzzlehttp/guzzle": "^6.3 || ^7.0",
     "league/container": "^3.4",
     "psr/log": "~1.0",
     "psy/psysh": "~0.11",
-    "symfony/event-dispatcher": "^4.0",
-    "symfony/finder": "^4.0 || ^5",
+    "symfony/event-dispatcher": "^4.0 || ^5.0 || ^6.0",
+    "symfony/finder": "^4.0 || ^5 || ^6",
     "symfony/polyfill-php80": "^1.23",
-    "symfony/var-dumper": "^4.0 || ^5.0",
-    "symfony/yaml": "^4.0",
+    "symfony/var-dumper": "^4.0 || ^5.0 || ^6.0",
+    "symfony/yaml": "^4.0 || ^5.0 || ^6.0",
     "webflo/drupal-finder": "^1.2",
     "webmozart/path-util": "^2.1.0"
   },
@@ -58,23 +57,22 @@
     "composer/installers": "^1.7",
     "cweagans/composer-patches": "~1.0",
     "david-garcia/phpwhois": "4.3.0",
-    "drupal/core-recommended": "^9",
-    "drupal/semver_example": "2.2.0",
+    "drupal/core-recommended": "^9 || ^10",
+    "drupal/semver_example": "2.3.0",
     "phpunit/phpunit": ">=7.5.20",
-    "rector/rector": "^0.11.58",
-    "squizlabs/php_codesniffer": "^2.7 || ^3",
+    "rector/rector": "^0.12",
+    "squizlabs/php_codesniffer": "^3.6",
     "vlucas/phpdotenv": "^2.4",
     "yoast/phpunit-polyfills": "^0.2.0"
   },
   "conflict": {
-    "drupal/core": "<= 8",
+    "drupal/core": "< 9.2",
     "drupal/migrate_run": "*",
     "drupal/migrate_tools": "<= 5"
   },
   "autoload": {
     "psr-4": {
-      "Drush\\":            "src/",
-      "Drush\\Internal\\":  "src/internal-forks"
+      "Drush\\":            "src/"
     }
   },
   "autoload-dev": {
@@ -88,6 +86,10 @@
     "files": ["tests/load.environment.php"]
   },
   "config": {
+    "allow-plugins": {
+      "composer/installers": true,
+      "cweagans/composer-patches": true
+    },
     "optimize-autoloader": true,
     "preferred-install": "dist",
     "sort-packages": true,
@@ -112,7 +114,7 @@
     "api": "php $HOME/bin/doctum.phar --ansi --ignore-parse-errors update doctum-config.php",
     "doctum-install": "mkdir -p $HOME/bin && curl --output $HOME/bin/doctum.phar https://doctum.long-term.support/releases/latest/doctum.phar && chmod +x $HOME/bin/doctum.phar",
     "mk:docs": "./drush --uri=dev -v mk:docs",
-    "rector": "rector process src/Boot src/Preflight src/Runtime src/SiteAlias src/Symfony src/Config",
+    "rector": "rector process",
     "sut": "./drush --uri=dev",
     "sut:si": "./drush --uri=dev site:install testing --sites-subdir=dev --db-url=${UNISH_DB_URL:-mysql://root:password@mariadb}/unish_dev -v",
     "phpunit": "php -d sendmail_path='true' vendor/bin/phpunit --colors=always --configuration tests",

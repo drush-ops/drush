@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * Contains \Drush\Psysh\DrushCommand.
@@ -22,7 +23,6 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class DrushCommand extends BaseCommand
 {
-
     /**
      * @var \Symfony\Component\Console\Command\Command
      */
@@ -43,7 +43,7 @@ class DrushCommand extends BaseCommand
     /**
      * Get the namespace of this command.
      */
-    public function getNamespace()
+    public function getNamespace(): string
     {
         $parts = explode(':', $this->getName());
         return count($parts) >= 2 ? array_shift($parts) : 'global';
@@ -52,7 +52,7 @@ class DrushCommand extends BaseCommand
     /**
      * {@inheritdoc}
      */
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName($this->command->getName())
@@ -65,7 +65,7 @@ class DrushCommand extends BaseCommand
     /**
      * {@inheritdoc}
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): void
     {
         $args = $input->getArguments();
         $first = array_shift($args);
@@ -100,10 +100,9 @@ class DrushCommand extends BaseCommand
      *
      * Currently it's a word-wrapped description, plus any examples provided.
      *
-     * @return string
      *   The help string.
      */
-    protected function buildHelpFromCommand()
+    protected function buildHelpFromCommand(): string
     {
         $help = wordwrap($this->command->getDescription());
 

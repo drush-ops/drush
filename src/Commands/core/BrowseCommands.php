@@ -1,4 +1,5 @@
 <?php
+
 namespace Drush\Commands\core;
 
 use Drupal\Core\Url;

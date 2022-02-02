@@ -13,7 +13,6 @@ use Webmozart\PathUtil\Path;
  */
 class RedispatchToSiteLocal
 {
-
     /**
      * Determine if a local redispatch is needed, and do so if it is.
      *
@@ -25,7 +24,7 @@ class RedispatchToSiteLocal
      * @return bool
      *   True if redispatch occurred, and was returned successfully.
      */
-    public static function redispatchIfSiteLocalDrush($argv, $root, $vendor, PreflightLog $preflightLog)
+    public static function redispatchIfSiteLocalDrush(array $argv, string $root, string $vendor, PreflightLog $preflightLog)
     {
 
         // Try to find the site-local Drush. If there is none, we are done.
@@ -41,7 +40,7 @@ class RedispatchToSiteLocal
 
         // Do another special check to detect symlinked Drush folder similar
         // to what the SUT sets up for Drush functional tests.
-        if (dirname($vendor) == dirname($siteLocalDrush)) {
+        if (dirname($vendor) === dirname($siteLocalDrush)) {
             return false;
         }
 
@@ -64,9 +63,9 @@ class RedispatchToSiteLocal
      * Find a site-local Drush, if there is one in the selected site's
      * vendor directory.
      *
-     * @param string $root The selected site root
+     * @param $root The selected site root
      */
-    protected static function findSiteLocalDrush($root)
+    protected static function findSiteLocalDrush(string $root)
     {
         $candidates = [
             "$root/vendor/drush/drush/drush",

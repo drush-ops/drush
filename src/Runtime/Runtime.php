@@ -1,6 +1,9 @@
 <?php
+
 namespace Drush\Runtime;
 
+use Symfony\Component\Console\Output\ConsoleOutput;
+use Drush\Application;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Drush\Preflight\Preflight;
@@ -44,7 +47,7 @@ class Runtime
     public function run($argv)
     {
         try {
-            $output = new \Symfony\Component\Console\Output\ConsoleOutput();
+            $output = new ConsoleOutput();
             $status = $this->doRun($argv, $output);
         } catch (\Exception $e) {
             // Fallback to status 1 if the Exception has not indicated otherwise.
@@ -66,7 +69,7 @@ class Runtime
         $status = $this->preflight->preflight($argv);
 
         // If preflight signals that we are done, then exit early.
-        if ($status !== false) {
+        if ($status) {
             return $status;
         }
 
@@ -79,7 +82,7 @@ class Runtime
 
         // Create the Symfony Application et. al.
         $input = $this->preflight->createInput();
-        $application = new \Drush\Application('Drush Commandline Tool', Drush::getVersion());
+        $application = new Application('Drush Commandline Tool', Drush::getVersion());
 
         // Set up the DI container.
         $container = $this->di->initContainer(
@@ -127,7 +130,7 @@ class Runtime
     /**
      * Mark the current request as having completed successfully.
      */
-    public static function setCompleted()
+    public static function setCompleted(): void
     {
         Drush::config()->set(self::DRUSH_RUNTIME_COMPLETED_NAMESPACE, true);
     }
@@ -139,7 +142,7 @@ class Runtime
      * Mark the exit code for current request.
      * @param int $code
      */
-    public static function setExitCode($code)
+    public static function setExitCode(int $code): void
     {
         Drush::config()->set(self::DRUSH_RUNTIME_EXIT_CODE_NAMESPACE, $code);
     }

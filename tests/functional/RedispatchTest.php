@@ -9,7 +9,6 @@ use Webmozart\PathUtil\Path;
  */
 class RedispatchTest extends CommandUnishTestCase
 {
-
     /**
      * Covers the following origin responsibilities.
      *  - A remote host is recognized in site specification.

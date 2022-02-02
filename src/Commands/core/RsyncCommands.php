@@ -1,4 +1,5 @@
 <?php
+
 namespace Drush\Commands\core;
 
 use Consolidation\AnnotatedCommand\CommandData;
@@ -58,7 +59,7 @@ class RsyncCommands extends DrushCommands implements SiteAliasManagerAwareInterf
      * @aliases rsync,core-rsync
      * @topics docs:aliases
      */
-    public function rsync($source, $target, array $extra, $options = ['exclude-paths' => self::REQ, 'include-paths' => self::REQ, 'mode' => 'akz'])
+    public function rsync($source, $target, array $extra, $options = ['exclude-paths' => self::REQ, 'include-paths' => self::REQ, 'mode' => 'akz']): void
     {
         // Prompt for confirmation. This is destructive.
         if (!$this->getConfig()->simulate()) {
@@ -74,7 +75,7 @@ class RsyncCommands extends DrushCommands implements SiteAliasManagerAwareInterf
         $parameters[] = Escape::shellArg($this->targetEvaluatedPath->fullyQualifiedPath());
 
         $ssh_options = $this->getConfig()->get('ssh.options', '');
-        $exec = "rsync -e 'ssh $ssh_options'". ' '. implode(' ', array_filter($parameters));
+        $exec = "rsync -e 'ssh $ssh_options'" . ' ' . implode(' ', array_filter($parameters));
         $process = $this->processManager()->shell($exec);
         $process->run($process->showRealtime());
 
@@ -83,14 +84,14 @@ class RsyncCommands extends DrushCommands implements SiteAliasManagerAwareInterf
         }
     }
 
-    public function rsyncOptions($options)
+    public function rsyncOptions($options): string
     {
         $verbose = $paths = '';
         // Process --include-paths and --exclude-paths options the same way
         foreach (['include', 'exclude'] as $include_exclude) {
             // Get the option --include-paths or --exclude-paths and explode to an array of paths
             // that we will translate into an --include or --exclude option to pass to rsync
-            $inc_ex_path = explode(PATH_SEPARATOR, @$options[$include_exclude . '-paths']);
+            $inc_ex_path = explode(PATH_SEPARATOR, (string) @$options[$include_exclude . '-paths']);
             foreach ($inc_ex_path as $one_path_to_inc_ex) {
                 if (!empty($one_path_to_inc_ex)) {
                     $paths .= ' --' . $include_exclude . '="' . $one_path_to_inc_ex . '"';
@@ -98,7 +99,7 @@ class RsyncCommands extends DrushCommands implements SiteAliasManagerAwareInterf
             }
         }
 
-        $mode = '-'. $options['mode'];
+        $mode = '-' . $options['mode'];
         if ($this->output()->isVerbose()) {
             $mode .= 'v';
             $verbose = ' --stats --progress';
@@ -117,9 +118,8 @@ class RsyncCommands extends DrushCommands implements SiteAliasManagerAwareInterf
      * @hook command-event core:rsync
      * @param ConsoleCommandEvent $event
      * @throws \Exception
-     * @return void
      */
-    public function preCommandEvent(ConsoleCommandEvent $event)
+    public function preCommandEvent(ConsoleCommandEvent $event): void
     {
         $input = $event->getInput();
         $this->sourceEvaluatedPath = $this->injectAliasPathParameterOptions($input, 'source');
@@ -154,11 +154,10 @@ class RsyncCommands extends DrushCommands implements SiteAliasManagerAwareInterf
      * Validate that passed aliases are valid.
      *
      * @hook validate core-rsync
-     * @param \Consolidation\AnnotatedCommand\CommandData $commandData
+     * @param CommandData $commandData
      * @throws \Exception
-     * @return void
      */
-    public function validate(CommandData $commandData)
+    public function validate(CommandData $commandData): void
     {
         if ($this->sourceEvaluatedPath->isRemote() && $this->targetEvaluatedPath->isRemote()) {
             $msg = dt("Cannot specify two remote aliases. Instead, use one of the following alternate options:\n\n    `drush {source} rsync @self {target}`\n    `drush {source} rsync @self {fulltarget}\n\nUse the second form if the site alias definitions are not available at {source}.", ['source' => $this->sourceEvaluatedPath->getSiteAlias()->name(), 'target' => $this->targetEvaluatedPath->getSiteAlias()->name(), 'fulltarget' => $this->targetEvaluatedPath->fullyQualifiedPath()]);

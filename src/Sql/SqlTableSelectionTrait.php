@@ -1,4 +1,5 @@
 <?php
+
 namespace Drush\Sql;
 
 use Drush\Utils\StringUtils;
@@ -10,7 +11,6 @@ use Drush\Utils\StringUtils;
  */
 trait SqlTableSelectionTrait
 {
-
     /**
      * Given a list of all tables, expand the convert the wildcards in the
      * option-provided lists into a list of actual table names.
@@ -22,7 +22,7 @@ trait SqlTableSelectionTrait
      *   An array of tables with each table name in the appropriate
      *   element of the array.
      */
-    public function getExpandedTableSelection($options, $all_tables)
+    public function getExpandedTableSelection(array $options, array $all_tables)
     {
         $table_selection = $this->getTableSelection($options);
         // Get the existing table names in the specified database.
@@ -51,7 +51,7 @@ trait SqlTableSelectionTrait
      * @return array
      *   An array of tables with non-existant tables removed.
      */
-    public function expandAndFilterTables($tables, $db_tables)
+    public function expandAndFilterTables(array $tables, array $db_tables)
     {
         $expanded_tables = $this->ExpandWildcardTables($tables, $db_tables);
         $tables = $this->filterTables(array_merge($tables, $expanded_tables), $db_tables);
@@ -70,7 +70,7 @@ trait SqlTableSelectionTrait
      * @return
      *   $tables array with wildcards resolved to real table names.
      */
-    public function expandWildcardTables($tables, $db_tables)
+    public function expandWildcardTables(array $tables, array $db_tables)
     {
         // Table name expansion based on `*` wildcard.
         $expanded_db_tables = [];
@@ -97,7 +97,7 @@ trait SqlTableSelectionTrait
      *   An array with only valid table names (i.e. all of which actually exist in
      *   the database).
      */
-    public function filterTables($tables, $db_tables)
+    public function filterTables(array $tables, array $db_tables)
     {
         // Ensure all the tables actually exist in the database.
         foreach ($tables as $k => $table) {
@@ -145,7 +145,7 @@ trait SqlTableSelectionTrait
      *   Returns an array of tables based on the first option
      *   found, or an empty array if there were no matches.
      */
-    public function getRawTableList($option_name, $options)
+    public function getRawTableList($option_name, array $options)
     {
         $key_list = StringUtils::csvToArray($options[$option_name . '-key']);
         foreach ($key_list as $key) {

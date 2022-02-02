@@ -1,4 +1,5 @@
 <?php
+
 namespace Drush\TestTraits;
 
 /**
@@ -59,7 +60,7 @@ trait OutputUtilsTrait
      * @return string
      *   The simplified output.
      */
-    protected function simplifyOutput($output)
+    protected function simplifyOutput(string $output)
     {
         // We do not care if Drush inserts a -t or not in the string. Depends on whether there is a tty.
         $output = preg_replace('# -t #', ' ', $output);

@@ -9,11 +9,6 @@
  *
  * This logger is designed such that it can be provided to
  * other libraries that log to a Psr\Log\LoggerInterface.
- * As such, it takes responsibility for passing log messages
- * to backend invoke, as necessary (c.f. drush_backend_packet()).
- *
- * Drush supports all of the required log levels from Psr\Log\LogLevel,
- * and also defines its own. See Drush\Log\LogLevel.
  *
  * Those who may wish to change the way logging works in Drush
  * should therefore NOT attempt to replace this logger with their
@@ -31,13 +26,12 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class Logger extends RoboLogger
 {
-
     public function __construct(OutputInterface $output)
     {
         parent::__construct($output);
     }
 
-    public function log($level, $message, array $context = [])
+    public function log($level, $message, array $context = []): void
     {
         // Append timer and memory values.
         if (Drush::debug()) {
@@ -57,7 +51,7 @@ class Logger extends RoboLogger
             // format_plural() not always available.
             return dt('@count bytes', ['@count' => $size]);
         } else {
-            $size = $size / DRUSH_KILOBYTE; // Convert bytes to kilobytes.
+            $size /= DRUSH_KILOBYTE; // Convert bytes to kilobytes.
             $units = [
                 dt('@size KB', []),
                 dt('@size MB', []),
@@ -70,7 +64,7 @@ class Logger extends RoboLogger
             ];
             foreach ($units as $unit) {
                 if (round($size, 2) >= DRUSH_KILOBYTE) {
-                    $size = $size / DRUSH_KILOBYTE;
+                    $size /= DRUSH_KILOBYTE;
                 } else {
                     break;
                 }

@@ -1,4 +1,5 @@
 <?php
+
 namespace Drush\Commands\core;
 
 use Consolidation\SiteProcess\Util\Shell;
@@ -30,7 +31,7 @@ class SshCommands extends DrushCommands implements SiteAliasManagerAwareInterfac
      * @aliases ssh,site-ssh
      * @topics docs:aliases
      */
-    public function ssh(array $code, $options = ['cd' => self::REQ, 'tty' => false])
+    public function ssh(array $code, $options = ['cd' => self::REQ, 'tty' => false]): void
     {
         $alias = $this->siteAliasManager()->getSelf();
 

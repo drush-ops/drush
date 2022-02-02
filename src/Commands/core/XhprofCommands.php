@@ -23,7 +23,6 @@ use Drush\Commands\DrushCommands;
  */
 class XhprofCommands extends DrushCommands
 {
-
     const XH_PROFILE_MEMORY = false;
     const XH_PROFILE_CPU = false;
     const XH_PROFILE_BUILTINS = true;
@@ -37,7 +36,7 @@ class XhprofCommands extends DrushCommands
      *
      * @option xh-link URL to your XHProf report site.
      */
-    public function optionsetXhProf($options = ['xh-link' => self::REQ])
+    public function optionsetXhProf($options = ['xh-link' => self::REQ]): void
     {
     }
 
@@ -46,7 +45,7 @@ class XhprofCommands extends DrushCommands
      *
      * @hook post-command *
      */
-    public function xhprofPost($result, CommandData $commandData)
+    public function xhprofPost($result, CommandData $commandData): void
     {
         $config = $this->getConfig();
         if (self::xhprofIsEnabled($config)) {
@@ -62,7 +61,7 @@ class XhprofCommands extends DrushCommands
      *
      * @hook init *
      */
-    public function xhprofInitialize(InputInterface $input, AnnotationData $annotationData)
+    public function xhprofInitialize(InputInterface $input, AnnotationData $annotationData): void
     {
         $config = $this->getConfig();
         if (self::xhprofIsEnabled($config)) {
@@ -74,15 +73,14 @@ class XhprofCommands extends DrushCommands
     /**
      * Determines if any profiler could be enabled.
      *
-     * @param \Drush\Config\DrushConfig $config
+     * @param DrushConfig $config
      *
-     * @return bool
      *   TRUE when xh.link configured, FALSE otherwise.
      *
      * @throws \Exception
      *   When no available profiler extension enabled.
      */
-    public static function xhprofIsEnabled(DrushConfig $config)
+    public static function xhprofIsEnabled(DrushConfig $config): bool
     {
         if (!$config->get('xh.link')) {
             return false;
@@ -100,7 +98,7 @@ class XhprofCommands extends DrushCommands
     /**
      * Determines flags.
      */
-    public static function xhprofFlags(DrushConfig $config)
+    public static function xhprofFlags(DrushConfig $config): int
     {
         if (extension_loaded('tideways_xhprof')) {
             $map = [
@@ -132,7 +130,7 @@ class XhprofCommands extends DrushCommands
     /**
      * Enable profiling.
      */
-    public static function xhprofEnable($flags)
+    public static function xhprofEnable($flags): void
     {
         if (extension_loaded('tideways_xhprof')) {
             \tideways_xhprof_enable($flags);

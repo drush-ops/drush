@@ -13,14 +13,13 @@ use Symfony\Component\Process\Process;
 use Webmozart\PathUtil\Path;
 use Consolidation\Config\Util\Interpolator;
 
-class SqlBase implements ConfigAwareInterface
+abstract class SqlBase implements ConfigAwareInterface
 {
-
     use SqlTableSelectionTrait;
     use ConfigAwareTrait;
 
     // An Drupal style array containing specs for connecting to database.
-    public $dbSpec;
+    public array $dbSpec;
 
     // Default code appended to sql connections.
     public $queryExtra = '';
@@ -48,24 +47,20 @@ class SqlBase implements ConfigAwareInterface
     /**
      * Get environment variables to pass to Process.
      */
-    public function getEnv()
+    public function getEnv(): array
     {
+        return [];
     }
 
     /**
      * Get the last used Process.
-     *
-     * @return Process
      */
-    public function getProcess()
+    public function getProcess(): Process
     {
         return $this->process;
     }
 
-    /**
-     * @param Process $process
-     */
-    public function setProcess($process)
+    public function setProcess(Process $process): void
     {
         $this->process = $process;
     }
@@ -75,9 +70,8 @@ class SqlBase implements ConfigAwareInterface
      *
      * @param $options
      *   An options array as handed to a command callback.
-     * @return SqlBase
      */
-    public static function create($options = [])
+    public static function create(array $options = []): ?SqlBase
     {
         // Set defaults in the unfortunate event that caller doesn't provide values.
         $options += [
@@ -107,42 +101,41 @@ class SqlBase implements ConfigAwareInterface
         }
     }
 
-    public static function getInstance($db_spec, $options)
+    public static function getInstance($db_spec, $options): ?self
     {
         $driver = $db_spec['driver'];
-        $class_name = 'Drush\Sql\Sql'. ucfirst($driver);
+        $class_name = 'Drush\Sql\Sql' . ucfirst($driver);
         if (class_exists($class_name)) {
             $instance = new $class_name($db_spec, $options);
             // Inject config
             $instance->setConfig(Drush::config());
             return $instance;
         }
+        return null;
     }
 
     /*
      * Get the current $db_spec.
      */
-    public function getDbSpec()
+    public function getDbSpec(): array
     {
         return $this->dbSpec;
     }
 
     /**
      * Set the current db spec.
-     *
-     * @param array $dbSpec
      */
-    public function setDbSpec($dbSpec)
+    public function setDbSpec(array $dbSpec): void
     {
         $this->dbSpec = $dbSpec;
     }
 
     /**
      * The unix command used to connect to the database.
-     * @return string
      */
-    public function command()
+    public function command(): string
     {
+        return '';
     }
 
     /**
@@ -151,10 +144,8 @@ class SqlBase implements ConfigAwareInterface
      * @param bool $hide_password
      *  If TRUE, DBMS should try to hide password from process list.
      *  On mysql, that means using --defaults-file to supply the user+password.
-     *
-     * @return string
      */
-    public function connect($hide_password = true)
+    public function connect(bool $hide_password = true): string
     {
         return trim($this->command() . ' ' . $this->creds($hide_password) . ' ' . $this->getOption('extra', $this->queryExtra));
     }
@@ -163,7 +154,7 @@ class SqlBase implements ConfigAwareInterface
     /*
      * Execute a SQL dump and return the path to the resulting dump file.
      *
-     * @return string|bool
+     * @return
      *   Returns path to dump file, or false on failure.
      */
     public function dump()
@@ -211,7 +202,7 @@ class SqlBase implements ConfigAwareInterface
      * make pipefail work right in this instance, we must wrap it
      * in 'bash -c', since pipefail is a bash feature.
      */
-    protected function addPipeFail($cmd, $pipefail)
+    protected function addPipeFail(string $cmd, string $pipefail): string
     {
         if (empty($pipefail)) {
             return $cmd;
@@ -231,24 +222,26 @@ class SqlBase implements ConfigAwareInterface
      *
      * @param array $table_selection
      *   Supported keys: 'skip', 'structure', 'tables'.
-     * @return string
+     * @return
      *   One or more mysqldump/pg_dump/sqlite3/etc statements that are ready for executing.
      *   If multiple statements are needed, enclose in parenthesis.
      */
-    public function dumpCmd($table_selection)
+    public function dumpCmd($table_selection): string
     {
+        return '';
     }
 
     /*
      * Generate a path to an output file for a SQL dump when needed.
      *
-     * @param string|bool @file
+     * @param string|bool|null @file
      *   If TRUE, generate a path based on usual backup directory and current date.
      *   Otherwise, just return the path that was provided.
      */
-    public function dumpFile($file)
+    public function dumpFile($file): ?string
     {
-        $database = $this->dbSpec['database'];
+        // basename() is needed for sqlite as $database is a path. Harmless otherwise.
+        $database = basename($this->dbSpec['database']);
 
         // $file is passed in to us usually via --result-file.  If the user
         // has set $options['result-file'] = 'auto', then we
@@ -272,17 +265,17 @@ class SqlBase implements ConfigAwareInterface
      * If you don't want to query results to print during --debug then
      * provide a $result_file whose value can be drush_bit_bucket().
      *
-     * @param string $query
+     * @param $query
      *   The SQL to be executed. Should be NULL if $input_file is provided.
-     * @param string $input_file
+     * @param $input_file
      *   A path to a file containing the SQL to be executed.
-     * @param string $result_file
+     * @param $result_file
      *   A path to save query results to. Can be drush_bit_bucket() if desired.
      *
      * @return boolean
      *   TRUE on success, FALSE on failure
      */
-    public function query($query, $input_file = null, $result_file = '')
+    public function query(string $query, $input_file = null, $result_file = ''): ?bool
     {
         if (!Drush::simulate()) {
             return $this->alwaysQuery($query, $input_file, $result_file);
@@ -296,17 +289,17 @@ class SqlBase implements ConfigAwareInterface
      * If you don't want results to print during --debug then
      * provide a $result_file whose value can be drush_bit_bucket().
      *
-     * @param string $query
+     * @param $query
      *   The SQL to be executed. Should be null if $input_file is provided.
-     * @param string $input_file
+     * @param $input_file
      *   A path to a file containing the SQL to be executed.
-     * @param string $result_file
+     * @param $result_file
      *   A path to save query results to. Can be drush_bit_bucket() if desired.
      *
-     * @return boolean
-     *   TRUE on success, FALSE on failure
+     * @return
+     *   TRUE on success, FALSE on failure.
      */
-    public function alwaysQuery($query, $input_file = null, $result_file = '')
+    public function alwaysQuery(string $query, $input_file = null, ?string $result_file = ''): bool
     {
         $input_file_original = $input_file;
         if ($input_file && FsUtils::isTarball($input_file)) {
@@ -333,7 +326,7 @@ class SqlBase implements ConfigAwareInterface
         $exec = implode(' ', $parts);
 
         if ($result_file) {
-            $exec .= ' > '. Escape::shellArg($result_file);
+            $exec .= ' > ' . Escape::shellArg($result_file);
         }
 
         // In --verbose mode, Process will show the call to mysql/psql/sqlite,
@@ -358,7 +351,7 @@ class SqlBase implements ConfigAwareInterface
     /**
      * Show the query in debug mode and simulate mode
      */
-    protected function logQueryInDebugMode($query, $input_file_original)
+    protected function logQueryInDebugMode($query, $input_file_original): void
     {
         // In --verbose mode, Drush::process() will show the call to mysql/psql/sqlite,
         // but the sql query itself is stored in a temp file and not displayed.
@@ -371,12 +364,13 @@ class SqlBase implements ConfigAwareInterface
     /*
      * A string to add to the command when queries should not print their results.
      */
-    public function silent()
+    public function silent(): ?string
     {
+        return null;
     }
 
 
-    public function queryPrefix($query)
+    public function queryPrefix($query): ?string
     {
         // Inject table prefixes as needed.
         if (Drush::bootstrapManager()->hasBootstrapped(DRUSH_BOOTSTRAP_DRUPAL_DATABASE)) {
@@ -399,14 +393,13 @@ class SqlBase implements ConfigAwareInterface
      *
      * @param array $tables
      *   An array of table names
-     * @return boolean
      *   True if successful, FALSE if failed.
      */
-    public function drop($tables)
+    public function drop(array $tables): ?bool
     {
         $return = true;
         if ($tables) {
-            $sql = 'DROP TABLE '. implode(', ', $tables);
+            $sql = 'DROP TABLE ' . implode(', ', $tables);
             $return = $this->query($sql);
         }
         return $return;
@@ -420,10 +413,10 @@ class SqlBase implements ConfigAwareInterface
      * @param boolean $quoted
      *   Quote the database name. Mysql uses backticks to quote which can cause problems
      *   in a Windows shell. Set TRUE if the CREATE is not running on the bash command line.
-     * @return string
      */
-    public function createdbSql($dbname, $quoted = false)
+    public function createdbSql($dbname, bool $quoted = false): string
     {
+        return '';
     }
 
     /**
@@ -432,10 +425,9 @@ class SqlBase implements ConfigAwareInterface
      * @param boolean $quoted
      *   Quote the database name. Mysql uses backticks to quote which can cause problems
      *   in a Windows shell. Set TRUE if the CREATE is not running on the bash command line.
-     * @return boolean
      *   True if successful, FALSE otherwise.
      */
-    public function createdb($quoted = false)
+    public function createdb(bool $quoted = false): ?bool
     {
         $dbname = $this->getDbSpec()['database'];
         $sql = $this->createdbSql($dbname, $quoted);
@@ -447,10 +439,10 @@ class SqlBase implements ConfigAwareInterface
     /**
      * Drop all tables (if DB exists) or CREATE target database.
      *
-     * return boolean
+     * return
      *   TRUE or FALSE depending on success.
      */
-    public function dropOrCreate()
+    public function dropOrCreate(): bool
     {
         if ($this->dbExists()) {
             return $this->drop($this->listTablesQuoted());
@@ -461,52 +453,48 @@ class SqlBase implements ConfigAwareInterface
 
     /*
      * Determine if the specified DB already exists.
-     *
-     * @return bool
      */
-    public function dbExists()
+    public function dbExists(): bool
     {
+        return false;
     }
 
     /**
-     * Build a fragment connection parameters.
+     * Build a string containing connection credentials.
      *
      * @param bool $hide_password
      *  If TRUE, DBMS should try to hide password from process list.
      *  On mysql, that means using --defaults-file to supply the user+password.
-     * @return string
      */
-    public function creds($hide_password = true)
+    public function creds(bool $hide_password = true): string
     {
+        return '';
     }
 
     /**
      * The active database driver.
-     * @return string
      */
-    public function scheme()
+    public function scheme(): string
     {
         return $this->dbSpec['driver'];
     }
 
     /**
      * Extract the name of all existing tables in the given database.
-     *
-     * @return array|null
-     *   An array of table names which exist in the current database.
      */
-    public function listTables()
+    public function listTables(): array
     {
+        return [];
     }
 
     /**
      * Extract the name of all existing tables in the given database.
      *
-     * @return array|null
+     * @return
      *   An array of table names which exist in the current database,
      *   appropriately quoted for the RDMS.
      */
-    public function listTablesQuoted()
+    public function listTablesQuoted(): array
     {
         return $this->listTables();
     }
@@ -517,7 +505,7 @@ class SqlBase implements ConfigAwareInterface
      * @return string
      *   A bash fragment.
      */
-    public function paramsToOptions($parameters)
+    public function paramsToOptions($parameters): string
     {
         // Turn each parameter into a valid parameter string.
         $parameter_strings = [];
@@ -533,10 +521,8 @@ class SqlBase implements ConfigAwareInterface
 
     /**
      * Adjust DB connection with superuser credentials if provided.
-     *
-     * @return null
      */
-    public function su()
+    public function su(): void
     {
         $create_db_target = $this->getDbSpec();
 
@@ -556,10 +542,7 @@ class SqlBase implements ConfigAwareInterface
         $this->setDbSpec($create_db_target);
     }
 
-    /**
-     * @return array
-     */
-    public function getOptions()
+    public function getOptions(): array
     {
         return $this->options;
     }
@@ -571,31 +554,18 @@ class SqlBase implements ConfigAwareInterface
     }
 
     /**
-     * @deprecated.
-     */
-    public function db_spec() // @codingStandardsIgnoreLine
-    {
-        return $this->getDbSpec();
-    }
-
-    /**
      * Convert from an old-style database URL to an array of database settings.
      *
      * @param db_url
      *   A Drupal 6 db url string to convert, or an array with a 'default' element.
-     * @return array
      *   An array of database values containing only the 'default' element of
      *   the db url. If the parse fails the array is empty.
      */
-    public static function dbSpecFromDbUrl($db_url)
+    public static function dbSpecFromDbUrl($db_url): array
     {
         $db_spec = [];
 
-        if (is_array($db_url)) {
-            $db_url_default = $db_url['default'];
-        } else {
-            $db_url_default = $db_url;
-        }
+        $db_url_default = is_array($db_url) ? $db_url['default'] : $db_url;
 
         // If it's a sqlite database, pick the database path and we're done.
         if (strpos($db_url_default, 'sqlite://') === 0) {

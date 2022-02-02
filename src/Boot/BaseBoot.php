@@ -17,12 +17,12 @@ abstract class BaseBoot implements Boot, LoggerAwareInterface
         register_shutdown_function([$this, 'terminate']);
     }
 
-    public function findUri($root, $uri)
+    public function findUri($root, $uri): string
     {
         return 'default';
     }
 
-    public function getUri()
+    public function getUri(): string
     {
         return $this->uri;
     }
@@ -32,18 +32,12 @@ abstract class BaseBoot implements Boot, LoggerAwareInterface
         $this->uri = $uri;
     }
 
-    /**
-     * @return int
-     */
-    public function getPhase()
+    public function getPhase(): int
     {
         return $this->phase;
     }
 
-    /**
-     * @param int $phase
-     */
-    public function setPhase($phase)
+    public function setPhase(int $phase)
     {
         $this->phase = $phase;
     }
@@ -65,14 +59,14 @@ abstract class BaseBoot implements Boot, LoggerAwareInterface
         // No longer used.
     }
 
-    public function bootstrapPhases()
+    public function bootstrapPhases(): array
     {
         return [
             DRUSH_BOOTSTRAP_DRUSH => 'bootstrapDrush',
         ];
     }
 
-    public function bootstrapPhaseMap()
+    public function bootstrapPhaseMap(): array
     {
         return [
             'none' => DRUSH_BOOTSTRAP_DRUSH,
@@ -103,7 +97,7 @@ abstract class BaseBoot implements Boot, LoggerAwareInterface
     {
     }
 
-    protected function hasRegisteredSymfonyCommand($application, $name)
+    protected function hasRegisteredSymfonyCommand($application, $name): bool
     {
         try {
             $application->get($name);

@@ -1,6 +1,10 @@
 <?php
+
 namespace Drush\Drupal\Commands\config;
 
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Drupal\Core\Config\ImportStorageTransformer;
+use Drupal\Core\Config\StorageTransformerException;
 use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\AnnotatedCommand\CommandError;
 use Drupal\config\StorageReplaceDataWrapper;
@@ -25,7 +29,6 @@ use Webmozart\PathUtil\Path;
 
 class ConfigImportCommands extends DrushCommands
 {
-
     /**
      * @var ConfigManagerInterface
      */
@@ -52,135 +55,94 @@ class ConfigImportCommands extends DrushCommands
     protected $importStorageTransformer;
 
     /**
-     * @var \Drupal\Core\Extension\ModuleHandlerInterface
+     * @var ModuleHandlerInterface
      */
     protected $moduleHandler;
 
     /**
      * The module extension list.
      *
-     * @var \Drupal\Core\Extension\ModuleExtensionList
+     * @var ModuleExtensionList
      */
     protected $moduleExtensionList;
 
-    /**
-     * @return ConfigManagerInterface
-     */
-    public function getConfigManager()
+    public function getConfigManager(): ConfigManagerInterface
     {
         return $this->configManager;
     }
 
-    /**
-     * @return StorageInterface
-     */
-    public function getConfigStorage()
+    public function getConfigStorage(): StorageInterface
     {
         return $this->configStorage;
     }
 
-    /**
-     * @return StorageInterface
-     */
-    public function getConfigStorageSync()
+    public function getConfigStorageSync(): StorageInterface
     {
         return $this->configStorageSync;
     }
 
-    /**
-     * @return \Drupal\Core\Cache\CacheBackendInterface
-     */
-    public function getConfigCache()
+    public function getConfigCache(): CacheBackendInterface
     {
         return $this->configCache;
     }
 
-    /**
-     * @return \Drupal\Core\Extension\ModuleHandlerInterface
-     */
-    public function getModuleHandler()
+    public function getModuleHandler(): ModuleHandlerInterface
     {
         return $this->moduleHandler;
     }
 
     /**
      * Note that type hint is changing https://www.drupal.org/project/drupal/issues/3161983
-     *
-     * @return \Symfony\Component\EventDispatcher\EventDispatcherInterface
      */
-    public function getEventDispatcher()
+    public function getEventDispatcher(): EventDispatcherInterface
     {
         return $this->eventDispatcher;
     }
 
-    /**
-     * @return \Drupal\Core\Lock\LockBackendInterface
-     */
-    public function getLock()
+    public function getLock(): LockBackendInterface
     {
         return $this->lock;
     }
 
-    /**
-     * @return \Drupal\Core\Config\TypedConfigManagerInterface
-     */
-    public function getConfigTyped()
+    public function getConfigTyped(): TypedConfigManagerInterface
     {
         return $this->configTyped;
     }
 
-    /**
-     * @return \Drupal\Core\Extension\ModuleInstallerInterface
-     */
-    public function getModuleInstaller()
+    public function getModuleInstaller(): ModuleInstallerInterface
     {
         return $this->moduleInstaller;
     }
 
-    /**
-     * @return \Drupal\Core\Extension\ThemeHandlerInterface
-     */
-    public function getThemeHandler()
+    public function getThemeHandler(): ThemeHandlerInterface
     {
         return $this->themeHandler;
     }
 
-    /**
-     * @return \Drupal\Core\StringTranslation\TranslationInterface
-     */
-    public function getStringTranslation()
+    public function getStringTranslation(): TranslationInterface
     {
         return $this->stringTranslation;
     }
 
-    /**
-     * @param \Drupal\Core\Config\ImportStorageTransformer $importStorageTransformer
-     */
-    public function setImportTransformer($importStorageTransformer)
+    public function setImportTransformer(ImportStorageTransformer $importStorageTransformer): void
     {
         $this->importStorageTransformer = $importStorageTransformer;
     }
 
-    /**
-     * @return bool
-     */
-    public function hasImportTransformer()
+    public function hasImportTransformer(): bool
     {
         return isset($this->importStorageTransformer);
     }
 
-    /**
-     * @return \Drupal\Core\Config\ImportStorageTransformer
-     */
-    public function getImportTransformer()
+    public function getImportTransformer(): ?ImportStorageTransformer
     {
         return $this->importStorageTransformer;
     }
 
     /**
-     * @return \Drupal\Core\Extension\ModuleExtensionList
+     * @return ModuleExtensionList
      */
-    public function getModuleExtensionList(): \Drupal\Core\Extension\ModuleExtensionList
+    public function getModuleExtensionList(): ModuleExtensionList
     {
         return $this->moduleExtensionList;
     }
@@ -189,15 +151,15 @@ class ConfigImportCommands extends DrushCommands
      * @param ConfigManagerInterface $configManager
      * @param StorageInterface $configStorage
      * @param StorageInterface $configStorageSync
-     * @param \Drupal\Core\Cache\CacheBackendInterface $configCache
-     * @param \Drupal\Core\Extension\ModuleHandlerInterface $moduleHandler
+     * @param CacheBackendInterface $configCache
+     * @param ModuleHandlerInterface $moduleHandler
      * @param $eventDispatcher
-     * @param \Drupal\Core\Lock\LockBackendInterface $lock
-     * @param \Drupal\Core\Config\TypedConfigManagerInterface $configTyped
-     * @param \Drupal\Core\Extension\ModuleInstallerInterface $moduleInstaller
-     * @param \Drupal\Core\Extension\ThemeHandlerInterface $themeHandler
-     * @param \Drupal\Core\StringTranslation\TranslationInterface $stringTranslation
-     * @param \Drupal\Core\Extension\ModuleExtensionList $moduleExtensionList
+     * @param LockBackendInterface $lock
+     * @param TypedConfigManagerInterface $configTyped
+     * @param ModuleInstallerInterface $moduleInstaller
+     * @param ThemeHandlerInterface $themeHandler
+     * @param TranslationInterface $stringTranslation
+     * @param ModuleExtensionList $moduleExtensionList
      */
     public function __construct(
         ConfigManagerInterface $configManager,
@@ -234,21 +196,19 @@ class ConfigImportCommands extends DrushCommands
      *
      * @command config:import
      *
-     * @param array $options
      *
      * @return bool|void
      * @option diff Show preview as a diff.
-     * @option preview Deprecated. Format for displaying proposed changes. Recognized values: list, diff.
-     * @option source An arbitrary directory that holds the configuration files. An alternative to label argument
+     * @option source An arbitrary directory that holds the configuration files.
      * @option partial Allows for partial config imports from the source directory. Only updates and new configs will be processed with this flag (missing configs will not be deleted). No config transformation happens.
      * @aliases cim,config-import
      * @topics docs:deploy
      * @bootstrap full
      *
-     * @throws \Drupal\Core\Config\StorageTransformerException
-     * @throws \Drush\Exceptions\UserAbortException
+     * @throws StorageTransformerException
+     * @throws UserAbortException
      */
-    public function import($options = ['preview' => 'list', 'source' => self::REQ, 'partial' => false, 'diff' => false])
+    public function import(array $options = ['source' => self::REQ, 'partial' => false, 'diff' => false])
     {
         // Determine source directory.
         $source_storage_dir = ConfigCommands::getDirectory($options['source']);
@@ -286,7 +246,7 @@ class ConfigImportCommands extends DrushCommands
             return;
         }
 
-        if ($options['preview'] == 'list' && !$options['diff']) {
+        if (!$options['diff']) {
             $change_list = [];
             foreach ($storage_comparer->getAllCollectionNames() as $collection) {
                 $change_list[$collection] = $storage_comparer->getChangelist(null, $collection);
@@ -306,7 +266,7 @@ class ConfigImportCommands extends DrushCommands
     }
 
     // Copied from submitForm() at /core/modules/config/src/Form/ConfigSync.php
-    public function doImport($storage_comparer)
+    public function doImport($storage_comparer): void
     {
         $config_importer = new ConfigImporter(
             $storage_comparer,
@@ -362,8 +322,8 @@ class ConfigImportCommands extends DrushCommands
 
     /**
      * @hook validate config:import
-     * @param \Consolidation\AnnotatedCommand\CommandData $commandData
-     * @return \Consolidation\AnnotatedCommand\CommandError|null
+     * @param CommandData $commandData
+     * @return CommandError|null
      */
     public function validate(CommandData $commandData)
     {

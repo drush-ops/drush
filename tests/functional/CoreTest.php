@@ -10,7 +10,7 @@ use Webmozart\PathUtil\Path;
  *
  * @group commands
  */
-class CoreCase extends CommandUnishTestCase
+class CoreTest extends CommandUnishTestCase
 {
     public function setup(): void
     {
@@ -47,7 +47,8 @@ class CoreCase extends CommandUnishTestCase
         'format' => 'json',
         'uri' => 'OMIT', // A special value which causes --uri to not be specified.
         ];
-        foreach ([
+        foreach (
+            [
                    'test.uri' => ['http://test.uri', 'sites/dev'],
                    'test.uri/' => ['http://test.uri/', 'sites/dev'],
                    'test.uri/subpath' => ['http://test.uri/subpath', 'sites/stage'],
@@ -60,7 +61,8 @@ class CoreCase extends CommandUnishTestCase
                    'https://test.uri/' => ['https://test.uri/', 'sites/dev'],
                    'https://test.uri/subpath' => ['https://test.uri/subpath', 'sites/stage'],
                    'https://test.uri/subpath/' => ['https://test.uri/subpath/', 'sites/stage'],
-                 ] as $test_uri => $expected) {
+                 ] as $test_uri => $expected
+        ) {
             // Put a yml file in the drush folder.
             $config_options = [
               'options' => [
@@ -84,7 +86,8 @@ class CoreCase extends CommandUnishTestCase
         $command_options = [
         'uri' => 'OMIT', // A special value which causes --uri to not be specified.
         ];
-        foreach ([
+        foreach (
+            [
                    'test.uri' => 'http://test.uri',
                    'test.uri/' => 'http://test.uri',
                    'test.uri/subpath' => 'http://test.uri/subpath',
@@ -97,7 +100,8 @@ class CoreCase extends CommandUnishTestCase
                    'https://test.uri/' => 'https://test.uri',
                    'https://test.uri/subpath' => 'https://test.uri/subpath',
                    'https://test.uri/subpath/' => 'https://test.uri/subpath',
-                 ] as $test_uri => $expected) {
+                 ] as $test_uri => $expected
+        ) {
             // Put a yml file in the drush folder.
             $config_options = [
               'options' => [
@@ -109,7 +113,7 @@ class CoreCase extends CommandUnishTestCase
             unlink($drush_config_file);
             $output = $this->getOutputRaw();
             // Include the test URI, for some context in errors.
-            $i=10;
+            $i = 10;
             $this->assertEquals([$test_uri => $expected], [$test_uri => trim($output)]);
         }
     }
@@ -170,5 +174,34 @@ class CoreCase extends CommandUnishTestCase
         $this->assertContains($a_drush_config_file, $output['drush-conf'], "Loaded drush config files are: " . $drush_conf_as_string);
         $this->assertContains($b_drush_config_file, $output['drush-conf'], "Loaded drush config files are: " . $drush_conf_as_string);
         $this->assertEquals($test_uri, $output['uri']);
+    }
+
+    public function testSiteSpecificConfigLoading()
+    {
+        $sandbox = $this->getSandbox();
+
+        foreach (['dev', 'stage'] as $site) {
+            $site_tmp_dir = "{$sandbox}/tmp/{$site}";
+            $drush_config_file = Path::join($this->webroot(), "/sites/{$site}/drush.yml");
+
+            $drush_config_yml = [
+                'drush' => []
+            ];
+
+            file_put_contents($drush_config_file, Yaml::dump($drush_config_yml, PHP_INT_MAX, 2));
+
+            $options = [
+                'uri' => $site,
+                'format' => 'json',
+            ];
+
+            // Test that the site-specific config file is loaded.
+            $this->drush('core-status', [], $options);
+            $output = $this->getOutputFromJSON();
+            $loaded = array_flip($output['drush-conf']);
+            $this->assertArrayHasKey("sites/{$site}/drush.yml", $loaded);
+
+            unlink($drush_config_file);
+        }
     }
 }

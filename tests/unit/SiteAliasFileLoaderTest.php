@@ -1,8 +1,8 @@
 <?php
+
 namespace Drush\SiteAlias;
 
 use PHPUnit\Framework\TestCase;
-
 use Consolidation\SiteAlias\Util\YamlDataFileLoader;
 use Consolidation\SiteAlias\SiteAlias;
 

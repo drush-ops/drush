@@ -24,6 +24,14 @@ extra_css:
 plugins:
   - edit_url
   - search
+  - git-revision-date-localized:
+      exclude:
+        - commands/*
+        - generators/*
+  - git-authors:
+      exclude:
+        - commands/*
+        - generators/*
 extra:
   social:
     - icon: fontawesome/brands/twitter
@@ -52,6 +60,8 @@ markdown_extensions:
             startinline: true
   - pymdownx.inlinehilite: { }
   - pymdownx.superfences: { }
+  - pymdownx.tabbed:
+      alternate_style: true
   - pymdownx.emoji:
       emoji_index: '!!python/name:materialx.emoji.twemoji'
       emoji_generator: '!!python/name:materialx.emoji.to_svg'
@@ -86,7 +96,6 @@ nav:
       - examples/SiteAliasAlterCommands.php.md
       - examples/SyncViaHttpCommands.php.md
       - examples/XkcdCommands.php.md
-      - .bashrc: examples/example.bashrc.md
       - prompt.sh: examples/example.prompt.sh.md
       - git-bisect.sh: examples/git-bisect.example.sh.md
   - Contribute:

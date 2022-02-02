@@ -1,6 +1,8 @@
 <?php
+
 namespace Drush\Commands\pm;
 
+use GuzzleHttp\Client;
 use Composer\Semver\Semver;
 use Consolidation\AnnotatedCommand\CommandResult;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
@@ -16,7 +18,6 @@ use Webmozart\PathUtil\Path;
  */
 class SecurityUpdateCommands extends DrushCommands
 {
-
     /**
      * Return path to composer.lock
      *
@@ -56,7 +57,7 @@ class SecurityUpdateCommands extends DrushCommands
      * @default-fields name,version
      *
      * @filter-default-field name
-     * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
+     * @return RowsOfFields
      *
      * @throws \Exception
      */
@@ -79,7 +80,7 @@ class SecurityUpdateCommands extends DrushCommands
     /**
      * Emit suggested Composer command for security updates.
      */
-    public function suggestComposerCommand($updates)
+    public function suggestComposerCommand($updates): void
     {
         $suggested_command = 'composer require ';
         foreach ($updates as $package) {
@@ -100,9 +101,8 @@ class SecurityUpdateCommands extends DrushCommands
      */
     protected function fetchAdvisoryComposerJson()
     {
-        // We use the v2 branch for now, as per https://github.com/drupal-composer/drupal-security-advisories/pull/11.
-        $client = new \GuzzleHttp\Client(['handler' => $this->getStack()]);
-        $response = $client->get('https://raw.githubusercontent.com/drupal-composer/drupal-security-advisories/8.x-v2/composer.json');
+        $client = new Client(['handler' => $this->getStack()]);
+        $response = $client->get('https://raw.githubusercontent.com/drupal-composer/drupal-security-advisories/9.x/composer.json');
         $security_advisories_composer_json = json_decode($response->getBody(), true);
         return $security_advisories_composer_json;
     }
@@ -110,11 +110,10 @@ class SecurityUpdateCommands extends DrushCommands
     /**
      * Loads the contents of the local Drupal application's composer.lock file.
      *
-     * @return array
      *
      * @throws \Exception
      */
-    protected function loadSiteComposerLock()
+    protected function loadSiteComposerLock(): array
     {
         $composer_lock_file_path = self::composerLockPath();
         $composer_lock_contents = file_get_contents($composer_lock_file_path);
@@ -132,10 +131,8 @@ class SecurityUpdateCommands extends DrushCommands
      *   The contents of the local Drupal application's composer.lock file.
      * @param array $security_advisories_composer_json
      *   The composer.json array from drupal-security-advisories.
-     *
-     * @return array
      */
-    protected function calculateSecurityUpdates($composer_lock_data, $security_advisories_composer_json, bool $excludeDev = false)
+    protected function calculateSecurityUpdates(array $composer_lock_data, array $security_advisories_composer_json, bool $excludeDev = false): array
     {
         $updates = [];
         $packages = $composer_lock_data['packages'];
@@ -176,7 +173,7 @@ class SecurityUpdateCommands extends DrushCommands
      * @usage HTTP_PROXY=tcp://localhost:8125 pm:security
      *   Proxy Guzzle requests through an http proxy.
      */
-    public function securityPhp($options = ['format' => 'yaml', 'no-dev' => false])
+    public function securityPhp(array $options = ['format' => 'yaml', 'no-dev' => false])
     {
         $result = (new SecurityChecker())->check(self::composerLockPath(), $options['no-dev']);
         if ($result) {

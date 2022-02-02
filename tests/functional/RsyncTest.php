@@ -11,7 +11,6 @@ namespace Unish;
  */
 class RsyncTest extends CommandUnishTestCase
 {
-
     public function setup(): void
     {
         if ($this->isWindows()) {

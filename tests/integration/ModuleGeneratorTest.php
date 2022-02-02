@@ -16,11 +16,17 @@ class ModuleGeneratorTest extends UnishIntegrationTestCase
      */
     public function testModuleGenerators(): void
     {
-        $this->setupModulesForTests(['woot'], Path::join(__DIR__, '../functional/resources/modules/d8'));
+        $this->setupModulesForTests(['woot'], Path::join(__DIR__, '/../fixtures/modules'));
         $this->drush('pm:enable', ['woot']);
         $this->drush('cc', ['drush']);
         $this->drush('generate', ['list']);
         $this->assertStringContainsString('woot:example', $this->getOutput());
         $this->assertStringContainsString('Generates a woot.', $this->getOutput());
+    }
+
+    public function tearDown(): void
+    {
+        $this->drush('pm:uninstall', ['woot']);
+        parent::tearDown();
     }
 }

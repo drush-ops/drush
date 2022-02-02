@@ -46,7 +46,8 @@ class LinkHooks extends DrushCommands
     /** @hook on-event field-create-set-options */
     public function hookSetOptions(InputInterface $input): void
     {
-        if (!$this->isInstalled()
+        if (
+            !$this->isInstalled()
             || $input->getOption('field-type') !== 'link'
         ) {
             return;
@@ -66,7 +67,8 @@ class LinkHooks extends DrushCommands
     /** @hook on-event field-create-field-config */
     public function hookFieldConfig(array $values, InputInterface $input): array
     {
-        if (!$this->isInstalled()
+        if (
+            !$this->isInstalled()
             || $values['field_type'] !== 'link'
         ) {
             return $values;

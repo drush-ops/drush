@@ -1,14 +1,9 @@
 <?php
-namespace Drush\Commands;
 
-/**
- * @file
- *   Set up local Drush configuration.
- */
+namespace Drush\Commands;
 
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Consolidation\OutputFormatters\Options\FormatterOptions;
-
 use Consolidation\AnnotatedCommand\CommandData;
 
 class ExampleCommands extends DrushCommands
@@ -28,10 +23,8 @@ class ExampleCommands extends DrushCommands
      * @usage example-table --fields=III,II
      * @aliases tf
      * @hidden
-     *
-     * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
      */
-    public function exampleTable($options = ['format' => 'table'])
+    public function exampleTable($options = ['format' => 'table']): RowsOfFields
     {
         $tableData = [
             'en' => [ 'first' => 'One',  'second' => 'Two',  'third' => 'Three' ],

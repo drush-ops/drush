@@ -6,9 +6,8 @@ namespace Unish;
  * @group base
  * @group slow
  */
-class SiteInstallCommandCase extends CommandUnishTestCase
+class SiteInstallTest extends CommandUnishTestCase
 {
-
     /**
      * Test functionality of site set.
      */

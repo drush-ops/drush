@@ -1,4 +1,5 @@
 <?php
+
 namespace Drush;
 
 use Composer\Autoload\ClassLoader;
@@ -70,16 +71,6 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
 
         $this->getDefinition()
             ->addOption(
-                new InputOption('--remote-host', null, InputOption::VALUE_REQUIRED, 'Run on a remote server.')
-            );
-
-        $this->getDefinition()
-            ->addOption(
-                new InputOption('--remote-user', null, InputOption::VALUE_REQUIRED, 'The user to use in remote execution.')
-            );
-
-        $this->getDefinition()
-            ->addOption(
                 new InputOption('--root', '-r', InputOption::VALUE_REQUIRED, 'The Drupal root for this site.')
             );
 
@@ -97,7 +88,7 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
         // TODO: Implement handling for 'pipe'
         $this->getDefinition()
             ->addOption(
-                new InputOption('--pipe', null, InputOption::VALUE_NONE, 'Select the canonical script-friendly output format.')
+                new InputOption('--pipe', null, InputOption::VALUE_NONE, 'Select the canonical script-friendly output format. Deprecated - use --format.')
             );
 
         $this->getDefinition()
@@ -350,7 +341,7 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
             }
         }
         $this->loadCommandClasses($commandList);
-        return array_keys($commandList);
+        return array_values($commandList);
     }
 
     /**
@@ -413,5 +404,15 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
         $output->writeln('', OutputInterface::VERBOSITY_QUIET);
 
         $this->doRenderException($e, $output);
+    }
+
+    /**
+     * Renders a caught Throwable. Omits the command docs at end.
+     */
+    public function renderThrowable(\Throwable $e, OutputInterface $output): void
+    {
+        $output->writeln('', OutputInterface::VERBOSITY_QUIET);
+
+        $this->doRenderThrowable($e, $output);
     }
 }

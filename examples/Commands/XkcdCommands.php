@@ -1,4 +1,5 @@
 <?php
+
 namespace Drush\Commands;
 
 use Drush\Attributes\Command;
@@ -17,7 +18,6 @@ use Drush\Exec\ExecTrait;
 
 class XkcdCommands extends DrushCommands
 {
-
     use ExecTrait;
 
     /**

@@ -21,7 +21,7 @@ class TildeExpansionHook implements ValidatorInterface, ConfigAwareInterface
 {
     use ConfigAwareTrait;
 
-    public function validate(CommandData $commandData)
+    public function validate(CommandData $commandData): void
     {
         $input = $commandData->input();
         $args = $input->getArguments();
@@ -30,7 +30,7 @@ class TildeExpansionHook implements ValidatorInterface, ConfigAwareInterface
         foreach ($options as $name => $value) {
             if (is_string($value)) {
                 $replaced = StringUtils::replaceTilde($value, $this->getConfig()->home());
-                if ($value != $replaced) {
+                if ($value !== $replaced) {
                     $input->setOption($name, $replaced);
                 }
             }
@@ -38,7 +38,7 @@ class TildeExpansionHook implements ValidatorInterface, ConfigAwareInterface
         foreach ($args as $name => $value) {
             if (is_string($value)) {
                 $replaced = StringUtils::replaceTilde($value, $this->getConfig()->home());
-                if ($value != $replaced) {
+                if ($value !== $replaced) {
                     $input->setArgument($name, $replaced);
                 }
             }

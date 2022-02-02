@@ -11,7 +11,7 @@ use Webmozart\PathUtil\Path;
  * @group commands
  * @group config
  */
-class ConfigCase extends CommandUnishTestCase
+class ConfigTest extends CommandUnishTestCase
 {
     use TestModuleHelperTrait;
 
@@ -25,11 +25,38 @@ class ConfigCase extends CommandUnishTestCase
         }
     }
 
+    /**
+     * @todo If this becomes an integration test, add test for stdin handling.
+     */
     public function testConfigGetSet()
     {
+        // Simple value
         $this->drush('config:set', ['system.site', 'name', 'config_test']);
         $this->drush('config:get', ['system.site', 'name']);
-        $this->assertEquals("'system.site:name': config_test", $this->getOutput(), 'Config was successfully set and get.');
+        $this->assertEquals("'system.site:name': config_test", $this->getOutput());
+
+        // Nested value
+        $this->drush('config:set', ['system.site', 'page.front', 'llama']);
+        $this->drush('config:get', ['system.site', 'page.front']);
+        $this->assertEquals("'system.site:page.front': llama", $this->getOutput());
+
+        // Simple sequence value
+        $this->drush('config:set', ['user.role.authenticated', 'permissions', '[foo,bar]'], ['input-format' => 'yaml']);
+        $this->drush('config:get', ['user.role.authenticated', 'permissions'], ['format' => 'json']);
+        $output = $this->getOutputFromJSON('user.role.authenticated:permissions');
+
+        // Mapping value
+        $this->drush('config:set', ['system.site', 'page', "{403: '403', front: home}"], ['input-format' => 'yaml']);
+        $this->drush('config:get', ['system.site', 'page'], ['format' => 'json']);
+        $output = $this->getOutputFromJSON('system.site:page');
+        $this->assertSame(['403' => '403', 'front' => 'home'], $output);
+
+        // Multiple top-level keys
+        $this->drush('config:set', ['user.role.authenticated', '?', "{label: 'Auth user', weight: 5}"], ['input-format' => 'yaml']);
+        $this->drush('config:get', ['user.role.authenticated'], ['format' => 'json']);
+        $output = $this->getOutputFromJSON();
+        $this->assertSame('Auth user', $output['label']);
+        $this->assertSame(5, $output['weight']);
     }
 
     public function testConfigExportImportStatusExistingConfig()
@@ -73,25 +100,20 @@ XML
         // Test the --existing-config option for site:install.
         $this->drush('core:status', [], ['field' => 'drupal-version']);
         $drupal_version = $this->getOutputRaw();
-        if (Comparator::greaterThanOrEqualTo($drupal_version, '8.6')) {
-            $contents = file_get_contents($system_site_yml);
-            $contents = preg_replace('/front: .*/', 'front: unish existing', $contents);
-            file_put_contents($system_site_yml, $contents);
-            $this->installDrupal('dev', true, ['existing-config' => true], false);
-            $this->drush('config-get', ['system.site', 'page'], ['format' => 'json']);
-            $page = $this->getOutputFromJSON('system.site:page');
-            $this->assertStringContainsString('unish existing', $page['front'], 'Existing config was successfully imported during site:install.');
-        }
+        $contents = file_get_contents($system_site_yml);
+        $contents = preg_replace('/front: .*/', 'front: unish existing', $contents);
+        file_put_contents($system_site_yml, $contents);
+        $this->installDrupal('dev', true, ['existing-config' => true], false);
+        $this->drush('config-get', ['system.site', 'page'], ['format' => 'json']);
+        $page = $this->getOutputFromJSON('system.site:page');
+        $this->assertStringContainsString('unish existing', $page['front'], 'Existing config was successfully imported during site:install.');
 
         // Similar, but this time via --partial option.
-        if ($this->isDrupalGreaterThanOrEqualTo('8.8.0')) {
-            $this->markTestSkipped('Partial config import not yet working on 8.8.0');
-        }
         $contents = file_get_contents($system_site_yml);
         $contents = preg_replace('/front: .*/', 'front: unish partial', $contents);
         $partial_path = self::getSandbox() . '/partial';
         $this->mkdir($partial_path);
-        $contents = file_put_contents($partial_path. '/system.site.yml', $contents);
+        $contents = file_put_contents($partial_path . '/system.site.yml', $contents);
         $this->drush('config-import', [], ['partial' => null, 'source' => $partial_path]);
         $this->drush('config-get', ['system.site', 'page'], ['format' => 'json']);
         $page = $this->getOutputFromJSON('system.site:page');
@@ -103,7 +125,7 @@ XML
         $options = [
             'include' => __DIR__,
         ];
-        $this->setupModulesForTests(['woot'], Path::join(__DIR__, 'resources/modules/d8'));
+        $this->setupModulesForTests(['woot'], Path::join(__DIR__, '/../fixtures/modules'));
         $this->drush('pm-enable', ['woot'], $options);
 
         // Export the configuration.
@@ -159,6 +181,6 @@ YAML_FRAGMENT;
     protected function getConfigSyncDir()
     {
         $this->drush('core:status', [], ['format' => 'json', 'fields' => 'config-sync']);
-        return $this->webroot().'/'.$this->getOutputFromJSON('config-sync');
+        return $this->webroot() . '/' . $this->getOutputFromJSON('config-sync');
     }
 }

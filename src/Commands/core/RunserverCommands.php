@@ -1,4 +1,5 @@
 <?php
+
 namespace Drush\Commands\core;
 
 use Consolidation\SiteProcess\Util\Tty;
@@ -10,7 +11,6 @@ use Webmozart\PathUtil\Path;
 
 class RunserverCommands extends DrushCommands
 {
-
     use ExecTrait;
 
     protected $uri;
@@ -86,7 +86,7 @@ class RunserverCommands extends DrushCommands
     /**
      * Determine the URI to use for this server.
      */
-    public function uri($uri, $options)
+    public function uri($uri, $options): array
     {
         $drush_default = [
             'host' => '127.0.0.1',
@@ -119,13 +119,12 @@ class RunserverCommands extends DrushCommands
     /**
      * Parse a URI or partial URI (including just a port, host IP or path).
      *
-     * @param string $uri
+     * @param $uri
      *   String that can contain partial URI.
      *
-     * @return array
      *   URI array as returned by parse_url.
      */
-    public function parseUri($uri)
+    public function parseUri(?string $uri): array
     {
         if (empty($uri)) {
             return [];

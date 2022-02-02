@@ -14,20 +14,19 @@ use Psr\Log\LoggerInterface;
  */
 class EmptyBoot extends BaseBoot
 {
-
-    public function validRoot($path)
+    public function validRoot($path): bool
     {
         return false;
     }
 
-    public function bootstrapPhases()
+    public function bootstrapPhases(): array
     {
         return [
         DRUSH_BOOTSTRAP_DRUSH => '_drush_bootstrap_drush',
         ];
     }
 
-    public function bootstrapInitPhases()
+    public function bootstrapInitPhases(): array
     {
         return [DRUSH_BOOTSTRAP_DRUSH];
     }

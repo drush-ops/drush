@@ -14,7 +14,6 @@ use Symfony\Component\VarDumper\Caster\Caster as BaseCaster;
  */
 class Caster
 {
-
     /**
      * Casts \Drupal\Core\Entity\ContentEntityInterface classes.
      */

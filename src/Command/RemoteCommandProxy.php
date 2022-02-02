@@ -1,4 +1,5 @@
 <?php
+
 namespace Drush\Command;
 
 use Symfony\Component\Console\Command\Command;
@@ -6,7 +7,6 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Drush\Symfony\IndiscriminateInputDefinition;
-
 use Drush\Runtime\RedispatchHook;
 
 /**
@@ -40,9 +40,12 @@ class RemoteCommandProxy extends Command
             InputArgument::IS_ARRAY,
             'Proxy for command arguments'
         );
+
+        // The above should be enough but isn't in Drupal 10.
+        $this->ignoreValidationErrors();
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): void
     {
         $this->redispatchHook->redispatchIfRemote($input);
         $name = $this->getName();

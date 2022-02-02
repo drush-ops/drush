@@ -10,7 +10,6 @@ use Symfony\Component\Console\Input\InputInterface;
 
 class ImageCommands extends DrushCommands
 {
-
     /**
      * Flush all derived images for a given style.
      *
@@ -27,7 +26,7 @@ class ImageCommands extends DrushCommands
      * @validate-module-enabled image
      * @aliases if,image-flush
      */
-    public function flush($style_names, $options = ['all' => false])
+    public function flush($style_names, $options = ['all' => false]): void
     {
         foreach (ImageStyle::loadMultiple(StringUtils::csvToArray($style_names)) as $style_name => $style) {
             $style->flush();
@@ -38,7 +37,7 @@ class ImageCommands extends DrushCommands
     /**
      * @hook interact image-flush
      */
-    public function interactFlush($input, $output)
+    public function interactFlush($input, $output): void
     {
         $styles = array_keys(ImageStyle::loadMultiple());
         $style_names = $input->getArgument('style_names');
@@ -58,7 +57,7 @@ class ImageCommands extends DrushCommands
     /**
      * @hook init image-flush
      */
-    public function initFlush(InputInterface $input, AnnotationData $annotationData)
+    public function initFlush(InputInterface $input, AnnotationData $annotationData): void
     {
         // Needed for non-interactive calls.
         if ($input->getOption('all')) {

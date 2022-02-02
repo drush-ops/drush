@@ -71,6 +71,7 @@ abstract class UnishTestCase extends TestCase
         self::setEnv(['ETC_PREFIX' => $unish_sandbox]);
         self::setEnv(['SHARE_PREFIX' => $unish_sandbox]);
         self::setEnv(['TEMP' => Path::join($unish_sandbox, 'tmp')]);
+        self::setEnv(['FIXTURES_DIR' => Path::join(dirname(__DIR__), 'fixtures')]);
     }
 
     /**
@@ -741,7 +742,7 @@ EOT;
         foreach ($vars as $k => $v) {
             putenv($k . '=' . $v);
             // Value must be a string. See \Symfony\Component\Process\Process::getDefaultEnv.
-            $_SERVER[$k]= (string) $v;
+            $_SERVER[$k] = (string) $v;
         }
     }
 

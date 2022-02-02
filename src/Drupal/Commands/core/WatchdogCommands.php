@@ -1,4 +1,5 @@
 <?php
+
 namespace Drush\Drupal\Commands\core;
 
 use Consolidation\OutputFormatters\StructuredData\PropertyList;
@@ -15,7 +16,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class WatchdogCommands extends DrushCommands
 {
-
     /**
      * Show watchdog messages.
      *
@@ -48,7 +48,7 @@ class WatchdogCommands extends DrushCommands
      *   username: Username
      * @default-fields wid,date,type,severity,message
      * @filter-default-field message
-     * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
+     * @return RowsOfFields
      */
     public function show($substring = '', $options = ['format' => 'table', 'count' => 10, 'severity' => self::REQ, 'type' => self::REQ, 'extended' => false])
     {
@@ -97,9 +97,8 @@ class WatchdogCommands extends DrushCommands
      *   date: Date
      *   username: Username
      * @default-fields wid,date,type,severity,message
-     * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
      */
-    public function watchdogList($substring = '', $options = ['format' => 'table', 'count' => 10, 'extended' => false])
+    public function watchdogList($substring = '', $options = ['format' => 'table', 'count' => 10, 'extended' => false]): RowsOfFields
     {
         return $this->show($substring, $options);
     }
@@ -136,7 +135,7 @@ class WatchdogCommands extends DrushCommands
      * @filter-default-field message
      * @version 10.6
      */
-    public function tail(OutputInterface $output, $substring = '', $options = ['format' => 'table', 'severity' => self::REQ, 'type' => self::REQ, 'extended' => false])
+    public function tail(OutputInterface $output, $substring = '', $options = ['format' => 'table', 'severity' => self::REQ, 'type' => self::REQ, 'extended' => false]): void
     {
         $where = $this->where($options['type'], $options['severity'], $substring);
         if (empty($where['where'])) {
@@ -176,9 +175,9 @@ class WatchdogCommands extends DrushCommands
 
     /**
      * @hook interact watchdog-list
-     * @throws \Drush\Exceptions\UserAbortException
+     * @throws UserAbortException
      */
-    public function interactList($input, $output)
+    public function interactList($input, $output): void
     {
 
         $choices['-- types --'] = dt('== message types ==');
@@ -219,9 +218,8 @@ class WatchdogCommands extends DrushCommands
      *   Delete all messages of type cron.
      * @aliases wd-del,wd-delete,wd,watchdog-delete
      * @validate-module-enabled dblog
-     * @return void
      */
-    public function delete($substring = '', $options = ['severity' => self::REQ, 'type' => self::REQ])
+    public function delete($substring = '', $options = ['severity' => self::REQ, 'type' => self::REQ]): void
     {
         if ($substring == 'all') {
             $this->output()->writeln(dt('All watchdog messages will be deleted.'));
@@ -230,7 +228,7 @@ class WatchdogCommands extends DrushCommands
             }
             $ret = Database::getConnection()->truncate('watchdog')->execute();
             $this->logger()->success(dt('All watchdog messages have been deleted.'));
-        } else if (is_numeric($substring)) {
+        } elseif (is_numeric($substring)) {
             $this->output()->writeln(dt('Watchdog message #!wid will be deleted.', ['!wid' => $substring]));
             if (!$this->io()->confirm(dt('Do you want to continue?'))) {
                 throw new UserAbortException();
@@ -242,7 +240,7 @@ class WatchdogCommands extends DrushCommands
                 throw new \Exception(dt('Watchdog message #!wid does not exist.', ['!wid' => $substring]));
             }
         } else {
-            if ((empty($substring))&&(!isset($options['type']))&&(!isset($options['severity']))) {
+            if ((empty($substring)) && (!isset($options['type'])) && (!isset($options['severity']))) {
                 throw new \Exception(dt('No options provided.'));
             }
             $where = $this->where($options['type'], $options['severity'], $substring, 'OR');
@@ -264,10 +262,8 @@ class WatchdogCommands extends DrushCommands
      * @param $id Watchdog Id
      * @aliases wd-one,watchdog-show-one
      * @validate-module-enabled dblog
-     *
-     * @return \Consolidation\OutputFormatters\StructuredData\PropertyList
      */
-    public function showOne($id, $options = ['format' => 'yaml'])
+    public function showOne($id, $options = ['format' => 'yaml']): PropertyList
     {
         $rsc = Database::getConnection()->select('watchdog', 'w')
             ->fields('w')
@@ -295,13 +291,13 @@ class WatchdogCommands extends DrushCommands
      * @return
      *   An array with structure ('where' => string, 'args' => array())
      */
-    protected function where($type = null, $severity = null, $filter = null, $criteria = 'AND')
+    protected function where($type = null, $severity = null, $filter = null, $criteria = 'AND'): array
     {
         $args = [];
         $conditions = [];
         if ($type) {
             $types = $this->messageTypes();
-            if (array_search($type, $types) === false) {
+            if (!in_array($type, $types)) {
                 $msg = "Unrecognized message type: !type.\nRecognized types are: !types.";
                 throw new \Exception(dt($msg, ['!type' => $type, '!types' => implode(', ', $types)]));
             }
@@ -329,7 +325,7 @@ class WatchdogCommands extends DrushCommands
         }
         if ($filter) {
             $conditions[] = "message LIKE :filter";
-            $args[':filter'] = '%'.$filter.'%';
+            $args[':filter'] = '%' . $filter . '%';
         }
 
         $where = implode(" $criteria ", $conditions);
@@ -378,11 +374,7 @@ class WatchdogCommands extends DrushCommands
                 unset($result->referer);
             }
             // Username.
-            if ($account = User::load($result->uid)) {
-                $result->username = $account->name;
-            } else {
-                $result->username = dt('Anonymous');
-            }
+            $result->username = ($account = User::load($result->uid)) ? $account->name : dt('Anonymous');
             unset($result->uid);
             $message_length = PHP_INT_MAX;
         }

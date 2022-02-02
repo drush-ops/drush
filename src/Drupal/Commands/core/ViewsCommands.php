@@ -1,4 +1,5 @@
 <?php
+
 namespace Drush\Drupal\Commands\core;
 
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
@@ -12,7 +13,6 @@ use Drush\Utils\StringUtils;
 
 class ViewsCommands extends DrushCommands
 {
-
     protected $configFactory;
 
     protected $moduleHandler;
@@ -35,34 +35,22 @@ class ViewsCommands extends DrushCommands
         $this->configFactory = $configFactory;
     }
 
-    /**
-     * @return \Drupal\Core\Config\ConfigFactoryInterface
-     */
-    public function getConfigFactory()
+    public function getConfigFactory(): ConfigFactoryInterface
     {
         return $this->configFactory;
     }
 
-    /**
-     * @return \Drupal\Core\Extension\ModuleHandlerInterface
-     */
-    public function getModuleHandler()
+    public function getModuleHandler(): ModuleHandlerInterface
     {
         return $this->moduleHandler;
     }
 
-    /**
-     * @return \Drupal\Core\Entity\EntityTypeManagerInterface
-     */
-    public function getEntityTypeManager()
+    public function getEntityTypeManager(): EntityTypeManagerInterface
     {
         return $this->entityTypeManager;
     }
 
-    /**
-     * @return \Drupal\Core\Render\RendererInterface
-     */
-    public function getRenderer()
+    public function getRenderer(): RendererInterface
     {
         return $this->renderer;
     }
@@ -75,7 +63,7 @@ class ViewsCommands extends DrushCommands
      * @validate-module-enabled views
      * @aliases vd,views-dev
      */
-    public function dev()
+    public function dev(): void
     {
         $settings = [
             'ui.show.listing_filters' => true,
@@ -141,7 +129,7 @@ class ViewsCommands extends DrushCommands
      * @validate-module-enabled views
      *
      * @filter-default-field machine-name
-     * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
+     * @return RowsOfFields
      */
     public function vlist($options = ['name' => self::REQ, 'tags' => self::REQ, 'status' => self::REQ, 'format' => 'table'])
     {
@@ -152,11 +140,11 @@ class ViewsCommands extends DrushCommands
 
         // Get the --name option.
         $name = StringUtils::csvToArray($options['name']);
-        $with_name = !empty($name) ? true : false;
+        $with_name = !empty($name);
 
         // Get the --tags option.
-        $tags = \_convert_csv_to_array($options['tags']);
-        $with_tags = !empty($tags) ? true : false;
+        $tags =  StringUtils::csvToArray($options['tags']);
+        $with_tags = !empty($tags);
 
         // Get the --status option. Store user input apart to reuse it after.
         $status = $options['status'];
@@ -233,7 +221,7 @@ class ViewsCommands extends DrushCommands
      *
      * @return string
      */
-    public function execute($view_name, $display = null, $view_args = null, $options = ['count' => 0, 'show-admin-links' => false])
+    public function execute(string $view_name, $display = null, $view_args = null, $options = ['count' => 0, 'show-admin-links' => false])
     {
 
         $view = Views::getView($view_name);
@@ -268,7 +256,7 @@ class ViewsCommands extends DrushCommands
      * @aliases va,views-analyze
      * @validate-module-enabled views
      *
-     * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
+     * @return RowsOfFields
      */
     public function analyze()
     {
@@ -305,7 +293,7 @@ class ViewsCommands extends DrushCommands
      *   Enable the frontpage and taxonomy_term views.
      * @aliases ven,views-enable
      */
-    public function enable($views)
+    public function enable(string $views): void
     {
         $view_names = StringUtils::csvToArray($views);
         if ($views = $this->getEntityTypeManager()->getStorage('view')->loadMultiple($view_names)) {
@@ -327,7 +315,7 @@ class ViewsCommands extends DrushCommands
      *   Disable the frontpage and taxonomy_term views.
      * @aliases vdis,views-disable
      */
-    public function disable($views)
+    public function disable(string $views): void
     {
         $view_names = StringUtils::csvToArray($views);
         if ($views = $this->getEntityTypeManager()->getStorage('view')->loadMultiple($view_names)) {
@@ -344,7 +332,7 @@ class ViewsCommands extends DrushCommands
      *
      * @hook on-event cache-clear
      */
-    public function cacheClear(&$types, $include_bootstrapped_types)
+    public function cacheClear(&$types, $include_bootstrapped_types): void
     {
         if ($include_bootstrapped_types && $this->getModuleHandler()->moduleExists('views')) {
             $types['views'] = 'views_invalidate_cache';

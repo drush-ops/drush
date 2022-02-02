@@ -2,6 +2,7 @@
 
 namespace Drush\Drupal;
 
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Composer\Semver\Semver;
 use Drupal\Core\DependencyInjection\ServiceModifierInterface;
 use Drupal\Core\Site\Settings;
@@ -44,7 +45,7 @@ trait DrupalKernelTrait
     /**
      * Initializes the service container.
      *
-     * @return \Symfony\Component\DependencyInjection\ContainerInterface
+     * @return ContainerInterface
      */
     protected function initializeContainer()
     {
@@ -100,6 +101,7 @@ trait DrupalKernelTrait
         //  - These commands are not available until Drupal is bootstrapped.
         $this->addDrushServiceProvider("_drush__config", DRUSH_BASE_PATH . '/src/Drupal/Commands/config/drush.services.yml');
         $this->addDrushServiceProvider("_drush__core", DRUSH_BASE_PATH . '/src/Drupal/Commands/core/drush.services.yml');
+        $this->addDrushServiceProvider("_drush__field", DRUSH_BASE_PATH . '/src/Drupal/Commands/field/drush.services.yml');
         $this->addDrushServiceProvider("_drush__pm", DRUSH_BASE_PATH . '/src/Drupal/Commands/pm/drush.services.yml');
         $this->addDrushServiceProvider("_drush__sql", DRUSH_BASE_PATH . '/src/Drupal/Commands/sql/drush.services.yml');
 
@@ -202,9 +204,9 @@ trait DrupalKernelTrait
     /**
      * Add a services.yml file if it exists.
      */
-    protected function addDrushServiceProvider($serviceProviderName, $serviceYmlPath)
+    protected function addDrushServiceProvider($serviceProviderName, $serviceYmlPath = '')
     {
-        if (file_exists($serviceYmlPath)) {
+        if (($serviceYmlPath !== null) && file_exists($serviceYmlPath)) {
             $this->serviceYamls['app'][$serviceProviderName] = $serviceYmlPath;
         }
     }

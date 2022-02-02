@@ -11,9 +11,8 @@ use Webmozart\PathUtil\Path;
  * @group slow
  *  @group pm
  */
-class PmEnLocaleImportCase extends CommandUnishTestCase
+class PmEnLocaleImportTest extends CommandUnishTestCase
 {
-
     public function testBatchImportTranslations()
     {
         $info_yml = Path::join($this->webroot(), 'modules/unish/drush_empty_module/drush_empty_module.info.yml');

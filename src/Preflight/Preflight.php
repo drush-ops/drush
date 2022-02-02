@@ -1,6 +1,11 @@
 <?php
+
 namespace Drush\Preflight;
 
+use Symfony\Component\Console\Input\InputInterface;
+use Composer\Autoload\ClassLoader;
+use Drush\SiteAlias\SiteAliasFileLoader;
+use Drush\Config\DrushConfig;
 use Drush\Config\Environment;
 use Drush\Config\ConfigLocator;
 use Drush\Config\EnvironmentConfigLoader;
@@ -65,10 +70,7 @@ class Preflight
         $this->logger = $preflightLog ?: new PreflightLog();
     }
 
-    /**
-     * @return PreflightLog
-     */
-    public function logger()
+    public function logger(): PreflightLog
     {
         return $this->logger;
     }
@@ -76,7 +78,7 @@ class Preflight
     /**
      * @param PreflightLog $logger
      */
-    public function setLogger(PreflightLog $logger)
+    public function setLogger(PreflightLog $logger): void
     {
         $this->logger = $logger;
     }
@@ -85,7 +87,7 @@ class Preflight
      * Perform preliminary initialization. This mostly involves setting up
      * legacy systems.
      */
-    public function init()
+    public function init(): void
     {
         // Define legacy constants, and include legacy files that Drush still needs
         LegacyPreflight::includeCode($this->environment->drushBasePath());
@@ -111,7 +113,7 @@ class Preflight
      * Eventually, we might want to expose this table to some form of
      * 'help' output, so folks can see the available conversions.
      */
-    protected function remapOptions()
+    protected function remapOptions(): array
     {
         return [
             '--ssh-options' => '-Dssh.options',
@@ -135,7 +137,7 @@ class Preflight
      *
      * This should be fixed in Symfony Console.
      */
-    protected function remapCommandAliases()
+    protected function remapCommandAliases(): array
     {
         return [
             'si' => 'site:install',
@@ -150,7 +152,7 @@ class Preflight
      * Arguments and options not used during preflight will be processed
      * with an ArgvInput.
      */
-    public function preflightArgs($argv)
+    public function preflightArgs($argv): PreflightArgs
     {
         $argProcessor = new ArgsPreprocessor();
         $remapper = new ArgsRemapper($this->remapOptions(), $this->remapCommandAliases());
@@ -167,7 +169,7 @@ class Preflight
      * Create the initial config locator object, and inject any needed
      * settings, paths and so on into it.
      */
-    public function prepareConfig(Environment $environment)
+    public function prepareConfig(Environment $environment): void
     {
         // Make our environment settings available as configuration items
         $this->configLocator->addEnvironment($environment);
@@ -176,12 +178,12 @@ class Preflight
         $this->configLocator->addDrushConfig($environment->drushBasePath());
     }
 
-    public function createInput()
+    public function createInput(): InputInterface
     {
         return $this->preflightArgs->createInput();
     }
 
-    public function getCommandFilePaths()
+    public function getCommandFilePaths(): array
     {
         $commandlinePaths = $this->preflightArgs->commandPaths();
         $configPaths = $this->config()->get('drush.include', []);
@@ -192,22 +194,21 @@ class Preflight
         return $this->configLocator->getCommandFilePaths(array_merge($commandlinePaths, $configPaths), $this->drupalFinder()->getDrupalRoot());
     }
 
-    public function loadSiteAutoloader()
+    public function loadSiteAutoloader(): ClassLoader
     {
         return $this->environment()->loadSiteAutoloader($this->drupalFinder()->getDrupalRoot());
     }
 
-    public function config()
+    public function config(): DrushConfig
     {
         return $this->configLocator->config();
     }
 
     /**
      * @param $argv
-     * @return bool
      *   True if the request was successfully redispatched remotely. False if the request should proceed.
      */
-    public function preflight($argv)
+    public function preflight($argv): bool
     {
         // Fail fast if there is anything in our environment that does not check out
         $this->verify->verify($this->environment);
@@ -217,7 +218,7 @@ class Preflight
         $this->prepareConfig($this->environment);
 
         // Now that we know the value, set debug flag.
-        $this->logger()->setDebug($this->preflightArgs->get(PreflightArgs::DEBUG));
+        $this->logger()->setDebug($this->preflightArgs->get(PreflightArgs::DEBUG, false));
 
         // Do legacy initialization (load static includes, define old constants, etc.)
         $this->init();
@@ -240,7 +241,7 @@ class Preflight
         $paths = $this->configLocator->getSiteAliasPaths($this->preflightArgs->aliasPaths(), $this->environment);
 
         // Configure alias manager.
-        $aliasFileLoader = new \Drush\SiteAlias\SiteAliasFileLoader();
+        $aliasFileLoader = new SiteAliasFileLoader();
         $this->aliasManager = (new SiteAliasManager($aliasFileLoader))->addSearchLocations($paths);
         $this->aliasManager->setReferenceData($config->export());
 
@@ -266,7 +267,7 @@ class Preflight
         // NOTE: termination handlers have not been set yet, so it is okay
         // to exit early without taking special action.
         $status = RedispatchToSiteLocal::redispatchIfSiteLocalDrush($argv, $root, $this->environment->vendorPath(), $this->logger());
-        if ($status !== false) {
+        if ($status) {
             return $status;
         }
 
@@ -324,7 +325,7 @@ class Preflight
      * @param string $selectedRoot The location to being searching for a site
      * @param string|bool $fallbackPath The secondary location to search (usualy the vendor director)
      */
-    protected function setSelectedSite($selectedRoot, $fallbackPath = false, $originalSelection = null)
+    protected function setSelectedSite(string $selectedRoot, $fallbackPath = false, $originalSelection = null)
     {
         if ($selectedRoot || $fallbackPath) {
             $foundRoot = $this->drupalFinder->locateRoot($selectedRoot);
@@ -347,30 +348,24 @@ class Preflight
 
     /**
      * Return the Drupal Finder
-     *
-     * @return DrupalFinder
      */
-    public function drupalFinder()
+    public function drupalFinder(): DrupalFinder
     {
         return $this->drupalFinder;
     }
 
     /**
      * Return the alias manager
-     *
-     * @return SiteAliasManager
      */
-    public function aliasManager()
+    public function aliasManager(): SiteAliasManager
     {
         return $this->aliasManager;
     }
 
     /**
      * Return the environment
-     *
-     * @return Environment
      */
-    public function environment()
+    public function environment(): Environment
     {
         return $this->environment;
     }

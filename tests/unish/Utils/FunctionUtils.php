@@ -1,4 +1,5 @@
 <?php
+
 namespace Unish\Utils;
 
 trait FunctionUtils

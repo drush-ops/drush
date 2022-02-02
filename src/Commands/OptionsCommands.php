@@ -1,22 +1,22 @@
 <?php
+
 namespace Drush\Commands;
+
+use Symfony\Component\Console\Input\InputOption;
 
 /*
  * Common options providers. Use them by adding an annotation to your method.
  */
-use Symfony\Component\Console\Input\InputOption;
-
 class OptionsCommands
 {
-
-    const REQ=InputOption::VALUE_REQUIRED;
+    const REQ = InputOption::VALUE_REQUIRED;
 
     /**
      * @hook option @optionset_proc_build
      * @option ssh-options A string of extra options that will be passed to the ssh command (e.g. <info>-p 100</info>)
      * @option tty Create a tty (e.g. to run an interactive program).
      */
-    public function optionsetProcBuild($options = ['ssh-options' => self::REQ, 'tty' => false])
+    public function optionsetProcBuild($options = ['ssh-options' => self::REQ, 'tty' => false]): void
     {
     }
 
@@ -25,7 +25,7 @@ class OptionsCommands
      * @option editor A string of bash which launches user's preferred text editor. Defaults to <info>${VISUAL-${EDITOR-vi}}</info>.
      * @option bg Launch editor in background process.
      */
-    public function optionsetGetEditor($options = ['editor' => '', 'bg' => false])
+    public function optionsetGetEditor($options = ['editor' => '', 'bg' => false]): void
     {
     }
 
@@ -33,7 +33,7 @@ class OptionsCommands
      * @hook option @optionset_ssh
      * @option ssh-options A string appended to ssh command during rsync, sql-sync, etc.
      */
-    public function optionsetSsh($options = ['ssh-options' => self::REQ])
+    public function optionsetSsh($options = ['ssh-options' => self::REQ]): void
     {
     }
 
@@ -44,7 +44,7 @@ class OptionsCommands
      * @option target The name of a target within the specified database connection.
      * @option show-passwords Show password on the CLI. Useful for debugging.
      */
-    public function optionsetSql($options = ['database' => 'default', 'target' => 'default', 'db-url' => self::REQ, 'show-passwords' => false])
+    public function optionsetSql($options = ['database' => 'default', 'target' => 'default', 'db-url' => self::REQ, 'show-passwords' => false]): void
     {
     }
 
@@ -63,7 +63,7 @@ class OptionsCommands
         'tables-key' => self::REQ,
         'skip-tables-list' => self::REQ,
         'structure-tables-list' => self::REQ,
-        'tables-list' => self::REQ])
+        'tables-list' => self::REQ]): void
     {
     }
 }

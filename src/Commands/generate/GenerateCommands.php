@@ -13,7 +13,6 @@ use Symfony\Component\Console\Input\ArgvInput;
  */
 class GenerateCommands extends DrushCommands implements AutoloaderAwareInterface
 {
-
     use AutoloaderAwareTrait;
 
     /**
@@ -32,16 +31,16 @@ class GenerateCommands extends DrushCommands implements AutoloaderAwareInterface
      * @option destination Absolute path to a base directory for file writing.
      * @usage drush generate
      *  Pick from available generators and then run it.
-     * @usage drush generate controller
-     *  Generate a controller class for your module.
      * @usage drush generate drush-command-file
      *  Generate a Drush commandfile for your module.
+     * @usage drush generate controller --answer=Example --answer=example
+     *  Generate a controller class and pre-fill the first two questions in the wizard.
+     * @usage drush generate controller -vvv --dry-run
+     *  Learn all the potential answers so you can re-run with several --answer options.
      * @topics docs:generators
      * @bootstrap max
-     *
-     * @return int
      */
-    public function generate($generator = '', $options = ['answer' => [], 'destination' => self::REQ, 'dry-run' => false])
+    public function generate(string $generator = '', $options = ['answer' => [], 'destination' => self::REQ, 'dry-run' => false]): int
     {
         // Disallow default Symfony console commands.
         if ($generator == 'help' || $generator == 'list') {

@@ -1,4 +1,5 @@
 <?php
+
 namespace Drush\Preflight;
 
 use Consolidation\SiteAlias\SiteAliasName;
@@ -27,7 +28,7 @@ class ArgsPreprocessor
         $this->specParser = new SiteSpecParser();
     }
 
-    public function setArgsRemapper(ArgsRemapper $remapper)
+    public function setArgsRemapper(ArgsRemapper $remapper): void
     {
         $this->remapper = $remapper;
     }
@@ -38,11 +39,10 @@ class ArgsPreprocessor
      * @param string[] $argv
      *   Commandline arguments. The first element is
      *   the path to the application, which we will ignore.
-     * @param PreflightArgsInterface $storage
      *   A storage object to hold the arguments we remove
      *   from argv, plus the remaining argv arguments.
      */
-    public function parse($argv, PreflightArgsInterface $storage)
+    public function parse(array $argv, PreflightArgsInterface $storage)
     {
         $sawArg = false;
 
@@ -94,7 +94,7 @@ class ArgsPreprocessor
      * nextCouldBeValue determines whether there is a next argument that
      * exists and does not begin with a `-`.
      */
-    protected static function nextCouldBeValue($argv)
+    protected static function nextCouldBeValue($argv): bool
     {
         if (empty($argv)) {
             return false;
@@ -108,9 +108,8 @@ class ArgsPreprocessor
      *
      * @param string $arg
      *   Argument to test.
-     * @return bool
      */
-    protected function isAliasOrSiteSpec($arg)
+    protected function isAliasOrSiteSpec(string $arg): bool
     {
         if (SiteAliasName::isAliasName($arg)) {
             return true;
@@ -127,7 +126,7 @@ class ArgsPreprocessor
      * @param $opt The option string to check
      * @return [$methodName, $optionValue, $acceptsValueFromNextArg]
      */
-    protected function findMethodForOptionWithValues($optionsTable, $opt)
+    protected function findMethodForOptionWithValues($optionsTable, $opt): array
     {
         // Skip $opt if it is empty, or if it is not an option.
         if (empty($opt) || ($opt[0] != '-')) {
@@ -157,7 +156,7 @@ class ArgsPreprocessor
      *   to 'true'.
      * @return [$methodName, $optionValue, $acceptsValueFromNextArg]
      */
-    protected function checkMatchingOption($opt, $keyParam, $methodName)
+    protected function checkMatchingOption($opt, $keyParam, $methodName): array
     {
         // Test to see if $key ends in '='; remove the character if present.
         // If the char is removed, it means the option accepts a value.
@@ -166,7 +165,7 @@ class ArgsPreprocessor
         $acceptsValueFromNextArg = $keyParam[strlen($keyParam) - 1] != '~';
 
         // If $opt does not begin with $key, then it cannot be a match.
-        if ($key != substr($opt, 0, strlen($key))) {
+        if ($key !== substr($opt, 0, strlen($key))) {
             return [false, false, false];
         }
 
@@ -175,8 +174,8 @@ class ArgsPreprocessor
         // a value; in this case, the value will be provided from the next
         // argument in the calling function. If this option does not take a
         // supplied value, then we set its value to 'true'
-        if (strlen($key) == strlen($opt)) {
-            return [$methodName, $acceptsValue ? null: true, $acceptsValueFromNextArg];
+        if (strlen($key) === strlen($opt)) {
+            return [$methodName, $acceptsValue ? null : true, $acceptsValueFromNextArg];
         }
 
         // If the option is not an exact match for the key, then the next

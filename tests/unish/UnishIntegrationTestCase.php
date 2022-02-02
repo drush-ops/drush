@@ -1,4 +1,5 @@
 <?php
+
 namespace Unish;
 
 use Drush\Config\Environment;
@@ -8,6 +9,7 @@ use Drush\Runtime\DependencyInjection;
 use Drush\Runtime\Runtime;
 use Drush\Symfony\LessStrictArgvInput;
 use PHPUnit\Framework\TestResult;
+use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Process\Exception\ProcessTimedOutException;
 use Symfony\Component\Process\Process;
 use Unish\Controllers\RuntimeController;
@@ -95,8 +97,14 @@ abstract class UnishIntegrationTestCase extends UnishTestCase
         $return = $application->run($input, $output);
         $this->stdout = $output->fetch();
         $this->stderr = $output->getErrorOutput()->fetch();
-        $this->assertEquals($expected_return, $return, "Command failed: \n\n" . $this->getErrorOutput());
 
+        // Undo the env variable and verbosity property that Process unhelpfully persists.
+        // https://github.com/symfony/console/blob/3.4/Application.php#L970-L972
+        putenv('SHELL_VERBOSITY');
+        unset($_ENV['SHELL_VERBOSITY'], $_SERVER['SHELL_VERBOSITY']);
+        $output->setVerbosity(OutputInterface::VERBOSITY_NORMAL);
+
+        $this->assertEquals($expected_return, $return, "Command failed: \n\n" . $this->getErrorOutput());
         return $return;
     }
 

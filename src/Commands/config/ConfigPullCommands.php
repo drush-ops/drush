@@ -1,4 +1,5 @@
 <?php
+
 namespace Drush\Commands\config;
 
 use Consolidation\AnnotatedCommand\CommandData;
@@ -35,9 +36,8 @@ class ConfigPullCommands extends DrushCommands implements SiteAliasManagerAwareI
      * @topics docs:aliases,docs:config:exporting
      * @field-labels
      *  path: Path
-     * @return \Consolidation\OutputFormatters\StructuredData\PropertyList
      */
-    public function pull($source, $destination, $options = ['safe' => false, 'label' => 'sync', 'runner' => null, 'format' => 'null'])
+    public function pull(string $source, string $destination, array $options = ['safe' => false, 'label' => 'sync', 'runner' => null, 'format' => 'null']): PropertyList
     {
         $global_options = Drush::redispatchOptions()  + ['strict' => 0];
         $sourceRecord = $this->siteAliasManager()->get($source);
@@ -89,7 +89,7 @@ class ConfigPullCommands extends DrushCommands implements SiteAliasManagerAwareI
     /**
      * @hook validate config-pull
      */
-    public function validateConfigPull(CommandData $commandData)
+    public function validateConfigPull(CommandData $commandData): void
     {
         if ($commandData->input()->getOption('safe')) {
             $destinationRecord = $this->siteAliasManager()->get($commandData->input()->getArgument('destination'));

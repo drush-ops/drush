@@ -9,23 +9,18 @@ use Drupal\migrate\Plugin\MigrateIdMapInterface;
  */
 class MigrateIdMapFilter extends \FilterIterator
 {
-
     /**
      * List of specific source IDs to filter on.
-     *
-     * @var array
      */
-    protected $sourceIdList;
+    protected array $sourceIdList;
 
     /**
      * List of specific destination IDs to filter on.
-     *
-     * @var array
      */
-    protected $destinationIdList;
+    protected array $destinationIdList;
 
     /**
-     * @param \Drupal\migrate\Plugin\MigrateIdMapInterface $idMap
+     * @param MigrateIdMapInterface $idMap
      *   The ID map.
      * @param array|null $sourceIdList
      *   The source ID list to filter on.
@@ -49,7 +44,7 @@ class MigrateIdMapFilter extends \FilterIterator
             return true;
         }
 
-        /** @var \Drupal\migrate\Plugin\MigrateIdMapInterface $idMap */
+        /** @var MigrateIdMapInterface $idMap */
         $idMap = $this->getInnerIterator();
 
         $acceptedBySourceIdList = $this->sourceIdList && in_array(array_values($idMap->currentSource()), $this->sourceIdList);

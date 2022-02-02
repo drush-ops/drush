@@ -4,11 +4,12 @@ namespace Drush\Style;
 
 use Drush\Drush;
 use Drush\Exceptions\UserAbortException;
+use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 class DrushStyle extends SymfonyStyle
 {
-    public function confirm($question, $default = true)
+    public function confirm($question, $default = true): bool
     {
         // Automatically accept confirmations if the --yes argument was supplied.
         if (Drush::affirmative()) {
@@ -19,42 +20,49 @@ class DrushStyle extends SymfonyStyle
             $this->warning($question . ': no.');
             return false;
         }
-
-        $return = parent::confirm($question, $default);
-        return $return;
+        return parent::confirm($question, $default);
     }
 
-    /**
-     * @param string $question
-     * @param array $choices
-     *   If an associative array is passed, the chosen *key* is returned.
-     * @param null $default
-     * @return mixed
-     */
     public function choice($question, array $choices, $default = null)
     {
-        $choices = array_merge(['cancel' => 'Cancel'], $choices) ;
+        // Display the choices without their keys.
         $choices_values = array_values($choices);
         $return = parent::choice($question, $choices_values, $default);
-        if ($return == 'Cancel') {
-            throw new UserAbortException();
-        } else {
-            return array_search($return, $choices);
-        }
+
+        return array_search($return, $choices);
     }
 
-    public function warning($message)
+    public function warning($message): void
     {
         $this->block($message, 'WARNING', 'fg=black;bg=yellow', ' ! ', true);
     }
 
-    public function note($message)
+    public function note($message): void
     {
         $this->block($message, 'NOTE', 'fg=black;bg=yellow', ' ! ');
     }
 
-    public function caution($message)
+    public function caution($message): void
     {
         $this->block($message, 'CAUTION', 'fg=black;bg=yellow', ' ! ', true);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function askRequired($question)
+    {
+        $question = new Question($question);
+        $question->setValidator(function (?string $value) {
+            // FALSE is not considered as empty value because question helper use
+            // it as negative answer on confirmation questions.
+            if ($value === null || $value === '') {
+                throw new \UnexpectedValueException('This value is required.');
+            }
+
+            return $value;
+        });
+
+        return $this->askQuestion($question);
     }
 }

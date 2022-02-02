@@ -1,4 +1,5 @@
 <?php
+
 namespace Drush\Commands;
 
 use Consolidation\AnnotatedCommand\CommandData;
@@ -13,7 +14,6 @@ use Symfony\Component\Console\Input\InputOption;
 
 class PolicyCommands extends DrushCommands
 {
-
     /**
      * Prevent catastrophic braino. Note that this file has to be local to the
      * machine that initiates the sql:sync command.

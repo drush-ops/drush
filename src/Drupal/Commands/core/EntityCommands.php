@@ -2,13 +2,16 @@
 
 namespace Drush\Drupal\Commands\core;
 
+use Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException;
+use Drupal\Component\Plugin\Exception\PluginNotFoundException;
+use Drupal\Core\Entity\EntityStorageException;
+use Drupal\Core\Entity\Query\QueryInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drush\Commands\DrushCommands;
 use Drush\Utils\StringUtils;
 
 class EntityCommands extends DrushCommands
 {
-
     protected $entityTypeManager;
 
     /**
@@ -48,7 +51,7 @@ class EntityCommands extends DrushCommands
      * @aliases edel,entity-delete
      * @throws \Exception
      */
-    public function delete($entity_type, $ids = null, $options = ['bundle' => self::REQ, 'exclude' => self::REQ, 'chunks' => 50])
+    public function delete(string $entity_type, $ids = null, array $options = ['bundle' => self::REQ, 'exclude' => self::REQ, 'chunks' => 50]): void
     {
         $query = $this->getQuery($entity_type, $ids, $options);
         $result = $query->execute();
@@ -77,9 +80,9 @@ class EntityCommands extends DrushCommands
      * @param string $entity_type
      * @param array $ids
      *
-     * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
-     * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
-     * @throws \Drupal\Core\Entity\EntityStorageException
+     * @throws InvalidPluginDefinitionException
+     * @throws PluginNotFoundException
+     * @throws EntityStorageException
      */
     public function doDelete(string $entity_type, array $ids): void
     {
@@ -140,9 +143,9 @@ class EntityCommands extends DrushCommands
      * @param string $entity_type
      * @param array $ids
      *
-     * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
-     * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
-     * @throws \Drupal\Core\Entity\EntityStorageException
+     * @throws InvalidPluginDefinitionException
+     * @throws PluginNotFoundException
+     * @throws EntityStorageException
      */
     public function doSave(string $entity_type, array $ids): void
     {
@@ -157,15 +160,15 @@ class EntityCommands extends DrushCommands
      * @param string $entity_type
      * @param string|null $ids
      * @param array $options
-     * @return \Drupal\Core\Entity\Query\QueryInterface
-     * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
-     * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
+     * @return QueryInterface
+     * @throws InvalidPluginDefinitionException
+     * @throws PluginNotFoundException
      */
-    protected function getQuery(string $entity_type, ?string $ids, array $options): \Drupal\Core\Entity\Query\QueryInterface
+    protected function getQuery(string $entity_type, ?string $ids, array $options): QueryInterface
     {
         $storage = $this->entityTypeManager->getStorage($entity_type);
-        $query = $storage->getQuery();
-        if ($ids = StringUtils::csvToArray($ids)) {
+        $query = $storage->getQuery()->accessCheck(false);
+        if ($ids = StringUtils::csvToArray((string) $ids)) {
             $idKey = $this->entityTypeManager->getDefinition($entity_type)->getKey('id');
             $query = $query->condition($idKey, $ids, 'IN');
         } elseif ($options['bundle'] || $options['exclude']) {

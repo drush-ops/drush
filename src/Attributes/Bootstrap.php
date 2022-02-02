@@ -4,7 +4,6 @@ namespace Drush\Attributes;
 
 use Attribute;
 use Consolidation\AnnotatedCommand\Parser\CommandInfo;
-use Drush\Boot\DrupalBoot;
 use Drush\Boot\DrupalBootLevels;
 use JetBrains\PhpStorm\ExpectedValues;
 

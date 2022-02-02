@@ -7,7 +7,6 @@ namespace Unish;
  */
 class WatchdogTest extends UnishIntegrationTestCase
 {
-
     public function testWatchdog()
     {
         $this->drush('pm-enable', ['dblog']);

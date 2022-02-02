@@ -12,7 +12,6 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
  */
 class TestSqlIdMap extends Sql
 {
-
     public function __construct(Connection $database, array $configuration, $pluginId, $pluginDefinition, MigrationInterface $migration, EventDispatcherInterface $eventDispatcher)
     {
         $this->database = $database;

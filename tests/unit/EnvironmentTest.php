@@ -1,4 +1,5 @@
 <?php
+
 namespace Drush\Config;
 
 use PHPUnit\Framework\TestCase;

@@ -15,10 +15,11 @@ class CreateEntityType
             'name' => 'Unish Article',
             'machine_name' => 'unish_article',
             'description' => 'A test module',
-            'package' => 'unish',
+            'package' => 'Unish',
             'dependencies' => 'drupal:text',
         ];
         $testCase->drush('generate', ['module'], ['verbose' => null, 'answer' => $answers, 'destination' => Path::join($testCase->webroot(), 'modules/contrib')], null, null, $testCase::EXIT_SUCCESS, null, ['SHELL_INTERACTIVE' => 1]);
+
         // Create a content entity type and enable its module.
         // Note that only the values below are used. The keys are for documentation.
         $answers = [

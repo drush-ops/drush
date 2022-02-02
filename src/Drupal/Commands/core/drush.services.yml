@@ -25,20 +25,6 @@ services:
     class: \Drush\Drupal\Commands\core\EntityDisplayCommands
     tags:
       - { name: drush.command }
-  field.create.commands:
-    class: \Drush\Drupal\Commands\core\FieldCreateCommands
-    arguments:
-      - '@plugin.manager.field.field_type'
-      - '@plugin.manager.field.widget'
-      - '@plugin.manager.entity_reference_selection'
-      - '@entity_type.manager'
-      - '@entity_type.bundle.info'
-      - '@module_handler'
-      - '@entity_field.manager'
-    calls:
-      - [ setContentTranslationManager, [ '@?content_translation.manager' ] ]
-    tags:
-      -  { name: drush.command }
   link.hooks:
     class: \Drush\Drupal\Commands\core\LinkHooks
     arguments:
@@ -70,7 +56,7 @@ services:
         -  { name: drush.command }
   migrate_runner.commands:
     class: Drush\Drupal\Commands\core\MigrateRunnerCommands
-    arguments: ['@date.formatter', '@keyvalue']
+    arguments: ['@date.formatter', '@keyvalue', '@?plugin.manager.migration']
     tags:
       -  { name: drush.command }
   queue.commands:

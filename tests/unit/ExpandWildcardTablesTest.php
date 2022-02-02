@@ -2,7 +2,7 @@
 
 namespace Unish;
 
-use \Drush\Sql\SqlTableSelectionTrait;
+use Drush\Sql\SqlTableSelectionTrait;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -13,7 +13,6 @@ use PHPUnit\Framework\TestCase;
   */
 class ExpandWildcardTablesTest extends TestCase
 {
-
     use SqlTableSelectionTrait;
 
   /**

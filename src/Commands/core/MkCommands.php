@@ -35,7 +35,7 @@ class MkCommands extends DrushCommands implements SiteAliasManagerAwareInterface
      * @usage drush mk:docs
      *   Build many .md files in the docs/commands and docs/generators directories.
      */
-    public function docs()
+    public function docs(): void
     {
         $dir_root = Drush::bootstrapManager()->getComposerRoot();
         $destination = 'commands';
@@ -46,7 +46,7 @@ class MkCommands extends DrushCommands implements SiteAliasManagerAwareInterface
         $all = $application->all();
         $namespaced = ListCommands::categorize($all);
         [$nav_commands, $pages_commands] = $this->writeContentFilesAndAddToNav($namespaced, $destination, $dir_root, $destination_path);
-        $this->writeAllMd($pages_commands, $destination_path);
+        $this->writeAllMd($pages_commands, $destination_path, 'All commands');
 
         $destination = 'generators';
         $destination_path = Path::join($dir_root, 'docs', $destination);
@@ -57,7 +57,7 @@ class MkCommands extends DrushCommands implements SiteAliasManagerAwareInterface
         $all = $this->createAnnotatedCommands($application_generate, Drush::getApplication());
         $namespaced = ListCommands::categorize($all);
         [$nav_generators, $pages_generators] = $this->writeContentFilesAndAddToNav($namespaced, $destination, $dir_root, $destination_path);
-        $this->writeAllMd($pages_generators, $destination_path);
+        $this->writeAllMd($pages_generators, $destination_path, 'All generators');
 
         $this->writeYml($nav_commands, $nav_generators, $dir_root);
     }
@@ -77,8 +77,8 @@ class MkCommands extends DrushCommands implements SiteAliasManagerAwareInterface
             $annotated->setAliases($command->getAliases());
             $annotated->setTopics(['docs:generators']);
             $values = [];
-            if ($command->getName() == 'entity:bundle-class') {
-                $values['version'] = '11.x';
+            if (in_array($command->getName(), ['entity:bundle-class'])) {
+                $values['version'] = '11.0';
             }
             $annotated->setAnnotationData(new AnnotationData($values));
             // Hack, until we have https://github.com/consolidation/annotated-command/pull/247
@@ -100,7 +100,7 @@ class MkCommands extends DrushCommands implements SiteAliasManagerAwareInterface
 EOT;
     }
 
-    protected static function appendAliases(AnnotatedCommand $command): string
+    protected static function appendAliases($command): string
     {
         if ($aliases = $command->getAliases()) {
             $body = "#### Aliases\n\n";
@@ -141,7 +141,7 @@ EOT;
         return '';
     }
 
-    protected static function appendOptions(AnnotatedCommand $command): string
+    protected static function appendOptions($command): string
     {
         if ($opts = $command->getDefinition()->getOptions()) {
             $body = '';
@@ -159,7 +159,7 @@ EOT;
         return '';
     }
 
-    protected static function appendArguments(AnnotatedCommand $command): string
+    protected static function appendArguments($command): string
     {
         if ($args = $command->getDefinition()->getArguments()) {
             $body = "#### Arguments\n\n";
@@ -184,9 +184,12 @@ EOT;
         return '';
     }
 
-    protected static function appendPreamble(AnnotatedCommand $command, $root): string
+    protected static function appendPreamble($command, $root): string
     {
-        $path = Path::makeRelative($command->getAnnotationData()->get('_path'), $root);
+        $path = '';
+        if ($command instanceof AnnotatedCommand) {
+            $path = Path::makeRelative($command->getAnnotationData()->get('_path'), $root);
+        }
         $edit_url = $path ? "https://github.com/drush-ops/drush/blob/11.x/$path" : '';
         $body = <<<EOT
 ---
@@ -222,7 +225,7 @@ EOT;
         file_put_contents(Path::join($dest, 'mkdocs.yml'), $yaml_nav);
     }
 
-    protected function writeAllMd(array $pages_all, string $destination_path): void
+    protected function writeAllMd(array $pages_all, string $destination_path, string $title): void
     {
         unset($pages_all['all']);
         foreach ($pages_all as $name => $page) {
@@ -230,7 +233,7 @@ EOT;
             $items[] = "* [$name]($basename)";
         }
         $preamble = <<<EOT
-# All commands
+# $title
 
 !!! tip
 
@@ -258,7 +261,7 @@ EOT;
     /**
      * Build an array since that's what HelpCLIFormatter expects.
      *
-     * @param \Symfony\Component\Console\Input\InputArgument $arg
+     * @param InputArgument $arg
      *
      * @return iterable
      */
@@ -274,7 +277,7 @@ EOT;
     /**
      * Build an array since that's what HelpCLIFormatter expects.
      *
-     * @param \Symfony\Component\Console\Input\InputOption $opt
+     * @param InputOption $opt
      *
      * @return iterable
      */
@@ -328,7 +331,9 @@ EOT;
                     $command->optionsHook();
                 }
                 $body = self::appendPreamble($command, $dir_root);
-                $body .= self::appendUsages($command);
+                if ($command instanceof AnnotatedCommand) {
+                    $body .= self::appendUsages($command);
+                }
                 $body .= self::appendArguments($command);
                 $body .= self::appendOptions($command);
                 if ($command instanceof AnnotatedCommand) {

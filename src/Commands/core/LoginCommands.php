@@ -1,4 +1,5 @@
 <?php
+
 namespace Drush\Commands\core;
 
 use Drupal\user\Entity\User;
@@ -11,7 +12,6 @@ use Drupal\Core\Url;
 
 class LoginCommands extends DrushCommands implements SiteAliasManagerAwareInterface
 {
-
     use SiteAliasManagerAwareTrait;
     use ExecTrait;
 
@@ -38,7 +38,7 @@ class LoginCommands extends DrushCommands implements SiteAliasManagerAwareInterf
      * @usage drush user:login --mail=foo@bar.com
      *   Open browser and login as user with mail "foo@bar.com".
      */
-    public function login($path = '', $options = ['name' => null, 'uid' => null, 'mail' => null, 'browser' => true, 'redirect-port' => self::REQ])
+    public function login(string $path = '', $options = ['name' => null, 'uid' => null, 'mail' => null, 'browser' => true, 'redirect-port' => self::REQ])
     {
         // Redispatch if called against a remote-host so a browser is started on the
         // the *local* machine.
@@ -67,6 +67,10 @@ class LoginCommands extends DrushCommands implements SiteAliasManagerAwareInterf
 
             if (empty($account)) {
                 $account = User::load(1);
+            }
+
+            if ($account->isBlocked()) {
+                throw new \InvalidArgumentException(dt('Account !name is blocked and thus cannot login. The user:unblock command may be helpful.', ['!name' => $account->getAccountName()]));
             }
 
             $timestamp = \Drupal::time()->getRequestTime();

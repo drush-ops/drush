@@ -1,9 +1,11 @@
 <?php
+
 namespace Drush\Drupal;
 
 use Drush\Drush;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\Reference;
 
 /**
@@ -41,7 +43,7 @@ class FindCommandsCompilerPass implements CompilerPassInterface
         $this->tagId = $tagId;
     }
 
-    public function process(ContainerBuilder $container)
+    public function process(ContainerBuilder $container): void
     {
         Drush::logger()->debug(dt("process !storage !tag", ['!storage' => $this->storageClassId, '!tag' => $this->tagId]));
         // We expect that our called registered the storage
@@ -63,7 +65,7 @@ class FindCommandsCompilerPass implements CompilerPassInterface
             Drush::logger()->debug(dt("Found tagged service !id", ['!id' => $id]));
             $definition->addMethodCall(
                 'addCommandReference',
-                [new Reference($id)]
+                [new Reference($id, ContainerInterface::IGNORE_ON_INVALID_REFERENCE)]
             );
         }
     }
