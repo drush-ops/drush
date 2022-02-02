@@ -13,6 +13,7 @@ class ArchiveTest extends CommandUnishTestCase
 {
     public function testArchiveDumpCommand()
     {
+        $this->setUpDrupal(1, true);
         $options = [
             'db' => null,
             'exclude-code-paths' => 'sites/.+/settings.php',
@@ -25,7 +26,10 @@ class ArchiveTest extends CommandUnishTestCase
             $options
         );
         $actualArchivePath = $this->getOutput();
-        $this->assertTrue((bool) preg_match('#\/archives\/\d+\/archive\.tar\.gz$#', $actualArchivePath));
+        $this->assertMatchesRegularExpression(
+            '#\/archives\/\d+\/archive\.tar\.gz$#',
+            $actualArchivePath
+        );
 
         // Create an archive with "--destination".
         $expectedArchivePath = Path::join($this->getSandbox(), 'archive.tar.gz');
@@ -73,8 +77,8 @@ class ArchiveTest extends CommandUnishTestCase
             null,
             self::EXIT_ERROR
         );
-        $this->assertStringContainsString(
-            'Found database connection settings in sites/default/settings.php',
+        $this->assertMatchesRegularExpression(
+            '#Found database connection settings in sites\/.+\/settings\.php#',
             $this->getErrorOutput()
         );
     }
