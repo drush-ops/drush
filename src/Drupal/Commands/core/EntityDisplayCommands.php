@@ -76,6 +76,6 @@ class EntityDisplayCommands extends DrushCommands
         // config-export shows the correct changes.
         drupal_flush_all_caches();
 
-        $this->logger()->success(dt('Finished rebuilding form and display configurations. Run drush config-export if you want to add changes to your version control system.'));
+        $this->logger()->success(dt('Finished rebuilding form and display configurations. Run drush config:export if you want to add changes to your version control system.'));
     }
 }
