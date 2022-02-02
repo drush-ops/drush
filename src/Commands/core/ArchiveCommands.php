@@ -206,14 +206,13 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
         $archivePath .= '.gz';
 
         if (!$options['destination']) {
-
             return $archivePath;
         }
 
         if ($this->filesystem->exists($options['destination'])) {
             if (!$options['overwrite']) {
                 throw new Exception(
-                'The destination file already exists. Use "--overwrite" option for overwriting an existing file.'
+                    'The destination file already exists. Use "--overwrite" option for overwriting an existing file.'
                 );
             }
 
