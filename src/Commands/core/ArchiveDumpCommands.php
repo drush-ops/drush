@@ -2,10 +2,8 @@
 
 namespace Drush\Commands\core;
 
-use Consolidation\SiteAlias\HostPath;
 use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
 use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
-use Drush\Backend\BackendPathEvaluator;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Drush\Sql\SqlBase;
@@ -24,9 +22,9 @@ use Traversable;
 use Webmozart\PathUtil\Path;
 
 /**
- * Class ArchiveCommands.
+ * Class ArchiveDumpCommands.
  */
-class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInterface
+class ArchiveDumpCommands extends DrushCommands implements SiteAliasManagerAwareInterface
 {
     use SiteAliasManagerAwareTrait;
 
@@ -124,6 +122,8 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
      * @bootstrap max configuration
      *
      * @param array $options
+     *
+     * @return string
      *
      * @throws \Exception
      */
@@ -352,11 +352,20 @@ class ArchiveCommands extends DrushCommands implements SiteAliasManagerAwareInte
      */
     private function getDrupalFilesComponentPath(): string
     {
-        $evaluatedPath = HostPath::create($this->siteAliasManager(), '%files');
-        $pathEvaluator = new BackendPathEvaluator();
-        $pathEvaluator->evaluate($evaluatedPath);
+        $process = $this->processManager()->drush(
+            $this->siteAliasManager()->getSelf(),
+            'core-status',
+            [],
+            ['fields' => 'files', 'format' => 'json']
+        );
+        $process->setSimulated(false);
+        $process->mustRun();
+        $status = $process->getOutputAsJson();
+        if (!isset($status['files'])) {
+            throw new Exception('Failed to get path to Drupal files directory');
+        }
 
-        $drupalFilesPath = $evaluatedPath->fullyQualifiedPath();
+        $drupalFilesPath = Path::join($this->siteAliasManager()->getSelf()->root(), $status['files']);
         $drupalFilesArchiveComponentPath = Path::join($this->archiveDir, self::COMPONENT_FILES);
         $this->logger()->info(
             dt(
