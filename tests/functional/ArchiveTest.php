@@ -77,8 +77,8 @@ class ArchiveTest extends CommandUnishTestCase
             null,
             self::EXIT_ERROR
         );
-        $this->assertMatchesRegularExpression(
-            '#Found database connection settings in sites\/.+\/settings\.php#',
+        $this->assertStringContainsString(
+            'Found database connection settings',
             $this->getErrorOutput()
         );
     }

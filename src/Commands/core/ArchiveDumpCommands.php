@@ -411,7 +411,9 @@ class ArchiveDumpCommands extends DrushCommands implements SiteAliasManagerAware
                     FilesystemIterator::SKIP_DOTS
                 ),
                 function ($file) use ($excludes, $path) {
-                    $localFileName = str_replace($path . DIRECTORY_SEPARATOR, '', $file);
+                    $localFileName = str_replace($path, '', $file);
+                    $localFileName = str_replace('\\', '/', $localFileName);
+                    $localFileName = trim($localFileName, '\/');
 
                     foreach ($excludes as $exclude) {
                         if (preg_match($exclude, $localFileName)) {
