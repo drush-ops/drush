@@ -54,7 +54,7 @@ class EntityDisplayCommands extends DrushCommands
         }
 
         // Simulation is not supported, because class EntityDisplayRebuilder does not support it.
-        // Therefor we cannot get a diff of specific configurations that will be changed until we
+        // Therefore we cannot get a diff of specific configurations that will be changed until we
         // have finished rebuilding all form and display configurations.
         if ($this->getConfig()->simulate()) {
             throw new \Exception(dt('rebuild-display-config command does not support --simulate option.'));
