@@ -41,14 +41,11 @@ class ArchiveDumpCommands extends DrushCommands implements SiteAliasManagerAware
     private const WEB_DOCROOT = 'web';
 
     private const COMPONENT_CODE = 'code';
-    private const CODE_ARCHIVE_FILE_NAME = 'code.tar';
 
     private const COMPONENT_FILES = 'files';
-    private const DRUPAL_FILES_ARCHIVE_FILE_NAME = 'files.tar';
 
     private const COMPONENT_DATABASE = 'database';
     private const SQL_DUMP_FILE_NAME = 'database.sql';
-    private const DATABASE_ARCHIVE_FILE_NAME = 'database.tar';
 
     private const ARCHIVES_DIR_NAME = 'archives';
     private const ARCHIVE_SUBDIR_NAME = 'archive';
@@ -235,10 +232,8 @@ class ArchiveDumpCommands extends DrushCommands implements SiteAliasManagerAware
      *
      * @param array $options
      *   The command options.
-     *
-     * @return string
      */
-    private function createManifestFile(array $options): string
+    private function createManifestFile(array $options): void
     {
         $this->logger()->info(dt('Creating !manifest file...', ['!manifest' => self::MANIFEST_FILE_NAME]));
         $manifest = [
@@ -259,8 +254,6 @@ class ArchiveDumpCommands extends DrushCommands implements SiteAliasManagerAware
             $manifestFilePath,
             Yaml::dump($manifest)
         );
-
-        return $manifestFilePath;
     }
 
     /**
