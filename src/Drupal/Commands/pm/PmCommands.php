@@ -67,7 +67,7 @@ class PmCommands extends DrushCommands
      *
      * @command pm:install
      * @param $modules A comma delimited list of modules.
-     * @aliases install, pm-install, en, pm-enable, pm:enable
+     * @aliases in, install, pm-install, en, pm-enable, pm:enable
      * @bootstrap root
      */
     public function install(array $modules): void
