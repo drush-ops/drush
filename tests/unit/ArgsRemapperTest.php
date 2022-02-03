@@ -35,8 +35,13 @@ class ArgsRemapperTest extends TestCase
     {
         return [
             [
+                ['in', 'in'],
                 ['install', 'install'],
+                ['pm-install', 'pm-install'],
                 ['pm:install', 'install'],
+                ['en', 'en'],
+                ['pm-enable', 'pm-enable'],
+                ['pm:enable', 'en'],
             ],
         ];
     }
