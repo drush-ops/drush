@@ -20,7 +20,7 @@ class ArgsRemapperTest extends TestCase
     {
         $remapOptions = [];
         $remapCommandAliases = [
-            'install' => 'pm:install'
+            'in' => 'pm:install'
         ];
         $sut = new ArgsRemapper($remapOptions, $remapCommandAliases);
         $result = $sut->remap($argv);
