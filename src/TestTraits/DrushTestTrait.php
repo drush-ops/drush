@@ -75,8 +75,8 @@ trait DrushTestTrait
             $cmd[] = $this->convertKeyValueToFlag($key, $value);
         }
 
-        $cmd[] = $suffix;
-        $exec = array_filter($cmd, 'strlen'); // Remove NULLs
+        $cmd[] = (string) $suffix;
+        $exec = array_filter($cmd, 'strlen'); // Removes empty strings.
 
         $cmd = implode(' ', $exec);
         $this->execute($cmd, $expected_return, $cd, $env);
