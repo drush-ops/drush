@@ -121,7 +121,7 @@ abstract class SqlBase implements ConfigAwareInterface
         }
     }
 
-    public static function getInstance($db_spec, $options): ?static
+    public static function getInstance($db_spec, $options): ?self
     {
         $driver = $db_spec['driver'];
         $class_name = 'Drush\Sql\Sql' . ucfirst($driver);
