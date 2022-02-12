@@ -13,6 +13,26 @@ use Symfony\Component\Process\Process;
 use Webmozart\PathUtil\Path;
 use Consolidation\Config\Util\Interpolator;
 
+/**
+ * The base implementation for Drush database connections.
+ *
+ * MySql, PostgreSql and SQLite implementations are provided by Drush.
+ * Contrib and custom database drivers can provide their own implementation by
+ * extending from this class, and naming the class like 'SqlMydriver'. Note that
+ * the camelcasing is required, as well as it is mandatory that the namespace of
+ * the extending class be 'Drush\Sql'. In order to avoid autoloadier
+ * collisions, it is recommended to place the class outside of the 'src'
+ * directory of the module providing the database driver, then adding a
+ * 'classmap' entry to the autoload class of the module's composer.json file.
+ *
+ * For example, supposing the SqlMydriver class is located in a 'drush'
+ * module subdirectory:
+ * @code
+ *   "autoload": {
+ *     "classmap": ["drush/SqlMydriver.php"]
+ *   },
+ * @endcode
+ */
 abstract class SqlBase implements ConfigAwareInterface
 {
     use SqlTableSelectionTrait;
@@ -86,16 +106,16 @@ abstract class SqlBase implements ConfigAwareInterface
 
         if ($url = $options['db-url']) {
             $url = is_array($url) ? $url[$database] : $url;
-            $db_spec = self::dbSpecFromDbUrl($url);
+            $db_spec = static::dbSpecFromDbUrl($url);
             $db_spec['prefix'] = $options['db-prefix'];
-            return self::getInstance($db_spec, $options);
+            return static::getInstance($db_spec, $options);
         } elseif (($databases = $options['databases']) && (array_key_exists($database, $databases)) && (array_key_exists($target, $databases[$database]))) {
             // @todo 'databases' option is not declared anywhere?
             $db_spec = $databases[$database][$target];
-            return self::getInstance($db_spec, $options);
+            return static::getInstance($db_spec, $options);
         } elseif ($info = Database::getConnectionInfo($database)) {
             $db_spec = $info[$target];
-            return self::getInstance($db_spec, $options);
+            return static::getInstance($db_spec, $options);
         } else {
             throw new \Exception(dt('Unable to load Drupal settings. Check your --root, --uri, etc.'));
         }
@@ -587,7 +607,7 @@ abstract class SqlBase implements ConfigAwareInterface
                 ];
                 $url = (object)array_map('urldecode', $url);
                 $db_spec = [
-                    'driver'   => $url->scheme == 'mysqli' ? 'mysql' : $url->scheme,
+                    'driver'   => $url->scheme,
                     'username' => $url->user,
                     'password' => $url->pass,
                     'host' => $url->host,
