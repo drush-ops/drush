@@ -116,7 +116,7 @@ class PmCommands extends DrushCommands
         require_once DRUSH_DRUPAL_CORE . '/includes/install.inc';
         $error = false;
         foreach ($modules as $module) {
-            module_load_install($module);
+            $this->moduleHandler->loadInclude($module, 'install');
             $requirements = $this->getModuleHandler()->invoke($module, 'requirements', ['install']);
             if (is_array($requirements) && drupal_requirements_severity($requirements) == REQUIREMENT_ERROR) {
                 $error = true;
