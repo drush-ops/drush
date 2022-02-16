@@ -90,7 +90,7 @@ trait DrushTestTrait
      * @param string $value The option value (or empty)
      * @return string
      */
-    protected function convertKeyValueToFlag(string $key, string $value)
+    protected function convertKeyValueToFlag(string $key, ?string $value)
     {
         if (!isset($value)) {
             return "--$key";
