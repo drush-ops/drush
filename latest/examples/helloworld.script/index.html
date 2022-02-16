@@ -4861,15 +4861,13 @@
 
 <span class="c1">//</span>
 <span class="c1">// This example demonstrates how to write a drush</span>
-<span class="c1">// script.  These scripts are run with the php-script command.</span>
+<span class="c1">// script. These scripts are run with the php:script command.</span>
 <span class="c1">//</span>
 <span class="k">use</span> <span class="nx">Drush\Drush</span><span class="p">;</span>
 
 <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">output</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">writeln</span><span class="p">(</span><span class="s2">&quot;Hello world!&quot;</span><span class="p">);</span>
 <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">output</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">writeln</span><span class="p">(</span><span class="s2">&quot;The extra options/arguments to this command were:&quot;</span><span class="p">);</span>
 <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">output</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">writeln</span><span class="p">(</span><span class="nb">print_r</span><span class="p">(</span><span class="nv">$extra</span><span class="p">,</span> <span class="k">true</span><span class="p">));</span>
-
-
 
 <span class="c1">//</span>
 <span class="c1">// We can check which site was bootstrapped via</span>
