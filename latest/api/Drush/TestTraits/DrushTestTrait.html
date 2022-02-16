@@ -395,7 +395,7 @@ whitespace.</p></p>                </div>
                     string
                 </div>
                 <div class="col-md-8">
-                    <a href="#method_convertKeyValueToFlag">convertKeyValueToFlag</a>(string $key, string $value)
+                    <a href="#method_convertKeyValueToFlag">convertKeyValueToFlag</a>(string $key, string|null $value)
         
                                             <p><p>Given an option key / value pair, convert to a
 &quot;--key=value&quot; string.</p></p>                </div>
@@ -1203,7 +1203,7 @@ on minor differences.</p></p>
                     <h3 id="method_convertKeyValueToFlag">
         <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/TestTraits/DrushTestTrait.php#L93">at line 93</a></div>
         <code>            protected        string
-    <strong>convertKeyValueToFlag</strong>(string $key, string $value)
+    <strong>convertKeyValueToFlag</strong>(string $key, string|null $value)
         </code>
     </h3>
     <div class="details">    
@@ -1224,7 +1224,7 @@ on minor differences.</p></p>
                 <td><p>The option name</p></td>
             </tr>
                     <tr>
-                <td>string</td>
+                <td>string|null</td>
                 <td>$value</td>
                 <td><p>The option value (or empty)</p></td>
             </tr>
