@@ -18,7 +18,8 @@ test_74_steps: &test74steps
   steps:
     - checkout
     - run: cp .docker/zz-php.ini /usr/local/etc/php/conf.d/
-    - run: composer -n install
+    - run: composer -n require enlightn/security-checker --no-update
+    - run: composer -n update
     - run: mkdir -p /tmp/results
     - run: composer -n lint
     - run: composer -n unit -- --log-junit /tmp/results/unit.junit.xml
@@ -103,6 +104,7 @@ jobs:
       - run: cp .docker/zz-php.ini /usr/local/etc/php/conf.d/
       - run: composer -n require --dev drupal/core-recommended:9.2.8 --no-update
       - run: composer -n require symfony/polyfill-php80:"1.23 as 1.20" --no-update
+      - run: composer -n require enlightn/security-checker --no-update
       - run: php --version
       - run: composer -n update
       - run: composer -n phpunit -- --testsuite integration --filter=testInsecureDrupalPackage --stop-on-skipped

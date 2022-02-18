@@ -63,6 +63,10 @@ class SecurityUpdateCommands extends DrushCommands
      */
     public function security(array $options = ['no-dev' => false])
     {
+        if (!class_exists(SecurityChecker::class)) {
+            throw new \Exception("Enlightn\SecurityChecker not available. To use, run: composer require enlightn/security-checker");
+        }
+
         $security_advisories_composer_json = $this->fetchAdvisoryComposerJson();
         $composer_lock_data = $this->loadSiteComposerLock();
         $updates = $this->calculateSecurityUpdates($composer_lock_data, $security_advisories_composer_json, $options['no-dev']);
