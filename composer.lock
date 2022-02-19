@@ -774,16 +774,16 @@
         },
         {
             "name": "grasmash/expander",
-            "version": "2.0.0",
+            "version": "2.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/grasmash/expander.git",
-                "reference": "84c256112763e00d09b437d269897339ca1ceaf4"
+                "reference": "2c81d9d806097180da40747787b14bf021c6d3c9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/grasmash/expander/zipball/84c256112763e00d09b437d269897339ca1ceaf4",
-                "reference": "84c256112763e00d09b437d269897339ca1ceaf4",
+                "url": "https://api.github.com/repos/grasmash/expander/zipball/2c81d9d806097180da40747787b14bf021c6d3c9",
+                "reference": "2c81d9d806097180da40747787b14bf021c6d3c9",
                 "shasum": ""
             },
             "require": {
@@ -820,9 +820,9 @@
             "description": "Expands internal property references in PHP arrays file.",
             "support": {
                 "issues": "https://github.com/grasmash/expander/issues",
-                "source": "https://github.com/grasmash/expander/tree/2.0.0"
+                "source": "https://github.com/grasmash/expander/tree/2.0.1"
             },
-            "time": "2021-12-08T01:46:56+00:00"
+            "time": "2022-02-19T00:49:38+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",
