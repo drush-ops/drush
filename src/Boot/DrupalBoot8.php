@@ -140,8 +140,7 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
         if (method_exists(Request::class, 'create')) {
             // Drupal 9
             $request = Request::create($uri, 'GET', [], [], [], $server);
-        }
-        else {
+        } else {
             // Drupal 10
             $request = Request::createFromGlobals();
         }
@@ -301,8 +300,7 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
         if ($this->kernel) {
             if (method_exists(Response::class, 'create')) {
                 $response = Response::create('');
-            }
-            else {
+            } else {
                 $response = new HtmlResponse();
             }
             $this->kernel->terminate($this->getRequest(), $response);
