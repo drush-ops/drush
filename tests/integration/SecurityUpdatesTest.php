@@ -74,7 +74,7 @@ class SecurityUpdatesTest extends UnishIntegrationTestCase
      */
     protected function skipIfSecurityCheckerNotAvailable()
     {
-        if ($this->isDrupalGreaterThanOrEqualTo('10.0.0')) {
+        if ($this->isDrupalGreaterThanOrEqualTo('10.0.0@dev')) {
             $this->markTestSkipped('enlightn/security-checker not yet available for Drupal 10.');
         }
     }
