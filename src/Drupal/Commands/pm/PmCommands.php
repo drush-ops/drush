@@ -122,7 +122,7 @@ class PmCommands extends DrushCommands
             $module_list = \Drupal::service('extension.list.module');
             $file = DRUPAL_ROOT . '/' . $module_list->getPath($module) . "/$module.install";
             if (is_file($file)) {
-              require_once $file;
+                require_once $file;
             }
             // Once we've loaded the module, we can invoke its requirements hook.
             $requirements = $this->getModuleHandler()->invoke($module, 'requirements', ['install']);
