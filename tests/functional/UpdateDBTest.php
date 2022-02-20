@@ -77,7 +77,7 @@ class UpdateDBTest extends CommandUnishTestCase
         $this->drush('php-script', ['updatedb_script'], ['script-path' => __DIR__ . '/resources']);
 
         // Force re-run of woot_update_8101().
-        $this->drush('php:eval', array('\Drupal::service("update.update_hook_registry")->setInstalledVersion("woot", ' . $last_successful_update . ')'), $options);
+        $this->drush('php:eval', array('Drupal::service("update.update_hook_registry")->setInstalledVersion("woot", ' . $last_successful_update . ')'), $options);
 
         // Force re-run of the post-update woot_post_update_failing().
         $this->forcePostUpdate('woot_post_update_failing', $options);
@@ -161,7 +161,7 @@ class UpdateDBTest extends CommandUnishTestCase
         $this->drush('pm-enable', ['woot'], $options);
 
         // Force re-run of woot_update_8104().
-        $this->drush('php:eval', array('\Drupal::service("update.update_hook_registry")->setInstalledVersion("woot", 8103)'), $options);
+        $this->drush('php:eval', array('Drupal::service("update.update_hook_registry")->setInstalledVersion("woot", 8103)'), $options);
 
         // Force re-run of post-update hooks.
         $this->forcePostUpdate('woot_post_update_a', $options);
@@ -261,7 +261,7 @@ YAML_FRAGMENT;
         $this->drush('pm-enable', ['woot'], $options);
 
         // Force re-run of woot_update_8104() which is expected to be completed successfully.
-        $this->drush('php:eval', array('\Drupal::service("update.update_hook_registry")->setInstalledVersion("woot", 8103)'), $options);
+        $this->drush('php:eval', array('Drupal::service("update.update_hook_registry")->setInstalledVersion("woot", 8103)'), $options);
 
         // Force re-run of post-update hooks which are expected to be completed successfully.
         $this->forcePostUpdate('woot_post_update_a', $options);
@@ -296,7 +296,7 @@ YAML_FRAGMENT;
         $this->drush('pm:enable', ['woot'], $options);
 
         // Force re-run of woot_update_8105().
-        $this->drush('php:eval', ['\Drupal::service("update.update_hook_registry")->setInstalledVersion("woot", 8104)'], $options);
+        $this->drush('php:eval', ['Drupal::service("update.update_hook_registry")->setInstalledVersion("woot", 8104)'], $options);
         // Force re-run of woot_post_update_batch().
         $this->forcePostUpdate('woot_post_update_batch', $options);
 
@@ -343,7 +343,7 @@ POST_UPDATE;
         $this->drush('pm:enable', ['woot'], $options);
 
         // Force re-run of woot_update_8106().
-        $this->drush('php:eval', ['\Drupal::service("update.update_hook_registry")->setInstalledVersion("woot", 8105)'], $options);
+        $this->drush('php:eval', ['Drupal::service("update.update_hook_registry")->setInstalledVersion("woot", 8105)'], $options);
 
         // Run updates.
         $this->drush('updatedb', [], $options);
