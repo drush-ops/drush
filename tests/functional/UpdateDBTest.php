@@ -16,6 +16,10 @@ class UpdateDBTest extends CommandUnishTestCase
 
     public function testUpdateDBStatus()
     {
+        if (!$this->isDrupalGreaterThanOrEqualTo('9.3.0')) {
+            $this->markTestSkipped('Test uses setInstalledVersion from update.update_hook_registry, introduced in Drupal 9.3.0, instead of drupal_set_installed_schema_version');
+        }
+
         $this->setUpDrupal(1, true);
         $this->drush('pm:enable', ['drush_empty_module']);
         $this->drush('updatedb:status');
@@ -23,7 +27,7 @@ class UpdateDBTest extends CommandUnishTestCase
         $this->assertStringContainsString('[success] No database updates required.', $err);
 
         // Force a pending update.
-        $this->drush('php-script', [$this->updateDbScriptName()], ['script-path' => __DIR__ . '/resources']);
+        $this->drush('php-script', ['updatedb_script'], ['script-path' => __DIR__ . '/resources']);
 
         // Assert that pending hook_update_n appears
         $this->drush('updatedb:status', [], ['format' => 'json']);
@@ -59,6 +63,9 @@ class UpdateDBTest extends CommandUnishTestCase
         if (version_compare(phpversion(), '7.0.0') < 0) {
             $this->markTestSkipped('Catching fatal errors is supported in PHP 7.0 and higher.');
         }
+        if (!$this->isDrupalGreaterThanOrEqualTo('9.3.0')) {
+            $this->markTestSkipped('Test uses setInstalledVersion from update.update_hook_registry, introduced in Drupal 9.3.0, instead of drupal_set_installed_schema_version');
+        }
         $this->setUpDrupal(1, true);
         $options = [
             'yes' => null,
@@ -67,10 +74,10 @@ class UpdateDBTest extends CommandUnishTestCase
         $this->drush('pm-enable', ['woot'], $options);
 
         // Force a pending update.
-        $this->drush('php-script', [$this->updateDbScriptName()], ['script-path' => __DIR__ . '/resources']);
+        $this->drush('php-script', ['updatedb_script'], ['script-path' => __DIR__ . '/resources']);
 
         // Force re-run of woot_update_8101().
-        $this->drush('php:eval', array('drupal_set_installed_schema_version("woot", ' . $last_successful_update . ')'), $options);
+        $this->drush('php:eval', array('\Drupal::service("update.update_hook_registry")->setInstalledVersion("woot", ' . $last_successful_update . ')'), $options);
 
         // Force re-run of the post-update woot_post_update_failing().
         $this->forcePostUpdate('woot_post_update_failing', $options);
@@ -84,17 +91,6 @@ class UpdateDBTest extends CommandUnishTestCase
         foreach ($expected_update_log_output as $needle) {
             $this->assertStringContainsString($needle, $this->getErrorOutput());
         }
-    }
-
-    /**
-     * Select the appropriate update script for the current Drupal version
-     */
-    protected function updateDbScriptName()
-    {
-        if ($this->isDrupalGreaterThanOrEqualTo('9.3.0')) {
-            return 'updatedb_script';
-        }
-        return 'updatedb_script_legacy';
     }
 
     /**
@@ -153,6 +149,9 @@ class UpdateDBTest extends CommandUnishTestCase
         if ($this->isWindows()) {
             $this->markTestSkipped('See https://github.com/consolidation/site-process/pull/27');
         }
+        if (!$this->isDrupalGreaterThanOrEqualTo('9.3.0')) {
+            $this->markTestSkipped('Test uses setInstalledVersion from update.update_hook_registry, introduced in Drupal 9.3.0, instead of drupal_set_installed_schema_version');
+        }
 
         $this->setUpDrupal(1, true);
         $options = [
@@ -162,7 +161,7 @@ class UpdateDBTest extends CommandUnishTestCase
         $this->drush('pm-enable', ['woot'], $options);
 
         // Force re-run of woot_update_8104().
-        $this->drush('php:eval', array('drupal_set_installed_schema_version("woot", 8103)'), $options);
+        $this->drush('php:eval', array('\Drupal::service("update.update_hook_registry")->setInstalledVersion("woot", 8103)'), $options);
 
         // Force re-run of post-update hooks.
         $this->forcePostUpdate('woot_post_update_a', $options);
@@ -250,6 +249,10 @@ YAML_FRAGMENT;
      */
     public function testSuccessfulUpdate()
     {
+        if (!$this->isDrupalGreaterThanOrEqualTo('9.3.0')) {
+            $this->markTestSkipped('Test uses setInstalledVersion from update.update_hook_registry, introduced in Drupal 9.3.0, instead of drupal_set_installed_schema_version');
+        }
+
         $this->setUpDrupal(1, true);
         $options = [
             'yes' => null,
@@ -258,7 +261,7 @@ YAML_FRAGMENT;
         $this->drush('pm-enable', ['woot'], $options);
 
         // Force re-run of woot_update_8104() which is expected to be completed successfully.
-        $this->drush('php:eval', array('drupal_set_installed_schema_version("woot", 8103)'), $options);
+        $this->drush('php:eval', array('\Drupal::service("update.update_hook_registry")->setInstalledVersion("woot", 8103)'), $options);
 
         // Force re-run of post-update hooks which are expected to be completed successfully.
         $this->forcePostUpdate('woot_post_update_a', $options);
@@ -281,6 +284,10 @@ YAML_FRAGMENT;
      */
     public function testBatchUpdateLogMessages()
     {
+        if (!$this->isDrupalGreaterThanOrEqualTo('9.3.0')) {
+            $this->markTestSkipped('Test uses setInstalledVersion from update.update_hook_registry, introduced in Drupal 9.3.0, instead of drupal_set_installed_schema_version');
+        }
+
         $options = [
             'yes' => null,
         ];
@@ -289,7 +296,7 @@ YAML_FRAGMENT;
         $this->drush('pm:enable', ['woot'], $options);
 
         // Force re-run of woot_update_8105().
-        $this->drush('php:eval', ['drupal_set_installed_schema_version("woot", 8104)'], $options);
+        $this->drush('php:eval', ['\Drupal::service("update.update_hook_registry")->setInstalledVersion("woot", 8104)'], $options);
         // Force re-run of woot_post_update_batch().
         $this->forcePostUpdate('woot_post_update_batch', $options);
 
@@ -324,6 +331,10 @@ POST_UPDATE;
      */
     public function testEnableModuleViaUpdate()
     {
+        if (!$this->isDrupalGreaterThanOrEqualTo('9.3.0')) {
+            $this->markTestSkipped('Test uses setInstalledVersion from update.update_hook_registry, introduced in Drupal 9.3.0, instead of drupal_set_installed_schema_version');
+        }
+
         $options = [
             'yes' => null,
         ];
@@ -332,7 +343,7 @@ POST_UPDATE;
         $this->drush('pm:enable', ['woot'], $options);
 
         // Force re-run of woot_update_8106().
-        $this->drush('php:eval', ['drupal_set_installed_schema_version("woot", 8105)'], $options);
+        $this->drush('php:eval', ['\Drupal::service("update.update_hook_registry")->setInstalledVersion("woot", 8105)'], $options);
 
         // Run updates.
         $this->drush('updatedb', [], $options);
