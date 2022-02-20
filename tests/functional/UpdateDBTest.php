@@ -16,11 +16,6 @@ class UpdateDBTest extends CommandUnishTestCase
 
     public function testUpdateDBStatus()
     {
-        $updatedb_script = 'updatedb_script_legacy';
-        if ($this->isDrupalGreaterThanOrEqualTo('9.3.0')) {
-            $updatedb_script = 'updatedb_script';
-        }
-
         $this->setUpDrupal(1, true);
         $this->drush('pm:enable', ['drush_empty_module']);
         $this->drush('updatedb:status');
@@ -28,7 +23,7 @@ class UpdateDBTest extends CommandUnishTestCase
         $this->assertStringContainsString('[success] No database updates required.', $err);
 
         // Force a pending update.
-        $this->drush('php-script', [$updatedb_script], ['script-path' => __DIR__ . '/resources']);
+        $this->drush('php-script', [$this->updateDbScriptName()], ['script-path' => __DIR__ . '/resources']);
 
         // Assert that pending hook_update_n appears
         $this->drush('updatedb:status', [], ['format' => 'json']);
@@ -72,7 +67,7 @@ class UpdateDBTest extends CommandUnishTestCase
         $this->drush('pm-enable', ['woot'], $options);
 
         // Force a pending update.
-        $this->drush('php-script', [$updatedb_script], ['script-path' => __DIR__ . '/resources']);
+        $this->drush('php-script', [$this->updateDbScriptName()], ['script-path' => __DIR__ . '/resources']);
 
         // Force re-run of woot_update_8101().
         $this->drush('php:eval', array('drupal_set_installed_schema_version("woot", ' . $last_successful_update . ')'), $options);
@@ -89,6 +84,17 @@ class UpdateDBTest extends CommandUnishTestCase
         foreach ($expected_update_log_output as $needle) {
             $this->assertStringContainsString($needle, $this->getErrorOutput());
         }
+    }
+
+    /**
+     * Select the appropriate update script for the current Drupal version
+     */
+    protected function updateDbScriptName()
+    {
+        if ($this->isDrupalGreaterThanOrEqualTo('9.3.0')) {
+            return 'updatedb_script';
+        }
+        return 'updatedb_script_legacy';
     }
 
     /**
