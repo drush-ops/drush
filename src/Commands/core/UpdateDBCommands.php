@@ -234,8 +234,7 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
             // TODO: setInstalledVersion in update.update_hook_registry introduced in Drupal 9.3.0
             if (!function_exists('drupal_set_installed_schema_version')) {
                 \Drupal::service("update.update_hook_registry")->setInstalledVersion($module, $number);
-            }
-            else {
+            } else {
                 drupal_set_installed_schema_version($module, $number);
             }
             // Setting this value will output a success message.
@@ -377,8 +376,7 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
                     // TODO: setInstalledVersion in update.update_hook_registry introduced in Drupal 9.3.0
                     if (!function_exists('drupal_set_installed_schema_version')) {
                         \Drupal::service("update.update_hook_registry")->setInstalledVersion($update['module'], $update['number'] - 1);
-                    }
-                    else {
+                    } else {
                         drupal_set_installed_schema_version($update['module'], $update['number'] - 1);
                     }
                     unset($start[$update['module']]);
