@@ -55,6 +55,7 @@ install:
   - php -r "readfile('http://getcomposer.org/installer');" | php
   #Install dependencies via Composer
   - php composer.phar install --prefer-dist -n
+  - php composer.phar require enlightn/security-checker -n
   - SET PATH=%APPVEYOR_BUILD_FOLDER%;%APPVEYOR_BUILD_FOLDER%/vendor/bin;%PATH%
   # Uncomment this and on_finish line below to enable RDP into build machine https://www.appveyor.com/docs/how-to/rdp-to-build-worker/
   # - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))

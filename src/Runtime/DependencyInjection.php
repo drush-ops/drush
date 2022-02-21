@@ -97,50 +97,50 @@ class DependencyInjection
     protected function addDrushServices($container, ClassLoader $loader, DrupalFinder $drupalFinder, SiteAliasManager $aliasManager, DrushConfig $config, OutputInterface $output): void
     {
         // Override Robo's logger with a LoggerManager that delegates to the Drush logger.
-        $container->share('logger', '\Drush\Log\DrushLoggerManager')
+        Robo::addShared($container, 'logger', '\Drush\Log\DrushLoggerManager')
           ->addMethodCall('setLogOutputStyler', ['logStyler'])
           ->addMethodCall('add', ['drush', new Logger($output)]);
 
-        $container->share('loader', $loader);
-        $container->share('site.alias.manager', $aliasManager);
+        Robo::addShared($container, 'loader', $loader);
+        Robo::addShared($container, 'site.alias.manager', $aliasManager);
 
         // Fetch the runtime config, where -D et. al. are stored, and
         // add a reference to it to the container.
-        $container->share('config.runtime', $config->getContext(ConfigOverlay::PROCESS_CONTEXT));
+        Robo::addShared($container, 'config.runtime', $config->getContext(ConfigOverlay::PROCESS_CONTEXT));
 
         // Override Robo's formatter manager with our own
         // @todo not sure that we'll use this. Maybe remove it.
-        $container->share('formatterManager', DrushFormatterManager::class)
+        Robo::addShared($container, 'formatterManager', DrushFormatterManager::class)
             ->addMethodCall('addDefaultFormatters', [])
             ->addMethodCall('addDefaultSimplifiers', []);
 
         // Add some of our own objects to the container
-        $container->share('bootstrap.drupal8', 'Drush\Boot\DrupalBoot8');
-        $container->share('bootstrap.manager', 'Drush\Boot\BootstrapManager')
+        Robo::addShared($container, 'bootstrap.drupal8', 'Drush\Boot\DrupalBoot8');
+        Robo::addShared($container, 'bootstrap.manager', 'Drush\Boot\BootstrapManager')
             ->addMethodCall('setDrupalFinder', [$drupalFinder]);
         // TODO: Can we somehow add these via discovery (e.g. backdrop extension?)
         $container->extend('bootstrap.manager')
             ->addMethodCall('add', ['bootstrap.drupal8']);
-        $container->share('bootstrap.hook', 'Drush\Boot\BootstrapHook')
+        Robo::addShared($container, 'bootstrap.hook', 'Drush\Boot\BootstrapHook')
           ->addArgument('bootstrap.manager');
-        $container->share('tildeExpansion.hook', 'Drush\Runtime\TildeExpansionHook');
-        $container->share('process.manager', ProcessManager::class)
+        Robo::addShared($container, 'tildeExpansion.hook', 'Drush\Runtime\TildeExpansionHook');
+        Robo::addShared($container, 'process.manager', ProcessManager::class)
             ->addMethodCall('setConfig', ['config'])
             ->addMethodCall('setConfigRuntime', ['config.runtime']);
-        $container->share('redispatch.hook', 'Drush\Runtime\RedispatchHook')
+        Robo::addShared($container, 'redispatch.hook', 'Drush\Runtime\RedispatchHook')
             ->addArgument('process.manager');
 
         // Robo does not manage the command discovery object in the container,
         // but we will register and configure one for our use.
         // TODO: Some old adapter code uses this, but the Symfony dispatcher does not.
         // See Application::commandDiscovery().
-        $container->share('commandDiscovery', 'Consolidation\AnnotatedCommand\CommandFileDiscovery')
+        Robo::addShared($container, 'commandDiscovery', 'Consolidation\AnnotatedCommand\CommandFileDiscovery')
             ->addMethodCall('addSearchLocation', ['CommandFiles'])
             ->addMethodCall('setSearchPattern', ['#.*(Commands|CommandFile).php$#']);
 
         // Error and Shutdown handlers
-        $container->share('errorHandler', 'Drush\Runtime\ErrorHandler');
-        $container->share('shutdownHandler', 'Drush\Runtime\ShutdownHandler');
+        Robo::addShared($container, 'errorHandler', 'Drush\Runtime\ErrorHandler');
+        Robo::addShared($container, 'shutdownHandler', 'Drush\Runtime\ShutdownHandler');
 
         // Add inflectors. @see \Drush\Boot\BaseBoot::inflect
         $container->inflector(AutoloaderAwareInterface::class)
