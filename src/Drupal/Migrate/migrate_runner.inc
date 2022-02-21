@@ -17,7 +17,7 @@ use Drush\Drupal\Migrate\MigratePrepareRowEvent;
 function system_migrate_prepare_row(Row $row, MigrateSourceInterface $source, MigrationInterface $migration): void
 {
     \Drupal::service('event_dispatcher')->dispatch(
+        new MigratePrepareRowEvent($row, $source, $migration),
         MigrateEvents::DRUSH_MIGRATE_PREPARE_ROW,
-        new MigratePrepareRowEvent($row, $source, $migration)
     );
 }
