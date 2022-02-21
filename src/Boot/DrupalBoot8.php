@@ -5,6 +5,7 @@ namespace Drush\Boot;
 use Drupal\Core\DrupalKernelInterface;
 use Consolidation\AnnotatedCommand\AnnotationData;
 use Drupal\Core\Database\Database;
+use Drupal\Core\Render\HtmlResponse;
 use Drupal\Core\DrupalKernel;
 use Drush\Config\ConfigLocator;
 use Drush\Drupal\DrushLoggerServiceProvider;
@@ -135,7 +136,14 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
             'SCRIPT_FILENAME' => getcwd() . '/index.php',
             'SCRIPT_NAME' => isset($parsed_url['path']) ? $parsed_url['path'] . 'index.php' : '/index.php',
         ] + $_SERVER;
-        $request = Request::create($uri, 'GET', [], [], [], $server);
+        // To do: split into Drupal 9 and Drupal 10 bootstrap
+        if (method_exists(Request::class, 'create')) {
+            // Drupal 9
+            $request = Request::create($uri, 'GET', [], [], [], $server);
+        } else {
+            // Drupal 10
+            $request = Request::createFromGlobals();
+        }
         $request->overrideGlobals();
         $this->setRequest($request);
         return true;
@@ -290,7 +298,11 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
         parent::terminate();
 
         if ($this->kernel) {
-            $response = Response::create('');
+            if (method_exists(Response::class, 'create')) {
+                $response = Response::create('');
+            } else {
+                $response = new HtmlResponse();
+            }
             $this->kernel->terminate($this->getRequest(), $response);
         }
     }
