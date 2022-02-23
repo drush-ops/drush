@@ -16,7 +16,6 @@ class SecurityUpdatesTest extends UnishIntegrationTestCase
    */
     public function testInsecureDrupalPackage()
     {
-        $this->skipIfSecurityCheckerNotAvailable();
         list($expected_package, $expected_version) = ['drupal/semver_example', '2.3.0'];
         $this->drush('pm:security', [], ['format' => 'json'], self::EXIT_ERROR_WITH_CLARITY);
         $this->assertStringContainsString('One or more of your dependencies has an outstanding security update.', $this->getErrorOutput());
@@ -41,7 +40,6 @@ class SecurityUpdatesTest extends UnishIntegrationTestCase
      */
     public function testNoInsecureProductionDrupalPackage()
     {
-        $this->skipIfSecurityCheckerNotAvailable();
         $this->drush('pm:security', [], ['format' => 'json', 'no-dev' => true], self::EXIT_SUCCESS);
         $this->assertStringContainsString('There are no outstanding security updates for Drupal projects', $this->getErrorOutput());
     }
@@ -51,7 +49,6 @@ class SecurityUpdatesTest extends UnishIntegrationTestCase
      */
     public function testInsecurePhpPackage()
     {
-        $this->skipIfSecurityCheckerNotAvailable();
         $this->drush('pm:security-php', [], ['format' => 'json'], self::EXIT_ERROR_WITH_CLARITY);
         $this->assertStringContainsString('One or more of your dependencies has an outstanding security update.', $this->getErrorOutput());
         $this->assertStringContainsString('Run composer why david-garcia/phpwhois', $this->getErrorOutput());
@@ -64,18 +61,7 @@ class SecurityUpdatesTest extends UnishIntegrationTestCase
      */
     public function testNoInsecureProductionPhpPackage()
     {
-        $this->skipIfSecurityCheckerNotAvailable();
         $this->drush('pm:security-php', [], ['format' => 'json', 'no-dev' => true], self::EXIT_SUCCESS);
         $this->assertStringContainsString('There are no outstanding security updates for your dependencies.', $this->getErrorOutput());
-    }
-
-    /**
-     * Mark the test skipped if we don't expect enlightn/security-checker to be available.
-     */
-    protected function skipIfSecurityCheckerNotAvailable()
-    {
-        if ($this->isDrupalGreaterThanOrEqualTo('10.0.0@dev')) {
-            $this->markTestSkipped('enlightn/security-checker not yet available for Drupal 10.');
-        }
     }
 }
