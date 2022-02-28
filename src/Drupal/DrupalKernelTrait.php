@@ -135,8 +135,7 @@ trait DrupalKernelTrait
             if (is_file($composerJson) && is_readable($composerJson)) {
                 $packageName = $fileInfo->getBasename();
                 $this->addModuleDrushServiceProvider("_drush.site.$packageName", $composerJson);
-            }
-            else {
+            } else {
                 $this->addDrushServiceProviderFromSubdirectories($fileInfo->getPathname());
             }
         }
