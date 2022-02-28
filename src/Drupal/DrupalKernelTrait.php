@@ -105,20 +105,40 @@ trait DrupalKernelTrait
         $this->addDrushServiceProvider("_drush__pm", DRUSH_BASE_PATH . '/src/Drupal/Commands/pm/drush.services.yml');
         $this->addDrushServiceProvider("_drush__sql", DRUSH_BASE_PATH . '/src/Drupal/Commands/sql/drush.services.yml');
 
-        // TODO: We could potentially also add service providers from:
-        //  - DRUSH_BASE_PATH . '/drush/drush.services.yml');
-        //  - DRUSH_BASE_PATH . '/../drush/drush.services.yml');
-        // Or, perhaps better yet, from every Drush command directory
-        // (e.g. DRUSH_BASE_PATH/drush/mycmd/drush.services.yml) in
-        // any of these `drush` folders. In order to do this, it is
-        // necessary that the class files in these commands are available
-        // in the autoloader.
+        // Load and process composer.json announced drush.services.yml files
+        // of site-wide command packages.
+        // @fixme Fix directory to use project root.
+        $this->addDrushServiceProviderFromSubdirectories(dirname(DRUPAL_ROOT) . '/drush');
 
         // Also add Drush services from all modules
         $module_filenames = $this->getModuleFileNames();
         // Load each module's serviceProvider class.
         foreach ($module_filenames as $module => $filename) {
             $this->addModuleDrushServiceProvider($module, $filename);
+        }
+    }
+
+    /**
+     * Recursively register composer.json-announced drush.services.yml in
+     * subdirectories of a directory. Used for site-wide commands in
+     * drush/contrib|custom/some_package.
+     */
+    protected function addDrushServiceProviderFromSubdirectories($directory)
+    {
+        foreach (new \DirectoryIterator($directory) as $fileInfo) {
+            // $info->isDir correctly handles symlinks, too.
+            if ($fileInfo->isDot() || !$fileInfo->isDir()) {
+                continue;
+            }
+            $composerJson = "{$fileInfo->getPathname()}/composer.json";
+            // is_file correctly handles symlinks, too.
+            if (is_file($composerJson) && is_readable($composerJson)) {
+                $packageName = $fileInfo->getBasename();
+                $this->addModuleDrushServiceProvider("_drush.site.$packageName", $composerJson);
+            }
+            else {
+                $this->addDrushServiceProviderFromSubdirectories($fileInfo->getPathname());
+            }
         }
     }
 
