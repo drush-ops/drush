@@ -231,7 +231,12 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
 
         // Record the schema update if it was completed successfully.
         if ($context['finished'] >= 1 && empty($ret['#abort'])) {
-            drupal_set_installed_schema_version($module, $number);
+            // TODO: setInstalledVersion in update.update_hook_registry introduced in Drupal 9.3.0
+            if (!function_exists('drupal_set_installed_schema_version')) {
+                \Drupal::service("update.update_hook_registry")->setInstalledVersion($module, $number);
+            } else {
+                drupal_set_installed_schema_version($module, $number);
+            }
             // Setting this value will output a success message.
             // @see \DrushBatchContext::offsetSet()
             $context['message'] = "Update completed: $function";
@@ -368,7 +373,12 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
                 // correct place. (The updates are already sorted, so we can simply base
                 // this on the first one we come across in the above foreach loop.)
                 if (isset($start[$update['module']])) {
-                    drupal_set_installed_schema_version($update['module'], $update['number'] - 1);
+                    // TODO: setInstalledVersion in update.update_hook_registry introduced in Drupal 9.3.0
+                    if (!function_exists('drupal_set_installed_schema_version')) {
+                        \Drupal::service("update.update_hook_registry")->setInstalledVersion($update['module'], $update['number'] - 1);
+                    } else {
+                        drupal_set_installed_schema_version($update['module'], $update['number'] - 1);
+                    }
                     unset($start[$update['module']]);
                 }
                 // Add this update function to the batch.

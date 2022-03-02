@@ -10,7 +10,7 @@ use Webmozart\PathUtil\Path;
  *
  * @group commands
  */
-class CoreTest extends CommandUnishTestCase
+class FunctionalCoreTest extends CommandUnishTestCase
 {
     public function setup(): void
     {

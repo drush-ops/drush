@@ -18,8 +18,8 @@ test_74_steps: &test74steps
   steps:
     - checkout
     - run: cp .docker/zz-php.ini /usr/local/etc/php/conf.d/
-    - run: composer -n install
     - run: mkdir -p /tmp/results
+    - run: composer -n install
     - run: composer -n lint
     - run: composer -n unit -- --log-junit /tmp/results/unit.junit.xml
     - run: composer -n functional -- --log-junit /tmp/results/functional.junit.xml
@@ -33,7 +33,7 @@ test_74_steps: &test74steps
 version: 2.1
 jobs:
   # Code style test:
-  #   FAIL if code does not conform to PSR-2 conventions
+  #   FAIL if code does not conform to code style conventions
   #   PASS otherwise
   code_style:
     <<: *defaults

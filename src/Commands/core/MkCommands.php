@@ -28,7 +28,7 @@ class MkCommands extends DrushCommands implements SiteAliasManagerAwareInterface
     /**
      * Build a Markdown document for each Drush command/generator that is available on a site.
      *
-     * This command is an early step when building the www.drush.org static site. Adapt it to build a similar site listing the commands that are available on your site. Also see Drush's [Github Actions workflow](https://github.com/drush-ops/drush/blob/10.x/.github/workflows/main.yml).
+     * This command is an early step when building the www.drush.org static site. Adapt it to build a similar site listing the commands that are available on your site. Also see Drush's [Github Actions workflow](https://github.com/drush-ops/drush/blob/11.x/.github/workflows/main.yml).
      *
      * @command mk:docs
      * @bootstrap max
@@ -130,7 +130,7 @@ EOT;
                             $value = "- [$topic_description]($target_relative) ($name)";
                         } else {
                             $rel_from_root = Path::makeRelative($abs, DRUSH_BASE_PATH);
-                            $value = "- [$topic_description](https://raw.githubusercontent.com/drush-ops/drush/10.x/$rel_from_root) ($name)";
+                            $value = "- [$topic_description](https://raw.githubusercontent.com/drush-ops/drush/11.x/$rel_from_root) ($name)";
                         }
                     }
                 }
