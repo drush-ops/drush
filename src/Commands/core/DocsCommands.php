@@ -110,7 +110,7 @@ class DocsCommands extends DrushCommands
      * An example Drush script.
      *
      * @command docs:script
-     * @aliases docs-scipt
+     * @aliases docs-script
      * @hidden
      * @topic ../../../examples/helloworld.script
      */

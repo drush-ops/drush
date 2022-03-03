@@ -354,7 +354,7 @@ class UserCommands extends DrushCommands
     protected function getAccounts(string $names = '', array $options = []): array
     {
         $accounts = [];
-        if ($mails = StringUtils::csvToArray($options['mail'])) {
+        if (isset($options['mail']) && $mails = StringUtils::csvToArray($options['mail'])) {
             foreach ($mails as $mail) {
                 if ($account = user_load_by_mail($mail)) {
                     $accounts[$account->id()] = $account;
@@ -363,7 +363,7 @@ class UserCommands extends DrushCommands
                 }
             }
         }
-        if ($uids = StringUtils::csvToArray($options['uid'])) {
+        if (isset($options['uid']) && $uids = StringUtils::csvToArray($options['uid'])) {
             foreach ($uids as $uid) {
                 if ($account = User::load($uid)) {
                     $accounts[$account->id()] = $account;
