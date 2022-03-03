@@ -2,15 +2,13 @@
 
 //
 // This example demonstrates how to write a drush
-// script.  These scripts are run with the php-script command.
+// script. These scripts are run with the php:script command.
 //
 use Drush\Drush;
 
 $this->output()->writeln("Hello world!");
 $this->output()->writeln("The extra options/arguments to this command were:");
 $this->output()->writeln(print_r($extra, true));
-
-
 
 //
 // We can check which site was bootstrapped via

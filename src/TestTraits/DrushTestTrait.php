@@ -6,7 +6,7 @@ namespace Drush\TestTraits;
  * DrushTestTrait provides a `drush()` method that may be
  * used to write functional tests for Drush extensions.
  *
- * More information is available at https://github.com/drush-ops/drush/blob/10.x/docs/contribute/unish.md#drush-test-traits.
+ * More information is available at https://github.com/drush-ops/drush/blob/11.x/docs/contribute/unish.md#drush-test-traits.
  */
 trait DrushTestTrait
 {
@@ -75,8 +75,8 @@ trait DrushTestTrait
             $cmd[] = $this->convertKeyValueToFlag($key, $value);
         }
 
-        $cmd[] = $suffix;
-        $exec = array_filter($cmd, 'strlen'); // Remove NULLs
+        $cmd[] = (string) $suffix;
+        $exec = array_filter($cmd, 'strlen'); // Removes empty strings.
 
         $cmd = implode(' ', $exec);
         $this->execute($cmd, $expected_return, $cd, $env);
@@ -90,7 +90,7 @@ trait DrushTestTrait
      * @param string $value The option value (or empty)
      * @return string
      */
-    protected function convertKeyValueToFlag(string $key, string $value)
+    protected function convertKeyValueToFlag(string $key, ?string $value)
     {
         if (!isset($value)) {
             return "--$key";
