@@ -54,23 +54,6 @@ class ArchiveDumpCommands extends DrushCommands implements SiteAliasManagerAware
     private const MANIFEST_FILE_NAME = 'MANIFEST.yml';
 
     /**
-     * ArchiveCommands constructor.
-     *
-     * @throws \Exception
-     */
-    public function __construct()
-    {
-        parent::__construct();
-
-        $this->filesystem = new Filesystem();
-
-        $this->archiveDir = Path::join(FsUtils::prepareBackupDir(self::ARCHIVES_DIR_NAME), self::ARCHIVE_SUBDIR_NAME);
-        $this->filesystem->mkdir($this->archiveDir);
-
-        register_shutdown_function([$this, 'cleanUp']);
-    }
-
-    /**
      * Backup your code, files, and database into a single file.
      *
      * The following root-level directories would be excluded from a code archive:
@@ -137,6 +120,8 @@ class ArchiveDumpCommands extends DrushCommands implements SiteAliasManagerAware
         'exclude-code-paths' => null,
     ]): string
     {
+        $this->prepareArchiveDir();
+
         if (!$options['code'] && !$options['files'] && !$options['db']) {
             $options['code'] = $options['files'] = $options['db'] = true;
         }
@@ -165,6 +150,19 @@ class ArchiveDumpCommands extends DrushCommands implements SiteAliasManagerAware
         }
 
         return $this->createArchiveFile($components, $options);
+    }
+
+    /**
+     * Creates a temporary directory for the archive.
+     *
+     * @throws \Exception
+     */
+    protected function prepareArchiveDir(): void
+    {
+        $this->filesystem = new Filesystem();
+        $this->archiveDir = Path::join(FsUtils::prepareBackupDir(self::ARCHIVES_DIR_NAME), self::ARCHIVE_SUBDIR_NAME);
+        $this->filesystem->mkdir($this->archiveDir);
+        register_shutdown_function([$this, 'cleanUp']);
     }
 
     /**
