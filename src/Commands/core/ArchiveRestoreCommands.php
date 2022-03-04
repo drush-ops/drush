@@ -6,6 +6,7 @@ use Drush\Commands\DrushCommands;
 use Drush\Exceptions\UserAbortException;
 use Drush\Utils\FsUtils;
 use Exception;
+use PharData;
 use Symfony\Component\Filesystem\Exception\IOException;
 use Symfony\Component\Filesystem\Filesystem;
 use Webmozart\PathUtil\Path;
@@ -143,10 +144,35 @@ class ArchiveRestoreCommands extends DrushCommands
      *   Command options.
      *
      * @return string
+     *
+     * @throws \Exception
      */
     protected function extractArchive(string $path, array $options): string
     {
-        return $path;
+        $this->logger()->info('Extracting the archive...');
+
+        ['filename' => $archiveFileName] = pathinfo($path);
+        $archiveFileName = str_replace('.tar', '', $archiveFileName);
+
+        $extractDir = Path::join(dirname($path), $archiveFileName);
+        if (is_dir($extractDir)) {
+            if ($options['overwrite']) {
+                $this->filesystem->remove($extractDir);
+            } else {
+                throw new Exception(
+                    dt('Extract directory !path already exists (use "--overwrite" option).', ['!path' => $extractDir])
+                );
+            }
+        }
+
+        $this->filesystem->mkdir($extractDir);
+
+        $archive = new PharData($path);
+        $archive->extractTo($extractDir);
+
+        $this->logger()->info(dt('The archive successfully extracted into !path', ['!path' => $extractDir]));
+
+        return $extractDir;
     }
 
     /**
