@@ -3,6 +3,7 @@
 namespace Drush\Commands\core;
 
 use Drush\Commands\DrushCommands;
+use Drush\Exceptions\UserAbortException;
 use Drush\Utils\FsUtils;
 use Exception;
 use Symfony\Component\Filesystem\Exception\IOException;
@@ -103,16 +104,13 @@ class ArchiveRestoreCommands extends DrushCommands
             }
         }
 
-        // @todo add confirmation prompts.
-
         if ($options['code']) {
             $codeComponentPath = $options['code_path'] ?? Path::join($extractDir, self::COMPONENT_CODE);
             $this->importCode($codeComponentPath);
         }
 
         if ($options['db']) {
-            $databaseComponentPath = $options['db_path']
-                ?? Path::join($extractDir, self::COMPONENT_DATABASE, 'database.sql');
+            $databaseComponentPath = $options['db_path'] ?? Path::join($extractDir, self::COMPONENT_DATABASE, self::SQL_DUMP_FILE_NAME);
             $this->importDatabase($databaseComponentPath);
         }
 
@@ -156,21 +154,22 @@ class ArchiveRestoreCommands extends DrushCommands
      *
      * @param string $codePath
      *   The path to the code files directory.
+     *
+     * @throws \Drush\Exceptions\UserAbortException
+     * @throws \Exception
      */
     protected function importCode(string $codePath): void
     {
+        $this->logger()->info('Importing code...');
 
-    }
+        if (!is_dir($codePath)) {
+            throw new Exception(dt('Directory !path not found.', ['!path' => $codePath]));
+        }
 
-    /**
-     * Imports Drupal files to the site.
-     *
-     * @param string $filesPath
-     *   The path to the Drupal files directory.
-     */
-    protected function importFiles(string $filesPath): void
-    {
-
+        if (!$this->io()->confirm(dt('Are you sure you want to import the code?')))
+        {
+            throw new UserAbortException();
+        }
     }
 
     /**
@@ -178,10 +177,45 @@ class ArchiveRestoreCommands extends DrushCommands
      *
      * @param string $databaseDumpPath
      *   The path to the database dump file.
+     *
+     * @throws \Drush\Exceptions\UserAbortException
+     * @throws \Exception
      */
     protected function importDatabase(string $databaseDumpPath): void
     {
+        $this->logger()->info('Importing database...');
 
+        if (!is_file($databaseDumpPath)) {
+            throw new Exception(dt('Database dump file !path not found.', ['!path' => $databaseDumpPath]));
+        }
+
+        if (!$this->io()->confirm(dt('Are you sure you want to import the database dump?')))
+        {
+            throw new UserAbortException();
+        }
+    }
+
+    /**
+     * Imports Drupal files to the site.
+     *
+     * @param string $filesPath
+     *   The path to the Drupal files directory.
+     *
+     * @throws \Drush\Exceptions\UserAbortException
+     * @throws \Exception
+     */
+    protected function importFiles(string $filesPath): void
+    {
+        $this->logger()->info('Importing files...');
+
+        if (!is_dir($filesPath)) {
+            throw new Exception(dt('Directory !path not found.', ['!path' => $filesPath]));
+        }
+
+        if (!$this->io()->confirm(dt('Are you sure you want to import the Drupal files?')))
+        {
+            throw new UserAbortException();
+        }
     }
 
     /**
