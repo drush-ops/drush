@@ -155,6 +155,10 @@ class ArchiveRestoreCommands extends DrushCommands
             throw new Exception(sprintf('File %s is not found.', $path));
         }
 
+        if (!preg_match('/\.tar\.gz$/', $path)) {
+            throw new Exception(sprintf('File %s is not a *.tar.gz file.', $path));
+        }
+
         ['filename' => $archiveFileName] = pathinfo($path);
         $archiveFileName = str_replace('.tar', '', $archiveFileName);
 
