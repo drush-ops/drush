@@ -151,6 +151,10 @@ class ArchiveRestoreCommands extends DrushCommands
     {
         $this->logger()->info('Extracting the archive...');
 
+        if (!is_file($path)) {
+            throw new Exception(sprintf('File %s is not found.', $path));
+        }
+
         ['filename' => $archiveFileName] = pathinfo($path);
         $archiveFileName = str_replace('.tar', '', $archiveFileName);
 
