@@ -6,7 +6,7 @@ options, and to avoid mistakes.
 #### Directories and Discovery
 drush.yml files are discovered as below, in order of precedence:
 
-1.  Drupal site folder (e.g. `sites/{example.com}/drush.yml`). [_default_ site does not yet work](https://github.com/drush-ops/drush/pull/4345).
+1.  Drupal site folder (e.g. `sites/{example.com}/drush.yml`).
 2.  `sites/all/drush`, `WEBROOT/drush`, or `PROJECTROOT/drush`.
 3.  In any location, as specified by the `--config` option.
 4.  User's .drush folder (i.e. `~/.drush/drush.yml`).
