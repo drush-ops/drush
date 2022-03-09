@@ -230,6 +230,8 @@ class ArchiveDumpCommands extends DrushCommands implements SiteAliasManagerAware
      *
      * @param array $options
      *   The command options.
+     *
+     * @throws \Exception
      */
     private function createManifestFile(array $options): void
     {
@@ -242,6 +244,7 @@ class ArchiveDumpCommands extends DrushCommands implements SiteAliasManagerAware
                 self::COMPONENT_FILES => $options['files'],
                 self::COMPONENT_DATABASE => $options['db'],
             ],
+            'docroot' => $this->getDocrootName(),
             'description' => $options['description'] ?? null,
             'tags' => $options['tags'] ?? null,
             'generator' => $options['generator'] ?? 'Drush archive:dump',
