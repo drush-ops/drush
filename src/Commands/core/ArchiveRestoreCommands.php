@@ -3,6 +3,7 @@
 namespace Drush\Commands\core;
 
 use Drush\Commands\DrushCommands;
+use Drush\Drush;
 use Drush\Exceptions\UserAbortException;
 use Drush\Utils\FsUtils;
 use Exception;
@@ -204,6 +205,48 @@ class ArchiveRestoreCommands extends DrushCommands
         if (!$this->io()->confirm(dt('Are you sure you want to import the code?')))
         {
             throw new UserAbortException();
+        }
+
+        $source = $codePath . DIRECTORY_SEPARATOR;
+        $this->logger()->info(sprintf('Source: %s', $source));
+
+        $bootstrapManager = Drush::bootstrapManager();
+        $destination = rtrim($bootstrapManager->getComposerRoot(), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+        $this->logger()->info(sprintf('Destination: %s', $destination));
+
+//        $parameters = [];
+//        $parameters[] = Escape::shellArg($source);
+//
+//        $aliasConfigContext = $this->getConfig()->getContext(ConfigLocator::ALIAS_CONTEXT);
+//        $manager = $this->siteAliasManager();
+//        $aliasName = $this->siteAliasManager()->getSelf()->name();
+//        $evaluatedPath = HostPath::create($manager, $aliasName);
+//
+//        $pathEvaluator = new BackendPathEvaluator();
+//        $pathEvaluator->evaluate($evaluatedPath);
+//
+//        $aliasRecord = $evaluatedPath->getSiteAlias();
+//        if ($aliasRecord->isRemote()) {
+//            $aliasConfigContext->combine($aliasRecord->export());
+//        }
+//
+//        $destination = $evaluatedPath->fullyQualifiedPath() . DIRECTORY_SEPARATOR;
+
+        $ssh_options = $this->getConfig()->get('ssh.options', '');
+        $exec = "rsync -e 'ssh $ssh_options'" . ' -akz ' . $source . ' ' . $destination;
+
+        $process = $this->processManager()->shell($exec);
+        $process->mustRun();
+
+        if (!$process->isSuccessful()) {
+            throw new Exception(
+                dt("Could not rsync from !source to !dest",
+                    [
+                        '!source' => $source,
+                        '!dest' => $destination,
+                    ]
+                )
+            );
         }
     }
 
