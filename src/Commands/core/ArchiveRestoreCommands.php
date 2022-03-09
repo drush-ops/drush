@@ -152,6 +152,7 @@ class ArchiveRestoreCommands extends DrushCommands
         $this->logger()->info('Extracting the archive...');
 
         if (!is_file($path)) {
+            // @todo: use dt() instead of sprintf().
             throw new Exception(sprintf('File %s is not found.', $path));
         }
 
