@@ -2,9 +2,14 @@
 
 namespace Drush\Commands\core;
 
+use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
+use Drush\Backend\BackendPathEvaluator;
 use Drush\Commands\DrushCommands;
+use Drush\Config\ConfigLocator;
 use Drush\Drush;
 use Drush\Exceptions\UserAbortException;
+use Drush\SiteAlias\HostPath;
+use Drush\SiteAlias\SiteAliasManagerAwareInterface;
 use Drush\Utils\FsUtils;
 use Exception;
 use PharData;
@@ -15,8 +20,10 @@ use Webmozart\PathUtil\Path;
 /**
  * Class ArchiveRestoreCommands.
  */
-class ArchiveRestoreCommands extends DrushCommands
+class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAwareInterface
 {
+    use SiteAliasManagerAwareTrait;
+
     /**
      * @var \Symfony\Component\Filesystem\Filesystem
      */
@@ -61,12 +68,15 @@ class ArchiveRestoreCommands extends DrushCommands
      *   1) code ("code" directory);
      *   2) database dump file ("database/database.sql" file);
      *   3) Drupal files ("files" directory).
+     * @param string|null $target
+     *   A target site alias.
      * @param array $options
      *
      * @throws \Exception
      */
     public function restore(
         string $path = null,
+        ?string $target = null,
         array  $options = [
             'code' => false,
             'code_path' => null,
@@ -108,7 +118,7 @@ class ArchiveRestoreCommands extends DrushCommands
 
         if ($options['code']) {
             $codeComponentPath = $options['code_path'] ?? Path::join($extractDir, self::COMPONENT_CODE);
-            $this->importCode($codeComponentPath);
+            $this->importCode($codeComponentPath, $target);
         }
 
         if ($options['db']) {
@@ -190,11 +200,13 @@ class ArchiveRestoreCommands extends DrushCommands
      *
      * @param string $codePath
      *   The path to the code files directory.
+     * @param string|null $targetSiteAlias
+     *   The target site alias or NULL if self
      *
      * @throws \Drush\Exceptions\UserAbortException
      * @throws \Exception
      */
-    protected function importCode(string $codePath): void
+    protected function importCode(string $codePath, ?string $targetSiteAlias): void
     {
         $this->logger()->info('Importing code...');
 
@@ -210,44 +222,50 @@ class ArchiveRestoreCommands extends DrushCommands
         $source = $codePath . DIRECTORY_SEPARATOR;
         $this->logger()->info(sprintf('Source: %s', $source));
 
-        $bootstrapManager = Drush::bootstrapManager();
-        $destination = rtrim($bootstrapManager->getComposerRoot(), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+        if ($targetSiteAlias) {
+            // @todo: optimize import to a remote site.
+            // @todo: how to get composer root for a remote site? include a flag in the Manifest file.
+            $manager = $this->siteAliasManager();
+            $evaluatedPath = HostPath::create($manager, $targetSiteAlias);
+
+            $pathEvaluator = new BackendPathEvaluator();
+            $pathEvaluator->evaluate($evaluatedPath);
+
+            $aliasRecord = $evaluatedPath->getSiteAlias();
+            if ($aliasRecord->isRemote()) {
+                $aliasConfigContext->combine($aliasRecord->export());
+            }
+
+            $destination = rtrim($evaluatedPath->fullyQualifiedPath(), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+        } else {
+            $bootstrapManager = Drush::bootstrapManager();
+            $destination = rtrim($bootstrapManager->getComposerRoot(), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+        }
         $this->logger()->info(sprintf('Destination: %s', $destination));
 
-//        $parameters = [];
-//        $parameters[] = Escape::shellArg($source);
-//
-//        $aliasConfigContext = $this->getConfig()->getContext(ConfigLocator::ALIAS_CONTEXT);
-//        $manager = $this->siteAliasManager();
-//        $aliasName = $this->siteAliasManager()->getSelf()->name();
-//        $evaluatedPath = HostPath::create($manager, $aliasName);
-//
-//        $pathEvaluator = new BackendPathEvaluator();
-//        $pathEvaluator->evaluate($evaluatedPath);
-//
-//        $aliasRecord = $evaluatedPath->getSiteAlias();
-//        if ($aliasRecord->isRemote()) {
-//            $aliasConfigContext->combine($aliasRecord->export());
-//        }
-//
-//        $destination = $evaluatedPath->fullyQualifiedPath() . DIRECTORY_SEPARATOR;
+        $rsyncCommand = sprintf(
+            "rsync -e 'ssh %s' -akz %s %s",
+            $this->getConfig()->get('ssh.options', ''),
+            $source,
+            $destination
+        );
 
-        $ssh_options = $this->getConfig()->get('ssh.options', '');
-        $exec = "rsync -e 'ssh $ssh_options'" . ' -akz ' . $source . ' ' . $destination;
-
-        $process = $this->processManager()->shell($exec);
-        $process->mustRun();
-
-        if (!$process->isSuccessful()) {
-            throw new Exception(
-                dt("Could not rsync from !source to !dest",
-                    [
-                        '!source' => $source,
-                        '!dest' => $destination,
-                    ]
-                )
-            );
+        $process = $this->processManager()->shell($rsyncCommand);
+        $process->run();
+        if ($process->isSuccessful()) {
+            return;
         }
+
+        throw new Exception(
+            dt(
+                'Could not import code from !source to !destination: !error',
+                [
+                    '!source' => $source,
+                    '!destination' => $destination,
+                    '!error' => $process->getErrorOutput(),
+                ]
+            )
+        );
     }
 
     /**
