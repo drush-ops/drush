@@ -233,6 +233,7 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
 
             $aliasRecord = $evaluatedPath->getSiteAlias();
             if ($aliasRecord->isRemote()) {
+                $aliasConfigContext = $this->getConfig()->getContext(ConfigLocator::ALIAS_CONTEXT);
                 $aliasConfigContext->combine($aliasRecord->export());
             }
 
