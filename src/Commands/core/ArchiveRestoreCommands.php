@@ -2,14 +2,14 @@
 
 namespace Drush\Commands\core;
 
+use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
 use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
 use Drush\Backend\BackendPathEvaluator;
 use Drush\Commands\DrushCommands;
 use Drush\Config\ConfigLocator;
 use Drush\Drush;
 use Drush\Exceptions\UserAbortException;
-use Drush\SiteAlias\HostPath;
-use Drush\SiteAlias\SiteAliasManagerAwareInterface;
+use Consolidation\SiteAlias\HostPath;
 use Drush\Utils\FsUtils;
 use Exception;
 use PharData;
@@ -68,16 +68,16 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
      *   1) code ("code" directory);
      *   2) database dump file ("database/database.sql" file);
      *   3) Drupal files ("files" directory).
-     * @param string|null $target
-     *   A target site alias.
+     * @param string|null $site
+     *   Optional destination site alias.
      * @param array $options
      *
      * @throws \Exception
      */
     public function restore(
-        string $path = null,
-        ?string $target = null,
-        array  $options = [
+        string  $path = null,
+        ?string $site = null,
+        array $options = [
             'code' => false,
             'code_path' => null,
             'db' => false,
@@ -118,7 +118,8 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
 
         if ($options['code']) {
             $codeComponentPath = $options['code_path'] ?? Path::join($extractDir, self::COMPONENT_CODE);
-            $this->importCode($codeComponentPath, $target);
+            $this->importCode($codeComponentPath, $site);
+            return;
         }
 
         if ($options['db']) {
@@ -163,12 +164,11 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
         $this->logger()->info('Extracting the archive...');
 
         if (!is_file($path)) {
-            // @todo: use dt() instead of sprintf().
-            throw new Exception(sprintf('File %s is not found.', $path));
+            throw new Exception(dt('File !path is not found.', ['!path' => $path]));
         }
 
         if (!preg_match('/\.tar\.gz$/', $path)) {
-            throw new Exception(sprintf('File %s is not a *.tar.gz file.', $path));
+            throw new Exception(dt('File !path is not a *.tar.gz file.', ['!path' => $path]));
         }
 
         ['filename' => $archiveFileName] = pathinfo($path);
@@ -200,13 +200,13 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
      *
      * @param string $codePath
      *   The path to the code files directory.
-     * @param string|null $targetSiteAlias
+     * @param string|null $destinationSite
      *   The target site alias or NULL if self
      *
      * @throws \Drush\Exceptions\UserAbortException
      * @throws \Exception
      */
-    protected function importCode(string $codePath, ?string $targetSiteAlias): void
+    protected function importCode(string $codePath, ?string $destinationSite): void
     {
         $this->logger()->info('Importing code...');
 
@@ -214,35 +214,51 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
             throw new Exception(dt('Directory !path not found.', ['!path' => $codePath]));
         }
 
-        if (!$this->io()->confirm(dt('Are you sure you want to import the code?')))
-        {
+        if (!$this->io()->confirm(dt('Are you sure you want to import the code?'))) {
             throw new UserAbortException();
         }
 
         $source = $codePath . DIRECTORY_SEPARATOR;
-        $this->logger()->info(sprintf('Source: %s', $source));
+        $this->logger()->info(dt('Source: !source', ['!source' => $source]));
 
-        if ($targetSiteAlias) {
-            // @todo: optimize import to a remote site.
-            // @todo: how to get composer root for a remote site? include a flag in the Manifest file.
-            $manager = $this->siteAliasManager();
-            $evaluatedPath = HostPath::create($manager, $targetSiteAlias);
-
+        if ($destinationSite) {
             $pathEvaluator = new BackendPathEvaluator();
+            $manager = $this->siteAliasManager();
+            // @todo: make HostPath::create() to work without "root" alias attribute.
+            $evaluatedPath = HostPath::create($manager, $destinationSite);
             $pathEvaluator->evaluate($evaluatedPath);
 
-            $aliasRecord = $evaluatedPath->getSiteAlias();
-            if ($aliasRecord->isRemote()) {
+            $siteAlias = $evaluatedPath->getSiteAlias();
+            if ($siteAlias->isRemote()) {
                 $aliasConfigContext = $this->getConfig()->getContext(ConfigLocator::ALIAS_CONTEXT);
-                $aliasConfigContext->combine($aliasRecord->export());
+                $aliasConfigContext->combine($siteAlias->export());
             }
 
-            $destination = rtrim($evaluatedPath->fullyQualifiedPath(), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+            /** @var \Drush\SiteAlias\ProcessManager $processManager */
+            $processManager = $this->processManager();
+            $process = $processManager->drush(
+                $siteAlias,
+                'core-status',
+                [],
+                ['format' => 'json']
+            );
+            $process->mustRun();
+            $status = $process->getOutputAsJson();
+            if (!isset($status['composer-root'])) {
+                throw new Exception('Failed to get path to Composer root.');
+            }
+            if (!$status['composer-root']) {
+                throw new Exception('Path to Composer root is empty.');
+            }
+
+            $destination = sprintf('%s:%s', $evaluatedPath->getHost(), $status['composer-root']);
+            $destination = rtrim($destination, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
         } else {
+            // @todo: test on a local site.
             $bootstrapManager = Drush::bootstrapManager();
             $destination = rtrim($bootstrapManager->getComposerRoot(), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
         }
-        $this->logger()->info(sprintf('Destination: %s', $destination));
+        $this->logger()->info(dt('Destination: !destination', ['!destination' => $destination]));
 
         $rsyncCommand = sprintf(
             "rsync -e 'ssh %s' -akz %s %s",
