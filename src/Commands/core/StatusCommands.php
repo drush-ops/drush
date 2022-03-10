@@ -195,6 +195,7 @@ class StatusCommands extends DrushCommands implements SiteAliasManagerAwareInter
         $site_wide = 'sites/all';
         if ($drupal_root = $boot_manager->getRoot()) {
             $paths['%root'] = $drupal_root;
+            $paths['%composer-root'] = $boot_manager->getComposerRoot();
             if (($boot instanceof DrupalBoot) && ($site_root = $boot->confPath())) {
                 $paths['%site'] = $site_root;
                 if (is_dir($modules_path = $site_root . '/modules')) {
