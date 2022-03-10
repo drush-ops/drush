@@ -57,6 +57,7 @@ class StatusCommands extends DrushCommands implements SiteAliasManagerAwareInter
      *   alias-searchpaths: Alias search paths
      *   install-profile: Install profile
      *   root: Drupal root
+     *   composer-root: Composer root
      *   drupal-settings-file: Drupal Settings
      *   site-path: Site path
      *   site: Site path
@@ -69,7 +70,7 @@ class StatusCommands extends DrushCommands implements SiteAliasManagerAwareInter
      *   files-path: Files, Public
      *   temp-path: Files, Temp
      *   %paths: Other paths
-     * @default-fields drupal-version,uri,db-driver,db-hostname,db-port,db-username,db-name,db-status,bootstrap,theme,admin-theme,php-bin,php-conf,php-os,drush-script,drush-version,drush-temp,drush-conf,install-profile,root,site,files,private,temp
+     * @default-fields drupal-version,uri,db-driver,db-hostname,db-port,db-username,db-name,db-status,bootstrap,theme,admin-theme,php-bin,php-conf,php-os,drush-script,drush-version,drush-temp,drush-conf,install-profile,root,composer-root,site,files,private,temp
      * @pipe-format json
      * @hidden-options project
      * @bootstrap max
