@@ -547,20 +547,24 @@ class ArchiveDumpCommands extends DrushCommands implements SiteAliasManagerAware
             return;
         }
 
-        if (!@include($file)) {
-            throw new Exception(sprintf('Failed opening %s for validation', $file));
+        // Lookup for non-empty $databases value in a site/*/settings.php file.
+
+        if (!preg_match('/\$databases[\s\[=]+((.|\n)*?);/m', file_get_contents($file), $matches)) {
+            return;
         }
 
-        /** @var array $databases */
-        if ($databases) {
-            throw new Exception(
-                sprintf(
-                    'Found database connection settings in %s. It is risky to include them to the archive. Please move the database connection settings into a setting.*.php file or exclude them from the archive with "--exclude-code-paths=%s".',
-                    $localFileName,
-                    $localFileName
-                )
-            );
+        /** @var $databases */
+        if (!eval($matches[0]) && !$databases) {
+            return;
         }
+
+        throw new Exception(
+            sprintf(
+                'Found database connection settings in %s. It is risky to include them to the archive. Please move the database connection settings into a setting.*.php file or exclude them from the archive with "--exclude-code-paths=%s".',
+                $localFileName,
+                $localFileName
+            )
+        );
     }
 
     /**
