@@ -2,9 +2,11 @@
 
 namespace Drush\Commands\core;
 
+use Consolidation\SiteAlias\SiteAlias;
 use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
 use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
 use Drush\Backend\BackendPathEvaluator;
+use Drush\Boot\DrupalBootLevels;
 use Drush\Commands\DrushCommands;
 use Drush\Config\ConfigLocator;
 use Drush\Drush;
@@ -28,6 +30,11 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
      * @var \Symfony\Component\Filesystem\Filesystem
      */
     private Filesystem $filesystem;
+
+    /**
+     * @var array
+     */
+    private array $siteStatus;
 
     /**
      * @var string
@@ -60,7 +67,7 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
      * @optionset_sql
      * @optionset_table_selection
      *
-     * @bootstrap full
+     * @bootstrap max configuration
      *
      * @param string|null $path
      *   The full path to a single archive file (*.tar.gz) or a directory with components to import.
@@ -218,16 +225,9 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
             throw new UserAbortException();
         }
 
-        $pathEvaluator = new BackendPathEvaluator();
-        $manager = $this->siteAliasManager();
-        // @todo: make HostPath::create() to work without "root" alias attribute.
-        $evaluatedPath = HostPath::create($manager, $destinationSite);
-        $pathEvaluator->evaluate($evaluatedPath);
-
-        $siteAlias = $evaluatedPath->getSiteAlias();
+        $siteAlias = $this->getSiteAlias($destinationSite);
 
         if ($siteAlias->isLocal()) {
-            // @todo: test this. Consider using Drupal services.
             $bootstrapManager = Drush::bootstrapManager();
             $destination = $bootstrapManager->getComposerRoot();
             $this->rsyncFiles($source, $destination);
@@ -235,32 +235,17 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
             return;
         }
 
-        if ($siteAlias->isRemote()) {
-            $aliasConfigContext = $this->getConfig()->getContext(ConfigLocator::ALIAS_CONTEXT);
-            $aliasConfigContext->combine($siteAlias->export());
-        }
-
-        /** @var \Drush\SiteAlias\ProcessManager $processManager */
-        $processManager = $this->processManager();
-        $process = $processManager->drush(
-            $siteAlias,
-            'core-status',
-            [],
-            ['format' => 'json']
-        );
-        $process->mustRun();
-        $status = $process->getOutputAsJson();
-        if (!isset($status['composer-root'])) {
+        $siteStatus = $this->getSiteStatus($siteAlias);
+        if (!isset($siteStatus['composer-root'])) {
             throw new Exception('Failed to get path to Composer root.');
         }
-        if (!$status['composer-root']) {
+        if (!$siteStatus['composer-root']) {
             throw new Exception('Path to Composer root is empty.');
         }
 
-        $destination = sprintf('%s:%s', $evaluatedPath->getHost(), $status['composer-root']);
-        $rsyncOptions[] = sprintf("-e 'ssh %s'", $this->getConfig()->get('ssh.options'));
+        $destination = sprintf('%s:%s', $siteAlias->remoteHostWithUser(), $siteStatus['composer-root']);
 
-        $this->rsyncFiles($source, $destination, $rsyncOptions);
+        $this->rsyncFiles($source, $destination);
     }
 
     /**
@@ -284,19 +269,64 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
             throw new UserAbortException();
         }
 
-        $pathEvaluator = new BackendPathEvaluator();
-        $manager = $this->siteAliasManager();
-        // @todo: make HostPath::create() to work without "root" alias attribute.
-        $evaluatedPath = HostPath::create($manager, $destinationSite);
-        $pathEvaluator->evaluate($evaluatedPath);
-
-        $siteAlias = $evaluatedPath->getSiteAlias();
+        $siteAlias = $this->getSiteAlias($destinationSite);
 
         if ($siteAlias->isLocal()) {
+            Drush::bootstrapManager()->doBootstrap(DrupalBootLevels::FULL);
             $drupalFilesPath = \Drupal::service('file_system')->realpath('public://');
+            if (!$drupalFilesPath) {
+                throw new Exception('Path to Drupal files is empty.');
+            }
+
             $this->rsyncFiles($source, $drupalFilesPath);
 
             return;
+        }
+
+        $siteStatus = $this->getSiteStatus($siteAlias);
+        if (!isset($siteStatus['files'])) {
+            throw new Exception('Failed to get path to Drupal files directory');
+        }
+
+        $drupalFilesPath = Path::join($siteAlias->root(), $siteStatus['files']);
+        $destination = sprintf('%s:%s', $siteAlias->remoteHostWithUser(), $drupalFilesPath);
+
+        $this->rsyncFiles($source, $destination);
+    }
+
+    /**
+     * Returns SiteAlias object by the site alias name.
+     *
+     * @param string|null $site
+     *   The site alias.
+     *
+     * @return \Consolidation\SiteAlias\SiteAlias
+     *
+     * @throws \Exception
+     */
+    protected function getSiteAlias(?string $site): SiteAlias
+    {
+        $pathEvaluator = new BackendPathEvaluator();
+        $manager = $this->siteAliasManager();
+        // @todo: make HostPath::create() to work without "root" alias attribute.
+        $evaluatedPath = HostPath::create($manager, $site);
+        $pathEvaluator->evaluate($evaluatedPath);
+
+        return $evaluatedPath->getSiteAlias();
+    }
+
+    /**
+     * Returns the site status fields (files, composer-root).
+     *
+     * @param \Consolidation\SiteAlias\SiteAlias $siteAlias
+     *   The site alias object.
+     *
+     * @return array
+     */
+    protected function getSiteStatus(SiteAlias $siteAlias): array
+    {
+        if (isset($this->siteStatus)) {
+            return $this->siteStatus;
         }
 
         if ($siteAlias->isRemote()) {
@@ -310,19 +340,11 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
             $siteAlias,
             'core-status',
             [],
-            ['fields' => 'files', 'format' => 'json']
+            ['fields' => 'files,composer-root', 'format' => 'json']
         );
         $process->mustRun();
-        $status = $process->getOutputAsJson();
-        if (!isset($status['files'])) {
-            throw new Exception('Failed to get path to Drupal files directory');
-        }
 
-        $drupalFilesPath = Path::join($siteAlias->root(), $status['files']);
-        $destination = sprintf('%s:%s', $evaluatedPath->getHost(), $drupalFilesPath);
-        $rsyncOptions[] = sprintf("-e 'ssh %s'", $this->getConfig()->get('ssh.options'));
-
-        $this->rsyncFiles($source, $destination, $rsyncOptions);
+        return $this->siteStatus = $process->getOutputAsJson();
     }
 
     /**
@@ -332,12 +354,10 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
      *   The source path.
      * @param string $destination
      *   The destination path.
-     * @param array $options
-     *   An additional rsync command's options.
      *
      * @throws \Exception
      */
-    protected function rsyncFiles(string $source, string $destination, array $options = []): void
+    protected function rsyncFiles(string $source, string $destination): void
     {
         $source = rtrim($source, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
         $destination = rtrim($destination, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
@@ -348,6 +368,7 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
             '!destination' => $destination,
         ]));
 
+        $options[] = sprintf("-e 'ssh %s'", $this->getConfig()->get('ssh.options'));
         $options[] = '-akz';
         if ($this->output()->isVerbose()) {
             $options[] = '--stats';
