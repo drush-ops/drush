@@ -222,6 +222,7 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
         }
 
         if (!$this->io()->confirm(dt('Are you sure you want to import the code?'))) {
+            // @todo: move this right before executing rsync so that to provide source/destination paths.
             throw new UserAbortException();
         }
 
@@ -266,6 +267,7 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
         }
 
         if (!$this->io()->confirm(dt('Are you sure you want to import the Drupal files?'))) {
+            // @todo: move this right before executing rsync so that to provide source/destination paths.
             throw new UserAbortException();
         }
 
@@ -284,11 +286,15 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
         }
 
         $siteStatus = $this->getSiteStatus($siteAlias);
-        if (!isset($siteStatus['files'])) {
-            throw new Exception('Failed to get path to Drupal files directory');
+        if (!isset($siteStatus['root'])) {
+            throw new Exception('Failed to get the site root path.');
         }
 
-        $drupalFilesPath = Path::join($siteAlias->root(), $siteStatus['files']);
+        if (!isset($siteStatus['files'])) {
+            throw new Exception('Failed to get path to Drupal files directory.');
+        }
+
+        $drupalFilesPath = Path::join($siteStatus['root'], $siteStatus['files']);
         $destination = sprintf('%s:%s', $siteAlias->remoteHostWithUser(), $drupalFilesPath);
 
         $this->rsyncFiles($source, $destination);
@@ -308,7 +314,10 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
     {
         $pathEvaluator = new BackendPathEvaluator();
         $manager = $this->siteAliasManager();
-        // @todo: make HostPath::create() to work without "root" alias attribute.
+
+        if (null !== $site) {
+            $site .= ':%root';
+        }
         $evaluatedPath = HostPath::create($manager, $site);
         $pathEvaluator->evaluate($evaluatedPath);
 
@@ -316,7 +325,7 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
     }
 
     /**
-     * Returns the site status fields (files, composer-root).
+     * Returns the site status fields (composer-root, root, files).
      *
      * @param \Consolidation\SiteAlias\SiteAlias $siteAlias
      *   The site alias object.
@@ -340,7 +349,7 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
             $siteAlias,
             'core-status',
             [],
-            ['fields' => 'files,composer-root', 'format' => 'json']
+            ['fields' => 'composer-root,root,files', 'format' => 'json']
         );
         $process->mustRun();
 
