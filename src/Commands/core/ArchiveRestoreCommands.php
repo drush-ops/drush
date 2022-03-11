@@ -60,7 +60,7 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
      * @optionset_sql
      * @optionset_table_selection
      *
-     * @bootstrap max configuration
+     * @bootstrap full
      *
      * @param string|null $path
      *   The full path to a single archive file (*.tar.gz) or a directory with components to import.
@@ -68,7 +68,7 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
      *   1) code ("code" directory);
      *   2) database dump file ("database/database.sql" file);
      *   3) Drupal files ("files" directory).
-     * @param string $site
+     * @param string|null $site
      *   Destination site alias. Defaults to @self.
      * @param array $options
      *
@@ -76,7 +76,7 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
      */
     public function restore(
         string  $path = null,
-        string $site = '@self',
+        ?string $site = null,
         array $options = [
             'code' => false,
             'code_path' => null,
@@ -119,17 +119,17 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
         if ($options['code']) {
             $codeComponentPath = $options['code_path'] ?? Path::join($extractDir, self::COMPONENT_CODE);
             $this->importCode($codeComponentPath, $site);
+        }
+
+        if ($options['files']) {
+            $filesComponentPath = $options['files_path'] ?? Path::join($extractDir, self::COMPONENT_FILES);
+            $this->importFiles($filesComponentPath, $site);
             return;
         }
 
         if ($options['db']) {
             $databaseComponentPath = $options['db_path'] ?? Path::join($extractDir, self::COMPONENT_DATABASE, self::SQL_DUMP_FILE_NAME);
             $this->importDatabase($databaseComponentPath);
-        }
-
-        if ($options['files']) {
-            $filesComponentPath = $options['files_path'] ?? Path::join($extractDir, self::COMPONENT_FILES);
-            $this->importFiles($filesComponentPath);
         }
 
         $this->logger()->info(dt('Done!'));
@@ -200,13 +200,13 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
      *
      * @param string $source
      *   The path to the code files directory.
-     * @param string $destinationSite
+     * @param string|null $destinationSite
      *   The destination site alias.
      *
      * @throws \Drush\Exceptions\UserAbortException
      * @throws \Exception
      */
-    protected function importCode(string $source, string $destinationSite): void
+    protected function importCode(string $source, ?string $destinationSite): void
     {
         $this->logger()->info('Importing code...');
 
@@ -227,6 +227,7 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
         $siteAlias = $evaluatedPath->getSiteAlias();
 
         if ($siteAlias->isLocal()) {
+            // @todo: test this. Consider using Drupal services.
             $bootstrapManager = Drush::bootstrapManager();
             $destination = $bootstrapManager->getComposerRoot();
             $this->rsyncFiles($source, $destination);
@@ -257,6 +258,68 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
         }
 
         $destination = sprintf('%s:%s', $evaluatedPath->getHost(), $status['composer-root']);
+        $rsyncOptions[] = sprintf("-e 'ssh %s'", $this->getConfig()->get('ssh.options'));
+
+        $this->rsyncFiles($source, $destination, $rsyncOptions);
+    }
+
+    /**
+     * Imports Drupal files to the site.
+     *
+     * @param string|null $source
+     *   The path to the Drupal files directory.
+     *
+     * @throws \Drush\Exceptions\UserAbortException
+     * @throws \Exception
+     */
+    protected function importFiles(string $source, ?string $destinationSite): void
+    {
+        $this->logger()->info('Importing files...');
+
+        if (!is_dir($source)) {
+            throw new Exception(dt('Directory !path not found.', ['!path' => $source]));
+        }
+
+        if (!$this->io()->confirm(dt('Are you sure you want to import the Drupal files?'))) {
+            throw new UserAbortException();
+        }
+
+        $pathEvaluator = new BackendPathEvaluator();
+        $manager = $this->siteAliasManager();
+        // @todo: make HostPath::create() to work without "root" alias attribute.
+        $evaluatedPath = HostPath::create($manager, $destinationSite);
+        $pathEvaluator->evaluate($evaluatedPath);
+
+        $siteAlias = $evaluatedPath->getSiteAlias();
+
+        if ($siteAlias->isLocal()) {
+            $drupalFilesPath = \Drupal::service('file_system')->realpath('public://');
+            $this->rsyncFiles($source, $drupalFilesPath);
+
+            return;
+        }
+
+        if ($siteAlias->isRemote()) {
+            $aliasConfigContext = $this->getConfig()->getContext(ConfigLocator::ALIAS_CONTEXT);
+            $aliasConfigContext->combine($siteAlias->export());
+        }
+
+        /** @var \Drush\SiteAlias\ProcessManager $processManager */
+        $processManager = $this->processManager();
+        $process = $processManager->drush(
+            $siteAlias,
+            'core-status',
+            [],
+            ['fields' => 'files', 'format' => 'json']
+        );
+        $process->mustRun();
+        $status = $process->getOutputAsJson();
+        if (!isset($status['files'])) {
+            throw new Exception('Failed to get path to Drupal files directory');
+        }
+
+        $drupalFilesPath = Path::join($siteAlias->root(), $status['files']);
+        $destination = sprintf('%s:%s', $evaluatedPath->getHost(), $drupalFilesPath);
         $rsyncOptions[] = sprintf("-e 'ssh %s'", $this->getConfig()->get('ssh.options'));
 
         $this->rsyncFiles($source, $destination, $rsyncOptions);
@@ -335,31 +398,7 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
             throw new Exception(dt('Database dump file !path not found.', ['!path' => $databaseDumpPath]));
         }
 
-        if (!$this->io()->confirm(dt('Are you sure you want to import the database dump?')))
-        {
-            throw new UserAbortException();
-        }
-    }
-
-    /**
-     * Imports Drupal files to the site.
-     *
-     * @param string $filesPath
-     *   The path to the Drupal files directory.
-     *
-     * @throws \Drush\Exceptions\UserAbortException
-     * @throws \Exception
-     */
-    protected function importFiles(string $filesPath): void
-    {
-        $this->logger()->info('Importing files...');
-
-        if (!is_dir($filesPath)) {
-            throw new Exception(dt('Directory !path not found.', ['!path' => $filesPath]));
-        }
-
-        if (!$this->io()->confirm(dt('Are you sure you want to import the Drupal files?')))
-        {
+        if (!$this->io()->confirm(dt('Are you sure you want to import the database dump?'))) {
             throw new UserAbortException();
         }
     }
