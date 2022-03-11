@@ -68,15 +68,15 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
      *   1) code ("code" directory);
      *   2) database dump file ("database/database.sql" file);
      *   3) Drupal files ("files" directory).
-     * @param string|null $site
-     *   Optional destination site alias.
+     * @param string $site
+     *   Destination site alias. Defaults to @self.
      * @param array $options
      *
      * @throws \Exception
      */
     public function restore(
         string  $path = null,
-        ?string $site = null,
+        string $site = '@self',
         array $options = [
             'code' => false,
             'code_path' => null,
@@ -198,84 +198,117 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
     /**
      * Imports the code to the site.
      *
-     * @param string $codePath
+     * @param string $source
      *   The path to the code files directory.
-     * @param string|null $destinationSite
-     *   The target site alias or NULL if self
+     * @param string $destinationSite
+     *   The destination site alias.
      *
      * @throws \Drush\Exceptions\UserAbortException
      * @throws \Exception
      */
-    protected function importCode(string $codePath, ?string $destinationSite): void
+    protected function importCode(string $source, string $destinationSite): void
     {
         $this->logger()->info('Importing code...');
 
-        if (!is_dir($codePath)) {
-            throw new Exception(dt('Directory !path not found.', ['!path' => $codePath]));
+        if (!is_dir($source)) {
+            throw new Exception(dt('Directory !path not found.', ['!path' => $source]));
         }
 
         if (!$this->io()->confirm(dt('Are you sure you want to import the code?'))) {
             throw new UserAbortException();
         }
 
-        $source = $codePath . DIRECTORY_SEPARATOR;
-        $this->logger()->info(dt('Source: !source', ['!source' => $source]));
+        $pathEvaluator = new BackendPathEvaluator();
+        $manager = $this->siteAliasManager();
+        // @todo: make HostPath::create() to work without "root" alias attribute.
+        $evaluatedPath = HostPath::create($manager, $destinationSite);
+        $pathEvaluator->evaluate($evaluatedPath);
 
-        if ($destinationSite) {
-            $pathEvaluator = new BackendPathEvaluator();
-            $manager = $this->siteAliasManager();
-            // @todo: make HostPath::create() to work without "root" alias attribute.
-            $evaluatedPath = HostPath::create($manager, $destinationSite);
-            $pathEvaluator->evaluate($evaluatedPath);
+        $siteAlias = $evaluatedPath->getSiteAlias();
 
-            $siteAlias = $evaluatedPath->getSiteAlias();
-            if ($siteAlias->isRemote()) {
-                $aliasConfigContext = $this->getConfig()->getContext(ConfigLocator::ALIAS_CONTEXT);
-                $aliasConfigContext->combine($siteAlias->export());
-            }
-
-            /** @var \Drush\SiteAlias\ProcessManager $processManager */
-            $processManager = $this->processManager();
-            $process = $processManager->drush(
-                $siteAlias,
-                'core-status',
-                [],
-                ['format' => 'json']
-            );
-            $process->mustRun();
-            $status = $process->getOutputAsJson();
-            if (!isset($status['composer-root'])) {
-                throw new Exception('Failed to get path to Composer root.');
-            }
-            if (!$status['composer-root']) {
-                throw new Exception('Path to Composer root is empty.');
-            }
-
-            $destination = sprintf('%s:%s', $evaluatedPath->getHost(), $status['composer-root']);
-            $destination = rtrim($destination, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
-        } else {
-            // @todo: test on a local site.
+        if ($siteAlias->isLocal()) {
             $bootstrapManager = Drush::bootstrapManager();
-            $destination = rtrim($bootstrapManager->getComposerRoot(), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
-        }
-        $this->logger()->info(dt('Destination: !destination', ['!destination' => $destination]));
+            $destination = $bootstrapManager->getComposerRoot();
+            $this->rsyncFiles($source, $destination);
 
-        $rsyncCommand = sprintf(
-            "rsync -e 'ssh %s' -akz %s %s",
-            $this->getConfig()->get('ssh.options', ''),
+            return;
+        }
+
+        if ($siteAlias->isRemote()) {
+            $aliasConfigContext = $this->getConfig()->getContext(ConfigLocator::ALIAS_CONTEXT);
+            $aliasConfigContext->combine($siteAlias->export());
+        }
+
+        /** @var \Drush\SiteAlias\ProcessManager $processManager */
+        $processManager = $this->processManager();
+        $process = $processManager->drush(
+            $siteAlias,
+            'core-status',
+            [],
+            ['format' => 'json']
+        );
+        $process->mustRun();
+        $status = $process->getOutputAsJson();
+        if (!isset($status['composer-root'])) {
+            throw new Exception('Failed to get path to Composer root.');
+        }
+        if (!$status['composer-root']) {
+            throw new Exception('Path to Composer root is empty.');
+        }
+
+        $destination = sprintf('%s:%s', $evaluatedPath->getHost(), $status['composer-root']);
+        $rsyncOptions[] = sprintf("-e 'ssh %s'", $this->getConfig()->get('ssh.options'));
+
+        $this->rsyncFiles($source, $destination, $rsyncOptions);
+    }
+
+    /**
+     * Copies files from the source to the destination.
+     *
+     * @param string $source
+     *   The source path.
+     * @param string $destination
+     *   The destination path.
+     * @param array $options
+     *   An additional rsync command's options.
+     *
+     * @throws \Exception
+     */
+    protected function rsyncFiles(string $source, string $destination, array $options = []): void
+    {
+        $source = rtrim($source, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+        $destination = rtrim($destination, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+
+        $this->logger()->info(dt('Copying files from "!source" to "!destination"...',
+        [
+            '!source' => $source,
+            '!destination' => $destination,
+        ]));
+
+        $options[] = '-akz';
+        if ($this->output()->isVerbose()) {
+            $options[] = '--stats';
+            $options[] = '--progress';
+            $options[] = '-v';
+        }
+
+        $command = sprintf(
+            'rsync %s %s %s',
+            implode(' ', $options),
             $source,
             $destination
         );
 
-        $process = $this->processManager()->shell($rsyncCommand);
-        $process->run();
+        /** @var \Consolidation\SiteProcess\ProcessBase $process */
+        $process = $this->processManager()->shell($command);
+        $process->run($process->showRealtime());
         if ($process->isSuccessful()) {
             return;
         }
 
         throw new Exception(
             dt(
-                'Could not import code from !source to !destination: !error',
+                'Failed to copy files from !source to !destination: !error',
                 [
                     '!source' => $source,
                     '!destination' => $destination,
