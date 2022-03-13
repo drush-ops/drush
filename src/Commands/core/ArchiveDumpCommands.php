@@ -326,13 +326,22 @@ class ArchiveDumpCommands extends DrushCommands
         $excludes = $options['exclude-code-paths']
             ? $this->getRegexpsForPaths(explode(',', $options['exclude-code-paths']))
             : [];
+
+        $excludeDirs = [
+            '.git',
+            'vendor',
+        ];
+        $normalizedComposerRoot = str_replace("\\/", DIRECTORY_SEPARATOR, $this->getComposerRoot());
+        $normalizedArchiveDir = str_replace("\\/", DIRECTORY_SEPARATOR, $this->archiveDir);
+        if (0 === strpos($normalizedArchiveDir, $normalizedComposerRoot)) {
+            $archiveDirRelative = ltrim(str_replace($normalizedComposerRoot, '', $normalizedArchiveDir), DIRECTORY_SEPARATOR);
+            $excludeDirs[] = $archiveDirRelative;
+        }
+        print_r($excludeDirs);
         $excludes = array_merge(
             $excludes,
             $this->getRegexpsForPaths(
-                [
-                    '.git',
-                    'vendor',
-                ]
+                $excludeDirs
             ),
             $this->getDrupalExcludes()
         );
