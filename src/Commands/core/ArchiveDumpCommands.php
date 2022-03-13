@@ -346,19 +346,12 @@ class ArchiveDumpCommands extends DrushCommands implements SiteAliasManagerAware
      */
     private function getDrupalFilesComponentPath(): string
     {
-        $process = $this->processManager()->drush(
-            $this->siteAliasManager()->getSelf(),
-            'core-status',
-            [],
-            ['fields' => 'files', 'format' => 'json']
-        );
-        $process->mustRun();
-        $status = $process->getOutputAsJson();
-        if (!isset($status['files'])) {
-            throw new Exception('Failed to get path to Drupal files directory');
+        Drush::bootstrapManager()->doBootstrap(DrupalBootLevels::FULL);
+        $drupalFilesPath = \Drupal::service('file_system')->realpath('public://');
+        if (!$drupalFilesPath) {
+            throw new Exception('Path to Drupal files is empty.');
         }
 
-        $drupalFilesPath = Path::join($this->siteAliasManager()->getSelf()->root(), $status['files']);
         $drupalFilesArchiveComponentPath = Path::join($this->archiveDir, self::COMPONENT_FILES);
         $this->logger()->info(
             dt(
