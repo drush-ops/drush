@@ -2,8 +2,6 @@
 
 namespace Drush\Commands\core;
 
-use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
-use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
 use Drush\Boot\DrupalBootLevels;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
@@ -25,10 +23,8 @@ use Webmozart\PathUtil\Path;
 /**
  * Class ArchiveDumpCommands.
  */
-class ArchiveDumpCommands extends DrushCommands implements SiteAliasManagerAwareInterface
+class ArchiveDumpCommands extends DrushCommands
 {
-    use SiteAliasManagerAwareTrait;
-
     /**
      * @var \Symfony\Component\Filesystem\Filesystem
      */
@@ -38,8 +34,6 @@ class ArchiveDumpCommands extends DrushCommands implements SiteAliasManagerAware
      * @var string
      */
     private string $archiveDir;
-
-    private const WEB_DOCROOT = 'web';
 
     private const COMPONENT_CODE = 'code';
 
@@ -246,7 +240,6 @@ class ArchiveDumpCommands extends DrushCommands implements SiteAliasManagerAware
                 self::COMPONENT_FILES => $options['files'],
                 self::COMPONENT_DATABASE => $options['db'],
             ],
-            'docroot' => $this->getDocrootName(),
             'description' => $options['description'] ?? null,
             'tags' => $options['tags'] ?? null,
             'generator' => $options['generator'] ?? 'Drush archive:dump',
@@ -268,7 +261,7 @@ class ArchiveDumpCommands extends DrushCommands implements SiteAliasManagerAware
      */
     private function isWebRootSite(): bool
     {
-        return self::WEB_DOCROOT === basename($this->siteAliasManager()->getSelf()->root());
+        return $this->getComposerRoot() !== $this->getRoot();
     }
 
     /**
@@ -278,9 +271,33 @@ class ArchiveDumpCommands extends DrushCommands implements SiteAliasManagerAware
      *
      * @throws \Exception
      */
-    private function getDocrootName(): string
+    private function getComposerRoot(): string
     {
-        return $this->isWebRootSite() ? self::WEB_DOCROOT : '';
+        $bootstrapManager = Drush::bootstrapManager();
+        $composerRoot = $bootstrapManager->getComposerRoot();
+        if (!$composerRoot) {
+            throw new Exception('Path to Composer root is empty.');
+        }
+
+        return $composerRoot;
+    }
+
+    /**
+     * Returns site's docroot path.
+     *
+     * @return string
+     *
+     * @throws \Exception
+     */
+    private function getRoot(): string
+    {
+        $bootstrapManager = Drush::bootstrapManager();
+        $root = $bootstrapManager->getRoot();
+        if (!$root) {
+            throw new Exception('Path to Drupal docroot is empty.');
+        }
+
+        return $root;
     }
 
     /**
@@ -296,9 +313,7 @@ class ArchiveDumpCommands extends DrushCommands implements SiteAliasManagerAware
      */
     private function getCodeComponentPath(array $options): string
     {
-        $codePath = $this->isWebRootSite()
-            ? dirname($this->siteAliasManager()->getSelf()->root())
-            : $this->siteAliasManager()->getSelf()->root();
+        $codePath = $this->getComposerRoot();
         $codeArchiveComponentPath = Path::join($this->archiveDir, self::COMPONENT_CODE);
 
         $this->logger()->info(
@@ -476,7 +491,7 @@ class ArchiveDumpCommands extends DrushCommands implements SiteAliasManagerAware
      */
     private function getDocrootRegexpPrefix(): string
     {
-        return $this->getDocrootName() ? $this->getDocrootName() . '\/' : '';
+        return $this->isWebRootSite() ? basename($this->getRoot()) . '\/' : '';
     }
 
     /**
