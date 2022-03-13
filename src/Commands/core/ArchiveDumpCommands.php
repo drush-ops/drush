@@ -187,6 +187,7 @@ class ArchiveDumpCommands extends DrushCommands implements SiteAliasManagerAware
         $this->logger()->info(dt('Creating archive...'));
         $archivePath = Path::join(dirname($this->archiveDir), self::ARCHIVE_FILE_NAME);
 
+        stream_wrapper_restore('phar');
         $archive = new PharData($archivePath);
 
         $this->createManifestFile($options);
