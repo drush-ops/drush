@@ -558,13 +558,10 @@ class ArchiveDumpCommands extends DrushCommands
         }
 
         // Lookup for non-empty $databases value in a site/*/settings.php file.
-
-        if (!preg_match('/\$databases[\s\[=]+((.|\n)*?);/m', file_get_contents($file), $matches)) {
-            return;
-        }
-
+        // Remove all include/include_once/require/require_once directives.
+        $settingPhpWithoutIncludes = preg_replace('/\n*\s*(include|require).+?;|<\?php/m', '', file_get_contents($file));
         /** @var $databases */
-        if (!eval($matches[0]) && !$databases) {
+        if (!eval($settingPhpWithoutIncludes) && empty($databases)) {
             return;
         }
 
