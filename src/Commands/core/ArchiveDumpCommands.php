@@ -331,13 +331,9 @@ class ArchiveDumpCommands extends DrushCommands
             '.git',
             'vendor',
         ];
-        $normalizedComposerRoot = str_replace("\\/", DIRECTORY_SEPARATOR, $this->getComposerRoot());
-        $normalizedArchiveDir = str_replace("\\/", DIRECTORY_SEPARATOR, $this->archiveDir);
-        if (0 === strpos($normalizedArchiveDir, $normalizedComposerRoot)) {
-            $archiveDirRelative = ltrim(str_replace($normalizedComposerRoot, '', $normalizedArchiveDir), DIRECTORY_SEPARATOR);
-            $excludeDirs[] = $archiveDirRelative;
+        if (Path::isBasePath($this->getComposerRoot(), $this->archiveDir)) {
+            $excludeDirs[] = Path::makeRelative($this->archiveDir, $this->getComposerRoot());
         }
-        print_r($excludeDirs);
         $excludes = array_merge(
             $excludes,
             $this->getRegexpsForPaths(
