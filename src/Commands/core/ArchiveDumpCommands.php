@@ -17,6 +17,7 @@ use RecursiveIteratorIterator;
 use Symfony\Component\Filesystem\Exception\IOException;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Yaml\Yaml;
+use Throwable;
 use Traversable;
 use Webmozart\PathUtil\Path;
 
@@ -563,10 +564,23 @@ class ArchiveDumpCommands extends DrushCommands
         }
 
         // Lookup for non-empty $databases value in a site/*/settings.php file.
-        // Remove all include/include_once/require/require_once directives.
+        // Remove all PHP "include" and "require" directives from settings.php file before evaluating
+        // the $databases variable.
         $settingPhpWithoutIncludes = preg_replace('/\n*\s*(include|require).+?;|<\?php/m', '', file_get_contents($file));
+
+        try {
+            eval($settingPhpWithoutIncludes);
+        } catch (Throwable $t) {
+            throw new Exception(
+                dt(
+                    'Failed to detect an absence of database connection settings in !path: !error',
+                    ['!path' => $localFileName, '!error' => $t->getMessage()]
+                )
+            );
+        }
+
         /** @var $databases */
-        if (!eval($settingPhpWithoutIncludes) && empty($databases)) {
+        if (empty($databases)) {
             return;
         }
 
