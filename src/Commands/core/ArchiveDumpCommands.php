@@ -326,13 +326,20 @@ class ArchiveDumpCommands extends DrushCommands
         $excludes = $options['exclude-code-paths']
             ? $this->getRegexpsForPaths(explode(',', $options['exclude-code-paths']))
             : [];
+
+        $excludeDirs = [
+            '.git',
+            'vendor',
+        ];
+
+        if (Path::isBasePath($this->getComposerRoot(), $this->archiveDir)) {
+            $excludeDirs[] = Path::makeRelative($this->archiveDir, $this->getComposerRoot());
+        }
+        print_r($excludeDirs);
         $excludes = array_merge(
             $excludes,
             $this->getRegexpsForPaths(
-                [
-                    '.git',
-                    'vendor',
-                ]
+                $excludeDirs
             ),
             $this->getDrupalExcludes()
         );
