@@ -332,17 +332,17 @@ class ArchiveDumpCommands extends DrushCommands
         $process->mustRun();
         $installedPackages = $process->getOutputAsJson()['installed'] ?? [];
         $installedPackagesPaths = array_column($installedPackages, 'path');
-        $installedPackagesBaseDirs = array_map(
-            fn($path) =>ltrim(str_replace([$this->getComposerRoot()], '', $path), '/'),
+        $installedPackagesRelativePaths = array_map(
+            fn($path) => ltrim(str_replace([$this->getComposerRoot()], '', $path), '/'),
             $installedPackagesPaths
         );
-        $installedPackagesBaseDirs = array_unique(
+        $installedPackagesRelativePaths = array_unique(
             array_filter(
-                $installedPackagesBaseDirs,
+                $installedPackagesRelativePaths,
                 fn($path) => '' !== $path && 0 !== strpos($path, 'vendor')
             )
         );
-        $excludeDirs = array_merge($excludeDirs, $installedPackagesBaseDirs);
+        $excludeDirs = array_merge($excludeDirs, $installedPackagesRelativePaths);
 
         if (Path::isBasePath($this->getComposerRoot(), $this->archiveDir)) {
             $excludeDirs[] = Path::makeRelative($this->archiveDir, $this->getComposerRoot());
