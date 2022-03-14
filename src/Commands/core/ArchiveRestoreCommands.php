@@ -5,6 +5,7 @@ namespace Drush\Commands\core;
 use Consolidation\SiteAlias\SiteAlias;
 use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
 use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
+use Drupal;
 use Drush\Backend\BackendPathEvaluator;
 use Drush\Boot\DrupalBootLevels;
 use Drush\Commands\DrushCommands;
@@ -12,6 +13,7 @@ use Drush\Config\ConfigLocator;
 use Drush\Drush;
 use Drush\Exceptions\UserAbortException;
 use Consolidation\SiteAlias\HostPath;
+use Drush\Sql\SqlBase;
 use Drush\Utils\FsUtils;
 use Exception;
 use PharData;
@@ -136,7 +138,7 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
 
         if ($options['db']) {
             $databaseComponentPath = $options['db_path'] ?? Path::join($extractDir, self::COMPONENT_DATABASE, self::SQL_DUMP_FILE_NAME);
-            $this->importDatabase($databaseComponentPath);
+            $this->importDatabase($databaseComponentPath, $options);
         }
 
         $this->logger()->info(dt('Done!'));
@@ -275,7 +277,7 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
 
         if ($siteAlias->isLocal()) {
             Drush::bootstrapManager()->doBootstrap(DrupalBootLevels::FULL);
-            $drupalFilesPath = \Drupal::service('file_system')->realpath('public://');
+            $drupalFilesPath = Drupal::service('file_system')->realpath('public://');
             if (!$drupalFilesPath) {
                 throw new Exception('Path to Drupal files is empty.');
             }
@@ -420,7 +422,7 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
      * @throws \Drush\Exceptions\UserAbortException
      * @throws \Exception
      */
-    protected function importDatabase(string $databaseDumpPath): void
+    protected function importDatabase(string $databaseDumpPath, array $options): void
     {
         $this->logger()->info('Importing database...');
 
@@ -428,8 +430,31 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
             throw new Exception(dt('Database dump file !path not found.', ['!path' => $databaseDumpPath]));
         }
 
-        if (!$this->io()->confirm(dt('Are you sure you want to import the database dump?'))) {
+        // @todo: add support for remote sites.
+
+        $sql = SqlBase::create($options);
+        $databaseSpec = $sql->getDbSpec();
+
+        if (
+            !$this->io()->confirm(
+                dt(
+                    'Are you sure you want to import the database dump !path into the database "!database" (username: !user, prefix: !prefix, port: !port)?',
+                [
+                        '!path' => $databaseDumpPath,
+                        '!database' => $databaseSpec['database'],
+                        '!prefix' => $databaseSpec['prefix'] ?: dt('n/a'),
+                        '!user' => $databaseSpec['username'],
+                        '!port' => $databaseSpec['port'],
+                    ]
+                )
+            )
+        ) {
             throw new UserAbortException();
+        }
+
+        $result = $sql->query('', $databaseDumpPath);
+        if (!$result) {
+            throw new Exception(dt('Database import failed.'));
         }
     }
 
