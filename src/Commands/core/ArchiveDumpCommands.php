@@ -37,6 +37,11 @@ class ArchiveDumpCommands extends DrushCommands
      */
     private string $archiveDir;
 
+    /**
+     * @var string
+     */
+    private string $drupalFilesDir;
+
     private const COMPONENT_CODE = 'code';
 
     private const COMPONENT_FILES = 'files';
@@ -53,11 +58,11 @@ class ArchiveDumpCommands extends DrushCommands
     /**
      * Backup your code, files, and database into a single file.
      *
-     * The following root-level directories would be excluded from a code archive:
-     *  - "[docroot]/.git"
-     *  - "[docroot]/vendor"
-     *  - "[docroot]/sites/@/files"
+     * The following paths would be excluded from a code archive:
+     *  - ".git"
+     *  - "vendor"
      *  - "[docroot]/sites/@/settings.@.php"
+     *  - Drupal files directory
      *  - paths defined in composer.json in "extra"/"installer-paths" section: Drupal core, libraries, contrib modules/themes/profiles
      *
      * The following directories would be excluded from a file archive:
@@ -351,12 +356,7 @@ class ArchiveDumpCommands extends DrushCommands
      */
     private function getDrupalFilesComponentPath(): string
     {
-        Drush::bootstrapManager()->doBootstrap(DrupalBootLevels::FULL);
-        $drupalFilesPath = Drupal::service('file_system')->realpath('public://');
-        if (!$drupalFilesPath) {
-            throw new Exception(dt('Path to Drupal files is empty.'));
-        }
-
+        $drupalFilesPath = $this->getDrupalFilesDir();
         $drupalFilesArchiveComponentPath = Path::join($this->archiveDir, self::COMPONENT_FILES);
         $this->logger()->info(
             dt(
@@ -379,6 +379,28 @@ class ArchiveDumpCommands extends DrushCommands
         );
 
         return $drupalFilesArchiveComponentPath;
+    }
+
+    /**
+     * Returns the path to Drupal files directory.
+     *
+     * @return string
+     *
+     * @throws \Exception
+     */
+    private function getDrupalFilesDir(): string
+    {
+        if (isset($this->drupalFilesDir)) {
+            return $this->drupalFilesDir;
+        }
+
+        Drush::bootstrapManager()->doBootstrap(DrupalBootLevels::FULL);
+        $drupalFilesPath = Drupal::service('file_system')->realpath('public://');
+        if (!$drupalFilesPath) {
+            throw new Exception(dt('Path to Drupal files is empty.'));
+        }
+
+        return $this->drupalFilesDir = $drupalFilesPath;
     }
 
     /**
@@ -506,11 +528,13 @@ class ArchiveDumpCommands extends DrushCommands
             );
         }
 
-        $docrootRegexpPrefix = $this->getDocrootRegexpPrefix();
         $excludes = [
-            '#^' . $docrootRegexpPrefix . 'sites/.+/files$#',
-            '#^' . $docrootRegexpPrefix . 'sites/.+/settings\..+\.php$#',
+            '#^' . $this->getDocrootRegexpPrefix() . 'sites/.+/settings\..+\.php$#',
         ];
+
+        $drupalFilesPath = $this->getDrupalFilesDir();
+        $drupalFilesPathRelative = Path::makeRelative($drupalFilesPath, $this->getComposerRoot());
+        $excludes[] = '#^' . $drupalFilesPathRelative . '$#';
 
         if (!isset($composerJson['extra']['installer-paths'])) {
             return $excludes;
