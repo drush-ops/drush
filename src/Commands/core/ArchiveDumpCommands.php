@@ -204,7 +204,7 @@ class ArchiveDumpCommands extends DrushCommands
         if ($this->filesystem->exists($options['destination'])) {
             if (!$options['overwrite']) {
                 throw new Exception(
-                    'The destination file already exists. Use "--overwrite" option for overwriting an existing file.'
+                    dt('The destination file already exists. Use "--overwrite" option for overwriting an existing file.')
                 );
             }
 
@@ -277,7 +277,7 @@ class ArchiveDumpCommands extends DrushCommands
         $bootstrapManager = Drush::bootstrapManager();
         $composerRoot = $bootstrapManager->getComposerRoot();
         if (!$composerRoot) {
-            throw new Exception('Path to Composer root is empty.');
+            throw new Exception(dt('Path to Composer root is empty.'));
         }
 
         return $composerRoot;
@@ -295,7 +295,7 @@ class ArchiveDumpCommands extends DrushCommands
         $bootstrapManager = Drush::bootstrapManager();
         $root = $bootstrapManager->getRoot();
         if (!$root) {
-            throw new Exception('Path to Drupal docroot is empty.');
+            throw new Exception(dt('Path to Drupal docroot is empty.'));
         }
 
         return $root;
@@ -372,7 +372,7 @@ class ArchiveDumpCommands extends DrushCommands
         Drush::bootstrapManager()->doBootstrap(DrupalBootLevels::FULL);
         $drupalFilesPath = \Drupal::service('file_system')->realpath('public://');
         if (!$drupalFilesPath) {
-            throw new Exception('Path to Drupal files is empty.');
+            throw new Exception(dt('Path to Drupal files is empty.'));
         }
 
         $drupalFilesArchiveComponentPath = Path::join($this->archiveDir, self::COMPONENT_FILES);
@@ -466,7 +466,7 @@ class ArchiveDumpCommands extends DrushCommands
         $options['result-file'] = Path::join($databaseArchiveDir, self::SQL_DUMP_FILE_NAME);
         $sql = SqlBase::create($options);
         if (false === $sql->dump()) {
-            throw new Exception('Unable to dump database. Rerun with --debug to see any error message.');
+            throw new Exception(dt('Unable to dump database. Rerun with --debug to see any error message.'));
         }
 
         return $databaseArchiveDir;
@@ -585,10 +585,9 @@ class ArchiveDumpCommands extends DrushCommands
         }
 
         throw new Exception(
-            sprintf(
-                'Found database connection settings in %s. It is risky to include them to the archive. Please move the database connection settings into a setting.*.php file or exclude them from the archive with "--exclude-code-paths=%s".',
-                $localFileName,
-                $localFileName
+            dt(
+                'Found database connection settings in !path. It is risky to include them to the archive. Please move the database connection settings into a setting.*.php file or exclude them from the archive with "--exclude-code-paths=!path".',
+                ['!path' => $localFileName]
             )
         );
     }
