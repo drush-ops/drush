@@ -17,6 +17,7 @@ use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use Symfony\Component\Filesystem\Exception\IOException;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Process\Process;
 use Symfony\Component\Yaml\Yaml;
 use Throwable;
 use Traversable;
@@ -326,11 +327,11 @@ class ArchiveDumpCommands extends DrushCommands
             '.git',
             'vendor',
         ];
-        /** @var \Drush\SiteAlias\ProcessManager $processManager */
-        $processManager = $this->processManager();
-        $process = $processManager->shell(sprintf('composer info --path --format=json --working-dir=%s', $this->getComposerRoot()));
+
+        $process = Process::fromShellCommandline(sprintf('composer info --path --format=json --working-dir=%s', $this->getComposerRoot()));
         $process->mustRun();
-        $installedPackages = $process->getOutputAsJson()['installed'] ?? [];
+        $composerInfoRaw = $process->getOutput();
+        $installedPackages = json_decode($composerInfoRaw, true)['installed'] ?? [];
         $installedPackagesPaths = array_column($installedPackages, 'path');
         $installedPackagesRelativePaths = array_map(
             fn($path) => ltrim(str_replace([$this->getComposerRoot()], '', $path), '/'),
