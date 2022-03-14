@@ -2,6 +2,7 @@
 
 namespace Drush\Commands\core;
 
+use Drupal;
 use Drush\Boot\DrupalBootLevels;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
@@ -55,21 +56,9 @@ class ArchiveDumpCommands extends DrushCommands
      * The following root-level directories would be excluded from a code archive:
      *  - "[docroot]/.git"
      *  - "[docroot]/vendor"
-     *  - "[docroot]/modules/contrib"
-     *  - "[docroot]/themes/contrib"
-     *  - "[docroot]/profiles/contrib"
-     *  - "[docroot]/sites/@/modules/contrib"
-     *  - "[docroot]/sites/@/themes/contrib"
-     *  - "[docroot]/sites/@/profiles/contrib"
      *  - "[docroot]/sites/@/files"
      *  - "[docroot]/sites/@/settings.@.php"
-     *
-     * In addition, the following directories would be excluded from code archive of a "web" docroot-based site:
-     *  - "web" directory contents except for the following subdirectories:
-     *  -- "web/modules"
-     *  -- "web/themes"
-     *  -- "web/profiles"
-     *  -- "web/sites"
+     *  - paths defined in composer.json in "extra"/"installer-paths" section: Drupal core, libraries, contrib modules/themes/profiles
      *
      * The following directories would be excluded from a file archive:
      * - css
@@ -343,13 +332,6 @@ class ArchiveDumpCommands extends DrushCommands
             $this->getDrupalExcludes()
         );
 
-        if ($this->isWebRootSite()) {
-            $excludes = array_merge(
-                $excludes,
-                $this->getWebDocrootDrupalExcludes()
-            );
-        }
-
         $this->filesystem->mirror(
             $codePath,
             $codeArchiveComponentPath,
@@ -370,7 +352,7 @@ class ArchiveDumpCommands extends DrushCommands
     private function getDrupalFilesComponentPath(): string
     {
         Drush::bootstrapManager()->doBootstrap(DrupalBootLevels::FULL);
-        $drupalFilesPath = \Drupal::service('file_system')->realpath('public://');
+        $drupalFilesPath = Drupal::service('file_system')->realpath('public://');
         if (!$drupalFilesPath) {
             throw new Exception(dt('Path to Drupal files is empty.'));
         }
@@ -497,7 +479,7 @@ class ArchiveDumpCommands extends DrushCommands
      */
     private function getDocrootRegexpPrefix(): string
     {
-        return $this->isWebRootSite() ? basename($this->getRoot()) . '\/' : '';
+        return $this->isWebRootSite() ? basename($this->getRoot()) . '/' : '';
     }
 
     /**
@@ -509,38 +491,53 @@ class ArchiveDumpCommands extends DrushCommands
      */
     private function getDrupalExcludes(): array
     {
-        return [
-            '#^' . $this->getDocrootRegexpPrefix() . 'sites\/.+\/files$#',
-            '#^' . $this->getDocrootRegexpPrefix() . 'sites\/.+\/settings\..+\.php$#',
-        ];
-    }
+        $composerJsonPath = Path::join($this->getComposerRoot(), 'composer.json');
+        $composerJsonRaw = file_get_contents($composerJsonPath);
+        if (false === $composerJsonRaw) {
+            throw new Exception(dt('Failed reading composer.json file (!path)', ['!path' => $composerJsonPath]));
+        }
+        $composerJson = json_decode($composerJsonRaw, true);
+        if (json_last_error()) {
+            throw new Exception(
+                dt(
+                    'Failed decoding composer.json file (!path). Error code: !error_code.',
+                    ['!path' => $composerJsonPath, '!error_code' => json_last_error()]
+                )
+            );
+        }
 
-    /**
-     * Returns the list of regular expressions to match Drupal contrib projects paths (modules, themes and profiles).
-     *
-     * @return array
-     *
-     * @throws \Exception
-     */
-    private function getWebDocrootDrupalExcludes(): array
-    {
-        return [
-            str_replace(
-                '%docroot%',
-                $this->getDocrootRegexpPrefix(),
-                '#^(%docroot%(?!modules|themes|profiles|sites)|%docroot%modules\/contrib$|%docroot%sites\/.+\/modules\/contrib$)#'
-            ),
-            str_replace(
-                '%docroot%',
-                $this->getDocrootRegexpPrefix(),
-                '#^(%docroot%(?!modules|themes|profiles|sites)|%docroot%themes\/contrib$|%docroot%sites\/.+\/themes\/contrib$)#'
-            ),
-            str_replace(
-                '%docroot%',
-                $this->getDocrootRegexpPrefix(),
-                '#^(%docroot%(?!modules|themes|profiles|sites)|%docroot%profiles\/contrib$|%docroot%sites\/.+\/profiles\/contrib$)#'
-            ),
+        $docrootRegexpPrefix = $this->getDocrootRegexpPrefix();
+        $excludes = [
+            '#^' . $docrootRegexpPrefix . 'sites/.+/files$#',
+            '#^' . $docrootRegexpPrefix . 'sites/.+/settings\..+\.php$#',
         ];
+
+        if (!isset($composerJson['extra']['installer-paths'])) {
+            return $excludes;
+        }
+
+        foreach ($composerJson['extra']['installer-paths'] as $path => $types) {
+            if (
+                !array_intersect(
+                    $types,
+                    [
+                        'type:drupal-core',
+                        'type:drupal-library',
+                        'type:drupal-module',
+                        'type:drupal-profile',
+                        'type:drupal-theme',
+                    ]
+                )
+            ) {
+                continue;
+            }
+
+            $path = str_replace(['/{$name}'], '', $path);
+
+            $excludes[] = '#^' . $path . '$#';
+        }
+
+        return $excludes;
     }
 
     /**
@@ -558,7 +555,7 @@ class ArchiveDumpCommands extends DrushCommands
      */
     private function validateSensitiveData(string $file, string $localFileName): void
     {
-        $regexp = '#^' . $this->getDocrootRegexpPrefix() . 'sites\/.*\/settings\.php$#';
+        $regexp = '#^' . $this->getDocrootRegexpPrefix() . 'sites/.*/settings\.php$#';
         if (!preg_match($regexp, $localFileName)) {
             return;
         }
