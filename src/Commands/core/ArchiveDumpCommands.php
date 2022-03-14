@@ -63,7 +63,7 @@ class ArchiveDumpCommands extends DrushCommands
      *  - "vendor"
      *  - "[docroot]/sites/@/settings.@.php"
      *  - Drupal files directory
-     *  - paths defined in composer.json in "extra"/"installer-paths" section: Drupal core, libraries, contrib modules/themes/profiles
+     *  - Composer packages installed paths (`composer info --path --format=json`)
      *
      * The following directories would be excluded from a file archive:
      * - css
@@ -326,9 +326,28 @@ class ArchiveDumpCommands extends DrushCommands
             '.git',
             'vendor',
         ];
+        /** @var \Drush\SiteAlias\ProcessManager $processManager */
+        $processManager = $this->processManager();
+        $process = $processManager->shell(sprintf('composer info --path --format=json --working-dir=%s', $this->getComposerRoot()));
+        $process->mustRun();
+        $installedPackages = $process->getOutputAsJson()['installed'] ?? [];
+        $installedPackagesPaths = array_column($installedPackages, 'path');
+        $installedPackagesBaseDirs = array_map(
+            fn($path) =>ltrim(str_replace([$this->getComposerRoot()], '', $path), '/'),
+            $installedPackagesPaths
+        );
+        $installedPackagesBaseDirs = array_unique(
+            array_filter(
+                $installedPackagesBaseDirs,
+                fn($path) => '' !== $path && 0 !== strpos($path, 'vendor')
+            )
+        );
+        $excludeDirs = array_merge($excludeDirs, $installedPackagesBaseDirs);
+
         if (Path::isBasePath($this->getComposerRoot(), $this->archiveDir)) {
             $excludeDirs[] = Path::makeRelative($this->archiveDir, $this->getComposerRoot());
         }
+
         $excludes = array_merge(
             $excludes,
             $this->getRegexpsForPaths(
@@ -513,21 +532,6 @@ class ArchiveDumpCommands extends DrushCommands
      */
     private function getDrupalExcludes(): array
     {
-        $composerJsonPath = Path::join($this->getComposerRoot(), 'composer.json');
-        $composerJsonRaw = file_get_contents($composerJsonPath);
-        if (false === $composerJsonRaw) {
-            throw new Exception(dt('Failed reading composer.json file (!path)', ['!path' => $composerJsonPath]));
-        }
-        $composerJson = json_decode($composerJsonRaw, true);
-        if (json_last_error()) {
-            throw new Exception(
-                dt(
-                    'Failed decoding composer.json file (!path). Error code: !error_code.',
-                    ['!path' => $composerJsonPath, '!error_code' => json_last_error()]
-                )
-            );
-        }
-
         $excludes = [
             '#^' . $this->getDocrootRegexpPrefix() . 'sites/.+/settings\..+\.php$#',
         ];
@@ -535,31 +539,6 @@ class ArchiveDumpCommands extends DrushCommands
         $drupalFilesPath = $this->getDrupalFilesDir();
         $drupalFilesPathRelative = Path::makeRelative($drupalFilesPath, $this->getComposerRoot());
         $excludes[] = '#^' . $drupalFilesPathRelative . '$#';
-
-        if (!isset($composerJson['extra']['installer-paths'])) {
-            return $excludes;
-        }
-
-        foreach ($composerJson['extra']['installer-paths'] as $path => $types) {
-            if (
-                !array_intersect(
-                    $types,
-                    [
-                        'type:drupal-core',
-                        'type:drupal-library',
-                        'type:drupal-module',
-                        'type:drupal-profile',
-                        'type:drupal-theme',
-                    ]
-                )
-            ) {
-                continue;
-            }
-
-            $path = str_replace(['/{$name}'], '', $path);
-
-            $excludes[] = '#^' . $path . '$#';
-        }
 
         return $excludes;
     }
