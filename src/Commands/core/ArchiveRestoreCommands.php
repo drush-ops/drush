@@ -430,15 +430,13 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
             throw new Exception(dt('Database dump file !path not found.', ['!path' => $databaseDumpPath]));
         }
 
-        // @todo: add support for remote sites.
-
         $sql = SqlBase::create($options);
         $databaseSpec = $sql->getDbSpec();
 
         if (
             !$this->io()->confirm(
                 dt(
-                    'Are you sure you want to import the database dump !path into the database "!database" (username: !user, prefix: !prefix, port: !port)?',
+                    'Are you sure you want to drop the database "!database" (username: !user, prefix: !prefix, port: !port) and import the database dump "!path"?',
                 [
                         '!path' => $databaseDumpPath,
                         '!database' => $databaseSpec['database'],
@@ -452,9 +450,12 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
             throw new UserAbortException();
         }
 
-        $result = $sql->query('', $databaseDumpPath);
-        if (!$result) {
-            throw new Exception(dt('Database import failed.'));
+        if (!$sql->drop($sql->listTablesQuoted())) {
+            throw new Exception(dt('Failed to drop the database.'));
+        }
+
+        if (!$sql->query('', $databaseDumpPath)) {
+            throw new Exception(dt('Database import has failed.'));
         }
     }
 
