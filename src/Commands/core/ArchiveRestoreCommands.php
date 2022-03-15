@@ -84,7 +84,7 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
      * @throws \Exception
      */
     public function restore(
-        string  $path = null,
+        string $path = null,
         ?string $site = null,
         array $options = [
             'code' => false,
@@ -94,8 +94,8 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
             'files' => false,
             'files_path' => null,
             'overwrite' => false,
-        ]): void
-    {
+        ]
+    ): void {
         $this->prepareTempDir();
 
         $extractDir = null;
@@ -115,7 +115,8 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
             // Validate requested components have sources.
             if (null === $extractDir && null === $options[$component . '_path']) {
                 throw new Exception(
-                    dt('Missing either "path" input or "!component_path" option for the !label component.',
+                    dt(
+                        'Missing either "path" input or "!component_path" option for the !label component.',
                         [
                             '!component' => $component,
                             '!label' => $label,
@@ -376,11 +377,15 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
             throw new UserAbortException();
         }
 
-        $this->logger()->info(dt('Copying files from "!source" to "!destination"...',
-        [
-            '!source' => $source,
-            '!destination' => $destination,
-        ]));
+        $this->logger()->info(
+            dt(
+                'Copying files from "!source" to "!destination"...',
+                [
+                    '!source' => $source,
+                    '!destination' => $destination,
+                ]
+            )
+        );
 
         $options[] = sprintf("-e 'ssh %s'", $this->getConfig()->get('ssh.options'));
         $options[] = '-akz';
@@ -440,7 +445,7 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
             !$this->io()->confirm(
                 dt(
                     'Are you sure you want to drop the database "!database" (username: !user, prefix: !prefix, port: !port) and import the database dump "!path"?',
-                [
+                    [
                         '!path' => $databaseDumpPath,
                         '!database' => $databaseSpec['database'],
                         '!prefix' => $databaseSpec['prefix'] ?: dt('n/a'),
