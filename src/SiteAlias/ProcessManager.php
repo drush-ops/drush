@@ -68,7 +68,7 @@ class ProcessManager extends ConsolidationProcessManager
         // If the target is a local Drupal site that has a vendor/bin/drush,
         // then use that.
         if ($siteAlias->hasRoot()) {
-            $localDrushScript = Path::join($siteAlias->root(), 'vendor/bin/drush');
+            $localDrushScript = Path::join($siteAlias->root(), '../vendor/bin/drush');
             if (file_exists($localDrushScript)) {
                 return $localDrushScript;
             }
