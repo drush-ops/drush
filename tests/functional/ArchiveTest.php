@@ -5,25 +5,57 @@ namespace Unish;
 use Webmozart\PathUtil\Path;
 
 /**
+ * Class ArchiveTest.
+ *
  * @group slow
  * @group commands
  * @group archive
  */
 class ArchiveTest extends CommandUnishTestCase
 {
-    public function testArchiveDumpCommand()
+    /**
+     * @var string
+     */
+    protected string $archivePath;
+
+    /**
+     * @var array
+     */
+    protected array $archiveDumpOptions;
+
+    /**
+     * @inheritdoc
+     */
+    public function setUp(): void
     {
         $this->setUpDrupal(1, true);
-        $options = [
+        $this->archiveDumpOptions = [
             'db' => null,
-            'exclude-code-paths' => 'sites/.+/settings.php',
+            'files' => null,
+            'code' => null,
+            'exclude-code-paths' => 'sut/sites/.+/settings.php,(?!sut).*',
         ];
 
+        $this->archivePath = Path::join($this->getSandbox(), 'archive.tar.gz');
+        $this->drush(
+            'archive:dump',
+            [],
+            array_merge($this->archiveDumpOptions, [
+                'destination' => $this->archivePath,
+                'overwrite' => null,
+            ])
+        );
+        $actualArchivePath = $this->getOutput();
+        $this->assertEquals($this->archivePath, $actualArchivePath);
+    }
+
+    public function testArchiveDumpCommand(): void
+    {
         // Create an archive.
         $this->drush(
             'archive:dump',
             [],
-            $options
+            $this->archiveDumpOptions
         );
         $actualArchivePath = $this->getOutput();
         $this->assertMatchesRegularExpression(
@@ -31,24 +63,12 @@ class ArchiveTest extends CommandUnishTestCase
             $actualArchivePath
         );
 
-        // Create an archive with "--destination".
-        $expectedArchivePath = Path::join($this->getSandbox(), 'archive.tar.gz');
-        $this->drush(
-            'archive:dump',
-            [],
-            array_merge($options, [
-                'destination' => $expectedArchivePath,
-            ])
-        );
-        $actualArchivePath = $this->getOutput();
-        $this->assertEquals($expectedArchivePath, $actualArchivePath);
-
         // Try to overwrite the existing archive with "--destination".
         $this->drush(
             'archive:dump',
             [],
-            array_merge($options, [
-                'destination' => $expectedArchivePath,
+            array_merge($this->archiveDumpOptions, [
+                'destination' => $this->archivePath,
             ]),
             null,
             null,
@@ -60,13 +80,13 @@ class ArchiveTest extends CommandUnishTestCase
         $this->drush(
             'archive:dump',
             [],
-            array_merge($options, [
-                'destination' => $expectedArchivePath,
+            array_merge($this->archiveDumpOptions, [
+                'destination' => $this->archivePath,
                 'overwrite' => null,
             ])
         );
         $actualArchivePath = $this->getOutput();
-        $this->assertEquals($expectedArchivePath, $actualArchivePath);
+        $this->assertEquals($this->archivePath, $actualArchivePath);
 
         // Validate database credentials are present in settings.php file.
         $this->drush(
@@ -79,6 +99,36 @@ class ArchiveTest extends CommandUnishTestCase
         );
         $this->assertStringContainsString(
             'Found database connection settings',
+            $this->getErrorOutput()
+        );
+    }
+
+    public function testArchiveRestoreCommand(): void
+    {
+        // @todo: remove once archive:restore command has added.
+        if (!class_exists('\Drush\Commands\core\ArchiveRestoreCommands')) {
+            $this->markTestSkipped('The command archive:restore is not found.');
+        }
+
+        // Restore archive from an existing file.
+        $archivePath = Path::join($this->getSandbox(), 'archive.tar.gz');
+        $this->drush(
+            'archive:restore',
+            [$archivePath]
+        );
+
+        // Restore archive from a non-existing file.
+        $nonExistingArchivePath = Path::join($this->getSandbox(), 'non-existing-archive.tar.gz');
+        $this->drush(
+            'archive:restore',
+            [$nonExistingArchivePath],
+            [],
+            null,
+            null,
+            self::EXIT_ERROR
+        );
+        $this->assertStringContainsString(
+            'non-existing-archive.tar.gz is not found',
             $this->getErrorOutput()
         );
     }
