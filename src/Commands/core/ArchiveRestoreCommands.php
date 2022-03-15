@@ -133,7 +133,6 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
         if ($options['files']) {
             $filesComponentPath = $options['files_path'] ?? Path::join($extractDir, self::COMPONENT_FILES);
             $this->importFiles($filesComponentPath, $site);
-            return;
         }
 
         if ($options['db']) {
@@ -223,11 +222,6 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
             throw new Exception(dt('Directory !path not found.', ['!path' => $source]));
         }
 
-        if (!$this->io()->confirm(dt('Are you sure you want to import the code?'))) {
-            // @todo: move this right before executing rsync so that to provide source/destination paths.
-            throw new UserAbortException();
-        }
-
         $siteAlias = $this->getSiteAlias($destinationSite);
 
         if ($siteAlias->isLocal()) {
@@ -266,11 +260,6 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
 
         if (!is_dir($source)) {
             throw new Exception(dt('Directory !path not found.', ['!path' => $source]));
-        }
-
-        if (!$this->io()->confirm(dt('Are you sure you want to import the Drupal files?'))) {
-            // @todo: move this right before executing rsync so that to provide source/destination paths.
-            throw new UserAbortException();
         }
 
         $siteAlias = $this->getSiteAlias($destinationSite);
@@ -372,6 +361,20 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
     {
         $source = rtrim($source, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
         $destination = rtrim($destination, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+
+        if (
+            !$this->io()->confirm(
+                dt(
+                    'Are you sure you want to sync files from "!source" to "!destination"?',
+                    [
+                            '!source' => $source,
+                            '!destination' => $destination,
+                        ]
+                )
+            )
+        ) {
+            throw new UserAbortException();
+        }
 
         $this->logger()->info(dt('Copying files from "!source" to "!destination"...',
         [
