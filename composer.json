@@ -56,7 +56,7 @@
     "composer/installers": "^1.7",
     "cweagans/composer-patches": "~1.0",
     "david-garcia/phpwhois": "4.3.0",
-    "drupal/core-recommended": "^9 || ^10",
+    "drupal/core-recommended": "^11",
     "drupal/semver_example": "2.3.0",
     "phpunit/phpunit": ">=7.5.20",
     "rector/rector": "^0.12",
@@ -92,10 +92,7 @@
     "optimize-autoloader": true,
     "preferred-install": "dist",
     "sort-packages": true,
-    "process-timeout": 9600,
-    "platform": {
-      "php": "7.4"
-    }
+    "process-timeout": 9600
   },
   "scripts": {
     "cs": "phpcs",
