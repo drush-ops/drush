@@ -76,7 +76,7 @@ class TopicCommands extends DrushCommands
             throw new \Exception(dt("!topic topic not found.", ['!topic' => $topic_name]));
         }
     }
-    
+
     public function topicComplete(CompletionInput $input, CompletionSuggestions $suggestions): void
     {
         if ($input->mustSuggestArgumentValuesFor('topic_name')) {

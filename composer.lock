@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "876b8878c922c70452e83f790507d9c6",
+    "content-hash": "78e16fb077f0b62ef6f34d7af7368632",
     "packages": [
         {
             "name": "chi-teck/drupal-code-generator",
@@ -151,16 +151,16 @@
         },
         {
             "name": "consolidation/annotated-command",
-            "version": "dev-main",
+            "version": "dev-completion",
             "source": {
                 "type": "git",
                 "url": "https://github.com/consolidation/annotated-command.git",
-                "reference": "462a5689247594e4e7686ebcc5089b4552fd83f2"
+                "reference": "e1bcb277eff0521ce918444cb504b3c320a8aa43"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/consolidation/annotated-command/zipball/462a5689247594e4e7686ebcc5089b4552fd83f2",
-                "reference": "462a5689247594e4e7686ebcc5089b4552fd83f2",
+                "url": "https://api.github.com/repos/consolidation/annotated-command/zipball/e1bcb277eff0521ce918444cb504b3c320a8aa43",
+                "reference": "e1bcb277eff0521ce918444cb504b3c320a8aa43",
                 "shasum": ""
             },
             "require": {
@@ -177,7 +177,6 @@
                 "squizlabs/php_codesniffer": "^3",
                 "yoast/phpunit-polyfills": "^0.2.0"
             },
-            "default-branch": true,
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -202,9 +201,9 @@
             "description": "Initialize Symfony Console commands from annotated command class methods.",
             "support": {
                 "issues": "https://github.com/consolidation/annotated-command/issues",
-                "source": "https://github.com/consolidation/annotated-command/tree/main"
+                "source": "https://github.com/consolidation/annotated-command/tree/completion"
             },
-            "time": "2022-02-20T16:34:21+00:00"
+            "time": "2022-03-20T15:19:46+00:00"
         },
         {
             "name": "consolidation/config",
@@ -8374,7 +8373,7 @@
     "aliases": [
         {
             "package": "consolidation/annotated-command",
-            "version": "dev-main",
+            "version": "dev-completion",
             "alias": "4.5.2",
             "alias_normalized": "4.5.2.0"
         }
