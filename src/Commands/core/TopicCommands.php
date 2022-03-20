@@ -9,6 +9,8 @@ use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Completion\CompletionInput;
+use Symfony\Component\Console\Completion\CompletionSuggestions;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -72,6 +74,13 @@ class TopicCommands extends DrushCommands
         $topic_name = $commandData->input()->getArgument('topic_name');
         if (!in_array($topic_name, array_keys(self::getAllTopics()))) {
             throw new \Exception(dt("!topic topic not found.", ['!topic' => $topic_name]));
+        }
+    }
+    
+    public function topicComplete(CompletionInput $input, CompletionSuggestions $suggestions): void
+    {
+        if ($input->mustSuggestArgumentValuesFor('topic_name')) {
+            $suggestions->suggestValues(array_keys($this->getAllTopics()));
         }
     }
 
