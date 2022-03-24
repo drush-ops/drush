@@ -47,6 +47,11 @@
       "Unish":        "tests/"
     }
   },
+  "config": {
+    "platform": {
+      "php": "5.3.29"
+    }
+  },
   "extra": {
     "branch-alias": {
         "dev-master": "7.0.x-dev"
