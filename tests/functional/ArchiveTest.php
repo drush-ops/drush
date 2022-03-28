@@ -136,6 +136,33 @@ class ArchiveTest extends CommandUnishTestCase
             ['overwrite' => null],
         );
 
+        // Restore archive from paths.
+        $archiveBasePath = Path::join($this->getSandbox(), 'archive');
+        $this->drush(
+            'archive:restore',
+            [],
+            [
+                'code' => null,
+                'code_path' => Path::join($archiveBasePath, 'code'),
+            ]
+        );
+        $this->drush(
+            'archive:restore',
+            [],
+            [
+                'files' => null,
+                'files_path' => Path::join($archiveBasePath, 'files'),
+            ]
+        );
+        $this->drush(
+            'archive:restore',
+            [],
+            [
+                'db' => null,
+                'db_path' => Path::join($archiveBasePath, 'database', 'database.sql'),
+            ]
+        );
+
         // Restore archive from a non-existing file.
         $nonExistingArchivePath = Path::join($this->getSandbox(), 'non-existing-archive.tar.gz');
         $this->drush(
