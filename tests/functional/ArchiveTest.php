@@ -117,6 +117,25 @@ class ArchiveTest extends CommandUnishTestCase
             [$archivePath]
         );
 
+        // Restore archive from an existing file and an existing uncompressed directory.
+        $this->drush(
+            'archive:restore',
+            [$archivePath],
+            [],
+            null,
+            null,
+            self::EXIT_ERROR
+        );
+        $this->assertMatchesRegularExpression(
+            '/Extract directory .+ already exists/',
+            $this->getErrorOutput()
+        );
+        $this->drush(
+            'archive:restore',
+            [$archivePath],
+            ['overwrite' => null],
+        );
+
         // Restore archive from a non-existing file.
         $nonExistingArchivePath = Path::join($this->getSandbox(), 'non-existing-archive.tar.gz');
         $this->drush(
