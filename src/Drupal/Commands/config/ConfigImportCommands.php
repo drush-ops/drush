@@ -292,6 +292,12 @@ class ConfigImportCommands extends DrushCommands
                         $context = [];
                         do {
                             $config_importer->doSyncStep($step, $context);
+                            // Manually get and process any batches that may
+                            // have been created, e.g. via hook_install() when a
+                            // module is enabled.
+                            if (batch_get()) {
+                                drush_backend_batch_process();
+                            }
                             if (isset($context['message'])) {
                                 $this->logger()->notice(str_replace('Synchronizing', 'Synchronized', (string)$context['message']));
                             }
