@@ -264,7 +264,7 @@ class DrushArgvInput extends ArgvInput
     /**
      * {@inheritdoc}
      */
-    public function getFirstArgument()
+    public function getFirstArgument(): ?string
     {
         foreach ($this->tokens as $token) {
             if ($token && '-' === $token[0]) {
