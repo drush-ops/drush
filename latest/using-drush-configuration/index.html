@@ -5040,7 +5040,8 @@ command files, so we mimic that here as an example.</p>
 temporary sql dump files created during <a href="https://www.drush.org/latest/commands/sql_sync/">sql:sync</a>. If unspecified,
 defaults to <code>$HOME/drush-backups</code>.
 <div class="highlight"><pre><span></span><code>drush:
-  backup-dir: /tmp/drush-backups
+  paths:
+    backup-dir: /tmp/drush-backups
 </code></pre></div></p>
 <h4 id="global-options">Global options<a class="headerlink" href="#global-options" title="Permanent link">&para;</a></h4>
 <div class="highlight"><pre><span></span><code>options:
@@ -5145,7 +5146,7 @@ the Drush major version number in the filename, e.g. <code>drush10.yml</code>.</
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">March 7, 2022</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">April 1, 2022</span>
       
     
   </small>
