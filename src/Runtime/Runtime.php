@@ -80,6 +80,9 @@ class Runtime
         // Require the Composer autoloader for Drupal (if different)
         $loader = $this->preflight->loadSiteAutoloader();
 
+        // Load the Symfony compatability layer autoloader
+        $this->preflight->loadSymfonyCompatabilityAutoloader();
+
         // Create the Symfony Application et. al.
         $input = $this->preflight->createInput();
         $application = new Application('Drush Commandline Tool', Drush::getVersion());
