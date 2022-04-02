@@ -13,6 +13,10 @@ class QueueTest extends CommandUnishTestCase
 
     public function testQueue()
     {
+        if (!$this->isDrupalGreaterThanOrEqualTo('10.0.0')) {
+            $this->markTestSkipped('testQueue uses aggregator module, which has been removed in Drupal 10');
+        }
+
         $expected = 'aggregator_feeds,%items,"Drupal\Core\Queue\DatabaseQueue"';
         $sites = $this->setUpDrupal(1, true);
 
@@ -41,6 +45,10 @@ class QueueTest extends CommandUnishTestCase
    */
     public function testQueueDelete()
     {
+        if (!$this->isDrupalGreaterThanOrEqualTo('10.0.0')) {
+            $this->markTestSkipped('testQueueDelete uses aggregator module, which has been removed in Drupal 10');
+        }
+
         $expected = 'aggregator_feeds,%items,"Drupal\Core\Queue\DatabaseQueue"';
 
         $sites = $this->setUpDrupal(1, true);
