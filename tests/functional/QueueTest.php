@@ -11,64 +11,6 @@ class QueueTest extends CommandUnishTestCase
 {
     use TestModuleHelperTrait;
 
-    public function testQueue()
-    {
-        if (!$this->isDrupalGreaterThanOrEqualTo('10.0.0')) {
-            $this->markTestSkipped('testQueue uses aggregator module, which has been removed in Drupal 10');
-        }
-
-        $expected = 'aggregator_feeds,%items,"Drupal\Core\Queue\DatabaseQueue"';
-        $sites = $this->setUpDrupal(1, true);
-
-        // Enable aggregator since it declares a queue.
-        $this->drush('pm-enable', ['aggregator']);
-
-        $this->drush('queue-list');
-        $output = $this->getOutput();
-        $this->assertStringContainsString('aggregator_feeds', $output, 'Queue list shows the declared queue.');
-
-        // We need user to own to the feed.
-        $this->drush('user-create', ['example'], ['password' => 'password', 'mail' => "example@example.com"]);
-        $this->drush('php-script', ['queue_script'], ['script-path' => __DIR__ . '/resources']);
-        $this->drush('queue-list', [], ['format' => 'csv']);
-        $output = $this->getOutputAsList();
-        $this->assertEquals(str_replace('%items', 1, $expected), array_pop($output), 'Item was successfully added to the queue.');
-
-        $this->drush('queue-run', ['aggregator_feeds']);
-        $this->drush('queue-list', [], ['format' => 'csv']);
-        $output = $this->getOutputAsList();
-        $this->assertEquals(str_replace('%items', 0, $expected), array_pop($output), 'Queue item processed.');
-    }
-
-  /**
-   * Tests the queue-delete command.
-   */
-    public function testQueueDelete()
-    {
-        if (!$this->isDrupalGreaterThanOrEqualTo('10.0.0')) {
-            $this->markTestSkipped('testQueueDelete uses aggregator module, which has been removed in Drupal 10');
-        }
-
-        $expected = 'aggregator_feeds,%items,"Drupal\Core\Queue\DatabaseQueue"';
-
-        $sites = $this->setUpDrupal(1, true);
-
-        // Enable aggregator since it declares a queue.
-        $this->drush('pm-enable', ['aggregator']);
-
-        // Add another item to the queue and make sure it was deleted.
-        $this->drush('php-script', ['queue_script'], ['script-path' => __DIR__ . '/resources']);
-        $this->drush('queue-list', [], ['format' => 'csv']);
-        $output = $this->getOutputAsList();
-        $this->assertEquals(str_replace('%items', 1, $expected), array_pop($output), 'Item was successfully added to the queue.');
-
-        $this->drush('queue-delete', ['aggregator_feeds']);
-
-        $this->drush('queue-list', [], ['format' => 'csv']);
-        $output = $this->getOutputAsList();
-        $this->assertEquals(str_replace('%items', 0, $expected), array_pop($output), 'Queue was successfully deleted.');
-    }
-
   /**
    * Tests the RequeueException.
    */
@@ -111,7 +53,7 @@ class QueueTest extends CommandUnishTestCase
     }
 
   /**
-   * Tests that CustomExceptions do not hold up the queue.
+   * Tests that CustomExceptions do not hold up the queue. Also queue:run, queue:list, queue:delete
    */
     public function testCustomException()
     {
@@ -152,5 +94,12 @@ class QueueTest extends CommandUnishTestCase
         $this->drush('queue-list', [], ['format' => 'csv']);
         $output = $this->getOutput();
         $this->assertStringContainsString(str_replace('%items', 1, $expected), $output, 'Last queue item processed after first threw custom exception.');
+
+
+        $this->drush('queue-delete', ['woot_custom_exception']);
+        $this->drush('queue-list', [], ['format' => 'csv']);
+        $output = $this->getOutputAsList();
+        $expected = 'woot_custom_exception,%items,"Drupal\Core\Queue\DatabaseQueue"';
+        $this->assertEquals(str_replace('%items', 0, $expected), array_pop($output), 'Queue was successfully deleted.');
     }
 }
