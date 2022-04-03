@@ -2,6 +2,7 @@
 
 namespace Drush\Drupal;
 
+use Drush\Config\DrushConfig;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Composer\Semver\Semver;
 use Drupal\Core\DependencyInjection\ServiceModifierInterface;
@@ -14,6 +15,13 @@ use Drush\Log\LogLevel;
  */
 trait DrupalKernelTrait
 {
+    /**
+     * Holds the container instance.
+     *
+     * @var \Symfony\Component\DependencyInjection\ContainerInterface
+     */
+    protected $container;
+
     /** @var ServiceModifierInterface[] */
     protected $serviceModifiers = [];
 
@@ -107,8 +115,12 @@ trait DrupalKernelTrait
 
         // Load and process composer.json announced drush.services.yml files
         // of site-wide command packages.
-        // @fixme Fix directory to use project root.
-        $this->addDrushServiceProviderFromSubdirectories([dirname(DRUPAL_ROOT) . '/drush']);
+        // @see \Drush\Runtime\DependencyInjection::addDrushServices
+        /** @var \Drush\Config\DrushConfig $config */
+        $config = $this->container->get('config.runtime');
+        // @see \Drush\Runtime\Runtime::doRun
+        $commandFilePaths = $config->get('runtime.commandfile.paths');
+        $this->addDrushServiceProviderFromSubdirectories($commandFilePaths);
 
         // Also add Drush services from all modules
         $module_filenames = $this->getModuleFileNames();
