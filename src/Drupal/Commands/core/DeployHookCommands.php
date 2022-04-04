@@ -176,7 +176,8 @@ class DeployHookCommands extends DrushCommands implements SiteAliasManagerAwareI
             return;
         }
 
-        list($module, $name) = explode('_deploy_', $function, 2);
+        $name = end(explode('_deploy_', $function, 2));
+        $module = str_replace("_$name", '', $function);
         $filename = $module . '.deploy';
         \Drupal::moduleHandler()->loadInclude($module, 'php', $filename);
         if (function_exists($function)) {
