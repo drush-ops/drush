@@ -429,6 +429,7 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
 
             if ($targetTypeDefinition->hasKey('bundle')) {
                 if ($referencedBundle = $this->input->getOption('target-bundle')) {
+                    $this->validateBundle($targetType, $referencedBundle);
                     $referencedBundles = [$referencedBundle];
                 } else {
                     $referencedBundles = $this->askReferencedBundles($field);
