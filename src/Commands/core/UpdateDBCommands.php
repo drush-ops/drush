@@ -271,8 +271,7 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
         // having post update functions when it is supported in Drupal core.
         if (method_exists($update_registry, 'getUpdateFunctions')) {
             \Drupal::service('update.post_update_registry')->getUpdateFunctions($extension);
-        }
-        else {
+        } else {
             \Drupal::service('update.post_update_registry')->getModuleUpdateFunctions($extension);
         }
 
