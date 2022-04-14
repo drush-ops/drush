@@ -632,8 +632,8 @@ abstract class SqlBase implements ConfigAwareInterface
         return [
             $this->command(),
             $this->creds(!$this->getOption('show-passwords')),
-            $this->silent(),
             // This removes column header and various helpful things in mysql.
+            $this->silent(),
             $this->getOption('extra', $this->queryExtra),
             $this->queryFile,
             Escape::shellArg($input_file),

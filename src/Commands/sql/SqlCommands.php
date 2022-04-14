@@ -168,12 +168,14 @@ class SqlCommands extends DrushCommands implements StdinAwareInterface
      *   Browse user record. Table prefixes, if used, must be added to table names by hand.
      * @usage drush sql:query --db-prefix "SELECT * FROM {users}"
      *   Browse user record. Table prefixes are honored.  Caution: All curly-braces will be stripped.
-     * @usage $(drush sql-connect) < example.sql
+     * @usage $(drush sql:connect) < example.sql
      *   Import sql statements from a file into the current database.
      * @usage drush sql:query --file=example.sql
      *   Alternate way to import sql statements from a file.
      * @usage drush ev "return db_query('SELECT * FROM users')->fetchAll()" --format=json
      *   Get data back in JSON format. See https://github.com/drush-ops/drush/issues/3071#issuecomment-347929777.
+     * @usage `drush sql:connect` -e "select * from users limit 5;"
+     *   Results are formatted in a pretty table with borders and column headers.
      * @bootstrap max configuration
      *
      */
