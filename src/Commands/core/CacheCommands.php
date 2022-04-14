@@ -244,7 +244,7 @@ class CacheCommands extends DrushCommands implements CustomEventAwareInterface, 
         // Check if the provided type ($type) is a valid cache type.
         if ($type && !array_key_exists($type, $types)) {
             if ($type === 'all') {
-                throw new \Exception(dt('`cache-clear all` is deprecated for Drupal 8 and later. Please use the `cache-rebuild` command instead.'));
+                throw new \Exception(dt('`cache-clear all` is deprecated for Drupal 8 and later. Please use the `cache:rebuild` command instead.'));
             }
             // If we haven't done a full bootstrap, provide a more
             // specific message with instructions to the user on
