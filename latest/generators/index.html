@@ -4912,7 +4912,7 @@
 <li>Write a class similar to <a href="https://github.com/drush-ops/drush/tree/11.x/tests/fixtures/modules/woot/src/Generators/">ExampleGenerator</a>. Implement your custom logic in the generate() method. Typically this class is placed under the src/Generators directory.</li>
 <li>Add a .twig file to the same directory. This template specifies what gets output from the generator.</li>
 <li>Add your class to your module's drush.services.yml file (<a href="https://github.com/drush-ops/drush/blob/11.x/tests/fixtures/modules/woot/drush.services.yml">example</a>). Use the tag <code>drush.generator.v2</code> instead of <code>drush.command</code>.</li>
-<li>Perform a <code>drush cache-rebuild</code> to compile your drush.services.yml changes into the Drupal container.</li>
+<li>Perform a <code>drush cache:rebuild</code> to compile your drush.services.yml changes into the Drupal container.</li>
 </ol>
 <h2 id="global-generators">Global Generators<a class="headerlink" href="#global-generators" title="Permanent link">&para;</a></h2>
 <p>Generators that don't ship inside Drupal modules are called <em>global</em> generators. In general, it is better to use modules to carry your generators. If you still prefer using a global generator, please note:</p>
@@ -4940,7 +4940,7 @@
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">January 3, 2022</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">April 14, 2022</span>
       
     
   </small>
