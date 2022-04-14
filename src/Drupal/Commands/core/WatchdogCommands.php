@@ -133,7 +133,7 @@ class WatchdogCommands extends DrushCommands
               'args' => [],
             ];
         } else {
-            $where['where'] .= " AND wid > ?";
+            $where['where'] .= " AND wid > :wid";
         }
 
         $last_seen_wid = 0;
