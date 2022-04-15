@@ -20,7 +20,7 @@ class ArgsRemapperTest extends TestCase
     {
         $remapOptions = [];
         $remapCommandAliases = [
-            'in' => 'pm:install'
+            'en' => 'pm:enable'
         ];
         $sut = new ArgsRemapper($remapOptions, $remapCommandAliases);
         $result = $sut->remap($argv);
@@ -29,18 +29,13 @@ class ArgsRemapperTest extends TestCase
     }
 
     /**
-     * Provides arguments for ::ArgsRemapper
+     * Provides argumens for ::ArgsRemapper
      */
     public function argsProvider()
     {
         return [
             [
-                ['in', 'in'],
-                ['install', 'install'],
-                ['pm-install', 'pm-install'],
-                ['pm:install', 'install'],
                 ['en', 'en'],
-                ['pm-enable', 'pm-enable'],
                 ['pm:enable', 'en'],
             ],
         ];
