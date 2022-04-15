@@ -366,7 +366,7 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/commands/pm_enable/</loc>
+         <loc>https://www.drush.org/latest/commands/pm_install/</loc>
          <lastmod>2022-04-15</lastmod>
          <changefreq>daily</changefreq>
     </url>
