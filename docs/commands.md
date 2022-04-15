@@ -16,7 +16,7 @@ Creating a new Drush command or porting a legacy command is easy. Follow the ste
 The following are both valid ways to declare a command:
 
 === "PHP8 Attributes"
-    
+
     ```php
     use Drush\Attributes as CLI;
 
@@ -33,7 +33,7 @@ The following are both valid ways to declare a command:
     ```
 
 === "Annotations"
-    
+
     ```php
     /**
      * @command xkcd:fetch
@@ -131,36 +131,7 @@ A site-wide commandfile should have tests that run with each (major) version of 
 
 Commandfiles that are not part of any Drupal site are called 'global' commandfiles.
 
-### Commands discovered by configuration
-
-Global commandfiles discoverable by configuration are not supported by default; in order to enable them, you must configure your `drush.yml` configuration file to add an `include` search location.
-
-For example:
-
-```yaml
-drush:
-  paths:
-    include:
-      - '${env.home}/.drush/commands'
-```      
-With this configuration in place, global commands may be placed as described in the Site-Wide Drush Commands section above. Global commandfiles may not declare any dependencies of their own; they may only use those dependencies already available via the autoloader.
-
-!!! tip
-    1. The filename must be have a name like Commands/ExampleCommands.php
-        1. The prefix `Example` can be whatever string you want.
-        1. The file must end in `Commands.php`
-    1. The directory above `Commands` must be one of: 
-        1.  A Folder listed in the 'include' option. Include may be provided via [config](#global-drush-commands) or via CLI.
-        1.  ../drush, /drush or /sites/all/drush. These paths are relative to Drupal root.
-
-It is recommended that you avoid global Drush commands, and favor site-wide commandfiles instead. If you really need a command or commands that are not part of any Drupal site, consider making a stand-alone script or custom .phar instead. See [ahoy](https://github.com/ahoy-cli/ahoy), [Robo](https://github.com/consolidation/robo) and [g1a/starter](https://github.com/g1a/starter) as potential starting points.
-
-!!! warning "Symlinked packages"
-    While it is good practice to make your custom commands into a Composer package, please beware that symlinked packages (by using the composer repository type [Path](https://getcomposer.org/doc/05-repositories.md#path)) will **not** be discovered by Drush. When in development, it is recommended to [specify your package's](https://github.com/drush-ops/drush/blob/11.x/examples/example.drush.yml#L52-L67) path in your `drush.yml` to have quick access to your commands.
-
 ### Auto-discovered commands
-
-_Note_: Global commands auto-discovery is experimental until Drush 10.5.0. 
 
 Such commands are auto-discovered by their class PSR4 namespace and class/file name suffix. Drush will auto-discover commands if:
 
@@ -175,3 +146,33 @@ Such commands are auto-discovered by their class PSR4 namespace and class/file n
   ```
   then the Drush global commands class namespace should be `My\Custom\Library\Drush\Commands` and the class file should be located under the `src/Drush/Commands` directory.
 * The class and file name ends with `*DrushCommands`, e.g. `FooDrushCommands`.
+
+### \[deprecated\] Commands discovered by configuration
+
+**Warning!** Discovering commands by configuration is deprecated in Drush 11.0.9 and is scheduled for removal in a future major version.
+
+Global commandfiles discoverable by configuration are not supported by default; in order to enable them, you must configure your `drush.yml` configuration file to add an `include` search location.
+
+For example:
+
+```yaml
+drush:
+  paths:
+    include:
+      - '${env.home}/.drush/commands'
+```
+With this configuration in place, global commands may be placed as described in the Site-Wide Drush Commands section above. Global commandfiles may not declare any dependencies of their own; they may only use those dependencies already available via the autoloader.
+
+!!! tip
+
+1. The filename must be have a name like Commands/ExampleCommands.php
+   1. The prefix `Example` can be whatever string you want.
+   1. The file must end in `Commands.php`
+1. The directory above `Commands` must be one of:
+   1.  A Folder listed in the 'include' option. Include may be provided via [config](#global-drush-commands) or via CLI.
+   1.  ../drush, /drush or /sites/all/drush. These paths are relative to Drupal root.
+
+It is recommended that you avoid global Drush commands, and favor site-wide commandfiles instead. If you really need a command or commands that are not part of any Drupal site, consider making a stand-alone script or custom .phar instead. See [ahoy](https://github.com/ahoy-cli/ahoy), [Robo](https://github.com/consolidation/robo) and [g1a/starter](https://github.com/g1a/starter) as potential starting points.
+
+!!! warning "Symlinked packages"
+    While it is good practice to make your custom commands into a Composer package, please beware that symlinked packages (by using the composer repository type [Path](https://getcomposer.org/doc/05-repositories.md#path)) will **not** be discovered by Drush. When in development, it is recommended to [specify your package's](https://github.com/drush-ops/drush/blob/11.x/examples/example.drush.yml#L52-L67) path in your `drush.yml` to have quick access to your commands.
