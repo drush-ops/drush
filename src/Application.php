@@ -328,6 +328,9 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
         $runner->registerCommandClasses($this, $commandClasses);
     }
 
+    /**
+     * @deprecated
+     */
     protected function discoverCommandsFromConfiguration()
     {
         $commandList = [];
@@ -340,6 +343,13 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
                 $commandList[$value] = $classname;
             }
         }
+
+        if ($commandList) {
+            $message = dt('Discovering commands by configuration is deprecated in Drush 11.0.9 and is scheduled for removal in a future major version. The following command classes should be converted to PSR4 discovery (see docs/commands.md): !classes', ['!classes' => implode(', ', $commandList)]);
+            @trigger_error($message, E_USER_DEPRECATED);
+            $this->logger->warning($message);
+        }
+
         $this->loadCommandClasses($commandList);
         return array_values($commandList);
     }
