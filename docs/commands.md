@@ -147,6 +147,8 @@ Such commands are auto-discovered by their class PSR4 namespace and class/file n
   then the Drush global commands class namespace should be `My\Custom\Library\Drush\Commands` and the class file should be located under the `src/Drush/Commands` directory.
 * The class and file name ends with `*DrushCommands`, e.g. `FooDrushCommands`.
 
+Unlike commands defined in Drupal modules, global commands don't benefit from dependency injection. However, it's still possible to interact with Drupal container services by using the `\Drupal::services()` static method. This can be achieved by defining the bootstrap level in the command attributes (see https://www.drush.org/latest/bootstrap) for details. A global command with that needs access the Drupal services should use the `DrupalBootLevels::FULL` bootstrap level.
+
 ### \[deprecated\] Commands discovered by configuration
 
 **Warning!** Discovering commands by configuration is deprecated in Drush 11.0.9 and is scheduled for removal in a future major version.
