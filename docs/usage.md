@@ -15,8 +15,8 @@ Using the --uri option and --root options.
 
 For multi-site installations, use a site alias or the --uri option to target a particular site.
 
-    $ drush --uri=http://example.com pm:enable
-    
+    $ drush --uri=http://example.com pm:install
+
 If you are outside the Composer project and not using a site alias, you need to specify --root and --uri for Drush to locate and bootstrap the right Drupal site.
 
 Site Aliases
@@ -34,4 +34,3 @@ $ drush sql:sync --structure-tables-key=custom @live @self
 ```
 
 See [Site aliases](site-aliases.md) for more information.
-

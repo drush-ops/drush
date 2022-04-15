@@ -23,7 +23,7 @@ class QueueTest extends CommandUnishTestCase
 
         // Enable woot module, which contains a queue worker that throws a
         // RequeueException.
-        $this->drush('pm:enable', ['woot'], [], null, null, self::EXIT_SUCCESS);
+        $this->drush('pm:install', ['woot'], [], null, null, self::EXIT_SUCCESS);
 
         // Add an item to the queue.
         $this->drush('php:script', ['requeue_script'], ['script-path' => __DIR__ . '/resources']);
@@ -63,7 +63,7 @@ class QueueTest extends CommandUnishTestCase
 
         // Enable woot module, which contains a queue worker that throws a
         // custom exception.
-        $this->drush('pm:enable', ['woot'], [], null, null, self::EXIT_SUCCESS);
+        $this->drush('pm:install', ['woot'], [], null, null, self::EXIT_SUCCESS);
 
         // Add a couple of items to the queue.
         $this->drush('php:script', ['queue_custom_exception_script'], ['script-path' => __DIR__ . '/resources']);

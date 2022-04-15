@@ -17,7 +17,7 @@ class LanguageAddTest extends CommandUnishTestCase
         parent::setUp();
         if (empty($this->getSites())) {
             $this->setUpDrupal(1, true);
-            $this->drush('pm-enable', ['language']);
+            $this->drush('pm-install', ['language']);
         }
     }
 
@@ -40,7 +40,7 @@ class LanguageAddTest extends CommandUnishTestCase
             $this->markTestSkipped('Devel dev snapshot detected. Incompatible with translation import.');
         }
 
-        $this->drush('pm-enable', ['language', 'locale', 'dblog']);
+        $this->drush('pm-install', ['language', 'locale', 'dblog']);
         $this->drush('config-set', ['locale.settings', 'translation.import_enabled', true]);
 
         // Setup the interface translation system and prepare a source translation file.
@@ -54,7 +54,7 @@ class LanguageAddTest extends CommandUnishTestCase
         $this->mkdir($translationDir);
         copy($source, Path::join($translationDir, 'drush_empty_module.nl.po'));
 
-        $this->drush('pm-enable', ['drush_empty_module']);
+        $this->drush('pm-install', ['drush_empty_module']);
         $this->drush('language-add', ['nl']);
 
         $this->drush('watchdog-show', []);

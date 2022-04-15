@@ -95,7 +95,7 @@ class SqlSyncTest extends CommandUnishTestCase
         $mail = "joe.user@myhome.com";
 
         // Add user fields and a test User.
-        $this->drush('pm-enable', ['field,text,telephone,comment'], $stage_options + ['yes' => null]);
+        $this->drush('pm-install', ['field,text,telephone,comment'], $stage_options + ['yes' => null]);
         $this->drush('php-script', ['user_fields-D8', $name, $mail], $stage_options + ['script-path' => __DIR__ . '/resources',]);
 
         // Copy stage to dev, and then sql:sanitize.
