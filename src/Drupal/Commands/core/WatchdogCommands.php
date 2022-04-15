@@ -122,20 +122,9 @@ class WatchdogCommands extends DrushCommands
      *   Continously tail watchdog messages, filtering on type equals php.
      * @aliases wd-tail,wt,watchdog-tail
      * @validate-module-enabled dblog
-     * @field-labels
-     *   wid: ID
-     *   type: Type
-     *   message: Message
-     *   severity: Severity
-     *   location: Location
-     *   hostname: Hostname
-     *   date: Date
-     *   username: Username
-     * @default-fields wid,date,type,severity,message
-     * @filter-default-field message
      * @version 10.6
      */
-    public function tail(OutputInterface $output, $substring = '', $options = ['format' => 'table', 'severity' => self::REQ, 'type' => self::REQ, 'extended' => false]): void
+    public function tail(OutputInterface $output, $substring = '', $options = ['severity' => self::REQ, 'type' => self::REQ, 'extended' => false]): void
     {
         $where = $this->where($options['type'], $options['severity'], $substring);
         if (empty($where['where'])) {
@@ -144,7 +133,7 @@ class WatchdogCommands extends DrushCommands
               'args' => [],
             ];
         } else {
-            $where['where'] .= " AND wid > ?";
+            $where['where'] .= " AND wid > :wid";
         }
 
         $last_seen_wid = 0;

@@ -8,7 +8,7 @@ use Consolidation\AnnotatedCommand\Events\CustomEventAwareTrait;
 use Consolidation\Log\ConsoleLogLevel;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Drush\Drush;
-use Drush\Symfony\DrushArgvInput;
+use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Logger\ConsoleLogger;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -42,7 +42,7 @@ class SimpleSutCommands extends DrushCommands
      *
      * @hook init sut:simple
      */
-    public function customLogger(DrushArgvInput $argv, AnnotationData $annotationData): void
+    public function customLogger(InputInterface $argv, AnnotationData $annotationData): void
     {
         $verbosityLevelMap = [ConsoleLogLevel::SUCCESS => OutputInterface::VERBOSITY_NORMAL];
         $formatLevelMap = [ConsoleLogLevel::SUCCESS => \Psr\Log\LogLevel::INFO];

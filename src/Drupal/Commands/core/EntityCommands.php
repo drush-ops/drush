@@ -67,7 +67,7 @@ class EntityCommands extends DrushCommands
             $this->io()->progressStart(count($result));
             foreach (array_chunk($result, $options['chunks'], true) as $chunk) {
                 drush_op([$this, 'doDelete'], $entity_type, $chunk);
-                $this->io()->progressAdvance($options['chunks']);
+                $this->io()->progressAdvance(count($chunk));
             }
             $this->io()->progressFinish();
             $this->logger()->success(dt("Deleted !type entity Ids: !ids", ['!type' => $entity_type, '!ids' => implode(', ', array_values($result))]));
@@ -130,7 +130,7 @@ class EntityCommands extends DrushCommands
             $this->io()->progressStart(count($result));
             foreach (array_chunk($result, $options['chunks'], true) as $chunk) {
                 drush_op([$this, 'doSave'], $entity_type, $chunk);
-                $this->io()->progressAdvance($options['chunks']);
+                $this->io()->progressAdvance(count($chunk));
             }
             $this->io()->progressFinish();
             $this->logger()->success(dt("Saved !type entity ids: !ids", ['!type' => $entity_type, '!ids' => implode(', ', array_values($result))]));

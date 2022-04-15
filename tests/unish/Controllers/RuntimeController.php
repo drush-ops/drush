@@ -49,8 +49,6 @@ class RuntimeController
 
     private function __construct()
     {
-        // Create a reusable output buffer
-        $this->output = new \Drush\Symfony\BufferedConsoleOutput();
     }
 
     public static function instance()
@@ -84,6 +82,10 @@ class RuntimeController
 
     public function output()
     {
+        if (!isset($this->output)) {
+            // Create a reusable output buffer
+            $this->output = new \Drush\Symfony\BufferedConsoleOutput();
+        }
         return $this->output;
     }
 
@@ -121,6 +123,9 @@ class RuntimeController
         // Require the Composer autoloader for Drupal (if different)
         $loader = $this->preflight->loadSiteAutoloader();
 
+        // Load the Symfony compatability layer autoloader
+        $this->preflight->loadSymfonyCompatabilityAutoloader();
+
         // Create the Symfony Application et. al.
         $this->input = $this->preflight->createInput();
         $this->application = new \Drush\Application('Drush Commandline Tool (Unish-scaffolded)', Drush::getVersion());
@@ -130,7 +135,7 @@ class RuntimeController
             $this->application,
             $this->preflight->config(),
             $this->input,
-            $this->output,
+            $this->output(),
             $loader,
             $this->preflight->drupalFinder(),
             $this->preflight->aliasManager()
@@ -153,7 +158,7 @@ class RuntimeController
         // Configure the application object and register all of the commandfiles
         // from the search paths we found above.  After this point, the input
         // and output objects are ready & we can start using the logger, etc.
-        $this->application->configureAndRegisterCommands($this->input, $this->output, $commandfileSearchpath, $loader);
+        $this->application->configureAndRegisterCommands($this->input, $this->output(), $commandfileSearchpath, $loader);
     }
 
     protected function handleBootstrap()

@@ -21,8 +21,6 @@ class RoleCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
      * @command role:create
      * @param $machine_name The symbolic machine name for the role.
      * @param $human_readable_name A descriptive name for the role.
-     * @usage drush role:create 'test role'
-     *   Create a new role 'test role'. On D8, the human-readable name will be 'Test role'.
      * @usage drush role:create 'test role' 'Test role'
      *   Create a new role with a machine name of 'test role', and a human-readable name of 'Test role'.
      * @aliases rcrt,role-create
@@ -31,7 +29,7 @@ class RoleCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
     {
         $role = Role::create([
         'id' => $machine_name,
-        'label' => $human_readable_name,
+        'label' => $human_readable_name ?: ucfirst($machine_name),
         ], 'user_role');
         $role->save();
         $this->logger()->success(dt('Created "!role"', ['!role' => $machine_name]));
@@ -76,7 +74,7 @@ class RoleCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
         $perms = StringUtils::csvToArray($permissions);
         user_role_grant_permissions($machine_name, $perms);
         $this->logger()->success(dt('Added "!permissions" to "!role"', ['!permissions' => $permissions, '!role' => $machine_name]));
-        $this->processManager()->drush($this->siteAliasManager()->getSelf(), 'cache-rebuild');
+        $this->processManager()->drush($this->siteAliasManager()->getSelf(), 'cache:rebuild');
     }
 
     /**
@@ -96,7 +94,7 @@ class RoleCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
         $perms = StringUtils::csvToArray($permissions);
         user_role_revoke_permissions($machine_name, $perms);
         $this->logger()->success(dt('Removed "!permissions" to "!role"', ['!permissions' => $permissions, '!role' => $machine_name]));
-        $this->processManager()->drush($this->siteAliasManager()->getSelf(), 'cache-rebuild');
+        $this->processManager()->drush($this->siteAliasManager()->getSelf(), 'cache:rebuild');
     }
 
     /**

@@ -2,10 +2,10 @@
 
 namespace Drush\Preflight;
 
+use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Input\InputInterface;
 use Consolidation\Config\Config;
 use Consolidation\Config\ConfigInterface;
-use Drush\Symfony\DrushArgvInput;
 use Drush\Utils\StringUtils;
 use Drush\Symfony\LessStrictArgvInput;
 
@@ -492,7 +492,7 @@ class PreflightArgs extends Config implements PreflightArgsInterface
         // In strict mode (the default), create an ArgvInput. When
         // strict mode is disabled, create a more forgiving input object.
         if ($this->isStrict()) {
-            return new DrushArgvInput($this->args());
+            return new ArgvInput($this->args());
         }
         return new LessStrictArgvInput($this->args());
     }
