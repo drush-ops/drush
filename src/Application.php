@@ -394,7 +394,7 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
     {
         $classes = (new RelativeNamespaceDiscovery($classLoader))
             ->setRelativeNamespace('Drush\Commands')
-            ->setSearchPattern('/.*DrushCommands\.php$/')
+            ->setSearchPattern('/.*Commands\.php$/')
             ->getClasses();
 
         return array_filter($classes, function (string $class): bool {
