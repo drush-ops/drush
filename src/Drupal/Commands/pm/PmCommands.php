@@ -155,7 +155,7 @@ class PmCommands extends DrushCommands
      *
      * @command pm:uninstall
      * @param $modules A comma delimited list of modules.
-     * @aliases pmu,pm-uninstall
+     * @aliases un,pmu,pm-uninstall
      */
     public function uninstall(array $modules): void
     {
