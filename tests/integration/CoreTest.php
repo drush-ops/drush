@@ -53,7 +53,7 @@ class CoreTest extends UnishIntegrationTestCase
         $output = $this->getOutput();
         $this->assertEquals(Path::join($root, $sitewide . '/modules'), $output);
 
-        $this->drush('pm-enable', ['drush_empty_module']);
+        $this->drush('pm-install', ['drush_empty_module']);
         $this->drush('theme-enable', ['drush_empty_theme']);
 
         $this->drush('drupal-directory', ['drush_empty_module']);

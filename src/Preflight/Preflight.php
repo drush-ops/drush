@@ -141,7 +141,11 @@ class Preflight
     {
         return [
             'si' => 'site:install',
-            'en' => 'pm:enable',
+            'in' => 'pm:install',
+            'install' => 'pm:install',
+            'pm-install' => 'pm:install',
+            'en' => 'pm:install',
+            'pm-enable' => 'pm:install',
             // php was an alias for core-cli which got renamed to php-cli. See https://github.com/drush-ops/drush/issues/3091.
             'php' => 'php:cli',
         ];

@@ -40,7 +40,7 @@ EOT;
         $options['uri'] = 'dev';
         file_put_contents($conf_dir . '/modules/my_module/my_module.info.yml', $info);
         file_put_contents($conf_dir . '/modules/my_module/my_module.module', $module);
-        $this->drush('pm-enable', ['my_module'], $options);
+        $this->drush('pm-install', ['my_module'], $options);
 
         $this->drush('cron', [], $options);
         $this->assertStringContainsString('Message: test', $this->getErrorOutput());

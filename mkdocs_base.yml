@@ -24,6 +24,9 @@ extra_css:
 plugins:
   - edit_url
   - search
+  - redirects:
+      redirect_maps:
+        'commands/pm_enable.md': 'commands/pm_install.md'
   - git-revision-date-localized:
       exclude:
         - commands/*

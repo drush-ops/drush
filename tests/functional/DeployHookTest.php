@@ -20,7 +20,7 @@ class DeployHookTest extends CommandUnishTestCase
             'yes' => null,
         ];
         $this->setupModulesForTests(['woot'], Path::join(__DIR__, '/../fixtures/modules'));
-        $this->drush('pm-enable', ['woot'], $options);
+        $this->drush('pm-install', ['woot'], $options);
 
         // Run deploy hooks.
         $this->drush('deploy:hook', [], $options, null, null, self::EXIT_ERROR);
@@ -60,7 +60,7 @@ class DeployHookTest extends CommandUnishTestCase
     {
         $this->setUpDrupal(1, true);
         $this->setupModulesForTests(['woot'], Path::join(__DIR__, '/../fixtures/modules'));
-        $this->drush('pm-enable', ['woot'], ['yes' => null]);
+        $this->drush('pm-install', ['woot'], ['yes' => null]);
 
         $options = [
             'format' => 'json'

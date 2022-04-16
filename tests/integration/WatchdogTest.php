@@ -9,7 +9,7 @@ class WatchdogTest extends UnishIntegrationTestCase
 {
     public function testWatchdog()
     {
-        $this->drush('pm-enable', ['dblog']);
+        $this->drush('pm-install', ['dblog']);
         $this->drush('watchdog-delete', ['all'], ['yes' => true]);
         $output = $this->getErrorOutput();
         $this->assertStringContainsString('All watchdog messages have been deleted', $output);

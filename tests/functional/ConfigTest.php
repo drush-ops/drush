@@ -21,7 +21,7 @@ class ConfigTest extends CommandUnishTestCase
             $this->setUpDrupal(1, true);
             // Field module is needed for now for --existing-config. It is not actually
             // enabled after testing profile is installed. Its required by file and update though.
-            $this->drush('pm:enable', ['config, field']);
+            $this->drush('pm:install', ['config, field']);
         }
     }
 
@@ -126,7 +126,7 @@ XML
             'include' => __DIR__,
         ];
         $this->setupModulesForTests(['woot'], Path::join(__DIR__, '/../fixtures/modules'));
-        $this->drush('pm-enable', ['woot'], $options);
+        $this->drush('pm-install', ['woot'], $options);
 
         // Export the configuration.
         $this->drush('config:export');

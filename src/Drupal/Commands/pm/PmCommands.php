@@ -65,12 +65,12 @@ class PmCommands extends DrushCommands
     /**
      * Enable one or more modules.
      *
-     * @command pm:enable
+     * @command pm:install
      * @param $modules A comma delimited list of modules.
-     * @aliases en,pm-enable
+     * @aliases in, install, pm-install, en, pm-enable, pm:enable
      * @bootstrap root
      */
-    public function enable(array $modules): void
+    public function install(array $modules): void
     {
         $modules = StringUtils::csvToArray($modules);
         $todo = $this->addInstallDependencies($modules);
@@ -97,7 +97,7 @@ class PmCommands extends DrushCommands
     /**
      * Run requirements checks on the module installation.
      *
-     * @hook validate pm:enable
+     * @hook validate pm:install
      *
      * @throws UserAbortException
      * @throws MissingDependencyException
