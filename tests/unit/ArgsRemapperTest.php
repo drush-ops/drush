@@ -29,7 +29,7 @@ class ArgsRemapperTest extends TestCase
     }
 
     /**
-     * Provides argumens for ::ArgsRemapper
+     * Provides arguments for ::ArgsRemapper
      */
     public function argsProvider()
     {
