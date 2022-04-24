@@ -43,41 +43,6 @@ class Environment
     }
 
     /**
-     * Load the autoloader for the selected Drupal site.
-     */
-    public function loadSiteAutoloader(string $root): ClassLoader
-    {
-        $autloadFilePath = "$root/autoload.php";
-        if (!file_exists($autloadFilePath)) {
-            return $this->loader;
-        }
-
-        if ($this->siteLoader) {
-            return $this->siteLoader;
-        }
-
-        $this->siteLoader = require $autloadFilePath;
-        if ($this->siteLoader === false) {
-            // Nothing more to do. See https://github.com/drush-ops/drush/issues/3741.
-            return $this->loader;
-        }
-        if ($this->siteLoader === true) {
-            // The autoloader was already required. Assume that Drush and Drupal share an autoloader per
-            // "Point autoload.php to the proper vendor directory" - https://www.drupal.org/node/2404989
-            $this->siteLoader = $this->loader;
-        }
-
-        // Ensure that the site's autoloader has highest priority. Usually,
-        // the first classloader registered gets the first shot at loading classes.
-        // We want Drupal's classloader to be used first when a class is loaded,
-        // and have Drush's classloader only be called as a fallback measure.
-        $this->siteLoader->unregister();
-        $this->siteLoader->register(true);
-
-        return $this->siteLoader;
-    }
-
-    /**
      * Return the name of the user running drush.
      */
     protected function getUsername(): string

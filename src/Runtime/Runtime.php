@@ -77,9 +77,6 @@ class Runtime
         $this->preflight->logger()->log('Commandfile search paths: ' . implode(',', $commandfileSearchpath));
         $this->preflight->config()->set('runtime.commandfile.paths', $commandfileSearchpath);
 
-        // Require the Composer autoloader for Drupal (if different)
-        $loader = $this->preflight->loadSiteAutoloader();
-
         // Load the Symfony compatability layer autoloader
         $this->preflight->loadSymfonyCompatabilityAutoloader();
 
@@ -93,7 +90,7 @@ class Runtime
             $this->preflight->config(),
             $input,
             $output,
-            $loader,
+            $this->preflight->environment()->loader(),
             $this->preflight->drupalFinder(),
             $this->preflight->aliasManager()
         );
@@ -116,7 +113,7 @@ class Runtime
         // Configure the application object and register all of the commandfiles
         // from the search paths we found above.  After this point, the input
         // and output objects are ready & we can start using the logger, etc.
-        $application->configureAndRegisterCommands($input, $output, $commandfileSearchpath, $loader);
+        $application->configureAndRegisterCommands($input, $output, $commandfileSearchpath, $this->preflight->environment()->loader());
 
         // Run the Symfony Application
         // Predispatch: call a remote Drush command if applicable (via a 'pre-init' hook)
