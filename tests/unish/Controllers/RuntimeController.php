@@ -121,9 +121,6 @@ class RuntimeController
         $commandfileSearchpath = $this->preflight->getCommandFilePaths();
         $this->preflight->config()->set('runtime.commandfile.paths', $commandfileSearchpath);
 
-        // Require the Composer autoloader for Drupal (if different)
-        $loader = $this->preflight->loadSiteAutoloader();
-
         // Load the Symfony compatability layer autoloader
         $this->preflight->loadSymfonyCompatabilityAutoloader();
 

@@ -200,11 +200,6 @@ class Preflight
         return $this->configLocator->getCommandFilePaths(array_merge($commandlinePaths, $configPaths), $this->drupalFinder()->getDrupalRoot());
     }
 
-    public function loadSiteAutoloader(): ClassLoader
-    {
-        return $this->environment()->loadSiteAutoloader($this->drupalFinder()->getDrupalRoot());
-    }
-
     public function loadSymfonyCompatabilityAutoloader(): ClassLoader
     {
         $symfonyMajorVersion = Kernel::MAJOR_VERSION;
@@ -268,10 +263,14 @@ class Preflight
         // This will also load certain config values into the preflight args.
         $this->preflightArgs->applyToConfig($config);
 
+        // Determine the path to the preferred site (the one that shares
+        // `vendor` with Drush)
+        $preferredSite = $this->preferredSite();
+
         // Determine the local site targeted, if any.
         // Extend configuration and alias files to include files in
         // target site.
-        $root = $this->findSelectedSite();
+        $root = $this->findSelectedSite() ?? $preferredSite;
         $this->configLocator->addSitewideConfig($root);
         $this->configLocator->setComposerRoot($this->drupalFinder()->getComposerRoot());
 
@@ -296,8 +295,10 @@ class Preflight
             $this->configLocator->addAliasConfig($selfSiteAlias->exportConfig());
 
             // Process the selected alias. This might change the selected site,
-            // so we will add new site-wide config location for the new root.
-            $root = $this->setSelectedSite($selfSiteAlias->localRoot(), false, $root);
+            // which might cause a redispatch.
+            if ($this->drupalFinder->locateRoot($selfSiteAlias->localRoot())) {
+                $root = $this->drupalFinder()->getDrupalRoot();
+            }
         }
 
         // Now that we have our final Drupal root, check to see if there is
@@ -313,6 +314,7 @@ class Preflight
         // redispatch to a site-local Drush, then we cannot continue.
         // This can happen when using Drush 9 to call a site-local Drush 8
         // using an alias record that is only defined in a Drush 8 format.
+        // TODO: We can remove this when we drop support for Drush 8 aliases (already done?)
         if (!$selfSiteAlias) {
             // Note that PreflightSiteLocator::findSite only returns 'false'
             // when preflightArgs->alias() returns an alias name. In all other
@@ -321,10 +323,6 @@ class Preflight
             $aliasName = $this->preflightArgs->alias();
             throw new \Exception("The alias $aliasName could not be found.");
         }
-
-        // If we did not redispatch, then add the site-wide config for the
-        // new root (if the root did in fact change) and continue.
-        $this->configLocator->addSitewideConfig($root);
 
         // Remember the paths to all the files we loaded, so that we can
         // report on it from Drush status or wherever else it may be needed.
@@ -338,6 +336,20 @@ class Preflight
         $this->verify->confirmPhpVersion($config->get('drush.php.minimum-version'));
 
         return false;
+    }
+
+    /**
+     * Find the Drupal root of the preferred Drupal site (the one
+     * that shares the `vendor` directory with Drush).
+     */
+    protected function preferredSite()
+    {
+        $projectRoot = dirname($this->environment->vendorPath());
+        if ($this->drupalFinder->locateRoot($projectRoot)) {
+            return $this->drupalFinder()->getDrupalRoot();
+        }
+
+        return null;
     }
 
     /**
@@ -381,7 +393,17 @@ class Preflight
             }
             return $this->drupalFinder()->getDrupalRoot();
         }
-        return $originalSelection;
+
+        // If there isn't a --root option, try to find a Drupal root
+        // near the cwd.
+        $cwd = $this->environment->cwd();
+        if ($this->drupalFinder->locateRoot($cwd)) {
+            return $this->drupalFinder()->getDrupalRoot();
+        }
+
+        // No Drupal site selected; we will use the preferred site, or
+        // a site selected via a local alias.
+        return null;
     }
 
     /**
