@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "8094c1701a9d7c36a7478df78b0c9b5c",
+    "content-hash": "eb7c538821997a9476b29e01705ce17f",
     "packages": [
         {
             "name": "chi-teck/drupal-code-generator",
@@ -151,22 +151,22 @@
         },
         {
             "name": "consolidation/annotated-command",
-            "version": "4.5.3",
+            "version": "4.5.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/consolidation/annotated-command.git",
-                "reference": "1941a743e63993288e09d0686a4cb7ed47813213"
+                "reference": "67cea8e8e7656b74da651ea6f49321853996c0fd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/consolidation/annotated-command/zipball/1941a743e63993288e09d0686a4cb7ed47813213",
-                "reference": "1941a743e63993288e09d0686a4cb7ed47813213",
+                "url": "https://api.github.com/repos/consolidation/annotated-command/zipball/67cea8e8e7656b74da651ea6f49321853996c0fd",
+                "reference": "67cea8e8e7656b74da651ea6f49321853996c0fd",
                 "shasum": ""
             },
             "require": {
                 "consolidation/output-formatters": "^4.1.1",
                 "php": ">=7.1.3",
-                "psr/log": "^1|^2",
+                "psr/log": "^1|^2|^3",
                 "symfony/console": "^4.4.8|^5|^6",
                 "symfony/event-dispatcher": "^4.4.8|^5|^6",
                 "symfony/finder": "^4.4.8|^5|^6"
@@ -180,7 +180,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-main": "5.x-dev"
+                    "dev-main": "4.x-dev"
                 }
             },
             "autoload": {
@@ -201,9 +201,9 @@
             "description": "Initialize Symfony Console commands from annotated command class methods.",
             "support": {
                 "issues": "https://github.com/consolidation/annotated-command/issues",
-                "source": "https://github.com/consolidation/annotated-command/tree/4.5.3"
+                "source": "https://github.com/consolidation/annotated-command/tree/4.5.5"
             },
-            "time": "2022-04-02T00:17:53+00:00"
+            "time": "2022-04-26T16:18:25+00:00"
         },
         {
             "name": "consolidation/config",
@@ -839,26 +839,25 @@
         },
         {
             "name": "grasmash/expander",
-            "version": "2.0.2",
+            "version": "2.0.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/grasmash/expander.git",
-                "reference": "f4df21d01d1fbda38269cca89e3dbb6ba223da7f"
+                "reference": "b7cbc1f2fdf9a9c0e253a424c2a4058316b7cb6e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/grasmash/expander/zipball/f4df21d01d1fbda38269cca89e3dbb6ba223da7f",
-                "reference": "f4df21d01d1fbda38269cca89e3dbb6ba223da7f",
+                "url": "https://api.github.com/repos/grasmash/expander/zipball/b7cbc1f2fdf9a9c0e253a424c2a4058316b7cb6e",
+                "reference": "b7cbc1f2fdf9a9c0e253a424c2a4058316b7cb6e",
                 "shasum": ""
             },
             "require": {
                 "dflydev/dot-access-data": "^3.0.0",
-                "php": ">=5.6",
-                "psr/log": "^1 | ^2"
+                "php": ">=7.1",
+                "psr/log": "^1 | ^2 | ^3"
             },
             "require-dev": {
                 "greg-1-anderson/composer-test-scenarios": "^1",
-                "php-coveralls/php-coveralls": "^2.0",
                 "phpunit/phpunit": "^6.0 || ^8.0 || ^9",
                 "squizlabs/php_codesniffer": "^2.7 || ^3.3"
             },
@@ -885,9 +884,9 @@
             "description": "Expands internal property references in PHP arrays file.",
             "support": {
                 "issues": "https://github.com/grasmash/expander/issues",
-                "source": "https://github.com/grasmash/expander/tree/2.0.2"
+                "source": "https://github.com/grasmash/expander/tree/2.0.3"
             },
-            "time": "2022-02-24T03:58:20+00:00"
+            "time": "2022-04-25T22:17:46+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",
@@ -1887,16 +1886,16 @@
         },
         {
             "name": "symfony/filesystem",
-            "version": "v5.4.6",
+            "version": "v5.4.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/filesystem.git",
-                "reference": "d53a45039974952af7f7ebc461ccdd4295e29440"
+                "reference": "3a4442138d80c9f7b600fb297534ac718b61d37f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/filesystem/zipball/d53a45039974952af7f7ebc461ccdd4295e29440",
-                "reference": "d53a45039974952af7f7ebc461ccdd4295e29440",
+                "url": "https://api.github.com/repos/symfony/filesystem/zipball/3a4442138d80c9f7b600fb297534ac718b61d37f",
+                "reference": "3a4442138d80c9f7b600fb297534ac718b61d37f",
                 "shasum": ""
             },
             "require": {
@@ -1931,7 +1930,7 @@
             "description": "Provides basic utilities for the filesystem",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/filesystem/tree/v5.4.6"
+                "source": "https://github.com/symfony/filesystem/tree/v5.4.7"
             },
             "funding": [
                 {
@@ -1947,7 +1946,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-03-02T12:42:23+00:00"
+            "time": "2022-04-01T12:33:59+00:00"
         },
         {
             "name": "symfony/finder",
@@ -3917,16 +3916,16 @@
         },
         {
             "name": "drupal/core",
-            "version": "9.3.9",
+            "version": "9.3.12",
             "source": {
                 "type": "git",
                 "url": "https://github.com/drupal/core.git",
-                "reference": "86b0c4496e20ae7f945e9a7f0404fafe191ab774"
+                "reference": "ed6af33093f66a9c5048d02f9f2c326ad0e7e90c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/drupal/core/zipball/86b0c4496e20ae7f945e9a7f0404fafe191ab774",
-                "reference": "86b0c4496e20ae7f945e9a7f0404fafe191ab774",
+                "url": "https://api.github.com/repos/drupal/core/zipball/ed6af33093f66a9c5048d02f9f2c326ad0e7e90c",
+                "reference": "ed6af33093f66a9c5048d02f9f2c326ad0e7e90c",
                 "shasum": ""
             },
             "require": {
@@ -4168,22 +4167,22 @@
             ],
             "description": "Drupal is an open source content management platform powering millions of websites and applications.",
             "support": {
-                "source": "https://github.com/drupal/core/tree/9.3.9"
+                "source": "https://github.com/drupal/core/tree/9.3.12"
             },
-            "time": "2022-03-21T21:21:58+00:00"
+            "time": "2022-04-20T14:25:27+00:00"
         },
         {
             "name": "drupal/core-recommended",
-            "version": "9.3.9",
+            "version": "9.3.12",
             "source": {
                 "type": "git",
                 "url": "https://github.com/drupal/core-recommended.git",
-                "reference": "3ce3f2b6145de56178e006fb2ef94089d32cf411"
+                "reference": "a8fa50016c1aa1eb7f4e54f590e6343d286c418f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/drupal/core-recommended/zipball/3ce3f2b6145de56178e006fb2ef94089d32cf411",
-                "reference": "3ce3f2b6145de56178e006fb2ef94089d32cf411",
+                "url": "https://api.github.com/repos/drupal/core-recommended/zipball/a8fa50016c1aa1eb7f4e54f590e6343d286c418f",
+                "reference": "a8fa50016c1aa1eb7f4e54f590e6343d286c418f",
                 "shasum": ""
             },
             "require": {
@@ -4192,7 +4191,7 @@
                 "doctrine/annotations": "1.13.2",
                 "doctrine/lexer": "1.2.1",
                 "doctrine/reflection": "1.2.2",
-                "drupal/core": "9.3.9",
+                "drupal/core": "9.3.12",
                 "egulias/email-validator": "3.1.2",
                 "guzzlehttp/guzzle": "6.5.5",
                 "guzzlehttp/promises": "1.5.1",
@@ -4254,9 +4253,9 @@
             ],
             "description": "Locked core dependencies; require this project INSTEAD OF drupal/core.",
             "support": {
-                "source": "https://github.com/drupal/core-recommended/tree/9.3.9"
+                "source": "https://github.com/drupal/core-recommended/tree/9.3.12"
             },
-            "time": "2022-03-21T21:21:58+00:00"
+            "time": "2022-04-20T14:25:27+00:00"
         },
         {
             "name": "drupal/semver_example",
@@ -5479,16 +5478,16 @@
         },
         {
             "name": "phpstan/phpstan",
-            "version": "1.5.3",
+            "version": "1.6.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpstan.git",
-                "reference": "39953ac1452a8843702ee41a35b4861d3e8207a7"
+                "reference": "becb9603a31d70f5007d505877a7b812598dfe46"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/39953ac1452a8843702ee41a35b4861d3e8207a7",
-                "reference": "39953ac1452a8843702ee41a35b4861d3e8207a7",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/becb9603a31d70f5007d505877a7b812598dfe46",
+                "reference": "becb9603a31d70f5007d505877a7b812598dfe46",
                 "shasum": ""
             },
             "require": {
@@ -5514,7 +5513,7 @@
             "description": "PHPStan - PHP Static Analysis Tool",
             "support": {
                 "issues": "https://github.com/phpstan/phpstan/issues",
-                "source": "https://github.com/phpstan/phpstan/tree/1.5.3"
+                "source": "https://github.com/phpstan/phpstan/tree/1.6.2"
             },
             "funding": [
                 {
@@ -5534,7 +5533,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-03-30T21:55:08+00:00"
+            "time": "2022-04-27T11:05:24+00:00"
         },
         {
             "name": "phpunit/php-code-coverage",
@@ -6063,21 +6062,21 @@
         },
         {
             "name": "rector/rector",
-            "version": "0.12.19",
+            "version": "0.12.21",
             "source": {
                 "type": "git",
                 "url": "https://github.com/rectorphp/rector.git",
-                "reference": "ed06366a1d56bf5709ddc854d0fea043513ac5ac"
+                "reference": "2fb3b1c1d85e784a55e5806cf50734e5aa872eb4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/rectorphp/rector/zipball/ed06366a1d56bf5709ddc854d0fea043513ac5ac",
-                "reference": "ed06366a1d56bf5709ddc854d0fea043513ac5ac",
+                "url": "https://api.github.com/repos/rectorphp/rector/zipball/2fb3b1c1d85e784a55e5806cf50734e5aa872eb4",
+                "reference": "2fb3b1c1d85e784a55e5806cf50734e5aa872eb4",
                 "shasum": ""
             },
             "require": {
-                "php": "^7.1|^8.0",
-                "phpstan/phpstan": "^1.4.8"
+                "php": "^7.2|^8.0",
+                "phpstan/phpstan": "^1.5.6"
             },
             "conflict": {
                 "phpstan/phpdoc-parser": "<1.2",
@@ -6111,7 +6110,7 @@
             "description": "Instant Upgrade and Automated Refactoring of any PHP code",
             "support": {
                 "issues": "https://github.com/rectorphp/rector/issues",
-                "source": "https://github.com/rectorphp/rector/tree/0.12.19"
+                "source": "https://github.com/rectorphp/rector/tree/0.12.21"
             },
             "funding": [
                 {
@@ -6119,7 +6118,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2022-03-23T14:22:44+00:00"
+            "time": "2022-04-18T12:12:41+00:00"
         },
         {
             "name": "sebastian/cli-parser",
@@ -6487,16 +6486,16 @@
         },
         {
             "name": "sebastian/environment",
-            "version": "5.1.3",
+            "version": "5.1.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/environment.git",
-                "reference": "388b6ced16caa751030f6a69e588299fa09200ac"
+                "reference": "1b5dff7bb151a4db11d49d90e5408e4e938270f7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/environment/zipball/388b6ced16caa751030f6a69e588299fa09200ac",
-                "reference": "388b6ced16caa751030f6a69e588299fa09200ac",
+                "url": "https://api.github.com/repos/sebastianbergmann/environment/zipball/1b5dff7bb151a4db11d49d90e5408e4e938270f7",
+                "reference": "1b5dff7bb151a4db11d49d90e5408e4e938270f7",
                 "shasum": ""
             },
             "require": {
@@ -6538,7 +6537,7 @@
             ],
             "support": {
                 "issues": "https://github.com/sebastianbergmann/environment/issues",
-                "source": "https://github.com/sebastianbergmann/environment/tree/5.1.3"
+                "source": "https://github.com/sebastianbergmann/environment/tree/5.1.4"
             },
             "funding": [
                 {
@@ -6546,7 +6545,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2020-09-28T05:52:38+00:00"
+            "time": "2022-04-03T09:37:03+00:00"
         },
         {
             "name": "sebastian/exporter",
