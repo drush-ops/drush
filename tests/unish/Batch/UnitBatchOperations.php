@@ -16,7 +16,6 @@ class UnitBatchOperations
             // The contents of 'results' will be available as $results in the
             // 'finished' function.
             $context['results'][] = $i;
-
         }
         $context['finished'] = 1;
     }
