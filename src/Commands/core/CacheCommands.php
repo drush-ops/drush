@@ -212,19 +212,16 @@ class CacheCommands extends DrushCommands implements CustomEventAwareInterface, 
             $this->logger()->info(dt("Skipping cache-clear operation due to --no-cache-clear option."));
             return true;
         }
-        chdir(DRUPAL_ROOT);
 
         // We no longer clear APC and similar caches as they are useless on CLI.
         // See https://github.com/drush-ops/drush/pull/2450
-
-        $autoloader = $this->loadDrupalAutoloader(DRUPAL_ROOT);
+        $root  = Drush::bootstrapManager()->getRoot();
+        $autoloader = $this->loadDrupalAutoloader($root);
         require_once DRUSH_DRUPAL_CORE . '/includes/utility.inc';
 
         $request = Drush::bootstrap()->getRequest();
         DrupalKernel::bootEnvironment();
 
-        // Avoid 'Only variables should be passed by reference'
-        $root  = DRUPAL_ROOT;
         $site_path = DrupalKernel::findSitePath($request);
         Settings::initialize($root, $site_path, $autoloader);
 
