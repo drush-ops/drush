@@ -18,20 +18,17 @@ use Drush\Exec\ExecTrait;
 use Robo\Contract\ConfigAwareInterface;
 use Robo\Contract\IOAwareInterface;
 use Robo\Common\IO;
-use Robo\LoadAllTasks;
-use Robo\Contract\BuilderAwareInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Consolidation\SiteProcess\ProcessManagerAwareTrait;
 use Consolidation\SiteProcess\ProcessManagerAwareInterface;
 use Webmozart\PathUtil\Path;
 
-abstract class DrushCommands implements IOAwareInterface, LoggerAwareInterface, ConfigAwareInterface, ProcessManagerAwareInterface, BuilderAwareInterface
+abstract class DrushCommands implements IOAwareInterface, LoggerAwareInterface, ConfigAwareInterface, ProcessManagerAwareInterface
 {
     use ProcessManagerAwareTrait;
     use ExecTrait;
     use ConfigAwareTrait;
     use LoggerAwareTrait;
-    use LoadAllTasks;
     use IO {
         io as roboIo;
     }

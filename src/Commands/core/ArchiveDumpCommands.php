@@ -151,7 +151,7 @@ class ArchiveDumpCommands extends DrushCommands
     protected function prepareArchiveDir(): void
     {
         $this->filesystem = new Filesystem();
-        $this->archiveDir = $this->_tmpDir();
+        $this->archiveDir = FsUtils::tmpDir(self::ARCHIVES_DIR_NAME);
     }
 
     /**
