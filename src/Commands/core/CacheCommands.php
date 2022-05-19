@@ -226,7 +226,8 @@ class CacheCommands extends DrushCommands implements CustomEventAwareInterface, 
         Settings::initialize($root, $site_path, $autoloader);
 
         // drupal_rebuild() calls drupal_flush_all_caches() itself, so we don't do it manually.
-        drupal_rebuild($autoloader, $request);
+        // Pass $root in the hopes that drupal_rebuild will honor it in future https://github.com/drush-ops/drush/pull/4713
+        drupal_rebuild($autoloader, $request, $root);
         $this->logger()->success(dt('Cache rebuild complete.'));
     }
 
