@@ -151,9 +151,7 @@ class ArchiveDumpCommands extends DrushCommands
     protected function prepareArchiveDir(): void
     {
         $this->filesystem = new Filesystem();
-        $this->archiveDir = Path::join(FsUtils::prepareBackupDir(self::ARCHIVES_DIR_NAME), self::ARCHIVE_SUBDIR_NAME);
-        $this->filesystem->mkdir($this->archiveDir);
-        register_shutdown_function([$this, 'cleanUp']);
+        $this->archiveDir = $this->_tmpDir();
     }
 
     /**
@@ -591,25 +589,5 @@ class ArchiveDumpCommands extends DrushCommands
                 ['!path' => $localFileName]
             )
         );
-    }
-
-    /**
-     * Performs clean-up tasks.
-     *
-     * Deletes temporary archive components.
-     */
-    public function cleanUp(): void
-    {
-        try {
-            $this->logger()->info(dt('Deleting !path...', ['!path' => $this->archiveDir]));
-            $this->filesystem->remove($this->archiveDir);
-        } catch (IOException $e) {
-            $this->logger()->info(
-                dt(
-                    'Failed deleting !path: !message',
-                    ['!path' => $this->archiveDir, '!message' => $e->getMessage()]
-                )
-            );
-        }
     }
 }
