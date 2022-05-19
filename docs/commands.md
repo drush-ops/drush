@@ -160,8 +160,6 @@ It is recommended that you avoid global Drush commands, and favor site-wide comm
 
 ### Auto-discovered commands
 
-_Note_: Global commands auto-discovery is experimental until Drush 10.5.0. 
-
 Such commands are auto-discovered by their class PSR4 namespace and class/file name suffix. Drush will auto-discover commands if:
 
 * The commands class is PSR4 auto-loadable.
