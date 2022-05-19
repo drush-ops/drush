@@ -5103,7 +5103,6 @@ With this configuration in place, global commands may be placed as described in 
 <p>While it is good practice to make your custom commands into a Composer package, please beware that symlinked packages (by using the composer repository type <a href="https://getcomposer.org/doc/05-repositories.md#path">Path</a>) will <strong>not</strong> be discovered by Drush. When in development, it is recommended to <a href="https://github.com/drush-ops/drush/blob/11.x/examples/example.drush.yml#L52-L67">specify your package's</a> path in your <code>drush.yml</code> to have quick access to your commands.</p>
 </div>
 <h3 id="auto-discovered-commands">Auto-discovered commands<a class="headerlink" href="#auto-discovered-commands" title="Permanent link">&para;</a></h3>
-<p><em>Note</em>: Global commands auto-discovery is experimental until Drush 10.5.0. </p>
 <p>Such commands are auto-discovered by their class PSR4 namespace and class/file name suffix. Drush will auto-discover commands if:</p>
 <ul>
 <li>The commands class is PSR4 auto-loadable.</li>
@@ -5123,7 +5122,7 @@ With this configuration in place, global commands may be placed as described in 
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">January 3, 2022</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">May 19, 2022</span>
       
     
   </small>
