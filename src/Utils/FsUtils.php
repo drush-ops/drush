@@ -11,7 +11,7 @@ use Webmozart\PathUtil\Path;
 class FsUtils
 {
     // @var null|string[] List of directories to delete
-    static $deletionList = null;
+    private static $deletionList = null;
 
     /**
      * Decide where our backup directory should go
@@ -159,7 +159,7 @@ class FsUtils
         $fs = new Filesystem();
         foreach (static::$deletionList as $dir) {
             try {
-              $fs->remove($dir);
+                $fs->remove($dir);
             } catch (IOException $e) {
               // No action taken if someone already deleted the directory
             }
