@@ -97,9 +97,16 @@ class ArchiveTest extends CommandUnishTestCase
 
     public function testArchiveRestoreCommand(): void
     {
-        // @todo: remove once archive:restore command has added.
-        if (!class_exists('\Drush\Commands\core\ArchiveRestoreCommands')) {
-            $this->markTestSkipped('The command archive:restore is not found.');
+        // [info] Copying files from "C:/projects/work/sandbox/archive/code\" to "C:\projects\work\"...
+        // [info] Executing: rsync -e 'ssh ' -akz --stats --progress -v C:/projects/work/sandbox/archive/code\ C:\projects\work\
+        // > The source and destination cannot both be remote.
+        if ($this->isWindows()) {
+            $this->markTestSkipped('The command archive:restore does not work on Windows yet due to an rsync issue.');
+        }
+
+        // Restoring to sqlite fails
+        if ($this->dbDriver() === 'sqlite') {
+            $this->markTestSkipped('The command archive:restore cannot restore to an sqlite database.');
         }
 
         // Restore archive from an existing file.
