@@ -51,17 +51,9 @@ class ArchiveTest extends CommandUnishTestCase
 
     public function testArchiveDumpCommand(): void
     {
-        // Create an archive.
-        $this->drush(
-            'archive:dump',
-            [],
-            $this->archiveDumpOptions
-        );
-        $actualArchivePath = $this->getOutput();
-        $this->assertMatchesRegularExpression(
-            '#\/archives\/\d+\/archive\.tar\.gz$#',
-            $actualArchivePath
-        );
+        // Create a file at the destination to confirm that archive:dump
+        // will fail without --overwrite in this instance.
+        file_put_contents($this->archivePath, "Existing file at destination");
 
         // Try to overwrite the existing archive with "--destination".
         $this->drush(
