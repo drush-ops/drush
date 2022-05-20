@@ -30,7 +30,8 @@ install:
   - copy php.ini-production php.ini
 
   # https://github.com/php-coveralls/php-coveralls/pull/223/files
-  - appveyor DownloadFile https://curl.se/ca/cacert.pem -FileName C:\cacert.pem
+  # - appveyor DownloadFile https://curl.se/ca/cacert.pem -FileName C:\cacert.pem
+  - curl -fsS -o C:\cacert.pem https://curl.se/ca/cacert.pem
   - echo curl.cainfo=C:\cacert.pem >> php.ini
 
   - echo extension_dir=ext >> php.ini
