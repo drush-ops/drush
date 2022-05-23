@@ -9,7 +9,6 @@ use Drupal;
 use Drush\Backend\BackendPathEvaluator;
 use Drush\Boot\DrupalBootLevels;
 use Drush\Commands\DrushCommands;
-use Drush\Config\ConfigLocator;
 use Drush\Drush;
 use Drush\Exceptions\UserAbortException;
 use Consolidation\SiteAlias\HostPath;
@@ -96,6 +95,16 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
             'overwrite' => false,
         ]
     ): void {
+        $siteAlias = $this->getSiteAlias($site);
+        if (!$siteAlias->isLocal()) {
+            throw new Exception(
+                dt(
+                    'Could not restore archive !path into site !site: restoring an archive into a local site is not supported.',
+                    ['!path' => $path, '!site' => $site]
+                )
+            );
+        }
+
         $this->prepareTempDir();
 
         $extractDir = null;
@@ -128,12 +137,12 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
 
         if ($options['code']) {
             $codeComponentPath = $options['code_path'] ?? Path::join($extractDir, self::COMPONENT_CODE);
-            $this->importCode($codeComponentPath, $site);
+            $this->importCode($codeComponentPath);
         }
 
         if ($options['files']) {
             $filesComponentPath = $options['files_path'] ?? Path::join($extractDir, self::COMPONENT_FILES);
-            $this->importFiles($filesComponentPath, $site);
+            $this->importFiles($filesComponentPath);
         }
 
         if ($options['db']) {
@@ -204,18 +213,15 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
         return $extractDir;
     }
 
-    /**
-     * Imports the code to the site.
-     *
-     * @param string $source
-     *   The path to the code files directory.
-     * @param string|null $destinationSite
-     *   The destination site alias.
-     *
-     * @throws \Drush\Exceptions\UserAbortException
-     * @throws \Exception
-     */
-    protected function importCode(string $source, ?string $destinationSite): void
+  /**
+   * Imports the code to the site.
+   *
+   * @param string $source
+   *   The path to the code files directory.
+   *
+   * @throws \Exception
+   */
+    protected function importCode(string $source): void
     {
         $this->logger()->info('Importing code...');
 
@@ -223,39 +229,18 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
             throw new Exception(dt('Directory !path not found.', ['!path' => $source]));
         }
 
-        $siteAlias = $this->getSiteAlias($destinationSite);
-
-        if ($siteAlias->isLocal()) {
-            $bootstrapManager = Drush::bootstrapManager();
-            $destination = $bootstrapManager->getComposerRoot();
-            $this->rsyncFiles($source, $destination);
-
-            return;
-        }
-
-        $siteStatus = $this->getSiteStatus($siteAlias);
-        if (!isset($siteStatus['composer-root'])) {
-            throw new Exception('Failed to get path to Composer root.');
-        }
-        if (!$siteStatus['composer-root']) {
-            throw new Exception('Path to Composer root is empty.');
-        }
-
-        $destination = sprintf('%s:%s', $siteAlias->remoteHostWithUser(), $siteStatus['composer-root']);
-
+        $bootstrapManager = Drush::bootstrapManager();
+        $destination = $bootstrapManager->getComposerRoot();
         $this->rsyncFiles($source, $destination);
     }
 
     /**
      * Imports Drupal files to the site.
      *
-     * @param string|null $source
-     *   The path to the Drupal files directory.
-     *
      * @throws \Drush\Exceptions\UserAbortException
      * @throws \Exception
      */
-    protected function importFiles(string $source, ?string $destinationSite): void
+    protected function importFiles(string $source): void
     {
         $this->logger()->info('Importing files...');
 
@@ -263,33 +248,13 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
             throw new Exception(dt('Directory !path not found.', ['!path' => $source]));
         }
 
-        $siteAlias = $this->getSiteAlias($destinationSite);
-
-        if ($siteAlias->isLocal()) {
-            Drush::bootstrapManager()->doBootstrap(DrupalBootLevels::FULL);
-            $drupalFilesPath = Drupal::service('file_system')->realpath('public://');
-            if (!$drupalFilesPath) {
-                throw new Exception('Path to Drupal files is empty.');
-            }
-
-            $this->rsyncFiles($source, $drupalFilesPath);
-
-            return;
+        Drush::bootstrapManager()->doBootstrap(DrupalBootLevels::FULL);
+        $drupalFilesPath = Drupal::service('file_system')->realpath('public://');
+        if (!$drupalFilesPath) {
+            throw new Exception('Path to Drupal files is empty.');
         }
 
-        $siteStatus = $this->getSiteStatus($siteAlias);
-        if (!isset($siteStatus['root'])) {
-            throw new Exception('Failed to get the site root path.');
-        }
-
-        if (!isset($siteStatus['files'])) {
-            throw new Exception('Failed to get path to Drupal files directory.');
-        }
-
-        $drupalFilesPath = Path::join($siteStatus['root'], $siteStatus['files']);
-        $destination = sprintf('%s:%s', $siteAlias->remoteHostWithUser(), $drupalFilesPath);
-
-        $this->rsyncFiles($source, $destination);
+        $this->rsyncFiles($source, $drupalFilesPath);
     }
 
     /**
@@ -314,38 +279,6 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
         $pathEvaluator->evaluate($evaluatedPath);
 
         return $evaluatedPath->getSiteAlias();
-    }
-
-    /**
-     * Returns the site status fields (composer-root, root, files).
-     *
-     * @param \Consolidation\SiteAlias\SiteAlias $siteAlias
-     *   The site alias object.
-     *
-     * @return array
-     */
-    protected function getSiteStatus(SiteAlias $siteAlias): array
-    {
-        if (isset($this->siteStatus)) {
-            return $this->siteStatus;
-        }
-
-        if ($siteAlias->isRemote()) {
-            $aliasConfigContext = $this->getConfig()->getContext(ConfigLocator::ALIAS_CONTEXT);
-            $aliasConfigContext->combine($siteAlias->export());
-        }
-
-        /** @var \Drush\SiteAlias\ProcessManager $processManager */
-        $processManager = $this->processManager();
-        $process = $processManager->drush(
-            $siteAlias,
-            'core-status',
-            [],
-            ['fields' => 'composer-root,root,files', 'format' => 'json']
-        );
-        $process->mustRun();
-
-        return $this->siteStatus = $process->getOutputAsJson();
     }
 
     /**
