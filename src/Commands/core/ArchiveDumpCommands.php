@@ -562,32 +562,16 @@ class ArchiveDumpCommands extends DrushCommands
             return;
         }
 
-        // Lookup for non-empty $databases value in a site/*/settings.php file.
-        // Remove all PHP "include" and "require" directives from settings.php file before evaluating
-        // the $databases variable.
-        $settingPhpWithoutIncludes = preg_replace('/\n*\s*(include|require).+?;|<\?php/m', '', file_get_contents($file));
-
-        try {
-            eval($settingPhpWithoutIncludes);
-        } catch (Throwable $t) {
+        $settingsPhpFileContents = file_get_contents($file);
+        $settingsWithoutComments = preg_replace('/\/\*(.*?)\*\/|(\/\/|#)(.*?)$/ms', '', $settingsPhpFileContents);
+        $isDatabaseSettingsPresent = preg_match('/\$databases[^;]*=[^;]*(\[|(array[^;]*\())[^;]+(\]|\))[^;]*;/ms', $settingsWithoutComments);
+        if ($isDatabaseSettingsPresent) {
             throw new Exception(
                 dt(
-                    'Failed to detect an absence of database connection settings in !path: !error',
-                    ['!path' => $localFileName, '!error' => $t->getMessage()]
+                    'Found database connection settings in !path. It is risky to include them to the archive. Please move the database connection settings into a setting.*.php file or exclude them from the archive with "--exclude-code-paths=!path".',
+                    ['!path' => $localFileName]
                 )
             );
         }
-
-        /** @var $databases */
-        if (empty($databases)) {
-            return;
-        }
-
-        throw new Exception(
-            dt(
-                'Found database connection settings in !path. It is risky to include them to the archive. Please move the database connection settings into a setting.*.php file or exclude them from the archive with "--exclude-code-paths=!path".',
-                ['!path' => $localFileName]
-            )
-        );
     }
 }
