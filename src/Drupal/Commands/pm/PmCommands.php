@@ -67,11 +67,13 @@ class PmCommands extends DrushCommands
      *
      * @command pm:install
      * @param $modules A comma delimited list of modules.
-     * @option dry-run Display what modules would be installed but don't install them.
      * @aliases in, install, pm-install, en, pm-enable, pm:enable
      * @bootstrap root
+     *
+     * @usage drush pm:install --simulate content_moderation
+     *    Display what modules would be installed but don't install them.
      */
-    public function install(array $modules, array $options = ['dry-run' => false]): void
+    public function install(array $modules): void
     {
         $modules = StringUtils::csvToArray($modules);
         $todo = $this->addInstallDependencies($modules);
@@ -79,7 +81,7 @@ class PmCommands extends DrushCommands
         if (empty($todo)) {
             $this->logger()->notice(dt('Already enabled: !list', ['!list' => implode(', ', $modules)]));
             return;
-        } elseif ($options['dry-run']) {
+        } elseif (Drush::simulate()) {
             $this->output()->writeln(dt('The following module(s) will be enabled: !list', $todo_str));
             return;
         } elseif (array_values($todo) !== $modules) {
@@ -159,14 +161,16 @@ class PmCommands extends DrushCommands
      *
      * @command pm:uninstall
      * @param $modules A comma delimited list of modules.
-     * @option dry-run Display what modules would be uninstalled but don't uninstall them.
      * @aliases un,pmu,pm-uninstall
+     *
+     * @usage drush pm:uninstall --simulate field_ui
+     *      Display what modules would be uninstalled but don't uninstall them.
      */
-    public function uninstall(array $modules, array $options = ['dry-run' => false]): void
+    public function uninstall(array $modules): void
     {
         $modules = StringUtils::csvToArray($modules);
         $list = $this->addUninstallDependencies($modules);
-        if ($options['dry-run']) {
+        if (Drush::simulate()) {
             $this->output()->writeln(dt('The following extensions will be uninstalled: !list', ['!list' => implode(', ', $list)]));
             return;
         }
