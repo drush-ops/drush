@@ -98,7 +98,7 @@ class ArchiveTest extends CommandUnishTestCase
     public function testArchiveRestoreCommand(): void
     {
         // [info] Copying files from "C:/projects/work/sandbox/archive/code\" to "C:\projects\work\"...
-        // [info] Executing: rsync -e 'ssh ' -akz --stats --progress -v C:/projects/work/sandbox/archive/code\ C:\projects\work\
+        // [info] Executing: rsync -akz --stats --progress -v C:/projects/work/sandbox/archive/code\ C:\projects\work\
         // > The source and destination cannot both be remote.
         if ($this->isWindows()) {
             $this->markTestSkipped('The command archive:restore does not work on Windows yet due to an rsync issue.');
@@ -135,8 +135,17 @@ class ArchiveTest extends CommandUnishTestCase
             ['overwrite' => null],
         );
 
+        $this->drush(
+          'status',
+          [],
+          ['format' => 'json']
+        );
+        $sutStatus = json_decode($this->getOutput(), true);
+
         // Restore archive from paths.
         $archiveBasePath = Path::join($this->getSandbox(), 'archive');
+        $testFileName = 'test-file.txt';
+        file_put_contents(Path::join($archiveBasePath, 'code', 'sut', $testFileName), 'foo_bar');
         $this->drush(
             'archive:restore',
             [],
@@ -145,6 +154,9 @@ class ArchiveTest extends CommandUnishTestCase
                 'code-source-path' => Path::join($archiveBasePath, 'code'),
             ]
         );
+        $this->assertTrue(is_file(Path::join($sutStatus['root'], $testFileName)));
+
+        file_put_contents(Path::join($archiveBasePath, 'files', $testFileName), 'foo_bar');
         $this->drush(
             'archive:restore',
             [],
@@ -153,6 +165,8 @@ class ArchiveTest extends CommandUnishTestCase
                 'files-source-path' => Path::join($archiveBasePath, 'files'),
             ]
         );
+        $this->assertTrue(is_file(Path::join($sutStatus['root'], $sutStatus['files'], $testFileName)));
+
         $this->drush(
             'archive:restore',
             [],
@@ -163,7 +177,7 @@ class ArchiveTest extends CommandUnishTestCase
         );
 
         // Restore archive from a non-existing file.
-        $nonExistingArchivePath = Path::join($this->getSandbox(), 'non-existing-archive.tar.gz');
+        $nonExistingArchivePath = Path::join($this->getSandbox(), 'arch.tar.gz');
         $this->drush(
             'archive:restore',
             [$nonExistingArchivePath],
@@ -173,8 +187,53 @@ class ArchiveTest extends CommandUnishTestCase
             self::EXIT_ERROR
         );
         $this->assertStringContainsString(
-            'non-existing-archive.tar.gz is not found',
+            'arch.tar.gz is not found',
             $this->getErrorOutput()
         );
+
+        // Restore archive to a specified destination.
+        $destination = Path::join($this->getSandbox(), 'restore-to-destination-' . mt_rand());
+        $this->assertFalse(is_dir($destination));
+
+        $this->drush(
+        'archive:restore',
+            [],
+            [
+                'code' => null,
+                'code-source-path' => Path::join($archiveBasePath, 'code'),
+                'destination-path' => $destination,
+            ]
+        );
+        $this->assertTrue(is_file(Path::join($destination, 'sut', $testFileName)));
+
+        $this->drush(
+        'archive:restore',
+            [],
+            [
+                'files' => null,
+                'files-source-path' => Path::join($archiveBasePath, 'files'),
+                'destination-path' => $destination,
+            ],
+          null,
+          null,
+          self::EXIT_ERROR
+        );
+        $this->assertStringContainsString(
+            'Can\'t detect relative path for Drupal files',
+            $this->getErrorOutput()
+        );
+
+        $filesRelativePath = 'files-destination';
+        $this->drush(
+        'archive:restore',
+            [],
+            [
+                'files' => null,
+                'files-source-path' => Path::join($archiveBasePath, 'files'),
+                'destination-path' => $destination,
+                'files-destination-relative-path' => $filesRelativePath,
+            ]
+        );
+        $this->assertTrue(is_file(Path::join($destination, $filesRelativePath, $testFileName)));
     }
 }
