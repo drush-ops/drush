@@ -370,7 +370,6 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
             )
         );
 
-        $options[] = sprintf("-e 'ssh %s'", $this->getConfig()->get('ssh.options'));
         $options[] = '-akz';
         if ($this->output()->isVerbose()) {
             $options[] = '--stats';
