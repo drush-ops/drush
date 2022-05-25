@@ -142,7 +142,7 @@ class ArchiveTest extends CommandUnishTestCase
             [],
             [
                 'code' => null,
-                'code_path' => Path::join($archiveBasePath, 'code'),
+                'code_source_path' => Path::join($archiveBasePath, 'code'),
             ]
         );
         $this->drush(
@@ -150,7 +150,7 @@ class ArchiveTest extends CommandUnishTestCase
             [],
             [
                 'files' => null,
-                'files_path' => Path::join($archiveBasePath, 'files'),
+                'files_source_path' => Path::join($archiveBasePath, 'files'),
             ]
         );
         $this->drush(
@@ -158,7 +158,7 @@ class ArchiveTest extends CommandUnishTestCase
             [],
             [
                 'db' => null,
-                'db_path' => Path::join($archiveBasePath, 'database', 'database.sql'),
+                'db_source_path' => Path::join($archiveBasePath, 'database', 'database.sql'),
             ]
         );
 

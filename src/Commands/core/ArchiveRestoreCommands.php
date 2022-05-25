@@ -67,15 +67,15 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
      * @command archive:restore
      * @aliases arr
      *
-     * @option destination_path The path to restore the code/files into.
-     * @option code Import code.
-     * @option code_path Import code from specified directory. Has higher priority over "path" argument.
-     * @option db Import database.
-     * @option db_path Import database from specified dump file. Has higher priority over "path" argument.
-     * @option files Import Drupal files.
-     * @option files_path Import Drupal files from specified directory. Has higher priority over "path" argument.
-     * @option files_relative_path Import Drupal files into specified directory.
+     * @option destination_path The base path to restore the code/files into.
      * @option overwrite Overwrite files if exists when un-compressing an archive.
+     * @option code Import code.
+     * @option code_source_path Import code from specified directory. Has higher priority over "path" argument.
+     * @option files Import Drupal files.
+     * @option files_source_path Import Drupal files from specified directory. Has higher priority over "path" argument.
+     * @option files_destination_relative_path Import Drupal files into specified directory.
+     * @option db Import database.
+     * @option db_source_path Import database from specified dump file. Has higher priority over "path" argument.
      *
      * @optionset_sql
      * @optionset_table_selection
@@ -99,15 +99,14 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
         ?string $site = null,
         array $options = [
             'destination_path' => null,
-            'code' => false,
-            'code_path' => null,
-            'db' => false,
-            'db_path' => null,
-            'files' => false,
-            // @todo: consider renaming options, ie. files_source_path, files_destination_relative_path
-            'files_path' => null,
-            'files_relative_path' => null,
             'overwrite' => false,
+            'code' => false,
+            'code_source_path' => null,
+            'files' => false,
+            'files_source_path' => null,
+            'files_destination_relative_path' => null,
+            'db' => false,
+            'db_source_path' => null,
         ]
     ): void {
         $siteAlias = $this->getSiteAlias($site);
@@ -137,7 +136,7 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
             }
 
             // Validate requested components have sources.
-            if (null === $extractDir && null === $options[$component . '_path']) {
+            if (null === $extractDir && null === $options[$component . '_source_path']) {
                 throw new Exception(
                     dt(
                         'Missing either "path" input or "!component_path" option for the !label component.',
@@ -155,23 +154,22 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
             $this->autodetectDestination = false;
 
             if (!is_dir($this->destinationPath) && !mkdir($this->destinationPath)) {
-                // @todo: add test
                 throw new Exception(dt('Failed creating destination directory "!destination"', ['!destination' => $this->destinationPath]));
             }
         }
 
         if ($options['code']) {
-            $codeComponentPath = $options['code_path'] ?? Path::join($extractDir, self::COMPONENT_CODE);
+            $codeComponentPath = $options['code_source_path'] ?? Path::join($extractDir, self::COMPONENT_CODE);
             $this->importCode($codeComponentPath);
         }
 
         if ($options['files']) {
-            $filesComponentPath = $options['files_path'] ?? Path::join($extractDir, self::COMPONENT_FILES);
-            $this->importFiles($filesComponentPath, $options['files_relative_path']);
+            $filesComponentPath = $options['files_source_path'] ?? Path::join($extractDir, self::COMPONENT_FILES);
+            $this->importFiles($filesComponentPath, $options['files_destination_relative_path']);
         }
 
         if ($options['db']) {
-            $databaseComponentPath = $options['db_path'] ?? Path::join($extractDir, self::COMPONENT_DATABASE, self::SQL_DUMP_FILE_NAME);
+            $databaseComponentPath = $options['db_source_path'] ?? Path::join($extractDir, self::COMPONENT_DATABASE, self::SQL_DUMP_FILE_NAME);
             $this->importDatabase($databaseComponentPath, $options);
         }
 
@@ -254,13 +252,7 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
             throw new Exception(dt('Directory !path not found.', ['!path' => $source]));
         }
 
-        // @todo: add test for non-empty $destination
-        if (!$this->destinationPath) {
-            $bootstrapManager = Drush::bootstrapManager();
-            $this->destinationPath = $bootstrapManager->getComposerRoot();
-        }
-
-        $this->rsyncFiles($source, $this->destinationPath);
+        $this->rsyncFiles($source, $this->getDestinationPath());
     }
 
     /**
@@ -282,29 +274,46 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
             throw new Exception(dt('The source directory !path not found.', ['!path' => $source]));
         }
 
-        if ($this->autodetectDestination && !$destinationRelative) {
+        if ($destinationRelative) {
+            $destinationAbsolute = Path::join($this->getDestinationPath(), $destinationRelative);
+            $this->rsyncFiles($source, $destinationAbsolute);
+
+            return;
+        }
+
+        if ($this->autodetectDestination) {
             // @todo: catch error if possible
-            // @todo: add test
             Drush::bootstrapManager()->doBootstrap(DrupalBootLevels::FULL);
             $destinationAbsolute = Drupal::service('file_system')->realpath('public://');
             if (!$destinationAbsolute) {
                 throw new Exception('Path to Drupal files is empty.');
             }
-        } else {
-            // @todo: add test
-            if (!$destinationRelative) {
-                // @todo: add test
-                throw new Exception('Can\'t detect destination path for Drupal files: missing --files_relative_path option.');
-            }
 
-            $destinationAbsolute = Path::join($this->destinationPath, $destinationRelative);
+            $this->rsyncFiles($source, $destinationAbsolute);
+            return;
         }
 
-        if (!is_dir($destinationAbsolute)) {
-            throw new Exception(dt('The destination directory !path not found.', ['!path' => $destinationAbsolute]));
+        throw new Exception(
+            dt(
+                'Can\'t detect relative path for Drupal files for destination "!destination": missing --files_destination_relative_path option.',
+                ['!destination' => $this->getDestinationPath()]
+            )
+        );
+    }
+
+    /**
+     * Returns the destination path.
+     *
+     * @return string
+     */
+    protected function getDestinationPath(): string
+    {
+        if (!$this->destinationPath) {
+            $bootstrapManager = Drush::bootstrapManager();
+            $this->destinationPath = $bootstrapManager->getComposerRoot();
         }
 
-        $this->rsyncFiles($source, $destinationAbsolute);
+        return $this->destinationPath;
     }
 
     /**
@@ -358,6 +367,13 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
             )
         ) {
             throw new UserAbortException();
+        }
+
+        if (!is_dir($source)) {
+            throw new Exception(dt('The source directory !path not found.', ['!path' => $source]));
+        }
+        if (!is_dir($destination)) {
+            throw new Exception(dt('The destination directory !path not found.', ['!path' => $destination]));
         }
 
         $this->logger()->info(
