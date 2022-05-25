@@ -77,6 +77,13 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
      * @option files_destination_relative_path Import Drupal files into specified directory.
      * @option db Import database.
      * @option db_source_path Import database from specified dump file. Has higher priority over "path" argument.
+     * @option db-name Destination database name.
+     * @option db-port Destination database port.
+     * @option db-host Destination database host.
+     * @option db-user Destination database user.
+     * @option db-password Destination database user password.
+     * @option db-prefix Destination database prefix.
+     * @option db-driver Destination database driver.
      *
      * @optionset_sql
      * @optionset_table_selection
@@ -108,6 +115,13 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
             'files_destination_relative_path' => null,
             'db' => false,
             'db_source_path' => null,
+            'db-driver' => 'mysql',
+            'db-port' => null,
+            'db-host' => null,
+            'db-name' => null,
+            'db-user' => null,
+            'db-password' => null,
+            'db-prefix' => null,
         ]
     ): void {
         $siteAlias = $this->getSiteAlias($site);
@@ -439,9 +453,35 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
             throw new Exception(dt('Database dump file !path not found.', ['!path' => $databaseDumpPath]));
         }
 
-        // @todo: add support for database credentials.
-        $bootstrapManager = Drush::bootstrapManager();
-        $bootstrapManager->doBootstrap(DrupalBootLevels::CONFIGURATION);
+        if ($this->autodetectDestination) {
+            $bootstrapManager = Drush::bootstrapManager();
+            $bootstrapManager->doBootstrap(DrupalBootLevels::CONFIGURATION);
+        } else if (!isset($options['db-url'])) {
+            $requiredOptions = ['db-host', 'db-name', 'db-user'];
+            foreach ($requiredOptions as $optionName) {
+                if (!isset($options[$optionName])) {
+                    throw new Exception(dt('Missing --!option_name option value', ['!option_name' => $optionName]));
+                }
+            }
+
+            $connection = [
+                'driver' => $options['db-driver'],
+                'port' => $options['db-port'],
+                'prefix' => $options['db-prefix'],
+                'host' => $options['db-host'],
+                'database' => $options['db-name'],
+                'username' => $options['db-user'],
+                'password' => $options['db-password'],
+            ];
+
+            $options = [
+                'databases' => [
+                    'default' => [
+                        'default' => $connection,
+                    ],
+                ],
+            ];
+        }
 
         $sql = SqlBase::create($options);
         $databaseSpec = $sql->getDbSpec();
@@ -449,13 +489,14 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
         if (
             !$this->io()->confirm(
                 dt(
-                    'Are you sure you want to drop the database "!database" (username: !user, prefix: !prefix, port: !port) and import the database dump "!path"?',
+                    'Are you sure you want to drop the database "!database" (username: !user, password: !password, port: !port, prefix: !prefix) and import the database dump "!path"?',
                     [
                         '!path' => $databaseDumpPath,
                         '!database' => $databaseSpec['database'],
-                        '!prefix' => $databaseSpec['prefix'] ?: dt('n/a'),
                         '!user' => $databaseSpec['username'],
-                        '!port' => $databaseSpec['port'],
+                        '!password' => isset($databaseSpec['password']) ? '******' : '[not set]',
+                        '!port' => $databaseSpec['port'] ?: dt('n/a'),
+                        '!prefix' => $databaseSpec['prefix'] ?: dt('n/a'),
                     ]
                 )
             )
