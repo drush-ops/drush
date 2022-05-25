@@ -43,9 +43,14 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
     private string $extractedPath;
 
     /**
+     * @var null|string
+     */
+    private ?string $destinationPath = null;
+
+    /**
      * @var bool
      */
-    private bool $isCodeDestinationCwd = false;
+    private bool $autodetectDestination = true;
 
     private const COMPONENT_CODE = 'code';
 
@@ -62,13 +67,14 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
      * @command archive:restore
      * @aliases arr
      *
+     * @option destination_path The path to restore the code/files into.
      * @option code Import code.
      * @option code_path Import code from specified directory. Has higher priority over "path" argument.
      * @option db Import database.
      * @option db_path Import database from specified dump file. Has higher priority over "path" argument.
      * @option files Import Drupal files.
      * @option files_path Import Drupal files from specified directory. Has higher priority over "path" argument.
-     * @option files_destination_path Import Drupal files into specified directory.
+     * @option files_relative_path Import Drupal files into specified directory.
      * @option overwrite Overwrite files if exists when un-compressing an archive.
      *
      * @optionset_sql
@@ -92,13 +98,15 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
         string $path = null,
         ?string $site = null,
         array $options = [
+            'destination_path' => null,
             'code' => false,
             'code_path' => null,
             'db' => false,
             'db_path' => null,
             'files' => false,
+            // @todo: consider renaming options, ie. files_source_path, files_destination_relative_path
             'files_path' => null,
-            'files_destination_path' => null,
+            'files_relative_path' => null,
             'overwrite' => false,
         ]
     ): void {
@@ -142,6 +150,16 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
             }
         }
 
+        if ($options['destination_path']) {
+            $this->destinationPath = $options['destination_path'];
+            $this->autodetectDestination = false;
+
+            if (!is_dir($this->destinationPath) && !mkdir($this->destinationPath)) {
+                // @todo: add test
+                throw new Exception(dt('Failed creating destination directory "!destination"', ['!destination' => $this->destinationPath]));
+            }
+        }
+
         if ($options['code']) {
             $codeComponentPath = $options['code_path'] ?? Path::join($extractDir, self::COMPONENT_CODE);
             $this->importCode($codeComponentPath);
@@ -149,7 +167,7 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
 
         if ($options['files']) {
             $filesComponentPath = $options['files_path'] ?? Path::join($extractDir, self::COMPONENT_FILES);
-            $this->importFiles($filesComponentPath, $options['files_destination_path']);
+            $this->importFiles($filesComponentPath, $options['files_relative_path']);
         }
 
         if ($options['db']) {
@@ -236,30 +254,13 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
             throw new Exception(dt('Directory !path not found.', ['!path' => $source]));
         }
 
-        $destination = null;
-        $skipConfirmation = false;
-        $cwd = getcwd();
-        if (
-            2 === count(scandir($cwd)) && $this->io()->confirm(
-                dt(
-                    'The current directory !cwd is empty. Do you want to restore the code into this directory?',
-                    [
-                        '!cwd' => $cwd,
-                    ]
-                )
-            )
-        ) {
-            $destination = $cwd;
-            $this->isCodeDestinationCwd = true;
-            $skipConfirmation = true;
-        }
-
-        if (!$destination) {
+        // @todo: add test for non-empty $destination
+        if (!$this->destinationPath) {
             $bootstrapManager = Drush::bootstrapManager();
-            $destination = $bootstrapManager->getComposerRoot();
+            $this->destinationPath = $bootstrapManager->getComposerRoot();
         }
 
-        $this->rsyncFiles($source, $destination, $skipConfirmation);
+        $this->rsyncFiles($source, $this->destinationPath);
     }
 
     /**
@@ -267,13 +268,13 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
      *
      * @param string $source
      *   The path to the source directory.
-     * @param null|string $destination
-     *   The path to the destination directory.
+     * @param null|string $destinationRelative
+     *   The relative path to the Drupal files directory.
      *
      * @throws \Drush\Exceptions\UserAbortException
      * @throws \Exception
      */
-    protected function importFiles(string $source, ?string $destination): void
+    protected function importFiles(string $source, ?string $destinationRelative): void
     {
         $this->logger()->info('Importing files...');
 
@@ -281,28 +282,29 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
             throw new Exception(dt('The source directory !path not found.', ['!path' => $source]));
         }
 
-        if ($this->isCodeDestinationCwd && !$destination) {
-            throw new Exception(
-                dt(
-                    'Can\'t detect the path to Drupal files for "!destination" project. Please use --files_destination_path parameter to provide a path to Drupal files',
-                    ['!destination' => $this->isCodeDestinationCwd]
-                )
-            );
-        }
-
-        if (!$destination) {
+        if ($this->autodetectDestination && !$destinationRelative) {
+            // @todo: catch error if possible
+            // @todo: add test
             Drush::bootstrapManager()->doBootstrap(DrupalBootLevels::FULL);
-            $destination = Drupal::service('file_system')->realpath('public://');
-            if (!$destination) {
+            $destinationAbsolute = Drupal::service('file_system')->realpath('public://');
+            if (!$destinationAbsolute) {
                 throw new Exception('Path to Drupal files is empty.');
             }
+        } else {
+            // @todo: add test
+            if (!$destinationRelative) {
+                // @todo: add test
+                throw new Exception('Can\'t detect destination path for Drupal files: missing --files_relative_path option.');
+            }
+
+            $destinationAbsolute = Path::join($this->destinationPath, $destinationRelative);
         }
 
-        if (!is_dir($destination)) {
-            throw new Exception(dt('The destination directory !path not found.', ['!path' => $destination]));
+        if (!is_dir($destinationAbsolute)) {
+            throw new Exception(dt('The destination directory !path not found.', ['!path' => $destinationAbsolute]));
         }
 
-        $this->rsyncFiles($source, $destination);
+        $this->rsyncFiles($source, $destinationAbsolute);
     }
 
     /**
@@ -336,18 +338,16 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
      *   The source path.
      * @param string $destination
      *   The destination path.
-     * @param bool $skipConfirmation
-     *   The flag for skipping the confirmation dialog.
      *
      * @throws \Exception
      */
-    protected function rsyncFiles(string $source, string $destination, bool $skipConfirmation = false): void
+    protected function rsyncFiles(string $source, string $destination): void
     {
         $source = rtrim($source, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
         $destination = rtrim($destination, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
 
         if (
-            !$skipConfirmation && !$this->io()->confirm(
+            !$this->io()->confirm(
                 dt(
                     'Are you sure you want to sync files from "!source" to "!destination"?',
                     [
