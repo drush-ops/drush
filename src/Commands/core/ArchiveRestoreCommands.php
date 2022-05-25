@@ -329,6 +329,7 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
     protected function getSiteAlias(?string $site): SiteAlias
     {
         $pathEvaluator = new BackendPathEvaluator();
+        /** @var \Consolidation\SiteAlias\SiteAliasManager $manager */
         $manager = $this->siteAliasManager();
 
         if (null !== $site) {
@@ -371,9 +372,6 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
 
         if (!is_dir($source)) {
             throw new Exception(dt('The source directory !path not found.', ['!path' => $source]));
-        }
-        if (!is_dir($destination)) {
-            throw new Exception(dt('The destination directory !path not found.', ['!path' => $destination]));
         }
 
         $this->logger()->info(
