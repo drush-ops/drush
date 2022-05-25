@@ -18,6 +18,7 @@ use Exception;
 use PharData;
 use Symfony\Component\Filesystem\Exception\IOException;
 use Symfony\Component\Filesystem\Filesystem;
+use Throwable;
 use Webmozart\PathUtil\Path;
 
 /**
@@ -282,9 +283,13 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
         }
 
         if ($this->autodetectDestination) {
-            // @todo: catch error if possible
-            Drush::bootstrapManager()->doBootstrap(DrupalBootLevels::FULL);
-            $destinationAbsolute = Drupal::service('file_system')->realpath('public://');
+            try {
+                Drush::bootstrapManager()->doBootstrap(DrupalBootLevels::FULL);
+                $destinationAbsolute = Drupal::service('file_system')->realpath('public://');
+            } catch (Throwable $t) {
+                throw new Exception(dt('Failed to get the path to Drupal files: !error', ['!error' => $t->getMessage()]));
+            }
+
             if (!$destinationAbsolute) {
                 throw new Exception('Path to Drupal files is empty.');
             }
