@@ -108,7 +108,7 @@ class DrushHelpCommand extends BaseCommand
                     $namespaces[$namespace] = [];
                 }
 
-                $namespaces[$namespace][] = sprintf("    <info>%-${width}s</info> %s%s", $name, $command->getDescription(), $aliases);
+                $namespaces[$namespace][] = sprintf("    <info>%-{$width}s</info> %s%s", $name, $command->getDescription(), $aliases);
             }
 
             $messages = [];
