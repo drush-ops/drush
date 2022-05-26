@@ -160,10 +160,10 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
         }
 
         if ($options['destination-path']) {
-            $this->destinationPathOption = $options['destination-path'];
-            if (!is_dir($this->destinationPathOption) && !mkdir($this->destinationPathOption)) {
-                throw new Exception(dt('Failed creating destination directory "!destination"', ['!destination' => $this->destinationPathOption]));
+            if (!is_dir($options['destination-path']) && !mkdir($options['destination-path'])) {
+                throw new Exception(dt('Failed creating destination directory "!destination"', ['!destination' => $options['destination-path']]));
             }
+            $this->destinationPathOption = realpath($options['destination-path']);
         }
 
         if ($options['code']) {
