@@ -46,12 +46,7 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
     /**
      * @var null|string
      */
-    private ?string $destinationPath = null;
-
-    /**
-     * @var bool
-     */
-    private bool $autodetectDestination = true;
+    private ?string $destinationPathOption = null;
 
     private const COMPONENT_CODE = 'code';
 
@@ -165,11 +160,9 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
         }
 
         if ($options['destination-path']) {
-            $this->destinationPath = $options['destination-path'];
-            $this->autodetectDestination = false;
-
-            if (!is_dir($this->destinationPath) && !mkdir($this->destinationPath)) {
-                throw new Exception(dt('Failed creating destination directory "!destination"', ['!destination' => $this->destinationPath]));
+            $this->destinationPathOption = $options['destination-path'];
+            if (!is_dir($this->destinationPathOption) && !mkdir($this->destinationPathOption)) {
+                throw new Exception(dt('Failed creating destination directory "!destination"', ['!destination' => $this->destinationPathOption]));
             }
         }
 
@@ -267,7 +260,7 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
             throw new Exception(dt('Directory !path not found.', ['!path' => $source]));
         }
 
-        $this->rsyncFiles($source, $this->getDestinationPath());
+        $this->rsyncFiles($source, $this->getDestinationPathOption());
     }
 
     /**
@@ -290,13 +283,13 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
         }
 
         if ($destinationRelative) {
-            $destinationAbsolute = Path::join($this->getDestinationPath(), $destinationRelative);
+            $destinationAbsolute = Path::join($this->getDestinationPathOption(), $destinationRelative);
             $this->rsyncFiles($source, $destinationAbsolute);
 
             return;
         }
 
-        if ($this->autodetectDestination) {
+        if (!$this->destinationPathOption) {
             try {
                 Drush::bootstrapManager()->doBootstrap(DrupalBootLevels::FULL);
                 $destinationAbsolute = Drupal::service('file_system')->realpath('public://');
@@ -315,7 +308,7 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
         throw new Exception(
             dt(
                 'Can\'t detect relative path for Drupal files for destination "!destination": missing --files-destination-relative-path option.',
-                ['!destination' => $this->getDestinationPath()]
+                ['!destination' => $this->getDestinationPathOption()]
             )
         );
     }
@@ -325,14 +318,15 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
      *
      * @return string
      */
-    protected function getDestinationPath(): string
+    protected function getDestinationPathOption(): string
     {
-        if (!$this->destinationPath) {
-            $bootstrapManager = Drush::bootstrapManager();
-            $this->destinationPath = $bootstrapManager->getComposerRoot();
+        if ($this->destinationPathOption) {
+            return $this->destinationPathOption;
         }
 
-        return $this->destinationPath;
+        $bootstrapManager = Drush::bootstrapManager();
+
+        return $bootstrapManager->getComposerRoot();
     }
 
     /**
@@ -453,7 +447,7 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
             throw new Exception(dt('Database dump file !path not found.', ['!path' => $databaseDumpPath]));
         }
 
-        if ($this->autodetectDestination) {
+        if (!$this->destinationPathOption) {
             $bootstrapManager = Drush::bootstrapManager();
             $bootstrapManager->doBootstrap(DrupalBootLevels::CONFIGURATION);
         } else if (!isset($options['db-url'])) {
