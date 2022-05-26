@@ -447,17 +447,10 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
             throw new Exception(dt('Database dump file !path not found.', ['!path' => $databaseDumpPath]));
         }
 
-        if (!$this->destinationPathOption) {
-            $bootstrapManager = Drush::bootstrapManager();
-            $bootstrapManager->doBootstrap(DrupalBootLevels::CONFIGURATION);
-        } else if (!isset($options['db-url'])) {
-            $requiredOptions = ['db-host', 'db-name', 'db-user'];
-            foreach ($requiredOptions as $optionName) {
-                if (!isset($options[$optionName])) {
-                    throw new Exception(dt('Missing --!option_name option value', ['!option_name' => $optionName]));
-                }
-            }
-
+        $sqlOptions = [];
+        if (isset($options['db-url'])) {
+            $sqlOptions = ['db-url' => $options['db-url']];
+        } else if ($options['db-name']) {
             $connection = [
                 'driver' => $options['db-driver'],
                 'port' => $options['db-port'],
@@ -468,17 +461,26 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
                 'password' => $options['db-password'],
             ];
 
-            $options = [
+            $sqlOptions = [
                 'databases' => [
                     'default' => [
                         'default' => $connection,
                     ],
                 ],
             ];
+        } else if ($options['destination-path']) {
+            throw new Exception('Database connection settings are required if --destination-path option is provided');
+        } else {
+            $bootstrapManager = Drush::bootstrapManager();
+            $bootstrapManager->doBootstrap(DrupalBootLevels::CONFIGURATION);
         }
 
-        $sql = SqlBase::create($options);
-        $databaseSpec = $sql->getDbSpec();
+        try {
+            $sql = SqlBase::create($sqlOptions);
+            $databaseSpec = $sql->getDbSpec();
+        } catch (Throwable $t) {
+            throw new Exception(dt('Failed to get database specification: !error', ['!error' => $t->getMessage()]));
+        }
 
         if (
             !$this->io()->confirm(
