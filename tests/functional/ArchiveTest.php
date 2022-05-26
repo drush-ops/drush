@@ -136,9 +136,9 @@ class ArchiveTest extends CommandUnishTestCase
         );
 
         $this->drush(
-          'status',
-          [],
-          ['format' => 'json']
+            'status',
+            [],
+            ['format' => 'json']
         );
         $sutStatus = json_decode($this->getOutput(), true);
 
@@ -196,7 +196,7 @@ class ArchiveTest extends CommandUnishTestCase
         $this->assertFalse(is_dir($destination));
 
         $this->drush(
-        'archive:restore',
+            'archive:restore',
             [],
             [
                 'code' => null,
@@ -207,16 +207,16 @@ class ArchiveTest extends CommandUnishTestCase
         $this->assertTrue(is_file(Path::join($destination, 'sut', $testFileName)));
 
         $this->drush(
-        'archive:restore',
+            'archive:restore',
             [],
             [
                 'files' => null,
                 'files-source-path' => Path::join($archiveBasePath, 'files'),
                 'destination-path' => $destination,
             ],
-          null,
-          null,
-          self::EXIT_ERROR
+            null,
+            null,
+            self::EXIT_ERROR
         );
         $this->assertStringContainsString(
             'Can\'t detect relative path for Drupal files',
@@ -225,7 +225,7 @@ class ArchiveTest extends CommandUnishTestCase
 
         $filesRelativePath = 'files-destination';
         $this->drush(
-        'archive:restore',
+            'archive:restore',
             [],
             [
                 'files' => null,
