@@ -255,6 +255,7 @@ class ArchiveTest extends CommandUnishTestCase
             [
                 'db' => null,
                 'db-source-path' => Path::join($archiveBasePath, 'database', 'database.sql'),
+                'db-driver' => $sutStatus['db-driver'],
                 'db-name' => $sutStatus['db-name'],
                 'db-host' => $sutStatus['db-hostname'],
                 'db-user' => $sutStatus['db-username'],
@@ -269,6 +270,7 @@ class ArchiveTest extends CommandUnishTestCase
             [
                 'db' => null,
                 'db-source-path' => Path::join($archiveBasePath, 'database', 'database.sql'),
+                'db-driver' => $sutStatus['db-driver'],
                 'db-name' => $sutStatus['db-name'],
                 'db-host' => 'invalid_host',
                 'db-user' => $sutStatus['db-username'],
