@@ -149,7 +149,7 @@ class ArchiveTest extends CommandUnishTestCase
         // Restore archive from paths.
 
         $archiveBasePath = Path::join($this->getSandbox(), 'archive');
-        $testFileName = 'test-file.txt';
+        $testFileName = 'test-file-' . mt_rand() . '.txt';
 
         // Restore code.
         file_put_contents(Path::join($archiveBasePath, 'code', 'sut', $testFileName), 'foo_bar');
@@ -204,7 +204,7 @@ class ArchiveTest extends CommandUnishTestCase
         );
 
         // Restore database with valid --db-url option.
-        $sutDbPassword = 'root';
+        $sutDbPassword = '';
         $this->drush(
             'archive:restore',
             [],
@@ -233,7 +233,7 @@ class ArchiveTest extends CommandUnishTestCase
                     '%s://%s:%s@%s/%s',
                     $sutStatus['db-driver'],
                     $sutStatus['db-username'],
-                    'invalid password',
+                    'invalid_password',
                     $sutStatus['db-hostname'],
                     $sutStatus['db-name']
                 ),
@@ -271,7 +271,7 @@ class ArchiveTest extends CommandUnishTestCase
                 'db-name' => $sutStatus['db-name'],
                 'db-host' => $sutStatus['db-hostname'],
                 'db-user' => $sutStatus['db-username'],
-                'db-password' => 'invalid password',
+                'db-password' => 'invalid_password',
             ],
             null,
             null,
