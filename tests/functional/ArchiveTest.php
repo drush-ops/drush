@@ -117,6 +117,8 @@ class ArchiveTest extends CommandUnishTestCase
         );
 
         // Restore archive from an existing file and an existing uncompressed directory.
+
+        // Restore without options.
         $this->drush(
             'archive:restore',
             [$archivePath],
@@ -129,6 +131,8 @@ class ArchiveTest extends CommandUnishTestCase
             '/Extract directory .+ already exists/',
             $this->getErrorOutput()
         );
+
+        // Restore with --overwrite option.
         $this->drush(
             'archive:restore',
             [$archivePath],
@@ -143,8 +147,11 @@ class ArchiveTest extends CommandUnishTestCase
         $sutStatus = json_decode($this->getOutput(), true);
 
         // Restore archive from paths.
+
         $archiveBasePath = Path::join($this->getSandbox(), 'archive');
         $testFileName = 'test-file.txt';
+
+        // Restore code.
         file_put_contents(Path::join($archiveBasePath, 'code', 'sut', $testFileName), 'foo_bar');
         $this->drush(
             'archive:restore',
@@ -156,6 +163,7 @@ class ArchiveTest extends CommandUnishTestCase
         );
         $this->assertTrue(is_file(Path::join($sutStatus['root'], $testFileName)));
 
+        // Restore Drupal files.
         file_put_contents(Path::join($archiveBasePath, 'files', $testFileName), 'foo_bar');
         $this->drush(
             'archive:restore',
@@ -167,6 +175,7 @@ class ArchiveTest extends CommandUnishTestCase
         );
         $this->assertTrue(is_file(Path::join($sutStatus['root'], $sutStatus['files'], $testFileName)));
 
+        // Restore database.
         $this->drush(
             'archive:restore',
             [],
@@ -176,7 +185,105 @@ class ArchiveTest extends CommandUnishTestCase
             ]
         );
 
+        // Restore database with invalid --db-url.
+        $this->drush(
+            'archive:restore',
+            [],
+            [
+                'db' => null,
+                'db-source-path' => Path::join($archiveBasePath, 'database', 'database.sql'),
+                'db-url' => 'bad://db@url/schema',
+            ],
+            null,
+            null,
+            self::EXIT_ERROR
+        );
+        $this->assertStringContainsString(
+            'Failed to get database specification:',
+            $this->getErrorOutput()
+        );
+
+        // Restore database with valid --db-url option.
+        $sutDbPassword = 'root';
+        $this->drush(
+            'archive:restore',
+            [],
+            [
+                'db' => null,
+                'db-source-path' => Path::join($archiveBasePath, 'database', 'database.sql'),
+                'db-url' => sprintf(
+                    '%s://%s:%s@%s/%s',
+                    $sutStatus['db-driver'],
+                    $sutStatus['db-username'],
+                    $sutDbPassword,
+                    $sutStatus['db-hostname'],
+                    $sutStatus['db-name']
+                ),
+            ]
+        );
+
+        // Restore database with valid --db-url option with an invalid password.
+        $this->drush(
+            'archive:restore',
+            [],
+            [
+                'db' => null,
+                'db-source-path' => Path::join($archiveBasePath, 'database', 'database.sql'),
+                'db-url' => sprintf(
+                    '%s://%s:%s@%s/%s',
+                    $sutStatus['db-driver'],
+                    $sutStatus['db-username'],
+                    'invalid password',
+                    $sutStatus['db-hostname'],
+                    $sutStatus['db-name']
+                ),
+            ],
+            null,
+            null,
+            self::EXIT_ERROR
+        );
+        $this->assertStringContainsString(
+            'Database import has failed.',
+            $this->getErrorOutput()
+        );
+
+        // Restore database with a set of database connection options.
+        $this->drush(
+            'archive:restore',
+            [],
+            [
+                'db' => null,
+                'db-source-path' => Path::join($archiveBasePath, 'database', 'database.sql'),
+                'db-name' => $sutStatus['db-name'],
+                'db-host' => $sutStatus['db-hostname'],
+                'db-user' => $sutStatus['db-username'],
+                'db-password' => $sutDbPassword,
+            ]
+        );
+
+        // Restore database with a set of database connection options with an invalid password.
+        $this->drush(
+            'archive:restore',
+            [],
+            [
+                'db' => null,
+                'db-source-path' => Path::join($archiveBasePath, 'database', 'database.sql'),
+                'db-name' => $sutStatus['db-name'],
+                'db-host' => $sutStatus['db-hostname'],
+                'db-user' => $sutStatus['db-username'],
+                'db-password' => 'invalid password',
+            ],
+            null,
+            null,
+            self::EXIT_ERROR
+        );
+        $this->assertStringContainsString(
+            'Database import has failed.',
+            $this->getErrorOutput()
+        );
+
         // Restore archive from a non-existing file.
+
         $nonExistingArchivePath = Path::join($this->getSandbox(), 'arch.tar.gz');
         $this->drush(
             'archive:restore',
@@ -192,9 +299,11 @@ class ArchiveTest extends CommandUnishTestCase
         );
 
         // Restore archive to a specified destination.
+
         $destination = Path::join($this->getSandbox(), 'restore-to-destination-' . mt_rand());
         $this->assertFalse(is_dir($destination));
 
+        // Restore code with --destination-path option.
         $this->drush(
             'archive:restore',
             [],
@@ -206,6 +315,7 @@ class ArchiveTest extends CommandUnishTestCase
         );
         $this->assertTrue(is_file(Path::join($destination, 'sut', $testFileName)));
 
+        // Restore Drupal files with --destination-path option.
         $this->drush(
             'archive:restore',
             [],
@@ -223,6 +333,7 @@ class ArchiveTest extends CommandUnishTestCase
             $this->getErrorOutput()
         );
 
+        // Restore Drupal files with --destination-path and --files-destination-relative-path options.
         $filesRelativePath = 'files-destination';
         $this->drush(
             'archive:restore',
