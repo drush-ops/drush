@@ -349,6 +349,52 @@ class ArchiveTest extends CommandUnishTestCase
             ]
         );
         $this->assertTrue(is_file(Path::join($destination, $filesRelativePath, $testFileName)));
+
+        // Restore database with --destination-path option.
+        $this->drush(
+            'archive:restore',
+            [],
+            [
+                'db' => null,
+                'db-source-path' => Path::join($archiveBasePath, 'database', 'database.sql'),
+                'destination-path' => $destination,
+            ],
+            null,
+            null,
+            self::EXIT_ERROR
+        );
+        $this->assertStringContainsString(
+            'Database connection settings are required if --destination-path',
+            $this->getErrorOutput()
+        );
+
+        // Restore database with --destination-path and --db-url options.
+        $this->drush(
+            'archive:restore',
+            [],
+            [
+                'db' => null,
+                'db-source-path' => Path::join($archiveBasePath, 'database', 'database.sql'),
+                'destination-path' => $destination,
+                'db-url' => $sutDbUrl,
+            ]
+        );
+
+        // Restore database with --destination-path and a set of database connection options.
+        $this->drush(
+            'archive:restore',
+            [],
+            [
+                'db' => null,
+                'db-source-path' => Path::join($archiveBasePath, 'database', 'database.sql'),
+                'destination-path' => $destination,
+                'db-driver' => $sutStatus['db-driver'],
+                'db-name' => $sutStatus['db-name'],
+                'db-host' => $sutStatus['db-hostname'],
+                'db-user' => $sutStatus['db-username'],
+                'db-password' => $sutDbPassword,
+            ]
+        );
     }
 
     /**
