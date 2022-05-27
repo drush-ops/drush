@@ -24,6 +24,11 @@ class ArchiveTest extends CommandUnishTestCase
     protected array $archiveDumpOptions;
 
     /**
+     * @var null|string
+     */
+    protected ?string $testFilePath = null;
+
+    /**
      * @inheritdoc
      */
     public function setUp(): void
@@ -153,6 +158,7 @@ class ArchiveTest extends CommandUnishTestCase
 
         // Restore code.
         file_put_contents(Path::join($archiveBasePath, 'code', 'sut', $testFileName), 'foo_bar');
+        $this->testFilePath = Path::join($sutStatus['root'], $testFileName);
         $this->drush(
             'archive:restore',
             [],
@@ -161,7 +167,7 @@ class ArchiveTest extends CommandUnishTestCase
                 'code-source-path' => Path::join($archiveBasePath, 'code'),
             ]
         );
-        $this->assertTrue(is_file(Path::join($sutStatus['root'], $testFileName)));
+        $this->assertTrue(is_file($this->testFilePath));
 
         // Restore Drupal files.
         file_put_contents(Path::join($archiveBasePath, 'files', $testFileName), 'foo_bar');
@@ -341,5 +347,17 @@ class ArchiveTest extends CommandUnishTestCase
             ]
         );
         $this->assertTrue(is_file(Path::join($destination, $filesRelativePath, $testFileName)));
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+
+        if ($this->testFilePath && is_file($this->testFilePath)) {
+           unlink($this->testFilePath);
+        }
     }
 }
