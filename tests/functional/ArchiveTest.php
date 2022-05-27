@@ -204,21 +204,14 @@ class ArchiveTest extends CommandUnishTestCase
         );
 
         // Restore database with valid --db-url option.
-        $sutDbPassword = '';
+        $sutDbUrl = self::getDbUrl() . '/' . $sutStatus['db-name'];
         $this->drush(
             'archive:restore',
             [],
             [
                 'db' => null,
                 'db-source-path' => Path::join($archiveBasePath, 'database', 'database.sql'),
-                'db-url' => sprintf(
-                    '%s://%s:%s@%s/%s',
-                    $sutStatus['db-driver'],
-                    $sutStatus['db-username'],
-                    $sutDbPassword,
-                    $sutStatus['db-hostname'],
-                    $sutStatus['db-name']
-                ),
+                'db-url' => $sutDbUrl,
             ]
         );
 
@@ -248,6 +241,8 @@ class ArchiveTest extends CommandUnishTestCase
         );
 
         // Restore database with a set of database connection options.
+        $dbUrlParts = explode(':', self::getDbUrl());
+        $sutDbPassword = substr($dbUrlParts[2], 0, strpos($dbUrlParts[2], '@'));
         $this->drush(
             'archive:restore',
             [],
