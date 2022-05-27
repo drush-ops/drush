@@ -221,7 +221,9 @@ class ArchiveTest extends CommandUnishTestCase
             ]
         );
 
-        // Restore database with valid --db-url option with an invalid password.
+        // Restore database with valid --db-url option with an invalid host.
+        $dbUrlParts = explode(':', self::getDbUrl());
+        $sutDbPassword = substr($dbUrlParts[2], 0, strpos($dbUrlParts[2], '@'));
         $this->drush(
             'archive:restore',
             [],
@@ -232,8 +234,8 @@ class ArchiveTest extends CommandUnishTestCase
                     '%s://%s:%s@%s/%s',
                     $sutStatus['db-driver'],
                     $sutStatus['db-username'],
-                    'invalid_password',
-                    $sutStatus['db-hostname'],
+                    $sutDbPassword,
+                    'invalid_host',
                     $sutStatus['db-name']
                 ),
             ],
@@ -247,8 +249,6 @@ class ArchiveTest extends CommandUnishTestCase
         );
 
         // Restore database with a set of database connection options.
-        $dbUrlParts = explode(':', self::getDbUrl());
-        $sutDbPassword = substr($dbUrlParts[2], 0, strpos($dbUrlParts[2], '@'));
         $this->drush(
             'archive:restore',
             [],
@@ -262,7 +262,7 @@ class ArchiveTest extends CommandUnishTestCase
             ]
         );
 
-        // Restore database with a set of database connection options with an invalid password.
+        // Restore database with a set of database connection options with an invalid host.
         $this->drush(
             'archive:restore',
             [],
@@ -270,9 +270,9 @@ class ArchiveTest extends CommandUnishTestCase
                 'db' => null,
                 'db-source-path' => Path::join($archiveBasePath, 'database', 'database.sql'),
                 'db-name' => $sutStatus['db-name'],
-                'db-host' => $sutStatus['db-hostname'],
+                'db-host' => 'invalid_host',
                 'db-user' => $sutStatus['db-username'],
-                'db-password' => 'invalid_password',
+                'db-password' => $sutDbPassword,
             ],
             null,
             null,
@@ -357,7 +357,7 @@ class ArchiveTest extends CommandUnishTestCase
         parent::tearDown();
 
         if ($this->testFilePath && is_file($this->testFilePath)) {
-           unlink($this->testFilePath);
+            unlink($this->testFilePath);
         }
     }
 }
