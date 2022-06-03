@@ -126,7 +126,11 @@ class FsUtils
      */
     public static function tmpDir($subdir = null): string
     {
-        $dir = static::prepareBackupDir($subdir);
+        $parent = self::getBackupDirParent();
+        $fs = new Filesystem();
+        $dir = $fs->tempnam($parent, $subdir ?? 'drush');
+        unlink($dir);
+        $fs->mkdir($dir);
         static::registerForDeletion($dir);
         return $dir;
     }

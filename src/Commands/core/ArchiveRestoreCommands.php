@@ -6,6 +6,7 @@ use Consolidation\SiteAlias\SiteAlias;
 use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
 use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
 use Drupal;
+use DrupalFinder\DrupalFinder;
 use Drush\Backend\BackendPathEvaluator;
 use Drush\Boot\DrupalBootLevels;
 use Drush\Commands\DrushCommands;
@@ -39,11 +40,6 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
     private array $siteStatus;
 
     /**
-     * @var string
-     */
-    private string $extractedPath;
-
-    /**
      * @var null|string
      */
     private ?string $destinationPathOption = null;
@@ -69,7 +65,7 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
      * @option code-source-path Import code from specified directory. Has higher priority over "path" argument.
      * @option files Import Drupal files.
      * @option files-source-path Import Drupal files from specified directory. Has higher priority over "path" argument.
-     * @option files-destination-relative-path Import Drupal files into specified directory.
+     * @option files-destination-relative-path Import Drupal files into specified directory relative to Composer root.
      * @option db Import database.
      * @option db-source-path Import database from specified dump file. Has higher priority over "path" argument.
      * @option db-name Destination database name.
@@ -129,7 +125,7 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
             );
         }
 
-        $this->prepareTempDir();
+        $this->filesystem = new Filesystem();
 
         $extractDir = null;
         if (null !== $path) {
@@ -166,6 +162,28 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
             $this->destinationPathOption = realpath($options['destination-path']);
         }
 
+        // If the destination path was not specified, extract over the current site
+        if (!$this->destinationPathOption) {
+            $bootstrapManager = Drush::bootstrapManager();
+            $this->destinationPathOption = $bootstrapManager->getComposerRoot();
+        }
+
+        // If there isn't a current site either, then extract to the cwd
+        if (!$this->destinationPathOption) {
+            $siteDirName = basename(basename($path, '.tgz'), 'tar.gz');
+            $this->destinationPathOption = Path::join(getcwd(), $siteDirName);
+        }
+
+        // Remove destination if overwrite set
+        if ($options['overwrite']) {
+            $this->filesystem->remove($this->destinationPathOption);
+        }
+        elseif (is_dir($this->destinationPathOption)) {
+            throw new Exception(
+                dt('Extract directory !path already exists (use "--overwrite" option).', ['!path' => $this->destinationPathOption])
+            );
+        }
+
         if ($options['code']) {
             $codeComponentPath = $options['code-source-path'] ?? Path::join($extractDir, self::COMPONENT_CODE);
             $this->importCode($codeComponentPath);
@@ -182,18 +200,6 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
         }
 
         $this->logger()->info(dt('Done!'));
-    }
-
-    /**
-     * Creates a temporary directory to extract the archive onto.
-     *
-     * @throws \Exception
-     */
-    protected function prepareTempDir(): void
-    {
-        $this->filesystem = new Filesystem();
-        $this->extractedPath = FsUtils::prepareBackupDir(self::TEMP_DIR_NAME);
-        register_shutdown_function([$this, 'cleanUp']);
     }
 
     /**
@@ -216,24 +222,14 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
             throw new Exception(dt('File !path is not found.', ['!path' => $path]));
         }
 
-        if (!preg_match('/\.tar\.gz$/', $path)) {
+        if (!preg_match('/\.tar\.gz$/', $path) && !preg_match('/\.tgz$/', $path)) {
             throw new Exception(dt('File !path is not a *.tar.gz file.', ['!path' => $path]));
         }
 
         ['filename' => $archiveFileName] = pathinfo($path);
         $archiveFileName = str_replace('.tar', '', $archiveFileName);
 
-        $extractDir = Path::join(dirname($path), $archiveFileName);
-        if (is_dir($extractDir)) {
-            if ($options['overwrite']) {
-                $this->filesystem->remove($extractDir);
-            } else {
-                throw new Exception(
-                    dt('Extract directory !path already exists (use "--overwrite" option).', ['!path' => $extractDir])
-                );
-            }
-        }
-
+        $extractDir = Path::join(FsUtils::tmpDir(), $archiveFileName);
         $this->filesystem->mkdir($extractDir);
 
         $archive = new PharData($path);
@@ -279,30 +275,50 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
         $this->logger()->info('Importing files...');
 
         if (!is_dir($source)) {
-            throw new Exception(dt('The source directory !path not found.', ['!path' => $source]));
+            throw new Exception(dt('The source directory !path not found for files.', ['!path' => $source]));
         }
 
+        $destinationAbsolute = $this->fileImportAbsolutePath($destinationRelative);
+        $this->filesystem->mkdir($destinationAbsolute);
+        $this->rsyncFiles($source, $destinationAbsolute);
+    }
+
+    /**
+     * Determines the path where files should be extraced
+     *
+     * @param null|string $destinationRelative
+     *   The relative path to the Drupal files directory.
+     *
+     * @return string
+     *   The absolute path to the Drupal files directory.
+     *
+     * @throws \Exception
+     */
+    protected function fileImportAbsolutePath(?string $destinationRelative): string
+    {
+        // If the user specified the path to the files directory, use that.
         if ($destinationRelative) {
-            $destinationAbsolute = Path::join($this->getDestinationPathOption(), $destinationRelative);
-            $this->rsyncFiles($source, $destinationAbsolute);
-
-            return;
+            return Path::join($this->getDestinationPathOption(), $destinationRelative);
         }
 
-        if (!$this->destinationPathOption) {
+        // If we are extracting over an existing site, query Drupal to get the files path
+        $bootstrapManager = Drush::bootstrapManager();
+        $path = $bootstrapManager->getComposerRoot();
+        if (!empty($path)) {
             try {
-                Drush::bootstrapManager()->doBootstrap(DrupalBootLevels::FULL);
-                $destinationAbsolute = Drupal::service('file_system')->realpath('public://');
+                $bootstrapManager->doBootstrap(DrupalBootLevels::FULL);
+                return Drupal::service('file_system')->realpath('public://');
             } catch (Throwable $t) {
-                throw new Exception(dt('Failed to get the path to Drupal files: !error', ['!error' => $t->getMessage()]));
+                $this->logger()->warning('Could not bootstrap Drupal site at destination to determine file path');
             }
+        }
 
-            if (!$destinationAbsolute) {
-                throw new Exception('Path to Drupal files is empty.');
-            }
-
-            $this->rsyncFiles($source, $destinationAbsolute);
-            return;
+        // Find the Drupal root for the archived code, and assume sites/default/files.
+        $composerRoot = $this->getDestinationPathOption();
+        $drupalFinder = new DrupalFinder();
+        $root = $drupalFinder->getDrupalRoot();
+        if ($drupalFinder->locateRoot($composerRoot)) {
+            return Path::join($drupalFinder->getDrupalRoot(), 'sites/default/files');
         }
 
         throw new Exception(
@@ -320,13 +336,7 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
      */
     protected function getDestinationPathOption(): string
     {
-        if ($this->destinationPathOption) {
-            return $this->destinationPathOption;
-        }
-
-        $bootstrapManager = Drush::bootstrapManager();
-
-        return $bootstrapManager->getComposerRoot();
+        return $this->destinationPathOption;
     }
 
     /**
@@ -506,26 +516,6 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
 
         if (!$sql->query('', $databaseDumpPath)) {
             throw new Exception(dt('Database import has failed.'));
-        }
-    }
-
-    /**
-     * Performs clean-up tasks.
-     *
-     * Deletes temporary directory.
-     */
-    public function cleanUp(): void
-    {
-        try {
-            $this->logger()->info(dt('Deleting !path...', ['!path' => $this->extractedPath]));
-            $this->filesystem->remove($this->extractedPath);
-        } catch (IOException $e) {
-            $this->logger()->info(
-                dt(
-                    'Failed deleting !path: !message',
-                    ['!path' => $this->extractedPath, '!message' => $e->getMessage()]
-                )
-            );
         }
     }
 }

@@ -1,0 +1,5 @@
+command:
+  archive:
+    dump:
+      options:
+        exclude-code-paths: docs,examples,includes,misc,src,src-symfony-compatibility,tests,CODEOWNERS,CONTRIBUTING.md,README.md,appveyor.yml,doctum-config.php,drush,drush.bat,drush.info,drush.php,drush.yml,drush-logo-black.png,mkdocs_base.yml,phpcs.xml,rector.php
