@@ -17,6 +17,7 @@ use Drush\Sql\SqlBase;
 use Drush\Utils\FsUtils;
 use Exception;
 use PharData;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Filesystem\Exception\IOException;
 use Symfony\Component\Filesystem\Filesystem;
 use Throwable;
@@ -99,12 +100,12 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
         array $options = [
             'destination-path' => null,
             'overwrite' => false,
-            'code' => false,
+            'code' => InputOption::VALUE_OPTIONAL,
             'code-source-path' => null,
-            'files' => false,
+            'files' => InputOption::VALUE_OPTIONAL,
             'files-source-path' => null,
             'files-destination-relative-path' => null,
-            'db' => false,
+            'db' => InputOption::VALUE_OPTIONAL,
             'db-source-path' => null,
             'db-driver' => 'mysql',
             'db-port' => null,
@@ -132,8 +133,12 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
             $extractDir = is_dir($path) ? $path : $this->extractArchive($path, $options);
         }
 
+        // If none of --code, --files or --db are provided, then make them all true.
+        // If one is turned off, e.g. --db=0, then make the rest true.
         if (!$options['code'] && !$options['files'] && !$options['db']) {
-            $options['code'] = $options['files'] = $options['db'] = true;
+            $options['code'] = $optons['code'] !== false;
+            $options['files'] = $options['files'] !== false;
+            $options['db'] = $options['db'] !== false;
         }
 
         foreach (['code' => 'code', 'db' => 'database', 'files' => 'files'] as $component => $label) {
@@ -156,10 +161,7 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
         }
 
         if ($options['destination-path']) {
-            if (!is_dir($options['destination-path']) && !mkdir($options['destination-path'])) {
-                throw new Exception(dt('Failed creating destination directory "!destination"', ['!destination' => $options['destination-path']]));
-            }
-            $this->destinationPathOption = realpath($options['destination-path']);
+            $this->destinationPathOption = $options['destination-path'];
         }
 
         // If the destination path was not specified, extract over the current site
@@ -182,6 +184,12 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
                 dt('Extract directory !path already exists (use "--overwrite" option).', ['!path' => $this->destinationPathOption])
             );
         }
+
+        // Create the destination if it does not already exist
+        if (!is_dir($this->destinationPathOption) && !mkdir($this->destinationPathOption)) {
+            throw new Exception(dt('Failed creating destination directory "!destination"', ['!destination' => $this->destinationPathOption]));
+        }
+        $this->destinationPathOption = realpath($this->destinationPathOption);
 
         if ($options['code']) {
             $codeComponentPath = $options['code-source-path'] ?? Path::join($extractDir, self::COMPONENT_CODE);
