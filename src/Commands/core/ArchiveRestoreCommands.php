@@ -177,8 +177,7 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
         // Remove destination if overwrite set
         if ($options['overwrite']) {
             $this->filesystem->remove($this->destinationPathOption);
-        }
-        elseif (is_dir($this->destinationPathOption)) {
+        } elseif (is_dir($this->destinationPathOption)) {
             throw new Exception(
                 dt('Extract directory !path already exists (use "--overwrite" option).', ['!path' => $this->destinationPathOption])
             );
