@@ -136,7 +136,7 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
         // If none of --code, --files or --db are provided, then make them all true.
         // If one is turned off, e.g. --db=0, then make the rest true.
         if (!$options['code'] && !$options['files'] && !$options['db']) {
-            $options['code'] = $optons['code'] !== false;
+            $options['code'] = $options['code'] !== false;
             $options['files'] = $options['files'] !== false;
             $options['db'] = $options['db'] !== false;
         }
