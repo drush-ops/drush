@@ -18,7 +18,6 @@ use Drush\Utils\FsUtils;
 use Exception;
 use PharData;
 use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Filesystem\Exception\IOException;
 use Symfony\Component\Filesystem\Filesystem;
 use Throwable;
 use Webmozart\PathUtil\Path;
@@ -274,7 +273,6 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
      * @param null|string $destinationRelative
      *   The relative path to the Drupal files directory.
      *
-     * @throws \Drush\Exceptions\UserAbortException
      * @throws \Exception
      */
     protected function importFiles(string $source, ?string $destinationRelative): void
@@ -323,7 +321,6 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
         // Find the Drupal root for the archived code, and assume sites/default/files.
         $composerRoot = $this->getDestinationPathOption();
         $drupalFinder = new DrupalFinder();
-        $root = $drupalFinder->getDrupalRoot();
         if ($drupalFinder->locateRoot($composerRoot)) {
             return Path::join($drupalFinder->getDrupalRoot(), 'sites/default/files');
         }
