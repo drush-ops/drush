@@ -267,7 +267,7 @@ class ArchiveTest extends CommandUnishTestCase
             self::EXIT_ERROR
         );
         $this->assertStringContainsString(
-            sprintf('Failed to drop database %s.', $this->fixtureDatabaseSettings['db-name']),
+            sprintf('Failed to create database %s.', $this->fixtureDatabaseSettings['db-name']),
             $this->getErrorOutput()
         );
 
@@ -310,7 +310,7 @@ class ArchiveTest extends CommandUnishTestCase
             self::EXIT_ERROR
         );
         $this->assertStringContainsString(
-            sprintf('Failed to drop database %s.', $this->fixtureDatabaseSettings['db-name']),
+            sprintf('Failed to create database %s.', $this->fixtureDatabaseSettings['db-name']),
             $this->getErrorOutput()
         );
 

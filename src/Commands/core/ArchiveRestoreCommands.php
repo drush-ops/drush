@@ -518,15 +518,13 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
             throw new UserAbortException();
         }
 
-        if (!$sql->dropOrCreate()) {
-            if ($isDbExist) {
-                throw new Exception(
-                    dt('Failed to create database !database.', ['!database' => $databaseSpec['database']])
-                );
-            }
-
+        if ($isDbExist && !$sql->drop($sql->listTablesQuoted())) {
             throw new Exception(
                 dt('Failed to drop database !database.', ['!database' => $databaseSpec['database']])
+            );
+        } elseif (!$sql->createdb(true)) {
+            throw new Exception(
+                dt('Failed to create database !database.', ['!database' => $databaseSpec['database']])
             );
         }
 
