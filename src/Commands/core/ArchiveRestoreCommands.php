@@ -493,12 +493,14 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
 
         try {
             $sql = SqlBase::create($sqlOptions);
+            $isDbExist = $sql->dbExists();
             $databaseSpec = $sql->getDbSpec();
         } catch (Throwable $t) {
             throw new Exception(dt('Failed to get database specification: !error', ['!error' => $t->getMessage()]));
         }
 
         if (
+            $isDbExist &&
             !$this->io()->confirm(
                 dt(
                     'Are you sure you want to drop the database "!database" (username: !user, password: !password, port: !port, prefix: !prefix) and import the database dump "!path"?',
@@ -516,12 +518,21 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
             throw new UserAbortException();
         }
 
-        if (!$sql->drop($sql->listTablesQuoted())) {
-            throw new Exception(dt('Failed to drop the database.'));
+        if (!$sql->dropOrCreate()) {
+            if ($isDbExist) {
+                throw new Exception(
+                    dt('Failed to create database !database.', ['!database' => $databaseSpec['database']])
+                );
+            }
+
+            throw new Exception(
+                dt('Failed to drop database !database.', ['!database' => $databaseSpec['database']])
+            );
         }
 
+        $sql = SqlBase::create($sqlOptions);
         if (!$sql->query('', $databaseDumpPath)) {
-            throw new Exception(dt('Database import has failed.'));
+            throw new Exception(dt('Database import has failed: !error', ['!error' => $sql->getProcess()->getErrorOutput()]));
         }
     }
 }
