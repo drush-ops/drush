@@ -126,11 +126,7 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
         }
 
         $this->filesystem = new Filesystem();
-
-        $extractDir = null;
-        if (null !== $path) {
-            $extractDir = is_dir($path) ? $path : $this->extractArchive($path, $options);
-        }
+        $extractDir = $this->getExtractDir($path, $options);
 
         // If none of --code, --files or --db are provided, then make them all true.
         // If one is turned off, e.g. --db=0, then make the rest true.
@@ -211,17 +207,23 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
     /**
      * Extracts the archive.
      *
-     * @param string $path
+     * @param string|null $path
      *   The path to the archive file.
-     * @param array $options
-     *   Command options.
      *
-     * @return string
+     * @return string|null
      *
      * @throws \Exception
      */
-    protected function extractArchive(string $path, array $options): string
+    protected function getExtractDir(?string $path): ?string
     {
+        if (null === $path) {
+            return null;
+        }
+
+        if (is_dir($path)) {
+            return $path;
+        }
+
         $this->logger()->info('Extracting the archive...');
 
         if (!is_file($path)) {
