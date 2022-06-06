@@ -43,11 +43,6 @@ class ArchiveTest extends CommandUnishTestCase
     protected array $archiveRestoreOptions;
 
     /**
-     * @var null|string
-     */
-    protected ?string $testFilePath = null;
-
-    /**
      * @var array
      */
     protected array $fixtureDatabaseSettings;
@@ -353,17 +348,5 @@ class ArchiveTest extends CommandUnishTestCase
             'Database connection settings are required if --destination-path',
             $this->getErrorOutput()
         );
-    }
-
-    /**
-     * @inheritdoc
-     */
-    protected function tearDown(): void
-    {
-        parent::tearDown();
-
-        if ($this->testFilePath && is_file($this->testFilePath)) {
-            unlink($this->testFilePath);
-        }
     }
 }
