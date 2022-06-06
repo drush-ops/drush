@@ -2,6 +2,8 @@
 
 namespace Unish;
 
+use PharData;
+use Unish\Utils\FSUtils;
 use Webmozart\PathUtil\Path;
 
 /**
@@ -13,7 +15,7 @@ use Webmozart\PathUtil\Path;
  */
 class ArchiveTest extends CommandUnishTestCase
 {
-    use \Unish\Utils\FSUtils;
+    use FSUtils;
 
     /**
      * @var string
@@ -24,6 +26,11 @@ class ArchiveTest extends CommandUnishTestCase
      * @var string
      */
     protected string $restorePath;
+
+    /**
+     * @var string
+     */
+    protected string $extractPath;
 
     /**
      * @var array
@@ -39,6 +46,11 @@ class ArchiveTest extends CommandUnishTestCase
      * @var null|string
      */
     protected ?string $testFilePath = null;
+
+    /**
+     * @var array
+     */
+    protected array $fixtureDatabaseSettings;
 
     /**
      * @inheritdoc
@@ -65,11 +77,30 @@ class ArchiveTest extends CommandUnishTestCase
         $actualArchivePath = $this->getOutput();
         $this->assertEquals($this->archivePath, $actualArchivePath);
 
-        $this->restorePath = Path::join($this->getSandbox(), 'archive');
+        $this->restorePath = Path::join($this->getSandbox(), 'restore');
+        $this->removeDir($this->restorePath);
+
+        $this->extractPath = Path::join($this->getSandbox(), 'extract');
+        $this->removeDir($this->extractPath);
+        $archive = new PharData($this->archivePath);
+        $archive->extractTo($this->extractPath);
+
+        $this->drush(
+            'status',
+            [],
+            ['format' => 'json']
+        );
+        $this->fixtureDatabaseSettings = json_decode($this->getOutput(), true);
+        $this->fixtureDatabaseSettings['db-name'] = 'archive_dump_restore_test_' .  mt_rand();
+        $dbUrlParts = explode(':', self::getDbUrl());
+        $this->fixtureDatabaseSettings['db-password'] = substr($dbUrlParts[2], 0, strpos($dbUrlParts[2], '@'));
+        $fixtureDbUrl = self::getDbUrl() . '/' . $this->fixtureDatabaseSettings['db-name'];
+
         $this->archiveRestoreOptions = [
             'destination-path' => $this->restorePath,
+            'overwrite' => null,
+            'db-url' => $fixtureDbUrl,
         ];
-        $this->removeDir($this->restorePath);
     }
 
     public function testArchiveDumpCommand(): void
@@ -133,23 +164,19 @@ class ArchiveTest extends CommandUnishTestCase
         }
 
         // Restore archive from an existing file.
-        $archivePath = Path::join($this->getSandbox(), 'archive.tar.gz');
+        $this->assertFalse(is_dir($this->restorePath));
         $this->drush(
             'archive:restore',
-            [$archivePath],
-            array_merge(
-                array_diff_key($this->archiveRestoreOptions, ['overwrite' => null]),
-                ['db' => '0']
-            )
+            [$this->archivePath],
+            array_diff_key($this->archiveRestoreOptions, ['overwrite' => null])
         );
+        $this->assertTrue(is_dir($this->restorePath));
 
-        // Restore archive from an existing file and an existing uncompressed directory.
-
-        // Restore without options.
+        // Restore archive from an existing file and an existing destination path.
         $this->drush(
             'archive:restore',
-            [$archivePath],
-            $this->archiveRestoreOptions,
+            [$this->archivePath],
+            array_diff_key($this->archiveRestoreOptions, ['overwrite' => null]),
             null,
             null,
             self::EXIT_ERROR
@@ -159,49 +186,42 @@ class ArchiveTest extends CommandUnishTestCase
             str_replace("\n", " ", $this->getErrorOutput())
         );
 
-        // Restore with --overwrite option.
+        // Restore archive from an existing file and an existing destination path with --overwrite option.
         $this->drush(
             'archive:restore',
-            [$archivePath],
-            array_merge($this->archiveRestoreOptions, ['overwrite' => null, 'db' => '0'])
+            [$this->archivePath],
+            $this->archiveRestoreOptions
         );
-
-        $this->drush(
-            'status',
-            [],
-            ['format' => 'json']
-        );
-        $sutStatus = json_decode($this->getOutput(), true);
 
         // Restore archive from paths.
 
-        $archiveBasePath = Path::join($this->getSandbox(), 'archive');
-        $testFileName = 'test-file-' . mt_rand() . '.txt';
-
         // Restore code.
-        file_put_contents(Path::join($archiveBasePath, 'code', 'sut', $testFileName), 'foo_bar');
-        $this->testFilePath = Path::join($sutStatus['root'], $testFileName);
+        $testFileName = 'test-file-' . mt_rand() . '.txt';
+        file_put_contents(Path::join($this->extractPath, 'code', 'sut', $testFileName), 'foo_bar');
         $this->drush(
             'archive:restore',
             [],
             array_merge($this->archiveRestoreOptions, [
                 'code' => null,
-                'code-source-path' => Path::join($archiveBasePath, 'code'),
+                'code-source-path' => Path::join($this->extractPath, 'code'),
+                'destination-path' => $this->restorePath,
             ])
         );
-        $this->assertTrue(is_file($this->testFilePath));
+        $this->assertTrue(is_file(Path::join($this->restorePath, 'sut', $testFileName)));
 
         // Restore Drupal files.
-        file_put_contents(Path::join($archiveBasePath, 'files', $testFileName), 'foo_bar');
+        file_put_contents(Path::join($this->extractPath, 'files', $testFileName), 'foo_bar');
+        $filesRelativePath = 'files-destination';
         $this->drush(
             'archive:restore',
             [],
             array_merge($this->archiveRestoreOptions, [
                 'files' => null,
-                'files-source-path' => Path::join($archiveBasePath, 'files'),
+                'files-source-path' => Path::join($this->extractPath, 'files'),
+                'files-destination-relative-path' => $filesRelativePath,
             ])
         );
-        $this->assertTrue(is_file(Path::join($sutStatus['root'], $sutStatus['files'], $testFileName)));
+        $this->assertTrue(is_file(Path::join($this->restorePath, $filesRelativePath, $testFileName)));
 
         // Restore database.
         $this->drush(
@@ -209,7 +229,7 @@ class ArchiveTest extends CommandUnishTestCase
             [],
             array_merge($this->archiveRestoreOptions, [
                 'db' => null,
-                'db-source-path' => Path::join($archiveBasePath, 'database', 'database.sql'),
+                'db-source-path' => Path::join($this->extractPath, 'database', 'database.sql'),
             ])
         );
 
@@ -219,7 +239,7 @@ class ArchiveTest extends CommandUnishTestCase
             [],
             array_merge($this->archiveRestoreOptions, [
                 'db' => null,
-                'db-source-path' => Path::join($archiveBasePath, 'database', 'database.sql'),
+                'db-source-path' => Path::join($this->extractPath, 'database', 'database.sql'),
                 'db-url' => 'bad://db@url/schema',
             ]),
             null,
@@ -231,34 +251,20 @@ class ArchiveTest extends CommandUnishTestCase
             $this->getErrorOutput()
         );
 
-        // Restore database with valid --db-url option.
-        $sutDbUrl = self::getDbUrl() . '/' . $sutStatus['db-name'];
+        // Restore database with --db-url option with an invalid host.
         $this->drush(
             'archive:restore',
             [],
             array_merge($this->archiveRestoreOptions, [
                 'db' => null,
-                'db-source-path' => Path::join($archiveBasePath, 'database', 'database.sql'),
-                'db-url' => $sutDbUrl,
-            ])
-        );
-
-        // Restore database with valid --db-url option with an invalid host.
-        $dbUrlParts = explode(':', self::getDbUrl());
-        $sutDbPassword = substr($dbUrlParts[2], 0, strpos($dbUrlParts[2], '@'));
-        $this->drush(
-            'archive:restore',
-            [],
-            array_merge($this->archiveRestoreOptions, [
-                'db' => null,
-                'db-source-path' => Path::join($archiveBasePath, 'database', 'database.sql'),
+                'db-source-path' => Path::join($this->extractPath, 'database', 'database.sql'),
                 'db-url' => sprintf(
                     '%s://%s:%s@%s/%s',
-                    $sutStatus['db-driver'],
-                    $sutStatus['db-username'],
-                    $sutDbPassword,
+                    $this->fixtureDatabaseSettings['db-driver'],
+                    $this->fixtureDatabaseSettings['db-username'],
+                    $this->fixtureDatabaseSettings['db-password'],
                     'invalid_host',
-                    $sutStatus['db-name']
+                    $this->fixtureDatabaseSettings['db-name']
                 ),
             ]),
             null,
@@ -266,7 +272,7 @@ class ArchiveTest extends CommandUnishTestCase
             self::EXIT_ERROR
         );
         $this->assertStringContainsString(
-            'Database import has failed.',
+            sprintf('Failed to drop database %s.', $this->fixtureDatabaseSettings['db-name']),
             $this->getErrorOutput()
         );
 
@@ -274,41 +280,46 @@ class ArchiveTest extends CommandUnishTestCase
         $this->drush(
             'archive:restore',
             [],
-            array_merge($this->archiveRestoreOptions, [
-                'db' => null,
-                'db-source-path' => Path::join($archiveBasePath, 'database', 'database.sql'),
-                'db-driver' => $sutStatus['db-driver'],
-                'db-name' => $sutStatus['db-name'],
-                'db-host' => $sutStatus['db-hostname'],
-                'db-user' => $sutStatus['db-username'],
-                'db-password' => $sutDbPassword,
-            ])
+            array_merge(
+                array_diff_key($this->archiveRestoreOptions, ['db-url' => null]),
+                [
+                    'db' => null,
+                    'db-source-path' => Path::join($this->extractPath, 'database', 'database.sql'),
+                    'db-driver' => $this->fixtureDatabaseSettings['db-driver'],
+                    'db-name' => $this->fixtureDatabaseSettings['db-name'],
+                    'db-host' => $this->fixtureDatabaseSettings['db-hostname'],
+                    'db-user' => $this->fixtureDatabaseSettings['db-username'],
+                    'db-password' => $this->fixtureDatabaseSettings['db-password'],
+                ]
+            )
         );
 
         // Restore database with a set of database connection options with an invalid host.
         $this->drush(
             'archive:restore',
             [],
-            array_merge($this->archiveRestoreOptions, [
-                'db' => null,
-                'db-source-path' => Path::join($archiveBasePath, 'database', 'database.sql'),
-                'db-driver' => $sutStatus['db-driver'],
-                'db-name' => $sutStatus['db-name'],
-                'db-host' => 'invalid_host',
-                'db-user' => $sutStatus['db-username'],
-                'db-password' => $sutDbPassword,
-            ]),
+            array_merge(
+                array_diff_key($this->archiveRestoreOptions, ['db-url' => null]),
+                [
+                    'db' => null,
+                    'db-source-path' => Path::join($this->extractPath, 'database', 'database.sql'),
+                    'db-driver' => $this->fixtureDatabaseSettings['db-driver'],
+                    'db-name' => $this->fixtureDatabaseSettings['db-name'],
+                    'db-host' => 'invalid_host',
+                    'db-user' => $this->fixtureDatabaseSettings['db-username'],
+                    'db-password' => $this->fixtureDatabaseSettings['db-password'],
+                ]
+            ),
             null,
             null,
             self::EXIT_ERROR
         );
         $this->assertStringContainsString(
-            'Database import has failed.',
+            sprintf('Failed to drop database %s.', $this->fixtureDatabaseSettings['db-name']),
             $this->getErrorOutput()
         );
 
         // Restore archive from a non-existing file.
-
         $nonExistingArchivePath = Path::join($this->getSandbox(), 'arch.tar.gz');
         $this->drush(
             'archive:restore',
@@ -327,11 +338,13 @@ class ArchiveTest extends CommandUnishTestCase
         $this->drush(
             'archive:restore',
             [],
-            array_merge($this->archiveRestoreOptions, [
-                'db' => null,
-                'db-source-path' => Path::join($archiveBasePath, 'database', 'database.sql'),
-                'destination-path' => $destination,
-            ]),
+            array_merge(
+                array_diff_key($this->archiveRestoreOptions, ['db-url' => null]),
+                [
+                    'db' => null,
+                    'db-source-path' => Path::join($this->extractPath, 'database', 'database.sql'),
+                ]
+            ),
             null,
             null,
             self::EXIT_ERROR
