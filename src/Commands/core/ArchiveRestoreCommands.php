@@ -530,7 +530,7 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
             );
         }
 
-        $sql = SqlBase::create($sqlOptions);
+        $sql->setDbSpec($databaseSpec);
         if (!$sql->query('', $databaseDumpPath)) {
             throw new Exception(dt('Database import has failed: !error', ['!error' => $sql->getProcess()->getErrorOutput()]));
         }
