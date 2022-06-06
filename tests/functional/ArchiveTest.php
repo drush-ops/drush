@@ -323,38 +323,7 @@ class ArchiveTest extends CommandUnishTestCase
             $this->getErrorOutput()
         );
 
-        // Restore archive to a specified destination.
-
-        $destination = Path::join($this->getSandbox(), 'restore-to-destination-' . mt_rand());
-        $this->assertFalse(is_dir($destination));
-
-        // Restore code with --destination-path option.
-        $this->drush(
-            'archive:restore',
-            [],
-            array_merge($this->archiveRestoreOptions, [
-                'code' => null,
-                'code-source-path' => Path::join($archiveBasePath, 'code'),
-                'destination-path' => $destination,
-            ])
-        );
-        $this->assertTrue(is_file(Path::join($destination, 'sut', $testFileName)));
-
-        // Restore Drupal files with --destination-path and --files-destination-relative-path options.
-        $filesRelativePath = 'files-destination';
-        $this->drush(
-            'archive:restore',
-            [],
-            array_merge($this->archiveRestoreOptions, [
-                'files' => null,
-                'files-source-path' => Path::join($archiveBasePath, 'files'),
-                'destination-path' => $destination,
-                'files-destination-relative-path' => $filesRelativePath,
-            ])
-        );
-        $this->assertTrue(is_file(Path::join($destination, $filesRelativePath, $testFileName)));
-
-        // Restore database with --destination-path option.
+        // Restore database without database connection settings.
         $this->drush(
             'archive:restore',
             [],
@@ -370,34 +339,6 @@ class ArchiveTest extends CommandUnishTestCase
         $this->assertStringContainsString(
             'Database connection settings are required if --destination-path',
             $this->getErrorOutput()
-        );
-
-        // Restore database with --destination-path and --db-url options.
-        $this->drush(
-            'archive:restore',
-            [],
-            array_merge($this->archiveRestoreOptions, [
-                'db' => null,
-                'db-source-path' => Path::join($archiveBasePath, 'database', 'database.sql'),
-                'destination-path' => $destination,
-                'db-url' => $sutDbUrl,
-            ])
-        );
-
-        // Restore database with --destination-path and a set of database connection options.
-        $this->drush(
-            'archive:restore',
-            [],
-            array_merge($this->archiveRestoreOptions, [
-                'db' => null,
-                'db-source-path' => Path::join($archiveBasePath, 'database', 'database.sql'),
-                'destination-path' => $destination,
-                'db-driver' => $sutStatus['db-driver'],
-                'db-name' => $sutStatus['db-name'],
-                'db-host' => $sutStatus['db-hostname'],
-                'db-user' => $sutStatus['db-username'],
-                'db-password' => $sutDbPassword,
-            ])
         );
     }
 
