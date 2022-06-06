@@ -15,11 +15,9 @@ use PharData;
 use RecursiveCallbackFilterIterator;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
-use Symfony\Component\Filesystem\Exception\IOException;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Yaml\Yaml;
-use Throwable;
 use Traversable;
 use Webmozart\PathUtil\Path;
 
@@ -51,7 +49,6 @@ class ArchiveDumpCommands extends DrushCommands
     private const SQL_DUMP_FILE_NAME = 'database.sql';
 
     private const ARCHIVES_DIR_NAME = 'archives';
-    private const ARCHIVE_SUBDIR_NAME = 'archive';
     private const ARCHIVE_FILE_NAME = 'archive.tar';
     private const MANIFEST_FORMAT_VERSION = '1.0';
     private const MANIFEST_FILE_NAME = 'MANIFEST.yml';
