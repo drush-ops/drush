@@ -126,7 +126,7 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
         }
 
         $this->filesystem = new Filesystem();
-        $extractDir = $this->getExtractDir($path, $options);
+        $extractDir = $this->getExtractDir($path);
 
         // If none of --code, --files or --db are provided, then make them all true.
         // If one is turned off, e.g. --db=0, then make the rest true.
