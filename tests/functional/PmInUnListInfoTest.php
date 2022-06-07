@@ -8,7 +8,7 @@
 namespace Unish;
 
 use Composer\Semver\Comparator;
-
+use Drush\Drupal\Commands\pm\PmCommands;
 /**
  *  @group slow
  *  @group pm
@@ -45,6 +45,17 @@ class PmInUnListInfoTest extends CommandUnishTestCase
 
         $this->drush('core:status', [], ['field' => 'drupal-version']);
         $drupal_version = $this->getOutputRaw();
+
+        // Test pm-enable enables a dependent module for already enabled module,
+        // and pm-list verifies that.
+        $list_of_dependent_modules = PmCommands::addInstallDependencies('drush_empty_module');
+        $dependent_modules = ['!list' => implode(', ', $list_of_dependent_modules)];
+        foreach($dependent_modules as $dependent_module){
+            $this->drush('pm-enable', [$dependent_module]);
+            $this->drush('pm-list', [], ['status' => 'enabled']);
+            $out = $this->getOutput();
+            $this->assertStringContainsString($module_dependency, $out);
+        }
 
         // Test the testing install profile theme is installed.
         $active_theme = 'stark';
