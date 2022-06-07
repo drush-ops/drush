@@ -57,7 +57,7 @@ class ArchiveTest extends CommandUnishTestCase
             'db' => null,
             'files' => null,
             'code' => null,
-            'exclude-code-paths' => 'sut/sites/.+/settings.php,(?!sut).*',
+            'exclude-code-paths' => 'sut/sites/.+/settings.php,(?!sut|composer\.json|composer\.lock).*',
         ];
 
         $this->archivePath = Path::join($this->getSandbox(), 'archive.tar.gz');
@@ -166,6 +166,8 @@ class ArchiveTest extends CommandUnishTestCase
             array_diff_key($this->archiveRestoreOptions, ['overwrite' => null])
         );
         $this->assertTrue(is_dir($this->restorePath));
+        $this->assertTrue(is_file(Path::join($this->restorePath, 'composer.json')));
+        $this->assertTrue(is_file(Path::join($this->restorePath, 'composer.lock')));
 
         // Restore archive from an existing file and an existing destination path.
         $this->drush(
