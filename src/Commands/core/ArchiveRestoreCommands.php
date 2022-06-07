@@ -209,7 +209,7 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
 
         if ($options['files']) {
             $filesComponentPath = $options['files-source-path'] ?? Path::join($extractDir, self::COMPONENT_FILES);
-            $this->importFiles($filesComponentPath, $options['files-destination-relative-path']);
+            $this->importFiles($filesComponentPath, $options['files-destination-relative-path'], $options['overwrite']);
         }
 
         if ($options['db']) {
@@ -290,10 +290,12 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
      *   The path to the source directory.
      * @param null|string $destinationRelative
      *   The relative path to the Drupal files directory.
+     * @param bool $overwrite
+     *   The --overwrite option.
      *
      * @throws \Exception
      */
-    protected function importFiles(string $source, ?string $destinationRelative): void
+    protected function importFiles(string $source, ?string $destinationRelative, bool $overwrite): void
     {
         $this->logger()->info('Importing files...');
 
@@ -302,12 +304,27 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
         }
 
         $destinationAbsolute = $this->fileImportAbsolutePath($destinationRelative);
+        if (
+            is_dir($destinationAbsolute) &&
+            !$overwrite &&
+            !$this->io()->confirm(
+                dt(
+                    'Destination Drupal files path !path already exists. Are you sure you want to delete !path directory before restoring the archive into it?',
+                    [
+                        '!path' => $destinationAbsolute,
+                    ]
+                )
+            )
+        ) {
+            throw new UserAbortException();
+        }
+
         $this->filesystem->mkdir($destinationAbsolute);
         $this->rsyncFiles($source, $destinationAbsolute);
     }
 
     /**
-     * Determines the path where files should be extraced
+     * Determines the path where files should be extracted.
      *
      * @param null|string $destinationRelative
      *   The relative path to the Drupal files directory.
