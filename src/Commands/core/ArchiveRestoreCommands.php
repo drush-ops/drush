@@ -171,19 +171,35 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
             $this->destinationPathOption = Path::join(getcwd(), $siteDirName);
         }
 
-        // Remove destination if overwrite set
-        if ($options['overwrite']) {
+        if ($options['code'] && is_dir($this->destinationPathOption)) {
+            if (!$options['overwrite']) {
+                throw new Exception(
+                    dt('Destination path !path already exists (use "--overwrite" option).', ['!path' => $this->destinationPathOption])
+                );
+            }
+
+            if (
+                !$this->io()->confirm(
+                    dt(
+                        'Destination path !path already exists. Are you sure you want to delete !path directory before restoring the archive into it?',
+                        [
+                            '!path' => $this->destinationPathOption,
+                        ]
+                    )
+                )
+            ) {
+                throw new UserAbortException();
+            }
+
+            // Remove destination if --overwrite option is set.
             $this->filesystem->remove($this->destinationPathOption);
-        } elseif (is_dir($this->destinationPathOption)) {
-            throw new Exception(
-                dt('Extract directory !path already exists (use "--overwrite" option).', ['!path' => $this->destinationPathOption])
-            );
         }
 
         // Create the destination if it does not already exist
         if (!is_dir($this->destinationPathOption) && !mkdir($this->destinationPathOption)) {
             throw new Exception(dt('Failed creating destination directory "!destination"', ['!destination' => $this->destinationPathOption]));
         }
+
         $this->destinationPathOption = realpath($this->destinationPathOption);
 
         if ($options['code']) {
