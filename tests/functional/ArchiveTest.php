@@ -3,6 +3,7 @@
 namespace Unish;
 
 use PharData;
+use Symfony\Component\Process\Process;
 use Unish\Utils\FSUtils;
 use Webmozart\PathUtil\Path;
 
@@ -168,6 +169,13 @@ class ArchiveTest extends CommandUnishTestCase
         $this->assertTrue(is_dir($this->restorePath));
         $this->assertTrue(is_file(Path::join($this->restorePath, 'composer.json')));
         $this->assertTrue(is_file(Path::join($this->restorePath, 'composer.lock')));
+
+        $process = new Process(['composer', 'install'], $this->restorePath, null, null, 120);
+        $process->run();
+        $this->assertTrue(
+            $process->isSuccessful(),
+            sprintf('"composer install" has failed: %s', $process->getErrorOutput())
+        );
 
         // Restore archive from an existing file and an existing destination path.
         $this->drush(
