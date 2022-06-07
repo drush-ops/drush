@@ -92,6 +92,16 @@ class ArchiveTest extends CommandUnishTestCase
         $this->fixtureDatabaseSettings['db-password'] = substr($dbUrlParts[2], 0, strpos($dbUrlParts[2], '@'));
         $fixtureDbUrl = self::getDbUrl() . '/' . $this->fixtureDatabaseSettings['db-name'];
 
+        // Backup setting.php and replace the database name.
+        copy('sut/sites/dev/settings.php', Path::join($this->getSandbox(), 'settings.php'));
+        $settingsPhp = file_get_contents(Path::join($this->getSandbox(), 'settings.php'));
+        $settingsPhp = preg_replace(
+            "/'database' => '(.+)'/",
+            sprintf("'database' => '%s'",$this->fixtureDatabaseSettings['db-name']),
+            $settingsPhp
+        );
+        file_put_contents(Path::join($this->getSandbox(), 'settings.php'), $settingsPhp);
+
         $this->archiveRestoreOptions = [
             'destination-path' => $this->restorePath,
             'overwrite' => null,
@@ -169,6 +179,14 @@ class ArchiveTest extends CommandUnishTestCase
         $this->assertTrue(is_dir($this->restorePath));
         $this->assertTrue(is_file(Path::join($this->restorePath, 'composer.json')));
         $this->assertTrue(is_file(Path::join($this->restorePath, 'composer.lock')));
+
+        // Copy settings.php into sut/sites/dev.
+        mkdir(Path::join($this->restorePath, 'sut', 'sites', 'dev'), 0777, true);
+        $settingsPhpPath = Path::join($this->restorePath, 'sut', 'sites', 'dev', 'settings.php');
+        copy(Path::join($this->getSandbox(), 'settings.php'), $settingsPhpPath);
+        $this->assertTrue(is_file($settingsPhpPath));
+        $settingsPhp = file_get_contents($settingsPhpPath);
+        $this->assertStringContainsString($this->fixtureDatabaseSettings['db-name'], $settingsPhp);
 
         $process = new Process(['composer', 'install'], $this->restorePath, null, null, 120);
         $process->run();
