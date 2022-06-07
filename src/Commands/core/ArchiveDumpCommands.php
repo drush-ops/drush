@@ -502,7 +502,7 @@ class ArchiveDumpCommands extends DrushCommands
     private function getRegexpsForPaths(array $paths): array
     {
         return array_map(
-            fn($path) => sprintf('#^%s$#', addslashes(trim($path))),
+            fn($path) => sprintf('#^%s$#', trim($path)),
             $paths
         );
     }
