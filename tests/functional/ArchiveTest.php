@@ -204,7 +204,7 @@ class ArchiveTest extends CommandUnishTestCase
 
         // Restore Drupal files.
         file_put_contents(Path::join($this->extractPath, 'files', $testFileName), 'foo_bar');
-        $filesRelativePath = 'files-destination';
+        $filesRelativePath = Path::join('sut', 'sites', 'default', 'files');
         $this->drush(
             'archive:restore',
             [],
