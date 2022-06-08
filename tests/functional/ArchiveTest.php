@@ -397,4 +397,17 @@ class ArchiveTest extends CommandUnishTestCase
         $settingsPhp = file_get_contents($settingsPhpPath);
         $this->assertStringContainsString($this->fixtureDatabaseSettings['db-name'], $settingsPhp);
     }
+
+    /**
+     * Executes `composer install` in the restored site's composer root.
+     */
+    private function installComposerDependencies(): void
+    {
+        $process = new Process(['composer', 'install'], $this->restorePath, null, null, 180);
+        $process->run();
+        $this->assertTrue(
+            $process->isSuccessful(),
+            sprintf('"composer install" has failed: %s', $process->getErrorOutput())
+        );
+    }
 }
