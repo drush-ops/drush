@@ -364,6 +364,26 @@ class ArchiveTest extends CommandUnishTestCase
     }
 
     /**
+     * Asserts the status of restored site.
+     */
+    private function assertRestoredSiteStatus(): void
+    {
+        $this->setupSettingsPhp();
+
+        $this->drush(
+            'status',
+            [],
+            ['format' => 'json'],
+            null,
+            Path::join($this->restorePath, 'sut')
+        );
+        $restoredSiteStatus = json_decode($this->getOutput(), true);
+        $this->assertEquals('Connected', $restoredSiteStatus['db-status']);
+        $this->assertEquals(Path::join($this->restorePath, 'sut'), $restoredSiteStatus['root']);
+        $this->assertEquals($this->fixtureDatabaseSettings['db-name'], $restoredSiteStatus['db-name']);
+    }
+
+    /**
      * Creates a backup of settings.php file and replaces the database name with a fixture.
      */
     private function backupSettingsPhp(): void
