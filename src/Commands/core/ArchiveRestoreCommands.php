@@ -209,7 +209,7 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
 
         if ($options['files']) {
             $filesComponentPath = $options['files-source-path'] ?? Path::join($extractDir, self::COMPONENT_FILES);
-            $this->importFiles($filesComponentPath, $options['files-destination-relative-path'], $options['overwrite']);
+            $this->importFiles($filesComponentPath, $options);
         }
 
         if ($options['db']) {
@@ -288,14 +288,12 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
      *
      * @param string $source
      *   The path to the source directory.
-     * @param null|string $destinationRelative
-     *   The relative path to the Drupal files directory.
-     * @param bool $overwrite
-     *   The --overwrite option.
+     * @param array $options
+     *   The options.
      *
      * @throws \Exception
      */
-    protected function importFiles(string $source, ?string $destinationRelative, bool $overwrite): void
+    protected function importFiles(string $source, array $options): void
     {
         $this->logger()->info('Importing files...');
 
@@ -303,13 +301,14 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
             throw new Exception(dt('The source directory !path not found for files.', ['!path' => $source]));
         }
 
-        $destinationAbsolute = $this->fileImportAbsolutePath($destinationRelative);
+        $destinationAbsolute = $this->fileImportAbsolutePath($options['files-destination-relative-path']);
+
         if (
             is_dir($destinationAbsolute) &&
-            !$overwrite &&
+            (!$options['code'] || !$options['overwrite']) &&
             !$this->io()->confirm(
                 dt(
-                    'Destination Drupal files path !path already exists. Are you sure you want to delete !path directory before restoring the archive into it?',
+                    'Destination Drupal files path !path already exists. Are you sure you want restore Drupal files archive into it?',
                     [
                         '!path' => $destinationAbsolute,
                     ]
@@ -484,6 +483,8 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
      *
      * @param string $databaseDumpPath
      *   The path to the database dump file.
+     * @param array $options
+     *   The command options.
      *
      * @throws \Drush\Exceptions\UserAbortException
      * @throws \Exception
