@@ -383,8 +383,12 @@ class ArchiveTest extends CommandUnishTestCase
      */
     private function setupSettingsPhp(): void
     {
-        mkdir(Path::join($this->restorePath, 'sut', 'sites', 'dev'), 0777, true);
         $settingsPhpPath = Path::join($this->restorePath, 'sut', 'sites', 'dev', 'settings.php');
+        if (is_file($settingsPhpPath)) {
+            return;
+        }
+
+        mkdir(Path::join($this->restorePath, 'sut', 'sites', 'dev'), 0777, true);
         copy(Path::join($this->getSandbox(), 'settings.php'), $settingsPhpPath);
         $this->assertTrue(is_file($settingsPhpPath));
         $settingsPhp = file_get_contents($settingsPhpPath);
