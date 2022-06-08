@@ -200,6 +200,7 @@ class ArchiveTest extends CommandUnishTestCase
             ])
         );
         $this->assertTrue(is_file(Path::join($this->restorePath, 'sut', $testFileName)));
+        $this->installComposerDependencies();
 
         // Restore Drupal files.
         file_put_contents(Path::join($this->extractPath, 'files', $testFileName), 'foo_bar');
