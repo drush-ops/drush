@@ -216,6 +216,7 @@ class ArchiveTest extends CommandUnishTestCase
             ])
         );
         $this->assertTrue(is_file(Path::join($this->restorePath, $filesRelativePath, $testFileName)));
+        $this->assertRestoredSiteStatus();
 
         // Restore database.
         $this->drush(
@@ -226,6 +227,7 @@ class ArchiveTest extends CommandUnishTestCase
                 'db-source-path' => Path::join($this->extractPath, 'database', 'database.sql'),
             ])
         );
+        $this->assertRestoredSiteStatus();
 
         // Restore database with invalid --db-url.
         $this->drush(
@@ -244,6 +246,7 @@ class ArchiveTest extends CommandUnishTestCase
             'Failed to get database specification:',
             $this->getErrorOutput()
         );
+        $this->assertRestoredSiteStatus();
 
         // Restore database with --db-url option with an invalid host.
         $this->drush(
@@ -269,6 +272,7 @@ class ArchiveTest extends CommandUnishTestCase
             sprintf('Failed to create database %s.', $this->fixtureDatabaseSettings['db-name']),
             $this->getErrorOutput()
         );
+        $this->assertRestoredSiteStatus();
 
         // Restore database with a set of database connection options.
         $this->drush(
@@ -287,6 +291,7 @@ class ArchiveTest extends CommandUnishTestCase
                 ]
             )
         );
+        $this->assertRestoredSiteStatus();
 
         // Restore database with a set of database connection options with an invalid host.
         $this->drush(
@@ -312,6 +317,7 @@ class ArchiveTest extends CommandUnishTestCase
             sprintf('Failed to create database %s.', $this->fixtureDatabaseSettings['db-name']),
             $this->getErrorOutput()
         );
+        $this->assertRestoredSiteStatus();
 
         // Restore archive from a non-existing file.
         $nonExistingArchivePath = Path::join($this->getSandbox(), 'arch.tar.gz');
@@ -327,6 +333,7 @@ class ArchiveTest extends CommandUnishTestCase
             'arch.tar.gz is not found',
             $this->getErrorOutput()
         );
+        $this->assertRestoredSiteStatus();
 
         // Restore database without database connection settings.
         $this->drush(
@@ -347,6 +354,7 @@ class ArchiveTest extends CommandUnishTestCase
             'Database connection settings are required if --destination-path',
             $this->getErrorOutput()
         );
+        $this->assertRestoredSiteStatus();
     }
 
     /**
