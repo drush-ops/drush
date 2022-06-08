@@ -368,7 +368,10 @@ class ArchiveTest extends CommandUnishTestCase
      */
     private function backupSettingsPhp(): void
     {
-        copy('sut/sites/dev/settings.php', Path::join($this->getSandbox(), 'settings.php'));
+        copy(
+            Path::join('sut', 'sites', 'dev', 'settings.php'),
+            Path::join($this->getSandbox(), 'settings.php')
+        );
         $settingsPhp = file_get_contents(Path::join($this->getSandbox(), 'settings.php'));
         $settingsPhp = preg_replace(
             "/'database' => '(.+)'/",
