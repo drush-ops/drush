@@ -185,13 +185,6 @@ class ArchiveTest extends CommandUnishTestCase
             str_replace("\n", " ", $this->getErrorOutput())
         );
 
-        // Restore archive from an existing file and an existing destination path with --overwrite option.
-        $this->drush(
-            'archive:restore',
-            [$this->archivePath],
-            $this->archiveRestoreOptions
-        );
-
         // Restore archive from paths.
 
         // Restore code.
