@@ -190,7 +190,7 @@ class ArchiveTest extends CommandUnishTestCase
             self::EXIT_ERROR
         );
         $this->assertMatchesRegularExpression(
-            '/Extract directory .+ already exists/',
+            '/Destination path .+ already exists/',
             str_replace("\n", " ", $this->getErrorOutput())
         );
 
