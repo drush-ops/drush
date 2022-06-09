@@ -42,7 +42,7 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
     /**
      * @var null|string
      */
-    private ?string $destinationPathOption = null;
+    private ?string $destinationPath = null;
 
     private const COMPONENT_CODE = 'code';
 
@@ -156,25 +156,25 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
         }
 
         if ($options['destination-path']) {
-            $this->destinationPathOption = $options['destination-path'];
+            $this->destinationPath = $options['destination-path'];
         }
 
         // If the destination path was not specified, extract over the current site
-        if (!$this->destinationPathOption) {
+        if (!$this->destinationPath) {
             $bootstrapManager = Drush::bootstrapManager();
-            $this->destinationPathOption = $bootstrapManager->getComposerRoot();
+            $this->destinationPath = $bootstrapManager->getComposerRoot();
         }
 
         // If there isn't a current site either, then extract to the cwd
-        if (!$this->destinationPathOption) {
+        if (!$this->destinationPath) {
             $siteDirName = basename(basename($path, '.tgz'), 'tar.gz');
-            $this->destinationPathOption = Path::join(getcwd(), $siteDirName);
+            $this->destinationPath = Path::join(getcwd(), $siteDirName);
         }
 
-        if ($options['code'] && is_dir($this->destinationPathOption)) {
+        if ($options['code'] && is_dir($this->destinationPath)) {
             if (!$options['overwrite']) {
                 throw new Exception(
-                    dt('Destination path !path already exists (use "--overwrite" option).', ['!path' => $this->destinationPathOption])
+                    dt('Destination path !path already exists (use "--overwrite" option).', ['!path' => $this->destinationPath])
                 );
             }
 
@@ -183,7 +183,7 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
                     dt(
                         'Destination path !path already exists. Are you sure you want to delete !path directory before restoring the archive into it?',
                         [
-                            '!path' => $this->destinationPathOption,
+                            '!path' => $this->destinationPath,
                         ]
                     )
                 )
@@ -192,15 +192,15 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
             }
 
             // Remove destination if --overwrite option is set.
-            $this->filesystem->remove($this->destinationPathOption);
+            $this->filesystem->remove($this->destinationPath);
         }
 
         // Create the destination if it does not already exist
-        if (!is_dir($this->destinationPathOption) && !mkdir($this->destinationPathOption)) {
-            throw new Exception(dt('Failed creating destination directory "!destination"', ['!destination' => $this->destinationPathOption]));
+        if (!is_dir($this->destinationPath) && !mkdir($this->destinationPath)) {
+            throw new Exception(dt('Failed creating destination directory "!destination"', ['!destination' => $this->destinationPath]));
         }
 
-        $this->destinationPathOption = realpath($this->destinationPathOption);
+        $this->destinationPath = realpath($this->destinationPath);
 
         if ($options['code']) {
             $codeComponentPath = $options['code-source-path'] ?? Path::join($extractDir, self::COMPONENT_CODE);
@@ -280,7 +280,7 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
             throw new Exception(dt('Directory !path not found.', ['!path' => $source]));
         }
 
-        $this->rsyncFiles($source, $this->getDestinationPathOption());
+        $this->rsyncFiles($source, $this->getDestinationPath());
     }
 
     /**
@@ -337,7 +337,7 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
     {
         // If the user specified the path to the files directory, use that.
         if ($destinationRelative) {
-            return Path::join($this->getDestinationPathOption(), $destinationRelative);
+            return Path::join($this->getDestinationPath(), $destinationRelative);
         }
 
         // If we are extracting over an existing site, query Drupal to get the files path
@@ -353,7 +353,7 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
         }
 
         // Find the Drupal root for the archived code, and assume sites/default/files.
-        $composerRoot = $this->getDestinationPathOption();
+        $composerRoot = $this->getDestinationPath();
         $drupalFinder = new DrupalFinder();
         if ($drupalFinder->locateRoot($composerRoot)) {
             return Path::join($drupalFinder->getDrupalRoot(), 'sites/default/files');
@@ -362,7 +362,7 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
         throw new Exception(
             dt(
                 'Can\'t detect relative path for Drupal files for destination "!destination": missing --files-destination-relative-path option.',
-                ['!destination' => $this->getDestinationPathOption()]
+                ['!destination' => $this->getDestinationPath()]
             )
         );
     }
@@ -372,9 +372,9 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
      *
      * @return string
      */
-    protected function getDestinationPathOption(): string
+    protected function getDestinationPath(): string
     {
-        return $this->destinationPathOption;
+        return $this->destinationPath;
     }
 
     /**
