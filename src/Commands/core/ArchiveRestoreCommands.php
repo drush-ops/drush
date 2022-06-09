@@ -17,7 +17,6 @@ use Drush\Sql\SqlBase;
 use Drush\Utils\FsUtils;
 use Exception;
 use PharData;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Process\Process;
 use Throwable;
@@ -104,17 +103,17 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
         ?string $site = null,
         array $options = [
             'destination-path' => null,
-            'overwrite' => false,
+            'overwrite' => null,
             'site-subdir' => self::SITE_SUBDIR,
             'setup-database-connection' => true,
-            'code' => InputOption::VALUE_OPTIONAL,
+            'code' => null,
             'code-source-path' => null,
             'code-no-composer-install' => null,
             'code-composer-install-timeout' => 180,
-            'files' => InputOption::VALUE_OPTIONAL,
+            'files' => null,
             'files-source-path' => null,
             'files-destination-relative-path' => null,
-            'db' => InputOption::VALUE_OPTIONAL,
+            'db' => null,
             'db-source-path' => null,
             'db-driver' => 'mysql',
             'db-port' => null,
