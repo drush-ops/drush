@@ -385,10 +385,9 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
         }
 
         // Find the Drupal root for the archived code, and assume sites/default/files.
-        $composerRoot = $this->getDestinationPath();
-        $drupalFinder = new DrupalFinder();
-        if ($drupalFinder->locateRoot($composerRoot)) {
-            return Path::join($drupalFinder->getDrupalRoot(), 'sites/default/files');
+        $drupalRootPath = $this->getDrupalRootPath();
+        if ($drupalRootPath) {
+            return Path::join($drupalRootPath, 'sites/default/files');
         }
 
         throw new Exception(
@@ -397,6 +396,22 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
                 ['!destination' => $this->getDestinationPath()]
             )
         );
+    }
+
+    /**
+     * Returns the absolute path to Drupal root.
+     *
+     * @return string|null
+     */
+    protected function getDrupalRootPath(): ?string
+    {
+        $composerRoot = $this->getDestinationPath();
+        $drupalFinder = new DrupalFinder();
+        if (!$drupalFinder->locateRoot($composerRoot)) {
+            return null;
+        }
+
+        return $drupalFinder->getDrupalRoot();
     }
 
     /**
