@@ -94,6 +94,7 @@ class ArchiveTest extends CommandUnishTestCase
         $this->archiveRestoreOptions = [
             'destination-path' => $this->restorePath,
             'overwrite' => null,
+            'site-subdir' => 'dev',
             'db-url' => $fixtureDbUrl,
         ];
     }
@@ -215,7 +216,7 @@ class ArchiveTest extends CommandUnishTestCase
         $this->assertTrue(is_file(Path::join($this->restorePath, $filesRelativePath, $testFileName)));
         $this->assertRestoredSiteStatus();
 
-        // Restore database.
+        // Restore the database from a source path.
         $this->drush(
             'archive:restore',
             [],

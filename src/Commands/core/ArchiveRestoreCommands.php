@@ -51,6 +51,7 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
 
     private const COMPONENT_DATABASE = 'database';
     private const SQL_DUMP_FILE_NAME = 'database.sql';
+    private const SITE_SUBDIR = 'default';
 
     private const TEMP_DIR_NAME = 'uncompressed';
 
@@ -62,6 +63,8 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
      *
      * @option destination-path The base path to restore the code/files into.
      * @option overwrite Overwrite files if exists when un-compressing an archive.
+     * @option site-subdir Site subdirectory to put settings.local.php into.
+     * @option setup-database-connection Sets up the database connection in settings.local.php file if either --db-url option or set of specific --db-* options are provided.
      * @option code Import code.
      * @option code-source-path Import code from specified directory. Has higher priority over "path" argument.
      * @option code-no-composer-install Skip installing Composer dependencies.
@@ -102,6 +105,8 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
         array $options = [
             'destination-path' => null,
             'overwrite' => false,
+            'site-subdir' => self::SITE_SUBDIR,
+            'setup-database-connection' => true,
             'code' => InputOption::VALUE_OPTIONAL,
             'code-source-path' => null,
             'code-no-composer-install' => null,
@@ -592,6 +597,12 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
         $sql->setDbSpec($databaseSpec);
         if (!$sql->query('', $databaseDumpPath)) {
             throw new Exception(dt('Database import has failed: !error', ['!error' => $sql->getProcess()->getErrorOutput()]));
+        }
+
+        if ($sqlOptions) {
+            // Setup settings.local.php file since database connection settings provided via options.
+            // @todo: implement setupLocalSettingsPhp()
+            // $this->setupLocalSettingsPhp($databaseSpec, $options);
         }
     }
 }
