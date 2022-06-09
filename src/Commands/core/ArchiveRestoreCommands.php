@@ -63,6 +63,8 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
      * @option overwrite Overwrite files if exists when un-compressing an archive.
      * @option code Import code.
      * @option code-source-path Import code from specified directory. Has higher priority over "path" argument.
+     * @option code-no-composer-install Skip installing Composer dependencies.
+     * @option code-composer-install-timeout Timeout for `composer install` execution.
      * @option files Import Drupal files.
      * @option files-source-path Import Drupal files from specified directory. Has higher priority over "path" argument.
      * @option files-destination-relative-path Import Drupal files into specified directory relative to Composer root.
@@ -101,6 +103,8 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
             'overwrite' => false,
             'code' => InputOption::VALUE_OPTIONAL,
             'code-source-path' => null,
+            'code-no-composer-install' => null,
+            'code-composer-install-timeout' => 180,
             'files' => InputOption::VALUE_OPTIONAL,
             'files-source-path' => null,
             'files-destination-relative-path' => null,
