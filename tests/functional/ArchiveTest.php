@@ -3,7 +3,6 @@
 namespace Unish;
 
 use PharData;
-use Symfony\Component\Process\Process;
 use Unish\Utils\FSUtils;
 use Webmozart\PathUtil\Path;
 
@@ -91,7 +90,6 @@ class ArchiveTest extends CommandUnishTestCase
         $dbUrlParts = explode(':', self::getDbUrl());
         $this->fixtureDatabaseSettings['db-password'] = substr($dbUrlParts[2], 0, strpos($dbUrlParts[2], '@'));
         $fixtureDbUrl = self::getDbUrl() . '/' . $this->fixtureDatabaseSettings['db-name'];
-        $this->backupSettingsPhp();
 
         $this->archiveRestoreOptions = [
             'destination-path' => $this->restorePath,
@@ -361,8 +359,6 @@ class ArchiveTest extends CommandUnishTestCase
      */
     private function assertRestoredSiteStatus(): void
     {
-        $this->setupSettingsPhp();
-
         $this->drush(
             'status',
             [],
@@ -374,40 +370,5 @@ class ArchiveTest extends CommandUnishTestCase
         $this->assertEquals('Connected', $restoredSiteStatus['db-status']);
         $this->assertEquals(Path::join($this->restorePath, 'sut'), $restoredSiteStatus['root']);
         $this->assertEquals($this->fixtureDatabaseSettings['db-name'], $restoredSiteStatus['db-name']);
-    }
-
-    /**
-     * Creates a backup of settings.php file and replaces the database name with a fixture.
-     */
-    private function backupSettingsPhp(): void
-    {
-        copy(
-            Path::join('sut', 'sites', 'dev', 'settings.php'),
-            Path::join($this->getSandbox(), 'settings.php')
-        );
-        $settingsPhp = file_get_contents(Path::join($this->getSandbox(), 'settings.php'));
-        $settingsPhp = preg_replace(
-            "/'database' => '(.+)'/",
-            sprintf("'database' => '%s'", $this->fixtureDatabaseSettings['db-name']),
-            $settingsPhp
-        );
-        file_put_contents(Path::join($this->getSandbox(), 'settings.php'), $settingsPhp);
-    }
-
-    /**
-     * Sets up settings.php for the restored site.
-     */
-    private function setupSettingsPhp(): void
-    {
-        $settingsPhpPath = Path::join($this->restorePath, 'sut', 'sites', 'dev', 'settings.php');
-        if (is_file($settingsPhpPath)) {
-            return;
-        }
-
-        mkdir(Path::join($this->restorePath, 'sut', 'sites', 'dev'), 0777, true);
-        copy(Path::join($this->getSandbox(), 'settings.php'), $settingsPhpPath);
-        $this->assertTrue(is_file($settingsPhpPath));
-        $settingsPhp = file_get_contents($settingsPhpPath);
-        $this->assertStringContainsString($this->fixtureDatabaseSettings['db-name'], $settingsPhp);
     }
 }
