@@ -19,6 +19,7 @@ use Exception;
 use PharData;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Process\Process;
 use Throwable;
 use Webmozart\PathUtil\Path;
 
@@ -208,7 +209,7 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
 
         if ($options['code']) {
             $codeComponentPath = $options['code-source-path'] ?? Path::join($extractDir, self::COMPONENT_CODE);
-            $this->importCode($codeComponentPath);
+            $this->importCode($codeComponentPath, $options);
         }
 
         if ($options['files']) {
@@ -273,10 +274,12 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
      *
      * @param string $source
      *   The path to the code files directory.
+     * @param array $options
+     *   The options.
      *
      * @throws \Exception
      */
-    protected function importCode(string $source): void
+    protected function importCode(string $source, array $options): void
     {
         $this->logger()->info('Importing code...');
 
@@ -285,6 +288,26 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
         }
 
         $this->rsyncFiles($source, $this->getDestinationPath());
+
+        if ($options['code-no-composer-install']) {
+            return;
+        }
+
+        $composerJsonPath = Path::join($this->getDestinationPath(), 'composer.json');
+        if (is_file($composerJsonPath)) {
+            $this->logger()->info(
+                dt('composer.json is found (!path), installing Composer dependencies...'),
+                ['!path' => $composerJsonPath]
+            );
+            $process = new Process(
+                ['composer', 'install'],
+                $this->getDestinationPath(),
+                null,
+                null,
+                $options['code-composer-install-timeout']
+            );
+            $process->mustRun();
+        }
     }
 
     /**
