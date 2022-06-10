@@ -674,6 +674,5 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
                 throw new Exception(dt('Failed to save updated !path', ['!path' => $settingsPhpPath]));
             }
         }
-
     }
 }
