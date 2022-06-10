@@ -159,16 +159,23 @@ class ArchiveTest extends CommandUnishTestCase
             $this->markTestSkipped('The command archive:restore cannot restore to an sqlite database.');
         }
 
-        // Restore archive from an existing file.
-        $this->assertFalse(is_dir($this->restorePath));
+        // Restore the code from a source path.
+        $testFileName = 'test-file-' . mt_rand() . '.txt';
+        file_put_contents(Path::join($this->extractPath, 'code', 'sut', $testFileName), 'foo_bar');
         $this->drush(
             'archive:restore',
-            [$this->archivePath],
-            array_diff_key($this->archiveRestoreOptions, ['overwrite' => null])
+            [],
+            array_merge($this->archiveRestoreOptions, [
+                'code' => null,
+                'code-source-path' => Path::join($this->extractPath, 'code'),
+                'code-no-composer-install' => true,
+            ])
         );
-        $this->assertTrue(is_dir($this->restorePath));
+        $this->assertTrue(is_file(Path::join($this->restorePath, 'sut', $testFileName)));
         $this->assertTrue(is_file(Path::join($this->restorePath, 'composer.json')));
-        $this->assertTrue(is_file(Path::join($this->restorePath, 'composer.lock')));
+        $this->assertTrue(!is_dir(Path::join($this->restorePath, 'vendor')));
+        $this->assertTrue(!is_file(Path::join($this->restorePath, 'sut', 'sites', 'dev', 'settings.php')));
+        $this->assertTrue(!is_file(Path::join($this->restorePath, 'sut', 'sites', 'dev', 'settings.local.php')));
 
         // Restore archive from an existing file and an existing destination path.
         $this->drush(
@@ -184,24 +191,15 @@ class ArchiveTest extends CommandUnishTestCase
             str_replace("\n", " ", $this->getErrorOutput())
         );
 
-        // Restore archive from paths.
-
-        // Restore code.
-        $testFileName = 'test-file-' . mt_rand() . '.txt';
-        file_put_contents(Path::join($this->extractPath, 'code', 'sut', $testFileName), 'foo_bar');
+        // Restore archive from an existing file.
         $this->drush(
             'archive:restore',
-            [],
-            array_merge($this->archiveRestoreOptions, [
-                'code' => null,
-                'code-source-path' => Path::join($this->extractPath, 'code'),
-                'destination-path' => $this->restorePath,
-            ])
+            [$this->archivePath],
+            $this->archiveRestoreOptions
         );
-        $this->assertTrue(is_file(Path::join($this->restorePath, 'sut', $testFileName)));
         $this->assertRestoredSiteStatus();
 
-        // Restore Drupal files.
+        // Restore the Drupal files from a source path.
         file_put_contents(Path::join($this->extractPath, 'files', $testFileName), 'foo_bar');
         $filesRelativePath = Path::join('sut', 'sites', 'default', 'files');
         $this->drush(
@@ -360,6 +358,10 @@ class ArchiveTest extends CommandUnishTestCase
      */
     private function assertRestoredSiteStatus(): void
     {
+        $this->assertTrue(is_file(Path::join($this->restorePath, 'composer.json')));
+        $this->assertTrue(is_file(Path::join($this->restorePath, 'sut', 'sites', 'dev', 'settings.php')));
+        $this->assertTrue(is_file(Path::join($this->restorePath, 'sut', 'sites', 'dev', 'settings.local.php')));
+
         $this->drush(
             'status',
             [],
