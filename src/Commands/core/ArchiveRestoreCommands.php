@@ -615,8 +615,65 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
 
         if ($sqlOptions) {
             // Setup settings.local.php file since database connection settings provided via options.
-            // @todo: implement setupLocalSettingsPhp()
-            // $this->setupLocalSettingsPhp($databaseSpec, $options);
+            $this->setupLocalSettingsPhp($databaseSpec, $options);
         }
+    }
+
+    /**
+     * Sets up settings.local.php file.
+     *
+     * 1. Creates settings.php file (a copy of default.settings.php) in the site's subdirectory if not exists;
+     * 2. Makes sure settings.php has an active (i.e. uncommented) "include settings.local.php file" directive;
+     * 3. Updates settings.local.php file to include database connection settings provided via command's options.
+     *
+     * @param array $databaseSpec
+     *   The database connection specification.
+     * @param array $options
+     *   The command options.
+     *
+     * @throws Exception
+     */
+    private function setupLocalSettingsPhp(array $databaseSpec, array $options): void
+    {
+        $drupalRootPath = $this->getDrupalRootPath();
+        if (!$drupalRootPath) {
+            throw new Exception(
+                dt('Failed to detect Drupal docroot path for path !path', ['!path' => $this->getDestinationPath()])
+            );
+        }
+
+        $siteSubdir = Path::join($drupalRootPath, 'sites', $options['site-subdir']);
+        $this->filesystem->mkdir($siteSubdir);
+
+        $settingsPhpPath = Path::join($siteSubdir, 'settings.php');
+        if (!is_file($settingsPhpPath)) {
+            // Create settings.php file as a copy of default.settings.php file.
+            $defaultSettingsPath = Path::join($drupalRootPath, 'sites', self::SITE_SUBDIR, 'default.settings.php');
+            $this->logger()->info('Copying !from to !to...', ['!from' => $defaultSettingsPath, '!to' => $settingsPhpPath]);
+            copy(
+                $defaultSettingsPath,
+                $settingsPhpPath
+            );
+        }
+
+        $drushSignature = '// Added by Drush archive:restore command.';
+
+        // Make sure settings.php has an active (i.e. uncommented) "include settings.local.php file" directive.
+        $settingsPhpContent = file_get_contents($settingsPhpPath);
+        if (preg_match('/\# if \(file_exists.+?settings\.local\.php.+?\# }/ms', $settingsPhpContent, $matches)) {
+            $uncommentedLocalSettingsInclude = $drushSignature . "\n" . str_replace('# ', '', $matches[0]);
+
+            $settingsPhpIncludeLocalContent = str_replace(
+                $matches[0],
+                $uncommentedLocalSettingsInclude,
+                $settingsPhpContent
+            );
+
+            $this->logger()->info(sprintf('Updating %s to include settings.local.php file...', $settingsPhpPath));
+            if (!file_put_contents($settingsPhpPath, $settingsPhpIncludeLocalContent)) {
+                throw new Exception(dt('Failed to save updated !path', ['!path' => $settingsPhpPath]));
+            }
+        }
+
     }
 }
