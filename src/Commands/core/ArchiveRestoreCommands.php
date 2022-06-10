@@ -675,4 +675,18 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
             }
         }
     }
+
+    /**
+     * Saves settings.local.php file with actual database connection settings.
+     *
+     * @param string $path
+     * @param string $content
+     * @throws Exception
+     */
+    private function saveSettingsLocalPhp(string $path, string $content): void
+    {
+        if (!file_put_contents($path, $content)) {
+            throw new Exception(dt('Failed to create or update !path.', ['!path' => $path]));
+        }
+    }
 }
