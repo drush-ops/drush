@@ -674,6 +674,39 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
                 throw new Exception(dt('Failed to save updated !path', ['!path' => $settingsPhpPath]));
             }
         }
+
+        $databaseSpecExported = var_export($databaseSpec, true);
+        $settingsLocalPhpPath = Path::join($siteSubdir, 'settings.local.php');
+        $settingsLocalPhpDatabaseConnection = <<<EOT
+
+$drushSignature
+\$databases['default']['default'] = $databaseSpecExported;
+
+EOT;
+
+        if (!is_file($settingsLocalPhpPath)) {
+            // Create settings.local.php file with database connection settings provided via command's options.
+            $this->logger()->info('Creating !path with database connection settings...', ['!path' => $settingsLocalPhpPath]);
+            $settingsLocalPhpModifiedContent = '<?php' . $settingsLocalPhpDatabaseConnection;
+            $this->saveSettingsLocalPhp($settingsLocalPhpPath, $settingsLocalPhpModifiedContent);
+            return;
+        }
+
+        $settingsLocalPhpContent = file_get_contents($settingsLocalPhpPath);
+        if (false === strpos($settingsLocalPhpContent, $drushSignature)) {
+            $this->logger()->info('Adding database connection settings to !path...', ['!path' => $settingsLocalPhpPath]);
+            $settingsLocalPhpModifiedContent = $settingsLocalPhpContent . $settingsLocalPhpDatabaseConnection;
+            $this->saveSettingsLocalPhp($settingsLocalPhpPath, $settingsLocalPhpModifiedContent);
+            return;
+        }
+
+        $this->logger()->info('Updating database connection settings in !path...', ['!path' => $settingsLocalPhpPath]);
+        $settingsLocalPhpModifiedContent = preg_replace(
+            '/' . preg_quote($drushSignature, '/') . '.+?\);/ms',
+            $settingsLocalPhpDatabaseConnection,
+            $settingsLocalPhpContent
+        );
+        $this->saveSettingsLocalPhp($settingsLocalPhpPath, $settingsLocalPhpModifiedContent);
     }
 
     /**
