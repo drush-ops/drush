@@ -890,16 +890,16 @@
         },
         {
             "name": "guzzlehttp/guzzle",
-            "version": "6.5.6",
+            "version": "6.5.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/guzzle.git",
-                "reference": "f092dd734083473658de3ee4bef093ed77d2689c"
+                "reference": "724562fa861e21a4071c652c8a159934e4f05592"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/guzzle/zipball/f092dd734083473658de3ee4bef093ed77d2689c",
-                "reference": "f092dd734083473658de3ee4bef093ed77d2689c",
+                "url": "https://api.github.com/repos/guzzle/guzzle/zipball/724562fa861e21a4071c652c8a159934e4f05592",
+                "reference": "724562fa861e21a4071c652c8a159934e4f05592",
                 "shasum": ""
             },
             "require": {
@@ -985,7 +985,7 @@
             ],
             "support": {
                 "issues": "https://github.com/guzzle/guzzle/issues",
-                "source": "https://github.com/guzzle/guzzle/tree/6.5.6"
+                "source": "https://github.com/guzzle/guzzle/tree/6.5.7"
             },
             "funding": [
                 {
@@ -1001,7 +1001,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-05-25T13:19:12+00:00"
+            "time": "2022-06-09T21:36:50+00:00"
         },
         {
             "name": "guzzlehttp/promises",
@@ -3960,16 +3960,16 @@
         },
         {
             "name": "drupal/core",
-            "version": "9.4.0-beta1",
+            "version": "9.4.0-rc2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/drupal/core.git",
-                "reference": "c1cc2465cc764c67c0db6ffa55aab8ecae15eff9"
+                "reference": "02340dc1f6596052080eabc7697d01fa4e95d4f7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/drupal/core/zipball/c1cc2465cc764c67c0db6ffa55aab8ecae15eff9",
-                "reference": "c1cc2465cc764c67c0db6ffa55aab8ecae15eff9",
+                "url": "https://api.github.com/repos/drupal/core/zipball/02340dc1f6596052080eabc7697d01fa4e95d4f7",
+                "reference": "02340dc1f6596052080eabc7697d01fa4e95d4f7",
                 "shasum": ""
             },
             "require": {
@@ -3991,7 +3991,7 @@
                 "ext-spl": "*",
                 "ext-tokenizer": "*",
                 "ext-xml": "*",
-                "guzzlehttp/guzzle": "^6.5.6 || ^7.4.3",
+                "guzzlehttp/guzzle": "^6.5.7 || ^7.4.4",
                 "laminas/laminas-diactoros": "^2.11",
                 "laminas/laminas-feed": "^2.17",
                 "masterminds/html5": "^2.7",
@@ -4211,22 +4211,22 @@
             ],
             "description": "Drupal is an open source content management platform powering millions of websites and applications.",
             "support": {
-                "source": "https://github.com/drupal/core/tree/9.4.0-beta1"
+                "source": "https://github.com/drupal/core/tree/9.4.0-rc2"
             },
-            "time": "2022-05-30T18:39:46+00:00"
+            "time": "2022-06-10T19:15:41+00:00"
         },
         {
             "name": "drupal/core-recommended",
-            "version": "9.4.0-beta1",
+            "version": "9.4.0-rc2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/drupal/core-recommended.git",
-                "reference": "a13d6aab069096d32c6e47556cc8d151d98de889"
+                "reference": "11d88111b7c3e32b108461ff076b0e823e9fb16e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/drupal/core-recommended/zipball/a13d6aab069096d32c6e47556cc8d151d98de889",
-                "reference": "a13d6aab069096d32c6e47556cc8d151d98de889",
+                "url": "https://api.github.com/repos/drupal/core-recommended/zipball/11d88111b7c3e32b108461ff076b0e823e9fb16e",
+                "reference": "11d88111b7c3e32b108461ff076b0e823e9fb16e",
                 "shasum": ""
             },
             "require": {
@@ -4235,9 +4235,9 @@
                 "doctrine/annotations": "1.13.2",
                 "doctrine/lexer": "1.2.3",
                 "doctrine/reflection": "1.2.2",
-                "drupal/core": "9.4.0-beta1",
+                "drupal/core": "9.4.0-rc2",
                 "egulias/email-validator": "3.2",
-                "guzzlehttp/guzzle": "6.5.6",
+                "guzzlehttp/guzzle": "6.5.7",
                 "guzzlehttp/promises": "1.5.1",
                 "guzzlehttp/psr7": "1.8.5",
                 "laminas/laminas-diactoros": "2.11.0",
@@ -4297,9 +4297,9 @@
             ],
             "description": "Locked core dependencies; require this project INSTEAD OF drupal/core.",
             "support": {
-                "source": "https://github.com/drupal/core-recommended/tree/9.4.0-beta1"
+                "source": "https://github.com/drupal/core-recommended/tree/9.4.0-rc2"
             },
-            "time": "2022-05-30T18:39:46+00:00"
+            "time": "2022-06-10T19:15:41+00:00"
         },
         {
             "name": "drupal/semver_example",
@@ -5522,16 +5522,16 @@
         },
         {
             "name": "phpstan/phpstan",
-            "version": "1.7.11",
+            "version": "1.7.12",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpstan.git",
-                "reference": "62fcadcde81b4037e42ad2489119d31c46f00191"
+                "reference": "32f10779d9cd88a9cbd972ec611a4148a3cbbc7e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/62fcadcde81b4037e42ad2489119d31c46f00191",
-                "reference": "62fcadcde81b4037e42ad2489119d31c46f00191",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/32f10779d9cd88a9cbd972ec611a4148a3cbbc7e",
+                "reference": "32f10779d9cd88a9cbd972ec611a4148a3cbbc7e",
                 "shasum": ""
             },
             "require": {
@@ -5557,7 +5557,7 @@
             "description": "PHPStan - PHP Static Analysis Tool",
             "support": {
                 "issues": "https://github.com/phpstan/phpstan/issues",
-                "source": "https://github.com/phpstan/phpstan/tree/1.7.11"
+                "source": "https://github.com/phpstan/phpstan/tree/1.7.12"
             },
             "funding": [
                 {
@@ -5577,7 +5577,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-06-07T08:47:03+00:00"
+            "time": "2022-06-09T12:39:36+00:00"
         },
         {
             "name": "phpunit/php-code-coverage",
@@ -7130,16 +7130,16 @@
         },
         {
             "name": "squizlabs/php_codesniffer",
-            "version": "3.6.2",
+            "version": "3.7.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/squizlabs/PHP_CodeSniffer.git",
-                "reference": "5e4e71592f69da17871dba6e80dd51bce74a351a"
+                "reference": "a2cd51b45bcaef9c1f2a4bda48f2dd2fa2b95563"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/squizlabs/PHP_CodeSniffer/zipball/5e4e71592f69da17871dba6e80dd51bce74a351a",
-                "reference": "5e4e71592f69da17871dba6e80dd51bce74a351a",
+                "url": "https://api.github.com/repos/squizlabs/PHP_CodeSniffer/zipball/a2cd51b45bcaef9c1f2a4bda48f2dd2fa2b95563",
+                "reference": "a2cd51b45bcaef9c1f2a4bda48f2dd2fa2b95563",
                 "shasum": ""
             },
             "require": {
@@ -7182,7 +7182,7 @@
                 "source": "https://github.com/squizlabs/PHP_CodeSniffer",
                 "wiki": "https://github.com/squizlabs/PHP_CodeSniffer/wiki"
             },
-            "time": "2021-12-12T21:44:58+00:00"
+            "time": "2022-06-13T06:31:38+00:00"
         },
         {
             "name": "stack/builder",
@@ -8742,5 +8742,5 @@
     "platform-overrides": {
         "php": "7.4"
     },
-    "plugin-api-version": "2.2.0"
+    "plugin-api-version": "2.1.0"
 }
