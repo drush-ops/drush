@@ -17,6 +17,6 @@ class ServiceCommandlist
 
     public function getCommandList(): array
     {
-        return $this->commandList;
+        return array_filter($this->commandList);
     }
 }
