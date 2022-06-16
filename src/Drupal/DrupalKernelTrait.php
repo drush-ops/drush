@@ -115,12 +115,8 @@ trait DrupalKernelTrait
 
         // Load and process composer.json announced drush.services.yml files
         // of site-wide command packages.
-        // @see \Drush\Runtime\DependencyInjection::addDrushServices
-        /** @var \Drush\Config\DrushConfig $config */
-        $config = $this->container->get('config.runtime');
-        // @see \Drush\Runtime\Runtime::doRun
-        $commandFilePaths = $config->get('runtime.commandfile.paths');
-        $this->addDrushServiceProviderFromSubdirectories($commandFilePaths);
+        // @fixme Replace hardcoded path.
+        $this->addDrushServiceProviderFromSubdirectories(['../drush']);
 
         // Also add Drush services from all modules
         $module_filenames = $this->getModuleFileNames();
@@ -149,7 +145,7 @@ trait DrupalKernelTrait
                     $packageName = $fileInfo->getBasename();
                     $this->addModuleDrushServiceProvider("_drush.site.$packageName", $composerJson);
                 } else {
-                    $this->addDrushServiceProviderFromSubdirectories($fileInfo->getPathname());
+                    $this->addDrushServiceProviderFromSubdirectories([$fileInfo->getPathname()]);
                 }
             }
         }
