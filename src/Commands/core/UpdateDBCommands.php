@@ -29,12 +29,13 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
      * @command updatedb
      * @option cache-clear Clear caches upon completion.
      * @option post-updates Run post updates after hook_update_n and entity updates.
+     * @option force Do not ask 'Do you wish to run the specified pending updates?' question before running updates.
      * @bootstrap full
      * @topics docs:deploy
      * @kernel update
      * @aliases updb
      */
-    public function updatedb($options = ['cache-clear' => true, 'post-updates' => true]): int
+    public function updatedb($options = ['cache-clear' => true, 'post-updates' => true, 'force' => false]): int
     {
         $this->cache_clear = $options['cache-clear'];
         require_once DRUPAL_ROOT . '/core/includes/install.inc';
@@ -63,7 +64,7 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
         if ($output = $process->getOutput()) {
             // We have pending updates - let's run em.
             $this->output()->writeln($output);
-            if (!$this->io()->confirm(dt('Do you wish to run the specified pending updates?'))) {
+            if (!$options['force'] && !$this->io()->confirm(dt('Do you wish to run the specified pending updates?'))) {
                 throw new UserAbortException();
             }
             if ($this->getConfig()->simulate()) {
