@@ -298,7 +298,7 @@ function make_download_git($name, $type, $download, $download_location) {
      (!empty($download['tag']) || !empty($download['branch']))) {
 
     $branch = (!empty($download['branch']) ? $download['branch'] : $download['tag']);
-    $command .= " --depth=1 --branch=${branch}";
+    $command .= " --depth=1 --branch={$branch}";
 
     // since the shallow copy option automatically "checks out" the requested branch, no further
     // actions are needed after the clone command

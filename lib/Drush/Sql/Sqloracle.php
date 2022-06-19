@@ -56,7 +56,7 @@ class Sqloracle extends SqlBase {
     $sqlp_settings = implode("\n", $settings) . "\n";
 
     // important for sqlplus to exit correctly
-    return "${sqlp_settings}${query};\nexit;\n";
+    return "{$sqlp_settings}{$query};\nexit;\n";
   }
 
   public function listTables() {
