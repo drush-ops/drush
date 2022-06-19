@@ -1307,7 +1307,7 @@ function drush_pm_releases() {
       $version = isset($projects[$project_name]) ? $projects[$project_name]['version'] : NULL;
       $releases = $project_release_info->filterReleases($filter, $version);
       foreach ($releases as $key => $release) {
-        $output["${project_name}-${key}"] = array(
+        $output["{$project_name}-{$key}"] = array(
           'project' => $project_name,
           'version' => $release['version'],
           'date' => gmdate('Y-M-d', $release['date']),

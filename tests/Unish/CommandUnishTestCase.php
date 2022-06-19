@@ -292,7 +292,7 @@ abstract class CommandUnishTestCase extends UnishTestCase {
 
     $php_options = (array_key_exists('PHP_OPTIONS', $env)) ? $env['PHP_OPTIONS'] . " " : "";
     // @todo The PHP Options below are not yet honored by execute(). See .travis.yml for an alternative way.
-    $env['PHP_OPTIONS'] = "${php_options}-d sendmail_path='true'";
+    $env['PHP_OPTIONS'] = "{$php_options}-d sendmail_path='true'";
     $return = $this->execute(implode(' ', $exec), $expected_return, $cd, $env);
 
     // Ignore code coverage information.
