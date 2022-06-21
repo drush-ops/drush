@@ -299,18 +299,10 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
 
         $composerJsonPath = Path::join($this->getDestinationPath(), 'composer.json');
         if (is_file($composerJsonPath)) {
-            $this->logger()->info(
-                dt('composer.json is found (!path), installing Composer dependencies...'),
+            $this->logger()->success(
+                dt('composer.json is found (!path), install Composer dependencies with composer install.'),
                 ['!path' => $composerJsonPath]
             );
-            $process = new Process(
-                ['composer', 'install'],
-                $this->getDestinationPath(),
-                null,
-                null,
-                $options['code-composer-install-timeout']
-            );
-            $process->mustRun();
         }
     }
 
