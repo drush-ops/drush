@@ -467,7 +467,7 @@ abstract class SqlBase implements ConfigAwareInterface
         if ($this->dbExists()) {
             return $this->drop($this->listTablesQuoted());
         } else {
-            return $this->createdb();
+            return $this->createdb(true);
         }
     }
 
