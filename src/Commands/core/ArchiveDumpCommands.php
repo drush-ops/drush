@@ -595,8 +595,7 @@ class ArchiveDumpCommands extends DrushCommands
             // If neither, the user provided a directory.
             if (substr($destination, -1) === "/") {
                 return $destination . "archive.tar.gz";
-            }
-            else {
+            } else {
                 return $destination . "/archive.tar.gz";
             }
         }
