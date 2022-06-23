@@ -71,6 +71,7 @@ class ArchiveDumpCommands extends DrushCommands
      * - php
      *
      * @command archive:dump
+     * @validate-php-extension Phar
      * @aliases ard
      *
      * @option code Archive codebase.

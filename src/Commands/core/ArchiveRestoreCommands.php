@@ -58,6 +58,7 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
      * Restore (import) your code, files, and database.
      *
      * @command archive:restore
+     * @validate-php-extension Phar
      * @aliases arr
      *
      * @option destination-path The base path to restore the code/files into.
