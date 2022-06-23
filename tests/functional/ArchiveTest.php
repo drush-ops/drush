@@ -381,11 +381,11 @@ class ArchiveTest extends CommandUnishTestCase
      */
     private function installComposerDependencies(): void
     {
-      $process = new Process(['composer', 'install'], $this->restorePath, null, null, 180);
-      $process->run();
-      $this->assertTrue(
-        $process->isSuccessful(),
-        sprintf('"composer install" has failed: %s', $process->getErrorOutput())
-      );
+        $process = new Process(['composer', 'install'], $this->restorePath, null, null, 180);
+        $process->run();
+        $this->assertTrue(
+            $process->isSuccessful(),
+            sprintf('"composer install" has failed: %s', $process->getErrorOutput())
+        );
     }
 }
