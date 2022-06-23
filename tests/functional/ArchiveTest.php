@@ -197,6 +197,7 @@ class ArchiveTest extends CommandUnishTestCase
             [$this->archivePath],
             $this->archiveRestoreOptions
         );
+        $this->installComposerDependencies();
         $this->assertRestoredSiteStatus();
 
         // Restore the Drupal files from a source path.
@@ -373,5 +374,18 @@ class ArchiveTest extends CommandUnishTestCase
         $this->assertEquals('Connected', $restoredSiteStatus['db-status']);
         $this->assertEquals(Path::join($this->restorePath, 'sut'), $restoredSiteStatus['root']);
         $this->assertEquals($this->fixtureDatabaseSettings['db-name'], $restoredSiteStatus['db-name']);
+    }
+
+    /**
+     * Executes `composer install` in the restored site's composer root.
+     */
+    private function installComposerDependencies(): void
+    {
+      $process = new Process(['composer', 'install'], $this->restorePath, null, null, 180);
+      $process->run();
+      $this->assertTrue(
+        $process->isSuccessful(),
+        sprintf('"composer install" has failed: %s', $process->getErrorOutput())
+      );
     }
 }
