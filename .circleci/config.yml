@@ -124,8 +124,7 @@ jobs:
       - run: composer -n config platform.php --unset
       - run: composer -n require --dev drupal/core-recommended:10.0.x-dev --no-update
       - run: composer -n update
-      - run: composer info consolidation/*
-      - run: composer info psr/*
+      - run: composer show
       - run: mkdir -p /tmp/results
       - run: composer -n lint
       - run: composer -n unit -- --log-junit /tmp/results/unit.junit.xml
