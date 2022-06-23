@@ -15,6 +15,7 @@ use PharData;
 use RecursiveCallbackFilterIterator;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Yaml\Yaml;
@@ -99,13 +100,13 @@ class ArchiveDumpCommands extends DrushCommands
         'code' => false,
         'files' => false,
         'db' => false,
-        'destination' => null,
+        'destination' => InputOption::VALUE_REQUIRED,
         'overwrite' => false,
-        'description' => null,
-        'tags' => null,
-        'generator' => null,
-        'generatorversion' => null,
-        'exclude-code-paths' => null,
+        'description' => InputOption::VALUE_REQUIRED,
+        'tags' => InputOption::VALUE_REQUIRED,
+        'generator' => InputOption::VALUE_REQUIRED,
+        'generatorversion' => InputOption::VALUE_REQUIRED,
+        'exclude-code-paths' => InputOption::VALUE_REQUIRED,
     ]): string
     {
         $this->prepareArchiveDir();
@@ -191,6 +192,8 @@ class ArchiveDumpCommands extends DrushCommands
             return $archivePath;
         }
 
+        $options['destination'] = $this->destinationCleanup($options['destination']);
+
         if ($this->filesystem->exists($options['destination'])) {
             if (!$options['overwrite']) {
                 throw new Exception(
@@ -244,7 +247,7 @@ class ArchiveDumpCommands extends DrushCommands
     }
 
     /**
-     * Returns TRUE is the site is a "web" docroot site.
+     * Returns TRUE if the site is a "web" docroot site.
      *
      * @return bool
      *
@@ -570,5 +573,32 @@ class ArchiveDumpCommands extends DrushCommands
                 )
             );
         }
+    }
+
+    /**
+     * Provides basic verification/correction on destination option.
+     *
+     * @param string $destination
+     *
+     * @return void
+     */
+    private function destinationCleanup($destination)
+    {
+        // User input may be in the wrong format, this performs some basic
+        // corrections. The correct format should include a .tar.gz.
+        if (substr($destination, -7) !== ".tar.gz") {
+            // If the user provided .tar but not .gz.
+            if (substr($destination, -4) === ".tar") {
+                return $destination . ".gz";
+            }
+
+            // If neither, the user provided a directory.
+            if (substr($destination, -1) === "/") {
+                return $destination . "archive.tar.gz";
+            } else {
+                return $destination . "/archive.tar.gz";
+            }
+        }
+        return $destination;
     }
 }
