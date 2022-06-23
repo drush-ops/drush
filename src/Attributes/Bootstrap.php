@@ -15,7 +15,7 @@ class Bootstrap
      *   The level to bootstrap to.
      */
     public function __construct(
-        #[ExpectedValues(valuesFromClass: DrupalBootLevels::class)] public string $level,
+        #[ExpectedValues(valuesFromClass: DrupalBootLevels::class)] public int $level,
     ) {
     }
 
