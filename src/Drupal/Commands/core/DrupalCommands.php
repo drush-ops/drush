@@ -145,6 +145,8 @@ class DrupalCommands extends DrushCommands
      *   View details about the <info>update.status</info> route.
      * @usage drush route --path=/user/1
      *   View details about the <info>entity.user.canonical</info> route.
+     * @usage drush route --url=https://example.com/node
+     *   View details about the <info>entity.node.canonical</info> route.
      * @option name A route name.
      * @option path An internal path.
      * @version 10.5
