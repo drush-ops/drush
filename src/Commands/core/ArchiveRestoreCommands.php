@@ -63,8 +63,6 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
      * @option setup-database-connection Sets up the database connection in settings.local.php file if either --db-url option or set of specific --db-* options are provided.
      * @option code Import code.
      * @option code-source-path Import code from specified directory. Has higher priority over "path" argument.
-     * @option code-no-composer-install Skip installing Composer dependencies.
-     * @option code-composer-install-timeout Timeout for `composer install` execution.
      * @option files Import Drupal files.
      * @option files-source-path Import Drupal files from specified directory. Has higher priority over "path" argument.
      * @option files-destination-relative-path Import Drupal files into specified directory relative to Composer root.
@@ -105,8 +103,6 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
             'setup-database-connection' => true,
             'code' => null,
             'code-source-path' => null,
-            'code-no-composer-install' => null,
-            'code-composer-install-timeout' => 180,
             'files' => null,
             'files-source-path' => null,
             'files-destination-relative-path' => null,
@@ -210,7 +206,7 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
 
         if ($options['code']) {
             $codeComponentPath = $options['code-source-path'] ?? Path::join($extractDir, self::COMPONENT_CODE);
-            $this->importCode($codeComponentPath, $options);
+            $this->importCode($codeComponentPath);
         }
 
         if ($options['files']) {
@@ -275,12 +271,10 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
      *
      * @param string $source
      *   The path to the code files directory.
-     * @param array $options
-     *   The options.
      *
      * @throws \Exception
      */
-    protected function importCode(string $source, array $options): void
+    protected function importCode(string $source): void
     {
         $this->logger()->info('Importing code...');
 
@@ -289,10 +283,6 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
         }
 
         $this->rsyncFiles($source, $this->getDestinationPath());
-
-        if ($options['code-no-composer-install']) {
-            return;
-        }
 
         $composerJsonPath = Path::join($this->getDestinationPath(), 'composer.json');
         if (is_file($composerJsonPath)) {

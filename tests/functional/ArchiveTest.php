@@ -167,7 +167,6 @@ class ArchiveTest extends CommandUnishTestCase
             array_merge($this->archiveRestoreOptions, [
                 'code' => null,
                 'code-source-path' => Path::join($this->extractPath, 'code'),
-                'code-no-composer-install' => true,
             ])
         );
         $this->assertTrue(is_file(Path::join($this->restorePath, 'sut', $testFileName)));
