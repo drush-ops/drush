@@ -8,8 +8,6 @@ use Unish\Utils\FSUtils;
 use Webmozart\PathUtil\Path;
 
 /**
- * Class ArchiveTest.
- *
  * @group slow
  * @group commands
  * @group archive

@@ -22,9 +22,6 @@ use Symfony\Component\Process\Process;
 use Throwable;
 use Webmozart\PathUtil\Path;
 
-/**
- * Class ArchiveRestoreCommands.
- */
 class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAwareInterface
 {
     use SiteAliasManagerAwareTrait;

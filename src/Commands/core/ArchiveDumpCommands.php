@@ -22,9 +22,6 @@ use Symfony\Component\Yaml\Yaml;
 use Traversable;
 use Webmozart\PathUtil\Path;
 
-/**
- * Class ArchiveDumpCommands.
- */
 class ArchiveDumpCommands extends DrushCommands
 {
     /**
