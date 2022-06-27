@@ -16,34 +16,11 @@ class ArchiveTest extends CommandUnishTestCase
 {
     use FSUtils;
 
-    /**
-     * @var string
-     */
     protected string $archivePath;
-
-    /**
-     * @var string
-     */
     protected string $restorePath;
-
-    /**
-     * @var string
-     */
     protected string $extractPath;
-
-    /**
-     * @var array
-     */
     protected array $archiveDumpOptions;
-
-    /**
-     * @var array
-     */
     protected array $archiveRestoreOptions;
-
-    /**
-     * @var array
-     */
     protected array $fixtureDatabaseSettings;
 
     /**

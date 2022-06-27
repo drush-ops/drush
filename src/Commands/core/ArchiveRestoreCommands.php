@@ -25,19 +25,8 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
 {
     use SiteAliasManagerAwareTrait;
 
-    /**
-     * @var \Symfony\Component\Filesystem\Filesystem
-     */
     private Filesystem $filesystem;
-
-    /**
-     * @var array
-     */
     private array $siteStatus;
-
-    /**
-     * @var null|string
-     */
     private ?string $destinationPath = null;
 
     private const COMPONENT_CODE = 'code';

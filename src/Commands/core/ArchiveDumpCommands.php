@@ -24,19 +24,8 @@ use Webmozart\PathUtil\Path;
 
 class ArchiveDumpCommands extends DrushCommands
 {
-    /**
-     * @var \Symfony\Component\Filesystem\Filesystem
-     */
     private Filesystem $filesystem;
-
-    /**
-     * @var string
-     */
     private string $archiveDir;
-
-    /**
-     * @var string
-     */
     private string $drupalFilesDir;
 
     private const COMPONENT_CODE = 'code';
