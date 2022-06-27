@@ -18,7 +18,6 @@ use Drush\Utils\FsUtils;
 use Exception;
 use PharData;
 use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\Process\Process;
 use Throwable;
 use Webmozart\PathUtil\Path;
 
