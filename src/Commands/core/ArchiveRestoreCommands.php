@@ -108,15 +108,15 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
         ?string $site = null,
         array $options = [
             'destination-path' => null,
-            'overwrite' => null,
+            'overwrite' => false,
             'site-subdir' => self::SITE_SUBDIR,
             'setup-database-connection' => true,
-            'code' => null,
+            'code' => false,
             'code-source-path' => null,
-            'files' => null,
+            'files' => false,
             'files-source-path' => null,
             'files-destination-relative-path' => null,
-            'db' => null,
+            'db' => false,
             'db-source-path' => null,
             'db-driver' => 'mysql',
             'db-port' => null,
@@ -137,16 +137,18 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
             );
         }
 
+        if (!$options['code'] && !$options['files'] && !$options['db']) {
+            $options['code'] = $options['files'] = $options['db'] = true;
+        }
+
+        if (($options['code'] || $options['files']) && !self::programExists('rsync')) {
+            throw new Exception(
+                dt('Could not restore the code or the Drupal files: "rsync" program not found')
+            );
+        }
+
         $this->filesystem = new Filesystem();
         $extractDir = $this->getExtractDir($path);
-
-        // If none of --code, --files or --db are provided, then make them all true.
-        // If one is turned off, e.g. --db=0, then make the rest true.
-        if (!$options['code'] && !$options['files'] && !$options['db']) {
-            $options['code'] = $options['code'] !== false;
-            $options['files'] = $options['files'] !== false;
-            $options['db'] = $options['db'] !== false;
-        }
 
         foreach (['code' => 'code', 'db' => 'database', 'files' => 'files'] as $component => $label) {
             if (!$options[$component]) {
