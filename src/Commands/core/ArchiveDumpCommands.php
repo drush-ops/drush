@@ -60,17 +60,31 @@ class ArchiveDumpCommands extends DrushCommands
      * @validate-php-extension Phar
      * @aliases ard
      *
-     * @option code Archive codebase.
-     * @option files Archive Drupal files.
-     * @option db Archive database SQL dump.
      * @option destination The full path and filename in which the archive should be stored. If omitted, it will be saved to the drush-backups directory.
      * @option overwrite Overwrite destination file if exists.
+     * @option code Archive codebase.
+     * @option exclude-code-paths Comma-separated list of paths (or regular expressions matching paths) to exclude from the code archive.
+     * @option files Archive Drupal files.
+     * @option db Archive database SQL dump.
      * @option description Describe the archive contents.
      * @option tags Add tags to the archive manifest. Delimit several by commas.
-     * @option overwrite Do not fail if the destination file exists; overwrite it instead. Default is --no-overwrite.
      * @option generator The generator name to store in the MANIFEST.yml file. The default is "Drush archive-dump".
      * @option generatorversion The generator version number to store in the MANIFEST file. The default is Drush version.
-     * @option exclude-code-paths Comma-separated list of paths to exclude from the code archive.
+     *
+     * @usage drush archive:dump
+     *   Create a site archive file in a temporary directory containing code, database and Drupal files.
+     * @usage drush archive:dump --destination=/path/to/archive.tar.gz
+     *   Create /path/to/archive.tar.gz file containing code, database and Drupal files.
+     * @usage drush archive:dump --destination=/path/to/archive.tar.gz --overwrite
+     *   Create (or overwrite if exists) /path/to/archive.tar.gz file containing code, database and Drupal files.
+     * @usage drush archive:dump --code --destination=/path/to/archive.tar.gz
+     *   Create /path/to/archive.tar.gz file containing the code only.
+     * @usage drush archive:dump --exclude-code-paths=foo_bar.txt,web/sites/.+/settings.php --destination=/path/to/archive.tar.gz
+     *   Create /path/to/archive.tar.gz file containing code, database and Drupal files but excluding foo_bar.txt file and settings.php files if found in web/sites/* subdirectories.
+     * @usage drush archive:dump --files --destination=/path/to/archive.tar.gz
+     *   Create /path/to/archive.tar.gz file containing the Drupal files only.
+     * @usage drush archive:dump --database --destination=/path/to/archive.tar.gz
+     *   Create /path/to/archive.tar.gz archive file containing the database dump only.
      *
      * @optionset_sql
      * @optionset_table_selection
