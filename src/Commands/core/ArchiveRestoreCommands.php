@@ -65,6 +65,27 @@ class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAw
      * @option db-prefix Destination database prefix.
      * @option db-driver Destination database driver.
      *
+     * @usage drush archive:restore /path/to/archive.tar.gz
+     *   Restore the site from /path/to/archive.tar.gz archive file.
+     * @usage drush archive:restore /path/to/archive.tar.gz --destination-path=/path/to/restore
+     *   Restore the site from /path/to/archive.tar.gz archive file into /path/to/restore directory.
+     * @usage drush archive:restore /path/to/archive.tar.gz --code --destination-path=/path/to/restore
+     *   Restore the code from /path/to/archive.tar.gz archive file into /path/to/restore directory.
+     * @usage drush archive:restore /path/to/archive.tar.gz --code-source-path=/code/source/path
+     *   Restore database and Drupal files from /path/to/archive.tar.gz archive file and the code from /code/source/path directory.
+     * @usage drush archive:restore /path/to/archive.tar.gz --files --destination-path=/path/to/restore
+     *   Restore the Drupal files from /path/to/archive.tar.gz archive file into /path/to/restore directory
+     * @usage drush archive:restore /path/to/archive.tar.gz --files-source-path=/files/source/path
+     *   Restore code and database from /path/to/archive.tar.gz archive file and the Drupal files from /files/source/path directory.
+     * @usage drush archive:restore /path/to/archive.tar.gz --files-destination-relative-path=web/site/foo-bar/files
+     *   Restore the Drupal files from /path/to/archive.tar.gz archive file into web/site/foo-bar/files site's subdirectory.
+     * @usage drush archive:restore /path/to/archive.tar.gz --db
+     *   Restore the database from /path/to/archive.tar.gz archive file.
+     * @usage drush archive:restore /path/to/archive.tar.gz --db-source-path=/path/to/database.sql
+     *   Restore code and Drupal files from /path/to/archive.tar.gz archive file and the database from /path/to/database.sql dump file.
+     * @usage drush archive:restore /path/to/archive.tar.gz --db-url=mysql://user:password@localhost/database_name --destination-path=/path/to/restore
+     *   Restore code, database and Drupal files from /path/to/archive.tar.gz archive file into /path/to/restore directory using database URL.
+     *
      * @optionset_sql
      * @optionset_table_selection
      *
