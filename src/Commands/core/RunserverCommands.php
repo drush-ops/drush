@@ -75,6 +75,7 @@ class RunserverCommands extends DrushCommands
         $router = Path::join(DRUSH_BASE_PATH, '/misc/d8-rs-router.php');
         $php = $this->getConfig()->get('php', 'php');
         $process = $this->processManager()->process([$php, '-S', $addr . ':' . $uri['port'], $router]);
+        $process->setTimeout(null);
         $process->setWorkingDirectory(Drush::bootstrapManager()->getRoot());
         $process->setTty(Tty::isTtySupported());
         if ($options['quiet']) {
