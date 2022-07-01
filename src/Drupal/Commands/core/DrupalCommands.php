@@ -151,7 +151,7 @@ class DrupalCommands extends DrushCommands
      * @option path An internal path or URL.
      * @version 10.5
      */
-    public function route($options = ['name' => self::REQ, 'path' => self::REQ,'format' => 'yaml'])
+    public function route($options = ['name' => self::REQ, 'path' => self::REQ, 'format' => 'yaml'])
     {
         $route = $items = null;
         $provider = $this->getRouteProvider();
