@@ -18,6 +18,80 @@ Install a site-local Drush and Drush Launcher.
 
 Drupal Compatibility
 -----------------
-Please see: https://www.drush.org/latest/install/#drupal-compatibility
+<table>
+  <tr>
+    <th rowspan="2"> Drush Version </th> 
+    <th rowspan="2"> Drush Branch </th>
+    <th rowspan="2"> PHP </th>
+    <th rowspan="2"> EOL </th>
+    <th colspan="5"> Drupal versions </th>
+  </tr>
+    <th>6</th> <th>7</th> <th>-8.3</th> <th>8.4+</th> <th>9</th>
+  </tr>
+  <tr>
+    <td> Drush 10 </td>
+    <td> 10.x </td>
+    <td> 7.1+ </td>
+    <!-- Released Oct 2019 -->
+    <td> <i>TBD</i> </td>
+    <td></td> <td></td> <td></td> <td>✅</td> <td><b>✅</b></td>
+  </tr>
+  <tr>
+    <td> Drush 9 </td>
+    <td> 9.x </td>
+    <td> 5.6+ </td>
+    <!-- Released Jan 2018 -->
+    <td> <i>May 2020</i> </td>
+    <td></td> <td></td> <td></td> <td>✅</td> <td></td>
+  </tr>
+  <tr>
+    <td> Drush 8 </td>
+    <td> 8.x </td>
+    <td> 5.4.5+ </td>
+    <!-- Released Nov 2015 -->
+    <td> ❶ </td>
+    <td>✅</td> <td>✅</td> <td>✅</td> <td><b>⚠️</b></td> <td></td>
+  </tr>
+  <tr>
+    <td> Drush 7 </td>
+    <td> 7.x </td>
+    <td> 5.3.0+ </td>
+    <!-- Released May 2015 -->
+    <td> Jul 2017 </td>
+    <td>✓</td> <td>✓</td> <td></td> <td></td> <td></td>
+  </tr>
+  <tr>
+    <td> Drush 6 </td>
+    <td> 6.x </td>
+    <td> 5.3.0+ </td>
+    <!-- Released Aug 2013 -->
+    <td> Dec 2015 </td>
+    <td>✓</td> <td>✓</td> <td></td> <td></td> <td></td>
+  </tr>
+  <tr>
+    <td> Drush 5 </td>
+    <td> 5.x </td>
+    <td> 5.2.0+ </td>
+    <!-- Released March 2012 -->
+    <td> May 2015 </td>
+    <td>✓</td> <td>✓</td> <td></td> <td></td> <td></td>
+  </tr>
+</table>
+
+<table>
+    <tr>
+        <th colspan="2">Legend</th>
+    </tr>
+    <tr>
+        <td>✅</td> <td>Supported and recommended</td>
+    </tr>
+    <tr>
+        <td><b>⚠️</b></td> <td>Supported but not recommended</td>
+    </tr>
+    <tr>
+        <td>✓</td> <td>Compatible but no longer supported</td>
+    </tr>
+    
+</table>
 
 ❶: EOL date for Drush 8 tbd, but estimated to be in concert with <a href="https://www.drupal.org/psa-2019-02-25">Drupal 7 EOL</a>.</td>
