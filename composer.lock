@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "eb7c538821997a9476b29e01705ce17f",
+    "content-hash": "aeb0a971d297c9b05531b1e0de6ea712",
     "packages": [
         {
             "name": "chi-teck/drupal-code-generator",
@@ -887,6 +887,62 @@
                 "source": "https://github.com/grasmash/expander/tree/2.0.3"
             },
             "time": "2022-04-25T22:17:46+00:00"
+        },
+        {
+            "name": "grasmash/yaml-cli",
+            "version": "3.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/grasmash/yaml-cli.git",
+                "reference": "4d9c4d97de16a881196e2310e868e3230202b4a7"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/grasmash/yaml-cli/zipball/4d9c4d97de16a881196e2310e868e3230202b4a7",
+                "reference": "4d9c4d97de16a881196e2310e868e3230202b4a7",
+                "shasum": ""
+            },
+            "require": {
+                "dflydev/dot-access-data": "^1.1.0 | ^2 | ^3",
+                "php": ">=5.6",
+                "symfony/console": "^4 | ^5",
+                "symfony/filesystem": "^4 | ^5",
+                "symfony/yaml": "^4 | ^5"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^5.5.4",
+                "satooshi/php-coveralls": "^1.0",
+                "squizlabs/php_codesniffer": "^2.7"
+            },
+            "bin": [
+                "bin/yaml-cli"
+            ],
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Grasmash\\YamlCli\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Matthew Grasmick"
+                }
+            ],
+            "description": "A command line tool for reading and manipulating yaml files.",
+            "support": {
+                "issues": "https://github.com/grasmash/yaml-cli/issues",
+                "source": "https://github.com/grasmash/yaml-cli/tree/3.0.0"
+            },
+            "time": "2022-02-24T04:01:47+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",
@@ -8737,5 +8793,5 @@
     "platform-overrides": {
         "php": "7.4"
     },
-    "plugin-api-version": "2.2.0"
+    "plugin-api-version": "2.1.0"
 }
