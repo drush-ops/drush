@@ -102,7 +102,7 @@ class SecurityUpdateCommands extends DrushCommands
     protected function fetchAdvisoryComposerJson()
     {
         $client = new Client(['handler' => $this->getStack()]);
-        $security_advisories_composer_url = getenv('DRUSH_SECURITY_ADVISORIES_URL') ? getenv('DRUSH_SECURITY_ADVISORIES_URL') : 'https://raw.githubusercontent.com/drupal-composer/drupal-security-advisories/9.x/composer.json';
+        $security_advisories_composer_url = getenv('DRUSH_SECURITY_ADVISORIES_URL') ?? 'https://raw.githubusercontent.com/drupal-composer/drupal-security-advisories/9.x/composer.json';
         $response = $client->get($security_advisories_composer_url);
         $security_advisories_composer_json = json_decode($response->getBody(), true);
         return $security_advisories_composer_json;
