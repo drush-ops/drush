@@ -960,7 +960,7 @@ are available. An exit code of 3 indicates that the check completed, and insecur
             </div>
                     <div class="method-item">
                     <h3 id="method_fetchAdvisoryComposerJson">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/pm/SecurityUpdateCommands.php#L102">at line 102</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/pm/SecurityUpdateCommands.php#L107">at line 107</a></div>
         <code>            protected        mixed
     <strong>fetchAdvisoryComposerJson</strong>()
         </code>
@@ -970,7 +970,10 @@ are available. An exit code of 3 indicates that the check completed, and insecur
             
 
         <div class="method-description">
-                            <p><p>Fetches the generated composer.json from drupal-security-advisories.</p></p>                        
+                            <p><p>Fetches the generated composer.json from drupal-security-advisories.</p></p>                <p><p>This function fetches the generated composer.json from the
+drupal-security-advisories repository or fetches it from another source
+if the environment variable DRUSH_SECURITY_ADVISORIES_URL is set. The
+environment variable is not a supported API.</p></p>        
         </div>
         <div class="tags">
             
@@ -1001,7 +1004,7 @@ are available. An exit code of 3 indicates that the check completed, and insecur
             </div>
                     <div class="method-item">
                     <h3 id="method_loadSiteComposerLock">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/pm/SecurityUpdateCommands.php#L116">at line 116</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/pm/SecurityUpdateCommands.php#L122">at line 122</a></div>
         <code>            protected        array
     <strong>loadSiteComposerLock</strong>()
         </code>
@@ -1042,7 +1045,7 @@ are available. An exit code of 3 indicates that the check completed, and insecur
             </div>
                     <div class="method-item">
                     <h3 id="method_calculateSecurityUpdates">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/pm/SecurityUpdateCommands.php#L135">at line 135</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/pm/SecurityUpdateCommands.php#L141">at line 141</a></div>
         <code>            protected        array
     <strong>calculateSecurityUpdates</strong>(array $composer_lock_data, array $security_advisories_composer_json, bool $excludeDev = false)
         </code>
@@ -1094,7 +1097,7 @@ are available. An exit code of 3 indicates that the check completed, and insecur
             </div>
                     <div class="method-item">
                     <h3 id="method_securityPhp">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/pm/SecurityUpdateCommands.php#L176">at line 176</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/pm/SecurityUpdateCommands.php#L182">at line 182</a></div>
         <code>                    <abbr title="Consolidation\OutputFormatters\StructuredData\UnstructuredData">UnstructuredData</abbr>
     <strong>securityPhp</strong>(array $options = [&#039;format&#039; =&gt; &#039;yaml&#039;, &#039;no-dev&#039; =&gt; false])
         </code>
