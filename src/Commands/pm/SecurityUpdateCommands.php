@@ -95,6 +95,11 @@ class SecurityUpdateCommands extends DrushCommands
     /**
      * Fetches the generated composer.json from drupal-security-advisories.
      *
+     * This function fetches the generated composer.json from the
+     * drupal-security-advisories repository or fetches it from another source
+     * if the environment variable DRUSH_SECURITY_ADVISORIES_URL is set. The
+     * environment variable is not a supported API.
+     *
      * @return mixed
      *
      * @throws \Exception
