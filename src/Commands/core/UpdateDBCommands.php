@@ -525,7 +525,7 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
                             $return[$module . '-post-' . $id] = [
                                 'module' => $module,
                                 'update_id' => $id,
-                                'description' => $item,
+                                'description' => trim($item),
                                 'type' => 'post-update'
                             ];
                         }
