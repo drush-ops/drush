@@ -197,7 +197,7 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
 
             $this->ensureOption('field-description', [$this, 'askFieldDescription'], false);
             $this->ensureOption('field-type', [$this, 'askFieldType'], true);
-            $this->ensureOption('field-widget', [$this, 'askFieldWidget'], true);
+            $this->ensureOption('field-widget', [$this, 'askFieldWidget'], false);
             $this->ensureOption('is-required', [$this, 'askRequired'], false);
             $this->ensureOption('is-translatable', [$this, 'askTranslatable'], false);
             $this->ensureOption('cardinality', [$this, 'askCardinality'], true);
@@ -294,7 +294,7 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
         return $this->io()->choice('Field type', $choices);
     }
 
-    protected function askFieldWidget(): string
+    protected function askFieldWidget(): ?string
     {
         $formDisplay = $this->getEntityDisplay('form');
 
@@ -309,6 +309,11 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
         $choices = [];
         $fieldType = $this->input->getOption('field-type');
         $widgets = $this->widgetPluginManager->getOptions($fieldType);
+
+        if ($widgets === []) {
+            $this->io()->comment('No widgets available for this field type. Skipping option.');
+            return null;
+        }
 
         foreach ($widgets as $name => $label) {
             $label = $this->input->getOption('show-machine-names') ? $name : $label->render();
