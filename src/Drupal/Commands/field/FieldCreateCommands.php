@@ -179,7 +179,7 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
 
             $this->ensureOption('field-label', [$this, 'askFieldLabel'], true);
             $this->ensureOption('field-description', [$this, 'askFieldDescription'], false);
-            $this->ensureOption('field-widget', [$this, 'askFieldWidget'], true);
+            $this->ensureOption('field-widget', [$this, 'askFieldWidget'], false);
             $this->ensureOption('is-required', [$this, 'askRequired'], false);
             $this->ensureOption('is-translatable', [$this, 'askTranslatable'], false);
         } else {
