@@ -7,6 +7,7 @@ use Consolidation\AnnotatedCommand\AnnotationData;
 use Drupal\Core\Database\Database;
 use Drupal\Core\Render\HtmlResponse;
 use Drupal\Core\DrupalKernel;
+use Drupal\Core\Session\AnonymousUserSession;
 use Drush\Config\ConfigLocator;
 use Drush\Drupal\DrushLoggerServiceProvider;
 use Drush\Drupal\DrushServiceModifier;
