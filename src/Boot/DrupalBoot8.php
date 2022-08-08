@@ -248,6 +248,9 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
 
         parent::bootstrapDrupalFull($manager);
         $this->addDrupalModuleDrushCommands($manager);
+
+        // Set a default account to make sure the correct timezone is set
+        $this->kernel->getContainer()->get('current_user')->setAccount(new AnonymousUserSession());
     }
 
     public function addDrupalModuleDrushCommands($manager): void
