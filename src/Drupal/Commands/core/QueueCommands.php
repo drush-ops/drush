@@ -14,6 +14,7 @@ use Drupal\Core\Queue\QueueWorkerManagerInterface;
 use Drupal\Core\Queue\RequeueException;
 use Drupal\Core\Queue\SuspendQueueException;
 use Drush\Commands\DrushCommands;
+use Drupal\Core\Queue\QueueGarbageCollectionInterface;
 
 class QueueCommands extends DrushCommands
 {
@@ -70,6 +71,10 @@ class QueueCommands extends DrushCommands
         $count = 0;
         $remaining = $time_limit;
         $lease_time = $options['lease-time'] ?? $info['cron']['time'] ?? 30;
+
+        if ($queue instanceof QueueGarbageCollectionInterface) {
+            $queue->garbageCollection();
+        }
 
         while ((!$time_limit || $remaining > 0) && (!$items_limit || $count < $items_limit) && ($item = $queue->claimItem($lease_time))) {
             try {
