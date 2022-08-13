@@ -10,9 +10,10 @@ services:
       -  { name: drush.command }
   config.export.commands:
     class: \Drush\Drupal\Commands\config\ConfigExportCommands
-    arguments: ['@config.manager', '@config.storage', '@config.storage.sync']
+    arguments: ['@config.manager', '@config.storage']
     calls:
       - [setExportStorage, ['@?config.storage.export']]
+      - [setConfigStorageSync, ['@?config.storage.sync']]
     tags:
       -  { name: drush.command }
   config.import.commands:
@@ -20,7 +21,6 @@ services:
     arguments:
       - '@config.manager'
       - '@config.storage'
-      - '@config.storage.sync'
       - '@cache.config'
       - '@module_handler'
       - '@event_dispatcher'
@@ -32,5 +32,6 @@ services:
       - '@extension.list.module'
     calls:
       - [setImportTransformer, ['@?config.import_transformer']]
+      - [setConfigStorageSync, ['@?config.storage.sync']]
     tags:
       -  { name: drush.command }
