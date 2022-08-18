@@ -23,7 +23,7 @@ class DrushStyle extends SymfonyStyle
         return parent::confirm($question, $default);
     }
 
-    public function choice(string $question, array $choices, mixed $default = null): mixed
+    public function choice(string $question, array $choices, mixed $default = null, bool $multiSelect = false): mixed
     {
         // Display the choices without their keys.
         $choices_values = array_values($choices);
