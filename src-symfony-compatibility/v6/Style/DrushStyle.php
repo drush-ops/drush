@@ -27,7 +27,7 @@ class DrushStyle extends SymfonyStyle
     {
         // Display the choices without their keys.
         $choices_values = array_values($choices);
-        $return = parent::choice($question, $choices_values, $default);
+        $return = parent::choice($question, $choices_values, $default, $multiSelect);
 
         return array_search($return, $choices);
     }
