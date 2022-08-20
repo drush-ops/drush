@@ -50,6 +50,7 @@ class StatusCommands extends DrushCommands implements SiteAliasManagerAwareInter
      *   php-bin: PHP binary
      *   php-conf: PHP config
      *   php-os: PHP OS
+     *   php-version: PHP version
      *   drush-script: Drush script
      *   drush-version: Drush version
      *   drush-temp: Drush temp
@@ -70,7 +71,7 @@ class StatusCommands extends DrushCommands implements SiteAliasManagerAwareInter
      *   files-path: Files, Public
      *   temp-path: Files, Temp
      *   %paths: Other paths
-     * @default-fields drupal-version,uri,db-driver,db-hostname,db-port,db-username,db-name,db-status,bootstrap,theme,admin-theme,php-bin,php-conf,php-os,drush-script,drush-version,drush-temp,drush-conf,install-profile,root,site,files,private,temp
+     * @default-fields drupal-version,uri,db-driver,db-hostname,db-port,db-username,db-name,db-status,bootstrap,theme,admin-theme,php-bin,php-conf,php-os,php-version,drush-script,drush-version,drush-temp,drush-conf,install-profile,root,site,files,private,temp
      * @pipe-format json
      * @hidden-options project
      * @bootstrap max
@@ -133,6 +134,7 @@ class StatusCommands extends DrushCommands implements SiteAliasManagerAwareInter
         }
         $status_table['php-bin'] = Path::canonicalize(PHP_BINARY);
         $status_table['php-os'] = PHP_OS;
+        $status_table['php-version'] = PHP_VERSION;
         if ($phpIniFiles = EditCommands::phpIniFiles()) {
             $status_table['php-conf'] = array_map('Webmozart\PathUtil\Path::canonicalize', $phpIniFiles);
         }
