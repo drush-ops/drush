@@ -194,7 +194,9 @@ class DeployHookCommands extends DrushCommands implements SiteAliasManagerAwareI
                 Drush::logger()->error($e->getMessage());
 
                 $variables = Error::decodeException($e);
-                unset($variables['backtrace']);
+                $variables = array_filter($variables, function ($key) {
+                    return $key[0] == '@' || $key[0] == '%';
+                }, ARRAY_FILTER_USE_KEY);
                 // On windows there is a problem with json encoding a string with backslashes.
                 $variables['%file'] = strtr($variables['%file'], [DIRECTORY_SEPARATOR => '/']);
                 $ret['#abort'] = [
