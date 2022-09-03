@@ -7,6 +7,7 @@ use Consolidation\AnnotatedCommand\AnnotationData;
 use Drupal\Core\Database\Database;
 use Drupal\Core\Render\HtmlResponse;
 use Drupal\Core\DrupalKernel;
+use Drupal\Core\Session\AnonymousUserSession;
 use Drush\Config\ConfigLocator;
 use Drush\Drupal\DrushLoggerServiceProvider;
 use Drush\Drupal\DrushServiceModifier;
@@ -248,6 +249,9 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
 
         parent::bootstrapDrupalFull($manager);
         $this->addDrupalModuleDrushCommands($manager);
+
+        // Set a default account to make sure the correct timezone is set
+        $this->kernel->getContainer()->get('current_user')->setAccount(new AnonymousUserSession());
     }
 
     public function addDrupalModuleDrushCommands($manager): void
