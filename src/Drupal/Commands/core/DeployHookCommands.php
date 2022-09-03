@@ -174,7 +174,7 @@ class DeployHookCommands extends DrushCommands implements SiteAliasManagerAwareI
         // Module names can include '_deploy', so deploy functions like
         // module_deploy_deploy_name() are ambiguous. Check every occurrence.
         $components = explode('_', $function);
-        foreach (array_keys($components, 'deploy', TRUE) as $position) {
+        foreach (array_keys($components, 'deploy', true) as $position) {
             $module = implode('_', array_slice($components, 0, $position));
             $name = implode('_', array_slice($components, $position + 1));
             $filename = $module . '.deploy';
