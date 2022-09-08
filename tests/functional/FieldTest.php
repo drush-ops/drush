@@ -3,7 +3,7 @@
 namespace Unish;
 
 use Drupal\Core\Field\FieldStorageDefinitionInterface;
-use Webmozart\PathUtil\Path;
+use Drush\PathUtil\Path;
 
 /**
  * @group commands

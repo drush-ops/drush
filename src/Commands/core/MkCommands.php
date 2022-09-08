@@ -19,7 +19,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Yaml\Yaml;
-use Webmozart\PathUtil\Path;
+use Drush\PathUtil\Path;
 
 class MkCommands extends DrushCommands implements SiteAliasManagerAwareInterface, AutoloaderAwareInterface
 {

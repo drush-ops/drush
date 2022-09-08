@@ -14,7 +14,7 @@ use Symfony\Component\Process\Exception\ProcessTimedOutException;
 use Symfony\Component\Process\Process;
 use Unish\Controllers\RuntimeController;
 use Drush\TestTraits\OutputUtilsTrait;
-use Webmozart\PathUtil\Path;
+use Drush\PathUtil\Path;
 
 /**
  * UnishIntegrationTestCase will prepare a single Drupal site and

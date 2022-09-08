@@ -5,7 +5,7 @@ namespace Unish;
 use PharData;
 use Symfony\Component\Process\Process;
 use Unish\Utils\FSUtils;
-use Webmozart\PathUtil\Path;
+use Drush\PathUtil\Path;
 
 /**
  * @group slow

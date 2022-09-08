@@ -4,7 +4,7 @@ namespace Unish;
 
 use Composer\Semver\Comparator;
 use Drupal\Core\Serialization\Yaml;
-use Webmozart\PathUtil\Path;
+use Drush\PathUtil\Path;
 
 /**
  * Tests for Configuration Management commands for D8+.

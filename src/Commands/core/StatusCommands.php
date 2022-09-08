@@ -15,7 +15,7 @@ use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
 use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
 use Consolidation\OutputFormatters\Options\FormatterOptions;
 use Consolidation\AnnotatedCommand\CommandData;
-use Webmozart\PathUtil\Path;
+use Drush\PathUtil\Path;
 
 class StatusCommands extends DrushCommands implements SiteAliasManagerAwareInterface
 {
@@ -136,18 +136,18 @@ class StatusCommands extends DrushCommands implements SiteAliasManagerAwareInter
         $status_table['php-os'] = PHP_OS;
         $status_table['php-version'] = PHP_VERSION;
         if ($phpIniFiles = EditCommands::phpIniFiles()) {
-            $status_table['php-conf'] = array_map('Webmozart\PathUtil\Path::canonicalize', $phpIniFiles);
+            $status_table['php-conf'] = array_map('Drush\PathUtil\Path::canonicalize', $phpIniFiles);
         }
         $status_table['drush-script'] = Path::canonicalize($this->getConfig()->get('runtime.drush-script'));
         $status_table['drush-version'] = Drush::getVersion();
         $status_table['drush-temp'] = Path::canonicalize($this->getConfig()->tmp());
-        $status_table['drush-conf'] = array_map('Webmozart\PathUtil\Path::canonicalize', $this->getConfig()->configPaths());
+        $status_table['drush-conf'] = array_map('Drush\PathUtil\Path::canonicalize', $this->getConfig()->configPaths());
         // List available alias files
         $alias_files = $this->siteAliasManager()->listAllFilePaths();
         sort($alias_files);
         $status_table['drush-alias-files'] = $alias_files;
         $alias_searchpaths = $this->siteAliasManager()->searchLocations();
-        $status_table['alias-searchpaths'] = array_map('Webmozart\PathUtil\Path::canonicalize', $alias_searchpaths);
+        $status_table['alias-searchpaths'] = array_map('Drush\PathUtil\Path::canonicalize', $alias_searchpaths);
 
         $paths = self::pathAliases($options, $boot_manager, $boot_object);
         if (!empty($paths)) {
@@ -163,7 +163,7 @@ class StatusCommands extends DrushCommands implements SiteAliasManagerAwareInter
         // Store the paths into the '%paths' index; this will be
         // used by other code, but will not be included in the default output
         // of the drush status command.
-        $status_table['%paths'] = array_map('Webmozart\PathUtil\Path::canonicalize', array_filter($paths));
+        $status_table['%paths'] = array_map('Drush\PathUtil\Path::canonicalize', array_filter($paths));
 
         return $status_table;
     }

@@ -25,7 +25,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\ConsoleOutputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Yaml\Parser;
-use Webmozart\PathUtil\Path;
+use Drush\PathUtil\Path;
 
 class ConfigCommands extends DrushCommands implements StdinAwareInterface, SiteAliasManagerAwareInterface
 {

@@ -3,7 +3,7 @@
 namespace Unish;
 
 use Symfony\Component\Filesystem\Filesystem;
-use Webmozart\PathUtil\Path;
+use Drush\PathUtil\Path;
 
 /**
  * Helper for installing testing modules.

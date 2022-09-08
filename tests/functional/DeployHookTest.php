@@ -2,7 +2,7 @@
 
 namespace Unish;
 
-use Webmozart\PathUtil\Path;
+use Drush\PathUtil\Path;
 
 /**
  *  @group slow

@@ -5,7 +5,7 @@ use Drush\Config\Environment;
 use Drush\Preflight\Preflight;
 use Drush\Runtime\Runtime;
 use Drush\Runtime\DependencyInjection;
-use Webmozart\PathUtil\Path;
+use Drush\PathUtil\Path;
 
 /**
  * This script runs Drush.

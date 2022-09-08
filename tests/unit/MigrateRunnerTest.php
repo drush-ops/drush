@@ -8,7 +8,7 @@ use Drupal\migrate\Plugin\MigrationInterface;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Unish\TestSqlIdMap;
-use Webmozart\PathUtil\Path;
+use Drush\PathUtil\Path;
 
 class MigrateRunnerTest extends TestCase
 {

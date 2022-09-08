@@ -6,7 +6,7 @@ use Drush\Drush;
 use Drush\Sql\SqlBase;
 use finfo;
 use Symfony\Component\Filesystem\Filesystem;
-use Webmozart\PathUtil\Path;
+use Drush\PathUtil\Path;
 
 class FsUtils
 {

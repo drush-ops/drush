@@ -7,7 +7,7 @@ use Drush\Drush;
 use Drupal\Core\Url;
 use Drush\Commands\DrushCommands;
 use Drush\Exec\ExecTrait;
-use Webmozart\PathUtil\Path;
+use Drush\PathUtil\Path;
 
 class RunserverCommands extends DrushCommands
 {

@@ -4,7 +4,7 @@ namespace Unish;
 
 use Drupal\Core\Language\Language;
 use Drupal\language\Entity\ConfigurableLanguage;
-use Webmozart\PathUtil\Path;
+use Drush\PathUtil\Path;
 
 /**
  *  @group slow

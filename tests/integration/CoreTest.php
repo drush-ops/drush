@@ -3,7 +3,7 @@
 namespace Unish;
 
 use Symfony\Component\Yaml\Yaml;
-use Webmozart\PathUtil\Path;
+use Drush\PathUtil\Path;
 
 /**
  * Tests for core commands.

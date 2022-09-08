@@ -50,7 +50,7 @@
     "symfony/var-dumper": "^4.0 || ^5.0 || ^6.0",
     "symfony/yaml": "^4.0 || ^5.0 || ^6.0",
     "webflo/drupal-finder": "^1.2",
-    "webmozart/path-util": "^2.1.0"
+    "webmozart/assert": "^1.0"
   },
   "require-dev": {
     "composer/installers": "^1.7",

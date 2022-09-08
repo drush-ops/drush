@@ -21,7 +21,7 @@ use Robo\Common\IO;
 use Symfony\Component\Console\Input\InputOption;
 use Consolidation\SiteProcess\ProcessManagerAwareTrait;
 use Consolidation\SiteProcess\ProcessManagerAwareInterface;
-use Webmozart\PathUtil\Path;
+use Drush\PathUtil\Path;
 
 abstract class DrushCommands implements IOAwareInterface, LoggerAwareInterface, ConfigAwareInterface, ProcessManagerAwareInterface
 {

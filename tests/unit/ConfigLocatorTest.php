@@ -3,7 +3,7 @@
 namespace Drush\Config;
 
 use PHPUnit\Framework\TestCase;
-use Webmozart\PathUtil\Path;
+use Drush\PathUtil\Path;
 
 /**
  * Test the config loader. Also exercises the EnvironmentConfigLoader.

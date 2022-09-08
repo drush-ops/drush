@@ -22,7 +22,7 @@ use Robo\ClassDiscovery\RelativeNamespaceDiscovery;
 use Symfony\Component\Console\Helper\HelperSet;
 use Symfony\Component\Filesystem\Filesystem;
 use Twig\Loader\FilesystemLoader;
-use Webmozart\PathUtil\Path;
+use Drush\PathUtil\Path;
 
 class ApplicationFactory implements AutoloaderAwareInterface
 {

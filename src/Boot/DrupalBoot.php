@@ -3,7 +3,7 @@
 namespace Drush\Boot;
 
 use Drush\Drush;
-use Webmozart\PathUtil\Path;
+use Drush\PathUtil\Path;
 
 abstract class DrupalBoot extends BaseBoot
 {

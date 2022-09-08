@@ -2,7 +2,7 @@
 
 namespace Drush\Preflight;
 
-use Webmozart\PathUtil\Path;
+use Drush\PathUtil\Path;
 
 /**
  * RedispatchToSiteLocal forces an `exec` to the site-local Drush if it

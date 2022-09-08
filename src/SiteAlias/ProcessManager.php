@@ -9,7 +9,7 @@ use Consolidation\SiteProcess\SiteProcess;
 use Drush\Drush;
 use Drush\Style\DrushStyle;
 use Symfony\Component\Process\Process;
-use Webmozart\PathUtil\Path;
+use Drush\PathUtil\Path;
 
 /**
  * The Drush ProcessManager adds a few Drush-specific service methods.

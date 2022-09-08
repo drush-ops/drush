@@ -20,7 +20,7 @@ use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Yaml\Yaml;
 use Traversable;
-use Webmozart\PathUtil\Path;
+use Drush\PathUtil\Path;
 
 class ArchiveDumpCommands extends DrushCommands
 {

@@ -3,7 +3,7 @@
 namespace Unish\Utils;
 
 use Drush\Config\Environment;
-use Webmozart\PathUtil\Path;
+use Drush\PathUtil\Path;
 
 trait Fixtures
 {

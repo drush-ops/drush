@@ -8,7 +8,7 @@
 namespace Unish;
 
 use Drush\Sql\SqlBase;
-use Webmozart\PathUtil\Path;
+use Drush\PathUtil\Path;
 
 /**
  * @group commands

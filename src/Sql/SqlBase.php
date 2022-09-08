@@ -10,7 +10,7 @@ use Drush\Config\ConfigAwareTrait;
 use Robo\Contract\ConfigAwareInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Process\Process;
-use Webmozart\PathUtil\Path;
+use Drush\PathUtil\Path;
 use Consolidation\Config\Util\Interpolator;
 
 /**
