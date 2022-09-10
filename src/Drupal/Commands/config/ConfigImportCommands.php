@@ -81,7 +81,10 @@ class ConfigImportCommands extends DrushCommands
         return $this->configStorageSync;
     }
 
-    public function setConfigStorageSync(StorageInterface|null $syncStorage): void
+    /**
+     * @param StorageInterface|null $syncStorage
+     */
+    public function setConfigStorageSync($syncStorage): void
     {
         $this->configStorageSync = $syncStorage;
     }
