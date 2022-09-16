@@ -61,14 +61,14 @@ class Commandfiles implements CommandfilesInterface {
 	    if ($load_command) {
 	      $this->cache[$module_versionless] = $commandfile;
 
-        // Avoid problems with relative paths when drush is a phar.
-        $phar_path = class_exists('Phar') ? \Phar::running(FALSE) : '';
-        if ($phar_path && stripos($commandfile, 'phar://') !== 0 && strpos($commandfile, DIRECTORY_SEPARATOR) !== 0) {
-          $full_path = DRUPAL_ROOT . DIRECTORY_SEPARATOR . $commandfile;
-          if (file_exists($full_path)) {
-            $commandfile = $full_path;
-          }
-        }
+	      // Avoid problems with relative paths when drush is a phar.
+	      $phar_path = class_exists('Phar') ? \Phar::running(FALSE) : '';
+	      if ($phar_path && stripos($commandfile, 'phar://') !== 0 && strpos($commandfile, DIRECTORY_SEPARATOR) !== 0) {
+	        $full_path = DRUPAL_ROOT . DIRECTORY_SEPARATOR . $commandfile;
+	        if (file_exists($full_path)) {
+	          $commandfile = $full_path;
+	        }
+	      }
 
 	      require_once $commandfile;
 	      unset($this->deferred[$module]);
