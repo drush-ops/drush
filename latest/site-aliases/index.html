@@ -575,6 +575,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#site-specifications" class="md-nav__link">
+    Site specifications:
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#environment-variables" class="md-nav__link">
     Environment variables
   </a>
@@ -5109,6 +5116,8 @@ See <a href="#additional-site-alias-options">Additional Site Alias Options</a> f
 <a href="../commands/site_alias-convert/">site:alias-convert</a> command.</p>
 <h3 id="altering-aliases">Altering aliases:<a class="headerlink" href="#altering-aliases" title="Permanent link">&para;</a></h3>
 <p>See <a href="https://www.drush.org/latest/examples/SiteAliasAlterCommands.php/">examples/Commands/SiteAliasAlterCommands.php</a>) for an example.</p>
+<h3 id="site-specifications">Site specifications:<a class="headerlink" href="#site-specifications" title="Permanent link">&para;</a></h3>
+<p>When a site alias name is provided on the command line, a site specification may be used instead. A site specification is a site alias that is not saved on the filesystem but instead is directly e.g. <code>drush user@server/path/to/drupal#uri core:status</code>. See <a href="https://github.com/consolidation/site-alias/blob/ef2eb7d37e59b3d837b4556d4d8070cb345b378c/src/SiteSpecParser.php#L24-L31">example site specifications</a>.</p>
 <h3 id="environment-variables">Environment variables<a class="headerlink" href="#environment-variables" title="Permanent link">&para;</a></h3>
 <p>Site aliases may reference environment variables, just like any Drush config
 file. For example, <code>${env.PROJECT_SSH_USER}</code> will be replaced by the value
@@ -5276,7 +5285,7 @@ may be specified in an alias record, as shown below.</p>
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">April 26, 2022</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">September 19, 2022</span>
       
     
   </small>
