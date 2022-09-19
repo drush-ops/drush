@@ -111,7 +111,7 @@ See [examples/Commands/SiteAliasAlterCommands.php](https://www.drush.org/latest/
 
 ### Site specifications:
 
-When a site alias name is provided on the command line, a site specification may be used instead. A site specification is a site alias that is not saved on the filesystem but instead is directly e.g. `drush user@server/path/to/drupal#uri core:status`. See [example site specifications](https://github.com/consolidation/site-alias/blob/ef2eb7d37e59b3d837b4556d4d8070cb345b378c/src/SiteSpecParser.php#L24-L31).
+When a site alias name is provided on the command line, a site specification may be used instead. A site specification is a site alias that is not saved on the filesystem but instead is provided directly e.g. `drush user@server/path/to/drupal#uri core:status`. See [example site specifications](https://github.com/consolidation/site-alias/blob/ef2eb7d37e59b3d837b4556d4d8070cb345b378c/src/SiteSpecParser.php#L24-L31).
 
 ### Environment variables
 
