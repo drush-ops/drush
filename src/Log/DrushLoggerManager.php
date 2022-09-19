@@ -9,6 +9,6 @@ class DrushLoggerManager extends LoggerManager implements SuccessInterface
 {
     public function success(string $message, array $context = array())
     {
-        $this->log(ConsoleLogLevel::SUCCESS, $message, $context);
+        $this->log(self::SUCCESS, $message, $context);
     }
 }
