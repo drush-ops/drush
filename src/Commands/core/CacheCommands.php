@@ -194,11 +194,9 @@ class CacheCommands extends DrushCommands implements CustomEventAwareInterface, 
     }
 
     /**
-     * Rebuild a Drupal 8 site.
+     * Rebuild all caches.
      *
-     * This is a copy of core/rebuild.php. Additionally
-     * it also clears Drush cache and Drupal's render cache.
-
+     * This is a copy of core/rebuild.php.
      *
      * @command cache:rebuild
      * @option cache-clear Set to 0 to suppress normal cache clearing; the caller should then clear if needed.
