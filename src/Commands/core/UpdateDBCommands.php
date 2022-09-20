@@ -2,7 +2,7 @@
 
 namespace Drush\Commands\core;
 
-use Consolidation\Log\ConsoleLogLevel;
+use Drush\Log\SuccessInterface;
 use Drush\Drupal\DrupalUtil;
 use DrushBatchContext;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
@@ -73,7 +73,7 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
                 // Caches were just cleared in updateFinished callback.
             }
 
-            $level = $success ? ConsoleLogLevel::SUCCESS : LogLevel::ERROR;
+            $level = $success ? SuccessInterface::SUCCESS : LogLevel::ERROR;
             $this->logger()->log($level, dt('Finished performing updates.'));
         } else {
             $this->logger()->success(dt('No pending updates.'));
