@@ -453,7 +453,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>                </
                 <div class="col-md-8">
                     <a href="#method_rebuild">rebuild</a>($options = [&#039;cache-clear&#039; =&gt; true])
         
-                                            <p><p>Rebuild a Drupal 8 site.</p></p>                </div>
+                                            <p><p>Rebuild all caches.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -1358,7 +1358,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_rebuild">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/core/CacheCommands.php#L209">at line 209</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/core/CacheCommands.php#L207">at line 207</a></div>
         <code>                    
     <strong>rebuild</strong>($options = [&#039;cache-clear&#039; =&gt; true])
         </code>
@@ -1368,8 +1368,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             
 
         <div class="method-description">
-                            <p><p>Rebuild a Drupal 8 site.</p></p>                <p><p>This is a copy of core/rebuild.php. Additionally
-it also clears Drush cache and Drupal's render cache.</p></p>        
+                            <p><p>Rebuild all caches.</p></p>                <p><p>This is a copy of core/rebuild.php.</p></p>        
         </div>
         <div class="tags">
                             <h4>Parameters</h4>
@@ -1392,7 +1391,7 @@ it also clears Drush cache and Drupal's render cache.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_validate">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/core/CacheCommands.php#L236">at line 236</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/core/CacheCommands.php#L234">at line 234</a></div>
         <code>                    void
     <strong>validate</strong>(<abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr> $commandData)
         </code>
@@ -1435,7 +1434,7 @@ it also clears Drush cache and Drupal's render cache.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_getTypes">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/core/CacheCommands.php#L264">at line 264</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/core/CacheCommands.php#L262">at line 262</a></div>
         <code>                    array
     <strong>getTypes</strong>($include_bootstrapped_types = false)
         </code>
@@ -1477,7 +1476,7 @@ it also clears Drush cache and Drupal's render cache.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_clearDrush">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/core/CacheCommands.php#L291">at line 291</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/core/CacheCommands.php#L289">at line 289</a></div>
         <code>        static            void
     <strong>clearDrush</strong>()
         </code>
@@ -1509,7 +1508,7 @@ it also clears Drush cache and Drupal's render cache.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_clearBins">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/core/CacheCommands.php#L305">at line 305</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/core/CacheCommands.php#L303">at line 303</a></div>
         <code>        static            void
     <strong>clearBins</strong>($args = [&#039;default&#039;])
         </code>
@@ -1551,7 +1550,7 @@ it also clears Drush cache and Drupal's render cache.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_clearThemeRegistry">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/core/CacheCommands.php#L314">at line 314</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/core/CacheCommands.php#L312">at line 312</a></div>
         <code>        static            void
     <strong>clearThemeRegistry</strong>()
         </code>
@@ -1584,7 +1583,7 @@ it also clears Drush cache and Drupal's render cache.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_clearRouter">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/core/CacheCommands.php#L319">at line 319</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/core/CacheCommands.php#L317">at line 317</a></div>
         <code>        static            void
     <strong>clearRouter</strong>()
         </code>
@@ -1617,7 +1616,7 @@ it also clears Drush cache and Drupal's render cache.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_clearCssJs">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/core/CacheCommands.php#L326">at line 326</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/core/CacheCommands.php#L324">at line 324</a></div>
         <code>        static            void
     <strong>clearCssJs</strong>()
         </code>
@@ -1650,7 +1649,7 @@ it also clears Drush cache and Drupal's render cache.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_clearRender">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/core/CacheCommands.php#L336">at line 336</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/core/CacheCommands.php#L334">at line 334</a></div>
         <code>        static            void
     <strong>clearRender</strong>()
         </code>
@@ -1682,7 +1681,7 @@ it also clears Drush cache and Drupal's render cache.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_clearPlugin">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/core/CacheCommands.php#L341">at line 341</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/core/CacheCommands.php#L339">at line 339</a></div>
         <code>        static            void
     <strong>clearPlugin</strong>()
         </code>
@@ -1715,7 +1714,7 @@ it also clears Drush cache and Drupal's render cache.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_loadDrupalAutoloader">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/core/CacheCommands.php#L349">at line 349</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/core/CacheCommands.php#L347">at line 347</a></div>
         <code>                    
     <strong>loadDrupalAutoloader</strong>($drupal_root)
         </code>
