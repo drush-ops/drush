@@ -201,7 +201,7 @@ class WatchdogCommands extends DrushCommands
      *   Delete messages with id 64.
      * @usage drush watchdog:delete "cron run succesful"
      *   Delete messages containing the string "cron run succesful".
-     * @usage drush watchdog:delete --severity=notice
+     * @usage drush watchdog:delete --severity=Notice
      *   Delete all messages with a severity of notice.
      * @usage drush watchdog:delete --type=cron
      *   Delete all messages of type cron.
