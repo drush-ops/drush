@@ -2,7 +2,7 @@
 
 namespace Drush\Drupal\Commands\core;
 
-use Consolidation\Log\ConsoleLogLevel;
+use Drush\Log\SuccessInterface;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Consolidation\OutputFormatters\StructuredData\UnstructuredListData;
 use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
@@ -135,7 +135,7 @@ class DeployHookCommands extends DrushCommands implements SiteAliasManagerAwareI
             }
         }
 
-        $level = $success ? ConsoleLogLevel::SUCCESS : LogLevel::ERROR;
+        $level = $success ? SuccessInterface::SUCCESS : LogLevel::ERROR;
         $this->logger()->log($level, dt('Finished performing deploy hooks.'));
         return $success ? self::EXIT_SUCCESS : self::EXIT_FAILURE;
     }
