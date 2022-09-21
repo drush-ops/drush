@@ -136,10 +136,17 @@ class HelpCLIFormatter implements FormatterInterface
 
     protected function cleanOptions(&$data): void
     {
+
         if (array_key_exists('options', $data)) {
             foreach ($data['options'] as $key => $option) {
+                // Remove global options.
                 if (self::isGlobalOption($key)) {
                     unset($data['options'][$key]);
+                }
+
+                // Populate missing props.
+                if ($key == 'desciption' && !isset($option[$key])) {
+                    $option[$key] = '';
                 }
             }
         }

@@ -37,7 +37,7 @@
     "consolidation/annotated-command": "^4.5.3",
     "consolidation/config": "^2",
     "consolidation/filter-via-dot-access-data": "^2",
-    "consolidation/robo": "^3.0.9 || ^4.0.0-alpha1",
+    "consolidation/robo": "^3.0.9 || ^4.0.1",
     "consolidation/site-alias": "^3.1.3",
     "consolidation/site-process": "^4.1.3 || ^5",
     "enlightn/security-checker": "^1",
