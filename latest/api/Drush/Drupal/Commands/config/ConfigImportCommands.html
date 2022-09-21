@@ -367,7 +367,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>                </
                     
                 </div>
                 <div class="col-md-8">
-                    <a href="#method___construct">__construct</a>(<abbr title="Drupal\Core\Config\ConfigManagerInterface">ConfigManagerInterface</abbr> $configManager, <abbr title="Drupal\Core\Config\StorageInterface">StorageInterface</abbr> $configStorage, <abbr title="Drupal\Core\Config\StorageInterface">StorageInterface</abbr> $configStorageSync, <abbr title="Drupal\Core\Cache\CacheBackendInterface">CacheBackendInterface</abbr> $configCache, <abbr title="Drupal\Core\Extension\ModuleHandlerInterface">ModuleHandlerInterface</abbr> $moduleHandler, $eventDispatcher, <abbr title="Drupal\Core\Lock\LockBackendInterface">LockBackendInterface</abbr> $lock, <abbr title="Drupal\Core\Config\TypedConfigManagerInterface">TypedConfigManagerInterface</abbr> $configTyped, <abbr title="Drupal\Core\Extension\ModuleInstallerInterface">ModuleInstallerInterface</abbr> $moduleInstaller, <abbr title="Drupal\Core\Extension\ThemeHandlerInterface">ThemeHandlerInterface</abbr> $themeHandler, <abbr title="Drupal\Core\StringTranslation\TranslationInterface">TranslationInterface</abbr> $stringTranslation, <abbr title="Drupal\Core\Extension\ModuleExtensionList">ModuleExtensionList</abbr> $moduleExtensionList)
+                    <a href="#method___construct">__construct</a>(<abbr title="Drupal\Core\Config\ConfigManagerInterface">ConfigManagerInterface</abbr> $configManager, <abbr title="Drupal\Core\Config\StorageInterface">StorageInterface</abbr> $configStorage, <abbr title="Drupal\Core\Cache\CacheBackendInterface">CacheBackendInterface</abbr> $configCache, <abbr title="Drupal\Core\Extension\ModuleHandlerInterface">ModuleHandlerInterface</abbr> $moduleHandler, $eventDispatcher, <abbr title="Drupal\Core\Lock\LockBackendInterface">LockBackendInterface</abbr> $lock, <abbr title="Drupal\Core\Config\TypedConfigManagerInterface">TypedConfigManagerInterface</abbr> $configTyped, <abbr title="Drupal\Core\Extension\ModuleInstallerInterface">ModuleInstallerInterface</abbr> $moduleInstaller, <abbr title="Drupal\Core\Extension\ThemeHandlerInterface">ThemeHandlerInterface</abbr> $themeHandler, <abbr title="Drupal\Core\StringTranslation\TranslationInterface">TranslationInterface</abbr> $stringTranslation, <abbr title="Drupal\Core\Extension\ModuleExtensionList">ModuleExtensionList</abbr> $moduleExtensionList)
         
                                             <p class="no-description">No description</p>
                                     </div>
@@ -467,6 +467,17 @@ DrushConfig as return type. Helps with IDE completion.</p></p>                </
                 </div>
                 <div class="col-md-8">
                     <a href="#method_getConfigStorageSync">getConfigStorageSync</a>()
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    void
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_setConfigStorageSync">setConfigStorageSync</a>(<abbr title="Drupal\Core\Config\StorageInterface">StorageInterface</abbr>|null $syncStorage)
         
                                             <p class="no-description">No description</p>
                                     </div>
@@ -819,9 +830,9 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method___construct">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/config/ConfigImportCommands.php#L164">at line 164</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/config/ConfigImportCommands.php#L172">at line 172</a></div>
         <code>                    
-    <strong>__construct</strong>(<abbr title="Drupal\Core\Config\ConfigManagerInterface">ConfigManagerInterface</abbr> $configManager, <abbr title="Drupal\Core\Config\StorageInterface">StorageInterface</abbr> $configStorage, <abbr title="Drupal\Core\Config\StorageInterface">StorageInterface</abbr> $configStorageSync, <abbr title="Drupal\Core\Cache\CacheBackendInterface">CacheBackendInterface</abbr> $configCache, <abbr title="Drupal\Core\Extension\ModuleHandlerInterface">ModuleHandlerInterface</abbr> $moduleHandler, $eventDispatcher, <abbr title="Drupal\Core\Lock\LockBackendInterface">LockBackendInterface</abbr> $lock, <abbr title="Drupal\Core\Config\TypedConfigManagerInterface">TypedConfigManagerInterface</abbr> $configTyped, <abbr title="Drupal\Core\Extension\ModuleInstallerInterface">ModuleInstallerInterface</abbr> $moduleInstaller, <abbr title="Drupal\Core\Extension\ThemeHandlerInterface">ThemeHandlerInterface</abbr> $themeHandler, <abbr title="Drupal\Core\StringTranslation\TranslationInterface">TranslationInterface</abbr> $stringTranslation, <abbr title="Drupal\Core\Extension\ModuleExtensionList">ModuleExtensionList</abbr> $moduleExtensionList)
+    <strong>__construct</strong>(<abbr title="Drupal\Core\Config\ConfigManagerInterface">ConfigManagerInterface</abbr> $configManager, <abbr title="Drupal\Core\Config\StorageInterface">StorageInterface</abbr> $configStorage, <abbr title="Drupal\Core\Cache\CacheBackendInterface">CacheBackendInterface</abbr> $configCache, <abbr title="Drupal\Core\Extension\ModuleHandlerInterface">ModuleHandlerInterface</abbr> $moduleHandler, $eventDispatcher, <abbr title="Drupal\Core\Lock\LockBackendInterface">LockBackendInterface</abbr> $lock, <abbr title="Drupal\Core\Config\TypedConfigManagerInterface">TypedConfigManagerInterface</abbr> $configTyped, <abbr title="Drupal\Core\Extension\ModuleInstallerInterface">ModuleInstallerInterface</abbr> $moduleInstaller, <abbr title="Drupal\Core\Extension\ThemeHandlerInterface">ThemeHandlerInterface</abbr> $themeHandler, <abbr title="Drupal\Core\StringTranslation\TranslationInterface">TranslationInterface</abbr> $stringTranslation, <abbr title="Drupal\Core\Extension\ModuleExtensionList">ModuleExtensionList</abbr> $moduleExtensionList)
         </code>
     </h3>
     <div class="details">    
@@ -844,11 +855,6 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
                     <tr>
                 <td><abbr title="Drupal\Core\Config\StorageInterface">StorageInterface</abbr></td>
                 <td>$configStorage</td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td><abbr title="Drupal\Core\Config\StorageInterface">StorageInterface</abbr></td>
-                <td>$configStorageSync</td>
                 <td></td>
             </tr>
                     <tr>
@@ -1227,8 +1233,51 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
 
             </div>
                     <div class="method-item">
+                    <h3 id="method_setConfigStorageSync">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/config/ConfigImportCommands.php#L87">at line 87</a></div>
+        <code>                    void
+    <strong>setConfigStorageSync</strong>(<abbr title="Drupal\Core\Config\StorageInterface">StorageInterface</abbr>|null $syncStorage)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Drupal\Core\Config\StorageInterface">StorageInterface</abbr>|null</td>
+                <td>$syncStorage</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>void</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
                     <h3 id="method_getConfigCache">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/config/ConfigImportCommands.php#L84">at line 84</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/config/ConfigImportCommands.php#L92">at line 92</a></div>
         <code>                    <abbr title="Drupal\Core\Cache\CacheBackendInterface">CacheBackendInterface</abbr>
     <strong>getConfigCache</strong>()
         </code>
@@ -1261,7 +1310,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_getModuleHandler">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/config/ConfigImportCommands.php#L89">at line 89</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/config/ConfigImportCommands.php#L97">at line 97</a></div>
         <code>                    <abbr title="Drupal\Core\Extension\ModuleHandlerInterface">ModuleHandlerInterface</abbr>
     <strong>getModuleHandler</strong>()
         </code>
@@ -1294,7 +1343,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_getEventDispatcher">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/config/ConfigImportCommands.php#L97">at line 97</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/config/ConfigImportCommands.php#L105">at line 105</a></div>
         <code>                    <abbr title="Symfony\Component\EventDispatcher\EventDispatcherInterface">EventDispatcherInterface</abbr>
     <strong>getEventDispatcher</strong>()
         </code>
@@ -1326,7 +1375,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_getLock">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/config/ConfigImportCommands.php#L102">at line 102</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/config/ConfigImportCommands.php#L110">at line 110</a></div>
         <code>                    <abbr title="Drupal\Core\Lock\LockBackendInterface">LockBackendInterface</abbr>
     <strong>getLock</strong>()
         </code>
@@ -1359,7 +1408,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_getConfigTyped">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/config/ConfigImportCommands.php#L107">at line 107</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/config/ConfigImportCommands.php#L115">at line 115</a></div>
         <code>                    <abbr title="Drupal\Core\Config\TypedConfigManagerInterface">TypedConfigManagerInterface</abbr>
     <strong>getConfigTyped</strong>()
         </code>
@@ -1392,7 +1441,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_getModuleInstaller">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/config/ConfigImportCommands.php#L112">at line 112</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/config/ConfigImportCommands.php#L120">at line 120</a></div>
         <code>                    <abbr title="Drupal\Core\Extension\ModuleInstallerInterface">ModuleInstallerInterface</abbr>
     <strong>getModuleInstaller</strong>()
         </code>
@@ -1425,7 +1474,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_getThemeHandler">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/config/ConfigImportCommands.php#L117">at line 117</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/config/ConfigImportCommands.php#L125">at line 125</a></div>
         <code>                    <abbr title="Drupal\Core\Extension\ThemeHandlerInterface">ThemeHandlerInterface</abbr>
     <strong>getThemeHandler</strong>()
         </code>
@@ -1458,7 +1507,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_getStringTranslation">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/config/ConfigImportCommands.php#L122">at line 122</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/config/ConfigImportCommands.php#L130">at line 130</a></div>
         <code>                    <abbr title="Drupal\Core\StringTranslation\TranslationInterface">TranslationInterface</abbr>
     <strong>getStringTranslation</strong>()
         </code>
@@ -1491,7 +1540,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_setImportTransformer">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/config/ConfigImportCommands.php#L127">at line 127</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/config/ConfigImportCommands.php#L135">at line 135</a></div>
         <code>                    void
     <strong>setImportTransformer</strong>(<abbr title="Drupal\Core\Config\ImportStorageTransformer">ImportStorageTransformer</abbr> $importStorageTransformer)
         </code>
@@ -1534,7 +1583,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_hasImportTransformer">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/config/ConfigImportCommands.php#L132">at line 132</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/config/ConfigImportCommands.php#L140">at line 140</a></div>
         <code>                    bool
     <strong>hasImportTransformer</strong>()
         </code>
@@ -1567,7 +1616,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_getImportTransformer">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/config/ConfigImportCommands.php#L137">at line 137</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/config/ConfigImportCommands.php#L145">at line 145</a></div>
         <code>                    <abbr title="Drush\Drupal\Commands\config\Drupal\Core\Config\ImportStorageTransformer">ImportStorageTransformer</abbr>|null
     <strong>getImportTransformer</strong>()
         </code>
@@ -1600,7 +1649,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_getModuleExtensionList">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/config/ConfigImportCommands.php#L145">at line 145</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/config/ConfigImportCommands.php#L153">at line 153</a></div>
         <code>                    <abbr title="Drupal\Core\Extension\ModuleExtensionList">ModuleExtensionList</abbr>
     <strong>getModuleExtensionList</strong>()
         </code>
@@ -1633,7 +1682,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_import">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/config/ConfigImportCommands.php#L211">at line 211</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/config/ConfigImportCommands.php#L217">at line 217</a></div>
         <code>                    bool|void
     <strong>import</strong>(array $options = [&#039;source&#039; =&gt; self::REQ, &#039;partial&#039; =&gt; false, &#039;diff&#039; =&gt; false])
         </code>
@@ -1688,7 +1737,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_doImport">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/config/ConfigImportCommands.php#L269">at line 269</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/config/ConfigImportCommands.php#L275">at line 275</a></div>
         <code>                    void
     <strong>doImport</strong>($storage_comparer)
         </code>
@@ -1731,7 +1780,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_validate">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/config/ConfigImportCommands.php#L328">at line 328</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/config/ConfigImportCommands.php#L334">at line 334</a></div>
         <code>                    <abbr title="Consolidation\AnnotatedCommand\CommandError">CommandError</abbr>|null
     <strong>validate</strong>(<abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr> $commandData)
         </code>
