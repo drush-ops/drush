@@ -68,17 +68,21 @@ class ConfigExportCommands extends DrushCommands
         return $this->configStorageSync;
     }
 
+    public function setConfigStorageSync(?StorageInterface $syncStorage): void
+    {
+        $this->configStorageSync = $syncStorage;
+    }
+
     /**
      * @param ConfigManagerInterface $configManager
      * @param StorageInterface $configStorage
      * @param StorageInterface $configStorageSync
      */
-    public function __construct(ConfigManagerInterface $configManager, StorageInterface $configStorage, StorageInterface $configStorageSync)
+    public function __construct(ConfigManagerInterface $configManager, StorageInterface $configStorage)
     {
         parent::__construct();
         $this->configManager = $configManager;
         $this->configStorage = $configStorage;
-        $this->configStorageSync = $configStorageSync;
     }
 
     /**

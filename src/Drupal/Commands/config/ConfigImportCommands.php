@@ -81,6 +81,14 @@ class ConfigImportCommands extends DrushCommands
         return $this->configStorageSync;
     }
 
+    /**
+     * @param StorageInterface|null $syncStorage
+     */
+    public function setConfigStorageSync($syncStorage): void
+    {
+        $this->configStorageSync = $syncStorage;
+    }
+
     public function getConfigCache(): CacheBackendInterface
     {
         return $this->configCache;
@@ -164,7 +172,6 @@ class ConfigImportCommands extends DrushCommands
     public function __construct(
         ConfigManagerInterface $configManager,
         StorageInterface $configStorage,
-        StorageInterface $configStorageSync,
         CacheBackendInterface $configCache,
         ModuleHandlerInterface $moduleHandler,
         // Omit type hint as it changed in https://www.drupal.org/project/drupal/issues/3161983
@@ -179,7 +186,6 @@ class ConfigImportCommands extends DrushCommands
         parent::__construct();
         $this->configManager = $configManager;
         $this->configStorage = $configStorage;
-        $this->configStorageSync = $configStorageSync;
         $this->configCache = $configCache;
         $this->moduleHandler = $moduleHandler;
         $this->eventDispatcher = $eventDispatcher;

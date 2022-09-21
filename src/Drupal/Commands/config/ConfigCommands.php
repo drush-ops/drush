@@ -2,6 +2,7 @@
 
 namespace Drush\Drupal\Commands\config;
 
+use Drupal\Core\Config\ConfigDirectoryNotDefinedException;
 use Drupal\Core\Config\ImportStorageTransformer;
 use Consolidation\AnnotatedCommand\CommandError;
 use Consolidation\AnnotatedCommand\CommandData;
@@ -389,7 +390,10 @@ class ConfigCommands extends DrushCommands implements StdinAwareInterface, SiteA
             }
         } else {
             // If a directory isn't specified, use default sync directory.
-            $return = Settings::get('config_sync_directory');
+            $return = Settings::get('config_sync_directory', false);
+            if ($return === false) {
+                throw new ConfigDirectoryNotDefinedException('The config sync directory is not defined in $settings["config_sync_directory"]');
+            }
         }
         return Path::canonicalize($return);
     }
