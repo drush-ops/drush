@@ -5021,7 +5021,7 @@
 <ol>
 <li>Run <code>drush generate drush-command-file</code>.</li>
 <li>Drush will prompt for the machine name of the module that should "own" the file.<ol>
-<li>(optional) Drush will also prompt for the path to a legacy command file to port. See <a href="https://weitzman.github.io/blog/port-to-drush9">tips on porting commands to Drush 10</a></li>
+<li>(optional) Drush will also prompt for the path to a legacy command file to port. See <a href="https://weitzman.github.io/blog/port-to-drush9">tips on porting commands to Drush 11</a></li>
 <li>The module selected must already exist and be enabled. Use <code>drush generate module-standard</code> to create a new module.</li>
 </ol>
 </li>
@@ -5078,7 +5078,7 @@
 <div class="highlight"><pre><span></span><code><span class="w">  </span><span class="nt">&quot;extra&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
 <span class="w">    </span><span class="nt">&quot;drush&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
 <span class="w">      </span><span class="nt">&quot;services&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="nt">&quot;drush.services.yml&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^9&quot;</span><span class="w"></span>
+<span class="w">        </span><span class="nt">&quot;drush.services.yml&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^11&quot;</span><span class="w"></span>
 <span class="w">      </span><span class="p">}</span><span class="w"></span>
 <span class="w">    </span><span class="p">}</span><span class="w"></span>
 <span class="w">  </span><span class="p">}</span><span class="w"></span>
@@ -5087,15 +5087,14 @@ If for some reason you need to load different services for different versions of
 <div class="highlight"><pre><span></span><code><span class="w">  </span><span class="nt">&quot;extra&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
 <span class="w">    </span><span class="nt">&quot;drush&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
 <span class="w">      </span><span class="nt">&quot;services&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="nt">&quot;drush-9-99.services.yml&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^9.99&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">        </span><span class="nt">&quot;drush.services.yml&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^9&quot;</span><span class="w"></span>
+<span class="w">        </span><span class="nt">&quot;drush-11-99.services.yml&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^11.99&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="nt">&quot;drush.services.yml&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^11&quot;</span><span class="w"></span>
 <span class="w">      </span><span class="p">}</span><span class="w"></span>
 <span class="w">    </span><span class="p">}</span><span class="w"></span>
 <span class="w">  </span><span class="p">}</span><span class="w"></span>
 </code></pre></div>
-In this example, the file <code>drush-9-99.services.yml</code> loads commandfile classes that require features only available in Drush 9.99 and later, and drush.services.yml loads an older commandfile implementation for earlier versions of Drush.</p>
-<p>It is also possible to use <a href="https://getcomposer.org/doc/articles/versions.md#version-range">version ranges</a> to exactly specify which version of Drush the services file should be used with (e.g. <code>"drush.services.yml": "&gt;=9 &lt;9.99"</code>).</p>
-<p>In Drush 9, the default services file, <code>drush.services.yml</code>, will be used in instances where there is no <code>services</code> section in the Drush extras of the project's composer.json file. In Drush 10, however, the services section must exist, and must name the services file to be used. If a future Drush extension is written such that it only works with Drush 10 and later, then its entry would read <code>"drush.services.yml": "^10"</code>, and Drush 9 would not load the extension's commands. It is all the same recommended that Drush 9 extensions explicitly declare their services file with an appropriate version constraint.</p>
+In this example, the file <code>drush-11-99.services.yml</code> loads commandfile classes that require features only available in Drush 11.99 and later, and drush.services.yml loads an older commandfile implementation for earlier versions of Drush.</p>
+<p>It is also possible to use <a href="https://getcomposer.org/doc/articles/versions.md#version-range">version ranges</a> to exactly specify which version of Drush the services file should be used with (e.g. <code>"drush.services.yml": "&gt;=11 &lt;11.99"</code>).</p>
 <h2 id="altering-drush-command-info">Altering Drush Command Info<a class="headerlink" href="#altering-drush-command-info" title="Permanent link">&para;</a></h2>
 <p>Drush command info (annotations/attributes) can be altered from other modules. This is done by creating and registering 'command info alterers'. Alterers are class services that are able to intercept and manipulate an existing command annotation.</p>
 <p>In order to alter an existing command info, follow the steps below:</p>
@@ -5136,7 +5135,7 @@ In this example, the file <code>drush-9-99.services.yml</code> loads commandfile
 <span class="w">    </span><span class="p">}</span><span class="w"></span>
 </code></pre></div>
 Using <code>require</code> in place of <code>conflict</code> is not recommended.</p>
-<p>A site-wide commandfile should have tests that run with each (major) version of Drush that is supported. You may model your test suite after the <a href="https://github.com/drush-ops/example-drush-extension">example drush extension</a> project, which works on Drush ^8.2 and ^9.6.</p>
+<p>A site-wide commandfile should have tests that run with each (major) version of Drush that is supported. You may model your test suite after the <a href="https://github.com/drush-ops/example-drush-extension">example drush extension</a> project.</p>
 <h2 id="global-drush-commands">Global Drush Commands<a class="headerlink" href="#global-drush-commands" title="Permanent link">&para;</a></h2>
 <p>Commandfiles that are not part of any Drupal site are called 'global' commandfiles.</p>
 <h3 id="commands-discovered-by-configuration">Commands discovered by configuration<a class="headerlink" href="#commands-discovered-by-configuration" title="Permanent link">&para;</a></h3>
@@ -5188,7 +5187,7 @@ With this configuration in place, global commands may be placed as described in 
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">May 19, 2022</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">September 21, 2022</span>
       
     
   </small>
