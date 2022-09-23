@@ -139,14 +139,14 @@ class HelpCLIFormatter implements FormatterInterface
 
         if (array_key_exists('options', $data)) {
             foreach ($data['options'] as $key => $option) {
+                // Populate any missing description.
+                if (!array_key_exists('description', $option)) {
+                    $data['options'][$key]['description'] = '';
+                }
+
                 // Remove global options.
                 if (self::isGlobalOption($key)) {
                     unset($data['options'][$key]);
-                }
-
-                // Populate missing props.
-                if ($key == 'desciption' && !isset($option[$key])) {
-                    $option[$key] = '';
                 }
             }
         }
