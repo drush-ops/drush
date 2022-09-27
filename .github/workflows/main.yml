@@ -8,6 +8,9 @@ on:
 
 jobs:
   build:
+    permissions:
+      contents: write # for git push
+
     name: Build and Push
     runs-on: ubuntu-latest
     steps:
