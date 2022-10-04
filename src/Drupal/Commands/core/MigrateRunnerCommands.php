@@ -6,7 +6,7 @@ use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\AnnotatedCommand\CommandError;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Drupal\Component\Plugin\Exception\PluginException;
-use Drupal\Core\Datetime\DateFormatter;
+use Drupal\Core\Datetime\DateFormatterInterface;
 use Drupal\Core\KeyValueStore\KeyValueFactoryInterface;
 use Drupal\Core\KeyValueStore\KeyValueStoreInterface;
 use Drupal\migrate\Exception\RequirementsException;
@@ -35,7 +35,7 @@ class MigrateRunnerCommands extends DrushCommands
     /**
      * Date formatter service.
      */
-    protected DateFormatter $dateFormatter;
+    protected DateFormatterInterface $DateFormatterInterface;
 
     /**
      * The key-value store service.
@@ -50,17 +50,17 @@ class MigrateRunnerCommands extends DrushCommands
     /**
      * Constructs a new class instance.
      *
-     * @param DateFormatter $dateFormatter
+     * @param DateFormatterInterface $DateFormatterInterface
      *   Date formatter service.
      * @param KeyValueFactoryInterface $keyValueFactory
      *   The key-value factory service.
      * @param MigrationPluginManagerInterface|null $migrationPluginManager
      *   The migration plugin manager service.
      */
-    public function __construct(DateFormatter $dateFormatter, KeyValueFactoryInterface $keyValueFactory, ?MigrationPluginManagerInterface $migrationPluginManager = null)
+    public function __construct(DateFormatterInterface $DateFormatterInterface, KeyValueFactoryInterface $keyValueFactory, ?MigrationPluginManagerInterface $migrationPluginManager = null)
     {
         parent::__construct();
-        $this->dateFormatter = $dateFormatter;
+        $this->DateFormatterInterface = $DateFormatterInterface;
         $this->keyValue = $keyValueFactory->get('migrate_last_imported');
         $this->migrationPluginManager = $migrationPluginManager;
     }
