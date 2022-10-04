@@ -35,7 +35,7 @@ class MigrateRunnerCommands extends DrushCommands
     /**
      * Date formatter service.
      */
-    protected DateFormatterInterface $DateFormatterInterface;
+    protected DateFormatterInterface $dateFormatter;
 
     /**
      * The key-value store service.
@@ -50,17 +50,17 @@ class MigrateRunnerCommands extends DrushCommands
     /**
      * Constructs a new class instance.
      *
-     * @param DateFormatterInterface $DateFormatterInterface
+     * @param DateFormatterInterface $dateFormatter
      *   Date formatter service.
      * @param KeyValueFactoryInterface $keyValueFactory
      *   The key-value factory service.
      * @param MigrationPluginManagerInterface|null $migrationPluginManager
      *   The migration plugin manager service.
      */
-    public function __construct(DateFormatterInterface $DateFormatterInterface, KeyValueFactoryInterface $keyValueFactory, ?MigrationPluginManagerInterface $migrationPluginManager = null)
+    public function __construct(DateFormatterInterface $dateFormatter, KeyValueFactoryInterface $keyValueFactory, ?MigrationPluginManagerInterface $migrationPluginManager = null)
     {
         parent::__construct();
-        $this->DateFormatterInterface = $DateFormatterInterface;
+        $this->dateFormatter = $dateFormatter;
         $this->keyValue = $keyValueFactory->get('migrate_last_imported');
         $this->migrationPluginManager = $migrationPluginManager;
     }
