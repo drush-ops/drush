@@ -44,6 +44,8 @@ class EntityCommands extends DrushCommands
      *   Delete all nodes except node 9, 14 and 81.
      * @usage drush entity:delete user
      *   Delete all users except uid=1.
+     * @usage drush entity:delete taxonomy_term --bundle=tags
+     *   Delete all temrs of Tags vocabulary.
      * @usage drush entity:delete node --chunks=5
      *   Delete all node entities in steps of 5.
      *
