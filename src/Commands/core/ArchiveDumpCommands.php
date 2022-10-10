@@ -17,10 +17,10 @@ use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Filesystem\Path;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Yaml\Yaml;
 use Traversable;
-use Webmozart\PathUtil\Path;
 
 class ArchiveDumpCommands extends DrushCommands
 {

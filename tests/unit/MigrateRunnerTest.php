@@ -7,8 +7,8 @@ use Drupal\Core\Database\Driver\sqlite\Connection;
 use Drupal\migrate\Plugin\MigrationInterface;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\Filesystem\Path;
 use Unish\TestSqlIdMap;
-use Webmozart\PathUtil\Path;
 
 class MigrateRunnerTest extends TestCase
 {

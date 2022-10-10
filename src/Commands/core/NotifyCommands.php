@@ -6,7 +6,7 @@ use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\SiteProcess\Util\Escape;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
-use Webmozart\PathUtil\Path;
+use Symfony\Component\Filesystem\Path;
 
 class NotifyCommands extends DrushCommands
 {

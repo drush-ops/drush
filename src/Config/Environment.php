@@ -6,7 +6,7 @@ use Composer\Autoload\ClassLoader;
 use Drush\Drush;
 use Drush\Utils\FsUtils;
 use Symfony\Component\Console\Terminal;
-use Webmozart\PathUtil\Path;
+use Symfony\Component\Filesystem\Path;
 
 /**
  * Store information about the environment

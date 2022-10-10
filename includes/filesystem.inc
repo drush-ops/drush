@@ -7,7 +7,7 @@
 use Drush\Drush;
 use Drush\Sql\SqlBase;
 use Symfony\Component\Filesystem\Filesystem;
-use Webmozart\PathUtil\Path;
+use Symfony\Component\Filesystem\Path;
 
 /**
  * @defgroup filesystemfunctions Filesystem convenience functions.
