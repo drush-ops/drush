@@ -11,7 +11,7 @@ use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Enlightn\SecurityChecker\SecurityChecker;
 use Exception;
-use Webmozart\PathUtil\Path;
+use Symfony\Component\Filesystem\Path;
 
 /**
  * Check Drupal Composer packages for security updates.

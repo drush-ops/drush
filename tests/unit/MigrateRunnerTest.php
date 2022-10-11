@@ -7,8 +7,8 @@ use Drupal\Core\Database\Driver\sqlite\Connection;
 use Drupal\migrate\Plugin\MigrationInterface;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\Filesystem\Path;
 use Unish\TestSqlIdMap;
-use Webmozart\PathUtil\Path;
 
 class MigrateRunnerTest extends TestCase
 {
@@ -161,7 +161,7 @@ class MigrateRunnerTest extends TestCase
         if (Comparator::greaterThanOrEqualTo(\Drupal::VERSION, '9.4')) {
             /** @var \Composer\Autoload\ClassLoader $loader */
             $loader = require PHPUNIT_COMPOSER_INSTALL;
-            $loader->addPsr4('Drupal\sqlite\\', Path::join([dirname(__DIR__, 2), 'sut/core/modules/sqlite/src']));
+            $loader->addPsr4('Drupal\sqlite\\', Path::join(dirname(__DIR__, 2), 'sut/core/modules/sqlite/src'));
         }
         $connection = new Connection($pdo, $options);
 

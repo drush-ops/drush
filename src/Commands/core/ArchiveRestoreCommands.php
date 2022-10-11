@@ -18,8 +18,8 @@ use Drush\Utils\FsUtils;
 use Exception;
 use PharData;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Filesystem\Path;
 use Throwable;
-use Webmozart\PathUtil\Path;
 
 class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAwareInterface
 {

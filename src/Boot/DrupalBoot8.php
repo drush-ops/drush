@@ -13,9 +13,9 @@ use Drush\Drupal\DrushLoggerServiceProvider;
 use Drush\Drupal\DrushServiceModifier;
 use Drush\Drush;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Filesystem\Path;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Webmozart\PathUtil\Path;
 
 class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
 {
