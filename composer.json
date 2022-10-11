@@ -38,7 +38,7 @@
     "consolidation/config": "^2",
     "consolidation/filter-via-dot-access-data": "^2",
     "consolidation/robo": "^3.0.9 || ^4.0.1",
-    "consolidation/site-alias": "^3.1.3",
+    "consolidation/site-alias": "^3.1.6",
     "consolidation/site-process": "^4.1.3 || ^5",
     "enlightn/security-checker": "^1",
     "guzzlehttp/guzzle": "^6.5 || ^7.0",
