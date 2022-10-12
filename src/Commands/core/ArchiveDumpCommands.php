@@ -44,13 +44,15 @@ class ArchiveDumpCommands extends DrushCommands
      * Backup your code, files, and database into a single file.
      *
      * The following paths would be excluded from a code archive:
-     *  - ".git"
-     *  - "vendor"
-     *  - "[docroot]/sites/@/settings.@.php"
+     *
+     *  - .git
+     *  - vendor
+     *  - [docroot]/sites/@/settings.@.php
      *  - Drupal files directory
      *  - Composer packages installed paths (`composer info --path --format=json`)
      *
      * The following directories would be excluded from a file archive:
+     *
      * - css
      * - js
      * - styles
