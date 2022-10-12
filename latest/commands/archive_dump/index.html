@@ -4979,17 +4979,21 @@
 
 <h1 id="archivedump">archive:dump<a class="headerlink" href="#archivedump" title="Permanent link">&para;</a></h1>
 <p>Backup your code, files, and database into a single file.</p>
-<p>The following paths would be excluded from a code archive:
-- ".git"
-- "vendor"
-- "[docroot]/sites/@/settings.@.php"
-- Drupal files directory
-- Composer packages installed paths (<code>composer info --path --format=json</code>)</p>
-<p>The following directories would be excluded from a file archive:
-- css
-- js
-- styles
-- php</p>
+<p>The following paths would be excluded from a code archive:</p>
+<ul>
+<li>.git</li>
+<li>vendor</li>
+<li>[docroot]/sites/@/settings.@.php</li>
+<li>Drupal files directory</li>
+<li>Composer packages installed paths (<code>composer info --path --format=json</code>)</li>
+</ul>
+<p>The following directories would be excluded from a file archive:</p>
+<ul>
+<li>css</li>
+<li>js</li>
+<li>styles</li>
+<li>php</li>
+</ul>
 <h4 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h4>
 <ul>
 <li><code>drush archive:dump</code>. Create a site archive file in a temporary directory containing code, database and Drupal files.</li>
