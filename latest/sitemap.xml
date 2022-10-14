@@ -526,7 +526,7 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/commands/theme_enable/</loc>
+         <loc>https://www.drush.org/latest/commands/theme_install/</loc>
          <lastmod>2022-10-14</lastmod>
          <changefreq>daily</changefreq>
     </url>
