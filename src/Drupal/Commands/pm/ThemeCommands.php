@@ -26,19 +26,19 @@ class ThemeCommands extends DrushCommands
     }
 
     /**
-     * Enable one or more themes.
+     * Install one or more themes.
      *
-     * @command theme:enable
+     * @command theme:install
      * @param $themes A comma delimited list of themes.
-     * @aliases then,theme-enable
+     * @aliases theme:in,thin,theme:enable,then,theme-enable
      */
-    public function enable(array $themes): void
+    public function install(array $themes): void
     {
         $themes = StringUtils::csvToArray($themes);
         if (!$this->getThemeInstaller()->install($themes, true)) {
             throw new \Exception('Unable to install themes.');
         }
-        $this->logger()->success(dt('Successfully enabled theme: !list', ['!list' => implode(', ', $themes)]));
+        $this->logger()->success(dt('Successfully installed theme: !list', ['!list' => implode(', ', $themes)]));
     }
 
     /**
@@ -46,7 +46,7 @@ class ThemeCommands extends DrushCommands
      *
      * @command theme:uninstall
      * @param $themes A comma delimited list of themes.
-     * @aliases thun,theme-uninstall
+     * @aliases theme:un,thun,theme-uninstall
      */
     public function uninstall(array $themes): void
     {
