@@ -25,7 +25,7 @@ use Drupal\Core\Site\Settings;
 use Drupal\Core\StringTranslation\TranslationInterface;
 use Drush\Commands\DrushCommands;
 use Drush\Exceptions\UserAbortException;
-use Webmozart\PathUtil\Path;
+use Symfony\Component\Filesystem\Path;
 
 class ConfigImportCommands extends DrushCommands
 {

@@ -8,7 +8,7 @@ use Consolidation\Config\Loader\ConfigLoaderInterface;
 use Drush\Config\Loader\YamlConfigLoader;
 use Consolidation\Config\Loader\ConfigProcessor;
 use Consolidation\Config\Util\EnvConfig;
-use Webmozart\PathUtil\Path;
+use Symfony\Component\Filesystem\Path;
 
 /**
  * Locate Drush configuration files and load them into the configuration

@@ -9,7 +9,7 @@ use Drush\Exceptions\UserAbortException;
 use Consolidation\SiteAlias\SiteAlias;
 use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
 use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
-use Webmozart\PathUtil\Path;
+use Symfony\Component\Filesystem\Path;
 
 class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwareInterface
 {

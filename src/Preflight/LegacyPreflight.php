@@ -6,7 +6,7 @@ use Drush\Drush;
 use Drush\Config\Environment;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Webmozart\PathUtil\Path;
+use Symfony\Component\Filesystem\Path;
 
 /**
  * Prepare to bootstrap Drupal

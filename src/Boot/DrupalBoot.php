@@ -3,7 +3,7 @@
 namespace Drush\Boot;
 
 use Drush\Drush;
-use Webmozart\PathUtil\Path;
+use Symfony\Component\Filesystem\Path;
 
 abstract class DrupalBoot extends BaseBoot
 {

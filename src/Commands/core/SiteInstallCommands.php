@@ -16,7 +16,7 @@ use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
 use Drush\Exec\ExecTrait;
 use Drush\Sql\SqlBase;
 use Drush\Utils\StringUtils;
-use Webmozart\PathUtil\Path;
+use Symfony\Component\Filesystem\Path;
 
 class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAwareInterface
 {
