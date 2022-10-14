@@ -12,7 +12,7 @@ use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Drush\Exceptions\UserAbortException;
 use Symfony\Component\Console\Output\BufferedOutput;
-use Webmozart\PathUtil\Path;
+use Symfony\Component\Filesystem\Path;
 
 class ConfigExportCommands extends DrushCommands
 {
@@ -68,17 +68,21 @@ class ConfigExportCommands extends DrushCommands
         return $this->configStorageSync;
     }
 
+    public function setConfigStorageSync(?StorageInterface $syncStorage): void
+    {
+        $this->configStorageSync = $syncStorage;
+    }
+
     /**
      * @param ConfigManagerInterface $configManager
      * @param StorageInterface $configStorage
      * @param StorageInterface $configStorageSync
      */
-    public function __construct(ConfigManagerInterface $configManager, StorageInterface $configStorage, StorageInterface $configStorageSync)
+    public function __construct(ConfigManagerInterface $configManager, StorageInterface $configStorage)
     {
         parent::__construct();
         $this->configManager = $configManager;
         $this->configStorage = $configStorage;
-        $this->configStorageSync = $configStorageSync;
     }
 
     /**
@@ -112,8 +116,10 @@ class ConfigExportCommands extends DrushCommands
 
     public function doExport($options, $destination_dir)
     {
+        $sync_directory = Settings::get('config_sync_directory');
+
         // Prepare the configuration storage for the export.
-        if ($destination_dir ==  Path::canonicalize(Settings::get('config_sync_directory'))) {
+        if ($sync_directory !== null && $destination_dir == Path::canonicalize($sync_directory)) {
             $target_storage = $this->getConfigStorageSync();
         } else {
             $target_storage = new FileStorage($destination_dir);

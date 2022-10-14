@@ -9,8 +9,8 @@ use Drush\Commands\DrushCommands;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drush\Drush;
 use Drush\Utils\StringUtils;
+use Symfony\Component\Filesystem\Path;
 use Symfony\Component\Finder\Finder;
-use Webmozart\PathUtil\Path;
 
 class TwigCommands extends DrushCommands
 {

@@ -2,8 +2,8 @@
 
 namespace Unish;
 
+use Symfony\Component\Filesystem\Path;
 use Symfony\Component\Yaml\Yaml;
-use Webmozart\PathUtil\Path;
 
 /**
  * @group commands
