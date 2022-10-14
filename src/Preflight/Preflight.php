@@ -11,6 +11,7 @@ use Drush\Config\ConfigLocator;
 use Drush\Config\EnvironmentConfigLoader;
 use Consolidation\SiteAlias\SiteAliasManager;
 use DrupalFinder\DrupalFinder;
+use RuntimeException;
 
 /**
  * The Drush preflight determines what needs to be done for this request.

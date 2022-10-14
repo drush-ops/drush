@@ -11,9 +11,9 @@ use Drush\Runtime\DependencyInjection;
 use Drush\Runtime\Runtime;
 use PHPUnit\Framework\TestResult;
 use Symfony\Component\Console\Output\NullOutput;
+use Symfony\Component\Filesystem\Path;
 use Symfony\Component\Process\Exception\ProcessTimedOutException;
 use Symfony\Component\Process\Process;
-use Webmozart\PathUtil\Path;
 
 /**
  * The runtime controller manages the Drush runtime for Unish,

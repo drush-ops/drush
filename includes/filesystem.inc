@@ -7,7 +7,7 @@
 use Drush\Drush;
 use Drush\Sql\SqlBase;
 use Symfony\Component\Filesystem\Filesystem;
-use Webmozart\PathUtil\Path;
+use Symfony\Component\Filesystem\Path;
 
 /**
  * @defgroup filesystemfunctions Filesystem convenience functions.
@@ -233,7 +233,7 @@ function drush_file_not_empty($file_to_test) {
  * the other.
  */
 function drush_is_nested_directory($base_dir, $test_is_nested) {
-  $common = Path::getLongestCommonBasePath([$test_is_nested, $base_dir]);
+  $common = Path::getLongestCommonBasePath($test_is_nested, $base_dir);
   return $common == Path::canonicalize($base_dir);
 }
 

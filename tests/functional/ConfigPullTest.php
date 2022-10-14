@@ -2,7 +2,7 @@
 
 namespace Unish;
 
-use Webmozart\PathUtil\Path;
+use Symfony\Component\Filesystem\Path;
 
 /**
  * Tests for config-pull command. Sets up two Drupal sites.

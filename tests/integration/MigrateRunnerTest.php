@@ -3,7 +3,7 @@
 namespace Unish;
 
 use Drupal\migrate\Plugin\MigrationInterface;
-use Webmozart\PathUtil\Path;
+use Symfony\Component\Filesystem\Path;
 
 /**
  * @group commands

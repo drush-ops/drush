@@ -30,7 +30,8 @@ install:
   - copy php.ini-production php.ini
 
   # https://github.com/php-coveralls/php-coveralls/pull/223/files
-  - appveyor DownloadFile http://curl.haxx.se/ca/cacert.pem -FileName C:\cacert.pem
+  # - appveyor DownloadFile https://curl.se/ca/cacert.pem -FileName C:\cacert.pem
+  - curl -fsS -o C:\cacert.pem https://curl.se/ca/cacert.pem
   - echo curl.cainfo=C:\cacert.pem >> php.ini
 
   - echo extension_dir=ext >> php.ini
@@ -48,12 +49,14 @@ install:
   - echo extension=php_pgsql.dll >> php.ini
   - echo extension=php_gd2.dll >> php.ini
   - echo extension=php_fileinfo.dll >> php.ini
+  - echo memory_limit=256M >> php.ini
   - SET PATH=C:\tools\php74;%PATH%
   #Install Composer
   - cd %APPVEYOR_BUILD_FOLDER%
   #- appveyor DownloadFile https://getcomposer.org/composer.phar
   - php -r "readfile('http://getcomposer.org/installer');" | php
-  #Install dependencies via Composer
+  - echo @php %cd%\composer.phar %%* > composer.bat
+  # Install dependencies via Composer.
   - php composer.phar install --prefer-dist -n
   - SET PATH=%APPVEYOR_BUILD_FOLDER%;%APPVEYOR_BUILD_FOLDER%/vendor/bin;%PATH%
   # Uncomment this and on_finish line below to enable RDP into build machine https://www.appveyor.com/docs/how-to/rdp-to-build-worker/

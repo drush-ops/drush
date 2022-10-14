@@ -6,6 +6,7 @@ use Consolidation\OutputFormatters\StructuredData\PropertyList;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Drupal\Core\Database\Database;
 use Drupal\Core\Logger\RfcLogLevel;
+use Drupal\Core\Session\AnonymousUserSession;
 use Drupal\user\Entity\User;
 use Drush\Commands\DrushCommands;
 use Drupal\Component\Utility\Unicode;
@@ -46,6 +47,7 @@ class WatchdogCommands extends DrushCommands
      *   hostname: Hostname
      *   date: Date
      *   username: Username
+     *   uid: Uid
      * @default-fields wid,date,type,severity,message
      * @filter-default-field message
      * @return RowsOfFields
@@ -201,7 +203,7 @@ class WatchdogCommands extends DrushCommands
      *   Delete messages with id 64.
      * @usage drush watchdog:delete "cron run succesful"
      *   Delete messages containing the string "cron run succesful".
-     * @usage drush watchdog:delete --severity=notice
+     * @usage drush watchdog:delete --severity=Notice
      *   Delete all messages with a severity of notice.
      * @usage drush watchdog:delete --type=cron
      *   Delete all messages of type cron.
@@ -263,7 +265,7 @@ class WatchdogCommands extends DrushCommands
         if (!$result) {
             throw new \Exception(dt('Watchdog message #!wid not found.', ['!wid' => $id]));
         }
-        return new PropertyList($this->formatResult($result));
+        return new PropertyList($this->formatResult($result, true));
     }
 
     /**
@@ -342,6 +344,13 @@ class WatchdogCommands extends DrushCommands
         $result->date = date('d/M H:i', $result->timestamp);
         unset($result->timestamp);
 
+        // Username.
+        $result->username = (new AnonymousUserSession())->getAccountName() ?: dt('Anonymous');
+        $account = User::load($result->uid);
+        if ($account && !$account->isAnonymous()) {
+            $result->username = $account->getAccountName();
+        }
+
         // Message.
         $variables = $result->variables;
         if (is_string($variables)) {
@@ -362,9 +371,6 @@ class WatchdogCommands extends DrushCommands
             if (empty($result->referer)) {
                 unset($result->referer);
             }
-            // Username.
-            $result->username = ($account = User::load($result->uid)) ? $account->name : dt('Anonymous');
-            unset($result->uid);
             $message_length = PHP_INT_MAX;
         }
         $result->message = Unicode::truncate(strip_tags(Html::decodeEntities($result->message)), $message_length, false, false);
