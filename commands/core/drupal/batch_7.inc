@@ -16,7 +16,7 @@ use Drush\Log\LogLevel;
  *    The command to call to process the batch.
  *
  */
-function _drush_backend_batch_process($command = 'batch-process', $args, $options) {
+function _drush_backend_batch_process($command, $args, $options) {
   $batch =& batch_get();
 
   if (isset($batch)) {
