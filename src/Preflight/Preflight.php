@@ -221,11 +221,6 @@ class Preflight
         $compatibilityBaseDir = dirname(__DIR__, 2) . '/src-symfony-compatibility';
         $compatibilityDir = $compatibilityBaseDir . '/' . $compatibilityMap[$symfonyMajorVersion];
 
-        // For Symfony 4 only, include our "Path" class (introduced in Symfony 5.4)
-        if ($symfonyMajorVersion == 4) {
-            include "$compatibilityBaseDir/Filesystem/Path.php";
-        }
-
         // Next we will make a dynamic autoloader equivalent to an
         // entry in the autoload.php file similar to:
         //
