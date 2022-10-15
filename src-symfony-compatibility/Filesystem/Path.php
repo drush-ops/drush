@@ -1,7 +1,14 @@
 <?php
 
 /*
- * This file is part of the Symfony package.
+ * This file derived from the Symfony package.
+ *
+ * MODIFIED for use with Drush with Symfony 4.x versions. This file is
+ * identical to the Symfony version save for the fact that it throw
+ * standard \InvalidArgumentException and \RuntimeException errors instead
+ * of the Symfony-provided exceptions:
+ *   - Symfony\Component\Filesystem\Exception\InvalidArgumentException
+ *   - Symfony\Component\Filesystem\Exception\RuntimeException
  *
  * (c) Fabien Potencier <fabien@symfony.com>
  *
@@ -10,9 +17,6 @@
  */
 
 namespace Symfony\Component\Filesystem;
-
-use Symfony\Component\Filesystem\Exception\InvalidArgumentException;
-use Symfony\Component\Filesystem\Exception\RuntimeException;
 
 /**
  * Contains utility methods for handling path strings.
@@ -187,7 +191,7 @@ final class Path
      *
      * The result is a canonical path.
      *
-     * @throws RuntimeException If your operating system or environment isn't supported
+     * @throws \RuntimeException If your operating system or environment isn't supported
      */
     public static function getHomeDirectory(): string
     {
@@ -201,7 +205,7 @@ final class Path
             return self::canonicalize(getenv('HOMEDRIVE').getenv('HOMEPATH'));
         }
 
-        throw new RuntimeException("Cannot find the home directory path: Your environment or operating system isn't supported.");
+        throw new \RuntimeException("Cannot find the home directory path: Your environment or operating system isn't supported.");
     }
 
     /**
@@ -433,18 +437,18 @@ final class Path
      *
      * @param string $basePath an absolute base path
      *
-     * @throws InvalidArgumentException if the base path is not absolute or if
+     * @throws \InvalidArgumentException if the base path is not absolute or if
      *                                  the given path is an absolute path with
      *                                  a different root than the base path
      */
     public static function makeAbsolute(string $path, string $basePath): string
     {
         if ('' === $basePath) {
-            throw new InvalidArgumentException(sprintf('The base path must be a non-empty string. Got: "%s".', $basePath));
+            throw new \InvalidArgumentException(sprintf('The base path must be a non-empty string. Got: "%s".', $basePath));
         }
 
         if (!self::isAbsolute($basePath)) {
-            throw new InvalidArgumentException(sprintf('The base path "%s" is not an absolute path.', $basePath));
+            throw new \InvalidArgumentException(sprintf('The base path "%s" is not an absolute path.', $basePath));
         }
 
         if (self::isAbsolute($path)) {
@@ -507,7 +511,7 @@ final class Path
      *
      * The result is a canonical path.
      *
-     * @throws InvalidArgumentException if the base path is not absolute or if
+     * @throws \InvalidArgumentException if the base path is not absolute or if
      *                                  the given path has a different root
      *                                  than the base path
      */
@@ -534,12 +538,12 @@ final class Path
         // If the passed path is absolute, but the base path is not, we
         // cannot generate a relative path
         if ('' !== $root && '' === $baseRoot) {
-            throw new InvalidArgumentException(sprintf('The absolute path "%s" cannot be made relative to the relative path "%s". You should provide an absolute base path instead.', $path, $basePath));
+            throw new \InvalidArgumentException(sprintf('The absolute path "%s" cannot be made relative to the relative path "%s". You should provide an absolute base path instead.', $path, $basePath));
         }
 
         // Fail if the roots of the two paths are different
         if ($baseRoot && $root !== $baseRoot) {
-            throw new InvalidArgumentException(sprintf('The path "%s" cannot be made relative to "%s", because they have different roots ("%s" and "%s").', $path, $basePath, $root, $baseRoot));
+            throw new \InvalidArgumentException(sprintf('The path "%s" cannot be made relative to "%s", because they have different roots ("%s" and "%s").', $path, $basePath, $root, $baseRoot));
         }
 
         if ('' === $relativeBasePath) {
