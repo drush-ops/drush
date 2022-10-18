@@ -13,7 +13,7 @@ use Composer\Semver\Comparator;
  *  @group slow
  *  @group pm
  */
-class EnDisUnListInfoTest extends CommandUnishTestCase
+class PmInUnListInfoTest extends CommandUnishTestCase
 {
     public function testEnDisUnList()
     {
