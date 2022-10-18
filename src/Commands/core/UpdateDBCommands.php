@@ -28,7 +28,7 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
      *
      * @command updatedb
      * @option cache-clear Clear caches upon completion.
-     * @option post-updates Run post updates after hook_update_n and entity updates.
+     * @option post-updates Run post updates after hook_update_n.
      * @bootstrap full
      * @topics docs:deploy
      * @kernel update
