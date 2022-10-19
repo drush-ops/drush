@@ -77,7 +77,7 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
 
         $this->getDefinition()
             ->addOption(
-                new InputOption('--uri', '-l', InputOption::VALUE_REQUIRED, 'An URL for building links and selecting a multi-site. Defaults to https://default.')
+                new InputOption('--uri', '-l', InputOption::VALUE_REQUIRED, 'A base URL for building links and selecting a multi-site. Defaults to https://default.')
             );
 
         $this->getDefinition()
