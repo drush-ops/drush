@@ -6,6 +6,7 @@ use Consolidation\OutputFormatters\FormatterManager;
 use Consolidation\OutputFormatters\Formatters\FormatterInterface;
 use Consolidation\OutputFormatters\Options\FormatterOptions;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
+use Drush\Commands\core\MkCommands;
 use Drush\Drush;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -74,7 +75,7 @@ class HelpCLIFormatter implements FormatterInterface
                 $name = '-' . $value->getShortcut() . ', ' . $name;
             }
             $rows[] = [
-                $name,
+                $this->formatOptionKeys(MkCommands::optionToArray($value)),
                 $value->getDescription(),
             ];
         }

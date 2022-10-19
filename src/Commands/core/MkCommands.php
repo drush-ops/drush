@@ -168,11 +168,8 @@ EOT;
                 if (!in_array($key, HelpCLIFormatter::OPTIONS_GLOBAL_IMPORTANT)) {
                     continue;
                 }
-                $name = '--' . $key;
-                if ($value->getShortcut()) {
-                    $name = '-' . $name . ', ' . $value->getShortcut();
-                }
-                $body .= '- ** ' . $name . '**. ' . self::cliTextToMarkdown($value->getDescription()) . "\n";
+                // The values don't go through standard formatting since we want to show http://default not the uri that was used when running this command.
+                $body .= '- ** ' . HelpCLIFormatter::formatOptionKeys(self::optionToArray($value)) . '**. ' . self::cliTextToMarkdown($value->getDescription()) . "\n";
             }
             $body .= '- To see all global options, run <code>drush topic</code> and pick the first choice.' . "\n";
             $body = "#### Global Options\n\n$body\n";
