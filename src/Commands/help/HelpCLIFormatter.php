@@ -185,12 +185,8 @@ class HelpCLIFormatter implements FormatterInterface
         $output->writeln('');
         $output->writeln("<comment>$title:</comment>");
         foreach ($options as $option) {
-            if (substr($option['name'], 0, 8) !== '--notify' && substr($option['name'], 0, 5) !== '--xh-' && substr(
-                    $option['name'],
-                    0,
-                    11
-                ) !== '--druplicon') {
-                $rows[] = [$this->formatOptionKeys($option), $this->formatOptionDescription($option)];
+            if (substr($option['name'], 0, 8) !== '--notify' && substr($option['name'], 0, 5) !== '--xh-' && substr($option['name'], 0, 11) !== '--druplicon') {
+                 $rows[] = [$this->formatOptionKeys($option), $this->formatOptionDescription($option)];
             }
         }
         return $rows;
