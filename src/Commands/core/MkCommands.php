@@ -160,6 +160,28 @@ EOT;
         return '';
     }
 
+    protected static function appendOptionsGlobal($application): string
+    {
+        if ($opts = $application->getDefinition()->getOptions()) {
+            $body = '';
+            foreach ($opts as $key => $value) {
+                if (!in_array($key, HelpCLIFormatter::OPTIONS_GLOBAL_IMPORTANT)) {
+                    continue;
+                }
+                $name = '--' . $key;
+                if ($value->getShortcut()) {
+                    $name = '-' . $name . ', ' . $value->getShortcut();
+                }
+                $body .= '- ** ' . $name . '**. ' . self::cliTextToMarkdown($value->getDescription()) . "\n";
+            }
+            if ($body) {
+                $body = "#### Global Options\n\n$body\n";
+            }
+            return $body;
+        }
+        return '';
+    }
+
     protected static function appendArguments($command): string
     {
         if ($args = $command->getDefinition()->getArguments()) {
@@ -328,6 +350,9 @@ EOT;
                 }
                 $body .= self::appendArguments($command);
                 $body .= self::appendOptions($command);
+                if ($destination == 'commands') {
+                    $body .= self::appendOptionsGlobal($command->getApplication());
+                }
                 if ($command instanceof AnnotatedCommand) {
                     $body .= self::appendTopics($command, $destination_path);
                 }
