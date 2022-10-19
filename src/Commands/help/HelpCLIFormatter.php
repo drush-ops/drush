@@ -80,7 +80,7 @@ class HelpCLIFormatter implements FormatterInterface
         }
         $rows[] = [
             '',
-            'Run `drush topic` and pick first choice to see all global options.',
+            'To see all global options, run `drush topic` and pick the first choice.',
         ];
         $formatterManager->write($output, 'table', new RowsOfFields($rows), $options);
 
