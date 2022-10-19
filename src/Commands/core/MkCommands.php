@@ -174,9 +174,8 @@ EOT;
                 }
                 $body .= '- ** ' . $name . '**. ' . self::cliTextToMarkdown($value->getDescription()) . "\n";
             }
-            if ($body) {
-                $body = "#### Global Options\n\n$body\n";
-            }
+            $body .= '- <code>drush topic</code>. Pick first choice to see all global options.' . "\n";
+            $body = "#### Global Options\n\n$body\n";
             return $body;
         }
         return '';

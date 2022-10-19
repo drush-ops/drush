@@ -78,6 +78,10 @@ class HelpCLIFormatter implements FormatterInterface
                 $value->getDescription(),
             ];
         }
+        $rows[] = [
+            '',
+            'Run `drush topic` and pick first choice to see all global options.',
+        ];
         $formatterManager->write($output, 'table', new RowsOfFields($rows), $options);
 
         if (array_key_exists('topics', $data)) {
