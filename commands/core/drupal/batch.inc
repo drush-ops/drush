@@ -13,11 +13,12 @@ use Drush\Log\LogLevel;
  * Saves a record of the batch into the database, and progressively call $command to
  * process the operations.
  *
- * @param command
+ * @param string $command
  *    The command to call to process the batch.
- *
+ * @param array $args
+ * @param array $options
  */
-function _drush_backend_batch_process($command = 'batch-process', $args, $options) {
+function _drush_backend_batch_process($command, $args, $options) {
   $batch =& batch_get();
 
   if (isset($batch)) {
