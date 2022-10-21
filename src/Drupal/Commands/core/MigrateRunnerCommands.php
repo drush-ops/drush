@@ -570,29 +570,52 @@ class MigrateRunnerCommands extends DrushCommands
      *
      * @command migrate:reset-status
      *
-     * @param string $migrationId
-     *   The ID of migration to reset.
+     * @param string|null $migrationIds
+     *   Comma-separated list of migration IDs.
      *
      * @aliases mrs,migrate-reset-status
      *
      * @topics docs:migrate
      *
+     * @option all Process all migrations.
+     * @option tag A comma-separated list of migration tags to rollback
+     *
+     * @usage migrate:reset-status --all
+     *   Reset the status of all migrations
+     * @usage migrate:reset-status --tag=user,main_content
+     *   Reset the status of all migrations tagged with <info>user</info> and <info>main_content</info> tags
+     * @usage migrate:reset-status classification,article
+     *   Reset the status of the <info>classification</info> and <info>article</info> migrations
+     *
      * @validate-module-enabled migrate
-     * @validate-migration-id
      * @version 10.4
      *
      * @throws PluginException
      */
-    public function resetStatus(string $migrationId): void
+    public function resetStatus(?string $migrationIds = null, array $options = ['all' => false, 'tag' => self::REQ]): void
     {
-        /** @var MigrationInterface $migration */
-        $migration = $this->migrationPluginManager->createInstance($migrationId);
-        $status = $migration->getStatus();
-        if ($status == MigrationInterface::STATUS_IDLE) {
-            $this->logger()->warning(dt('Migration @id is already Idle', ['@id' => $migrationId]));
-        } else {
-            $migration->setStatus(MigrationInterface::STATUS_IDLE);
-            $this->logger()->success(dt('Migration @id reset to Idle', ['@id' => $migrationId]));
+        $tags = $options['tag'];
+        $all = $options['all'];
+
+        if (!$all && !$migrationIds && !$tags) {
+            throw new \Exception(dt('You must specify --all, --tag, or one or more migration names separated by commas'));
+        }
+
+        if (!$list = $this->getMigrationList($migrationIds, $options['tag'])) {
+            $this->logger()->error(dt('No migrations found.'));
+        }
+
+        foreach ($list as $migrations) {
+            foreach ($migrations as $migrationId => $migration) {
+                /** @var MigrationInterface $migration */
+                $status = $migration->getStatus();
+                if ($status == MigrationInterface::STATUS_IDLE) {
+                    $this->logger()->warning(dt('Migration @id is already Idle', ['@id' => $migrationId]));
+                } else {
+                    $migration->setStatus(MigrationInterface::STATUS_IDLE);
+                    $this->logger()->success(dt('Migration @id reset to Idle', ['@id' => $migrationId]));
+                }
+            }
         }
     }
 
