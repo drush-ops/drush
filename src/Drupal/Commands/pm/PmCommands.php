@@ -169,7 +169,18 @@ class PmCommands extends DrushCommands
     public function uninstall(array $modules): void
     {
         $modules = StringUtils::csvToArray($modules);
-        $list = $this->addUninstallDependencies($modules);
+
+        $enabled_modules = array_filter($modules, function ($module) {
+            return $this->getModuleHandler()->moduleExists($module);
+        });
+        if ($enabled_modules === []) {
+            throw new \Exception(dt('The following module(s) are not enabled: !list. No modules to uninstall.', ['!list' => implode(', ', $modules)]));
+        }
+        if ($enabled_modules !== $modules) {
+            $this->logger()->warning(dt('The following module(s) are not enabled and will not be uninstalled: !list', ['!list' => implode(', ', array_diff($modules, $enabled_modules))]));
+        }
+
+        $list = $this->addUninstallDependencies($enabled_modules);
         if (Drush::simulate()) {
             $this->output()->writeln(dt('The following extensions will be uninstalled: !list', ['!list' => implode(', ', $list)]));
             return;
