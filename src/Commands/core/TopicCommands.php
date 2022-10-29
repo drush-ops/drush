@@ -28,6 +28,7 @@ class TopicCommands extends DrushCommands
      *   Show documentation for the Drush interactive shell
      * @usage drush docs:r
      *   Filter topics for those starting with 'docs-r'.
+     * @complete topicComplete
      * @remote-tty
      * @aliases topic,core-topic
      * @bootstrap max
@@ -80,7 +81,7 @@ class TopicCommands extends DrushCommands
     public function topicComplete(CompletionInput $input, CompletionSuggestions $suggestions): void
     {
         if ($input->mustSuggestArgumentValuesFor('topic_name')) {
-            $suggestions->suggestValues(array_keys($this->getAllTopics()));
+            $suggestions->suggestValues(array_keys(self::getAllTopics()));
         }
     }
 
