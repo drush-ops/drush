@@ -20,7 +20,7 @@ class DrupalUtil
             $data = \Drupal::service('renderer')->renderRoot($data);
         }
 
-        $data = MailFormatHelper::htmlToText($data);
+        $data = MailFormatHelper::htmlToText((string) $data);
         return $data;
     }
 }

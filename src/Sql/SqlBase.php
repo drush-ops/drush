@@ -9,8 +9,8 @@ use Drush\Utils\FsUtils;
 use Drush\Config\ConfigAwareTrait;
 use Robo\Contract\ConfigAwareInterface;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Filesystem\Path;
 use Symfony\Component\Process\Process;
-use Webmozart\PathUtil\Path;
 use Consolidation\Config\Util\Interpolator;
 
 /**
@@ -632,8 +632,8 @@ abstract class SqlBase implements ConfigAwareInterface
         return [
             $this->command(),
             $this->creds(!$this->getOption('show-passwords')),
-            $this->silent(),
             // This removes column header and various helpful things in mysql.
+            $this->silent(),
             $this->getOption('extra', $this->queryExtra),
             $this->queryFile,
             Escape::shellArg($input_file),

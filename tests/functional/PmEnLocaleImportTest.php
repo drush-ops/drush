@@ -4,7 +4,7 @@ namespace Unish;
 
 use Drupal\Core\Language\Language;
 use Drupal\language\Entity\ConfigurableLanguage;
-use Webmozart\PathUtil\Path;
+use Symfony\Component\Filesystem\Path;
 
 /**
  * @group locale
@@ -23,7 +23,7 @@ class PmEnLocaleImportTest extends CommandUnishTestCase
         $this->setUpDrupal(1, true);
         $root = $this->webroot();
 
-        $this->drush('pm-enable', ['language', 'locale', 'dblog']);
+        $this->drush('pm-install', ['language', 'locale', 'dblog']);
         $this->drush('config-set', ['locale.settings', 'translation.import_enabled', true]);
 
         // Setup the interface translation system and prepare a source translation file.
@@ -39,7 +39,7 @@ class PmEnLocaleImportTest extends CommandUnishTestCase
 
         $this->drush('language-add', ['nl']);
 
-        $this->drush('pm-enable', ['drush_empty_module']);
+        $this->drush('pm-install', ['drush_empty_module']);
         $this->drush('watchdog-show');
         $this->assertStringContainsString('Translations imported:', $this->getSimplifiedOutput());
 

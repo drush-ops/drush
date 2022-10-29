@@ -11,6 +11,7 @@ use Drush\Config\ConfigLocator;
 use Drush\Config\EnvironmentConfigLoader;
 use Consolidation\SiteAlias\SiteAliasManager;
 use DrupalFinder\DrupalFinder;
+use RuntimeException;
 
 /**
  * The Drush preflight determines what needs to be done for this request.
@@ -141,7 +142,11 @@ class Preflight
     {
         return [
             'si' => 'site:install',
-            'en' => 'pm:enable',
+            'in' => 'pm:install',
+            'install' => 'pm:install',
+            'pm-install' => 'pm:install',
+            'en' => 'pm:install',
+            'pm-enable' => 'pm:install',
             // php was an alias for core-cli which got renamed to php-cli. See https://github.com/drush-ops/drush/issues/3091.
             'php' => 'php:cli',
         ];
@@ -197,6 +202,38 @@ class Preflight
     public function loadSiteAutoloader(): ClassLoader
     {
         return $this->environment()->loadSiteAutoloader($this->drupalFinder()->getDrupalRoot());
+    }
+
+    public function loadSymfonyCompatabilityAutoloader(): ClassLoader
+    {
+        $symfonyMajorVersion = \Symfony\Component\HttpKernel\Kernel::MAJOR_VERSION;
+        $compatibilityMap = [
+            3 => false, // Drupal 8
+            4 => 'v4',  // Drupal 9
+            5 => 'v4',  // Early Drupal 10 (Symfony 5 works with Symfony 4 classes, so we don't keep an extra copy)
+            6 => 'v6',  // Drupal 10
+        ];
+
+        if (empty($compatibilityMap[$symfonyMajorVersion])) {
+            throw new RuntimeException("Fatal error: Drush does not work with Symfony $symfonyMajorVersion. (In theory, Composer should not allow you to get this far.)");
+        }
+
+        $compatibilityBaseDir = dirname(__DIR__, 2) . '/src-symfony-compatibility';
+        $compatibilityDir = $compatibilityBaseDir . '/' . $compatibilityMap[$symfonyMajorVersion];
+
+        // Next we will make a dynamic autoloader equivalent to an
+        // entry in the autoload.php file similar to:
+        //
+        //    "psr-4": {
+        //      "Drush\\": $compatibilityDir
+        //    }
+        $loader = new \Composer\Autoload\ClassLoader();
+        // register classes with namespaces
+        $loader->addPsr4('Drush\\', $compatibilityDir);
+        // activate the autoloader
+        $loader->register();
+
+        return $loader;
     }
 
     public function config(): DrushConfig

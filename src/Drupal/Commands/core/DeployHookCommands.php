@@ -2,7 +2,7 @@
 
 namespace Drush\Drupal\Commands\core;
 
-use Consolidation\Log\ConsoleLogLevel;
+use Drush\Log\SuccessInterface;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Consolidation\OutputFormatters\StructuredData\UnstructuredListData;
 use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
@@ -135,7 +135,7 @@ class DeployHookCommands extends DrushCommands implements SiteAliasManagerAwareI
             }
         }
 
-        $level = $success ? ConsoleLogLevel::SUCCESS : LogLevel::ERROR;
+        $level = $success ? SuccessInterface::SUCCESS : LogLevel::ERROR;
         $this->logger()->log($level, dt('Finished performing deploy hooks.'));
         return $success ? self::EXIT_SUCCESS : self::EXIT_FAILURE;
     }
@@ -171,9 +171,19 @@ class DeployHookCommands extends DrushCommands implements SiteAliasManagerAwareI
             return;
         }
 
-        list($module, $name) = explode('_deploy_', $function, 2);
-        $filename = $module . '.deploy';
-        \Drupal::moduleHandler()->loadInclude($module, 'php', $filename);
+        // Module names can include '_deploy', so deploy functions like
+        // module_deploy_deploy_name() are ambiguous. Check every occurrence.
+        $components = explode('_', $function);
+        foreach (array_keys($components, 'deploy', true) as $position) {
+            $module = implode('_', array_slice($components, 0, $position));
+            $name = implode('_', array_slice($components, $position + 1));
+            $filename = $module . '.deploy';
+            \Drupal::moduleHandler()->loadInclude($module, 'php', $filename);
+            if (function_exists($function)) {
+                break;
+            }
+        }
+
         if (function_exists($function)) {
             if (empty($context['results'][$module][$name]['type'])) {
                 Drush::logger()->notice("Deploy hook started: $function");
@@ -194,7 +204,9 @@ class DeployHookCommands extends DrushCommands implements SiteAliasManagerAwareI
                 Drush::logger()->error($e->getMessage());
 
                 $variables = Error::decodeException($e);
-                unset($variables['backtrace']);
+                $variables = array_filter($variables, function ($key) {
+                    return $key[0] == '@' || $key[0] == '%';
+                }, ARRAY_FILTER_USE_KEY);
                 // On windows there is a problem with json encoding a string with backslashes.
                 $variables['%file'] = strtr($variables['%file'], [DIRECTORY_SEPARATOR => '/']);
                 $ret['#abort'] = [

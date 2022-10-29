@@ -2,7 +2,7 @@
 
 namespace Unish;
 
-use Webmozart\PathUtil\Path;
+use Symfony\Component\Filesystem\Path;
 
 /**
  *  @group slow
@@ -168,7 +168,7 @@ class UserTest extends CommandUnishTestCase
     public function testUserCancel()
     {
         CreateEntityType::createContentEntity($this);
-        $this->drush('pm-enable', ['text,unish_article']);
+        $this->drush('pm-install', ['text,unish_article']);
         $this->drush('php:script', ['create_unish_article_bundles'], ['script-path' => Path::join(__DIR__, 'resources')]);
         // Create one unish_article owned by our example user.
         $this->drush('php-script', ['create_unish_articles'], ['script-path' => Path::join(__DIR__, 'resources')]);

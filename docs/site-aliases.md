@@ -109,13 +109,17 @@ To convert legacy alias (*.aliases.drushrc.php) to yml, run the
 
 See [examples/Commands/SiteAliasAlterCommands.php](https://www.drush.org/latest/examples/SiteAliasAlterCommands.php/)) for an example.
 
+### Site specifications:
+
+When a site alias name is provided on the command line, a site specification may be used instead. A site specification is a site alias that is not saved on the filesystem but instead is provided directly e.g. `drush user@server/path/to/drupal#uri core:status`. See [example site specifications](https://github.com/consolidation/site-alias/blob/ef2eb7d37e59b3d837b4556d4d8070cb345b378c/src/SiteSpecParser.php#L24-L31).
+
 ### Environment variables
 
 Site aliases may reference environment variables, just like any Drush config
 file. For example, `${env.PROJECT_SSH_USER}` will be replaced by the value
 of the `PROJECT_SSH_USER` environment value.
 
-SSH site aliases may set environment variables via the `env-var` key.
+SSH site aliases may set environment variables via the `env-vars` key.
 See below.
 
 ### Additional Site Alias Options

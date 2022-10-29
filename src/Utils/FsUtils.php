@@ -6,10 +6,13 @@ use Drush\Drush;
 use Drush\Sql\SqlBase;
 use finfo;
 use Symfony\Component\Filesystem\Filesystem;
-use Webmozart\PathUtil\Path;
+use Symfony\Component\Filesystem\Path;
 
 class FsUtils
 {
+    // @var null|string[] List of directories to delete
+    private static $deletionList = null;
+
     /**
      * Decide where our backup directory should go
      *
@@ -113,11 +116,66 @@ class FsUtils
     }
 
     /**
+     * Prepare a temporary directory that will be deleted on exit.
+     *
+     * @param string $subdir
+     *   A string naming the subdirectory of the backup directory.
+     * @return string
+     *   Path to the specified backup directory.
+     * @throws \Exception
+     */
+    public static function tmpDir($subdir = null): string
+    {
+        $parent = self::getBackupDirParent();
+        $fs = new Filesystem();
+        $dir = $fs->tempnam($parent, $subdir ?? 'drush');
+        unlink($dir);
+        $fs->mkdir($dir);
+        static::registerForDeletion($dir);
+        return $dir;
+    }
+
+    /**
+     * Add the given directory to a list to be deleted on exit.
+     *
+     * @param string $dir
+     *   Path to directory to be deleted later.
+     */
+    public static function registerForDeletion(string $dir)
+    {
+        if (!isset(static::$deletionList)) {
+            static::$deletionList = [];
+            register_shutdown_function([static::class, 'cleanup']);
+        }
+
+        static::$deletionList[] = $dir;
+    }
+
+    /**
+     * Delete all of the files registered for deletion.
+     */
+    public static function cleanup()
+    {
+        if (!isset(static::$deletionList)) {
+            return;
+        }
+
+        $fs = new Filesystem();
+        foreach (static::$deletionList as $dir) {
+            try {
+                $fs->remove($dir);
+            } catch (IOException $e) {
+              // No action taken if someone already deleted the directory
+            }
+        }
+    }
+
+    /**
      * Prepare a backup directory.
      *
      * @param string $subdir
      *   A string naming the subdirectory of the backup directory.
-     *
+     * @return string
      *   Path to the specified backup directory.
      * @throws \Exception
      */
@@ -137,7 +195,7 @@ class FsUtils
      *
      * @param string $path
      *   The path being checked.
-     *
+     * @return string
      *   The canonicalized absolute pathname.
      */
     public static function realpath(string $path): string

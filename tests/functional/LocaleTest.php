@@ -2,7 +2,7 @@
 
 namespace Unish;
 
-use Webmozart\PathUtil\Path;
+use Symfony\Component\Filesystem\Path;
 
 /**
  *  @group slow
@@ -22,7 +22,7 @@ class LocaleTest extends CommandUnishTestCase
         if (!$this->getSites()) {
             $this->setUpDrupal(1, true);
         }
-        $this->drush('pm:enable', ['language', 'locale']);
+        $this->drush('pm:install', ['language', 'locale']);
         $this->drush('language:add', ['nl'], ['skip-translations' => null]);
 
         $this->sourceFile = Path::join(__DIR__, '/resources/drush_empty_module.nl.po');

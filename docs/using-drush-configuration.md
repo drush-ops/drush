@@ -80,7 +80,8 @@ temporary sql dump files created during [sql:sync](https://www.drush.org/latest/
 defaults to `$HOME/drush-backups`.
 ```yml
 drush:
-  backup-dir: /tmp/drush-backups
+  paths:
+    backup-dir: /tmp/drush-backups
 ```
 
 #### Global options

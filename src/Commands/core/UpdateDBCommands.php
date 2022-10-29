@@ -2,7 +2,7 @@
 
 namespace Drush\Commands\core;
 
-use Consolidation\Log\ConsoleLogLevel;
+use Drush\Log\SuccessInterface;
 use Drush\Drupal\DrupalUtil;
 use DrushBatchContext;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
@@ -28,7 +28,7 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
      *
      * @command updatedb
      * @option cache-clear Clear caches upon completion.
-     * @option post-updates Run post updates after hook_update_n and entity updates.
+     * @option post-updates Run post updates after hook_update_n.
      * @bootstrap full
      * @topics docs:deploy
      * @kernel update
@@ -73,7 +73,7 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
                 // Caches were just cleared in updateFinished callback.
             }
 
-            $level = $success ? ConsoleLogLevel::SUCCESS : LogLevel::ERROR;
+            $level = $success ? SuccessInterface::SUCCESS : LogLevel::ERROR;
             $this->logger()->log($level, dt('Finished performing updates.'));
         } else {
             $this->logger()->success(dt('No pending updates.'));
@@ -265,11 +265,18 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
             return;
         }
 
-        list($module, $name) = explode('_post_update_', $function, 2);
-        $filename = $module . '.post_update';
-        \Drupal::moduleHandler()->loadInclude($module, 'php', $filename);
+        list($extension, $name) = explode('_post_update_', $function, 2);
+        $update_registry = \Drupal::service('update.post_update_registry');
+        // https://www.drupal.org/project/drupal/issues/3259188 Support theme's
+        // having post update functions when it is supported in Drupal core.
+        if (method_exists($update_registry, 'getUpdateFunctions')) {
+            \Drupal::service('update.post_update_registry')->getUpdateFunctions($extension);
+        } else {
+            \Drupal::service('update.post_update_registry')->getModuleUpdateFunctions($extension);
+        }
+
         if (function_exists($function)) {
-            if (empty($context['results'][$module][$name]['type'])) {
+            if (empty($context['results'][$extension][$name]['type'])) {
                 Drush::logger()->notice("Update started: $function");
             }
             try {
@@ -306,10 +313,10 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
             $context['finished'] = $context['sandbox']['#finished'];
             unset($context['sandbox']['#finished']);
         }
-        if (!isset($context['results'][$module][$name])) {
-            $context['results'][$module][$name] = [];
+        if (!isset($context['results'][$extension][$name])) {
+            $context['results'][$extension][$name] = [];
         }
-        $context['results'][$module][$name] = array_merge($context['results'][$module][$name], $ret);
+        $context['results'][$extension][$name] = array_merge($context['results'][$extension][$name], $ret);
 
         // Log the message that was returned.
         if (!empty($ret['results']['query'])) {
@@ -518,7 +525,7 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
                             $return[$module . '-post-' . $id] = [
                                 'module' => $module,
                                 'update_id' => $id,
-                                'description' => $item,
+                                'description' => trim($item),
                                 'type' => 'post-update'
                             ];
                         }

@@ -21,8 +21,8 @@ use Psr\Log\LoggerInterface;
 use Robo\ClassDiscovery\RelativeNamespaceDiscovery;
 use Symfony\Component\Console\Helper\HelperSet;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Filesystem\Path;
 use Twig\Loader\FilesystemLoader;
-use Webmozart\PathUtil\Path;
 
 class ApplicationFactory implements AutoloaderAwareInterface
 {

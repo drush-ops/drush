@@ -2,7 +2,7 @@
 
 namespace Unish;
 
-use Webmozart\PathUtil\Path;
+use Symfony\Component\Filesystem\Path;
 
 /**
  *  @group slow
@@ -22,7 +22,7 @@ class RoleTest extends CommandUnishTestCase
         // In D8+, the testing profile has no perms.
         // Copy the module to where Drupal expects it.
         $this->setupModulesForTests(['user_form_test'], Path::join($this->webroot(), 'core/modules/user/tests/modules'));
-        $this->drush('pm-enable', ['user_form_test']);
+        $this->drush('pm-install', ['user_form_test']);
 
         $this->drush('role-list');
         $output = $this->getOutput();

@@ -1,6 +1,6 @@
 COMMANDS
 ------------
-pm:enable: GOOD. testEnDisUnList().
+pm:install: GOOD. testEnDisUnList().
 pm:uninstall: GOOD. testEnDisUnList().
 pm:list: GOOD. testEnDisUnList().
 pm:security: GOOD.

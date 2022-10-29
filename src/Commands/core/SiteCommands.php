@@ -12,7 +12,7 @@ use Consolidation\OutputFormatters\StructuredData\UnstructuredListData;
 use Drush\Utils\StringUtils;
 use Symfony\Component\Console\Input\Input;
 use Symfony\Component\Console\Output\Output;
-use Webmozart\PathUtil\Path;
+use Symfony\Component\Filesystem\Path;
 
 class SiteCommands extends DrushCommands implements SiteAliasManagerAwareInterface
 {

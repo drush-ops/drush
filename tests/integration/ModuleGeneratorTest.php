@@ -2,7 +2,7 @@
 
 namespace Unish;
 
-use Webmozart\PathUtil\Path;
+use Symfony\Component\Filesystem\Path;
 
 /**
  * @group commands
@@ -17,7 +17,7 @@ class ModuleGeneratorTest extends UnishIntegrationTestCase
     public function testModuleGenerators(): void
     {
         $this->setupModulesForTests(['woot'], Path::join(__DIR__, '/../fixtures/modules'));
-        $this->drush('pm:enable', ['woot']);
+        $this->drush('pm:install', ['woot']);
         $this->drush('cc', ['drush']);
         $this->drush('generate', ['list']);
         $this->assertStringContainsString('woot:example', $this->getOutput());

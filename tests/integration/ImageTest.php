@@ -11,8 +11,8 @@ class ImageTest extends UnishIntegrationTestCase
 {
     public function testImage()
     {
-        $this->drush('pm-enable', ['image']);
-        $logo = 'core/themes/bartik/screenshot.png';
+        $this->drush('pm-install', ['image']);
+        $logo = 'core/misc/menu-expanded.png';
         $styles_dir = $this->webroot() . '/sites/default/files/styles/';
         $thumbnail = $styles_dir . 'thumbnail/public/' . $logo;
         $medium = $styles_dir . 'medium/public/' . $logo;

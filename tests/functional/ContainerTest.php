@@ -2,7 +2,7 @@
 
 namespace Unish;
 
-use Webmozart\PathUtil\Path;
+use Symfony\Component\Filesystem\Path;
 
 /**
  * Tests the Drush override of DrupalKernel.
@@ -26,7 +26,7 @@ class ContainerTest extends CommandUnishTestCase
         $this->setupModulesForTests(['woot'], Path::join(__DIR__, '/../fixtures/modules'));
 
         // Enable our module.
-        $this->drush('pm-enable', ['woot']);
+        $this->drush('pm-install', ['woot']);
 
         // Set up for a config import with just one small piece.
         $this->drush('config-export');

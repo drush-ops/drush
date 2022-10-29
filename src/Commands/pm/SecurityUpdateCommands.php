@@ -11,7 +11,7 @@ use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Enlightn\SecurityChecker\SecurityChecker;
 use Exception;
-use Webmozart\PathUtil\Path;
+use Symfony\Component\Filesystem\Path;
 
 /**
  * Check Drupal Composer packages for security updates.
@@ -95,6 +95,11 @@ class SecurityUpdateCommands extends DrushCommands
     /**
      * Fetches the generated composer.json from drupal-security-advisories.
      *
+     * This function fetches the generated composer.json from the
+     * drupal-security-advisories repository or fetches it from another source
+     * if the environment variable DRUSH_SECURITY_ADVISORIES_URL is set. The
+     * environment variable is not a supported API.
+     *
      * @return mixed
      *
      * @throws \Exception
@@ -102,7 +107,8 @@ class SecurityUpdateCommands extends DrushCommands
     protected function fetchAdvisoryComposerJson()
     {
         $client = new Client(['handler' => $this->getStack()]);
-        $response = $client->get('https://raw.githubusercontent.com/drupal-composer/drupal-security-advisories/9.x/composer.json');
+        $security_advisories_composer_url = getenv('DRUSH_SECURITY_ADVISORIES_URL') ?: 'https://raw.githubusercontent.com/drupal-composer/drupal-security-advisories/9.x/composer.json';
+        $response = $client->get($security_advisories_composer_url);
         $security_advisories_composer_json = json_decode($response->getBody(), true);
         return $security_advisories_composer_json;
     }

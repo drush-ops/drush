@@ -34,7 +34,7 @@ Drupal Compatibility
   </tr>
   <tr>
     <td> Drush 10 </td>
-    <td> 7.1+ </td>
+    <td> 7.1+ (not 8) </td>
     <!-- Released Oct 2019 -->
     <td> Jan 2022 </td>
     <td></td> <td>✓</td> <td><b>✓</b></td>
@@ -50,7 +50,7 @@ Drupal Compatibility
     <td> Drush 8 </td>
     <td> 5.4.5+ </td>
     <!-- Released Nov 2015 -->
-    <td> Nov 2022 </td>
+    <td> Nov 2023 </td>
     <td>✅</td> <td><b>⚠️</b></td> <td></td>
   </tr>
   <tr>
