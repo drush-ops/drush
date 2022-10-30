@@ -8,6 +8,8 @@ use Drush\Attributes as CLI;
 use Drush\Attributes as DR;
 use Consolidation\AnnotatedCommand\Attributes as AC;
 use Drush\Boot\DrupalBootLevels;
+use Symfony\Component\Console\Completion\CompletionInput;
+use Symfony\Component\Console\Completion\CompletionSuggestions;
 
 class ExampleAttributesCommands extends DrushCommands
 {
@@ -45,6 +47,7 @@ class ExampleAttributesCommands extends DrushCommands
     #[CLI\Argument(name: 'two', description: 'The other number to add.')]
     #[CLI\Option(name: 'negate', description: 'Whether or not the result should be negated.')]
     #[CLI\Usage(name: '2 2 --negate', description: 'Add two plus two and then negate.')]
+    #[CLI\Complete(method_name_or_callable: 'testArithmaticComplete')]
     #[CLI\Misc(data: ['dup' => ['one', 'two']])]
     public function testArithmatic($one, $two = 2, array $options = ['negate' => false, 'unused' => 'bob'])
     {
@@ -94,5 +97,15 @@ class ExampleAttributesCommands extends DrushCommands
             'cardinal' => ['name' => 'Cardinal', 'color' => 'red'],
         ];
         return new RowsOfFields($rows);
+    }
+
+    /*
+     * An argument completion callback.
+     */
+    public function testArithmaticComplete(CompletionInput $input, CompletionSuggestions $suggestions): void
+    {
+        if ($input->mustSuggestArgumentValuesFor('one') || $input->mustSuggestArgumentValuesFor('two')) {
+            $suggestions->suggestValues(range(0, 9));
+        }
     }
 }
