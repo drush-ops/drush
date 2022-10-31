@@ -43,13 +43,16 @@ class ExampleAttributesCommands extends DrushCommands
 
     #[CLI\Command(name: 'test:arithmatic', aliases: ['arithmatic'])]
     #[CLI\Help(description: 'This is the test:arithmatic command', synopsis: "This command will add one and two. If the --negate flag\nis provided, then the result is negated.")]
-    #[CLI\Argument(name: 'one', description: 'The first number to add.')]
+    // suggestedValues available on Symfony 6.1+. Useful when only static values are allowed.
+    #[CLI\Argument(name: 'one', description: 'The first number to add.', suggestedValues: [1,2,3,4,5])]
     #[CLI\Argument(name: 'two', description: 'The other number to add.')]
-    #[CLI\Option(name: 'negate', description: 'Whether or not the result should be negated.')]
-    #[CLI\Usage(name: '2 2 --negate', description: 'Add two plus two and then negate.')]
+    // Use the Complete Attribute when for dynamic values.
     #[CLI\Complete(method_name_or_callable: 'testArithmaticComplete')]
+    #[CLI\Option(name: 'negate', description: 'Whether or not the result should be negated.')]
+    #[CLI\Option(name: 'color', description: 'What color are you feeling.', suggestedValues: ['red', 'blue', 'green'])]
+    #[CLI\Usage(name: '2 2 --negate', description: 'Add two plus two and then negate.')]
     #[CLI\Misc(data: ['dup' => ['one', 'two']])]
-    public function testArithmatic($one, $two = 2, array $options = ['negate' => false, 'unused' => 'bob'])
+    public function testArithmatic($one, $two = 2, array $options = ['negate' => false, 'unused' => 'bob', 'color' => self::REQ])
     {
         $result = $one + $two;
         if ($options['negate']) {
@@ -104,8 +107,8 @@ class ExampleAttributesCommands extends DrushCommands
      */
     public function testArithmaticComplete(CompletionInput $input, CompletionSuggestions $suggestions): void
     {
-        if ($input->mustSuggestArgumentValuesFor('one') || $input->mustSuggestArgumentValuesFor('two')) {
-            $suggestions->suggestValues(range(0, 9));
+        if ($input->mustSuggestArgumentValuesFor('two')) {
+            $suggestions->suggestValues(range(10, 15));
         }
     }
 }
