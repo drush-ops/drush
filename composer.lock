@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d1301367167c4e5618755338cd9db71a",
+    "content-hash": "c10a8fe79b1f2d7cffa089c64f098bb3",
     "packages": [
         {
             "name": "chi-teck/drupal-code-generator",
@@ -150,16 +150,16 @@
         },
         {
             "name": "consolidation/annotated-command",
-            "version": "dev-completion",
+            "version": "dev-input-def",
             "source": {
                 "type": "git",
                 "url": "https://github.com/consolidation/annotated-command.git",
-                "reference": "e197c87e20ce1b5eed22e98bafd0aad2af97ca78"
+                "reference": "28a2bc9c9a9d9fdd3bab33d253a4b98e4c83a9b9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/consolidation/annotated-command/zipball/e197c87e20ce1b5eed22e98bafd0aad2af97ca78",
-                "reference": "e197c87e20ce1b5eed22e98bafd0aad2af97ca78",
+                "url": "https://api.github.com/repos/consolidation/annotated-command/zipball/28a2bc9c9a9d9fdd3bab33d253a4b98e4c83a9b9",
+                "reference": "28a2bc9c9a9d9fdd3bab33d253a4b98e4c83a9b9",
                 "shasum": ""
             },
             "require": {
@@ -200,9 +200,9 @@
             "description": "Initialize Symfony Console commands from annotated command class methods.",
             "support": {
                 "issues": "https://github.com/consolidation/annotated-command/issues",
-                "source": "https://github.com/consolidation/annotated-command/tree/completion"
+                "source": "https://github.com/consolidation/annotated-command/tree/input-def"
             },
-            "time": "2022-10-29T18:50:51+00:00"
+            "time": "2022-10-31T15:24:37+00:00"
         },
         {
             "name": "consolidation/config",
@@ -7785,9 +7785,9 @@
     "aliases": [
         {
             "package": "consolidation/annotated-command",
-            "version": "dev-completion",
-            "alias": "4.5.7",
-            "alias_normalized": "4.5.7.0"
+            "version": "dev-input-def",
+            "alias": "4.6.0",
+            "alias_normalized": "4.6.0.0"
         }
     ],
     "minimum-stability": "dev",
