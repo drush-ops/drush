@@ -166,6 +166,11 @@ class DependencyInjection
         $factory = $container->get('commandFactory');
         $factory->setIncludeAllPublicMethods(false);
         $factory->setIgnoreCommandsInTraits(true);
+        // Temporary: once we have a stable release of Annotated Command with
+        // this flag, we can call it invariantly.
+        if (method_exists($factory, 'setIgnoreCommandsInParentClasses')) {
+            $factory->setIgnoreCommandsInParentClasses(true);
+        }
         $factory->addCommandInfoAlterer(new DrushCommandInfoAlterer());
 
         $commandProcessor = $container->get('commandProcessor');
