@@ -20,9 +20,9 @@ class ExampleAttributesCommands extends DrushCommands
     #[CLI\Option(name: 'flip', description: 'Whether or not the second parameter should come first in the result.')]
     #[CLI\Usage(name: 'bet alpha --flip', description: 'Concatenate "alpha" and "bet".')]
     #[CLI\Version(version: '11.0')]
-    public function myEcho($one, $two = '', array $options = ['flip' => false])
+    public function myEcho($one, $two = '', $flip = false)
     {
-        if ($options['flip']) {
+        if ($flip) {
             return "{$two}{$one}";
         }
         return "{$one}{$two}";
@@ -52,10 +52,10 @@ class ExampleAttributesCommands extends DrushCommands
     #[CLI\Option(name: 'color', description: 'What color are you feeling.', suggestedValues: ['red', 'blue', 'green'])]
     #[CLI\Usage(name: '2 2 --negate', description: 'Add two plus two and then negate.')]
     #[CLI\Misc(data: ['dup' => ['one', 'two']])]
-    public function testArithmatic($one, $two = 2, array $options = ['negate' => false, 'unused' => 'bob', 'color' => self::REQ])
+    public function testArithmatic($one, $two = 2, $negate = false, $color = self::REQ)
     {
         $result = $one + $two;
-        if ($options['negate']) {
+        if ($negate) {
             $result = -$result;
         }
 
