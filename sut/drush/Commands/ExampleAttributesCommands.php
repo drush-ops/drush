@@ -43,7 +43,7 @@ class ExampleAttributesCommands extends DrushCommands
 
     #[CLI\Command(name: 'test:arithmatic', aliases: ['arithmatic'])]
     #[CLI\Help(description: 'This is the test:arithmatic command', synopsis: "This command will add one and two. If the --negate flag\nis provided, then the result is negated.")]
-    // suggestedValues available on Symfony 6.1+. Useful when only static values are allowed.
+    // suggestedValues available on Symfony 6.1+. Also see the CLI\Complete Attribute below.
     #[CLI\Argument(name: 'one', description: 'The first number to add.', suggestedValues: [1,2,3,4,5])]
     #[CLI\Argument(name: 'two', description: 'The other number to add.')]
     // Use the Complete Attribute when for dynamic values.
