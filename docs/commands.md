@@ -21,8 +21,8 @@ The following are both valid ways to declare a command:
     use Drush\Attributes as CLI;
 
     #[CLI\Command(name: 'xkcd:fetch-attributes', aliases: ['xkcd-attributes'])]
-    #[CLI\Argument(name: 'search', description: 'Optional argument to retrieve the cartoons matching an index, keyword keyword, or "random".')]
-    #[CLI\Option(name: 'image-viewer', description: 'Command to use to view images (e.g. xv, firefox).')]
+    #[CLI\Argument(name: 'search', description: 'Optional argument to retrieve the cartoons matching an index, keyword, or "random".')]
+    #[CLI\Option(name: 'image-viewer', description: 'Command to use to view images (e.g. xv, firefox).', suggestedValues: ['open', 'xv', 'firefox'])]
     #[CLI\Option(name: 'google-custom-search-api-key', description: 'Google Custom Search API Key')]
     #[CLI\Help(description: 'Retrieve and display xkcd cartoons (attribute variant).')]
     #[CLI\Usage(name: 'drush xkcd', description: 'Retrieve and display the latest cartoon')]
