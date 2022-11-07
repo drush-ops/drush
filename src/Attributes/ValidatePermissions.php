@@ -13,7 +13,7 @@ class ValidatePermissions
      *   The argument name containing the required permissions.
      */
     public function __construct(
-        public array $argName,
+        public string $argName,
     ) {
     }
 
