@@ -1,7 +1,7 @@
 name: drush
 type: php
 docroot: sut
-php_version: "7.4"
+php_version: "8.1"
 webserver_type: nginx-fpm
 router_http_port: "87"
 router_https_port: "444"
@@ -15,6 +15,8 @@ mutagen_enabled: false
 use_dns_when_possible: true
 composer_version: ""
 disable_settings_management: true
+webimage_extra_packages:
+  - bash-completion
 web_environment:
   - UNISH_DB_URL=mysql://root:root@db
 #  - "UNISH_DB_URL=sqlite://:memory:"

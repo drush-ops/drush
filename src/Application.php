@@ -53,10 +53,13 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
      */
     public function configureGlobalOptions()
     {
-        $this->getDefinition()
-            ->addOption(
-                new InputOption('--debug', 'd', InputOption::VALUE_NONE, 'Equivalent to -vv')
-            );
+        // Symfony 6.1+ has a --debug option for its completion command.
+        if ($this->getDefinition()->hasOption('--debug')) {
+            $this->getDefinition()
+                ->addOption(
+                    new InputOption('--debug', 'd', InputOption::VALUE_NONE, 'Equivalent to -vv')
+                );
+        }
 
         $this->getDefinition()
             ->addOption(

@@ -2,6 +2,9 @@
 
 namespace Unish;
 
+use Consolidation\AnnotatedCommand\AnnotatedCommandFactory;
+use Drush\Commands\ExampleAttributesCommands;
+
 /**
  * Tests commands defined using PHP 8+ attributes.
  *
@@ -14,7 +17,7 @@ class AttributesTest extends UnishIntegrationTestCase
      */
     public function testAttributes()
     {
-        $options = ['include' => __DIR__ . '/resources/'];
+        $options = [];
 
         // Hook declaration test
         $this->drush('my:echo', ['foo', 'bar'], $options);

@@ -8,6 +8,8 @@ use Drush\Attributes as CLI;
 use Drush\Attributes as DR;
 use Consolidation\AnnotatedCommand\Attributes as AC;
 use Drush\Boot\DrupalBootLevels;
+use Symfony\Component\Console\Completion\CompletionInput;
+use Symfony\Component\Console\Completion\CompletionSuggestions;
 
 class ExampleAttributesCommands extends DrushCommands
 {
@@ -18,9 +20,9 @@ class ExampleAttributesCommands extends DrushCommands
     #[CLI\Option(name: 'flip', description: 'Whether or not the second parameter should come first in the result.')]
     #[CLI\Usage(name: 'bet alpha --flip', description: 'Concatenate "alpha" and "bet".')]
     #[CLI\Version(version: '11.0')]
-    public function myEcho($one, $two = '', array $options = ['flip' => false])
+    public function myEcho($one, $two = '', $flip = false)
     {
-        if ($options['flip']) {
+        if ($flip) {
             return "{$two}{$one}";
         }
         return "{$one}{$two}";
@@ -41,15 +43,19 @@ class ExampleAttributesCommands extends DrushCommands
 
     #[CLI\Command(name: 'test:arithmatic', aliases: ['arithmatic'])]
     #[CLI\Help(description: 'This is the test:arithmatic command', synopsis: "This command will add one and two. If the --negate flag\nis provided, then the result is negated.")]
-    #[CLI\Argument(name: 'one', description: 'The first number to add.')]
+    // suggestedValues available on Symfony 6.1+. Also see the CLI\Complete Attribute below.
+    #[CLI\Argument(name: 'one', description: 'The first number to add.', suggestedValues: [1,2,3,4,5])]
     #[CLI\Argument(name: 'two', description: 'The other number to add.')]
+    // Use the Complete Attribute when for dynamic values.
+    #[CLI\Complete(method_name_or_callable: 'testArithmaticComplete')]
     #[CLI\Option(name: 'negate', description: 'Whether or not the result should be negated.')]
+    #[CLI\Option(name: 'color', description: 'What color are you feeling.', suggestedValues: ['red', 'blue', 'green'])]
     #[CLI\Usage(name: '2 2 --negate', description: 'Add two plus two and then negate.')]
     #[CLI\Misc(data: ['dup' => ['one', 'two']])]
-    public function testArithmatic($one, $two = 2, array $options = ['negate' => false, 'unused' => 'bob'])
+    public function testArithmatic($one, $two = 2, $negate = false, $color = self::REQ)
     {
         $result = $one + $two;
-        if ($options['negate']) {
+        if ($negate) {
             $result = -$result;
         }
 
@@ -94,5 +100,15 @@ class ExampleAttributesCommands extends DrushCommands
             'cardinal' => ['name' => 'Cardinal', 'color' => 'red'],
         ];
         return new RowsOfFields($rows);
+    }
+
+    /*
+     * An argument completion callback.
+     */
+    public function testArithmaticComplete(CompletionInput $input, CompletionSuggestions $suggestions): void
+    {
+        if ($input->mustSuggestArgumentValuesFor('two')) {
+            $suggestions->suggestValues(range(10, 15));
+        }
     }
 }
