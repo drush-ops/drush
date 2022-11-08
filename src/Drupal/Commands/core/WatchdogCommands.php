@@ -57,7 +57,7 @@ class WatchdogCommands extends DrushCommands
      */
     public function show($substring = '', $options = ['format' => 'table', 'count' => 10, 'severity' => self::REQ, 'severity-min' => self::REQ, 'type' => self::REQ, 'extended' => false])
     {
-        $where = $this->where($options['type'], $options['severity'], $options['severity-min'], $substring);
+        $where = $this->where($options['type'], $options['severity'], $substring, 'AND', $options['severity-min']);
         $query = Database::getConnection()->select('watchdog', 'w')
             ->range(0, $options['count'])
             ->fields('w')
@@ -121,20 +121,20 @@ class WatchdogCommands extends DrushCommands
      * @usage  drush watchdog:tail
      *   Continuously tail watchdog messages.
      * @usage drush watchdog:tail "cron run successful"
-     *   Continously tail watchdog messages, filtering on the string <info>cron run successful</info>.
+     *   Continuously tail watchdog messages, filtering on the string <info>cron run successful</info>.
      * @usage drush watchdog:tail --severity=Notice
-     *   Continously tail watchdog messages, filtering severity of notice.
+     *   Continuously tail watchdog messages, filtering severity of notice.
      * @usage drush watchdog:tail --severity-min=Warning
-     *   Continously tail watchdog messages, filtering for a severity of warning or higher.
+     *   Continuously tail watchdog messages, filtering for a severity of warning or higher.
      * @usage drush watchdog:tail --type=php
-     *   Continously tail watchdog messages, filtering on type equals php.
+     *   Continuously tail watchdog messages, filtering on type equals php.
      * @aliases wd-tail,wt,watchdog-tail
      * @validate-module-enabled dblog
      * @version 10.6
      */
     public function tail(OutputInterface $output, $substring = '', $options = ['severity' => self::REQ, 'severity-min' => self::REQ, 'type' => self::REQ, 'extended' => false]): void
     {
-        $where = $this->where($options['type'], $options['severity'], $options['severity-min'], $substring);
+        $where = $this->where($options['type'], $options['severity'], $substring, 'AND', $options['severity-min']);
         if (empty($where['where'])) {
             $where = [
               'where' => 'wid > :wid',
@@ -240,7 +240,7 @@ class WatchdogCommands extends DrushCommands
             if ((empty($substring)) && (!isset($options['type'])) && (!isset($options['severity']))) {
                 throw new \Exception(dt('No options provided.'));
             }
-            $where = $this->where($options['type'], $options['severity'], null, $substring, 'OR');
+            $where = $this->where($options['type'], $options['severity'], $substring, 'OR');
             $this->output()->writeln(dt('All messages with !where will be deleted.', ['!where' => preg_replace("/message LIKE %$substring%/", "message body containing '$substring'", strtr($where['where'], $where['args']))]));
             if (!$this->io()->confirm(dt('Do you want to continue?'))) {
                 throw new UserAbortException();
@@ -281,16 +281,16 @@ class WatchdogCommands extends DrushCommands
      *   String. Valid watchdog type.
      * @param $severity
      *   Int or String for a valid watchdog severity message.
-     * @param $severity_min
-     *   Int or String for the minimum severity to return.
      * @param $filter
      *   String. Value to filter watchdog messages by.
      * @param $criteria
      *   ('AND', 'OR'). Criteria for the WHERE snippet.
+     * @param $severity_min
+     *   Int or String for the minimum severity to return.
      * @return
      *   An array with structure ('where' => string, 'args' => array())
      */
-    protected function where($type = null, $severity = null, $severity_min = null, $filter = null, $criteria = 'AND'): array
+    protected function where($type = null, $severity = null, $filter = null, $criteria = 'AND', $severity_min = null): array
     {
         $args = [];
         $conditions = [];
