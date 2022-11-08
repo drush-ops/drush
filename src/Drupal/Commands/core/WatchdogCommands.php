@@ -23,7 +23,8 @@ class WatchdogCommands extends DrushCommands
      * @command watchdog:show
      * @param $substring A substring to look search in error messages.
      * @option count The number of messages to show.
-     * @option severity Restrict to messages of a given severity level.
+     * @option severity Restrict to messages of a given severity level (numeric or string).
+     * @option severity-min Restrict to messages of a given severity level and higher.
      * @option type Restrict to messages of a given type.
      * @option extended Return extended information about each message.
      * @usage  drush watchdog:show
@@ -34,6 +35,8 @@ class WatchdogCommands extends DrushCommands
      *   Show a listing of most recent 46 messages.
      * @usage drush watchdog:show --severity=Notice
      *   Show a listing of most recent 10 messages with a severity of notice.
+     * @usage drush watchdog:show --severity-min=Warning
+     *   Show a listing of most recent 10 messages with a severity of warning or higher.
      * @usage drush watchdog:show --type=php
      *   Show a listing of most recent 10 messages of type php
      * @aliases wd-show,ws,watchdog-show
@@ -52,9 +55,9 @@ class WatchdogCommands extends DrushCommands
      * @filter-default-field message
      * @return RowsOfFields
      */
-    public function show($substring = '', $options = ['format' => 'table', 'count' => 10, 'severity' => self::REQ, 'type' => self::REQ, 'extended' => false])
+    public function show($substring = '', $options = ['format' => 'table', 'count' => 10, 'severity' => self::REQ, 'severity-min' => self::REQ, 'type' => self::REQ, 'extended' => false])
     {
-        $where = $this->where($options['type'], $options['severity'], $substring);
+        $where = $this->where($options['type'], $options['severity'], $options['severity-min'], $substring);
         $query = Database::getConnection()->select('watchdog', 'w')
             ->range(0, $options['count'])
             ->fields('w')
@@ -111,7 +114,8 @@ class WatchdogCommands extends DrushCommands
      * @command watchdog:tail
      * @param OutputInterface $output
      * @param $substring A substring to look search in error messages.
-     * @option severity Restrict to messages of a given severity level.
+     * @option severity Restrict to messages of a given severity level (numeric or string).
+     * @option severity-min Restrict to messages of a given severity level and higher.
      * @option type Restrict to messages of a given type.
      * @option extended Return extended information about each message.
      * @usage  drush watchdog:tail
@@ -120,15 +124,17 @@ class WatchdogCommands extends DrushCommands
      *   Continously tail watchdog messages, filtering on the string <info>cron run successful</info>.
      * @usage drush watchdog:tail --severity=Notice
      *   Continously tail watchdog messages, filtering severity of notice.
+     * @usage drush watchdog:tail --severity-min=Warning
+     *   Continously tail watchdog messages, filtering for a severity of warning or higher.
      * @usage drush watchdog:tail --type=php
      *   Continously tail watchdog messages, filtering on type equals php.
      * @aliases wd-tail,wt,watchdog-tail
      * @validate-module-enabled dblog
      * @version 10.6
      */
-    public function tail(OutputInterface $output, $substring = '', $options = ['severity' => self::REQ, 'type' => self::REQ, 'extended' => false]): void
+    public function tail(OutputInterface $output, $substring = '', $options = ['severity' => self::REQ, 'severity-min' => self::REQ, 'type' => self::REQ, 'extended' => false]): void
     {
-        $where = $this->where($options['type'], $options['severity'], $substring);
+        $where = $this->where($options['type'], $options['severity'], $options['severity-min'], $substring);
         if (empty($where['where'])) {
             $where = [
               'where' => 'wid > :wid',
@@ -234,7 +240,7 @@ class WatchdogCommands extends DrushCommands
             if ((empty($substring)) && (!isset($options['type'])) && (!isset($options['severity']))) {
                 throw new \Exception(dt('No options provided.'));
             }
-            $where = $this->where($options['type'], $options['severity'], $substring, 'OR');
+            $where = $this->where($options['type'], $options['severity'], null, $substring, 'OR');
             $this->output()->writeln(dt('All messages with !where will be deleted.', ['!where' => preg_replace("/message LIKE %$substring%/", "message body containing '$substring'", strtr($where['where'], $where['args']))]));
             if (!$this->io()->confirm(dt('Do you want to continue?'))) {
                 throw new UserAbortException();
@@ -275,6 +281,8 @@ class WatchdogCommands extends DrushCommands
      *   String. Valid watchdog type.
      * @param $severity
      *   Int or String for a valid watchdog severity message.
+     * @param $severity_min
+     *   Int or String for the minimum severity to return.
      * @param $filter
      *   String. Value to filter watchdog messages by.
      * @param $criteria
@@ -282,7 +290,7 @@ class WatchdogCommands extends DrushCommands
      * @return
      *   An array with structure ('where' => string, 'args' => array())
      */
-    protected function where($type = null, $severity = null, $filter = null, $criteria = 'AND'): array
+    protected function where($type = null, $severity = null, $severity_min = null, $filter = null, $criteria = 'AND'): array
     {
         $args = [];
         $conditions = [];
@@ -295,7 +303,19 @@ class WatchdogCommands extends DrushCommands
             $conditions[] = "type = :type";
             $args[':type'] = $type;
         }
-        if (isset($severity)) {
+        if (!empty($severity) && !empty($severity_min)) {
+            $msg = "--severity=!severity  --severity-min=!severity_min\nYou may provide a value for one of these parameters but not both.";
+            throw new \Exception(dt($msg, ['!severity' => $severity, '!severity_min' => $severity_min]));
+        }
+        // From here we know that only one of --severity or --severity-min might
+        // have a value but not both of them.
+        if (!empty($severity) || !empty($severity_min)) {
+            if (empty($severity)) {
+                $severity = $severity_min;
+                $operator = '<=';
+            } else {
+                $operator = '=';
+            }
             $severities = RfcLogLevel::getLevels();
             if (isset($severities[$severity])) {
                 $level = $severity;
@@ -308,10 +328,10 @@ class WatchdogCommands extends DrushCommands
                 foreach ($severities as $key => $value) {
                     $levels[] = "$value($key)";
                 }
-                $msg = "Unknown severity level: !severity.\nValid severity levels are: !levels.";
+                $msg = "Unknown severity level: !severity\nValid severity levels are: !levels.";
                 throw new \Exception(dt($msg, ['!severity' => $severity, '!levels' => implode(', ', $levels)]));
             }
-            $conditions[] = 'severity = :severity';
+            $conditions[] = "severity {$operator} :severity";
             $args[':severity'] = $level;
         }
         if ($filter) {
