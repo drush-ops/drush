@@ -37,6 +37,34 @@ class WatchdogTest extends UnishIntegrationTestCase
         $output = $this->getOutput();
         $this->assertGreaterThanOrEqual($message_chars, substr_count($output, $char));
 
+        // Test deleting a watchdog message by filtering on text.
+        $this->drush('watchdog-delete', ['\*\*\*'], ['yes' => true]);
+        $output = $this->getErrorOutput();
+        $this->assertStringContainsString('1 watchdog messages have been deleted.', $output);
+
+        // Add a warning message and an alert message, for testing the severity parameters.
+        $eval3 = "\\Drupal::logger('drush')->warning('Rocking Unish.');";
+        $this->drush('php-eval', [$eval3]);
+        $eval4 = "\\Drupal::logger('drush')->alert('Beware! Rocks of Unish ahead');";
+        $this->drush('php-eval', [$eval4]);
+
+        // Test the 'severity' parameter, to show only messages with a severity of Notice.
+        $this->drush('watchdog-show', [], ['severity' => 'Notice']);
+        $output = $this->getOutput();
+        $this->assertStringContainsString('Unish rocks.', $output);
+        $this->assertStringContainsString('Notice', $output);
+        $this->assertStringNotContainsString('Warning', $output);
+        $this->assertStringNotContainsString('Alert', $output);
+        $this->assertStringNotContainsString(str_repeat($char, 20), $output);
+
+        // Test the 'severity-min' parameter, to show all messages with a severity of Warning
+        // and higher. This should not include the notice message.
+        $this->drush('watchdog-show', [], ['severity-min' => 'Warning']);
+        $output = $this->getOutput();
+        $this->assertStringNotContainsString('Notice', $output);
+        $this->assertStringContainsString('Warning', $output);
+        $this->assertStringContainsString('Alert', $output);
+
         // Tests message deletion
         $this->drush('watchdog-delete', ['all'], ['yes' => true]);
         $output = $this->getErrorOutput();
