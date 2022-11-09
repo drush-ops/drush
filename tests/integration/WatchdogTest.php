@@ -122,8 +122,8 @@ class WatchdogTest extends UnishIntegrationTestCase
         $this->showAll();
         // So also delete by matching ordinary words.
         $this->drush('watchdog-delete', ['Exterminate'], ['yes' => true]);
-        $this->showAll();
         $output .= $this->getErrorOutput();
+        $this->showAll();
         $this->assertStringContainsString('1 watchdog messages have been deleted.', $output);
         $this->assertStringNotContainsString('Exterminate', $output);
 
