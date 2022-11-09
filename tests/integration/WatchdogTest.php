@@ -7,12 +7,10 @@ namespace Unish;
  */
 class WatchdogTest extends UnishIntegrationTestCase
 {
-    public function testWatchdog()
+    public function testWatchdogShow()
     {
         $this->drush('pm-install', ['dblog']);
         $this->drush('watchdog-delete', ['all'], ['yes' => true]);
-        $output = $this->getErrorOutput();
-        $this->assertStringContainsString('All watchdog messages have been deleted', $output);
 
         $eval1 = "\\Drupal::logger('drush')->notice('Unish rocks.');";
         $this->drush('php-eval', [$eval1]);
@@ -37,16 +35,6 @@ class WatchdogTest extends UnishIntegrationTestCase
         $output = $this->getOutput();
         $this->assertGreaterThanOrEqual($message_chars, substr_count($output, $char));
 
-        // Test deleting a watchdog message by filtering on text.
-        // $this->drush('watchdog-delete', ['\*\*\*'], ['yes' => true]);
-        // $output = $this->getErrorOutput();
-        // $this->assertStringContainsString('1 watchdog messages have been deleted.', $output);
-        // The above delete passes using mysql and postgres db but fails with sqlite.
-        // Therefore delete by id not text filter.
-        $this->drush('watchdog-delete', [2], ['yes' => true]);
-        $output = $this->getErrorOutput();
-        $this->assertStringContainsString('Watchdog message #2 has been deleted.', $output);
-
         // Add a warning message and an alert message, for testing the severity parameters.
         $eval3 = "\\Drupal::logger('drush')->warning('Rocking Unish.');";
         $this->drush('php-eval', [$eval3]);
@@ -60,7 +48,6 @@ class WatchdogTest extends UnishIntegrationTestCase
         $this->assertStringContainsString('Notice', $output);
         $this->assertStringNotContainsString('Warning', $output);
         $this->assertStringNotContainsString('Alert', $output);
-        $this->assertStringNotContainsString(str_repeat($char, 20), $output);
 
         // Test the 'severity-min' parameter, to show all messages with a severity of Warning
         // and higher. This should not include the notice message.
@@ -69,13 +56,87 @@ class WatchdogTest extends UnishIntegrationTestCase
         $this->assertStringNotContainsString('Notice', $output);
         $this->assertStringContainsString('Warning', $output);
         $this->assertStringContainsString('Alert', $output);
+    }
 
-        // Tests message deletion
+    public function testWatchdogDelete()
+    {
+        // Test deleting all messages.
         $this->drush('watchdog-delete', ['all'], ['yes' => true]);
         $output = $this->getErrorOutput();
         $this->assertStringContainsString('All watchdog messages have been deleted', $output);
         $this->drush('watchdog-show');
         $output = $this->getOutput();
         $this->assertEquals('', $output);
+
+        // Create messages.
+        $eval1 = "\\Drupal::logger('other')->info('Scrub');";
+        $this->drush('php-eval', [$eval1]);
+        $eval2 = "\\Drupal::logger('drush')->notice('Delete');";
+        $this->drush('php-eval', [$eval2]);
+        $eval3 = "\\Drupal::logger('drush')->warning('Eliminate');";
+        $this->drush('php-eval', [$eval3]);
+        $eval4 = "\\Drupal::logger('drush')->error('Obliterate');";
+        $this->drush('php-eval', [$eval4]);
+        $eval5 = "\\Drupal::logger('drush')->critical('*** Exterminate!');";
+        $this->drush('php-eval', [$eval5]);
+        $this->showAll();
+
+        // Show that all the messages have been stored.
+        $this->drush('watchdog-show');
+        $output = $this->getOutput();
+        $this->assertStringContainsString('Scrub', $output);
+        $this->assertStringContainsString('Delete', $output);
+        $this->assertStringContainsString('Eliminate', $output);
+        $this->assertStringContainsString('Obliterate', $output);
+        $this->assertStringContainsString('Exterminate', $output);
+
+        // Test deleting a single message by id.
+        $this->drush('watchdog-delete', [2], ['yes' => true]);
+        $output = $this->getErrorOutput();
+        $this->assertStringContainsString('Watchdog message #2 has been deleted.', $output);
+        $this->assertStringNotContainsString('Delete', $output);
+        $this->showAll();
+
+        // Test deleting messages by severity.
+        $this->drush('watchdog-delete', [], ['severity' => 'Warning', 'yes' => true]);
+        $output = $this->getErrorOutput();
+        $this->assertStringContainsString('1 watchdog messages have been deleted', $output);
+        $this->assertStringNotContainsString('Eliminate', $output);
+        $this->showAll();
+
+        // Test deleting messages by type.
+        $this->drush('watchdog-delete', [], ['type' => 'other', 'yes' => true]);
+        $output = $this->getErrorOutput();
+        $this->assertStringContainsString('1 watchdog messages have been deleted', $output);
+        $this->assertStringNotContainsString('Scrub', $output);
+        $this->showAll();
+
+        // Test deleting a watchdog message by filtering on text.
+        // @todo Investigate why this does not work on sqlite CircleCI tests
+        // when it passes on mysql and postgres tests.
+        $this->drush('watchdog-delete', ['\*\*\*'], ['yes' => true]);
+        $output = $this->getErrorOutput();
+        $this->assertStringContainsString('1 watchdog messages have been deleted.', $output);
+        $this->assertStringNotContainsString('Exterminate', $output);
+        $this->showAll();
+
+        // Finally delete all messages.
+        $this->drush('watchdog-delete', ['all'], ['yes' => true]);
+        $output = $this->getErrorOutput();
+        $this->assertStringContainsString('All watchdog messages have been deleted', $output);
+        $this->drush('watchdog-show');
+        $output = $this->getOutput();
+        $this->assertEquals('', $output);
+        $this->showAll();
+    }
+
+    private function showAll()
+    {
+      // Helper (debug) function to show all watchdog messages.
+        static $count;
+        $count += 1;
+        $this->drush('watchdog-show');
+        $output = $this->getOutput();
+        print "\n>>>>> {$count}\n" . $output . "\n";
     }
 }
