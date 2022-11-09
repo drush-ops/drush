@@ -115,13 +115,17 @@ class WatchdogTest extends UnishIntegrationTestCase
         $this->showAll();
 
         // Test deleting a watchdog message by filtering on text.
-        // @todo Investigate why this does not work on sqlite CircleCI tests
-        // when it passes on mysql and postgres tests.
+        // @todo Investigate why using '\*\*\*' to match '***' does not work on
+        // sqlite CircleCI tests when it passes on mysql and postgres tests.
         $this->drush('watchdog-delete', ['\*\*\*'], ['yes' => true]);
         $output = $this->getErrorOutput();
+        $this->showAll();
+        // So also delete by matching ordinary words.
+        $this->drush('watchdog-delete', ['Exterminate'], ['yes' => true]);
+        $this->showAll();
+        $output .= $this->getErrorOutput();
         $this->assertStringContainsString('1 watchdog messages have been deleted.', $output);
         $this->assertStringNotContainsString('Exterminate', $output);
-        $this->showAll();
 
         // Finally delete all messages.
         $this->drush('watchdog-delete', ['all'], ['yes' => true]);
