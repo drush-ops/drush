@@ -135,7 +135,7 @@ class WatchdogTest extends UnishIntegrationTestCase
 
     private function showAll()
     {
-      // Helper (debug) function to show all watchdog messages.
+        // Helper (debug) function to show all watchdog messages.
         static $count;
         $count += 1;
         $this->drush('watchdog-show');
