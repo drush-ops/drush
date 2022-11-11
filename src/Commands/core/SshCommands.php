@@ -52,7 +52,7 @@ class SshCommands extends DrushCommands implements SiteAliasManagerAwareInterfac
         $process = $this->processManager()->siteProcess($alias, $code);
         if (Tty::isTtySupported()) {
             // @todo is this is still needed?
-            $process->setTty(false);
+            $process->setTty($options['tty']);
         }
         // The transport handles the chdir during processArgs().
         $fallback = $alias->hasRoot() ? $alias->root() : null;
