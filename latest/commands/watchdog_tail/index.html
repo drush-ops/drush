@@ -4997,9 +4997,10 @@
 <h4 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h4>
 <ul>
 <li><code>drush watchdog:tail</code>. Continuously tail watchdog messages.</li>
-<li><code>drush watchdog:tail "cron run successful"</code>. Continously tail watchdog messages, filtering on the string <em>cron run successful</em>.</li>
-<li><code>drush watchdog:tail --severity=Notice</code>. Continously tail watchdog messages, filtering severity of notice.</li>
-<li><code>drush watchdog:tail --type=php</code>. Continously tail watchdog messages, filtering on type equals php.</li>
+<li><code>drush watchdog:tail "cron run successful"</code>. Continuously tail watchdog messages, filtering on the string <em>cron run successful</em>.</li>
+<li><code>drush watchdog:tail --severity=Notice</code>. Continuously tail watchdog messages, filtering severity of notice.</li>
+<li><code>drush watchdog:tail --severity-min=Warning</code>. Continuously tail watchdog messages, filtering for a severity of warning or higher.</li>
+<li><code>drush watchdog:tail --type=php</code>. Continuously tail watchdog messages, filtering on type equals php.</li>
 </ul>
 <h4 id="arguments">Arguments<a class="headerlink" href="#arguments" title="Permanent link">&para;</a></h4>
 <ul>
@@ -5007,7 +5008,8 @@
 </ul>
 <h4 id="options">Options<a class="headerlink" href="#options" title="Permanent link">&para;</a></h4>
 <ul>
-<li><strong> --severity=SEVERITY</strong>. Restrict to messages of a given severity level.</li>
+<li><strong> --severity=SEVERITY</strong>. Restrict to messages of a given severity level (numeric or string).</li>
+<li><strong> --severity-min=SEVERITY-MIN</strong>. Restrict to messages of a given severity level and higher.</li>
 <li><strong> --type=TYPE</strong>. Restrict to messages of a given type.</li>
 <li><strong> --extended</strong>. Return extended information about each message.</li>
 </ul>
