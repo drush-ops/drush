@@ -81,6 +81,8 @@ In this example, the file `drush-11-99.services.yml` loads commandfile classes t
 
 It is also possible to use [version ranges](https://getcomposer.org/doc/articles/versions.md#version-range) to exactly specify which version of Drush the services file should be used with (e.g. `"drush.services.yml": ">=11 <11.99"`).
 
+In cases where a Composer package contains one or more sub-modules with their own `drush.services.yml` files (such as Drupal distributions or suites of modules), a minimal `composer.json` file can be added to the sub-module's directory, containing only the `extra.drush.services`section as described above.
+
 ## Altering Drush Command Info
 Drush command info (annotations/attributes) can be altered from other modules. This is done by creating and registering 'command info alterers'. Alterers are class services that are able to intercept and manipulate an existing command annotation.
 
