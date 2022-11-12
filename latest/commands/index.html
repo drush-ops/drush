@@ -15,7 +15,7 @@
         <link rel="canonical" href="https://www.drush.org/latest/commands/">
       
       <link rel="icon" href="../img/favicon.ico">
-      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-8.5.9">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-8.5.10">
     
     
       
@@ -23,7 +23,7 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.20d9efc8.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.472b142f.min.css">
       
         
         <link rel="stylesheet" href="../assets/stylesheets/palette.08040f6c.min.css">
@@ -86,7 +86,7 @@
     
     
     
-    <body dir="ltr" data-md-color-scheme="preference" data-md-color-primary="indigo" data-md-color-accent="indigo">
+    <body dir="ltr" data-md-color-scheme="preference" data-md-color-primary="" data-md-color-accent="">
   
     
     
@@ -5095,6 +5095,7 @@ If for some reason you need to load different services for different versions of
 </code></pre></div>
 In this example, the file <code>drush-11-99.services.yml</code> loads commandfile classes that require features only available in Drush 11.99 and later, and drush.services.yml loads an older commandfile implementation for earlier versions of Drush.</p>
 <p>It is also possible to use <a href="https://getcomposer.org/doc/articles/versions.md#version-range">version ranges</a> to exactly specify which version of Drush the services file should be used with (e.g. <code>"drush.services.yml": "&gt;=11 &lt;11.99"</code>).</p>
+<p>In cases where a Composer package contains one or more sub-modules with their own <code>drush.services.yml</code> files (such as Drupal distributions or suites of modules), a minimal <code>composer.json</code> file can be added to the sub-module's directory, containing only the <code>extra.drush.services</code>section as described above.</p>
 <h2 id="altering-drush-command-info">Altering Drush Command Info<a class="headerlink" href="#altering-drush-command-info" title="Permanent link">&para;</a></h2>
 <p>Drush command info (annotations/attributes) can be altered from other modules. This is done by creating and registering 'command info alterers'. Alterers are class services that are able to intercept and manipulate an existing command annotation.</p>
 <p>In order to alter an existing command info, follow the steps below:</p>
@@ -5187,7 +5188,7 @@ With this configuration in place, global commands may be placed as described in 
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">November 7, 2022</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">November 12, 2022</span>
       
     
   </small>
@@ -5202,7 +5203,7 @@ With this configuration in place, global commands may be placed as described in 
     
         <div class="md-source-date">
             <small>
-                Authors: <span class='git-page-authors git-authors'><a href='mailto:clau.cristea@gmail.com'>Claudiu Cristea</a>, <a href='mailto:danepowell@users.noreply.github.com'>Dane Powell</a>, <a href='mailto:greg.1.anderson@greenknowe.org'>Greg Anderson</a>, <a href='mailto:neclimdul@gmail.com'>James Gilliland</a>, <a href='mailto:weitzman@tejasa.com'>Moshe Weitzman</a>, <a href='mailto:nelus87@gmail.com'>Niels van Aken</a></span>
+                Authors: <span class='git-page-authors git-authors'><a href='mailto:clau.cristea@gmail.com'>Claudiu Cristea</a>, <a href='mailto:danepowell@users.noreply.github.com'>Dane Powell</a>, <a href='mailto:greg.1.anderson@greenknowe.org'>Greg Anderson</a>, <a href='mailto:neclimdul@gmail.com'>James Gilliland</a>, <a href='mailto:mike@mstenta.net'>Michael Stenta</a>, <a href='mailto:weitzman@tejasa.com'>Moshe Weitzman</a>, <a href='mailto:nelus87@gmail.com'>Niels van Aken</a></span>
             </small>
         </div>
     
