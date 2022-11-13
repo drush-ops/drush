@@ -39,9 +39,9 @@ Drush's own tests may be run within provided Docker containers via [DDEV](https:
 Drush provides test traits that may be used to test your own Drush extensions. Adding the traits varies slightly depending how you package your Drush extension.
 
   - An extension that ships inside a contributed module - [DevelCommandsTest](https://cgit.drupalcode.org/devel/tree/tests/src/Functional/DevelCommandsTest.php?h=8.x-2.x) for an example. More examples are [SchedulerDrushTest](https://git.drupalcode.org/project/scheduler/blob/8.x-1.x/tests/src/Functional/SchedulerDrushTest.php) and [Views Bulk Operations](https://git.drupalcode.org/project/views_bulk_operations/-/blob/8.x-3.x/tests/src/Functional/DrushCommandsTest.php). Remember to add `drush/drush` to your module's composer.json (`require-dev` section).
-  - A standalone Drush extension or one that ships inside a custom module - [example drush extension](https://github.com/drush-ops/example-drush-extension)
+  - A standalone Drush extension or one that ships outside of a module - [example drush extension](https://github.com/drush-ops/example-drush-extension)
 
-Once you have included the Drush Test Traits, you will be able to write simple tests that call your extension's commands and makes assertions against the output.
+Once you successfully have `use Drush\TestTraits\DrushTestTrait` in your test class, you are able to write simple tests that call your extension's commands and makes assertions against the output.
 ```php
     public function testMyCommand()
     {
