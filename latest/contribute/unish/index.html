@@ -5031,9 +5031,9 @@ high quality, our tests are run on every push. See <a href="https://circleci.com
 <p>Drush provides test traits that may be used to test your own Drush extensions. Adding the traits varies slightly depending how you package your Drush extension.</p>
 <ul>
 <li>An extension that ships inside a contributed module - <a href="https://cgit.drupalcode.org/devel/tree/tests/src/Functional/DevelCommandsTest.php?h=8.x-2.x">DevelCommandsTest</a> for an example. More examples are <a href="https://git.drupalcode.org/project/scheduler/blob/8.x-1.x/tests/src/Functional/SchedulerDrushTest.php">SchedulerDrushTest</a> and <a href="https://git.drupalcode.org/project/views_bulk_operations/-/blob/8.x-3.x/tests/src/Functional/DrushCommandsTest.php">Views Bulk Operations</a>. Remember to add <code>drush/drush</code> to your module's composer.json (<code>require-dev</code> section).</li>
-<li>A standalone Drush extension or one that ships inside a custom module - <a href="https://github.com/drush-ops/example-drush-extension">example drush extension</a></li>
+<li>A standalone Drush extension or one that ships outside of a module - <a href="https://github.com/drush-ops/example-drush-extension">example drush extension</a></li>
 </ul>
-<p>Once you have included the Drush Test Traits, you will be able to write simple tests that call your extension's commands and makes assertions against the output.
+<p>Once you successfully have <code>use Drush\TestTraits\DrushTestTrait</code> in your test class, you are able to write simple tests that call your extension's commands and makes assertions against the output.
 <div class="highlight"><pre><span></span><code>    <span class="k">public</span> <span class="k">function</span> <span class="nf">testMyCommand</span><span class="p">()</span>
     <span class="p">{</span>
         <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">drush</span><span class="p">(</span><span class="s1">&#39;my:command&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;param&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;flag&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;value&#39;</span><span class="p">]);</span>
@@ -5046,7 +5046,7 @@ high quality, our tests are run on every push. See <a href="https://circleci.com
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">December 11, 2021</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">November 13, 2022</span>
       
     
   </small>
