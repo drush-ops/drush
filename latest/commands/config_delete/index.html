@@ -4985,16 +4985,16 @@
 
 
 <h1 id="configdelete">config:delete<a class="headerlink" href="#configdelete" title="Permanent link">&para;</a></h1>
-<p>Delete a configuration key, or a whole object.</p>
+<p>Delete a configuration key, or a whole object(s).</p>
 <h4 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h4>
 <ul>
-<li><code>drush config:delete system.site</code>. Delete the the system.site config object.</li>
+<li><code>drush config:delete system.site,system.rss</code>. Delete the system.site and system.rss config objects.</li>
 <li><code>drush config:delete system.site page.front</code>. Delete the 'page.front' key from the system.site object.</li>
 </ul>
 <h4 id="arguments">Arguments<a class="headerlink" href="#arguments" title="Permanent link">&para;</a></h4>
 <ul>
-<li><strong>config_name</strong>. The config object name, for example "system.site".</li>
-<li><strong>[key]</strong>. A config key to clear, for example "page.front".</li>
+<li><strong>config_name</strong>. The config object name(s). Delimit multiple with commas.</li>
+<li><strong>[key]</strong>. A config key to clear, May not be used with multiple config names.</li>
 </ul>
 <h4 id="global-options">Global Options<a class="headerlink" href="#global-options" title="Permanent link">&para;</a></h4>
 <ul>
