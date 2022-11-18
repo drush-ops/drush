@@ -21,6 +21,7 @@ use Drush\Drush;
 use Drush\Exec\ExecTrait;
 use Drush\SiteAlias\SiteAliasManagerAwareInterface;
 use Drush\Utils\FsUtils;
+use Drush\Utils\StringUtils;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\ConsoleOutputInterface;
@@ -249,29 +250,33 @@ class ConfigCommands extends DrushCommands implements StdinAwareInterface, SiteA
     }
 
     /**
-     * Delete a configuration key, or a whole object.
+     * Delete a configuration key, or a whole object(s).
      *
      * @command config:delete
      * @validate-config-name
      * @interact-config-name
-     * @param $config_name The config object name, for example "system.site".
-     * @param $key A config key to clear, for example "page.front".
-     * @usage drush config:delete system.site
-     *   Delete the the system.site config object.
+     * @param $config_name The config object name(s). Delimit multiple with commas.
+     * @param $key A config key to clear, May not be used with multiple config names.
+     * @usage drush config:delete system.site,system.rss
+     *   Delete the system.site and system.rss config objects.
      * @usage drush config:delete system.site page.front
      *   Delete the 'page.front' key from the system.site object.
      * @aliases cdel,config-delete
      */
     public function delete($config_name, $key = null): void
     {
-        $config = $this->getConfigFactory()->getEditable($config_name);
         if ($key) {
+            $config = $this->getConfigFactory()->getEditable($config_name);
             if ($config->get($key) === null) {
                 throw new \Exception(dt('Configuration key !key not found.', ['!key' => $key]));
             }
             $config->clear($key)->save();
         } else {
-            $config->delete();
+            $names = StringUtils::csvToArray($config_name);
+            foreach ($names as $name) {
+                $config = $this->getConfigFactory()->getEditable($name);
+                $config->delete();
+            }
         }
     }
 
@@ -504,10 +509,13 @@ class ConfigCommands extends DrushCommands implements StdinAwareInterface, SiteA
     {
         $arg_name = $commandData->annotationData()->get('validate-config-name', null) ?: 'config_name';
         $config_name = $commandData->input()->getArgument($arg_name);
-        $config = \Drupal::config($config_name);
-        if ($config->isNew()) {
-            $msg = dt('Config !name does not exist', ['!name' => $config_name]);
-            return new CommandError($msg);
+        $names = StringUtils::csvToArray($config_name);
+        foreach ($names as $name) {
+            $config = \Drupal::config($name);
+            if ($config->isNew()) {
+                $msg = dt('Config !name does not exist', ['!name' => $name]);
+                return new CommandError($msg);
+            }
         }
     }
 
