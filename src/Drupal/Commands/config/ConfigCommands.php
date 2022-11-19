@@ -148,7 +148,7 @@ class ConfigCommands extends DrushCommands implements StdinAwareInterface, SiteA
      *   Use a sequence as value for the key <info>permissions</info> of <info>user.role.authenticated</info> config object.
      * @usage drush config:set --input-format=yaml system.site page {403: '403', front: home}
      *   Use a mapping as value for the key <info>page</info> of <info>system.site</info> config object.
-     * @usage drush config:set --input-format=yaml user.role.authenticated "{label: 'Auth user', weight: 5}"
+     * @usage drush config:set --input-format=yaml user.role.authenticated ? "{label: 'Auth user', weight: 5}"
      *   Update two top level keys (label, weight) in the <info>system.site</info> config object.
      * @aliases cset,config-set
      */
