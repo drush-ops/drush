@@ -76,13 +76,15 @@
   "autoload-dev": {
     "psr-4": {
       "Unish\\": "tests/unish",
-      "Custom\\Library\\": "tests/fixtures/lib",
-      "Sut\\Drush\\": "sut/drush"
+      "Custom\\Library\\": "tests/fixtures/lib"
     },
     "classmap": [
         "sut/core/modules/migrate/src"
     ],
-    "files": ["tests/load.environment.php"]
+    "files": [
+      "tests/load.environment.php",
+      "sut/drush/Commands/ExampleAttributesCommands.php"
+    ]
   },
   "config": {
     "allow-plugins": {
