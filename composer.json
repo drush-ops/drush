@@ -76,7 +76,8 @@
   "autoload-dev": {
     "psr-4": {
       "Unish\\": "tests/unish",
-      "Custom\\Library\\": "tests/fixtures/lib"
+      "Custom\\Library\\": "tests/fixtures/lib",
+      "Sut\\Drush\\": "sut/drush"
     },
     "classmap": [
         "sut/core/modules/migrate/src"
