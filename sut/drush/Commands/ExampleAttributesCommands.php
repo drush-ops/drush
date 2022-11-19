@@ -1,6 +1,6 @@
 <?php
 
-namespace Drush\Commands;
+namespace Sut\Drush\Commands;
 
 use Consolidation\AnnotatedCommand\Hooks\HookManager;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
@@ -8,6 +8,7 @@ use Drush\Attributes as CLI;
 use Drush\Attributes as DR;
 use Consolidation\AnnotatedCommand\Attributes as AC;
 use Drush\Boot\DrupalBootLevels;
+use Drush\Commands\DrushCommands;
 use Symfony\Component\Console\Completion\CompletionInput;
 use Symfony\Component\Console\Completion\CompletionSuggestions;
 
@@ -46,7 +47,7 @@ class ExampleAttributesCommands extends DrushCommands
     // suggestedValues available on Symfony 6.1+. Also see the CLI\Complete Attribute below.
     #[CLI\Argument(name: 'one', description: 'The first number to add.', suggestedValues: [1,2,3,4,5])]
     #[CLI\Argument(name: 'two', description: 'The other number to add.')]
-    // Use the Complete Attribute when for dynamic values.
+    // Use the Complete Attribute for dynamic values.
     #[CLI\Complete(method_name_or_callable: 'testArithmaticComplete')]
     #[CLI\Option(name: 'negate', description: 'Whether or not the result should be negated.')]
     #[CLI\Option(name: 'color', description: 'What color are you feeling.', suggestedValues: ['red', 'blue', 'green'])]
