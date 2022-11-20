@@ -135,6 +135,8 @@ jobs:
           path: /tmp/results
       - store_artifacts:
           path: /tmp/results
+      - store_artifacts:
+          path: ~/drush
 
 workflows:
   version: 2
