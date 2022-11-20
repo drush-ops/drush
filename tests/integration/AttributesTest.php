@@ -50,7 +50,7 @@ class AttributesTest extends UnishIntegrationTestCase
             $this->markTestSkipped('Symfony Console 6.2+ needed for rest this test.');
         }
 
-        $this->commandFileInstance = new \Custom\Library\Drush\Commands\ExampleAttributesCommands();
+        $this->commandFileInstance = new \Custom\Library\Drush\Commands\ExampleAttributesDrushCommands();
         $this->commandFactory = new AnnotatedCommandFactory();
         $commandInfo = $this->commandFactory->createCommandInfo($this->commandFileInstance, 'testArithmatic');
         $command = $this->commandFactory->createCommand($commandInfo, $this->commandFileInstance);
