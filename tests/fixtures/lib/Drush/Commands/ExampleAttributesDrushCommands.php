@@ -12,7 +12,7 @@ use Drush\Commands\DrushCommands;
 use Symfony\Component\Console\Completion\CompletionInput;
 use Symfony\Component\Console\Completion\CompletionSuggestions;
 
-class ExampleAttributesCommands extends DrushCommands
+class ExampleAttributesDrushCommands extends DrushCommands
 {
     #[CLI\Command(name: 'my:echo', aliases: ['c'])]
     #[CLI\Help(description: 'This is the my:echo command', synopsis: "This command will concatenate two parameters. If the --flip flag\nis provided, then the result is the concatenation of two and one.")]
