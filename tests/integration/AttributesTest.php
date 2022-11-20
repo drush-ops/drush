@@ -47,11 +47,11 @@ class AttributesTest extends UnishIntegrationTestCase
     public function testCompletion()
     {
         if (!class_exists('\Symfony\Component\Console\Completion\Output\FishCompletionOutput')) {
-            $this->markTestSkipped('Symfony Console 6.1+ needed for rest this test.');
+            $this->markTestSkipped('Symfony Console 6.2+ needed for rest this test.');
         }
 
         // ExampleAttributesCommands is added to the autoloader via composer.json/
-        $this->commandFileInstance = new ExampleAttributesCommands();
+        $this->commandFileInstance = new \ExampleAttributesCommands();
         $this->commandFactory = new AnnotatedCommandFactory();
         $commandInfo = $this->commandFactory->createCommandInfo($this->commandFileInstance, 'testArithmatic');
         $command = $this->commandFactory->createCommand($commandInfo, $this->commandFileInstance);
