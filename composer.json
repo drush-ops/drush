@@ -82,8 +82,7 @@
         "sut/core/modules/migrate/src"
     ],
     "files": [
-      "tests/load.environment.php",
-      "sut/drush/Commands/ExampleAttributesCommands.php"
+      "tests/load.environment.php"
     ]
   },
   "config": {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Drush\Commands;
+namespace Custom\Library\Drush\Commands;
 
 use Consolidation\AnnotatedCommand\Hooks\HookManager;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
@@ -8,6 +8,7 @@ use Drush\Attributes as CLI;
 use Drush\Attributes as DR;
 use Consolidation\AnnotatedCommand\Attributes as AC;
 use Drush\Boot\DrupalBootLevels;
+use Drush\Commands\DrushCommands;
 use Symfony\Component\Console\Completion\CompletionInput;
 use Symfony\Component\Console\Completion\CompletionSuggestions;
 
