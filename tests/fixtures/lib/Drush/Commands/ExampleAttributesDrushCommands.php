@@ -15,7 +15,7 @@ use Symfony\Component\Console\Completion\CompletionSuggestions;
 class ExampleAttributesDrushCommands extends DrushCommands
 {
     #[CLI\Command(name: 'my:echo', aliases: ['c'])]
-    #[CLI\Help(description: 'This is the my:echo command', synopsis: "This command will concatenate two parameters. If the --flip flag\nis provided, then the result is the concatenation of two and one.")]
+    #[CLI\Help(description: 'This is the my:echo command', synopsis: "This command will concatenate two parameters. If the --flip flag\nis provided, then the result is the concatenation of two and one.", hidden: true)]
     #[CLI\Argument(name: 'one', description: 'The first parameter')]
     #[CLI\Argument(name: 'two', description: 'The other parameter')]
     #[CLI\Option(name: 'flip', description: 'Whether or not the second parameter should come first in the result.')]
