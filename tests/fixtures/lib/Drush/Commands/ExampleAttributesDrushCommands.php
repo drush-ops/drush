@@ -1,6 +1,6 @@
 <?php
 
-namespace Drush\Commands;
+namespace Custom\Library\Drush\Commands;
 
 use Consolidation\AnnotatedCommand\Hooks\HookManager;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
@@ -8,13 +8,14 @@ use Drush\Attributes as CLI;
 use Drush\Attributes as DR;
 use Consolidation\AnnotatedCommand\Attributes as AC;
 use Drush\Boot\DrupalBootLevels;
+use Drush\Commands\DrushCommands;
 use Symfony\Component\Console\Completion\CompletionInput;
 use Symfony\Component\Console\Completion\CompletionSuggestions;
 
-class ExampleAttributesCommands extends DrushCommands
+class ExampleAttributesDrushCommands extends DrushCommands
 {
     #[CLI\Command(name: 'my:echo', aliases: ['c'])]
-    #[CLI\Help(description: 'This is the my:echo command', synopsis: "This command will concatenate two parameters. If the --flip flag\nis provided, then the result is the concatenation of two and one.")]
+    #[CLI\Help(description: 'This is the my:echo command', synopsis: "This command will concatenate two parameters. If the --flip flag\nis provided, then the result is the concatenation of two and one.", hidden: true)]
     #[CLI\Argument(name: 'one', description: 'The first parameter')]
     #[CLI\Argument(name: 'two', description: 'The other parameter')]
     #[CLI\Option(name: 'flip', description: 'Whether or not the second parameter should come first in the result.')]
