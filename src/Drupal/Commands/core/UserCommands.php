@@ -168,7 +168,7 @@ class UserCommands extends DrushCommands
      * @option $uid A comma delimited list of user ids to lookup (an alternative to names).
      * @option $mail A comma delimited list of emails to lookup (an alternative to names).
      * @aliases urol,user-add-role
-     * @usage drush user-add-role 'editor' user3
+     * @usage drush user:role:add 'editor' user3
      *   Add the editor role to user3
      */
     public function addRole(string $role, string $names = '', $options = ['uid' => self::REQ, 'mail' => self::REQ]): void
@@ -190,13 +190,13 @@ class UserCommands extends DrushCommands
      * @command user:role:remove
      *
      * @validate-entity-load user_role role
-     * @param string $role The name of the role to add
+     * @param string $role The machine name of the role to remove
      * @param string $names A comma delimited list of user names.
      * @option $uid A comma delimited list of user ids to lookup (an alternative to names).
      * @option $mail A comma delimited list of emails to lookup (an alternative to names).
      * @aliases urrol,user-remove-role
-     * @usage drush user:remove-role 'power user' user3
-     *   Remove the 'power user' role from user3
+     * @usage drush user:role:remove 'power_user' user3
+     *   Remove the 'power_user' role from user3
      */
     public function removeRole(string $role, string $names = '', $options = ['uid' => self::REQ, 'mail' => self::REQ]): void
     {
