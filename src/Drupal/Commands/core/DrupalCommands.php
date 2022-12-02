@@ -101,6 +101,7 @@ class DrupalCommands extends DrushCommands
         drupal_load_updates();
 
         $requirements = $this->getModuleHandler()->invokeAll('requirements', ['runtime']);
+        $this->getModuleHandler()->alter('requirements', $requirements);
         // If a module uses "$requirements[] = " instead of
         // "$requirements['label'] = ", then build a label from
         // the title.
