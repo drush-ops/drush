@@ -37,12 +37,11 @@ class SshCommands extends DrushCommands implements SiteAliasManagerAwareInterfac
         $alias = $this->siteAliasManager()->getSelf();
 
         if (empty($code)) {
-            $code[] = 'bash';
-            $code[] = '-l';
+            $code = $this->getConfig()->get('ssh.default-command') ?? ['bash', '-l'];
 
             // We're calling an interactive 'bash' shell, so we want to
             // force tty to true.
-            $options['tty'] = true;
+            $options['tty'] = $this->getConfig()->get('ssh.default-command-tty', true);
         }
 
         if ((count($code) == 1)) {

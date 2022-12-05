@@ -21,5 +21,6 @@ live:
   uri: https://example.com
   ssh:
     options: '-o PasswordAuthentication=example'
+    default-command: ['sh', '-l']
   paths:
     drush-script: '/example/path/to/drush'

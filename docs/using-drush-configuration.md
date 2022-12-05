@@ -159,6 +159,10 @@ ssh:
   # password authentication, and is included here, so you may add additional
   # parameters without losing the default configuration.
   options: '-o PasswordAuthentication=no'
+  # Specify the default command used when `drush ssh` is invoked without arguments.
+  default-command: ['bash', '-l']
+  # Enable tty mode when using default command.
+  default-command-tty: true
   # This string is valid for Bash shell. Override in case you need something different. See https://github.com/drush-ops/drush/issues/3816.
   pipefail: 'set -o pipefail; '
 
