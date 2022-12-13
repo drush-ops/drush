@@ -23,7 +23,7 @@ class AttributesTest extends UnishIntegrationTestCase
         $this->drush('my:echo', ['foo', 'bar'], $options);
         $this->assertStringNotContainsString("HOOKED", $this->getOutput());
         $this->drush('test:arithmatic', ['9'], $options);
-        $this->assertStringContainsString("HOOKED");
+        $this->assertStringContainsString("HOOKED", $this->getOutput());
 
         // Table Attributes
         $this->drush('birds', [], $options + ['format' => 'json', 'filter' => 'Cardinal']);
