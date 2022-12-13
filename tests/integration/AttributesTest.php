@@ -4,6 +4,7 @@ namespace Unish;
 
 use Consolidation\AnnotatedCommand\AnnotatedCommandFactory;
 use Symfony\Component\Console\Tester\CommandCompletionTester;
+use Symfony\Component\Filesystem\Path;
 
 /**
  * Tests commands defined using PHP 8+ attributes.
@@ -23,7 +24,7 @@ class AttributesTest extends UnishIntegrationTestCase
         $this->drush('my:echo', ['foo', 'bar'], $options);
         $this->assertStringNotContainsString("HOOKED", $this->getOutput());
         $this->drush('test:arithmatic', ['9'], $options);
-        $this->assertOutputEquals("HOOKED\n11");
+        $this->assertStringContainsString("HOOKED", $this->getOutput());
 
         // Table Attributes
         $this->drush('birds', [], $options + ['format' => 'json', 'filter' => 'Cardinal']);
@@ -31,14 +32,15 @@ class AttributesTest extends UnishIntegrationTestCase
         $this->assertEquals(['color' => 'red'], $data);
 
         // Validators and Bootstrap test
-        $this->drush('validatestuff', ['access df', '/tmp', 'authenticated'], $options, self::EXIT_ERROR);
+        $sandbox = Path::join($this->getSandbox());
+        $this->drush('validatestuff', ['access df', $sandbox, 'authenticated'], $options, self::EXIT_ERROR);
         $this->assertErrorOutputContains('Permission(s) not found: access df');
-        $this->drush('validatestuff', ['access content', '/tmp/dfdf', 'authenticated'], $options, self::EXIT_ERROR);
-        $this->assertErrorOutputContains('File(s) not found: /tmp/dfdf');
-        $this->drush('validatestuff', ['access content', '/tmp', 'authenticatedddndndn'], $options, self::EXIT_ERROR);
+        $this->drush('validatestuff', ['access content', Path::join($sandbox, 'dfdf'), 'authenticated'], $options, self::EXIT_ERROR);
+        $this->assertErrorOutputContains('File(s) not found: ' . Path::join($sandbox, 'dfdf'));
+        $this->drush('validatestuff', ['access content', $sandbox, 'authenticatedddndndn'], $options, self::EXIT_ERROR);
         $this->assertErrorOutputContains('Unable to load the user_role: authenticatedddndndn');
         // Finally, expect success.
-        $this->drush('validatestuff', ['access content', '/tmp', 'authenticated'], $options, self::EXIT_SUCCESS);
+        $this->drush('validatestuff', ['access content', $sandbox, 'authenticated'], $options, self::EXIT_SUCCESS);
     }
 
     /**
