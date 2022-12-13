@@ -15,6 +15,7 @@ use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
 use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
 use Consolidation\OutputFormatters\Options\FormatterOptions;
 use Consolidation\AnnotatedCommand\CommandData;
+use Drush\Utils\StringUtils;
 use Symfony\Component\Filesystem\Path;
 
 class StatusCommands extends DrushCommands implements SiteAliasManagerAwareInterface
@@ -228,7 +229,7 @@ class StatusCommands extends DrushCommands implements SiteAliasManagerAwareInter
                     $modules = \Drupal::moduleHandler()->getModuleList();
                     $themes = \Drupal::service('theme_handler')->listInfo();
                     $projects = array_merge($modules, $themes);
-                    foreach (explode(',', $options['project']) as $target) {
+                    foreach (StringUtils::csvToArray($options['project']) as $target) {
                         if (array_key_exists($target, $projects)) {
                             $paths['%' . $target] = $drupal_root . '/' . $projects[$target]->getPath();
                         }

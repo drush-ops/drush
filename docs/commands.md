@@ -21,8 +21,8 @@ The following are both valid ways to declare a command:
     use Drush\Attributes as CLI;
 
     #[CLI\Command(name: 'xkcd:fetch-attributes', aliases: ['xkcd-attributes'])]
-    #[CLI\Argument(name: 'search', description: 'Optional argument to retrieve the cartoons matching an index, keyword keyword, or "random".')]
-    #[CLI\Option(name: 'image-viewer', description: 'Command to use to view images (e.g. xv, firefox).')]
+    #[CLI\Argument(name: 'search', description: 'Optional argument to retrieve the cartoons matching an index, keyword, or "random".')]
+    #[CLI\Option(name: 'image-viewer', description: 'Command to use to view images (e.g. xv, firefox).', suggestedValues: ['open', 'xv', 'firefox'])]
     #[CLI\Option(name: 'google-custom-search-api-key', description: 'Google Custom Search API Key')]
     #[CLI\Help(description: 'Retrieve and display xkcd cartoons (attribute variant).')]
     #[CLI\Usage(name: 'drush xkcd', description: 'Retrieve and display the latest cartoon')]
@@ -80,6 +80,8 @@ If for some reason you need to load different services for different versions of
 In this example, the file `drush-11-99.services.yml` loads commandfile classes that require features only available in Drush 11.99 and later, and drush.services.yml loads an older commandfile implementation for earlier versions of Drush.
 
 It is also possible to use [version ranges](https://getcomposer.org/doc/articles/versions.md#version-range) to exactly specify which version of Drush the services file should be used with (e.g. `"drush.services.yml": ">=11 <11.99"`).
+
+In cases where a Composer package contains one or more sub-modules with their own `drush.services.yml` files (such as Drupal distributions or suites of modules), a minimal `composer.json` file can be added to the sub-module's directory, containing only the `extra.drush.services`section as described above.
 
 ## Altering Drush Command Info
 Drush command info (annotations/attributes) can be altered from other modules. This is done by creating and registering 'command info alterers'. Alterers are class services that are able to intercept and manipulate an existing command annotation.
