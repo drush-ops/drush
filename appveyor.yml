@@ -47,7 +47,7 @@ install:
   - echo extension=php_pdo_pgsql.dll >> php.ini
   - echo extension=php_pdo_sqlite.dll >> php.ini
   - echo extension=php_pgsql.dll >> php.ini
-  - echo extension=php_gd2.dll >> php.ini
+  - echo extension=php_gd.dll >> php.ini
   - echo extension=php_fileinfo.dll >> php.ini
   - echo memory_limit=256M >> php.ini
   - SET PATH=C:\tools\php80;%PATH%
