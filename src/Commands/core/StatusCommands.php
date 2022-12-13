@@ -228,9 +228,11 @@ class StatusCommands extends DrushCommands implements SiteAliasManagerAwareInter
                     $modules = \Drupal::moduleHandler()->getModuleList();
                     $themes = \Drupal::service('theme_handler')->listInfo();
                     $projects = array_merge($modules, $themes);
-                    foreach (explode(',', $options['project']) as $target) {
-                        if (array_key_exists($target, $projects)) {
-                            $paths['%' . $target] = $drupal_root . '/' . $projects[$target]->getPath();
+                    if ($options['project']) {
+                        foreach (explode(',', $options['project']) as $target) {
+                            if (array_key_exists($target, $projects)) {
+                                $paths['%' . $target] = $drupal_root . '/' . $projects[$target]->getPath();
+                            }
                         }
                     }
                 }
