@@ -207,7 +207,7 @@ class LocaleCommands extends DrushCommands
      * @command locale:import
      * @validate-module-enabled locale
      * @param $langcode The language code of the imported translations.
-     * @param $file Path and file name of the gettext file.
+     * @param $file Path and file name of the gettext file. Relative paths calculated from Drupal root.
      * @option type The type of translations to be imported. Recognized values: <info>customized</info>, <info>not-customized</info>
      * @option override Whether and how imported strings will override existing translations. Defaults to the Import behavior configured in the admin interface. Recognized values: <info>none</info>, <info>customized</info>, <info>not-customized</info>, <info>all</info>,
      * @option autocreate-language Create the language in addition to import.
