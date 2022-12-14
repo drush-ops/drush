@@ -609,9 +609,7 @@ class MigrateRunnerCommands extends DrushCommands
             foreach ($migrations as $migrationId => $migration) {
                 /** @var MigrationInterface $migration */
                 $status = $migration->getStatus();
-                if ($status == MigrationInterface::STATUS_IDLE) {
-                    $this->logger()->warning(dt('Migration @id is already Idle', ['@id' => $migrationId]));
-                } else {
+                if ($status !== MigrationInterface::STATUS_IDLE) {
                     $migration->setStatus(MigrationInterface::STATUS_IDLE);
                     $this->logger()->success(dt('Migration @id reset to Idle', ['@id' => $migrationId]));
                 }
