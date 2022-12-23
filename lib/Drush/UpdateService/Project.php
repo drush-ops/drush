@@ -687,8 +687,9 @@ class Project {
       // Download the release node page and get the html as xml to explore it.
       $release_link = $this->parsed['releases'][$version]['release_link'];
       $filename = drush_download_file($release_link, drush_tempnam($project_name));
-      @$dom = \DOMDocument::loadHTMLFile($filename);
-      if ($dom) {
+      @$dom = new \DOMDocument();
+      $success = $dom->loadHTMLFile($filename);
+      if ($success) {
         drush_log(dt("Successfully parsed and loaded the HTML contained in the release notes' page for !project (!version) project.", array('!project' => $project_name, '!version' => $version)), LogLevel::NOTICE);
       }
       else {

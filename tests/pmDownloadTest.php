@@ -90,7 +90,7 @@ class pmDownloadCase extends CommandUnishTestCase {
     $output = $this->getOutput();
      // 4 items are: Select message + Cancel + 2 versions.
     $this->assertEquals(4, count($items), '--select offerred 2 options.');
-    $this->assertContains('6.x-1.x-dev', $output, 'Dev release was shown by --select.');
+    $this->assertStringContainsString('6.x-1.x-dev', $output, 'Dev release was shown by --select.');
 
     // --select --dev. Specify 6.x since that has so many releases.
     $this->drush('pm-download', array('devel-6.x'), $options + array('dev' => NULL), NULL, NULL, CommandUnishTestCase::UNISH_EXITCODE_USER_ABORT);
@@ -98,7 +98,7 @@ class pmDownloadCase extends CommandUnishTestCase {
     $output = $this->getOutput();
     // 12 items are: Select message + Cancel + 1 option.
     $this->assertEquals(3, count($items), '--select --dev expected to offer only one option.');
-    $this->assertContains('6.x-1.x-dev', $output, 'Assure that --dev lists the only dev release.');
+    $this->assertStringContainsString('6.x-1.x-dev', $output, 'Assure that --dev lists the only dev release.');
 
     // --select --all. Specify 5.x since this is frozen.
     $this->drush('pm-download', array('devel-5.x'), $options + array('all' => NULL), NULL, NULL, CommandUnishTestCase::UNISH_EXITCODE_USER_ABORT);
@@ -106,7 +106,7 @@ class pmDownloadCase extends CommandUnishTestCase {
     $output = $this->getOutput();
     // 12 items are: Select message + Cancel + 9 options.
     $this->assertEquals(11, count($items), '--select --all offerred 8 options.');
-    $this->assertContains('5.x-0.1', $output, 'Assure that --all lists very old releases.');
+    $this->assertStringContainsString('5.x-0.1', $output, 'Assure that --all lists very old releases.');
   }
 
   public function testPackageHandler() {

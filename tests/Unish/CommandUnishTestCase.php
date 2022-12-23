@@ -13,13 +13,6 @@ abstract class CommandUnishTestCase extends UnishTestCase {
   const UNISH_EXITCODE_USER_ABORT = 75; // Same as DRUSH_EXITCODE_USER_ABORT
 
   /**
-   * Code coverage data collected during a single test.
-   *
-   * @var array
-   */
-  protected $coverage_data = array();
-
-  /**
    * Process of last executed command.
    *
    * @var Process
@@ -293,7 +286,7 @@ abstract class CommandUnishTestCase extends UnishTestCase {
     if ($hide_stderr) {
       $cmd[] = '2>' . $this->bit_bucket();
     }
-    $exec = array_filter($cmd, 'strlen'); // Remove NULLs
+    $exec = array_filter($cmd, function ($item) { return !empty($item); }); // Remove NULLs
     // Set sendmail_path to 'true' to disable any outgoing emails
     // that tests might cause Drupal to send.
 
@@ -302,59 +295,12 @@ abstract class CommandUnishTestCase extends UnishTestCase {
     $env['PHP_OPTIONS'] = "${php_options}-d sendmail_path='true'";
     $return = $this->execute(implode(' ', $exec), $expected_return, $cd, $env);
 
-    // Save code coverage information.
+    // Ignore code coverage information.
     if (!empty($coverage_file)) {
-      $data = unserialize(file_get_contents($coverage_file));
       unlink($coverage_file);
-      // Save for appending after the test finishes.
-      $this->coverage_data[] = $data;
     }
 
     return $return;
-  }
-
-  /**
-   * Override the run method, so we can add in our code coverage data after the
-   * test has run.
-   *
-   * We have to collect all coverage data, merge them and append them as one, to
-   * avoid having phpUnit duplicating the test function as many times as drush
-   * has been invoked.
-   *
-   * Runs the test case and collects the results in a TestResult object.
-   * If no TestResult object is passed a new one will be created.
-   *
-   * @param  PHPUnit_Framework_TestResult $result
-   * @return PHPUnit_Framework_TestResult
-   * @throws PHPUnit_Framework_Exception
-   */
-  public function run(\PHPUnit_Framework_TestResult $result = NULL) {
-    $result = parent::run($result);
-    $data = array();
-    foreach ($this->coverage_data as $merge_data) {
-      foreach ($merge_data as $file => $lines) {
-        if (!isset($data[$file])) {
-          $data[$file] = $lines;
-        }
-        else {
-          foreach ($lines as $num => $executed) {
-            if (!isset($data[$file][$num])) {
-              $data[$file][$num] = $executed;
-            }
-            else {
-              $data[$file][$num] = ($executed == 1 ? $executed : $data[$file][$num]);
-            }
-          }
-        }
-      }
-    }
-
-    // Reset coverage data.
-    $this->coverage_data = array();
-    if (!empty($data)) {
-      $result->getCodeCoverage()->append($data, $this);
-    }
-    return $result;
   }
 
   /**

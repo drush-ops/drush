@@ -1608,7 +1608,7 @@ function pm_parse_version($version, $is_core = FALSE) {
     $drupal_version_default = 8;
   }
   if ($core_parts['major'] == '') {
-    $core_parts['major'] = ($drupal_version_default) ? $drupal_version_default : drush_get_option('default-major', 8);
+    $core_parts['major'] = ($drupal_version_default) ? $drupal_version_default : drush_get_option('default-major', 7);
   }
 
   if ($is_core) {

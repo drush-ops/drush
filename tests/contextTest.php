@@ -42,8 +42,8 @@ class contextCase extends CommandUnishTestCase {
    * Try to write a tiny drushrc.php to each place that Drush checks. Also
    * write a sites/dev/aliases.drushrc.php file to the sandbox.
    */
-  function setUp() {
-    parent::setUp();
+  function set_up() {
+    parent::set_up();
 
     if (!$this->getSites()) {
       $this->setUpDrupal();

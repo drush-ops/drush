@@ -9,7 +9,7 @@ namespace Unish;
  */
 class coreCase extends CommandUnishTestCase {
 
-  function setUp() {
+  function set_up() {
     if (!$this->getSites()) {
       $this->setUpDrupal(1, TRUE);
     }
@@ -130,7 +130,7 @@ drush_invoke("version", $arg);
       'root' => $root,
       'uri' => key($this->getSites()),
       'pipe' => NULL,
-      'ignore' => 'cron,http requests,update,update_core,trusted_host_patterns', // no network access when running in tests, so ignore these
+      'ignore' => 'cron,http requests,update,update_core,trusted_host_patterns,coverage_core', // no network access when running in tests, so ignore these
       'strict' => 0, // invoke from script: do not verify options
     );
     // Drupal 6 has reached EOL, so we will always get errors for 'update_contrib';

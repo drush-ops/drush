@@ -54,8 +54,10 @@
     "symfony/event-dispatcher": "~2.7",
     "symfony/finder": "~2.7",
     "symfony/yaml": "~2.3",
-    "phpunit/phpunit": "4.*",
-    "symfony/process": "2.7.*"
+    "symfony/process": "2.7.*",
+    "phpunit/phpunit": "^4 || ^7.5.20 || ^9",
+    "squizlabs/php_codesniffer": "^3",
+    "yoast/phpunit-polyfills": "^1"
   },
   "suggest": {
       "ext-pcntl": "*",
@@ -76,8 +78,8 @@
     }
   },
   "scripts": {
-    "phar:install-tools": "curl -LSs https://box-project.github.io/box2/installer.php | php",
-    "phar:build": "php box.phar build",
+    "phar:install-tools": "curl -L https://github.com/box-project/box/releases/download/3.14.0/box.phar --output box.phar",
+    "phar:build": "php box.phar compile",
     "lint": [
       "find includes -name '*.inc' -print0 | xargs -0 -n1 php -l",
       "find lib/Drush -name '*.php' -print0 | xargs -0 -n1 php -l"

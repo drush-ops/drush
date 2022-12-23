@@ -2,7 +2,9 @@
 
 namespace Unish;
 
-abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
+use Yoast\PHPUnitPolyfills\TestCases\TestCase;
+
+abstract class UnishTestCase extends TestCase {
 
   /**
    * A list of Drupal sites that have been recently installed. They key is the
@@ -20,7 +22,7 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
    * Assure that each class starts with an empty sandbox directory and
    * a clean environment - http://drupal.org/node/1103568.
    */
-  public static function setUpBeforeClass() {
+  public static function set_up_before_class() {
     self::setUpFreshSandBox();
   }
 
@@ -54,7 +56,7 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
   /**
    * Runs after all tests in a class are run. Remove sandbox directory.
    */
-  public static function tearDownAfterClass() {
+  public static function tear_down_after_class() {
     chdir(dirname(UNISH_SANDBOX));
     $dirty = getenv('UNISH_DIRTY');
     if (file_exists(UNISH_SANDBOX) && empty($dirty)) {
@@ -286,11 +288,18 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
 
     $cache_keys = array($num_sites, $install ? 'install' : 'noinstall', $version_string, $profile, $db_driver);
     $source = $this->directory_cache('environments') . '/' . implode('-', $cache_keys) . '.tar.gz';
+    $fetchAndInstall = true;
     if (file_exists($source)) {
       $this->log('Cache HIT. Environment: ' . $source, 'verbose');
-      $this->drush('archive-restore', array($source), array('destination' => $root, 'overwrite' => NULL));
+      try {
+        $this->drush('archive-restore', array($source), array('destination' => $root, 'overwrite' => NULL));
+        $fetchAndInstall = false;
+      }
+      catch (\Exception $e) {
+        $this->log('Unexpected error restoring saved environment. Re-installing instead.', 'warning');
+      }
     }
-    else {
+    if ($fetchAndInstall) {
       $this->log('Cache MISS. Environment: ' . $source, 'verbose');
       // Build the site(s), install (if needed), then cache.
       foreach ($sites_subdirs as $subdir) {

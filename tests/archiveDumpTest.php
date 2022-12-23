@@ -61,18 +61,15 @@ class archiveDumpCase extends CommandUnishTestCase {
     $dump_dest = $this->archiveDump(FALSE);
     $docroot = basename($this->webroot());
 
-    // Check the dump file is a gzip file.
-    $exec = sprintf('file %s', $dump_dest);
-    $this->execute($exec);
-    $output = $this->getOutput();
-    $expected = '%sgzip compressed data%s';
-    $this->assertStringMatchesFormat($expected, $output);
+    // Confirm that the dump exists
+    $this->assertFileExists($dump_dest);
 
     // Untar the archive and make sure it looks right.
     $untar_dest = $this->unTar($dump_dest);
 
     if (strpos(UNISH_DB_URL, 'mysql') !== FALSE) {
-      $this->execute(sprintf('head %s/unish_%s.sql | grep "MySQL dump"', $untar_dest, self::uri));
+      $this->assertFileExists($untar_dest . '/unish_' . self::uri . '.sql');
+      $this->execute(sprintf('head %s/unish_%s.sql | grep " dump"', $untar_dest, self::uri));
     }
     $this->assertFileExists($untar_dest . '/MANIFEST.ini');
     $this->assertFileExists($untar_dest . '/' . $docroot);
@@ -110,7 +107,7 @@ class archiveDumpCase extends CommandUnishTestCase {
     $this->assertFileExists($untar_dest . '/MANIFEST.ini');
     $this->assertFileExists($untar_dest . '/' . $docroot);
     $modules_dir = UNISH_DRUPAL_MAJOR_VERSION >= 8 ? '/core/modules' : '/modules';
-    $this->assertFileNotExists($untar_dest . '/' . $docroot . $modules_dir, 'No modules directory should exist with --no-core');
+    $this->assertFileDoesNotExist($untar_dest . '/' . $docroot . $modules_dir, 'No modules directory should exist with --no-core');
 
     return $dump_dest;
   }

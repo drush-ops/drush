@@ -29,7 +29,7 @@ class makeConvertCase extends CommandUnishTestCase {
     $return = $this->drush('make-convert', array($source_file), $options);
     $output = $this->getOutput();
     foreach ($expected_lines as $expected_line) {
-      $this->assertContains($expected_line, $output);
+      $this->assertStringContainsString($expected_line, $output);
     }
   }
 

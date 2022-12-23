@@ -16,7 +16,7 @@ class lockMakefileCase extends CommandUnishTestCase {
   /**
    * Initialize $makefile_path.
    */
-  function __construct() {
+  function set_up() {
     $this->makefile_path =  dirname(__FILE__) . DIRECTORY_SEPARATOR . 'makefiles';
   }
 
