@@ -17,7 +17,7 @@ use Drush\Commands\DrushCommands;
 class QueueCommands extends DrushCommands
 {
     /**
-     * @var QueueWorkerManager
+     * @var QueueWorkerManagerInterface
      */
     protected $workerManager;
 
