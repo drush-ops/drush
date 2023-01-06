@@ -14,8 +14,14 @@
       
         <link rel="canonical" href="https://www.drush.org/latest/examples/example.prompt.sh/">
       
+      
+        <link rel="prev" href="../XkcdCommands.php/">
+      
+      
+        <link rel="next" href="../git-bisect.example.sh/">
+      
       <link rel="icon" href="../../img/favicon.ico">
-      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-8.5.10">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.0.2">
     
     
       
@@ -23,11 +29,10 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.975780f9.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.f56500e0.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.2505c338.min.css">
-        
       
       
 
@@ -211,7 +216,7 @@
 <!-- Navigation tabs -->
 <nav
         class="md-tabs"
-        aria-label="Tabs"
+        aria-label=""
         data-md-component="tabs"
 >
   <div class="md-tabs__inner md-grid">
@@ -4917,13 +4922,10 @@
     
                   
 
-  <a href="https://github.com/drush-ops/drush/blob/11.x/examples/example.prompt.sh" title="Edit this page" class="md-content__button md-icon">
-    
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25Z"/></svg>
-  </a>
+  
+  
 
 
-  <h1>prompt.sh</h1>
 
 <div class="highlight"><pre><span></span><code><span class="c1"># -*- mode: shell-script; mode: flyspell-prog; ispell-local-dictionary: &quot;american&quot; -*-</span>
 <span class="c1">#</span>
@@ -4948,88 +4950,88 @@
 <span class="c1">#</span>
 <span class="c1"># Displays Git repository and Drush alias status in your prompt.</span>
 
-__drush_ps1<span class="o">()</span> <span class="o">{</span>
-  <span class="nv">f</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">TMPDIR</span><span class="k">:-</span><span class="p">/tmp/</span><span class="si">}</span><span class="s2">/drush-env-</span><span class="si">${</span><span class="nv">USER</span><span class="si">}</span><span class="s2">/drush-drupal-site-</span><span class="nv">$$</span><span class="s2">&quot;</span>
-  <span class="k">if</span> <span class="o">[</span> -f <span class="nv">$f</span> <span class="o">]</span>
-  <span class="k">then</span>
-    <span class="nv">__DRUPAL_SITE</span><span class="o">=</span><span class="k">$(</span>cat <span class="s2">&quot;</span><span class="nv">$f</span><span class="s2">&quot;</span><span class="k">)</span>
-  <span class="k">else</span>
-    <span class="nv">__DRUPAL_SITE</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$DRUPAL_SITE</span><span class="s2">&quot;</span>
-  <span class="k">fi</span>
+__drush_ps1<span class="o">()</span><span class="w"> </span><span class="o">{</span>
+<span class="w">  </span><span class="nv">f</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">TMPDIR</span><span class="k">:-</span><span class="p">/tmp/</span><span class="si">}</span><span class="s2">/drush-env-</span><span class="si">${</span><span class="nv">USER</span><span class="si">}</span><span class="s2">/drush-drupal-site-</span><span class="nv">$$</span><span class="s2">&quot;</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="o">[</span><span class="w"> </span>-f<span class="w"> </span><span class="nv">$f</span><span class="w"> </span><span class="o">]</span>
+<span class="w">  </span><span class="k">then</span>
+<span class="w">    </span><span class="nv">__DRUPAL_SITE</span><span class="o">=</span><span class="k">$(</span>cat<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$f</span><span class="s2">&quot;</span><span class="k">)</span>
+<span class="w">  </span><span class="k">else</span>
+<span class="w">    </span><span class="nv">__DRUPAL_SITE</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$DRUPAL_SITE</span><span class="s2">&quot;</span>
+<span class="w">  </span><span class="k">fi</span>
 
-  <span class="c1"># Set DRUSH_PS1_SHOWCOLORHINTS to a non-empty value and define a</span>
-  <span class="c1"># __drush_ps1_colorize_alias() function for color hints in your Drush PS1</span>
-  <span class="c1"># prompt. See example.prompt.sh for an example implementation.</span>
-  <span class="k">if</span> <span class="o">[</span> -n <span class="s2">&quot;</span><span class="si">${</span><span class="nv">__DRUPAL_SITE</span><span class="p">-</span><span class="si">}</span><span class="s2">&quot;</span> <span class="o">]</span> <span class="o">&amp;&amp;</span> <span class="o">[</span> -n <span class="s2">&quot;</span><span class="si">${</span><span class="nv">DRUSH_PS1_SHOWCOLORHINTS</span><span class="p">-</span><span class="si">}</span><span class="s2">&quot;</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
-    __drush_ps1_colorize_alias
-  <span class="k">fi</span>
+<span class="w">  </span><span class="c1"># Set DRUSH_PS1_SHOWCOLORHINTS to a non-empty value and define a</span>
+<span class="w">  </span><span class="c1"># __drush_ps1_colorize_alias() function for color hints in your Drush PS1</span>
+<span class="w">  </span><span class="c1"># prompt. See example.prompt.sh for an example implementation.</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="o">[</span><span class="w"> </span>-n<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">__DRUPAL_SITE</span><span class="p">-</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="o">]</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="o">[</span><span class="w"> </span>-n<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">DRUSH_PS1_SHOWCOLORHINTS</span><span class="p">-</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="o">]</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
+<span class="w">    </span>__drush_ps1_colorize_alias
+<span class="w">  </span><span class="k">fi</span>
 
-  <span class="o">[[</span> -n <span class="s2">&quot;</span><span class="nv">$__DRUPAL_SITE</span><span class="s2">&quot;</span> <span class="o">]]</span> <span class="o">&amp;&amp;</span> <span class="nb">printf</span> <span class="s2">&quot;</span><span class="si">${</span><span class="nv">1</span><span class="k">:-</span><span class="p"> (%s)</span><span class="si">}</span><span class="s2">&quot;</span> <span class="s2">&quot;</span><span class="nv">$__DRUPAL_SITE</span><span class="s2">&quot;</span>
+<span class="w">  </span><span class="o">[[</span><span class="w"> </span>-n<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$__DRUPAL_SITE</span><span class="s2">&quot;</span><span class="w"> </span><span class="o">]]</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">printf</span><span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">1</span><span class="k">:-</span><span class="p"> (%s)</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$__DRUPAL_SITE</span><span class="s2">&quot;</span>
 <span class="o">}</span>
 
-<span class="k">if</span> <span class="o">[</span> -n <span class="s2">&quot;</span><span class="k">$(</span><span class="nb">type</span> -t __git_ps1<span class="k">)</span><span class="s2">&quot;</span> <span class="o">]</span> <span class="o">&amp;&amp;</span> <span class="o">[</span> <span class="s2">&quot;</span><span class="k">$(</span><span class="nb">type</span> -t __git_ps1<span class="k">)</span><span class="s2">&quot;</span> <span class="o">=</span> <span class="k">function</span> <span class="o">]</span> <span class="o">&amp;&amp;</span> <span class="o">[</span> <span class="s2">&quot;</span><span class="k">$(</span><span class="nb">type</span> -t __drush_ps1<span class="k">)</span><span class="s2">&quot;</span> <span class="o">]</span> <span class="o">&amp;&amp;</span> <span class="o">[</span> <span class="s2">&quot;</span><span class="k">$(</span><span class="nb">type</span> -t __drush_ps1<span class="k">)</span><span class="s2">&quot;</span> <span class="o">=</span> <span class="k">function</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
+<span class="k">if</span><span class="w"> </span><span class="o">[</span><span class="w"> </span>-n<span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span><span class="nb">type</span><span class="w"> </span>-t<span class="w"> </span>__git_ps1<span class="k">)</span><span class="s2">&quot;</span><span class="w"> </span><span class="o">]</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="o">[</span><span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span><span class="nb">type</span><span class="w"> </span>-t<span class="w"> </span>__git_ps1<span class="k">)</span><span class="s2">&quot;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">function</span><span class="w"> </span><span class="o">]</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="o">[</span><span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span><span class="nb">type</span><span class="w"> </span>-t<span class="w"> </span>__drush_ps1<span class="k">)</span><span class="s2">&quot;</span><span class="w"> </span><span class="o">]</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="o">[</span><span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span><span class="nb">type</span><span class="w"> </span>-t<span class="w"> </span>__drush_ps1<span class="k">)</span><span class="s2">&quot;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">function</span><span class="w"> </span><span class="o">]</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
 
-  <span class="c1"># This line enables color hints in your Drush prompt. Modify the below</span>
-  <span class="c1"># __drush_ps1_colorize_alias() to customize your color theme.</span>
-  <span class="nv">DRUSH_PS1_SHOWCOLORHINTS</span><span class="o">=</span><span class="nb">true</span>
+<span class="w">  </span><span class="c1"># This line enables color hints in your Drush prompt. Modify the below</span>
+<span class="w">  </span><span class="c1"># __drush_ps1_colorize_alias() to customize your color theme.</span>
+<span class="w">  </span><span class="nv">DRUSH_PS1_SHOWCOLORHINTS</span><span class="o">=</span><span class="nb">true</span>
 
-  <span class="c1"># Git offers various prompt customization options as well as seen in</span>
-  <span class="c1"># https://github.com/git/git/blob/10.x/contrib/completion/git-prompt.sh.</span>
-  <span class="c1"># Adjust the following lines to enable the corresponding features:</span>
-  <span class="c1">#</span>
-  <span class="nv">GIT_PS1_SHOWDIRTYSTATE</span><span class="o">=</span><span class="nb">true</span>
-  <span class="nv">GIT_PS1_SHOWUPSTREAM</span><span class="o">=</span>auto
-  <span class="c1"># GIT_PS1_SHOWSTASHSTATE=true</span>
-  <span class="c1"># GIT_PS1_SHOWUNTRACKEDFILES=true</span>
-  <span class="nv">GIT_PS1_SHOWCOLORHINTS</span><span class="o">=</span><span class="nb">true</span>
+<span class="w">  </span><span class="c1"># Git offers various prompt customization options as well as seen in</span>
+<span class="w">  </span><span class="c1"># https://github.com/git/git/blob/10.x/contrib/completion/git-prompt.sh.</span>
+<span class="w">  </span><span class="c1"># Adjust the following lines to enable the corresponding features:</span>
+<span class="w">  </span><span class="c1">#</span>
+<span class="w">  </span><span class="nv">GIT_PS1_SHOWDIRTYSTATE</span><span class="o">=</span><span class="nb">true</span>
+<span class="w">  </span><span class="nv">GIT_PS1_SHOWUPSTREAM</span><span class="o">=</span>auto
+<span class="w">  </span><span class="c1"># GIT_PS1_SHOWSTASHSTATE=true</span>
+<span class="w">  </span><span class="c1"># GIT_PS1_SHOWUNTRACKEDFILES=true</span>
+<span class="w">  </span><span class="nv">GIT_PS1_SHOWCOLORHINTS</span><span class="o">=</span><span class="nb">true</span>
 
-  <span class="c1"># The following line sets your bash prompt according to this example:</span>
-  <span class="c1">#</span>
-  <span class="c1">#   username@hostname ~/working-directory (git-branch)[@drush-alias] $</span>
-  <span class="c1">#</span>
-  <span class="c1"># See http://ss64.com/bash/syntax-prompt.html for customization options.</span>
-  <span class="nb">export</span> <span class="nv">PROMPT_COMMAND</span><span class="o">=</span><span class="s1">&#39;__git_ps1 &quot;\u@\h \w&quot; &quot;$(__drush_ps1 &quot;[%s]&quot;) \\\$ &quot;&#39;</span>
+<span class="w">  </span><span class="c1"># The following line sets your bash prompt according to this example:</span>
+<span class="w">  </span><span class="c1">#</span>
+<span class="w">  </span><span class="c1">#   username@hostname ~/working-directory (git-branch)[@drush-alias] $</span>
+<span class="w">  </span><span class="c1">#</span>
+<span class="w">  </span><span class="c1"># See http://ss64.com/bash/syntax-prompt.html for customization options.</span>
+<span class="w">  </span><span class="nb">export</span><span class="w"> </span><span class="nv">PROMPT_COMMAND</span><span class="o">=</span><span class="s1">&#39;__git_ps1 &quot;\u@\h \w&quot; &quot;$(__drush_ps1 &quot;[%s]&quot;) \\\$ &quot;&#39;</span>
 
-  <span class="c1"># PROMPT_COMMAND is used in the example above rather than PS1 because neither</span>
-  <span class="c1"># Git nor Drush color hints are compatible with PS1. If you don&#39;t want color</span>
-  <span class="c1"># hints, however, and prefer to use PS1, you can still do so by commenting out</span>
-  <span class="c1"># the PROMPT_COMMAND line above and uncommenting the PS1 line below:</span>
-  <span class="c1">#</span>
-  <span class="c1"># export PS1=&#39;\u@\h \w$(__git_ps1 &quot; (%s)&quot;)$(__drush_ps1 &quot;[%s]&quot;)\$ &#39;</span>
+<span class="w">  </span><span class="c1"># PROMPT_COMMAND is used in the example above rather than PS1 because neither</span>
+<span class="w">  </span><span class="c1"># Git nor Drush color hints are compatible with PS1. If you don&#39;t want color</span>
+<span class="w">  </span><span class="c1"># hints, however, and prefer to use PS1, you can still do so by commenting out</span>
+<span class="w">  </span><span class="c1"># the PROMPT_COMMAND line above and uncommenting the PS1 line below:</span>
+<span class="w">  </span><span class="c1">#</span>
+<span class="w">  </span><span class="c1"># export PS1=&#39;\u@\h \w$(__git_ps1 &quot; (%s)&quot;)$(__drush_ps1 &quot;[%s]&quot;)\$ &#39;</span>
 
-  __drush_ps1_colorize_alias<span class="o">()</span> <span class="o">{</span>
-    <span class="k">if</span> <span class="o">[[</span> -n <span class="si">${</span><span class="nv">ZSH_VERSION</span><span class="p">-</span><span class="si">}</span> <span class="o">]]</span><span class="p">;</span> <span class="k">then</span>
-      <span class="nb">local</span> <span class="nv">COLOR_BLUE</span><span class="o">=</span><span class="s1">&#39;%F{blue}&#39;</span>
-      <span class="nb">local</span> <span class="nv">COLOR_CYAN</span><span class="o">=</span><span class="s1">&#39;%F{cyan}&#39;</span>
-      <span class="nb">local</span> <span class="nv">COLOR_GREEN</span><span class="o">=</span><span class="s1">&#39;%F{green}&#39;</span>
-      <span class="nb">local</span> <span class="nv">COLOR_MAGENTA</span><span class="o">=</span><span class="s1">&#39;%F{magenta}&#39;</span>
-      <span class="nb">local</span> <span class="nv">COLOR_RED</span><span class="o">=</span><span class="s1">&#39;%F{red}&#39;</span>
-      <span class="nb">local</span> <span class="nv">COLOR_WHITE</span><span class="o">=</span><span class="s1">&#39;%F{white}&#39;</span>
-      <span class="nb">local</span> <span class="nv">COLOR_YELLOW</span><span class="o">=</span><span class="s1">&#39;%F{yellow}&#39;</span>
-      <span class="nb">local</span> <span class="nv">COLOR_NONE</span><span class="o">=</span><span class="s1">&#39;%f&#39;</span>
-    <span class="k">else</span>
-      <span class="c1"># Using \[ and \] around colors is necessary to prevent issues with</span>
-      <span class="c1"># command line editing/browsing/completion.</span>
-      <span class="nb">local</span> <span class="nv">COLOR_BLUE</span><span class="o">=</span><span class="s1">&#39;\[\e[94m\]&#39;</span>
-      <span class="nb">local</span> <span class="nv">COLOR_CYAN</span><span class="o">=</span><span class="s1">&#39;\[\e[36m\]&#39;</span>
-      <span class="nb">local</span> <span class="nv">COLOR_GREEN</span><span class="o">=</span><span class="s1">&#39;\[\e[32m\]&#39;</span>
-      <span class="nb">local</span> <span class="nv">COLOR_MAGENTA</span><span class="o">=</span><span class="s1">&#39;\[\e[35m\]&#39;</span>
-      <span class="nb">local</span> <span class="nv">COLOR_RED</span><span class="o">=</span><span class="s1">&#39;\[\e[91m\]&#39;</span>
-      <span class="nb">local</span> <span class="nv">COLOR_WHITE</span><span class="o">=</span><span class="s1">&#39;\[\e[37m\]&#39;</span>
-      <span class="nb">local</span> <span class="nv">COLOR_YELLOW</span><span class="o">=</span><span class="s1">&#39;\[\e[93m\]&#39;</span>
-      <span class="nb">local</span> <span class="nv">COLOR_NONE</span><span class="o">=</span><span class="s1">&#39;\[\e[0m\]&#39;</span>
-    <span class="k">fi</span>
+<span class="w">  </span>__drush_ps1_colorize_alias<span class="o">()</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="o">[[</span><span class="w"> </span>-n<span class="w"> </span><span class="si">${</span><span class="nv">ZSH_VERSION</span><span class="p">-</span><span class="si">}</span><span class="w"> </span><span class="o">]]</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
+<span class="w">      </span><span class="nb">local</span><span class="w"> </span><span class="nv">COLOR_BLUE</span><span class="o">=</span><span class="s1">&#39;%F{blue}&#39;</span>
+<span class="w">      </span><span class="nb">local</span><span class="w"> </span><span class="nv">COLOR_CYAN</span><span class="o">=</span><span class="s1">&#39;%F{cyan}&#39;</span>
+<span class="w">      </span><span class="nb">local</span><span class="w"> </span><span class="nv">COLOR_GREEN</span><span class="o">=</span><span class="s1">&#39;%F{green}&#39;</span>
+<span class="w">      </span><span class="nb">local</span><span class="w"> </span><span class="nv">COLOR_MAGENTA</span><span class="o">=</span><span class="s1">&#39;%F{magenta}&#39;</span>
+<span class="w">      </span><span class="nb">local</span><span class="w"> </span><span class="nv">COLOR_RED</span><span class="o">=</span><span class="s1">&#39;%F{red}&#39;</span>
+<span class="w">      </span><span class="nb">local</span><span class="w"> </span><span class="nv">COLOR_WHITE</span><span class="o">=</span><span class="s1">&#39;%F{white}&#39;</span>
+<span class="w">      </span><span class="nb">local</span><span class="w"> </span><span class="nv">COLOR_YELLOW</span><span class="o">=</span><span class="s1">&#39;%F{yellow}&#39;</span>
+<span class="w">      </span><span class="nb">local</span><span class="w"> </span><span class="nv">COLOR_NONE</span><span class="o">=</span><span class="s1">&#39;%f&#39;</span>
+<span class="w">    </span><span class="k">else</span>
+<span class="w">      </span><span class="c1"># Using \[ and \] around colors is necessary to prevent issues with</span>
+<span class="w">      </span><span class="c1"># command line editing/browsing/completion.</span>
+<span class="w">      </span><span class="nb">local</span><span class="w"> </span><span class="nv">COLOR_BLUE</span><span class="o">=</span><span class="s1">&#39;\[\e[94m\]&#39;</span>
+<span class="w">      </span><span class="nb">local</span><span class="w"> </span><span class="nv">COLOR_CYAN</span><span class="o">=</span><span class="s1">&#39;\[\e[36m\]&#39;</span>
+<span class="w">      </span><span class="nb">local</span><span class="w"> </span><span class="nv">COLOR_GREEN</span><span class="o">=</span><span class="s1">&#39;\[\e[32m\]&#39;</span>
+<span class="w">      </span><span class="nb">local</span><span class="w"> </span><span class="nv">COLOR_MAGENTA</span><span class="o">=</span><span class="s1">&#39;\[\e[35m\]&#39;</span>
+<span class="w">      </span><span class="nb">local</span><span class="w"> </span><span class="nv">COLOR_RED</span><span class="o">=</span><span class="s1">&#39;\[\e[91m\]&#39;</span>
+<span class="w">      </span><span class="nb">local</span><span class="w"> </span><span class="nv">COLOR_WHITE</span><span class="o">=</span><span class="s1">&#39;\[\e[37m\]&#39;</span>
+<span class="w">      </span><span class="nb">local</span><span class="w"> </span><span class="nv">COLOR_YELLOW</span><span class="o">=</span><span class="s1">&#39;\[\e[93m\]&#39;</span>
+<span class="w">      </span><span class="nb">local</span><span class="w"> </span><span class="nv">COLOR_NONE</span><span class="o">=</span><span class="s1">&#39;\[\e[0m\]&#39;</span>
+<span class="w">    </span><span class="k">fi</span>
 
-    <span class="c1"># Customize your color theme below.</span>
-    <span class="k">case</span> <span class="s2">&quot;</span><span class="nv">$__DRUPAL_SITE</span><span class="s2">&quot;</span> <span class="k">in</span>
-      *.live<span class="p">|</span>*.prod<span class="o">)</span> <span class="nb">local</span> <span class="nv">ENV_COLOR</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$COLOR_RED</span><span class="s2">&quot;</span> <span class="p">;;</span>
-      *.stage<span class="p">|</span>*.test<span class="o">)</span> <span class="nb">local</span> <span class="nv">ENV_COLOR</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$COLOR_YELLOW</span><span class="s2">&quot;</span> <span class="p">;;</span>
-      *.local<span class="o">)</span> <span class="nb">local</span> <span class="nv">ENV_COLOR</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$COLOR_GREEN</span><span class="s2">&quot;</span> <span class="p">;;</span>
-      *<span class="o">)</span> <span class="nb">local</span> <span class="nv">ENV_COLOR</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$COLOR_BLUE</span><span class="s2">&quot;</span> <span class="p">;;</span>
-    <span class="k">esac</span>
+<span class="w">    </span><span class="c1"># Customize your color theme below.</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$__DRUPAL_SITE</span><span class="s2">&quot;</span><span class="w"> </span><span class="k">in</span>
+<span class="w">      </span>*.live<span class="p">|</span>*.prod<span class="o">)</span><span class="w"> </span><span class="nb">local</span><span class="w"> </span><span class="nv">ENV_COLOR</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$COLOR_RED</span><span class="s2">&quot;</span><span class="w"> </span><span class="p">;;</span>
+<span class="w">      </span>*.stage<span class="p">|</span>*.test<span class="o">)</span><span class="w"> </span><span class="nb">local</span><span class="w"> </span><span class="nv">ENV_COLOR</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$COLOR_YELLOW</span><span class="s2">&quot;</span><span class="w"> </span><span class="p">;;</span>
+<span class="w">      </span>*.local<span class="o">)</span><span class="w"> </span><span class="nb">local</span><span class="w"> </span><span class="nv">ENV_COLOR</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$COLOR_GREEN</span><span class="s2">&quot;</span><span class="w"> </span><span class="p">;;</span>
+<span class="w">      </span>*<span class="o">)</span><span class="w"> </span><span class="nb">local</span><span class="w"> </span><span class="nv">ENV_COLOR</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$COLOR_BLUE</span><span class="s2">&quot;</span><span class="w"> </span><span class="p">;;</span>
+<span class="w">    </span><span class="k">esac</span>
 
-    <span class="nv">__DRUPAL_SITE</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">ENV_COLOR</span><span class="si">}${</span><span class="nv">__DRUPAL_SITE</span><span class="si">}${</span><span class="nv">COLOR_NONE</span><span class="si">}</span><span class="s2">&quot;</span>
-  <span class="o">}</span>
+<span class="w">    </span><span class="nv">__DRUPAL_SITE</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">ENV_COLOR</span><span class="si">}${</span><span class="nv">__DRUPAL_SITE</span><span class="si">}${</span><span class="nv">COLOR_NONE</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="w">  </span><span class="o">}</span>
 
 <span class="k">fi</span>
 </code></pre></div>
@@ -5068,42 +5070,6 @@ __drush_ps1<span class="o">()</span> <span class="o">{</span>
       </main>
       
         <footer class="md-footer">
-  
-    
-    <nav class="md-footer__inner md-grid" aria-label="Footer" >
-      
-        
-        <a href="../XkcdCommands.php/" class="md-footer__link md-footer__link--prev" aria-label="Previous: XkcdCommands.php" rel="prev">
-          <div class="md-footer__button md-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
-          </div>
-          <div class="md-footer__title">
-            <div class="md-ellipsis">
-              <span class="md-footer__direction">
-                Previous
-              </span>
-              XkcdCommands.php
-            </div>
-          </div>
-        </a>
-      
-      
-        
-        <a href="../git-bisect.example.sh/" class="md-footer__link md-footer__link--next" aria-label="Next: git-bisect.sh" rel="next">
-          <div class="md-footer__title">
-            <div class="md-ellipsis">
-              <span class="md-footer__direction">
-                Next
-              </span>
-              git-bisect.sh
-            </div>
-          </div>
-          <div class="md-footer__button md-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4Z"/></svg>
-          </div>
-        </a>
-      
-    </nav>
   
   <div class="md-footer-meta md-typeset">
     <div class="md-footer-meta__inner md-grid">
@@ -5157,12 +5123,11 @@ __drush_ps1<span class="o">()</span> <span class="o">{</span>
       <div class="md-dialog__inner md-typeset"></div>
     </div>
     
-    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "toc.integrate"], "search": "../../assets/javascripts/workers/search.16e2a7d4.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "toc.integrate"], "search": "../../assets/javascripts/workers/search.12658920.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.5a2dcb6a.min.js"></script>
+      <script src="../../assets/javascripts/bundle.5cf534bf.min.js"></script>
       
-    
     
   </body>
 </html>

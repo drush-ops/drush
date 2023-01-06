@@ -194,7 +194,7 @@
             </tr>
                     <tr>
                 <td class="type" id="property_workerManager">
-                                        protected                                        <abbr title="Drupal\Core\Queue\QueueWorkerManager">QueueWorkerManager</abbr>
+                                        protected                                        <abbr title="Drupal\Core\Queue\QueueWorkerManagerInterface">QueueWorkerManagerInterface</abbr>
                                                                                 
                                     </td>
                 <td>$workerManager</td>
@@ -351,7 +351,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>                </
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    <abbr title="Drupal\Core\Queue\QueueWorkerManager">QueueWorkerManager</abbr>
+                    <abbr title="Drupal\Core\Queue\QueueWorkerManagerInterface">QueueWorkerManagerInterface</abbr>
                 </div>
                 <div class="col-md-8">
                     <a href="#method_getWorkerManager">getWorkerManager</a>()
@@ -615,7 +615,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method___construct">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/QueueCommands.php#L27">at line 27</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/QueueCommands.php#L26">at line 26</a></div>
         <code>                    
     <strong>__construct</strong>(<abbr title="Drupal\Core\Queue\QueueWorkerManagerInterface">QueueWorkerManagerInterface</abbr> $workerManager, <abbr title="Drupal\Core\Queue\QueueFactory">QueueFactory</abbr> $queueService)
         </code>
@@ -875,8 +875,8 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_getWorkerManager">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/QueueCommands.php#L33">at line 33</a></div>
-        <code>                    <abbr title="Drupal\Core\Queue\QueueWorkerManager">QueueWorkerManager</abbr>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/QueueCommands.php#L32">at line 32</a></div>
+        <code>                    <abbr title="Drupal\Core\Queue\QueueWorkerManagerInterface">QueueWorkerManagerInterface</abbr>
     <strong>getWorkerManager</strong>()
         </code>
     </h3>
@@ -894,7 +894,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
 
                     <table class="table table-condensed">
         <tr>
-            <td><abbr title="Drupal\Core\Queue\QueueWorkerManager">QueueWorkerManager</abbr></td>
+            <td><abbr title="Drupal\Core\Queue\QueueWorkerManagerInterface">QueueWorkerManagerInterface</abbr></td>
             <td></td>
         </tr>
     </table>
@@ -908,7 +908,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_getQueueService">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/QueueCommands.php#L38">at line 38</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/QueueCommands.php#L37">at line 37</a></div>
         <code>                    <abbr title="Drupal\Core\Queue\QueueFactory">QueueFactory</abbr>
     <strong>getQueueService</strong>()
         </code>
@@ -941,7 +941,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_run">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/QueueCommands.php#L61">at line 61</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/QueueCommands.php#L60">at line 60</a></div>
         <code>                    void
     <strong>run</strong>(string $name, $options = [&#039;time-limit&#039; =&gt; self::REQ, &#039;items-limit&#039; =&gt; self::REQ, &#039;lease-time&#039; =&gt; self::REQ])
         </code>
@@ -988,7 +988,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_qList">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/QueueCommands.php#L122">at line 122</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/QueueCommands.php#L121">at line 121</a></div>
         <code>                    <abbr title="Consolidation\OutputFormatters\StructuredData\RowsOfFields">RowsOfFields</abbr>
     <strong>qList</strong>($options = [&#039;format&#039; =&gt; &#039;table&#039;])
         </code>
@@ -1030,7 +1030,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_delete">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/QueueCommands.php#L144">at line 144</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/QueueCommands.php#L143">at line 143</a></div>
         <code>                    void
     <strong>delete</strong>($name)
         </code>
@@ -1072,7 +1072,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_validateQueueName">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/QueueCommands.php#L160">at line 160</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/QueueCommands.php#L159">at line 159</a></div>
         <code>                    <abbr title="Consolidation\AnnotatedCommand\CommandError">CommandError</abbr>|null
     <strong>validateQueueName</strong>(<abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr> $commandData)
         </code>
@@ -1114,7 +1114,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_getQueues">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/QueueCommands.php#L173">at line 173</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/QueueCommands.php#L172">at line 172</a></div>
         <code>                    array
     <strong>getQueues</strong>()
         </code>
@@ -1146,7 +1146,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_getQueue">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/QueueCommands.php#L187">at line 187</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/QueueCommands.php#L186">at line 186</a></div>
         <code>                    <abbr title="Drupal\Core\Queue\QueueInterface">QueueInterface</abbr>
     <strong>getQueue</strong>($name)
         </code>

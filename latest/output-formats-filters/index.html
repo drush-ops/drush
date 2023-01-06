@@ -14,8 +14,14 @@
       
         <link rel="canonical" href="https://www.drush.org/latest/output-formats-filters/">
       
+      
+        <link rel="prev" href="../site-aliases/">
+      
+      
+        <link rel="next" href="../migrate/">
+      
       <link rel="icon" href="../img/favicon.ico">
-      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-8.5.10">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.0.2">
     
     
       
@@ -23,11 +29,10 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.975780f9.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.f56500e0.min.css">
       
         
         <link rel="stylesheet" href="../assets/stylesheets/palette.2505c338.min.css">
-        
       
       
 
@@ -216,7 +221,7 @@
 <!-- Navigation tabs -->
 <nav
         class="md-tabs"
-        aria-label="Tabs"
+        aria-label=""
         data-md-component="tabs"
 >
   <div class="md-tabs__inner md-grid">
@@ -4976,10 +4981,9 @@
     
                   
 
-  <a href="https://github.com/drush-ops/drush/blob/11.x/docs/output-formats-filters.md" title="Edit this page" class="md-content__button md-icon">
-    
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25Z"/></svg>
-  </a>
+  
+  
+
 
 
 <h1 id="output-formats-fields-and-filters">Output Formats, Fields and Filters<a class="headerlink" href="#output-formats-fields-and-filters" title="Permanent link">&para;</a></h1>
@@ -4991,56 +4995,56 @@
 </ul>
 <h2 id="output-formats">Output Formats<a class="headerlink" href="#output-formats" title="Permanent link">&para;</a></h2>
 <p>The <code>--format</code> option may be used to select the data format used to print the output of a command. Most commands that produce informative output about some object or system can transform their data into different formats. For example, the <a href="../commands/version/">version command</a> may be printed in a human-readable table (the default), or in a json array:
-<div class="highlight"><pre><span></span><code>$ drush version
- Drush version : <span class="m">10</span>.3.1
-$ drush version --format<span class="o">=</span>json
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>drush<span class="w"> </span>version
+<span class="w"> </span>Drush<span class="w"> </span>version<span class="w"> </span>:<span class="w"> </span><span class="m">10</span>.3.1
+$<span class="w"> </span>drush<span class="w"> </span>version<span class="w"> </span>--format<span class="o">=</span>json
 <span class="o">{</span>
-    <span class="s2">&quot;drush-version&quot;</span>: <span class="s2">&quot;10.3.1&quot;</span>
+<span class="w">    </span><span class="s2">&quot;drush-version&quot;</span>:<span class="w"> </span><span class="s2">&quot;10.3.1&quot;</span>
 <span class="o">}</span>
 </code></pre></div>
 The available output formats are shown in the <code>help</code> for each command:
-<div class="highlight"><pre><span></span><code>$ drush <span class="nb">help</span> version
-Show drush version.
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>drush<span class="w"> </span><span class="nb">help</span><span class="w"> </span>version
+Show<span class="w"> </span>drush<span class="w"> </span>version.
 
 Options:
- --format<span class="o">=</span>&lt;json&gt;    Select output format. Available: json, string, var_export, yaml. Default is key-value.
+<span class="w"> </span>--format<span class="o">=</span>&lt;json&gt;<span class="w">    </span>Select<span class="w"> </span>output<span class="w"> </span>format.<span class="w"> </span>Available:<span class="w"> </span>json,<span class="w"> </span>string,<span class="w"> </span>var_export,<span class="w"> </span>yaml.<span class="w"> </span>Default<span class="w"> </span>is<span class="w"> </span>key-value.
 </code></pre></div></p>
 <h2 id="output-fields">Output Fields<a class="headerlink" href="#output-fields" title="Permanent link">&para;</a></h2>
 <p>If you wish to limit the number of columns produced by a command, use the <code>--fields</code> option. List the field names in the order they should be displayed:
-<div class="highlight"><pre><span></span><code>$ drush views:list --fields<span class="o">=</span>machine-name,status
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>drush<span class="w"> </span>views:list<span class="w"> </span>--fields<span class="o">=</span>machine-name,status
 +-------------------+----------+
-<span class="p">|</span> Machine name      <span class="p">|</span> Status   <span class="p">|</span>
+<span class="p">|</span><span class="w"> </span>Machine<span class="w"> </span>name<span class="w">      </span><span class="p">|</span><span class="w"> </span>Status<span class="w">   </span><span class="p">|</span>
 +-------------------+----------+
-<span class="p">|</span> block_content     <span class="p">|</span> Enabled  <span class="p">|</span>
-<span class="p">|</span> comment           <span class="p">|</span> Enabled  <span class="p">|</span>
-<span class="p">|</span> comments_recent   <span class="p">|</span> Enabled  <span class="p">|</span>
-<span class="p">|</span> content           <span class="p">|</span> Enabled  <span class="p">|</span>
-<span class="p">|</span> content_recent    <span class="p">|</span> Enabled  <span class="p">|</span>
-<span class="p">|</span> files             <span class="p">|</span> Enabled  <span class="p">|</span>
-<span class="p">|</span> frontpage         <span class="p">|</span> Enabled  <span class="p">|</span>
-<span class="p">|</span> taxonomy_term     <span class="p">|</span> Enabled  <span class="p">|</span>
-<span class="p">|</span> user_admin_people <span class="p">|</span> Enabled  <span class="p">|</span>
-<span class="p">|</span> watchdog          <span class="p">|</span> Enabled  <span class="p">|</span>
-<span class="p">|</span> who_s_new         <span class="p">|</span> Enabled  <span class="p">|</span>
-<span class="p">|</span> who_s_online      <span class="p">|</span> Enabled  <span class="p">|</span>
-<span class="p">|</span> archive           <span class="p">|</span> Disabled <span class="p">|</span>
-<span class="p">|</span> glossary          <span class="p">|</span> Disabled <span class="p">|</span>
+<span class="p">|</span><span class="w"> </span>block_content<span class="w">     </span><span class="p">|</span><span class="w"> </span>Enabled<span class="w">  </span><span class="p">|</span>
+<span class="p">|</span><span class="w"> </span>comment<span class="w">           </span><span class="p">|</span><span class="w"> </span>Enabled<span class="w">  </span><span class="p">|</span>
+<span class="p">|</span><span class="w"> </span>comments_recent<span class="w">   </span><span class="p">|</span><span class="w"> </span>Enabled<span class="w">  </span><span class="p">|</span>
+<span class="p">|</span><span class="w"> </span>content<span class="w">           </span><span class="p">|</span><span class="w"> </span>Enabled<span class="w">  </span><span class="p">|</span>
+<span class="p">|</span><span class="w"> </span>content_recent<span class="w">    </span><span class="p">|</span><span class="w"> </span>Enabled<span class="w">  </span><span class="p">|</span>
+<span class="p">|</span><span class="w"> </span>files<span class="w">             </span><span class="p">|</span><span class="w"> </span>Enabled<span class="w">  </span><span class="p">|</span>
+<span class="p">|</span><span class="w"> </span>frontpage<span class="w">         </span><span class="p">|</span><span class="w"> </span>Enabled<span class="w">  </span><span class="p">|</span>
+<span class="p">|</span><span class="w"> </span>taxonomy_term<span class="w">     </span><span class="p">|</span><span class="w"> </span>Enabled<span class="w">  </span><span class="p">|</span>
+<span class="p">|</span><span class="w"> </span>user_admin_people<span class="w"> </span><span class="p">|</span><span class="w"> </span>Enabled<span class="w">  </span><span class="p">|</span>
+<span class="p">|</span><span class="w"> </span>watchdog<span class="w">          </span><span class="p">|</span><span class="w"> </span>Enabled<span class="w">  </span><span class="p">|</span>
+<span class="p">|</span><span class="w"> </span>who_s_new<span class="w">         </span><span class="p">|</span><span class="w"> </span>Enabled<span class="w">  </span><span class="p">|</span>
+<span class="p">|</span><span class="w"> </span>who_s_online<span class="w">      </span><span class="p">|</span><span class="w"> </span>Enabled<span class="w">  </span><span class="p">|</span>
+<span class="p">|</span><span class="w"> </span>archive<span class="w">           </span><span class="p">|</span><span class="w"> </span>Disabled<span class="w"> </span><span class="p">|</span>
+<span class="p">|</span><span class="w"> </span>glossary<span class="w">          </span><span class="p">|</span><span class="w"> </span>Disabled<span class="w"> </span><span class="p">|</span>
 +-------------------+----------+
 </code></pre></div>
 The available field names are shown in the <code>help</code> text:
-<div class="highlight"><pre><span></span><code>$ drush <span class="nb">help</span> views:list
-Get a list of all views <span class="k">in</span> the system.
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>drush<span class="w"> </span><span class="nb">help</span><span class="w"> </span>views:list
+Get<span class="w"> </span>a<span class="w"> </span>list<span class="w"> </span>of<span class="w"> </span>all<span class="w"> </span>views<span class="w"> </span><span class="k">in</span><span class="w"> </span>the<span class="w"> </span>system.
 
 Options:
-  --fields<span class="o">=</span>FIELDS   Available fields: Machine name <span class="o">(</span>machine-name<span class="o">)</span>,     
-                    Name <span class="o">(</span>label<span class="o">)</span>, Description <span class="o">(</span>description<span class="o">)</span>, Status    
-                    <span class="o">(</span>status<span class="o">)</span>, Tag <span class="o">(</span>tag<span class="o">)</span> <span class="o">[</span>default:                      
-                    <span class="s2">&quot;machine-name,label,description,status&quot;</span><span class="o">]</span>           
+<span class="w">  </span>--fields<span class="o">=</span>FIELDS<span class="w">   </span>Available<span class="w"> </span>fields:<span class="w"> </span>Machine<span class="w"> </span>name<span class="w"> </span><span class="o">(</span>machine-name<span class="o">)</span>,<span class="w">     </span>
+<span class="w">                    </span>Name<span class="w"> </span><span class="o">(</span>label<span class="o">)</span>,<span class="w"> </span>Description<span class="w"> </span><span class="o">(</span>description<span class="o">)</span>,<span class="w"> </span>Status<span class="w">    </span>
+<span class="w">                    </span><span class="o">(</span>status<span class="o">)</span>,<span class="w"> </span>Tag<span class="w"> </span><span class="o">(</span>tag<span class="o">)</span><span class="w"> </span><span class="o">[</span>default:<span class="w">                      </span>
+<span class="w">                    </span><span class="s2">&quot;machine-name,label,description,status&quot;</span><span class="o">]</span><span class="w">           </span>
 </code></pre></div>
 Fields may be named either using their human-readable name, or via their machine name.</p>
 <p>Note also that some commands do not display all of their available data columns by default. To show all available fields, use <code>--fields=*</code></p>
 <p>There is also a singular form <code>--field</code> available. If this form is used, it will also force the output format to <code>string</code>.
-<div class="highlight"><pre><span></span><code>$ drush views:list --field<span class="o">=</span>machine-name 
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>drush<span class="w"> </span>views:list<span class="w"> </span>--field<span class="o">=</span>machine-name<span class="w"> </span>
 block_content
 comment
 comments_recent
@@ -5059,40 +5063,40 @@ glossary
 <h2 id="output-filters">Output Filters<a class="headerlink" href="#output-filters" title="Permanent link">&para;</a></h2>
 <p>A number of Drush commands that output tabular data support a <code>--filter</code> option that allows rows from the output to be selected with simple logic expressions.</p>
 <p>In its simplest form, the <code>--filter</code> option takes a string that indicates the value to filter by in the command's <em>default filter field</em>. For example, the <a href="../commands/role_list/">role:list command</a> specifies <code>perms</code> as its default filter; the output of the <code>role:list</code> command may be limited to only those roles that have a specified permission:
-<div class="highlight"><pre><span></span><code>$ drush role:list --filter<span class="o">=</span><span class="s1">&#39;post comments&#39;</span>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>drush<span class="w"> </span>role:list<span class="w"> </span>--filter<span class="o">=</span><span class="s1">&#39;post comments&#39;</span>
 authenticated:
-  label: <span class="s1">&#39;Authenticated user&#39;</span>
-  perms:
-    - <span class="s1">&#39;access comments&#39;</span>
-    - <span class="s1">&#39;access content&#39;</span>
-    - <span class="s1">&#39;access shortcuts&#39;</span>
-    - <span class="s1">&#39;access site-wide contact form&#39;</span>
-    - <span class="s1">&#39;access user contact forms&#39;</span>
-    - <span class="s1">&#39;post comments&#39;</span>
-    - <span class="s1">&#39;search content&#39;</span>
-    - <span class="s1">&#39;skip comment approval&#39;</span>
-    - <span class="s1">&#39;use text format basic_html&#39;</span>
+<span class="w">  </span>label:<span class="w"> </span><span class="s1">&#39;Authenticated user&#39;</span>
+<span class="w">  </span>perms:
+<span class="w">    </span>-<span class="w"> </span><span class="s1">&#39;access comments&#39;</span>
+<span class="w">    </span>-<span class="w"> </span><span class="s1">&#39;access content&#39;</span>
+<span class="w">    </span>-<span class="w"> </span><span class="s1">&#39;access shortcuts&#39;</span>
+<span class="w">    </span>-<span class="w"> </span><span class="s1">&#39;access site-wide contact form&#39;</span>
+<span class="w">    </span>-<span class="w"> </span><span class="s1">&#39;access user contact forms&#39;</span>
+<span class="w">    </span>-<span class="w"> </span><span class="s1">&#39;post comments&#39;</span>
+<span class="w">    </span>-<span class="w"> </span><span class="s1">&#39;search content&#39;</span>
+<span class="w">    </span>-<span class="w"> </span><span class="s1">&#39;skip comment approval&#39;</span>
+<span class="w">    </span>-<span class="w"> </span><span class="s1">&#39;use text format basic_html&#39;</span>
 </code></pre></div>
 Note that not all commands have a default filter field.</p>
 <p>Other fields in the output may be searched by using a simple expression in the <code>--filter</code> term. For example, to list only the enabled extensions with the <code>pm:list</code> command, you could run:
-<div class="highlight"><pre><span></span><code>$ drush pm:list --filter<span class="o">=</span><span class="s1">&#39;status=enabled&#39;</span>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>drush<span class="w"> </span>pm:list<span class="w"> </span>--filter<span class="o">=</span><span class="s1">&#39;status=enabled&#39;</span>
 </code></pre></div>
 To search for fields that contain a string using the operator <code>*=</code>, or match a regular expression with the <code>~=</code> operator. For example, to find all views whose machine name contains the word <em>content</em>:
-<div class="highlight"><pre><span></span><code>drush views:list --filter<span class="o">=</span><span class="s1">&#39;machine-name*=content&#39;</span>
+<div class="highlight"><pre><span></span><code>drush<span class="w"> </span>views:list<span class="w"> </span>--filter<span class="o">=</span><span class="s1">&#39;machine-name*=content&#39;</span>
 </code></pre></div>
 To use a regular expression to find any core requirement notice whose title contains either <em>php</em> or <em>gd</em>
-<div class="highlight"><pre><span></span><code>drush core:requirements --filter<span class="o">=</span><span class="s1">&#39;title~=#(php|gd)#i&#39;</span>
+<div class="highlight"><pre><span></span><code>drush<span class="w"> </span>core:requirements<span class="w"> </span>--filter<span class="o">=</span><span class="s1">&#39;title~=#(php|gd)#i&#39;</span>
 </code></pre></div>
 Finally, filter expressions may also use logical-and (<code>&amp;&amp;</code>) or logical-or (<code>||</code>) operations to separate multiple terms.  Parenthesis are not supported. For example, to search both the <code>title</code> and <code>severity</code> fields in the <code>core:requirements</code> command:
-<div class="highlight"><pre><span></span><code>drush core:requirements --filter<span class="o">=</span><span class="s1">&#39;title~=#(php|gd)#i&amp;&amp;severity=warning&#39;</span>
+<div class="highlight"><pre><span></span><code>drush<span class="w"> </span>core:requirements<span class="w"> </span>--filter<span class="o">=</span><span class="s1">&#39;title~=#(php|gd)#i&amp;&amp;severity=warning&#39;</span>
 </code></pre></div></p>
 <p>The <code>=</code> and <code>*=</code> operators always use case-insensitive comparisons. The <code>~=</code> operator is case-sensitive, unless the <code>i</code> <a href="http://php.net/manual/en/reference.pcre.pattern.modifiers.php">PCRE modifier</a> is used, as shown in the previous example.</p>
 <h2 id="comparison-of-filters-with-grep">Comparison of Filters with Grep<a class="headerlink" href="#comparison-of-filters-with-grep" title="Permanent link">&para;</a></h2>
 <p>Using the <code>--filter</code> feature is similar to using <code>grep</code>. The main difference is that the filter feature does a semantic search, which is to say that it explicitly compares against the data in specific fields. In comparison, the <code>grep</code> command does a line-based search.</p>
 <p>Show only results where the severity is <em>warning</em>:</p>
-<p><code class="highlight">drush core:requirements --filter<span class="o">=</span><span class="s1">&#39;severity=warning&#39;</span></code></p>
+<p><code class="highlight">drush<span class="w"> </span>core:requirements<span class="w"> </span>--filter<span class="o">=</span><span class="s1">&#39;severity=warning&#39;</span></code></p>
 <p>Show only lines that contain the string <em>warning</em> (either in the severity field, or somewhere else on the line):</p>
-<p><code class="highlight">drush core:requirements <span class="p">|</span> grep -i warning</code></p>
+<p><code class="highlight">drush<span class="w"> </span>core:requirements<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-i<span class="w"> </span>warning</code></p>
 <p>The table below compares and contrasts the two ways of searching.</p>
 <table>
 <thead>
@@ -5166,42 +5170,6 @@ Finally, filter expressions may also use logical-and (<code>&amp;&amp;</code>) o
       
         <footer class="md-footer">
   
-    
-    <nav class="md-footer__inner md-grid" aria-label="Footer" >
-      
-        
-        <a href="../site-aliases/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Site aliases" rel="prev">
-          <div class="md-footer__button md-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
-          </div>
-          <div class="md-footer__title">
-            <div class="md-ellipsis">
-              <span class="md-footer__direction">
-                Previous
-              </span>
-              Site aliases
-            </div>
-          </div>
-        </a>
-      
-      
-        
-        <a href="../migrate/" class="md-footer__link md-footer__link--next" aria-label="Next: Migrate" rel="next">
-          <div class="md-footer__title">
-            <div class="md-ellipsis">
-              <span class="md-footer__direction">
-                Next
-              </span>
-              Migrate
-            </div>
-          </div>
-          <div class="md-footer__button md-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4Z"/></svg>
-          </div>
-        </a>
-      
-    </nav>
-  
   <div class="md-footer-meta md-typeset">
     <div class="md-footer-meta__inner md-grid">
       <div class="md-copyright">
@@ -5254,12 +5222,11 @@ Finally, filter expressions may also use logical-and (<code>&amp;&amp;</code>) o
       <div class="md-dialog__inner md-typeset"></div>
     </div>
     
-    <script id="__config" type="application/json">{"base": "..", "features": ["navigation.tabs", "navigation.tabs.sticky", "toc.integrate"], "search": "../assets/javascripts/workers/search.16e2a7d4.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
+    <script id="__config" type="application/json">{"base": "..", "features": ["navigation.tabs", "navigation.tabs.sticky", "toc.integrate"], "search": "../assets/javascripts/workers/search.12658920.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../assets/javascripts/bundle.5a2dcb6a.min.js"></script>
+      <script src="../assets/javascripts/bundle.5cf534bf.min.js"></script>
       
-    
     
   </body>
 </html>
