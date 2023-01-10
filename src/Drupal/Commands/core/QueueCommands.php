@@ -2,7 +2,6 @@
 
 namespace Drush\Drupal\Commands\core;
 
-use Drupal\Core\Queue\QueueWorkerManager;
 use Drupal\Core\Queue\QueueInterface;
 use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\AnnotatedCommand\CommandError;
@@ -18,7 +17,7 @@ use Drush\Commands\DrushCommands;
 class QueueCommands extends DrushCommands
 {
     /**
-     * @var QueueWorkerManager
+     * @var QueueWorkerManagerInterface
      */
     protected $workerManager;
 
@@ -30,7 +29,7 @@ class QueueCommands extends DrushCommands
         $this->queueService = $queueService;
     }
 
-    public function getWorkerManager(): QueueWorkerManager
+    public function getWorkerManager(): QueueWorkerManagerInterface
     {
         return $this->workerManager;
     }

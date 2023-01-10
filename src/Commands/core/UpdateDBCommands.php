@@ -104,7 +104,12 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
     {
         require_once DRUSH_DRUPAL_CORE . '/includes/install.inc';
         drupal_load_updates();
-        list($pending, $start) = $this->getUpdatedbStatus($options);
+        list($pending, $start, $warnings) = $this->getUpdatedbStatus($options);
+
+        // Output any warnings.
+        foreach ($warnings as $module => $warning) {
+            $this->logger()->warning(dt('!module: !warning', ['!module' => $module, '!warning' => $warning]));
+        }
         if (empty($pending)) {
             $this->logger()->success(dt("No database updates required."));
         } else {
@@ -453,7 +458,9 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
         $return = [];
         $updates = update_get_update_list();
         foreach ($updates as $module => $update) {
-            $return[$module] = $update['start'];
+            if (!empty($update['start'])) {
+                $return[$module] = $update['start'];
+            }
         }
 
         return $return;
@@ -484,9 +491,14 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
     }
 
     /**
-     * Return a 2 item array with
-     *  - an array where each item is a 4 item associative array describing a pending update.
-     *  - an array listing the first update to run, keyed by module.
+     * Returns information about available module updates.
+     *
+     * @return array
+     *   An indexed array (aka tuple) with 3 elements:
+     *  - An array where each item is a 4 item associative array describing a
+     *    pending update.
+     *  - An array listing the first update to run, keyed by module.
+     *  - An array listing the available warnings, keyed by module.
      */
     public function getUpdatedbStatus(array $options): array
     {
@@ -494,11 +506,14 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
         $pending = \update_get_update_list();
 
         $return = [];
+        $warnings = [];
+
         // Ensure system module's updates run first.
         $start['system'] = [];
 
         foreach ($pending as $module => $updates) {
             if (isset($updates['start'])) {
+                $start[$module] = $updates['start'];
                 foreach ($updates['pending'] as $update_id => $description) {
                     // Strip cruft from front.
                     $description = str_replace($update_id . ' -   ', '', $description);
@@ -509,14 +524,16 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
                         'type' => 'hook_update_n'
                     ];
                 }
-                if (isset($updates['start'])) {
-                    $start[$module] = $updates['start'];
-                }
+            }
+            if (isset($updates['warning'])) {
+                $warnings[$module] = $updates['warning'];
             }
         }
 
         // Pending hook_post_update_X() implementations.
-        $post_updates = \Drupal::service('update.post_update_registry')->getPendingUpdateInformation();
+        /** @var \Drupal\Core\Update\UpdateRegistry $post_update_registry */
+        $post_update_registry = \Drupal::service('update.post_update_registry');
+        $post_updates = $post_update_registry->getPendingUpdateInformation();
         if ($options['post-updates']) {
             foreach ($post_updates as $module => $post_update) {
                 foreach ($post_update as $key => $list) {
@@ -534,7 +551,7 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
             }
         }
 
-        return [$return, $start];
+        return [$return, $start, $warnings];
     }
 
     /**

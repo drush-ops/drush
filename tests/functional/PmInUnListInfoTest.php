@@ -71,10 +71,18 @@ class PmInUnListInfoTest extends CommandUnishTestCase
         $this->assertEquals($extensionProperties['drush_empty_module']['status'], 'Enabled');
         $this->assertEquals($extensionProperties['drush_empty_module']['type'], 'module');
 
-        // Test module uninstall.
+        // Test uninstall of installed module.
         $this->drush('pm-uninstall', ['drush_empty_module']);
+        $out = $this->getErrorOutput();
+        $this->assertStringContainsString('Successfully uninstalled', $out);
+
         $this->drush('pm-list', [], ['status' => 'disabled', 'type' => 'module']);
         $out = $this->getOutput();
         $this->assertStringContainsString('drush_empty_module', $out);
+
+        // Test uninstall of uninstalled module.
+        $this->drush('pm-uninstall', ['drush_empty_module'], [], null, null, self::EXIT_ERROR);
+        $out = $this->getErrorOutput();
+        $this->assertStringContainsString('The following module(s) are not installed', $out);
     }
 }
