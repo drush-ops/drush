@@ -4,7 +4,6 @@ namespace Drush\Commands\core;
 
 use Drush\Log\SuccessInterface;
 use Drush\Drupal\DrupalUtil;
-use DrushBatchContext;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Consolidation\OutputFormatters\StructuredData\UnstructuredListData;
 use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
@@ -151,10 +150,10 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
      *   The update number to run.
      * @param array $dependency_map
      *   The update dependency map.
-     * @param DrushBatchContext $context
+     * @param array $context
      *   The batch context object.
      */
-    public static function updateDoOne(string $module, int $number, array $dependency_map, DrushBatchContext $context): void
+    public static function updateDoOne(string $module, int $number, array $dependency_map, array $context): void
     {
         $function = $module . '_update_' . $number;
 
@@ -229,9 +228,7 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
         if (!empty($ret['#abort'])) {
             // Record this function in the list of updates that were aborted.
             $context['results']['#abort'][] = $function;
-            // Setting this value will output an error message.
-            // @see \DrushBatchContext::offsetSet()
-            $context['error_message'] = "Update failed: $function";
+            Drush::logger()->error("Update failed: $function");
         }
 
         // Record the schema update if it was completed successfully.
@@ -242,8 +239,6 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
             } else {
                 drupal_set_installed_schema_version($module, $number);
             }
-            // Setting this value will output a success message.
-            // @see \DrushBatchContext::offsetSet()
             $context['message'] = "Update completed: $function";
         }
     }
@@ -255,7 +250,7 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
      *   The post-update function to execute.
      *   The batch context object.
      */
-    public static function updateDoOnePostUpdate(string $function, DrushBatchContext $context): void
+    public static function updateDoOnePostUpdate(string $function, array $context): void
     {
         $ret = [];
 
@@ -331,12 +326,8 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
         if (!empty($ret['#abort'])) {
             // Record this function in the list of updates that were aborted.
             $context['results']['#abort'][] = $function;
-            // Setting this value will output an error message.
-            // @see \DrushBatchContext::offsetSet()
-            $context['error_message'] = "Update failed: $function";
+            Drush::logger()->error("Update failed: $function");
         } elseif ($context['finished'] == 1 && empty($ret['#abort'])) {
-            // Setting this value will output a success message.
-            // @see \DrushBatchContext::offsetSet()
             $context['message'] = "Update completed: $function";
         }
     }
