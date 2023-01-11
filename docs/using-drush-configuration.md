@@ -101,10 +101,14 @@ options:
 ```yml
 command:
   sql:
+    cli:
+      options:
+        # Enable auto-complete in MySQL.
+        extra: "--auto-rehash"
     dump:
       options:
         # Omit cache and similar tables (including during a sql:sync).
-          structure-tables-key: common
+        structure-tables-key: common
   php:
     script:
       options:
