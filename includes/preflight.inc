@@ -730,7 +730,7 @@ function drush_preflight_command_dispatch() {
     $values = drush_invoke_process($site_record, $command_name, $args, $multi_options, $backend_options);
   }
   if (isset($values)) {
-    if (is_array($values) && ($values['error_status'] > 0)) {
+    if (is_array($values) && isset($values['error_status']) && ($values['error_status'] > 0)) {
       // Force an error result code.  Note that drush_shutdown() will still run.
       drush_set_context('DRUSH_EXECUTION_COMPLETED', TRUE);
       exit($values['error_status']);
