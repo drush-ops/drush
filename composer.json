@@ -31,7 +31,7 @@
   "require": {
     "php": ">=7.4",
     "ext-dom": "*",
-    "chi-teck/drupal-code-generator": "^2.4",
+    "chi-teck/drupal-code-generator": "3.x-dev",
     "composer/semver": "^1.4 || ^3",
     "consolidation/annotated-command": "^4.7.0",
     "consolidation/config": "^2",
