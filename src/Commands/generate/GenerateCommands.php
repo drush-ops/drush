@@ -2,6 +2,7 @@
 
 namespace Drush\Commands\generate;
 
+use DrupalCodeGenerator\Application;
 use Drush\Boot\AutoloaderAwareInterface;
 use Drush\Boot\AutoloaderAwareTrait;
 use Drush\Commands\DrushCommands;
@@ -26,9 +27,10 @@ class GenerateCommands extends DrushCommands implements AutoloaderAwareInterface
      *
      * @param string $generator A generator name. Omit to pick from available Generators.
      *
+     * @option working-dir Absolute path to working directory.
      * @option answer Answer to generator question.
      * @option dry-run Output the generated code but not save it to file system.
-     * @option destination Absolute path to a base directory for file writing.
+     * @option destination Path to a base directory for file writing
      * @usage drush generate
      *  Pick from available generators and then run it.
      * @usage drush generate drush-command-file
@@ -40,16 +42,19 @@ class GenerateCommands extends DrushCommands implements AutoloaderAwareInterface
      * @topics docs:generators
      * @bootstrap max
      */
-    public function generate(string $generator = '', $options = ['answer' => [], 'destination' => self::REQ, 'dry-run' => false]): int
+    public function generate(string $generator = '', $options = ['replace' => FALSE, 'working-dir' => self::REQ, 'answer' => [], 'destination' => self::REQ, 'dry-run' => false]): int
     {
+        // @todo Figure out a way to inject the container.
+        $container = \Drupal::getContainer();
+
+        // @todo Implement discovery for third-party generators.
+        $application = Application::create($container);
+        $application->setAutoExit(FALSE);
+
         // Disallow default Symfony console commands.
         if ($generator == 'help' || $generator == 'list') {
             $generator = null;
         }
-
-        $factory = new ApplicationFactory($this->logger(), $this->getConfig());
-        $factory->setAutoloader($this->autoloader());
-        $application = $factory->create();
 
         if (!$generator) {
             $all = $application->all();
@@ -62,7 +67,14 @@ class GenerateCommands extends DrushCommands implements AutoloaderAwareInterface
 
         // Create an isolated input.
         $argv = ['dcg', $generator];
+
         $argv[] = '--full-path';
+        if ($options['yes']) {
+            $argv[] = '--replace';
+        }
+        if ($options['working-dir']) {
+            $argv[] = '--working-dir=' . $options['working-dir'];
+        }
         // annotated-command does not support short options (e.g. '-a' for answer).
         foreach ($options['answer'] as $answer) {
             $argv[] = '--answer=' . $answer;
@@ -73,7 +85,8 @@ class GenerateCommands extends DrushCommands implements AutoloaderAwareInterface
         if ($options['ansi']) {
             $argv[] = '--ansi';
         }
-        if ($options['no-ansi']) {
+        // @todo Why is this option missing?
+        if (!empty($options['no-ansi'])) {
             $argv[] = '--no-ansi';
         }
         if ($options['dry-run']) {
