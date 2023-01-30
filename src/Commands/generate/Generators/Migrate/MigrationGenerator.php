@@ -2,25 +2,36 @@
 
 namespace Drush\Commands\generate\Generators\Migrate;
 
-use DrupalCodeGenerator\Command\Plugin\PluginGenerator;
+use DrupalCodeGenerator\Asset\Assets;
+use DrupalCodeGenerator\Attribute\Generator;
+use DrupalCodeGenerator\Command\BaseGenerator;
+use DrupalCodeGenerator\GeneratorType;
 
-/**
- * Implements `generate migration` command.
- */
-class MigrationGenerator extends PluginGenerator
+#[Generator(
+    name: 'migration',
+    description: 'Generates the yml and PHP class for a Migration',
+    templatePath: __DIR__,
+    type: GeneratorType::MODULE_COMPONENT,
+)]
+class MigrationGenerator extends BaseGenerator
 {
-    protected string $name = 'migration';
-    protected string $description = 'Generates the yml and PHP class for a Migration';
-    protected string $templatePath = __DIR__;
-
     /**
      * {@inheritdoc}
      */
-    protected function generate(array &$vars): void
+    protected function generate(array &$vars, Assets $assets): void
     {
-        $this->collectDefault($vars);
-        $vars['destination_plugin'] = $this->ask('Destination plugin', 'entity:node');
-        $this->addFile('src/Plugin/migrate/source/{class}.php', 'migration.php.twig');
-        $this->addFile('migrations/{plugin_id}.yml', 'migration.yml.twig');
+        $ir = $this->createInterviewer($vars);
+
+        $vars['machine_name'] = $ir->askMachineName();
+        $vars['name'] = $ir->askName();
+
+        $vars['plugin_label'] = $ir->askPluginLabel();
+        $vars['plugin_id'] = $ir->askPluginId();
+        $vars['class'] = $ir->askClass();
+
+        $vars['destination_plugin'] = $ir->ask('Destination plugin', 'entity:node');
+
+        $assets->addFile('src/Plugin/migrate/source/{class}.php', 'migration.php.twig');
+        $assets->addFile('migrations/{plugin_id}.yml', 'migration.yml.twig');
     }
 }
