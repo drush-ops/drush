@@ -6,6 +6,8 @@ use DrupalCodeGenerator\Application;
 use Drush\Boot\AutoloaderAwareInterface;
 use Drush\Boot\AutoloaderAwareTrait;
 use Drush\Commands\DrushCommands;
+use Drush\Commands\generate\Generators\Drush\DrushAliasFile;
+use Drush\Commands\generate\Generators\Migrate\MigrationGenerator;
 use Drush\Commands\help\ListCommands;
 use Symfony\Component\Console\Input\ArgvInput;
 
@@ -41,6 +43,8 @@ class GenerateCommands extends DrushCommands implements AutoloaderAwareInterface
      *  Learn all the potential answers so you can re-run with several --answer options.
      * @topics docs:generators
      * @bootstrap max
+     *
+     * @todo Update this command to use PHP attributes instead of annotations.
      */
     public function generate(string $generator = '', $options = ['replace' => FALSE, 'working-dir' => self::REQ, 'answer' => [], 'destination' => self::REQ, 'dry-run' => false]): int
     {
@@ -51,14 +55,20 @@ class GenerateCommands extends DrushCommands implements AutoloaderAwareInterface
         $application = Application::create($container);
         $application->setAutoExit(FALSE);
 
+        $application->addCommands([
+            new MigrationGenerator(),
+            new DrushAliasFile(),
+            // @todo Update DrushCommandFile generator.
+        ]);
+
         // Disallow default Symfony console commands.
-        if ($generator == 'help' || $generator == 'list') {
+        if ($generator == 'help' || $generator == 'list' || $generator == 'completion') {
             $generator = null;
         }
 
         if (!$generator) {
             $all = $application->all();
-            unset($all['help'], $all['list']);
+            unset($all['help'], $all['list'], $all['completion']);
             $namespaced = ListCommands::categorize($all);
             $preamble = dt('Run `drush generate [command]` and answer a few questions in order to write starter code to your project.');
             ListCommands::renderListCLI($application, $namespaced, $this->output(), $preamble);
@@ -95,4 +105,5 @@ class GenerateCommands extends DrushCommands implements AutoloaderAwareInterface
 
         return $application->run(new ArgvInput($argv), $this->output());
     }
+
 }
