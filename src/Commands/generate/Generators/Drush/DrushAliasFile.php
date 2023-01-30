@@ -2,33 +2,36 @@
 
 namespace Drush\Commands\generate\Generators\Drush;
 
-use DrupalCodeGenerator\Command\Generator;
+use DrupalCodeGenerator\Asset\AssetCollection as Assets;
+use DrupalCodeGenerator\Command\BaseGenerator;
+use DrupalCodeGenerator\GeneratorType;
 use Drush\Drush;
 
-/**
- * Implements drush-alias-file command.
- */
-class DrushAliasFile extends Generator
+#[\DrupalCodeGenerator\Attribute\Generator(
+    name: 'drush:alias-file',
+    description: 'Generates a Drush site alias file.',
+    aliases: ['daf'],
+    templatePath: __DIR__,
+    type: GeneratorType::MODULE_COMPONENT,
+)]
+class DrushAliasFile extends BaseGenerator
 {
-    protected string $name = 'drush:alias-file';
-    protected string $description = 'Generates a Drush site alias file.';
-    protected string $alias = 'daf';
-    protected string $templatePath = __DIR__;
-
     /**
      * {@inheritdoc}
      */
-    protected function generate(array &$vars): void
+    protected function generate(array &$vars, Assets $assets): void
     {
-        $vars['prefix'] = $this->ask('File prefix (one word)', 'self');
-        $vars['root'] = $this->ask('Path to Drupal root', Drush::bootstrapManager()->getRoot());
-        $vars['uri'] = $this->ask('Drupal uri', Drush::bootstrapManager()->getUri());
-        $vars['host'] = $this->ask('Remote host');
+        $ir = $this->createInterviewer($vars);
+
+        $vars['prefix'] = $ir->ask('File prefix (one word)', 'self');
+        $vars['root'] = $ir->ask('Path to Drupal root', Drush::bootstrapManager()->getRoot());
+        $vars['uri'] = $ir->ask('Drupal uri', Drush::bootstrapManager()->getUri());
+        $vars['host'] = $ir->ask('Remote host');
 
         if ($vars['host']) {
-            $vars['user'] = $this->ask('Remote user', Drush::config()->user());
+            $vars['user'] = $ir->ask('Remote user', Drush::config()->user());
         }
 
-        $this->addFile('drush/{prefix}.site.yml', 'drush-alias-file.yml.twig');
+        $assets->addFile('drush/{prefix}.site.yml', 'drush-alias-file.yml.twig');
     }
 }
