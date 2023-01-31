@@ -86,6 +86,7 @@ class LocaleCommands extends DrushCommands
      * @command locale:clear-status
      * @aliases locale-clear-status
      * @validate-module-enabled locale
+     * @version 11.5
      */
     public function clearStatus(): void
     {
