@@ -3,8 +3,10 @@
 namespace Drush\Commands\generate;
 
 use DrupalCodeGenerator\Application;
+use Drush\Attributes as CLI;
 use Drush\Boot\AutoloaderAwareInterface;
 use Drush\Boot\AutoloaderAwareTrait;
+use Drush\Boot\DrupalBootLevels;
 use Drush\Commands\DrushCommands;
 use Drush\Commands\generate\Generators\Drush\DrushAliasFile;
 use Drush\Commands\generate\Generators\Migrate\MigrationGenerator;
@@ -23,29 +25,19 @@ class GenerateCommands extends DrushCommands implements AutoloaderAwareInterface
      *
      * Drush asks questions so that the generated code is as polished as possible. After
      * generating, Drush lists the files that were created.
-     *
-     * @command generate
-     * @aliases gen
-     *
-     * @param string $generator A generator name. Omit to pick from available Generators.
-     *
-     * @option working-dir Absolute path to working directory.
-     * @option answer Answer to generator question.
-     * @option dry-run Output the generated code but not save it to file system.
-     * @option destination Path to a base directory for file writing
-     * @usage drush generate
-     *  Pick from available generators and then run it.
-     * @usage drush generate drush-command-file
-     *  Generate a Drush commandfile for your module.
-     * @usage drush generate controller --answer=Example --answer=example
-     *  Generate a controller class and pre-fill the first two questions in the wizard.
-     * @usage drush generate controller -vvv --dry-run
-     *  Learn all the potential answers so you can re-run with several --answer options.
-     * @topics docs:generators
-     * @bootstrap max
-     *
-     * @todo Update this command to use PHP attributes instead of annotations.
      */
+    #[CLI\Command(name: 'generate', aliases: ['gen'])]
+    #[CLI\Argument(name: 'generator', description: 'A generator name. Omit to pick from available Generators.')]
+    #[CLI\Option(name: 'working-dir', description: 'Absolute path to working directory.')]
+    #[CLI\Option(name: 'dry-run', description: 'Output the generated code but not save it to file system.')]
+    #[CLI\Option(name: 'answer', description: 'Answer to generator question.')]
+    #[CLI\Option(name: 'destination', description: 'Path to a base directory for file writing.')]
+    #[CLI\Usage(name: 'drush generate', description: 'Pick from available generators and then run it.')]
+    #[CLI\Usage(name: 'drush generate drush-command-file', description: 'Generate a Drush commandfile for your module.')]
+    #[CLI\Usage(name: 'drush generate controller --answer=Example --answer=example', description: 'Generate a controller class and pre-fill the first two questions in the wizard.')]
+    #[CLI\Usage(name: 'drush generate controller -vvv --dry-run', description: 'Learn all the potential answers so you can re-run with several --answer options.')]
+    #[CLI\Topics(topics: ['docs:generators'])]
+    #[CLI\Bootstrap(level: DrupalBootLevels::MAX)]
     public function generate(string $generator = '', $options = ['replace' => FALSE, 'working-dir' => self::REQ, 'answer' => [], 'destination' => self::REQ, 'dry-run' => false]): int
     {
         // @todo Figure out a way to inject the container.
