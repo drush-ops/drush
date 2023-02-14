@@ -59,13 +59,13 @@ class ConfigCommands extends DrushCommands implements StdinAwareInterface, SiteA
     /**
      * ConfigCommands constructor.
      * @param ConfigFactoryInterface $configFactory
-     * @param StorageInterface $configStorage
+     * @param StorageInterface $configStorageExport
      */
-    public function __construct($configFactory, StorageInterface $configStorage)
+    public function __construct($configFactory, StorageInterface $configStorageExport)
     {
         parent::__construct();
         $this->configFactory = $configFactory;
-        $this->configStorage = $configStorage;
+        $this->configStorageExport = $configStorageExport;
     }
 
     /**
