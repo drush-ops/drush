@@ -267,22 +267,25 @@ class UserCommands extends DrushCommands
      *
      * @param string $names A comma delimited list of user names.
      * @option delete-content Delete the user, and all content created by the user
+     * @option reassign-content Delete the user and make its content belong to the anonymous user. This action cannot be undone.
      * @aliases ucan,user-cancel
      * @usage drush user:cancel username
      *   Cancel the user account with the name username and anonymize all content created by that user.
      * @usage drush user:cancel --delete-content username
      *   Delete the user account with the name username and delete all content created by that user.
      */
-    public function cancel($names, $options = ['delete-content' => false])
+    public function cancel($names, $options = ['delete-content' => false, 'reassign-content' => false])
     {
         if ($names = StringUtils::csvToArray($names)) {
             foreach ($names as $name) {
                 if ($account = user_load_by_name($name)) {
                     if ($options['delete-content']) {
                         $this->logger()->warning(dt('All content created by !name will be deleted.', ['!name' => $account->getUsername()]));
+                    } else if ($options['reassign-content']) {
+                        $this->logger()->warning(dt('All content created by !name will be assigned to anonymous user.', ['!name' => $account->getUsername()]));
                     }
                     if ($this->io()->confirm('Cancel user account?: ')) {
-                        $method = $options['delete-content'] ? 'user_cancel_delete' : 'user_cancel_block';
+                        $method = $options['delete-content'] ? 'user_cancel_delete' : ($options['reassign-content'] ? 'user_cancel_reassign' : 'user_cancel_block');
                         user_cancel([], $account->id(), $method);
                         drush_backend_batch_process();
                         // Drupal logs a message for us.
