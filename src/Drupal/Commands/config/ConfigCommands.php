@@ -84,7 +84,7 @@ class ConfigCommands extends DrushCommands implements StdinAwareInterface, SiteA
         if (isset($this->configStorageExport)) {
             return $this->configStorageExport;
         }
-        return $this->configStorage;
+        return $this->configStorageExport;
     }
 
     public function setImportTransformer(ImportStorageTransformer $importStorageTransformer): void
@@ -412,7 +412,7 @@ class ConfigCommands extends DrushCommands implements StdinAwareInterface, SiteA
             $target_storage = $this->getImportTransformer()->transform($target_storage);
         }
 
-        $config_comparer = new StorageComparer($this->configStorage, $target_storage);
+        $config_comparer = new StorageComparer($this->configStorageExport, $target_storage);
 
         $change_list = [];
         if ($config_comparer->createChangelist()->hasChanges()) {
