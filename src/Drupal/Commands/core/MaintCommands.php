@@ -25,7 +25,9 @@ class MaintCommands extends DrushCommands
     }
 
     /**
-     * Get maintenance mode.
+     * Get maintenance mode. Returns 1 if enabled, 0 if not.
+     *
+     * Consider using maint:status instead when chaining commands.
      *
      * @command maint:get
      *
@@ -60,7 +62,7 @@ class MaintCommands extends DrushCommands
 
 
     /**
-     * Fails if maintenance mode is enabled.
+     * Fail if maintenance mode is enabled.
      *
      * This commands fails with exit code of 3 when maintenance mode is on. This special
      * exit code distinguishes from a failure to complete.
@@ -72,7 +74,7 @@ class MaintCommands extends DrushCommands
      * @aliases mstatus
      * @version 11.5
      */
-    public function status()
+    public function status(): int
     {
         $value = $this->getState()->get(self::KEY);
         return $value ? self::EXIT_FAILURE_WITH_CLARITY : self::EXIT_SUCCESS;
