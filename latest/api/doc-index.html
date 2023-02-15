@@ -1432,7 +1432,11 @@ loading drush.yml and drush10.yml, etc.</p></dd><dt><a href="Drush/Config/Enviro
 <abbr title="Drush\Drupal\Commands\core\LocaleCommands">LocaleCommands</abbr>::getModuleHandler</a>() &mdash; <em>Method in class <a href="Drush/Drupal/Commands/core/LocaleCommands.html"><abbr title="Drush\Drupal\Commands\core\LocaleCommands">LocaleCommands</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Drupal/Commands/core/LocaleCommands.html#method_getState">
 <abbr title="Drush\Drupal\Commands\core\LocaleCommands">LocaleCommands</abbr>::getState</a>() &mdash; <em>Method in class <a href="Drush/Drupal/Commands/core/LocaleCommands.html"><abbr title="Drush\Drupal\Commands\core\LocaleCommands">LocaleCommands</abbr></a></em></dt>
-                    <dd></dd><dt><a href="Drush/Drupal/Commands/core/MigrateRunnerCommands.html#method_getMigrationSourceRowsCount">
+                    <dd></dd><dt><a href="Drush/Drupal/Commands/core/MaintCommands.html#method_getState">
+<abbr title="Drush\Drupal\Commands\core\MaintCommands">MaintCommands</abbr>::getState</a>() &mdash; <em>Method in class <a href="Drush/Drupal/Commands/core/MaintCommands.html"><abbr title="Drush\Drupal\Commands\core\MaintCommands">MaintCommands</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/Drupal/Commands/core/MaintCommands.html#method_get">
+<abbr title="Drush\Drupal\Commands\core\MaintCommands">MaintCommands</abbr>::get</a>() &mdash; <em>Method in class <a href="Drush/Drupal/Commands/core/MaintCommands.html"><abbr title="Drush\Drupal\Commands\core\MaintCommands">MaintCommands</abbr></a></em></dt>
+                    <dd><p>Get maintenance mode. Returns 1 if enabled, 0 if not.</p></dd><dt><a href="Drush/Drupal/Commands/core/MigrateRunnerCommands.html#method_getMigrationSourceRowsCount">
 <abbr title="Drush\Drupal\Commands\core\MigrateRunnerCommands">MigrateRunnerCommands</abbr>::getMigrationSourceRowsCount</a>() &mdash; <em>Method in class <a href="Drush/Drupal/Commands/core/MigrateRunnerCommands.html"><abbr title="Drush\Drupal\Commands\core\MigrateRunnerCommands">MigrateRunnerCommands</abbr></a></em></dt>
                     <dd><p>Returns the migration source rows count.</p></dd><dt><a href="Drush/Drupal/Commands/core/MigrateRunnerCommands.html#method_getMigrationNeedingUpdateCount">
 <abbr title="Drush\Drupal\Commands\core\MigrateRunnerCommands">MigrateRunnerCommands</abbr>::getMigrationNeedingUpdateCount</a>() &mdash; <em>Method in class <a href="Drush/Drupal/Commands/core/MigrateRunnerCommands.html"><abbr title="Drush\Drupal\Commands\core\MigrateRunnerCommands">MigrateRunnerCommands</abbr></a></em></dt>
@@ -1989,6 +1993,7 @@ is available or not.</p></dd><dt><a href="Drush/SiteAlias/LegacyAliasConverter.h
 <abbr title="Drush\Drupal\Commands\core\LinkHooks">LinkHooks</abbr>#moduleHandler</a> &mdash; <em>Property in class <a href="Drush/Drupal/Commands/core/LinkHooks.html"><abbr title="Drush\Drupal\Commands\core\LinkHooks">LinkHooks</abbr></a></em></dt>
                     <dd></dd><dt>$<a href="Drush/Drupal/Commands/core/LocaleCommands.html#property_moduleHandler">
 <abbr title="Drush\Drupal\Commands\core\LocaleCommands">LocaleCommands</abbr>#moduleHandler</a> &mdash; <em>Property in class <a href="Drush/Drupal/Commands/core/LocaleCommands.html"><abbr title="Drush\Drupal\Commands\core\LocaleCommands">LocaleCommands</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/Drupal/Commands/core/MaintCommands.html"><abbr title="Drush\Drupal\Commands\core\MaintCommands">MaintCommands</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Drupal/Commands/core.html">Drush\Drupal\Commands\core</a></em></dt>
                     <dd></dd><dt><a href="Drush/Drupal/Commands/core/MessengerCommands.html"><abbr title="Drush\Drupal\Commands\core\MessengerCommands">MessengerCommands</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Drupal/Commands/core.html">Drush\Drupal\Commands\core</a></em></dt>
                     <dd></dd><dt>$<a href="Drush/Drupal/Commands/core/MessengerCommands.html#property_messenger">
 <abbr title="Drush\Drupal\Commands\core\MessengerCommands">MessengerCommands</abbr>#messenger</a> &mdash; <em>Property in class <a href="Drush/Drupal/Commands/core/MessengerCommands.html"><abbr title="Drush\Drupal\Commands\core\MessengerCommands">MessengerCommands</abbr></a></em></dt>
@@ -2621,7 +2626,13 @@ use as /user/share (e.g. during the functional tests).</p></dd><dt><a href="Drus
 <abbr title="Drush\Drupal\Commands\core\DeployHookCommands">DeployHookCommands</abbr>::setUpdateType</a>() &mdash; <em>Method in class <a href="Drush/Drupal/Commands/core/DeployHookCommands.html"><abbr title="Drush\Drupal\Commands\core\DeployHookCommands">DeployHookCommands</abbr></a></em></dt>
                     <dd></dd><dt>$<a href="Drush/Drupal/Commands/core/LocaleCommands.html#property_state">
 <abbr title="Drush\Drupal\Commands\core\LocaleCommands">LocaleCommands</abbr>#state</a> &mdash; <em>Property in class <a href="Drush/Drupal/Commands/core/LocaleCommands.html"><abbr title="Drush\Drupal\Commands\core\LocaleCommands">LocaleCommands</abbr></a></em></dt>
-                    <dd></dd><dt><a href="Drush/Drupal/Commands/core/MigrateRunnerCommands.html#method_status">
+                    <dd></dd><dt>$<a href="Drush/Drupal/Commands/core/MaintCommands.html#property_state">
+<abbr title="Drush\Drupal\Commands\core\MaintCommands">MaintCommands</abbr>#state</a> &mdash; <em>Property in class <a href="Drush/Drupal/Commands/core/MaintCommands.html"><abbr title="Drush\Drupal\Commands\core\MaintCommands">MaintCommands</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/Drupal/Commands/core/MaintCommands.html#method_set">
+<abbr title="Drush\Drupal\Commands\core\MaintCommands">MaintCommands</abbr>::set</a>() &mdash; <em>Method in class <a href="Drush/Drupal/Commands/core/MaintCommands.html"><abbr title="Drush\Drupal\Commands\core\MaintCommands">MaintCommands</abbr></a></em></dt>
+                    <dd><p>Set maintenance mode.</p></dd><dt><a href="Drush/Drupal/Commands/core/MaintCommands.html#method_status">
+<abbr title="Drush\Drupal\Commands\core\MaintCommands">MaintCommands</abbr>::status</a>() &mdash; <em>Method in class <a href="Drush/Drupal/Commands/core/MaintCommands.html"><abbr title="Drush\Drupal\Commands\core\MaintCommands">MaintCommands</abbr></a></em></dt>
+                    <dd><p>Fail if maintenance mode is enabled.</p></dd><dt><a href="Drush/Drupal/Commands/core/MigrateRunnerCommands.html#method_status">
 <abbr title="Drush\Drupal\Commands\core\MigrateRunnerCommands">MigrateRunnerCommands</abbr>::status</a>() &mdash; <em>Method in class <a href="Drush/Drupal/Commands/core/MigrateRunnerCommands.html"><abbr title="Drush\Drupal\Commands\core\MigrateRunnerCommands">MigrateRunnerCommands</abbr></a></em></dt>
                     <dd><p>List all migrations with current status.</p></dd><dt><a href="Drush/Drupal/Commands/core/MigrateRunnerCommands.html#method_stop">
 <abbr title="Drush\Drupal\Commands\core\MigrateRunnerCommands">MigrateRunnerCommands</abbr>::stop</a>() &mdash; <em>Method in class <a href="Drush/Drupal/Commands/core/MigrateRunnerCommands.html"><abbr title="Drush\Drupal\Commands\core\MigrateRunnerCommands">MigrateRunnerCommands</abbr></a></em></dt>
@@ -3081,6 +3092,8 @@ need to be expanded.</p></dd>        </dl><h2 id="letter_">_</h2>
 <abbr title="Drush\Drupal\Commands\core\LinkHooks">LinkHooks</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/Drupal/Commands/core/LinkHooks.html"><abbr title="Drush\Drupal\Commands\core\LinkHooks">LinkHooks</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Drupal/Commands/core/LocaleCommands.html#method___construct">
 <abbr title="Drush\Drupal\Commands\core\LocaleCommands">LocaleCommands</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/Drupal/Commands/core/LocaleCommands.html"><abbr title="Drush\Drupal\Commands\core\LocaleCommands">LocaleCommands</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/Drupal/Commands/core/MaintCommands.html#method___construct">
+<abbr title="Drush\Drupal\Commands\core\MaintCommands">MaintCommands</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/Drupal/Commands/core/MaintCommands.html"><abbr title="Drush\Drupal\Commands\core\MaintCommands">MaintCommands</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Drupal/Commands/core/MessengerCommands.html#method___construct">
 <abbr title="Drush\Drupal\Commands\core\MessengerCommands">MessengerCommands</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/Drupal/Commands/core/MessengerCommands.html"><abbr title="Drush\Drupal\Commands\core\MessengerCommands">MessengerCommands</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Drupal/Commands/core/MigrateRunnerCommands.html#method___construct">
