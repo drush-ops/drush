@@ -261,20 +261,24 @@ class UserCommands extends DrushCommands
     }
 
     /**
-     * Cancel user account(s) with the specified name(s).
+     * Block or delete user account(s) with the specified name(s).
+     *
+     * Existing content may be deleted or reassigned to the Anonymous user. See options.
      *
      * @command user:cancel
      *
      * @param string $names A comma delimited list of user names.
      * @option delete-content Delete the user, and all content created by the user
-     * @option reassign-content Delete the user and make its content belong to the anonymous user. This action cannot be undone.
+     * @option reassign-content Delete the user and make its content belong to the anonymous user.
      * @option $uid A comma delimited list of user ids to lookup (an alternative to names).
      * @option $mail A comma delimited list of emails to lookup (an alternative to names).
      * @aliases ucan,user-cancel
      * @usage drush user:cancel username
-     *   Cancel the user account with the name username and anonymize all content created by that user.
+     *   Block the user account with the name username.
      * @usage drush user:cancel --delete-content username
-     *   Delete the user account with the name username and delete all content created by that user.
+     *   Delete the user account with the name <info>username<info> and delete all content created by that user.
+     * @usage drush user:cancel --reassign-content username
+     *   Delete the user account with the name <info>username<info> and assign all her content to the anonymous user.
      */
     public function cancel(string $names, $options = ['delete-content' => false, 'reassign-content' => false, 'uid' => self::REQ, 'mail' => self::REQ]): void
     {
