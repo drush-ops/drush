@@ -46,6 +46,11 @@ class ConfigCommands extends DrushCommands implements StdinAwareInterface, SiteA
     protected $configStorageExport;
 
     /**
+     * @var StorageInterface
+     */
+    protected $configStorage;
+
+    /**
      * @var ImportStorageTransformer
      */
     protected $importStorageTransformer;
