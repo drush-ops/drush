@@ -263,7 +263,9 @@ class UserCommands extends DrushCommands
     /**
      * Block or delete user account(s) with the specified name(s).
      *
-     * Existing content may be deleted or reassigned to the Anonymous user. See options.
+     * - Existing content may be deleted or reassigned to the Anonymous user. See options.
+     * - By default only nodes are deleted or reassigned. Custom entity types need own code to
+     * support cancellation. See https://www.drupal.org/project/drupal/issues/3043725 for updates.
      *
      * @command user:cancel
      *
