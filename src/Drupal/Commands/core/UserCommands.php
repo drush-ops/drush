@@ -123,7 +123,11 @@ class UserCommands extends DrushCommands
      * @option $mail A comma delimited list of emails to lookup (an alternative to names).
      * @aliases ublk,user-block
      * @usage drush user:block user3
-     *   Block the users whose name is user3
+     *   Block the user whose name is user3
+     * @usage drush user:cancel user3 --delete-content
+     *   Block the user whose name is user3 and delete her content.
+     * @usage drush user:cancel user3 --reassign-content
+     *   Block the user whose name is user3 and reassign her content to the anonymous user.
      */
     public function block(string $names = '', $options = ['uid' => self::REQ, 'mail' => self::REQ]): void
     {
