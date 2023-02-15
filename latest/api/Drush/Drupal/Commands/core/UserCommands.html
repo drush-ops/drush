@@ -417,9 +417,9 @@ DrushConfig as return type. Helps with IDE completion.</p></p>                </
                     void
                 </div>
                 <div class="col-md-8">
-                    <a href="#method_cancel">cancel</a>(string $names, $options = [&#039;delete-content&#039; =&gt; false, &#039;uid&#039; =&gt; self::REQ, &#039;mail&#039; =&gt; self::REQ])
+                    <a href="#method_cancel">cancel</a>(string $names, $options = [&#039;delete-content&#039; =&gt; false, &#039;reassign-content&#039; =&gt; false, &#039;uid&#039; =&gt; self::REQ, &#039;mail&#039; =&gt; self::REQ])
         
-                                            <p><p>Cancel user account(s) with the specified name(s).</p></p>                </div>
+                                            <p><p>Block or delete user account(s) with the specified name(s).</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -982,7 +982,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_block">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/UserCommands.php#L128">at line 128</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/UserCommands.php#L132">at line 132</a></div>
         <code>                    void
     <strong>block</strong>(string $names = &#039;&#039;, $options = [&#039;uid&#039; =&gt; self::REQ, &#039;mail&#039; =&gt; self::REQ])
         </code>
@@ -1029,7 +1029,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_unblock">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/UserCommands.php#L150">at line 150</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/UserCommands.php#L154">at line 154</a></div>
         <code>                    void
     <strong>unblock</strong>(string $names = &#039;&#039;, $options = [&#039;uid&#039; =&gt; self::REQ, &#039;mail&#039; =&gt; self::REQ])
         </code>
@@ -1076,7 +1076,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_addRole">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/UserCommands.php#L174">at line 174</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/UserCommands.php#L178">at line 178</a></div>
         <code>                    void
     <strong>addRole</strong>(string $role, string $names = &#039;&#039;, $options = [&#039;uid&#039; =&gt; self::REQ, &#039;mail&#039; =&gt; self::REQ])
         </code>
@@ -1128,7 +1128,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_removeRole">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/UserCommands.php#L201">at line 201</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/UserCommands.php#L205">at line 205</a></div>
         <code>                    void
     <strong>removeRole</strong>(string $role, string $names = &#039;&#039;, $options = [&#039;uid&#039; =&gt; self::REQ, &#039;mail&#039; =&gt; self::REQ])
         </code>
@@ -1180,7 +1180,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_create">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/UserCommands.php#L226">at line 226</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/UserCommands.php#L230">at line 230</a></div>
         <code>                    
     <strong>create</strong>(string $name, $options = [&#039;password&#039; =&gt; self::REQ, &#039;mail&#039; =&gt; self::REQ])
         </code>
@@ -1218,7 +1218,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_createValidate">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/UserCommands.php#L250">at line 250</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/UserCommands.php#L254">at line 254</a></div>
         <code>                    void
     <strong>createValidate</strong>(<abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr> $commandData)
         </code>
@@ -1260,9 +1260,9 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_cancel">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/UserCommands.php#L278">at line 278</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/UserCommands.php#L289">at line 289</a></div>
         <code>                    void
-    <strong>cancel</strong>(string $names, $options = [&#039;delete-content&#039; =&gt; false, &#039;uid&#039; =&gt; self::REQ, &#039;mail&#039; =&gt; self::REQ])
+    <strong>cancel</strong>(string $names, $options = [&#039;delete-content&#039; =&gt; false, &#039;reassign-content&#039; =&gt; false, &#039;uid&#039; =&gt; self::REQ, &#039;mail&#039; =&gt; self::REQ])
         </code>
     </h3>
     <div class="details">    
@@ -1270,7 +1270,11 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             
 
         <div class="method-description">
-                            <p><p>Cancel user account(s) with the specified name(s).</p></p>                        
+                            <p><p>Block or delete user account(s) with the specified name(s).</p></p>                <p><ul>
+<li>Existing content may be deleted or reassigned to the Anonymous user. See options.</li>
+<li>By default only nodes are deleted or reassigned. Custom entity types need own code to
+support cancellation. See <a href="https://www.drupal.org/project/drupal/issues/3043725">https://www.drupal.org/project/drupal/issues/3043725</a> for updates.</li>
+</ul></p>        
         </div>
         <div class="tags">
                             <h4>Parameters</h4>
@@ -1307,7 +1311,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_password">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/UserCommands.php#L305">at line 305</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/UserCommands.php#L318">at line 318</a></div>
         <code>                    void
     <strong>password</strong>(string $name, string $password)
         </code>
@@ -1354,7 +1358,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_infoArray">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/UserCommands.php#L323">at line 323</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/UserCommands.php#L336">at line 336</a></div>
         <code>                    array
     <strong>infoArray</strong>($account)
         </code>
@@ -1396,7 +1400,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_getAccounts">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/UserCommands.php#L354">at line 354</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/UserCommands.php#L367">at line 367</a></div>
         <code>            protected        array
     <strong>getAccounts</strong>(string $names = &#039;&#039;, array $options = [])
         </code>
