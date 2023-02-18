@@ -16,15 +16,16 @@ use Drupal\Core\Config\FileStorage;
 use Drupal\Core\Config\StorageComparer;
 use Drupal\Core\Config\StorageInterface;
 use Drupal\Core\Site\Settings;
+use Drush\Boot\DrupalBootLevels;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Drush\Exec\ExecTrait;
 use Drush\SiteAlias\SiteAliasManagerAwareInterface;
 use Drush\Utils\FsUtils;
 use Drush\Utils\StringUtils;
+use Symfony\Component\Console\Completion\CompletionInput;
+use Symfony\Component\Console\Completion\CompletionSuggestions;
 use Symfony\Component\Console\Helper\Table;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\ConsoleOutputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Filesystem\Path;
 use Symfony\Component\Yaml\Parser;
@@ -122,6 +123,7 @@ class ConfigCommands extends DrushCommands implements StdinAwareInterface, SiteA
      * @usage drush config:get system.site page.front
      *   Gets system.site:page.front value.
      * @aliases cget,config-get
+     * @complete configComplete
      */
     public function get($config_name, $key = '', $options = ['format' => 'yaml', 'source' => 'active', 'include-overridden' => false])
     {
@@ -156,6 +158,7 @@ class ConfigCommands extends DrushCommands implements StdinAwareInterface, SiteA
      * @usage drush config:set --input-format=yaml user.role.authenticated ? "{label: 'Auth user', weight: 5}"
      *   Update two top level keys (label, weight) in the <info>system.site</info> config object.
      * @aliases cset,config-set
+     * @complete configComplete
      */
     public function set($config_name, $key, $value, $options = ['input-format' => 'string'])
     {
@@ -225,6 +228,7 @@ class ConfigCommands extends DrushCommands implements StdinAwareInterface, SiteA
      *   Return to shell prompt as soon as the editor window opens.
      * @aliases cedit,config-edit
      * @validate-module-enabled config
+     * @complete configComplete
      */
     public function edit($config_name, $options = []): void
     {
@@ -267,6 +271,7 @@ class ConfigCommands extends DrushCommands implements StdinAwareInterface, SiteA
      * @usage drush config:delete system.site page.front
      *   Delete the 'page.front' key from the system.site object.
      * @aliases cdel,config-delete
+     * @complete configComplete
      */
     public function delete($config_name, $key = null): void
     {
@@ -486,6 +491,12 @@ class ConfigCommands extends DrushCommands implements StdinAwareInterface, SiteA
         $table->setHeaders(['Collection', 'Config', 'Operation']);
         $table->addRows($rows);
         return $table;
+    }
+
+    public function configComplete(CompletionInput $input, CompletionSuggestions $suggestions): void {
+        if ($input->mustSuggestArgumentValuesFor('config_name')) {
+            $suggestions->suggestValues($this->getConfigFactory()->listAll());
+        }
     }
 
     /**
