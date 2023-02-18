@@ -66,8 +66,8 @@ markdown_extensions:
       emoji_index: '!!python/name:materialx.emoji.twemoji'
       emoji_generator: '!!python/name:materialx.emoji.to_svg'
 nav:
+  - Home: index.md
   - Use:
-    - Introduction: index.md
     - Install: install.md
     - Usage: usage.md
     - Cron: cron.md
