@@ -493,7 +493,8 @@ class ConfigCommands extends DrushCommands implements StdinAwareInterface, SiteA
         return $table;
     }
 
-    public function configComplete(CompletionInput $input, CompletionSuggestions $suggestions): void {
+    public function configComplete(CompletionInput $input, CompletionSuggestions $suggestions): void
+    {
         if ($input->mustSuggestArgumentValuesFor('config_name')) {
             $suggestions->suggestValues($this->getConfigFactory()->listAll());
         }
