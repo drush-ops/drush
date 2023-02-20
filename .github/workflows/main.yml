@@ -17,7 +17,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
-      - name: Setup doc deploy
+      - name: Setup Git
         run: |
           git config --local user.email "actions@github.com"
           git config --local user.name "Drush Documentation Bot"
@@ -68,6 +68,10 @@ jobs:
 #        run: |
 #          cd site && git checkout -- CNAME index.html 404.html
 
+      - name: Setup Git
+        run: |
+          git config --local user.email "actions@github.com"
+          git config --local user.name "Drush Documentation Bot"
       - name: Commit static site
         run: |
           cd gh-pages
@@ -78,6 +82,5 @@ jobs:
           else
             git commit -m "[CI] Add Doctum build"
           fi
-
       - name: Git Push
         run: cd gh-pages && git push
