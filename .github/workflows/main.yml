@@ -59,7 +59,7 @@ jobs:
         run: composer mk:docs
 
       - name: Mkdocs build
-        run: mike deploy ${{ vars.GITHUB_REF_NAME }} dev latest
+        run: mike deploy 11.x dev latest
 
       - name: Install Doctum
         run: composer doctum-install
