@@ -24,6 +24,8 @@ extra_css:
 plugins:
   - edit_url
   - search
+  - mike:
+      canonical_version: latest
   - git-revision-date-localized:
       exclude:
         - commands/*

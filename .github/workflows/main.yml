@@ -10,37 +10,25 @@ jobs:
   build:
     permissions:
       contents: write # for git push
-
-    name: Build and Push
+    name: Build docs and push
     runs-on: ubuntu-latest
     steps:
       - name: Checkout 11.x
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
-
       - name: Setup doc deploy
         run: |
           git config --local user.email "actions@github.com"
           git config --local user.name "Drush Documentation Bot"
-
-#      - name: Checkout gh-pages branch
-#        uses: actions/checkout@v2
-#        with:
-#          ref: gh-pages
-#          path: gh-pages
-#          fetch-depth: 0
-
       - name: Set up Python 3.8
         uses: actions/setup-python@v2
         with:
           python-version: '3.8'
-
       - name: Install Python dependencies
         run: |
           python -m pip install --upgrade pip
           pip install mkdocs-material mike mkdocs-git-authors-plugin mkdocs-redirects mkdocs-git-revision-date-localized-plugin pymdown-extensions git+https://gitlab.com/blacs30/mkdocs-edit-url.git
-
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
@@ -48,46 +36,43 @@ jobs:
           extensions: dom, curl, gd, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite
           coverage: none
           tools: composer:v2
-
       - name: Install Composer dependencies
         run: composer install --prefer-dist --no-interaction
-
       - name: Install Drupal
         run: composer sut:si
         env:
           UNISH_DB_URL: sqlite://sites/default/files/.ht.sqlite
-
       - name: Drush status
         run: ./drush --uri=dev st
-
-      - name: See env
-        run: env
-
       - name: Drush mk:docs
         run: composer mk:docs
-
       - name: Mike build
         run: mike deploy --push 11.x dev latest
-
+      - name: Checkout gh-pages branch
+        uses: actions/checkout@v2
+        with:
+          ref: gh-pages
+          path: gh-pages
+          fetch-depth: 0
+      - name: Git pull
+        run: cd gh-pages && git pull
       - name: Install Doctum
         run: composer doctum-install
-
       - name: Doctum build
         run: |
-          rm -rf site/latest/api
+          rm -rf gh-pages/latest/api
           composer api
 
-#      - name: Checkout CNAME+redirect+404 files
+##      - name: Checkout CNAME+redirect+404 files
 #        # They got wiped and are needed.
 #        run: |
 #          cd site && git checkout -- CNAME index.html 404.html
 
       - name: Commit static site
         run: |
-          cd site
-          ls -al
-          git add -f -A latest
-          
+          cd gh-pages
+          git add -A .
+
           if git diff-index --quiet HEAD --; then
             echo "No changes..."
           else
@@ -95,4 +80,4 @@ jobs:
           fi
 
       - name: Git Push
-        run: cd site && git push
+        run: cd gh-pages && git push
