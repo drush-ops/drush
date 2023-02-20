@@ -68,19 +68,27 @@ jobs:
 #        run: |
 #          cd site && git checkout -- CNAME index.html 404.html
 
-      - name: Setup Git
-        run: |
-          cd gh-pages && git config --local user.email "actions@github.com"
-          cd gh-pages && git config --local user.name "Drush Documentation Bot"
-      - name: Commit static site
-        run: |
-          cd gh-pages
-          git add -A .
+      - uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: "[CI] Add Doctum build"
+          repository: gh-pages
+          #skip_dirty_check: true
+          commit_user_name: "Drush Documentation Bot"
+          commit_user_email: "actions@github.com"
 
-          if git diff-index --quiet HEAD --; then
-            echo "No changes..."
-          else
-            git commit -m "[CI] Add Doctum build"
-          fi
-      - name: Git Push
-        run: cd gh-pages && git push
+#      - name: Setup Git
+#        run: |
+#          cd gh-pages && git config --local user.email "actions@github.com"
+#          cd gh-pages && git config --local user.name "Drush Documentation Bot"
+#      - name: Commit static site
+#        run: |
+#          cd gh-pages
+#          git add -A .
+#
+#          if git diff-index --quiet HEAD --; then
+#            echo "No changes..."
+#          else
+#            git commit -m "[CI] Add Doctum build"
+#          fi
+#      - name: Git Push
+#        run: cd gh-pages && git push
