@@ -33,6 +33,8 @@ plugins:
         - commands/*
         - generators/*
 extra:
+  version:
+    provider: mike
   social:
     - icon: fontawesome/brands/twitter
       link: https://twitter.com/drushcli

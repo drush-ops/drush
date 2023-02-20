@@ -34,7 +34,7 @@ jobs:
       - name: Install Python dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install mkdocs-material mkdocs-git-authors-plugin mkdocs-redirects mkdocs-git-revision-date-localized-plugin pymdown-extensions git+https://gitlab.com/blacs30/mkdocs-edit-url.git
+          pip install mkdocs-material mike mkdocs-git-authors-plugin mkdocs-redirects mkdocs-git-revision-date-localized-plugin pymdown-extensions git+https://gitlab.com/blacs30/mkdocs-edit-url.git
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
@@ -59,7 +59,7 @@ jobs:
         run: composer mk:docs
 
       - name: Mkdocs build
-        run: mkdocs build -v --site-dir gh-pages/latest
+        run: mike deploy ${{ vars.GITHUB_REF_NAME }} dev latest
 
       - name: Install Doctum
         run: composer doctum-install
