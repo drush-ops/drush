@@ -77,10 +77,10 @@ jobs:
           rm -rf site/latest/api
           composer api
 
-      - name: Checkout CNAME+redirect+404 files
-        # They got wiped and are needed.
-        run: |
-          cd site && git checkout -- CNAME index.html 404.html
+#      - name: Checkout CNAME+redirect+404 files
+#        # They got wiped and are needed.
+#        run: |
+#          cd site && git checkout -- CNAME index.html 404.html
 
       - name: Commit static site
         run: |
