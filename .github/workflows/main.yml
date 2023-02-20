@@ -74,16 +74,17 @@ jobs:
 
       - name: Doctum build
         run: |
-          rm -rf latest/api
+          rm -rf site/latest/api
           composer api
 
-#      - name: Checkout CNAME+redirect+404 files
-#        # They got wiped and are needed.
-#        run: |
-#          cd gh-pages && git checkout -- CNAME index.html 404.html
+      - name: Checkout CNAME+redirect+404 files
+        # They got wiped and are needed.
+        run: |
+          cd site && git checkout -- CNAME index.html 404.html
 
       - name: Commit static site
         run: |
+          cd site
           git add -A latest
           
           if git diff-index --quiet HEAD --; then
@@ -93,4 +94,4 @@ jobs:
           fi
 
       - name: Git Push
-        run: git push
+        run: cd site && git push
