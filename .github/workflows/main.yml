@@ -67,7 +67,7 @@ jobs:
         run: composer mk:docs
 
       - name: Mike build
-        run: mike deploy 11.x dev latest
+        run: mike deploy --push 11.x dev latest
 
       - name: Install Doctum
         run: composer doctum-install
@@ -85,7 +85,8 @@ jobs:
       - name: Commit static site
         run: |
           cd site
-          git add -A latest
+          ls -al
+          git add -f -A latest
           
           if git diff-index --quiet HEAD --; then
             echo "No changes..."
