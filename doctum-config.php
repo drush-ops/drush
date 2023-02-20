@@ -29,7 +29,7 @@ return new Doctum($iterator, [
   'versions'             => $versions,
   'title'                => 'Drush API',
 //  'build_dir'            => __DIR__.'/gh-pages/api/%version%',
-  'build_dir'            => __DIR__.'/gh-pages/latest/api',
+  'build_dir'            => __DIR__.'/latest/api',
   'cache_dir'            => __DIR__.'/.doctum-cache/%version%',
   'remote_repository'    => new GitHubRemoteRepository('drush-ops/drush', dirname($dir)),
   'default_opened_level' => 2,

@@ -19,12 +19,17 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Checkout gh-pages branch
-        uses: actions/checkout@v2
-        with:
-          ref: gh-pages
-          path: gh-pages
-          fetch-depth: 0
+      - name: Setup doc deploy
+        run: |
+          git config --local user.email "actions@github.com"
+          git config --local user.name "Drush Documentation Bot"
+
+#      - name: Checkout gh-pages branch
+#        uses: actions/checkout@v2
+#        with:
+#          ref: gh-pages
+#          path: gh-pages
+#          fetch-depth: 0
 
       - name: Set up Python 3.8
         uses: actions/setup-python@v2
@@ -61,7 +66,7 @@ jobs:
       - name: Drush mk:docs
         run: composer mk:docs
 
-      - name: Mkdocs build
+      - name: Mike build
         run: mike deploy 11.x dev latest
 
       - name: Install Doctum
@@ -69,28 +74,23 @@ jobs:
 
       - name: Doctum build
         run: |
-          rm -rf gh-pages/latest/api
+          rm -rf latest/api
           composer api
 
-      - name: Checkout CNAME+redirect+404 files
-        # They got wiped and are needed.
+#      - name: Checkout CNAME+redirect+404 files
+#        # They got wiped and are needed.
+#        run: |
+#          cd gh-pages && git checkout -- CNAME index.html 404.html
+
+      - name: Commit static site
         run: |
-          cd gh-pages && git checkout -- CNAME index.html 404.html
-
-      - name: Commit static site to gh-pages
-        run: |
-          cd gh-pages
-
-          git config --local user.email "actions@github.com"
-          git config --local user.name "Drush Documentation Bot"
-
-          git add -A .
-
+          git add -A latest
+          
           if git diff-index --quiet HEAD --; then
             echo "No changes..."
           else
-            git commit -m "[CI] Build static site"
+            git commit -m "[CI] Add Doctum build"
           fi
 
       - name: Git Push
-        run: cd gh-pages && git push
+        run: git push
