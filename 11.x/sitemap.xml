@@ -1,1152 +1,1152 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
-         <loc>https://www.drush.org/latest/11.x/</loc>
+         <loc>https://www.drush.org/latest/latest/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/bootstrap/</loc>
+         <loc>https://www.drush.org/latest/latest/bootstrap/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/config-exporting/</loc>
+         <loc>https://www.drush.org/latest/latest/config-exporting/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/cron/</loc>
+         <loc>https://www.drush.org/latest/latest/cron/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/dependency-injection/</loc>
+         <loc>https://www.drush.org/latest/latest/dependency-injection/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/deploycommand/</loc>
+         <loc>https://www.drush.org/latest/latest/deploycommand/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/generators/</loc>
+         <loc>https://www.drush.org/latest/latest/generators/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/hooks/</loc>
+         <loc>https://www.drush.org/latest/latest/hooks/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/install/</loc>
+         <loc>https://www.drush.org/latest/latest/install/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/io/</loc>
+         <loc>https://www.drush.org/latest/latest/io/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/migrate/</loc>
+         <loc>https://www.drush.org/latest/latest/migrate/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/output-formats-filters/</loc>
+         <loc>https://www.drush.org/latest/latest/output-formats-filters/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/repl/</loc>
+         <loc>https://www.drush.org/latest/latest/repl/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/site-alias-manager/</loc>
+         <loc>https://www.drush.org/latest/latest/site-alias-manager/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/site-aliases/</loc>
+         <loc>https://www.drush.org/latest/latest/site-aliases/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/usage/</loc>
+         <loc>https://www.drush.org/latest/latest/usage/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/using-drush-configuration/</loc>
+         <loc>https://www.drush.org/latest/latest/using-drush-configuration/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/all/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/all/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/archive_dump/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/archive_dump/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/archive_restore/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/archive_restore/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/browse/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/browse/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/cache_clear/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/cache_clear/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/cache_get/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/cache_get/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/cache_rebuild/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/cache_rebuild/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/cache_set/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/cache_set/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/cache_tags/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/cache_tags/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/config_delete/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/config_delete/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/config_edit/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/config_edit/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/config_export/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/config_export/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/config_get/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/config_get/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/config_import/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/config_import/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/config_pull/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/config_pull/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/config_set/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/config_set/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/config_status/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/config_status/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/core_cron/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/core_cron/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/core_edit/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/core_edit/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/core_requirements/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/core_requirements/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/core_route/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/core_route/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/core_rsync/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/core_rsync/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/core_status/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/core_status/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/core_topic/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/core_topic/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/deploy/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/deploy/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/deploy_hook-status/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/deploy_hook-status/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/deploy_hook/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/deploy_hook/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/deploy_mark-complete/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/deploy_mark-complete/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/drupal_directory/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/drupal_directory/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/entity_delete/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/entity_delete/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/entity_save/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/entity_save/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/field_base-info/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/field_base-info/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/field_base-override-create/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/field_base-override-create/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/field_create/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/field_create/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/field_delete/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/field_delete/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/field_info/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/field_info/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/generate/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/generate/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/help/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/help/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/image_derive/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/image_derive/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/image_flush/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/image_flush/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/jn_get/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/jn_get/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/list/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/list/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/locale_check/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/locale_check/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/locale_clear-status/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/locale_clear-status/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/locale_export/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/locale_export/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/locale_import/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/locale_import/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/locale_update/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/locale_update/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/maint_get/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/maint_get/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/maint_set/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/maint_set/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/maint_status/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/maint_status/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/migrate_fields-source/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/migrate_fields-source/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/migrate_import/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/migrate_import/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/migrate_messages/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/migrate_messages/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/migrate_reset-status/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/migrate_reset-status/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/migrate_rollback/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/migrate_rollback/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/migrate_status/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/migrate_status/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/migrate_stop/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/migrate_stop/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/mk_docs/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/mk_docs/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/php_cli/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/php_cli/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/php_eval/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/php_eval/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/php_script/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/php_script/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/pm_install/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/pm_install/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/pm_list/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/pm_list/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/pm_security-php/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/pm_security-php/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/pm_security/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/pm_security/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/pm_uninstall/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/pm_uninstall/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/queue_delete/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/queue_delete/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/queue_list/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/queue_list/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/queue_run/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/queue_run/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/role_create/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/role_create/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/role_delete/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/role_delete/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/role_list/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/role_list/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/role_perm_add/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/role_perm_add/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/role_perm_remove/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/role_perm_remove/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/runserver/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/runserver/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/site_alias-convert/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/site_alias-convert/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/site_alias/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/site_alias/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/site_install/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/site_install/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/site_set/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/site_set/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/site_ssh/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/site_ssh/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/sql_cli/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/sql_cli/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/sql_connect/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/sql_connect/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/sql_create/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/sql_create/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/sql_drop/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/sql_drop/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/sql_dump/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/sql_dump/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/sql_query/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/sql_query/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/sql_sanitize/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/sql_sanitize/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/sql_sync/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/sql_sync/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/state_delete/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/state_delete/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/state_get/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/state_get/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/state_set/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/state_set/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/theme_install/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/theme_install/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/theme_uninstall/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/theme_uninstall/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/twig_compile/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/twig_compile/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/twig_unused/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/twig_unused/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/updatedb/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/updatedb/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/updatedb_status/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/updatedb_status/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/user_block/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/user_block/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/user_cancel/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/user_cancel/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/user_create/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/user_create/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/user_information/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/user_information/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/user_login/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/user_login/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/user_password/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/user_password/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/user_role_add/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/user_role_add/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/user_role_remove/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/user_role_remove/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/user_unblock/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/user_unblock/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/version/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/version/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/views_analyze/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/views_analyze/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/views_dev/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/views_dev/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/views_disable/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/views_disable/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/views_enable/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/views_enable/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/views_execute/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/views_execute/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/views_list/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/views_list/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/watchdog_delete/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/watchdog_delete/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/watchdog_list/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/watchdog_list/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/watchdog_show-one/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/watchdog_show-one/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/watchdog_show/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/watchdog_show/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/commands/watchdog_tail/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/watchdog_tail/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/contribute/CONTRIBUTING/</loc>
+         <loc>https://www.drush.org/latest/latest/contribute/CONTRIBUTING/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/contribute/unish/</loc>
+         <loc>https://www.drush.org/latest/latest/contribute/unish/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/examples/ArtCommands.php/</loc>
+         <loc>https://www.drush.org/latest/latest/examples/ArtCommands.php/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/examples/PolicyCommands.php/</loc>
+         <loc>https://www.drush.org/latest/latest/examples/PolicyCommands.php/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/examples/SiteAliasAlterCommands.php/</loc>
+         <loc>https://www.drush.org/latest/latest/examples/SiteAliasAlterCommands.php/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/examples/SyncViaHttpCommands.php/</loc>
+         <loc>https://www.drush.org/latest/latest/examples/SyncViaHttpCommands.php/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/examples/XkcdCommands.php/</loc>
+         <loc>https://www.drush.org/latest/latest/examples/XkcdCommands.php/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/examples/example.drush.yml/</loc>
+         <loc>https://www.drush.org/latest/latest/examples/example.drush.yml/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/examples/example.prompt.sh/</loc>
+         <loc>https://www.drush.org/latest/latest/examples/example.prompt.sh/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/examples/example.site.yml/</loc>
+         <loc>https://www.drush.org/latest/latest/examples/example.site.yml/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/examples/git-bisect.example.sh/</loc>
+         <loc>https://www.drush.org/latest/latest/examples/git-bisect.example.sh/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/examples/helloworld.script/</loc>
+         <loc>https://www.drush.org/latest/latest/examples/helloworld.script/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/generators/all/</loc>
+         <loc>https://www.drush.org/latest/latest/generators/all/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/generators/composer/</loc>
+         <loc>https://www.drush.org/latest/latest/generators/composer/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/generators/controller/</loc>
+         <loc>https://www.drush.org/latest/latest/generators/controller/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/generators/drush_alias-file/</loc>
+         <loc>https://www.drush.org/latest/latest/generators/drush_alias-file/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/generators/drush_command-file/</loc>
+         <loc>https://www.drush.org/latest/latest/generators/drush_command-file/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/generators/drush_testing-generator/</loc>
+         <loc>https://www.drush.org/latest/latest/generators/drush_testing-generator/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/generators/entity_bundle-class/</loc>
+         <loc>https://www.drush.org/latest/latest/generators/entity_bundle-class/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/generators/entity_configuration/</loc>
+         <loc>https://www.drush.org/latest/latest/generators/entity_configuration/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/generators/entity_content/</loc>
+         <loc>https://www.drush.org/latest/latest/generators/entity_content/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/generators/field/</loc>
+         <loc>https://www.drush.org/latest/latest/generators/field/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/generators/form_config/</loc>
+         <loc>https://www.drush.org/latest/latest/generators/form_config/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/generators/form_confirm/</loc>
+         <loc>https://www.drush.org/latest/latest/generators/form_confirm/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/generators/form_simple/</loc>
+         <loc>https://www.drush.org/latest/latest/generators/form_simple/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/generators/hook/</loc>
+         <loc>https://www.drush.org/latest/latest/generators/hook/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/generators/install-file/</loc>
+         <loc>https://www.drush.org/latest/latest/generators/install-file/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/generators/javascript/</loc>
+         <loc>https://www.drush.org/latest/latest/generators/javascript/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/generators/layout/</loc>
+         <loc>https://www.drush.org/latest/latest/generators/layout/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/generators/migration/</loc>
+         <loc>https://www.drush.org/latest/latest/generators/migration/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/generators/misc_apache-virtual-host/</loc>
+         <loc>https://www.drush.org/latest/latest/generators/misc_apache-virtual-host/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/generators/misc_html-page/</loc>
+         <loc>https://www.drush.org/latest/latest/generators/misc_html-page/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/generators/misc_nginx-virtual-host/</loc>
+         <loc>https://www.drush.org/latest/latest/generators/misc_nginx-virtual-host/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/generators/misc_project/</loc>
+         <loc>https://www.drush.org/latest/latest/generators/misc_project/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/generators/module-file/</loc>
+         <loc>https://www.drush.org/latest/latest/generators/module-file/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/generators/module/</loc>
+         <loc>https://www.drush.org/latest/latest/generators/module/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/generators/phpstorm-metadata/</loc>
+         <loc>https://www.drush.org/latest/latest/generators/phpstorm-metadata/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/generators/plugin_action/</loc>
+         <loc>https://www.drush.org/latest/latest/generators/plugin_action/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/generators/plugin_block/</loc>
+         <loc>https://www.drush.org/latest/latest/generators/plugin_block/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/generators/plugin_ckeditor/</loc>
+         <loc>https://www.drush.org/latest/latest/generators/plugin_ckeditor/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/generators/plugin_condition/</loc>
+         <loc>https://www.drush.org/latest/latest/generators/plugin_condition/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/generators/plugin_constraint/</loc>
+         <loc>https://www.drush.org/latest/latest/generators/plugin_constraint/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/generators/plugin_entity-reference-selection/</loc>
+         <loc>https://www.drush.org/latest/latest/generators/plugin_entity-reference-selection/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/generators/plugin_field_formatter/</loc>
+         <loc>https://www.drush.org/latest/latest/generators/plugin_field_formatter/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/generators/plugin_field_type/</loc>
+         <loc>https://www.drush.org/latest/latest/generators/plugin_field_type/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/generators/plugin_field_widget/</loc>
+         <loc>https://www.drush.org/latest/latest/generators/plugin_field_widget/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/generators/plugin_filter/</loc>
+         <loc>https://www.drush.org/latest/latest/generators/plugin_filter/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/generators/plugin_manager/</loc>
+         <loc>https://www.drush.org/latest/latest/generators/plugin_manager/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/generators/plugin_menu-link/</loc>
+         <loc>https://www.drush.org/latest/latest/generators/plugin_menu-link/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/generators/plugin_migrate_destination/</loc>
+         <loc>https://www.drush.org/latest/latest/generators/plugin_migrate_destination/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/generators/plugin_migrate_process/</loc>
+         <loc>https://www.drush.org/latest/latest/generators/plugin_migrate_process/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/generators/plugin_migrate_source/</loc>
+         <loc>https://www.drush.org/latest/latest/generators/plugin_migrate_source/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/generators/plugin_queue-worker/</loc>
+         <loc>https://www.drush.org/latest/latest/generators/plugin_queue-worker/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/generators/plugin_rest-resource/</loc>
+         <loc>https://www.drush.org/latest/latest/generators/plugin_rest-resource/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/generators/plugin_views_argument-default/</loc>
+         <loc>https://www.drush.org/latest/latest/generators/plugin_views_argument-default/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/generators/plugin_views_field/</loc>
+         <loc>https://www.drush.org/latest/latest/generators/plugin_views_field/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/generators/plugin_views_style/</loc>
+         <loc>https://www.drush.org/latest/latest/generators/plugin_views_style/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/generators/render-element/</loc>
+         <loc>https://www.drush.org/latest/latest/generators/render-element/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/generators/service-provider/</loc>
+         <loc>https://www.drush.org/latest/latest/generators/service-provider/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/generators/service_access-checker/</loc>
+         <loc>https://www.drush.org/latest/latest/generators/service_access-checker/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/generators/service_breadcrumb-builder/</loc>
+         <loc>https://www.drush.org/latest/latest/generators/service_breadcrumb-builder/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/generators/service_cache-context/</loc>
+         <loc>https://www.drush.org/latest/latest/generators/service_cache-context/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/generators/service_custom/</loc>
+         <loc>https://www.drush.org/latest/latest/generators/service_custom/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/generators/service_event-subscriber/</loc>
+         <loc>https://www.drush.org/latest/latest/generators/service_event-subscriber/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/generators/service_logger/</loc>
+         <loc>https://www.drush.org/latest/latest/generators/service_logger/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/generators/service_middleware/</loc>
+         <loc>https://www.drush.org/latest/latest/generators/service_middleware/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/generators/service_param-converter/</loc>
+         <loc>https://www.drush.org/latest/latest/generators/service_param-converter/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/generators/service_path-processor/</loc>
+         <loc>https://www.drush.org/latest/latest/generators/service_path-processor/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/generators/service_request-policy/</loc>
+         <loc>https://www.drush.org/latest/latest/generators/service_request-policy/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/generators/service_response-policy/</loc>
+         <loc>https://www.drush.org/latest/latest/generators/service_response-policy/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/generators/service_route-subscriber/</loc>
+         <loc>https://www.drush.org/latest/latest/generators/service_route-subscriber/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/generators/service_theme-negotiator/</loc>
+         <loc>https://www.drush.org/latest/latest/generators/service_theme-negotiator/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/generators/service_twig-extension/</loc>
+         <loc>https://www.drush.org/latest/latest/generators/service_twig-extension/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/generators/service_uninstall-validator/</loc>
+         <loc>https://www.drush.org/latest/latest/generators/service_uninstall-validator/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/generators/test_browser/</loc>
+         <loc>https://www.drush.org/latest/latest/generators/test_browser/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/generators/test_kernel/</loc>
+         <loc>https://www.drush.org/latest/latest/generators/test_kernel/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/generators/test_nightwatch/</loc>
+         <loc>https://www.drush.org/latest/latest/generators/test_nightwatch/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/generators/test_unit/</loc>
+         <loc>https://www.drush.org/latest/latest/generators/test_unit/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/generators/test_webdriver/</loc>
+         <loc>https://www.drush.org/latest/latest/generators/test_webdriver/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/generators/theme/</loc>
+         <loc>https://www.drush.org/latest/latest/generators/theme/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/generators/theme_file/</loc>
+         <loc>https://www.drush.org/latest/latest/generators/theme_file/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/generators/theme_settings/</loc>
+         <loc>https://www.drush.org/latest/latest/generators/theme_settings/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/generators/yml_breakpoints/</loc>
+         <loc>https://www.drush.org/latest/latest/generators/yml_breakpoints/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/generators/yml_links_action/</loc>
+         <loc>https://www.drush.org/latest/latest/generators/yml_links_action/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/generators/yml_links_contextual/</loc>
+         <loc>https://www.drush.org/latest/latest/generators/yml_links_contextual/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/generators/yml_links_menu/</loc>
+         <loc>https://www.drush.org/latest/latest/generators/yml_links_menu/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/generators/yml_links_task/</loc>
+         <loc>https://www.drush.org/latest/latest/generators/yml_links_task/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/generators/yml_module-info/</loc>
+         <loc>https://www.drush.org/latest/latest/generators/yml_module-info/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/generators/yml_module-libraries/</loc>
+         <loc>https://www.drush.org/latest/latest/generators/yml_module-libraries/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/generators/yml_permissions/</loc>
+         <loc>https://www.drush.org/latest/latest/generators/yml_permissions/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/generators/yml_routing/</loc>
+         <loc>https://www.drush.org/latest/latest/generators/yml_routing/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/generators/yml_services/</loc>
+         <loc>https://www.drush.org/latest/latest/generators/yml_services/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/generators/yml_theme-info/</loc>
+         <loc>https://www.drush.org/latest/latest/generators/yml_theme-info/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/11.x/generators/yml_theme-libraries/</loc>
+         <loc>https://www.drush.org/latest/latest/generators/yml_theme-libraries/</loc>
          <lastmod>2023-02-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
