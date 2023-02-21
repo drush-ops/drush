@@ -49,7 +49,8 @@ jobs:
         run: |
           mike set-default latest
       - name: Mike alias
-        if: ${GITHUB_REF_NAME} == '11.x'
+        # https://stackoverflow.com/a/59883969/265501
+        if: github.ref == '11.x'
         run: mike alias latest
       - name: Mike build
         run: mike deploy --push ${GITHUB_REF_NAME}
