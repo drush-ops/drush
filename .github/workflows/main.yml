@@ -45,13 +45,10 @@ jobs:
         run: ./drush --uri=dev st
       - name: Drush mk:docs
         run: composer mk:docs
-      - name: Mike set-default
+      - name: Mike config
         run: |
+          mike alias 11.x latest
           mike set-default latest
-      - name: Mike alias
-        # https://stackoverflow.com/a/59883969/265501
-        if: github.ref == '11.x'
-        run: mike alias latest
       - name: Mike build
         run: mike deploy --push ${GITHUB_REF_NAME}
       # Build Doctum to gh-pages/api in the gh-pages branch.
