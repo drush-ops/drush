@@ -1,0 +1,1539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="robots" content="index, follow, all" />
+    <title>Drush\Config\Environment | Drush API %version%</title>
+
+            <link rel="stylesheet" type="text/css" href="../../css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="../../css/bootstrap-theme.min.css">
+        <link rel="stylesheet" type="text/css" href="../../css/doctum.css">
+        <link rel="stylesheet" type="text/css" href="../../fonts/doctum-font.css">
+        <script src="../../js/jquery-3.5.1.slim.min.js"></script>
+        <script async defer src="../../doctum.js"></script>
+        <script async defer src="../../js/bootstrap.min.js"></script>
+        <script async defer src="../../js/autocomplete.min.js"></script>
+        <meta name="MobileOptimized" content="width">
+        <meta name="HandheldFriendly" content="true">
+        <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+
+    </head>
+
+    <body id="class" data-name="class:Drush_Config_Environment" data-root-path="../../" data-search-index-url="../../doctum-search.json">
+            <div id="content">
+        <div id="left-column">
+                <div id="control-panel">
+                <div class="search-bar hidden" id="search-progress-bar-container">
+            <div class="progress">
+                <div class="progress-bar" role="progressbar" id="search-progress-bar"
+                    aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%"></div>
+            </div>
+        </div>
+        <form id="search-form" action="../../search.html">
+            <span class="icon icon-search"></span>
+            <input name="search"
+                   id="doctum-search-auto-complete"
+                   class="typeahead form-control"
+                   type="search"
+                   placeholder="Search"
+                   spellcheck="false"
+                   autocorrect="off"
+                   autocomplete="off"
+                   autocapitalize="off">
+            <div class="auto-complete-results" id="auto-complete-results"></div>
+        </form>
+    </div>
+
+                <div id="api-tree"></div>
+
+        </div>
+        <div id="right-column">
+                <nav id="site-nav" class="navbar navbar-default" role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-elements">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="../../index.html">Drush API %version%</a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar-elements">
+                <ul class="nav navbar-nav">
+                    <li><a href="../../classes.html">Classes</a></li>
+                    <li><a href="../../namespaces.html">Namespaces</a></li>
+                    <li><a href="../../interfaces.html">Interfaces</a></li>
+                    <li><a href="../../traits.html">Traits</a></li>
+                    <li><a href="../../doc-index.html">Index</a></li>
+                    <li><a href="../../search.html">Search</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+                        <div class="namespace-breadcrumbs">
+            <ol class="breadcrumb">
+                <li><span class="label label-default">class</span></li>
+                        <li><a href="../../Drush.html">Drush</a></li><li class="backslash">\</li><li><a href="../../Drush/Config.html">Config</a></li><li class="backslash">\</li><li>Environment</li>
+            </ol>
+        </div>
+                <div id="page-content">
+    <div class="page-header">
+        <h1>Environment    
+            </h1>
+    </div>
+
+    
+    <p>        class
+    <strong>Environment</strong>        (<a href="https://github.com/drush-ops/drush/blob/11.x/src/Config/Environment.php">View source</a>)
+</p>
+
+        
+    
+        
+
+            <div class="description">
+            <p><p>Store information about the environment</p></p>                    </div>
+            
+        
+    
+            <h2>Properties</h2>
+
+            <table class="table table-condensed">
+                    <tr>
+                <td class="type" id="property_homeDir">
+                                        protected                                        
+                                                                                
+                                    </td>
+                <td>$homeDir</td>
+                <td class="last"></td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_originalCwd">
+                                        protected                                        
+                                                                                
+                                    </td>
+                <td>$originalCwd</td>
+                <td class="last"></td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_etcPrefix">
+                                        protected                                        
+                                                                                
+                                    </td>
+                <td>$etcPrefix</td>
+                <td class="last"></td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_sharePrefix">
+                                        protected                                        
+                                                                                
+                                    </td>
+                <td>$sharePrefix</td>
+                <td class="last"></td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_drushBasePath">
+                                        protected                                        
+                                                                                
+                                    </td>
+                <td>$drushBasePath</td>
+                <td class="last"></td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_vendorDir">
+                                        protected                                        
+                                                                                
+                                    </td>
+                <td>$vendorDir</td>
+                <td class="last"></td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_docPrefix">
+                                        protected                                        
+                                                                                
+                                    </td>
+                <td>$docPrefix</td>
+                <td class="last"></td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_configFileVariant">
+                                        protected                                        
+                                                                                
+                                    </td>
+                <td>$configFileVariant</td>
+                <td class="last"></td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_loader">
+                                        protected                                        
+                                                                                
+                                    </td>
+                <td>$loader</td>
+                <td class="last"></td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_siteLoader">
+                                        protected                                        
+                                                                                
+                                    </td>
+                <td>$siteLoader</td>
+                <td class="last"></td>
+                <td></td>
+            </tr>
+            </table>
+
+    
+            <h2>Methods</h2>
+
+            <div class="container-fluid underlined">
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method___construct">__construct</a>(string $homeDir, string $cwd, string $autoloadFile)
+        
+                                            <p><p>Environment constructor</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    <abbr title="Composer\Autoload\ClassLoader">ClassLoader</abbr>
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_loadSiteAutoloader">loadSiteAutoloader</a>(string $root)
+        
+                                            <p><p>Load the autoloader for the selected Drupal site.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    string
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_getUsername">getUsername</a>()
+        
+                                            <p><p>Return the name of the user running drush.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    string
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_getTmp">getTmp</a>()
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    array
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_exportConfigData">exportConfigData</a>()
+        
+                                            <p><p>Convert the environment object into an exported configuration
+array.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    string
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_drushBasePath">drushBasePath</a>()
+        
+                                            <p><p>The base directory of the Drush application itself
+(where composer.json et.al. are found)</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    bool|string
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_getSiteSetAliasName">getSiteSetAliasName</a>()
+        
+                                            <p><p>Get the site:set alias from the current site:set file path.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    string
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_homeDir">homeDir</a>()
+        
+                                            <p><p>User's home directory</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    string
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_userConfigPath">userConfigPath</a>()
+        
+                                            <p><p>The user's Drush configuration directory, ~/.drush</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    void
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_setConfigFileVariant">setConfigFileVariant</a>($variant)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_getConfigFileVariant">getConfigFileVariant</a>()
+        
+                                            <p><p>Get the config file variant -- defined to be
+the Drush major version number. This is for
+loading drush.yml and drush10.yml, etc.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    string
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_cwd">cwd</a>()
+        
+                                            <p><p>The original working directory</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    string
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_vendorPath">vendorPath</a>()
+        
+                                            <p><p>Return the path to Drush's vendor directory</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    <abbr title="Drush\Config\Composer\Autoload\ClassLoader">ClassLoader</abbr>|null
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_loader">loader</a>()
+        
+                                            <p><p>The class loader returned when the autoload.php file is included.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    void
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_setLoader">setLoader</a>(<abbr title="Composer\Autoload\ClassLoader">ClassLoader</abbr> $loader)
+        
+                                            <p><p>Set the class loader from the autload.php file, if available.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    <a href="../../Drush/Config/Environment.html"><abbr title="Drush\Config\Environment">Environment</abbr></a>
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_applyEnvironment">applyEnvironment</a>()
+        
+                                            <p><p>Alter our default locations based on the value of environment variables.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    <a href="../../Drush/Config/Environment.html"><abbr title="Drush\Config\Environment">Environment</abbr></a>
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_setEtcPrefix">setEtcPrefix</a>(string $etcPrefix)
+        
+                                            <p><p>Set the directory prefix to locate the directory that Drush will
+use as /etc (e.g. during the functional tests).</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    <a href="../../Drush/Config/Environment.html"><abbr title="Drush\Config\Environment">Environment</abbr></a>
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_setSharePrefix">setSharePrefix</a>(string $sharePrefix)
+        
+                                            <p><p>Set the directory prefix to locate the directory that Drush will
+use as /user/share (e.g. during the functional tests).</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    string|null
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_docsPath">docsPath</a>()
+        
+                                            <p><p>Return the directory where Drush's documentation is stored. Usually
+this is within the Drush application, but some Drush RPM distributions
+&amp; c. for Linux platforms slice-and-dice the contents and put the docs
+elsewhere.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    string|bool
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_findDocsPath">findDocsPath</a>(string $drushBasePath)
+        
+                                            <p><p>Locate the Drush documentation. This is recalculated whenever the
+share prefix is changed.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    string|bool
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_findFromCandidates">findFromCandidates</a>(array $candidates)
+        
+                                            <p><p>Check a list of directories and return the first one that exists.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    static&nbsp;string
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_systemPathPrefix">systemPathPrefix</a>(string $override = &#039;&#039;, string $defaultPrefix = &#039;&#039;)
+        
+                                            <p><p>Return the appropriate system path prefix, unless an override is provided.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    string
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_systemConfigPath">systemConfigPath</a>()
+        
+                                            <p><p>Return the system configuration path (default: /etc/drush)</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    string
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_systemCommandFilePath">systemCommandFilePath</a>()
+        
+                                            <p><p>Return the system shared commandfile path (default: /usr/share/drush/commands)</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    static&nbsp;bool
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_isWindows">isWindows</a>($os = null)
+        
+                                            <p><p>Determine whether current OS is a Windows variant.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    bool
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_verifyCLI">verifyCLI</a>()
+        
+                                            <p><p>Verify that we are running PHP through the command line interface.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    int
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_calculateColumns">calculateColumns</a>()
+        
+                                            <p><p>Get terminal width.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    string|false
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_getSiteSetAliasFilePath">getSiteSetAliasFilePath</a>(string $filename_prefix = &#039;drush-drupal-site-&#039;)
+        
+                                            <p><p>Returns the filename for the file that stores the DRUPAL_SITE variable.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+            </div>
+
+
+        <h2>Details</h2>
+
+            <div id="method-details">
+                    <div class="method-item">
+                    <h3 id="method___construct">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Config/Environment.php#L35">at line 35</a></div>
+        <code>                    
+    <strong>__construct</strong>(string $homeDir, string $cwd, string $autoloadFile)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Environment constructor</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$homeDir</td>
+                <td><p>User home directory.</p></td>
+            </tr>
+                    <tr>
+                <td>string</td>
+                <td>$cwd</td>
+                <td><p>The current working directory at the time Drush was called.</p></td>
+            </tr>
+                    <tr>
+                <td>string</td>
+                <td>$autoloadFile</td>
+                <td><p>Path to the autoload.php file.</p></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_loadSiteAutoloader">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Config/Environment.php#L48">at line 48</a></div>
+        <code>                    <abbr title="Composer\Autoload\ClassLoader">ClassLoader</abbr>
+    <strong>loadSiteAutoloader</strong>(string $root)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Load the autoloader for the selected Drupal site.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$root</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><abbr title="Composer\Autoload\ClassLoader">ClassLoader</abbr></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getUsername">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Config/Environment.php#L83">at line 83</a></div>
+        <code>            protected        string
+    <strong>getUsername</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Return the name of the user running drush.</p></p>                        
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getTmp">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Config/Environment.php#L99">at line 99</a></div>
+        <code>            protected        string
+    <strong>getTmp</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_exportConfigData">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Config/Environment.php#L155">at line 155</a></div>
+        <code>                    array
+    <strong>exportConfigData</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Convert the environment object into an exported configuration
+array.</p></p>                        
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>array</td>
+            <td><p>associative array that is overlayed on configuration.</p></td>
+        </tr>
+    </table>
+
+            
+            
+                            <h4>See also</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>
+                                            PreflightArgs::applyToConfig()
+                                    </td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>
+                                            <abbr title="Drush\Config\which also exports information to config.">which also exports information to config.</abbr>
+                                    </td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_drushBasePath">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Config/Environment.php#L191">at line 191</a></div>
+        <code>                    string
+    <strong>drushBasePath</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>The base directory of the Drush application itself
+(where composer.json et.al. are found)</p></p>                        
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getSiteSetAliasName">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Config/Environment.php#L201">at line 201</a></div>
+        <code>                    bool|string
+    <strong>getSiteSetAliasName</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Get the site:set alias from the current site:set file path.</p></p>                        
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>bool|string</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_homeDir">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Config/Environment.php#L216">at line 216</a></div>
+        <code>                    string
+    <strong>homeDir</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>User's home directory</p></p>                        
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_userConfigPath">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Config/Environment.php#L224">at line 224</a></div>
+        <code>                    string
+    <strong>userConfigPath</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>The user's Drush configuration directory, ~/.drush</p></p>                        
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_setConfigFileVariant">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Config/Environment.php#L229">at line 229</a></div>
+        <code>                    void
+    <strong>setConfigFileVariant</strong>($variant)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$variant</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>void</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getConfigFileVariant">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Config/Environment.php#L239">at line 239</a></div>
+        <code>                    
+    <strong>getConfigFileVariant</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Get the config file variant -- defined to be
+the Drush major version number. This is for
+loading drush.yml and drush10.yml, etc.</p></p>                        
+        </div>
+        <div class="tags">
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_cwd">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Config/Environment.php#L247">at line 247</a></div>
+        <code>                    string
+    <strong>cwd</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>The original working directory</p></p>                        
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_vendorPath">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Config/Environment.php#L255">at line 255</a></div>
+        <code>                    string
+    <strong>vendorPath</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Return the path to Drush's vendor directory</p></p>                        
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_loader">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Config/Environment.php#L263">at line 263</a></div>
+        <code>                    <abbr title="Drush\Config\Composer\Autoload\ClassLoader">ClassLoader</abbr>|null
+    <strong>loader</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>The class loader returned when the autoload.php file is included.</p></p>                        
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><abbr title="Drush\Config\Composer\Autoload\ClassLoader">ClassLoader</abbr>|null</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_setLoader">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Config/Environment.php#L273">at line 273</a></div>
+        <code>                    void
+    <strong>setLoader</strong>(<abbr title="Composer\Autoload\ClassLoader">ClassLoader</abbr> $loader)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Set the class loader from the autload.php file, if available.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Composer\Autoload\ClassLoader">ClassLoader</abbr></td>
+                <td>$loader</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>void</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_applyEnvironment">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Config/Environment.php#L281">at line 281</a></div>
+        <code>                    <a href="../../Drush/Config/Environment.html"><abbr title="Drush\Config\Environment">Environment</abbr></a>
+    <strong>applyEnvironment</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Alter our default locations based on the value of environment variables.</p></p>                        
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><a href="../../Drush/Config/Environment.html"><abbr title="Drush\Config\Environment">Environment</abbr></a></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_setEtcPrefix">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Config/Environment.php#L296">at line 296</a></div>
+        <code>                    <a href="../../Drush/Config/Environment.html"><abbr title="Drush\Config\Environment">Environment</abbr></a>
+    <strong>setEtcPrefix</strong>(string $etcPrefix)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Set the directory prefix to locate the directory that Drush will
+use as /etc (e.g. during the functional tests).</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$etcPrefix</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><a href="../../Drush/Config/Environment.html"><abbr title="Drush\Config\Environment">Environment</abbr></a></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_setSharePrefix">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Config/Environment.php#L308">at line 308</a></div>
+        <code>                    <a href="../../Drush/Config/Environment.html"><abbr title="Drush\Config\Environment">Environment</abbr></a>
+    <strong>setSharePrefix</strong>(string $sharePrefix)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Set the directory prefix to locate the directory that Drush will
+use as /user/share (e.g. during the functional tests).</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$sharePrefix</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><a href="../../Drush/Config/Environment.html"><abbr title="Drush\Config\Environment">Environment</abbr></a></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_docsPath">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Config/Environment.php#L323">at line 323</a></div>
+        <code>                    string|null
+    <strong>docsPath</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Return the directory where Drush's documentation is stored. Usually
+this is within the Drush application, but some Drush RPM distributions
+&amp; c. for Linux platforms slice-and-dice the contents and put the docs
+elsewhere.</p></p>                        
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string|null</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_findDocsPath">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Config/Environment.php#L337">at line 337</a></div>
+        <code>            protected        string|bool
+    <strong>findDocsPath</strong>(string $drushBasePath)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Locate the Drush documentation. This is recalculated whenever the
+share prefix is changed.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$drushBasePath</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string|bool</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_findFromCandidates">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Config/Environment.php#L351">at line 351</a></div>
+        <code>            protected        string|bool
+    <strong>findFromCandidates</strong>(array $candidates)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Check a list of directories and return the first one that exists.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>array</td>
+                <td>$candidates</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string|bool</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_systemPathPrefix">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Config/Environment.php#L364">at line 364</a></div>
+        <code>        static    protected        string
+    <strong>systemPathPrefix</strong>(string $override = &#039;&#039;, string $defaultPrefix = &#039;&#039;)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Return the appropriate system path prefix, unless an override is provided.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$override</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>string</td>
+                <td>$defaultPrefix</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_systemConfigPath">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Config/Environment.php#L375">at line 375</a></div>
+        <code>                    string
+    <strong>systemConfigPath</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Return the system configuration path (default: /etc/drush)</p></p>                        
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_systemCommandFilePath">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Config/Environment.php#L383">at line 383</a></div>
+        <code>                    string
+    <strong>systemCommandFilePath</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Return the system shared commandfile path (default: /usr/share/drush/commands)</p></p>                        
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_isWindows">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Config/Environment.php#L391">at line 391</a></div>
+        <code>        static            bool
+    <strong>isWindows</strong>($os = null)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Determine whether current OS is a Windows variant.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$os</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>bool</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_verifyCLI">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Config/Environment.php#L402">at line 402</a></div>
+        <code>                    bool
+    <strong>verifyCLI</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Verify that we are running PHP through the command line interface.</p></p>                <p><p>A boolean value that is true when PHP is being run through the command line,
+and false if being run through cgi or mod_php.</p></p>        
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>bool</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_calculateColumns">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Config/Environment.php#L410">at line 410</a></div>
+        <code>                    int
+    <strong>calculateColumns</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Get terminal width.</p></p>                        
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>int</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getSiteSetAliasFilePath">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Config/Environment.php#L424">at line 424</a></div>
+        <code>            protected        string|false
+    <strong>getSiteSetAliasFilePath</strong>(string $filename_prefix = &#039;drush-drupal-site-&#039;)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Returns the filename for the file that stores the DRUPAL_SITE variable.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$filename_prefix</td>
+                <td><p>An arbitrary string to prefix the filename with.</p></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string|false</td>
+            <td><p>Returns the full path to temp file if possible, or FALSE if not.</p></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+            </div>
+
+    
+</div><div id="footer">
+        Generated by <a href="https://github.com/code-lts/doctum">Doctum, a API Documentation generator and fork of Sami</a>.</div></div>
+    </div>
+    </body>
+
+</html>
