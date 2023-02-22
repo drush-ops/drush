@@ -1,3 +1,9 @@
 .sami-cache/
 _site/
 isolation/
+docs
+mkdocs.yml
+site
+sut
+tests
+vendor
