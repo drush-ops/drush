@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="robots" content="index, follow, all" />
+    <title>Drush\Boot\Boot | Drush API %version%</title>
+
+            <link rel="stylesheet" type="text/css" href="../../css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="../../css/bootstrap-theme.min.css">
+        <link rel="stylesheet" type="text/css" href="../../css/doctum.css">
+        <link rel="stylesheet" type="text/css" href="../../fonts/doctum-font.css">
+        <script src="../../js/jquery-3.5.1.slim.min.js"></script>
+        <script async defer src="../../doctum.js"></script>
+        <script async defer src="../../js/bootstrap.min.js"></script>
+        <script async defer src="../../js/autocomplete.min.js"></script>
+        <meta name="MobileOptimized" content="width">
+        <meta name="HandheldFriendly" content="true">
+        <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+
+    </head>
+
+    <body id="class" data-name="class:Drush_Boot_Boot" data-root-path="../../" data-search-index-url="../../doctum-search.json">
+            <div id="content">
+        <div id="left-column">
+                <div id="control-panel">
+                <div class="search-bar hidden" id="search-progress-bar-container">
+            <div class="progress">
+                <div class="progress-bar" role="progressbar" id="search-progress-bar"
+                    aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%"></div>
+            </div>
+        </div>
+        <form id="search-form" action="../../search.html">
+            <span class="icon icon-search"></span>
+            <input name="search"
+                   id="doctum-search-auto-complete"
+                   class="typeahead form-control"
+                   type="search"
+                   placeholder="Search"
+                   spellcheck="false"
+                   autocorrect="off"
+                   autocomplete="off"
+                   autocapitalize="off">
+            <div class="auto-complete-results" id="auto-complete-results"></div>
+        </form>
+    </div>
+
+                <div id="api-tree"></div>
+
+        </div>
+        <div id="right-column">
+                <nav id="site-nav" class="navbar navbar-default" role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-elements">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="../../index.html">Drush API %version%</a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar-elements">
+                <ul class="nav navbar-nav">
+                    <li><a href="../../classes.html">Classes</a></li>
+                    <li><a href="../../namespaces.html">Namespaces</a></li>
+                    <li><a href="../../interfaces.html">Interfaces</a></li>
+                    <li><a href="../../traits.html">Traits</a></li>
+                    <li><a href="../../doc-index.html">Index</a></li>
+                    <li><a href="../../search.html">Search</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+                        <div class="namespace-breadcrumbs">
+            <ol class="breadcrumb">
+                <li><span class="label label-default">interface</span></li>
+                        <li><a href="../../Drush.html">Drush</a></li><li class="backslash">\</li><li><a href="../../Drush/Boot.html">Boot</a></li><li class="backslash">\</li><li>Boot</li>
+            </ol>
+        </div>
+                <div id="page-content">
+    <div class="page-header">
+        <h1>Boot    
+            </h1>
+    </div>
+
+    
+    <p>        interface
+    <strong>Boot</strong>        (<a href="https://github.com/drush-ops/drush/blob/11.x/src/Boot/Boot.php">View source</a>)
+</p>
+
+        
+    
+        
+
+            <div class="description">
+            <p><p>Defines the interface for a Boot classes.  Any CMS that wishes
+to work with Drush should extend BaseBoot.  If the CMS has a
+Drupal-Compatibility layer, then it should extend DrupalBoot.</p></p>                    </div>
+            
+        
+    
+    
+            <h2>Methods</h2>
+
+            <div class="container-fluid underlined">
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_findUri">findUri</a>($root, $uri)
+        
+                                            <p><p>Select the best URI for the provided cwd. Only called
+if the user did not explicitly specify a URI.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_setUri">setUri</a>(string $uri)
+        
+                                            <p><p>Inject the uri for the specific site to be bootstrapped</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    true
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_validRoot">validRoot</a>($path)
+        
+                                            <p><p>This function determines if the specified path points to
+the root directory of a CMS that can be bootstrapped by
+the specific subclass that implements it.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    string|null
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_getVersion">getVersion</a>(string $root)
+        
+                                            <p><p>Given a site root directory, determine the exact version of the software.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    array
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_bootstrapPhases">bootstrapPhases</a>()
+        
+                                            <p><p>Returns an array that determines what bootstrap phases
+are necessary to bootstrap this CMS.  This array
+should map from a numeric phase to the name of a method
+(string) in the Boot class that handles the bootstrap
+phase.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    array
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_bootstrapPhaseMap">bootstrapPhaseMap</a>()
+        
+                                            <p><p>Return an array mapping from bootstrap phase shorthand
+strings (e.g. &quot;full&quot;) to the corresponding bootstrap
+phase index constant (e.g. DRUSH_BOOTSTRAP_DRUPAL_FULL).</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_lookUpPhaseIndex">lookUpPhaseIndex</a>($phase)
+        
+                                            <p><p>Convert from a phase shorthand or constant to a phase index.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_reportCommandError">reportCommandError</a>($command)
+        
+                                            <p><p>Called by Drush if a command is not found, or if the
+command was found, but did not meet requirements.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    void
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_terminate">terminate</a>()
+        
+                                            <p><p>This method is called during the shutdown of drush.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+            </div>
+
+
+        <h2>Details</h2>
+
+            <div id="method-details">
+                    <div class="method-item">
+                    <h3 id="method_findUri">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Boot/Boot.php#L16">at line 16</a></div>
+        <code>                    
+    <strong>findUri</strong>($root, $uri)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Select the best URI for the provided cwd. Only called
+if the user did not explicitly specify a URI.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$root</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$uri</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_setUri">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Boot/Boot.php#L23">at line 23</a></div>
+        <code>                    
+    <strong>setUri</strong>(string $uri)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Inject the uri for the specific site to be bootstrapped</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$uri</td>
+                <td><p>Site to bootstrap</p></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_validRoot">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Boot/Boot.php#L37">at line 37</a></div>
+        <code>                    true
+    <strong>validRoot</strong>($path)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>This function determines if the specified path points to
+the root directory of a CMS that can be bootstrapped by
+the specific subclass that implements it.</p></p>                <p><p>These functions should be written such that one and only
+one class will return TRUE for any given $path.</p></p>        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$path</td>
+                <td><p>to a directory to test</p></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>true</td>
+            <td><p>if $path is a valid root directory</p></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getVersion">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Boot/Boot.php#L47">at line 47</a></div>
+        <code>                    string|null
+    <strong>getVersion</strong>(string $root)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Given a site root directory, determine the exact version of the software.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$root</td>
+                <td><p>The full path to the site installation, with no trailing slash.</p></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string|null</td>
+            <td><p>The version string for the current version of the software, e.g. 8.1.3</p></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_bootstrapPhases">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Boot/Boot.php#L60">at line 60</a></div>
+        <code>                    array
+    <strong>bootstrapPhases</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Returns an array that determines what bootstrap phases
+are necessary to bootstrap this CMS.  This array
+should map from a numeric phase to the name of a method
+(string) in the Boot class that handles the bootstrap
+phase.</p></p>                        
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>array</td>
+            <td><p>of PHASE index =&gt; method name.</p></td>
+        </tr>
+    </table>
+
+            
+            
+                            <h4>See also</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>
+                                            <a href="../../Drush/Boot/DrupalBoot.html#method_bootstrapPhases">
+<abbr title="Drush\Boot\DrupalBoot">DrupalBoot</abbr>::bootstrapPhases</a>
+                                    </td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_bootstrapPhaseMap">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Boot/Boot.php#L67">at line 67</a></div>
+        <code>                    array
+    <strong>bootstrapPhaseMap</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Return an array mapping from bootstrap phase shorthand
+strings (e.g. &quot;full&quot;) to the corresponding bootstrap
+phase index constant (e.g. DRUSH_BOOTSTRAP_DRUPAL_FULL).</p></p>                        
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>array</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_lookUpPhaseIndex">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Boot/Boot.php#L72">at line 72</a></div>
+        <code>                    
+    <strong>lookUpPhaseIndex</strong>($phase)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Convert from a phase shorthand or constant to a phase index.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$phase</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_reportCommandError">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Boot/Boot.php#L82">at line 82</a></div>
+        <code>                    
+    <strong>reportCommandError</strong>($command)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Called by Drush if a command is not found, or if the
+command was found, but did not meet requirements.</p></p>                <p><p>The implementation in BaseBoot should be sufficient
+for most cases, so this method typically will not need
+to be overridden.</p></p>        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$command</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_terminate">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Boot/Boot.php#L89">at line 89</a></div>
+        <code>                    void
+    <strong>terminate</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>This method is called during the shutdown of drush.</p></p>                        
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>void</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+            </div>
+
+    
+</div><div id="footer">
+        Generated by <a href="https://github.com/code-lts/doctum">Doctum, a API Documentation generator and fork of Sami</a>.</div></div>
+    </div>
+    </body>
+
+</html>

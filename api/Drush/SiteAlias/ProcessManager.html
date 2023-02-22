@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="robots" content="index, follow, all" />
+    <title>Drush\SiteAlias\ProcessManager | Drush API %version%</title>
+
+            <link rel="stylesheet" type="text/css" href="../../css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="../../css/bootstrap-theme.min.css">
+        <link rel="stylesheet" type="text/css" href="../../css/doctum.css">
+        <link rel="stylesheet" type="text/css" href="../../fonts/doctum-font.css">
+        <script src="../../js/jquery-3.5.1.slim.min.js"></script>
+        <script async defer src="../../doctum.js"></script>
+        <script async defer src="../../js/bootstrap.min.js"></script>
+        <script async defer src="../../js/autocomplete.min.js"></script>
+        <meta name="MobileOptimized" content="width">
+        <meta name="HandheldFriendly" content="true">
+        <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+
+    </head>
+
+    <body id="class" data-name="class:Drush_SiteAlias_ProcessManager" data-root-path="../../" data-search-index-url="../../doctum-search.json">
+            <div id="content">
+        <div id="left-column">
+                <div id="control-panel">
+                <div class="search-bar hidden" id="search-progress-bar-container">
+            <div class="progress">
+                <div class="progress-bar" role="progressbar" id="search-progress-bar"
+                    aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%"></div>
+            </div>
+        </div>
+        <form id="search-form" action="../../search.html">
+            <span class="icon icon-search"></span>
+            <input name="search"
+                   id="doctum-search-auto-complete"
+                   class="typeahead form-control"
+                   type="search"
+                   placeholder="Search"
+                   spellcheck="false"
+                   autocorrect="off"
+                   autocomplete="off"
+                   autocapitalize="off">
+            <div class="auto-complete-results" id="auto-complete-results"></div>
+        </form>
+    </div>
+
+                <div id="api-tree"></div>
+
+        </div>
+        <div id="right-column">
+                <nav id="site-nav" class="navbar navbar-default" role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-elements">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="../../index.html">Drush API %version%</a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar-elements">
+                <ul class="nav navbar-nav">
+                    <li><a href="../../classes.html">Classes</a></li>
+                    <li><a href="../../namespaces.html">Namespaces</a></li>
+                    <li><a href="../../interfaces.html">Interfaces</a></li>
+                    <li><a href="../../traits.html">Traits</a></li>
+                    <li><a href="../../doc-index.html">Index</a></li>
+                    <li><a href="../../search.html">Search</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+                        <div class="namespace-breadcrumbs">
+            <ol class="breadcrumb">
+                <li><span class="label label-default">class</span></li>
+                        <li><a href="../../Drush.html">Drush</a></li><li class="backslash">\</li><li><a href="../../Drush/SiteAlias.html">SiteAlias</a></li><li class="backslash">\</li><li>ProcessManager</li>
+            </ol>
+        </div>
+                <div id="page-content">
+    <div class="page-header">
+        <h1>ProcessManager    
+            </h1>
+    </div>
+
+    
+    <p>        class
+    <strong>ProcessManager</strong>        extends <abbr title="Consolidation\SiteProcess\ProcessManager">ProcessManager</abbr>        (<a href="https://github.com/drush-ops/drush/blob/11.x/src/SiteAlias/ProcessManager.php">View source</a>)
+</p>
+
+        
+    
+        
+
+            <div class="description">
+            <p><p>The Drush ProcessManager adds a few Drush-specific service methods.</p></p>                    </div>
+            
+        
+    
+    
+            <h2>Methods</h2>
+
+            <div class="container-fluid underlined">
+                    <div class="row">
+                <div class="col-md-2 type">
+                    <abbr title="Consolidation\SiteProcess\ProcessBase">ProcessBase</abbr>
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_drush">drush</a>(<abbr title="Consolidation\SiteAlias\SiteAliasInterface">SiteAliasInterface</abbr> $siteAlias, string $command, array $args = [], array $options = [], array $options_double_dash = [])
+        
+                                            <p><p>Run a Drush command on a site alias (or @self).</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    <abbr title="Consolidation\SiteProcess\ProcessBase">ProcessBase</abbr>
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_drushSiteProcess">drushSiteProcess</a>(<abbr title="Consolidation\SiteAlias\SiteAliasInterface">SiteAliasInterface</abbr> $siteAlias, array $args = [], array $options = [], array $options_double_dash = [])
+        
+                                            <p><p>drushSiteProcess should be avoided in favor of the drush method above.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_drushScript">drushScript</a>(<abbr title="Consolidation\SiteAlias\SiteAliasInterface">SiteAliasInterface</abbr> $siteAlias)
+        
+                                            <p><p>Determine the path to Drush to use</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    <abbr title="Consolidation\SiteProcess\ProcessBase">ProcessBase</abbr>
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_siteProcess">siteProcess</a>(<abbr title="Consolidation\SiteAlias\SiteAliasInterface">SiteAliasInterface</abbr> $siteAlias, $args = [], $options = [], $optionsPassedAsArgs = [])
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    <abbr title="Consolidation\SiteProcess\ProcessBase">ProcessBase</abbr>
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_process">process</a>(array $commandline, string|null $cwd = null, array $env = null, mixed|null $input = null, int|float|null $timeout = 60)
+        
+                                            <p><p>Run a bash fragment locally.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    <abbr title="Consolidation\SiteProcess\ProcessBase">ProcessBase</abbr>
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_shell">shell</a>(string $command, string|null $cwd = null, array $env = null, mixed|null $input = null, int|float|null $timeout = 60)
+        
+                                            <p><p>Create a Process instance from a commandline string.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    static&nbsp;<abbr title="Consolidation\SiteProcess\ProcessBase">ProcessBase</abbr>
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_configureProcess">configureProcess</a>(<abbr title="Consolidation\SiteProcess\ProcessBase">ProcessBase</abbr> $process)
+        
+                                            <p><p>configureProcess sets up a process object so that it is ready to use.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+            </div>
+
+
+        <h2>Details</h2>
+
+            <div id="method-details">
+                    <div class="method-item">
+                    <h3 id="method_drush">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/SiteAlias/ProcessManager.php#L22">at line 22</a></div>
+        <code>                    <abbr title="Consolidation\SiteProcess\ProcessBase">ProcessBase</abbr>
+    <strong>drush</strong>(<abbr title="Consolidation\SiteAlias\SiteAliasInterface">SiteAliasInterface</abbr> $siteAlias, string $command, array $args = [], array $options = [], array $options_double_dash = [])
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Run a Drush command on a site alias (or @self).</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Consolidation\SiteAlias\SiteAliasInterface">SiteAliasInterface</abbr></td>
+                <td>$siteAlias</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>string</td>
+                <td>$command</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>array</td>
+                <td>$args</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>array</td>
+                <td>$options</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>array</td>
+                <td>$options_double_dash</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><abbr title="Consolidation\SiteProcess\ProcessBase">ProcessBase</abbr></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_drushSiteProcess">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/SiteAlias/ProcessManager.php#L33">at line 33</a></div>
+        <code>                    <abbr title="Consolidation\SiteProcess\ProcessBase">ProcessBase</abbr>
+    <strong>drushSiteProcess</strong>(<abbr title="Consolidation\SiteAlias\SiteAliasInterface">SiteAliasInterface</abbr> $siteAlias, array $args = [], array $options = [], array $options_double_dash = [])
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>drushSiteProcess should be avoided in favor of the drush method above.</p></p>                <p><p>drushSiteProcess exists specifically for use by the RedispatchHook,
+which does not have specific knowledge about which argument is the command.</p></p>        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Consolidation\SiteAlias\SiteAliasInterface">SiteAliasInterface</abbr></td>
+                <td>$siteAlias</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>array</td>
+                <td>$args</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>array</td>
+                <td>$options</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>array</td>
+                <td>$options_double_dash</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><abbr title="Consolidation\SiteProcess\ProcessBase">ProcessBase</abbr></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_drushScript">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/SiteAlias/ProcessManager.php#L53">at line 53</a></div>
+        <code>                    
+    <strong>drushScript</strong>(<abbr title="Consolidation\SiteAlias\SiteAliasInterface">SiteAliasInterface</abbr> $siteAlias)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Determine the path to Drush to use</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Consolidation\SiteAlias\SiteAliasInterface">SiteAliasInterface</abbr></td>
+                <td>$siteAlias</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_siteProcess">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/SiteAlias/ProcessManager.php#L88">at line 88</a></div>
+        <code>                    <abbr title="Consolidation\SiteProcess\ProcessBase">ProcessBase</abbr>
+    <strong>siteProcess</strong>(<abbr title="Consolidation\SiteAlias\SiteAliasInterface">SiteAliasInterface</abbr> $siteAlias, $args = [], $options = [], $optionsPassedAsArgs = [])
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Consolidation\SiteAlias\SiteAliasInterface">SiteAliasInterface</abbr></td>
+                <td>$siteAlias</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$args</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$options</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$optionsPassedAsArgs</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><abbr title="Consolidation\SiteProcess\ProcessBase">ProcessBase</abbr></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_process">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/SiteAlias/ProcessManager.php#L108">at line 108</a></div>
+        <code>                    <abbr title="Consolidation\SiteProcess\ProcessBase">ProcessBase</abbr>
+    <strong>process</strong>(array $commandline, string|null $cwd = null, array $env = null, mixed|null $input = null, int|float|null $timeout = 60)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Run a bash fragment locally.</p></p>                <p><p>The timeout parameter on this method doesn't work. It exists for compatibility with parent.
+Call this method to get a Process and then call setters as needed.</p></p>        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>array</td>
+                <td>$commandline</td>
+                <td><p>The command line to run with arguments as separate items in an array</p></td>
+            </tr>
+                    <tr>
+                <td>string|null</td>
+                <td>$cwd</td>
+                <td><p>The working directory or null to use the working dir of the current PHP process</p></td>
+            </tr>
+                    <tr>
+                <td>array</td>
+                <td>$env</td>
+                <td><p>The environment variables or null to use the same environment as the current PHP process</p></td>
+            </tr>
+                    <tr>
+                <td>mixed|null</td>
+                <td>$input</td>
+                <td><p>The input as stream resource, scalar or \Traversable, or null for no input</p></td>
+            </tr>
+                    <tr>
+                <td>int|float|null</td>
+                <td>$timeout</td>
+                <td><p>The timeout in seconds or null to disable</p>
+<p>A wrapper around Symfony Process.</p></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><abbr title="Consolidation\SiteProcess\ProcessBase">ProcessBase</abbr></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_shell">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/SiteAlias/ProcessManager.php#L122">at line 122</a></div>
+        <code>                    <abbr title="Consolidation\SiteProcess\ProcessBase">ProcessBase</abbr>
+    <strong>shell</strong>(string $command, string|null $cwd = null, array $env = null, mixed|null $input = null, int|float|null $timeout = 60)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Create a Process instance from a commandline string.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$command</td>
+                <td><p>The commandline string to run</p></td>
+            </tr>
+                    <tr>
+                <td>string|null</td>
+                <td>$cwd</td>
+                <td><p>The working directory or null to use the working dir of the current PHP process</p></td>
+            </tr>
+                    <tr>
+                <td>array</td>
+                <td>$env</td>
+                <td><p>The environment variables or null to use the same environment as the current PHP process</p></td>
+            </tr>
+                    <tr>
+                <td>mixed|null</td>
+                <td>$input</td>
+                <td><p>The input as stream resource, scalar or \Traversable, or null for no input</p></td>
+            </tr>
+                    <tr>
+                <td>int|float|null</td>
+                <td>$timeout</td>
+                <td><p>The timeout in seconds or null to disable</p></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><abbr title="Consolidation\SiteProcess\ProcessBase">ProcessBase</abbr></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_configureProcess">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/SiteAlias/ProcessManager.php#L131">at line 131</a></div>
+        <code>        static    protected        <abbr title="Consolidation\SiteProcess\ProcessBase">ProcessBase</abbr>
+    <strong>configureProcess</strong>(<abbr title="Consolidation\SiteProcess\ProcessBase">ProcessBase</abbr> $process)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>configureProcess sets up a process object so that it is ready to use.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Consolidation\SiteProcess\ProcessBase">ProcessBase</abbr></td>
+                <td>$process</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><abbr title="Consolidation\SiteProcess\ProcessBase">ProcessBase</abbr></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+            </div>
+
+    
+</div><div id="footer">
+        Generated by <a href="https://github.com/code-lts/doctum">Doctum, a API Documentation generator and fork of Sami</a>.</div></div>
+    </div>
+    </body>
+
+</html>
