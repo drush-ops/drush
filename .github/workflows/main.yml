@@ -3,7 +3,7 @@ name: Build docs site
 on:
   push:
     branches: [11.x, 12.x]
-    tags: "*"
+    tags: ["11.*", "12.*"]
 
 jobs:
   build:
@@ -49,7 +49,7 @@ jobs:
         run: |
           mike alias 11.x latest
           mike set-default latest
-      - name: Mike build
+      - name: Mike deploy
         run: mike deploy --push ${GITHUB_REF_NAME}
       # Build Doctum to gh-pages/api in the gh-pages branch.
       - name: Checkout gh-pages branch
@@ -70,6 +70,5 @@ jobs:
         with:
           commit_message: "[CI] Add Doctum build"
           repository: gh-pages
-          #skip_dirty_check: true
           commit_user_name: "Drush Documentation Bot"
           commit_user_email: "actions@github.com"
