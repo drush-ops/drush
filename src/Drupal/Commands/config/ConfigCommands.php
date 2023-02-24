@@ -597,8 +597,11 @@ class ConfigCommands extends DrushCommands implements StdinAwareInterface, SiteA
         self::copyConfig($source_storage, $temp_source_storage);
 
         $prefix = ['diff'];
-        if (self::programExists('git') && $output->isDecorated()) {
-            $prefix = ['git', 'diff', '--color=always'];
+        if (self::programExists('git')) {
+            $prefix = ['git', 'diff'];
+            if ($output->isDecorated()) {
+                $prefix[] = '--color=always';
+            }
         }
         $args = array_merge($prefix, ['-u', $temp_destination_dir, $temp_source_dir]);
         $process = Drush::process($args);
