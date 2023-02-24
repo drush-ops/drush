@@ -52,7 +52,6 @@
   "require-dev": {
     "composer/installers": "^1.12",
     "cweagans/composer-patches": "~1.0",
-    "david-garcia/phpwhois": "4.3.0",
     "drupal/core-recommended": "^10",
     "drupal/semver_example": "2.3.0",
     "phpunit/phpunit": ">=9",

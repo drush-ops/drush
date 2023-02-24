@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "09f1a733a30eb1aa15f298acc16ae688",
+    "content-hash": "2b41da6ddc170bf752b40c6020b1d128",
     "packages": [
         {
             "name": "chi-teck/drupal-code-generator",
@@ -3565,74 +3565,6 @@
             "time": "2022-12-20T22:53:13+00:00"
         },
         {
-            "name": "david-garcia/phpwhois",
-            "version": "4.3.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/DavidGarciaCat/phpWhois.git",
-                "reference": "652e8b3c4e22bab934baebb53740c9d2d8c05cd6"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/DavidGarciaCat/phpWhois/zipball/652e8b3c4e22bab934baebb53740c9d2d8c05cd6",
-                "reference": "652e8b3c4e22bab934baebb53740c9d2d8c05cd6",
-                "shasum": ""
-            },
-            "require": {
-                "mso/idna-convert": "*",
-                "php": ">=5.3.0"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "4.4.1"
-            },
-            "suggest": {
-                "lib-openssl": "*"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "phpWhois\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "GPL-2.0"
-            ],
-            "authors": [
-                {
-                    "name": "Mark Jeftovic",
-                    "email": "markjr@easydns.com"
-                },
-                {
-                    "name": "David Saez Padros",
-                    "email": "david@ols.es"
-                },
-                {
-                    "name": "Ross Golder",
-                    "email": "ross@golder.org"
-                },
-                {
-                    "name": "Dmitry Lukashin",
-                    "email": "dmitry@lukashin.ru"
-                },
-                {
-                    "name": "David Garcia",
-                    "email": "me@davidgarcia.cat"
-                }
-            ],
-            "description": "phpWhois - library for querying whois services and parsing results. Based on phpwhois.org",
-            "homepage": "http://phpwhois.pw",
-            "keywords": [
-                "php",
-                "phpwhois",
-                "whois"
-            ],
-            "support": {
-                "source": "https://github.com/DavidGarciaCat/phpWhois/tree/master"
-            },
-            "time": "2017-08-30T22:37:26+00:00"
-        },
-        {
             "name": "doctrine/annotations",
             "version": "1.13.3",
             "source": {
@@ -4212,43 +4144,6 @@
             "time": "2023-01-02T17:26:14+00:00"
         },
         {
-            "name": "jakeasmith/http_build_url",
-            "version": "1.0.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/jakeasmith/http_build_url.git",
-                "reference": "93c273e77cb1edead0cf8bcf8cd2003428e74e37"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/jakeasmith/http_build_url/zipball/93c273e77cb1edead0cf8bcf8cd2003428e74e37",
-                "reference": "93c273e77cb1edead0cf8bcf8cd2003428e74e37",
-                "shasum": ""
-            },
-            "type": "library",
-            "autoload": {
-                "files": [
-                    "src/http_build_url.php"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Jake A. Smith",
-                    "email": "theman@jakeasmith.com"
-                }
-            ],
-            "description": "Provides functionality for http_build_url() to environments without pecl_http.",
-            "support": {
-                "issues": "https://github.com/jakeasmith/http_build_url/issues",
-                "source": "https://github.com/jakeasmith/http_build_url"
-            },
-            "time": "2017-05-01T15:36:40+00:00"
-        },
-        {
             "name": "masterminds/html5",
             "version": "2.7.6",
             "source": {
@@ -4316,63 +4211,6 @@
                 "source": "https://github.com/Masterminds/html5-php/tree/2.7.6"
             },
             "time": "2022-08-18T16:18:26+00:00"
-        },
-        {
-            "name": "mso/idna-convert",
-            "version": "v3.1.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/algo26-matthias/idna-convert.git",
-                "reference": "340a4dc65f6b0d9884853a3d32895d82f0c1502a"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/algo26-matthias/idna-convert/zipball/340a4dc65f6b0d9884853a3d32895d82f0c1502a",
-                "reference": "340a4dc65f6b0d9884853a3d32895d82f0c1502a",
-                "shasum": ""
-            },
-            "require": {
-                "ext-pcre": "*",
-                "jakeasmith/http_build_url": "^1",
-                "php": ">=7.2.0"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "8.0"
-            },
-            "suggest": {
-                "ext-iconv": "Install ext/iconv for using input / output other than UTF-8 or ISO-8859-1",
-                "ext-mbstring": "Install ext/mbstring for using input / output other than UTF-8 or ISO-8859-1"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Algo26\\IdnaConvert\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "LGPL-2.1+"
-            ],
-            "authors": [
-                {
-                    "name": "Matthias Sommerfeld",
-                    "email": "matthias.sommerfeld@algo26.de",
-                    "role": "Developer"
-                }
-            ],
-            "description": "A library for encoding and decoding internationalized domain names",
-            "homepage": "http://idnaconv.net/",
-            "keywords": [
-                "idn",
-                "idna",
-                "php"
-            ],
-            "support": {
-                "issues": "https://github.com/algo26-matthias/idna-convert/issues",
-                "source": "https://github.com/algo26-matthias/idna-convert/tree/v3.1.0"
-            },
-            "abandoned": "algo26-matthias/idna-convert",
-            "time": "2023-02-17T10:08:02+00:00"
         },
         {
             "name": "myclabs/deep-copy",
