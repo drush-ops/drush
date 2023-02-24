@@ -157,41 +157,4 @@ class SecurityUpdateCommands extends DrushCommands
         }
         return $updates;
     }
-
-    /**
-     * Check non-Drupal PHP packages for pending security updates.
-     *
-     * Packages are discovered via composer.lock file. An exit code of 3
-     * indicates that the check completed, and insecure packages were found.
-     *
-     * @param array $options
-     *
-     * @return UnstructuredData
-     * @throws \Exception
-     * @command pm:security-php
-     * @validate-php-extension json
-     * @aliases sec-php,pm-security-php
-     * @option no-dev Only check production dependencies.
-     * @bootstrap none
-     *
-     * @usage drush pm:security-php --format=json
-     *   Get security data in JSON format.
-     * @usage HTTP_PROXY=tcp://localhost:8125 pm:security
-     *   Proxy Guzzle requests through an http proxy.
-     */
-    public function securityPhp(array $options = ['format' => 'yaml', 'no-dev' => false])
-    {
-        $result = (new SecurityChecker())->check(self::composerLockPath(), $options['no-dev']);
-        if ($result) {
-            $suggested_command = "composer why " . implode(' && composer why ', array_keys($result));
-            $this->logger()->warning('One or more of your dependencies has an outstanding security update.');
-            $this->logger()->notice("Run <comment>$suggested_command</comment> to learn what module requires the package.");
-            return CommandResult::dataWithExitCode(new UnstructuredData($result), self::EXIT_FAILURE_WITH_CLARITY);
-        }
-        $this->logger()->success("There are no outstanding security updates for your dependencies.");
-        if ($options['format'] === 'table') {
-            return null;
-        }
-        return new RowsOfFields([]);
-    }
 }

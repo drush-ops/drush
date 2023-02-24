@@ -43,25 +43,4 @@ class SecurityUpdatesTest extends UnishIntegrationTestCase
         $this->drush('pm:security', [], ['format' => 'json', 'no-dev' => true], self::EXIT_SUCCESS);
         $this->assertStringContainsString('There are no outstanding security updates for Drupal projects', $this->getErrorOutput());
     }
-
-    /**
-     * Test that insecure PHP packages are correctly identified.
-     */
-    public function testInsecurePhpPackage()
-    {
-        $this->drush('pm:security-php', [], ['format' => 'json'], self::EXIT_ERROR_WITH_CLARITY);
-        $this->assertStringContainsString('One or more of your dependencies has an outstanding security update.', $this->getErrorOutput());
-        $this->assertStringContainsString('david-garcia/phpwhois', $this->getErrorOutput());
-        $security_advisories = $this->getOutputFromJSON();
-        $this->arrayHasKey('david-garcia/phpwhois', $security_advisories);
-    }
-
-    /**
-     * Test that dev dependencies are correctly excluded.
-     */
-    public function testNoInsecureProductionPhpPackage()
-    {
-        $this->drush('pm:security-php', [], ['format' => 'json', 'no-dev' => true], self::EXIT_SUCCESS);
-        $this->assertStringContainsString('There are no outstanding security updates for your dependencies.', $this->getErrorOutput());
-    }
 }
