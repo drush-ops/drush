@@ -80,8 +80,9 @@ jobs:
       - image: wodby/php:8.2
         environment:
           - UNISH_DB_URL=pgsql://unish:unish@127.0.0.1
-      - image: wodby/postgres:10.5
+      - image: wodby/postgres:14
         environment:
+          POSTGRES_DB_EXTENSIONS: pg_trgm
           POSTGRES_PASSWORD: unish
           POSTGRES_DB: unish_dev
           POSTGRES_USER: unish
