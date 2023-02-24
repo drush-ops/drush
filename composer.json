@@ -39,7 +39,6 @@
     "consolidation/robo": "^4.0.3",
     "consolidation/site-alias": "^4",
     "consolidation/site-process": "^5.2.0",
-    "enlightn/security-checker": "^1",
     "guzzlehttp/guzzle": "^7.0",
     "league/container": "^4",
     "psy/psysh": "~0.11",

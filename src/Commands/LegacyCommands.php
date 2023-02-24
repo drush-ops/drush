@@ -139,4 +139,16 @@ class LegacyCommands extends DrushCommands
     public function execute(): void
     {
     }
+
+    /**
+     * pm:security-php has been removed. Please use `composer audit` command.
+     *
+     * @command pm:security-php
+     * @aliases sec-php,pm-security-php
+     * @hidden
+     * @obsolete
+     */
+    public function secphp(): void
+    {
+    }
 }
