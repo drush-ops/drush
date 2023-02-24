@@ -81,6 +81,19 @@ class LocaleCommands extends DrushCommands
     }
 
     /**
+     * Clears the translation status.
+     *
+     * @command locale:clear-status
+     * @aliases locale-clear-status
+     * @validate-module-enabled locale
+     * @version 11.5
+     */
+    public function clearStatus(): void
+    {
+        locale_translation_clear_status();
+    }
+
+    /**
      * Imports the available translation updates.
      *
      * @see TranslationStatusForm::buildForm()
