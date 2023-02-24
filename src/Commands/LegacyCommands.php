@@ -141,6 +141,18 @@ class LegacyCommands extends DrushCommands
     }
 
     /**
+     * site:alias-convert has been removed. Please use Drush 11 or convert by hand.
+     *
+     * @command site:alias-convert
+     * @aliases sa-convert,sac
+     * @hidden
+     * @obsolete
+     */
+    public function saconvert(): void
+    {
+    }
+
+    /**
      * pm:security-php has been removed. Please use `composer audit` command.
      *
      * @command pm:security-php
