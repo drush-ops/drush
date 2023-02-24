@@ -123,7 +123,11 @@ class UserCommands extends DrushCommands
      * @option $mail A comma delimited list of emails to lookup (an alternative to names).
      * @aliases ublk,user-block
      * @usage drush user:block user3
-     *   Block the users whose name is user3
+     *   Block the user whose name is <info>user3</info>
+     * @usage drush user:cancel user3 --delete-content
+     *   <info>Delete</info> the user whose name is <info>user3</info> and delete her content.
+     * @usage drush user:cancel user3 --reassign-content
+     *   <info>Delete</info> the user whose name is <info>user3</info> and reassign her content to the anonymous user.
      */
     public function block(string $names = '', $options = ['uid' => self::REQ, 'mail' => self::REQ]): void
     {
@@ -261,29 +265,38 @@ class UserCommands extends DrushCommands
     }
 
     /**
-     * Cancel user account(s) with the specified name(s).
+     * Block or delete user account(s) with the specified name(s).
+     *
+     * - Existing content may be deleted or reassigned to the Anonymous user. See options.
+     * - By default only nodes are deleted or reassigned. Custom entity types need own code to
+     * support cancellation. See https://www.drupal.org/project/drupal/issues/3043725 for updates.
      *
      * @command user:cancel
      *
      * @param string $names A comma delimited list of user names.
      * @option delete-content Delete the user, and all content created by the user
+     * @option reassign-content Delete the user and make its content belong to the anonymous user.
      * @option $uid A comma delimited list of user ids to lookup (an alternative to names).
      * @option $mail A comma delimited list of emails to lookup (an alternative to names).
      * @aliases ucan,user-cancel
      * @usage drush user:cancel username
-     *   Cancel the user account with the name username and anonymize all content created by that user.
+     *   Block the user account with the name username.
      * @usage drush user:cancel --delete-content username
-     *   Delete the user account with the name username and delete all content created by that user.
+     *   Delete the user account with the name <info>username<info> and delete all content created by that user.
+     * @usage drush user:cancel --reassign-content username
+     *   Delete the user account with the name <info>username<info> and assign all her content to the anonymous user.
      */
-    public function cancel(string $names, $options = ['delete-content' => false, 'uid' => self::REQ, 'mail' => self::REQ]): void
+    public function cancel(string $names, $options = ['delete-content' => false, 'reassign-content' => false, 'uid' => self::REQ, 'mail' => self::REQ]): void
     {
         $accounts = $this->getAccounts($names, $options);
         foreach ($accounts as $id => $account) {
             if ($options['delete-content']) {
                 $this->logger()->warning(dt('All content created by !name will be deleted.', ['!name' => $account->getAccountName()]));
+            } else if ($options['reassign-content']) {
+                $this->logger()->warning(dt('All content created by !name will be assigned to anonymous user.', ['!name' => $account->getAccountName()]));
             }
             if ($this->io()->confirm('Cancel user account?: ')) {
-                $method = $options['delete-content'] ? 'user_cancel_delete' : 'user_cancel_block';
+                $method = $options['delete-content'] ? 'user_cancel_delete' : ($options['reassign-content'] ? 'user_cancel_reassign' : 'user_cancel_block');
                 user_cancel([], $account->id(), $method);
                 drush_backend_batch_process();
                 // Drupal logs a message for us.

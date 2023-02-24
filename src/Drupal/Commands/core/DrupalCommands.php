@@ -60,6 +60,8 @@ class DrupalCommands extends DrushCommands
      *
      * @command core:cron
      * @aliases cron,core-cron
+     * @usage drush maint:status && drush core:cron
+     *  Run cron unless maintenance mode is enabled
      * @topics docs:cron
      */
     public function cron(): void
