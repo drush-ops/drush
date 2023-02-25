@@ -519,6 +519,26 @@ abstract class UnishTestCase extends TestCase
         return parse_url($db_url ?: self::getDbUrl(), PHP_URL_SCHEME);
     }
 
+    public function dbUser($db_url = null)
+    {
+        return parse_url($db_url ?: self::getDbUrl(), PHP_URL_USER);
+    }
+
+    public function dbPass($db_url = null)
+    {
+        return parse_url($db_url ?: self::getDbUrl(), PHP_URL_PASS);
+    }
+
+    public function dbHost($db_url = null)
+    {
+        return parse_url($db_url ?: self::getDbUrl(), PHP_URL_HOST);
+    }
+
+    public function dbPort($db_url = null)
+    {
+        return parse_url($db_url ?: self::getDbUrl(), PHP_URL_PORT);
+    }
+
     /**
      * Create some fixture sites that only have a 'settings.php' file
      * with a database record.
@@ -540,18 +560,22 @@ abstract class UnishTestCase extends TestCase
 
     public function createSettings($subdir)
     {
+        $driver = $this->dbDriver();
+        $user = $this->dbUser();
+        $pass = $this->dbPass();
+        $host = $this->dbHost();
+        $port = $this->dbPort();
         $settingsContents = <<<EOT
 <?php
 
 \$databases['default']['default'] = array (
   'database' => 'unish_$subdir',
-  'username' => 'root',
-  'password' => '',
+  'username' => '$user',
+  'password' => '$pass',
   'prefix' => '',
-  'host' => '127.0.0.1',
-  'port' => '',
-  'namespace' => 'Drupal\\Core\\Database\\Driver\\mysql',
-  'driver' => 'mysql',
+  'host' => '$host',
+  'port' => '$port',
+  'driver' => $'$driver',
 );
 \$settings['install_profile'] = 'testing';
 EOT;
