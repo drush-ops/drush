@@ -133,7 +133,7 @@ jobs:
       - store_artifacts:
           path: /tmp/results
       - store_artifacts:
-          path: .
+          path: ./sut/sites
 
 workflows:
   version: 2

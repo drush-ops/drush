@@ -8,8 +8,6 @@ router_https_port: "444"
 xdebug_enabled: false
 additional_hostnames: []
 additional_fqdns: []
-mariadb_version: "10.5"
-mysql_version: ""
 nfs_mount_enabled: false
 mutagen_enabled: false
 use_dns_when_possible: true
