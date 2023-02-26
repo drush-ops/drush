@@ -29,7 +29,7 @@
     }
   },
   "require": {
-    "php": ">=8.2",
+    "php": ">=8.1",
     "ext-dom": "*",
     "chi-teck/drupal-code-generator": "^2.4",
     "composer/semver": "^1.4 || ^3",
@@ -92,7 +92,7 @@
     "sort-packages": true,
     "process-timeout": 9600,
     "platform": {
-      "php": "8.2"
+      "php": "8.1"
     }
   },
   "scripts": {
