@@ -133,7 +133,7 @@ jobs:
       - store_artifacts:
           path: /tmp/results
       - store_artifacts:
-          path: $HOME/drush
+          path: .
 
 workflows:
   version: 2
