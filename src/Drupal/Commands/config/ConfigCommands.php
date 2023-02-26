@@ -147,7 +147,7 @@ final class ConfigCommands extends DrushCommands implements StdinAwareInterface,
     #[CLI\Usage(name: "drush config:set --input-format=yaml system.site page {403: '403', front: home}", description: 'Use a mapping as value for the key <info>page</info> of <info>system.site</info> config object.')]
     #[CLI\Usage(name: 'drush config:set --input-format=yaml user.role.authenticated ? "{label: \'Auth user\', weight: 5}"', description: 'Update two top level keys (label, weight) in the <info>system.site</info> config object.')]
     #[CLI\Complete(method_name_or_callable: 'configComplete')]
-    #[CLI\ValidateConfigName(argumentName: 'config-name')]
+    #[CLI\ValidateConfigName(argumentName: 'config_name')]
     public function set($config_name, $key, $value, $options = ['input-format' => 'string'])
     {
         $data = $value;
@@ -210,7 +210,7 @@ final class ConfigCommands extends DrushCommands implements StdinAwareInterface,
     #[CLI\ValidateModulesEnabled(modules: ['config'])]
     #[CLI\ValidateConfigName()]
     #[CLI\InteractConfigName()]
-    #[CLI\Complete('configComplete')]
+    #[CLI\Complete(method_name_or_callable: 'configComplete')]
     public function edit($config_name, $options = []): void
     {
         $config = $this->getConfigFactory()->get($config_name);
@@ -489,6 +489,7 @@ final class ConfigCommands extends DrushCommands implements StdinAwareInterface,
                 return new CommandError($msg);
             }
         }
+        return null;
     }
 
     /**
