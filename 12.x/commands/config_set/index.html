@@ -21,7 +21,7 @@
         <link rel="next" href="../config_status/">
       
       <link rel="icon" href="../../img/favicon.ico">
-      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.0.14">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.0.15">
     
     
       
@@ -5216,7 +5216,7 @@
 <h4 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h4>
 <ul>
 <li><code>drush config:set system.site name MySite</code>. Sets a value for the key <em>name</em> of <em>system.site</em> config object.</li>
-<li><code>drush config:set system.site page.front '/path/to/page'</code>. Sets the given URL path as value for the config item with key <em>page.front</em> of <em>system.site</em> config object.</li>
+<li><code>drush config:set system.site page.front /path/to/page</code>. Sets the given URL path as value for the config item with key <em>page.front</em> of <em>system.site</em> config object.</li>
 <li><code>drush config:set system.site '[]'</code>. Sets the given key to an empty array.</li>
 <li><code>drush config:set --input-format=yaml user.role.authenticated permissions [foo,bar]</code>. Use a sequence as value for the key <em>permissions</em> of <em>user.role.authenticated</em> config object.</li>
 <li><code>drush config:set --input-format=yaml system.site page {403: '403', front: home}</code>. Use a mapping as value for the key <em>page</em> of <em>system.site</em> config object.</li>
