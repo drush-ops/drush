@@ -2,7 +2,10 @@
 
 namespace Drush\Drupal\Commands\config;
 
+use Consolidation\AnnotatedCommand\Hooks\HookManager;
+use Drush\Boot\DrupalBootLevels;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Drush\Attributes as CLI;
 use Drupal\Core\Config\ImportStorageTransformer;
 use Drupal\Core\Config\StorageTransformerException;
 use Consolidation\AnnotatedCommand\CommandData;
@@ -198,22 +201,14 @@ class ConfigImportCommands extends DrushCommands
     }
 
     /**
-     * Import config from a config directory.
-     *
-     * @command config:import
-     *
-     *
-     * @return bool|void
-     * @option diff Show preview as a diff.
-     * @option source An arbitrary directory that holds the configuration files.
-     * @option partial Allows for partial config imports from the source directory. Only updates and new configs will be processed with this flag (missing configs will not be deleted). No config transformation happens.
-     * @aliases cim,config-import
-     * @topics docs:deploy
-     * @bootstrap full
-     *
-     * @throws StorageTransformerException
-     * @throws UserAbortException
+     * Import config from the config directory.
      */
+    #[CLI\Command(name: 'config:import', aliases: ['cim', 'config-import'])]
+    #[CLI\Option(name: 'diff', description: 'Show preview as a diff.')]
+    #[CLI\Option(name: 'source', description: 'An arbitrary directory that holds the configuration files.')]
+    #[CLI\Option(name: 'partial', description: 'Allows for partial config imports from the source directory. Only updates and new configs will be processed with this flag (missing configs will not be deleted). No config transformation happens.')]
+    #[CLI\Bootstrap(level: DrupalBootLevels::FULL)]
+    #[CLI\Topics(topics: ['docs:deploy'])]
     public function import(array $options = ['source' => self::REQ, 'partial' => false, 'diff' => false])
     {
         // Determine source directory.
@@ -327,10 +322,9 @@ class ConfigImportCommands extends DrushCommands
     }
 
     /**
-     * @hook validate config:import
-     * @param CommandData $commandData
-     * @return CommandError|null
+     * Validate partial and source options.
      */
+    #[CLI\Hook(type: HookManager::ARGUMENT_VALIDATOR, target: 'config:import')]
     public function validate(CommandData $commandData)
     {
         $msgs = [];
