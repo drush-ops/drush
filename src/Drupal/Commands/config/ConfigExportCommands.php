@@ -2,7 +2,6 @@
 
 namespace Drush\Drupal\Commands\config;
 
-use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\AnnotatedCommand\Hooks\HookManager;
 use Drupal\Core\Config\ConfigManagerInterface;
 use Drupal\Core\Config\StorageComparer;
