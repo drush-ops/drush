@@ -2,13 +2,16 @@
 
 namespace Drush\Drupal\Commands\core;
 
+use Consolidation\AnnotatedCommand\Hooks\HookManager;
 use Drupal\Core\Messenger\MessengerInterface;
+use Drush\Attributes as CLI;
+use Drush\Boot\DrupalBootLevels;
 use Drush\Commands\DrushCommands;
 use Drush\Drupal\DrupalUtil;
 
 class MessengerCommands extends DrushCommands
 {
-    protected $messenger;
+    protected MessengerInterface $messenger;
 
     /**
      * @inheritDoc
@@ -18,17 +21,13 @@ class MessengerCommands extends DrushCommands
         $this->messenger = $messenger;
     }
 
-    /**
-     * @hook pre-command *
-     */
+    #[CLI\Hook(type: HookManager::PRE_COMMAND_HOOK, target: '*')]
     public function pre(): void
     {
         self::log();
     }
 
-    /**
-     * @hook post-command *
-     */
+    #[CLI\Hook(type: HookManager::POST_COMMAND_HOOK, target: '*')]
     public function post(): void
     {
         self::log();
