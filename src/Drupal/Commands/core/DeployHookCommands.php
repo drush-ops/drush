@@ -135,7 +135,7 @@ class DeployHookCommands extends DrushCommands implements SiteAliasManagerAwareI
      * Process operations in the specified batch set.
      */
     #[CLI\Command(name: 'deploy:batch-process')]
-    #[CLI\Argument(name: '$batch_id', description: 'The batch id that will be processed.')]
+    #[CLI\Argument(name: 'batch_id', description: 'The batch id that will be processed.')]
     #[CLI\Bootstrap(level: DrupalBootLevels::FULL)]
     #[CLI\Help(hidden: true)]
     public function process(string $batch_id, $options = ['format' => 'json']): UnstructuredListData
