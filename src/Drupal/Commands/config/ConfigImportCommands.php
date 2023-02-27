@@ -7,7 +7,6 @@ use Drush\Boot\DrupalBootLevels;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Drush\Attributes as CLI;
 use Drupal\Core\Config\ImportStorageTransformer;
-use Drupal\Core\Config\StorageTransformerException;
 use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\AnnotatedCommand\CommandError;
 use Drupal\config\StorageReplaceDataWrapper;

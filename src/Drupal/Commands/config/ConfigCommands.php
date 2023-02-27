@@ -279,7 +279,7 @@ final class ConfigCommands extends DrushCommands implements StdinAwareInterface,
     #[CLI\Usage(name: 'drush config:status --state=Any --format=list', description: 'List all config names.')]
     #[CLI\Usage(name: 'drush config:status 2>&amp;1 | grep "No differences"', description: 'Check there are no differences between database and exported config. Useful for CI.')]
     #[CLI\FieldLabels(labels: ['name' => 'Name', 'state' => 'State'])]
-    #[CLI\DefaultFields(fields: ['name', 'state'])]
+    #[CLI\DefaultTableFields(fields: ['name', 'state'])]
     #[CLI\FilterDefaultField(field: 'name')]
     public function status($options = ['state' => 'Only in DB,Only in sync dir,Different', 'prefix' => self::REQ]): ?RowsOfFields
     {

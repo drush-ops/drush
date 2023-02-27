@@ -66,7 +66,7 @@ class DrupalCommands extends DrushCommands
         'description' => 'Description',
         'value' => 'Summary',
     ])]
-    #[CLI\DefaultFields(fields: ['severity', 'value'])]
+    #[CLI\DefaultTableFields(fields: ['title', 'severity', 'value'])]
     #[CLI\FilterDefaultField(field: 'severity')]
     public function requirements($options = ['format' => 'table', 'severity' => -1, 'ignore' => '']): RowsOfFields
     {

@@ -48,7 +48,7 @@ class DeployHookCommands extends DrushCommands implements SiteAliasManagerAwareI
     #[CLI\Command(name: 'deploy:hook-status')]
     #[CLI\Usage(name: 'drush deploy:hook-status', description: 'Prints information about pending deploy hooks.')]
     #[CLI\FieldLabels(labels: ['module' => 'Module', 'hook' => 'Hook', 'description' => 'Description'])]
-    #[CLI\DefaultFields(fields: ['module', 'hook', 'description'])]
+    #[CLI\DefaultTableFields(fields: ['module', 'hook', 'description'])]
     #[CLI\FilterDefaultField(field: 'hook')]
     #[CLI\Topics(topics: ['docs:deploy'])]
     public function status(): RowsOfFields
