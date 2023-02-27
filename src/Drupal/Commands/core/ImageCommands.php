@@ -3,7 +3,9 @@
 namespace Drush\Drupal\Commands\core;
 
 use Consolidation\AnnotatedCommand\AnnotationData;
+use Consolidation\AnnotatedCommand\Hooks\HookManager;
 use Drupal\image\Entity\ImageStyle;
+use Drush\Attributes as CLI;
 use Drush\Commands\DrushCommands;
 use Drush\Utils\StringUtils;
 use Symfony\Component\Console\Input\InputInterface;
@@ -12,20 +14,15 @@ class ImageCommands extends DrushCommands
 {
     /**
      * Flush all derived images for a given style.
-     *
-     * @command image:flush
-     * @param $style_names A comma delimited list of image style machine names. If not provided, user may choose from a list of names.
-     * @option all Flush all derived images
-     * @usage drush image:flush
-     *   Pick an image style and then delete its derivatives.
-     * @usage drush image:flush thumbnail,large
-     *   Delete all thumbnail and large derivatives.
-     * @usage drush image:flush --all
-     *   Flush all derived images. They will be regenerated on demand.
-     * @validate-entity-load image_style style_names
-     * @validate-module-enabled image
-     * @aliases if,image-flush
      */
+    #[CLI\Command(name: 'image:flush', aliases: ['if', 'image-flush'])]
+    #[CLI\Argument(name: 'style_names', description: 'A comma delimited list of image style machine names. If not provided, user may choose from a list of names.')]
+    #[CLI\Option(name: 'all', description: 'Flush all derived images')]
+    #[CLI\Usage(name: 'drush image:flush', description: 'Pick an image style and then delete its derivatives.')]
+    #[CLI\Usage(name: 'drush image:flush thumbnail,large', description: 'Delete all thumbnail and large derivatives.')]
+    #[CLI\Usage(name: 'drush image:flush --all', description: 'Flush all derived images. They will be regenerated on demand.')]
+    #[CLI\ValidateEntityLoad(entityType: 'image_style', argumentName: 'style_names')]
+    #[CLI\ValidateModulesEnabled(modules: ['image'])]
     public function flush($style_names, $options = ['all' => false]): void
     {
         foreach (ImageStyle::loadMultiple(StringUtils::csvToArray($style_names)) as $style_name => $style) {
@@ -34,9 +31,7 @@ class ImageCommands extends DrushCommands
         }
     }
 
-    /**
-     * @hook interact image-flush
-     */
+    #[CLI\Hook(type: HookManager::INTERACT, target: 'image:flush')]
     public function interactFlush($input, $output): void
     {
         $styles = array_keys(ImageStyle::loadMultiple());
@@ -54,9 +49,7 @@ class ImageCommands extends DrushCommands
         }
     }
 
-    /**
-     * @hook init image-flush
-     */
+    #[CLI\Hook(type: HookManager::INITIALIZE, target: 'image:flush')]
     public function initFlush(InputInterface $input, AnnotationData $annotationData): void
     {
         // Needed for non-interactive calls.
@@ -68,17 +61,14 @@ class ImageCommands extends DrushCommands
 
     /**
      * Create an image derivative.
-     *
-     * @command image:derive
-     * @param $style_name An image style machine name.
-     * @param $source Path to a source image. Optionally prepend stream wrapper scheme.
-     * @usage drush image:derive thumbnail core/themes/bartik/screenshot.png
-     *   Save thumbnail sized derivative of logo image.
-     * @validate-file-exists source
-     * @validate-entity-load image_style style_name
-     * @validate-module-enabled image
-     * @aliases id,image-derive
      */
+    #[CLI\Command(name: 'image:derive', aliases: ['id', 'image-derive'])]
+    #[CLI\Argument(name: 'style_name', description: 'An image style machine name.')]
+    #[CLI\Argument(name: 'source', description: 'Path to a source image. Optionally prepend stream wrapper scheme. Relative paths calculated from Drupal root.')]
+    #[CLI\Usage(name: 'drush image:derive thumbnail core/themes/bartik/screenshot.png', description: 'Save thumbnail sized derivative of logo image.')]
+    #[CLI\ValidateFileExists(argName: 'source')]
+    #[CLI\ValidateEntityLoad(entityType: 'image_style', argumentName: 'style_name')]
+    #[CLI\ValidateModulesEnabled(modules: ['image'])]
     public function derive($style_name, $source)
     {
         $image_style = ImageStyle::load($style_name);
