@@ -3,6 +3,7 @@
 namespace Drush\Drupal\Commands\core;
 
 use Consolidation\AnnotatedCommand\AnnotatedCommand;
+use Drush\Attributes as CLI;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Drush\Psysh\DrushCommand;
@@ -18,27 +19,22 @@ class CliCommands extends DrushCommands
 {
     /**
      * Drush's PHP Shell.
-     *
-     * @command docs:repl
-     * @aliases docs-repl
-     * @hidden
-     * @topic ../../../../docs/repl.md
      */
+    #[CLI\Command(name: 'docs:repl', aliases: ['docs-repl'])]
+    #[CLI\Help(hidden: true)]
+    #[CLI\Topics(path: '../../../../docs/repl.md')]
     public function docs(): void
     {
         self::printFileTopic($this->commandData);
     }
 
     /**
-     * @command php:cli
-     * @description Open an interactive shell on a Drupal site.
-     * @aliases php,core:cli,core-cli
-     * @option $version-history Use command history based on Drupal version
-     *   (Default is per site).
-     * @option $cwd A directory to change to before launching the shell. Default is the project root directory
-     * @topics docs:repl
-     * @remote-tty
+     * Open an interactive shell on a Drupal site.
      */
+    #[CLI\Command(name: 'php:cli', aliases: ['php,core:cli', 'core-cli'])]
+    #[CLI\Option(name: 'version-history', description: 'Use command history based on Drupal version. Default is per site.')]
+    #[CLI\Option(name: 'cwd', description: 'A directory to change to before launching the shell. Default is the project root directory')]
+    #[CLI\Topics(topics: ['docs:repl'])]
     public function cli(array $options = ['version-history' => false, 'cwd' => self::REQ]): void
     {
         $configuration = new Configuration();
