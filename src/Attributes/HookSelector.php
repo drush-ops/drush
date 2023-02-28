@@ -6,11 +6,11 @@ use Attribute;
 use Consolidation\AnnotatedCommand\Parser\CommandInfo;
 
 #[Attribute(Attribute::TARGET_METHOD)]
-class HookCustom
+class HookSelector
 {
     /**
      * @param $name
-     *  The hook name which is being implemented.
+     *  The hook target which is being selected. If a hook has a target that begins with @, the remainder of the target is the name of the hook selector that must be present for that hook to run.
      * @param $arguments
      *   Arguments which should be passed along to the hook implementation.
      */
