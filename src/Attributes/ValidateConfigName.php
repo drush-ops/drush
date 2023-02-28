@@ -4,6 +4,7 @@ namespace Drush\Attributes;
 
 use Attribute;
 use Consolidation\AnnotatedCommand\Parser\CommandInfo;
+use Drush\Drupal\Commands\config\ConfigCommands;
 
 #[Attribute(Attribute::TARGET_METHOD)]
 class ValidateConfigName
@@ -19,6 +20,6 @@ class ValidateConfigName
 
     public static function handle(\ReflectionAttribute $attribute, CommandInfo $commandInfo)
     {
-        $commandInfo->addAnnotation('validate-config-name', $attribute->newInstance()->argumentName);
+        $commandInfo->addAnnotation(ConfigCommands::VALIDATE_CONFIG_NAME, $attribute->newInstance()->argumentName);
     }
 }

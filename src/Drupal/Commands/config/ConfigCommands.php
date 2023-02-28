@@ -37,6 +37,9 @@ final class ConfigCommands extends DrushCommands implements StdinAwareInterface,
     use ExecTrait;
     use SiteAliasManagerAwareTrait;
 
+    const INTERACT_CONFIG_NAME = 'interact-config-name';
+    const VALIDATE_CONFIG_NAME = 'validate-config-name';
+
     /**
      * @var ConfigFactoryInterface
      */
@@ -463,7 +466,7 @@ final class ConfigCommands extends DrushCommands implements StdinAwareInterface,
         }
     }
 
-    #[CLI\Hook(type: HookManager::INTERACT, target: '@interact-config-name')]
+    #[CLI\Hook(type: HookManager::INTERACT, selector: self::INTERACT_CONFIG_NAME)]
     public function interactConfigName($input, $output): void
     {
         if (empty($input->getArgument('config_name'))) {
@@ -476,10 +479,10 @@ final class ConfigCommands extends DrushCommands implements StdinAwareInterface,
     /**
      * Validate that a config name is valid.
      */
-    #[CLI\Hook(type: 'validate', target: '@validate-config-name')]
+    #[CLI\Hook(type: 'validate', selector: self::VALIDATE_CONFIG_NAME)]
     public function validateConfigName(CommandData $commandData): ?CommandError
     {
-        $arg_name = $commandData->annotationData()->get('validate-config-name');
+        $arg_name = $commandData->annotationData()->get(self::VALIDATE_CONFIG_NAME);
         $config_name = $commandData->input()->getArgument($arg_name);
         $names = StringUtils::csvToArray($config_name);
         foreach ($names as $name) {
