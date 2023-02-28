@@ -4,6 +4,7 @@ namespace Drush\Attributes;
 
 use Attribute;
 use Consolidation\AnnotatedCommand\Parser\CommandInfo;
+use Drush\Drupal\Commands\config\ConfigCommands;
 
 #[Attribute(Attribute::TARGET_METHOD)]
 class InteractConfigName
@@ -19,6 +20,6 @@ class InteractConfigName
 
     public static function handle(\ReflectionAttribute $attribute, CommandInfo $commandInfo)
     {
-        $commandInfo->addAnnotation('interact-config-name', $attribute->newInstance()->argumentName);
+        $commandInfo->addAnnotation(ConfigCommands::INTERACT_CONFIG_NAME, $attribute->newInstance()->argumentName);
     }
 }

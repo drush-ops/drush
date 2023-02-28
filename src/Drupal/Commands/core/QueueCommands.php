@@ -110,16 +110,10 @@ class QueueCommands extends DrushCommands
 
     /**
      * Returns a list of all defined queues.
-     *
-     * @command queue:list
-     * @aliases queue-list
-     * @field-labels
-     *   queue: Queue
-     *   items: Items
-     *   class: Class
-     *
-     * @filter-default-field queue
      */
+    #[CLI\Command(name: 'queue:list', aliases: ['queue-list'])]
+    #[CLI\FieldLabels(labels: ['queue' => 'Queue', 'items' => 'Items', 'class' => 'Class'])]
+    #[CLI\FilterDefaultField(field: 'queue')]
     public function qList($options = ['format' => 'table']): RowsOfFields
     {
         $result = [];
@@ -136,12 +130,10 @@ class QueueCommands extends DrushCommands
 
     /**
      * Delete all items in a specific queue.
-     *
-     * @command queue:delete
-     * @aliases queue-delete
-     * @param $name The name of the queue to run, as defined in either hook_queue_info or hook_cron_queue_info.
-     * @validate-queue name
      */
+    #[CLI\Command(name: 'queue:delete', aliases: ['queue-delete'])]
+    #[CLI\Argument(name: 'name', description: 'The name of the queue to run, as defined in either hook_queue_info or hook_cron_queue_info.')]
+    #[CLI\HookSelector(name: self::VALIDATE_QUEUE, value: 'name')]
     public function delete($name): void
     {
         $queue = $this->getQueue($name);
@@ -152,7 +144,7 @@ class QueueCommands extends DrushCommands
     /**
      * Validate that a queue exists.
      */
-    #[CLI\Hook(type: HookManager::ARGUMENT_VALIDATOR, target: '@' . self::VALIDATE_QUEUE)]
+    #[CLI\Hook(type: HookManager::ARGUMENT_VALIDATOR, selector: self::VALIDATE_QUEUE)]
     public function validateQueueName(CommandData $commandData)
     {
         $arg_name = $commandData->annotationData()->get(self::VALIDATE_QUEUE, null);
@@ -163,9 +155,6 @@ class QueueCommands extends DrushCommands
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getQueues(): array
     {
         if (!isset(static::$queues)) {
@@ -177,9 +166,6 @@ class QueueCommands extends DrushCommands
         return static::$queues;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getQueue($name): QueueInterface
     {
         return $this->getQueueService()->get($name);

@@ -13,9 +13,6 @@ use Symfony\Component\Filesystem\Path;
  */
 class AttributesTest extends UnishIntegrationTestCase
 {
-    /**
-     * @requires PHP >= 8.0
-     */
     public function testAttributes()
     {
         $options = [];
@@ -43,9 +40,6 @@ class AttributesTest extends UnishIntegrationTestCase
         $this->drush('validatestuff', ['access content', $sandbox, 'authenticated'], $options, self::EXIT_SUCCESS);
     }
 
-    /**
-     * @requires PHP >= 8.0
-     */
     public function testCompletion()
     {
         if (!class_exists('\Symfony\Component\Console\Completion\Output\FishCompletionOutput')) {
