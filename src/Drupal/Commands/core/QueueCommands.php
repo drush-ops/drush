@@ -58,7 +58,7 @@ class QueueCommands extends DrushCommands
     #[CLI\Option(name: 'time-limit', description: 'The maximum number of seconds allowed to run the queue.')]
     #[CLI\Option(name: 'items-limit', description: 'The maximum number of items allowed to run the queue.')]
     #[CLI\Option(name: 'lease-time', description: 'The maximum number of seconds that an item remains claimed.')]
-    #[CLI\HookSelector(name: self::VALIDATE_QUEUE, arguments: ['name'])]
+    #[CLI\HookSelector(name: self::VALIDATE_QUEUE, value: 'name')]
     public function run(string $name, $options = ['time-limit' => self::REQ, 'items-limit' => self::REQ, 'lease-time' => self::REQ]): void
     {
         $time_limit = (int) $options['time-limit'];
