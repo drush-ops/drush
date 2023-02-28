@@ -19,6 +19,9 @@ use Drush\Commands\DrushCommands;
 class QueueCommands extends DrushCommands
 {
     const VALIDATE_QUEUE = 'validate-queue';
+    const NAME_QUEUE_RUN = 'queue:run';
+    const NAME_QUEUE_LIST = 'queue:list';
+    const NAME_QUEUE_DELETE = 'queue:run';
 
     /**
      * @var QueueWorkerManagerInterface
@@ -53,7 +56,7 @@ class QueueCommands extends DrushCommands
     /**
      * Run a specific queue by name.
      */
-    #[CLI\Command(name: 'queue:run', aliases: ['queue-run'])]
+    #[CLI\Command(name: self::NAME_QUEUE_RUN, aliases: ['queue-run'])]
     #[CLI\Argument(name: 'name', description: 'The name of the queue to run, as defined in either hook_queue_info or hook_cron_queue_info.')]
     #[CLI\Option(name: 'time-limit', description: 'The maximum number of seconds allowed to run the queue.')]
     #[CLI\Option(name: 'items-limit', description: 'The maximum number of items allowed to run the queue.')]
@@ -111,7 +114,7 @@ class QueueCommands extends DrushCommands
     /**
      * Returns a list of all defined queues.
      */
-    #[CLI\Command(name: 'queue:list', aliases: ['queue-list'])]
+    #[CLI\Command(name: self::NAME_QUEUE_LIST, aliases: ['queue-list'])]
     #[CLI\FieldLabels(labels: ['queue' => 'Queue', 'items' => 'Items', 'class' => 'Class'])]
     #[CLI\FilterDefaultField(field: 'queue')]
     public function qList($options = ['format' => 'table']): RowsOfFields
@@ -131,7 +134,7 @@ class QueueCommands extends DrushCommands
     /**
      * Delete all items in a specific queue.
      */
-    #[CLI\Command(name: 'queue:delete', aliases: ['queue-delete'])]
+    #[CLI\Command(name: self::NAME_QUEUE_DELETE, aliases: ['queue-delete'])]
     #[CLI\Argument(name: 'name', description: 'The name of the queue to run, as defined in either hook_queue_info or hook_cron_queue_info.')]
     #[CLI\HookSelector(name: self::VALIDATE_QUEUE, value: 'name')]
     public function delete($name): void
