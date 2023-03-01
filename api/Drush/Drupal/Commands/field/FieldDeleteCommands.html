@@ -381,8 +381,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>                </
         
                                             <p class="no-description">No description</p>
                                     </div>
-                <div class="col-md-2"><small>from&nbsp;<a href="../../../../Drush/Drupal/Commands/field/EntityTypeBundleAskTrait.html#method_askBundle">
-<abbr title="Drush\Drupal\Commands\field\EntityTypeBundleAskTrait">EntityTypeBundleAskTrait</abbr></a></small></div>
+                <div class="col-md-2"></div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
@@ -413,7 +412,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>                </
                     void
                 </div>
                 <div class="col-md-8">
-                    <a href="#method_delete">delete</a>(string|null $entityType = null, string|null $bundle = null, array $options = [&#039;field-name&#039; =&gt; InputOption::VALUE_REQUIRED, &#039;show-machine-names&#039; =&gt; InputOption::VALUE_OPTIONAL])
+                    <a href="#method_delete">delete</a>(string|null $entityType = null, string|null $bundle = null, array $options = [&#039;field-name&#039; =&gt; InputOption::VALUE_REQUIRED, &#039;show-machine-names&#039; =&gt; InputOption::VALUE_OPTIONAL, &#039;all-bundles&#039; =&gt; InputOption::VALUE_OPTIONAL])
         
                                             <p><p>Delete a field</p></p>                </div>
                 <div class="col-md-2"></div>
@@ -423,7 +422,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>                </
                     string
                 </div>
                 <div class="col-md-8">
-                    <a href="#method_askExisting">askExisting</a>(string $entityType, string $bundle)
+                    <a href="#method_askExisting">askExisting</a>(string $entityType, string|null $bundle)
         
                                             <p class="no-description">No description</p>
                                     </div>
@@ -918,8 +917,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_askBundle">
-        <div class="location">in <a href="../../../../Drush/Drupal/Commands/field/EntityTypeBundleAskTrait.html#method_askBundle">
-<abbr title="Drush\Drupal\Commands\field\EntityTypeBundleAskTrait">EntityTypeBundleAskTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/field/EntityTypeBundleAskTrait.php#L43">at line 43</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/field/FieldDeleteCommands.php#L182">at line 182</a></div>
         <code>            protected        string|null
     <strong>askBundle</strong>()
         </code>
@@ -1045,9 +1043,9 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_delete">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/field/FieldDeleteCommands.php#L62">at line 62</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/field/FieldDeleteCommands.php#L65">at line 65</a></div>
         <code>                    void
-    <strong>delete</strong>(string|null $entityType = null, string|null $bundle = null, array $options = [&#039;field-name&#039; =&gt; InputOption::VALUE_REQUIRED, &#039;show-machine-names&#039; =&gt; InputOption::VALUE_OPTIONAL])
+    <strong>delete</strong>(string|null $entityType = null, string|null $bundle = null, array $options = [&#039;field-name&#039; =&gt; InputOption::VALUE_REQUIRED, &#039;show-machine-names&#039; =&gt; InputOption::VALUE_OPTIONAL, &#039;all-bundles&#039; =&gt; InputOption::VALUE_OPTIONAL])
         </code>
     </h3>
     <div class="details">    
@@ -1108,9 +1106,9 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_askExisting">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/field/FieldDeleteCommands.php#L111">at line 111</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/field/FieldDeleteCommands.php#L135">at line 135</a></div>
         <code>            protected        string
-    <strong>askExisting</strong>(string $entityType, string $bundle)
+    <strong>askExisting</strong>(string $entityType, string|null $bundle)
         </code>
     </h3>
     <div class="details">    
@@ -1131,7 +1129,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
                 <td></td>
             </tr>
                     <tr>
-                <td>string</td>
+                <td>string|null</td>
                 <td>$bundle</td>
                 <td></td>
             </tr>
@@ -1156,7 +1154,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_deleteFieldConfig">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/field/FieldDeleteCommands.php#L141">at line 141</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/field/FieldDeleteCommands.php#L219">at line 219</a></div>
         <code>            protected        void
     <strong>deleteFieldConfig</strong>(<abbr title="Drupal\field\FieldConfigInterface">FieldConfigInterface</abbr> $fieldConfig)
         </code>
