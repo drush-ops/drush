@@ -2,17 +2,24 @@
 
 namespace Drush\Drupal\Commands\core;
 
+use Consolidation\AnnotatedCommand\Hooks\HookManager;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Render\RendererInterface;
+use Drush\Attributes as CLI;
 use Drush\Commands\DrushCommands;
 use Drupal\views\Views;
 use Drush\Utils\StringUtils;
 
-class ViewsCommands extends DrushCommands
+final class ViewsCommands extends DrushCommands
 {
+    const DEV = 'views:dev';
+    const EXECUTE = 'views:execute';
+    const LIST = 'views:list';
+    const ENABLE = 'views:enable';
+    const DISABLE = 'views:disable';
     protected $configFactory;
 
     protected $moduleHandler;
@@ -21,12 +28,7 @@ class ViewsCommands extends DrushCommands
 
     protected $renderer;
 
-    /**
-     * ViewsCommands constructor.
-     * @param $moduleHandler
-     * @param $entityTypeManager
-     * @param $renderer
-     */
+
     public function __construct(ConfigFactoryInterface $configFactory, ModuleHandlerInterface $moduleHandler, EntityTypeManagerInterface $entityTypeManager, RendererInterface $renderer)
     {
         $this->moduleHandler = $moduleHandler;
@@ -57,12 +59,9 @@ class ViewsCommands extends DrushCommands
 
     /**
      * Set several Views settings to more developer-oriented values.
-     *
-     * @command views:dev
-     *
-     * @validate-module-enabled views
-     * @aliases vd,views-dev
      */
+    #[CLI\Command(name: self::DEV, aliases: ['vd', 'views-dev'])]
+    #[CLI\ValidateModulesEnabled(modules: ['views'])]
     public function dev(): void
     {
         $settings = [
@@ -103,35 +102,25 @@ class ViewsCommands extends DrushCommands
 
     /**
      * Get a list of all views in the system.
-     *
-     * @command views:list
-     *
-     * @option name A string contained in the view's name to filter the results with.
-     * @option tags A comma-separated list of views tags by which to filter the results.
-     * @option status Filter views by status. Choices: enabled, disabled.
-     * @usage drush vl
-     *   Show a list of all available views.
-     * @usage drush vl --name=blog
-     *   Show a list of views which names contain 'blog'.
-     * @usage drush vl --tags=tag1,tag2
-     *   Show a list of views tagged with 'tag1' or 'tag2'.
-     * @usage drush vl --status=enabled
-     *   Show a list of enabled views.
-     * @table-style default
-     * @field-labels
-     *   machine-name: Machine name
-     *   label: Name
-     *   description: Description
-     *   status: Status
-     *   tag: Tag
-     * @default-fields machine-name,label,description,status
-     * @aliases vl,views-list
-     * @validate-module-enabled views
-     *
-     * @filter-default-field machine-name
-     * @return RowsOfFields
      */
-    public function vlist($options = ['name' => self::REQ, 'tags' => self::REQ, 'status' => self::REQ, 'format' => 'table'])
+    #[CLI\Command(name: self::LIST, aliases: ['vl', 'views-list'])]
+    #[CLI\Option(name: 'tags', description: 'A comma-separated list of views tags by which to filter the results.')]
+    #[CLI\Option(name: 'status', description: 'Filter views by status. Choices: enabled, disabled.')]
+    #[CLI\Usage(name: 'drush vl', description: 'Show a list of all available views.')]
+    #[CLI\Usage(name: 'drush vl --name=blog', description: 'Show a list of views which names contain \'blog\'.')]
+    #[CLI\Usage(name: 'drush vl --tags=tag1,tag2', description: "Show a list of views tagged with 'tag1' or 'tag2'.")]
+    #[CLI\Usage(name: 'drush vl --status=enabled', description: 'Show a list of enabled views.')]
+    #[CLI\FieldLabels(labels: [
+        'machine-name' => 'Machine name',
+        'label' => 'Name',
+        'description' => 'Description',
+        'status' => 'Status',
+        'tag' => 'Tag',
+    ])]
+    #[CLI\DefaultTableFields(fields: ['machine-name', 'label', 'description', 'status'])]
+    #[CLI\ValidateModulesEnabled(modules: ['views'])]
+    #[CLI\FilterDefaultField(field: 'machine_name')]
+    public function vlist($options = ['name' => self::REQ, 'tags' => self::REQ, 'status' => self::REQ, 'format' => 'table']): ?RowsOfFields
     {
         $disabled_views = [];
         $enabled_views = [];
@@ -196,32 +185,26 @@ class ViewsCommands extends DrushCommands
             return new RowsOfFields($rows);
         } else {
             $this->logger()->notice(dt('No views found.'));
+            // Satisfy this method's type hint.
+            return null;
         }
     }
 
     /**
      * Execute a view and show a count of the results, or the rendered HTML.
-     *
-     * @command views:execute
-     *
-     * @param string $view_name The name of the view to execute.
-     * @param string $display The display ID to execute. If none specified, the default display will be used.
-     * @param string $view_args A comma delimited list of values, corresponding to contextual filters.
-     * @option count Display a count of the results instead of each row.
-     * @option show-admin-links Show contextual admin links in the rendered markup.
-     * @usage drush views:execute my_view
-     *   Show the rendered HTML for the default display for the my_view View.
-     * @usage drush views:execute my_view page_1 3 --count
-     *   Show a count of my_view:page_1 where the first contextual filter value is 3.
-     * @usage drush views:execute my_view page_1 3,foo
-     *   Show the rendered HTML of my_view:page_1 where the first two contextual filter values are 3 and 'foo' respectively.
-     * @validate-entity-load view view_name
-     * @aliases vex,views-execute
-     * @validate-module-enabled views
-     *
-     * @return string
      */
-    public function execute(string $view_name, $display = null, $view_args = null, $options = ['count' => 0, 'show-admin-links' => false])
+    #[CLI\Command(name: self::EXECUTE, aliases: ['vex', 'views-execute'])]
+    #[CLI\Argument(name: 'view_name', description: 'The name of the view to execute.')]
+    #[CLI\Argument(name: 'display', description: 'The display ID to execute. If none specified, the default display will be used.')]
+    #[CLI\Argument(name: 'view_args', description: 'A comma delimited list of values, corresponding to contextual filters.')]
+    #[CLI\Option(name: 'count', description: 'Display a count of the results instead of each row.')]
+    #[CLI\Option(name: 'show-admin-links', description: 'Show contextual admin links in the rendered markup.')]
+    #[CLI\Usage(name: 'drush views:execute my_view', description: 'Show the rendered HTML for the default display for the my_view View.')]
+    #[CLI\Usage(name: 'drush views:execute my_view page_1 3 --count', description: 'Show a count of my_view:page_1 where the first contextual filter value is 3.')]
+    #[CLI\Usage(name: 'drush views:execute my_view page_1 3,foo', description: "Show the rendered HTML of my_view:page_1 where the first two contextual filter values are 3 and 'foo' respectively.")]
+    #[CLI\ValidateEntityLoad(entityType: 'view', argumentName: 'view_name')]
+    #[CLI\ValidateModulesEnabled(modules: ['views'])]
+    public function execute(string $view_name, $display = null, $view_args = null, $options = ['count' => 0, 'show-admin-links' => false]): ?string
     {
 
         $view = Views::getView($view_name);
@@ -255,10 +238,8 @@ class ViewsCommands extends DrushCommands
      *   message: Message
      * @aliases va,views-analyze
      * @validate-module-enabled views
-     *
-     * @return RowsOfFields
      */
-    public function analyze()
+    public function analyze(): ?RowsOfFields
     {
         $messages = null;
         $messages_count = 0;
@@ -280,19 +261,17 @@ class ViewsCommands extends DrushCommands
             return new RowsOfFields($rows);
         } else {
             $this->logger()->success(dt('There are no views to analyze'));
+            return null;
         }
     }
 
     /**
      * Enable the specified views.
-     *
-     * @command views:enable
-     * @param string $views A comma delimited list of view names.
-     * @validate-entity-load view views
-     * @usage drush ven frontpage,taxonomy_term
-     *   Enable the frontpage and taxonomy_term views.
-     * @aliases ven,views-enable
      */
+    #[CLI\Command(name: self::ENABLE, aliases: ['ven', 'views-enable'])]
+    #[CLI\Argument(name: 'views', description: 'A comma delimited list of view names.')]
+    #[CLI\Usage(name: 'drush ven frontpage,taxonomy_term', description: 'Enable the frontpage and taxonomy_term views.')]
+    #[CLI\ValidateEntityLoad(entityType: 'view', argumentName: 'views')]
     public function enable(string $views): void
     {
         $view_names = StringUtils::csvToArray($views);
@@ -307,14 +286,11 @@ class ViewsCommands extends DrushCommands
 
     /**
      * Disable the specified views.
-     *
-     * @command views:disable
-     * @validate-entity-load view views
-     * @param string $views A comma delimited list of view names.
-     * @usage drush vdis frontpage taxonomy_term
-     *   Disable the frontpage and taxonomy_term views.
-     * @aliases vdis,views-disable
      */
+    #[CLI\Command(name: self::DISABLE, aliases: ['vdis', 'views-disable'])]
+    #[CLI\ValidateEntityLoad(entityType: 'view', argumentName: 'views')]
+    #[CLI\Argument(name: 'views', description: 'A comma delimited list of view names.')]
+    #[CLI\Usage(name: 'drush vdis frontpage taxonomy_term', description: 'Disable the frontpage and taxonomy_term views.')]
     public function disable(string $views): void
     {
         $view_names = StringUtils::csvToArray($views);
@@ -329,9 +305,8 @@ class ViewsCommands extends DrushCommands
 
     /**
      * Adds a cache clear option for views.
-     *
-     * @hook on-event cache-clear
      */
+    #[CLI\Hook(type: HookManager::ON_EVENT, target: 'cache-clear')]
     public function cacheClear(&$types, $include_bootstrapped_types): void
     {
         if ($include_bootstrapped_types && $this->getModuleHandler()->moduleExists('views')) {

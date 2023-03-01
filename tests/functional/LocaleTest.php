@@ -2,6 +2,7 @@
 
 namespace Unish;
 
+use Drush\Drupal\Commands\core\LocaleCommands;
 use Symfony\Component\Filesystem\Path;
 
 /**
@@ -27,7 +28,7 @@ class LocaleTest extends CommandUnishTestCase
 
         $this->sourceFile = Path::join(__DIR__, '/resources/drush_empty_module.nl.po');
 
-        $this->drush('locale:import', ['nl', $this->sourceFile]);
+        $this->drush(LocaleCommands::IMPORT, ['nl', $this->sourceFile]);
         $this->assertTranslation('Drush Empty Module', 'NL Drush Empty Module', 'nl', 0);
     }
 
@@ -40,25 +41,25 @@ class LocaleTest extends CommandUnishTestCase
     public function testLocaleExport()
     {
         // Export standard translations.
-        $this->drush('locale:export', ['nl'], ['types' => 'not-customized']);
+        $this->drush(LocaleCommands::EXPORT, ['nl'], ['types' => 'not-customized']);
         $this->assertGettextTranslation('Drush Empty Module', 'NL Drush Empty Module');
 
         // Export customized translations.
         $this->drush('sql:query', ["UPDATE locales_target SET translation = 'CUSTOM Drush Empty Module', customized = 1"]);
         $this->assertTranslation('Drush Empty Module', 'CUSTOM Drush Empty Module', 'nl', 1);
-        $this->drush('locale:export', ['nl'], ['types' => 'customized']);
+        $this->drush(LocaleCommands::EXPORT, ['nl'], ['types' => 'customized']);
 
         // Export untranslated strings.
         $this->drush('sql:query', ["INSERT INTO locales_source (source) VALUES ('Something untranslated')"]);
-        $this->drush('locale:export', ['nl'], ['types' => 'not-translated']);
+        $this->drush(LocaleCommands::EXPORT, ['nl'], ['types' => 'not-translated']);
 
         // Export all.
-        $this->drush('locale:export', ['nl']);
+        $this->drush(LocaleCommands::EXPORT, ['nl']);
         $this->assertGettextTranslation('Drush Empty Module', 'CUSTOM Drush Empty Module');
         $this->assertGettextTranslation('Something untranslated', '');
 
         // Export template file.
-        $this->drush('locale:export', ['nl'], ['template' => null]);
+        $this->drush(LocaleCommands::EXPORT, ['nl'], ['template' => null]);
         $this->assertGettextTranslation('Drush Empty Module', '');
         $this->assertGettextTranslation('Something untranslated', '');
     }
@@ -68,31 +69,31 @@ class LocaleTest extends CommandUnishTestCase
         // Import without override.
         $this->drush('sql:query', ["UPDATE locales_target SET translation = 'NO Drush Empty Module'"]);
         $this->assertTranslation('Drush Empty Module', 'NO Drush Empty Module', 'nl', 0);
-        $this->drush('locale:import', ['nl', $this->sourceFile], ['override' => 'none']);
+        $this->drush(LocaleCommands::IMPORT, ['nl', $this->sourceFile], ['override' => 'none']);
         $this->assertTranslation('Drush Empty Module', 'NO Drush Empty Module', 'nl', 0);
 
         // Import with override.
         $this->drush('sql:query', ["UPDATE locales_target SET translation = 'NO Drush Empty Module'"]);
         $this->assertTranslation('Drush Empty Module', 'NO Drush Empty Module', 'nl', 0);
-        $this->drush('locale:import', ['nl', $this->sourceFile], ['override' => 'not-customized']);
+        $this->drush(LocaleCommands::IMPORT, ['nl', $this->sourceFile], ['override' => 'not-customized']);
         $this->assertTranslation('Drush Empty Module', 'NL Drush Empty Module', 'nl', 0);
 
         // Import without override of custom translation
         $this->drush('sql:query', ["UPDATE locales_target SET translation = 'NO Drush Empty Module', customized = 1"]);
         $this->assertTranslation('Drush Empty Module', 'NO Drush Empty Module', 'nl', 1);
-        $this->drush('locale:import', ['nl', $this->sourceFile], ['override' => 'not-customized']);
+        $this->drush(LocaleCommands::IMPORT, ['nl', $this->sourceFile], ['override' => 'not-customized']);
         $this->assertTranslation('Drush Empty Module', 'NO Drush Empty Module', 'nl', 1);
 
         // Import with override of custom translation.
         $this->drush('sql:query', ["UPDATE locales_target SET translation = 'NO Drush Empty Module', customized = 1"]);
         $this->assertTranslation('Drush Empty Module', 'NO Drush Empty Module', 'nl', 1);
-        $this->drush('locale:import', ['nl', $this->sourceFile], ['override' => 'customized']);
+        $this->drush(LocaleCommands::IMPORT, ['nl', $this->sourceFile], ['override' => 'customized']);
         $this->assertTranslation('Drush Empty Module', 'NL Drush Empty Module', 'nl', 0);
 
         // Import with override of custom translation as customized.
         $this->drush('sql:query', ["UPDATE locales_target SET translation = 'NO Drush Empty Module', customized = 1"]);
         $this->assertTranslation('Drush Empty Module', 'NO Drush Empty Module', 'nl', 1);
-        $this->drush('locale:import', ['nl', $this->sourceFile], ['type' => 'customized', 'override' => 'customized']);
+        $this->drush(LocaleCommands::IMPORT, ['nl', $this->sourceFile], ['type' => 'customized', 'override' => 'customized']);
         $this->assertTranslation('Drush Empty Module', 'NL Drush Empty Module', 'nl', 1);
     }
 

@@ -2,6 +2,7 @@
 
 namespace Drush\Drupal\Commands\config;
 
+use Consolidation\AnnotatedCommand\Hooks\HookManager;
 use Drupal\Core\Config\ConfigDirectoryNotDefinedException;
 use Drupal\Core\Config\ImportStorageTransformer;
 use Consolidation\AnnotatedCommand\CommandError;
@@ -16,7 +17,7 @@ use Drupal\Core\Config\FileStorage;
 use Drupal\Core\Config\StorageComparer;
 use Drupal\Core\Config\StorageInterface;
 use Drupal\Core\Site\Settings;
-use Drush\Boot\DrupalBootLevels;
+use Drush\Attributes as CLI;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Drush\Exec\ExecTrait;
@@ -30,11 +31,19 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Filesystem\Path;
 use Symfony\Component\Yaml\Parser;
 
-class ConfigCommands extends DrushCommands implements StdinAwareInterface, SiteAliasManagerAwareInterface
+final class ConfigCommands extends DrushCommands implements StdinAwareInterface, SiteAliasManagerAwareInterface
 {
     use StdinAwareTrait;
     use ExecTrait;
     use SiteAliasManagerAwareTrait;
+
+    const INTERACT_CONFIG_NAME = 'interact-config-name';
+    const VALIDATE_CONFIG_NAME = 'validate-config-name';
+    const GET = 'config:get';
+    const SET = 'config:set';
+    const EDIT = 'config:edit';
+    const DELETE = 'config:delete';
+    const STATUS = 'config:status';
 
     /**
      * @var ConfigFactoryInterface
@@ -110,21 +119,17 @@ class ConfigCommands extends DrushCommands implements StdinAwareInterface, SiteA
 
     /**
      * Display a config value, or a whole configuration object.
-     *
-     * @command config:get
-     * @validate-config-name
-     * @interact-config-name
-     * @param $config_name The config object name, for example <info>system.site</info>.
-     * @param $key The config key, for example <info>page.front</info>. Optional.
-     * @option source The config storage source to read. Additional labels may be defined in settings.php.
-     * @option include-overridden Apply module and settings.php overrides to values.
-     * @usage drush config:get system.site
-     *   Displays the system.site config.
-     * @usage drush config:get system.site page.front
-     *   Gets system.site:page.front value.
-     * @aliases cget,config-get
-     * @complete configComplete
      */
+    #[CLI\Command(name: self::GET, aliases: ['cget','config-get'])]
+    #[CLI\Argument(name: 'config_name', description: 'The config object name, for example <info>system.site</info>.')]
+    #[CLI\Argument(name: 'key', description: 'The config key, for example <info>page.front</info>. Optional.')]
+    #[CLI\Option(name: 'source', description: 'The config storage source to read.')]
+    #[CLI\Option(name: 'include-overridden', description: 'Apply module and settings.php overrides to values.')]
+    #[CLI\Usage(name: 'drush config:get system.site', description: 'Displays the system.site config.')]
+    #[CLI\Usage(name: 'drush config:get system.site page.front', description: 'Gets system.site:page.front value.')]
+    #[CLI\Complete(method_name_or_callable: 'configComplete')]
+    #[CLI\ValidateConfigName()]
+    #[CLI\InteractConfigName()]
     public function get($config_name, $key = '', $options = ['format' => 'yaml', 'source' => 'active', 'include-overridden' => false])
     {
         // Displaying overrides only applies to active storage.
@@ -137,29 +142,20 @@ class ConfigCommands extends DrushCommands implements StdinAwareInterface, SiteA
 
     /**
      * Save a config value directly. Does not perform a config import.
-     *
-     * @command config:set
-     * @validate-config-name
-     * @todo @interact-config-name deferred until we have interaction for key.
-     * @param $config_name The config object name, for example <info>system.site</info>.
-     * @param $key The config key, for example <info>page.front</info>. Use <info>?</info> if you are updating multiple top-level keys.
-     * @param $value The value to assign to the config key. Use <info>-</info> to read from Stdin.
-     * @option input-format Format to parse the object. Recognized values: <info>string</info>, <info>yaml</info>. Since JSON is a subset of YAML, $value may be in JSON format.
-     * @usage drush config:set system.site name MySite
-     *   Sets a value for the key <info>name</info> of <info>system.site</info> config object.
-     * @usage drush config:set system.site page.front '/path/to/page'
-     *   Sets the given URL path as value for the config item with key <info>page.front</info> of <info>system.site</info> config object.
-     * @usage drush config:set system.site '[]'
-     *   Sets the given key to an empty array.
-     * @usage drush config:set --input-format=yaml user.role.authenticated permissions [foo,bar]
-     *   Use a sequence as value for the key <info>permissions</info> of <info>user.role.authenticated</info> config object.
-     * @usage drush config:set --input-format=yaml system.site page {403: '403', front: home}
-     *   Use a mapping as value for the key <info>page</info> of <info>system.site</info> config object.
-     * @usage drush config:set --input-format=yaml user.role.authenticated ? "{label: 'Auth user', weight: 5}"
-     *   Update two top level keys (label, weight) in the <info>system.site</info> config object.
-     * @aliases cset,config-set
-     * @complete configComplete
      */
+    #[CLI\Command(name: self::SET, aliases: ['cset', 'config-set'])]
+    #[CLI\Argument(name: 'config_name', description: 'The config object name, for example <info>system.site</info>.')]
+    #[CLI\Argument(name: 'key', description: 'The config key, for example <info>page.front</info>. Use <info>?</info> if you are updating multiple top-level keys.')]
+    #[CLI\Argument(name: 'value', description: 'The value to assign to the config key. Use <info>-</info> to read from Stdin.')]
+    #[CLI\Option(name: 'input-format', description: 'Format to parse the object. Recognized values: <info>string</info>, <info>yaml</info>. Since JSON is a subset of YAML, $value may be in JSON format.', suggestedValues: ['string', 'json'])]
+    #[CLI\Usage(name: 'drush config:set system.site name MySite', description: 'Sets a value for the key <info>name</info> of <info>system.site</info> config object.')]
+    #[CLI\Usage(name: 'drush config:set system.site page.front /path/to/page', description: 'Sets the given URL path as value for the config item with key <info>page.front</info> of <info>system.site</info> config object.')]
+    #[CLI\Usage(name: 'drush config:set system.site \'[]\'', description: 'Sets the given key to an empty array.')]
+    #[CLI\Usage(name: 'drush config:set --input-format=yaml user.role.authenticated permissions [foo,bar]', description: 'Use a sequence as value for the key <info>permissions</info> of <info>user.role.authenticated</info> config object.')]
+    #[CLI\Usage(name: "drush config:set --input-format=yaml system.site page {403: '403', front: home}", description: 'Use a mapping as value for the key <info>page</info> of <info>system.site</info> config object.')]
+    #[CLI\Usage(name: 'drush config:set --input-format=yaml user.role.authenticated ? "{label: \'Auth user\', weight: 5}"', description: 'Update two top level keys (label, weight) in the <info>system.site</info> config object.')]
+    #[CLI\Complete(method_name_or_callable: 'configComplete')]
+    #[CLI\ValidateConfigName(argumentName: 'config_name')]
     public function set($config_name, $key, $value, $options = ['input-format' => 'string'])
     {
         $data = $value;
@@ -212,24 +208,17 @@ class ConfigCommands extends DrushCommands implements StdinAwareInterface, SiteA
 
     /**
      * Open a config file in a text editor. Edits are imported after closing editor.
-     *
-     * @command config:edit
-     * @validate-config-name
-     * @interact-config-name
-     * @param $config_name The config object name, for example <info>system.site</info>.
-     * @optionset_get_editor
-     * @allow_additional_options config-import
-     * @hidden-options source,partial
-     * @usage drush config:edit image.style.large
-     *   Edit the image style configurations.
-     * @usage drush config:edit
-     *   Choose a config file to edit.
-     * @usage drush --bg config-edit image.style.large
-     *   Return to shell prompt as soon as the editor window opens.
-     * @aliases cedit,config-edit
-     * @validate-module-enabled config
-     * @complete configComplete
      */
+    #[CLI\Command(name: self::EDIT, aliases: ['cedit', 'config-edit'])]
+    #[CLI\Argument(name: 'config_name', description: 'The config object name, for example <info>system.site</info>.')]
+    #[CLI\Usage(name: 'drush config:edit image.style.large', description: 'Edit the image style configurations.')]
+    #[CLI\Usage(name: 'drush config:edit', description: 'Choose a config file to edit.')]
+    #[CLI\Usage(name: 'drush --bg config-edit image.style.large', description: 'Return to shell prompt as soon as the editor window opens.')]
+    #[CLI\OptionsetGetEditor()]
+    #[CLI\ValidateModulesEnabled(modules: ['config'])]
+    #[CLI\ValidateConfigName()]
+    #[CLI\InteractConfigName()]
+    #[CLI\Complete(method_name_or_callable: 'configComplete')]
     public function edit($config_name, $options = []): void
     {
         $config = $this->getConfigFactory()->get($config_name);
@@ -260,19 +249,15 @@ class ConfigCommands extends DrushCommands implements StdinAwareInterface, SiteA
 
     /**
      * Delete a configuration key, or a whole object(s).
-     *
-     * @command config:delete
-     * @validate-config-name
-     * @interact-config-name
-     * @param $config_name The config object name(s). Delimit multiple with commas.
-     * @param $key A config key to clear, May not be used with multiple config names.
-     * @usage drush config:delete system.site,system.rss
-     *   Delete the system.site and system.rss config objects.
-     * @usage drush config:delete system.site page.front
-     *   Delete the 'page.front' key from the system.site object.
-     * @aliases cdel,config-delete
-     * @complete configComplete
      */
+    #[CLI\Command(name: self::DELETE, aliases: ['cdel', 'config-delete'])]
+    #[CLI\Argument(name: 'config_name', description: 'The config object name(s). Delimit multiple with commas.')]
+    #[CLI\Argument(name: 'key', description: 'A config key to clear, May not be used with multiple config names.')]
+    #[CLI\Usage(name: 'drush config:delete system.site,system.rss', description: 'Delete the system.site and system.rss config objects.')]
+    #[CLI\Usage(name: 'drush config:delete system.site page.front', description: "Delete the 'page.front' key from the system.site object.")]
+    #[CLI\Complete(method_name_or_callable: 'configComplete')]
+    #[CLI\ValidateConfigName()]
+    #[CLI\InteractConfigName()]
     public function delete($config_name, $key = null): void
     {
         if ($key) {
@@ -292,27 +277,18 @@ class ConfigCommands extends DrushCommands implements StdinAwareInterface, SiteA
 
     /**
      * Display status of configuration (differences between the filesystem configuration and database configuration).
-     *
-     * @command config:status
-     * @option state  A comma-separated list of states to filter results.
-     * @option prefix Prefix The config prefix. For example, <info>system</info>. No prefix will return all names in the system.
-     * @usage drush config:status
-     *   Display configuration items that need to be synchronized.
-     * @usage drush config:status --state=Identical
-     *   Display configuration items that are in default state.
-     * @usage drush config:status --state='Only in sync dir' --prefix=node.type.
-     *   Display all content types that would be created in active storage on configuration import.
-     * @usage drush config:status --state=Any --format=list
-     *   List all config names.
-     * @usage drush config:status 2>&amp;1 | grep "No differences"
-     *   Check there are no differences between database and exported config. Useful for CI.
-     * @field-labels
-     *   name: Name
-     *   state: State
-     * @default-fields name,state
-     * @aliases cst,config-status
-     * @filter-default-field name
      */
+    #[CLI\Command(name: self::STATUS, aliases: ['cst', 'config-status'])]
+    #[CLI\Option(name: 'state', description: 'A comma-separated list of states to filter results.')]
+    #[CLI\Option(name: 'prefix', description: 'The config prefix. For example, <info>system</info>. No prefix will return all names in the system.')]
+    #[CLI\Usage(name: 'drush config:status', description: 'Display configuration items that need to be synchronized.')]
+    #[CLI\Usage(name: 'drush config:status --state=Identical', description: 'Display configuration items that are in default state.')]
+    #[CLI\Usage(name: "drush config:status --state='Only in sync dir' --prefix=node.type.", description: 'Display all content types that would be created in active storage on configuration import.')]
+    #[CLI\Usage(name: 'drush config:status --state=Any --format=list', description: 'List all config names.')]
+    #[CLI\Usage(name: 'drush config:status 2>&amp;1 | grep "No differences"', description: 'Check there are no differences between database and exported config. Useful for CI.')]
+    #[CLI\FieldLabels(labels: ['name' => 'Name', 'state' => 'State'])]
+    #[CLI\DefaultTableFields(fields: ['name', 'state'])]
+    #[CLI\FilterDefaultField(field: 'name')]
     public function status($options = ['state' => 'Only in DB,Only in sync dir,Different', 'prefix' => self::REQ]): ?RowsOfFields
     {
         $config_list = array_fill_keys(
@@ -386,11 +362,8 @@ class ConfigCommands extends DrushCommands implements StdinAwareInterface, SiteA
      * Directory path is determined based on the following precedence:
      *   1. User-provided $directory.
      *   2. Default sync directory
-     *
-     * @param string $directory
-     *   A configuration directory.
      */
-    public static function getDirectory($directory = null): string
+    public static function getDirectory(?string $directory = null): string
     {
         $return = null;
         // If the user provided a directory, use it.
@@ -450,8 +423,6 @@ class ConfigCommands extends DrushCommands implements StdinAwareInterface, SiteA
      *
      * @param array $config_changes
      *   An array of changes keyed by collection.
-     *
-     * @return Table A Symfony table object.
      */
     public static function configChangesTable(array $config_changes, OutputInterface $output, $use_color = true): Table
     {
@@ -500,9 +471,7 @@ class ConfigCommands extends DrushCommands implements StdinAwareInterface, SiteA
         }
     }
 
-    /**
-     * @hook interact @interact-config-name
-     */
+    #[CLI\Hook(type: HookManager::INTERACT, selector: self::INTERACT_CONFIG_NAME)]
     public function interactConfigName($input, $output): void
     {
         if (empty($input->getArgument('config_name'))) {
@@ -514,17 +483,11 @@ class ConfigCommands extends DrushCommands implements StdinAwareInterface, SiteA
 
     /**
      * Validate that a config name is valid.
-     *
-     * If the argument to be validated is not named $config_name, pass the
-     * argument name as the value of the annotation.
-     *
-     * @hook validate @validate-config-name
-     * @param CommandData $commandData
-     * @return CommandError|null
      */
-    public function validateConfigName(CommandData $commandData)
+    #[CLI\Hook(type: HookManager::ARGUMENT_VALIDATOR, selector: self::VALIDATE_CONFIG_NAME)]
+    public function validateConfigName(CommandData $commandData): ?CommandError
     {
-        $arg_name = $commandData->annotationData()->get('validate-config-name', null) ?: 'config_name';
+        $arg_name = $commandData->annotationData()->get(self::VALIDATE_CONFIG_NAME);
         $config_name = $commandData->input()->getArgument($arg_name);
         $names = StringUtils::csvToArray($config_name);
         foreach ($names as $name) {
@@ -534,6 +497,7 @@ class ConfigCommands extends DrushCommands implements StdinAwareInterface, SiteA
                 return new CommandError($msg);
             }
         }
+        return null;
     }
 
     /**
@@ -576,12 +540,6 @@ class ConfigCommands extends DrushCommands implements StdinAwareInterface, SiteA
 
     /**
      * Get diff between two config sets.
-     *
-     * @param StorageInterface $destination_storage
-     * @param StorageInterface $source_storage
-     * @param OutputInterface $output
-     * @return array|bool
-     *   An array of strings containing the diff.
      */
     public static function getDiff(StorageInterface $destination_storage, StorageInterface $source_storage, OutputInterface $output): string
     {
