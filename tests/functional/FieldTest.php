@@ -86,7 +86,7 @@ class FieldTest extends CommandUnishTestCase
         $this->assertStringContainsString('The field-name option is required.', $this->getErrorOutputRaw());
 
         $this->drush('field:delete', ['unish_article', 'alpha'], ['field-name' => 'field_testZZZZZ'], null, null, self::EXIT_ERROR);
-        $this->assertStringContainsString("Field with name 'field_testZZZZZ' does not exist on bundle 'alpha'", $this->getErrorOutputRaw());
+        $this->assertStringContainsString("Field with name 'field_testZZZZZ' does not exist.", $this->getErrorOutputRaw());
         $this->drush('field:delete', ['unish_article', 'alpha'], ['field-name' => 'field_test5']);
         $this->assertStringContainsString(" The field Test has been deleted from the Alpha bundle.", $this->getErrorOutputRaw());
 
