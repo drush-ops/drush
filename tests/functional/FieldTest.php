@@ -89,6 +89,11 @@ class FieldTest extends CommandUnishTestCase
         $this->assertStringContainsString("Field with name 'field_testZZZZZ' does not exist on bundle 'alpha'", $this->getErrorOutputRaw());
         $this->drush('field:delete', ['unish_article', 'alpha'], ['field-name' => 'field_test5']);
         $this->assertStringContainsString(" The field Test has been deleted from the Alpha bundle.", $this->getErrorOutputRaw());
+
+        // All bundles
+        $this->drush('field:create', ['unish_article', 'alpha'], ['field-label' => 'Test', 'field-name' => 'field_test5', 'field-description' => 'baz', 'field-type' => 'entity_reference', 'is-required' => true, 'field-widget' => 'entity_reference_autocomplete', 'cardinality' => FieldStorageDefinitionInterface::CARDINALITY_UNLIMITED, 'target-type' => 'unish_article', 'target-bundle' => 'beta']);
+        $this->drush('field:delete', ['unish_article'], ['field-name' => 'field_test5', 'all-bundles' => true]);
+        $this->assertStringContainsString("The field Test has been deleted from the Alpha bundle.", $this->getErrorOutputRaw());
     }
 
     public function testFieldBaseInfo()
