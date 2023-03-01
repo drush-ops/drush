@@ -16,7 +16,7 @@ use Drupal\Core\Queue\SuspendQueueException;
 use Drush\Attributes as CLI;
 use Drush\Commands\DrushCommands;
 
-class QueueCommands extends DrushCommands
+final class QueueCommands extends DrushCommands
 {
     const VALIDATE_QUEUE = 'validate-queue';
     const RUN = 'queue:run';

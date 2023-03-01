@@ -8,10 +8,12 @@ use Drush\Commands\DrushCommands;
 
 class BatchCommands extends DrushCommands
 {
+    const PROCESS = 'batch:process';
+
     /**
      * Process operations in the specified batch set.
      */
-    #[CLI\Command(name: 'batch:process', aliases: ['batch-process'])]
+    #[CLI\Command(name: self::PROCESS, aliases: ['batch-process'])]
     #[CLI\Argument(name: 'batch_id', description: 'The batch id that will be processed.')]
     #[CLI\Help(hidden: true)]
     public function process($batch_id, $options = ['format' => 'json']): UnstructuredListData

@@ -2,6 +2,8 @@
 
 namespace Unish;
 
+use Drush\Commands\core\CoreCommands;
+use Drush\Drupal\Commands\core\DrupalCommands;
 use Symfony\Component\Filesystem\Path;
 use Symfony\Component\Yaml\Yaml;
 
@@ -19,12 +21,12 @@ class CoreTest extends UnishIntegrationTestCase
             'ignore' => 'cron,http requests,update,update_core,trusted_host_patterns', // no network access when running in tests, so ignore these
         ];
         // Verify that there are no severity 2 items in the status report
-        $this->drush('core-requirements', [], $options + ['severity' => '2', 'pipe' => true]);
+        $this->drush(DrupalCommands::REQUIREMENTS, [], $options + ['severity' => '2', 'pipe' => true]);
         $output = $this->getOutput();
         $this->assertEquals('', $output);
 
         // Verify the severity of some checks
-        $this->drush('core-requirements', [], $options + ['format' => 'json', 'fields' => 'sid']);
+        $this->drush(DrupalCommands::REQUIREMENTS, [], $options + ['format' => 'json', 'fields' => 'sid']);
         $loaded = $this->getOutputFromJSON();
         $expected = [
             'php' => ['sid' => '-1'],
@@ -67,11 +69,11 @@ class CoreTest extends UnishIntegrationTestCase
 
     public function testRoute()
     {
-        $this->drush('route', [], ['format' => 'json']);
+        $this->drush(DrupalCommands::ROUTE, [], ['format' => 'json']);
         $json = $this->getOutputFromJSON();
         $this->assertArrayHasKey('user.login', $json);
         $this->assertSame('/user/login', $json['user.login']);
-        $this->drush('route', [], ['path' => '/user/login', 'format' => 'json']);
+        $this->drush(DrupalCommands::ROUTE, [], ['path' => '/user/login', 'format' => 'json']);
         $json = $this->getOutputFromJSON();
         $this->assertSame('/user/login', $json['path']);
         $this->assertSame('user.login', $json['name']);
@@ -79,7 +81,7 @@ class CoreTest extends UnishIntegrationTestCase
         $this->assertSame("FALSE", $json['requirements']['_user_is_logged_in']);
         $this->assertSame('access_check.user.login_status', $json['options']['_access_checks'][0]);
 
-        $this->drush('route', [], ['name' => 'user.login', 'format' => 'json']);
+        $this->drush(DrupalCommands::ROUTE, [], ['name' => 'user.login', 'format' => 'json']);
         $json = $this->getOutputFromJSON();
         $this->assertSame('/user/login', $json['path']);
     }

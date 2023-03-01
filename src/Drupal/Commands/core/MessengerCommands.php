@@ -9,7 +9,7 @@ use Drush\Boot\DrupalBootLevels;
 use Drush\Commands\DrushCommands;
 use Drush\Drupal\DrupalUtil;
 
-class MessengerCommands extends DrushCommands
+final class MessengerCommands extends DrushCommands
 {
     protected MessengerInterface $messenger;
 
