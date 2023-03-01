@@ -5,7 +5,6 @@ namespace Drush\Command;
 use Symfony\Component\Console\ConsoleEvents;
 use Symfony\Component\Console\Event\ConsoleCommandEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Drush\Preflight\LegacyPreflight;
 
 class GlobalOptionsEventListener implements EventSubscriberInterface
 {
@@ -28,7 +27,6 @@ class GlobalOptionsEventListener implements EventSubscriberInterface
      */
     public function setGlobalOptions(ConsoleCommandEvent $event): void
     {
-        /* @var Input $input */
         $input = $event->getInput();
         $output = $event->getOutput();
 
