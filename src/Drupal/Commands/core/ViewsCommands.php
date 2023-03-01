@@ -238,10 +238,8 @@ final class ViewsCommands extends DrushCommands
      *   message: Message
      * @aliases va,views-analyze
      * @validate-module-enabled views
-     *
-     * @return RowsOfFields
      */
-    public function analyze()
+    public function analyze(): ?RowsOfFields
     {
         $messages = null;
         $messages_count = 0;
@@ -263,6 +261,7 @@ final class ViewsCommands extends DrushCommands
             return new RowsOfFields($rows);
         } else {
             $this->logger()->success(dt('There are no views to analyze'));
+            return null;
         }
     }
 
