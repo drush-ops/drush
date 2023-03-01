@@ -154,12 +154,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/consolidation/annotated-command.git",
-                "reference": "662f58aa8dc5df6b9f469f7ce2f61b5c50606de2"
+                "reference": "8fefdcff0cdb61bc04e34323f626404d536786a5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/consolidation/annotated-command/zipball/662f58aa8dc5df6b9f469f7ce2f61b5c50606de2",
-                "reference": "662f58aa8dc5df6b9f469f7ce2f61b5c50606de2",
+                "url": "https://api.github.com/repos/consolidation/annotated-command/zipball/8fefdcff0cdb61bc04e34323f626404d536786a5",
+                "reference": "8fefdcff0cdb61bc04e34323f626404d536786a5",
                 "shasum": ""
             },
             "require": {
@@ -202,7 +202,7 @@
                 "issues": "https://github.com/consolidation/annotated-command/issues",
                 "source": "https://github.com/consolidation/annotated-command/tree/4.x"
             },
-            "time": "2023-02-28T14:14:11+00:00"
+            "time": "2023-02-28T15:36:38+00:00"
         },
         {
             "name": "consolidation/config",
@@ -1947,16 +1947,16 @@
         },
         {
             "name": "symfony/deprecation-contracts",
-            "version": "v3.2.0",
+            "version": "v3.2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/deprecation-contracts.git",
-                "reference": "1ee04c65529dea5d8744774d474e7cbd2f1206d3"
+                "reference": "0121954c80fd17c18cf050fe73360e63bb43d4fb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/deprecation-contracts/zipball/1ee04c65529dea5d8744774d474e7cbd2f1206d3",
-                "reference": "1ee04c65529dea5d8744774d474e7cbd2f1206d3",
+                "url": "https://api.github.com/repos/symfony/deprecation-contracts/zipball/0121954c80fd17c18cf050fe73360e63bb43d4fb",
+                "reference": "0121954c80fd17c18cf050fe73360e63bb43d4fb",
                 "shasum": ""
             },
             "require": {
@@ -1994,7 +1994,7 @@
             "description": "A generic function and convention to trigger deprecation notices",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/deprecation-contracts/tree/v3.2.0"
+                "source": "https://github.com/symfony/deprecation-contracts/tree/v3.2.1"
             },
             "funding": [
                 {
@@ -2010,7 +2010,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-11-25T10:21:52+00:00"
+            "time": "2023-02-02T07:48:03+00:00"
         },
         {
             "name": "symfony/event-dispatcher",
@@ -2097,16 +2097,16 @@
         },
         {
             "name": "symfony/event-dispatcher-contracts",
-            "version": "v3.2.0",
+            "version": "v3.2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/event-dispatcher-contracts.git",
-                "reference": "0782b0b52a737a05b4383d0df35a474303cabdae"
+                "reference": "2265d0faa6d870182dd8c65e40d3dfbc34e79b26"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/event-dispatcher-contracts/zipball/0782b0b52a737a05b4383d0df35a474303cabdae",
-                "reference": "0782b0b52a737a05b4383d0df35a474303cabdae",
+                "url": "https://api.github.com/repos/symfony/event-dispatcher-contracts/zipball/2265d0faa6d870182dd8c65e40d3dfbc34e79b26",
+                "reference": "2265d0faa6d870182dd8c65e40d3dfbc34e79b26",
                 "shasum": ""
             },
             "require": {
@@ -2156,7 +2156,7 @@
                 "standards"
             ],
             "support": {
-                "source": "https://github.com/symfony/event-dispatcher-contracts/tree/v3.2.0"
+                "source": "https://github.com/symfony/event-dispatcher-contracts/tree/v3.2.1"
             },
             "funding": [
                 {
@@ -2172,7 +2172,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-11-25T10:21:52+00:00"
+            "time": "2023-02-02T07:48:03+00:00"
         },
         {
             "name": "symfony/filesystem",
@@ -2856,16 +2856,16 @@
         },
         {
             "name": "symfony/service-contracts",
-            "version": "v3.2.0",
+            "version": "v3.2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/service-contracts.git",
-                "reference": "aac98028c69df04ee77eb69b96b86ee51fbf4b75"
+                "reference": "aee5f59db63978f7785290b94d2f12286b1b590a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/service-contracts/zipball/aac98028c69df04ee77eb69b96b86ee51fbf4b75",
-                "reference": "aac98028c69df04ee77eb69b96b86ee51fbf4b75",
+                "url": "https://api.github.com/repos/symfony/service-contracts/zipball/aee5f59db63978f7785290b94d2f12286b1b590a",
+                "reference": "aee5f59db63978f7785290b94d2f12286b1b590a",
                 "shasum": ""
             },
             "require": {
@@ -2921,7 +2921,7 @@
                 "standards"
             ],
             "support": {
-                "source": "https://github.com/symfony/service-contracts/tree/v3.2.0"
+                "source": "https://github.com/symfony/service-contracts/tree/v3.2.1"
             },
             "funding": [
                 {
@@ -2937,7 +2937,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-11-25T10:21:52+00:00"
+            "time": "2023-02-16T12:50:33+00:00"
         },
         {
             "name": "symfony/string",
@@ -7184,16 +7184,16 @@
         },
         {
             "name": "symfony/translation-contracts",
-            "version": "v3.2.0",
+            "version": "v3.2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/translation-contracts.git",
-                "reference": "68cce71402305a015f8c1589bfada1280dc64fe7"
+                "reference": "1f40e77fbb12a16d841688f42fecefd8ceb43ed6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/translation-contracts/zipball/68cce71402305a015f8c1589bfada1280dc64fe7",
-                "reference": "68cce71402305a015f8c1589bfada1280dc64fe7",
+                "url": "https://api.github.com/repos/symfony/translation-contracts/zipball/1f40e77fbb12a16d841688f42fecefd8ceb43ed6",
+                "reference": "1f40e77fbb12a16d841688f42fecefd8ceb43ed6",
                 "shasum": ""
             },
             "require": {
@@ -7245,7 +7245,7 @@
                 "standards"
             ],
             "support": {
-                "source": "https://github.com/symfony/translation-contracts/tree/v3.2.0"
+                "source": "https://github.com/symfony/translation-contracts/tree/v3.2.1"
             },
             "funding": [
                 {
@@ -7261,7 +7261,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-11-25T10:21:52+00:00"
+            "time": "2023-02-16T12:50:33+00:00"
         },
         {
             "name": "symfony/validator",

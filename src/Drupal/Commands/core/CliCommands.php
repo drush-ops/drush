@@ -15,12 +15,15 @@ use Drush\Utils\FsUtils;
 use Psy\Configuration;
 use Psy\VersionUpdater\Checker;
 
-class CliCommands extends DrushCommands
+final class CliCommands extends DrushCommands
 {
+    const DOCS_REPL = 'docs:repl';
+    const PHP = 'php:cli';
+
     /**
      * Drush's PHP Shell.
      */
-    #[CLI\Command(name: 'docs:repl', aliases: ['docs-repl'])]
+    #[CLI\Command(name: self::DOCS_REPL, aliases: ['docs-repl'])]
     #[CLI\Help(hidden: true)]
     #[CLI\Topics(path: '../../../../docs/repl.md')]
     public function docs(): void
@@ -31,10 +34,10 @@ class CliCommands extends DrushCommands
     /**
      * Open an interactive shell on a Drupal site.
      */
-    #[CLI\Command(name: 'php:cli', aliases: ['php,core:cli', 'core-cli'])]
+    #[CLI\Command(name: self::PHP, aliases: ['php,core:cli', 'core-cli'])]
     #[CLI\Option(name: 'version-history', description: 'Use command history based on Drupal version. Default is per site.')]
     #[CLI\Option(name: 'cwd', description: 'A directory to change to before launching the shell. Default is the project root directory')]
-    #[CLI\Topics(topics: ['docs:repl'])]
+    #[CLI\Topics(topics: [self::DOCS_REPL])]
     public function cli(array $options = ['version-history' => false, 'cwd' => self::REQ]): void
     {
         $configuration = new Configuration();
@@ -103,7 +106,7 @@ class CliCommands extends DrushCommands
 
         $ignored_commands = [
             'help',
-            'php:cli',
+            self::PHP,
             'core:cli',
             'php',
             'php:eval',

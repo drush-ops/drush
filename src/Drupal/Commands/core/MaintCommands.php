@@ -6,9 +6,12 @@ use Drupal\Core\State\StateInterface;
 use Drush\Attributes as CLI;
 use Drush\Commands\DrushCommands;
 
-class MaintCommands extends DrushCommands
+final class MaintCommands extends DrushCommands
 {
     const KEY = 'system.maintenance_mode';
+    const GET = 'maint:get';
+    const SET = 'maint:set';
+    const STATUS = 'maint:status';
 
     protected StateInterface $state;
 
@@ -27,7 +30,7 @@ class MaintCommands extends DrushCommands
      *
      * Consider using maint:status instead when chaining commands.
      */
-    #[CLI\Command(name: 'maint:get', aliases: ['mget'])]
+    #[CLI\Command(name: self::GET, aliases: ['mget'])]
     #[CLI\Usage(name: 'drush maint:get', description: 'Print value of maintenance mode in Drupal')]
     #[CLI\Version(version: '11.5')]
     public function get(): string
@@ -39,7 +42,7 @@ class MaintCommands extends DrushCommands
     /**
      * Set maintenance mode.
      */
-    #[CLI\Command(name: 'maint:set', aliases: ['mset'])]
+    #[CLI\Command(name: self::SET, aliases: ['mset'])]
     #[CLI\Argument(name: 'value', description: 'The value to assign to the state key')]
     #[CLI\Usage(name: 'drush maint:set 1', description: 'Put site into Maintenance mode.')]
     #[CLI\Usage(name: 'drush maint:set 0', description: 'Remove site from Maintenance mode.')]
@@ -56,7 +59,7 @@ class MaintCommands extends DrushCommands
      * This commands fails with exit code of 3 when maintenance mode is on. This special
      * exit code distinguishes from a failure to complete.
      */
-    #[CLI\Command(name: 'maint:status', aliases: ['mstatus'])]
+    #[CLI\Command(name: self::STATUS, aliases: ['mstatus'])]
     #[CLI\Usage(name: 'drush maint:status && drush cron', description: 'Only run cron when Drupal is not in maintenance mode.')]
     #[CLI\Version(version: '11.5')]
     public function status(): int

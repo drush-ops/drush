@@ -10,12 +10,15 @@ use Drush\Commands\DrushCommands;
 use Drush\Utils\StringUtils;
 use Symfony\Component\Console\Input\InputInterface;
 
-class ImageCommands extends DrushCommands
+final class ImageCommands extends DrushCommands
 {
+    const FLUSH = 'image:flush';
+    const DERIVE = 'image:derive';
+
     /**
      * Flush all derived images for a given style.
      */
-    #[CLI\Command(name: 'image:flush', aliases: ['if', 'image-flush'])]
+    #[CLI\Command(name: self::FLUSH, aliases: ['if', 'image-flush'])]
     #[CLI\Argument(name: 'style_names', description: 'A comma delimited list of image style machine names. If not provided, user may choose from a list of names.')]
     #[CLI\Option(name: 'all', description: 'Flush all derived images')]
     #[CLI\Usage(name: 'drush image:flush', description: 'Pick an image style and then delete its derivatives.')]
@@ -31,7 +34,7 @@ class ImageCommands extends DrushCommands
         }
     }
 
-    #[CLI\Hook(type: HookManager::INTERACT, target: 'image:flush')]
+    #[CLI\Hook(type: HookManager::INTERACT, target: self::FLUSH)]
     public function interactFlush($input, $output): void
     {
         $styles = array_keys(ImageStyle::loadMultiple());
@@ -49,7 +52,7 @@ class ImageCommands extends DrushCommands
         }
     }
 
-    #[CLI\Hook(type: HookManager::INITIALIZE, target: 'image:flush')]
+    #[CLI\Hook(type: HookManager::INITIALIZE, target: self::FLUSH)]
     public function initFlush(InputInterface $input, AnnotationData $annotationData): void
     {
         // Needed for non-interactive calls.
@@ -62,7 +65,7 @@ class ImageCommands extends DrushCommands
     /**
      * Create an image derivative.
      */
-    #[CLI\Command(name: 'image:derive', aliases: ['id', 'image-derive'])]
+    #[CLI\Command(name: self::DERIVE, aliases: ['id', 'image-derive'])]
     #[CLI\Argument(name: 'style_name', description: 'An image style machine name.')]
     #[CLI\Argument(name: 'source', description: 'Path to a source image. Optionally prepend stream wrapper scheme. Relative paths calculated from Drupal root.')]
     #[CLI\Usage(name: 'drush image:derive thumbnail core/themes/bartik/screenshot.png', description: 'Save thumbnail sized derivative of logo image.')]
