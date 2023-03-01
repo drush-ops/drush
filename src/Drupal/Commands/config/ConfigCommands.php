@@ -39,6 +39,11 @@ final class ConfigCommands extends DrushCommands implements StdinAwareInterface,
 
     const INTERACT_CONFIG_NAME = 'interact-config-name';
     const VALIDATE_CONFIG_NAME = 'validate-config-name';
+    const GET = 'config:get';
+    const SET = 'config:set';
+    const EDIT = 'config:edit';
+    const DELETE = 'config:delete';
+    const STATUS = 'config:status';
 
     /**
      * @var ConfigFactoryInterface
@@ -115,7 +120,7 @@ final class ConfigCommands extends DrushCommands implements StdinAwareInterface,
     /**
      * Display a config value, or a whole configuration object.
      */
-    #[CLI\Command(name: 'config:get', aliases: ['cget','config-get'])]
+    #[CLI\Command(name: self::GET, aliases: ['cget','config-get'])]
     #[CLI\Argument(name: 'config_name', description: 'The config object name, for example <info>system.site</info>.')]
     #[CLI\Argument(name: 'key', description: 'The config key, for example <info>page.front</info>. Optional.')]
     #[CLI\Option(name: 'source', description: 'The config storage source to read.')]
@@ -138,7 +143,7 @@ final class ConfigCommands extends DrushCommands implements StdinAwareInterface,
     /**
      * Save a config value directly. Does not perform a config import.
      */
-    #[CLI\Command(name: 'config:set', aliases: ['cset', 'config-set'])]
+    #[CLI\Command(name: self::SET, aliases: ['cset', 'config-set'])]
     #[CLI\Argument(name: 'config_name', description: 'The config object name, for example <info>system.site</info>.')]
     #[CLI\Argument(name: 'key', description: 'The config key, for example <info>page.front</info>. Use <info>?</info> if you are updating multiple top-level keys.')]
     #[CLI\Argument(name: 'value', description: 'The value to assign to the config key. Use <info>-</info> to read from Stdin.')]
@@ -204,7 +209,7 @@ final class ConfigCommands extends DrushCommands implements StdinAwareInterface,
     /**
      * Open a config file in a text editor. Edits are imported after closing editor.
      */
-    #[CLI\Command(name: 'config:edit', aliases: ['cedit', 'config-edit'])]
+    #[CLI\Command(name: self::EDIT, aliases: ['cedit', 'config-edit'])]
     #[CLI\Argument(name: 'config_name', description: 'The config object name, for example <info>system.site</info>.')]
     #[CLI\Usage(name: 'drush config:edit image.style.large', description: 'Edit the image style configurations.')]
     #[CLI\Usage(name: 'drush config:edit', description: 'Choose a config file to edit.')]
@@ -245,7 +250,7 @@ final class ConfigCommands extends DrushCommands implements StdinAwareInterface,
     /**
      * Delete a configuration key, or a whole object(s).
      */
-    #[CLI\Command(name: 'config:delete', aliases: ['cdel', 'config-delete'])]
+    #[CLI\Command(name: self::DELETE, aliases: ['cdel', 'config-delete'])]
     #[CLI\Argument(name: 'config_name', description: 'The config object name(s). Delimit multiple with commas.')]
     #[CLI\Argument(name: 'key', description: 'A config key to clear, May not be used with multiple config names.')]
     #[CLI\Usage(name: 'drush config:delete system.site,system.rss', description: 'Delete the system.site and system.rss config objects.')]
@@ -273,7 +278,7 @@ final class ConfigCommands extends DrushCommands implements StdinAwareInterface,
     /**
      * Display status of configuration (differences between the filesystem configuration and database configuration).
      */
-    #[CLI\Command(name: 'config:status', aliases: ['cst', 'config-status'])]
+    #[CLI\Command(name: self::STATUS, aliases: ['cst', 'config-status'])]
     #[CLI\Option(name: 'state', description: 'A comma-separated list of states to filter results.')]
     #[CLI\Option(name: 'prefix', description: 'The config prefix. For example, <info>system</info>. No prefix will return all names in the system.')]
     #[CLI\Usage(name: 'drush config:status', description: 'Display configuration items that need to be synchronized.')]
@@ -479,7 +484,7 @@ final class ConfigCommands extends DrushCommands implements StdinAwareInterface,
     /**
      * Validate that a config name is valid.
      */
-    #[CLI\Hook(type: 'validate', selector: self::VALIDATE_CONFIG_NAME)]
+    #[CLI\Hook(type: HookManager::ARGUMENT_VALIDATOR, selector: self::VALIDATE_CONFIG_NAME)]
     public function validateConfigName(CommandData $commandData): ?CommandError
     {
         $arg_name = $commandData->annotationData()->get(self::VALIDATE_CONFIG_NAME);

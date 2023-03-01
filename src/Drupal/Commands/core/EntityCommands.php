@@ -11,8 +11,10 @@ use Drush\Attributes as CLI;
 use Drush\Commands\DrushCommands;
 use Drush\Utils\StringUtils;
 
-class EntityCommands extends DrushCommands
+final class EntityCommands extends DrushCommands
 {
+    const DELETE = 'entity:delete';
+    const SAVE = 'entity:save';
     protected $entityTypeManager;
 
     public function __construct(EntityTypeManagerInterface $entityTypeManager)
@@ -25,7 +27,7 @@ class EntityCommands extends DrushCommands
      *
      * To delete configuration entities, see config:delete command.
      */
-    #[CLI\Command(name: 'entity:delete', aliases: ['edel', 'entity-delete'])]
+    #[CLI\Command(name: self::DELETE, aliases: ['edel', 'entity-delete'])]
     #[CLI\Argument(name: 'entity_type', description: 'An entity machine name.')]
     #[CLI\Argument(name: 'ids', description: 'A comma delimited list of Ids.')]
     #[CLI\Option(name: 'bundle', description: 'Restrict deletion to the specified bundle. Ignored when ids is specified.')]
@@ -80,7 +82,7 @@ class EntityCommands extends DrushCommands
     /**
      * Load and save entities.
      */
-    #[CLI\Command(name: 'entity:save', aliases: ['esav', 'entity-save'])]
+    #[CLI\Command(name: self::SAVE, aliases: ['esav', 'entity-save'])]
     #[CLI\Argument(name: 'entity_type', description: 'An entity machine name.')]
     #[CLI\Argument(name: 'ids', description: 'A comma delimited list of Ids.')]
     #[CLI\Option(name: 'bundle', description: 'Restrict to the specified bundle. Ignored when ids is specified.')]

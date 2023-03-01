@@ -9,8 +9,10 @@ use Drush\Drush;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 
-class JsonapiCommands extends DrushCommands
+final class JsonapiCommands extends DrushCommands
 {
+    const GET = 'jn:get';
+
     /**
      * Execute a JSONAPI request.
      *
@@ -23,7 +25,7 @@ class JsonapiCommands extends DrushCommands
      *   Pretty print JSON by piping to jq. See https://stedolan.github.io/jq/ for lots more jq features.
      * @validate-module-enabled jsonapi
      */
-    #[CLI\Command(name: 'jn:get')]
+    #[CLI\Command(name: self::GET)]
     #[CLI\Argument(name: 'url', description: 'The JSONAPI URL to request.')]
     #[CLI\Usage(name: 'drush jn:get jsonapi/node/article', description: 'Get a list of articles back as JSON.')]
     #[CLI\Usage(name: 'drush jn:get jsonapi/node/article | jq', description: 'Pretty print JSON by piping to jq. See https://stedolan.github.io/jq/ for lots more jq features.')]

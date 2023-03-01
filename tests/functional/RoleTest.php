@@ -2,6 +2,7 @@
 
 namespace Unish;
 
+use Drush\Drupal\Commands\core\RoleCommands;
 use Symfony\Component\Filesystem\Path;
 
 /**
@@ -24,42 +25,42 @@ class RoleTest extends CommandUnishTestCase
         $this->setupModulesForTests(['user_form_test'], Path::join($this->webroot(), 'core/modules/user/tests/modules'));
         $this->drush('pm-install', ['user_form_test']);
 
-        $this->drush('role-list');
+        $this->drush(RoleCommands::LIST);
         $output = $this->getOutput();
         $this->assertStringNotContainsString('cancel other accounts', $output);
 
-        $this->drush('role-list', [], ['filter' => 'cancel other accounts']);
+        $this->drush(RoleCommands::LIST, [], ['filter' => 'cancel other accounts']);
         $output = $this->getOutput();
         $this->assertStringNotContainsString('authenticated', $output);
         $this->assertStringNotContainsString('anonymous', $output);
 
         // Create the role foo.
         $rid = 'foo';
-        $this->drush('role-create', [$rid]);
-        $this->drush('role-list');
+        $this->drush(RoleCommands::CREATE, [$rid]);
+        $this->drush(RoleCommands::LIST);
         $this->assertStringContainsString($rid, $this->getOutput());
 
         // Assert that anon user starts without 'cancel other accounts' perm.
         $perm = 'cancel other accounts';
-        $this->drush('role-list', [], ['format' => 'json']);
+        $this->drush(RoleCommands::LIST, [], ['format' => 'json']);
         $role = $this->getOutputFromJSON($rid);
         $this->assertFalse(in_array($perm, $role['perms']));
 
         // Now grant that perm to foo.
-        $this->drush('role-add-perm', [$rid, 'cancel other accounts']);
-        $this->drush('role-list', [], ['format' => 'json']);
+        $this->drush(RoleCommands::PERM_ADD, [$rid, 'cancel other accounts']);
+        $this->drush(RoleCommands::LIST, [], ['format' => 'json']);
         $role = $this->getOutputFromJSON($rid);
         $this->assertTrue(in_array($perm, $role['perms']));
 
         // Now remove the perm from foo.
-        $this->drush('role-remove-perm', [$rid, 'cancel other accounts']);
-        $this->drush('role-list', [], ['format' => 'json']);
+        $this->drush(RoleCommands::PERM_REMOVE, [$rid, 'cancel other accounts']);
+        $this->drush(RoleCommands::LIST, [], ['format' => 'json']);
         $role = $this->getOutputFromJSON($rid);
         $this->assertFalse(in_array($perm, $role['perms']));
 
         // Delete the foo role
-        $this->drush('role-delete', [$rid]);
-        $this->drush('role-list');
+        $this->drush(RoleCommands::DELETE, [$rid]);
+        $this->drush(RoleCommands::LIST);
         $this->assertStringNotContainsString($rid, $this->getOutput());
     }
 }

@@ -14,8 +14,9 @@ use Drush\Exceptions\UserAbortException;
 use Symfony\Component\Console\Output\BufferedOutput;
 use Symfony\Component\Filesystem\Path;
 
-class ConfigExportCommands extends DrushCommands
+final class ConfigExportCommands extends DrushCommands
 {
+    const EXPORT = 'config:export';
     /**
      * @var ConfigManagerInterface
      */
@@ -88,7 +89,7 @@ class ConfigExportCommands extends DrushCommands
     /**
      * Export Drupal configuration to a directory.
      */
-    #[CLI\Command(name: 'config:export', aliases: ['cex', 'config-export'])]
+    #[CLI\Command(name: self::EXPORT, aliases: ['cex', 'config-export'])]
     #[CLI\Option(name: 'add', description: 'Run `git add -p` after exporting. This lets you choose which config changes to sync for commit.')]
     #[CLI\Option(name: 'commit', description: 'Run `git add -A` and `git commit` after exporting.  This commits everything that was exported without prompting.')]
     #[CLI\Option(name: 'message', description: 'Commit comment for the exported configuration.  Optional; may only be used with --commit.')]
@@ -189,7 +190,7 @@ class ConfigExportCommands extends DrushCommands
         }
     }
 
-    #[CLI\Hook(type: HookManager::ARGUMENT_VALIDATOR, target: 'config:export')]
+    #[CLI\Hook(type: HookManager::ARGUMENT_VALIDATOR, target: self::EXPORT)]
     public function validate($commandData): void
     {
         $destination = $commandData->input()->getOption('destination');

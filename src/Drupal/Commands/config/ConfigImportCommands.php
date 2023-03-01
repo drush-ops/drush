@@ -4,7 +4,7 @@ namespace Drush\Drupal\Commands\config;
 
 use Consolidation\AnnotatedCommand\Hooks\HookManager;
 use Drush\Boot\DrupalBootLevels;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Drush\Attributes as CLI;
 use Drupal\Core\Config\ImportStorageTransformer;
 use Consolidation\AnnotatedCommand\CommandData;
@@ -31,42 +31,20 @@ use Symfony\Component\Filesystem\Path;
 
 class ConfigImportCommands extends DrushCommands
 {
-    /**
-     * @var ConfigManagerInterface
-     */
-    protected $configManager;
-
+    const IMPORT = 'config:import';
+    protected ConfigManagerInterface $configManager;
     protected $configStorage;
-
     protected $configStorageSync;
-
     protected $configCache;
-
-    protected $eventDispatcher;
-
+    protected EventDispatcherInterface $eventDispatcher;
     protected $lock;
-
     protected $configTyped;
-
     protected $moduleInstaller;
-
     protected $themeHandler;
-
     protected $stringTranslation;
-
     protected $importStorageTransformer;
-
-    /**
-     * @var ModuleHandlerInterface
-     */
-    protected $moduleHandler;
-
-    /**
-     * The module extension list.
-     *
-     * @var ModuleExtensionList
-     */
-    protected $moduleExtensionList;
+    protected ModuleHandlerInterface $moduleHandler;
+    protected ModuleExtensionList $moduleExtensionList;
 
     public function getConfigManager(): ConfigManagerInterface
     {
@@ -83,10 +61,7 @@ class ConfigImportCommands extends DrushCommands
         return $this->configStorageSync;
     }
 
-    /**
-     * @param StorageInterface|null $syncStorage
-     */
-    public function setConfigStorageSync($syncStorage): void
+    public function setConfigStorageSync(?StorageInterface $syncStorage): void
     {
         $this->configStorageSync = $syncStorage;
     }
@@ -101,9 +76,6 @@ class ConfigImportCommands extends DrushCommands
         return $this->moduleHandler;
     }
 
-    /**
-     * Note that type hint is changing https://www.drupal.org/project/drupal/issues/3161983
-     */
     public function getEventDispatcher(): EventDispatcherInterface
     {
         return $this->eventDispatcher;
@@ -149,35 +121,17 @@ class ConfigImportCommands extends DrushCommands
         return $this->importStorageTransformer;
     }
 
-    /**
-     * @return ModuleExtensionList
-     */
     public function getModuleExtensionList(): ModuleExtensionList
     {
         return $this->moduleExtensionList;
     }
 
-    /**
-     * @param ConfigManagerInterface $configManager
-     * @param StorageInterface $configStorage
-     * @param StorageInterface $configStorageSync
-     * @param CacheBackendInterface $configCache
-     * @param ModuleHandlerInterface $moduleHandler
-     * @param $eventDispatcher
-     * @param LockBackendInterface $lock
-     * @param TypedConfigManagerInterface $configTyped
-     * @param ModuleInstallerInterface $moduleInstaller
-     * @param ThemeHandlerInterface $themeHandler
-     * @param TranslationInterface $stringTranslation
-     * @param ModuleExtensionList $moduleExtensionList
-     */
     public function __construct(
         ConfigManagerInterface $configManager,
         StorageInterface $configStorage,
         CacheBackendInterface $configCache,
         ModuleHandlerInterface $moduleHandler,
-        // Omit type hint as it changed in https://www.drupal.org/project/drupal/issues/3161983
-        $eventDispatcher,
+        EventDispatcherInterface $eventDispatcher,
         LockBackendInterface $lock,
         TypedConfigManagerInterface $configTyped,
         ModuleInstallerInterface $moduleInstaller,
@@ -202,7 +156,7 @@ class ConfigImportCommands extends DrushCommands
     /**
      * Import config from the config directory.
      */
-    #[CLI\Command(name: 'config:import', aliases: ['cim', 'config-import'])]
+    #[CLI\Command(name: self::IMPORT, aliases: ['cim', 'config-import'])]
     #[CLI\Option(name: 'diff', description: 'Show preview as a diff.')]
     #[CLI\Option(name: 'source', description: 'An arbitrary directory that holds the configuration files.')]
     #[CLI\Option(name: 'partial', description: 'Allows for partial config imports from the source directory. Only updates and new configs will be processed with this flag (missing configs will not be deleted). No config transformation happens.')]
@@ -323,7 +277,7 @@ class ConfigImportCommands extends DrushCommands
     /**
      * Validate partial and source options.
      */
-    #[CLI\Hook(type: HookManager::ARGUMENT_VALIDATOR, target: 'config:import')]
+    #[CLI\Hook(type: HookManager::ARGUMENT_VALIDATOR, target: self::IMPORT)]
     public function validate(CommandData $commandData)
     {
         $msgs = [];

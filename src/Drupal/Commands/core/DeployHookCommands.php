@@ -17,9 +17,14 @@ use DrushBatchContext;
 use Drush\Exceptions\UserAbortException;
 use Psr\Log\LogLevel;
 
-class DeployHookCommands extends DrushCommands implements SiteAliasManagerAwareInterface
+final class DeployHookCommands extends DrushCommands implements SiteAliasManagerAwareInterface
 {
     use SiteAliasManagerAwareTrait;
+
+    const HOOK_STATUS = 'deploy:hook-status';
+    const HOOK = 'deploy:hook';
+    const BATCH_PROCESS = 'deploy:batch-process';
+    const MARK_COMPLETE = 'deploy:mark-complete';
 
     /**
      * Get the deploy hook update registry.
@@ -45,7 +50,7 @@ class DeployHookCommands extends DrushCommands implements SiteAliasManagerAwareI
     /**
      * Prints information about pending deploy update hooks.
      */
-    #[CLI\Command(name: 'deploy:hook-status')]
+    #[CLI\Command(name: self::HOOK_STATUS)]
     #[CLI\Usage(name: 'drush deploy:hook-status', description: 'Prints information about pending deploy hooks.')]
     #[CLI\FieldLabels(labels: ['module' => 'Module', 'hook' => 'Hook', 'description' => 'Description'])]
     #[CLI\DefaultTableFields(fields: ['module', 'hook', 'description'])]
@@ -73,8 +78,8 @@ class DeployHookCommands extends DrushCommands implements SiteAliasManagerAwareI
     /**
      * Run pending deploy update hooks.
      */
-    #[CLI\Command(name: 'deploy:hook')]
-    #[CLI\Usage(name: 'deploy:hook', description: 'Run pending deploy hooks.')]
+    #[CLI\Command(name: self::HOOK)]
+    #[CLI\Usage(name: 'drush ' . self::HOOK, description: 'Run pending deploy hooks.')]
     #[CLI\Topics(topics: ['docs:deploy'])]
     #[CLI\Version(version: '10.3')]
     public function run(): int
@@ -86,7 +91,7 @@ class DeployHookCommands extends DrushCommands implements SiteAliasManagerAwareI
             return self::EXIT_SUCCESS;
         }
 
-        $process = $this->processManager()->drush($this->siteAliasManager()->getSelf(), 'deploy:hook-status');
+        $process = $this->processManager()->drush($this->siteAliasManager()->getSelf(), self::HOOK_STATUS);
         $process->mustRun();
         $this->output()->writeln($process->getOutput());
 
@@ -109,7 +114,7 @@ class DeployHookCommands extends DrushCommands implements SiteAliasManagerAwareI
                 'finished' => [$this, 'updateFinished'],
             ];
             batch_set($batch);
-            $result = drush_backend_batch_process('deploy:batch-process');
+            $result = drush_backend_batch_process(self::BATCH_PROCESS);
 
             $success = false;
             if (!is_array($result)) {
@@ -134,7 +139,7 @@ class DeployHookCommands extends DrushCommands implements SiteAliasManagerAwareI
     /**
      * Process operations in the specified batch set.
      */
-    #[CLI\Command(name: 'deploy:batch-process')]
+    #[CLI\Command(name: self::BATCH_PROCESS)]
     #[CLI\Argument(name: 'batch_id', description: 'The batch id that will be processed.')]
     #[CLI\Bootstrap(level: DrupalBootLevels::FULL)]
     #[CLI\Help(hidden: true)]
@@ -248,7 +253,7 @@ class DeployHookCommands extends DrushCommands implements SiteAliasManagerAwareI
     /**
      * Mark all deploy hooks as having run.
      */
-    #[CLI\Command(name: 'deploy:mark-complete')]
+    #[CLI\Command(name: self::MARK_COMPLETE)]
     #[CLI\Usage(name: 'drush deploy:mark-complete', description: 'Skip all pending deploy hooks and mark them as complete.')]
     #[CLI\Topics(topics: ['docs-deploy'])]
     #[CLI\Version(version: '10.6.1')]

@@ -12,8 +12,11 @@ use Drush\Commands\DrushCommands;
 use Drush\Drupal\DrupalUtil;
 use Drush\Utils\StringUtils;
 
-class DrupalCommands extends DrushCommands
+final class DrupalCommands extends DrushCommands
 {
+    const CRON = 'core:cron';
+    const REQUIREMENTS = 'core:requirements';
+    const ROUTE = 'core:route';
     protected CronInterface $cron;
     protected ModuleHandlerInterface $moduleHandler;
     protected RouteProviderInterface $routeProvider;
@@ -43,7 +46,7 @@ class DrupalCommands extends DrushCommands
     /**
      * Run all cron hooks in all active modules for specified site.
      */
-    #[CLI\Command(name: 'core:cron', aliases: ['cron', 'core-cron'])]
+    #[CLI\Command(name: self::CRON, aliases: ['cron', 'core-cron'])]
     #[CLI\Usage(name: 'drush maint:status && drush core:cron', description: 'Run cron unless maintenance mode is enabled')]
     #[CLI\Topics(topics: ['docs:cron'])]
     public function cron(): void
@@ -54,7 +57,7 @@ class DrupalCommands extends DrushCommands
     /**
      * Information about things that may be wrong in your Drupal installation.
      */
-    #[CLI\Command(name: 'core:requirements', aliases: ['status-report', 'rq', 'core-requirements'])]
+    #[CLI\Command(name: self::REQUIREMENTS, aliases: ['status-report', 'rq', 'core-requirements'])]
     #[CLI\Option(name: 'severity', description: 'Only show status report messages with a severity greater than or equal to the specified value.')]
     #[CLI\Option(name: 'ignore', description: 'Comma-separated list of requirements to remove from output. Run with --format=yaml to see key values to use.')]
     #[CLI\Usage(name: 'drush core:requirements', description: 'Show all status lines from the Status Report admin page.')]
@@ -118,7 +121,7 @@ class DrupalCommands extends DrushCommands
     /**
      * View information about all routes or one route.
      */
-    #[CLI\Command(name: 'core:route', aliases: ['route'])]
+    #[CLI\Command(name: self::ROUTE, aliases: ['route'])]
     #[CLI\Usage(name: 'drush route', description: 'View all routes.')]
     #[CLI\Usage(name: 'drush route --name=update.status', description: 'View details about the <info>update.status</info> route.')]
     #[CLI\Usage(name: 'drush route --path=/user/1', description: 'View details about the <info>entity.user.canonical</info> route.')]
