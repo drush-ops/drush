@@ -17,7 +17,7 @@ use Drush\Commands\DrushCommands;
 use Drush\Exceptions\CommandFailedException;
 use Drush\Utils\StringUtils;
 
-class LocaleCommands extends DrushCommands
+final class LocaleCommands extends DrushCommands
 {
     protected LanguageManagerInterface $languageManager;
 
