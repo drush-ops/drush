@@ -21,7 +21,7 @@
         <link rel="next" href="../field_info/">
       
       <link rel="icon" href="../../img/favicon.ico">
-      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.0.14">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.0.15">
     
     
       
@@ -5149,6 +5149,7 @@
 <li><code>drush field:delete</code>. Delete a field by answering the prompts.</li>
 <li><code>drush field-delete taxonomy_term tag</code>. Delete a field and fill in the remaining information through prompts.</li>
 <li><code>drush field-delete taxonomy_term tag --field-name=field_tag_label</code>. Delete a field in a non-interactive way.</li>
+<li><code>drush field-delete taxonomy_term --field-name=field_tag_label --all-bundles</code>. Delete a field from all bundles.</li>
 </ul>
 <h4 id="arguments">Arguments<a class="headerlink" href="#arguments" title="Permanent link">&para;</a></h4>
 <ul>
@@ -5159,6 +5160,7 @@
 <ul>
 <li><strong> --field-name=FIELD-NAME</strong>. The machine name of the field</li>
 <li><strong> --show-machine-names[=SHOW-MACHINE-NAMES]</strong>. Show machine names instead of labels in option lists.</li>
+<li><strong> --all-bundles[=ALL-BUNDLES]</strong>. Whether to delete the field from all bundles.</li>
 </ul>
 <h4 id="global-options">Global Options<a class="headerlink" href="#global-options" title="Permanent link">&para;</a></h4>
 <ul>
