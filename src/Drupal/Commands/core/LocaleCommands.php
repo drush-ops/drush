@@ -19,6 +19,12 @@ use Drush\Utils\StringUtils;
 
 final class LocaleCommands extends DrushCommands
 {
+    const CHECK = 'locale:check';
+    const CLEAR = 'locale:clear-status';
+    const UPDATE = 'locale:update';
+    const EXPORT = 'locale:export';
+    const IMPORT = 'locale:import';
+
     protected LanguageManagerInterface $languageManager;
 
     protected ConfigFactoryInterface $configFactory;
@@ -61,7 +67,7 @@ final class LocaleCommands extends DrushCommands
     /**
      * Checks for available translation updates.
      */
-    #[CLI\Command(name: 'locale:check', aliases: ['locale-check'])]
+    #[CLI\Command(name: self::CHECK, aliases: ['locale-check'])]
     #[CLI\ValidateModulesEnabled(modules: ['locale'])]
     public function check(): void
     {
@@ -83,7 +89,7 @@ final class LocaleCommands extends DrushCommands
     /**
      * Clears the translation status.
      */
-    #[CLI\Command(name: 'locale:clear-status', aliases: ['locale-clear-status'])]
+    #[CLI\Command(name: self::CLEAR, aliases: ['locale-clear-status'])]
     #[CLI\ValidateModulesEnabled(modules: ['locale'])]
     #[CLI\Version(version: '11.5')]
     public function clearStatus(): void
@@ -101,7 +107,7 @@ final class LocaleCommands extends DrushCommands
      * @todo This can be simplified once https://www.drupal.org/node/2631584 lands
      *   in Drupal core.
      */
-    #[CLI\Command(name: 'locale:update', aliases: ['locale-update'])]
+    #[CLI\Command(name: self::UPDATE, aliases: ['locale-update'])]
     #[CLI\Option(name: 'langcodes', description: 'A comma-separated list of language codes to update. If omitted, all translations will be updated.')]
     #[CLI\ValidateModulesEnabled(modules: ['locale'])]
     public function update($options = ['langcodes' => self::REQ]): void
@@ -159,7 +165,7 @@ final class LocaleCommands extends DrushCommands
      *
      * See Drupal Core: \Drupal\locale\Form\ExportForm::submitForm
      */
-    #[CLI\Command(name: 'locale:export', aliases: ['locale-export'])]
+    #[CLI\Command(name: self::EXPORT, aliases: ['locale-export'])]
     #[CLI\Argument(name: 'langcode', description: 'The language code of the exported translations.')]
     #[CLI\Option(name: 'template', description: 'POT file output of extracted source texts to be translated.')]
     #[CLI\Option(name: 'types', description: 'A comma separated list of string types to include, defaults to all types. Recognized values: <info>not-customized</info>, <info>customized</info>, </info>not-translated<info>')]
@@ -187,7 +193,7 @@ final class LocaleCommands extends DrushCommands
     /**
      * Assure that required options are set.
      */
-    #[CLI\Hook(type: HookManager::ARGUMENT_VALIDATOR, target: 'locale:export')]
+    #[CLI\Hook(type: HookManager::ARGUMENT_VALIDATOR, target: self::EXPORT)]
     public function exportValidate(CommandData $commandData): void
     {
         $langcode = $commandData->input()->getArgument('langcode');
@@ -215,7 +221,7 @@ final class LocaleCommands extends DrushCommands
     /**
      * Imports to a gettext translation file.
      */
-    #[CLI\Command(name: 'locale:import', aliases: ['locale-import'])]
+    #[CLI\Command(name: self::IMPORT, aliases: ['locale-import'])]
     #[CLI\Argument(name: 'langcode', description: 'The language code of the imported translations.')]
     #[CLI\Argument(name: 'file', description: 'Path and file name of the gettext file. Relative paths calculated from Drupal root.')]
     #[CLI\Option(name: 'type', description: 'String types to include, defaults to all types. Recognized values: <info>not-customized</info>, <info>customized</info>, </info>not-translated<info>')]
