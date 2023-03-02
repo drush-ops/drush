@@ -226,7 +226,7 @@ final class PmCommands extends DrushCommands
         'status' => 'Status',
         'version' => 'Version',
     ])]
-    #[CLI\DefaultTableFields(fields: ['package', 'display_name', 'status,version'])]
+    #[CLI\DefaultTableFields(fields: ['package', 'display_name', 'status', 'version'])]
     #[CLI\FilterDefaultField(field: 'display_name')]
     public function pmList($options = ['format' => 'table', 'type' => 'module,theme', 'status' => 'enabled,disabled', 'package' => self::REQ, 'core' => false, 'no-core' => false]): RowsOfFields
     {
