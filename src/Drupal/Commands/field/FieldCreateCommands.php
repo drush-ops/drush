@@ -401,6 +401,43 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
         return $this->io()->askQuestion($question) ?: [];
     }
 
+    protected function askBundle(): ?string
+    {
+        $entityTypeId = $this->input->getArgument('entityType');
+        $entityTypeDefinition = $this->entityTypeManager->getDefinition($entityTypeId);
+        $bundleEntityType = $entityTypeDefinition->getBundleEntityType();
+        $bundleInfo = $this->entityTypeBundleInfo->getBundleInfo($entityTypeId);
+        $choices = [];
+
+        if ($bundleEntityType && $bundleInfo === []) {
+            throw new \InvalidArgumentException(
+                t('Entity type with id \':entityType\' does not have any bundles.', [':entityType' => $entityTypeId])
+            );
+        }
+
+        if ($fieldName = $this->input->getOption('existing-field-name')) {
+            $bundleInfo = array_filter($bundleInfo, function (string $bundle) use ($entityTypeId, $fieldName) {
+                return !$this->entityTypeManager->getStorage('field_config')->load("$entityTypeId.$bundle.$fieldName");
+            }, ARRAY_FILTER_USE_KEY);
+        }
+
+        if (!$bundleEntityType && count($bundleInfo) === 1) {
+            // eg. User
+            return $entityTypeId;
+        }
+
+        foreach ($bundleInfo as $bundle => $data) {
+            $label = $this->input->getOption('show-machine-names') ? $bundle : $data['label'];
+            $choices[$bundle] = $label;
+        }
+
+        if (!$answer = $this->io()->choice('Bundle', $choices)) {
+            throw new \InvalidArgumentException(t('The bundle argument is required.'));
+        }
+
+        return $answer;
+    }
+
     protected function createField(): FieldConfigInterface
     {
         $values = [
