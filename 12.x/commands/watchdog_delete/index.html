@@ -5173,10 +5173,10 @@
 <p>Delete watchdog log records.</p>
 <h4 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h4>
 <ul>
-<li><code>drush watchdog:delete all</code>. Delete all messages.</li>
+<li><code>drush watchdog:delete</code>. Delete all messages.</li>
 <li><code>drush watchdog:delete 64</code>. Delete messages with id 64.</li>
 <li><code>drush watchdog:delete "cron run succesful"</code>. Delete messages containing the string "cron run succesful".</li>
-<li><code>drush watchdog:delete --severity=Notice</code>. Delete all messages with a severity of notice.</li>
+<li><code>@usage drush watchdog:delete --severity=Notice</code>. Delete all messages with a severity of notice.</li>
 <li><code>drush watchdog:delete --type=cron</code>. Delete all messages of type cron.</li>
 </ul>
 <h4 id="arguments">Arguments<a class="headerlink" href="#arguments" title="Permanent link">&para;</a></h4>
