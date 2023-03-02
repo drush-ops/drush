@@ -5172,10 +5172,9 @@
 <h1 id="sqlsanitize">sql:sanitize<a class="headerlink" href="#sqlsanitize" title="Permanent link">&para;</a></h1>
 <p>Sanitize the database by removing or obfuscating user data.</p>
 <p>Commandfiles may add custom operations by implementing:</p>
-<ul>
-<li><code>@hook on-event sql-sanitize-confirms</code>. Display summary to user before confirmation.</li>
-<li><code>@hook post-command sql-sanitize</code>. Run queries or call APIs to perform sanitizing</li>
-</ul>
+<div class="highlight"><pre><span></span><code>- `@hook on-event sql-sanitize-confirms`. Display summary to user before confirmation.
+- `@hook post-command sql-sanitize`. Run queries or call APIs to perform sanitizing
+</code></pre></div>
 <p>Several working commandfiles may be found at <a href="https://github.com/drush-ops/drush/tree/11.x/src/Drupal/Commands/sql">https://github.com/drush-ops/drush/tree/11.x/src/Drupal/Commands/sql</a></p>
 <h4 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h4>
 <ul>
@@ -5184,7 +5183,7 @@
 </ul>
 <h4 id="options">Options<a class="headerlink" href="#options" title="Permanent link">&para;</a></h4>
 <ul>
-<li><strong> --whitelist-fields[=WHITELIST-FIELDS]</strong>. Deprecated. Use allowlist-fields instead.</li>
+<li><strong> --whitelist-fields[=WHITELIST-FIELDS]</strong>. </li>
 <li><strong> --allowlist-fields[=ALLOWLIST-FIELDS]</strong>. A comma delimited list of fields exempt from sanitization.</li>
 <li><strong> --sanitize-email[=SANITIZE-EMAIL]</strong>. The pattern for test email addresses in the sanitization operation, or <em>no</em> to keep email addresses unchanged. May contain replacement patterns <em>%uid</em>, <em>%mail</em> or <em>%name</em>. [default: <em>user+%<a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#117;&#105;&#100;&#64;&#108;&#111;&#99;&#97;&#108;&#104;&#111;&#115;&#116;&#46;&#108;&#111;&#99;&#97;&#108;&#100;&#111;&#109;&#97;&#105;&#110;">&#117;&#105;&#100;&#64;&#108;&#111;&#99;&#97;&#108;&#104;&#111;&#115;&#116;&#46;&#108;&#111;&#99;&#97;&#108;&#100;&#111;&#109;&#97;&#105;&#110;</a></em>]</li>
 <li><strong> --sanitize-password[=SANITIZE-PASSWORD]</strong>. By default, passwords are randomized. Specify <em>no</em> to disable that. Specify any other value to set all passwords to that value.</li>
