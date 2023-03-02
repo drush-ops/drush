@@ -3,13 +3,15 @@
 namespace Drush\Drupal\Commands\sql;
 
 use Consolidation\AnnotatedCommand\CommandData;
+use Consolidation\AnnotatedCommand\Hooks\HookManager;
+use Drush\Attributes as CLI;
 use Drush\Commands\DrushCommands;
 use Symfony\Component\Console\Input\InputInterface;
 
 /**
  * This class is a good example of how to build a sql-sanitize plugin.
  */
-class SanitizeUserFieldsCommands extends DrushCommands implements SanitizePluginInterface
+final class SanitizeUserFieldsCommands extends DrushCommands implements SanitizePluginInterface
 {
     protected $database;
     protected $entityFieldManager;
@@ -42,11 +44,8 @@ class SanitizeUserFieldsCommands extends DrushCommands implements SanitizePlugin
      * Sanitize string fields associated with the user.
      *
      * @todo Use Drupal services to get field info.
-     *
-     * @hook post-command sql-sanitize
-     *
-     * @inheritdoc
      */
+    #[CLI\Hook(type: HookManager::POST_COMMAND_HOOK, target: 'sql-sanitize')]
     public function sanitize($result, CommandData $commandData): void
     {
         $options = $commandData->options();
@@ -124,11 +123,7 @@ class SanitizeUserFieldsCommands extends DrushCommands implements SanitizePlugin
         }
     }
 
-    /**
-     * @hook on-event sql-sanitize-confirms
-     *
-     * @inheritdoc
-     */
+    #[CLI\Hook(type: HookManager::ON_EVENT, target: 'sql-sanitize-confirms')]
     public function messages(&$messages, InputInterface $input): void
     {
         $messages[] = dt('Sanitize text fields associated with users.');
@@ -136,9 +131,10 @@ class SanitizeUserFieldsCommands extends DrushCommands implements SanitizePlugin
 
     /**
      * @hook option sql-sanitize
-     * @option whitelist-fields Deprecated. Use allowlist-fields instead.
      * @option allowlist-fields A comma delimited list of fields exempt from sanitization.
      */
+    #[CLI\Hook(type: HookManager::OPTION_HOOK, target: 'sql-sanitize')]
+    #[CLI\Option(name: 'allowlist-fields', description: 'A comma delimited list of fields exempt from sanitization.')]
     public function options($options = ['whitelist-fields' => '', 'allowlist-fields' => '']): void
     {
     }
