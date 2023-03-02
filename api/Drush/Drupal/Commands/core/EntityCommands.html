@@ -85,8 +85,8 @@
     </div>
 
     
-    <p>        class
-    <strong>EntityCommands</strong>        extends <a href="../../../../Drush/Commands/DrushCommands.html"><abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a>        (<a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/EntityCommands.php">View source</a>)
+    <p>final         class
+    <strong>EntityCommands</strong>        extends <a href="../../../../Drush/Commands/DrushCommands.html"><abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a>        (<a href="https://github.com/drush-ops/drush/blob/12.x/src/Drupal/Commands/core/EntityCommands.php">View source</a>)
 </p>
 
         
@@ -170,6 +170,24 @@
                     <tr>
                 <td>
                                                                                                                         EXIT_FAILURE_WITH_CLARITY
+                                    </td>
+                <td class="last">
+                    <p><em></em></p>
+                    <p></p>
+                </td>
+            </tr>
+                    <tr>
+                <td>
+                                                                                                                        DELETE
+                                    </td>
+                <td class="last">
+                    <p><em></em></p>
+                    <p></p>
+                </td>
+            </tr>
+                    <tr>
+                <td>
+                                                                                                                        SAVE
                                     </td>
                 <td class="last">
                     <p><em></em></p>
@@ -261,7 +279,8 @@ DrushConfig as return type. Helps with IDE completion.</p></p>                </
                 <div class="col-md-8">
                     <a href="#method___construct">__construct</a>(<abbr title="Drupal\Core\Entity\EntityTypeManagerInterface">EntityTypeManagerInterface</abbr> $entityTypeManager)
         
-                                            <p><p>EntityCommands constructor.</p></p>                </div>
+                                            <p class="no-description">No description</p>
+                                    </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -335,7 +354,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>                </
                     void
                 </div>
                 <div class="col-md-8">
-                    <a href="#method_delete">delete</a>(string $entity_type, string $ids = null, array $options = [&#039;bundle&#039; =&gt; self::REQ, &#039;exclude&#039; =&gt; self::REQ, &#039;chunks&#039; =&gt; 50])
+                    <a href="#method_delete">delete</a>(string $entity_type, $ids = null, array $options = [&#039;bundle&#039; =&gt; self::REQ, &#039;exclude&#039; =&gt; self::REQ, &#039;chunks&#039; =&gt; 50])
         
                                             <p><p>Delete content entities.</p></p>                </div>
                 <div class="col-md-2"></div>
@@ -355,7 +374,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>                </
                     void
                 </div>
                 <div class="col-md-8">
-                    <a href="#method_loadSave">loadSave</a>(string $entity_type, string $ids = null, array $options = [&#039;bundle&#039; =&gt; self::REQ, &#039;exclude&#039; =&gt; self::REQ, &#039;chunks&#039; =&gt; 50])
+                    <a href="#method_loadSave">loadSave</a>(string $entity_type, $ids = null, array $options = [&#039;bundle&#039; =&gt; self::REQ, &#039;exclude&#039; =&gt; self::REQ, &#039;chunks&#039; =&gt; 50])
         
                                             <p><p>Load and save entities.</p></p>                </div>
                 <div class="col-md-2"></div>
@@ -390,7 +409,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>                </
                     <div class="method-item">
                     <h3 id="method_startBrowser">
         <div class="location">in <a href="../../../../Drush/Exec/ExecTrait.html#method_startBrowser">
-<abbr title="Drush\Exec\ExecTrait">ExecTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/11.x/src/Exec/ExecTrait.php#L27">at line 27</a></div>
+<abbr title="Drush\Exec\ExecTrait">ExecTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/12.x/src/Exec/ExecTrait.php#L27">at line 27</a></div>
         <code>                    bool
     <strong>startBrowser</strong>($uri = null, int $sleep = 0, int|null $port = null, string|bool $browser = false)
         </code>
@@ -451,7 +470,7 @@ default browser could not be found.</p></td>
                     <div class="method-item">
                     <h3 id="method_programExists">
         <div class="location">in <a href="../../../../Drush/Exec/ExecTrait.html#method_programExists">
-<abbr title="Drush\Exec\ExecTrait">ExecTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/11.x/src/Exec/ExecTrait.php#L91">at line 91</a></div>
+<abbr title="Drush\Exec\ExecTrait">ExecTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/12.x/src/Exec/ExecTrait.php#L91">at line 91</a></div>
         <code>        static            
     <strong>programExists</strong>($program)
         </code>
@@ -486,7 +505,7 @@ default browser could not be found.</p></td>
                     <div class="method-item">
                     <h3 id="method_getEditor">
         <div class="location">in <a href="../../../../Drush/Exec/ExecTrait.html#method_getEditor">
-<abbr title="Drush\Exec\ExecTrait">ExecTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/11.x/src/Exec/ExecTrait.php#L103">at line 103</a></div>
+<abbr title="Drush\Exec\ExecTrait">ExecTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/12.x/src/Exec/ExecTrait.php#L103">at line 103</a></div>
         <code>        static            
     <strong>getEditor</strong>(string|null $editor = null)
         </code>
@@ -521,7 +540,7 @@ default browser could not be found.</p></td>
                     <div class="method-item">
                     <h3 id="method_getConfig">
         <div class="location">in <a href="../../../../Drush/Config/ConfigAwareTrait.html#method_getConfig">
-<abbr title="Drush\Config\ConfigAwareTrait">ConfigAwareTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/11.x/src/Config/ConfigAwareTrait.php#L19">at line 19</a></div>
+<abbr title="Drush\Config\ConfigAwareTrait">ConfigAwareTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/12.x/src/Config/ConfigAwareTrait.php#L19">at line 19</a></div>
         <code>                    <a href="../../../../Drush/Config/DrushConfig.html"><abbr title="Drush\Config\DrushConfig">DrushConfig</abbr></a>
     <strong>getConfig</strong>()
         </code>
@@ -565,7 +584,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method___construct">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/EntityCommands.php#L20">at line 20</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Drupal/Commands/core/EntityCommands.php#L20">at line 20</a></div>
         <code>                    
     <strong>__construct</strong>(<abbr title="Drupal\Core\Entity\EntityTypeManagerInterface">EntityTypeManagerInterface</abbr> $entityTypeManager)
         </code>
@@ -575,7 +594,8 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             
 
         <div class="method-description">
-                            <p><p>EntityCommands constructor.</p></p>                        
+                            <p class="no-description">No description</p>
+                    
         </div>
         <div class="tags">
                             <h4>Parameters</h4>
@@ -599,7 +619,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
                     <div class="method-item">
                     <h3 id="method_io">
         <div class="location">in <a href="../../../../Drush/Commands/DrushCommands.html#method_io">
-<abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a> <a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/DrushCommands.php#L55">at line 55</a></div>
+<abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a> <a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/DrushCommands.php#L55">at line 55</a></div>
         <code>            protected        <abbr title="Symfony\Component\Console\Style\SymfonyStyle">SymfonyStyle</abbr>
     <strong>io</strong>()
         </code>
@@ -632,7 +652,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
                     <div class="method-item">
                     <h3 id="method_logger">
         <div class="location">in <a href="../../../../Drush/Commands/DrushCommands.html#method_logger">
-<abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a> <a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/DrushCommands.php#L67">at line 67</a></div>
+<abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a> <a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/DrushCommands.php#L67">at line 67</a></div>
         <code>            protected        <abbr title="Drush\Commands\Drush\Log\DrushLoggerManager">DrushLoggerManager</abbr>|null
     <strong>logger</strong>()
         </code>
@@ -665,7 +685,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
                     <div class="method-item">
                     <h3 id="method_printFile">
         <div class="location">in <a href="../../../../Drush/Commands/DrushCommands.html#method_printFile">
-<abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a> <a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/DrushCommands.php#L78">at line 78</a></div>
+<abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a> <a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/DrushCommands.php#L78">at line 78</a></div>
         <code>            protected        void
     <strong>printFile</strong>(string $file)
         </code>
@@ -708,7 +728,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
                     <div class="method-item">
                     <h3 id="method_preHook">
         <div class="location">in <a href="../../../../Drush/Commands/DrushCommands.html#method_preHook">
-<abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a> <a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/DrushCommands.php#L104">at line 104</a></div>
+<abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a> <a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/DrushCommands.php#L104">at line 104</a></div>
         <code>                    
     <strong>preHook</strong>(<abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr> $commandData)
         </code>
@@ -742,7 +762,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
                     <div class="method-item">
                     <h3 id="method_printFileTopic">
         <div class="location">in <a href="../../../../Drush/Commands/DrushCommands.html#method_printFileTopic">
-<abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a> <a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/DrushCommands.php#L115">at line 115</a></div>
+<abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a> <a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/DrushCommands.php#L115">at line 115</a></div>
         <code>            protected        
     <strong>printFileTopic</strong>(<abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr> $commandData)
         </code>
@@ -776,7 +796,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
                     <div class="method-item">
                     <h3 id="method_getStack">
         <div class="location">in <a href="../../../../Drush/Commands/DrushCommands.html#method_getStack">
-<abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a> <a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/DrushCommands.php#L126">at line 126</a></div>
+<abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a> <a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/DrushCommands.php#L126">at line 126</a></div>
         <code>            protected        <abbr title="GuzzleHttp\HandlerStack">HandlerStack</abbr>
     <strong>getStack</strong>()
         </code>
@@ -819,9 +839,9 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_delete">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/EntityCommands.php#L54">at line 54</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Drupal/Commands/core/EntityCommands.php#L30">at line 30</a></div>
         <code>                    void
-    <strong>delete</strong>(string $entity_type, string $ids = null, array $options = [&#039;bundle&#039; =&gt; self::REQ, &#039;exclude&#039; =&gt; self::REQ, &#039;chunks&#039; =&gt; 50])
+    <strong>delete</strong>(string $entity_type, $ids = null, array $options = [&#039;bundle&#039; =&gt; self::REQ, &#039;exclude&#039; =&gt; self::REQ, &#039;chunks&#039; =&gt; 50])
         </code>
     </h3>
     <div class="details">    
@@ -838,12 +858,12 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
                     <tr>
                 <td>string</td>
                 <td>$entity_type</td>
-                <td><p>An entity machine name.</p></td>
+                <td></td>
             </tr>
                     <tr>
-                <td>string</td>
+                <td></td>
                 <td>$ids</td>
-                <td><p>A comma delimited list of Ids.</p></td>
+                <td></td>
             </tr>
                     <tr>
                 <td>array</td>
@@ -863,15 +883,6 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
     </table>
 
             
-                            <h4>Exceptions</h4>
-
-                    <table class="table table-condensed">
-                    <tr>
-                <td><a target="_blank" rel="noopener" href="https://www.php.net/Exception">Exception</a></td>
-                <td></td>
-            </tr>
-            </table>
-
             
             
                     </div>
@@ -880,7 +891,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_doDelete">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/EntityCommands.php#L87">at line 87</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Drupal/Commands/core/EntityCommands.php#L75">at line 75</a></div>
         <code>                    void
     <strong>doDelete</strong>(string $entity_type, array $ids)
         </code>
@@ -944,9 +955,9 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_loadSave">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/EntityCommands.php#L122">at line 122</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Drupal/Commands/core/EntityCommands.php#L85">at line 85</a></div>
         <code>                    void
-    <strong>loadSave</strong>(string $entity_type, string $ids = null, array $options = [&#039;bundle&#039; =&gt; self::REQ, &#039;exclude&#039; =&gt; self::REQ, &#039;chunks&#039; =&gt; 50])
+    <strong>loadSave</strong>(string $entity_type, $ids = null, array $options = [&#039;bundle&#039; =&gt; self::REQ, &#039;exclude&#039; =&gt; self::REQ, &#039;chunks&#039; =&gt; 50])
         </code>
     </h3>
     <div class="details">    
@@ -963,12 +974,12 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
                     <tr>
                 <td>string</td>
                 <td>$entity_type</td>
-                <td><p>An entity machine name.</p></td>
+                <td></td>
             </tr>
                     <tr>
-                <td>string</td>
+                <td></td>
                 <td>$ids</td>
-                <td><p>A comma delimited list of Ids.</p></td>
+                <td></td>
             </tr>
                     <tr>
                 <td>array</td>
@@ -988,15 +999,6 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
     </table>
 
             
-                            <h4>Exceptions</h4>
-
-                    <table class="table table-condensed">
-                    <tr>
-                <td><a target="_blank" rel="noopener" href="https://www.php.net/Exception">Exception</a></td>
-                <td></td>
-            </tr>
-            </table>
-
             
             
                     </div>
@@ -1005,7 +1007,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_doSave">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/EntityCommands.php#L150">at line 150</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Drupal/Commands/core/EntityCommands.php#L126">at line 126</a></div>
         <code>                    void
     <strong>doSave</strong>(string $entity_type, array $ids)
         </code>
@@ -1069,7 +1071,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_getQuery">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/EntityCommands.php#L167">at line 167</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Drupal/Commands/core/EntityCommands.php#L143">at line 143</a></div>
         <code>            protected        <abbr title="Drupal\Core\Entity\Query\QueryInterface">QueryInterface</abbr>
     <strong>getQuery</strong>(string $entity_type, string|null $ids, array $options)
         </code>
