@@ -3,41 +3,34 @@
 namespace Drush\Commands\config;
 
 use Consolidation\AnnotatedCommand\CommandData;
+use Consolidation\AnnotatedCommand\Hooks\HookManager;
+use Drush\Attributes as CLI;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Consolidation\SiteAlias\HostPath;
 use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
 use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
 use Consolidation\OutputFormatters\StructuredData\PropertyList;
-use Consolidation\SiteProcess\ProcessBase;
 
-class ConfigPullCommands extends DrushCommands implements SiteAliasManagerAwareInterface
+final class ConfigPullCommands extends DrushCommands implements SiteAliasManagerAwareInterface
 {
     use SiteAliasManagerAwareTrait;
 
+    const PULL = 'config:pull';
+
     /**
      * Export and transfer config from one environment to another.
-     *
-     * @command config:pull
-     * @param string $source A site-alias or the name of a subdirectory within /sites whose config you want to copy from.
-     * @param string $destination A site-alias or the name of a subdirectory within /sites whose config you want to replace.
-     * @param array $options
-     * @throws \Exception
-     * @option safe Validate that there are no git uncommitted changes before proceeding
-     * @option label A config directory label (i.e. a key in $config_directories array in settings.php).
-     * @option runner Where to run the rsync command; defaults to the local site. Can also be <info>source</info> or <info>destination</info>.
-     * @usage drush config:pull @prod @stage
-     *   Export config from @prod and transfer to @stage.
-     * @usage drush config:pull @prod @self --label=vcs
-     *   Export config from @prod and transfer to the <info>vcs</info> config directory of current site.
-     * @usage drush config:pull @prod @self:../config/sync
-     *   Export config to a custom directory. Relative paths are calculated from Drupal root.
-     * @aliases cpull,config-pull
-     * @topics docs:aliases,docs:config:exporting
-     * @field-labels
-     *  path: Path
      */
-    public function pull(string $source, string $destination, array $options = ['safe' => false, 'label' => 'sync', 'runner' => null, 'format' => 'null']): PropertyList
+    #[CLI\Command(name: self::PULL, aliases: ['cpull', 'config-pull'])]
+    #[CLI\Argument(name: 'source', description: 'A site-alias or the name of a subdirectory within /sites whose config you want to copy from.')]
+    #[CLI\Argument(name: 'destination', description: 'A site-alias or the name of a subdirectory within /sites whose config you want to replace.')]
+    #[CLI\Option(name: 'safe', description: 'Validate that there are no git uncommitted changes before proceeding')]
+    #[CLI\Option(name: 'runner', description: 'Where to run the rsync command; defaults to the local site. Can also be <info>source</info> or <info>destination</info>.')]
+    #[CLI\Usage(name: 'drush config:pull @prod @stage', description: 'Export config from @prod and transfer to @stage.')]
+    #[CLI\Usage(name: 'drush config:pull @prod @self:../config/sync', description: 'Export config and transfer to a custom directory. Relative paths are calculated from Drupal root.')]
+    #[CLI\Topics(topics: ['docs:aliases', 'docs:config:exporting'])]
+    #[CLI\FieldLabels(labels: ['path' => 'Path'])]
+    public function pull(string $source, string $destination, array $options = ['safe' => false, 'runner' => null, 'format' => 'null']): PropertyList
     {
         $global_options = Drush::redispatchOptions()  + ['strict' => 0];
         $sourceRecord = $this->siteAliasManager()->get($source);
@@ -62,7 +55,7 @@ class ConfigPullCommands extends DrushCommands implements SiteAliasManagerAwareI
         }
 
         if (strpos($destination, ':') === false) {
-            $destination .= ':%config-' . $options['label'];
+            $destination .= ':%config-sync';
         }
         $destinationHostPath = HostPath::create($this->siteAliasManager(), $destination);
 
@@ -86,9 +79,7 @@ class ConfigPullCommands extends DrushCommands implements SiteAliasManagerAwareI
         return new PropertyList(['path' => $destinationHostPath->getOriginal()]);
     }
 
-    /**
-     * @hook validate config-pull
-     */
+    #[CLI\Hook(type: HookManager::ARGUMENT_VALIDATOR, target: 'config-pull')]
     public function validateConfigPull(CommandData $commandData): void
     {
         if ($commandData->input()->getOption('safe')) {
