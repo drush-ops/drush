@@ -21,7 +21,7 @@
         <link rel="next" href="../config_set/">
       
       <link rel="icon" href="../../img/favicon.ico">
-      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.0.15">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.1.0">
     
     
       
@@ -29,7 +29,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.113286f1.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.402914a4.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.a0c5b2b5.min.css">
@@ -119,7 +119,7 @@
 
   
 
-<header class="md-header md-header--lifted" data-md-component="header">
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
     <a href="../.." title="Drush" class="md-header__button md-logo" aria-label="Drush" data-md-component="logo">
       
@@ -5181,8 +5181,7 @@
 <h4 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h4>
 <ul>
 <li><code>drush config:pull @prod @stage</code>. Export config from @prod and transfer to @stage.</li>
-<li><code>drush config:pull @prod @self --label=vcs</code>. Export config from @prod and transfer to the <em>vcs</em> config directory of current site.</li>
-<li><code>drush config:pull @prod @self:../config/sync</code>. Export config to a custom directory. Relative paths are calculated from Drupal root.</li>
+<li><code>drush config:pull @prod @self:../config/sync</code>. Export config and transfer to a custom directory. Relative paths are calculated from Drupal root.</li>
 </ul>
 <h4 id="arguments">Arguments<a class="headerlink" href="#arguments" title="Permanent link">&para;</a></h4>
 <ul>
@@ -5192,7 +5191,6 @@
 <h4 id="options">Options<a class="headerlink" href="#options" title="Permanent link">&para;</a></h4>
 <ul>
 <li><strong> --safe</strong>. Validate that there are no git uncommitted changes before proceeding</li>
-<li><strong> --label[=LABEL]</strong>. A config directory label (i.e. a key in $config_directories array in settings.php). [default: <em>sync</em>]</li>
 <li><strong> --runner[=RUNNER]</strong>. Where to run the rsync command; defaults to the local site. Can also be <em>source</em> or <em>destination</em>.</li>
 <li><strong> --format[=FORMAT]</strong>. Format the result data. Available formats: csv,json,list,null,php,print-r,string,table,tsv,var_dump,var_export,xml,yaml [default: <em>null</em>]</li>
 <li><strong> --fields=FIELDS</strong>. Available fields: Path (path)</li>
@@ -5304,7 +5302,7 @@
     <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "toc.integrate"], "search": "../../assets/javascripts/workers/search.208ed371.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.2a6f1dda.min.js"></script>
+      <script src="../../assets/javascripts/bundle.ce72ebac.min.js"></script>
       
     
   </body>
