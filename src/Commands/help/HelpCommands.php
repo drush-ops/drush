@@ -4,6 +4,9 @@ namespace Drush\Commands\help;
 
 use Consolidation\AnnotatedCommand\AnnotatedCommand;
 use Consolidation\AnnotatedCommand\CommandData;
+use Consolidation\AnnotatedCommand\Hooks\HookManager;
+use Drush\Attributes as CLI;
+use Drush\Boot\DrupalBootLevels;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
 
@@ -11,20 +14,15 @@ class HelpCommands extends DrushCommands
 {
     /**
      * Display usage details for a command.
-     *
-     * @command help
-     * @param $command_name A command name
-     * @usage drush help pm-uninstall
-     *   Show help for a command.
-     * @usage drush help pmu
-     *   Show help for a command using an alias.
-     * @usage drush help --format=xml
-     *   Show all available commands in XML format.
-     * @usage drush help --format=json
-     *   All available commands, in JSON format.
-     * @bootstrap max
-     * @topics docs:readme
      */
+    #[CLI\Command(name: 'help')]
+    #[CLI\Argument(name: 'command_name', description: 'A command name')]
+    #[CLI\Usage(name: 'drush help pm:uninstall', description: 'Show help for a command.')]
+    #[CLI\Usage(name: 'drush help pmu', description: 'Show help for a command using an alias.')]
+    #[CLI\Usage(name: 'drush help --format=xml', description: 'Show all available commands in XML format.')]
+    #[CLI\Usage(name: 'drush help --format=json', description: 'All available commands, in JSON format.')]
+    #[CLI\Bootstrap(level: DrupalBootLevels::MAX)]
+    #[CLI\Topics(topics: ['docs:readme'])]
     public function help($command_name = '', $options = ['format' => 'helpcli', 'include-field-labels' => false, 'table-style' => 'compact']): DrushHelpDocument
     {
         $application = Drush::getApplication();
@@ -41,20 +39,13 @@ class HelpCommands extends DrushCommands
 
         return $helpDocument;
     }
-
-    /**
-     * @hook validate help
-     */
+    
+    #[CLI\Hook(type: HookManager::ARGUMENT_VALIDATOR, target: 'help')]
     public function validate(CommandData $commandData): void
     {
         $name = $commandData->input()->getArgument('command_name');
         if (empty($name)) {
             throw new \Exception(dt("The help command requires that a command name be provided. Run `drush list` to see a list of available commands."));
-        } else {
-            $application = Drush::getApplication();
-            if (!in_array($name, array_keys($application->all()))) {
-                throw new \Exception(dt("!name command not found.", ['!name' => $name]));
-            }
         }
     }
 }
