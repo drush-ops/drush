@@ -178,6 +178,15 @@
                     <p></p>
                 </td>
             </tr>
+                    <tr>
+                <td>
+                                                                                                                        SECURITY
+                                    </td>
+                <td class="last">
+                    <p><em></em></p>
+                    <p></p>
+                </td>
+            </tr>
             </table>
 
     
@@ -337,7 +346,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>                </
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    <abbr title="Consolidation\OutputFormatters\StructuredData\RowsOfFields">RowsOfFields</abbr>
+                    <abbr title="Drush\Commands\pm\Consolidation\OutputFormatters\StructuredData\RowsOfFields|Consolidation\AnnotatedCommand\CommandResult|null">CommandResult|null</abbr>
                 </div>
                 <div class="col-md-8">
                     <a href="#method_security">security</a>(array $options = [&#039;no-dev&#039; =&gt; false])
@@ -815,7 +824,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_composerLockPath">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/pm/SecurityUpdateCommands.php#L27">at line 27</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/pm/SecurityUpdateCommands.php#L30">at line 30</a></div>
         <code>        static            string
     <strong>composerLockPath</strong>()
         </code>
@@ -856,8 +865,8 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_security">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/pm/SecurityUpdateCommands.php#L64">at line 64</a></div>
-        <code>                    <abbr title="Consolidation\OutputFormatters\StructuredData\RowsOfFields">RowsOfFields</abbr>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/pm/SecurityUpdateCommands.php#L48">at line 48</a></div>
+        <code>                    <abbr title="Drush\Commands\pm\Consolidation\OutputFormatters\StructuredData\RowsOfFields|Consolidation\AnnotatedCommand\CommandResult|null">CommandResult|null</abbr>
     <strong>security</strong>(array $options = [&#039;no-dev&#039; =&gt; false])
         </code>
     </h3>
@@ -885,21 +894,12 @@ are available. An exit code of 3 indicates that the check completed, and insecur
 
                     <table class="table table-condensed">
         <tr>
-            <td><abbr title="Consolidation\OutputFormatters\StructuredData\RowsOfFields">RowsOfFields</abbr></td>
+            <td><abbr title="Drush\Commands\pm\Consolidation\OutputFormatters\StructuredData\RowsOfFields|Consolidation\AnnotatedCommand\CommandResult|null">CommandResult|null</abbr></td>
             <td></td>
         </tr>
     </table>
 
             
-                            <h4>Exceptions</h4>
-
-                    <table class="table table-condensed">
-                    <tr>
-                <td><a target="_blank" rel="noopener" href="https://www.php.net/Exception">Exception</a></td>
-                <td></td>
-            </tr>
-            </table>
-
             
             
                     </div>
@@ -908,7 +908,7 @@ are available. An exit code of 3 indicates that the check completed, and insecur
             </div>
                     <div class="method-item">
                     <h3 id="method_suggestComposerCommand">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/pm/SecurityUpdateCommands.php#L83">at line 83</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/pm/SecurityUpdateCommands.php#L75">at line 75</a></div>
         <code>                    void
     <strong>suggestComposerCommand</strong>($updates)
         </code>
@@ -950,7 +950,7 @@ are available. An exit code of 3 indicates that the check completed, and insecur
             </div>
                     <div class="method-item">
                     <h3 id="method_fetchAdvisoryComposerJson">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/pm/SecurityUpdateCommands.php#L107">at line 107</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/pm/SecurityUpdateCommands.php#L99">at line 99</a></div>
         <code>            protected        mixed
     <strong>fetchAdvisoryComposerJson</strong>()
         </code>
@@ -994,7 +994,7 @@ environment variable is not a supported API.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_loadSiteComposerLock">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/pm/SecurityUpdateCommands.php#L122">at line 122</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/pm/SecurityUpdateCommands.php#L114">at line 114</a></div>
         <code>            protected        array
     <strong>loadSiteComposerLock</strong>()
         </code>
@@ -1035,7 +1035,7 @@ environment variable is not a supported API.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_calculateSecurityUpdates">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/pm/SecurityUpdateCommands.php#L141">at line 141</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/pm/SecurityUpdateCommands.php#L133">at line 133</a></div>
         <code>            protected        array
     <strong>calculateSecurityUpdates</strong>(array $composer_lock_data, array $security_advisories_composer_json, bool $excludeDev = false)
         </code>
