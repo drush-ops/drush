@@ -39,7 +39,7 @@ class HelpCommands extends DrushCommands
 
         return $helpDocument;
     }
-    
+
     #[CLI\Hook(type: HookManager::ARGUMENT_VALIDATOR, target: 'help')]
     public function validate(CommandData $commandData): void
     {
