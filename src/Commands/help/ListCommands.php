@@ -72,7 +72,7 @@ class ListCommands extends DrushCommands
             // return $dom;
         }
     }
-    
+
     public function buildDom($namespaced, $application): \DOMDocument
     {
         $dom = new \DOMDocument('1.0', 'UTF-8');
