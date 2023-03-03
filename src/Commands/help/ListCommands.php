@@ -19,10 +19,12 @@ use Symfony\Component\Console\Terminal;
 
 class ListCommands extends DrushCommands
 {
+    const LIST = 'list';
+
     /**
      * List available commands.
      */
-    #[CLI\Command(name: 'list', aliases: [])]
+    #[CLI\Command(name: self::LIST, aliases: [])]
     #[CLI\Option(name: 'filter', description: 'Restrict command list to those commands defined in the specified file. Omit value to choose from a list of names.')]
     #[CLI\Option(name: 'raw', description: 'Show a simple table of command names and descriptions.')]
     #[CLI\Bootstrap(level: DrupalBootLevels::MAX)]
