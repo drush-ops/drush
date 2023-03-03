@@ -2,11 +2,12 @@
 
 namespace Drush\Commands\pm;
 
+use Drush\Boot\DrupalBootLevels;
 use GuzzleHttp\Client;
 use Composer\Semver\Semver;
 use Consolidation\AnnotatedCommand\CommandResult;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
-use Consolidation\OutputFormatters\StructuredData\UnstructuredData;
+use Drush\Attributes as CLI;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Enlightn\SecurityChecker\SecurityChecker;
@@ -18,6 +19,8 @@ use Symfony\Component\Filesystem\Path;
  */
 class SecurityUpdateCommands extends DrushCommands
 {
+    const SECURITY = 'pm:security';
+
     /**
      * Return path to composer.lock
      *
@@ -41,27 +44,16 @@ class SecurityUpdateCommands extends DrushCommands
      *
      * This uses the [Drupal security advisories package](https://github.com/drupal-composer/drupal-security-advisories) to determine if updates
      * are available. An exit code of 3 indicates that the check completed, and insecure packages were found.
-     *
-     * @command pm:security
-     * @aliases sec,pm-security
-     * @option no-dev Only check production dependencies.
-     * @usage drush pm:security --format=json
-     *   Get security data in JSON format.
-     * @usage HTTP_PROXY=tcp://localhost:8125 pm:security
-     *   Proxy Guzzle requests through an http proxy.
-     * @bootstrap none
-     * @table-style default
-     * @field-labels
-     *   name: Name
-     *   version: Installed Version
-     * @default-fields name,version
-     *
-     * @filter-default-field name
-     * @return RowsOfFields
-     *
-     * @throws \Exception
      */
-    public function security(array $options = ['no-dev' => false])
+    #[CLI\Command(name: self::SECURITY, aliases: ['sec', 'pm-security'])]
+    #[CLI\Option(name: 'no-dev', description: 'Only check production dependencies.')]
+    #[CLI\Usage(name: 'drush pm:security --format=json', description: 'Get security data in JSON format.')]
+    #[CLI\Usage(name: 'HTTP_PROXY=tcp://localhost:8125 pm:security', description: 'Proxy Guzzle requests through an http proxy.')]
+    #[CLI\Bootstrap(level: DrupalBootLevels::NONE)]
+    #[CLI\FieldLabels(labels: ['name' => 'Name', 'version' => 'Installed Version'])]
+    #[CLI\DefaultTableFields(fields: ['name', 'version'])]
+    #[CLI\FilterDefaultField(field: 'version')]
+    public function security(array $options = ['no-dev' => false]): RowsOfFields|CommandResult|null
     {
         $security_advisories_composer_json = $this->fetchAdvisoryComposerJson();
         $composer_lock_data = $this->loadSiteComposerLock();

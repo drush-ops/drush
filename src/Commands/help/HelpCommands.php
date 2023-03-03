@@ -12,10 +12,12 @@ use Drush\Drush;
 
 class HelpCommands extends DrushCommands
 {
+    const HELP = 'help';
+
     /**
      * Display usage details for a command.
      */
-    #[CLI\Command(name: 'help')]
+    #[CLI\Command(name: self::HELP)]
     #[CLI\Argument(name: 'command_name', description: 'A command name')]
     #[CLI\Usage(name: 'drush help pm:uninstall', description: 'Show help for a command.')]
     #[CLI\Usage(name: 'drush help pmu', description: 'Show help for a command using an alias.')]
@@ -40,7 +42,7 @@ class HelpCommands extends DrushCommands
         return $helpDocument;
     }
 
-    #[CLI\Hook(type: HookManager::ARGUMENT_VALIDATOR, target: 'help')]
+    #[CLI\Hook(type: HookManager::ARGUMENT_VALIDATOR, target: self::HELP)]
     public function validate(CommandData $commandData): void
     {
         $name = $commandData->input()->getArgument('command_name');
