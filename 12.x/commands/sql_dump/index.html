@@ -5171,6 +5171,7 @@
 
 <h1 id="sqldump">sql:dump<a class="headerlink" href="#sqldump" title="Permanent link">&para;</a></h1>
 <p>Exports the Drupal DB as SQL using mysqldump or equivalent.</p>
+<p>--createdb is used by sql-sync, since including the DROP TABLE statements interferes with the import when the database is created.</p>
 <h4 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h4>
 <ul>
 <li><code>drush sql:dump --result-file=../18.sql</code>. Save SQL dump to the directory above Drupal root.</li>
