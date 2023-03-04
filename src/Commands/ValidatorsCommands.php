@@ -5,6 +5,8 @@ namespace Drush\Commands;
 use Consolidation\AnnotatedCommand\AnnotationData;
 use Consolidation\AnnotatedCommand\CommandError;
 use Consolidation\AnnotatedCommand\CommandData;
+use Consolidation\AnnotatedCommand\Hooks\HookManager;
+use Drush\Attributes as CLI;
 use Drush\Utils\StringUtils;
 use Symfony\Component\Console\Input\Input;
 
@@ -16,10 +18,8 @@ class ValidatorsCommands
     /**
      * Validate that passed entity names are valid.
      * @see \Drush\Commands\core\ViewsCommands::execute for an example.
-     *
-     * @hook validate @validate-entity-load
-     * @return CommandError|null
      */
+    #[CLI\Hook(type: HookManager::ARGUMENT_VALIDATOR, selector: 'validate-entity-load')]
     public function validateEntityLoad(CommandData $commandData)
     {
         list($entity_type, $arg_name) = explode(' ', $commandData->annotationData()->get('validate-entity-load', null));
@@ -36,9 +36,8 @@ class ValidatorsCommands
      * need to know that their module is enabled (e.g. image-flush).
      *
      * @see \Drush\Commands\core\WatchdogCommands::show for an example.
-     *
-     * @hook post-init @validate-module-enabled
      */
+    #[CLI\Hook(type: HookManager::POST_INITIALIZE, selector: 'validate-module-enabled')]
     public function validateModuleEnabled(Input $input, AnnotationData $annotationData): void
     {
         $names = StringUtils::csvToArray($annotationData->get('validate-module-enabled'));
@@ -53,10 +52,8 @@ class ValidatorsCommands
      * Validate that the file path exists.
      *
      * Annotation value should be the name of the argument containing the path.
-     *
-     * @hook validate @validate-file-exists
-     * @return CommandError|null
      */
+    #[CLI\Hook(type: HookManager::ARGUMENT_VALIDATOR, selector: 'validate-file-exists')]
     public function validateFileExists(CommandData $commandData)
     {
         $missing = [];
@@ -83,10 +80,8 @@ class ValidatorsCommands
      * Validate that required PHP extension exists.
      *
      * Annotation value should be extension name. If multiple, delimit by a comma.
-     *
-     * @hook validate @validate-php-extension
-     * @return CommandError|null
      */
+    #[CLI\Hook(type: HookManager::ARGUMENT_VALIDATOR, selector: 'validate-php-extension')]
     public function validatePHPExtension(CommandData $commandData)
     {
         $missing = [];
@@ -107,10 +102,8 @@ class ValidatorsCommands
      * Validate that the permission exists.
      *
      * Annotation value should be the name of the argument/option containing the permission(s).
-     *
-     * @hook validate @validate-permissions
-     * @return CommandError|null
      */
+    #[CLI\Hook(type: HookManager::ARGUMENT_VALIDATOR, selector: 'validate-permissions')]
     public function validatePermissions(CommandData $commandData)
     {
         $missing = [];
