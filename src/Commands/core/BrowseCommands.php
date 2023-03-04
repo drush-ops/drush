@@ -3,34 +3,29 @@
 namespace Drush\Commands\core;
 
 use Drupal\Core\Url;
+use Drush\Attributes as CLI;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Drush\Exec\ExecTrait;
 use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
 use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
 
-class BrowseCommands extends DrushCommands implements SiteAliasManagerAwareInterface
+final class BrowseCommands extends DrushCommands implements SiteAliasManagerAwareInterface
 {
     use ExecTrait;
     use SiteAliasManagerAwareTrait;
 
     /**
      * Display a link to a given path or open link in a browser.
-     *
-     * @command browse
-     *
-     * @param string|null $path Path to open. If omitted, the site front page will be opened.
-     * @param array $options An associative array of options whose values come from cli, aliases, config, etc.
-     * @option browser Open the URL in the default browser. Use --no-browser to avoid opening a browser.
-     * @option integer $redirect-port The port that the web server is redirected to (e.g. when running within a Vagrant environment).
-     * @usage drush browse
-     *   Open default web browser (if configured or detected) to the site front page.
-     * @usage drush browse node/1
-     *   Open web browser to the path node/1.
-     * @usage drush @example.prod browse
-     *   Open a browser to the web site specified in a site alias.
-     * @handle-remote-commands true
      */
+    #[CLI\Command(name: 'browse')]
+    #[CLI\Argument(name: 'path', description: 'Path to open. If omitted, the site front page will be opened.')]
+    #[CLI\Option(name: 'browser', description: 'Open the URL in the default browser. Use --no-browser to avoid opening a browser.')]
+    #[CLI\Option(name: 'redirect-port', description: 'The port that the web server is redirected to (e.g. when running within a Vagrant environment).')]
+    #[CLI\Usage(name: 'drush browse', description: 'Open default web browser (if configured or detected) to the site front page.')]
+    #[CLI\Usage(name: 'drush browse node/1', description: 'Open web browser to the path node/1.')]
+    #[CLI\Usage(name: 'drush @example.prod browse', description: 'Open a browser to the web site specified in a site alias.')]
+    #[CLI\HookSelector(name: 'handle-remote-commands')]
     public function browse($path = '', array $options = ['browser' => true, 'redirect-port' => self::REQ])
     {
         $aliasRecord = $this->siteAliasManager()->getSelf();
