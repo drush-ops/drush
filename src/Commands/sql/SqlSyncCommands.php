@@ -3,6 +3,9 @@
 namespace Drush\Commands\sql;
 
 use Consolidation\AnnotatedCommand\CommandData;
+use Consolidation\AnnotatedCommand\Hooks\HookManager;
+use Drush\Attributes as CLI;
+use Drush\Boot\DrupalBootLevels;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Drush\Exceptions\UserAbortException;
@@ -11,36 +14,30 @@ use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
 use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
 use Symfony\Component\Filesystem\Path;
 
-class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwareInterface
+final class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwareInterface
 {
     use SiteAliasManagerAwareTrait;
 
     /**
      * Copy DB data from a source site to a target site. Transfers data via rsync.
-     *
-     * @command sql:sync
-     * @aliases sql-sync
-     * @param $source A site-alias or site specification whose database you want to copy from.
-     * @param $target A site-alias or site specification whose database you want to replace.
-     * @optionset_table_selection
-     * @option no-dump Do not dump the sql database; always use an existing dump file.
-     * @option no-sync Do not rsync the database dump file from source to target.
-     * @option runner Where to run the rsync command; defaults to the local site. Can also be <info>source</info> or <info>target</info>.
-     * @option create-db Create a new database before importing the database dump on the target machine.
-     * @option db-su Account to use when creating a new database (e.g. <info>root</info>).
-     * @option db-su-pw Password for the db-su account.
-     * @option source-dump The path for retrieving the sql-dump on source machine.
-     * @option target-dump The path for storing the sql-dump on target machine.
-     * @option extra-dump Add custom arguments/options to the dumping of the database (e.g. mysqldump command).
-     * @usage drush sql:sync @source @self
-     *   Copy the database from the site with the alias 'source' to the local site.
-     * @usage drush sql:sync @self @target
-     *   Copy the database from the local site to the site with the alias 'target'.
-     * @usage drush sql:sync #prod #dev
-     *   Copy the database from the site in /sites/prod to the site in /sites/dev (multisite installation).
-     * @topics docs:aliases,docs:policy,docs:configuration,docs:example-sync-via-http
-     * @throws \Exception
      */
+    #[CLI\Command(name: 'sql:sync', aliases: ['sql-sync'])]
+    #[CLI\Argument(name: 'source', description: 'A site-alias or site specification whose database you want to copy from.')]
+    #[CLI\Argument(name: 'target', description: 'A site-alias or site specification whose database you want to replace.')]
+    #[CLI\HookSelector(name: 'optionset_table_selection')]
+    #[CLI\Option(name: 'no-dump', description: 'Do not dump the sql database; always use an existing dump file.')]
+    #[CLI\Option(name: 'no-sync', description: 'Do not rsync the database dump file from source to target.')]
+    #[CLI\Option(name: 'runner', description: 'Where to run the rsync command; defaults to the local site. Can also be <info>source</info> or <info>target</info>.')]
+    #[CLI\Option(name: 'create-db', description: 'Create a new database before importing the database dump on the target machine.')]
+    #[CLI\Option(name: 'db-su', description: 'Account to use when creating a new database (e.g. <info>root</info>).')]
+    #[CLI\Option(name: 'db-su-pw', description: 'Password for the db-su account.')]
+    #[CLI\Option(name: 'source-dump', description: 'The path for retrieving the sql-dump on source machine.')]
+    #[CLI\Option(name: 'target-dump', description: 'The path for storing the sql-dump on target machine.')]
+    #[CLI\Option(name: 'extra-dump', description: 'Add custom arguments/options to the dumping of the database (e.g. mysqldump command).')]
+    #[CLI\Usage(name: 'drush sql:sync @source @self', description: "Copy the database from the site with the alias 'source' to the local site.")]
+    #[CLI\Usage(name: 'drush sql:sync @self @target', description: "Copy the database from the local site to the site with the alias 'target'.")]
+    #[CLI\Usage(name: 'drush sql:sync #prod #dev', description: 'Copy the database from the site in /sites/prod to the site in /sites/dev (multisite installation).')]
+    #[CLI\Topics(topics: ['docs:aliases', 'docs:policy', 'docs:configuration', 'docs:example-sync-via-http'])]
     public function sqlsync($source, $target, $options = ['no-dump' => false, 'no-sync' => false, 'runner' => self::REQ, 'create-db' => false, 'db-su' => self::REQ, 'db-su-pw' => self::REQ, 'target-dump' => self::REQ, 'source-dump' => self::OPT, 'extra-dump' => self::REQ]): void
     {
         $manager = $this->siteAliasManager();
@@ -64,10 +61,7 @@ class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwareInte
         $this->import($global_options, $target_dump_path, $targetRecord);
     }
 
-    /**
-     * @hook validate sql-sync
-     * @throws \Exception
-     */
+    #[CLI\Hook(type: HookManager::ARGUMENT_VALIDATOR, target: 'sql:sync')]
     public function validate(CommandData $commandData): void
     {
         $source = $commandData->input()->getArgument('source');
