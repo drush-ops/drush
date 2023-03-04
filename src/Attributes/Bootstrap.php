@@ -13,15 +13,18 @@ class Bootstrap
     /**
      * @param $level
      *   The level to bootstrap to.
+     * @package $extra
+     *   A maximum level when used with MAX.
      */
     public function __construct(
         #[ExpectedValues(valuesFromClass: DrupalBootLevels::class)] public int $level,
+        public ?string $extra = null,
     ) {
     }
 
     public static function handle(\ReflectionAttribute $attribute, CommandInfo $commandInfo)
     {
-        $args = $attribute->getArguments();
-        $commandInfo->addAnnotation('bootstrap', $args['level']);
+        $instance = $attribute->newInstance();
+        $commandInfo->addAnnotation('bootstrap', $instance->level . ( isset($instance->extra) ? " $instance->extra" : ''));
     }
 }

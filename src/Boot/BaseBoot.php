@@ -82,6 +82,9 @@ abstract class BaseBoot implements Boot, LoggerAwareInterface
 
     public function lookUpPhaseIndex($phase)
     {
+        if (is_numeric($phase)) {
+            return $phase;
+        }
         $phaseMap = $this->bootstrapPhaseMap();
         if (isset($phaseMap[$phase])) {
             return $phaseMap[$phase];
