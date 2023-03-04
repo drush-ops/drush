@@ -154,12 +154,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/consolidation/annotated-command.git",
-                "reference": "8fefdcff0cdb61bc04e34323f626404d536786a5"
+                "reference": "3f748a4fb629249fe8433214442319d0fc0b22d5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/consolidation/annotated-command/zipball/8fefdcff0cdb61bc04e34323f626404d536786a5",
-                "reference": "8fefdcff0cdb61bc04e34323f626404d536786a5",
+                "url": "https://api.github.com/repos/consolidation/annotated-command/zipball/3f748a4fb629249fe8433214442319d0fc0b22d5",
+                "reference": "3f748a4fb629249fe8433214442319d0fc0b22d5",
                 "shasum": ""
             },
             "require": {
@@ -176,6 +176,7 @@
                 "squizlabs/php_codesniffer": "^3",
                 "yoast/phpunit-polyfills": "^0.2.0"
             },
+            "default-branch": true,
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -202,7 +203,7 @@
                 "issues": "https://github.com/consolidation/annotated-command/issues",
                 "source": "https://github.com/consolidation/annotated-command/tree/4.x"
             },
-            "time": "2023-02-28T15:36:38+00:00"
+            "time": "2023-03-04T15:09:03+00:00"
         },
         {
             "name": "consolidation/config",
