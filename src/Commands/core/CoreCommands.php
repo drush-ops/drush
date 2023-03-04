@@ -3,31 +3,25 @@
 namespace Drush\Commands\core;
 
 use Consolidation\OutputFormatters\StructuredData\PropertyList;
+use Drush\Attributes as CLI;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
 use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
 
-class CoreCommands extends DrushCommands implements SiteAliasManagerAwareInterface
+final class CoreCommands extends DrushCommands implements SiteAliasManagerAwareInterface
 {
     use SiteAliasManagerAwareTrait;
 
     /**
      * All global options.
-     *
-     * @command core:global-options
-     * @hidden
-     * @topic
-     * @table-style default
-     * @field-labels
-     *   name: Name
-     *   description: Description
-     * @default-fields name,description
-     * @aliases core-global-options
-     *
-     * @filter-default-field name
      */
+    #[CLI\Command(name: 'core:global-options', aliases: ['core-global-options'])]
+    #[CLI\Help(hidden: true)]
+    #[CLI\Topic]
+    #[CLI\FieldLabels(labels: ['name' => 'Name', 'description' => 'Description'])]
+    #[CLI\FilterDefaultField(field: 'name')]
     public function globalOptions($options = ['format' => 'table']): RowsOfFields
     {
         $application = Drush::getApplication();
@@ -67,15 +61,11 @@ class CoreCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
 
     /**
      * Show Drush version.
-     *
-     * @command version
-     * @table-style compact
-     * @list-delimiter :
-     * @field-labels
-     *   drush-version: Drush version
-     *
-     *
      */
+    #[CLI\Command(name: 'version')]
+    #[CLI\HookSelector(name: 'table-style', value: 'compact')]
+    #[CLI\HookSelector(name: 'list-delimiter', value: ':')]
+    #[CLI\FieldLabels(labels: ['drush-version' => 'Drush version'])]
     public function version($options = ['format' => 'table']): PropertyList
     {
         return new PropertyList(['drush-version' => Drush::getVersion()]);
