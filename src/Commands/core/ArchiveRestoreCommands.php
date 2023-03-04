@@ -26,6 +26,7 @@ final class ArchiveRestoreCommands extends DrushCommands implements SiteAliasMan
 {
     use SiteAliasManagerAwareTrait;
 
+    const RESTORE = 'archive:restore';
     private Filesystem $filesystem;
     private array $siteStatus;
     private ?string $destinationPath = null;
@@ -104,6 +105,39 @@ final class ArchiveRestoreCommands extends DrushCommands implements SiteAliasMan
      *
      * @throws \Exception
      */
+    #[CLI\Command(name: self::RESTORE, aliases: ['arr'])]
+    #[CLI\Option(name: 'destination-path', description: 'The base path to restore the code/files into.')]
+    #[CLI\Option(name: 'overwrite', description: 'Overwrite files if exists when un-compressing an archive.')]
+    #[CLI\Option(name: 'site-subdir', description: 'Site subdirectory to put settings.local.php into.')]
+    #[CLI\Option(name: 'setup-database-connection', description: 'Sets up the database connection in settings.local.php file if either --db-url option or set of specific --db-* options are provided.')]
+    #[CLI\Option(name: 'code', description: 'Import code.')]
+    #[CLI\Option(name: 'code-source-path', description: 'Import code from specified directory. Has higher priority over "path" argument.')]
+    #[CLI\Option(name: 'files', description: 'Import Drupal files.')]
+    #[CLI\Option(name: 'files-source-path', description: 'Import Drupal files from specified directory. Has higher priority over "path" argument.')]
+    #[CLI\Option(name: 'files-destination-relative-path', description: 'Import Drupal files into specified directory relative to Composer root.')]
+    #[CLI\Option(name: 'db', description: 'Import database.')]
+    #[CLI\Option(name: 'db-source-path', description: 'Import database from specified dump file. Has higher priority over "path" argument.')]
+    #[CLI\Option(name: 'db-name', description: 'Destination database name.')]
+    #[CLI\Option(name: 'db-port', description: 'Destination database port.')]
+    #[CLI\Option(name: 'db-host', description: 'Destination database host.')]
+    #[CLI\Option(name: 'db-user', description: 'Destination database user.')]
+    #[CLI\Option(name: 'db-password', description: 'Destination database user password.')]
+    #[CLI\Option(name: 'db-prefix', description: 'Destination database prefix.')]
+    #[CLI\Option(name: 'db-driver', description: 'Destination database driver.')]
+    #[CLI\Usage(name: 'drush archive:restore /path/to/archive.tar.gz', description: 'Restore the site from /path/to/archive.tar.gz archive file.')]
+    #[CLI\Usage(name: 'drush archive:restore /path/to/archive.tar.gz --destination-path=/path/to/restore', description: 'Restore the site from /path/to/archive.tar.gz archive file into /path/to/restore directory.')]
+    #[CLI\Usage(name: 'drush archive:restore /path/to/archive.tar.gz --code --destination-path=/path/to/restore', description: 'Restore the code from /path/to/archive.tar.gz archive file into /path/to/restore directory.')]
+    #[CLI\Usage(name: 'drush archive:restore /path/to/archive.tar.gz --code-source-path=/code/source/path', description: 'Restore database and Drupal files from /path/to/archive.tar.gz archive file and the code from /code/source/path directory.')]
+    #[CLI\Usage(name: 'drush archive:restore /path/to/archive.tar.gz --files --destination-path=/path/to/restore', description: 'Restore the Drupal files from /path/to/archive.tar.gz archive file into /path/to/restore directory')]
+    #[CLI\Usage(name: 'drush archive:restore /path/to/archive.tar.gz --files-source-path=/files/source/path', description: 'Restore code and database from /path/to/archive.tar.gz archive file and the Drupal files from /files/source/path directory.')]
+    #[CLI\Usage(name: 'drush archive:restore /path/to/archive.tar.gz --files-destination-relative-path=web/site/foo-bar/files', description: 'Restore the Drupal files from /path/to/archive.tar.gz archive file into web/site/foo-bar/files site\'s subdirectory.')]
+    #[CLI\Usage(name: 'drush archive:restore /path/to/archive.tar.gz --db', description: 'Restore the database from /path/to/archive.tar.gz archive file.')]
+    #[CLI\Usage(name: 'drush archive:restore /path/to/archive.tar.gz --db-source-path=/path/to/database.sql', description: 'Restore code and Drupal files from /path/to/archive.tar.gz archive file and the database from /path/to/database.sql dump file.')]
+    #[CLI\Usage(name: 'drush archive:restore /path/to/archive.tar.gz --db-url=mysql://user:password@localhost/database_name --destination-path=/path/to/restore', description: 'Restore code, database and Drupal files from /path/to/archive.tar.gz archive file into /path/to/restore directory using database URL.')]
+    #[CLI\HookSelector(name: 'optionset_table_selection')]
+    #[CLI\HookSelector(name: 'optionset_sql')]
+    #[CLI\Bootstrap(level: DrupalBootLevels::MAX, extra: DrupalBootLevels::NONE)]
+    #[CLI\ValidatePhpExtensions(extensions: ['Phar'])]
     public function restore(
         string $path = null,
         ?string $site = null,

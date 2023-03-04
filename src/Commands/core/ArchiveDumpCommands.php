@@ -25,6 +25,7 @@ use Traversable;
 
 final class ArchiveDumpCommands extends DrushCommands
 {
+    const DUMP = 'archive:dump';
     private Filesystem $filesystem;
     private string $archiveDir;
     private string $drupalFilesDir;
@@ -59,7 +60,7 @@ final class ArchiveDumpCommands extends DrushCommands
      * - styles
      * - php
      */
-    #[CLI\Command(name: 'archive:dump', aliases: ['ard'])]
+    #[CLI\Command(name: self::DUMP, aliases: ['ard'])]
     #[CLI\ValidatePhpExtensions(extensions: ['Phar'])]
     #[CLI\Option(name: 'destination', description: 'The full path and filename in which the archive should be stored. If omitted, it will be saved to the drush-backups directory.')]
     #[CLI\Option(name: 'overwrite', description: 'Overwrite destination file if exists.')]
