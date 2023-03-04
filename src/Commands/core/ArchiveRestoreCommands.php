@@ -7,6 +7,7 @@ use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
 use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
 use Drupal;
 use DrupalFinder\DrupalFinder;
+use Drush\Attributes as CLI;
 use Drush\Backend\BackendPathEvaluator;
 use Drush\Boot\DrupalBootLevels;
 use Drush\Commands\DrushCommands;
@@ -21,7 +22,7 @@ use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Path;
 use Throwable;
 
-class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAwareInterface
+final class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAwareInterface
 {
     use SiteAliasManagerAwareTrait;
 
