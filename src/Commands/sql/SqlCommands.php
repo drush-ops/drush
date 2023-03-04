@@ -18,7 +18,7 @@ use Drush\Sql\SqlBase;
 use Consolidation\OutputFormatters\StructuredData\PropertyList;
 use Symfony\Component\Console\Input\InputInterface;
 
-class SqlCommands extends DrushCommands implements StdinAwareInterface
+final class SqlCommands extends DrushCommands implements StdinAwareInterface
 {
     use ExecTrait;
     use StdinAwareTrait;
