@@ -154,12 +154,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/consolidation/annotated-command.git",
-                "reference": "d35bd43a7360029b41d887a7420e84ed0b1fb80d"
+                "reference": "15a8824cb2c3975b3f2decc671e9522c655806ea"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/consolidation/annotated-command/zipball/d35bd43a7360029b41d887a7420e84ed0b1fb80d",
-                "reference": "d35bd43a7360029b41d887a7420e84ed0b1fb80d",
+                "url": "https://api.github.com/repos/consolidation/annotated-command/zipball/15a8824cb2c3975b3f2decc671e9522c655806ea",
+                "reference": "15a8824cb2c3975b3f2decc671e9522c655806ea",
                 "shasum": ""
             },
             "require": {
@@ -203,7 +203,7 @@
                 "issues": "https://github.com/consolidation/annotated-command/issues",
                 "source": "https://github.com/consolidation/annotated-command/tree/4.x"
             },
-            "time": "2023-03-04T23:58:04+00:00"
+            "time": "2023-03-05T00:53:25+00:00"
         },
         {
             "name": "consolidation/config",
