@@ -5,28 +5,24 @@ namespace Drush\Commands\core;
 use Consolidation\SiteAlias\SiteAlias;
 use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
 use Consolidation\SiteProcess\ProcessManager;
+use Drush\Attributes as CLI;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Drush\SiteAlias\SiteAliasManagerAwareInterface;
 
-class DeployCommands extends DrushCommands implements SiteAliasManagerAwareInterface
+final class DeployCommands extends DrushCommands implements SiteAliasManagerAwareInterface
 {
     use SiteAliasManagerAwareTrait;
 
+    const DEPLOY = 'deploy';
+
     /**
      * Run several commands after performing a code deployment.
-     *
-     * @command deploy
-     *
-     * @usage drush deploy -v -y
-     *   Run updates with verbose logging and accept all prompts.
-     *
-     * @version 10.3
-     *
-     * @topics docs:deploy
-     *
-     * @throws \Exception
      */
+    #[CLI\Command(name: self::DEPLOY)]
+    #[CLI\Usage(name: 'drush deploy -v -y', description: 'Run updates with verbose logging and accept all prompts.')]
+    #[CLI\Version(version: '10.3')]
+    #[CLI\Topics(topics: ['docs:deploy'])]
     public function deploy(): void
     {
         $self = $this->siteAliasManager()->getSelf();
