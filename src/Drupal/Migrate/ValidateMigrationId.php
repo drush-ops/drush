@@ -10,7 +10,6 @@ class ValidateMigrationId
 {
     public static function handle(\ReflectionAttribute $attribute, CommandInfo $commandInfo)
     {
-        $args = $attribute->getArguments();
-        $commandInfo->addAnnotation('validate-migration-id', NULL);
+        $commandInfo->addAnnotation('validate-migration-id', null);
     }
 }
