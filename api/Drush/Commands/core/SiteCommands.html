@@ -85,7 +85,7 @@
     </div>
 
     
-    <p>        class
+    <p>final         class
     <strong>SiteCommands</strong>        extends <a href="../../../Drush/Commands/DrushCommands.html"><abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a>        implements        <abbr title="Consolidation\SiteAlias\SiteAliasManagerAwareInterface">SiteAliasManagerAwareInterface</abbr>        (<a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/SiteCommands.php">View source</a>)
 </p>
 
@@ -175,6 +175,24 @@
                     <tr>
                 <td>
                                                                                                                         EXIT_FAILURE_WITH_CLARITY
+                                    </td>
+                <td class="last">
+                    <p><em></em></p>
+                    <p></p>
+                </td>
+            </tr>
+                    <tr>
+                <td>
+                                                                                                                        SET
+                                    </td>
+                <td class="last">
+                    <p><em></em></p>
+                    <p></p>
+                </td>
+            </tr>
+                    <tr>
+                <td>
+                                                                                                                        ALIAS
                                     </td>
                 <td class="last">
                     <p><em></em></p>
@@ -340,10 +358,10 @@ DrushConfig as return type. Helps with IDE completion.</p></p>                </
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    <abbr title="Consolidation\OutputFormatters\StructuredData\UnstructuredListData">UnstructuredListData</abbr>
+                    <abbr title="Drush\Commands\core\Consolidation\OutputFormatters\StructuredData\UnstructuredListData">UnstructuredListData</abbr>|null
                 </div>
                 <div class="col-md-8">
-                    <a href="#method_siteAlias">siteAlias</a>(string $site = null, array $options = [&#039;format&#039; =&gt; &#039;yaml&#039;])
+                    <a href="#method_siteAlias">siteAlias</a>($site = null, array $options = [&#039;format&#039; =&gt; &#039;yaml&#039;])
         
                                             <p><p>Show site alias details, or a list of available site aliases.</p></p>                </div>
                 <div class="col-md-2"></div>
@@ -789,7 +807,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_siteSet">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/SiteCommands.php#L46">at line 46</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/SiteCommands.php#L24">at line 24</a></div>
         <code>                    void
     <strong>siteSet</strong>(string $site = &#039;@none&#039;)
         </code>
@@ -809,7 +827,7 @@ file.</p></p>
                     <tr>
                 <td>string</td>
                 <td>$site</td>
-                <td><p>Site specification to use, or <info>-</info> for previous site. Omit this argument to unset.</p></td>
+                <td></td>
             </tr>
             </table>
 
@@ -824,15 +842,6 @@ file.</p></p>
     </table>
 
             
-                            <h4>Exceptions</h4>
-
-                    <table class="table table-condensed">
-                    <tr>
-                <td><a target="_blank" rel="noopener" href="https://www.php.net/Exception">Exception</a></td>
-                <td></td>
-            </tr>
-            </table>
-
             
             
                     </div>
@@ -841,9 +850,9 @@ file.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_siteAlias">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/SiteCommands.php#L116">at line 116</a></div>
-        <code>                    <abbr title="Consolidation\OutputFormatters\StructuredData\UnstructuredListData">UnstructuredListData</abbr>
-    <strong>siteAlias</strong>(string $site = null, array $options = [&#039;format&#039; =&gt; &#039;yaml&#039;])
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/SiteCommands.php#L90">at line 90</a></div>
+        <code>                    <abbr title="Drush\Commands\core\Consolidation\OutputFormatters\StructuredData\UnstructuredListData">UnstructuredListData</abbr>|null
+    <strong>siteAlias</strong>($site = null, array $options = [&#039;format&#039; =&gt; &#039;yaml&#039;])
         </code>
     </h3>
     <div class="details">    
@@ -858,9 +867,9 @@ file.</p></p>
 
                     <table class="table table-condensed">
                     <tr>
-                <td>string</td>
+                <td></td>
                 <td>$site</td>
-                <td><p>Site alias or site specification.</p></td>
+                <td></td>
             </tr>
                     <tr>
                 <td>array</td>
@@ -874,21 +883,12 @@ file.</p></p>
 
                     <table class="table table-condensed">
         <tr>
-            <td><abbr title="Consolidation\OutputFormatters\StructuredData\UnstructuredListData">UnstructuredListData</abbr></td>
+            <td><abbr title="Drush\Commands\core\Consolidation\OutputFormatters\StructuredData\UnstructuredListData">UnstructuredListData</abbr>|null</td>
             <td></td>
         </tr>
     </table>
 
             
-                            <h4>Exceptions</h4>
-
-                    <table class="table table-condensed">
-                    <tr>
-                <td><a target="_blank" rel="noopener" href="https://www.php.net/Exception">Exception</a></td>
-                <td></td>
-            </tr>
-            </table>
-
             
             
                     </div>
@@ -897,7 +897,7 @@ file.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_siteAliasExportList">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/SiteCommands.php#L141">at line 141</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/SiteCommands.php#L122">at line 122</a></div>
         <code>            protected        array
     <strong>siteAliasExportList</strong>(array $aliasList, $options)
         </code>
