@@ -179,7 +179,7 @@ class MigrateRunnerTest extends UnishIntegrationTestCase
         // @see \Drupal\woot\EventSubscriber\PreRowDeleteTestSubscriber::onPreRowDelete()
         $this->drush('migrate:rollback', [], ['all' => null], self::EXIT_ERROR);
         $this->assertStringContainsString('Earthquake while rolling back', $this->getErrorOutputRaw());
-        $this->drush('migrate:reset', ['test_migration']);
+        $this->drush('migrate:reset-status', ['test_migration']);
 
         // Reset the flag, so we won't fail the rollback again.
         $this->drush('state:delete', ['woot.migrate_runner.trigger_failures']);
@@ -283,7 +283,7 @@ class MigrateRunnerTest extends UnishIntegrationTestCase
         // @todo Find a way to stop a migration that runs.
         $this->assertStringContainsString('Migration test_migration is idle', $this->getErrorOutput());
 
-        $this->drush('migrate:reset', ['test_migration']);
+        $this->drush('migrate:reset-status', ['test_migration']);
         // @todo Find a way to reset a migration that is not idle.
         $this->assertStringContainsString('Migration test_migration is already Idle', $this->getErrorOutput());
     }
