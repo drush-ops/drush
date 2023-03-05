@@ -3,17 +3,17 @@
 namespace Drush\Commands\core;
 
 use Consolidation\AnnotatedCommand\CommandData;
+use Consolidation\AnnotatedCommand\Hooks\HookManager;
 use Consolidation\SiteProcess\Util\Escape;
+use Drush\Attributes as CLI;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Symfony\Component\Filesystem\Path;
 
 class NotifyCommands extends DrushCommands
 {
-    /**
-     * @hook option *
-     * @option notify Notify upon command completion. If set to a number, commands that finish in fewer seconds won't notify.
-     */
+    #[CLI\Hook(type: HookManager::OPTION_HOOK, target: '*')]
+    #[CLI\Option(name: 'notify', description: "Notify upon command completion. If set to a number, commands that finish in fewer seconds won't notify.")]
     public function optionsetNotify(): void
     {
     }
@@ -21,6 +21,7 @@ class NotifyCommands extends DrushCommands
     /**
      * @hook pre-command *
      */
+    #[CLI\Hook(type: HookManager::PRE_COMMAND_HOOK, target: '*')]
     public function registerShutdown(CommandData $commandData): void
     {
         register_shutdown_function([$this, 'shutdown'], $commandData);

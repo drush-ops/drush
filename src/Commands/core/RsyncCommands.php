@@ -3,8 +3,10 @@
 namespace Drush\Commands\core;
 
 use Consolidation\AnnotatedCommand\CommandData;
+use Consolidation\AnnotatedCommand\Hooks\HookManager;
 use Consolidation\SiteProcess\ProcessBase;
 use Consolidation\SiteProcess\Util\Escape;
+use Drush\Attributes as CLI;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Drush\Exceptions\UserAbortException;
@@ -15,7 +17,7 @@ use Drush\Backend\BackendPathEvaluator;
 use Drush\Config\ConfigLocator;
 use Symfony\Component\Console\Event\ConsoleCommandEvent;
 
-class RsyncCommands extends DrushCommands implements SiteAliasManagerAwareInterface
+final class RsyncCommands extends DrushCommands implements SiteAliasManagerAwareInterface
 {
     use SiteAliasManagerAwareTrait;
 
@@ -23,6 +25,7 @@ class RsyncCommands extends DrushCommands implements SiteAliasManagerAwareInterf
      * These are arguments after the aliases and paths have been evaluated.
      * @see validate().
      */
+    const RSYNC = 'core:rsync';
     /** @var HostPath */
     public $sourceEvaluatedPath;
     /** @var HostPath */
@@ -39,26 +42,20 @@ class RsyncCommands extends DrushCommands implements SiteAliasManagerAwareInterf
 
     /**
      * Rsync Drupal code or files to/from another server using ssh.
-     *
-     * @command core:rsync
-     * @param $source A site alias and optional path. See rsync documentation and [Site aliases](../site-aliases.md).
-     * @param $target A site alias and optional path. See rsync documentation and [Site aliases](../site-aliases.md).
-     * @param $extra Additional parameters after the ssh statement.
-     * @optionset_ssh
-     * @option exclude-paths List of paths to exclude, seperated by : (Unix-based systems) or ; (Windows).
-     * @option include-paths List of paths to include, seperated by : (Unix-based systems) or ; (Windows).
-     * @option mode The unary flags to pass to rsync; --mode=rultz implies rsync -rultz.  Default is -akz.
-     * @usage drush rsync @dev @stage
-     *   Rsync Drupal root from Drush alias dev to the alias stage.
-     * @usage drush rsync ./ @stage:%files/img
-     *   Rsync all files in the current directory to the <info>img</info>directory in the file storage folder on the Drush alias stage.
-     * @usage drush rsync @dev @stage -- --exclude=*.sql --delete
-     *   Rsync Drupal root from the Drush alias dev to the alias stage, excluding all .sql files and delete all files on the destination that are no longer on the source.
-     * @usage drush rsync @dev @stage --ssh-options="-o StrictHostKeyChecking=no" -- --delete
-     *   Customize how rsync connects with remote host via SSH. rsync options like --delete are placed after a --.
-     * @aliases rsync,core-rsync
-     * @topics docs:aliases
      */
+    #[CLI\Command(name: self::RSYNC, aliases: ['rsync', 'core-rsync'])]
+    #[CLI\Argument(name: 'source', description: 'A site alias and optional path. See rsync documentation and [Site aliases](../site-aliases.md).')]
+    #[CLI\Argument(name: 'target', description: 'A site alias and optional path. See rsync documentation and [Site aliases](../site-aliases.md).')]
+    #[CLI\Argument(name: 'extra', description: 'Additional parameters after the ssh statement.')]
+    #[CLI\Option(name: 'exclude-paths', description: 'List of paths to exclude, seperated by : (Unix-based systems) or ; (Windows).')]
+    #[CLI\Option(name: 'include-paths', description: 'List of paths to include, seperated by : (Unix-based systems) or ; (Windows).')]
+    #[CLI\Option(name: 'mode', description: 'The unary flags to pass to rsync; --mode=rultz implies rsync -rultz.  Default is -akz.')]
+    #[CLI\HookSelector(name: 'optionset_ssh')]
+    #[CLI\Usage(name: 'drush rsync @dev @stage', description: 'Rsync Drupal root from Drush alias dev to the alias stage.')]
+    #[CLI\Usage(name: 'drush rsync ./ @stage:%files/img', description: 'Rsync all files in the current directory to the <info>img</info>directory in the file storage folder on the Drush alias stage.')]
+    #[CLI\Usage(name: 'drush rsync @dev @stage -- --exclude=*.sql --delete', description: 'Rsync Drupal root from the Drush alias dev to the alias stage, excluding all .sql files and delete all files on the destination that are no longer on the source.')]
+    #[CLI\Usage(name: 'drush rsync @dev @stage --ssh-options="-o StrictHostKeyChecking=no" -- --delete', description: 'Customize how rsync connects with remote host via SSH. rsync options like --delete are placed after a --.')]
+    #[CLI\Topics(topics: ['docs:aliases'])]
     public function rsync($source, $target, array $extra, $options = ['exclude-paths' => self::REQ, 'include-paths' => self::REQ, 'mode' => 'akz']): void
     {
         // Prompt for confirmation. This is destructive.
@@ -152,11 +149,8 @@ class RsyncCommands extends DrushCommands implements SiteAliasManagerAwareInterf
 
     /**
      * Validate that passed aliases are valid.
-     *
-     * @hook validate core-rsync
-     * @param CommandData $commandData
-     * @throws \Exception
      */
+    #[CLI\Hook(type: HookManager::ARGUMENT_VALIDATOR, target: self::RSYNC)]
     public function validate(CommandData $commandData): void
     {
         if ($this->sourceEvaluatedPath->isRemote() && $this->targetEvaluatedPath->isRemote()) {
