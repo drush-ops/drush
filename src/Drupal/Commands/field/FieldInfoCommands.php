@@ -60,7 +60,7 @@ class FieldInfoCommands extends DrushCommands
     #[CLI\FilterDefaultField(field: 'field_name')]
     #[CLI\Usage(name: 'field:info taxonomy_term tag', description: 'List all fields.')]
     #[CLI\Usage(name: 'field:info', description: 'List all fields and fill in the remaining information through prompts.')]
-    #[CLI\Version('11.0')]
+    #[CLI\Version(version: '11.0')]
     public function info(?string $entityType = null, ?string $bundle = null, array $options = [
         'format' => 'table',
     ]): RowsOfFields
