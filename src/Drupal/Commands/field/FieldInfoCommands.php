@@ -42,7 +42,7 @@ class FieldInfoCommands extends DrushCommands
         'field_type',
         'cardinality',
     ])]
-    #[CLI\FieldLabels([
+    #[CLI\FieldLabels(labels: [
         'label' => 'Label',
         'description' => 'Description',
         'field_name' => 'Field name',
