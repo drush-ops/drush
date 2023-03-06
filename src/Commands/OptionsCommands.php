@@ -20,6 +20,9 @@ class OptionsCommands
     {
     }
 
+    /**
+     * @deprecated Use \Drush\Attributes\OptionsetGetEditor attribute instead.
+     */
     #[CLI\Hook(type: HookManager::OPTION_HOOK, selector: 'optionset_get_editor')]
     #[CLI\Option(name: 'editor', description: 'A string of bash which launches user\'s preferred text editor. Defaults to <info>${VISUAL-${EDITOR-vi}}</info>.')]
     #[CLI\Option(name: 'bg', description: 'Launch editor in background process.')]
@@ -27,8 +30,12 @@ class OptionsCommands
     {
     }
 
+    /**
+     * @deprecated Use \Drush\Attributes\OptionsetSsh attribute instead.
+     */
     #[CLI\Hook(type: HookManager::OPTION_HOOK, selector: 'optionset_ssh')]
     #[CLI\Option(name: 'ssh-options', description: 'A string appended to ssh command during rsync, sql-sync, etc.')]
+    #[Deprecated(reason: 'Use \Drush\Attributes\OptionsetSsh')]
     public function optionsetSsh($options = ['ssh-options' => self::REQ]): void
     {
     }
