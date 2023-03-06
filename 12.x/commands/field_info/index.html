@@ -5181,19 +5181,19 @@
 <p>List all configurable fields of an entity bundle</p>
 <h4 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h4>
 <ul>
-<li><code>drush field-info taxonomy_term tag</code>. List all fields.</li>
-<li><code>drush field:info</code>. List all fields and fill in the remaining information through prompts.</li>
+<li><code>field:info taxonomy_term tag</code>. List all fields.</li>
+<li><code>field:info</code>. List all fields and fill in the remaining information through prompts.</li>
 </ul>
 <h4 id="arguments">Arguments<a class="headerlink" href="#arguments" title="Permanent link">&para;</a></h4>
 <ul>
-<li><strong>[entityType]</strong>. The machine name of the entity type</li>
-<li><strong>[bundle]</strong>. The machine name of the bundle</li>
+<li><strong>[entityType]</strong>. The machine name of the entity type.</li>
+<li><strong>[bundle]</strong>. The machine name of the bundle.</li>
 </ul>
 <h4 id="options">Options<a class="headerlink" href="#options" title="Permanent link">&para;</a></h4>
 <ul>
 <li><strong> --format[=FORMAT]</strong>. Format the result data. Available formats: csv,json,list,null,php,print-r,sections,string,table,tsv,var_dump,var_export,xml,yaml [default: <em>table</em>]</li>
 <li><strong> --show-machine-names</strong>. Show machine names instead of labels in option lists.</li>
-<li><strong> --fields=FIELDS</strong>. Available fields: Label (label), Description (description), Field name (field_name), Field type (field_type), Required (required), Translatable (translatable), Cardinality (cardinality), Default value (default_value), Default value callback (default_value_callback), Allowed values (allowed_values), Allowed values function (allowed_values_function), Selection handler (handler), Target bundles (target_bundles) [default: <em>field_name,required,field_type,cardinality</em>]</li>
+<li><strong> --fields=FIELDS</strong>. Available fields: Label (label), Description (description), Field name (field_name), Field type (field_type), Required (required), Translatable (translatable), Cardinality (cardinality), Default value (default_value), Default value callback (default_value_callback), Allowed values (allowed_values), Allowed values function (allowed_values_function), Selection handler (handler), Target bundles (target_bundles)</li>
 <li><strong> --field=FIELD</strong>. Select just one field, and force format to <em>string</em>.</li>
 <li><strong> --filter[=FILTER]</strong>. Filter output based on provided expression</li>
 </ul>
