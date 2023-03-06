@@ -545,7 +545,7 @@ class MigrateRunnerCommands extends DrushCommands
         'message' => 'Message',
         'hash' => 'Source IDs hash',
     ])]
-    #[CLI\DefaultFields(fields: [
+    #[CLI\DefaultTableFields(fields: [
         'level',
         'source_ids',
         'destination_ids',
