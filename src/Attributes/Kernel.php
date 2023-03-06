@@ -13,17 +13,17 @@ use JetBrains\PhpStorm\ExpectedValues;
 class Kernel
 {
     /**
-     * @param $kernel
+     * @param $name
      *   The kernel name.
      */
     public function __construct(
-        #[ExpectedValues(valuesFromClass: Kernels::class)] public string $kernel,
+        #[ExpectedValues(valuesFromClass: Kernels::class)] public string $name,
     ) {
     }
 
     public static function handle(\ReflectionAttribute $attribute, CommandInfo $commandInfo)
     {
         $args = $attribute->getArguments();
-        $commandInfo->addAnnotation('kernel', $args['kernel']);
+        $commandInfo->addAnnotation('kernel', $args['name']);
     }
 }

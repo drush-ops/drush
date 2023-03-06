@@ -2,6 +2,7 @@
 
 namespace Drush\Commands\core;
 
+use Consolidation\AnnotatedCommand\Hooks\HookManager;
 use Consolidation\OutputFormatters\StructuredData\PropertyList;
 use Drupal\Core\Site\Settings;
 use Drupal\Core\StreamWrapper\PrivateStream;
@@ -175,9 +176,7 @@ final class StatusCommands extends DrushCommands implements SiteAliasManagerAwar
         return $cellData;
     }
 
-    /**
-     * @hook pre-command core-status
-     */
+    #[CLI\Hook(type: HookManager::PRE_COMMAND_HOOK, target: self::STATUS)]
     public function adjustStatusOptions(CommandData $commandData): void
     {
         $input = $commandData->input();
