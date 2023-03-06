@@ -38,7 +38,7 @@ class FieldBaseInfoCommands extends DrushCommands
     #[CLI\Command(name: 'field:base-info', aliases: ['field-base-info', 'fbi'])]
     #[CLI\Argument(name: 'entityType', description: 'The machine name of the entity type.')]
     #[CLI\Option(name: 'show-machine-names', description: 'Show machine names instead of labels in option lists.')]
-    #[CLI\DefaultFields(fields: [
+    #[CLI\DefaultTableFields(fields: [
         'field_name',
         'required',
         'field_type',

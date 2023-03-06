@@ -34,7 +34,7 @@ class FieldInfoCommands extends DrushCommands
     #[CLI\Argument(name: 'entityType', description: 'The machine name of the entity type.')]
     #[CLI\Argument(name: 'bundle', description: 'The machine name of the bundle.')]
     #[CLI\Option(name: 'show-machine-names', description: 'Show machine names instead of labels in option lists.')]
-    #[CLI\DefaultFields(fields: [
+    #[CLI\DefaultTableFields(fields: [
         'field_name',
         'required',
         'field_type',
