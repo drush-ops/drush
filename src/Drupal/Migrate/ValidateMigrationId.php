@@ -8,5 +8,5 @@ use Drush\Attributes\NoArgumentsBase;
 #[Attribute(Attribute::TARGET_METHOD)]
 class ValidateMigrationId extends NoArgumentsBase
 {
-    protected const NAME = 'validate-migration-id';
+    protected const NAME = 'validate_migration_id';
 }

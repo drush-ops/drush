@@ -143,7 +143,7 @@ class MigrateRunnerTest extends UnishIntegrationTestCase
     public function testMigrateImportAndRollback(): void
     {
         // Reset status just in case.
-        $this->drush('migrate:reset-status', ['test_migration'], []);
+        $this->drush('migrate:reset-status', ['test_migration']);
 
         // Trigger logging in ProcessRowTestSubscriber::onPrepareRow().
         // @see \Drupal\woot\EventSubscriber\ProcessRowTestSubscriber::onPrepareRow()
