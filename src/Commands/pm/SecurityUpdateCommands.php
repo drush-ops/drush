@@ -17,7 +17,7 @@ use Symfony\Component\Filesystem\Path;
 /**
  * Check Drupal Composer packages for security updates.
  */
-class SecurityUpdateCommands extends DrushCommands
+final class SecurityUpdateCommands extends DrushCommands
 {
     const SECURITY = 'pm:security';
 
