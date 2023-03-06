@@ -178,7 +178,7 @@ class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwareInte
         } else {
             $tmp = '/tmp'; // Our fallback plan.
             $this->logger()->notice(dt('Starting to discover temporary files directory on target.'));
-            $process = $this->processManager()->drush($targetRecord, 'core-status', ['drush-temp'], ['format' => 'string']);
+            $process = $this->processManager()->drush($targetRecord, 'core-status', [], ['format' => 'string', 'field' => 'drush-temp']);
             $process->setSimulated(false);
             $process->run();
 
