@@ -7,7 +7,7 @@ use Drush\Attributes as CLI;
 use Symfony\Component\Console\Input\InputOption;
 
 /*
- * Common options providers. Use them by adding an annotation to your method.
+ * Common options providers. Use them by adding their Attribute to your command method.
  */
 class OptionsCommands
 {
@@ -20,12 +20,7 @@ class OptionsCommands
     {
     }
 
-    /**
-     * @hook option @optionset_get_editor
-     * @option editor A string of bash which launches user's preferred text editor. Defaults to <info>${VISUAL-${EDITOR-vi}}</info>.
-     * @option bg Launch editor in background process.
-     */
-    #[CLI\OptionsetGetEditor]
+    #[CLI\Hook(type: HookManager::OPTION_HOOK, selector: 'optionset_get_editor')]
     #[CLI\Option(name: 'editor', description: 'A string of bash which launches user\'s preferred text editor. Defaults to <info>${VISUAL-${EDITOR-vi}}</info>.')]
     #[CLI\Option(name: 'bg', description: 'Launch editor in background process.')]
     public function optionsetGetEditor($options = ['editor' => '', 'bg' => false]): void
