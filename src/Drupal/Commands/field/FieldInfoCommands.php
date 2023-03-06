@@ -29,8 +29,6 @@ class FieldInfoCommands extends DrushCommands
 
     /**
      * List all configurable fields of an entity bundle
-     *
-     * @table-style default
      */
     #[CLI\Command(name: 'field:info', aliases: ['field-info', 'fi'])]
     #[CLI\Argument(name: 'entityType', description: 'The machine name of the entity type.')]

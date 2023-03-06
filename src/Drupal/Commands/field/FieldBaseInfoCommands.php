@@ -34,8 +34,6 @@ class FieldBaseInfoCommands extends DrushCommands
 
     /**
      * List all base fields of an entity type
-     *
-     * @table-style default
      */
     #[CLI\Command(name: 'field:base-info', aliases: ['field-base-info', 'fbi'])]
     #[CLI\Argument(name: 'entityType', description: 'The machine name of the entity type.')]
