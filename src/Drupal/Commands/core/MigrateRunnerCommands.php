@@ -81,7 +81,7 @@ class MigrateRunnerCommands extends DrushCommands
         'unprocessed' => 'Unprocessed',
         'last_imported' => 'Last Imported',
     ])]
-    #[CLI\DefaultFields(fields: [
+    #[CLI\DefaultTableFields(fields: [
         'id',
         'status',
         'total',
