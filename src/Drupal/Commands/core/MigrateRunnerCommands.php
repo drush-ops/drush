@@ -55,7 +55,7 @@ class MigrateRunnerCommands extends DrushCommands
     }
 
     /**
-     * Lists all migrations with current status.
+     * List all migrations with current status.
      *
      * @throws \Exception
      *   If --names-only is used with --field having other value than 'id'.
@@ -64,7 +64,6 @@ class MigrateRunnerCommands extends DrushCommands
     #[CLI\Argument(name: 'migrationIds', description: 'Restrict to a comma-separated list of migrations. Optional.')]
     #[CLI\Option(name: 'tag', description: 'A comma-separated list of migration tags to list. If only <info>--tag</info> is provided, all tagged migrations will be listed, grouped by tags.')]
     #[CLI\Option(name: 'names-only', description: '[Deprecated, use --field=id instead] Only return names, not all the details (faster).')]
-    #[CLI\Help(description: 'List all migrations with current status.')]
     #[CLI\Usage(name: 'migrate:status', description: 'Retrieve status for all migrations')]
     #[CLI\Usage(name: 'migrate:status --tag', description: 'Retrieve status for all migrations, grouped by tag')]
     #[CLI\Usage(name: 'migrate:status --tag=user,main_content', description: 'Retrieve status for all migrations tagged with <info>user</info> or <info>main_content</info>')]
@@ -294,7 +293,7 @@ class MigrateRunnerCommands extends DrushCommands
     }
 
     /**
-     * Performs one or more migration processes.
+     * Perform one or more migration processes.
      *
      * @throws \Exception
      *   When not enough options were provided or no migration was found.
@@ -313,7 +312,6 @@ class MigrateRunnerCommands extends DrushCommands
     #[CLI\Option(name: 'total', description: 'Show total processed item number in progress messages')]
     #[CLI\Option(name: 'progress', description: 'Show progress bar')]
     #[CLI\Option(name: 'delete', description: 'Delete destination records missed from the source. Not compatible with <info>--limit</info> and <info>--idlist</info> options, and high_water_property source configuration key.')]
-    #[CLI\Help(description: 'Perform one or more migration processes.')]
     #[CLI\Usage(name: 'migrate:import --all', description: 'Perform all migrations')]
     #[CLI\Usage(name: 'migrate:import --all --no-progress', description: 'Perform all migrations but avoid the progress bar')]
     #[CLI\Usage(name: 'migrate:import --tag=user,main_content', description: 'Import all migrations tagged with <info>user</info> and <info>main_content</info> tags')]
@@ -422,7 +420,7 @@ class MigrateRunnerCommands extends DrushCommands
     }
 
     /**
-     * Rolls-back one or more migrations.
+     * Rollback one or more migrations.
      *
      * @throws \Exception
      *   When not enough options were provided.
@@ -434,7 +432,6 @@ class MigrateRunnerCommands extends DrushCommands
     #[CLI\Option(name: 'feedback', description: 'Frequency of progress messages, in items processed')]
     #[CLI\Option(name: 'idlist', description: "Comma-separated list of IDs to rollback. As an ID may have more than one column, concatenate the columns with the colon ':' separator")]
     #[CLI\Option(name: 'progress', description: 'Show progress bar')]
-    #[CLI\Help(description: 'Rollback one or more migrations.')]
     #[CLI\Usage(name: 'migrate:rollback --all', description: 'Rollback all migrations')]
     #[CLI\Usage(name: 'migrate:rollback --all --no-progress', description: 'Rollback all migrations but avoid the progress bar')]
     #[CLI\Usage(name: 'migrate:rollback --tag=user,main_content', description: 'Rollback all migrations tagged with <info>user</info> and <info>main_content</info> tags')]
@@ -472,13 +469,12 @@ class MigrateRunnerCommands extends DrushCommands
     }
 
     /**
-     * Stops an active migration operation.
+     * Stop an active migration operation.
      *
      * @throws PluginException
      */
     #[CLI\Command(name: 'migrate:stop', aliases: ['mst', 'migrate-stop'])]
     #[CLI\Argument(name: 'migrationId', description: 'The ID of migration to stop.')]
-    #[CLI\Help(description: 'Stop an active migration operation.')]
     #[CLI\Topics(topics: ['docs:migrate'])]
     #[CLI\ValidateModulesEnabled(modules: ['migrate'])]
     #[Migrate\ValidateMigrationId()]
@@ -505,13 +501,12 @@ class MigrateRunnerCommands extends DrushCommands
     }
 
     /**
-     * Resets an active migration's status to idle.
+     * Reset an active migration's status to idle.
      *
      * @throws PluginException
      */
     #[CLI\Command(name: 'migrate:reset-status', aliases: ['mrs', 'migrate-reset-status'])]
     #[CLI\Argument(name: 'migrationId', description: 'The ID of migration to reset.')]
-    #[CLI\Help(description: "Reset an active migration's status to idle.")]
     #[CLI\Topics(topics: ['docs:migrate'])]
     #[CLI\ValidateModulesEnabled(modules: ['migrate'])]
     #[Migrate\ValidateMigrationId()]
@@ -530,14 +525,13 @@ class MigrateRunnerCommands extends DrushCommands
     }
 
     /**
-     * Shows any messages associated with a migration.
+     * View any messages associated with a migration.
      *
      * @throws PluginException
      */
     #[CLI\Command(name: 'migrate:messages', aliases: ['mmsg', 'migrate-messages'])]
     #[CLI\Argument(name: 'migrationId', description: 'The ID of the migration.')]
     #[CLI\Option(name: 'idlist', description: "Comma-separated list of IDs to import. As an ID may have more than one column, concatenate the columns with the colon ':' separator")]
-    #[CLI\Help(description: 'View any messages associated with a migration')]
     #[CLI\Usage(name: 'migrate:messages article', description: 'Show all messages for the <info>article</info> migration')]
     #[CLI\Usage(name: 'migrate:messages node_revision --idlist=1:2,2:3,3:5', description: 'Show messages related to node revision records with source IDs [1,2], [2,3], and [3,5].')]
     #[CLI\Usage(name: 'migrate:messages custom_node_revision --idlist=1:"r:1",2:"r:3"', description: 'Show messages related to node revision records with source IDs [1,"r:1"], and [2,"r:3"].')]
@@ -633,13 +627,12 @@ class MigrateRunnerCommands extends DrushCommands
     }
 
     /**
-     * Lists the fields available for mapping in a source.
+     * List the fields available for mapping in a source.
      *
      * @throws PluginException
      */
     #[CLI\Command(name: 'migrate:fields-source', aliases: ['mfs', 'migrate-fields-source'])]
     #[CLI\Argument(name: 'migrationId', description: 'The ID of the migration.')]
-    #[CLI\Help(description: 'List the fields available for mapping in a source.')]
     #[CLI\Usage(name: 'migrate:fields-source article', description: 'List fields for the source in the article migration.')]
     #[CLI\Topics(topics: ['docs:migrate'])]
     #[CLI\ValidateModulesEnabled(modules: ['migrate'])]

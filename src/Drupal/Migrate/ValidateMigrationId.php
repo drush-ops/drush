@@ -3,13 +3,10 @@
 namespace Drush\Drupal\Migrate;
 
 use Attribute;
-use Consolidation\AnnotatedCommand\Parser\CommandInfo;
+use Drush\Attributes\NoArgumentsBase;
 
 #[Attribute(Attribute::TARGET_METHOD)]
-class ValidateMigrationId
+class ValidateMigrationId extends NoArgumentsBase
 {
-    public static function handle(\ReflectionAttribute $attribute, CommandInfo $commandInfo)
-    {
-        $commandInfo->addAnnotation('validate-migration-id', null);
-    }
+    protected const NAME = 'validate-migration-id';
 }
