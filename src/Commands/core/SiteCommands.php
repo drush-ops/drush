@@ -28,7 +28,7 @@ final class SiteCommands extends DrushCommands implements SiteAliasManagerAwareI
     #[CLI\Usage(name: 'drush site:set /path/to/drupal#sitename', description: 'Set the current session to use a local site via site specification.')]
     #[CLI\Usage(name: 'drush site:set -', description: 'Go back to the previously-set site (like `cd -`).')]
     #[CLI\Usage(name: 'drush site:set', description: 'Without an argument, any existing site becomes unset.')]
-    #[CLI\HookSelector(name: 'handle-remote-commands')]
+    #[CLI\HandleRemoteCommands]
     #[CLI\ValidatePhpExtensions('posix')]
     #[CLI\Topics(topics: ['docs:aliases'])]
     public function siteSet(string $site = '@none'): void

@@ -11,6 +11,6 @@ abstract class NoArgumentsBase
 
     public static function handle(\ReflectionAttribute $attribute, CommandInfo $commandInfo)
     {
-        $commandInfo->addAnnotation(static::NAME, null);
+        $commandInfo->addAnnotation(static::NAME, true);
     }
 }
