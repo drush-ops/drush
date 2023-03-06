@@ -25,7 +25,7 @@ class OptionsCommands
      * @option editor A string of bash which launches user's preferred text editor. Defaults to <info>${VISUAL-${EDITOR-vi}}</info>.
      * @option bg Launch editor in background process.
      */
-    #[CLI\Hook(type: HookManager::OPTION_HOOK, selector: 'optionset_get_editor')]
+    #[CLI\OptionsetGetEditor]
     #[CLI\Option(name: 'editor', description: 'A string of bash which launches user\'s preferred text editor. Defaults to <info>${VISUAL-${EDITOR-vi}}</info>.')]
     #[CLI\Option(name: 'bg', description: 'Launch editor in background process.')]
     public function optionsetGetEditor($options = ['editor' => '', 'bg' => false]): void

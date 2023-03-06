@@ -9,6 +9,7 @@ use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
 use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
 use Consolidation\SiteProcess\ProcessManager;
 use Consolidation\SiteProcess\Util\Tty;
+use Drush\Attributes\HandleRemoteCommands;
 use Drush\Drush;
 use Drush\Log\LogLevel;
 use Drush\Config\ConfigAwareTrait;
@@ -50,11 +51,11 @@ class RedispatchHook implements InitializeHookInterface, ConfigAwareInterface, S
         //   - redispatch to a different site-local Drush on same system
         //   - site-list handling (REMOVED)
         // These redispatches need to be done regardless of the presence
-        // of a @handle-remote-commands annotation.
+        // of a HandlRemoteCommands Attribute.
 
-        // If the command has the @handle-remote-commands annotation, then
+        // If the command has the HandlRemoteCommands Attribute, then
         // short-circuit redispatches to remote hosts.
-        if ($annotationData->has('handle-remote-commands')) {
+        if ($annotationData->has(HandleRemoteCommands::NAME)) {
             return;
         }
         return $this->redispatchIfRemote($input);

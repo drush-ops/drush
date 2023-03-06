@@ -24,7 +24,7 @@ final class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwa
     #[CLI\Command(name: 'sql:sync', aliases: ['sql-sync'])]
     #[CLI\Argument(name: 'source', description: 'A site-alias or site specification whose database you want to copy from.')]
     #[CLI\Argument(name: 'target', description: 'A site-alias or site specification whose database you want to replace.')]
-    #[CLI\HookSelector(name: 'optionset_table_selection')]
+    #[CLI\OptionsetTableSelection]
     #[CLI\Option(name: 'no-dump', description: 'Do not dump the sql database; always use an existing dump file.')]
     #[CLI\Option(name: 'no-sync', description: 'Do not rsync the database dump file from source to target.')]
     #[CLI\Option(name: 'runner', description: 'Where to run the rsync command; defaults to the local site. Can also be <info>source</info> or <info>target</info>.')]

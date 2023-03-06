@@ -25,7 +25,7 @@ final class BrowseCommands extends DrushCommands implements SiteAliasManagerAwar
     #[CLI\Usage(name: 'drush browse', description: 'Open default web browser (if configured or detected) to the site front page.')]
     #[CLI\Usage(name: 'drush browse node/1', description: 'Open web browser to the path node/1.')]
     #[CLI\Usage(name: 'drush @example.prod browse', description: 'Open a browser to the web site specified in a site alias.')]
-    #[CLI\HookSelector(name: 'handle-remote-commands')]
+    #[CLI\HandleRemoteCommands]
     public function browse($path = '', array $options = ['browser' => true, 'redirect-port' => self::REQ])
     {
         $aliasRecord = $this->siteAliasManager()->getSelf();

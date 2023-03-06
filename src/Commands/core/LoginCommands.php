@@ -30,7 +30,7 @@ final class LoginCommands extends DrushCommands implements SiteAliasManagerAware
     #[CLI\Option(name: 'browser', description: 'Open the URL in the default browser. Use --no-browser to avoid opening a browser.')]
     #[CLI\Option(name: 'redirect-port', description: 'A custom port for redirecting to (e.g., when running within a Vagrant environment)')]
     #[CLI\Bootstrap(level: DrupalBootLevels::NONE)]
-    #[CLI\HookSelector(name: 'handle-remote-commands')]
+    #[CLI\HandleRemoteCommands]
     #[CLI\Usage(name: 'drush user:login', description: 'Open browser to homepage, logged in as uid=1.')]
     #[CLI\Usage(name: 'drush user:login --name=ryan node/add/blog', description: 'Open browser (if configured or detected) for a one-time login link for username ryan that redirects to node/add/blog.')]
     #[CLI\Usage(name: 'drush user:login --uid=123', description: 'Open browser and login as user with uid "123".')]
