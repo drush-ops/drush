@@ -6,6 +6,7 @@ use Drupal\Core\Entity\EntityTypeBundleInfo;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\field\Entity\FieldConfig;
 use Drupal\field\FieldConfigInterface;
+use Drush\Attributes as CLI;
 use Drush\Commands\DrushCommands;
 use Symfony\Component\Console\Input\InputOption;
 
@@ -35,33 +36,19 @@ class FieldDeleteCommands extends DrushCommands
     /**
      * Delete a field
      *
-     * @command field:delete
-     * @aliases field-delete,fd
-     *
-     * @param string $entityType
-     *      The machine name of the entity type
-     * @param string $bundle
-     *      The machine name of the bundle
-     *
-     * @option field-name
-     *      The machine name of the field
-     * @option all-bundles
-     *      Whether to delete the field from all bundles.
-     * @option show-machine-names
-     *      Show machine names instead of labels in option lists.
-     *
-     * @usage drush field:delete
-     *      Delete a field by answering the prompts.
-     * @usage drush field-delete taxonomy_term tag
-     *      Delete a field and fill in the remaining information through prompts.
-     * @usage drush field-delete taxonomy_term tag --field-name=field_tag_label
-     *      Delete a field in a non-interactive way.
-     * @usage drush field-delete taxonomy_term --field-name=field_tag_label --all-bundles
-     *      Delete a field from all bundles.
-     *
-     * @version 11.0
      * @see \Drupal\field_ui\Form\FieldConfigDeleteForm
      */
+    #[CLI\Command(name: 'field:delete', aliases: ['field-delete', 'fd'])]
+    #[CLI\Argument(name: 'entityType', description: 'The machine name of the entity type.')]
+    #[CLI\Argument(name: 'bundle', description: 'The machine name of the bundle.')]
+    #[CLI\Option(name: 'field-name', description: 'The machine name of the field.')]
+    #[CLI\Option(name: 'all-bundles', description: 'Whether to delete the field from all bundles.')]
+    #[CLI\Option(name: 'show-machine-names', description: 'Show machine names instead of labels in option lists.')]
+    #[CLI\Usage(name: 'field:delete', description: 'Delete a field by answering the prompts.')]
+    #[CLI\Usage(name: 'field-delete taxonomy_term tag', description: 'Delete a field and fill in the remaining information through prompts.')]
+    #[CLI\Usage(name: 'field-delete taxonomy_term tag --field-name=field_tag_label', description: 'Delete a field in a non-interactive way.')]
+    #[CLI\Usage(name: 'field-delete taxonomy_term --field-name=field_tag_label --all-bundles', description: 'Delete a field from all bundles.')]
+    #[CLI\Version(version: '11.0')]
     public function delete(?string $entityType = null, ?string $bundle = null, array $options = [
         'field-name' => InputOption::VALUE_REQUIRED,
         'show-machine-names' => InputOption::VALUE_OPTIONAL,
