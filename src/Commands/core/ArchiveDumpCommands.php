@@ -79,8 +79,8 @@ final class ArchiveDumpCommands extends DrushCommands
     #[CLI\Usage(name: 'drush archive:dump --exclude-code-paths=foo_bar.txt,web/sites/.+/settings.php --destination=/path/to/archive.tar.gz', description: 'Create /path/to/archive.tar.gz file containing code, database and Drupal files but excluding foo_bar.txt file and settings.php files if found in web/sites/* subdirectories.')]
     #[CLI\Usage(name: 'drush archive:dump --files --destination=/path/to/archive.tar.gz', description: 'Create /path/to/archive.tar.gz file containing the Drupal files only.')]
     #[CLI\Usage(name: 'drush archive:dump --database --destination=/path/to/archive.tar.gz', description: 'Create /path/to/archive.tar.gz archive file containing the database dump only.')]
-    #[CLI\HookSelector(name: 'optionset_table_selection')]
-    #[CLI\HookSelector(name: 'optionset_sql')]
+    #[CLI\OptionsetTableSelection]
+    #[CLI\OptionsetSql]
     #[CLI\Bootstrap(level: DrupalBootLevels::MAX, extra: DrupalBootLevels::CONFIGURATION)]
     public function dump(array $options = [
         'code' => false,

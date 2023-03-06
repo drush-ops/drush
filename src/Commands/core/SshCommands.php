@@ -21,7 +21,7 @@ final class SshCommands extends DrushCommands implements SiteAliasManagerAwareIn
     #[CLI\Command(name: self::SSH, aliases: ['ssh', 'site-ssh'])]
     #[CLI\Argument(name: 'code', description: 'Code which should run at remote host.')]
     #[CLI\Option(name: 'cd', description: 'Directory to change to. Defaults to Drupal root.')]
-    #[CLI\HookSelector(name: 'optionset_proc_build')]
+    #[CLI\OptionsetProcBuild]
     #[CLI\HandleRemoteCommands]
     #[CLI\Usage(name: 'drush @mysite ssh', description: 'Open an interactive shell on @mysite\'s server.')]
     #[CLI\Usage(name: 'drush @prod ssh ls /tmp', description: 'Run <info>ls /tmp</info> on <info>@prod</info> site.')]

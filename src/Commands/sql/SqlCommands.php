@@ -35,7 +35,7 @@ final class SqlCommands extends DrushCommands implements StdinAwareInterface
     #[CLI\Help(hidden: true)]
     #[CLI\Option(name: 'all', description: 'Show all database connections, instead of just one.')]
     #[CLI\Bootstrap(level: DrupalBootLevels::MAX, extra: DrupalBootLevels::CONFIGURATION)]
-    #[CLI\HookSelector(name: 'optionset_sql')]
+    #[CLI\OptionsetSql]
     public function conf($options = ['format' => 'yaml', 'all' => false, 'show-passwords' => false]): ?array
     {
         if ($options['all']) {
@@ -62,7 +62,7 @@ final class SqlCommands extends DrushCommands implements StdinAwareInterface
      */
     #[CLI\Command(name: self::CONNECT, aliases: ['sql-connect'])]
     #[CLI\Option(name: 'extra', description: 'Add custom options to the connect string (e.g. --extra=--skip-column-names)')]
-    #[CLI\HookSelector(name: 'optionset_sql')]
+    #[CLI\OptionsetSql]
     #[CLI\Bootstrap(level: DrupalBootLevels::CONFIGURATION)]
     #[CLI\Usage(name: '$(drush sql-connect) < example.sql', description: 'Bash: Import SQL statements from a file into the current database.')]
     #[CLI\Usage(name: 'eval (drush sql-connect) < example.sql', description: 'Fish: Import SQL statements from a file into the current database.')]
@@ -82,7 +82,7 @@ final class SqlCommands extends DrushCommands implements StdinAwareInterface
     #[CLI\Usage(name: 'drush @site.test sql-create', description: 'Create the database as specified for @site.test.')]
     #[CLI\Usage(name: 'drush sql:create --db-su=root --db-su-pw=rootpassword --db-url="mysql://drupal_db_user:drupal_db_password@127.0.0.1/drupal_db"', description: 'Create the database as specified in the db-url option.')]
     #[CLI\Bootstrap(level: DrupalBootLevels::MAX, extra: DrupalBootLevels::CONFIGURATION)]
-    #[CLI\HookSelector(name: 'optionset_sql')]
+    #[CLI\OptionsetSql]
     public function create($options = ['db-su' => self::REQ, 'db-su-pw' => self::REQ]): void
     {
         $sql = SqlBase::create($options);
@@ -103,7 +103,7 @@ final class SqlCommands extends DrushCommands implements StdinAwareInterface
      */
     #[CLI\Command(name: self::DROP, aliases: ['sql-drop'])]
     #[CLI\Bootstrap(level: DrupalBootLevels::MAX, extra: DrupalBootLevels::CONFIGURATION)]
-    #[CLI\HookSelector(name: 'optionset_sql')]
+    #[CLI\OptionsetSql]
     #[CLI\Topics(topics: ['docs:policy'])]
     public function drop($options = []): void
     {
@@ -124,7 +124,7 @@ final class SqlCommands extends DrushCommands implements StdinAwareInterface
     #[CLI\Command(name: self::CLI, aliases: ['sqlc', 'sql-cli'])]
     #[CLI\Option(name: 'extra', description: 'Add custom options to the connect string (e.g. --extra=--skip-column-names)')]
     #[CLI\Bootstrap(level: DrupalBootLevels::MAX, extra: DrupalBootLevels::CONFIGURATION)]
-    #[CLI\HookSelector(name: 'optionset_sql')]
+    #[CLI\OptionsetSql]
     #[CLI\Topics(topics: ['docs:policy'])]
     #[CLI\Usage(name: 'drush sql:cli', description: 'Open a SQL command-line interface using Drupal\'s credentials.')]
     #[CLI\Usage(name: 'drush sql:cli --extra=--progress-reports', description: 'Open a SQL CLI and skip reading table information.')]
@@ -147,7 +147,7 @@ final class SqlCommands extends DrushCommands implements StdinAwareInterface
     #[CLI\Command(name: self::QUERY, aliases: ['sqlq', 'sql-query'])]
     #[CLI\Argument(name: 'query', description: 'An SQL query. Ignored if --file is provided.')]
     #[CLI\Bootstrap(level: DrupalBootLevels::MAX, extra: DrupalBootLevels::CONFIGURATION)]
-    #[CLI\HookSelector(name: 'optionset_sql')]
+    #[CLI\OptionsetSql]
     #[CLI\Option(name: 'result-file', description: 'Save to a file. The file should be relative to Drupal root.')]
     #[CLI\Option(name: 'file', description: 'Path to a file containing the SQL to be run. Gzip files are accepted.')]
     #[CLI\Option(name: 'file-delete', description: 'Delete the --file after running it.')]
@@ -191,8 +191,8 @@ final class SqlCommands extends DrushCommands implements StdinAwareInterface
      */
     #[CLI\Command(name: self::DUMP, aliases: ['sql-dump'])]
     #[CLI\Bootstrap(level: DrupalBootLevels::MAX, extra: DrupalBootLevels::CONFIGURATION)]
-    #[CLI\HookSelector(name: 'optionset_sql')]
-    #[CLI\HookSelector(name: 'optionset_table_selection')]
+    #[CLI\OptionsetSql]
+    #[CLI\OptionsetTableSelection]
     #[CLI\Option(name: 'result-file', description: "Save to a file. The file should be relative to Drupal root. If --result-file is provided with the value 'auto', a date-based filename will be created under ~/drush-backups directory.")]
     #[CLI\Option(name: 'create-db', description: 'Omit DROP TABLE statements. Used by Postgres and Oracle only.')]
     #[CLI\Option(name: 'data-only', description: 'Dump data without statements to create any of the schema.')]

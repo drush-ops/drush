@@ -50,7 +50,7 @@ final class RsyncCommands extends DrushCommands implements SiteAliasManagerAware
     #[CLI\Option(name: 'exclude-paths', description: 'List of paths to exclude, seperated by : (Unix-based systems) or ; (Windows).')]
     #[CLI\Option(name: 'include-paths', description: 'List of paths to include, seperated by : (Unix-based systems) or ; (Windows).')]
     #[CLI\Option(name: 'mode', description: 'The unary flags to pass to rsync; --mode=rultz implies rsync -rultz.  Default is -akz.')]
-    #[CLI\HookSelector(name: 'optionset_ssh')]
+    #[CLI\OptionsetSsh]
     #[CLI\Usage(name: 'drush rsync @dev @stage', description: 'Rsync Drupal root from Drush alias dev to the alias stage.')]
     #[CLI\Usage(name: 'drush rsync ./ @stage:%files/img', description: 'Rsync all files in the current directory to the <info>img</info>directory in the file storage folder on the Drush alias stage.')]
     #[CLI\Usage(name: 'drush rsync @dev @stage -- --exclude=*.sql --delete', description: 'Rsync Drupal root from the Drush alias dev to the alias stage, excluding all .sql files and delete all files on the destination that are no longer on the source.')]
