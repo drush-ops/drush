@@ -13,7 +13,7 @@ use Symfony\Component\Console\Input\Input;
 /*
  * Common validation providers. Use them by adding an annotation to your method.
  */
-class ValidatorsCommands
+final class ValidatorsCommands
 {
     /**
      * Validate that passed entity names are valid.

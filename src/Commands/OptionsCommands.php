@@ -9,7 +9,7 @@ use Symfony\Component\Console\Input\InputOption;
 /*
  * Common options providers. Use them by adding their Attribute to your command method.
  */
-class OptionsCommands
+final class OptionsCommands
 {
     const REQ = InputOption::VALUE_REQUIRED;
 
