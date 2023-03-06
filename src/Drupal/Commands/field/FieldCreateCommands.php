@@ -20,6 +20,7 @@ use Drupal\Core\Field\WidgetPluginManager;
 use Drupal\Core\Url;
 use Drupal\field\FieldConfigInterface;
 use Drupal\field\FieldStorageConfigInterface;
+use Drush\Attributes as CLI;
 use Drush\Commands\DrushCommands;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Question\ChoiceQuestion;
@@ -76,53 +77,29 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
     /**
      * Create a new field
      *
-     * @command field:create
-     * @aliases field-create,fc
-     *
-     * @param string $entityType
-     *      The machine name of the entity type
-     * @param string $bundle
-     *      The machine name of the bundle
-     *
-     * @option field-name
-     *      A unique machine-readable name containing letters, numbers, and underscores.
-     * @option field-label
-     *      The field label
-     * @option field-description
-     *      Instructions to present to the user below this field on the editing form.
-     * @option field-type
-     *      The field type
-     * @option field-widget
-     *      The field widget
-     * @option is-required
-     *      Whether the field is required
-     * @option is-translatable
-     *      Whether the field is translatable
-     * @option cardinality
-     *      The allowed number of values
-     * @option target-type
-     *      The target entity type. Only necessary for entity reference fields.
-     * @option target-bundle
-     *      The target bundle(s). Only necessary for entity reference fields.
-     *
-     * @option existing
-     *      Re-use an existing field.
-     * @option existing-field-name
-     *      The name of an existing field you want to re-use. Only used in non-interactive context.
-     * @option show-machine-names
-     *      Show machine names instead of labels in option lists.
-     *
-     * @usage drush field:create
-     *      Create a field by answering the prompts.
-     * @usage drush field-create taxonomy_term tag
-     *      Create a field and fill in the remaining information through prompts.
-     * @usage drush field-create taxonomy_term tag --field-name=field_tag_label --field-label=Label --field-type=string --field-widget=string_textfield --is-required=1 --cardinality=2
-     *      Create a field in a completely non-interactive way.
-     *
-     * @version 11.0
      * @see \Drupal\field_ui\Form\FieldConfigEditForm
      * @see \Drupal\field_ui\Form\FieldStorageConfigEditForm
      */
+    #[CLI\Command(name: 'field:create', aliases: ['field-create', 'fc'])]
+    #[CLI\Argument(name: 'entityType', description: 'The machine name of the entity type')]
+    #[CLI\Argument(name: 'bundle', description: 'The machine name of the bundle')]
+    #[CLI\Option(name: 'field-name', description: 'A unique machine-readable name containing letters, numbers, and underscores.')]
+    #[CLI\Option(name: 'field-label', description: 'The field label')]
+    #[CLI\Option(name: 'field-description', description: 'Instructions to present to the user below this field on the editing form.')]
+    #[CLI\Option(name: 'field-type', description: 'The field type')]
+    #[CLI\Option(name: 'field-widget', description: 'The field widget')]
+    #[CLI\Option(name: 'is-required', description: 'Whether the field is required')]
+    #[CLI\Option(name: 'is-translatable', description: 'Whether the field is translatable')]
+    #[CLI\Option(name: 'cardinality', description: 'The allowed number of values')]
+    #[CLI\Option(name: 'target-type', description: 'The target entity type. Only necessary for entity reference fields.')]
+    #[CLI\Option(name: 'target-bundle', description: 'The target bundle(s). Only necessary for entity reference fields.')]
+    #[CLI\Option(name: 'existing', description: 'Re-use an existing field.')]
+    #[CLI\Option(name: 'existing-field-name', description: 'The name of an existing field you want to re-use. Only used in non-interactive context.')]
+    #[CLI\Option(name: 'show-machine-names', description: 'Show machine names instead of labels in option lists.')]
+    #[CLI\Usage(name: 'field:create', description: 'Create a field by answering the prompts.')]
+    #[CLI\Usage(name: 'field-create taxonomy_term tag', description: 'Create a field and fill in the remaining information through prompts.')]
+    #[CLI\Usage(name: 'field-create taxonomy_term tag --field-name=field_tag_label --field-label=Label --field-type=string --field-widget=string_textfield --is-required=1 --cardinality=2', description: 'Create a field in a completely non-interactive way.')]
+    #[CLI\Version('11.0')]
     public function create(?string $entityType = null, ?string $bundle = null, array $options = [
         'field-name' => InputOption::VALUE_REQUIRED,
         'field-label' => InputOption::VALUE_REQUIRED,
