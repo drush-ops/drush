@@ -2,6 +2,8 @@
 
 namespace Unish;
 
+use Drush\Commands\core\CacheCommands;
+use Drush\Drupal\Commands\pm\PmCommands;
 use Symfony\Component\Filesystem\Path;
 
 /**
@@ -17,8 +19,8 @@ class ModuleGeneratorTest extends UnishIntegrationTestCase
     public function testModuleGenerators(): void
     {
         $this->setupModulesForTests(['woot'], Path::join(__DIR__, '/../fixtures/modules'));
-        $this->drush('pm:install', ['woot']);
-        $this->drush('cc', ['drush']);
+        $this->drush(PmCommands::INSTALL, ['woot']);
+        $this->drush(CacheCommands::CLEAR, ['drush']);
         $this->drush('generate', ['list']);
         $this->assertStringContainsString('woot:example', $this->getOutput());
         $this->assertStringContainsString('Generates a woot.', $this->getOutput());
@@ -26,7 +28,7 @@ class ModuleGeneratorTest extends UnishIntegrationTestCase
 
     public function tearDown(): void
     {
-        $this->drush('pm:uninstall', ['woot']);
+        $this->drush(PmCommands::UNINSTALL, ['woot']);
         parent::tearDown();
     }
 }

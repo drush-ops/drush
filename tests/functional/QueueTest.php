@@ -2,7 +2,9 @@
 
 namespace Unish;
 
+use Drush\Commands\core\PhpCommands;
 use Drush\Drupal\Commands\core\QueueCommands;
+use Drush\Drupal\Commands\pm\PmCommands;
 use Symfony\Component\Filesystem\Path;
 
 /**
@@ -24,10 +26,10 @@ class QueueTest extends CommandUnishTestCase
 
         // Enable woot module, which contains a queue worker that throws a
         // RequeueException.
-        $this->drush('pm:install', ['woot'], [], null, null, self::EXIT_SUCCESS);
+        $this->drush(PmCommands::INSTALL, ['woot'], [], null, null, self::EXIT_SUCCESS);
 
         // Add an item to the queue.
-        $this->drush('php:script', ['requeue_script'], ['script-path' => __DIR__ . '/resources']);
+        $this->drush(PhpCommands::SCRIPT, ['requeue_script'], ['script-path' => __DIR__ . '/resources']);
 
         // Check that the queue exists and it has one item in it.
         $this->drush(QueueCommands::LIST, [], ['format' => 'json']);
@@ -64,10 +66,10 @@ class QueueTest extends CommandUnishTestCase
 
         // Enable woot module, which contains a queue worker that throws a
         // custom exception.
-        $this->drush('pm:install', ['woot'], [], null, null, self::EXIT_SUCCESS);
+        $this->drush(PmCommands::INSTALL, ['woot'], [], null, null, self::EXIT_SUCCESS);
 
         // Add a couple of items to the queue.
-        $this->drush('php:script', ['queue_custom_exception_script'], ['script-path' => __DIR__ . '/resources']);
+        $this->drush(PhpCommands::SCRIPT, ['queue_custom_exception_script'], ['script-path' => __DIR__ . '/resources']);
 
         // Check that the queue exists and it has two items in it.
         $this->drush(QueueCommands::LIST, [], ['format' => 'json']);

@@ -2,6 +2,8 @@
 
 namespace Unish;
 
+use Drush\Commands\core\CacheCommands;
+use Drush\Commands\sql\SqlCommands;
 use Symfony\Component\Filesystem\Path;
 
 /**
@@ -34,15 +36,15 @@ class SqlDumpTest extends CommandUnishTestCase
         ];
 
         // In Drupal 9.1+, cache_discovery et. al. do not exist until after a cache rebuild.
-        $this->drush('cache:rebuild', []);
+        $this->drush(CacheCommands::re, []);
 
-        $this->drush('sql-dump', [], $options + ['simulate' => null]);
+        $this->drush(SqlCommands::DUMP, [], $options + ['simulate' => null]);
         $expected = $this->dbDriver() == 'mysql' ? '--ignore-table=unish_dev.cache_discovery' : '--exclude-table=cache_discovery';
         $this->assertStringContainsString($expected, $this->getErrorOutput());
 
         // Test --extra-dump option
         if ($this->dbDriver() == 'mysql') {
-            $this->drush('sql-dump', [], array_merge($options, [], ['extra-dump' => '--skip-add-drop-table']));
+            $this->drush(SqlCommands::DUMP, [], array_merge($options, [], ['extra-dump' => '--skip-add-drop-table']));
             $this->assertFileExists($full_dump_file_path);
             $full_dump_file = file_get_contents($full_dump_file_path);
             $this->assertStringNotContainsString('DROP TABLE IF EXISTS', $full_dump_file);
@@ -50,7 +52,7 @@ class SqlDumpTest extends CommandUnishTestCase
 
 
         // First, do a test without any aliases, and dump the whole database
-        $this->drush('sql-dump', [], $options);
+        $this->drush(SqlCommands::DUMP, [], $options);
         $this->assertFileExists($full_dump_file_path);
         $full_dump_file = file_get_contents($full_dump_file_path);
         // Test that we have sane contents.
@@ -62,7 +64,7 @@ class SqlDumpTest extends CommandUnishTestCase
         // Control: insure options are not set when not specified
         unset($options['skip-tables-list']);
         unlink($full_dump_file_path);
-        $this->drush('sql-dump', [], $options);
+        $this->drush(SqlCommands::DUMP, [], $options);
         $this->assertFileExists($full_dump_file_path);
         $full_dump_file = file_get_contents($full_dump_file_path);
         // Test that we have sane contents.
