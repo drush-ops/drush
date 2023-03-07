@@ -7,6 +7,8 @@ use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
 use Consolidation\SiteProcess\ProcessManager;
 use Drush\Attributes as CLI;
 use Drush\Commands\DrushCommands;
+use Drush\Drupal\Commands\config\ConfigImportCommands;
+use Drush\Drupal\Commands\core\DeployHookCommands;
 use Drush\Drush;
 use Drush\SiteAlias\SiteAliasManagerAwareInterface;
 
@@ -31,19 +33,19 @@ final class DeployCommands extends DrushCommands implements SiteAliasManagerAwar
 
         $this->logger()->notice("Database updates start.");
         $options = ['no-cache-clear' => true];
-        $process = $manager->drush($self, 'updatedb', [], $options + $redispatchOptions);
+        $process = $manager->drush($self, UpdateDBCommands::UPDATEDB, [], $options + $redispatchOptions);
         $process->mustRun($process->showRealtime());
 
         $this->cacheRebuild($manager, $self, $redispatchOptions);
 
         $this->logger()->success("Config import start.");
-        $process = $manager->drush($self, 'config:import', [], $redispatchOptions);
+        $process = $manager->drush($self, ConfigImportCommands::IMPORT, [], $redispatchOptions);
         $process->mustRun($process->showRealtime());
 
         $this->cacheRebuild($manager, $self, $redispatchOptions);
 
         $this->logger()->success("Deploy hook start.");
-        $process = $manager->drush($self, 'deploy:hook', [], $redispatchOptions);
+        $process = $manager->drush($self, DeployHookCommands::HOOK, [], $redispatchOptions);
         $process->mustRun($process->showRealtime());
     }
 
@@ -56,7 +58,7 @@ final class DeployCommands extends DrushCommands implements SiteAliasManagerAwar
     {
         // It is possible that no updates were pending and thus no caches cleared yet.
         $this->logger()->success("Cache rebuild start.");
-        $process = $manager->drush($self, 'cache:rebuild', [], $redispatchOptions);
+        $process = $manager->drush($self, CacheCommands::REBUILD, [], $redispatchOptions);
         $process->mustRun($process->showRealtime());
     }
 }
