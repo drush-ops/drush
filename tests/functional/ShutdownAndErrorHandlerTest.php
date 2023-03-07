@@ -2,6 +2,7 @@
 
 namespace Unish;
 
+use Drush\Commands\core\PhpCommands;
 use Drush\Commands\DrushCommands;
 
 /**
@@ -18,7 +19,7 @@ class ShutdownAndErrorHandlerTest extends CommandUnishTestCase
     public function testShutdownFunctionAbruptExit()
     {
         // Run some garbage php with a syntax error.
-        $this->drush('ev', ['exit(0);'], [], null, null, DrushCommands::EXIT_FAILURE);
+        $this->drush(PhpCommands::EVAL, ['exit(0);'], [], null, null, DrushCommands::EXIT_FAILURE);
 
         $this->assertStringContainsString("Drush command terminated abnormally.", $this->getErrorOutput(), 'Error handler did not log a message.');
     }
@@ -31,7 +32,7 @@ class ShutdownAndErrorHandlerTest extends CommandUnishTestCase
     public function testShutdownFunctionExitCodePassedThrough()
     {
         // script command passes along an exit code nicely for our purposes.
-        $this->drush('php:script', ['exit.php'], ['script-path' => __DIR__ . '/resources'], null, null, 123);
+        $this->drush(PhpCommands::SCRIPT, ['exit.php'], ['script-path' => __DIR__ . '/resources'], null, null, 123);
         // Placate phpunit. If above succeeds we are done here.
         $this->addToAssertionCount(1);
     }
@@ -43,7 +44,7 @@ class ShutdownAndErrorHandlerTest extends CommandUnishTestCase
     public function testShutdownFunctionPHPError()
     {
         // Run some garbage php with a syntax error.
-        $this->drush('ev', ['\Drush\Drush::setContainer("string is the wrong type to pass here");'], [], null, null, PHP_MAJOR_VERSION == 5 ? 255 : DrushCommands::EXIT_FAILURE);
+        $this->drush(PhpCommands::EVAL, ['\Drush\Drush::setContainer("string is the wrong type to pass here");'], [], null, null, PHP_MAJOR_VERSION == 5 ? 255 : DrushCommands::EXIT_FAILURE);
 
         $this->assertStringContainsString("Drush command terminated abnormally.", $this->getErrorOutput(), 'Error handler did not log a message.');
     }
@@ -54,7 +55,7 @@ class ShutdownAndErrorHandlerTest extends CommandUnishTestCase
     public function testErrorHandler()
     {
         // Access a missing array element
-        $this->drush('ev', ['$a = []; print $a["b"];']);
+        $this->drush(PhpCommands::EVAL, ['$a = []; print $a["b"];']);
 
         if (empty($this->logLevel()) && PHP_MAJOR_VERSION <= 7) {
             $this->assertEquals('', $this->getErrorOutput(), 'Error handler did not suppress deprecated message.');

@@ -2,6 +2,7 @@
 
 namespace Unish;
 
+use Drush\Commands\config\ConfigPullCommands;
 use Drush\Drupal\Commands\config\ConfigCommands;
 use Drush\Drupal\Commands\config\ConfigImportCommands;
 use Symfony\Component\Filesystem\Path;
@@ -39,7 +40,7 @@ class ConfigPullTest extends CommandUnishTestCase
         $this->drush(ConfigCommands::SET, ['system.site', 'uuid', $uuid], $options, $destination);
 
         $this->drush(ConfigCommands::SET, ['system.site', 'name', 'testConfigPull'], $options, $source);
-        $this->drush('config:pull', [$source, $destination], $options);
+        $this->drush(ConfigPullCommands::PULL, [$source, $destination], $options);
         $this->drush(ConfigImportCommands::IMPORT, [], $options, $destination);
         $this->drush(ConfigCommands::GET, ['system.site', 'name'], $options, $source);
         $this->assertEquals("'system.site:name': testConfigPull", $this->getOutput(), 'Config was successfully pulled.');
@@ -48,7 +49,7 @@ class ConfigPullTest extends CommandUnishTestCase
         $target = Path::join($this->getSandbox(), __CLASS__);
         $this->recursiveDelete($target);
         $this->mkdir($target);
-        $this->drush('config:pull', [$source, "$destination:$target"], $options);
+        $this->drush(ConfigPullCommands::PULL, [$source, "$destination:$target"], $options);
         $this->assertFileExists(Path::join($target, 'system.site.yml'));
     }
 }

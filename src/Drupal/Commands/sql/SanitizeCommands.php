@@ -12,6 +12,8 @@ final class SanitizeCommands extends DrushCommands implements CustomEventAwareIn
 {
     use CustomEventAwareTrait;
 
+    const SANITIZE = 'sql:sanitize';
+
     /**
      * Sanitize the database by removing or obfuscating user data.
      *
@@ -22,7 +24,7 @@ final class SanitizeCommands extends DrushCommands implements CustomEventAwareIn
      *
      * Several working commandfiles may be found at https://github.com/drush-ops/drush/tree/11.x/src/Drupal/Commands/sql
      */
-    #[CLI\Command(name: 'sql:sanitize', aliases: ['sqlsan','sql-sanitize'])]
+    #[CLI\Command(name: self::SANITIZE, aliases: ['sqlsan','sql-sanitize'])]
     #[CLI\Usage(name: 'drush sql:sanitize --sanitize-password=no', description: 'Sanitize database without modifying any passwords.')]
     #[CLI\Usage(name: 'drush sql:sanitize --allowlist-fields=field_biography,field_phone_number', description: 'Sanitizes database but exempts two user fields from modification.')]
     #[CLI\Topics(topics: ['docs:hooks'])]

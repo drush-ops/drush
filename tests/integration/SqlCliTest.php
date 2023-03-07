@@ -7,6 +7,7 @@
 
 namespace Unish;
 
+use Drush\Commands\sql\SqlCommands;
 use Drush\Sql\SqlBase;
 use Symfony\Component\Filesystem\Path;
 
@@ -23,7 +24,7 @@ class SqlCliTest extends UnishIntegrationTestCase
         }
 
         // @todo Ensure SQL dumps can be imported via sql:cli via stdin.
-        $this->drush('sql:query', [], ['file' => Path::join(__DIR__, 'resources/sqlcli.sql')], self::EXIT_SUCCESS);
+        $this->drush(SqlCommands::QUERY, [], ['file' => Path::join(__DIR__, 'resources/sqlcli.sql')], self::EXIT_SUCCESS);
         $sql = SqlBase::create();
         $tables = $sql->listTables();
         $this->assertContains('sqlcli', $tables);

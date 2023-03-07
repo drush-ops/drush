@@ -5,7 +5,8 @@ namespace Drush\Commands\sql;
 use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\AnnotatedCommand\Hooks\HookManager;
 use Drush\Attributes as CLI;
-use Drush\Boot\DrupalBootLevels;
+use Drush\Commands\core\RsyncCommands;
+use Drush\Commands\core\StatusCommands;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Drush\Exceptions\UserAbortException;
@@ -18,10 +19,12 @@ final class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwa
 {
     use SiteAliasManagerAwareTrait;
 
+    const SYNC = 'sql:sync';
+
     /**
      * Copy DB data from a source site to a target site. Transfers data via rsync.
      */
-    #[CLI\Command(name: 'sql:sync', aliases: ['sql-sync'])]
+    #[CLI\Command(name: self::SYNC, aliases: ['sql-sync'])]
     #[CLI\Argument(name: 'source', description: 'A site-alias or site specification whose database you want to copy from.')]
     #[CLI\Argument(name: 'target', description: 'A site-alias or site specification whose database you want to replace.')]
     #[CLI\OptionsetTableSelection]
@@ -50,7 +53,7 @@ final class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwa
         // Create target DB if needed.
         if ($options['create-db']) {
             $this->logger()->notice(dt('Starting to create database on target.'));
-            $process = $this->processManager()->drush($targetRecord, 'sql-create', [], $global_options);
+            $process = $this->processManager()->drush($targetRecord, SqlCommands::CREATE, [], $global_options);
             $process->mustRun();
         }
 
@@ -61,7 +64,7 @@ final class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwa
         $this->import($global_options, $target_dump_path, $targetRecord);
     }
 
-    #[CLI\Hook(type: HookManager::ARGUMENT_VALIDATOR, target: 'sql:sync')]
+    #[CLI\Hook(type: HookManager::ARGUMENT_VALIDATOR, target: self::SYNC)]
     public function validate(CommandData $commandData): void
     {
         $source = $commandData->input()->getArgument('source');
@@ -135,7 +138,7 @@ final class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwa
         ];
         if (!$options['no-dump']) {
             $this->logger()->notice(dt('Starting to dump database on source.'));
-            $process = $this->processManager()->drush($sourceRecord, 'sql-dump', [], $dump_options + ['format' => 'json']);
+            $process = $this->processManager()->drush($sourceRecord, SqlCommands::DUMP, [], $dump_options + ['format' => 'json']);
             $process->mustRun();
 
             if ($this->getConfig()->simulate()) {
@@ -172,7 +175,7 @@ final class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwa
         } else {
             $tmp = '/tmp'; // Our fallback plan.
             $this->logger()->notice(dt('Starting to discover temporary files directory on target.'));
-            $process = $this->processManager()->drush($targetRecord, 'core-status', [], ['format' => 'string', 'field' => 'drush-temp']);
+            $process = $this->processManager()->drush($targetRecord, StatusCommands::STATUS, [], ['format' => 'string', 'field' => 'drush-temp']);
             $process->setSimulated(false);
             $process->run();
 
@@ -198,7 +201,7 @@ final class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwa
                 $runner = $targetRecord;
             }
             $this->logger()->notice(dt('Copying dump file from source to target.'));
-            $process = $this->processManager()->drush($runner, 'core-rsync', [$sourceRecord->name() . ":$source_dump_path", $targetRecord->name() . ":$target_dump_path"], ['yes' => true], $double_dash_options);
+            $process = $this->processManager()->drush($runner, RsyncCommands::RSYNC, [$sourceRecord->name() . ":$source_dump_path", $targetRecord->name() . ":$target_dump_path"], ['yes' => true], $double_dash_options);
             $process->mustRun($process->showRealtime());
         }
         return $target_dump_path;
@@ -218,7 +221,7 @@ final class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwa
             'file' => $target_dump_path,
             'file-delete' => true,
         ];
-        $process = $this->processManager()->drush($targetRecord, 'sql-query', [], $query_options);
+        $process = $this->processManager()->drush($targetRecord, SqlCommands::QUERY, [], $query_options);
         $process->mustRun();
     }
 }

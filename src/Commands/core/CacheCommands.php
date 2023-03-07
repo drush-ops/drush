@@ -36,6 +36,7 @@ final class CacheCommands extends DrushCommands implements CustomEventAwareInter
     const TAGS = 'cache:tags';
     const CLEAR = 'cache:clear';
     const SET = 'cache:set';
+    const REBUILD = 'cache:rebuild';
 
     /**
      * Fetch a cached object and display it.
@@ -191,7 +192,7 @@ final class CacheCommands extends DrushCommands implements CustomEventAwareInter
      *
      * This is a copy of core/rebuild.php.
      */
-    #[CLI\Command(name: 'cache:rebuild', aliases: ['cr', 'rebuild', 'cache-rebuild'])]
+    #[CLI\Command(name: self::REBUILD, aliases: ['cr', 'rebuild', 'cache-rebuild'])]
     #[CLI\Option(name: 'cache-clear', description: 'Set to 0 to suppress normal cache clearing; the caller should then clear if needed.')]
     #[CLI\Bootstrap(level: DrupalBootLevels::SITE)]
     public function rebuild($options = ['cache-clear' => true])
