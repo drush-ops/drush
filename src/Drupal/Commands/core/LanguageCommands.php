@@ -12,6 +12,8 @@ use Drush\Utils\StringUtils;
 
 final class LanguageCommands extends DrushCommands
 {
+    const ADD = 'language:add';
+    const INFO = 'language:info';
     /**
      * @var LanguageManagerInterface
      */
@@ -38,7 +40,7 @@ final class LanguageCommands extends DrushCommands
         $this->moduleHandler = $moduleHandler;
     }
 
-    #[CLI\Command(name: 'language:add', aliases: ['language-add'])]
+    #[CLI\Command(name: self::ADD, aliases: ['language-add'])]
     #[CLI\Help(hidden: true)]
     #[CLI\Argument(name: 'langcode', description: 'A comma delimited list of language codes.')]
     #[CLI\Option(name: 'skip-translations', description: 'Prevent translations from being downloaded and/or imported.')]
@@ -78,7 +80,7 @@ final class LanguageCommands extends DrushCommands
     /**
      * Print the currently available languages.
      */
-    #[CLI\Command(name: 'language:info', aliases: ['language-info'])]
+    #[CLI\Command(name: self::INFO, aliases: ['language-info'])]
     #[CLI\Help(hidden: true)]
     #[CLI\FieldLabels(labels: [
         'language' => 'Language',
