@@ -64,8 +64,8 @@ final class SqlCommands extends DrushCommands implements StdinAwareInterface
     #[CLI\Option(name: 'extra', description: 'Add custom options to the connect string (e.g. --extra=--skip-column-names)')]
     #[CLI\OptionsetSql]
     #[CLI\Bootstrap(level: DrupalBootLevels::CONFIGURATION)]
-    #[CLI\Usage(name: '$(drush sql-connect) < example.sql', description: 'Bash: Import SQL statements from a file into the current database.')]
-    #[CLI\Usage(name: 'eval (drush sql-connect) < example.sql', description: 'Fish: Import SQL statements from a file into the current database.')]
+    #[CLI\Usage(name: '$(drush sql:connect) < example.sql', description: 'Bash: Import SQL statements from a file into the current database.')]
+    #[CLI\Usage(name: 'eval (drush sql:connect) < example.sql', description: 'Fish: Import SQL statements from a file into the current database.')]
     public function connect($options = ['extra' => self::REQ]): string
     {
         $sql = SqlBase::create($options);
@@ -79,7 +79,7 @@ final class SqlCommands extends DrushCommands implements StdinAwareInterface
     #[CLI\Option(name: 'db-su', description: 'Account to use when creating a new database.')]
     #[CLI\Option(name: 'db-su-pw', description: 'Password for the db-su account.')]
     #[CLI\Usage(name: 'drush sql:create', description: 'Create the database for the current site.')]
-    #[CLI\Usage(name: 'drush @site.test sql-create', description: 'Create the database as specified for @site.test.')]
+    #[CLI\Usage(name: 'drush @site.test sql:create', description: 'Create the database as specified for @site.test.')]
     #[CLI\Usage(name: 'drush sql:create --db-su=root --db-su-pw=rootpassword --db-url="mysql://drupal_db_user:drupal_db_password@127.0.0.1/drupal_db"', description: 'Create the database as specified in the db-url option.')]
     #[CLI\Bootstrap(level: DrupalBootLevels::MAX, extra: DrupalBootLevels::CONFIGURATION)]
     #[CLI\OptionsetSql]

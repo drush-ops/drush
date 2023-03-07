@@ -41,7 +41,7 @@ final class LoginCommands extends DrushCommands implements SiteAliasManagerAware
         // the *local* machine.
         $aliasRecord = $this->siteAliasManager()->getSelf();
         if ($this->processManager()->hasTransport($aliasRecord)) {
-            $process = $this->processManager()->drush($aliasRecord, 'user-login', [$path], Drush::redispatchOptions());
+            $process = $this->processManager()->drush($aliasRecord, self::LOGIN, [$path], Drush::redispatchOptions());
             $process->mustRun();
             $link = $process->getOutput();
         } else {

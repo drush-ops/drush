@@ -3,7 +3,10 @@
 namespace Unish;
 
 use Drush\Commands\core\CoreCommands;
+use Drush\Commands\core\DrupalDirectoryCommands;
 use Drush\Drupal\Commands\core\DrupalCommands;
+use Drush\Drupal\Commands\pm\PmCommands;
+use Drush\Drupal\Commands\pm\ThemeCommands;
 use Symfony\Component\Filesystem\Path;
 use Symfony\Component\Yaml\Yaml;
 
@@ -44,25 +47,25 @@ class CoreTest extends UnishIntegrationTestCase
         $sitewide = $this->drupalSitewideDirectory();
 
         if ($this->isWindows()) {
-            $this->markTestSkipped('Windows escpaping woes.');
+            $this->markTestSkipped('Windows escaping woes.');
         }
 
-        $this->drush('drupal-directory', ['%files']);
+        $this->drush(DrupalDirectoryCommands::DIRECTORY, ['%files']);
         $output = $this->getOutput();
         $this->assertEquals(Path::join($root, '/sites/default/files'), $output);
 
-        $this->drush('drupal-directory', ['%modules']);
+        $this->drush(DrupalDirectoryCommands::DIRECTORY, ['%modules']);
         $output = $this->getOutput();
         $this->assertEquals(Path::join($root, $sitewide . '/modules'), $output);
 
-        $this->drush('pm-install', ['drush_empty_module']);
-        $this->drush('theme-enable', ['drush_empty_theme']);
+        $this->drush(PmCommands::INSTALL, ['drush_empty_module']);
+        $this->drush(ThemeCommands::INSTALL, ['drush_empty_theme']);
 
-        $this->drush('drupal-directory', ['drush_empty_module']);
+        $this->drush(DrupalDirectoryCommands::DIRECTORY, ['drush_empty_module']);
         $output = $this->getOutput();
         $this->assertEquals(Path::join($root, '/modules/unish/drush_empty_module'), $output);
 
-        $this->drush('drupal-directory', ['drush_empty_theme']);
+        $this->drush(DrupalDirectoryCommands::DIRECTORY, ['drush_empty_theme']);
         $output = $this->getOutput();
         $this->assertEquals(Path::join($root, '/themes/unish/drush_empty_theme'), $output);
     }

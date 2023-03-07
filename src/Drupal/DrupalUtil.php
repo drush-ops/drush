@@ -19,8 +19,6 @@ class DrupalUtil
         if (is_array($data)) {
             $data = \Drupal::service('renderer')->renderRoot($data);
         }
-
-        $data = MailFormatHelper::htmlToText((string) $data);
-        return $data;
+        return MailFormatHelper::htmlToText((string) $data);
     }
 }

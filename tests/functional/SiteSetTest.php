@@ -2,6 +2,8 @@
 
 namespace Unish;
 
+use Drush\Commands\core\SiteCommands;
+
 /**
  * @group base
  * @group slow
@@ -22,18 +24,18 @@ class SiteSetTest extends CommandUnishTestCase
 
         // Test changing aliases.
         foreach ($site_aliases as $site_alias) {
-            $this->drush('site:set', [$site_alias]);
+            $this->drush(SiteCommands::SET, [$site_alias]);
             $output = $this->getErrorOutput();
             $this->assertStringContainsString('[success] Site set to ' . $site_alias, $output);
         }
 
         // Test setting the site to the special @none alias.
-        $this->drush('site:set', ['@none']);
+        $this->drush(SiteCommands::SET, ['@none']);
         $output = $this->getErrorOutput();
         $this->assertStringContainsString('[success] Site unset.', $output);
 
         // Alternative to '@none'.
-        $this->drush('site:set', ['']);
+        $this->drush(SiteCommands::SET, ['']);
         $output = $this->getErrorOutput();
         $this->assertStringContainsString('[success] Site unset.', $output);
 
@@ -41,10 +43,10 @@ class SiteSetTest extends CommandUnishTestCase
         $this->markTestSkipped('Inexplicably fails on TravisCI but not locally.');
 
         // Toggle between the previous set alias and back again.
-        $this->drush('site:set', ['-']);
+        $this->drush(SiteCommands::SET, ['-']);
         $output = $this->getErrorOutput();
         $this->assertStringContainsString('[success] Site set to ' . $site_aliases[0], $output);
-        $this->drush('site:set', ['-']);
+        $this->drush(SiteCommands::SET, ['-']);
         $output = $this->getErrorOutput();
         $this->assertStringContainsString('[success] Site set to ' . $site_aliases[1], $output);
     }

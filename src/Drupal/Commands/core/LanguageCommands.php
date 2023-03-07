@@ -6,11 +6,14 @@ use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Language\LanguageManagerInterface;
 use Drupal\language\Entity\ConfigurableLanguage;
+use Drush\Attributes as CLI;
 use Drush\Commands\DrushCommands;
 use Drush\Utils\StringUtils;
 
-class LanguageCommands extends DrushCommands
+final class LanguageCommands extends DrushCommands
 {
+    const ADD = 'language:add';
+    const INFO = 'language:info';
     /**
      * @var LanguageManagerInterface
      */
@@ -37,21 +40,13 @@ class LanguageCommands extends DrushCommands
         $this->moduleHandler = $moduleHandler;
     }
 
-    /**
-     * Add a configurable language.
-     *
-     * @command language:add
-     * @param $langcode A comma delimited list of language codes.
-     * @option skip-translations Prevent translations from being downloaded and/or imported.
-     * @usage drush language:add nl,fr
-     *   Add Dutch and French language and import their translations.
-     * @usage drush language:add nl --skip-translations
-     *   Add Dutch language without importing translations.
-     * @aliases language-add
-     * @validate-module-enabled language
-     * @hidden
-     * @throws \Exception
-     */
+    #[CLI\Command(name: self::ADD, aliases: ['language-add'])]
+    #[CLI\Help(hidden: true)]
+    #[CLI\Argument(name: 'langcode', description: 'A comma delimited list of language codes.')]
+    #[CLI\Option(name: 'skip-translations', description: 'Prevent translations from being downloaded and/or imported.')]
+    #[CLI\Usage(name: 'drush language:add nl,fr', description: 'Add Dutch and French language and import their translations.')]
+    #[CLI\Usage(name: 'drush language:add nl --skip-translations', description: 'Add Dutch language without importing translations.')]
+    #[CLI\ValidateModulesEnabled(modules: ['language'])]
     public function add($langcode, $options = ['skip-translations' => false]): void
     {
         if ($langcodes = StringUtils::csvToArray($langcode)) {
@@ -84,18 +79,17 @@ class LanguageCommands extends DrushCommands
 
     /**
      * Print the currently available languages.
-     *
-     * @command language:info
-     * @aliases language-info
-     * @hidden
-     * @field-labels
-     *   language: Language
-     *   direction: Direction
-     *   default: Default
-     *   locked: Locked
-     * @default-fields language,direction,default
-     * @filter-default-field language
      */
+    #[CLI\Command(name: self::INFO, aliases: ['language-info'])]
+    #[CLI\Help(hidden: true)]
+    #[CLI\FieldLabels(labels: [
+        'language' => 'Language',
+        'direction' => 'Direction',
+        'default' => 'Default',
+        'locked' => 'Locked',
+    ])]
+    #[CLI\DefaultTableFields(fields: ['language', 'direction', 'default'])]
+    #[CLI\FilterDefaultField(field: 'language')]
     public function info(): RowsOfFields
     {
         $rows = [];

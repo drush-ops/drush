@@ -10,7 +10,7 @@ use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Symfony\Component\Filesystem\Path;
 
-class NotifyCommands extends DrushCommands
+final class NotifyCommands extends DrushCommands
 {
     #[CLI\Hook(type: HookManager::OPTION_HOOK, target: '*')]
     #[CLI\Option(name: 'notify', description: "Notify upon command completion. If set to a number, commands that finish in fewer seconds won't notify.")]

@@ -13,10 +13,13 @@ final class PhpCommands extends DrushCommands implements StdinAwareInterface
 {
     use StdinAwareTrait;
 
+    const SCRIPT = 'php:script';
+    const EVAL = 'php:eval';
+
     /**
      * Evaluate arbitrary php code after bootstrapping Drupal (if available).
      */
-    #[CLI\Command(name: 'php:eval', aliases: ['eval', 'ev', 'php-eval'])]
+    #[CLI\Command(name: self::EVAL, aliases: ['eval', 'ev', 'php-eval'])]
     #[CLI\Argument(name: 'code', description: 'PHP code. If shell escaping gets too tedious, consider using the php:script command.')]
     #[CLI\Usage(name: "drush php:eval '\$node = \Drupal\node\Entity\Node::load(1); print \$node->getTitle();'", description: 'Loads node with nid 1 and then prints its title.')]
     #[CLI\Usage(name: 'drush php:eval "\Drupal::service(\'file_system\')->copy(\'$HOME/Pictures/image.jpg\', \'public://image.jpg\');"', description: 'Copies a file whose path is determined by an environment\'s variable. Use of double quotes so the variable $HOME gets replaced by its value.')]
@@ -36,7 +39,7 @@ final class PhpCommands extends DrushCommands implements StdinAwareInterface
      * that's more self-documenting.  Drush provides commandline options to the
      * script via a variable called <info>$extra</info>.
      */
-    #[CLI\Command(name: 'php:script', aliases: ['scr', 'php-script'])]
+    #[CLI\Command(name: self::SCRIPT, aliases: ['scr', 'php-script'])]
     #[CLI\Option(name: 'script-path', description: 'Additional paths to search for scripts, separated by : (Unix-based systems) or ; (Windows).')]
     #[CLI\Usage(name: 'drush php:script example --script-path=/path/to/scripts:/another/path', description: 'Run a script named example.php from specified paths')]
     #[CLI\Usage(name: 'drush php:script -', description: 'Run PHP code from standard input.')]

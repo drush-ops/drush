@@ -10,7 +10,7 @@ use Drush\Commands\DrushCommands;
  * Any commandfile may add topics.
  * Us ethe Topic attribute to indicate the command is a topic
  */
-class DocsCommands extends DrushCommands
+final class DocsCommands extends DrushCommands
 {
     /**
      * README.md

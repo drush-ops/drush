@@ -2,9 +2,8 @@
 
 namespace Drupal\{{ machine_name }}\Commands;
 
-{% if not source %}
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
-{% endif %}
+use Drush\Attributes as CLI;
 use Drush\Commands\DrushCommands;
 
 /**
@@ -18,11 +17,41 @@ use Drush\Commands\DrushCommands;
  *   - http://cgit.drupalcode.org/devel/tree/src/Commands/DevelCommands.php
  *   - http://cgit.drupalcode.org/devel/tree/drush.services.yml
  */
-class {{ class }} extends DrushCommands {
+final class {{ class }} extends DrushCommands {
 
-{% if source %}
-{% include 'ported-methods.php.twig' %}
-{% else %}
-{% include 'default-methods.php.twig' %}
-{% endif %}
+  /**
+   * Command description here.
+   */
+  #[CLI\Command(name: '{{  machine_name }}:commandName', aliases: ['foo'])]
+  #[CLI\Argument(name: 'arg1', description: 'Argument description.')]
+  #[CLI\Option(name: 'option-name', description: 'Option description')]
+  #[CLI\Usage(name: '{{ machine_name }}:commandName foo', description: 'Usage description')]
+  public function commandName($arg1, $options = ['option-name' => 'default']) {
+    $this->logger()->success(dt('Achievement unlocked.'));
+  }
+
+  /**
+   * An example of the table output format.
+   */
+  #[CLI\Command(name: '{{  machine_name }}:token', aliases: ['token'])]
+  #[CLI\FieldLabels(labels: [
+    'group' => 'Group',
+    'token' => 'Token',
+    'name' => 'Name'
+  ])]
+  #[CLI\DefaultTableFields(fields: ['group', 'token', 'name'])]
+  #[CLI\FilterDefaultField(field: 'name')]
+  public function token($options = ['format' => 'table']): RowsOfFields {
+    $all = \Drupal::token()->getInfo();
+    foreach ($all['tokens'] as $group => $tokens) {
+      foreach ($tokens as $key => $token) {
+        $rows[] = [
+          'group' => $group,
+          'token' => $key,
+          'name' => $token['name'],
+        ];
+      }
+    }
+    return new RowsOfFields($rows);
+  }
 }

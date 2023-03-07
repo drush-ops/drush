@@ -3,9 +3,13 @@
 namespace Unish;
 
 use Drupal\Core\Serialization\Yaml;
+use Drush\Commands\core\PhpCommands;
+use Drush\Commands\core\StatusCommands;
 use Drush\Drupal\Commands\config\ConfigCommands;
 use Drush\Drupal\Commands\config\ConfigExportCommands;
 use Drush\Drupal\Commands\config\ConfigImportCommands;
+use Drush\Drupal\Commands\core\StateCommands;
+use Drush\Drupal\Commands\pm\PmCommands;
 use Symfony\Component\Filesystem\Path;
 
 /**
@@ -24,7 +28,7 @@ class ConfigTest extends CommandUnishTestCase
             $this->setUpDrupal(1, true);
             // Field module is needed for now for --existing-config. It is not actually
             // enabled after testing profile is installed. Its required by file and update though.
-            $this->drush('pm:install', ['config, field']);
+            $this->drush(PmCommands::INSTALL, ['config, field']);
         }
     }
 
@@ -101,7 +105,7 @@ XML
         }
 
         // Test the --existing-config option for site:install.
-        $this->drush('core:status', [], ['field' => 'drupal-version']);
+        $this->drush(StatusCommands::STATUS, [], ['field' => 'drupal-version']);
         $drupal_version = $this->getOutputRaw();
         $contents = file_get_contents($system_site_yml);
         $contents = preg_replace('/front: .*/', 'front: unish existing', $contents);
@@ -129,7 +133,7 @@ XML
             'include' => __DIR__,
         ];
         $this->setupModulesForTests(['woot'], Path::join(__DIR__, '/../fixtures/modules'));
-        $this->drush('pm-install', ['woot'], $options);
+        $this->drush(PmCommands::INSTALL, ['woot'], $options);
 
         // Export the configuration.
         $this->drush(ConfigExportCommands::EXPORT);
@@ -167,9 +171,9 @@ YAML_FRAGMENT;
         $this->assertStringContainsString("woot config error", $this->getErrorOutput(), 'Woot returned an expected config validation error.');
 
         // Now we disable the error, and retry the config import.
-        $this->drush('state:set', ['woot.shoud_not_fail_on_cim', 'true']);
+        $this->drush(StateCommands::SET, ['woot.shoud_not_fail_on_cim', 'true']);
         $this->drush(ConfigImportCommands::IMPORT);
-        $this->drush('php:eval', ["return Drupal::getContainer()->getParameter('container.modules')"], ['format' => 'json']);
+        $this->drush(PhpCommands::EVAL, ["return Drupal::getContainer()->getParameter('container.modules')"], ['format' => 'json']);
 
         // Assure that new modules are fully enabled.
         $out = $this->getOutputFromJSON();
@@ -178,12 +182,12 @@ YAML_FRAGMENT;
 
         // We make sure that the service inside the newly enabled module exists now. A fatal
         // error will be thrown by Drupal if the service does not exist.
-        $this->drush('php:eval', ['Drupal::service("drush_empty_module.service");']);
+        $this->drush(PhpCommands::EVAL, ['Drupal::service("drush_empty_module.service");']);
     }
 
     protected function getConfigSyncDir()
     {
-        $this->drush('core:status', [], ['format' => 'json', 'fields' => 'config-sync']);
+        $this->drush(StatusCommands::STATUS, [], ['format' => 'json', 'fields' => 'config-sync']);
         return $this->webroot() . '/' . $this->getOutputFromJSON('config-sync');
     }
 }

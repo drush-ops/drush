@@ -2,7 +2,10 @@
 
 namespace Unish;
 
+use Drush\Commands\core\StatusCommands;
 use Drush\Drupal\Commands\core\DeployHookCommands;
+use Drush\Drupal\Commands\core\StateCommands;
+use Drush\Drupal\Commands\pm\PmCommands;
 use Symfony\Component\Filesystem\Path;
 
 /**
@@ -21,7 +24,7 @@ class DeployHookTest extends CommandUnishTestCase
             'yes' => null,
         ];
         $this->setupModulesForTests(['woot'], Path::join(__DIR__, '/../fixtures/modules'));
-        $this->drush('pm-install', ['woot'], $options);
+        $this->drush(PmCommands::INSTALL, ['woot'], $options);
 
         // Run deploy hooks.
         $this->drush(DeployHookCommands::HOOK, [], $options, null, null, self::EXIT_ERROR);
@@ -41,7 +44,7 @@ class DeployHookTest extends CommandUnishTestCase
         $this->assertStringContainsString('[error]  Finished performing deploy hooks.', $this->getErrorOutput());
 
         // Set the drupal state so that the failing hook passes
-        $this->drush('state:set', ['woot_deploy_pass', 'true'], [], null, null, self::EXIT_SUCCESS);
+        $this->drush(StateCommands::SET, ['woot_deploy_pass', 'true'], [], null, null, self::EXIT_SUCCESS);
 
         // Run deploy hooks again.
         $this->drush(DeployHookCommands::HOOK, [], $options, null, null, self::EXIT_SUCCESS);
@@ -61,7 +64,7 @@ class DeployHookTest extends CommandUnishTestCase
     {
         $this->setUpDrupal(1, true);
         $this->setupModulesForTests(['woot'], Path::join(__DIR__, '/../fixtures/modules'));
-        $this->drush('pm-install', ['woot'], ['yes' => null]);
+        $this->drush(PmCommands::INSTALL, ['woot'], ['yes' => null]);
 
         $options = [
             'format' => 'json'
@@ -103,7 +106,7 @@ class DeployHookTest extends CommandUnishTestCase
             'yes' => null,
         ];
         $this->setupModulesForTests(['woot_deploy'], Path::join(__DIR__, '/../fixtures/modules'));
-        $this->drush('pm-install', ['woot_deploy'], $options);
+        $this->drush(PmCommands::INSTALL, ['woot_deploy'], $options);
 
         // Run deploy hooks.
         $this->drush(DeployHookCommands::HOOK, [], $options, null, null, self::EXIT_SUCCESS);

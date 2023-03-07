@@ -129,10 +129,6 @@ final class SanitizeUserFieldsCommands extends DrushCommands implements Sanitize
         $messages[] = dt('Sanitize text fields associated with users.');
     }
 
-    /**
-     * @hook option sql-sanitize
-     * @option allowlist-fields A comma delimited list of fields exempt from sanitization.
-     */
     #[CLI\Hook(type: HookManager::OPTION_HOOK, target: 'sql-sanitize')]
     #[CLI\Option(name: 'allowlist-fields', description: 'A comma delimited list of fields exempt from sanitization.')]
     public function options($options = ['whitelist-fields' => '', 'allowlist-fields' => '']): void
