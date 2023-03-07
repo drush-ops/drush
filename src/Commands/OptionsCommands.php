@@ -13,13 +13,19 @@ final class OptionsCommands
 {
     const REQ = InputOption::VALUE_REQUIRED;
 
+    /**
+     * @deprecated Use \Drush\Attributes\OptionsetGetEditor attribute instead.
+     */
     #[CLI\Hook(type: HookManager::OPTION_HOOK, selector: 'optionset_proc_build')]
-    #[CLI\Option(name: 'ssh-options', description: ' A string of extra options that will be passed to the ssh command (e.g. <info>-p 100</info>)')]
+    #[CLI\Option(name: 'ssh-options', description: 'A string of extra options that will be passed to the ssh command (e.g. <info>-p 100</info>)')]
     #[CLI\Option(name: 'tty', description: 'Create a tty (e.g. to run an interactive program).')]
     public function optionsetProcBuild($options = ['ssh-options' => self::REQ, 'tty' => false]): void
     {
     }
 
+    /**
+     * @deprecated Use \Drush\Attributes\OptionsetGetEditor attribute instead.
+     */
     #[CLI\Hook(type: HookManager::OPTION_HOOK, selector: 'optionset_get_editor')]
     #[CLI\Option(name: 'editor', description: 'A string of bash which launches user\'s preferred text editor. Defaults to <info>${VISUAL-${EDITOR-vi}}</info>.')]
     #[CLI\Option(name: 'bg', description: 'Launch editor in background process.')]
@@ -27,12 +33,18 @@ final class OptionsCommands
     {
     }
 
+    /**
+     * @deprecated Use \Drush\Attributes\OptionsetSsh attribute instead.
+     */
     #[CLI\Hook(type: HookManager::OPTION_HOOK, selector: 'optionset_ssh')]
     #[CLI\Option(name: 'ssh-options', description: 'A string appended to ssh command during rsync, sql-sync, etc.')]
     public function optionsetSsh($options = ['ssh-options' => self::REQ]): void
     {
     }
 
+    /**
+     * @deprecated Use \Drush\Attributes\OptionsetSql attribute instead.
+     */
     #[CLI\Hook(type: HookManager::OPTION_HOOK, selector: 'optionset_sql')]
     #[CLI\Option(name: 'database', description: 'The DB connection key if using multiple connections in settings.php.')]
     #[CLI\Option(name: 'db-url', description: 'A Drupal 6 style database URL. For example <info>mysql://root:pass@localhost:port/dbname</info>')]
@@ -42,6 +54,9 @@ final class OptionsCommands
     {
     }
 
+    /**
+     * @deprecated Use \Drush\Attributes\OptionsetTableSelection attribute instead.
+     */
     #[CLI\Hook(type: HookManager::OPTION_HOOK, selector: 'optionset_table_selection')]
     #[CLI\Option(name: 'skip-tables-key', description: 'A key in the $skip_tables array. @see [Site aliases](../site-aliases.md)')]
     #[CLI\Option(name: 'structure-tables-key', description: 'A key in the $structure_tables array. @see [Site aliases](../site-aliases.md)')]
