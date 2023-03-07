@@ -38,11 +38,13 @@ class OptionsCommands
      */
     #[CLI\Hook(type: HookManager::OPTION_HOOK, selector: 'optionset_ssh')]
     #[CLI\Option(name: 'ssh-options', description: 'A string appended to ssh command during rsync, sql-sync, etc.')]
-    #[Deprecated(reason: 'Use \Drush\Attributes\OptionsetSsh')]
     public function optionsetSsh($options = ['ssh-options' => self::REQ]): void
     {
     }
 
+    /**
+     * @deprecated Use \Drush\Attributes\OptionsetSql attribute instead.
+     */
     #[CLI\Hook(type: HookManager::OPTION_HOOK, selector: 'optionset_sql')]
     #[CLI\Option(name: 'database', description: 'The DB connection key if using multiple connections in settings.php.')]
     #[CLI\Option(name: 'db-url', description: 'A Drupal 6 style database URL. For example <info>mysql://root:pass@localhost:port/dbname</info>')]
@@ -52,6 +54,9 @@ class OptionsCommands
     {
     }
 
+    /**
+     * @deprecated Use \Drush\Attributes\OptionsetTableSelection attribute instead.
+     */
     #[CLI\Hook(type: HookManager::OPTION_HOOK, selector: 'optionset_table_selection')]
     #[CLI\Option(name: 'skip-tables-key', description: 'A key in the $skip_tables array. @see [Site aliases](../site-aliases.md)')]
     #[CLI\Option(name: 'structure-tables-key', description: 'A key in the $structure_tables array. @see [Site aliases](../site-aliases.md)')]
