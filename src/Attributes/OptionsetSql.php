@@ -7,7 +7,7 @@ use Consolidation\AnnotatedCommand\Parser\CommandInfo;
 use Drush\Commands\DrushCommands;
 
 #[Attribute(Attribute::TARGET_METHOD)]
-class OptionsetSql extends NoArgumentsBase
+class OptionsetSql
 {
     public static function handle(\ReflectionAttribute $attribute, CommandInfo $commandInfo)
     {
