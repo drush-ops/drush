@@ -11,6 +11,6 @@ class OptionsetSsh
 {
     public static function handle(\ReflectionAttribute $attribute, CommandInfo $commandInfo)
     {
-        $commandInfo->addOptionDescriptionDefaultValue('ssh-options', 'A string appended to ssh command during rsync, sql-sync, etc.', [], DrushCommands::REQ);
+        $commandInfo->addOption('ssh-options', 'A string appended to ssh command during rsync, sql-sync, etc.', [], DrushCommands::REQ);
     }
 }

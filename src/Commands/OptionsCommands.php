@@ -13,8 +13,11 @@ class OptionsCommands
 {
     const REQ = InputOption::VALUE_REQUIRED;
 
+    /**
+     * @deprecated Use \Drush\Attributes\OptionsetGetEditor attribute instead.
+     */
     #[CLI\Hook(type: HookManager::OPTION_HOOK, selector: 'optionset_proc_build')]
-    #[CLI\Option(name: 'ssh-options', description: ' A string of extra options that will be passed to the ssh command (e.g. <info>-p 100</info>)')]
+    #[CLI\Option(name: 'ssh-options', description: 'A string of extra options that will be passed to the ssh command (e.g. <info>-p 100</info>)')]
     #[CLI\Option(name: 'tty', description: 'Create a tty (e.g. to run an interactive program).')]
     public function optionsetProcBuild($options = ['ssh-options' => self::REQ, 'tty' => false]): void
     {
