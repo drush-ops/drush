@@ -2,6 +2,7 @@
 
 namespace Drush\Preflight;
 
+use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Component\Console\Input\InputInterface;
 use Composer\Autoload\ClassLoader;
 use Drush\SiteAlias\SiteAliasFileLoader;
@@ -206,7 +207,7 @@ class Preflight
 
     public function loadSymfonyCompatabilityAutoloader(): ClassLoader
     {
-        $symfonyMajorVersion = \Symfony\Component\HttpKernel\Kernel::MAJOR_VERSION;
+        $symfonyMajorVersion = Kernel::MAJOR_VERSION;
         $compatibilityMap = [
             3 => false, // Drupal 8
             4 => 'v4',  // Drupal 9
@@ -227,7 +228,7 @@ class Preflight
         //    "psr-4": {
         //      "Drush\\": $compatibilityDir
         //    }
-        $loader = new \Composer\Autoload\ClassLoader();
+        $loader = new ClassLoader();
         // register classes with namespaces
         $loader->addPsr4('Drush\\', $compatibilityDir);
         // activate the autoloader

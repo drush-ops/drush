@@ -168,7 +168,7 @@ class ConfigImportCommands extends DrushCommands
         $source_storage_dir = ConfigCommands::getDirectory($options['source']);
 
         // Prepare the configuration storage for the import.
-        if ($source_storage_dir == Path::canonicalize(Settings::get('config_sync_directory'))) {
+        if ($source_storage_dir === Path::canonicalize(Settings::get('config_sync_directory'))) {
             $source_storage = $this->getConfigStorageSync();
         } else {
             $source_storage = new FileStorage($source_storage_dir);
@@ -269,7 +269,7 @@ class ConfigImportCommands extends DrushCommands
                 $message .= implode("\n", $config_importer->getErrors());
 
                 watchdog_exception('config_import', $e);
-                throw new \Exception($message);
+                throw new \Exception($message, $e->getCode(), $e);
             }
         }
     }
