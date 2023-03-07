@@ -127,7 +127,7 @@ class RedispatchHook implements InitializeHookInterface, ConfigAwareInterface, S
      *
      * @param int $exit_code.
      */
-    protected function exitEarly(int $exit_code): void
+    protected function exitEarly(int $exit_code): never
     {
         Drush::logger()->debug('Redispatch hook exit early');
 

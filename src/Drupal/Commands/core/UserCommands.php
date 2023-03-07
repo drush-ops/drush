@@ -292,7 +292,7 @@ final class UserCommands extends DrushCommands
         foreach ($accounts as $id => $account) {
             if ($options['delete-content']) {
                 $this->logger()->warning(dt('All content created by !name will be deleted.', ['!name' => $account->getAccountName()]));
-            } else if ($options['reassign-content']) {
+            } elseif ($options['reassign-content']) {
                 $this->logger()->warning(dt('All content created by !name will be assigned to anonymous user.', ['!name' => $account->getAccountName()]));
             }
             if ($this->io()->confirm('Cancel user account?: ')) {

@@ -2,6 +2,8 @@
 
 namespace Drush\Commands\core;
 
+use Consolidation\SiteAlias\SiteAliasManager;
+use Consolidation\SiteProcess\ProcessBase;
 use Consolidation\SiteAlias\SiteAlias;
 use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
 use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
@@ -28,7 +30,6 @@ final class ArchiveRestoreCommands extends DrushCommands implements SiteAliasMan
 
     const RESTORE = 'archive:restore';
     private Filesystem $filesystem;
-    private array $siteStatus;
     private ?string $destinationPath = null;
 
     private const COMPONENT_CODE = 'code';
@@ -401,14 +402,14 @@ final class ArchiveRestoreCommands extends DrushCommands implements SiteAliasMan
      * @param string|null $site
      *   The site alias.
      *
-     * @return \Consolidation\SiteAlias\SiteAlias
+     * @return SiteAlias
      *
      * @throws \Exception
      */
     protected function getSiteAlias(?string $site): SiteAlias
     {
         $pathEvaluator = new BackendPathEvaluator();
-        /** @var \Consolidation\SiteAlias\SiteAliasManager $manager */
+        /** @var SiteAliasManager $manager */
         $manager = $this->siteAliasManager();
 
         if (null !== $site) {
@@ -477,7 +478,7 @@ final class ArchiveRestoreCommands extends DrushCommands implements SiteAliasMan
             $destination
         );
 
-        /** @var \Consolidation\SiteProcess\ProcessBase $process */
+        /** @var ProcessBase $process */
         $process = $this->processManager()->shell($command);
         $process->run($process->showRealtime());
         if ($process->isSuccessful()) {
@@ -504,7 +505,7 @@ final class ArchiveRestoreCommands extends DrushCommands implements SiteAliasMan
      * @param array $options
      *   The command options.
      *
-     * @throws \Drush\Exceptions\UserAbortException
+     * @throws UserAbortException
      * @throws \Exception
      */
     protected function importDatabase(string $databaseDumpPath, array $options): void
@@ -518,7 +519,7 @@ final class ArchiveRestoreCommands extends DrushCommands implements SiteAliasMan
         $sqlOptions = [];
         if (isset($options['db-url'])) {
             $sqlOptions = ['db-url' => $options['db-url']];
-        } else if ($options['db-name']) {
+        } elseif ($options['db-name']) {
             $connection = [
                 'driver' => $options['db-driver'],
                 'port' => $options['db-port'],
@@ -536,7 +537,7 @@ final class ArchiveRestoreCommands extends DrushCommands implements SiteAliasMan
                     ],
                 ],
             ];
-        } else if ($options['destination-path']) {
+        } elseif ($options['destination-path']) {
             throw new Exception('Database connection settings are required if --destination-path option is provided');
         } else {
             $bootstrapManager = Drush::bootstrapManager();
@@ -548,7 +549,7 @@ final class ArchiveRestoreCommands extends DrushCommands implements SiteAliasMan
             $isDbExist = $sql->dbExists();
             $databaseSpec = $sql->getDbSpec();
         } catch (Throwable $t) {
-            throw new Exception(dt('Failed to get database specification: !error', ['!error' => $t->getMessage()]));
+            throw new Exception(dt('Failed to get database specification: !error', ['!error' => $t->getMessage()]), $t->getCode(), $t);
         }
 
         if (

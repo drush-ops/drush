@@ -174,11 +174,9 @@ final class ConfigCommands extends DrushCommands implements StdinAwareInterface,
             $data = [];
         }
 
-        // Parse the value if needed.
-        switch ($options['input-format']) {
-            case 'yaml':
-                $parser = new Parser();
-                $data = $parser->parse($data, true);
+        if ($options['input-format'] === 'yaml') {
+            $parser = new Parser();
+            $data = $parser->parse($data, true);
         }
 
         $config = $this->getConfigFactory()->getEditable($config_name);
@@ -524,7 +522,7 @@ final class ConfigCommands extends DrushCommands implements StdinAwareInterface,
             try {
                 $destination->write($name, $source->read($name));
             } catch (\TypeError $e) {
-                throw new \Exception(dt('Source not found for @name.', ['@name' => $name]));
+                throw new \Exception(dt('Source not found for @name.', ['@name' => $name]), $e->getCode(), $e);
             }
         }
 

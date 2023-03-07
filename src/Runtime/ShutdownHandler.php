@@ -51,7 +51,7 @@ class ShutdownHandler implements LoggerAwareInterface, HandlerInterface
     /**
      * @deprecated. This function will be removed in Drush 10. Throw an exception to indicate an error.
      */
-    public function returnStatus(): void
+    public function returnStatus(): never
     {
         exit(Runtime::exitCode());
     }
