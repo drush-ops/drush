@@ -360,8 +360,10 @@ final class ConfigCommands extends DrushCommands implements StdinAwareInterface,
      * Directory path is determined based on the following precedence:
      *   1. User-provided $directory.
      *   2. Default sync directory
+     *
+     * @note: $directory param can be boolean.
      */
-    public static function getDirectory(?string $directory = null): string
+    public static function getDirectory(mixed $directory = null): string
     {
         $return = null;
         // If the user provided a directory, use it.
