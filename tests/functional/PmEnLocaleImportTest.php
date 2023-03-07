@@ -5,6 +5,7 @@ namespace Unish;
 use Drupal\Core\Language\Language;
 use Drupal\language\Entity\ConfigurableLanguage;
 use Drush\Drupal\Commands\config\ConfigCommands;
+use Drush\Drupal\Commands\core\LanguageCommands;
 use Drush\Drupal\Commands\core\WatchdogCommands;
 use Drush\Drupal\Commands\pm\PmCommands;
 use Symfony\Component\Filesystem\Path;
@@ -40,7 +41,7 @@ class PmEnLocaleImportTest extends CommandUnishTestCase
         $this->mkdir($translationDir);
         copy($source, Path::join($translationDir, 'drush_empty_module.nl.po'));
 
-        $this->drush('language-add', ['nl']);
+        $this->drush(LanguageCommands::ADD, ['nl']);
 
         $this->drush(PmCommands::INSTALL, ['drush_empty_module']);
         $this->drush(WatchdogCommands::SHOW);

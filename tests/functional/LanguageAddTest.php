@@ -5,6 +5,7 @@ namespace Unish;
 use Drupal\Core\Language\Language;
 use Drupal\language\Entity\ConfigurableLanguage;
 use Drush\Drupal\Commands\config\ConfigCommands;
+use Drush\Drupal\Commands\core\LanguageCommands;
 use Drush\Drupal\Commands\core\WatchdogCommands;
 use Drush\Drupal\Commands\pm\PmCommands;
 use Symfony\Component\Filesystem\Path;
@@ -26,12 +27,12 @@ class LanguageAddTest extends CommandUnishTestCase
 
     public function testLanguageInfoAdd()
     {
-        $this->drush('language-info', []);
+        $this->drush(LanguageCommands::INFO, []);
         $this->assertStringContainsString('English (en)', $this->getSimplifiedOutput());
 
-        $this->drush('language-add', ['nl,fr'], ['skip-translations' => null]);
+        $this->drush(LanguageCommands::ADD, ['nl,fr'], ['skip-translations' => null]);
 
-        $this->drush('language-info', []);
+        $this->drush(LanguageCommands::INFO, []);
         $this->assertStringContainsString('Dutch (nl)', $this->getSimplifiedOutput());
         $this->assertStringContainsString('French (fr)', $this->getSimplifiedOutput());
     }
@@ -58,7 +59,7 @@ class LanguageAddTest extends CommandUnishTestCase
         copy($source, Path::join($translationDir, 'drush_empty_module.nl.po'));
 
         $this->drush(PmCommands::INSTALL, ['drush_empty_module']);
-        $this->drush('language-add', ['nl']);
+        $this->drush(LanguageCommands::ADD, ['nl']);
 
         $this->drush(WatchdogCommands::SHOW, []);
         $this->assertStringContainsString('Translations imported:', $this->getSimplifiedOutput());
