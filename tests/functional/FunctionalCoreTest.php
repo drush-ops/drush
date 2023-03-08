@@ -3,6 +3,7 @@
 namespace Unish;
 
 use Drush\Commands\core\StatusCommands;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Path;
 use Symfony\Component\Yaml\Yaml;
 
@@ -22,21 +23,19 @@ class FunctionalCoreTest extends CommandUnishTestCase
 
     public function testSiteSelectionViaCwd()
     {
-        $cwd = getcwd();
-        $root = $this->webroot();
+        // $cwd = getcwd();
         foreach (['dev', 'stage'] as $uri) {
-            $conf_dir = $root . '/sites/' . $uri;
+            $conf_dir = $this->webroot() . '/sites/' . $uri;
             // We will chdir to the directory that contains settings.php
             // and ensure that we can bootstrap the selected site from here.
-            chdir($conf_dir);
+            // chdir($conf_dir);
             $options['uri'] = 'OMIT'; // A special value which causes --uri to not be specified.
-            $this->drush(StatusCommands::STATUS, [], $options);
+            $this->drush(StatusCommands::STATUS, [], $options, null, $conf_dir);
             $output = $this->getOutput();
             $output = preg_replace('#  *#', ' ', $output);
             $this->assertStringContainsString('Database : Connected', $output);
             $this->assertStringContainsString("Site path : sites/$uri", $output);
         }
-        chdir($cwd);
     }
 
     public function testOptionsUri()
@@ -45,8 +44,8 @@ class FunctionalCoreTest extends CommandUnishTestCase
         // various URI values for their expected Site URI and path.
         $drush_config_file = Path::join($this->webrootSlashDrush(), 'drush.yml');
         $command_options = [
-        'format' => 'json',
-        'uri' => 'OMIT', // A special value which causes --uri to not be specified.
+          'format' => 'json',
+          'uri' => 'OMIT', // A special value which causes --uri to not be specified.
         ];
         foreach (
             [

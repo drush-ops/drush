@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drush\Boot;
 
 use Drush\Drupal\DrupalKernel as DrushDrupalKernel;

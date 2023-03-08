@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drush\Boot;
 
 use Psr\Log\LoggerAwareInterface;
@@ -10,7 +12,7 @@ abstract class BaseBoot implements Boot, LoggerAwareInterface
     use LoggerAwareTrait;
 
     protected $uri = false;
-    protected $phase = false;
+    protected $phase = DrupalBootLevels::NONE;
 
     public function __construct()
     {
