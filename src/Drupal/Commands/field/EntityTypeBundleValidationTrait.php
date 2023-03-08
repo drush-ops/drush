@@ -40,7 +40,7 @@ trait EntityTypeBundleValidationTrait
 
         if (!$bundleDefinition) {
             throw new \InvalidArgumentException(
-                t("Bundle ':bundle' does not exist on entity type with id ':entityType'.", [
+                dt("Bundle ':bundle' does not exist on entity type with id ':entityType'.", [
                     ':bundle' => $bundle,
                     ':entityType' => $entityTypeId,
                 ])
