@@ -80,7 +80,7 @@ class FieldDeleteCommands extends DrushCommands
         if ($results === []) {
             throw new \InvalidArgumentException(
                 dt("Field with name ':fieldName' does not exist.", [
-                    ':fieldName' => $fieldName,
+                    ':fieldName' => (string)$fieldName,
                 ])
             );
         }

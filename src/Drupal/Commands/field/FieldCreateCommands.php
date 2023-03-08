@@ -129,13 +129,13 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
 
             if (!$fieldName = $this->input->getOption('existing-field-name')) {
                 throw new \InvalidArgumentException(
-                    t('There are no existing fields that can be added.')
+                    dt('There are no existing fields that can be added.')
                 );
             }
 
             if (!$this->fieldStorageExists($fieldName, $entityType)) {
                 throw new \InvalidArgumentException(
-                    t("Field storage with name ':fieldName' does not yet exist. Call this command without the --existing option first.", [
+                    dt("Field storage with name ':fieldName' does not yet exist. Call this command without the --existing option first.", [
                         ':fieldName' => $fieldName,
                     ])
                 );
@@ -145,7 +145,7 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
 
             if ($this->fieldExists($fieldName, $entityType, $bundle)) {
                 throw new \InvalidArgumentException(
-                    t("Field with name ':fieldName' already exists on bundle ':bundle'.", [
+                    dt("Field with name ':fieldName' already exists on bundle ':bundle'.", [
                         ':fieldName' => $fieldName,
                         ':bundle' => $bundle,
                     ])
@@ -168,7 +168,7 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
             $fieldName = $this->input->getOption('field-name');
             if ($this->fieldStorageExists($fieldName, $entityType)) {
                 throw new \InvalidArgumentException(
-                    t("Field storage with name ':fieldName' already exists. Call this command with the --existing option to add an existing field to a bundle.", [
+                    dt("Field storage with name ':fieldName' already exists. Call this command with the --existing option to add an existing field to a bundle.", [
                         ':fieldName' => $fieldName,
                     ])
                 );
@@ -390,7 +390,7 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
 
         if ($bundleEntityType && $bundleInfo === []) {
             throw new \InvalidArgumentException(
-                t('Entity type with id \':entityType\' does not have any bundles.', [':entityType' => $entityTypeId])
+                dt('Entity type with id \':entityType\' does not have any bundles.', [':entityType' => $entityTypeId])
             );
         }
 
@@ -411,7 +411,7 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
         }
 
         if (!$answer = $this->io()->choice('Bundle', $choices)) {
-            throw new \InvalidArgumentException(t('The bundle argument is required.'));
+            throw new \InvalidArgumentException(dt('The bundle argument is required.'));
         }
 
         return $answer;
