@@ -81,7 +81,7 @@ class MigrateRunnerCommands extends DrushCommands
         'unprocessed' => 'Unprocessed',
         'last_imported' => 'Last Imported',
     ])]
-    #[CLI\DefaultTableFields(fields: [
+    #[CLI\DefaultFields(fields: [
         'id',
         'status',
         'total',
@@ -545,7 +545,7 @@ class MigrateRunnerCommands extends DrushCommands
         'message' => 'Message',
         'hash' => 'Source IDs hash',
     ])]
-    #[CLI\DefaultTableFields(fields: [
+    #[CLI\DefaultFields(fields: [
         'level',
         'source_ids',
         'destination_ids',
