@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drush\Commands\core;
 
 use Drupal;
@@ -81,7 +83,7 @@ final class ArchiveDumpCommands extends DrushCommands
     #[CLI\Usage(name: 'drush archive:dump --database --destination=/path/to/archive.tar.gz', description: 'Create /path/to/archive.tar.gz archive file containing the database dump only.')]
     #[CLI\OptionsetTableSelection]
     #[CLI\OptionsetSql]
-    #[CLI\Bootstrap(level: DrupalBootLevels::MAX, extra: DrupalBootLevels::CONFIGURATION)]
+    #[CLI\Bootstrap(level: DrupalBootLevels::MAX, max_level: DrupalBootLevels::CONFIGURATION)]
     public function dump(array $options = [
         'code' => false,
         'files' => false,
@@ -429,7 +431,7 @@ final class ArchiveDumpCommands extends DrushCommands
                     FilesystemIterator::SKIP_DOTS
                 ),
                 function ($file) use ($excludes, $path) {
-                    $localFileName = str_replace($path, '', $file);
+                    $localFileName = str_replace($path, '', (string)$file);
                     $localFileName = str_replace('\\', '/', $localFileName);
                     $localFileName = trim($localFileName, '\/');
 
@@ -444,7 +446,7 @@ final class ArchiveDumpCommands extends DrushCommands
                         }
                     }
 
-                    $this->validateSensitiveData($file, $localFileName);
+                    $this->validateSensitiveData((string)$file, $localFileName);
 
                     return true;
                 }

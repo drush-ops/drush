@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drush\Drupal\Commands\config;
 
 use Consolidation\AnnotatedCommand\Hooks\HookManager;
@@ -176,7 +178,7 @@ final class ConfigCommands extends DrushCommands implements StdinAwareInterface,
 
         if ($options['input-format'] === 'yaml') {
             $parser = new Parser();
-            $data = $parser->parse($data, true);
+            $data = $parser->parse($data);
         }
 
         $config = $this->getConfigFactory()->getEditable($config_name);

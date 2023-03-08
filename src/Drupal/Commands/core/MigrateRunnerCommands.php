@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drush\Drupal\Commands\core;
 
 use Consolidation\AnnotatedCommand\CommandData;
@@ -94,6 +96,7 @@ class MigrateRunnerCommands extends DrushCommands
     public function status(?string $migrationIds = null, array $options = [
       'tag' => self::REQ,
       'names-only' => false,
+      'format' => 'table'
     ]): RowsOfFields
     {
         // The --names-only option takes precedence over --fields.
@@ -553,7 +556,7 @@ class MigrateRunnerCommands extends DrushCommands
         'hash',
     ])]
     #[CLI\Version(version: '10.4')]
-    public function messages(string $migrationId, array $options = ['idlist' => self::REQ]): RowsOfFields
+    public function messages(string $migrationId, array $options = ['idlist' => self::REQ, 'format' => 'table']): RowsOfFields
     {
         /** @var MigrationInterface $migration */
         $migration = $this->migrationPluginManager->createInstance($migrationId);
@@ -643,7 +646,7 @@ class MigrateRunnerCommands extends DrushCommands
     ])]
     #[CLI\DefaultFields(fields: ['machine_name', 'description'])]
     #[CLI\Version(version: '10.4')]
-    public function fieldsSource(string $migrationId): RowsOfFields
+    public function fieldsSource(string $migrationId, $options = ['format' => 'table']): RowsOfFields
     {
         /** @var MigrationInterface $migration */
         $migration = $this->migrationPluginManager->createInstance($migrationId);

@@ -293,9 +293,9 @@ class Environment
      * Set the directory prefix to locate the directory that Drush will
      * use as /etc (e.g. during the functional tests).
      */
-    public function setEtcPrefix(string $etcPrefix): self
+    public function setEtcPrefix(mixed $etcPrefix): self
     {
-        if (isset($etcPrefix)) {
+        if (!empty($etcPrefix)) {
             $this->etcPrefix = $etcPrefix;
         }
         return $this;

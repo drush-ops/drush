@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drush\Commands\sql;
 
 use Consolidation\AnnotatedCommand\CommandData;
@@ -34,7 +36,7 @@ final class SqlCommands extends DrushCommands implements StdinAwareInterface
     #[CLI\Command(name: self::CONF, aliases: ['sql-conf'])]
     #[CLI\Help(hidden: true)]
     #[CLI\Option(name: 'all', description: 'Show all database connections, instead of just one.')]
-    #[CLI\Bootstrap(level: DrupalBootLevels::MAX, extra: DrupalBootLevels::CONFIGURATION)]
+    #[CLI\Bootstrap(level: DrupalBootLevels::MAX, max_level: DrupalBootLevels::CONFIGURATION)]
     #[CLI\OptionsetSql]
     public function conf($options = ['format' => 'yaml', 'all' => false, 'show-passwords' => false]): ?array
     {
@@ -81,7 +83,7 @@ final class SqlCommands extends DrushCommands implements StdinAwareInterface
     #[CLI\Usage(name: 'drush sql:create', description: 'Create the database for the current site.')]
     #[CLI\Usage(name: 'drush @site.test sql:create', description: 'Create the database as specified for @site.test.')]
     #[CLI\Usage(name: 'drush sql:create --db-su=root --db-su-pw=rootpassword --db-url="mysql://drupal_db_user:drupal_db_password@127.0.0.1/drupal_db"', description: 'Create the database as specified in the db-url option.')]
-    #[CLI\Bootstrap(level: DrupalBootLevels::MAX, extra: DrupalBootLevels::CONFIGURATION)]
+    #[CLI\Bootstrap(level: DrupalBootLevels::MAX, max_level: DrupalBootLevels::CONFIGURATION)]
     #[CLI\OptionsetSql]
     public function create($options = ['db-su' => self::REQ, 'db-su-pw' => self::REQ]): void
     {
@@ -102,7 +104,7 @@ final class SqlCommands extends DrushCommands implements StdinAwareInterface
      * Drop all tables in a given database.
      */
     #[CLI\Command(name: self::DROP, aliases: ['sql-drop'])]
-    #[CLI\Bootstrap(level: DrupalBootLevels::MAX, extra: DrupalBootLevels::CONFIGURATION)]
+    #[CLI\Bootstrap(level: DrupalBootLevels::MAX, max_level: DrupalBootLevels::CONFIGURATION)]
     #[CLI\OptionsetSql]
     #[CLI\Topics(topics: ['docs:policy'])]
     public function drop($options = []): void
@@ -123,7 +125,7 @@ final class SqlCommands extends DrushCommands implements StdinAwareInterface
      */
     #[CLI\Command(name: self::CLI, aliases: ['sqlc', 'sql-cli'])]
     #[CLI\Option(name: 'extra', description: 'Add custom options to the connect string (e.g. --extra=--skip-column-names)')]
-    #[CLI\Bootstrap(level: DrupalBootLevels::MAX, extra: DrupalBootLevels::CONFIGURATION)]
+    #[CLI\Bootstrap(level: DrupalBootLevels::MAX, max_level: DrupalBootLevels::CONFIGURATION)]
     #[CLI\OptionsetSql]
     #[CLI\Topics(topics: ['docs:policy'])]
     #[CLI\Usage(name: 'drush sql:cli', description: 'Open a SQL command-line interface using Drupal\'s credentials.')]
@@ -146,7 +148,7 @@ final class SqlCommands extends DrushCommands implements StdinAwareInterface
      */
     #[CLI\Command(name: self::QUERY, aliases: ['sqlq', 'sql-query'])]
     #[CLI\Argument(name: 'query', description: 'An SQL query. Ignored if --file is provided.')]
-    #[CLI\Bootstrap(level: DrupalBootLevels::MAX, extra: DrupalBootLevels::CONFIGURATION)]
+    #[CLI\Bootstrap(level: DrupalBootLevels::MAX, max_level: DrupalBootLevels::CONFIGURATION)]
     #[CLI\OptionsetSql]
     #[CLI\Option(name: 'result-file', description: 'Save to a file. The file should be relative to Drupal root.')]
     #[CLI\Option(name: 'file', description: 'Path to a file containing the SQL to be run. Gzip files are accepted.')]
@@ -190,7 +192,7 @@ final class SqlCommands extends DrushCommands implements StdinAwareInterface
      * --createdb is used by sql-sync, since including the DROP TABLE statements interferes with the import when the database is created.
      */
     #[CLI\Command(name: self::DUMP, aliases: ['sql-dump'])]
-    #[CLI\Bootstrap(level: DrupalBootLevels::MAX, extra: DrupalBootLevels::CONFIGURATION)]
+    #[CLI\Bootstrap(level: DrupalBootLevels::MAX, max_level: DrupalBootLevels::CONFIGURATION)]
     #[CLI\OptionsetSql]
     #[CLI\OptionsetTableSelection]
     #[CLI\Option(name: 'result-file', description: "Save to a file. The file should be relative to Drupal root. If --result-file is provided with the value 'auto', a date-based filename will be created under ~/drush-backups directory.")]

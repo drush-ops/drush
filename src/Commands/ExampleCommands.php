@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drush\Commands;
 
 use Consolidation\AnnotatedCommand\Hooks\HookManager;

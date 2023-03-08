@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drush\Drupal\Commands\config;
 
 use Consolidation\AnnotatedCommand\Hooks\HookManager;

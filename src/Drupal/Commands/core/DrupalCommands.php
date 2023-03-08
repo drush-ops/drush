@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drush\Drupal\Commands\core;
 
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
@@ -108,7 +110,7 @@ final class DrupalCommands extends DrushCommands
                 'title' => self::styleRow((string) $info['title'], $options['format'], $severity),
                 'value' => self::styleRow(DrupalUtil::drushRender($info['value'] ?? ''), $options['format'], $severity),
                 'description' => self::styleRow(DrupalUtil::drushRender($info['description'] ?? ''), $options['format'], $severity),
-                'sid' => self::styleRow($severity, $options['format'], $severity),
+                'sid' => $severity,
                 'severity' => self::styleRow(@$severities[$severity], $options['format'], $severity)
             ];
             if ($severity < $min_severity) {

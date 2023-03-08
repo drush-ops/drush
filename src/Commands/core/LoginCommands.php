@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drush\Commands\core;
 
 use Drush\Attributes as CLI;
@@ -86,7 +88,7 @@ final class LoginCommands extends DrushCommands implements SiteAliasManagerAware
             )->toString();
         }
         $port = $options['redirect-port'];
-        $this->startBrowser($link, false, $port, $options['browser']);
+        $this->startBrowser($link, 0, $port, $options['browser']);
         return $link;
     }
 }

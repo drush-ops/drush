@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drush\Commands\generate\Generators\Migrate;
 
 use DrupalCodeGenerator\Command\Plugin\PluginGenerator;
