@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drush\Exec;
 
 use Consolidation\SiteProcess\Util\Shell;

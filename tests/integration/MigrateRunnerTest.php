@@ -216,7 +216,7 @@ class MigrateRunnerTest extends UnishIntegrationTestCase
     public function testMigrateImportAndRollbackWithIdList(): void
     {
         // Enlarge the source recordset to 50 rows.
-        $this->drush('state:set', ['woot.migrate_runner.source_data_amount', 50]);
+        $this->drush('state:set', ['woot.migrate_runner.source_data_amount', '50']);
 
         $this->drush('migrate:import', ['test_migration'], [
             // Intentionally added 56, which is out of bounds.
@@ -254,7 +254,7 @@ class MigrateRunnerTest extends UnishIntegrationTestCase
      */
     public function testMissingSourceRows(): void
     {
-        $this->drush('state:set', ['woot.migrate_runner.source_data_amount', 5]);
+        $this->drush('state:set', ['woot.migrate_runner.source_data_amount', '5']);
         $this->drush('migrate:import', ['test_migration']);
         $this->assertStringContainsString('[notice] Processed 5 items (5 created, 0 updated, 0 failed, 0 ignored)', $this->getErrorOutput());
         $this->drush('sql:query', ['SELECT title FROM node_field_data']);
@@ -294,7 +294,7 @@ class MigrateRunnerTest extends UnishIntegrationTestCase
      */
     public function testMigrateMessagesAndFieldSource(): void
     {
-        $this->drush('state:set', ['woot.migrate_runner.source_data_amount', 20]);
+        $this->drush('state:set', ['woot.migrate_runner.source_data_amount', '20']);
         $this->drush('state:set', ['woot.migrate_runner.trigger_failures', true]);
 
         $this->drush('migrate:import', ['test_migration'], [
@@ -365,7 +365,7 @@ class MigrateRunnerTest extends UnishIntegrationTestCase
     {
         // Set the test_migration source to 300 records.
         // @see woot_migration_plugins_alter()
-        $this->drush('state:set', ['woot.migrate_runner.source_data_amount', 300]);
+        $this->drush('state:set', ['woot.migrate_runner.source_data_amount', '300']);
         $this->drush('migrate:import', ['test_migration'], [
             'feedback' => 20,
             'limit' => 199,
@@ -433,7 +433,7 @@ class MigrateRunnerTest extends UnishIntegrationTestCase
      */
     public function testCommandProgressBar(): void
     {
-        $this->drush('state:set', ['woot.migrate_runner.source_data_amount', 50]);
+        $this->drush('state:set', ['woot.migrate_runner.source_data_amount', '50']);
 
         // Check an import and rollback with progress bar.
         $this->drush('migrate:import', ['test_migration']);

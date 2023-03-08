@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drush\Command;
 
 use Symfony\Component\Console\ConsoleEvents;

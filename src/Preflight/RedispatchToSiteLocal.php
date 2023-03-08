@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drush\Preflight;
 
 use Symfony\Component\Filesystem\Path;

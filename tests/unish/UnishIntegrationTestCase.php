@@ -151,7 +151,8 @@ abstract class UnishIntegrationTestCase extends UnishTestCase
 
         // Insert drush command arguments.
         foreach ($args as $arg) {
-            $cmd[] = $arg;
+            // Cast because on CLI all args are strings.
+            $cmd[] = (string)$arg;
         }
         // insert drush command options
         foreach ($options as $key => $values) {

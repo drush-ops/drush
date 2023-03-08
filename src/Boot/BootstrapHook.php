@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drush\Boot;
 
 use Consolidation\AnnotatedCommand\Hooks\InitializeHookInterface;

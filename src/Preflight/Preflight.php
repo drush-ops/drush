@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drush\Preflight;
 
 use Symfony\Component\HttpKernel\Kernel;
@@ -360,10 +362,10 @@ class Preflight
      * Use the DrupalFinder to locate the Drupal Root + Composer Root at
      * the selected root, or, if nothing is found there, at a fallback path.
      *
-     * @param string $selectedRoot The location to being searching for a site
-     * @param string|bool $fallbackPath The secondary location to search (usualy the vendor director)
+     * @param mixed $selectedRoot The location to being searching for a site
+     * @param string|bool $fallbackPath The secondary location to search (usually the vendor director)
      */
-    protected function setSelectedSite(string $selectedRoot, $fallbackPath = false, $originalSelection = null)
+    protected function setSelectedSite(mixed $selectedRoot, string|bool $fallbackPath = false, $originalSelection = null)
     {
         if ($selectedRoot || $fallbackPath) {
             $foundRoot = $this->drupalFinder->locateRoot($selectedRoot);

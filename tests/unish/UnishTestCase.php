@@ -419,6 +419,10 @@ abstract class UnishTestCase extends TestCase
      */
     public static function recursiveDelete($dir, $force = true, $follow_symlinks = false, $exclude = [])
     {
+        if (is_null($dir)) {
+            return true;
+        }
+
         // Do not delete symlinked files, only unlink symbolic links
         if (is_link($dir) && !$follow_symlinks) {
             return unlink($dir);

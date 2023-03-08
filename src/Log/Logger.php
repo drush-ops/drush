@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * @file
  * Contains \Drush\Log\Logger.
@@ -69,7 +71,7 @@ class Logger extends RoboLogger
                     break;
                 }
             }
-            return str_replace('@size', round($size, 2), $unit);
+            return str_replace('@size', (string) round($size, 2), $unit);
         }
     }
 }

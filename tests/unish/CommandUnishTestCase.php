@@ -128,6 +128,7 @@ abstract class CommandUnishTestCase extends UnishTestCase
                 $values = [$values];
             }
             foreach ($values as $value) {
+                $value = (string) $value;
                 if (in_array($key, $global_option_list)) {
                     unset($options[$key]);
                     if ($key == 'uri' && $value == 'OMIT') {
@@ -138,7 +139,7 @@ abstract class CommandUnishTestCase extends UnishTestCase
                     if (!isset($value)) {
                         $cmd[] = "$dashes$key";
                     } else {
-                        $cmd[] = "$dashes$key$equals" . self::escapeshellarg($value);
+                        $cmd[] = "$dashes$key$equals" . self::escapeshellarg((string)$value);
                     }
                 }
             }
@@ -167,7 +168,8 @@ abstract class CommandUnishTestCase extends UnishTestCase
 
         // Insert drush command arguments.
         foreach ($args as $arg) {
-            $cmd[] = self::escapeshellarg($arg);
+            // Cast because the CLI sends only strings.
+            $cmd[] = self::escapeshellarg((string)$arg);
         }
         // insert drush command options
         foreach ($options as $key => $values) {
@@ -182,7 +184,8 @@ abstract class CommandUnishTestCase extends UnishTestCase
                 if (!isset($value)) {
                     $cmd[] = "$dashes$key";
                 } else {
-                    $cmd[] = "$dashes$key$equals" . self::escapeshellarg($value);
+                    // Cast because the CLI sends only strings.
+                    $cmd[] = "$dashes$key$equals" . self::escapeshellarg((string)$value);
                 }
             }
         }

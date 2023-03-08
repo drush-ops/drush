@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drush\Preflight;
 
 /**
@@ -43,10 +45,10 @@ class ArgsRemapper
      * it does, then the remapping is performed.
      *
      * @param string $arg One argument to inspect
-     * @param string $sawCommand True if drush command was found
+     * @param bool $sawCommand True if drush command was found
      * @return string The altered argument
      */
-    protected function checkRemap(string $arg, string &$sawCommand)
+    protected function checkRemap(string $arg, bool &$sawCommand)
     {
         if (!$sawCommand && ctype_alpha($arg[0])) {
             $sawCommand = true;
