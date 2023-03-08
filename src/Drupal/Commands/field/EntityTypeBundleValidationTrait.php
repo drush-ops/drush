@@ -17,7 +17,7 @@ trait EntityTypeBundleValidationTrait
     {
         if (!$this->entityTypeManager->hasDefinition($entityTypeId)) {
             throw new \InvalidArgumentException(
-                dt("Entity type with id ':entityType' does not exist.", [':entityType' => $entityTypeId])
+                dt("Entity type with id '!entityType' does not exist.", ['!entityType' => $entityTypeId])
             );
         }
     }
@@ -40,9 +40,9 @@ trait EntityTypeBundleValidationTrait
 
         if (!$bundleDefinition) {
             throw new \InvalidArgumentException(
-                dt("Bundle ':bundle' does not exist on entity type with id ':entityType'.", [
-                    ':bundle' => $bundle,
-                    ':entityType' => $entityTypeId,
+                dt("Bundle '!bundle' does not exist on entity type with id '!entityType'.", [
+                    '!bundle' => $bundle,
+                    '!entityType' => $entityTypeId,
                 ])
             );
         }

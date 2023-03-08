@@ -64,8 +64,8 @@ class FieldDeleteCommands extends DrushCommands
         $this->input->setOption('field-name', $fieldName);
 
         if ($fieldName === '') {
-            throw new \InvalidArgumentException(dt('The %optionName option is required.', [
-                '%optionName' => 'field-name',
+            throw new \InvalidArgumentException(dt('The !optionName option is required.', [
+                '!optionName' => 'field-name',
             ]));
         }
 
@@ -79,8 +79,8 @@ class FieldDeleteCommands extends DrushCommands
 
         if ($results === []) {
             throw new \InvalidArgumentException(
-                dt("Field with name ':fieldName' does not exist.", [
-                    ':fieldName' => (string)$fieldName,
+                dt("Field with name '!fieldName' does not exist.", [
+                    '!fieldName' => $fieldName,
                 ])
             );
         }
@@ -100,9 +100,9 @@ class FieldDeleteCommands extends DrushCommands
 
             if ($results === []) {
                 throw new \InvalidArgumentException(
-                    t("Field with name ':fieldName' does not exist on bundle ':bundle'.", [
-                        ':fieldName' => $fieldName,
-                        ':bundle' => $bundle,
+                    dt("Field with name '!fieldName' does not exist on bundle '!bundle'.", [
+                        '!fieldName' => $fieldName,
+                        '!bundle' => $bundle,
                     ])
                 );
             }
@@ -121,7 +121,7 @@ class FieldDeleteCommands extends DrushCommands
         field_purge_batch(10);
     }
 
-    protected function askExisting(string $entityType, ?string $bundle): mixed
+    protected function askExisting(string $entityType, ?string $bundle): string
     {
         /** @var FieldConfigInterface[] $fieldConfigs */
         $fieldConfigs = $this->entityTypeManager
@@ -132,8 +132,8 @@ class FieldDeleteCommands extends DrushCommands
 
         if ($fieldConfigs === []) {
             throw new \InvalidArgumentException(
-                t("Entity type ':entityType' has no fields.", [
-                    ':entityType' => $entityType,
+                dt("Entity type '!entityType' has no fields.", [
+                    '!entityType' => $entityType,
                 ])
             );
         }
@@ -149,8 +149,8 @@ class FieldDeleteCommands extends DrushCommands
 
             if ($fieldConfigs === []) {
                 throw new \InvalidArgumentException(
-                    t("Bundle ':bundle' has no fields.", [
-                        ':bundle' => $bundle,
+                    dt("Bundle '!bundle' has no fields.", [
+                        '!bundle' => $bundle,
                     ])
                 );
             }
@@ -178,7 +178,7 @@ class FieldDeleteCommands extends DrushCommands
 
         if ($bundleEntityType && $bundleInfo === []) {
             throw new \InvalidArgumentException(
-                dt('Entity type with id \':entityType\' does not have any bundles.', [':entityType' => $entityTypeId])
+                dt("Entity type with id '!entityType' does not have any bundles.", ['!entityType' => $entityTypeId])
             );
         }
 
@@ -220,13 +220,13 @@ class FieldDeleteCommands extends DrushCommands
                 $fieldStorage->delete();
             }
 
-            $message = 'The field :field has been deleted from the :type bundle.';
+            $message = 'The field !field has been deleted from the !type bundle.';
         } else {
-            $message = 'There was a problem removing the :field from the :type content type.';
+            $message = 'There was a problem removing the !field from the !type content type.';
         }
 
         $this->logger()->success(
-            t($message, [':field' => $fieldConfig->label(), ':type' => $bundleLabel])
+            dt($message, ['!field' => $fieldConfig->label(), '!type' => $bundleLabel])
         );
     }
 }

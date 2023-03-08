@@ -52,7 +52,7 @@ trait EntityTypeBundleAskTrait
 
         if ($bundleEntityType && $bundleInfo === []) {
             throw new \InvalidArgumentException(
-                dt('Entity type with id \':entityType\' does not have any bundles.', [':entityType' => $entityTypeId])
+                dt("Entity type with id '!entityType' does not have any bundles.", ['!entityType' => $entityTypeId])
             );
         }
 

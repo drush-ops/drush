@@ -75,8 +75,8 @@ class FieldBaseOverrideCreateCommands extends DrushCommands
         $this->input->setOption('field-name', $fieldName);
 
         if ($fieldName === '') {
-            throw new \InvalidArgumentException(dt('The %optionName option is required.', [
-                '%optionName' => 'field-name',
+            throw new \InvalidArgumentException(dt('The !optionName option is required.', [
+                '!optionName' => 'field-name',
             ]));
         }
 
@@ -86,9 +86,9 @@ class FieldBaseOverrideCreateCommands extends DrushCommands
 
         if ($definition === null) {
             throw new \InvalidArgumentException(
-                t("Base field with name ':fieldName' does not exist on bundle ':bundle'.", [
-                    ':fieldName' => $fieldName,
-                    ':bundle' => $bundle,
+                dt("Base field with name '!fieldName' does not exist on bundle '!bundle'.", [
+                    '!fieldName' => $fieldName,
+                    '!bundle' => $bundle,
                 ])
             );
         }
