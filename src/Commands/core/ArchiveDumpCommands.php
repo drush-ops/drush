@@ -446,7 +446,7 @@ final class ArchiveDumpCommands extends DrushCommands
                         }
                     }
 
-                    $this->validateSensitiveData($file, $localFileName);
+                    $this->validateSensitiveData((string)$file, $localFileName);
 
                     return true;
                 }

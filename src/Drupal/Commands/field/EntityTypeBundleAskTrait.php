@@ -67,7 +67,7 @@ trait EntityTypeBundleAskTrait
         }
 
         if (!$answer = $this->io()->choice('Bundle', $choices)) {
-            throw new \InvalidArgumentException(t('The bundle argument is required.'));
+            throw new \InvalidArgumentException(dt('The bundle argument is required.'));
         }
 
         return $answer;

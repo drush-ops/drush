@@ -17,7 +17,7 @@ trait EntityTypeBundleValidationTrait
     {
         if (!$this->entityTypeManager->hasDefinition($entityTypeId)) {
             throw new \InvalidArgumentException(
-                t("Entity type with id ':entityType' does not exist.", [':entityType' => $entityTypeId])
+                dt("Entity type with id ':entityType' does not exist.", [':entityType' => $entityTypeId])
             );
         }
     }

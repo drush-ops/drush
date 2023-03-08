@@ -88,7 +88,7 @@ final class LoginCommands extends DrushCommands implements SiteAliasManagerAware
             )->toString();
         }
         $port = $options['redirect-port'];
-        $this->startBrowser($link, false, $port, $options['browser']);
+        $this->startBrowser($link, 0, $port, $options['browser']);
         return $link;
     }
 }
