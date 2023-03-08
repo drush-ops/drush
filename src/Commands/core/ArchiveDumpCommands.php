@@ -431,7 +431,7 @@ final class ArchiveDumpCommands extends DrushCommands
                     FilesystemIterator::SKIP_DOTS
                 ),
                 function ($file) use ($excludes, $path) {
-                    $localFileName = str_replace($path, '', $file);
+                    $localFileName = str_replace($path, '', (string)$file);
                     $localFileName = str_replace('\\', '/', $localFileName);
                     $localFileName = trim($localFileName, '\/');
 

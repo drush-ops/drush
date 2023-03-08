@@ -36,7 +36,7 @@ trait EntityTypeBundleAskTrait
         }
 
         if (!$answer = $this->io()->choice('Entity type', $choices)) {
-            throw new \InvalidArgumentException(t('The entityType argument is required.'));
+            throw new \InvalidArgumentException(dt('The entityType argument is required.'));
         }
 
         return $answer;
@@ -52,7 +52,7 @@ trait EntityTypeBundleAskTrait
 
         if ($bundleEntityType && $bundleInfo === []) {
             throw new \InvalidArgumentException(
-                t('Entity type with id \':entityType\' does not have any bundles.', [':entityType' => $entityTypeId])
+                dt('Entity type with id \':entityType\' does not have any bundles.', [':entityType' => $entityTypeId])
             );
         }
 

@@ -46,7 +46,7 @@ final class BrowseCommands extends DrushCommands implements SiteAliasManagerAwar
             $link = Url::fromUserInput('/' . $path, ['absolute' => true])->toString();
         }
 
-        $this->startBrowser($link, false, $options['redirect-port']);
+        $this->startBrowser($link, 0, $options['redirect-port']);
         return $link;
     }
 }

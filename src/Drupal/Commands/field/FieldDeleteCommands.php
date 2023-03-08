@@ -79,7 +79,7 @@ class FieldDeleteCommands extends DrushCommands
 
         if ($results === []) {
             throw new \InvalidArgumentException(
-                t("Field with name ':fieldName' does not exist.", [
+                dt("Field with name ':fieldName' does not exist.", [
                     ':fieldName' => $fieldName,
                 ])
             );
@@ -121,7 +121,7 @@ class FieldDeleteCommands extends DrushCommands
         field_purge_batch(10);
     }
 
-    protected function askExisting(string $entityType, ?string $bundle): string
+    protected function askExisting(string $entityType, ?string $bundle): mixed
     {
         /** @var FieldConfigInterface[] $fieldConfigs */
         $fieldConfigs = $this->entityTypeManager
@@ -178,7 +178,7 @@ class FieldDeleteCommands extends DrushCommands
 
         if ($bundleEntityType && $bundleInfo === []) {
             throw new \InvalidArgumentException(
-                t('Entity type with id \':entityType\' does not have any bundles.', [':entityType' => $entityTypeId])
+                dt('Entity type with id \':entityType\' does not have any bundles.', [':entityType' => $entityTypeId])
             );
         }
 
@@ -199,7 +199,7 @@ class FieldDeleteCommands extends DrushCommands
         }
 
         if (!$answer = $this->io()->choice('Bundle', $choices)) {
-            throw new \InvalidArgumentException(t('The bundle argument is required.'));
+            throw new \InvalidArgumentException(dt('The bundle argument is required.'));
         }
 
         return $answer;
