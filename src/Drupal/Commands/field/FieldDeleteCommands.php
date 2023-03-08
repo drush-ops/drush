@@ -57,13 +57,13 @@ class FieldDeleteCommands extends DrushCommands
         'all-bundles' => InputOption::VALUE_OPTIONAL,
     ]): void
     {
-        $this->input->setArgument('entityType', $entityType = $entityType ?? $this->askEntityType());
+        $this->input->setArgument('entityType', $entityType ??= $this->askEntityType());
         $this->validateEntityType($entityType);
 
-        $fieldName = $this->input->getOption('field-name') ?? $this->askExisting($entityType, $bundle);
+        $fieldName = $this->input->getOption('field-name') ?: $this->askExisting($entityType, $bundle);
         $this->input->setOption('field-name', $fieldName);
 
-        if ($fieldName === '') {
+        if ($fieldName === null) {
             throw new \InvalidArgumentException(dt('The !optionName option is required.', [
                 '!optionName' => 'field-name',
             ]));
@@ -121,7 +121,7 @@ class FieldDeleteCommands extends DrushCommands
         field_purge_batch(10);
     }
 
-    protected function askExisting(string $entityType, ?string $bundle): string
+    protected function askExisting(string $entityType, ?string $bundle): ?string
     {
         /** @var FieldConfigInterface[] $fieldConfigs */
         $fieldConfigs = $this->entityTypeManager
@@ -165,7 +165,7 @@ class FieldDeleteCommands extends DrushCommands
             $choices[$fieldConfig->get('field_name')] = $label;
         }
 
-        return $this->io()->choice('Choose a field to delete', $choices);
+        return $this->io()->choice('Choose a field to delete', $choices) ?: null;
     }
 
     protected function askBundle(): ?string
