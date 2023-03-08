@@ -135,15 +135,6 @@ final class UserCommands extends DrushCommands
 
     /**
      * Unblock the specified user(s).
-     *
-     * @command user:unblock
-     *
-     * @param string $names A comma delimited list of user names.
-     * @option $uid A comma delimited list of user ids to lookup (an alternative to names).
-     * @option $mail A comma delimited list of emails to lookup (an alternative to names).
-     * @aliases uublk,user-unblock
-     * @usage drush user:unblock user3
-     *   Unblock the users with name user3
      */
     #[CLI\Command(name: self::UNBLOCK, aliases: ['uublk', 'user-unblock'])]
     #[CLI\Argument(name: 'names', description: 'A comma delimited list of user names.')]
@@ -162,17 +153,6 @@ final class UserCommands extends DrushCommands
 
     /**
      * Add a role to the specified user accounts.
-     *
-     * @command user:role:add
-     *
-     * @validate-entity-load user_role role
-     * @param string $role The machine name of the role to add.
-     * @param string $names A comma delimited list of user names.
-     * @option $uid A comma delimited list of user ids to lookup (an alternative to names).
-     * @option $mail A comma delimited list of emails to lookup (an alternative to names).
-     * @aliases urol,user-add-role
-     * @usage drush user:role:add 'editor' user3
-     *   Add the editor role to user3
      */
     #[CLI\Command(name: self::ROLE_ADD, aliases: ['urol', 'user-add-role'])]
     #[CLI\Argument(name: 'role', description: 'The machine name of the role to add.')]
@@ -196,17 +176,6 @@ final class UserCommands extends DrushCommands
 
     /**
      * Remove a role from the specified user accounts.
-     *
-     * @command user:role:remove
-     *
-     * @validate-entity-load user_role role
-     * @param string $role The machine name of the role to remove
-     * @param string $names A comma delimited list of user names.
-     * @option $uid A comma delimited list of user ids to lookup (an alternative to names).
-     * @option $mail A comma delimited list of emails to lookup (an alternative to names).
-     * @aliases urrol,user-remove-role
-     * @usage drush user:role:remove 'power_user' user3
-     *   Remove the 'power_user' role from user3
      */
     #[CLI\Command(name: self::ROLE_REMOVE, aliases: ['urrol', 'user-remove-role'])]
     #[CLI\Argument(name: 'role', description: 'The machine name of the role to add.')]
