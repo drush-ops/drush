@@ -18,13 +18,13 @@ class Bootstrap
      */
     public function __construct(
         #[ExpectedValues(valuesFromClass: DrupalBootLevels::class)] public int $level,
-        public ?string $extra = null,
+        public ?int $max_level = null,
     ) {
     }
 
     public static function handle(\ReflectionAttribute $attribute, CommandInfo $commandInfo)
     {
         $instance = $attribute->newInstance();
-        $commandInfo->addAnnotation('bootstrap', $instance->level . ( isset($instance->extra) ? " $instance->extra" : ''));
+        $commandInfo->addAnnotation('bootstrap', $instance->level . ( isset($instance->max_level) ? " $instance->max_level" : ''));
     }
 }

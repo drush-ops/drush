@@ -83,7 +83,7 @@ final class ArchiveDumpCommands extends DrushCommands
     #[CLI\Usage(name: 'drush archive:dump --database --destination=/path/to/archive.tar.gz', description: 'Create /path/to/archive.tar.gz archive file containing the database dump only.')]
     #[CLI\OptionsetTableSelection]
     #[CLI\OptionsetSql]
-    #[CLI\Bootstrap(level: DrupalBootLevels::MAX, extra: DrupalBootLevels::CONFIGURATION)]
+    #[CLI\Bootstrap(level: DrupalBootLevels::MAX, max_level: DrupalBootLevels::CONFIGURATION)]
     public function dump(array $options = [
         'code' => false,
         'files' => false,
