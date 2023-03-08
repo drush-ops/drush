@@ -626,11 +626,6 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/latest/commands/views_analyze/</loc>
-         <lastmod>2023-03-08</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
          <loc>https://www.drush.org/latest/latest/commands/views_dev/</loc>
          <lastmod>2023-03-08</lastmod>
          <changefreq>daily</changefreq>
