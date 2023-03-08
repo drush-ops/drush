@@ -24,9 +24,9 @@ class CoreTest extends UnishIntegrationTestCase
             'ignore' => 'cron,http requests,update,update_core,trusted_host_patterns', // no network access when running in tests, so ignore these
         ];
         // Verify that there are no severity 2 items in the status report
-        $this->drush(DrupalCommands::REQUIREMENTS, [], $options + ['severity' => '2']);
+        $this->drush(DrupalCommands::REQUIREMENTS, [], $options + ['severity' => '2', 'format' => 'json']);
         $output = $this->getOutput();
-        $this->assertEquals('', $output);
+        $this->assertEquals('[]', $output);
 
         // Verify the severity of some checks
         $this->drush(DrupalCommands::REQUIREMENTS, [], $options + ['format' => 'json', 'fields' => 'sid']);
