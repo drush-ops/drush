@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Unish;
 
 use Drush\Commands\core\DeployCommands;

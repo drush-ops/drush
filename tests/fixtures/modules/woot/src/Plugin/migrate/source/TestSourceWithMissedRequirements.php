@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\woot\Plugin\migrate\source;
 
 use Drupal\migrate\Exception\RequirementsException;

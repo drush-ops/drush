@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Drupal\aggregator\Entity\Feed;
 
 // Create a new feed.

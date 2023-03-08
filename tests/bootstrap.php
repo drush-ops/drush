@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 include dirname(__DIR__) . "/vendor/autoload.php";
 
 // We need our Symfony Filesystem Path backport available for tests as well.

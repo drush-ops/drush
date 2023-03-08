@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Unish;
 
 use Drush\Commands\core\PhpCommands;
@@ -34,7 +36,7 @@ class QueueTest extends CommandUnishTestCase
         // Check that the queue exists and it has one item in it.
         $this->drush(QueueCommands::LIST, [], ['format' => 'json']);
         $output = $this->getOutputFromJSON('woot_requeue_exception');
-        $this->assertStringContainsString(1, $output['items'], 'Item was successfully added to the queue.');
+        $this->assertEquals(1, $output['items'], 'Item was successfully added to the queue.');
         // Process the queue.
         $this->drush(QueueCommands::RUN, ['woot_requeue_exception']);
 
@@ -51,7 +53,7 @@ class QueueTest extends CommandUnishTestCase
         // 7. Command finishes. The queue is empty.
         $this->drush(QueueCommands::LIST, [], ['format' => 'json']);
         $output = $this->getOutputFromJSON('woot_requeue_exception');
-        $this->assertStringContainsString(0, $output['items'], 'Queue item processed after being requeued.');
+        $this->assertEquals(0, $output['items'], 'Queue item processed after being requeued.');
     }
 
   /**
@@ -74,7 +76,7 @@ class QueueTest extends CommandUnishTestCase
         // Check that the queue exists and it has two items in it.
         $this->drush(QueueCommands::LIST, [], ['format' => 'json']);
         $output = $this->getOutputFromJSON('woot_custom_exception');
-        $this->assertStringContainsString(2, $output['items'], 'Items were successfully added to the queue.');
+        $this->assertEquals(2, $output['items'], 'Items were successfully added to the queue.');
 
         // Process the queue.
         $this->drush(QueueCommands::RUN, ['woot_custom_exception']);
@@ -94,7 +96,7 @@ class QueueTest extends CommandUnishTestCase
         // skipped.
         $this->drush(QueueCommands::LIST, [], ['format' => 'json']);
         $output = $this->getOutputFromJSON('woot_custom_exception');
-        $this->assertStringContainsString(1, $output['items'], 'Last queue item processed after first threw custom exception.');
+        $this->assertEquals(1, $output['items'], 'Last queue item processed after first threw custom exception.');
 
         $this->drush(QueueCommands::DELETE, ['woot_custom_exception']);
         $this->drush(QueueCommands::LIST, [], ['format' => 'json']);
