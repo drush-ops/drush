@@ -25,13 +25,6 @@ final class RoleCommands extends DrushCommands implements SiteAliasManagerAwareI
 
     /**
      * Create a new role.
-     *
-     * @command role:create
-     * @param $machine_name The symbolic machine name for the role.
-     * @param $human_readable_name A descriptive name for the role.
-     * @usage drush role:create 'test_role' 'Test role'
-     *   Create a new role with a machine name of 'test_role', and a human-readable name of 'Test role'.
-     * @aliases rcrt,role-create
      */
     #[CLI\Command(name: self::CREATE, aliases: ['rcrt', 'role-create'])]
     #[CLI\Argument(name: 'machine_name', description: 'The symbolic machine name for the role.')]
@@ -64,19 +57,6 @@ final class RoleCommands extends DrushCommands implements SiteAliasManagerAwareI
 
     /**
      * Grant specified permission(s) to a role.
-     *
-     * @todo Add validation for permission names.
-     *
-     * @command role:perm:add
-     * @validate-entity-load user_role machine_name
-     * @validate-permissions permissions
-     * @param $machine_name The role to modify.
-     * @param $permissions The list of permission to grant, delimited by commas.
-     * @usage  drush role:perm:add anonymous 'post comments'
-     *   Allow anon users to post comments.
-     * @usage drush role:perm:add anonymous 'post comments,access content'
-     *   Allow anon users to post comments and access content.
-     * @aliases rap,role-add-perm
      */
     #[CLI\Command(name: self::PERM_ADD, aliases: ['rap', 'role-add-perm'])]
     #[CLI\Argument(name: 'machine_name', description: 'The role to modify.')]
@@ -95,15 +75,6 @@ final class RoleCommands extends DrushCommands implements SiteAliasManagerAwareI
 
     /**
      * Remove specified permission(s) from a role.
-     *
-     * @command role:perm:remove
-     * @validate-entity-load user_role machine_name
-     * @validate-permissions permissions
-     * @param $machine_name The role to modify.
-     * @param $permissions The list of permission to grant, delimited by commas.
-     * @usage drush role:remove-perm anonymous 'post comments,access content'
-     *   Remove 2 permissions from anon users.
-     * @aliases rmp,role-remove-perm
      */
     #[CLI\Command(name: self::PERM_REMOVE, aliases: ['rmp', 'role-remove-perm'])]
     #[CLI\Argument(name: 'machine_name', description: 'The role to modify.')]
@@ -125,17 +96,6 @@ final class RoleCommands extends DrushCommands implements SiteAliasManagerAwareI
      * If a role name is provided as an argument, then all of the permissions of
      * that role will be listed.  If a permission name is provided as an option,
      * then all of the roles that have been granted that permission will be listed.
-     *
-     * @command role:list
-     * @usage drush role:list --filter='administer nodes'
-     *   Display a list of roles that have the administer nodes permission assigned.
-     * @aliases rls,role-list
-     * @field-labels
-     *   rid: ID
-     *   label: Role Label
-     *   perms: Permissions
-     *
-     * @filter-default-field perms
      */
     #[CLI\Command(name: self::LIST, aliases: ['rls', 'role-list'])]
     #[CLI\Usage(name: "drush role:list --filter='administer nodes'", description: 'Display a list of roles that have the administer nodes permission assigned.')]

@@ -104,11 +104,6 @@ final class DocsCommands extends DrushCommands
 
     /**
      * Bootstrap explanation: how Drush starts up and prepares the Drupal environment.
-     *
-     * @command docs:bootstrap
-     * @aliases docs-bootstrap
-     * @hidden
-     * @topic ../../../docs/bootstrap.md
      */
     #[CLI\Command(name: 'docs:bootstrap', aliases: ['docs-bootstrap'])]
     #[CLI\Help(hidden: true)]

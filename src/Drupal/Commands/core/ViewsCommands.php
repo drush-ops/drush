@@ -232,14 +232,6 @@ final class ViewsCommands extends DrushCommands
 
     /**
      * Get a list of all Views and analyze warnings.
-     *
-     * @command views:analyze
-     * @todo Command has not  been fully tested. How to generate a message?
-     * @field-labels
-     *   type: Type
-     *   message: Message
-     * @aliases va,views-analyze
-     * @validate-module-enabled views
      */
     public function analyze(): ?RowsOfFields
     {
