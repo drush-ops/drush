@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * @file
  * Creates the woot_custom_exception queue and adds a couple items to it.
