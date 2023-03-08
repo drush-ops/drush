@@ -2,11 +2,6 @@
 
 declare(strict_types=1);
 
-/**
- * @file
- * Definition of Drush\Formatters\DrushFormatterManager.
- */
-
 namespace Drush\Formatters;
 
 use Consolidation\OutputFormatters\FormatterManager;

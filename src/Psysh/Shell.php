@@ -2,11 +2,6 @@
 
 declare(strict_types=1);
 
-/**
- * @file
- * Contains \Drush\Psysh\Shell.
- */
-
 namespace Drush\Psysh;
 
 use Psy\Shell as BaseShell;

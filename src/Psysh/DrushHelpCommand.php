@@ -2,11 +2,6 @@
 
 declare(strict_types=1);
 
-/**
- * @file
- * Contains \Drush\Psysh\DrushCommand.
- */
-
 namespace Drush\Psysh;
 
 use Psy\Command\Command as BaseCommand;

@@ -2,11 +2,6 @@
 
 declare(strict_types=1);
 
-/**
- * @file
- * Contains \Drush\Psysh\Caster.
- */
-
 namespace Drush\Psysh;
 
 use Symfony\Component\VarDumper\Caster\Caster as BaseCaster;

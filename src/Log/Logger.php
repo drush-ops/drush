@@ -2,8 +2,13 @@
 
 declare(strict_types=1);
 
+namespace Drush\Log;
+
+use Drush\Drush;
+use Robo\Log\RoboLogger;
+use Symfony\Component\Console\Output\OutputInterface;
+
 /**
- * @file
  * Contains \Drush\Log\Logger.
  *
  * This is the actual Logger for Drush that is responsible
@@ -19,13 +24,6 @@ declare(strict_types=1);
  * to set an output I/O object here, in case output redirection
  * was the only thing that needed to be swapped out.
  */
-
-namespace Drush\Log;
-
-use Drush\Drush;
-use Robo\Log\RoboLogger;
-use Symfony\Component\Console\Output\OutputInterface;
-
 class Logger extends RoboLogger
 {
     public function __construct(OutputInterface $output)

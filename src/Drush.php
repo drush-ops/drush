@@ -2,11 +2,6 @@
 
 declare(strict_types=1);
 
-/**
- * @file
- * Contains \Drush.
- */
-
 namespace Drush;
 
 use Robo\Runner;
