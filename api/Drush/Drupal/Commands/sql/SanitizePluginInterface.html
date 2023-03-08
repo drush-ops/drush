@@ -119,8 +119,7 @@
                 <div class="col-md-8">
                     <a href="#method_messages">messages</a>(array $messages, <abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr> $input)
         
-                                            <p class="no-description">No description</p>
-                                    </div>
+                                            <p><p>Use #[CLI\Hook(type: HookManager::ON_EVENT, target: 'sql-sanitize-confirms')]</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
             </div>
@@ -131,7 +130,7 @@
             <div id="method-details">
                     <div class="method-item">
                     <h3 id="method_sanitize">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Drupal/Commands/sql/SanitizePluginInterface.php#L23">at line 23</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Drupal/Commands/sql/SanitizePluginInterface.php#L24">at line 24</a></div>
         <code>                    
     <strong>sanitize</strong>($result, <abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr> $commandData)
         </code>
@@ -155,7 +154,8 @@
                     <tr>
                 <td><abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr></td>
                 <td>$commandData</td>
-                <td><p>Information about the current request.</p></td>
+                <td><p>Information about the current request.</p>
+<p>Use <code>#[CLI\Hook(type: HookManager::POST_COMMAND_HOOK, target: 'sql:sanitize')]</code></p></td>
             </tr>
             </table>
 
@@ -169,7 +169,7 @@
             </div>
                     <div class="method-item">
                     <h3 id="method_messages">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Drupal/Commands/sql/SanitizePluginInterface.php#L34">at line 34</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Drupal/Commands/sql/SanitizePluginInterface.php#L35">at line 35</a></div>
         <code>                    string[]
     <strong>messages</strong>(array $messages, <abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr> $input)
         </code>
@@ -179,8 +179,7 @@
             
 
         <div class="method-description">
-                            <p class="no-description">No description</p>
-                    
+                            <p><p>Use #[CLI\Hook(type: HookManager::ON_EVENT, target: 'sql-sanitize-confirms')]</p></p>                        
         </div>
         <div class="tags">
                             <h4>Parameters</h4>
