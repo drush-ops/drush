@@ -132,7 +132,7 @@ class MigrateRunnerCommands extends DrushCommands
             $this->logger()->warning($deprecationMessage);
             @trigger_error($deprecationMessage, E_USER_DEPRECATED);
             $fields = ['id'];
-        } elseif ($options['field'])     {
+        } elseif ($options['field']) {
             $fields = [$options['field']];
         } elseif ($options['fields']) {
             $fields = StringUtils::csvToArray($options['fields']);
