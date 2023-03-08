@@ -341,7 +341,7 @@ final class WatchdogCommands extends DrushCommands
         $result->severity = trim(DrupalUtil::drushRender($severities[$result->severity]));
 
         // Date.
-        $result->date = date('d/M H:i', $result->timestamp);
+        $result->date = date('d/M H:i', (int)$result->timestamp);
         unset($result->timestamp);
 
         // Username.

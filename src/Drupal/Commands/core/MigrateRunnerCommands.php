@@ -120,6 +120,7 @@ class MigrateRunnerCommands extends DrushCommands
     public function status(?string $migrationIds = null, array $options = [
       'tag' => self::REQ,
       'names-only' => false,
+      'format' => 'table'
     ]): RowsOfFields
     {
         // The --names-only option takes precedence over --fields.
@@ -131,7 +132,7 @@ class MigrateRunnerCommands extends DrushCommands
             $this->logger()->warning($deprecationMessage);
             @trigger_error($deprecationMessage, E_USER_DEPRECATED);
             $fields = ['id'];
-        } elseif ($options['field']) {
+        } elseif ($options['field'])     {
             $fields = [$options['field']];
         } elseif ($options['fields']) {
             $fields = StringUtils::csvToArray($options['fields']);
@@ -642,7 +643,7 @@ class MigrateRunnerCommands extends DrushCommands
      *
      * @throws PluginException
      */
-    public function messages(string $migrationId, array $options = ['idlist' => self::REQ]): RowsOfFields
+    public function messages(string $migrationId, array $options = ['idlist' => self::REQ, 'format' => 'table']): RowsOfFields
     {
         /** @var MigrationInterface $migration */
         $migration = $this->migrationPluginManager->createInstance($migrationId);
@@ -744,7 +745,7 @@ class MigrateRunnerCommands extends DrushCommands
      *
      * @throws PluginException
      */
-    public function fieldsSource(string $migrationId): RowsOfFields
+    public function fieldsSource(string $migrationId, $options = ['format' => 'table']): RowsOfFields
     {
         /** @var MigrationInterface $migration */
         $migration = $this->migrationPluginManager->createInstance($migrationId);
