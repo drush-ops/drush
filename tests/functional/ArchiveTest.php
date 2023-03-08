@@ -66,7 +66,7 @@ class ArchiveTest extends CommandUnishTestCase
         $this->fixtureDatabaseSettings = json_decode($this->getOutput(), true);
         $this->fixtureDatabaseSettings['db-name'] = 'archive_dump_restore_test_' .  mt_rand();
         $dbUrlParts = explode(':', self::getDbUrl());
-        $this->fixtureDatabaseSettings['db-password'] = substr($dbUrlParts[2], 0, strpos((string)$dbUrlParts[2], '@'));
+        $this->fixtureDatabaseSettings['db-password'] = substr($dbUrlParts[2], 0, (int)strpos((string)$dbUrlParts[2], '@'));
         $fixtureDbUrl = self::getDbUrl() . '/' . $this->fixtureDatabaseSettings['db-name'];
 
         $this->archiveRestoreOptions = [
