@@ -20,9 +20,6 @@ final class NotifyCommands extends DrushCommands
     {
     }
 
-    /**
-     * @hook pre-command *
-     */
     #[CLI\Hook(type: HookManager::PRE_COMMAND_HOOK, target: '*')]
     public function registerShutdown(CommandData $commandData): void
     {

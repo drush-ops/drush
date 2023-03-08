@@ -54,12 +54,10 @@ class ExampleCommands extends DrushCommands
     }
 
     /**
-     * Demonstrate an alter hook with an option
-     *
-     * @hook alter example-table
-     * @option french Add a row with French numbers.
-     * @usage example-table --french
+     * Demonstrate an alter hook with an option.
      */
+    #[CLI\Usage(name: 'drush example-table --french', description: 'Table with a French row.')]
+    #[CLI\Option(name: 'french', description: 'Add a row with French numbers.')]
     #[CLI\Hook(type: HookManager::ALTER_RESULT, target: self::TABLE)]
     public function alterFormatters($result, CommandData $commandData)
     {

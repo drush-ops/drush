@@ -36,6 +36,8 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
     use CustomEventAwareTrait;
     use EntityTypeBundleValidationTrait;
 
+    const CREATE = 'field:create';
+
     /** @var FieldTypePluginManagerInterface */
     protected $fieldTypePluginManager;
     /** @var WidgetPluginManager */
@@ -82,7 +84,7 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
      * @see \Drupal\field_ui\Form\FieldConfigEditForm
      * @see \Drupal\field_ui\Form\FieldStorageConfigEditForm
      */
-    #[CLI\Command(name: 'field:create', aliases: ['field-create', 'fc'])]
+    #[CLI\Command(name: self::CREATE, aliases: ['field-create', 'fc'])]
     #[CLI\Argument(name: 'entityType', description: 'The machine name of the entity type')]
     #[CLI\Argument(name: 'bundle', description: 'The machine name of the bundle')]
     #[CLI\Option(name: 'field-name', description: 'A unique machine-readable name containing letters, numbers, and underscores.')]
@@ -98,7 +100,7 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
     #[CLI\Option(name: 'existing', description: 'Re-use an existing field.')]
     #[CLI\Option(name: 'existing-field-name', description: 'The name of an existing field you want to re-use. Only used in non-interactive context.')]
     #[CLI\Option(name: 'show-machine-names', description: 'Show machine names instead of labels in option lists.')]
-    #[CLI\Usage(name: 'field:create', description: 'Create a field by answering the prompts.')]
+    #[CLI\Usage(name: self::CREATE, description: 'Create a field by answering the prompts.')]
     #[CLI\Usage(name: 'field-create taxonomy_term tag', description: 'Create a field and fill in the remaining information through prompts.')]
     #[CLI\Usage(name: 'field-create taxonomy_term tag --field-name=field_tag_label --field-label=Label --field-type=string --field-widget=string_textfield --is-required=1 --cardinality=2', description: 'Create a field in a completely non-interactive way.')]
     #[CLI\Version(version: '11.0')]

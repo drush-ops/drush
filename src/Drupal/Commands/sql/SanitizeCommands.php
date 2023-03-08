@@ -6,6 +6,7 @@ namespace Drush\Drupal\Commands\sql;
 
 use Consolidation\AnnotatedCommand\Events\CustomEventAwareInterface;
 use Consolidation\AnnotatedCommand\Events\CustomEventAwareTrait;
+use Consolidation\AnnotatedCommand\Hooks\HookManager;
 use Drush\Attributes as CLI;
 use Drush\Commands\DrushCommands;
 use Drush\Exceptions\UserAbortException;
@@ -21,8 +22,8 @@ final class SanitizeCommands extends DrushCommands implements CustomEventAwareIn
      *
      * Commandfiles may add custom operations by implementing:
      *
-     *     - `@hook on-event sql-sanitize-confirms`. Display summary to user before confirmation.
-     *     - `@hook post-command sql-sanitize`. Run queries or call APIs to perform sanitizing
+     *     - `#[CLI\Hook(type: HookManager::ON_EVENT, target: 'sql-sanitize-confirms')]`. Display summary to user before confirmation.
+     *     - `#[CLI\Hook(type: HookManager::POST_COMMAND_HOOK, target: 'sql:sanitize')]`. Run queries or call APIs to perform sanitizing
      *
      * Several working commandfiles may be found at https://github.com/drush-ops/drush/tree/11.x/src/Drupal/Commands/sql
      */
