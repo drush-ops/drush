@@ -54,11 +54,11 @@ $candidates = [
 ];
 foreach ($candidates as $candidate) {
     if (file_exists($candidate)) {
-        $autoloadfile = $candidate;
+        $autoloadFile = $candidate;
         break;
     }
 }
-$loader = include $autoloadfile;
+$loader = include $autoloadFile;
 if (!$loader) {
     throw new \Exception("Could not locate autoload.php. cwd is $cwd; __DIR__ is " . __DIR__);
 }
@@ -69,7 +69,7 @@ if (!class_exists('\Symfony\Component\Filesystem\Path')) {
 }
 
 // Set up environment
-$environment = new Environment(Path::getHomeDirectory(), $cwd, $autoloadfile);
+$environment = new Environment(Path::getHomeDirectory(), $cwd, $autoloadFile);
 $environment->setConfigFileVariant(Drush::getMajorVersion());
 $environment->setLoader($loader);
 $environment->applyEnvironment();
