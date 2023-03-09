@@ -20,7 +20,7 @@
     "slack": "https://drupal.slack.com/messages/C62H9CWQM"
   },
   "bin": [
-    "drush.php"
+    "drush"
   ],
   "repositories": {
     "drupal_org": {
