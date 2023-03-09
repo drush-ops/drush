@@ -49,7 +49,8 @@ use Symfony\Component\Filesystem\Path;
 $cwd = isset($_SERVER['PWD']) && is_dir($_SERVER['PWD']) ? $_SERVER['PWD'] : getcwd();
 
 // Set up autoloader
-$loader = include $_composer_autoload_path ?? __DIR__ . '/../vendor/autoload.php';
+$autoloadfile = $_composer_autoload_path ?? __DIR__ . '/../vendor/autoload.php';
+$loader = include $autoloadfile;
 if (!$loader) {
     throw new \Exception("Could not locate autoload.php. cwd is $cwd; __DIR__ is " . __DIR__);
 }
@@ -60,7 +61,7 @@ if (!class_exists('\Symfony\Component\Filesystem\Path')) {
 }
 
 // Set up environment
-$environment = new Environment(Path::getHomeDirectory(), $cwd, $autoloadFile);
+$environment = new Environment(Path::getHomeDirectory(), $cwd, $autoloadfile);
 $environment->setConfigFileVariant(Drush::getMajorVersion());
 $environment->setLoader($loader);
 $environment->applyEnvironment();
