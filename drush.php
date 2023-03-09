@@ -49,7 +49,9 @@ $cwd = isset($_SERVER['PWD']) && is_dir($_SERVER['PWD']) ? $_SERVER['PWD'] : get
 
 // Set up autoloader
 $loader = false;
-if (file_exists($autoloadFile = __DIR__ . '/vendor/autoload.php')
+// See https://getcomposer.org/doc/articles/vendor-binaries.md#finding-the-composer-autoloader-from-a-binary
+if ((isset($_composer_autoload_path) && file_exists($autoloadFile = $_composer_autoload_path))
+    || file_exists($autoloadFile = __DIR__ . '/vendor/autoload.php')
     || file_exists($autoloadFile = __DIR__ . '/../autoload.php')
     || file_exists($autoloadFile = __DIR__ . '/../../autoload.php')
 ) {
