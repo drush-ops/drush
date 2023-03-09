@@ -48,13 +48,8 @@ use Symfony\Component\Filesystem\Path;
 $cwd = isset($_SERVER['PWD']) && is_dir($_SERVER['PWD']) ? $_SERVER['PWD'] : getcwd();
 
 // Set up autoloader
-$loader = false;
-if (file_exists($autoloadFile = __DIR__ . '/vendor/autoload.php')
-    || file_exists($autoloadFile = __DIR__ . '/../autoload.php')
-    || file_exists($autoloadFile = __DIR__ . '/../../autoload.php')
-) {
-    $loader = include_once($autoloadFile);
-} else {
+$loader = include $_composer_autoload_path ?? __DIR__ . '/../vendor/autoload.php';
+if (!$loader) {
     throw new \Exception("Could not locate autoload.php. cwd is $cwd; __DIR__ is " . __DIR__);
 }
 
