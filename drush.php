@@ -48,13 +48,18 @@ use Symfony\Component\Filesystem\Path;
 $cwd = isset($_SERVER['PWD']) && is_dir($_SERVER['PWD']) ? $_SERVER['PWD'] : getcwd();
 
 // Set up autoloader
-$loader = false;
-if (file_exists($autoloadFile = __DIR__ . '/vendor/autoload.php')
-    || file_exists($autoloadFile = __DIR__ . '/../autoload.php')
-    || file_exists($autoloadFile = __DIR__ . '/../../autoload.php')
-) {
-    $loader = include_once($autoloadFile);
-} else {
+$candidates = [
+    $_composer_autoload_path ?? __DIR__ . '/../vendor/autoload.php', // https://getcomposer.org/doc/articles/vendor-binaries.md#finding-the-composer-autoloader-from-a-binary
+    __DIR__ . '/vendor/autoload.php', // For development of Drush itself.
+];
+foreach ($candidates as $candidate) {
+    if (file_exists($candidate)) {
+        $autoloadFile = $candidate;
+        break;
+    }
+}
+$loader = include $autoloadFile;
+if (!$loader) {
     throw new \Exception("Could not locate autoload.php. cwd is $cwd; __DIR__ is " . __DIR__);
 }
 
