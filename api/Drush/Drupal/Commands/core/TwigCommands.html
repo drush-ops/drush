@@ -85,8 +85,8 @@
     </div>
 
     
-    <p>        class
-    <strong>TwigCommands</strong>        extends <a href="../../../../Drush/Commands/DrushCommands.html"><abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a>        (<a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/TwigCommands.php">View source</a>)
+    <p>final         class
+    <strong>TwigCommands</strong>        extends <a href="../../../../Drush/Commands/DrushCommands.html"><abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a>        (<a href="https://github.com/drush-ops/drush/blob/12.x/src/Drupal/Commands/core/TwigCommands.php">View source</a>)
 </p>
 
         
@@ -170,6 +170,24 @@
                     <tr>
                 <td>
                                                                                                                         EXIT_FAILURE_WITH_CLARITY
+                                    </td>
+                <td class="last">
+                    <p><em></em></p>
+                    <p></p>
+                </td>
+            </tr>
+                    <tr>
+                <td>
+                                                                                                                        UNUSED
+                                    </td>
+                <td class="last">
+                    <p><em></em></p>
+                    <p></p>
+                </td>
+            </tr>
+                    <tr>
+                <td>
+                                                                                                                        COMPILE
                                     </td>
                 <td class="last">
                     <p><em></em></p>
@@ -391,7 +409,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>                </
                     <div class="method-item">
                     <h3 id="method_startBrowser">
         <div class="location">in <a href="../../../../Drush/Exec/ExecTrait.html#method_startBrowser">
-<abbr title="Drush\Exec\ExecTrait">ExecTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/11.x/src/Exec/ExecTrait.php#L27">at line 27</a></div>
+<abbr title="Drush\Exec\ExecTrait">ExecTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/12.x/src/Exec/ExecTrait.php#L29">at line 29</a></div>
         <code>                    bool
     <strong>startBrowser</strong>($uri = null, int $sleep = 0, int|null $port = null, string|bool $browser = false)
         </code>
@@ -452,7 +470,7 @@ default browser could not be found.</p></td>
                     <div class="method-item">
                     <h3 id="method_programExists">
         <div class="location">in <a href="../../../../Drush/Exec/ExecTrait.html#method_programExists">
-<abbr title="Drush\Exec\ExecTrait">ExecTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/11.x/src/Exec/ExecTrait.php#L91">at line 91</a></div>
+<abbr title="Drush\Exec\ExecTrait">ExecTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/12.x/src/Exec/ExecTrait.php#L93">at line 93</a></div>
         <code>        static            
     <strong>programExists</strong>($program)
         </code>
@@ -487,7 +505,7 @@ default browser could not be found.</p></td>
                     <div class="method-item">
                     <h3 id="method_getEditor">
         <div class="location">in <a href="../../../../Drush/Exec/ExecTrait.html#method_getEditor">
-<abbr title="Drush\Exec\ExecTrait">ExecTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/11.x/src/Exec/ExecTrait.php#L103">at line 103</a></div>
+<abbr title="Drush\Exec\ExecTrait">ExecTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/12.x/src/Exec/ExecTrait.php#L105">at line 105</a></div>
         <code>        static            
     <strong>getEditor</strong>(string|null $editor = null)
         </code>
@@ -522,7 +540,7 @@ default browser could not be found.</p></td>
                     <div class="method-item">
                     <h3 id="method_getConfig">
         <div class="location">in <a href="../../../../Drush/Config/ConfigAwareTrait.html#method_getConfig">
-<abbr title="Drush\Config\ConfigAwareTrait">ConfigAwareTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/11.x/src/Config/ConfigAwareTrait.php#L19">at line 19</a></div>
+<abbr title="Drush\Config\ConfigAwareTrait">ConfigAwareTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/12.x/src/Config/ConfigAwareTrait.php#L21">at line 21</a></div>
         <code>                    <a href="../../../../Drush/Config/DrushConfig.html"><abbr title="Drush\Config\DrushConfig">DrushConfig</abbr></a>
     <strong>getConfig</strong>()
         </code>
@@ -566,7 +584,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method___construct">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/TwigCommands.php#L41">at line 41</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Drupal/Commands/core/TwigCommands.php#L46">at line 46</a></div>
         <code>                    
     <strong>__construct</strong>(<abbr title="Drupal\Core\Template\TwigEnvironment">TwigEnvironment</abbr> $twig, <abbr title="Drupal\Core\Extension\ModuleHandlerInterface">ModuleHandlerInterface</abbr> $moduleHandler)
         </code>
@@ -606,7 +624,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
                     <div class="method-item">
                     <h3 id="method_io">
         <div class="location">in <a href="../../../../Drush/Commands/DrushCommands.html#method_io">
-<abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a> <a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/DrushCommands.php#L55">at line 55</a></div>
+<abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a> <a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/DrushCommands.php#L58">at line 58</a></div>
         <code>            protected        <abbr title="Symfony\Component\Console\Style\SymfonyStyle">SymfonyStyle</abbr>
     <strong>io</strong>()
         </code>
@@ -639,7 +657,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
                     <div class="method-item">
                     <h3 id="method_logger">
         <div class="location">in <a href="../../../../Drush/Commands/DrushCommands.html#method_logger">
-<abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a> <a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/DrushCommands.php#L67">at line 67</a></div>
+<abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a> <a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/DrushCommands.php#L70">at line 70</a></div>
         <code>            protected        <abbr title="Drush\Commands\Drush\Log\DrushLoggerManager">DrushLoggerManager</abbr>|null
     <strong>logger</strong>()
         </code>
@@ -672,7 +690,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
                     <div class="method-item">
                     <h3 id="method_printFile">
         <div class="location">in <a href="../../../../Drush/Commands/DrushCommands.html#method_printFile">
-<abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a> <a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/DrushCommands.php#L78">at line 78</a></div>
+<abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a> <a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/DrushCommands.php#L81">at line 81</a></div>
         <code>            protected        void
     <strong>printFile</strong>(string $file)
         </code>
@@ -715,7 +733,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
                     <div class="method-item">
                     <h3 id="method_preHook">
         <div class="location">in <a href="../../../../Drush/Commands/DrushCommands.html#method_preHook">
-<abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a> <a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/DrushCommands.php#L104">at line 104</a></div>
+<abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a> <a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/DrushCommands.php#L103">at line 103</a></div>
         <code>                    
     <strong>preHook</strong>(<abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr> $commandData)
         </code>
@@ -749,7 +767,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
                     <div class="method-item">
                     <h3 id="method_printFileTopic">
         <div class="location">in <a href="../../../../Drush/Commands/DrushCommands.html#method_printFileTopic">
-<abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a> <a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/DrushCommands.php#L115">at line 115</a></div>
+<abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a> <a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/DrushCommands.php#L115">at line 115</a></div>
         <code>            protected        
     <strong>printFileTopic</strong>(<abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr> $commandData)
         </code>
@@ -783,7 +801,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
                     <div class="method-item">
                     <h3 id="method_getStack">
         <div class="location">in <a href="../../../../Drush/Commands/DrushCommands.html#method_getStack">
-<abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a> <a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/DrushCommands.php#L126">at line 126</a></div>
+<abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a> <a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/DrushCommands.php#L126">at line 126</a></div>
         <code>            protected        <abbr title="GuzzleHttp\HandlerStack">HandlerStack</abbr>
     <strong>getStack</strong>()
         </code>
@@ -826,7 +844,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_getTwig">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/TwigCommands.php#L27">at line 27</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Drupal/Commands/core/TwigCommands.php#L32">at line 32</a></div>
         <code>                    <abbr title="Drupal\Core\Template\TwigEnvironment">TwigEnvironment</abbr>
     <strong>getTwig</strong>()
         </code>
@@ -859,7 +877,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_getModuleHandler">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/TwigCommands.php#L32">at line 32</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Drupal/Commands/core/TwigCommands.php#L37">at line 37</a></div>
         <code>                    <abbr title="Drupal\Core\Extension\ModuleHandlerInterface">ModuleHandlerInterface</abbr>
     <strong>getModuleHandler</strong>()
         </code>
@@ -892,7 +910,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_unused">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/TwigCommands.php#L65">at line 65</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Drupal/Commands/core/TwigCommands.php#L58">at line 58</a></div>
         <code>                    <abbr title="Consolidation\OutputFormatters\StructuredData\RowsOfFields">RowsOfFields</abbr>
     <strong>unused</strong>($searchpaths)
         </code>
@@ -912,7 +930,7 @@ use your Production PHPStorage dir for comparison.</p></p>
                     <tr>
                 <td></td>
                 <td>$searchpaths</td>
-                <td><p>A comma delimited list of paths to recursively search</p></td>
+                <td></td>
             </tr>
             </table>
 
@@ -935,7 +953,7 @@ use your Production PHPStorage dir for comparison.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_twigCompile">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/core/TwigCommands.php#L100">at line 100</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Drupal/Commands/core/TwigCommands.php#L95">at line 95</a></div>
         <code>                    void
     <strong>twigCompile</strong>()
         </code>
