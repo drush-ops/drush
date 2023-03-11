@@ -247,20 +247,6 @@ command was found, but did not meet requirements.</p></p>                </div>
                     array
                 </div>
                 <div class="col-md-8">
-                    <a href="#method_bootstrapPhases">bootstrapPhases</a>()
-        
-                                            <p><p>Returns an array that determines what bootstrap phases
-are necessary to bootstrap this CMS.  This array
-should map from a numeric phase to the name of a method
-(string) in the Boot class that handles the bootstrap
-phase.</p></p>                </div>
-                <div class="col-md-2"></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    array
-                </div>
-                <div class="col-md-8">
                     <a href="#method_bootstrapPhaseMap">bootstrapPhaseMap</a>()
         
                                             <p><p>Return an array mapping from bootstrap phase shorthand
@@ -660,44 +646,8 @@ to be overridden.</p></p>
 
             </div>
                     <div class="method-item">
-                    <h3 id="method_bootstrapPhases">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Boot/BaseBoot.php#L64">at line 64</a></div>
-        <code>                    array
-    <strong>bootstrapPhases</strong>()
-        </code>
-    </h3>
-    <div class="details">    
-    
-            
-
-        <div class="method-description">
-                            <p><p>Returns an array that determines what bootstrap phases
-are necessary to bootstrap this CMS.  This array
-should map from a numeric phase to the name of a method
-(string) in the Boot class that handles the bootstrap
-phase.</p></p>                        
-        </div>
-        <div class="tags">
-            
-                            <h4>Return Value</h4>
-
-                    <table class="table table-condensed">
-        <tr>
-            <td>array</td>
-            <td><p>of PHASE index =&gt; method name.</p></td>
-        </tr>
-    </table>
-
-            
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
                     <h3 id="method_bootstrapPhaseMap">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Boot/BaseBoot.php#L71">at line 71</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Boot/BaseBoot.php#L64">at line 64</a></div>
         <code>                    array
     <strong>bootstrapPhaseMap</strong>()
         </code>
@@ -731,7 +681,7 @@ phase index constant (e.g. DRUSH_BOOTSTRAP_DRUPAL_FULL).</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_lookUpPhaseIndex">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Boot/BaseBoot.php#L85">at line 85</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Boot/BaseBoot.php#L78">at line 78</a></div>
         <code>                    
     <strong>lookUpPhaseIndex</strong>($phase)
         </code>
@@ -764,7 +714,7 @@ phase index constant (e.g. DRUSH_BOOTSTRAP_DRUPAL_FULL).</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_bootstrapDrush">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Boot/BaseBoot.php#L101">at line 101</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Boot/BaseBoot.php#L94">at line 94</a></div>
         <code>                    
     <strong>bootstrapDrush</strong>()
         </code>
@@ -788,7 +738,7 @@ phase index constant (e.g. DRUSH_BOOTSTRAP_DRUPAL_FULL).</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_hasRegisteredSymfonyCommand">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Boot/BaseBoot.php#L105">at line 105</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Boot/BaseBoot.php#L98">at line 98</a></div>
         <code>            protected        bool
     <strong>hasRegisteredSymfonyCommand</strong>($application, $name)
         </code>
@@ -836,7 +786,7 @@ phase index constant (e.g. DRUSH_BOOTSTRAP_DRUPAL_FULL).</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_terminate">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Boot/BaseBoot.php#L118">at line 118</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Boot/BaseBoot.php#L111">at line 111</a></div>
         <code>                    void
     <strong>terminate</strong>()
         </code>
