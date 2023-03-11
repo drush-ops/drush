@@ -47,7 +47,7 @@ final class LoginCommands extends DrushCommands implements SiteAliasManagerAware
             $process->mustRun();
             $link = $process->getOutput();
         } else {
-            if (!Drush::bootstrapManager()->doBootstrap(DRUSH_BOOTSTRAP_DRUPAL_FULL)) {
+            if (!Drush::bootstrapManager()->doBootstrap(DrupalBootLevels::FULL)) {
                 throw new \Exception(dt('Unable to bootstrap Drupal.'));
             }
 
