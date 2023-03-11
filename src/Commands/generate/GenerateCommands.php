@@ -12,7 +12,6 @@ use Drush\Boot\DrupalBootLevels;
 use Drush\Commands\DrushCommands;
 use Drush\Commands\generate\Generators\Drush\DrushAliasFile;
 use Drush\Commands\generate\Generators\Drush\DrushCommandFile;
-use Drush\Commands\generate\Generators\Migrate\MigrationGenerator;
 use Drush\Commands\help\ListCommands;
 use Symfony\Component\Console\Input\ArgvInput;
 
@@ -51,7 +50,6 @@ class GenerateCommands extends DrushCommands implements AutoloaderAwareInterface
         $application->setAutoExit(FALSE);
 
         $application->addCommands([
-            new MigrationGenerator(),
             new DrushAliasFile(),
             new DrushCommandFile(),
         ]);
