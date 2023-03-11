@@ -1,10 +1,16 @@
+{% import '@lib/di.twig' as di %}
 <?php
 
 namespace Drupal\{{ machine_name }}\Commands;
 
+{% sort %}
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Drush\Attributes as CLI;
 use Drush\Commands\DrushCommands;
+  {% if services %}
+{{ di.use(services) }}
+  {% endif %}
+{% endsort %}
 
 /**
  * A Drush commandfile.
@@ -12,20 +18,27 @@ use Drush\Commands\DrushCommands;
  * In addition to this file, you need a drush.services.yml
  * in root of your module, and a composer.json file that provides the name
  * of the services file to use.
- *
- * See these files for an example of injecting Drupal services:
- *   - http://cgit.drupalcode.org/devel/tree/src/Commands/DevelCommands.php
- *   - http://cgit.drupalcode.org/devel/tree/drush.services.yml
  */
 final class {{ class }} extends DrushCommands {
+{% if services %}
+
+  /**
+   * Constructs {{ class|article }} object.
+   */
+  public function __construct(
+{{ di.signature(services) }}
+  ) {
+    parent::__construct();
+  }
+{% endif %}
 
   /**
    * Command description here.
    */
-  #[CLI\Command(name: '{{  machine_name }}:commandName', aliases: ['foo'])]
+  #[CLI\Command(name: '{{  machine_name }}:command-name', aliases: ['foo'])]
   #[CLI\Argument(name: 'arg1', description: 'Argument description.')]
   #[CLI\Option(name: 'option-name', description: 'Option description')]
-  #[CLI\Usage(name: '{{ machine_name }}:commandName foo', description: 'Usage description')]
+  #[CLI\Usage(name: '{{ machine_name }}:command-name foo', description: 'Usage description')]
   public function commandName($arg1, $options = ['option-name' => 'default']) {
     $this->logger()->success(dt('Achievement unlocked.'));
   }
@@ -42,7 +55,7 @@ final class {{ class }} extends DrushCommands {
   #[CLI\DefaultTableFields(fields: ['group', 'token', 'name'])]
   #[CLI\FilterDefaultField(field: 'name')]
   public function token($options = ['format' => 'table']): RowsOfFields {
-    $all = \Drupal::token()->getInfo();
+    $all = $this->token->getInfo();
     foreach ($all['tokens'] as $group => $tokens) {
       foreach ($tokens as $key => $token) {
         $rows[] = [
@@ -54,4 +67,5 @@ final class {{ class }} extends DrushCommands {
     }
     return new RowsOfFields($rows);
   }
+
 }
