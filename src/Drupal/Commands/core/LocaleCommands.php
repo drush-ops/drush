@@ -1,8 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drush\Drupal\Commands\core;
 
 use Consolidation\AnnotatedCommand\CommandData;
+use Consolidation\AnnotatedCommand\Hooks\HookManager;
 use Drupal\Component\Gettext\PoStreamWriter;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
@@ -11,19 +14,26 @@ use Drupal\Core\Language\LanguageManagerInterface;
 use Drupal\Core\State\StateInterface;
 use Drupal\language\Entity\ConfigurableLanguage;
 use Drupal\locale\PoDatabaseReader;
+use Drush\Attributes as CLI;
 use Drush\Commands\DrushCommands;
 use Drush\Exceptions\CommandFailedException;
 use Drush\Utils\StringUtils;
 
-class LocaleCommands extends DrushCommands
+final class LocaleCommands extends DrushCommands
 {
-    protected $languageManager;
+    const CHECK = 'locale:check';
+    const CLEAR = 'locale:clear-status';
+    const UPDATE = 'locale:update';
+    const EXPORT = 'locale:export';
+    const IMPORT = 'locale:import';
 
-    protected $configFactory;
+    protected LanguageManagerInterface $languageManager;
 
-    protected $moduleHandler;
+    protected ConfigFactoryInterface $configFactory;
 
-    protected $state;
+    protected ModuleHandlerInterface $moduleHandler;
+
+    protected StateInterface $state;
 
     protected function getLanguageManager(): LanguageManagerInterface
     {
@@ -58,11 +68,9 @@ class LocaleCommands extends DrushCommands
 
     /**
      * Checks for available translation updates.
-     *
-     * @command locale:check
-     * @aliases locale-check
-     * @validate-module-enabled locale
      */
+    #[CLI\Command(name: self::CHECK, aliases: ['locale-check'])]
+    #[CLI\ValidateModulesEnabled(modules: ['locale'])]
     public function check(): void
     {
         $this->getModuleHandler()->loadInclude('locale', 'inc', 'locale.compare');
@@ -82,12 +90,10 @@ class LocaleCommands extends DrushCommands
 
     /**
      * Clears the translation status.
-     *
-     * @command locale:clear-status
-     * @aliases locale-clear-status
-     * @validate-module-enabled locale
-     * @version 11.5
      */
+    #[CLI\Command(name: self::CLEAR, aliases: ['locale-clear-status'])]
+    #[CLI\ValidateModulesEnabled(modules: ['locale'])]
+    #[CLI\Version(version: '11.5')]
     public function clearStatus(): void
     {
         locale_translation_clear_status();
@@ -102,12 +108,10 @@ class LocaleCommands extends DrushCommands
      *
      * @todo This can be simplified once https://www.drupal.org/node/2631584 lands
      *   in Drupal core.
-     *
-     * @command locale:update
-     * @aliases locale-update
-     * @option langcodes A comma-separated list of language codes to update. If omitted, all translations will be updated.
-     * @validate-module-enabled locale
      */
+    #[CLI\Command(name: self::UPDATE, aliases: ['locale-update'])]
+    #[CLI\Option(name: 'langcodes', description: 'A comma-separated list of language codes to update. If omitted, all translations will be updated.')]
+    #[CLI\ValidateModulesEnabled(modules: ['locale'])]
     public function update($options = ['langcodes' => self::REQ]): void
     {
         $module_handler = $this->getModuleHandler();
@@ -162,22 +166,15 @@ class LocaleCommands extends DrushCommands
      * Exports to a gettext translation file.
      *
      * See Drupal Core: \Drupal\locale\Form\ExportForm::submitForm
-     *
-     * @throws \Exception
-     *
-     * @command locale:export
-     * @param $langcode The language code of the exported translations.
-     * @option template POT file output of extracted source texts to be translated.
-     * @option types String types to include, defaults to all types. Recognized values: <info>not-customized</info>, <info>customized</info>, </info>not-translated<info>.
-     * @usage drush locale:export nl > nl.po
-     *   Export the Dutch translations with all types.
-     * @usage drush locale:export nl --types=customized,not-customized > nl.po
-     *   Export the Dutch customized and not customized translations.
-     * @usage drush locale:export --template > drupal.pot
-     *   Export the source strings only as template file for translation.
-     * @aliases locale-export
-     * @validate-module-enabled locale
      */
+    #[CLI\Command(name: self::EXPORT, aliases: ['locale-export'])]
+    #[CLI\Argument(name: 'langcode', description: 'The language code of the exported translations.')]
+    #[CLI\Option(name: 'template', description: 'POT file output of extracted source texts to be translated.')]
+    #[CLI\Option(name: 'types', description: 'A comma separated list of string types to include, defaults to all types. Recognized values: <info>not-customized</info>, <info>customized</info>, </info>not-translated<info>')]
+    #[CLI\Usage(name: 'drush locale:export nl > nl.po', description: 'Export the Dutch translations with all types.')]
+    #[CLI\Usage(name: 'drush locale:export nl --types=customized,not-customized > nl.po', description: 'Export the Dutch customized and not customized translations.')]
+    #[CLI\Usage(name: 'drush locale:export --template > drupal.pot', description: 'Export the source strings only as template file for translation.')]
+    #[CLI\ValidateModulesEnabled(modules: ['locale'])]
     public function export($langcode = null, $options = ['template' => false, 'types' => self::REQ]): void
     {
         $language = $this->getTranslatableLanguage($langcode);
@@ -197,9 +194,8 @@ class LocaleCommands extends DrushCommands
 
     /**
      * Assure that required options are set.
-     *
-     * @hook validate locale:export
      */
+    #[CLI\Hook(type: HookManager::ARGUMENT_VALIDATOR, target: self::EXPORT)]
     public function exportValidate(CommandData $commandData): void
     {
         $langcode = $commandData->input()->getArgument('langcode');
@@ -215,28 +211,30 @@ class LocaleCommands extends DrushCommands
     }
 
     /**
-     * Imports to a gettext translation file.
+     * Converts input of translation type.
      *
-     * @command locale:import
-     * @validate-module-enabled locale
-     * @param $langcode The language code of the imported translations.
-     * @param $file Path and file name of the gettext file. Relative paths calculated from Drupal root.
-     * @option type The type of translations to be imported. Recognized values: <info>customized</info>, <info>not-customized</info>
-     * @option override Whether and how imported strings will override existing translations. Defaults to the Import behavior configured in the admin interface. Recognized values: <info>none</info>, <info>customized</info>, <info>not-customized</info>, <info>all</info>,
-     * @option autocreate-language Create the language in addition to import.
-     * @usage drush locale-import nl drupal-8.4.2.nl.po
-     *   Import the Dutch drupal core translation.
-     * @usage drush locale-import --type=customized nl drupal-8.4.2.nl.po
-     *   Import the Dutch drupal core translation. Treat imported strings as custom translations.
-     * @usage drush locale-import --override=none nl drupal-8.4.2.nl.po
-     *   Import the Dutch drupal core translation. Don't overwrite existing translations. Only append new translations.
-     * @usage drush locale-import --override=not-customized nl drupal-8.4.2.nl.po
-     *   Import the Dutch drupal core translation. Only override non-customized translations, customized translations are kept.
-     * @usage drush locale-import nl custom-translations.po --type=customized --override=all
-     *   Import customized Dutch translations and override any existing translation.
-     * @aliases locale-import
-     * @throws \Exception
+     * @param $type
      */
+    private function convertCustomizedType($type): int
+    {
+        return $type == 'customized' ? LOCALE_CUSTOMIZED : LOCALE_NOT_CUSTOMIZED;
+    }
+
+    /**
+     * Imports to a gettext translation file.
+     */
+    #[CLI\Command(name: self::IMPORT, aliases: ['locale-import'])]
+    #[CLI\Argument(name: 'langcode', description: 'The language code of the imported translations.')]
+    #[CLI\Argument(name: 'file', description: 'Path and file name of the gettext file. Relative paths calculated from Drupal root.')]
+    #[CLI\Option(name: 'type', description: 'String types to include, defaults to all types. Recognized values: <info>not-customized</info>, <info>customized</info>, </info>not-translated<info>')]
+    #[CLI\Option(name: 'override', description: 'Whether and how imported strings will override existing translations. Defaults to the Import behavior configured in the admin interface. Recognized values: <info>none</info>, <info>customized</info>, <info>not-customized</info>, <info>all</info>')]
+    #[CLI\Option(name: 'autocreate-language', description: 'Create the language in addition to import.')]
+    #[CLI\Usage(name: 'drush locale-import nl drupal-8.4.2.nl.po', description: 'Import the Dutch drupal core translation.')]
+    #[CLI\Usage(name: 'drush locale-import --type=customized nl drupal-8.4.2.nl.po', description: 'Import the Dutch drupal core translation. Treat imported strings as custom translations.')]
+    #[CLI\Usage(name: 'drush locale-import --override=none nl drupal-8.4.2.nl.po', description: "Import the Dutch drupal core translation. Don't overwrite existing translations. Only append new translations.")]
+    #[CLI\Usage(name: 'drush locale-import --override=not-customized nl drupal-8.4.2.nl.po', description: 'Import the Dutch drupal core translation. Only override non-customized translations, customized translations are kept.')]
+    #[CLI\Usage(name: 'drush locale-import nl custom-translations.po --type=customized --override=all', description: 'Import customized Dutch translations and override any existing translation.')]
+    #[CLI\ValidateModulesEnabled(modules: ['locale'])]
     public function import($langcode, $file, $options = ['type' => 'not-customized', 'override' => self::REQ, 'autocreate-language' => false]): void
     {
         if (!drush_file_not_empty($file)) {
@@ -270,16 +268,6 @@ class LocaleCommands extends DrushCommands
         }
 
         drush_backend_batch_process();
-    }
-
-    /**
-     * Converts input of translation type.
-     *
-     * @param $type
-     */
-    private function convertCustomizedType($type): int
-    {
-        return $type == 'customized' ? LOCALE_CUSTOMIZED : LOCALE_NOT_CUSTOMIZED;
     }
 
     /**

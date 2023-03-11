@@ -1,7 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
+namespace Drush\Log;
+
+use Drush\Drush;
+use Robo\Log\RoboLogger;
+use Symfony\Component\Console\Output\OutputInterface;
+
 /**
- * @file
  * Contains \Drush\Log\Logger.
  *
  * This is the actual Logger for Drush that is responsible
@@ -17,13 +24,6 @@
  * to set an output I/O object here, in case output redirection
  * was the only thing that needed to be swapped out.
  */
-
-namespace Drush\Log;
-
-use Drush\Drush;
-use Robo\Log\RoboLogger;
-use Symfony\Component\Console\Output\OutputInterface;
-
 class Logger extends RoboLogger
 {
     public function __construct(OutputInterface $output)
@@ -69,7 +69,7 @@ class Logger extends RoboLogger
                     break;
                 }
             }
-            return str_replace('@size', round($size, 2), $unit);
+            return str_replace('@size', (string) round($size, 2), $unit);
         }
     }
 }

@@ -1,12 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drush\Commands\help;
 
+use Drush\Boot\DrupalBootLevels;
 use Symfony\Component\Console\Application;
 use Consolidation\AnnotatedCommand\Help\HelpDocument;
 use Consolidation\OutputFormatters\FormatterManager;
 use Consolidation\OutputFormatters\Options\FormatterOptions;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
+use Drush\Attributes as CLI;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Symfony\Component\Console\Command\Command;
@@ -18,23 +22,19 @@ use Symfony\Component\Console\Terminal;
 
 class ListCommands extends DrushCommands
 {
+    const LIST = 'list';
+
     /**
      * List available commands.
-     *
-     * @command list
-     * @option filter Restrict command list to those commands defined in the specified file. Omit value to choose from a list of names.
-     * @option raw Show a simple table of command names and descriptions.
-     * @bootstrap max
-     * @usage drush list
-     *   List all commands.
-     * @usage drush list --filter=devel_generate
-     *   Show only commands starting with devel-
-     * @usage drush list --format=xml
-     *   List all commands in Symfony compatible xml format.
-     *
-     * @return string
      */
-    public function helpList($options = ['format' => 'listcli', 'raw' => false, 'filter' => self::REQ])
+    #[CLI\Command(name: self::LIST, aliases: [])]
+    #[CLI\Option(name: 'filter', description: 'Restrict command list to those commands defined in the specified file. Omit value to choose from a list of names.')]
+    #[CLI\Option(name: 'raw', description: 'Show a simple table of command names and descriptions.')]
+    #[CLI\Bootstrap(level: DrupalBootLevels::MAX)]
+    #[CLI\Usage(name: 'drush list', description: 'List all commands.')]
+    #[CLI\Usage(name: 'drush list --filter=devel_generate', description: 'Show only commands starting with devel-')]
+    #[CLI\Usage(name: 'drush list --format=xml', description: 'List all commands in Symfony compatible xml format.')]
+    public function helpList($options = ['format' => 'listcli', 'raw' => false, 'filter' => self::REQ]): ?string
     {
         $application = Drush::getApplication();
         $all = $application->all();
@@ -78,10 +78,6 @@ class ListCommands extends DrushCommands
         }
     }
 
-    /**
-     * @param $namespaced
-     * @param $application
-     */
     public function buildDom($namespaced, $application): \DOMDocument
     {
         $dom = new \DOMDocument('1.0', 'UTF-8');

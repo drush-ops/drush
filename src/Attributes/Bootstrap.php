@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drush\Attributes;
 
 use Attribute;
@@ -13,15 +15,18 @@ class Bootstrap
     /**
      * @param $level
      *   The level to bootstrap to.
+     * @package $extra
+     *   A maximum level when used with MAX.
      */
     public function __construct(
         #[ExpectedValues(valuesFromClass: DrupalBootLevels::class)] public int $level,
+        public ?int $max_level = null,
     ) {
     }
 
     public static function handle(\ReflectionAttribute $attribute, CommandInfo $commandInfo)
     {
-        $args = $attribute->getArguments();
-        $commandInfo->addAnnotation('bootstrap', $args['level']);
+        $instance = $attribute->newInstance();
+        $commandInfo->addAnnotation('bootstrap', $instance->level . ( isset($instance->max_level) ? " $instance->max_level" : ''));
     }
 }

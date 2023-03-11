@@ -14,7 +14,7 @@ requires: &requires
     - check_mergable
     - code_style
 
-test_82_steps: &test82steps
+test_81_steps: &test81steps
   steps:
     - checkout
     - run: cp .docker/zz-php.ini /usr/local/etc/php/conf.d/
@@ -38,7 +38,7 @@ jobs:
   code_style:
     <<: *defaults
     docker:
-      - image: wodby/php:8.2
+      - image: wodby/php:8.1
     steps:
       - checkout
       - run: cp .docker/zz-php.ini /usr/local/etc/php/conf.d/
@@ -56,28 +56,28 @@ jobs:
       - checkout
       - run: $HOME/drush/.circleci/mergable.sh
 
-  test_82_drupal10_mysql:
+  test_81_drupal10_mysql:
     <<: *defaults
     docker:
-      - image: wodby/php:8.2
+      - image: wodby/php:8.1
         environment:
           - MYSQL_HOST=127.0.0.1
           - UNISH_DB_URL=mysql://root:@127.0.0.1
       - image: cimg/mysql:5.7.38
-    <<: *test82steps
+    <<: *test81steps
 
-  test_82_drupal10_sqlite:
+  test_81_drupal10_sqlite:
     <<: *defaults
     docker:
-      - image: wodby/php:8.2
+      - image: wodby/php:8.1
         environment:
           - "UNISH_DB_URL=sqlite://:memory:"
-    <<: *test82steps
+    <<: *test81steps
 
-  test_82_drupal10_postgres:
+  test_81_drupal10_postgres:
     <<: *defaults
     docker:
-      - image: wodby/php:8.2
+      - image: wodby/php:8.1
         environment:
           - UNISH_DB_URL=pgsql://unish:unish@127.0.0.1
       - image: wodby/postgres:14
@@ -86,7 +86,7 @@ jobs:
           POSTGRES_PASSWORD: unish
           POSTGRES_DB: unish_dev
           POSTGRES_USER: unish
-    <<: *test82steps
+    <<: *test81steps
 
   # Drupal 9.2.8 for Security test coverage for drupal/core
 #  test_80_drupal92_security:
@@ -132,6 +132,8 @@ jobs:
           path: /tmp/results
       - store_artifacts:
           path: /tmp/results
+      - store_artifacts:
+          path: ./sut/sites
 
 workflows:
   version: 2
@@ -141,11 +143,11 @@ workflows:
       - check_mergable
 #      - test_80_drupal92_security:
 #          <<: *requires
-      - test_82_drupal10_mysql:
+      - test_81_drupal10_mysql:
           <<: *requires
       - test_8x_drupal10_highest:
           <<: *requires
-      - test_82_drupal10_sqlite:
+      - test_81_drupal10_sqlite:
           <<: *requires
-      - test_82_drupal10_postgres:
+      - test_81_drupal10_postgres:
           <<: *requires

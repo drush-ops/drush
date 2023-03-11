@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drush\Attributes;
 
 use Consolidation\AnnotatedCommand\Attributes\AttributeInterface;
@@ -11,6 +13,6 @@ abstract class NoArgumentsBase
 
     public static function handle(\ReflectionAttribute $attribute, CommandInfo $commandInfo)
     {
-        $commandInfo->addAnnotation(static::NAME, null);
+        $commandInfo->addAnnotation(static::NAME, true);
     }
 }

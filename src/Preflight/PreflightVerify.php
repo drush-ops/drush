@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drush\Preflight;
 
 use Drush\Config\Environment;
@@ -80,13 +82,13 @@ class PreflightVerify
     /**
      * Determine whether an ini value is valid based on the criteria.
      *
-     * @param string $ini_value
+     * @param mixed $ini_value
      *   The value of the ini setting being tested.
      * @param string|string[] $disallowed_value
-     *   The value that the ini seting cannot be, or a list of disallowed
+     *   The value that the ini setting cannot be, or a list of disallowed
      *   values that cannot appear in the setting.
      */
-    protected function invalidIniValue(string $ini_value, $disallowed_value): bool
+    protected function invalidIniValue(mixed $ini_value, string|array $disallowed_value): bool
     {
         if (empty($disallowed_value)) {
             return !empty($ini_value) && (strcasecmp($ini_value, 'off') != 0);

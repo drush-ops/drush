@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drush\Drupal;
 
 use Drupal\Core\Mail\MailFormatHelper;
@@ -19,8 +21,6 @@ class DrupalUtil
         if (is_array($data)) {
             $data = \Drupal::service('renderer')->renderRoot($data);
         }
-
-        $data = MailFormatHelper::htmlToText((string) $data);
-        return $data;
+        return MailFormatHelper::htmlToText((string) $data);
     }
 }

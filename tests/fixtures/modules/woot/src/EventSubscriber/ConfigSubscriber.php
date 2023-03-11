@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\woot\EventSubscriber;
 
 use Drupal\Core\Config\ConfigEvents;

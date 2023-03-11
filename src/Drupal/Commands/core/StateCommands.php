@@ -1,18 +1,24 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drush\Drupal\Commands\core;
 
 use Consolidation\AnnotatedCommand\Input\StdinAwareInterface;
 use Consolidation\AnnotatedCommand\Input\StdinAwareTrait;
 use Consolidation\OutputFormatters\StructuredData\PropertyList;
 use Drupal\Core\State\StateInterface;
+use Drush\Attributes as CLI;
 use Drush\Commands\DrushCommands;
 use Symfony\Component\Yaml\Yaml;
 
-class StateCommands extends DrushCommands implements StdinAwareInterface
+final class StateCommands extends DrushCommands implements StdinAwareInterface
 {
     use StdinAwareTrait;
 
+    const GET = 'state:get';
+    const SET = 'state:set';
+    const DELETE = 'state:delete';
     protected $state;
 
     public function __construct(StateInterface $state)
@@ -27,16 +33,11 @@ class StateCommands extends DrushCommands implements StdinAwareInterface
 
     /**
      * Display a state value.
-     *
-     * @command state:get
-     *
-     * @param string $key The key name.
-     * @usage drush state:get system.cron_last
-     *   Displays last cron run timestamp
-     * @usage drush state:get drupal_css_cache_files --format=yaml
-     *   Displays an array of css files in yaml format.
-     * @aliases sget,state-get
      */
+    #[CLI\Command(name: self::GET, aliases: ['sget', 'state-get'])]
+    #[CLI\Argument(name: 'key', description: 'The key name.')]
+    #[CLI\Usage(name: 'drush state:get system.cron_last', description: 'Displays last cron run timestamp')]
+    #[CLI\Usage(name: 'drush state:get drupal_css_cache_files --format=yaml', description: 'Displays an array of css files in yaml format.')]
     public function get(string $key, $options = ['format' => 'string']): PropertyList
     {
         $value = $this->getState()->get($key);
@@ -45,20 +46,14 @@ class StateCommands extends DrushCommands implements StdinAwareInterface
 
     /**
      * Set a state value.
-     *
-     * @command state:set
-     *
-     * @param string $key The state key, for example: <info>system.cron_last</info>.
-     * @param mixed $value The value to assign to the state key. Use <info>-</info> to read from Stdin.
-     * @option input-format Type for the value. Other recognized values: string, integer, float, boolean, json, yaml.
-     * @usage drush sset system.maintenance_mode 1 --input-format=integer
-     *  Put site into Maintenance mode.
-     * @usage drush state:set system.cron_last 1406682882 --input-format=integer
-     *  Sets a timestamp for last cron run.
-     * @usage php -r "print json_encode(array(\'drupal\', \'simpletest\'));"  | drush state-set --input-format=json foo.name -
-     *   Set a key to a complex value (e.g. array)
-     * @aliases sset,state-set
      */
+    #[CLI\Command(name: self::SET, aliases: ['sset', 'state-set'])]
+    #[CLI\Argument(name: 'key', description: 'The state key, for example: <info>system.cron_last</info>.')]
+    #[CLI\Argument(name: 'value', description: 'The value to assign to the state key. Use <info>-</info> to read from Stdin.')]
+    #[CLI\Option(name: 'input-format', description: 'Type for the value. Other recognized values: string, integer, float, boolean, json, yaml.')]
+    #[CLI\Usage(name: 'drush sset system.maintenance_mode 1 --input-format=integer', description: 'Put site into Maintenance mode.')]
+    #[CLI\Usage(name: 'drush state:set system.cron_last 1406682882 --input-format=integer', description: 'Sets a timestamp for last cron run.')]
+    #[CLI\Usage(name: 'php -r "print json_encode(array(\'drupal\', \'simpletest\'));"  | drush state-set --input-format=json foo.name -', description: 'Set a key to a complex value (e.g. array)')]
     public function set(string $key, $value, $options = ['input-format' => 'auto']): void
     {
 
@@ -82,14 +77,10 @@ class StateCommands extends DrushCommands implements StdinAwareInterface
 
     /**
      * Delete a state entry.
-     *
-     * @command state:delete
-     *
-     * @param string $key The state key, for example <info>system.cron_last</info>.
-     * @usage drush state:del system.cron_last
-     *   Delete state entry for system.cron_last.
-     * @aliases sdel,state-delete
      */
+    #[CLI\Command(name: self::DELETE, aliases: ['sdel', 'state-delete'])]
+    #[CLI\Argument(name: 'key', description: 'The state key, for example <info>system.cron_last</info>.')]
+    #[CLI\Usage(name: 'drush state:del system.cron_last', description: 'Delete state entry for system.cron_last.')]
     public function delete(string $key): void
     {
         $this->getState()->delete($key);

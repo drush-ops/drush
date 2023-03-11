@@ -1,16 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drush\Drupal\Commands\core;
 
 use Consolidation\AnnotatedCommand\AnnotationData;
+use Consolidation\AnnotatedCommand\Hooks\HookManager;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\link\LinkItemInterface;
+use Drush\Attributes as CLI;
 use Drush\Commands\DrushCommands;
+use Drush\Drupal\Commands\field\FieldCreateCommands;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 
-class LinkHooks extends DrushCommands
+final class LinkHooks extends DrushCommands
 {
     /** @var ModuleHandlerInterface */
     protected $moduleHandler;
@@ -21,7 +26,7 @@ class LinkHooks extends DrushCommands
         $this->moduleHandler = $moduleHandler;
     }
 
-    /** @hook option field:create */
+    #[CLI\Hook(type: HookManager::OPTION_HOOK, target: FieldCreateCommands::CREATE)]
     public function hookOption(Command $command, AnnotationData $annotationData): void
     {
         if (!$this->isInstalled()) {
@@ -43,7 +48,7 @@ class LinkHooks extends DrushCommands
         );
     }
 
-    /** @hook on-event field-create-set-options */
+    #[CLI\Hook(type: HookManager::ON_EVENT, target: 'field-create-set-options')]
     public function hookSetOptions(InputInterface $input): void
     {
         if (
@@ -64,7 +69,7 @@ class LinkHooks extends DrushCommands
         );
     }
 
-    /** @hook on-event field-create-field-config */
+    #[CLI\Hook(type: HookManager::ON_EVENT, target: 'field-create-field-config')]
     public function hookFieldConfig(array $values, InputInterface $input): array
     {
         if (

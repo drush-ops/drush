@@ -1,8 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Unish;
 
 use Composer\Semver\Semver;
+use Drush\Commands\pm\SecurityUpdateCommands;
 
 /**
  * Tests "pm:security" command.
@@ -17,7 +20,7 @@ class SecurityUpdatesTest extends UnishIntegrationTestCase
     public function testInsecureDrupalPackage()
     {
         list($expected_package, $expected_version) = ['drupal/semver_example', '2.3.0'];
-        $this->drush('pm:security', [], ['format' => 'json'], self::EXIT_ERROR_WITH_CLARITY);
+        $this->drush(SecurityUpdateCommands::SECURITY, [], ['format' => 'json'], self::EXIT_ERROR_WITH_CLARITY);
         $this->assertStringContainsString('One or more of your dependencies has an outstanding security update.', $this->getErrorOutput());
         $this->assertStringContainsString("$expected_package", $this->getErrorOutput());
         $security_advisories = $this->getOutputFromJSON();
@@ -40,7 +43,7 @@ class SecurityUpdatesTest extends UnishIntegrationTestCase
      */
     public function testNoInsecureProductionDrupalPackage()
     {
-        $this->drush('pm:security', [], ['format' => 'json', 'no-dev' => true], self::EXIT_SUCCESS);
+        $this->drush(SecurityUpdateCommands::SECURITY, [], ['format' => 'json', 'no-dev' => true], self::EXIT_SUCCESS);
         $this->assertStringContainsString('There are no outstanding security updates for Drupal projects', $this->getErrorOutput());
     }
 }

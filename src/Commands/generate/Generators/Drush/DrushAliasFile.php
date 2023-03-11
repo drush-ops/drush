@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drush\Commands\generate\Generators\Drush;
 
 use DrupalCodeGenerator\Asset\AssetCollection as Assets;

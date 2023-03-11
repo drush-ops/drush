@@ -1,13 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drush\Drupal\Commands\core;
 
+use Consolidation\AnnotatedCommand\Hooks\HookManager;
 use Consolidation\OutputFormatters\StructuredData\PropertyList;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Drupal\Core\Database\Database;
 use Drupal\Core\Logger\RfcLogLevel;
 use Drupal\Core\Session\AnonymousUserSession;
 use Drupal\user\Entity\User;
+use Drush\Attributes as CLI;
 use Drush\Commands\DrushCommands;
 use Drupal\Component\Utility\Unicode;
 use Drupal\Component\Utility\Html;
@@ -15,47 +19,45 @@ use Drush\Drupal\DrupalUtil;
 use Drush\Exceptions\UserAbortException;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class WatchdogCommands extends DrushCommands
+final class WatchdogCommands extends DrushCommands
 {
+    const SHOW = 'watchdog:show';
+    const LIST = 'watchdog:list';
+    const TAIL = 'watchdog:tail';
+    const DELETE = 'watchdog:delete';
+    const SHOW_ONE = 'watchdog:show-one';
+
     /**
      * Show watchdog messages.
-     *
-     * @command watchdog:show
-     * @param $substring A substring to look search in error messages.
-     * @option count The number of messages to show.
-     * @option severity Restrict to messages of a given severity level (numeric or string).
-     * @option severity-min Restrict to messages of a given severity level and higher.
-     * @option type Restrict to messages of a given type.
-     * @option extended Return extended information about each message.
-     * @usage  drush watchdog:show
-     *   Show a listing of most recent 10 messages.
-     * @usage drush watchdog:show "cron run successful"
-     *   Show a listing of most recent 10 messages containing the string <info>cron run successful</info>.
-     * @usage drush watchdog:show --count=46
-     *   Show a listing of most recent 46 messages.
-     * @usage drush watchdog:show --severity=Notice
-     *   Show a listing of most recent 10 messages with a severity of notice.
-     * @usage drush watchdog:show --severity-min=Warning
-     *   Show a listing of most recent 10 messages with a severity of warning or higher.
-     * @usage drush watchdog:show --type=php
-     *   Show a listing of most recent 10 messages of type php
-     * @aliases wd-show,ws,watchdog-show
-     * @validate-module-enabled dblog
-     * @field-labels
-     *   wid: ID
-     *   type: Type
-     *   message: Message
-     *   severity: Severity
-     *   location: Location
-     *   hostname: Hostname
-     *   date: Date
-     *   username: Username
-     *   uid: Uid
-     * @default-fields wid,date,type,severity,message
-     * @filter-default-field message
-     * @return RowsOfFields
      */
-    public function show($substring = '', $options = ['format' => 'table', 'count' => 10, 'severity' => self::REQ, 'severity-min' => self::REQ, 'type' => self::REQ, 'extended' => false])
+    #[CLI\Command(name: self::SHOW, aliases: ['wd-show', 'ws', 'watchdog-show'])]
+    #[CLI\Argument(name: 'substring', description: 'A substring to look search in error messages.')]
+    #[CLI\Option(name: 'count', description: 'The number of messages to show.')]
+    #[CLI\Option(name: 'severity', description: 'Restrict to messages of a given severity level (numeric or string).')]
+    #[CLI\Option(name: 'severity-min', description: 'Restrict to messages of a given severity level and higher.')]
+    #[CLI\Option(name: 'type', description: 'Restrict to messages of a given type.')]
+    #[CLI\Option(name: 'extended', description: 'Return extended information about each message.')]
+    #[CLI\Usage(name: 'drush watchdog:show', description: 'Show a listing of most recent 10 messages.')]
+    #[CLI\Usage(name: 'drush watchdog:show "cron run successful"', description: 'Show a listing of most recent 10 messages containing the string <info>cron run successful</info>.')]
+    #[CLI\Usage(name: 'drush watchdog:show --count=46', description: 'Show a listing of most recent 46 messages.')]
+    #[CLI\Usage(name: 'drush watchdog:show --severity=Notice', description: 'Show a listing of most recent 10 messages with a severity of notice.')]
+    #[CLI\Usage(name: 'drush watchdog:show --severity-min=Warning', description: 'Show a listing of most recent 10 messages with a severity of warning or higher.')]
+    #[CLI\Usage(name: 'drush watchdog:show --type=php', description: 'Show a listing of most recent 10 messages of type php')]
+    #[CLI\FieldLabels(labels: [
+        'wid' => 'ID',
+        'type' => 'Type',
+        'message' => 'Message',
+        'severity' => 'Severity',
+        'location' => 'Location',
+        'hostname' => 'Hostname',
+        'date' => 'Date',
+        'username' => 'Username',
+        'uid' => ' Uid',
+    ])]
+    #[CLI\ValidateModulesEnabled(modules: ['dblog'])]
+    #[CLI\FilterDefaultField(field: 'message')]
+    #[CLI\DefaultTableFields(fields: ['wid', 'date', 'type', 'severity', 'message'])]
+    public function show($substring = '', $options = ['format' => 'table', 'count' => 10, 'severity' => self::REQ, 'severity-min' => self::REQ, 'type' => self::REQ, 'extended' => false]): ?RowsOfFields
     {
         $where = $this->where($options['type'], $options['severity'], $substring, 'AND', $options['severity-min']);
         $query = Database::getConnection()->select('watchdog', 'w')
@@ -72,7 +74,7 @@ class WatchdogCommands extends DrushCommands
         }
         if (empty($table)) {
             $this->logger()->notice(dt('No log messages available.'));
-            return;
+            return null;
         } else {
             return new RowsOfFields($table);
         }
@@ -80,29 +82,27 @@ class WatchdogCommands extends DrushCommands
 
     /**
      * Interactively filter the watchdog message listing.
-     *
-     * @command watchdog:list
-     * @param $substring A substring to look search in error messages.
-     * @option count The number of messages to show.
-     * @option extended Return extended information about each message.
-     * @option severity Restrict to messages of a given severity level.
-     * @option type Restrict to messages of a given type.
-     * @usage  drush watchdog:list
-     *   Prompt for message type or severity, then run watchdog-show.
-     * @aliases wd-list,watchdog-list
-     * @hidden-options type,severity
-     * @validate-module-enabled dblog
-     * @field-labels
-     *   wid: ID
-     *   type: Type
-     *   message: Message
-     *   severity: Severity
-     *   location: Location
-     *   hostname: Hostname
-     *   date: Date
-     *   username: Username
-     * @default-fields wid,date,type,severity,message
      */
+    #[CLI\Command(name: self::LIST, aliases: ['wd-list,watchdog-list'])]
+    #[CLI\Argument(name: 'substring', description: 'A substring to look search in error messages.')]
+    #[CLI\Option(name: 'count', description: 'The number of messages to show.')]
+    #[CLI\Option(name: 'severity', description: 'Restrict to messages of a given severity level (numeric or string).')]
+    #[CLI\Option(name: 'type', description: 'Restrict to messages of a given type.')]
+    #[CLI\Option(name: 'extended', description: 'Return extended information about each message.')]
+    #[CLI\Usage(name: 'drush watchdog:list', description: 'Prompt for message type or severity, then run watchdog-show.')]
+    #[CLI\FieldLabels(labels: [
+        'wid' => 'ID',
+        'type' => 'Type',
+        'message' => 'Message',
+        'severity' => 'Severity',
+        'location' => 'Location',
+        'hostname' => 'Hostname',
+        'date' => 'Date',
+        'username' => 'Username',
+    ])]
+    #[CLI\ValidateModulesEnabled(modules: ['dblog'])]
+    #[CLI\FilterDefaultField(field: 'message')]
+    #[CLI\DefaultTableFields(fields: ['wid', 'date', 'type', 'severity', 'message'])]
     public function watchdogList($substring = '', $options = ['format' => 'table', 'count' => 10, 'extended' => false]): RowsOfFields
     {
         return $this->show($substring, $options);
@@ -110,28 +110,20 @@ class WatchdogCommands extends DrushCommands
 
     /**
      * Tail watchdog messages.
-     *
-     * @command watchdog:tail
-     * @param OutputInterface $output
-     * @param $substring A substring to look search in error messages.
-     * @option severity Restrict to messages of a given severity level (numeric or string).
-     * @option severity-min Restrict to messages of a given severity level and higher.
-     * @option type Restrict to messages of a given type.
-     * @option extended Return extended information about each message.
-     * @usage  drush watchdog:tail
-     *   Continuously tail watchdog messages.
-     * @usage drush watchdog:tail "cron run successful"
-     *   Continuously tail watchdog messages, filtering on the string <info>cron run successful</info>.
-     * @usage drush watchdog:tail --severity=Notice
-     *   Continuously tail watchdog messages, filtering severity of notice.
-     * @usage drush watchdog:tail --severity-min=Warning
-     *   Continuously tail watchdog messages, filtering for a severity of warning or higher.
-     * @usage drush watchdog:tail --type=php
-     *   Continuously tail watchdog messages, filtering on type equals php.
-     * @aliases wd-tail,wt,watchdog-tail
-     * @validate-module-enabled dblog
-     * @version 10.6
      */
+    #[CLI\Command(name: self::TAIL, aliases: ['wd-tail',  'wt', 'watchdog-tail'])]
+    #[CLI\Argument(name: 'substring', description: 'A substring to look search in error messages.')]
+    #[CLI\Option(name: 'severity', description: 'Restrict to messages of a given severity level (numeric or string).')]
+    #[CLI\Option(name: 'severity-min', description: 'Restrict to messages of a given severity level and higher.')]
+    #[CLI\Option(name: 'type', description: 'Restrict to messages of a given type.')]
+    #[CLI\Option(name: 'extended', description: 'Return extended information about each message.')]
+    #[CLI\Usage(name: 'drush watchdog:tail', description: 'Continuously tail watchdog messages.')]
+    #[CLI\Usage(name: 'drush watchdog:tail "cron run successful"', description: 'Continuously tail watchdog messages, filtering on the string <info>cron run successful</info>.')]
+    #[CLI\Usage(name: 'drush watchdog:tail --severity=Notice', description: 'Continuously tail watchdog messages, filtering severity of notice.')]
+    #[CLI\Usage(name: 'drush watchdog:tail --severity-min=Warning', description: 'Continuously tail watchdog messages, filtering for a severity of warning or higher.')]
+    #[CLI\Usage(name: 'drush watchdog:tail --type=php', description: 'Continuously tail watchdog messages, filtering on type equals php.')]
+    #[CLI\ValidateModulesEnabled(modules: ['dblog'])]
+    #[CLI\Version(version: '10.6')]
     public function tail(OutputInterface $output, $substring = '', $options = ['severity' => self::REQ, 'severity-min' => self::REQ, 'type' => self::REQ, 'extended' => false]): void
     {
         $where = $this->where($options['type'], $options['severity'], $substring, 'AND', $options['severity-min']);
@@ -170,10 +162,7 @@ class WatchdogCommands extends DrushCommands
         }
     }
 
-    /**
-     * @hook interact watchdog-list
-     * @throws UserAbortException
-     */
+    #[CLI\Hook(type: HookManager::INTERACT, target: 'watchdog-list')]
     public function interactList($input, $output): void
     {
 
@@ -198,24 +187,17 @@ class WatchdogCommands extends DrushCommands
 
     /**
      * Delete watchdog log records.
-     *
-     * @command watchdog:delete
-     * @param $substring Delete all log records with this text in the messages.
-     * @option severity Delete messages of a given severity level.
-     * @option type Delete messages of a given type.
-     * @usage drush watchdog:delete all
-     *   Delete all messages.
-     * @usage drush watchdog:delete 64
-     *   Delete messages with id 64.
-     * @usage drush watchdog:delete "cron run succesful"
-     *   Delete messages containing the string "cron run succesful".
-     * @usage drush watchdog:delete --severity=Notice
-     *   Delete all messages with a severity of notice.
-     * @usage drush watchdog:delete --type=cron
-     *   Delete all messages of type cron.
-     * @aliases wd-del,wd-delete,wd,watchdog-delete
-     * @validate-module-enabled dblog
      */
+    #[CLI\Command(name: self::DELETE, aliases: ['wd-del', 'wd-delete', 'wd', 'watchdog-delete'])]
+    #[CLI\Argument(name: 'substring', description: 'Delete all log records with this text in the messages.')]
+    #[CLI\Option(name: 'severity', description: 'Delete messages of a given severity level.')]
+    #[CLI\Option(name: 'type', description: 'Delete messages of a given type.')]
+    #[CLI\Usage(name: 'drush watchdog:delete', description: 'Delete all messages.')]
+    #[CLI\Usage(name: 'drush watchdog:delete 64', description: 'Delete messages with id 64.')]
+    #[CLI\Usage(name: 'drush watchdog:delete "cron run succesful"', description: 'Delete messages containing the string "cron run succesful".')]
+    #[CLI\Usage(name: '@usage drush watchdog:delete --severity=Notice', description: 'Delete all messages with a severity of notice.')]
+    #[CLI\Usage(name: 'drush watchdog:delete --type=cron', description: 'Delete all messages of type cron.')]
+    #[CLI\ValidateModulesEnabled(modules: ['dblog'])]
     public function delete($substring = '', $options = ['severity' => self::REQ, 'type' => self::REQ]): void
     {
         if ($substring == 'all') {
@@ -254,12 +236,10 @@ class WatchdogCommands extends DrushCommands
 
     /**
      * Show one log record by ID.
-     *
-     * @command watchdog:show-one
-     * @param $id Watchdog Id
-     * @aliases wd-one,watchdog-show-one
-     * @validate-module-enabled dblog
      */
+    #[CLI\Command(name: self::SHOW_ONE, aliases: ['wd-one', 'watchdog-show-one'])]
+    #[CLI\Argument(name: 'id', description: 'Watchdog Id')]
+    #[CLI\ValidateModulesEnabled(modules: ['dblog'])]
     public function showOne($id, $options = ['format' => 'yaml']): PropertyList
     {
         $rsc = Database::getConnection()->select('watchdog', 'w')
@@ -361,7 +341,7 @@ class WatchdogCommands extends DrushCommands
         $result->severity = trim(DrupalUtil::drushRender($severities[$result->severity]));
 
         // Date.
-        $result->date = date('d/M H:i', $result->timestamp);
+        $result->date = date('d/M H:i', (int)$result->timestamp);
         unset($result->timestamp);
 
         // Username.

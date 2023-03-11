@@ -1,17 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drush\Commands\core;
 
 use Consolidation\AnnotatedCommand\AnnotationData;
 use Consolidation\AnnotatedCommand\CommandData;
+use Consolidation\AnnotatedCommand\Hooks\HookManager;
+use Drush\Attributes as CLI;
 use Drush\Config\DrushConfig;
 use Symfony\Component\Console\Input\InputInterface;
 use Drush\Commands\DrushCommands;
 
 /**
- * Class XhprofCommands
- * @package Drush\Commands\core
- *
  * Supports profiling Drush commands using either XHProf or Tideways XHProf.
  *
  * Note that XHProf is compatible with PHP 5.6 and PHP 7+, you could also use
@@ -21,7 +22,7 @@ use Drush\Commands\DrushCommands;
  * @see https://pecl.php.net/package/xhprof
  * @see https://tideways.com/profiler/blog/releasing-new-tideways-xhprof-extension
  */
-class XhprofCommands extends DrushCommands
+final class XhprofCommands extends DrushCommands
 {
     const XH_PROFILE_MEMORY = false;
     const XH_PROFILE_CPU = false;
@@ -31,20 +32,16 @@ class XhprofCommands extends DrushCommands
   // @todo Add a command for launching the built-in web server pointing to the HTML site of xhprof.
   // @todo Write a topic explaining how to use this.
 
-    /**
-     * @hook option *
-     *
-     * @option xh-link URL to your XHProf report site.
-     */
+    #[CLI\Hook(type: HookManager::OPTION_HOOK, target: '*')]
+    #[CLI\Option(name: 'xh-link', description: 'URL to your XHProf report site.')]
     public function optionsetXhProf($options = ['xh-link' => self::REQ]): void
     {
     }
 
     /**
      * Finish profiling and emit a link.
-     *
-     * @hook post-command *
      */
+    #[CLI\Hook(type: HookManager::POST_COMMAND_HOOK, target: '*')]
     public function xhprofPost($result, CommandData $commandData): void
     {
         $config = $this->getConfig();
@@ -58,9 +55,8 @@ class XhprofCommands extends DrushCommands
 
     /**
      * Enable profiling via XHProf
-     *
-     * @hook init *
      */
+    #[CLI\Hook(type: HookManager::INITIALIZE, target: '*')]
     public function xhprofInitialize(InputInterface $input, AnnotationData $annotationData): void
     {
         $config = $this->getConfig();

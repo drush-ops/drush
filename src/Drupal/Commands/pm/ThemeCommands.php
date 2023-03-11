@@ -1,14 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drush\Drupal\Commands\pm;
 
 use Drupal\Core\Extension\ThemeInstallerInterface;
 use Drush\Commands\DrushCommands;
-use Drush\Drush;
+use Drush\Attributes as CLI;
 use Drush\Utils\StringUtils;
 
-class ThemeCommands extends DrushCommands
+final class ThemeCommands extends DrushCommands
 {
+    const INSTALL = 'theme:install';
+    const UNINSTALL = 'theme:uninstall';
     protected $themeInstaller;
 
     public function __construct(ThemeInstallerInterface $themeInstaller)
@@ -27,11 +31,9 @@ class ThemeCommands extends DrushCommands
 
     /**
      * Install one or more themes.
-     *
-     * @command theme:install
-     * @param $themes A comma delimited list of themes.
-     * @aliases theme:in,thin,theme:enable,then,theme-enable
      */
+    #[CLI\Command(name: self::INSTALL, aliases: ['theme:in', 'thin', 'theme:enable', 'then', 'theme-enable'])]
+    #[CLI\Argument(name: 'themes', description: 'A comma delimited list of themes.')]
     public function install(array $themes): void
     {
         $themes = StringUtils::csvToArray($themes);
@@ -42,12 +44,10 @@ class ThemeCommands extends DrushCommands
     }
 
     /**
-     * Uninstall theme.
-     *
-     * @command theme:uninstall
-     * @param $themes A comma delimited list of themes.
-     * @aliases theme:un,thun,theme-uninstall
+     * Uninstall themes.
      */
+    #[CLI\Command(name: self::UNINSTALL, aliases: ['theme:un', 'thun', 'theme-uninstall'])]
+    #[CLI\Argument(name: 'themes', description: 'A comma delimited list of themes.')]
     public function uninstall(array $themes): void
     {
         $themes = StringUtils::csvToArray($themes);

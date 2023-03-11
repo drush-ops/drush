@@ -1,48 +1,38 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drush\Commands\core;
 
+use Drush\Attributes as CLI;
 use Drush\Commands\DrushCommands;
-use Drush\Drush;
-use Drush\SiteAlias\LegacyAliasConverter;
-use Consolidation\SiteAlias\SiteAliasFileDiscovery;
 use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
 use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
 use Consolidation\OutputFormatters\StructuredData\UnstructuredListData;
-use Drush\Utils\StringUtils;
-use Symfony\Component\Console\Input\Input;
-use Symfony\Component\Console\Output\Output;
-use Symfony\Component\Filesystem\Path;
 
-class SiteCommands extends DrushCommands implements SiteAliasManagerAwareInterface
+final class SiteCommands extends DrushCommands implements SiteAliasManagerAwareInterface
 {
     use SiteAliasManagerAwareTrait;
+
+    const SET = 'site:set';
+    const ALIAS = 'site:alias';
 
     /**
      * Set a site alias that will persist for the current session.
      *
      * Stores the site alias being used in the current session in a temporary
      * file.
-     *
-     * @command site:set
-     *
-     * @param string $site Site specification to use, or <info>-</info> for previous site. Omit this argument to unset.
-     *
-     * @throws \Exception
-     * @handle-remote-commands
-     * @validate-php-extension posix
-     * @usage drush site:set @dev
-     *   Set the current session to use the @dev alias.
-     * @usage drush site:set user@server/path/to/drupal#sitename
-     *   Set the current session to use a remote site via site specification.
-     * @usage drush site:set /path/to/drupal#sitename
-     *   Set the current session to use a local site via site specification.
-     * @usage drush site:set -
-     *   Go back to the previously-set site (like `cd -`).
-     * @usage drush site:set
-     *   Without an argument, any existing site becomes unset.
-     * @aliases use,site-set
      */
+    #[CLI\Command(name: self::SET, aliases: ['use', 'site-set'])]
+    #[CLI\Argument(name: 'site', description: 'Site specification to use, or <info>-</info> for previous site. Omit this argument to unset.')]
+    #[CLI\Usage(name: 'drush site:set @dev', description: 'Set the current session to use the @dev alias.')]
+    #[CLI\Usage(name: 'drush site:set user@server/path/to/drupal#sitename', description: 'Set the current session to use a remote site via site specification.')]
+    #[CLI\Usage(name: 'drush site:set /path/to/drupal#sitename', description: 'Set the current session to use a local site via site specification.')]
+    #[CLI\Usage(name: 'drush site:set -', description: 'Go back to the previously-set site (like `cd -`).')]
+    #[CLI\Usage(name: 'drush site:set', description: 'Without an argument, any existing site becomes unset.')]
+    #[CLI\HandleRemoteCommands]
+    #[CLI\ValidatePhpExtensions('posix')]
+    #[CLI\Topics(topics: ['docs:aliases'])]
     public function siteSet(string $site = '@none'): void
     {
         $filename = $this->getConfig()->get('runtime.site-file-current');
@@ -98,22 +88,14 @@ class SiteCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
 
     /**
      * Show site alias details, or a list of available site aliases.
-     *
-     * @command site:alias
-     *
-     * @param string $site Site alias or site specification.
-     *
-     * @return UnstructuredListData
-     * @throws \Exception
-     * @aliases sa
-     * @filter-default-field id
-     * @usage drush site:alias
-     *   List all alias records known to drush.
-     * @usage drush site:alias @dev
-     *   Print an alias record for the alias 'dev'.
-     * @topics docs:aliases
      */
-    public function siteAlias($site = null, array $options = ['format' => 'yaml'])
+    #[CLI\Command(name: self::ALIAS, aliases: ['sa'])]
+    #[CLI\Argument(name: 'site', description: 'Site alias or site specification.')]
+    #[CLI\FilterDefaultField(field: 'id')]
+    #[CLI\Usage(name: 'drush site:alias', description: 'List all alias records known to drush.')]
+    #[CLI\Usage(name: 'drush site:alias @dev', description: 'Print an alias record for the alias <info>dev</info>.')]
+    #[CLI\Topics(topics: ['docs:aliases'])]
+    public function siteAlias($site = null, array $options = ['format' => 'yaml']): ?UnstructuredListData
     {
         // First check to see if the user provided a specification that matches
         // multiple sites.
@@ -132,6 +114,7 @@ class SiteCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
             throw new \Exception('Site alias not found.');
         } else {
             $this->logger()->success('No site aliases found.');
+            return null;
         }
     }
 

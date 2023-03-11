@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drush\Drupal\Commands\core;
 
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
@@ -7,26 +9,19 @@ use Drupal\Core\CronInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Routing\RouteProviderInterface;
 use Drupal\Core\Url;
+use Drush\Attributes as CLI;
 use Drush\Commands\DrushCommands;
 use Drush\Drupal\DrupalUtil;
 use Drush\Utils\StringUtils;
 
-class DrupalCommands extends DrushCommands
+final class DrupalCommands extends DrushCommands
 {
-    /**
-     * @var CronInterface
-     */
-    protected $cron;
-
-    /**
-     * @var ModuleHandlerInterface
-     */
-    protected $moduleHandler;
-
-    /**
-     * @var RouteProviderInterface
-     */
-    protected $routeProvider;
+    const CRON = 'core:cron';
+    const REQUIREMENTS = 'core:requirements';
+    const ROUTE = 'core:route';
+    protected CronInterface $cron;
+    protected ModuleHandlerInterface $moduleHandler;
+    protected RouteProviderInterface $routeProvider;
 
     public function getCron(): CronInterface
     {
@@ -43,11 +38,6 @@ class DrupalCommands extends DrushCommands
         return $this->routeProvider;
     }
 
-    /**
-     * @param CronInterface $cron
-     * @param ModuleHandlerInterface $moduleHandler
-     * @param RouteProviderInterface $routeProvider
-     */
     public function __construct(CronInterface $cron, ModuleHandlerInterface $moduleHandler, RouteProviderInterface $routeProvider)
     {
         $this->cron = $cron;
@@ -57,13 +47,10 @@ class DrupalCommands extends DrushCommands
 
     /**
      * Run all cron hooks in all active modules for specified site.
-     *
-     * @command core:cron
-     * @aliases cron,core-cron
-     * @usage drush maint:status && drush core:cron
-     *  Run cron unless maintenance mode is enabled
-     * @topics docs:cron
      */
+    #[CLI\Command(name: self::CRON, aliases: ['cron', 'core-cron'])]
+    #[CLI\Usage(name: 'drush maint:status && drush core:cron', description: 'Run cron unless maintenance mode is enabled')]
+    #[CLI\Topics(topics: ['docs:cron'])]
     public function cron(): void
     {
         $this->getCron()->run();
@@ -71,25 +58,21 @@ class DrupalCommands extends DrushCommands
 
     /**
      * Information about things that may be wrong in your Drupal installation.
-     *
-     * @command core:requirements
-     * @option severity Only show status report messages with a severity greater than or equal to the specified value.
-     * @option ignore Comma-separated list of requirements to remove from output. Run with --format=yaml to see key values to use.
-     * @aliases status-report,rq,core-requirements
-     * @usage drush core:requirements
-     *   Show all status lines from the Status Report admin page.
-     * @usage drush core:requirements --severity=2
-     *   Show only the red lines from the Status Report admin page.
-     * @table-style default
-     * @field-labels
-     *   title: Title
-     *   severity: Severity
-     *   sid: SID
-     *   description: Description
-     *   value: Summary
-     * @default-fields title,severity,value
-     * @filter-default-field severity
      */
+    #[CLI\Command(name: self::REQUIREMENTS, aliases: ['status-report', 'rq', 'core-requirements'])]
+    #[CLI\Option(name: 'severity', description: 'Only show status report messages with a severity greater than or equal to the specified value.')]
+    #[CLI\Option(name: 'ignore', description: 'Comma-separated list of requirements to remove from output. Run with --format=yaml to see key values to use.')]
+    #[CLI\Usage(name: 'drush core:requirements', description: 'Show all status lines from the Status Report admin page.')]
+    #[CLI\Usage(name: 'drush core:requirements --severity=2', description: 'Show only the red lines from the Status Report admin page.')]
+    #[CLI\FieldLabels(labels: [
+        'title' => 'Title',
+        'severity' => 'Severity',
+        'sid' => 'SID',
+        'description' => 'Description',
+        'value' => 'Summary',
+    ])]
+    #[CLI\DefaultTableFields(fields: ['title', 'severity', 'value'])]
+    #[CLI\FilterDefaultField(field: 'severity')]
     public function requirements($options = ['format' => 'table', 'severity' => -1, 'ignore' => '']): RowsOfFields
     {
         include_once DRUSH_DRUPAL_CORE . '/includes/install.inc';
@@ -127,7 +110,7 @@ class DrupalCommands extends DrushCommands
                 'title' => self::styleRow((string) $info['title'], $options['format'], $severity),
                 'value' => self::styleRow(DrupalUtil::drushRender($info['value'] ?? ''), $options['format'], $severity),
                 'description' => self::styleRow(DrupalUtil::drushRender($info['description'] ?? ''), $options['format'], $severity),
-                'sid' => self::styleRow($severity, $options['format'], $severity),
+                'sid' => $severity,
                 'severity' => self::styleRow(@$severities[$severity], $options['format'], $severity)
             ];
             if ($severity < $min_severity) {
@@ -139,21 +122,15 @@ class DrupalCommands extends DrushCommands
 
     /**
      * View information about all routes or one route.
-     *
-     * @command core:route
-     * @aliases route
-     * @usage drush route
-     *   View all routes.
-     * @usage drush route --name=update.status
-     *   View details about the <info>update.status</info> route.
-     * @usage drush route --path=/user/1
-     *   View details about the <info>entity.user.canonical</info> route.
-     * @usage drush route --url=https://example.com/node/1
-     *   View details about the <info>entity.node.canonical</info> route.
-     * @option name A route name.
-     * @option path An internal path or URL.
-     * @version 10.5
      */
+    #[CLI\Command(name: self::ROUTE, aliases: ['route'])]
+    #[CLI\Usage(name: 'drush route', description: 'View all routes.')]
+    #[CLI\Usage(name: 'drush route --name=update.status', description: 'View details about the <info>update.status</info> route.')]
+    #[CLI\Usage(name: 'drush route --path=/user/1', description: 'View details about the <info>entity.user.canonical</info> route.')]
+    #[CLI\Usage(name: 'drush route --url=https://example.com/node/1', description: 'View details about the <info>entity.node.canonical</info> route.')]
+    #[CLI\Option(name: 'name', description: 'A route name.')]
+    #[CLI\Option(name: 'path', description: 'An internal path or URL.')]
+    #[CLI\Version(version: '10.5')]
     public function route($options = ['name' => self::REQ, 'path' => self::REQ, 'format' => 'yaml'])
     {
         $route = $items = null;

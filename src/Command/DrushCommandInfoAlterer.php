@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drush\Command;
 
 use Consolidation\AnnotatedCommand\CommandInfoAltererInterface;

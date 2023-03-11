@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drush;
 
+use Robo\Runner;
 use Composer\Autoload\ClassLoader;
 use Consolidation\AnnotatedCommand\AnnotatedCommand;
 use Consolidation\AnnotatedCommand\CommandFileDiscovery;
@@ -174,8 +177,7 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
         if ($uri) {
             return $uri;
         }
-        $uri = $this->bootstrapManager()->selectUri($cwd);
-        return $uri;
+        return $this->bootstrapManager()->selectUri($cwd);
     }
 
     /**
@@ -327,7 +329,7 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
         // Use the robo runner to register commands with Symfony application.
         // This method could / should be refactored in Robo so that we can use
         // it without creating a Runner object that we would not otherwise need.
-        $runner = new \Robo\Runner();
+        $runner = new Runner();
         $runner->registerCommandClasses($this, $commandClasses);
     }
 
