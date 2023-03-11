@@ -98,7 +98,7 @@ final class StatusCommands extends DrushCommands implements SiteAliasManagerAwar
             $conf_dir = $boot_object->confPath();
             $settings_file = Path::join($conf_dir, 'settings.php');
             $status_table['drupal-settings-file'] = file_exists($settings_file) ? $settings_file : '';
-            if ($boot_manager->hasBootstrapped(DRUSH_BOOTSTRAP_DRUPAL_SITE)) {
+            if ($boot_manager->hasBootstrapped(DrupalBootLevels::SITE)) {
                 $status_table['uri'] = $boot_manager->getUri();
                 try {
                     if ($sql = SqlBase::create($options)) {
@@ -114,13 +114,13 @@ final class StatusCommands extends DrushCommands implements SiteAliasManagerAwar
                         $status_table['db-name'] = isset($db_spec['database']) ? $db_spec['database'] : null;
                         $status_table['db-port'] = isset($db_spec['port']) ? $db_spec['port'] : null;
                     }
-                    if ($boot_manager->hasBootstrapped(DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION)) {
+                    if ($boot_manager->hasBootstrapped(DrupalBootLevels::CONFIGURATION)) {
                         if (method_exists('Drupal', 'installProfile')) {
                             $status_table['install-profile'] = \Drupal::installProfile();
                         }
-                        if ($boot_manager->hasBootstrapped(DRUSH_BOOTSTRAP_DRUPAL_DATABASE)) {
+                        if ($boot_manager->hasBootstrapped(DrupalBootLevels::DATABASE)) {
                             $status_table['db-status'] = dt('Connected');
-                            if ($boot_manager->hasBootstrapped(DRUSH_BOOTSTRAP_DRUPAL_FULL)) {
+                            if ($boot_manager->hasBootstrapped(DrupalBootLevels::FULL)) {
                                 $status_table['bootstrap'] = dt('Successful');
                             }
                         }
@@ -129,7 +129,7 @@ final class StatusCommands extends DrushCommands implements SiteAliasManagerAwar
                     // Don't worry be happy.
                 }
             }
-            if ($boot_manager->hasBootstrapped(DRUSH_BOOTSTRAP_DRUPAL_FULL)) {
+            if ($boot_manager->hasBootstrapped(DrupalBootLevels::FULL)) {
                 $status_table['theme'] = \Drupal::config('system.theme')->get('default');
                 $status_table['admin-theme'] = $theme = \Drupal::config('system.theme')->get('admin') ?: 'seven';
             }
@@ -210,7 +210,7 @@ final class StatusCommands extends DrushCommands implements SiteAliasManagerAwar
                 } else {
                     $paths['%themes'] = ltrim($site_wide . '/themes', '/');
                 }
-                if ($boot_manager->hasBootstrapped(DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION)) {
+                if ($boot_manager->hasBootstrapped(DrupalBootLevels::CONFIGURATION)) {
                     try {
                         $paths["%config-sync"] = Settings::get('config_sync_directory');
                     } catch (\Exception $e) {
@@ -218,7 +218,7 @@ final class StatusCommands extends DrushCommands implements SiteAliasManagerAwar
                     }
                 }
 
-                if ($boot_manager->hasBootstrapped(DRUSH_BOOTSTRAP_DRUPAL_FULL)) {
+                if ($boot_manager->hasBootstrapped(DrupalBootLevels::FULL)) {
                     $paths['%files'] = PublicStream::basePath();
                     $paths['%temp'] = \Drupal::service('file_system')->getTempDirectory();
                     if ($private_path = PrivateStream::basePath()) {

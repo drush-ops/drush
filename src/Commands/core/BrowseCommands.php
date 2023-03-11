@@ -6,6 +6,7 @@ namespace Drush\Commands\core;
 
 use Drupal\Core\Url;
 use Drush\Attributes as CLI;
+use Drush\Boot\DrupalBootLevels;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Drush\Exec\ExecTrait;
@@ -38,7 +39,7 @@ final class BrowseCommands extends DrushCommands implements SiteAliasManagerAwar
             $process->mustRun();
             $link = $process->getOutput();
         } else {
-            if (!Drush::bootstrapManager()->doBootstrap(DRUSH_BOOTSTRAP_DRUPAL_FULL)) {
+            if (!Drush::bootstrapManager()->doBootstrap(DrupalBootLevels::FULL)) {
                 // Fail gracefully if unable to bootstrap Drupal. drush_bootstrap() has
                 // already logged an error.
                 return false;

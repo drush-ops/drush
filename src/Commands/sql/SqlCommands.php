@@ -167,7 +167,7 @@ final class SqlCommands extends DrushCommands implements StdinAwareInterface
         $filename = $options['file'];
         // Enable prefix processing when db-prefix option is used.
         if ($options['db-prefix']) {
-            Drush::bootstrapManager()->bootstrapMax(DRUSH_BOOTSTRAP_DRUPAL_DATABASE);
+            Drush::bootstrapManager()->bootstrapMax(DrupalBootLevels::DATABASE);
         }
         if ($this->getConfig()->simulate()) {
             if ($query) {
