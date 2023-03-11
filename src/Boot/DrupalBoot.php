@@ -75,6 +75,7 @@ abstract class DrupalBoot extends BaseBoot
     public function bootstrapPhases(): array
     {
         return [
+            DrupalBootLevels::NONE            => 'NoLongerUsed',
             DrupalBootLevels::ROOT            => 'bootstrapDrupalRoot',
             DrupalBootLevels::SITE            => 'bootstrapDrupalSite',
             DrupalBootLevels::CONFIGURATION   => 'bootstrapDrupalConfiguration',
