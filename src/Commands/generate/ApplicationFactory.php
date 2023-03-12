@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drush\Commands\generate;
 
 use DrupalCodeGenerator\Application;
@@ -109,7 +111,7 @@ class ApplicationFactory implements AutoloaderAwareInterface
                 !str_starts_with($generator->getName(), 'misc:d7:') &&
                 !str_starts_with($generator->getName(), 'console:'),
         );
-        $generators = array_map(
+        return array_map(
             function ($generator) {
                 if ($generator->getName() == 'theme-file') $generator->setName('theme:file');
                 if ($generator->getName() == 'theme-settings') $generator->setName('theme:settings');
@@ -121,7 +123,6 @@ class ApplicationFactory implements AutoloaderAwareInterface
             },
             $generators
         );
-        return $generators;
     }
 
     protected function discoverGlobalPathsDeprecated(): array

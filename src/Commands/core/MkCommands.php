@@ -1,12 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drush\Commands\core;
 
 use Consolidation\AnnotatedCommand\AnnotatedCommand;
 use Consolidation\AnnotatedCommand\AnnotationData;
 use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
+use Drush\Attributes as CLI;
 use Drush\Boot\AutoloaderAwareInterface;
 use Drush\Boot\AutoloaderAwareTrait;
+use Drush\Boot\DrupalBootLevels;
 use Drush\Commands\DrushCommands;
 use Drush\Commands\generate\ApplicationFactory;
 use Drush\Commands\help\HelpCLIFormatter;
@@ -21,7 +25,7 @@ use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Path;
 use Symfony\Component\Yaml\Yaml;
 
-class MkCommands extends DrushCommands implements SiteAliasManagerAwareInterface, AutoloaderAwareInterface
+final class MkCommands extends DrushCommands implements SiteAliasManagerAwareInterface, AutoloaderAwareInterface
 {
     use SiteAliasManagerAwareTrait;
     use AutoloaderAwareTrait;
@@ -30,12 +34,10 @@ class MkCommands extends DrushCommands implements SiteAliasManagerAwareInterface
      * Build a Markdown document for each Drush command/generator that is available on a site.
      *
      * This command is an early step when building the www.drush.org static site. Adapt it to build a similar site listing the commands that are available on your site. Also see Drush's [Github Actions workflow](https://github.com/drush-ops/drush/blob/11.x/.github/workflows/main.yml).
-     *
-     * @command mk:docs
-     * @bootstrap max
-     * @usage drush mk:docs
-     *   Build many .md files in the docs/commands and docs/generators directories.
      */
+    #[CLI\Command(name: 'mk:docs')]
+    #[CLI\Bootstrap(level: DrupalBootLevels::MAX)]
+    #[CLI\Usage(name: 'drush mk:docs', description: 'Build many .md files in the docs/commands and docs/generators directories.')]
     public function docs(): void
     {
         $dir_root = Drush::bootstrapManager()->getComposerRoot();

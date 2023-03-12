@@ -1,29 +1,31 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drush\Commands;
 
+use Consolidation\AnnotatedCommand\Hooks\HookManager;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Consolidation\OutputFormatters\Options\FormatterOptions;
 use Consolidation\AnnotatedCommand\CommandData;
+use Drush\Attributes as CLI;
 
 class ExampleCommands extends DrushCommands
 {
+    const TABLE = 'example:table';
+
     /**
      * Demonstrate output formatters.  Default format is 'table'.
      *
-     * @command example:table
-     * @field-labels
-     *   first: I
-     *   second: II
-     *   third: III
-     * @default-string-field second
-     * @usage example-table --format=yaml
-     * @usage example-table --format=csv
-     * @usage example-table --fields=first,third
-     * @usage example-table --fields=III,II
-     * @aliases tf
-     * @hidden
+     * @todo @default-string-field second
      */
+    #[CLI\Command(name: self::TABLE, aliases: ['tf'])]
+    #[CLI\Help(hidden: true)]
+    #[CLI\FieldLabels(labels: ['first' => 'I', 'second' => 'II', 'third' => 'III'])]
+    #[CLI\Usage(name: 'drush example:table --format=yaml', description: '')]
+    #[CLI\Usage(name: 'drush example:table --format=csv', description: '')]
+    #[CLI\Usage(name: 'drush example:table --fiends=first,third', description: '')]
+    #[CLI\Usage(name: 'drush example:table --fields=III,II', description: '')]
     public function exampleTable($options = ['format' => 'table']): RowsOfFields
     {
         $tableData = [
@@ -52,12 +54,11 @@ class ExampleCommands extends DrushCommands
     }
 
     /**
-     * Demonstrate an alter hook with an option
-     *
-     * @hook alter example-table
-     * @option french Add a row with French numbers.
-     * @usage example-table --french
+     * Demonstrate an alter hook with an option.
      */
+    #[CLI\Usage(name: 'drush example-table --french', description: 'Table with a French row.')]
+    #[CLI\Option(name: 'french', description: 'Add a row with French numbers.')]
+    #[CLI\Hook(type: HookManager::ALTER_RESULT, target: self::TABLE)]
     public function alterFormatters($result, CommandData $commandData)
     {
         if ($commandData->input()->getOption('french')) {

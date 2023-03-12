@@ -1,7 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Unish;
 
+use Drush\Commands\core\StatusCommands;
+use Drush\Drupal\Commands\core\DeployHookCommands;
+use Drush\Drupal\Commands\core\StateCommands;
+use Drush\Drupal\Commands\pm\PmCommands;
 use Symfony\Component\Filesystem\Path;
 
 /**
@@ -20,10 +26,10 @@ class DeployHookTest extends CommandUnishTestCase
             'yes' => null,
         ];
         $this->setupModulesForTests(['woot'], Path::join(__DIR__, '/../fixtures/modules'));
-        $this->drush('pm-install', ['woot'], $options);
+        $this->drush(PmCommands::INSTALL, ['woot'], $options);
 
         // Run deploy hooks.
-        $this->drush('deploy:hook', [], $options, null, null, self::EXIT_ERROR);
+        $this->drush(DeployHookCommands::HOOK, [], $options, null, null, self::EXIT_ERROR);
 
         $this->assertStringContainsString('woot     a         Successful deploy hook.', $this->getOutput());
         $this->assertStringContainsString('woot     batch     Successful batched deploy hook.', $this->getOutput());
@@ -40,10 +46,10 @@ class DeployHookTest extends CommandUnishTestCase
         $this->assertStringContainsString('[error]  Finished performing deploy hooks.', $this->getErrorOutput());
 
         // Set the drupal state so that the failing hook passes
-        $this->drush('state:set', ['woot_deploy_pass', 'true'], [], null, null, self::EXIT_SUCCESS);
+        $this->drush(StateCommands::SET, ['woot_deploy_pass', 'true'], [], null, null, self::EXIT_SUCCESS);
 
         // Run deploy hooks again.
-        $this->drush('deploy:hook', [], $options, null, null, self::EXIT_SUCCESS);
+        $this->drush(DeployHookCommands::HOOK, [], $options, null, null, self::EXIT_SUCCESS);
 
         $this->assertStringContainsString('woot     failing   Failing deploy hook.', $this->getOutput());
         $this->assertStringContainsString('[notice] Deploy hook started: woot_deploy_failing', $this->getErrorOutput());
@@ -51,7 +57,7 @@ class DeployHookTest extends CommandUnishTestCase
         $this->assertStringContainsString('[success] Finished performing deploy hooks.', $this->getErrorOutput());
 
         // This time there is nothing more to run.
-        $this->drush('deploy:hook', [], [], null, null, self::EXIT_SUCCESS);
+        $this->drush(DeployHookCommands::HOOK, [], [], null, null, self::EXIT_SUCCESS);
         $this->assertStringContainsString('[success] No pending deploy hooks.', $this->getErrorOutput());
         $this->assertStringNotContainsString('Finished performing deploy hooks.', $this->getErrorOutput());
     }
@@ -60,7 +66,7 @@ class DeployHookTest extends CommandUnishTestCase
     {
         $this->setUpDrupal(1, true);
         $this->setupModulesForTests(['woot'], Path::join(__DIR__, '/../fixtures/modules'));
-        $this->drush('pm-install', ['woot'], ['yes' => null]);
+        $this->drush(PmCommands::INSTALL, ['woot'], ['yes' => null]);
 
         $options = [
             'format' => 'json'
@@ -83,15 +89,15 @@ class DeployHookTest extends CommandUnishTestCase
             ],
         ];
         // Check pending deploy hooks.
-        $this->drush('deploy:hook-status', [], $options, null, null, self::EXIT_SUCCESS);
+        $this->drush(DeployHookCommands::HOOK_STATUS, [], $options, null, null, self::EXIT_SUCCESS);
         $this->assertEquals($hooks, $this->getOutputFromJSON());
 
         // Mark them all as having run.
-        $this->drush('deploy:mark-complete', [], [], null, null, self::EXIT_SUCCESS);
+        $this->drush(DeployHookCommands::MARK_COMPLETE, [], [], null, null, self::EXIT_SUCCESS);
         $this->assertStringContainsString('[success] Marked 3 pending deploy hooks as complete.', $this->getErrorOutput());
 
         // Check again to see no pending hooks.
-        $this->drush('deploy:hook-status', [], $options, null, null, self::EXIT_SUCCESS);
+        $this->drush(DeployHookCommands::HOOK_STATUS, [], $options, null, null, self::EXIT_SUCCESS);
         $this->assertStringContainsString('[]', $this->getOutput());
     }
 
@@ -102,10 +108,10 @@ class DeployHookTest extends CommandUnishTestCase
             'yes' => null,
         ];
         $this->setupModulesForTests(['woot_deploy'], Path::join(__DIR__, '/../fixtures/modules'));
-        $this->drush('pm-install', ['woot_deploy'], $options);
+        $this->drush(PmCommands::INSTALL, ['woot_deploy'], $options);
 
         // Run deploy hooks.
-        $this->drush('deploy:hook', [], $options, null, null, self::EXIT_SUCCESS);
+        $this->drush(DeployHookCommands::HOOK, [], $options, null, null, self::EXIT_SUCCESS);
 
         $this->assertStringContainsString('[notice] Deploy hook started: woot_deploy_deploy_function', $this->getErrorOutput());
         $this->assertStringContainsString('[notice] This is the update message from woot_deploy_deploy_function', $this->getErrorOutput());

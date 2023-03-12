@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drush\Preflight;
 
+use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Component\Console\Input\InputInterface;
 use Composer\Autoload\ClassLoader;
 use Drush\SiteAlias\SiteAliasFileLoader;
@@ -206,7 +209,7 @@ class Preflight
 
     public function loadSymfonyCompatabilityAutoloader(): ClassLoader
     {
-        $symfonyMajorVersion = \Symfony\Component\HttpKernel\Kernel::MAJOR_VERSION;
+        $symfonyMajorVersion = Kernel::MAJOR_VERSION;
         $compatibilityMap = [
             3 => false, // Drupal 8
             4 => 'v4',  // Drupal 9
@@ -227,7 +230,7 @@ class Preflight
         //    "psr-4": {
         //      "Drush\\": $compatibilityDir
         //    }
-        $loader = new \Composer\Autoload\ClassLoader();
+        $loader = new ClassLoader();
         // register classes with namespaces
         $loader->addPsr4('Drush\\', $compatibilityDir);
         // activate the autoloader
@@ -359,10 +362,10 @@ class Preflight
      * Use the DrupalFinder to locate the Drupal Root + Composer Root at
      * the selected root, or, if nothing is found there, at a fallback path.
      *
-     * @param string $selectedRoot The location to being searching for a site
-     * @param string|bool $fallbackPath The secondary location to search (usualy the vendor director)
+     * @param mixed $selectedRoot The location to being searching for a site
+     * @param string|bool $fallbackPath The secondary location to search (usually the vendor director)
      */
-    protected function setSelectedSite(string $selectedRoot, $fallbackPath = false, $originalSelection = null)
+    protected function setSelectedSite(mixed $selectedRoot, string|bool $fallbackPath = false, $originalSelection = null)
     {
         if ($selectedRoot || $fallbackPath) {
             $foundRoot = $this->drupalFinder->locateRoot($selectedRoot);

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drush\Commands\generate;
 
 use DrupalCodeGenerator\ClassResolver\ClassResolverInterface;

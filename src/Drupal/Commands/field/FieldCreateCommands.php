@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drush\Drupal\Commands\field;
 
 use Consolidation\AnnotatedCommand\Events\CustomEventAwareInterface;
@@ -20,6 +22,7 @@ use Drupal\Core\Field\WidgetPluginManager;
 use Drupal\Core\Url;
 use Drupal\field\FieldConfigInterface;
 use Drupal\field\FieldStorageConfigInterface;
+use Drush\Attributes as CLI;
 use Drush\Commands\DrushCommands;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Question\ChoiceQuestion;
@@ -32,6 +35,8 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
     use EntityTypeBundleAskTrait;
     use CustomEventAwareTrait;
     use EntityTypeBundleValidationTrait;
+
+    const CREATE = 'field:create';
 
     /** @var FieldTypePluginManagerInterface */
     protected $fieldTypePluginManager;
@@ -76,53 +81,29 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
     /**
      * Create a new field
      *
-     * @command field:create
-     * @aliases field-create,fc
-     *
-     * @param string $entityType
-     *      The machine name of the entity type
-     * @param string $bundle
-     *      The machine name of the bundle
-     *
-     * @option field-name
-     *      A unique machine-readable name containing letters, numbers, and underscores.
-     * @option field-label
-     *      The field label
-     * @option field-description
-     *      Instructions to present to the user below this field on the editing form.
-     * @option field-type
-     *      The field type
-     * @option field-widget
-     *      The field widget
-     * @option is-required
-     *      Whether the field is required
-     * @option is-translatable
-     *      Whether the field is translatable
-     * @option cardinality
-     *      The allowed number of values
-     * @option target-type
-     *      The target entity type. Only necessary for entity reference fields.
-     * @option target-bundle
-     *      The target bundle(s). Only necessary for entity reference fields.
-     *
-     * @option existing
-     *      Re-use an existing field.
-     * @option existing-field-name
-     *      The name of an existing field you want to re-use. Only used in non-interactive context.
-     * @option show-machine-names
-     *      Show machine names instead of labels in option lists.
-     *
-     * @usage drush field:create
-     *      Create a field by answering the prompts.
-     * @usage drush field-create taxonomy_term tag
-     *      Create a field and fill in the remaining information through prompts.
-     * @usage drush field-create taxonomy_term tag --field-name=field_tag_label --field-label=Label --field-type=string --field-widget=string_textfield --is-required=1 --cardinality=2
-     *      Create a field in a completely non-interactive way.
-     *
-     * @version 11.0
      * @see \Drupal\field_ui\Form\FieldConfigEditForm
      * @see \Drupal\field_ui\Form\FieldStorageConfigEditForm
      */
+    #[CLI\Command(name: self::CREATE, aliases: ['field-create', 'fc'])]
+    #[CLI\Argument(name: 'entityType', description: 'The machine name of the entity type')]
+    #[CLI\Argument(name: 'bundle', description: 'The machine name of the bundle')]
+    #[CLI\Option(name: 'field-name', description: 'A unique machine-readable name containing letters, numbers, and underscores.')]
+    #[CLI\Option(name: 'field-label', description: 'The field label')]
+    #[CLI\Option(name: 'field-description', description: 'Instructions to present to the user below this field on the editing form.')]
+    #[CLI\Option(name: 'field-type', description: 'The field type')]
+    #[CLI\Option(name: 'field-widget', description: 'The field widget')]
+    #[CLI\Option(name: 'is-required', description: 'Whether the field is required')]
+    #[CLI\Option(name: 'is-translatable', description: 'Whether the field is translatable')]
+    #[CLI\Option(name: 'cardinality', description: 'The allowed number of values')]
+    #[CLI\Option(name: 'target-type', description: 'The target entity type. Only necessary for entity reference fields.')]
+    #[CLI\Option(name: 'target-bundle', description: 'The target bundle(s). Only necessary for entity reference fields.')]
+    #[CLI\Option(name: 'existing', description: 'Re-use an existing field.')]
+    #[CLI\Option(name: 'existing-field-name', description: 'The name of an existing field you want to re-use. Only used in non-interactive context.')]
+    #[CLI\Option(name: 'show-machine-names', description: 'Show machine names instead of labels in option lists.')]
+    #[CLI\Usage(name: self::CREATE, description: 'Create a field by answering the prompts.')]
+    #[CLI\Usage(name: 'field-create taxonomy_term tag', description: 'Create a field and fill in the remaining information through prompts.')]
+    #[CLI\Usage(name: 'field-create taxonomy_term tag --field-name=field_tag_label --field-label=Label --field-type=string --field-widget=string_textfield --is-required=1 --cardinality=2', description: 'Create a field in a completely non-interactive way.')]
+    #[CLI\Version(version: '11.0')]
     public function create(?string $entityType = null, ?string $bundle = null, array $options = [
         'field-name' => InputOption::VALUE_REQUIRED,
         'field-label' => InputOption::VALUE_REQUIRED,
@@ -150,14 +131,14 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
 
             if (!$fieldName = $this->input->getOption('existing-field-name')) {
                 throw new \InvalidArgumentException(
-                    t('There are no existing fields that can be added.')
+                    dt('There are no existing fields that can be added.')
                 );
             }
 
             if (!$this->fieldStorageExists($fieldName, $entityType)) {
                 throw new \InvalidArgumentException(
-                    t("Field storage with name ':fieldName' does not yet exist. Call this command without the --existing option first.", [
-                        ':fieldName' => $fieldName,
+                    dt("Field storage with name '!fieldName' does not yet exist. Call this command without the --existing option first.", [
+                        '!fieldName' => $fieldName,
                     ])
                 );
             }
@@ -166,9 +147,9 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
 
             if ($this->fieldExists($fieldName, $entityType, $bundle)) {
                 throw new \InvalidArgumentException(
-                    t("Field with name ':fieldName' already exists on bundle ':bundle'.", [
-                        ':fieldName' => $fieldName,
-                        ':bundle' => $bundle,
+                    dt("Field with name '!fieldName' already exists on bundle '!bundle'.", [
+                        '!fieldName' => $fieldName,
+                        '!bundle' => $bundle,
                     ])
                 );
             }
@@ -189,8 +170,8 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
             $fieldName = $this->input->getOption('field-name');
             if ($this->fieldStorageExists($fieldName, $entityType)) {
                 throw new \InvalidArgumentException(
-                    t("Field storage with name ':fieldName' already exists. Call this command with the --existing option to add an existing field to a bundle.", [
-                        ':fieldName' => $fieldName,
+                    dt("Field storage with name '!fieldName' already exists. Call this command with the --existing option to add an existing field to a bundle.", [
+                        '!fieldName' => $fieldName,
                     ])
                 );
             }
@@ -399,6 +380,43 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
             ->setMultiselect(true);
 
         return $this->io()->askQuestion($question) ?: [];
+    }
+
+    protected function askBundle(): ?string
+    {
+        $entityTypeId = $this->input->getArgument('entityType');
+        $entityTypeDefinition = $this->entityTypeManager->getDefinition($entityTypeId);
+        $bundleEntityType = $entityTypeDefinition->getBundleEntityType();
+        $bundleInfo = $this->entityTypeBundleInfo->getBundleInfo($entityTypeId);
+        $choices = [];
+
+        if ($bundleEntityType && $bundleInfo === []) {
+            throw new \InvalidArgumentException(
+                dt("Entity type with id '!entityType' does not have any bundles.", ['!entityType' => $entityTypeId])
+            );
+        }
+
+        if ($fieldName = $this->input->getOption('existing-field-name')) {
+            $bundleInfo = array_filter($bundleInfo, function (string $bundle) use ($entityTypeId, $fieldName) {
+                return !$this->entityTypeManager->getStorage('field_config')->load("$entityTypeId.$bundle.$fieldName");
+            }, ARRAY_FILTER_USE_KEY);
+        }
+
+        if (!$bundleEntityType && count($bundleInfo) === 1) {
+            // eg. User
+            return $entityTypeId;
+        }
+
+        foreach ($bundleInfo as $bundle => $data) {
+            $label = $this->input->getOption('show-machine-names') ? $bundle : $data['label'];
+            $choices[$bundle] = $label;
+        }
+
+        if (!$answer = $this->io()->choice('Bundle', $choices)) {
+            throw new \InvalidArgumentException(dt('The bundle argument is required.'));
+        }
+
+        return $answer;
     }
 
     protected function createField(): FieldConfigInterface
@@ -648,8 +666,8 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
         }
 
         if ($required && $value === null) {
-            throw new \InvalidArgumentException(dt('The %optionName option is required.', [
-                '%optionName' => $name,
+            throw new \InvalidArgumentException(dt('The !optionName option is required.', [
+                '!optionName' => $name,
             ]));
         }
 

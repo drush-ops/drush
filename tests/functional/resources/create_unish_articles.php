@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Drupal\unish_article\Entity\UnishArticle;
 
 /** @var \Drupal\Core\Entity\ContentEntityInterface $article */

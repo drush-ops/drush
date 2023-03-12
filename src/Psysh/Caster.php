@@ -1,9 +1,6 @@
 <?php
 
-/**
- * @file
- * Contains \Drush\Psysh\Caster.
- */
+declare(strict_types=1);
 
 namespace Drush\Psysh;
 

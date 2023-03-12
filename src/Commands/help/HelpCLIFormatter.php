@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drush\Commands\help;
 
 use Consolidation\OutputFormatters\FormatterManager;
@@ -116,13 +118,11 @@ class HelpCLIFormatter implements FormatterInterface
                 $value = '[' . $value . ']';
             }
         }
-
-        $synopsis = sprintf(
+        return sprintf(
             '%s%s',
             $option['shortcut']  ? sprintf('-%s, ', $option['shortcut']) : ' ',
             sprintf('--%s%s', $option['name'], $value)
         );
-        return $synopsis;
     }
 
     public static function formatOptionDescription($option): string

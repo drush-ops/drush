@@ -1,9 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drush\Sql;
 
 use Consolidation\SiteProcess\Util\Escape;
 use Drupal\Core\Database\Database;
+use Drush\Boot\DrupalBootLevels;
 use Drush\Drush;
 use Drush\Utils\FsUtils;
 use Drush\Config\ConfigAwareTrait;
@@ -393,7 +396,7 @@ abstract class SqlBase implements ConfigAwareInterface
     public function queryPrefix($query): ?string
     {
         // Inject table prefixes as needed.
-        if (Drush::bootstrapManager()->hasBootstrapped(DRUSH_BOOTSTRAP_DRUPAL_DATABASE)) {
+        if (Drush::bootstrapManager()->hasBootstrapped(DrupalBootLevels::DATABASE)) {
             // Enable prefix processing which can be dangerous so off by default. See http://drupal.org/node/1219850.
             if ($this->getOption('db-prefix')) {
                 $query = Database::getConnection()->prefixTables($query);
@@ -467,7 +470,7 @@ abstract class SqlBase implements ConfigAwareInterface
         if ($this->dbExists()) {
             return $this->drop($this->listTablesQuoted());
         } else {
-            return $this->createdb();
+            return $this->createdb(true);
         }
     }
 

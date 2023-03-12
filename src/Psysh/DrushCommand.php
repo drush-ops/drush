@@ -1,12 +1,6 @@
 <?php
 
-/**
- * @file
- * Contains \Drush\Psysh\DrushCommand.
- *
- * DrushCommand is a PsySH proxy command which accepts a Drush command config
- * array and tries to build an appropriate PsySH command for it.
- */
+declare(strict_types=1);
 
 namespace Drush\Psysh;
 
@@ -19,7 +13,8 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Main Drush command.
+ * DrushCommand is a PsySH proxy command which accepts a Drush command config
+ * array and tries to build an appropriate PsySH command for it.
  */
 class DrushCommand extends BaseCommand
 {

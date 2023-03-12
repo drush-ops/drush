@@ -52,7 +52,7 @@ The following are both valid ways to declare a command:
     ```
 
 - A commandfile that will only be used on PHP8+ should [use PHP Attributes](https://github.com/drush-ops/drush/pull/4821) instead of Annotations.
-- [See all Attributes provided by Drush core](https://www.drush.org/latest/api/Drush/Attributes.html).
+- [See all Attributes provided by Drush core](https://www.drush.org/api/Drush/Attributes.html).
 
 ## Specifying the Services File
 

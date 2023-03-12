@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * This is a NAME.deploy.php file. It contains "deploy" functions. These are
  * one-time functions that run *after* config is imported during a deployment.

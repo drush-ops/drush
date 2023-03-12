@@ -1,8 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Unish;
 
 use Drupal\Core\Field\FieldStorageDefinitionInterface;
+use Drush\Commands\core\PhpCommands;
+use Drush\Drupal\Commands\pm\PmCommands;
 use Symfony\Component\Filesystem\Path;
 
 /**
@@ -17,8 +21,8 @@ class FieldTest extends CommandUnishTestCase
             $this->setUpDrupal(1, true);
             // Create a content entity with bundles.
             CreateEntityType::createContentEntity($this);
-            $this->drush('pm-install', ['text,field_ui,unish_article']);
-            $this->drush('php:script', ['create_unish_article_bundles'], ['script-path' => Path::join(__DIR__, 'resources')]);
+            $this->drush(PmCommands::INSTALL, ['text,field_ui,unish_article']);
+            $this->drush(PhpCommands::SCRIPT, ['create_unish_article_bundles'], ['script-path' => Path::join(__DIR__, 'resources')]);
         }
     }
 
@@ -43,7 +47,7 @@ class FieldTest extends CommandUnishTestCase
         $this->assertStringContainsString("Successfully created field 'field_test3' on unish_article type with bundle 'alpha'", $this->getErrorOutputRaw());
         $this->assertStringContainsString("http://dev/admin/structure/unish_article_types/manage/alpha/fields/unish_article.alpha.field_test3", $this->getSimplifiedErrorOutput());
         $php = "return Drupal::entityTypeManager()->getStorage('field_config')->load('unish_article.alpha.field_test3')->getSettings()";
-        $this->drush('php:eval', [$php], ['format' => 'json']);
+        $this->drush(PhpCommands::EVAL, [$php], ['format' => 'json']);
         $settings = $this->getOutputFromJSON();
         $this->assertSame('unish_article', $settings['target_type']);
         $this->assertEquals(['beta' => 'beta'], $settings['handler_settings']['target_bundles']);
@@ -80,15 +84,20 @@ class FieldTest extends CommandUnishTestCase
         $this->drush('field:create', ['unish_article', 'alpha'], ['field-label' => 'Test', 'field-name' => 'field_test5', 'field-description' => 'baz', 'field-type' => 'entity_reference', 'is-required' => true, 'field-widget' => 'entity_reference_autocomplete', 'cardinality' => FieldStorageDefinitionInterface::CARDINALITY_UNLIMITED, 'target-type' => 'unish_article', 'target-bundle' => 'beta']);
         $this->assertStringContainsString("Successfully created field 'field_test5' on unish_article type with bundle 'alpha'", $this->getSimplifiedErrorOutput());
 
-        $this->drush('field:delete', ['unish_article'], [], null, null, self::EXIT_ERROR);
+        $this->drush('field:delete', ['unish_article'], ['field-name' => 'field_test5'], null, null, self::EXIT_ERROR);
         $this->assertStringContainsString('The bundle argument is required.', $this->getErrorOutputRaw());
         $this->drush('field:delete', ['unish_article', 'alpha'], [], null, null, self::EXIT_ERROR);
         $this->assertStringContainsString('The field-name option is required.', $this->getErrorOutputRaw());
 
         $this->drush('field:delete', ['unish_article', 'alpha'], ['field-name' => 'field_testZZZZZ'], null, null, self::EXIT_ERROR);
-        $this->assertStringContainsString("Field with name 'field_testZZZZZ' does not exist on bundle 'alpha'", $this->getErrorOutputRaw());
+        $this->assertStringContainsString("Field with name 'field_testZZZZZ' does not exist.", $this->getErrorOutputRaw());
         $this->drush('field:delete', ['unish_article', 'alpha'], ['field-name' => 'field_test5']);
         $this->assertStringContainsString(" The field Test has been deleted from the Alpha bundle.", $this->getErrorOutputRaw());
+
+        // All bundles
+        $this->drush('field:create', ['unish_article', 'alpha'], ['field-label' => 'Test', 'field-name' => 'field_test5', 'field-description' => 'baz', 'field-type' => 'entity_reference', 'is-required' => true, 'field-widget' => 'entity_reference_autocomplete', 'cardinality' => FieldStorageDefinitionInterface::CARDINALITY_UNLIMITED, 'target-type' => 'unish_article', 'target-bundle' => 'beta']);
+        $this->drush('field:delete', ['unish_article'], ['field-name' => 'field_test5', 'all-bundles' => true]);
+        $this->assertStringContainsString("The field Test has been deleted from the Alpha bundle.", $this->getErrorOutputRaw());
     }
 
     public function testFieldBaseInfo()

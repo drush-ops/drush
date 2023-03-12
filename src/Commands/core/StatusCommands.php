@@ -1,13 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drush\Commands\core;
 
+use Consolidation\AnnotatedCommand\Hooks\HookManager;
 use Consolidation\OutputFormatters\StructuredData\PropertyList;
 use Drupal\Core\Site\Settings;
 use Drupal\Core\StreamWrapper\PrivateStream;
 use Drupal\Core\StreamWrapper\PublicStream;
+use Drush\Attributes as CLI;
 use Drush\Boot\BootstrapManager;
 use Drush\Boot\DrupalBoot;
+use Drush\Boot\DrupalBootLevels;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Drush\Sql\SqlBase;
@@ -18,67 +23,63 @@ use Consolidation\AnnotatedCommand\CommandData;
 use Drush\Utils\StringUtils;
 use Symfony\Component\Filesystem\Path;
 
-class StatusCommands extends DrushCommands implements SiteAliasManagerAwareInterface
+final class StatusCommands extends DrushCommands implements SiteAliasManagerAwareInterface
 {
     use SiteAliasManagerAwareTrait;
 
+    const STATUS = 'core:status';
+
     /**
      * An overview of the environment - Drush and Drupal.
-     *
-     * @command core:status
-     * @param $filter A field to filter on. @deprecated - use --field option instead.
-     * @option project A comma delimited list of projects. Their paths will be added to path-aliases section.
-     * @usage drush core-status --field=files
-     *   Emit just one field, not all the default fields.
-     * @usage drush core-status --fields=*
-     *   Emit all fields, not just the default ones.
-     * @aliases status,st,core-status
-     * @table-style compact
-     * @list-delimiter :
-     * @field-labels
-     *   drupal-version: Drupal version
-     *   uri: Site URI
-     *   db-driver: DB driver
-     *   db-hostname: DB hostname
-     *   db-port: DB port
-     *   db-username: DB username
-     *   db-password: DB password
-     *   db-name: DB name
-     *   db-status: Database
-     *   bootstrap: Drupal bootstrap
-     *   theme: Default theme
-     *   admin-theme: Admin theme
-     *   php-bin: PHP binary
-     *   php-conf: PHP config
-     *   php-os: PHP OS
-     *   php-version: PHP version
-     *   drush-script: Drush script
-     *   drush-version: Drush version
-     *   drush-temp: Drush temp
-     *   drush-conf: Drush configs
-     *   drush-alias-files: Drush aliases
-     *   alias-searchpaths: Alias search paths
-     *   install-profile: Install profile
-     *   root: Drupal root
-     *   drupal-settings-file: Drupal Settings
-     *   site-path: Site path
-     *   site: Site path
-     *   themes: Themes path
-     *   modules: Modules path
-     *   files: Files, Public
-     *   private: Files, Private
-     *   temp: Files, Temp
-     *   config-sync: Drupal config
-     *   files-path: Files, Public
-     *   temp-path: Files, Temp
-     *   %paths: Other paths
-     * @default-fields drupal-version,uri,db-driver,db-hostname,db-port,db-username,db-name,db-status,bootstrap,theme,admin-theme,php-bin,php-conf,php-os,php-version,drush-script,drush-version,drush-temp,drush-conf,install-profile,root,site,files,private,temp
-     * @pipe-format json
-     * @hidden-options project
-     * @bootstrap max
-     * @topics docs:readme
      */
-    public function status($filter = '', $options = ['project' => self::REQ, 'format' => 'table']): PropertyList
+    #[CLI\Command(name: self::STATUS, aliases: ['status', 'st', 'core-status'])]
+    #[CLI\Option(name: 'project', description: 'A comma delimited list of projects. Their paths will be added to path-aliases section.')]
+    #[CLI\Usage(name: 'drush core-status --field=files', description: 'Emit just one field, not all the default fields.')]
+    #[CLI\Usage(name: 'drush core-status --fields=*', description: 'Emit all fields, not just the default ones.')]
+    #[CLI\HookSelector(name: 'table-style', value: 'compact')]
+    #[CLI\HookSelector(name: 'list-delimiter', value: ':')]
+    #[CLI\FieldLabels(labels: [
+        'drupal-version' => 'Drupal version',
+        'uri' => 'Site URI',
+        'db-driver' => 'DB driver',
+        'db-hostname' => 'DB hostname',
+        'db-port' => 'DB port',
+        'db-username' => 'DB username',
+        'db-password' => 'DB password',
+        'db-name' => 'DB name',
+        'db-status' => 'Database',
+        'bootstrap' => 'Drupal bootstrap',
+        'theme' => 'Default theme',
+        'admin-theme' => 'Admin theme',
+        'php-bin' => 'PHP binary',
+        'php-conf' => 'PHP config',
+        'php-os' => 'PHP OS',
+        'php-version' => 'PHP version',
+        'drush-script' => 'Drush script',
+        'drush-version' => 'Drush version',
+        'drush-temp' => 'Drush temp',
+        'drush-conf' => 'Drush configs',
+        'drush-alias-files' => 'Drush aliases',
+        'alias-searchpaths' => 'Alias search paths',
+        'install-profile' => 'Install profile',
+        'root' => 'Drupal root',
+        'drupal-settings-file' => 'Drupal Settings',
+        'site-path' => 'Site path',
+        'site' => 'Site path',
+        'themes' => 'Themes path',
+        'modules' => 'Modules path',
+        'files' => 'Files, Public',
+        'private' => 'Files, Private',
+        'temp' => 'Files, Temp',
+        'config-sync' => 'Drupal config',
+        'files-path' => 'Files, Public',
+        'temp-path' => 'Files, Temp',
+        '%paths' => 'Other paths'
+    ])]
+    #[CLI\DefaultTableFields(fields: ['drupal-version', 'uri', 'db-driver', 'db-hostname', 'db-port', 'db-username', 'db-name', 'db-status', 'bootstrap', 'theme', 'admin-theme', 'php-bin', 'php-conf', 'php-os', 'php-version', 'drush-script', 'drush-version', 'drush-temp', 'drush-conf', 'install-profile', 'root', 'site', 'files', 'private', 'temp'])]
+    #[CLI\Bootstrap(level: DrupalBootLevels::MAX)]
+    #[CLI\Topics(topics: ['docs:readme'])]
+    public function status($options = ['project' => self::REQ, 'format' => 'table']): PropertyList
     {
         $data = $this->getPropertyList($options);
 
@@ -97,7 +98,7 @@ class StatusCommands extends DrushCommands implements SiteAliasManagerAwareInter
             $conf_dir = $boot_object->confPath();
             $settings_file = Path::join($conf_dir, 'settings.php');
             $status_table['drupal-settings-file'] = file_exists($settings_file) ? $settings_file : '';
-            if ($boot_manager->hasBootstrapped(DRUSH_BOOTSTRAP_DRUPAL_SITE)) {
+            if ($boot_manager->hasBootstrapped(DrupalBootLevels::SITE)) {
                 $status_table['uri'] = $boot_manager->getUri();
                 try {
                     if ($sql = SqlBase::create($options)) {
@@ -113,13 +114,13 @@ class StatusCommands extends DrushCommands implements SiteAliasManagerAwareInter
                         $status_table['db-name'] = isset($db_spec['database']) ? $db_spec['database'] : null;
                         $status_table['db-port'] = isset($db_spec['port']) ? $db_spec['port'] : null;
                     }
-                    if ($boot_manager->hasBootstrapped(DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION)) {
+                    if ($boot_manager->hasBootstrapped(DrupalBootLevels::CONFIGURATION)) {
                         if (method_exists('Drupal', 'installProfile')) {
                             $status_table['install-profile'] = \Drupal::installProfile();
                         }
-                        if ($boot_manager->hasBootstrapped(DRUSH_BOOTSTRAP_DRUPAL_DATABASE)) {
+                        if ($boot_manager->hasBootstrapped(DrupalBootLevels::DATABASE)) {
                             $status_table['db-status'] = dt('Connected');
-                            if ($boot_manager->hasBootstrapped(DRUSH_BOOTSTRAP_DRUPAL_FULL)) {
+                            if ($boot_manager->hasBootstrapped(DrupalBootLevels::FULL)) {
                                 $status_table['bootstrap'] = dt('Successful');
                             }
                         }
@@ -128,7 +129,7 @@ class StatusCommands extends DrushCommands implements SiteAliasManagerAwareInter
                     // Don't worry be happy.
                 }
             }
-            if ($boot_manager->hasBootstrapped(DRUSH_BOOTSTRAP_DRUPAL_FULL)) {
+            if ($boot_manager->hasBootstrapped(DrupalBootLevels::FULL)) {
                 $status_table['theme'] = \Drupal::config('system.theme')->get('default');
                 $status_table['admin-theme'] = $theme = \Drupal::config('system.theme')->get('admin') ?: 'seven';
             }
@@ -177,9 +178,7 @@ class StatusCommands extends DrushCommands implements SiteAliasManagerAwareInter
         return $cellData;
     }
 
-    /**
-     * @hook pre-command core-status
-     */
+    #[CLI\Hook(type: HookManager::PRE_COMMAND_HOOK, target: self::STATUS)]
     public function adjustStatusOptions(CommandData $commandData): void
     {
         $input = $commandData->input();
@@ -211,7 +210,7 @@ class StatusCommands extends DrushCommands implements SiteAliasManagerAwareInter
                 } else {
                     $paths['%themes'] = ltrim($site_wide . '/themes', '/');
                 }
-                if ($boot_manager->hasBootstrapped(DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION)) {
+                if ($boot_manager->hasBootstrapped(DrupalBootLevels::CONFIGURATION)) {
                     try {
                         $paths["%config-sync"] = Settings::get('config_sync_directory');
                     } catch (\Exception $e) {
@@ -219,7 +218,7 @@ class StatusCommands extends DrushCommands implements SiteAliasManagerAwareInter
                     }
                 }
 
-                if ($boot_manager->hasBootstrapped(DRUSH_BOOTSTRAP_DRUPAL_FULL)) {
+                if ($boot_manager->hasBootstrapped(DrupalBootLevels::FULL)) {
                     $paths['%files'] = PublicStream::basePath();
                     $paths['%temp'] = \Drupal::service('file_system')->getTempDirectory();
                     if ($private_path = PrivateStream::basePath()) {

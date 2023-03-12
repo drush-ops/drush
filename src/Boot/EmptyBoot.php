@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drush\Boot;
 
 use Psr\Log\LoggerInterface;
@@ -22,12 +24,12 @@ class EmptyBoot extends BaseBoot
     public function bootstrapPhases(): array
     {
         return [
-        DRUSH_BOOTSTRAP_DRUSH => '_drush_bootstrap_drush',
+            DrupalBootLevels::NONE => '_drush_bootstrap_drush',
         ];
     }
 
     public function bootstrapInitPhases(): array
     {
-        return [DRUSH_BOOTSTRAP_DRUSH];
+        return [DrupalBootLevels::NONE];
     }
 }

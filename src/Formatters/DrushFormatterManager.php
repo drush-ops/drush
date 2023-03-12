@@ -1,9 +1,6 @@
 <?php
 
-/**
- * @file
- * Definition of Drush\Formatters\DrushFormatterManager.
- */
+declare(strict_types=1);
 
 namespace Drush\Formatters;
 

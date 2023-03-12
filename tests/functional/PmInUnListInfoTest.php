@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * @file
  *   Tests for enable, disable, uninstall, pm-list commands.
