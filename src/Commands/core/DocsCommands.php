@@ -19,7 +19,7 @@ final class DocsCommands extends DrushCommands
      */
     #[CLI\Command(name: 'docs:readme', aliases: ['docs-readme'])]
     #[CLI\Help(hidden: true)]
-    #[CLI\Topic(path: '../../../README.md')]
+    #[CLI\Topics(path: '../../../README.md')]
     public function readme(): void
     {
         self::printFileTopic($this->commandData);
@@ -30,7 +30,7 @@ final class DocsCommands extends DrushCommands
      */
     #[CLI\Command(name: 'docs:bisect', aliases: ['docs-bisect'])]
     #[CLI\Help(hidden: true)]
-    #[CLI\Topic(path: '../../../examples/git-bisect.example.sh')]
+    #[CLI\Topics(path: '../../../examples/git-bisect.example.sh')]
     public function bisect(): void
     {
         self::printFileTopic($this->commandData);
@@ -41,7 +41,7 @@ final class DocsCommands extends DrushCommands
      */
     #[CLI\Command(name: 'docs:configuration', aliases: ['docs-configuration'])]
     #[CLI\Help(hidden: true)]
-    #[CLI\Topic(path: '../../../docs/using-drush-configuration.md')]
+    #[CLI\Topics(path: '../../../docs/using-drush-configuration.md')]
     public function config(): void
     {
         self::printFileTopic($this->commandData);
@@ -52,7 +52,7 @@ final class DocsCommands extends DrushCommands
      */
     #[CLI\Command(name: 'docs:hooks', aliases: ['docs-hooks'])]
     #[CLI\Help(hidden: true)]
-    #[CLI\Topic(path: '../../../docs/hooks.md')]
+    #[CLI\Topics(path: '../../../docs/hooks.md')]
     public function hooks(): void
     {
         self::printFileTopic($this->commandData);
@@ -63,7 +63,7 @@ final class DocsCommands extends DrushCommands
      */
     #[CLI\Command(name: 'docs:config:exporting', aliases: ['docs-config-exporting'])]
     #[CLI\Help(hidden: true)]
-    #[CLI\Topic(path: '../../../docs/config-exporting.md')]
+    #[CLI\Topics(path: '../../../docs/config-exporting.md')]
     public function configExport(): void
     {
         self::printFileTopic($this->commandData);
@@ -74,7 +74,7 @@ final class DocsCommands extends DrushCommands
      */
     #[CLI\Command(name: 'docs:output-formats-filters', aliases: ['docs:output'])]
     #[CLI\Help(hidden: true)]
-    #[CLI\Topic(path: '../../../docs/output-formats-filters.md')]
+    #[CLI\Topics(path: '../../../docs/output-formats-filters.md')]
     public function outputFormatsFilters(): void
     {
         self::printFileTopic($this->commandData);
@@ -85,7 +85,7 @@ final class DocsCommands extends DrushCommands
      */
     #[CLI\Command(name: 'docs:aliases', aliases: ['docs-aliases'])]
     #[CLI\Help(hidden: true)]
-    #[CLI\Topic(path: '../../../docs/site-aliases.md')]
+    #[CLI\Topics(path: '../../../docs/site-aliases.md')]
     public function siteAliases(): void
     {
         self::printFileTopic($this->commandData);
@@ -96,7 +96,7 @@ final class DocsCommands extends DrushCommands
      */
     #[CLI\Command(name: 'docs:script', aliases: ['docs-script'])]
     #[CLI\Help(hidden: true)]
-    #[CLI\Topic(path: '../../../examples/helloworld.script')]
+    #[CLI\Topics(path: '../../../examples/helloworld.script')]
     public function script(): void
     {
         self::printFileTopic($this->commandData);
@@ -107,7 +107,7 @@ final class DocsCommands extends DrushCommands
      */
     #[CLI\Command(name: 'docs:bootstrap', aliases: ['docs-bootstrap'])]
     #[CLI\Help(hidden: true)]
-    #[CLI\Topic(path: '../../../docs/bootstrap.md')]
+    #[CLI\Topics(path: '../../../docs/bootstrap.md')]
     public function bootstrap(): void
     {
         self::printFileTopic($this->commandData);
@@ -118,7 +118,7 @@ final class DocsCommands extends DrushCommands
      */
     #[CLI\Command(name: 'docs:cron', aliases: ['docs-cron'])]
     #[CLI\Help(hidden: true)]
-    #[CLI\Topic(path: '../../../docs/cron.md')]
+    #[CLI\Topics(path: '../../../docs/cron.md')]
     public function cron(): void
     {
         self::printFileTopic($this->commandData);
@@ -129,7 +129,7 @@ final class DocsCommands extends DrushCommands
      */
     #[CLI\Command(name: 'docs:commands', aliases: ['docs-commands'])]
     #[CLI\Help(hidden: true)]
-    #[CLI\Topic(path: '../../../docs/commands.md')]
+    #[CLI\Topics(path: '../../../docs/commands.md')]
     public function commands(): void
     {
         self::printFileTopic($this->commandData);
@@ -140,7 +140,7 @@ final class DocsCommands extends DrushCommands
      */
     #[CLI\Command(name: 'docs:generators', aliases: ['docs-generators'])]
     #[CLI\Help(hidden: true)]
-    #[CLI\Topic(path: '../../../docs/generators.md')]
+    #[CLI\Topics(path: '../../../docs/generators.md')]
     public function generators(): void
     {
         self::printFileTopic($this->commandData);
@@ -151,7 +151,7 @@ final class DocsCommands extends DrushCommands
      */
     #[CLI\Command(name: 'docs:examplecommand', aliases: ['docs-examplecommand'])]
     #[CLI\Help(hidden: true)]
-    #[CLI\Topic(path: '../../../examples/Commands/ArtCommands.php')]
+    #[CLI\Topics(path: '../../../examples/Commands/ArtCommands.php')]
     public function exampleCommand(): void
     {
         self::printFileTopic($this->commandData);
@@ -162,7 +162,7 @@ final class DocsCommands extends DrushCommands
      */
     #[CLI\Command(name: 'docs:migrate')]
     #[CLI\Help(hidden: true)]
-    #[CLI\Topic(path: '../../../docs/migrate.md')]
+    #[CLI\Topics(path: '../../../docs/migrate.md')]
     public function migrate(): void
     {
         self::printFileTopic($this->commandData);
@@ -173,7 +173,7 @@ final class DocsCommands extends DrushCommands
      */
     #[CLI\Command(name: 'docs:example-sync-via-http', aliases: ['docs-example-sync-via-http'])]
     #[CLI\Help(hidden: true)]
-    #[CLI\Topic(path: '../../../examples/Commands/SyncViaHttpCommands.php')]
+    #[CLI\Topics(path: '../../../examples/Commands/SyncViaHttpCommands.php')]
     public function syncHttp(): void
     {
         self::printFileTopic($this->commandData);
@@ -184,7 +184,7 @@ final class DocsCommands extends DrushCommands
      */
     #[CLI\Command(name: 'docs:policy', aliases: ['docs-policy'])]
     #[CLI\Help(hidden: true)]
-    #[CLI\Topic(path: '../../../examples/Commands/PolicyCommands.php')]
+    #[CLI\Topics(path: '../../../examples/Commands/PolicyCommands.php')]
     public function policy(): void
     {
         self::printFileTopic($this->commandData);
@@ -195,7 +195,7 @@ final class DocsCommands extends DrushCommands
      */
     #[CLI\Command(name: 'docs:deploy', aliases: ['docs-deploy'])]
     #[CLI\Help(hidden: true)]
-    #[CLI\Topic(path: '../../../docs/deploycommand.md')]
+    #[CLI\Topics(path: '../../../docs/deploycommand.md')]
     public function deploy(): void
     {
         self::printFileTopic($this->commandData);
