@@ -40,14 +40,14 @@ class GenerateCommands extends DrushCommands implements AutoloaderAwareInterface
     #[CLI\Usage(name: 'drush generate controller -vvv --dry-run', description: 'Learn all the potential answers so you can re-run with several --answer options.')]
     #[CLI\Topics(topics: ['docs:generators'])]
     #[CLI\Bootstrap(level: DrupalBootLevels::MAX)]
-    public function generate(string $generator = '', $options = ['replace' => FALSE, 'working-dir' => self::REQ, 'answer' => [], 'destination' => self::REQ, 'dry-run' => false]): int
+    public function generate(string $generator = '', $options = ['replace' => false, 'working-dir' => self::REQ, 'answer' => [], 'destination' => self::REQ, 'dry-run' => false]): int
     {
         // @todo Figure out a way to inject the container.
         $container = \Drupal::getContainer();
 
         // @todo Implement discovery for third-party generators.
         $application = Application::create($container);
-        $application->setAutoExit(FALSE);
+        $application->setAutoExit(false);
 
         $application->addCommands([
             new DrushAliasFile(),
@@ -98,5 +98,4 @@ class GenerateCommands extends DrushCommands implements AutoloaderAwareInterface
 
         return $application->run(new ArgvInput($argv), $this->output());
     }
-
 }
