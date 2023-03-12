@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drush\Attributes;
 
 use Attribute;
@@ -13,7 +15,7 @@ class ValidatePermissions
      *   The argument name containing the required permissions.
      */
     public function __construct(
-        public array $argName,
+        public string $argName,
     ) {
     }
 

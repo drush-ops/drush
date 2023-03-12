@@ -1,8 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drush\Drupal\Commands\core;
 
-use Drupal\Core\Queue\QueueWorkerManager;
+use Consolidation\AnnotatedCommand\Hooks\HookManager;
 use Drupal\Core\Queue\QueueInterface;
 use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\AnnotatedCommand\CommandError;
@@ -13,14 +15,20 @@ use Drupal\Core\Queue\QueueFactory;
 use Drupal\Core\Queue\QueueWorkerManagerInterface;
 use Drupal\Core\Queue\RequeueException;
 use Drupal\Core\Queue\SuspendQueueException;
+use Drush\Attributes as CLI;
 use Drush\Commands\DrushCommands;
 
-class QueueCommands extends DrushCommands
+final class QueueCommands extends DrushCommands
 {
+    const VALIDATE_QUEUE = 'validate-queue';
+    const RUN = 'queue:run';
+    const LIST = 'queue:list';
+    const DELETE = 'queue:delete';
+
     /**
-     * @var QueueWorkerManager
+     * @var QueueWorkerManagerInterface
      */
-    protected $workerManager;
+    protected QueueWorkerManagerInterface $workerManager;
 
     protected $queueService;
 
@@ -30,7 +38,7 @@ class QueueCommands extends DrushCommands
         $this->queueService = $queueService;
     }
 
-    public function getWorkerManager(): QueueWorkerManager
+    public function getWorkerManager(): QueueWorkerManagerInterface
     {
         return $this->workerManager;
     }
@@ -49,15 +57,13 @@ class QueueCommands extends DrushCommands
 
     /**
      * Run a specific queue by name.
-     *
-     * @command queue:run
-     * @aliases queue-run
-     * @param string $name The name of the queue to run, as defined in either hook_queue_info or hook_cron_queue_info.
-     * @validate-queue name
-     * @option time-limit The maximum number of seconds allowed to run the queue.
-     * @option items-limit The maximum number of items allowed to run the queue.
-     * @option lease-time The maximum number of seconds that an item remains claimed.
      */
+    #[CLI\Command(name: self::RUN, aliases: ['queue-run'])]
+    #[CLI\Argument(name: 'name', description: 'The name of the queue to run, as defined in either hook_queue_info or hook_cron_queue_info.')]
+    #[CLI\Option(name: 'time-limit', description: 'The maximum number of seconds allowed to run the queue.')]
+    #[CLI\Option(name: 'items-limit', description: 'The maximum number of items allowed to run the queue.')]
+    #[CLI\Option(name: 'lease-time', description: 'The maximum number of seconds that an item remains claimed.')]
+    #[CLI\HookSelector(name: self::VALIDATE_QUEUE, value: 'name')]
     public function run(string $name, $options = ['time-limit' => self::REQ, 'items-limit' => self::REQ, 'lease-time' => self::REQ]): void
     {
         $time_limit = (int) $options['time-limit'];
@@ -109,16 +115,10 @@ class QueueCommands extends DrushCommands
 
     /**
      * Returns a list of all defined queues.
-     *
-     * @command queue:list
-     * @aliases queue-list
-     * @field-labels
-     *   queue: Queue
-     *   items: Items
-     *   class: Class
-     *
-     * @filter-default-field queue
      */
+    #[CLI\Command(name: self::LIST, aliases: ['queue-list'])]
+    #[CLI\FieldLabels(labels: ['queue' => 'Queue', 'items' => 'Items', 'class' => 'Class'])]
+    #[CLI\FilterDefaultField(field: 'queue')]
     public function qList($options = ['format' => 'table']): RowsOfFields
     {
         $result = [];
@@ -135,12 +135,10 @@ class QueueCommands extends DrushCommands
 
     /**
      * Delete all items in a specific queue.
-     *
-     * @command queue:delete
-     * @aliases queue-delete
-     * @param $name The name of the queue to run, as defined in either hook_queue_info or hook_cron_queue_info.
-     * @validate-queue name
      */
+    #[CLI\Command(name: self::DELETE, aliases: ['queue-delete'])]
+    #[CLI\Argument(name: 'name', description: 'The name of the queue to run, as defined in either hook_queue_info or hook_cron_queue_info.')]
+    #[CLI\HookSelector(name: self::VALIDATE_QUEUE, value: 'name')]
     public function delete($name): void
     {
         $queue = $this->getQueue($name);
@@ -149,17 +147,12 @@ class QueueCommands extends DrushCommands
     }
 
     /**
-     * Validate that queue permission exists.
-     *
-     * Annotation value should be the name of the argument/option containing the name.
-     *
-     * @hook validate @validate-queue
-     * @param CommandData $commandData
-     * @return CommandError|null
+     * Validate that a queue exists.
      */
+    #[CLI\Hook(type: HookManager::ARGUMENT_VALIDATOR, selector: self::VALIDATE_QUEUE)]
     public function validateQueueName(CommandData $commandData)
     {
-        $arg_name = $commandData->annotationData()->get('validate-queue', null);
+        $arg_name = $commandData->annotationData()->get(self::VALIDATE_QUEUE, null);
         $name = $commandData->input()->getArgument($arg_name);
         if (!array_key_exists($name, self::getQueues())) {
             $msg = dt('Queue not found: !name', ['!name' => $name]);
@@ -167,9 +160,6 @@ class QueueCommands extends DrushCommands
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getQueues(): array
     {
         if (!isset(static::$queues)) {
@@ -181,9 +171,6 @@ class QueueCommands extends DrushCommands
         return static::$queues;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getQueue($name): QueueInterface
     {
         return $this->getQueueService()->get($name);

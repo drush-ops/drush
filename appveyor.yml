@@ -4,7 +4,7 @@ platform: 'x86'
 clone_folder: C:\projects\work
 branches:
   only:
-    - 11.x
+    - 12.x
 
   ## Cache composer bits
 cache:
@@ -25,12 +25,13 @@ install:
   - SET PATH=C:\Program Files\MySql\MySQL Server 5.7\bin\;%PATH%
   - choco search php --exact --all-versions -r
   #Install PHP per https://blog.wyrihaximus.net/2016/11/running-php-unit-tests-on-windows-using-appveyor-and-chocolatey/
-  - ps: appveyor-retry cinst --limit-output --ignore-checksums -y php --version 7.4.27
-  - cd c:\tools\php74
+  - ps: appveyor-retry cinst --limit-output --ignore-checksums -y php --version 8.1.16
+  - cd c:\tools\php81
   - copy php.ini-production php.ini
 
   # https://github.com/php-coveralls/php-coveralls/pull/223/files
-  - appveyor DownloadFile http://curl.haxx.se/ca/cacert.pem -FileName C:\cacert.pem
+  # - appveyor DownloadFile https://curl.se/ca/cacert.pem -FileName C:\cacert.pem
+  - curl -fsS -o C:\cacert.pem https://curl.se/ca/cacert.pem
   - echo curl.cainfo=C:\cacert.pem >> php.ini
 
   - echo extension_dir=ext >> php.ini
@@ -46,14 +47,16 @@ install:
   - echo extension=php_pdo_pgsql.dll >> php.ini
   - echo extension=php_pdo_sqlite.dll >> php.ini
   - echo extension=php_pgsql.dll >> php.ini
-  - echo extension=php_gd2.dll >> php.ini
+  - echo extension=php_gd.dll >> php.ini
   - echo extension=php_fileinfo.dll >> php.ini
-  - SET PATH=C:\tools\php74;%PATH%
+  - echo memory_limit=256M >> php.ini
+  - SET PATH=C:\tools\php81;%PATH%
   #Install Composer
   - cd %APPVEYOR_BUILD_FOLDER%
   #- appveyor DownloadFile https://getcomposer.org/composer.phar
   - php -r "readfile('http://getcomposer.org/installer');" | php
-  #Install dependencies via Composer
+  - echo @php %cd%\composer.phar %%* > composer.bat
+  # Install dependencies via Composer.
   - php composer.phar install --prefer-dist -n
   - SET PATH=%APPVEYOR_BUILD_FOLDER%;%APPVEYOR_BUILD_FOLDER%/vendor/bin;%PATH%
   # Uncomment this and on_finish line below to enable RDP into build machine https://www.appveyor.com/docs/how-to/rdp-to-build-worker/

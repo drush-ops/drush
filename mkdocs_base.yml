@@ -24,9 +24,8 @@ extra_css:
 plugins:
   - edit_url
   - search
-  - redirects:
-      redirect_maps:
-        'commands/pm_enable.md': 'commands/pm_install.md'
+  - mike:
+      canonical_version: latest
   - git-revision-date-localized:
       exclude:
         - commands/*
@@ -36,6 +35,8 @@ plugins:
         - commands/*
         - generators/*
 extra:
+  version:
+    provider: mike
   social:
     - icon: fontawesome/brands/twitter
       link: https://twitter.com/drushcli
@@ -69,8 +70,8 @@ markdown_extensions:
       emoji_index: '!!python/name:materialx.emoji.twemoji'
       emoji_generator: '!!python/name:materialx.emoji.to_svg'
 nav:
+  - Home: index.md
   - Use:
-    - Introduction: index.md
     - Install: install.md
     - Usage: usage.md
     - Cron: cron.md

@@ -1,27 +1,29 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drush\Commands\core;
 
 use Consolidation\AnnotatedCommand\CommandData;
+use Consolidation\AnnotatedCommand\Hooks\HookManager;
+use Drush\Attributes as CLI;
+use Drush\Attributes\HookSelector;
 use Drush\Commands\DrushCommands;
 
-class DrupliconCommands extends DrushCommands
+final class DrupliconCommands extends DrushCommands
 {
     protected $printed = false;
 
-    /**
-     * @hook option *
-     * @option druplicon Shows the druplicon as glorious ASCII art.
-     */
+    #[CLI\Hook(type: HookManager::OPTION_HOOK, target: '*')]
+    #[CLI\Option(name: 'druplicon', description: 'Shows the druplicon as glorious ASCII art.')]
     public function optionset($options = ['druplicon' => false]): void
     {
     }
 
     /**
      * Print druplicon as post-command output.
-     *
-     * @hook post-command *
      */
+    #[CLI\Hook(type: HookManager::POST_COMMAND_HOOK, target: '*')]
     public function druplicon($result, CommandData $commandData): void
     {
         // If one command does a Drush::drush() to another command,

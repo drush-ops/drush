@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drush\Boot;
 
 use Psr\Log\LoggerAwareInterface;
@@ -10,7 +12,7 @@ abstract class BaseBoot implements Boot, LoggerAwareInterface
     use LoggerAwareTrait;
 
     protected $uri = false;
-    protected $phase = false;
+    protected $phase = DrupalBootLevels::NONE;
 
     public function __construct()
     {
@@ -59,29 +61,25 @@ abstract class BaseBoot implements Boot, LoggerAwareInterface
         // No longer used.
     }
 
-    public function bootstrapPhases(): array
-    {
-        return [
-            DRUSH_BOOTSTRAP_DRUSH => 'bootstrapDrush',
-        ];
-    }
-
     public function bootstrapPhaseMap(): array
     {
         return [
-            'none' => DRUSH_BOOTSTRAP_DRUSH,
-            'drush' => DRUSH_BOOTSTRAP_DRUSH,
-            'max' => DRUSH_BOOTSTRAP_MAX,
-            'root' => DRUSH_BOOTSTRAP_DRUPAL_ROOT,
-            'site' => DRUSH_BOOTSTRAP_DRUPAL_SITE,
-            'configuration' => DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION,
-            'database' => DRUSH_BOOTSTRAP_DRUPAL_DATABASE,
-            'full' => DRUSH_BOOTSTRAP_DRUPAL_FULL
+            'none' => DrupalBootLevels::NONE,
+            'drush' => DrupalBootLevels::NONE,
+            'max' => DrupalBootLevels::MAX,
+            'root' => DrupalBootLevels::ROOT,
+            'site' => DrupalBootLevels::SITE,
+            'configuration' => DrupalBootLevels::CONFIGURATION,
+            'database' => DrupalBootLevels::DATABASE,
+            'full' => DrupalBootLevels::FULL
         ];
     }
 
     public function lookUpPhaseIndex($phase)
     {
+        if (is_numeric($phase)) {
+            return $phase;
+        }
         $phaseMap = $this->bootstrapPhaseMap();
         if (isset($phaseMap[$phase])) {
             return $phaseMap[$phase];

@@ -5,7 +5,7 @@ use Drush\Config\Environment;
 use Drush\Preflight\Preflight;
 use Drush\Runtime\Runtime;
 use Drush\Runtime\DependencyInjection;
-use Webmozart\PathUtil\Path;
+use Symfony\Component\Filesystem\Path;
 
 /**
  * This script runs Drush.
@@ -48,14 +48,24 @@ use Webmozart\PathUtil\Path;
 $cwd = isset($_SERVER['PWD']) && is_dir($_SERVER['PWD']) ? $_SERVER['PWD'] : getcwd();
 
 // Set up autoloader
-$loader = false;
-if (file_exists($autoloadFile = __DIR__ . '/vendor/autoload.php')
-    || file_exists($autoloadFile = __DIR__ . '/../autoload.php')
-    || file_exists($autoloadFile = __DIR__ . '/../../autoload.php')
-) {
-    $loader = include_once($autoloadFile);
-} else {
+$candidates = [
+    $_composer_autoload_path ?? __DIR__ . '/../vendor/autoload.php', // https://getcomposer.org/doc/articles/vendor-binaries.md#finding-the-composer-autoloader-from-a-binary
+    __DIR__ . '/vendor/autoload.php', // For development of Drush itself.
+];
+foreach ($candidates as $candidate) {
+    if (file_exists($candidate)) {
+        $autoloadFile = $candidate;
+        break;
+    }
+}
+$loader = include $autoloadFile;
+if (!$loader) {
     throw new \Exception("Could not locate autoload.php. cwd is $cwd; __DIR__ is " . __DIR__);
+}
+
+// For Symfony 4 only, include our "Path" class (introduced in Symfony 5.4)
+if (!class_exists('\Symfony\Component\Filesystem\Path')) {
+    include __DIR__ . "/src-symfony-compatibility/Filesystem/Path.php";
 }
 
 // Set up environment

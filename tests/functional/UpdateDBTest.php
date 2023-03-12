@@ -1,8 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Unish;
 
-use Webmozart\PathUtil\Path;
+use Drush\Commands\core\PhpCommands;
+use Drush\Commands\core\UpdateDBCommands;
+use Drush\Drupal\Commands\pm\PmCommands;
+use Symfony\Component\Filesystem\Path;
 
 /**
  *  @group slow
@@ -21,24 +26,24 @@ class UpdateDBTest extends CommandUnishTestCase
         }
 
         $this->setUpDrupal(1, true);
-        $this->drush('pm:install', ['drush_empty_module']);
-        $this->drush('updatedb:status');
+        $this->drush(PmCommands::INSTALL, ['drush_empty_module']);
+        $this->drush(UpdateDBCommands::STATUS);
         $err = $this->getErrorOutput();
         $this->assertStringContainsString('[success] No database updates required.', $err);
 
         // Force a pending update.
-        $this->drush('php-script', ['updatedb_script'], ['script-path' => __DIR__ . '/resources']);
+        $this->drush(PhpCommands::SCRIPT, ['updatedb_script'], ['script-path' => __DIR__ . '/resources']);
 
         // Assert that pending hook_update_n appears
-        $this->drush('updatedb:status', [], ['format' => 'json']);
+        $this->drush(UpdateDBCommands::STATUS, [], ['format' => 'json']);
         $out = $this->getOutputFromJSON('drush_empty_module_update_8001');
         $this->assertStringContainsString('Fake update hook', trim($out['description']));
 
         // Run hook_update_n
-        $this->drush('updatedb', []);
+        $this->drush(UpdateDBCommands::UPDATEDB, []);
 
         // Assert that we ran hook_update_n properly
-        $this->drush('updatedb:status');
+        $this->drush(UpdateDBCommands::STATUS);
         $err = $this->getErrorOutput();
         $this->assertStringContainsString('[success] No database updates required.', $err);
 

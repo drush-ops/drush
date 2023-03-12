@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drush\Config;
 
 use Composer\Autoload\ClassLoader;
 use Drush\Drush;
 use Drush\Utils\FsUtils;
 use Symfony\Component\Console\Terminal;
-use Webmozart\PathUtil\Path;
+use Symfony\Component\Filesystem\Path;
 
 /**
  * Store information about the environment
@@ -284,7 +286,7 @@ class Environment
         // This alters where we check for server-wide config and alias files.
         // Used by unit test suite to provide a clean environment.
         $this->setEtcPrefix(getenv('ETC_PREFIX'));
-        $this->setSharePrefix(getenv('SHARE_PREFIX'));
+        $this->setSharePrefix((string)getenv('SHARE_PREFIX'));
 
         return $this;
     }
@@ -293,9 +295,9 @@ class Environment
      * Set the directory prefix to locate the directory that Drush will
      * use as /etc (e.g. during the functional tests).
      */
-    public function setEtcPrefix(string $etcPrefix): self
+    public function setEtcPrefix(mixed $etcPrefix): self
     {
-        if (isset($etcPrefix)) {
+        if (!empty($etcPrefix)) {
             $this->etcPrefix = $etcPrefix;
         }
         return $this;

@@ -1,14 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drush\Drupal\Migrate;
 
 use Composer\Semver\Comparator;
 use Drupal\Core\Database\Driver\sqlite\Connection;
 use Drupal\migrate\Plugin\MigrationInterface;
+use Drupal\migrate\Plugin\MigrationPluginManagerInterface;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\Filesystem\Path;
 use Unish\TestSqlIdMap;
-use Webmozart\PathUtil\Path;
 
 class MigrateRunnerTest extends TestCase
 {
@@ -65,11 +68,13 @@ class MigrateRunnerTest extends TestCase
      */
     public function testMigrateIdMapFilter(array $sourceIdList, array $destinationIdList, array $expectedRows): void
     {
-        $migration = $this->getMockBuilder(MigrationInterface::class)->getMock();
+        $migration = $this->createMock(MigrationInterface::class);
+        $migration->expects($this->any())->method('id')->willReturn('foo');
+        $migrationManager = $this->createMock(MigrationPluginManagerInterface::class);
         $eventDispatcher = $this->getMockBuilder(EventDispatcherInterface::class)->getMock();
         $db = $this->getDatabaseConnection();
         require_once 'TestSqlIdMap.php';
-        $idMap = new TestSqlIdMap($db, [], 'sql', [], $migration, $eventDispatcher);
+        $idMap = new TestSqlIdMap($db, [], 'sql', [], $migration, $eventDispatcher, $migrationManager);
 
         $filteredIdMap = new MigrateIdMapFilter($idMap, $sourceIdList, $destinationIdList);
         $this->assertFilteredIdMap($filteredIdMap, $expectedRows);
@@ -161,7 +166,7 @@ class MigrateRunnerTest extends TestCase
         if (Comparator::greaterThanOrEqualTo(\Drupal::VERSION, '9.4')) {
             /** @var \Composer\Autoload\ClassLoader $loader */
             $loader = require PHPUNIT_COMPOSER_INSTALL;
-            $loader->addPsr4('Drupal\sqlite\\', Path::join([dirname(__DIR__, 2), 'sut/core/modules/sqlite/src']));
+            $loader->addPsr4('Drupal\sqlite\\', Path::join(dirname(__DIR__, 2), 'sut/core/modules/sqlite/src'));
         }
         $connection = new Connection($pdo, $options);
 

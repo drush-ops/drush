@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drush\Drupal\Commands\field;
 
 use Consolidation\OutputFormatters\Options\FormatterOptions;

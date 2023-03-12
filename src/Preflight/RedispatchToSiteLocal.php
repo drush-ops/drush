@@ -1,8 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drush\Preflight;
 
-use Webmozart\PathUtil\Path;
+use Symfony\Component\Filesystem\Path;
 
 /**
  * RedispatchToSiteLocal forces an `exec` to the site-local Drush if it

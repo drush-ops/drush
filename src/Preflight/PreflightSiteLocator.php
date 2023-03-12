@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drush\Preflight;
 
 use Drush\Config\Environment;
@@ -34,7 +36,7 @@ class PreflightSiteLocator
      *
      * @return SiteAlias|false
      */
-    public function findSite(PreflightArgsInterface $preflightArgs, Environment $environment, string $root): SiteAlias
+    public function findSite(PreflightArgsInterface $preflightArgs, Environment $environment, string $root)
     {
         $self = $this->determineSelf($preflightArgs, $environment, $root);
 
@@ -55,8 +57,10 @@ class PreflightSiteLocator
      * @param PreflightArgsInterface $preflightArgs
      * @param Environment $environment
      * @param $root
+     *
+     * @return SiteAlias|false
      */
-    protected function determineSelf(PreflightArgsInterface $preflightArgs, Environment $environment, $root): SiteAlias
+    protected function determineSelf(PreflightArgsInterface $preflightArgs, Environment $environment, $root)
     {
         if ($preflightArgs->hasAlias()) {
             $aliasName = $preflightArgs->alias();

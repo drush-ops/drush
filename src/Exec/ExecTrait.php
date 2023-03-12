@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drush\Exec;
 
 use Consolidation\SiteProcess\Util\Shell;
@@ -100,7 +102,7 @@ trait ExecTrait
         return $process->isSuccessful();
     }
 
-    public static function getEditor(?string $editor)
+    public static function getEditor(?string $editor = null)
     {
         // See http://drupal.org/node/1740294
         return $editor ? "$editor %s" : '${VISUAL-${EDITOR-vi}} %s';

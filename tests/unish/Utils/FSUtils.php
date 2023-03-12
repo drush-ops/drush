@@ -7,6 +7,10 @@ trait FSUtils
 {
     public function removeDir($dir)
     {
+        if (!is_dir($dir)) {
+            return;
+        }
+
         $files = array_diff(scandir($dir), ['.','..']);
         foreach ($files as $file) {
             if (is_dir("$dir/$file") && !is_link("$dir/$file")) {

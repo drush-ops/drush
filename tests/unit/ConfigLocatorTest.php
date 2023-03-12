@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drush\Config;
 
 use PHPUnit\Framework\TestCase;
-use Webmozart\PathUtil\Path;
+use Symfony\Component\Filesystem\Path;
 
 /**
  * Test the config loader. Also exercises the EnvironmentConfigLoader.

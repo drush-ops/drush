@@ -1,8 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Unish;
 
-use Webmozart\PathUtil\Path;
+use Drush\Commands\core\PhpCommands;
+use Drush\Drupal\Commands\core\QueueCommands;
+use Drush\Drupal\Commands\pm\PmCommands;
+use Symfony\Component\Filesystem\Path;
 
 /**
  * @group commands
@@ -23,17 +28,17 @@ class QueueTest extends CommandUnishTestCase
 
         // Enable woot module, which contains a queue worker that throws a
         // RequeueException.
-        $this->drush('pm:install', ['woot'], [], null, null, self::EXIT_SUCCESS);
+        $this->drush(PmCommands::INSTALL, ['woot'], [], null, null, self::EXIT_SUCCESS);
 
         // Add an item to the queue.
-        $this->drush('php:script', ['requeue_script'], ['script-path' => __DIR__ . '/resources']);
+        $this->drush(PhpCommands::SCRIPT, ['requeue_script'], ['script-path' => __DIR__ . '/resources']);
 
         // Check that the queue exists and it has one item in it.
-        $this->drush('queue:list', [], ['format' => 'json']);
+        $this->drush(QueueCommands::LIST, [], ['format' => 'json']);
         $output = $this->getOutputFromJSON('woot_requeue_exception');
-        $this->assertStringContainsString(1, $output['items'], 'Item was successfully added to the queue.');
+        $this->assertEquals(1, $output['items'], 'Item was successfully added to the queue.');
         // Process the queue.
-        $this->drush('queue:run', ['woot_requeue_exception']);
+        $this->drush(QueueCommands::RUN, ['woot_requeue_exception']);
 
         // Check that the item was processed after being requeued once.
         // Here is the detailed workflow of what the above command did.
@@ -46,9 +51,9 @@ class QueueTest extends CommandUnishTestCase
         // RequeueException this time (see below).
         // 6. Drush removes the item from the queue.
         // 7. Command finishes. The queue is empty.
-        $this->drush('queue:list', [], ['format' => 'json']);
+        $this->drush(QueueCommands::LIST, [], ['format' => 'json']);
         $output = $this->getOutputFromJSON('woot_requeue_exception');
-        $this->assertStringContainsString(0, $output['items'], 'Queue item processed after being requeued.');
+        $this->assertEquals(0, $output['items'], 'Queue item processed after being requeued.');
     }
 
   /**
@@ -63,18 +68,18 @@ class QueueTest extends CommandUnishTestCase
 
         // Enable woot module, which contains a queue worker that throws a
         // custom exception.
-        $this->drush('pm:install', ['woot'], [], null, null, self::EXIT_SUCCESS);
+        $this->drush(PmCommands::INSTALL, ['woot'], [], null, null, self::EXIT_SUCCESS);
 
         // Add a couple of items to the queue.
-        $this->drush('php:script', ['queue_custom_exception_script'], ['script-path' => __DIR__ . '/resources']);
+        $this->drush(PhpCommands::SCRIPT, ['queue_custom_exception_script'], ['script-path' => __DIR__ . '/resources']);
 
         // Check that the queue exists and it has two items in it.
-        $this->drush('queue-list', [], ['format' => 'json']);
+        $this->drush(QueueCommands::LIST, [], ['format' => 'json']);
         $output = $this->getOutputFromJSON('woot_custom_exception');
-        $this->assertStringContainsString(2, $output['items'], 'Items were successfully added to the queue.');
+        $this->assertEquals(2, $output['items'], 'Items were successfully added to the queue.');
 
         // Process the queue.
-        $this->drush('queue:run', ['woot_custom_exception']);
+        $this->drush(QueueCommands::RUN, ['woot_custom_exception']);
 
         // Check that the item was processed after being requeued once.
         // Here is the detailed workflow of what the above command did. Note
@@ -89,12 +94,12 @@ class QueueTest extends CommandUnishTestCase
         // 6. Drush removes the second item from the queue.
         // 7. Command finishes. The queue is left with the first item, which was
         // skipped.
-        $this->drush('queue:list', [], ['format' => 'json']);
+        $this->drush(QueueCommands::LIST, [], ['format' => 'json']);
         $output = $this->getOutputFromJSON('woot_custom_exception');
-        $this->assertStringContainsString(1, $output['items'], 'Last queue item processed after first threw custom exception.');
+        $this->assertEquals(1, $output['items'], 'Last queue item processed after first threw custom exception.');
 
-        $this->drush('queue:delete', ['woot_custom_exception']);
-        $this->drush('queue:list', [], ['format' => 'json']);
+        $this->drush(QueueCommands::DELETE, ['woot_custom_exception']);
+        $this->drush(QueueCommands::LIST, [], ['format' => 'json']);
         $output = $this->getOutputFromJSON('woot_custom_exception');
         $this->assertEquals(0, $output['items'], 'Queue was successfully deleted.');
     }

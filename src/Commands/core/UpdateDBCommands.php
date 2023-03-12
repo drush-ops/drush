@@ -1,9 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drush\Commands\core;
 
-use Consolidation\Log\ConsoleLogLevel;
+use Drush\Boot\DrupalBootLevels;
+use Drush\Log\SuccessInterface;
 use Drush\Drupal\DrupalUtil;
+use Drush\Attributes as CLI;
 use DrushBatchContext;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Consolidation\OutputFormatters\StructuredData\UnstructuredListData;
@@ -15,25 +19,26 @@ use Drush\Drush;
 use Drush\Exceptions\UserAbortException;
 use Psr\Log\LogLevel;
 
-class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInterface
+final class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInterface
 {
     use SiteAliasManagerAwareTrait;
 
+    const UPDATEDB = 'updatedb';
+    const STATUS = 'updatedb:status';
+    const BATCH_PROCESS = 'updatedb:batch-process';
     protected $cache_clear;
 
     protected $maintenanceModeOriginalState;
 
     /**
      * Apply any database updates required (as with running update.php).
-     *
-     * @command updatedb
-     * @option cache-clear Clear caches upon completion.
-     * @option post-updates Run post updates after hook_update_n and entity updates.
-     * @bootstrap full
-     * @topics docs:deploy
-     * @kernel update
-     * @aliases updb
      */
+    #[CLI\Command(name: self::UPDATEDB, aliases: ['updb'])]
+    #[CLI\Option(name: 'cache-clear', description: 'Clear caches upon completion.')]
+    #[CLI\Option(name: 'post-updates', description: 'Run post updates after hook_update_n.')]
+    #[CLI\Bootstrap(level: DrupalBootLevels::FULL)]
+    #[CLI\Topics(topics: ['docs:deploy'])]
+    #[CLI\Kernel(name: 'update')]
     public function updatedb($options = ['cache-clear' => true, 'post-updates' => true]): int
     {
         $this->cache_clear = $options['cache-clear'];
@@ -58,7 +63,7 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
         ];
         $status_options = array_merge(Drush::redispatchOptions(), $status_options);
 
-        $process = $this->processManager()->drush($this->siteAliasManager()->getSelf(), 'updatedb:status', [], $status_options);
+        $process = $this->processManager()->drush($this->siteAliasManager()->getSelf(), self::STATUS, [], $status_options);
         $process->mustRun();
         if ($output = $process->getOutput()) {
             // We have pending updates - let's run em.
@@ -73,7 +78,7 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
                 // Caches were just cleared in updateFinished callback.
             }
 
-            $level = $success ? ConsoleLogLevel::SUCCESS : LogLevel::ERROR;
+            $level = $success ? SuccessInterface::SUCCESS : LogLevel::ERROR;
             $this->logger()->log($level, dt('Finished performing updates.'));
         } else {
             $this->logger()->success(dt('No pending updates.'));
@@ -85,42 +90,46 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
 
     /**
      * List any pending database updates.
-     *
-     * @command updatedb:status
-     * @option post-updates Show post updates.
-     * @bootstrap full
-     * @kernel update
-     * @aliases updbst,updatedb-status
-     * @field-labels
-     *   module: Module
-     *   update_id: Update ID
-     *   description: Description
-     *   type: Type
-     * @default-fields module,update_id,type,description
-     * @filter-default-field type
-     * @return RowsOfFields
      */
-    public function updatedbStatus($options = ['format' => 'table', 'post-updates' => true])
+    #[CLI\Command(name: self::STATUS, aliases: ['updbst', 'updatedb-status'])]
+    #[CLI\Option(name: 'post-updates', description: 'Show post updates.')]
+    #[CLI\Bootstrap(level: DrupalBootLevels::FULL)]
+    #[CLI\Kernel(name: 'update')]
+    #[CLI\FieldLabels(labels: [
+        'module' => 'Module',
+        'update_id' => 'Update ID',
+        'description' => 'Description',
+        'type' => 'Type'
+    ])]
+    #[CLI\DefaultTableFields(fields: ['module', 'update_id', 'type', 'description'])]
+    #[CLI\FilterDefaultField(field: 'type')]
+    public function updatedbStatus($options = ['format' => 'table', 'post-updates' => true]): ?RowsOfFields
     {
         require_once DRUSH_DRUPAL_CORE . '/includes/install.inc';
         drupal_load_updates();
-        list($pending, $start) = $this->getUpdatedbStatus($options);
+        list($pending, $start, $warnings) = $this->getUpdatedbStatus($options);
+
+        // Output any warnings.
+        $return = null;
+        foreach ($warnings as $module => $warning) {
+            $this->logger()->warning(dt('!module: !warning', ['!module' => $module, '!warning' => $warning]));
+        }
         if (empty($pending)) {
             $this->logger()->success(dt("No database updates required."));
         } else {
-            return new RowsOfFields($pending);
+            $return = new RowsOfFields($pending);
         }
+        return $return;
     }
 
     /**
      * Process operations in the specified batch set.
-     *
-     * @command updatedb:batch-process
-     * @param string $batch_id The batch id that will be processed.
-     * @bootstrap full
-     * @kernel update
-     * @hidden
      */
+    #[CLI\Command(name: self::BATCH_PROCESS)]
+    #[CLI\Help(hidden: true)]
+    #[CLI\Argument(name: 'batch_id', description: 'The batch id that will be processed.')]
+    #[CLI\Bootstrap(level: DrupalBootLevels::FULL)]
+    #[CLI\Kernel(name: 'update')]
     public function process(string $batch_id, $options = ['format' => 'json']): UnstructuredListData
     {
         $result = drush_batch_command($batch_id);
@@ -423,7 +432,7 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
             'file' => 'core/includes/update.inc',
         ];
         batch_set($batch);
-        $result = drush_backend_batch_process('updatedb:batch-process');
+        $result = drush_backend_batch_process(self::BATCH_PROCESS);
 
         $success = false;
         if (!is_array($result)) {
@@ -453,7 +462,9 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
         $return = [];
         $updates = update_get_update_list();
         foreach ($updates as $module => $update) {
-            $return[$module] = $update['start'];
+            if (!empty($update['start'])) {
+                $return[$module] = $update['start'];
+            }
         }
 
         return $return;
@@ -484,9 +495,14 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
     }
 
     /**
-     * Return a 2 item array with
-     *  - an array where each item is a 4 item associative array describing a pending update.
-     *  - an array listing the first update to run, keyed by module.
+     * Returns information about available module updates.
+     *
+     * @return array
+     *   An indexed array (aka tuple) with 3 elements:
+     *  - An array where each item is a 4 item associative array describing a
+     *    pending update.
+     *  - An array listing the first update to run, keyed by module.
+     *  - An array listing the available warnings, keyed by module.
      */
     public function getUpdatedbStatus(array $options): array
     {
@@ -494,11 +510,14 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
         $pending = \update_get_update_list();
 
         $return = [];
+        $warnings = [];
+
         // Ensure system module's updates run first.
         $start['system'] = [];
 
         foreach ($pending as $module => $updates) {
             if (isset($updates['start'])) {
+                $start[$module] = $updates['start'];
                 foreach ($updates['pending'] as $update_id => $description) {
                     // Strip cruft from front.
                     $description = str_replace($update_id . ' -   ', '', $description);
@@ -509,14 +528,16 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
                         'type' => 'hook_update_n'
                     ];
                 }
-                if (isset($updates['start'])) {
-                    $start[$module] = $updates['start'];
-                }
+            }
+            if (isset($updates['warning'])) {
+                $warnings[$module] = $updates['warning'];
             }
         }
 
         // Pending hook_post_update_X() implementations.
-        $post_updates = \Drupal::service('update.post_update_registry')->getPendingUpdateInformation();
+        /** @var \Drupal\Core\Update\UpdateRegistry $post_update_registry */
+        $post_update_registry = \Drupal::service('update.post_update_registry');
+        $post_updates = $post_update_registry->getPendingUpdateInformation();
         if ($options['post-updates']) {
             foreach ($post_updates as $module => $post_update) {
                 foreach ($post_update as $key => $list) {
@@ -525,7 +546,7 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
                             $return[$module . '-post-' . $id] = [
                                 'module' => $module,
                                 'update_id' => $id,
-                                'description' => $item,
+                                'description' => trim($item),
                                 'type' => 'post-update'
                             ];
                         }
@@ -534,7 +555,7 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
             }
         }
 
-        return [$return, $start];
+        return [$return, $start, $warnings];
     }
 
     /**

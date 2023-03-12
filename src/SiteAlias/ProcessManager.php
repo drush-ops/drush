@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drush\SiteAlias;
 
 use Consolidation\SiteAlias\SiteAliasInterface;
@@ -8,8 +10,8 @@ use Consolidation\SiteProcess\ProcessManager as ConsolidationProcessManager;
 use Consolidation\SiteProcess\SiteProcess;
 use Drush\Drush;
 use Drush\Style\DrushStyle;
+use Symfony\Component\Filesystem\Path;
 use Symfony\Component\Process\Process;
-use Webmozart\PathUtil\Path;
 
 /**
  * The Drush ProcessManager adds a few Drush-specific service methods.

@@ -1,8 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drush\Drupal\Commands\sql;
 
 use Consolidation\AnnotatedCommand\CommandData;
+use Consolidation\AnnotatedCommand\Hooks\HookManager;
+use Drush\Attributes as CLI;
 use Drush\Commands\DrushCommands;
 use Drush\Sql\SqlBase;
 use Drush\Utils\StringUtils;
@@ -11,7 +15,7 @@ use Symfony\Component\Console\Input\InputInterface;
 /**
  * A sql-sanitize plugin.
  */
-class SanitizeUserTableCommands extends DrushCommands implements SanitizePluginInterface
+final class SanitizeUserTableCommands extends DrushCommands implements SanitizePluginInterface
 {
     protected $database;
     protected $passwordHasher;
@@ -27,11 +31,8 @@ class SanitizeUserTableCommands extends DrushCommands implements SanitizePluginI
     /**
      * Sanitize emails and passwords. This also an example of how to write a
      * database sanitizer for sql-sync.
-     *
-     * @hook post-command sql-sanitize
-     *
-     * @inheritdoc
      */
+    #[CLI\Hook(type: HookManager::POST_COMMAND_HOOK, target: 'sql-sanitize')]
     public function sanitize($result, CommandData $commandData): void
     {
         $options = $commandData->options();
@@ -84,24 +85,14 @@ class SanitizeUserTableCommands extends DrushCommands implements SanitizePluginI
         }
     }
 
-    /**
-     * @hook option sql-sanitize
-     * @option sanitize-email The pattern for test email addresses in the
-     *   sanitization operation, or <info>no</info> to keep email addresses unchanged. May
-     *   contain replacement patterns <info>%uid</info>, <info>%mail</info> or <info>%name</info>.
-     * @option sanitize-password
-     *   By default, passwords are randomized. Specify <info>no</info> to disable that. Specify any other value to set all passwords
-     *   to that value.
-     */
+    #[CLI\Hook(type: HookManager::OPTION_HOOK, target: 'sql-sanitize')]
+    #[CLI\Option(name: 'sanitize-email', description: 'The pattern for test email addresses in the sanitization operation, or <info>no</info> to keep email addresses unchanged. May contain replacement patterns <info>%uid</info>, <info>%mail</info> or <info>%name</info>.')]
+    #[CLI\Option(name: 'sanitize-password', description: 'By default, passwords are randomized. Specify <info>no</info> to disable that. Specify any other value to set all passwords to that value.')]
     public function options($options = ['sanitize-email' => 'user+%uid@localhost.localdomain', 'sanitize-password' => null]): void
     {
     }
 
-    /**
-     * @hook on-event sql-sanitize-confirms
-     *
-     * @inheritdoc
-     */
+    #[CLI\Hook(type: HookManager::ON_EVENT, target: 'sql-sanitize-confirms')]
     public function messages(&$messages, InputInterface $input): void
     {
         $options = $input->getOptions();
@@ -115,9 +106,8 @@ class SanitizeUserTableCommands extends DrushCommands implements SanitizePluginI
 
     /**
      * Test an option value to see if it is disabled.
-     * @param $value
      */
-    protected function isEnabled($value): bool
+    protected function isEnabled(?string $value): bool
     {
         return $value != 'no' && $value != '0';
     }

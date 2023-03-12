@@ -1,12 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drush\Commands\core;
 
 use Consolidation\AnnotatedCommand\AnnotatedCommand;
 use Consolidation\AnnotatedCommand\AnnotationData;
 use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
+use Drush\Attributes as CLI;
 use Drush\Boot\AutoloaderAwareInterface;
 use Drush\Boot\AutoloaderAwareTrait;
+use Drush\Boot\DrupalBootLevels;
 use Drush\Commands\DrushCommands;
 use Drush\Commands\generate\ApplicationFactory;
 use Drush\Commands\help\HelpCLIFormatter;
@@ -14,13 +18,14 @@ use Drush\Commands\help\ListCommands;
 use Drush\Drush;
 use Drush\SiteAlias\SiteAliasManagerAwareInterface;
 use Symfony\Component\Console\Application;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Filesystem\Path;
 use Symfony\Component\Yaml\Yaml;
-use Webmozart\PathUtil\Path;
 
-class MkCommands extends DrushCommands implements SiteAliasManagerAwareInterface, AutoloaderAwareInterface
+final class MkCommands extends DrushCommands implements SiteAliasManagerAwareInterface, AutoloaderAwareInterface
 {
     use SiteAliasManagerAwareTrait;
     use AutoloaderAwareTrait;
@@ -29,23 +34,21 @@ class MkCommands extends DrushCommands implements SiteAliasManagerAwareInterface
      * Build a Markdown document for each Drush command/generator that is available on a site.
      *
      * This command is an early step when building the www.drush.org static site. Adapt it to build a similar site listing the commands that are available on your site. Also see Drush's [Github Actions workflow](https://github.com/drush-ops/drush/blob/11.x/.github/workflows/main.yml).
-     *
-     * @command mk:docs
-     * @bootstrap max
-     * @usage drush mk:docs
-     *   Build many .md files in the docs/commands and docs/generators directories.
      */
+    #[CLI\Command(name: 'mk:docs')]
+    #[CLI\Bootstrap(level: DrupalBootLevels::MAX)]
+    #[CLI\Usage(name: 'drush mk:docs', description: 'Build many .md files in the docs/commands and docs/generators directories.')]
     public function docs(): void
     {
         $dir_root = Drush::bootstrapManager()->getComposerRoot();
+
         $destination = 'commands';
         $destination_path = Path::join($dir_root, 'docs', $destination);
         $this->prepare($destination_path);
-
         $application = Drush::getApplication();
         $all = $application->all();
         $namespaced = ListCommands::categorize($all);
-        [$nav_commands, $pages_commands] = $this->writeContentFilesAndAddToNav($namespaced, $destination, $dir_root, $destination_path);
+        [$nav_commands, $pages_commands, $map_commands] = $this->writeContentFilesAndBuildNavAndBuildRedirectMap($namespaced, $destination, $dir_root, $destination_path);
         $this->writeAllMd($pages_commands, $destination_path, 'All commands');
 
         $destination = 'generators';
@@ -56,10 +59,10 @@ class MkCommands extends DrushCommands implements SiteAliasManagerAwareInterface
         $application_generate = $factory->create();
         $all = $this->createAnnotatedCommands($application_generate, Drush::getApplication());
         $namespaced = ListCommands::categorize($all);
-        [$nav_generators, $pages_generators] = $this->writeContentFilesAndAddToNav($namespaced, $destination, $dir_root, $destination_path);
+        [$nav_generators, $pages_generators, $map_generators] = $this->writeContentFilesAndBuildNavAndBuildRedirectMap($namespaced, $destination, $dir_root, $destination_path);
         $this->writeAllMd($pages_generators, $destination_path, 'All generators');
 
-        $this->writeYml($nav_commands, $nav_generators, $dir_root);
+        $this->writeYml($nav_commands, $nav_generators, $map_commands, $map_generators, $dir_root);
     }
 
     public function createAnnotatedCommands(Application $application_generate, Application $application_drush): array
@@ -159,6 +162,24 @@ EOT;
         return '';
     }
 
+    protected static function appendOptionsGlobal($application): string
+    {
+        if ($opts = $application->getDefinition()->getOptions()) {
+            $body = '';
+            foreach ($opts as $key => $value) {
+                if (!in_array($key, HelpCLIFormatter::OPTIONS_GLOBAL_IMPORTANT)) {
+                    continue;
+                }
+                // The values don't go through standard formatting since we want to show http://default not the uri that was used when running this command.
+                $body .= '- ** ' . HelpCLIFormatter::formatOptionKeys(self::optionToArray($value)) . '**. ' . self::cliTextToMarkdown($value->getDescription()) . "\n";
+            }
+            $body .= '- To see all global options, run <code>drush topic</code> and pick the first choice.' . "\n";
+            $body = "#### Global Options\n\n$body\n";
+            return $body;
+        }
+        return '';
+    }
+
     protected static function appendArguments($command): string
     {
         if ($args = $command->getDefinition()->getArguments()) {
@@ -211,11 +232,12 @@ EOT;
         return $body;
     }
 
-    protected function writeYml(array $nav_commands, $nav_generators, string $dest): void
+    protected function writeYml(array $nav_commands, array $nav_generators, array $map_commands, array $map_generators, string $dest): void
     {
         $base = Yaml::parseFile(Path::join($dest, 'mkdocs_base.yml'));
         $base['nav'][] = ['Commands' => $nav_commands];
         $base['nav'][] = ['Generators' => $nav_generators];
+        $base['plugins'][]['redirects']['redirect_maps'] = $map_commands + $map_generators;
         $yaml_nav = Yaml::dump($base, PHP_INT_MAX, 2);
 
         // Remove invalid quotes that Symfony YAML adds/needs. https://github.com/symfony/symfony/blob/6.1/src/Symfony/Component/Yaml/Inline.php#L624
@@ -298,10 +320,6 @@ EOT;
 
     /**
      * Convert text like <info>foo</info> to *foo*.
-     *
-     * @param $text
-     *
-     * @return string
      */
     public static function cliTextToMarkdown(string $text): string
     {
@@ -309,17 +327,11 @@ EOT;
     }
 
     /**
-     * @param array $namespaced
-     * @param string $destination
-     * @param string $dir_root
-     * @param string $destination_path
-     *
-     * @return array
+     * Write content files, add to nav, build a redirect map.
      */
-    public function writeContentFilesAndAddToNav(array $namespaced, string $destination, string $dir_root, string $destination_path): array
+    public function writeContentFilesAndBuildNavAndBuildRedirectMap(array $namespaced, string $destination, string $dir_root, string $destination_path): array
     {
-        // Write content files and add to nav.
-        $pages = $pages_all = $nav = [];
+        $pages = $pages_all = $nav = $map_all = [];
         foreach ($namespaced as $category => $commands) {
             foreach ($commands as $command) {
                 // Special case a single page
@@ -336,6 +348,9 @@ EOT;
                 }
                 $body .= self::appendArguments($command);
                 $body .= self::appendOptions($command);
+                if ($destination == 'commands') {
+                    $body .= self::appendOptionsGlobal($command->getApplication());
+                }
                 if ($command instanceof AnnotatedCommand) {
                     $body .= self::appendTopics($command, $destination_path);
                 }
@@ -343,15 +358,41 @@ EOT;
                 if ($destination == 'commands') {
                     $body .= self::appendPostAmble();
                 }
-                $filename = str_replace(':', '_', $command->getName()) . '.md';
+                $filename = $this->getFilename($command->getName());
                 $pages[$command->getName()] = $destination . "/$filename";
                 file_put_contents(Path::join($destination_path, $filename), $body);
+
+                if ($map = $this->getRedirectMap($command, $destination)) {
+                    $map_all = array_merge($map_all, $map);
+                }
+                unset($map);
             }
             $this->logger()->info('Found {pages} pages in {cat}', ['pages' => count($pages), 'cat' => $category]);
             $nav[] = [$category => $pages];
             $pages_all = array_merge($pages_all, $pages);
             unset($pages);
         }
-        return [$nav, $pages_all];
+        return [$nav, $pages_all, $map_all];
+    }
+
+    protected function getRedirectMap(Command $command, string $destination): array
+    {
+        $map = [];
+        foreach ($command->getAliases() as $alias) {
+            // Skip trivial aliases that differ by a dash.
+            if (str_replace([':', '-'], '', $command->getName()) == str_replace([':', '-'], '', $alias)) {
+                continue;
+            }
+            $map[Path::join($destination, $this->getFilename($alias))] = Path::join($destination, $this->getFilename($command->getName()));
+        }
+        return $map;
+    }
+
+    /**
+     * Get a filename from a command.
+     */
+    public function getFilename(string $name): string
+    {
+        return str_replace(':', '_', $name) . '.md';
     }
 }

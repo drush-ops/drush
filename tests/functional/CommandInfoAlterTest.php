@@ -1,8 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Unish;
 
-use Webmozart\PathUtil\Path;
+use Drush\Drupal\Commands\pm\PmCommands;
+use Symfony\Component\Filesystem\Path;
 
 /**
  * @group commands
@@ -19,7 +22,7 @@ class CommandInfoAlterTest extends CommandUnishTestCase
     {
         $this->setUpDrupal(1, true);
         $this->setupModulesForTests(['woot'], Path::join(__DIR__, '/../fixtures/modules'));
-        $this->drush('pm-install', ['woot']);
+        $this->drush(PmCommands::INSTALL, ['woot']);
         $this->drush('woot:altered', [], ['help' => true, 'debug' => true]);
         $this->assertStringNotContainsString('woot-initial-alias', $this->getOutput());
         $this->assertStringContainsString('woot-new-alias', $this->getOutput());

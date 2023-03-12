@@ -1,20 +1,25 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drush\Drupal\Commands\core;
 
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Drupal\Core\PhpStorage\PhpStorageFactory;
 use Drupal\Core\Template\TwigEnvironment;
+use Drush\Attributes as CLI;
 use Drush\Commands\DrushCommands;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drush\Drush;
 use Drush\Utils\StringUtils;
+use Symfony\Component\Filesystem\Path;
 use Symfony\Component\Finder\Finder;
-use Webmozart\PathUtil\Path;
 
-class TwigCommands extends DrushCommands
+final class TwigCommands extends DrushCommands
 {
-  /**
+    const UNUSED = 'twig:unused';
+    const COMPILE = 'twig:compile';
+    /**
      * @var TwigEnvironment
      */
     protected $twig;
@@ -49,19 +54,12 @@ class TwigCommands extends DrushCommands
      *
      * Immediately before running this command, web crawl your entire web site. Or
      * use your Production PHPStorage dir for comparison.
-     *
-     * @param $searchpaths A comma delimited list of paths to recursively search
-     * @usage drush twig:unused --field=template /var/www/mass.local/docroot/modules/custom,/var/www/mass.local/docroot/themes/custom
-     *   Output a simple list of potentially unused templates.
-     * @table-style default
-     * @field-labels
-     *   template: Template
-     *   compiled: Compiled
-     * @default-fields template,compiled
-     * @filter-output
-     *
-     * @command twig:unused
      */
+    #[CLI\Command(name: self::UNUSED, aliases: [])]
+    #[CLI\Argument(name: 'searchpaths', description: 'A comma delimited list of paths to recursively search')]
+    #[CLI\Usage(name: 'drush twig:unused --field=template /var/www/mass.local/docroot/modules/custom,/var/www/mass.local/docroot/themes/custom', description: 'Output a simple list of potentially unused templates.')]
+    #[CLI\FieldLabels(labels: ['template' => 'Template', 'compiled' => 'Compiled'])]
+    #[CLI\DefaultTableFields(fields: ['template', 'compiled'])]
     public function unused($searchpaths): RowsOfFields
     {
         $unused = [];
@@ -93,10 +91,8 @@ class TwigCommands extends DrushCommands
 
   /**
    * Compile all Twig template(s).
-   *
-   * @command twig:compile
-   * @aliases twigc,twig-compile
    */
+    #[CLI\Command(name: self::COMPILE, aliases: ['twigc', 'twig-compile'])]
     public function twigCompile(): void
     {
         require_once DRUSH_DRUPAL_CORE . "/themes/engines/twig/twig.engine";

@@ -8,7 +8,7 @@
       tests without defining these variables if you use the default values.
 -->
 <phpunit
-    bootstrap="../vendor/autoload.php"
+    bootstrap="bootstrap.php"
     backupGlobals="false"
     backupStaticAttributes="false"
     colors="true">

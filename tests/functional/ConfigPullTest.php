@@ -1,8 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Unish;
 
-use Webmozart\PathUtil\Path;
+use Drush\Commands\config\ConfigPullCommands;
+use Drush\Drupal\Commands\config\ConfigCommands;
+use Drush\Drupal\Commands\config\ConfigImportCommands;
+use Symfony\Component\Filesystem\Path;
 
 /**
  * Tests for config-pull command. Sets up two Drupal sites.
@@ -32,21 +37,21 @@ class ConfigPullTest extends CommandUnishTestCase
         $source = $aliases['stage'];
         $destination = $aliases['dev'];
         // Make UUID match.
-        $this->drush('config:get', ['system.site', 'uuid'], $options, $source);
+        $this->drush(ConfigCommands::GET, ['system.site', 'uuid'], $options, $source);
         list($name, $uuid) = explode(' ', $this->getOutput());
-        $this->drush('config-set', ['system.site', 'uuid', $uuid], $options, $destination);
+        $this->drush(ConfigCommands::SET, ['system.site', 'uuid', $uuid], $options, $destination);
 
-        $this->drush('config:set', ['system.site', 'name', 'testConfigPull'], $options, $source);
-        $this->drush('config:pull', [$source, $destination], $options);
-        $this->drush('config:import', [], $options, $destination);
-        $this->drush('config:get', ['system.site', 'name'], $options, $source);
+        $this->drush(ConfigCommands::SET, ['system.site', 'name', 'testConfigPull'], $options, $source);
+        $this->drush(ConfigPullCommands::PULL, [$source, $destination], $options);
+        $this->drush(ConfigImportCommands::IMPORT, [], $options, $destination);
+        $this->drush(ConfigCommands::GET, ['system.site', 'name'], $options, $source);
         $this->assertEquals("'system.site:name': testConfigPull", $this->getOutput(), 'Config was successfully pulled.');
 
         // Test that custom target dir works
         $target = Path::join($this->getSandbox(), __CLASS__);
         $this->recursiveDelete($target);
         $this->mkdir($target);
-        $this->drush('config:pull', [$source, "$destination:$target"], $options);
+        $this->drush(ConfigPullCommands::PULL, [$source, "$destination:$target"], $options);
         $this->assertFileExists(Path::join($target, 'system.site.yml'));
     }
 }
