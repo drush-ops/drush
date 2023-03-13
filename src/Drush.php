@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Drush;
 
+use Composer\InstalledVersions;
 use Robo\Runner;
 use Robo\Robo;
 use Drush\Config\DrushConfig;
@@ -85,8 +86,7 @@ class Drush
     public static function getVersion()
     {
         if (!self::$version) {
-            $drush_info = self::drushReadDrushInfo();
-            self::$version = $drush_info['drush_version'];
+            self::$version = InstalledVersions::getVersion('drush/drush');
         }
         return self::$version;
     }
