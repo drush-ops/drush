@@ -201,5 +201,3 @@ class GenerateCommands extends DrushCommands implements AutoloaderAwareInterface
         }
     }
 }
-
-
