@@ -20,7 +20,6 @@ use DrupalCodeGenerator\GeneratorType;
 )]
 class ExampleGenerator extends BaseGenerator
 {
-
     /**
      * Illustrates how to inject a dependency into a Generator.
      */
