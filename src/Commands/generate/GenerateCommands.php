@@ -4,15 +4,20 @@ declare(strict_types=1);
 
 namespace Drush\Commands\generate;
 
+use Consolidation\AnnotatedCommand\CommandFileDiscovery;
 use DrupalCodeGenerator\Application;
+use DrupalCodeGenerator\ClassResolver\SimpleClassResolver;
+use DrupalCodeGenerator\Command\BaseGenerator;
+use DrupalCodeGenerator\Command\Generator;
+use DrupalCodeGenerator\Command\GeneratorInterface;
 use Drush\Attributes as CLI;
 use Drush\Boot\AutoloaderAwareInterface;
 use Drush\Boot\AutoloaderAwareTrait;
 use Drush\Boot\DrupalBootLevels;
 use Drush\Commands\DrushCommands;
-use Drush\Commands\generate\Generators\Drush\DrushAliasFile;
-use Drush\Commands\generate\Generators\Drush\DrushCommandFile;
 use Drush\Commands\help\ListCommands;
+use Drush\Drupal\DrushServiceModifier;
+use Robo\ClassDiscovery\RelativeNamespaceDiscovery;
 use Symfony\Component\Console\Input\ArgvInput;
 
 /**
@@ -45,14 +50,28 @@ class GenerateCommands extends DrushCommands implements AutoloaderAwareInterface
         // @todo Figure out a way to inject the container.
         $container = \Drupal::getContainer();
 
-        // @todo Implement discovery for third-party generators.
         $application = Application::create($container);
         $application->setAutoExit(false);
 
-        $application->addCommands([
-            new DrushAliasFile(),
-            new DrushCommandFile(),
-        ]);
+        $this->adjustDCGGenerators($application);
+
+        $drush_generators = $this->discoverDrushGenerators();
+        $global_generators = $this->discoverPsr4Generators();
+
+        $module_generators = [];
+        if (isset($container)) {
+            if ($container->has(DrushServiceModifier::DRUSH_GENERATOR_SERVICES)) {
+                $module_generators = $container->get(DrushServiceModifier::DRUSH_GENERATOR_SERVICES)->getCommandList();
+            }
+        }
+
+        $generators = [
+            ...$drush_generators,
+            ...$global_generators,
+            ...$module_generators,
+        ];
+        $application->addCommands($generators);
+        $this->adjustDCGGenerators($application);
 
         // Disallow default Symfony console commands.
         if ($generator == 'help' || $generator == 'list' || $generator == 'completion') {
@@ -98,4 +117,88 @@ class GenerateCommands extends DrushCommands implements AutoloaderAwareInterface
 
         return $application->run(new ArgvInput($argv), $this->output());
     }
+
+    protected function discoverDrushGenerators(): array
+    {
+        $discovery = (new CommandFileDiscovery())
+            ->setSearchPattern('/.php$/')
+            ->setSearchLocations(['Drush']);
+        $classes = $discovery->discover([__DIR__ . '/Generators'], '\Drush\Commands\generate\Generators');
+        $classes = $this->filterExists($classes);
+        return $this->getGenerators($classes);
+    }
+
+    protected function discoverPsr4Generators(): array
+    {
+        $classes = (new RelativeNamespaceDiscovery($this->autoloader()))
+            ->setRelativeNamespace('Drush\Generators')
+            ->setSearchPattern('/.*Generator\.php$/')->getClasses();
+        $classes = $this->filterExists($classes);
+        return $this->getGenerators($classes);
+    }
+
+    /**
+     * Check each class for existence.
+     *
+     * @param array $classes
+     * @return array
+     */
+    protected function filterExists(array $classes): array
+    {
+        $exists = [];
+        foreach ($classes as $class) {
+            try {
+                // DCG v1 generators extend a non-existent class, so this check is needed.
+                if (class_exists($class)) {
+                    $exists[] = $class;
+                }
+            } catch (\Throwable $e) {
+                $this->logger()->notice($e->getMessage());
+            }
+        }
+        return $exists;
+    }
+
+    /**
+     * Validate and instantiate generator classes.
+     *
+     * @param array $classes
+     * @return BaseGenerator[]
+     * @throws \ReflectionException
+     */
+    protected function getGenerators(array $classes): array
+    {
+        return array_map(
+            function (string $class): BaseGenerator {
+                return new $class();
+            },
+            array_filter($classes, function (string $class): bool {
+                $reflectionClass = new \ReflectionClass($class);
+                return $reflectionClass->isSubclassOf(BaseGenerator::class)
+                    && !$reflectionClass->isAbstract()
+                    && !$reflectionClass->isInterface()
+                    && !$reflectionClass->isTrait();
+            })
+        );
+    }
+
+    private function adjustDCGGenerators(Application $application): void
+    {
+        // Map DCG name to Drush name.
+        $modify = [
+            'theme' => 'theme:file',
+            'theme:settings' => 'theme:settings',
+            'plugin-manager' => 'plugin:manager',
+        ];
+        foreach ($modify as $old => $new) {
+            if ($application->has($old)) {
+//                $command = $application->get($old);
+//                $command->setName($new);
+//                $application->add($command);
+//                // @todo Application does not offer a remove.
+//                // $application->remove($old);
+            }
+        }
+    }
 }
+

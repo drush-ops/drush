@@ -5,36 +5,38 @@ declare(strict_types=1);
 namespace Drupal\woot\Generators;
 
 use Drupal\Core\Extension\ModuleHandlerInterface;
+use DrupalCodeGenerator\Asset\Assets;
+use DrupalCodeGenerator\Attribute\Generator;
+use DrupalCodeGenerator\Command\BaseGenerator;
 use DrupalCodeGenerator\Command\ModuleGenerator;
+use DrupalCodeGenerator\GeneratorType;
 
-class ExampleGenerator extends ModuleGenerator
+#[Generator(
+    name: 'woot:example',
+    description: 'Generates a woot.',
+    aliases: ['wootex'],
+    templatePath: __DIR__,
+    type: GeneratorType::MODULE_COMPONENT,
+)]
+class ExampleGenerator extends BaseGenerator
 {
-    protected string $name = 'woot:example';
-    protected string $description = 'Generates a woot.';
-    protected string $alias = 'wootex';
-    protected string $templatePath = __DIR__;
 
     /**
      * Illustrates how to inject a dependency into a Generator.
-     *
-     * @var ModuleHandlerInterface
      */
-    protected $moduleHandler;
+    protected ModuleHandlerInterface $moduleHandler;
 
     public function __construct(ModuleHandlerInterface $moduleHandler = null)
     {
-        parent::__construct($this->name);
+        parent::__construct();
         $this->moduleHandler = $moduleHandler;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    protected function generate(&$vars): void
+    protected function generate(array &$vars, Assets $assets): void
     {
-        $this->collectDefault($vars);
+        $ir = $this->createInterviewer($vars);
         $vars['class'] = '{machine_name|camelize}Commands';
-        $vars['color'] = $this->ask('Favorite color', 'blue');
-        $this->addFile('Commands/{class}.php', 'example-generator.twig');
+        $vars['color'] = $ir->ask('Favorite color', 'blue');
+        $assets->addFile('Commands/{class}.php', 'example-generator.twig');
     }
 }
