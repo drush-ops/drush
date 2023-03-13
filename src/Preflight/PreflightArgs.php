@@ -471,7 +471,7 @@ class PreflightArgs extends Config implements PreflightArgsInterface
             array_map(
                 function ($item) {
                     // Ignore configuration definitions
-                    if (substr($item, 0, 2) == '-D') {
+                    if (str_starts_with($item, '-D')) {
                         return null;
                     }
                     // Regular expression matches:

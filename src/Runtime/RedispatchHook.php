@@ -119,7 +119,7 @@ class RedispatchHook implements InitializeHookInterface, ConfigAwareInterface, S
     protected function alterArgsForRedispatch(array $redispatchArgs): array
     {
         return array_filter($redispatchArgs, function ($item) {
-            return strpos($item, '-D') !== 0;
+            return !str_starts_with($item, '-D');
         });
     }
 

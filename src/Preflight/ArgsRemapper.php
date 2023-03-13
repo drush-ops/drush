@@ -84,7 +84,7 @@ class ArgsRemapper
      */
     protected function matches(string $arg, string $candidate): bool
     {
-        if (strpos($arg, $candidate) !== 0) {
+        if (!str_starts_with($arg, $candidate)) {
             return false;
         }
 

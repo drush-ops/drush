@@ -50,7 +50,7 @@ final class TopicCommands extends DrushCommands
         if (!empty($topic_name)) {
             // Filter the topics to those matching the query.
             foreach ($topics as $key => $topic) {
-                if (strstr($key, $topic_name) === false) {
+                if (!str_contains($key, $topic_name)) {
                     unset($topics[$key]);
                 }
             }

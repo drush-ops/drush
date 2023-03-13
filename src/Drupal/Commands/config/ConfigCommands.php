@@ -305,7 +305,7 @@ final class ConfigCommands extends DrushCommands implements StdinAwareInterface,
         foreach ($this->getChanges($storage) as $collection) {
             foreach ($collection as $operation => $configs) {
                 foreach ($configs as $config) {
-                    if (!$options['prefix'] || strpos($config, $options['prefix']) === 0) {
+                    if (!$options['prefix'] || str_starts_with($config, $options['prefix'])) {
                         $config_list[$config] = $state_map[$operation];
                     }
                 }

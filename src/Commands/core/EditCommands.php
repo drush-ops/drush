@@ -40,7 +40,7 @@ final class EditCommands extends DrushCommands implements SiteAliasManagerAwareI
         // Apply any filter that was supplied.
         if ($filter) {
             foreach ($all as $file => $display) {
-                if (strpos($file, $filter) === false) {
+                if (!str_contains($file, $filter)) {
                     unset($all[$file]);
                 }
             }
