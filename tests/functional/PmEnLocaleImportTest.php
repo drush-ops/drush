@@ -22,7 +22,7 @@ class PmEnLocaleImportTest extends CommandUnishTestCase
     public function testBatchImportTranslations()
     {
         $info_yml = Path::join($this->webroot(), 'modules/unish/drush_empty_module/drush_empty_module.info.yml');
-        if (strpos(file_get_contents($info_yml), 'project:') === false || $this->isWindows()) {
+        if (!str_contains(file_get_contents($info_yml), 'project:') || $this->isWindows()) {
             $this->markTestSkipped('Devel dev snapshot detected. Incompatible with translation import.');
         }
 

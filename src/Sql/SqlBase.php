@@ -230,7 +230,7 @@ abstract class SqlBase implements ConfigAwareInterface
         if (empty($pipefail)) {
             return $cmd;
         }
-        if (strpos($pipefail, '{{cmd}}') === false) {
+        if (!str_contains($pipefail, '{{cmd}}')) {
             return $pipefail . ' ' . $cmd;
         }
         $interpolator = new Interpolator();
@@ -591,7 +591,7 @@ abstract class SqlBase implements ConfigAwareInterface
         $db_url_default = is_array($db_url) ? $db_url['default'] : $db_url;
 
         // If it's a sqlite database, pick the database path and we're done.
-        if (strpos($db_url_default, 'sqlite://') === 0) {
+        if (str_starts_with($db_url_default, 'sqlite://')) {
             $db_spec = [
                 'driver'   => 'sqlite',
                 'database' => substr($db_url_default, strlen('sqlite://')),

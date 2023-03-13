@@ -167,7 +167,7 @@ class ArgsPreprocessor
         $acceptsValueFromNextArg = $keyParam[strlen($keyParam) - 1] != '~';
 
         // If $opt does not begin with $key, then it cannot be a match.
-        if ($key !== substr($opt, 0, strlen($key))) {
+        if (!str_starts_with($opt, $key)) {
             return [false, false, false];
         }
 

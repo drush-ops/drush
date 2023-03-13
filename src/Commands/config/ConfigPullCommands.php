@@ -56,7 +56,7 @@ final class ConfigPullCommands extends DrushCommands implements SiteAliasManager
             $export_path = trim($process->getOutput()) . '/';
         }
 
-        if (strpos($destination, ':') === false) {
+        if (!str_contains($destination, ':')) {
             $destination .= ':%config-sync';
         }
         $destinationHostPath = HostPath::create($this->siteAliasManager(), $destination);

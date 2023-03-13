@@ -668,7 +668,7 @@ EOT;
         }
 
         $settingsLocalPhpContent = file_get_contents($settingsLocalPhpPath);
-        if (false === strpos($settingsLocalPhpContent, $drushSignature)) {
+        if (!str_contains($settingsLocalPhpContent, $drushSignature)) {
             $this->logger()->info('Adding database connection settings to !path...', ['!path' => $settingsLocalPhpPath]);
             $settingsLocalPhpModifiedContent = $settingsLocalPhpContent . $settingsLocalPhpDatabaseConnection;
             $this->saveSettingsLocalPhp($settingsLocalPhpPath, $settingsLocalPhpModifiedContent);

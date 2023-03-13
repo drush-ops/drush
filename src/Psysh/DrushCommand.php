@@ -67,7 +67,7 @@ class DrushCommand extends BaseCommand
 
         // If the first argument is an alias, assign the next argument as the
         // command.
-        if (strpos($first, '@') === 0) {
+        if (str_starts_with($first, '@')) {
             $alias = $first;
             $command = array_shift($args);
         } else {
@@ -106,7 +106,7 @@ class DrushCommand extends BaseCommand
         if ($this->command instanceof AnnotatedCommand) {
             foreach ($this->command->getExampleUsages() as $ex => $def) {
                 // Skip empty examples and things with obvious pipes...
-                if (($ex === '') || (strpos($ex, '|') !== false)) {
+                if (($ex === '') || (str_contains($ex, '|'))) {
                     continue;
                 }
 
