@@ -74,25 +74,26 @@ abstract class DrupalBoot extends BaseBoot
      */
     public function bootstrapPhases(): array
     {
-        return parent::bootstrapPhases() + [
-            DRUSH_BOOTSTRAP_DRUPAL_ROOT            => 'bootstrapDrupalRoot',
-            DRUSH_BOOTSTRAP_DRUPAL_SITE            => 'bootstrapDrupalSite',
-            DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION   => 'bootstrapDrupalConfiguration',
-            DRUSH_BOOTSTRAP_DRUPAL_DATABASE        => 'bootstrapDrupalDatabase',
-            DRUSH_BOOTSTRAP_DRUPAL_FULL            => 'bootstrapDrupalFull',
+        return [
+            DrupalBootLevels::NONE            => 'NoLongerUsed',
+            DrupalBootLevels::ROOT            => 'bootstrapDrupalRoot',
+            DrupalBootLevels::SITE            => 'bootstrapDrupalSite',
+            DrupalBootLevels::CONFIGURATION   => 'bootstrapDrupalConfiguration',
+            DrupalBootLevels::DATABASE        => 'bootstrapDrupalDatabase',
+            DrupalBootLevels::FULL            => 'bootstrapDrupalFull',
         ];
     }
 
     public function bootstrapPhaseMap(): array
     {
         return parent::bootstrapPhaseMap() + [
-            'root' => DRUSH_BOOTSTRAP_DRUPAL_ROOT,
-            'site' => DRUSH_BOOTSTRAP_DRUPAL_SITE,
-            'config' => DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION,
-            'configuration' => DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION,
-            'db' => DRUSH_BOOTSTRAP_DRUPAL_DATABASE,
-            'database' => DRUSH_BOOTSTRAP_DRUPAL_DATABASE,
-            'full' => DRUSH_BOOTSTRAP_DRUPAL_FULL,
+            'root' => DrupalBootLevels::ROOT,
+            'site' => DrupalBootLevels::SITE,
+            'config' => DrupalBootLevels::CONFIGURATION,
+            'configuration' => DrupalBootLevels::CONFIGURATION,
+            'db' => DrupalBootLevels::DATABASE,
+            'database' => DrupalBootLevels::DATABASE,
+            'full' => DrupalBootLevels::FULL,
         ];
     }
 

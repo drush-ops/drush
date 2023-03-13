@@ -101,7 +101,7 @@ final class CacheCommands extends DrushCommands implements CustomEventAwareInter
             return null;
         }
 
-        $types = $this->getTypes($boot_manager->hasBootstrapped((DRUSH_BOOTSTRAP_DRUPAL_FULL)));
+        $types = $this->getTypes($boot_manager->hasBootstrapped((DrupalBootLevels::FULL)));
 
         // Do it.
         drush_op($types[$type], $args);
@@ -116,7 +116,7 @@ final class CacheCommands extends DrushCommands implements CustomEventAwareInter
     {
         $boot_manager = Drush::bootstrapManager();
         if (empty($input->getArgument('type'))) {
-            $types = $this->getTypes($boot_manager->hasBootstrapped(DRUSH_BOOTSTRAP_DRUPAL_FULL));
+            $types = $this->getTypes($boot_manager->hasBootstrapped(DrupalBootLevels::FULL));
             $choices = array_combine(array_keys($types), array_keys($types));
             $type = $this->io()->choice(dt("Choose a cache to clear"), $choices, 'all');
             $input->setArgument('type', $type);
@@ -225,7 +225,7 @@ final class CacheCommands extends DrushCommands implements CustomEventAwareInter
     public function validate(CommandData $commandData): void
     {
         $boot_manager = Drush::bootstrapManager();
-        $types = $this->getTypes($boot_manager->hasBootstrapped(DRUSH_BOOTSTRAP_DRUPAL_FULL));
+        $types = $this->getTypes($boot_manager->hasBootstrapped(DrupalBootLevels::FULL));
         $type = $commandData->input()->getArgument('type');
         // Check if the provided type ($type) is a valid cache type.
         if ($type && !array_key_exists($type, $types)) {
@@ -235,7 +235,7 @@ final class CacheCommands extends DrushCommands implements CustomEventAwareInter
             // If we haven't done a full bootstrap, provide a more
             // specific message with instructions to the user on
             // bootstrapping a Drupal site for more options.
-            if (!$boot_manager->hasBootstrapped(DRUSH_BOOTSTRAP_DRUPAL_FULL)) {
+            if (!$boot_manager->hasBootstrapped(DrupalBootLevels::FULL)) {
                 $all_types = $this->getTypes(true);
                 if (array_key_exists($type, $all_types)) {
                     throw new \Exception(dt("'!type' cache requires a working Drupal site to operate on. Use the --root and --uri options, or a site @alias, or cd to a directory containing a Drupal settings.php file.", ['!type' => $type]));

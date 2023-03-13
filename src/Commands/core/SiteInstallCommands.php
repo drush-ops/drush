@@ -242,7 +242,7 @@ final class SiteInstallCommands extends DrushCommands implements SiteAliasManage
         try {
             // Try to get any already configured database information.
             $annotationData = Drush::getApplication()->find(self::INSTALL)->getAnnotationData();
-            $bootstrapManager->bootstrapMax(DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION, $annotationData);
+            $bootstrapManager->bootstrapMax(DrupalBootLevels::CONFIGURATION, $annotationData);
 
             // See https://github.com/drush-ops/drush/issues/3903.
             // We may have bootstrapped with /default/settings.php instead of the sites-subdir one.
@@ -363,7 +363,7 @@ final class SiteInstallCommands extends DrushCommands implements SiteAliasManage
         // We need to be at least at DRUSH_BOOTSTRAP_DRUPAL_SITE to select the site uri to install to
         define('MAINTENANCE_MODE', 'install');
         $bootstrapManager = Drush::bootstrapManager();
-        $bootstrapManager->doBootstrap(DRUSH_BOOTSTRAP_DRUPAL_SITE);
+        $bootstrapManager->doBootstrap(DrupalBootLevels::SITE);
 
         if ($program_exists && !$sql->dropOrCreate()) {
             $this->logger()->warning(dt('Failed to drop or create the database. Do it yourself before installing. @error', ['@error' => $sql->getProcess()->getErrorOutput()]));

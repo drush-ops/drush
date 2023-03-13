@@ -23,7 +23,7 @@ final class CoreCommands extends DrushCommands implements SiteAliasManagerAwareI
      */
     #[CLI\Command(name: 'core:global-options', aliases: ['core-global-options'])]
     #[CLI\Help(hidden: true)]
-    #[CLI\Topic]
+    #[CLI\Topics(isTopic: true)]
     #[CLI\FieldLabels(labels: ['name' => 'Name', 'description' => 'Description'])]
     #[CLI\FilterDefaultField(field: 'name')]
     public function globalOptions($options = ['format' => 'table']): RowsOfFields

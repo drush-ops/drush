@@ -98,7 +98,7 @@ final class EditCommands extends DrushCommands implements SiteAliasManagerAwareI
             }
         }
 
-        if (Drush::bootstrapManager()->hasBootstrapped(DRUSH_BOOTSTRAP_DRUPAL_FULL)) {
+        if (Drush::bootstrapManager()->hasBootstrapped(DrupalBootLevels::FULL)) {
             $site_root = \Drupal::service('kernel')->getSitePath();
             $path = realpath($site_root . '/settings.php');
             $drupal[$path] = $path;

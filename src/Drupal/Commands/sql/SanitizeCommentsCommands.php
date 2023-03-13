@@ -7,6 +7,7 @@ namespace Drush\Drupal\Commands\sql;
 use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\AnnotatedCommand\Hooks\HookManager;
 use Drush\Attributes as CLI;
+use Drush\Boot\DrupalBootLevels;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Symfony\Component\Console\Input\InputInterface;
@@ -63,7 +64,7 @@ final class SanitizeCommentsCommands extends DrushCommands implements SanitizePl
 
     protected function applies()
     {
-        Drush::bootstrapManager()->doBootstrap(DRUSH_BOOTSTRAP_DRUPAL_FULL);
+        Drush::bootstrapManager()->doBootstrap(DrupalBootLevels::FULL);
         return $this->moduleHandler->moduleExists('comment');
     }
 }
