@@ -10,9 +10,9 @@ use DrupalCodeGenerator\Command\BaseGenerator;
 use DrupalCodeGenerator\GeneratorType;
 
 #[Generator(
-  name: 'drush:testing-generator',
-  description: 'An internal generator used for tests',
-  type: GeneratorType::OTHER,
+    name: 'drush:testing-generator',
+    description: 'An internal generator used for tests',
+    type: GeneratorType::OTHER,
 )]
 class CustomGenerator extends BaseGenerator
 {
