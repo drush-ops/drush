@@ -8,8 +8,6 @@ use DrupalCodeGenerator\Asset\Assets;
 use DrupalCodeGenerator\Attribute\Generator;
 use DrupalCodeGenerator\Command\BaseGenerator;
 use DrupalCodeGenerator\GeneratorType;
-use DrupalCodeGenerator\Utils;
-use DrupalCodeGenerator\Validator\RequiredServiceName;
 use Drush\Drush;
 
 #[Generator(
