@@ -29,7 +29,7 @@ class CreateEntityType
              // Would you like to create README.md file?
             'No',
         ];
-        $testCase->drush('generate', ['module'], ['verbose' => null, 'answer' => $answers, 'destination' => Path::join($testCase->webroot(), 'modules/contrib')], null, null, $testCase::EXIT_SUCCESS, null, ['SHELL_INTERACTIVE' => 1]);
+        $testCase->drush('generate', ['module'], ['verbose' => 1, 'answer' => $answers, 'destination' => Path::join($testCase->webroot(), 'modules/contrib')], null, null, $testCase::EXIT_SUCCESS, null, ['SHELL_INTERACTIVE' => 1]);
 
         // Create a content entity type and enable its module.
         // Note that only the values below are used. The keys are for documentation.
@@ -75,6 +75,6 @@ class CreateEntityType
             // Create REST configuration for the entity?
             'no',
         ];
-        $testCase->drush('generate', ['content-entity'], ['answer' => $answers, 'destination' => Path::join($testCase::webroot(), 'modules/contrib/unish_article')], null, null, $testCase::EXIT_SUCCESS, null, ['SHELL_INTERACTIVE' => 1]);
+        $testCase->drush('generate', ['content-entity'], ['verbose' => 1, 'answer' => $answers, 'destination' => Path::join($testCase::webroot(), 'modules/contrib/unish_article')], null, null, $testCase::EXIT_SUCCESS, null, ['SHELL_INTERACTIVE' => 1]);
     }
 }
