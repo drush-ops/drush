@@ -62,7 +62,7 @@ jobs:
       - image: wodby/php:8.1
     steps:
       - checkout
-      - run: composer validate
+      - run: composer validate --no-interaction --no-check-all
 
   test_81_drupal10_mysql:
     <<: *defaults
@@ -149,6 +149,7 @@ workflows:
     jobs:
       - code_style
       - check_mergable
+      - composer_validate
 #      - test_80_drupal92_security:
 #          <<: *requires
       - test_81_drupal10_mysql:
