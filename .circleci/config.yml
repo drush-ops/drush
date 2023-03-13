@@ -56,6 +56,14 @@ jobs:
       - checkout
       - run: $HOME/drush/.circleci/mergable.sh
 
+  composer_validate:
+    <<: *defaults
+    docker:
+      - image: wodby/php:8.1
+    steps:
+      - checkout
+      - run: composer validate
+
   test_81_drupal10_mysql:
     <<: *defaults
     docker:

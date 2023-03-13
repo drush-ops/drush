@@ -177,10 +177,7 @@ class HelpCLIFormatter implements FormatterInterface
     {
         $application = Drush::getApplication();
         $def = $application->getDefinition();
-        return array_key_exists($name, $def->getOptions()) || str_starts_with($name, 'notify') || str_starts_with(
-                $name,
-                'xh-'
-            ) || str_starts_with($name, 'druplicon');
+        return array_key_exists($name, $def->getOptions()) || str_starts_with($name, 'notify') || str_starts_with($name, 'xh-') || str_starts_with($name, 'druplicon');
     }
 
     public function optionRows(OutputInterface $output, array $options, string $title): array
@@ -189,10 +186,12 @@ class HelpCLIFormatter implements FormatterInterface
         $output->writeln('');
         $output->writeln("<comment>$title:</comment>");
         foreach ($options as $option) {
-            if (!str_starts_with($option['name'], '--notify') && !str_starts_with(
+            if (
+                !str_starts_with($option['name'], '--notify') && !str_starts_with(
                     $option['name'],
                     '--xh-'
-                ) && !str_starts_with($option['name'], '--druplicon')) {
+                ) && !str_starts_with($option['name'], '--druplicon')
+            ) {
                  $rows[] = [$this->formatOptionKeys($option), $this->formatOptionDescription($option)];
             }
         }
