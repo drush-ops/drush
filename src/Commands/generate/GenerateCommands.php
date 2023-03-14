@@ -16,6 +16,8 @@ use Drush\Boot\AutoloaderAwareInterface;
 use Drush\Boot\AutoloaderAwareTrait;
 use Drush\Boot\DrupalBootLevels;
 use Drush\Commands\DrushCommands;
+use Drush\Commands\generate\Generators\Drush\DrushAliasFile;
+use Drush\Commands\generate\Generators\Drush\DrushCommandFile;
 use Drush\Commands\help\ListCommands;
 use Drush\Drupal\DrushServiceModifier;
 use Robo\ClassDiscovery\RelativeNamespaceDiscovery;
@@ -52,12 +54,11 @@ final class GenerateCommands extends DrushCommands implements AutoloaderAwareInt
         $container = \Drupal::getContainer();
 
         $container->get('event_dispatcher')
-            ->addListener(GeneratorInfoAlter::class, [self::class, 'adjustGenerators']);
+            ->addListener(GeneratorInfoAlter::class, [self::class, 'alterGenerators']);
 
         $application = Application::create($container);
         $application->setAutoExit(false);
 
-        $drush_generators = $this->discoverDrushGenerators();
         $global_generators = $this->discoverPsr4Generators();
 
         $module_generators = [];
@@ -68,7 +69,8 @@ final class GenerateCommands extends DrushCommands implements AutoloaderAwareInt
         }
 
         $generators = [
-            ...$drush_generators,
+            new DrushCommandFile(),
+            new DrushAliasFile(),
             ...$global_generators,
             ...$module_generators,
         ];
@@ -117,16 +119,6 @@ final class GenerateCommands extends DrushCommands implements AutoloaderAwareInt
         }
 
         return $application->run(new ArgvInput($argv), $this->output());
-    }
-
-    protected function discoverDrushGenerators(): array
-    {
-        $discovery = (new CommandFileDiscovery())
-            ->setSearchPattern('/.php$/')
-            ->setSearchLocations(['Drush']);
-        $classes = $discovery->discover([__DIR__ . '/Generators'], '\Drush\Commands\generate\Generators');
-        $classes = $this->filterExists($classes);
-        return $this->getGenerators($classes);
     }
 
     protected function discoverPsr4Generators(): array
@@ -186,7 +178,7 @@ final class GenerateCommands extends DrushCommands implements AutoloaderAwareInt
     /**
      * Implements hook GeneratorInfoAlter.
      */
-    public static function adjustGenerators(GeneratorInfoAlter $event): void {
+    public static function alterGenerators(GeneratorInfoAlter $event): void {
         $event->generators['theme-settings']->setName('theme:settings');
         $event->generators['plugin-manager']->setName('plugin:manager');
     }
