@@ -10,6 +10,7 @@ use DrupalCodeGenerator\ClassResolver\SimpleClassResolver;
 use DrupalCodeGenerator\Command\BaseGenerator;
 use DrupalCodeGenerator\Command\Generator;
 use DrupalCodeGenerator\Command\GeneratorInterface;
+use DrupalCodeGenerator\Event\GeneratorInfoAlter;
 use Drush\Attributes as CLI;
 use Drush\Boot\AutoloaderAwareInterface;
 use Drush\Boot\AutoloaderAwareTrait;
@@ -23,7 +24,7 @@ use Symfony\Component\Console\Input\ArgvInput;
 /**
  * Drush generate command.
  */
-class GenerateCommands extends DrushCommands implements AutoloaderAwareInterface
+final class GenerateCommands extends DrushCommands implements AutoloaderAwareInterface
 {
     use AutoloaderAwareTrait;
 
@@ -50,10 +51,11 @@ class GenerateCommands extends DrushCommands implements AutoloaderAwareInterface
         // @todo Figure out a way to inject the container.
         $container = \Drupal::getContainer();
 
+        $container->get('event_dispatcher')
+            ->addListener(GeneratorInfoAlter::class, [self::class, 'adjustGenerators']);
+
         $application = Application::create($container);
         $application->setAutoExit(false);
-
-        $this->adjustDCGGenerators($application);
 
         $drush_generators = $this->discoverDrushGenerators();
         $global_generators = $this->discoverPsr4Generators();
@@ -71,7 +73,6 @@ class GenerateCommands extends DrushCommands implements AutoloaderAwareInterface
             ...$module_generators,
         ];
         $application->addCommands($generators);
-        $this->adjustDCGGenerators($application);
 
         // Disallow default Symfony console commands.
         if ($generator == 'help' || $generator == 'list' || $generator == 'completion') {
@@ -182,22 +183,11 @@ class GenerateCommands extends DrushCommands implements AutoloaderAwareInterface
         );
     }
 
-    private function adjustDCGGenerators(Application $application): void
-    {
-        // Map DCG name to Drush name.
-        $modify = [
-            'theme' => 'theme:file',
-            'theme:settings' => 'theme:settings',
-            'plugin-manager' => 'plugin:manager',
-        ];
-        foreach ($modify as $old => $new) {
-            if ($application->has($old)) {
-//                $command = $application->get($old);
-//                $command->setName($new);
-//                $application->add($command);
-//                // @todo Application does not offer a remove.
-//                // $application->remove($old);
-            }
-        }
+    /**
+     * Implements hook GeneratorInfoAlter.
+     */
+    public static function adjustGenerators(GeneratorInfoAlter $event): void {
+        $event->generators['theme-settings']->setName('theme:settings');
+        $event->generators['plugin-manager']->setName('plugin:manager');
     }
 }
