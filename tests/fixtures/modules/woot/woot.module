@@ -2,11 +2,6 @@
 
 declare(strict_types=1);
 
-/**
- * @file
- * Contains woot.module.
- */
-
 use Drupal\Core\Routing\RouteMatchInterface;
 
 /**
