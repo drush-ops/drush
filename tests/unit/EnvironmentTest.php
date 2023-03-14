@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Drush\Config;
 
+use Unish\Utils\Fixtures;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -12,7 +13,7 @@ use PHPUnit\Framework\TestCase;
  */
 class EnvironmentTest extends TestCase
 {
-    use \Unish\Utils\Fixtures;
+    use Fixtures;
 
     public function testExportConfigData()
     {

@@ -30,7 +30,7 @@ class TestSourceWithMissedRequirements extends SourcePluginBase implements Requi
         return ['id' => ['type' => 'integer']];
     }
 
-    public function checkRequirements(): array
+    public function checkRequirements(): never
     {
         throw new RequirementsException('message', [
           'type1' => ['a', 'b', 'c'],

@@ -2,6 +2,7 @@
 
 namespace Unish\Controllers;
 
+use Drush\Symfony\BufferedConsoleOutput;
 use Drush\Application;
 use Drush\Config\Environment;
 use Drush\Drush;
@@ -84,7 +85,7 @@ class RuntimeController
     {
         if (!isset($this->output)) {
             // Create a reusable output buffer
-            $this->output = new \Drush\Symfony\BufferedConsoleOutput();
+            $this->output = new BufferedConsoleOutput();
         }
         return $this->output;
     }
@@ -113,7 +114,7 @@ class RuntimeController
         $status = $this->preflight->preflight($argv);
 
         // If preflight signals that we are done, then exit early.
-        if ($status !== false) {
+        if ($status) {
             return $status;
         }
 
@@ -128,7 +129,7 @@ class RuntimeController
 
         // Create the Symfony Application et. al.
         $this->input = $this->preflight->createInput();
-        $this->application = new \Drush\Application('Drush Commandline Tool (Unish-scaffolded)', Drush::getVersion());
+        $this->application = new Application('Drush Commandline Tool (Unish-scaffolded)', Drush::getVersion());
 
         // Set up the DI container.
         $this->container = $di->initContainer(

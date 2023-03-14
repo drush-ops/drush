@@ -2,11 +2,6 @@
 
 declare(strict_types=1);
 
-/**
- * @file
- * Contains \Drupal\woot\WootManager.
- */
-
 namespace Drupal\woot;
 
 use Drupal\Component\Graph\Graph;
@@ -25,12 +20,7 @@ use Symfony\Component\Serializer\Serializer;
  */
 class WootManager
 {
-  /**
-   * The current user.
-   *
-   * @var \Drupal\Core\Session\AccountInterface
-   */
-    protected $currentUser;
+    protected AccountInterface $currentUser;
 
   /**
    * Constructs the default content manager.
