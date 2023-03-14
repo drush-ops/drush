@@ -155,7 +155,7 @@ final class StatusCommands extends DrushCommands implements SiteAliasManagerAwar
         if (!empty($paths)) {
             foreach ($paths as $target => $one_path) {
                 $name = $target;
-                if (substr($name, 0, 1) == '%') {
+                if (str_starts_with($name, '%')) {
                     $name = substr($name, 1);
                 }
                 $status_table[$name] = $one_path;

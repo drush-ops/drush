@@ -375,7 +375,7 @@ class MigrateRunnerTest extends UnishIntegrationTestCase
         ]);
 
         $importOutput = array_values(array_filter(array_map('trim', $this->getErrorOutputAsList()), function (string $line): bool {
-            return strpos($line, '[notice]') === 0;
+            return str_starts_with($line, '[notice]');
         }));
 
         $this->assertCount(10, $importOutput);

@@ -326,7 +326,7 @@ final class ArchiveDumpCommands extends DrushCommands
         $installedPackagesRelativePaths = array_unique(
             array_filter(
                 $installedPackagesRelativePaths,
-                fn($path) => '' !== $path && 0 !== strpos($path, 'vendor')
+                fn($path) => '' !== $path && !str_starts_with($path, 'vendor')
             )
         );
         $excludeDirs = array_merge($excludeDirs, $installedPackagesRelativePaths);
@@ -574,14 +574,14 @@ final class ArchiveDumpCommands extends DrushCommands
     {
         // User input may be in the wrong format, this performs some basic
         // corrections. The correct format should include a .tar.gz.
-        if (substr($destination, -7) !== ".tar.gz") {
+        if (!str_ends_with($destination, ".tar.gz")) {
             // If the user provided .tar but not .gz.
-            if (substr($destination, -4) === ".tar") {
+            if (str_ends_with($destination, ".tar")) {
                 return $destination . ".gz";
             }
 
             // If neither, the user provided a directory.
-            if (substr($destination, -1) === "/") {
+            if (str_ends_with($destination, "/")) {
                 return $destination . "archive.tar.gz";
             } else {
                 return $destination . "/archive.tar.gz";

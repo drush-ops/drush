@@ -85,7 +85,7 @@ abstract class BaseBoot implements Boot, LoggerAwareInterface
             return $phaseMap[$phase];
         }
 
-        if ((substr($phase, 0, 16) != 'DRUSH_BOOTSTRAP_') || (!defined($phase))) {
+        if ((!str_starts_with($phase, 'DRUSH_BOOTSTRAP_')) || (!defined($phase))) {
             return;
         }
         return constant($phase);

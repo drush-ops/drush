@@ -310,7 +310,7 @@ class FsUtils
                 '.sql'     => 'application/octet-stream',
             ];
             foreach ($extension_mimetype as $extension => $ct) {
-                if (substr($path, -strlen($extension)) === $extension) {
+                if (str_ends_with($path, $extension)) {
                     $content_type = $ct;
                     break;
                 }

@@ -438,7 +438,7 @@ abstract class UnishTestCase extends TestCase
             }
             return unlink($dir);
         }
-        if (self::recursiveDeleteDirContents($dir, $force, $exclude) === false) {
+        if (!self::recursiveDeleteDirContents($dir, $force, $exclude)) {
             return false;
         }
         // Don't delete the directory itself if we are retaining some of its contents
@@ -536,7 +536,7 @@ abstract class UnishTestCase extends TestCase
             $this->createSettings($subdir);
         }
         // Create basic site alias data with root and uri
-        $siteAliasData = $this->aliasFileData(array_keys($sites), $aliasGroup);
+        $siteAliasData = $this->aliasFileData(array_keys($sites));
         // Add in caller-provided site alias data
         $siteAliasData = array_merge_recursive($siteAliasData, $sites);
         $this->writeSiteAliases($siteAliasData, $aliasGroup);

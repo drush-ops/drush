@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Drush\Config;
 
+use Unish\Utils\Fixtures;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Path;
 
@@ -12,7 +13,7 @@ use Symfony\Component\Filesystem\Path;
  */
 class ConfigLocatorTest extends TestCase
 {
-    use \Unish\Utils\Fixtures;
+    use Fixtures;
 
     /**
      * Test a config locator initialized only with data from the fixture's environment

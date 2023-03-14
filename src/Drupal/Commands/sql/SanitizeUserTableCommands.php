@@ -54,7 +54,7 @@ final class SanitizeUserTableCommands extends DrushCommands implements SanitizeP
 
         // Sanitize email addresses.
         if ($this->isEnabled($options['sanitize-email'])) {
-            if (strpos($options['sanitize-email'], '%') !== false) {
+            if (str_contains($options['sanitize-email'], '%')) {
                 // We need a different sanitization query for MSSQL, Postgres and Mysql.
                 $sql = SqlBase::create($commandData->input()->getOptions());
                 $db_driver = $sql->scheme();

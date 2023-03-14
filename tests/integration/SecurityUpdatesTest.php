@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Unish;
 
-use Composer\Semver\Semver;
 use Drush\Commands\pm\SecurityUpdateCommands;
 
 /**
@@ -19,12 +18,13 @@ class SecurityUpdatesTest extends UnishIntegrationTestCase
    */
     public function testInsecureDrupalPackage()
     {
-        list($expected_package, $expected_version) = ['drupal/semver_example', '2.3.0'];
+        $expected_package = 'drupal/semver_example';
+        $expected_version = '2.3.0';
         $this->drush(SecurityUpdateCommands::SECURITY, [], ['format' => 'json'], self::EXIT_ERROR_WITH_CLARITY);
         $this->assertStringContainsString('One or more of your dependencies has an outstanding security update.', $this->getErrorOutput());
         $this->assertStringContainsString("$expected_package", $this->getErrorOutput());
         $security_advisories = $this->getOutputFromJSON();
-        $this->arrayHasKey($expected_package, $security_advisories);
+        $this->assertArrayHasKey($expected_package, $security_advisories);
         $this->assertEquals($expected_package, $security_advisories[$expected_package]['name']);
         $this->assertEquals($expected_version, $security_advisories[$expected_package]['version']);
 
@@ -33,7 +33,7 @@ class SecurityUpdatesTest extends UnishIntegrationTestCase
             $this->markTestSkipped("We only test for drupal/core security updates if the SUT is on Drupal 9.2.8");
         }
         $this->assertStringContainsString("Try running: composer require drupal/core", $this->getErrorOutput());
-        $this->arrayHasKey('drupal/core', $security_advisories);
+        $this->assertArrayHasKey('drupal/core', $security_advisories);
         $this->assertEquals('drupal/core', $security_advisories['drupal/core']['name']);
         $this->assertEquals('9.2.8', $security_advisories['drupal/core']['version']);
     }
@@ -43,7 +43,7 @@ class SecurityUpdatesTest extends UnishIntegrationTestCase
      */
     public function testNoInsecureProductionDrupalPackage()
     {
-        $this->drush(SecurityUpdateCommands::SECURITY, [], ['format' => 'json', 'no-dev' => true], self::EXIT_SUCCESS);
+        $this->drush(SecurityUpdateCommands::SECURITY, [], ['format' => 'json', 'no-dev' => true]);
         $this->assertStringContainsString('There are no outstanding security updates for Drupal projects', $this->getErrorOutput());
     }
 }

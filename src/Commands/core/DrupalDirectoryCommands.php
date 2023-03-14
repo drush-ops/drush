@@ -45,7 +45,7 @@ final class DrupalDirectoryCommands extends DrushCommands implements SiteAliasMa
         // If there is no such key, then no replacement is done.  In the
         // case of the dd command, we will consider it an error if
         // any keys are -not- replaced.
-        if ($path && (strpos($path, '%') === false)) {
+        if ($path && (!str_contains($path, '%'))) {
             return $path;
         } else {
             throw new \Exception(dt("Target '{target}' not found.", ['target' => $target]));

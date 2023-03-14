@@ -442,7 +442,7 @@ class ConfigLocator
             // Check to see if there is a `#` in the include path.
             // This indicates an include path that has a namespace,
             // e.g. `namespace#/path`.
-            if (is_numeric($key) && strpos($commandPath, '#') !== false) {
+            if (is_numeric($key) && str_contains($commandPath, '#')) {
                 [$key, $commandPath] = explode('#', $commandPath, 2);
             }
             $sep = ($this->config->isWindows()) ? ';' : ':';
