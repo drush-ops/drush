@@ -4,11 +4,12 @@ declare(strict_types=1);
 
 namespace Drush\SiteAlias;
 
+use Unish\Utils\Fixtures;
 use PHPUnit\Framework\TestCase;
 
 class SiteSpecParserTest extends TestCase
 {
-    use \Unish\Utils\Fixtures;
+    use Fixtures;
 
     /**
      * @dataProvider parserTestValues

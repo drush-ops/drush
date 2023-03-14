@@ -15,7 +15,7 @@ function woot_post_update_a()
 /**
  * Failing post-update.
  */
-function woot_post_update_failing()
+function woot_post_update_failing(): never
 {
     throw new \Exception('This is the exception message thrown in woot_post_update_failing');
 }

@@ -4,11 +4,12 @@ declare(strict_types=1);
 
 namespace Drush\Preflight;
 
+use Unish\Utils\Fixtures;
 use PHPUnit\Framework\TestCase;
 
 class ArgsPreprocessorTest extends TestCase
 {
-    use \Unish\Utils\Fixtures;
+    use Fixtures;
 
     /**
      * @dataProvider argTestValues

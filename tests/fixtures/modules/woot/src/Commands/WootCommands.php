@@ -61,9 +61,8 @@ class WootCommands
      * @usage try:formatters --fields=III,II
      *   Emit other fields.
      * @aliases try-formatters
-     * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
      */
-    public function tryFormatters($options = ['format' => 'table', 'fields' => ''])
+    public function tryFormatters($options = ['format' => 'table', 'fields' => '']): RowsOfFields
     {
         $outputData = [
             'en' => [ 'first' => 'One',  'second' => 'Two',  'third' => 'Three' ],

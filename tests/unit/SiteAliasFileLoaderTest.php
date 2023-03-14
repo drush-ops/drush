@@ -4,14 +4,16 @@ declare(strict_types=1);
 
 namespace Drush\SiteAlias;
 
+use Unish\Utils\Fixtures;
+use Unish\Utils\FunctionUtils;
 use PHPUnit\Framework\TestCase;
 use Consolidation\SiteAlias\Util\YamlDataFileLoader;
 use Consolidation\SiteAlias\SiteAlias;
 
 class SiteAliasFileLoaderTest extends TestCase
 {
-    use \Unish\Utils\Fixtures;
-    use \Unish\Utils\FunctionUtils;
+    use Fixtures;
+    use FunctionUtils;
 
     protected $sut;
 

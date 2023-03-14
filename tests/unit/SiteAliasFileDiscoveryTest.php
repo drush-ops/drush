@@ -6,11 +6,18 @@ namespace Drush\SiteAlias;
 
 use PHPUnit\Framework\TestCase;
 use Consolidation\SiteAlias\SiteAliasFileDiscovery;
+use Unish\Utils\Fixtures;
+use Unish\Utils\FunctionUtils;
 
 class SiteAliasFileDiscoveryTest extends TestCase
 {
-    use \Unish\Utils\Fixtures;
-    use \Unish\Utils\FunctionUtils;
+    use Fixtures;
+    use FunctionUtils;
+
+    /**
+     * @var SiteAliasFileDiscovery|mixed
+     */
+    public $sut;
 
     public function setup(): void
     {
