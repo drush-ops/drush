@@ -176,7 +176,8 @@ final class GenerateCommands extends DrushCommands implements AutoloaderAwareInt
     /**
      * Implements hook GeneratorInfoAlter.
      */
-    public static function alterGenerators(GeneratorInfoAlter $event): void {
+    public static function alterGenerators(GeneratorInfoAlter $event): void
+    {
         $event->generators['theme-settings']->setName('theme:settings');
         $event->generators['plugin-manager']->setName('plugin:manager');
     }
