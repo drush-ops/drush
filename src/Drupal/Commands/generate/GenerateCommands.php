@@ -2,11 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Drush\Commands\generate;
+namespace Drush\Drupal\Commands\generate;
 
-use Consolidation\AnnotatedCommand\CommandFileDiscovery;
+use Composer\Autoload\ClassLoader;
 use DrupalCodeGenerator\Application;
-use DrupalCodeGenerator\ClassResolver\SimpleClassResolver;
 use DrupalCodeGenerator\Command\BaseGenerator;
 use DrupalCodeGenerator\Command\Generator;
 use DrupalCodeGenerator\Command\GeneratorInterface;
@@ -14,21 +13,28 @@ use DrupalCodeGenerator\Event\GeneratorInfoAlter;
 use Drush\Attributes as CLI;
 use Drush\Boot\AutoloaderAwareInterface;
 use Drush\Boot\AutoloaderAwareTrait;
-use Drush\Boot\DrupalBootLevels;
 use Drush\Commands\DrushCommands;
-use Drush\Commands\generate\Generators\Drush\DrushAliasFile;
-use Drush\Commands\generate\Generators\Drush\DrushCommandFile;
 use Drush\Commands\help\ListCommands;
+use Drush\Drupal\Commands\generate\Generators\Drush\DrushAliasFile;
+use Drush\Drupal\Commands\generate\Generators\Drush\DrushCommandFile;
 use Drush\Drupal\DrushServiceModifier;
 use Robo\ClassDiscovery\RelativeNamespaceDiscovery;
 use Symfony\Component\Console\Input\ArgvInput;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Drush generate command.
  */
-final class GenerateCommands extends DrushCommands implements AutoloaderAwareInterface
+final class GenerateCommands extends DrushCommands
 {
-    use AutoloaderAwareTrait;
+    private ContainerInterface $container;
+    private ClassLoader $autoloader;
+
+    public function __construct(ContainerInterface $container, ClassLoader $autoloader)
+    {
+        $this->container = $container;
+        $this->autoloader = $autoloader;
+    }
 
     /**
      * Generate boilerplate code for modules/plugins/services etc.
@@ -47,23 +53,20 @@ final class GenerateCommands extends DrushCommands implements AutoloaderAwareInt
     #[CLI\Usage(name: 'drush generate controller --answer=Example --answer=example', description: 'Generate a controller class and pre-fill the first two questions in the wizard.')]
     #[CLI\Usage(name: 'drush generate controller -vvv --dry-run', description: 'Learn all the potential answers so you can re-run with several --answer options.')]
     #[CLI\Topics(topics: ['docs:generators'])]
-    #[CLI\Bootstrap(level: DrupalBootLevels::MAX)]
     public function generate(string $generator = '', $options = ['replace' => false, 'working-dir' => self::REQ, 'answer' => [], 'destination' => self::REQ, 'dry-run' => false]): int
     {
-        // @todo Figure out a way to inject the container.
-        $container = \Drupal::getContainer();
 
-        $container->get('event_dispatcher')
+        $this->container->get('event_dispatcher')
             ->addListener(GeneratorInfoAlter::class, [self::class, 'alterGenerators']);
 
-        $application = Application::create($container);
+        $application = Application::create($this->container);
         $application->setAutoExit(false);
 
         $global_generators = $this->discoverPsr4Generators();
 
         $module_generators = [];
-        if ($container->has(DrushServiceModifier::DRUSH_GENERATOR_SERVICES)) {
-            $module_generators = $container->get(DrushServiceModifier::DRUSH_GENERATOR_SERVICES)->getCommandList();
+        if ($this->container->has(DrushServiceModifier::DRUSH_GENERATOR_SERVICES)) {
+            $module_generators = $this->container->get(DrushServiceModifier::DRUSH_GENERATOR_SERVICES)->getCommandList();
         }
 
         $generators = [
@@ -121,7 +124,7 @@ final class GenerateCommands extends DrushCommands implements AutoloaderAwareInt
 
     protected function discoverPsr4Generators(): array
     {
-        $classes = (new RelativeNamespaceDiscovery($this->autoloader()))
+        $classes = (new RelativeNamespaceDiscovery($this->autoloader))
             ->setRelativeNamespace('Drush\Generators')
             ->setSearchPattern('/.*Generator\.php$/')->getClasses();
         $classes = $this->filterExists($classes);

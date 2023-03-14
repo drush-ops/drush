@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Drush\Commands\generate\Generators\Drush;
+namespace Drush\Drupal\Commands\generate\Generators\Drush;
 
 use DrupalCodeGenerator\Asset\Asset;
 use DrupalCodeGenerator\Asset\File;
