@@ -8,15 +8,18 @@ use Unish\Utils\Fixtures;
 use Unish\Utils\FunctionUtils;
 use PHPUnit\Framework\TestCase;
 use Consolidation\SiteAlias\SiteAliasFileDiscovery;
+use Unish\Utils\Fixtures;
+use Unish\Utils\FunctionUtils;
 
 class SiteAliasFileDiscoveryTest extends TestCase
 {
+    use Fixtures;
+    use FunctionUtils;
+
     /**
      * @var SiteAliasFileDiscovery|mixed
      */
     public $sut;
-    use Fixtures;
-    use FunctionUtils;
 
     public function setup(): void
     {

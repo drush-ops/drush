@@ -4,15 +4,10 @@ declare(strict_types=1);
 
 namespace Drupal\woot;
 
-use Drupal\Component\Graph\Graph;
 use Drupal\Component\Utility\SafeMarkup;
-use Drupal\Core\Config\Entity\ConfigEntityInterface;
-use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Entity\EntityManager;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\rest\LinkManager\LinkManagerInterface;
-use Drupal\rest\Plugin\Type\ResourcePluginManager;
-use Symfony\Component\Serializer\Serializer;
 
 /**
  * A simulated service for wooting.
