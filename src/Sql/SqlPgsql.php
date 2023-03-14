@@ -88,7 +88,7 @@ class SqlPgsql extends SqlBase
         }
         $sql[] = sprintf('drop database if exists %s;', $dbname);
         $sql[] = sprintf("create database %s ENCODING 'UTF8';", $dbname);
-        $sql[] = sprintf("CREATE EXTENSION IF NOT EXISTS pg_trgm;", $dbname);
+        $sql[] = sprintf("CREATE EXTENSION IF NOT EXISTS pg_trgm %s;", $dbname);
         return implode(' ', $sql);
     }
 
