@@ -62,10 +62,8 @@ final class GenerateCommands extends DrushCommands implements AutoloaderAwareInt
         $global_generators = $this->discoverPsr4Generators();
 
         $module_generators = [];
-        if (isset($container)) {
-            if ($container->has(DrushServiceModifier::DRUSH_GENERATOR_SERVICES)) {
-                $module_generators = $container->get(DrushServiceModifier::DRUSH_GENERATOR_SERVICES)->getCommandList();
-            }
+        if ($container->has(DrushServiceModifier::DRUSH_GENERATOR_SERVICES)) {
+            $module_generators = $container->get(DrushServiceModifier::DRUSH_GENERATOR_SERVICES)->getCommandList();
         }
 
         $generators = [
