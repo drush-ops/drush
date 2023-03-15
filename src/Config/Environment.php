@@ -152,7 +152,7 @@ class Environment
      *
      * @see PreflightArgs::applyToConfig(), which also exports information to config.
      *
-     * @return Nested associative array that is overlayed on configuration.
+     * @return array Nested associative array that is overlayed on configuration.
      */
     public function exportConfigData(): array
     {
@@ -331,10 +331,8 @@ class Environment
     /**
      * Locate the Drush documentation. This is recalculated whenever the
      * share prefix is changed.
-     *
-     * @return string|bool
      */
-    protected function findDocsPath(string $drushBasePath)
+    protected function findDocsPath(string $drushBasePath): string|bool
     {
         $candidates = [
             "$drushBasePath/README.md",
@@ -345,10 +343,8 @@ class Environment
 
     /**
      * Check a list of directories and return the first one that exists.
-     *
-     * @return string|boolean
      */
-    protected function findFromCandidates(array $candidates)
+    protected function findFromCandidates(array $candidates): bool|string
     {
         foreach ($candidates as $candidate) {
             if (file_exists($candidate)) {
@@ -374,7 +370,7 @@ class Environment
      */
     public function systemConfigPath(): string
     {
-        return static::systemPathPrefix($this->etcPrefix, '') . '/etc/drush';
+        return static::systemPathPrefix($this->etcPrefix) . '/etc/drush';
     }
 
     /**
@@ -435,6 +431,6 @@ class Environment
         $tmp = getenv('TMPDIR') ? getenv('TMPDIR') : '/tmp';
         $username = $this->getUsername();
 
-        return "{$tmp}/drush-env-{$username}/{$filename_prefix}" . $shell_pid;
+        return "$tmp/drush-env-{$username}/{$filename_prefix}" . $shell_pid;
     }
 }

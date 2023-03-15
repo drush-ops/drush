@@ -64,8 +64,6 @@ final class NotifyCommands extends DrushCommands
      *
      * @param string $msg
      *   Message text for delivery.
-     *
-     *   TRUE on success, FALSE on failure
      */
     public static function shutdownSendText(string $msg, CommandData $commandData): bool
     {

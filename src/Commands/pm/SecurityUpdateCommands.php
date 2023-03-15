@@ -12,7 +12,6 @@ use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Drush\Attributes as CLI;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
-use Enlightn\SecurityChecker\SecurityChecker;
 use Exception;
 use Symfony\Component\Filesystem\Path;
 
@@ -25,9 +24,6 @@ final class SecurityUpdateCommands extends DrushCommands
 
     /**
      * Return path to composer.lock
-     *
-     * @return string
-     * @throws \Exception
      */
     public static function composerLockPath(): string
     {
@@ -93,12 +89,8 @@ final class SecurityUpdateCommands extends DrushCommands
      * drupal-security-advisories repository or fetches it from another source
      * if the environment variable DRUSH_SECURITY_ADVISORIES_URL is set. The
      * environment variable is not a supported API.
-     *
-     * @return mixed
-     *
-     * @throws \Exception
      */
-    protected function fetchAdvisoryComposerJson()
+    protected function fetchAdvisoryComposerJson(): mixed
     {
         $client = new Client(['handler' => $this->getStack()]);
         $security_advisories_composer_url = getenv('DRUSH_SECURITY_ADVISORIES_URL') ?: 'https://raw.githubusercontent.com/drupal-composer/drupal-security-advisories/9.x/composer.json';
@@ -108,9 +100,6 @@ final class SecurityUpdateCommands extends DrushCommands
 
     /**
      * Loads the contents of the local Drupal application's composer.lock file.
-     *
-     *
-     * @throws \Exception
      */
     protected function loadSiteComposerLock(): array
     {

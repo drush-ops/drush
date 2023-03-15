@@ -4,15 +4,14 @@ declare(strict_types=1);
 
 namespace Drush\Commands\core;
 
-use Consolidation\AnnotatedCommand\AnnotationData;
 use Consolidation\AnnotatedCommand\AnnotatedCommand;
+use Consolidation\AnnotatedCommand\AnnotationData;
 use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\AnnotatedCommand\Hooks\HookManager;
 use Drush\Attributes as CLI;
 use Drush\Boot\DrupalBootLevels;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
-use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Completion\CompletionInput;
 use Symfony\Component\Console\Completion\CompletionSuggestions;
@@ -89,7 +88,6 @@ final class TopicCommands extends DrushCommands
      */
     public static function getAllTopics(): array
     {
-        /** @var Application $application */
         $application = Drush::getApplication();
         $all = $application->all();
         foreach ($all as $key => $command) {
@@ -101,6 +99,6 @@ final class TopicCommands extends DrushCommands
                 }
             }
         }
-        return $topics;
+        return $topics ?? [];
     }
 }

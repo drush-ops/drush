@@ -67,7 +67,7 @@ final class EditCommands extends DrushCommands implements SiteAliasManagerAwareI
 
     public function load($headers = true): array
     {
-        $php_header = $php = $rcs_header = $rcs = $aliases_header = $aliases = $drupal_header = $drupal = [];
+        $php_header = $rcs_header = $aliases_header = $drupal_header = $drupal = [];
         $php = $this->phpIniFiles();
         if (!empty($php)) {
             if ($headers) {

@@ -8,7 +8,6 @@ use Drupal\Core\Extension\ModuleHandlerInterface;
 use DrupalCodeGenerator\Asset\Assets;
 use DrupalCodeGenerator\Attribute\Generator;
 use DrupalCodeGenerator\Command\BaseGenerator;
-use DrupalCodeGenerator\Command\ModuleGenerator;
 use DrupalCodeGenerator\GeneratorType;
 
 #[Generator(

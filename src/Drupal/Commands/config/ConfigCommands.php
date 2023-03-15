@@ -47,25 +47,12 @@ final class ConfigCommands extends DrushCommands implements StdinAwareInterface,
     const DELETE = 'config:delete';
     const STATUS = 'config:status';
 
-    /**
-     * @var ConfigFactoryInterface
-     */
-    protected $configFactory;
+    protected ConfigFactoryInterface $configFactory;
 
-    /**
-     * @var StorageInterface
-     */
-    protected $configStorageExport;
+    protected ?StorageInterface $configStorageExport;
+    protected StorageInterface $configStorage;
 
-    /**
-     * @var StorageInterface
-     */
-    protected $configStorage;
-
-    /**
-     * @var ImportStorageTransformer
-     */
-    protected $importStorageTransformer;
+    protected ?ImportStorageTransformer $importStorageTransformer;
 
     public function getConfigFactory(): ConfigFactoryInterface
     {
@@ -73,12 +60,7 @@ final class ConfigCommands extends DrushCommands implements StdinAwareInterface,
     }
 
 
-    /**
-     * ConfigCommands constructor.
-     * @param ConfigFactoryInterface $configFactory
-     * @param StorageInterface $configStorage
-     */
-    public function __construct($configFactory, StorageInterface $configStorage)
+    public function __construct(ConfigFactoryInterface $configFactory, StorageInterface $configStorage)
     {
         parent::__construct();
         $this->configFactory = $configFactory;
