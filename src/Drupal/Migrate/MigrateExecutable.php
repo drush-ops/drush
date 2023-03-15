@@ -48,12 +48,12 @@ class MigrateExecutable extends MigrateExecutableBase
     /**
      * Maximum number of items to process in this migration.
      */
-    protected ?int $limit;
+    protected ?string $limit;
 
     /**
      * Frequency (in items) at which progress messages should be emitted.
      */
-    protected ?int $feedback;
+    protected ?string $feedback;
 
     /**
      * Show timestamp in progress message.
@@ -114,13 +114,6 @@ class MigrateExecutable extends MigrateExecutableBase
 
     /**
      * Constructs a new migrate executable instance.
-     *
-     * @param MigrationInterface $migration
-     * @param MigrateMessageInterface $message
-     * @param OutputInterface $output
-     * @param array $options
-     *
-     * @throws MigrateException
      */
     public function __construct(MigrationInterface $migration, MigrateMessageInterface $message, OutputInterface $output, array $options = [])
     {
