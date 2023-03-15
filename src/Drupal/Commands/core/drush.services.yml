@@ -76,7 +76,7 @@ services:
       -  { name: drush.command }
   twig.commands:
     class: \Drush\Drupal\Commands\core\TwigCommands
-    arguments: ['@twig', '@module_handler']
+    arguments: ['@twig', '@module_handler', '@extension.list.module']
     tags:
       -  { name: drush.command }
   user.commands:

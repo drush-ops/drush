@@ -7,7 +7,6 @@ namespace Drush\Drupal;
 use Drush\Log\DrushLog;
 use Drupal\Core\DependencyInjection\ContainerBuilder;
 use Drupal\Core\DependencyInjection\ServiceProviderInterface;
-use Drush\Log\LoggerDrupalToDrush;
 use Symfony\Component\DependencyInjection\Reference;
 
 class DrushLoggerServiceProvider implements ServiceProviderInterface

@@ -220,7 +220,7 @@ final class ViewsCommands extends DrushCommands
             $this->logger()->success(dt('No results returned for this View.'));
             return null;
         } elseif ($options['count']) {
-            $this->io()->writeln(count($view->result));
+            $this->io()->writeln($view->result);
             return null;
         } else {
             // Don't show admin links in markup by default.

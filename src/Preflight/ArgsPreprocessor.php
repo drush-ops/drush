@@ -128,7 +128,7 @@ class ArgsPreprocessor
      * @param $opt The option string to check
      * @return [$methodName, $optionValue, $acceptsValueFromNextArg]
      */
-    protected function findMethodForOptionWithValues($optionsTable, $opt): array
+    protected function findMethodForOptionWithValues(array $optionsTable, string $opt): array
     {
         // Skip $opt if it is empty, or if it is not an option.
         if (empty($opt) || ($opt[0] != '-')) {
@@ -158,7 +158,7 @@ class ArgsPreprocessor
      *   to 'true'.
      * @return [$methodName, $optionValue, $acceptsValueFromNextArg]
      */
-    protected function checkMatchingOption($opt, $keyParam, $methodName): array
+    protected function checkMatchingOption(string $opt, string $keyParam, string $methodName): array
     {
         // Test to see if $key ends in '='; remove the character if present.
         // If the char is removed, it means the option accepts a value.

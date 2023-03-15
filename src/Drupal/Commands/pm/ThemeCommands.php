@@ -13,7 +13,7 @@ final class ThemeCommands extends DrushCommands
 {
     const INSTALL = 'theme:install';
     const UNINSTALL = 'theme:uninstall';
-    protected $themeInstaller;
+    protected ThemeInstallerInterface $themeInstaller;
 
     public function __construct(ThemeInstallerInterface $themeInstaller)
     {
@@ -37,7 +37,7 @@ final class ThemeCommands extends DrushCommands
     public function install(array $themes): void
     {
         $themes = StringUtils::csvToArray($themes);
-        if (!$this->getThemeInstaller()->install($themes, true)) {
+        if (!$this->getThemeInstaller()->install($themes)) {
             throw new \Exception('Unable to install themes.');
         }
         $this->logger()->success(dt('Successfully installed theme: !list', ['!list' => implode(', ', $themes)]));
@@ -53,7 +53,7 @@ final class ThemeCommands extends DrushCommands
         $themes = StringUtils::csvToArray($themes);
         // The uninstall() method has no return value. Assume it succeeded, and
         // allow exceptions to bubble.
-        $this->getThemeInstaller()->uninstall($themes, true);
+        $this->getThemeInstaller()->uninstall($themes);
         $this->logger()->success(dt('Successfully uninstalled theme: !list', ['!list' => implode(', ', $themes)]));
     }
 }

@@ -48,7 +48,7 @@ class ArgsRemapper
      * @param bool $sawCommand True if drush command was found
      * @return string The altered argument
      */
-    protected function checkRemap(string $arg, bool &$sawCommand)
+    protected function checkRemap(string $arg, bool &$sawCommand): string
     {
         if (!$sawCommand && ctype_alpha($arg[0])) {
             $sawCommand = true;

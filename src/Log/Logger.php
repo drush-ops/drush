@@ -53,14 +53,14 @@ class Logger extends RoboLogger
         } else {
             $size /= DRUSH_KILOBYTE; // Convert bytes to kilobytes.
             $units = [
-                dt('@size KB', []),
-                dt('@size MB', []),
-                dt('@size GB', []),
-                dt('@size TB', []),
-                dt('@size PB', []),
-                dt('@size EB', []),
-                dt('@size ZB', []),
-                dt('@size YB', []),
+                dt('@size KB'),
+                dt('@size MB'),
+                dt('@size GB'),
+                dt('@size TB'),
+                dt('@size PB'),
+                dt('@size EB'),
+                dt('@size ZB'),
+                dt('@size YB'),
             ];
             foreach ($units as $unit) {
                 if (round($size, 2) >= DRUSH_KILOBYTE) {
