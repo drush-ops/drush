@@ -241,13 +241,11 @@ class ConfigLocator
 
     /**
      * Add the Drush project directory as a configuration search location.
-     *
-     * @param $drushProjectDir Path to the drush project directory.
      */
-    public function addDrushConfig($drushProjectDir): self
+    public function addDrushConfig(string $drushProjectDir): self
     {
         if (!$this->isLocal) {
-            $this->addConfigPaths(self::DRUSH_CONTEXT, [ $drushProjectDir ]);
+            $this->addConfigPaths(self::DRUSH_CONTEXT, [$drushProjectDir]);
         }
         return $this;
     }
