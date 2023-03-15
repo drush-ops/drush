@@ -9,7 +9,7 @@ Creating a new Drush command or porting a legacy command is easy. Follow the ste
 3. Drush will then report that it created a commandfile, a drush.services.yml file and a composer.json file. Edit those files as needed.
 4. Use the classes for the core Drush commands at [/src/Drupal/Commands](https://github.com/drush-ops/drush/tree/11.x/src/Drupal/Commands) as inspiration and documentation.
 5. See the [dependency injection docs](dependency-injection.md) for interfaces you can implement to gain access to Drush config, Drupal site aliases, etc.
-6. Write PHPUnit tests based on [Drush Test Traits](https://github.com/drush-ops/drush/blob/11.x/docs/contribute/unish.md#drush-test-traits).
+6. Write PHPUnit tests based on [Drush Test Traits](https://github.com/drush-ops/drush/blob/12.x/docs/contribute/unish.md#drush-test-traits).
 7. Once your drush.services.yml files is ready, run `drush cr` to get your command recognized by the Drupal container.
 
 ## Attributes or Annotations
@@ -20,11 +20,13 @@ The following are both valid ways to declare a command:
     ```php
     use Drush\Attributes as CLI;
 
+    /**
+     * Retrieve and display xkcd cartoons (attribute variant).
+     */
     #[CLI\Command(name: 'xkcd:fetch-attributes', aliases: ['xkcd-attributes'])]
     #[CLI\Argument(name: 'search', description: 'Optional argument to retrieve the cartoons matching an index, keyword, or "random".')]
     #[CLI\Option(name: 'image-viewer', description: 'Command to use to view images (e.g. xv, firefox).', suggestedValues: ['open', 'xv', 'firefox'])]
     #[CLI\Option(name: 'google-custom-search-api-key', description: 'Google Custom Search API Key')]
-    #[CLI\Help(description: 'Retrieve and display xkcd cartoons (attribute variant).')]
     #[CLI\Usage(name: 'drush xkcd', description: 'Retrieve and display the latest cartoon')]
     #[CLI\Usage(name: 'drush xkcd sandwich', description: 'Retrieve and display cartoons about sandwiches.')]
     public function fetch($search = null, $options = ['image-viewer' => 'open', 'google-custom-search-api-key' => 'AIza']) {
@@ -156,7 +158,7 @@ With this configuration in place, global commands may be placed as described in 
 It is recommended that you avoid global Drush commands, and favor site-wide commandfiles instead. If you really need a command or commands that are not part of any Drupal site, consider making a stand-alone script or custom .phar instead. See [ahoy](https://github.com/ahoy-cli/ahoy), [Robo](https://github.com/consolidation/robo) and [g1a/starter](https://github.com/g1a/starter) as potential starting points.
 
 !!! warning "Symlinked packages"
-    While it is good practice to make your custom commands into a Composer package, please beware that symlinked packages (by using the composer repository type [Path](https://getcomposer.org/doc/05-repositories.md#path)) will **not** be discovered by Drush. When in development, it is recommended to [specify your package's](https://github.com/drush-ops/drush/blob/11.x/examples/example.drush.yml#L52-L67) path in your `drush.yml` to have quick access to your commands.
+    While it is good practice to make your custom commands into a Composer package, please beware that symlinked packages (by using the composer repository type [Path](https://getcomposer.org/doc/05-repositories.md#path)) will **not** be discovered by Drush. When in development, it is recommended to [specify your package's](https://github.com/drush-ops/drush/blob/12.x/examples/example.drush.yml#L52-L67) path in your `drush.yml` to have quick access to your commands.
 
 ### Auto-discovered commands
 

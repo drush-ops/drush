@@ -60,11 +60,9 @@ class MyModuleCommands extends DrushCommands implements SiteAliasManagerAwareInt
   
   /**
    * Prints the current alias name and info.
-   *
-   * @command mymodule:myAlias
-   * @return \Consolidation\OutputFormatters\StructuredData\ListDataFromKeys
    */
-  public function myAlias() 
+  #[CLI\Command(name: 'mymodule:myAlias')]
+  public function myAlias(): ListDataFromKeys 
   {
     $selfAlias = $this->siteAliasManager()->getSelf();
     $this->logger()->success(‘The current alias is {name}’, [‘name’ => $selfAlias]);

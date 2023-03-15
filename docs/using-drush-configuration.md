@@ -171,12 +171,12 @@ notify:
   duration: 30
   # Specify a command to run. Defaults to Notification Center (OSX) or libnotify (Linux)
   cmd: /path/to/program
-  # See https://github.com/drush-ops/drush/blob/11.x/src/Commands/core/NotifyCommands.php for more settings.
+  # See https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/NotifyCommands.php for more settings.
 
 xh:
   # Start profiling via xhprof/tideways and show a link to the run report.
   link: http://xhprof.local
-  # See https://github.com/drush-ops/drush/blob/11.x/src/Commands/core/XhprofCommands.php for more settings.
+  # See https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/XhprofCommands.php for more settings.
   profile-builtins: true
   profile-cpu: false
   profile-memory: false
