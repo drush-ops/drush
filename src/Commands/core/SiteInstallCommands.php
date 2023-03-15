@@ -341,7 +341,7 @@ final class SiteInstallCommands extends DrushCommands implements SiteAliasManage
 
         // Can't install without sites subdirectory and settings.php.
         if (!file_exists($confPath)) {
-            if ((new \Symfony\Component\Filesystem\Filesystem)->mkdir($confPath) && !$this->getConfig()->simulate()) {
+            if ((new \Symfony\Component\Filesystem\Filesystem())->mkdir($confPath) && !$this->getConfig()->simulate()) {
                 throw new \Exception(dt('Failed to create directory @confPath', ['@confPath' => $confPath]));
             }
         } else {
