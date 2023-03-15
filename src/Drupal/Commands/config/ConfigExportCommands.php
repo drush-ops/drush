@@ -19,34 +19,17 @@ use Symfony\Component\Filesystem\Path;
 final class ConfigExportCommands extends DrushCommands
 {
     const EXPORT = 'config:export';
-    /**
-     * @var ConfigManagerInterface
-     */
-    protected $configManager;
 
-    /**
-     * @var StorageInterface
-     */
-    protected $configStorage;
-
-    /**
-     * @var StorageInterface
-     */
-    protected $configStorageSync;
-
-    /**
-     * @var StorageInterface
-     */
-    protected $configStorageExport;
+    protected ConfigManagerInterface $configManager;
+    protected StorageInterface $configStorage;
+    protected StorageInterface $configStorageSync;
+    protected StorageInterface $configStorageExport;
 
     public function getConfigManager(): ConfigManagerInterface
     {
         return $this->configManager;
     }
 
-    /**
-     * @param StorageInterface $exportStorage
-     */
     public function setExportStorage(StorageInterface $exportStorage): void
     {
         $this->configStorageExport = $exportStorage;
@@ -76,11 +59,6 @@ final class ConfigExportCommands extends DrushCommands
         $this->configStorageSync = $syncStorage;
     }
 
-    /**
-     * @param ConfigManagerInterface $configManager
-     * @param StorageInterface $configStorage
-     * @param StorageInterface $configStorageSync
-     */
     public function __construct(ConfigManagerInterface $configManager, StorageInterface $configStorage)
     {
         parent::__construct();
