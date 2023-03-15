@@ -72,7 +72,7 @@ class HelpCLIFormatter implements FormatterInterface
             if (!in_array($key, self::OPTIONS_GLOBAL_IMPORTANT)) {
                 continue;
             }
-            $name = $name = '--' . $key;
+            $name = '--' . $key;
             if ($value->getShortcut()) {
                 $name = '-' . $value->getShortcut() . ', ' . $name;
             }

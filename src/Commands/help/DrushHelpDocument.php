@@ -19,9 +19,4 @@ class DrushHelpDocument extends HelpDocument
 
         return parent::generateBaseHelpDom($command);
     }
-
-    protected function alterHelpDocument(Command $command, \DomDocument $dom): \DomDocument
-    {
-        return parent::alterHelpDocument($command, $dom);
-    }
 }

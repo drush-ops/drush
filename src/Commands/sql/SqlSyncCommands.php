@@ -85,7 +85,7 @@ final class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwa
         if (!$target_db_name = $this->databaseName($targetRecord)) {
             throw new \Exception(dt('Error: no database record could be found for target !target', ['!target' => $target]));
         }
-        $txt_source = ($sourceRecord->remoteHost() ? $sourceRecord->remoteHost() . '/' : '') . $source_db_name;
+        $txt_source = ($sourceRecord->remoteHost() ? $sourceRecord->remoteHost() . '/' : '') . $this->databaseName($sourceRecord);
         $txt_target = ($targetRecord->remoteHost() ? $targetRecord->remoteHost() . '/' : '') . $target_db_name;
 
         if ($commandData->input()->getOption('no-dump') && !$commandData->input()->getOption('source-dump')) {
@@ -125,12 +125,6 @@ final class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwa
 
     /**
      * Perform sql-dump on source unless told otherwise. Returns the path to the dump file.
-     *
-     * @param $options
-     * @param $global_options
-     * @param $sourceRecord
-     *
-     * @throws \Exception
      */
     public function dump(array $options, array $global_options, SiteAlias $sourceRecord): string
     {

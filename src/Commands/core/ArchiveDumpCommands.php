@@ -565,12 +565,8 @@ final class ArchiveDumpCommands extends DrushCommands
 
     /**
      * Provides basic verification/correction on destination option.
-     *
-     * @param string $destination
-     *
-     * @return void
      */
-    private function destinationCleanup($destination)
+    private function destinationCleanup(string $destination): string
     {
         // User input may be in the wrong format, this performs some basic
         // corrections. The correct format should include a .tar.gz.

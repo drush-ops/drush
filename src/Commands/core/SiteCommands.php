@@ -31,7 +31,7 @@ final class SiteCommands extends DrushCommands implements SiteAliasManagerAwareI
     #[CLI\Usage(name: 'drush site:set -', description: 'Go back to the previously-set site (like `cd -`).')]
     #[CLI\Usage(name: 'drush site:set', description: 'Without an argument, any existing site becomes unset.')]
     #[CLI\HandleRemoteCommands]
-    #[CLI\ValidatePhpExtensions('posix')]
+    #[CLI\ValidatePhpExtensions(['posix'])]
     #[CLI\Topics(topics: ['docs:aliases'])]
     public function siteSet(string $site = '@none'): void
     {
@@ -70,11 +70,12 @@ final class SiteCommands extends DrushCommands implements SiteAliasManagerAwareI
                     @rename($filename, $last_site_filename);
                 }
                 $success_message = dt('Site set to @site', ['@site' => $site]);
+                $fs = new \Symfony\Component\Filesystem\Filesystem();
                 if ($site == '@none' || $site == '') {
-                    if (drush_delete_dir($filename)) {
-                        $this->logger()->success(dt('Site unset.'));
-                    }
-                } elseif (drush_mkdir(dirname($filename), true)) {
+                    $fs->remove($filename);
+                    $this->logger()->success(dt('Site unset.'));
+                } else {
+                    $fs->mkdir(dirname($filename));
                     if (file_put_contents($filename, $site)) {
                         $this->logger()->success($success_message);
                         $this->logger()->info(dt('Site information stored in @file', ['@file' => $filename]));
@@ -118,9 +119,6 @@ final class SiteCommands extends DrushCommands implements SiteAliasManagerAwareI
         }
     }
 
-    /**
-     * @param $options
-     */
     protected function siteAliasExportList(array $aliasList, $options): array
     {
         $result = array_map(

@@ -12,6 +12,7 @@ use Drupal\Core\Installer\Exception\AlreadyInstalledException;
 use Drupal\Core\Site\Settings;
 use Drush\Attributes as CLI;
 use Drush\Boot\DrupalBootLevels;
+use Drush\Boot\Kernels;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Drush\Exceptions\UserAbortException;
@@ -55,13 +56,13 @@ final class SiteInstallCommands extends DrushCommands implements SiteAliasManage
     #[CLI\Usage(name: 'drush si --existing-config', description: 'Install based on the yml files stored in the config export/import directory.')]
     #[CLI\Usage(name: 'drush si standard install_configure_form.enable_update_status_emails=NULL', description: 'Disable email notification during install and later. If your server has no mail transfer agent, this gets rid of an error during install.')]
     #[CLI\Bootstrap(level: DrupalBootLevels::ROOT)]
-    #[CLI\Kernel(name: 'installer')]
+    #[CLI\Kernel(name: Kernels::INSTALLER)]
     public function install(array $profile, $options = ['db-url' => self::REQ, 'db-prefix' => self::REQ, 'db-su' => self::REQ, 'db-su-pw' => self::REQ, 'account-name' => 'admin', 'account-mail' => 'admin@example.com', 'site-mail' => 'admin@example.com', 'account-pass' => self::REQ, 'locale' => 'en', 'site-name' => 'Drush Site-Install', 'site-pass' => self::REQ, 'sites-subdir' => self::REQ, 'config-dir' => self::REQ, 'existing-config' => false]): void
     {
         $additional = $profile;
         $profile = array_shift($additional) ?: '';
         $form_options = [];
-        foreach ((array)$additional as $arg) {
+        foreach ($additional as $arg) {
             list($key, $value) = explode('=', $arg, 2);
 
             // Allow for numeric and NULL values to be passed in.
@@ -199,7 +200,7 @@ final class SiteInstallCommands extends DrushCommands implements SiteAliasManage
             try {
                 install_begin_request($class_loader, $install_state);
                 $profile = _install_select_profile($install_state);
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 // This is only a best effort to provide a better default, no harm done
                 // if it fails.
             }
@@ -246,12 +247,12 @@ final class SiteInstallCommands extends DrushCommands implements SiteAliasManage
 
             // See https://github.com/drush-ops/drush/issues/3903.
             // We may have bootstrapped with /default/settings.php instead of the sites-subdir one.
-            if ($sites_subdir && "sites/$sites_subdir" !== $bootstrapManager->bootstrap()->confpath(true)) {
+            if ($sites_subdir && "sites/$sites_subdir" !== $bootstrapManager->bootstrap()->confpath()) {
                 Database::removeConnection('default');
             }
 
             $sql = SqlBase::create($commandData->input()->getOptions());
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             // Ask questions to get our data.
             // TODO: we should only 'ask' in hook interact, never in hook validate
             if ($commandData->input()->getOption('db-url') == '') {
@@ -340,7 +341,7 @@ final class SiteInstallCommands extends DrushCommands implements SiteAliasManage
 
         // Can't install without sites subdirectory and settings.php.
         if (!file_exists($confPath)) {
-            if (!drush_mkdir($confPath) && !$this->getConfig()->simulate()) {
+            if ((new \Symfony\Component\Filesystem\Filesystem)->mkdir($confPath) && !$this->getConfig()->simulate()) {
                 throw new \Exception(dt('Failed to create directory @confPath', ['@confPath' => $confPath]));
             }
         } else {
@@ -390,7 +391,6 @@ final class SiteInstallCommands extends DrushCommands implements SiteAliasManage
         // Find the dir from sites.php file
         $sites_file = $root . '/sites/sites.php';
         if (file_exists($sites_file)) {
-            /** @var array $sites */
             $sites = [];
             include $sites_file;
             if (!empty($sites) && array_key_exists($uri, $sites)) {

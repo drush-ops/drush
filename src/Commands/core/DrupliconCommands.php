@@ -7,12 +7,11 @@ namespace Drush\Commands\core;
 use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\AnnotatedCommand\Hooks\HookManager;
 use Drush\Attributes as CLI;
-use Drush\Attributes\HookSelector;
 use Drush\Commands\DrushCommands;
 
 final class DrupliconCommands extends DrushCommands
 {
-    protected $printed = false;
+    protected bool $printed = false;
 
     #[CLI\Hook(type: HookManager::OPTION_HOOK, target: '*')]
     #[CLI\Option(name: 'druplicon', description: 'Shows the druplicon as glorious ASCII art.')]
