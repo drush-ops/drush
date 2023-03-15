@@ -85,6 +85,10 @@ workflows:
     jobs:
       - lint
       - test:
+          name: test-drupal-9-php-8.2
+          drupal: "9.5.4"
+          os: linux82
+      - test:
           name: test-drupal-8-php-7.4
           drupal: "8.9.20"
           os: linux74
