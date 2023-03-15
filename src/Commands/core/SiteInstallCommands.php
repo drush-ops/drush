@@ -250,8 +250,6 @@ final class SiteInstallCommands extends DrushCommands implements SiteAliasManage
             if ($sites_subdir && "sites/$sites_subdir" !== $bootstrapManager->bootstrap()->confpath()) {
                 Database::removeConnection('default');
             }
-
-            $sql = SqlBase::create($commandData->input()->getOptions());
         } catch (\Exception) {
             // Ask questions to get our data.
             // TODO: we should only 'ask' in hook interact, never in hook validate
