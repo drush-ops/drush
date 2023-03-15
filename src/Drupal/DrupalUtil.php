@@ -16,7 +16,7 @@ class DrupalUtil
      *
      *   The plain-text representation of the input.
      */
-    public static function drushRender($data): string
+    public static function drushRender(string|array $data): string
     {
         if (is_array($data)) {
             $data = \Drupal::service('renderer')->renderRoot($data);

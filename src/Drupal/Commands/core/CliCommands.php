@@ -119,10 +119,7 @@ final class CliCommands extends DrushCommands
         ];
         $php_keywords = $this->getPhpKeywords();
 
-        /** @var AnnotatedCommand $command */
         foreach ($commands as $name => $command) {
-            $definition = $command->getDefinition();
-
             // Ignore some commands that don't make sense inside PsySH, are PHP keywords
             // are hidden, or are aliases.
             if (in_array($name, $ignored_commands) || in_array($name, $php_keywords) || ($name !== $command->getName())) {

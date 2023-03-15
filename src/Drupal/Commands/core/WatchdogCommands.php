@@ -137,9 +137,7 @@ final class WatchdogCommands extends DrushCommands
         }
 
         $last_seen_wid = 0;
-        $iteration = 1;
         while (true) {
-            $iteration++;
             $where['args'][':wid'] = $last_seen_wid;
             $query = Database::getConnection()->select('watchdog', 'w')
                 ->fields('w')
@@ -155,7 +153,7 @@ final class WatchdogCommands extends DrushCommands
                     $last_seen_wid = $result->wid;
                 }
                 $row = $this->formatResult($result, $options['extended']);
-                $msg = "{$row->wid}\t{$row->date}\t{$row->type}\t{$row->severity}\t{$row->message}";
+                $msg = "$row->wid\t$row->date\t$row->type\t$row->severity\t$row->message";
                 $output->writeln($msg);
             }
             sleep(2);
@@ -257,6 +255,8 @@ final class WatchdogCommands extends DrushCommands
     /**
      * Build a WHERE snippet based on given parameters.
      *
+     * Example: ('where' => string, 'args' => [])
+     *
      * @param $type
      *   String. Valid watchdog type.
      * @param $severity
@@ -267,10 +267,8 @@ final class WatchdogCommands extends DrushCommands
      *   ('AND', 'OR'). Criteria for the WHERE snippet.
      * @param $severity_min
      *   Int or String for the minimum severity to return.
-     * @return
-     *   An array with structure ('where' => string, 'args' => array())
      */
-    protected function where($type = null, $severity = null, $filter = null, $criteria = 'AND', $severity_min = null): array
+    protected function where(?string $type = null, $severity = null, ?string $filter = null, string $criteria = 'AND', int|string $severity_min = null): array
     {
         $args = [];
         $conditions = [];
@@ -311,7 +309,7 @@ final class WatchdogCommands extends DrushCommands
                 $msg = "Unknown severity level: !severity\nValid severity levels are: !levels.";
                 throw new \Exception(dt($msg, ['!severity' => $severity, '!levels' => implode(', ', $levels)]));
             }
-            $conditions[] = "severity {$operator} :severity";
+            $conditions[] = "severity $operator :severity";
             $args[':severity'] = $level;
         }
         if ($filter) {
@@ -334,7 +332,7 @@ final class WatchdogCommands extends DrushCommands
      * @return
      *   Array. The result object with some attributes themed.
      */
-    protected function formatResult($result, $extended = false)
+    protected function formatResult($result, bool $extended = false)
     {
         // Severity.
         $severities = RfcLogLevel::getLevels();
@@ -373,7 +371,7 @@ final class WatchdogCommands extends DrushCommands
             }
             $message_length = PHP_INT_MAX;
         }
-        $result->message = Unicode::truncate(strip_tags(Html::decodeEntities($result->message)), $message_length, false, false);
+        $result->message = Unicode::truncate(strip_tags(Html::decodeEntities($result->message)), $message_length);
 
         return $result;
     }
@@ -381,10 +379,10 @@ final class WatchdogCommands extends DrushCommands
     /**
      * Helper function to obtain the message types based on drupal version.
      *
-     * @return
+     * @return array
      *   Array of watchdog message types.
      */
-    public static function messageTypes()
+    public static function messageTypes(): array
     {
         return _dblog_get_message_types();
     }

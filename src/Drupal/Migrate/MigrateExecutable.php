@@ -47,17 +47,13 @@ class MigrateExecutable extends MigrateExecutableBase
 
     /**
      * Maximum number of items to process in this migration.
-     *
-     * @var int|null
      */
-    protected $limit;
+    protected ?int $limit;
 
     /**
      * Frequency (in items) at which progress messages should be emitted.
-     *
-     * @var int|null
      */
-    protected $feedback;
+    protected ?int $feedback;
 
     /**
      * Show timestamp in progress message.

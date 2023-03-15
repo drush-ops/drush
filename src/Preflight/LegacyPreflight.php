@@ -4,10 +4,8 @@ declare(strict_types=1);
 
 namespace Drush\Preflight;
 
-use Drush\Drush;
 use Drush\Config\Environment;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
+use Drush\Drush;
 use Symfony\Component\Filesystem\Path;
 
 /**

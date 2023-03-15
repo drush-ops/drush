@@ -297,8 +297,6 @@ final class UserCommands extends DrushCommands
 
     /**
      * A flatter and simpler array presentation of a Drupal $user object.
-     *
-     * @param $account A user account
      */
     public function infoArray($account): array
     {

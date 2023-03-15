@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Drush\Drupal\Commands\core;
 
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
+use Drupal\Core\Extension\ExtensionList;
 use Drupal\Core\PhpStorage\PhpStorageFactory;
 use Drupal\Core\Template\TwigEnvironment;
 use Drush\Attributes as CLI;
@@ -28,6 +29,7 @@ final class TwigCommands extends DrushCommands
      * @var ModuleHandlerInterface
      */
     protected $moduleHandler;
+    private ExtensionList $extensionList;
 
     public function getTwig(): TwigEnvironment
     {
@@ -43,10 +45,11 @@ final class TwigCommands extends DrushCommands
      * @param TwigEnvironment $twig
      * @param ModuleHandlerInterface $moduleHandler
      */
-    public function __construct(TwigEnvironment $twig, ModuleHandlerInterface $moduleHandler)
+    public function __construct(TwigEnvironment $twig, ModuleHandlerInterface $moduleHandler, ExtensionList $extensionList)
     {
         $this->twig = $twig;
         $this->moduleHandler = $moduleHandler;
+        $this->extensionList = $extensionList;
     }
 
   /**
@@ -99,7 +102,7 @@ final class TwigCommands extends DrushCommands
         // Scan all enabled modules and themes.
         $modules = array_keys($this->getModuleHandler()->getModuleList());
         foreach ($modules as $module) {
-            $searchpaths[] = drupal_get_path('module', $module);
+            $searchpaths[] = $this->extensionList->getPath($module);
         }
 
         $themes = \Drupal::service('theme_handler')->listInfo();

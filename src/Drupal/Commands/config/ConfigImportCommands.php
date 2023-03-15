@@ -35,16 +35,16 @@ class ConfigImportCommands extends DrushCommands
 {
     const IMPORT = 'config:import';
     protected ConfigManagerInterface $configManager;
-    protected $configStorage;
+    protected StorageInterface $configStorage;
     protected $configStorageSync;
-    protected $configCache;
+    protected CacheBackendInterface $configCache;
     protected EventDispatcherInterface $eventDispatcher;
-    protected $lock;
-    protected $configTyped;
-    protected $moduleInstaller;
-    protected $themeHandler;
-    protected $stringTranslation;
-    protected $importStorageTransformer;
+    protected LockBackendInterface $lock;
+    protected TypedConfigManagerInterface $configTyped;
+    protected ModuleInstallerInterface $moduleInstaller;
+    protected ThemeHandlerInterface $themeHandler;
+    protected TranslationInterface $stringTranslation;
+    protected ?ImportStorageTransformer $importStorageTransformer;
     protected ModuleHandlerInterface $moduleHandler;
     protected ModuleExtensionList $moduleExtensionList;
 

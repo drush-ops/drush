@@ -8,9 +8,8 @@ use Symfony\Component\Console\Output\StreamOutput;
 
 class PreflightLog
 {
-    protected $debug;
-
-    protected $output;
+    protected bool $debug;
+    protected ?string $output;
 
     public function __construct($output = null)
     {

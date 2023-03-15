@@ -344,22 +344,6 @@ class PreflightArgs extends Config implements PreflightArgsInterface
     }
 
     /**
-     * Add multiple additional locations for alias paths.
-     */
-    public function mergeAliasPaths(string $aliasPaths): self
-    {
-        $aliasPaths = array_map(
-            function ($item) {
-                return StringUtils::replaceTilde($item, $this->homeDir());
-            },
-            $aliasPaths
-        );
-        $paths = $this->aliasPaths();
-        $merged_paths = array_merge($paths, $aliasPaths);
-        return $this->set(self::ALIAS_PATH, $merged_paths);
-    }
-
-    /**
      * Get the path where Drush commandfiles e.g. FooCommands.php may be found.
      */
     public function commandPaths()

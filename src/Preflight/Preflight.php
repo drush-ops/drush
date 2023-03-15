@@ -4,17 +4,16 @@ declare(strict_types=1);
 
 namespace Drush\Preflight;
 
-use Symfony\Component\HttpKernel\Kernel;
-use Symfony\Component\Console\Input\InputInterface;
 use Composer\Autoload\ClassLoader;
-use Drush\SiteAlias\SiteAliasFileLoader;
-use Drush\Config\DrushConfig;
-use Drush\Config\Environment;
-use Drush\Config\ConfigLocator;
-use Drush\Config\EnvironmentConfigLoader;
 use Consolidation\SiteAlias\SiteAliasManager;
 use DrupalFinder\DrupalFinder;
+use Drush\Config\ConfigLocator;
+use Drush\Config\DrushConfig;
+use Drush\Config\Environment;
+use Drush\SiteAlias\SiteAliasFileLoader;
 use RuntimeException;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\HttpKernel\Kernel;
 
 /**
  * The Drush preflight determines what needs to be done for this request.

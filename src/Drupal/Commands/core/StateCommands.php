@@ -96,7 +96,7 @@ final class StateCommands extends DrushCommands implements StdinAwareInterface
    * @return $value
    *  The value, casted as needed.
    */
-    public static function format($value, $format)
+    public static function format(mixed $value, string $format): mixed
     {
         if ($format == 'auto') {
             if (is_numeric($value)) {
@@ -132,7 +132,7 @@ final class StateCommands extends DrushCommands implements StdinAwareInterface
                 $value = json_decode($value, true);
                 break;
             case 'yaml':
-                $value = Yaml::parse($value, false);
+                $value = Yaml::parse($value);
                 break;
         }
         return $value;

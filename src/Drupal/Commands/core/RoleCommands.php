@@ -119,7 +119,7 @@ final class RoleCommands extends DrushCommands implements SiteAliasManagerAwareI
     /*
      * Used in the unlikely event user specifies --format=table.
      */
-    public function renderPermsCell($key, $cellData, FormatterOptions $options)
+    public function renderPermsCell($key, $cellData, FormatterOptions $options): string
     {
         if (is_array($cellData)) {
             return implode(',', $cellData);
