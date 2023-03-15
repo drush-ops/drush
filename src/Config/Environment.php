@@ -197,13 +197,11 @@ class Environment
 
     /**
      * Get the site:set alias from the current site:set file path.
-     *
-     * @return bool|string
      */
-    public function getSiteSetAliasName()
+    public function getSiteSetAliasName(): bool|string
     {
         $site_filename = $this->getSiteSetAliasFilePath();
-        if (file_exists($site_filename)) {
+        if ($site_filename && file_exists($site_filename)) {
             $site = file_get_contents($site_filename);
             if ($site) {
                 return $site;
@@ -423,7 +421,7 @@ class Environment
      * @return string|false
      *   Returns the full path to temp file if possible, or FALSE if not.
      */
-    protected function getSiteSetAliasFilePath(string $filename_prefix = 'drush-drupal-site-')
+    protected function getSiteSetAliasFilePath(string $filename_prefix = 'drush-drupal-site-'): string|false
     {
         $shell_pid = getenv('DRUSH_SHELL_PID');
         if (!$shell_pid && function_exists('posix_getppid')) {
