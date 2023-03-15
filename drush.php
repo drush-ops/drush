@@ -63,11 +63,6 @@ if (!$loader) {
     throw new \Exception("Could not locate autoload.php. cwd is $cwd; __DIR__ is " . __DIR__);
 }
 
-// For Symfony 4 only, include our "Path" class (introduced in Symfony 5.4)
-if (!class_exists('\Symfony\Component\Filesystem\Path')) {
-    include __DIR__ . "/src-symfony-compatibility/Filesystem/Path.php";
-}
-
 // Set up environment
 $environment = new Environment(Path::getHomeDirectory(), $cwd, $autoloadFile);
 $environment->setConfigFileVariant(Drush::getMajorVersion());
