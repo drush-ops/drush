@@ -22,8 +22,8 @@ final class ConfigExportCommands extends DrushCommands
 
     protected ConfigManagerInterface $configManager;
     protected StorageInterface $configStorage;
-    protected StorageInterface $configStorageSync;
-    protected StorageInterface $configStorageExport;
+    protected ?StorageInterface $configStorageSync;
+    protected ?StorageInterface $configStorageExport;
 
     public function getConfigManager(): ConfigManagerInterface
     {
