@@ -4,14 +4,15 @@ declare(strict_types=1);
 
 namespace Drush\Preflight;
 
+use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Output\StreamOutput;
 
 class PreflightLog
 {
     protected bool $debug;
-    protected ?string $output;
+    protected ?OutputInterface $output;
 
-    public function __construct($output = null)
+    public function __construct(?OutputInterface $output = null)
     {
         $this->output = $output ?: new StreamOutput(fopen('php://stderr', 'w'));
     }
