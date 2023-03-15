@@ -17,7 +17,7 @@ class WootCommands
      * @command woot
      * @aliases wt
      */
-    public function woot()
+    public function woot(): string
     {
         return 'Woot!';
     }
@@ -36,7 +36,7 @@ class WootCommands
      * @usage bet alpha --flip
      *   Concatinate "alpha" and "bet".
      */
-    public function myCat($one, $two = '', $options = ['flip' => false])
+    public function myCat($one, $two = '', $options = ['flip' => false]): string
     {
         if ($options['flip']) {
             return "{$two}{$one}";

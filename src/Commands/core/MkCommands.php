@@ -33,7 +33,7 @@ final class MkCommands extends DrushCommands implements SiteAliasManagerAwareInt
     /**
      * Build a Markdown document for each Drush command/generator that is available on a site.
      *
-     * This command is an early step when building the www.drush.org static site. Adapt it to build a similar site listing the commands that are available on your site. Also see Drush's [Github Actions workflow](https://github.com/drush-ops/drush/blob/11.x/.github/workflows/main.yml).
+     * This command is an early step when building the www.drush.org static site. Adapt it to build a similar site listing the commands that are available on your site. Also see Drush's [Github Actions workflow](https://github.com/drush-ops/drush/blob/12.x/.github/workflows/main.yml).
      */
     #[CLI\Command(name: 'mk:docs')]
     #[CLI\Bootstrap(level: DrupalBootLevels::MAX)]
@@ -211,7 +211,7 @@ EOT;
         if ($command instanceof AnnotatedCommand) {
             $path = Path::makeRelative($command->getAnnotationData()->get('_path'), $root);
         }
-        $edit_url = $path ? "https://github.com/drush-ops/drush/blob/11.x/$path" : '';
+        $edit_url = $path ? "https://github.com/drush-ops/drush/blob/12.x/$path" : '';
         $body = <<<EOT
 ---
 edit_url: $edit_url
