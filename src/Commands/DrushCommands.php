@@ -17,6 +17,7 @@ use Drush\Style\DrushStyle;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\MessageFormatter;
 use GuzzleHttp\Middleware;
+use PhpPkg\CliMarkdown\CliMarkdown;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use Robo\Common\IO;
@@ -80,10 +81,18 @@ abstract class DrushCommands implements IOAwareInterface, LoggerAwareInterface, 
      */
     protected function printFile(string $file): void
     {
-        if (str_ends_with($file, ".htm") || str_ends_with($file, ".html")) {
+        $extension = Path::getExtension($file);
+        if ($extension == ".htm" || $extension == ".html") {
             $tmp_file = drush_tempnam(basename($file));
             file_put_contents($tmp_file, drush_html_to_text(file_get_contents($file)));
             $file = $tmp_file;
+        }
+
+        if ($extension == 'md') {
+            $parser = new CliMarkdown();
+            $rendered = $parser->render(file_get_contents($file));
+            $this->output()->write($rendered);
+            return;
         }
 
         if (self::input()->isInteractive()) {
