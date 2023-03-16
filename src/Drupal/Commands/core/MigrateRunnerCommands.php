@@ -58,9 +58,6 @@ class MigrateRunnerCommands extends DrushCommands
 
     /**
      * List all migrations with current status.
-     *
-     * @throws \Exception
-     *   If --names-only is used with --field having other value than 'id'.
      */
     #[CLI\Command(name: 'migrate:status', aliases: ['ms', 'migrate-status'])]
     #[CLI\Argument(name: 'migrationIds', description: 'Restrict to a comma-separated list of migrations. Optional.')]
