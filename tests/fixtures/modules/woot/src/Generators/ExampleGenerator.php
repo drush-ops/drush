@@ -33,6 +33,7 @@ class ExampleGenerator extends BaseGenerator
     protected function generate(array &$vars, Assets $assets): void
     {
         $ir = $this->createInterviewer($vars);
+        $vars['machine_name'] = $ir->askMachineName();
         $vars['class'] = '{machine_name|camelize}Commands';
         $vars['color'] = $ir->ask('Favorite color', 'blue');
         $assets->addFile('Commands/{class}.php', 'example-generator.twig');
