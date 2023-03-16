@@ -226,7 +226,7 @@
                     bool
                 </div>
                 <div class="col-md-8">
-                    <a href="#method_startBrowser">startBrowser</a>($uri = null, int $sleep = 0, int|null $port = null, string|bool $browser = false)
+                    <a href="#method_startBrowser">startBrowser</a>(string|null $uri = null, int $sleep = 0, int|null $port = null, <abbr title="Drush\Exec\string|bool">string|bool</abbr> $browser = false)
         
                                             <p><p>Starts a background browser/tab for the current site or a specified URL.</p></p>                </div>
                 <div class="col-md-2"><small>from&nbsp;<a href="../../../Drush/Exec/ExecTrait.html#method_startBrowser">
@@ -234,7 +234,7 @@
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    static&nbsp;
+                    static&nbsp;bool
                 </div>
                 <div class="col-md-8">
                     <a href="#method_programExists">programExists</a>($program)
@@ -246,7 +246,7 @@
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    static&nbsp;
+                    static&nbsp;string
                 </div>
                 <div class="col-md-8">
                     <a href="#method_getEditor">getEditor</a>(string|null $editor = null)
@@ -386,9 +386,9 @@ DrushConfig as return type. Helps with IDE completion.</p></p>                </
                     <div class="method-item">
                     <h3 id="method_startBrowser">
         <div class="location">in <a href="../../../Drush/Exec/ExecTrait.html#method_startBrowser">
-<abbr title="Drush\Exec\ExecTrait">ExecTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/12.x/src/Exec/ExecTrait.php#L29">at line 29</a></div>
+<abbr title="Drush\Exec\ExecTrait">ExecTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/12.x/src/Exec/ExecTrait.php#L26">at line 26</a></div>
         <code>                    bool
-    <strong>startBrowser</strong>($uri = null, int $sleep = 0, int|null $port = null, string|bool $browser = false)
+    <strong>startBrowser</strong>(string|null $uri = null, int $sleep = 0, int|null $port = null, <abbr title="Drush\Exec\string|bool">string|bool</abbr> $browser = false)
         </code>
     </h3>
     <div class="details">    
@@ -403,7 +403,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>                </
 
                     <table class="table table-condensed">
                     <tr>
-                <td></td>
+                <td>string|null</td>
                 <td>$uri</td>
                 <td><p>Optional URI or site path to open in browser. If omitted, or if a site path
 is specified, the current site home page uri will be prepended if the site's
@@ -420,7 +420,7 @@ hostname resolves.</p></td>
                 <td></td>
             </tr>
                     <tr>
-                <td>string|bool</td>
+                <td><abbr title="Drush\Exec\string|bool">string|bool</abbr></td>
                 <td>$browser</td>
                 <td></td>
             </tr>
@@ -447,8 +447,8 @@ default browser could not be found.</p></td>
                     <div class="method-item">
                     <h3 id="method_programExists">
         <div class="location">in <a href="../../../Drush/Exec/ExecTrait.html#method_programExists">
-<abbr title="Drush\Exec\ExecTrait">ExecTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/12.x/src/Exec/ExecTrait.php#L93">at line 93</a></div>
-        <code>        static            
+<abbr title="Drush\Exec\ExecTrait">ExecTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/12.x/src/Exec/ExecTrait.php#L87">at line 87</a></div>
+        <code>        static            bool
     <strong>programExists</strong>($program)
         </code>
     </h3>
@@ -472,6 +472,15 @@ default browser could not be found.</p></td>
             </table>
 
             
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>bool</td>
+            <td></td>
+        </tr>
+    </table>
+
             
             
             
@@ -482,8 +491,8 @@ default browser could not be found.</p></td>
                     <div class="method-item">
                     <h3 id="method_getEditor">
         <div class="location">in <a href="../../../Drush/Exec/ExecTrait.html#method_getEditor">
-<abbr title="Drush\Exec\ExecTrait">ExecTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/12.x/src/Exec/ExecTrait.php#L105">at line 105</a></div>
-        <code>        static            
+<abbr title="Drush\Exec\ExecTrait">ExecTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/12.x/src/Exec/ExecTrait.php#L99">at line 99</a></div>
+        <code>        static            string
     <strong>getEditor</strong>(string|null $editor = null)
         </code>
     </h3>
@@ -507,6 +516,15 @@ default browser could not be found.</p></td>
             </table>
 
             
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string</td>
+            <td></td>
+        </tr>
+    </table>
+
             
             
             
@@ -850,7 +868,7 @@ file.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_siteAlias">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/SiteCommands.php#L92">at line 92</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/SiteCommands.php#L93">at line 93</a></div>
         <code>                    <abbr title="Drush\Commands\core\Consolidation\OutputFormatters\StructuredData\UnstructuredListData">UnstructuredListData</abbr>|null
     <strong>siteAlias</strong>($site = null, array $options = [&#039;format&#039; =&gt; &#039;yaml&#039;])
         </code>
@@ -897,7 +915,7 @@ file.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_siteAliasExportList">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/SiteCommands.php#L124">at line 124</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/SiteCommands.php#L122">at line 122</a></div>
         <code>            protected        array
     <strong>siteAliasExportList</strong>(array $aliasList, $options)
         </code>

@@ -214,7 +214,7 @@
                     bool
                 </div>
                 <div class="col-md-8">
-                    <a href="#method_startBrowser">startBrowser</a>($uri = null, int $sleep = 0, int|null $port = null, string|bool $browser = false)
+                    <a href="#method_startBrowser">startBrowser</a>(string|null $uri = null, int $sleep = 0, int|null $port = null, <abbr title="Drush\Exec\string|bool">string|bool</abbr> $browser = false)
         
                                             <p><p>Starts a background browser/tab for the current site or a specified URL.</p></p>                </div>
                 <div class="col-md-2"><small>from&nbsp;<a href="../../../Drush/Exec/ExecTrait.html#method_startBrowser">
@@ -222,7 +222,7 @@
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    static&nbsp;
+                    static&nbsp;bool
                 </div>
                 <div class="col-md-8">
                     <a href="#method_programExists">programExists</a>($program)
@@ -234,7 +234,7 @@
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    static&nbsp;
+                    static&nbsp;string
                 </div>
                 <div class="col-md-8">
                     <a href="#method_getEditor">getEditor</a>(string|null $editor = null)
@@ -403,9 +403,9 @@ DrushConfig as return type. Helps with IDE completion.</p></p>                </
                     <div class="method-item">
                     <h3 id="method_startBrowser">
         <div class="location">in <a href="../../../Drush/Exec/ExecTrait.html#method_startBrowser">
-<abbr title="Drush\Exec\ExecTrait">ExecTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/12.x/src/Exec/ExecTrait.php#L29">at line 29</a></div>
+<abbr title="Drush\Exec\ExecTrait">ExecTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/12.x/src/Exec/ExecTrait.php#L26">at line 26</a></div>
         <code>                    bool
-    <strong>startBrowser</strong>($uri = null, int $sleep = 0, int|null $port = null, string|bool $browser = false)
+    <strong>startBrowser</strong>(string|null $uri = null, int $sleep = 0, int|null $port = null, <abbr title="Drush\Exec\string|bool">string|bool</abbr> $browser = false)
         </code>
     </h3>
     <div class="details">    
@@ -420,7 +420,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>                </
 
                     <table class="table table-condensed">
                     <tr>
-                <td></td>
+                <td>string|null</td>
                 <td>$uri</td>
                 <td><p>Optional URI or site path to open in browser. If omitted, or if a site path
 is specified, the current site home page uri will be prepended if the site's
@@ -437,7 +437,7 @@ hostname resolves.</p></td>
                 <td></td>
             </tr>
                     <tr>
-                <td>string|bool</td>
+                <td><abbr title="Drush\Exec\string|bool">string|bool</abbr></td>
                 <td>$browser</td>
                 <td></td>
             </tr>
@@ -464,8 +464,8 @@ default browser could not be found.</p></td>
                     <div class="method-item">
                     <h3 id="method_programExists">
         <div class="location">in <a href="../../../Drush/Exec/ExecTrait.html#method_programExists">
-<abbr title="Drush\Exec\ExecTrait">ExecTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/12.x/src/Exec/ExecTrait.php#L93">at line 93</a></div>
-        <code>        static            
+<abbr title="Drush\Exec\ExecTrait">ExecTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/12.x/src/Exec/ExecTrait.php#L87">at line 87</a></div>
+        <code>        static            bool
     <strong>programExists</strong>($program)
         </code>
     </h3>
@@ -489,6 +489,15 @@ default browser could not be found.</p></td>
             </table>
 
             
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>bool</td>
+            <td></td>
+        </tr>
+    </table>
+
             
             
             
@@ -499,8 +508,8 @@ default browser could not be found.</p></td>
                     <div class="method-item">
                     <h3 id="method_getEditor">
         <div class="location">in <a href="../../../Drush/Exec/ExecTrait.html#method_getEditor">
-<abbr title="Drush\Exec\ExecTrait">ExecTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/12.x/src/Exec/ExecTrait.php#L105">at line 105</a></div>
-        <code>        static            
+<abbr title="Drush\Exec\ExecTrait">ExecTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/12.x/src/Exec/ExecTrait.php#L99">at line 99</a></div>
+        <code>        static            string
     <strong>getEditor</strong>(string|null $editor = null)
         </code>
     </h3>
@@ -524,6 +533,15 @@ default browser could not be found.</p></td>
             </table>
 
             
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string</td>
+            <td></td>
+        </tr>
+    </table>
+
             
             
             
@@ -824,7 +842,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_composerLockPath">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/pm/SecurityUpdateCommands.php#L32">at line 32</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/pm/SecurityUpdateCommands.php#L28">at line 28</a></div>
         <code>        static            string
     <strong>composerLockPath</strong>()
         </code>
@@ -848,15 +866,6 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
     </table>
 
             
-                            <h4>Exceptions</h4>
-
-                    <table class="table table-condensed">
-                    <tr>
-                <td><a target="_blank" rel="noopener" href="https://www.php.net/Exception">Exception</a></td>
-                <td></td>
-            </tr>
-            </table>
-
             
             
                     </div>
@@ -865,7 +874,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_security">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/pm/SecurityUpdateCommands.php#L50">at line 50</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/pm/SecurityUpdateCommands.php#L46">at line 46</a></div>
         <code>                    <abbr title="Drush\Commands\pm\Consolidation\OutputFormatters\StructuredData\RowsOfFields|Consolidation\AnnotatedCommand\CommandResult|null">CommandResult|null</abbr>
     <strong>security</strong>(array $options = [&#039;no-dev&#039; =&gt; false])
         </code>
@@ -908,7 +917,7 @@ are available. An exit code of 3 indicates that the check completed, and insecur
             </div>
                     <div class="method-item">
                     <h3 id="method_suggestComposerCommand">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/pm/SecurityUpdateCommands.php#L77">at line 77</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/pm/SecurityUpdateCommands.php#L73">at line 73</a></div>
         <code>                    void
     <strong>suggestComposerCommand</strong>($updates)
         </code>
@@ -950,7 +959,7 @@ are available. An exit code of 3 indicates that the check completed, and insecur
             </div>
                     <div class="method-item">
                     <h3 id="method_fetchAdvisoryComposerJson">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/pm/SecurityUpdateCommands.php#L101">at line 101</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/pm/SecurityUpdateCommands.php#L93">at line 93</a></div>
         <code>            protected        mixed
     <strong>fetchAdvisoryComposerJson</strong>()
         </code>
@@ -977,15 +986,6 @@ environment variable is not a supported API.</p></p>
     </table>
 
             
-                            <h4>Exceptions</h4>
-
-                    <table class="table table-condensed">
-                    <tr>
-                <td><a target="_blank" rel="noopener" href="https://www.php.net/Exception">Exception</a></td>
-                <td></td>
-            </tr>
-            </table>
-
             
             
                     </div>
@@ -994,7 +994,7 @@ environment variable is not a supported API.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_loadSiteComposerLock">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/pm/SecurityUpdateCommands.php#L115">at line 115</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/pm/SecurityUpdateCommands.php#L104">at line 104</a></div>
         <code>            protected        array
     <strong>loadSiteComposerLock</strong>()
         </code>
@@ -1018,15 +1018,6 @@ environment variable is not a supported API.</p></p>
     </table>
 
             
-                            <h4>Exceptions</h4>
-
-                    <table class="table table-condensed">
-                    <tr>
-                <td><a target="_blank" rel="noopener" href="https://www.php.net/Exception">Exception</a></td>
-                <td></td>
-            </tr>
-            </table>
-
             
             
                     </div>
@@ -1035,7 +1026,7 @@ environment variable is not a supported API.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_calculateSecurityUpdates">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/pm/SecurityUpdateCommands.php#L134">at line 134</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/pm/SecurityUpdateCommands.php#L123">at line 123</a></div>
         <code>            protected        array
     <strong>calculateSecurityUpdates</strong>(array $composer_lock_data, array $security_advisories_composer_json, bool $excludeDev = false)
         </code>

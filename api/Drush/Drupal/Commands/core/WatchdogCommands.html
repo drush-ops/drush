@@ -248,7 +248,7 @@
                     bool
                 </div>
                 <div class="col-md-8">
-                    <a href="#method_startBrowser">startBrowser</a>($uri = null, int $sleep = 0, int|null $port = null, string|bool $browser = false)
+                    <a href="#method_startBrowser">startBrowser</a>(string|null $uri = null, int $sleep = 0, int|null $port = null, <abbr title="Drush\Exec\string|bool">string|bool</abbr> $browser = false)
         
                                             <p><p>Starts a background browser/tab for the current site or a specified URL.</p></p>                </div>
                 <div class="col-md-2"><small>from&nbsp;<a href="../../../../Drush/Exec/ExecTrait.html#method_startBrowser">
@@ -256,7 +256,7 @@
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    static&nbsp;
+                    static&nbsp;bool
                 </div>
                 <div class="col-md-8">
                     <a href="#method_programExists">programExists</a>($program)
@@ -268,7 +268,7 @@
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    static&nbsp;
+                    static&nbsp;string
                 </div>
                 <div class="col-md-8">
                     <a href="#method_getEditor">getEditor</a>(string|null $editor = null)
@@ -434,7 +434,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>                </
                     array
                 </div>
                 <div class="col-md-8">
-                    <a href="#method_where">where</a>($type = null, $severity = null, $filter = null, $criteria = &#039;AND&#039;, $severity_min = null)
+                    <a href="#method_where">where</a>(string|null $type = null, $severity = null, string|null $filter = null, string $criteria = &#039;AND&#039;, <abbr title="Drush\Drupal\Commands\core\int|string">int|string</abbr> $severity_min = null)
         
                                             <p><p>Build a WHERE snippet based on given parameters.</p></p>                </div>
                 <div class="col-md-2"></div>
@@ -444,7 +444,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>                </
                     
                 </div>
                 <div class="col-md-8">
-                    <a href="#method_formatResult">formatResult</a>($result, $extended = false)
+                    <a href="#method_formatResult">formatResult</a>($result, bool $extended = false)
         
                                             <p><p>Format a watchdog database row.</p></p>                </div>
                 <div class="col-md-2"></div>
@@ -468,9 +468,9 @@ DrushConfig as return type. Helps with IDE completion.</p></p>                </
                     <div class="method-item">
                     <h3 id="method_startBrowser">
         <div class="location">in <a href="../../../../Drush/Exec/ExecTrait.html#method_startBrowser">
-<abbr title="Drush\Exec\ExecTrait">ExecTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/12.x/src/Exec/ExecTrait.php#L29">at line 29</a></div>
+<abbr title="Drush\Exec\ExecTrait">ExecTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/12.x/src/Exec/ExecTrait.php#L26">at line 26</a></div>
         <code>                    bool
-    <strong>startBrowser</strong>($uri = null, int $sleep = 0, int|null $port = null, string|bool $browser = false)
+    <strong>startBrowser</strong>(string|null $uri = null, int $sleep = 0, int|null $port = null, <abbr title="Drush\Exec\string|bool">string|bool</abbr> $browser = false)
         </code>
     </h3>
     <div class="details">    
@@ -485,7 +485,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>                </
 
                     <table class="table table-condensed">
                     <tr>
-                <td></td>
+                <td>string|null</td>
                 <td>$uri</td>
                 <td><p>Optional URI or site path to open in browser. If omitted, or if a site path
 is specified, the current site home page uri will be prepended if the site's
@@ -502,7 +502,7 @@ hostname resolves.</p></td>
                 <td></td>
             </tr>
                     <tr>
-                <td>string|bool</td>
+                <td><abbr title="Drush\Exec\string|bool">string|bool</abbr></td>
                 <td>$browser</td>
                 <td></td>
             </tr>
@@ -529,8 +529,8 @@ default browser could not be found.</p></td>
                     <div class="method-item">
                     <h3 id="method_programExists">
         <div class="location">in <a href="../../../../Drush/Exec/ExecTrait.html#method_programExists">
-<abbr title="Drush\Exec\ExecTrait">ExecTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/12.x/src/Exec/ExecTrait.php#L93">at line 93</a></div>
-        <code>        static            
+<abbr title="Drush\Exec\ExecTrait">ExecTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/12.x/src/Exec/ExecTrait.php#L87">at line 87</a></div>
+        <code>        static            bool
     <strong>programExists</strong>($program)
         </code>
     </h3>
@@ -554,6 +554,15 @@ default browser could not be found.</p></td>
             </table>
 
             
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>bool</td>
+            <td></td>
+        </tr>
+    </table>
+
             
             
             
@@ -564,8 +573,8 @@ default browser could not be found.</p></td>
                     <div class="method-item">
                     <h3 id="method_getEditor">
         <div class="location">in <a href="../../../../Drush/Exec/ExecTrait.html#method_getEditor">
-<abbr title="Drush\Exec\ExecTrait">ExecTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/12.x/src/Exec/ExecTrait.php#L105">at line 105</a></div>
-        <code>        static            
+<abbr title="Drush\Exec\ExecTrait">ExecTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/12.x/src/Exec/ExecTrait.php#L99">at line 99</a></div>
+        <code>        static            string
     <strong>getEditor</strong>(string|null $editor = null)
         </code>
     </h3>
@@ -589,6 +598,15 @@ default browser could not be found.</p></td>
             </table>
 
             
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string</td>
+            <td></td>
+        </tr>
+    </table>
+
             
             
             
@@ -1035,7 +1053,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_interactList">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Drupal/Commands/core/WatchdogCommands.php#L165">at line 165</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Drupal/Commands/core/WatchdogCommands.php#L163">at line 163</a></div>
         <code>                    void
     <strong>interactList</strong>($input, $output)
         </code>
@@ -1083,7 +1101,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_delete">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Drupal/Commands/core/WatchdogCommands.php#L191">at line 191</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Drupal/Commands/core/WatchdogCommands.php#L189">at line 189</a></div>
         <code>                    void
     <strong>delete</strong>($substring = &#039;&#039;, $options = [&#039;severity&#039; =&gt; self::REQ, &#039;type&#039; =&gt; self::REQ])
         </code>
@@ -1130,7 +1148,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_showOne">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Drupal/Commands/core/WatchdogCommands.php#L240">at line 240</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Drupal/Commands/core/WatchdogCommands.php#L238">at line 238</a></div>
         <code>                    <abbr title="Consolidation\OutputFormatters\StructuredData\PropertyList">PropertyList</abbr>
     <strong>showOne</strong>($id, $options = [&#039;format&#039; =&gt; &#039;yaml&#039;])
         </code>
@@ -1177,9 +1195,9 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_where">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Drupal/Commands/core/WatchdogCommands.php#L273">at line 273</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Drupal/Commands/core/WatchdogCommands.php#L271">at line 271</a></div>
         <code>            protected        array
-    <strong>where</strong>($type = null, $severity = null, $filter = null, $criteria = &#039;AND&#039;, $severity_min = null)
+    <strong>where</strong>(string|null $type = null, $severity = null, string|null $filter = null, string $criteria = &#039;AND&#039;, <abbr title="Drush\Drupal\Commands\core\int|string">int|string</abbr> $severity_min = null)
         </code>
     </h3>
     <div class="details">    
@@ -1187,14 +1205,14 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             
 
         <div class="method-description">
-                            <p><p>Build a WHERE snippet based on given parameters.</p></p>                        
+                            <p><p>Build a WHERE snippet based on given parameters.</p></p>                <p><p>Example: ('where' =&gt; string, 'args' =&gt; [])</p></p>        
         </div>
         <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
-                <td></td>
+                <td>string|null</td>
                 <td>$type</td>
                 <td><p>String. Valid watchdog type.</p></td>
             </tr>
@@ -1204,17 +1222,17 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
                 <td><p>Int or String for a valid watchdog severity message.</p></td>
             </tr>
                     <tr>
-                <td></td>
+                <td>string|null</td>
                 <td>$filter</td>
                 <td><p>String. Value to filter watchdog messages by.</p></td>
             </tr>
                     <tr>
-                <td></td>
+                <td>string</td>
                 <td>$criteria</td>
                 <td><p>('AND', 'OR'). Criteria for the WHERE snippet.</p></td>
             </tr>
                     <tr>
-                <td></td>
+                <td><abbr title="Drush\Drupal\Commands\core\int|string">int|string</abbr></td>
                 <td>$severity_min</td>
                 <td><p>Int or String for the minimum severity to return.</p></td>
             </tr>
@@ -1226,7 +1244,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
                     <table class="table table-condensed">
         <tr>
             <td>array</td>
-            <td><p>array with structure ('where' =&gt; string, 'args' =&gt; array())</p></td>
+            <td></td>
         </tr>
     </table>
 
@@ -1239,9 +1257,9 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_formatResult">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Drupal/Commands/core/WatchdogCommands.php#L337">at line 337</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Drupal/Commands/core/WatchdogCommands.php#L335">at line 335</a></div>
         <code>            protected        
-    <strong>formatResult</strong>($result, $extended = false)
+    <strong>formatResult</strong>($result, bool $extended = false)
         </code>
     </h3>
     <div class="details">    
@@ -1261,7 +1279,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
                 <td><p>Array. A database result object.</p></td>
             </tr>
                     <tr>
-                <td></td>
+                <td>bool</td>
                 <td>$extended</td>
                 <td><p>Boolean. Return extended message details.</p></td>
             </tr>
@@ -1277,7 +1295,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_messageTypes">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Drupal/Commands/core/WatchdogCommands.php#L387">at line 387</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Drupal/Commands/core/WatchdogCommands.php#L385">at line 385</a></div>
         <code>        static            array
     <strong>messageTypes</strong>()
         </code>
@@ -1296,7 +1314,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
                     <table class="table table-condensed">
         <tr>
             <td>array</td>
-            <td><p>of watchdog message types.</p></td>
+            <td><p>Array of watchdog message types.</p></td>
         </tr>
     </table>
 
