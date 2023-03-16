@@ -65,7 +65,6 @@ class MigrateRunnerCommands extends DrushCommands
     #[CLI\Command(name: 'migrate:status', aliases: ['ms', 'migrate-status'])]
     #[CLI\Argument(name: 'migrationIds', description: 'Restrict to a comma-separated list of migrations. Optional.')]
     #[CLI\Option(name: 'tag', description: 'A comma-separated list of migration tags to list. If only <info>--tag</info> is provided, all tagged migrations will be listed, grouped by tags.')]
-    #[CLI\Option(name: 'names-only', description: '[Deprecated, use --field=id instead] Only return names, not all the details (faster).')]
     #[CLI\Usage(name: 'migrate:status', description: 'Retrieve status for all migrations')]
     #[CLI\Usage(name: 'migrate:status --tag', description: 'Retrieve status for all migrations, grouped by tag')]
     #[CLI\Usage(name: 'migrate:status --tag=user,main_content', description: 'Retrieve status for all migrations tagged with <info>user</info> or <info>main_content</info>')]
@@ -95,20 +94,10 @@ class MigrateRunnerCommands extends DrushCommands
     #[CLI\Version(version:  '10.4')]
     public function status(?string $migrationIds = null, array $options = [
       'tag' => self::REQ,
-      'names-only' => false,
       'format' => 'table'
     ]): RowsOfFields
     {
-        // The --names-only option takes precedence over --fields.
-        if ($options['names-only']) {
-            if ($options['field'] && $options['field'] !== 'id') {
-                throw new \Exception("Cannot use --names-only with --field={$options['field']}.");
-            }
-            $deprecationMessage = 'The --names-only option is deprecated in Drush 10.5.1 and is removed from Drush 11.0.0. Use --field=id instead.';
-            $this->logger()->warning($deprecationMessage);
-            @trigger_error($deprecationMessage, E_USER_DEPRECATED);
-            $fields = ['id'];
-        } elseif ($options['field']) {
+        if ($options['field']) {
             $fields = [$options['field']];
         } elseif ($options['fields']) {
             $fields = StringUtils::csvToArray($options['fields']);
