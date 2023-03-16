@@ -131,7 +131,7 @@ EOT;
                             $value = "- [$topic_description]($target_relative) ($name)";
                         } else {
                             $rel_from_root = Path::makeRelative($abs, DRUSH_BASE_PATH);
-                            $value = "- [$topic_description](https://raw.githubusercontent.com/drush-ops/drush/11.x/$rel_from_root) ($name)";
+                            $value = "- [$topic_description](https://raw.githubusercontent.com/drush-ops/drush/12.x/$rel_from_root) ($name)";
                         }
                     }
                 }

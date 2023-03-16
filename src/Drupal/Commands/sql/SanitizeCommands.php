@@ -24,7 +24,7 @@ final class SanitizeCommands extends DrushCommands implements CustomEventAwareIn
      *     - `#[CLI\Hook(type: HookManager::ON_EVENT, target: 'sql-sanitize-confirms')]`. Display summary to user before confirmation.
      *     - `#[CLI\Hook(type: HookManager::POST_COMMAND_HOOK, target: 'sql:sanitize')]`. Run queries or call APIs to perform sanitizing
      *
-     * Several working commandfiles may be found at https://github.com/drush-ops/drush/tree/11.x/src/Drupal/Commands/sql
+     * Several working commandfiles may be found at https://github.com/drush-ops/drush/tree/12.x/src/Drupal/Commands/sql
      */
     #[CLI\Command(name: self::SANITIZE, aliases: ['sqlsan','sql-sanitize'])]
     #[CLI\Usage(name: 'drush sql:sanitize --sanitize-password=no', description: 'Sanitize database without modifying any passwords.')]

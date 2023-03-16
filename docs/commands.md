@@ -4,10 +4,10 @@ Creating a new Drush command or porting a legacy command is easy. Follow the ste
 
 1. Run `drush generate drush-command-file`.
 2. Drush will prompt for the machine name of the module that should "own" the file.
-    1. (optional) Drush will also prompt for the path to a legacy command file to port. See [tips on porting commands to Drush 11](https://weitzman.github.io/blog/port-to-drush9)
+    1. (optional) See [tips on porting commands from Drush 8 or earlier](https://weitzman.github.io/blog/port-to-drush9)
     1. The module selected must already exist and be enabled. Use `drush generate module-standard` to create a new module.
 3. Drush will then report that it created a commandfile, a drush.services.yml file and a composer.json file. Edit those files as needed.
-4. Use the classes for the core Drush commands at [/src/Drupal/Commands](https://github.com/drush-ops/drush/tree/11.x/src/Drupal/Commands) as inspiration and documentation.
+4. Use the classes for the core Drush commands at [/src/Drupal/Commands](https://github.com/drush-ops/drush/tree/12.x/src/Drupal/Commands) as inspiration and documentation.
 5. See the [dependency injection docs](dependency-injection.md) for interfaces you can implement to gain access to Drush config, Drupal site aliases, etc.
 6. Write PHPUnit tests based on [Drush Test Traits](https://github.com/drush-ops/drush/blob/12.x/docs/contribute/unish.md#drush-test-traits).
 7. Once your drush.services.yml files is ready, run `drush cr` to get your command recognized by the Drupal container.
@@ -63,7 +63,7 @@ A module's composer.json file stipulates the filename where the Drush services (
   "extra": {
     "drush": {
       "services": {
-        "drush.services.yml": "^11"
+        "drush.services.yml": "^12"
       }
     }
   }
@@ -73,15 +73,15 @@ If for some reason you need to load different services for different versions of
   "extra": {
     "drush": {
       "services": {
-        "drush-11-99.services.yml": "^11.99",
-        "drush.services.yml": "^11"
+        "drush-12-99.services.yml": "^12.99",
+        "drush.services.yml": "^12"
       }
     }
   }
 ```
-In this example, the file `drush-11-99.services.yml` loads commandfile classes that require features only available in Drush 11.99 and later, and drush.services.yml loads an older commandfile implementation for earlier versions of Drush.
+In this example, the file `drush-12-99.services.yml` loads commandfile classes that require features only available in Drush 12.99 and later, and drush.services.yml loads an older commandfile implementation for earlier versions of Drush.
 
-It is also possible to use [version ranges](https://getcomposer.org/doc/articles/versions.md#version-range) to exactly specify which version of Drush the services file should be used with (e.g. `"drush.services.yml": ">=11 <11.99"`).
+It is also possible to use [version ranges](https://getcomposer.org/doc/articles/versions.md#version-range) to exactly specify which version of Drush the services file should be used with (e.g. `"drush.services.yml": ">=12 <12.99"`).
 
 In cases where a Composer package contains one or more sub-modules with their own `drush.services.yml` files (such as Drupal distributions or suites of modules), a minimal `composer.json` file can be added to the sub-module's directory, containing only the `extra.drush.services`section as described above.
 
@@ -101,7 +101,7 @@ For an example, see the alterer class provided by the testing 'woot' module: `te
 Drush lists and runs Symfony Console commands, in addition to more typical annotated commands. See [this test](https://github.com/drush-ops/drush/blob/eed106ae4510d5a2df89f8e7fd54b41ffb0aa5fa/tests/integration/AnnotatedCommandCase.php#L178-L180) and this [commandfile](https://github.com/drush-ops/drush/tree/HEAD/tests/fixtures/modules/woot/src/Commands/GreetCommand.php).
 
 ## Site-Wide Drush Commands
-Commandfiles that are installed in a Drupal site and are not bundled inside a Drupal module are called 'site-wide' commandfiles. Site-wide commands may either be added directly to the Drupal site's repository (e.g. for site-specific policy files), or via `composer require`. See the [examples/Commands](https://github.com/drush-ops/drush/tree/11.x/examples/Commands) folder for examples. In general, it's better to use modules to carry your Drush commands, as module-based commands may [participate in Drupal's dependency injection via the drush.services.yml](#specifying-the-services-file).
+Commandfiles that are installed in a Drupal site and are not bundled inside a Drupal module are called 'site-wide' commandfiles. Site-wide commands may either be added directly to the Drupal site's repository (e.g. for site-specific policy files), or via `composer require`. See the [examples/Commands](https://github.com/drush-ops/drush/tree/12.x/examples/Commands) folder for examples. In general, it's better to use modules to carry your Drush commands, as module-based commands may [participate in Drupal's dependency injection via the drush.services.yml](#specifying-the-services-file).
 
 If you still prefer using site-wide commandfiles, here are some examples of valid commandfile names and namespaces:
 
