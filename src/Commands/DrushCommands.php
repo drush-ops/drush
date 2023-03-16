@@ -8,6 +8,7 @@ use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\AnnotatedCommand\Hooks\HookManager;
 use Consolidation\SiteProcess\ProcessManagerAwareInterface;
 use Consolidation\SiteProcess\ProcessManagerAwareTrait;
+use Consolidation\SiteProcess\Util\Tty;
 use Drush\Attributes as CLI;
 use Drush\Config\ConfigAwareTrait;
 use Drush\Drush;
@@ -84,26 +85,22 @@ abstract class DrushCommands implements IOAwareInterface, LoggerAwareInterface, 
     {
         $extension = Path::getExtension($file);
         if ($extension == ".htm" || $extension == ".html") {
-            $tmp_file = drush_tempnam(basename($file));
-            file_put_contents($tmp_file, drush_html_to_text(file_get_contents($file)));
-            $file = $tmp_file;
-        }
-
-        if ($extension == 'md') {
-            $parser = new CliMarkdown();
-            $rendered = $parser->render(file_get_contents($file));
-            $this->output()->write($rendered, false, OutputInterface::OUTPUT_RAW);
+            $this->output()->writeln(drush_html_to_text(file_get_contents($file)));
             return;
         }
 
         if (self::input()->isInteractive()) {
-            if (self::programExists('less')) {
-                $process = $this->processManager()->process(['less', $file])->setTty(true);
-                if ($process->run() === 0) {
+            $candidates = ['bat', 'batcat', 'less'];
+            foreach ($candidates as $candidate) {
+                if (self::programExists($candidate)) {
+                    $process = $this->processManager()->process([$candidate, $file])->setTty(true);
+                    $process->mustRun();
                     return;
                 }
             }
         }
+
+        // Fallback to simple text.
         $this->output()->writeln(file_get_contents($file));
     }
 

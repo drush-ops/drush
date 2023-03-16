@@ -4,72 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6019b3f6a563b97405535ff7401c3f1f",
+    "content-hash": "76099056c22334e3d75229db528795e8",
     "packages": [
-        {
-            "name": "cebe/markdown",
-            "version": "1.2.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/cebe/markdown.git",
-                "reference": "9bac5e971dd391e2802dca5400bbeacbaea9eb86"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/cebe/markdown/zipball/9bac5e971dd391e2802dca5400bbeacbaea9eb86",
-                "reference": "9bac5e971dd391e2802dca5400bbeacbaea9eb86",
-                "shasum": ""
-            },
-            "require": {
-                "lib-pcre": "*",
-                "php": ">=5.4.0"
-            },
-            "require-dev": {
-                "cebe/indent": "*",
-                "facebook/xhprof": "*@dev",
-                "phpunit/phpunit": "4.1.*"
-            },
-            "bin": [
-                "bin/markdown"
-            ],
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "1.2.x-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "cebe\\markdown\\": ""
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Carsten Brandt",
-                    "email": "mail@cebe.cc",
-                    "homepage": "http://cebe.cc/",
-                    "role": "Creator"
-                }
-            ],
-            "description": "A super fast, highly extensible markdown parser for PHP",
-            "homepage": "https://github.com/cebe/markdown#readme",
-            "keywords": [
-                "extensible",
-                "fast",
-                "gfm",
-                "markdown",
-                "markdown-extra"
-            ],
-            "support": {
-                "issues": "https://github.com/cebe/markdown/issues",
-                "source": "https://github.com/cebe/markdown"
-            },
-            "time": "2018-03-26T11:24:36+00:00"
-        },
         {
             "name": "chi-teck/drupal-code-generator",
             "version": "3.x-dev",
@@ -1481,50 +1417,6 @@
                 "source": "https://github.com/phpowermove/docblock/tree/v4.0"
             },
             "time": "2021-09-22T16:57:06+00:00"
-        },
-        {
-            "name": "phppkg/cli-markdown",
-            "version": "v2.0.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/phppkg/cli-markdown.git",
-                "reference": "263bf6857a10ac5f1cae254b7d7836e8349cc80b"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/phppkg/cli-markdown/zipball/263bf6857a10ac5f1cae254b7d7836e8349cc80b",
-                "reference": "263bf6857a10ac5f1cae254b7d7836e8349cc80b",
-                "shasum": ""
-            },
-            "require": {
-                "cebe/markdown": "^1.2",
-                "ext-mbstring": "*",
-                "php": ">8.0.0",
-                "toolkit/cli-utils": "~2.0"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "PhpPkg\\CliMarkdown\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "inhere",
-                    "email": "in.798@qq.com"
-                }
-            ],
-            "description": "Render colored markdown contents on console terminal",
-            "homepage": "https://github.com/phppkg/cli-markdown",
-            "support": {
-                "issues": "https://github.com/phppkg/cli-markdown/issues",
-                "source": "https://github.com/phppkg/cli-markdown/tree/v2.0.1"
-            },
-            "time": "2022-08-06T15:00:13+00:00"
         },
         {
             "name": "psr/container",
@@ -3374,64 +3266,6 @@
                 }
             ],
             "time": "2023-01-10T18:53:53+00:00"
-        },
-        {
-            "name": "toolkit/cli-utils",
-            "version": "v2.0.3",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/php-toolkit/cli-utils.git",
-                "reference": "bc07930a1669372566d8bc9f521a57cc3bb5b499"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/php-toolkit/cli-utils/zipball/bc07930a1669372566d8bc9f521a57cc3bb5b499",
-                "reference": "bc07930a1669372566d8bc9f521a57cc3bb5b499",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">8.0.0"
-            },
-            "require-dev": {
-                "ext-posix": "*",
-                "ext-readline": "*"
-            },
-            "suggest": {
-                "inhere/console": "a lightweight php console application library.",
-                "toolkit/pflag": "Command line flag parse library of the php"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Toolkit\\Cli\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "inhere",
-                    "email": "in.798@qq.com",
-                    "homepage": "http://github.com/inhere"
-                }
-            ],
-            "description": "useful cli tool library of the php",
-            "homepage": "https://github.com/php-toolkit/cli-utils",
-            "keywords": [
-                "cli",
-                "cli-color",
-                "command-line",
-                "library",
-                "php",
-                "tool"
-            ],
-            "support": {
-                "issues": "https://github.com/php-toolkit/cli-utils/issues",
-                "source": "https://github.com/php-toolkit/cli-utils/tree/v2.0.3"
-            },
-            "time": "2022-06-15T08:50:01+00:00"
         },
         {
             "name": "twig/twig",
@@ -7730,8 +7564,8 @@
     "prefer-lowest": false,
     "platform": {
         "php": ">=8.1",
-        "ext-dom": "*",
-        "composer-runtime-api": "^2.2"
+        "composer-runtime-api": "^2.2",
+        "ext-dom": "*"
     },
     "platform-dev": [],
     "platform-overrides": {
