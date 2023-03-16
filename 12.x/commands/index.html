@@ -5087,12 +5087,12 @@
 <ol>
 <li>Run <code>drush generate drush-command-file</code>.</li>
 <li>Drush will prompt for the machine name of the module that should "own" the file.<ol>
-<li>(optional) Drush will also prompt for the path to a legacy command file to port. See <a href="https://weitzman.github.io/blog/port-to-drush9">tips on porting commands to Drush 11</a></li>
+<li>(optional) See <a href="https://weitzman.github.io/blog/port-to-drush9">tips on porting commands from Drush 8 or earlier</a></li>
 <li>The module selected must already exist and be enabled. Use <code>drush generate module-standard</code> to create a new module.</li>
 </ol>
 </li>
 <li>Drush will then report that it created a commandfile, a drush.services.yml file and a composer.json file. Edit those files as needed.</li>
-<li>Use the classes for the core Drush commands at <a href="https://github.com/drush-ops/drush/tree/11.x/src/Drupal/Commands">/src/Drupal/Commands</a> as inspiration and documentation.</li>
+<li>Use the classes for the core Drush commands at <a href="https://github.com/drush-ops/drush/tree/12.x/src/Drupal/Commands">/src/Drupal/Commands</a> as inspiration and documentation.</li>
 <li>See the <a href="../dependency-injection/">dependency injection docs</a> for interfaces you can implement to gain access to Drush config, Drupal site aliases, etc.</li>
 <li>Write PHPUnit tests based on <a href="https://github.com/drush-ops/drush/blob/12.x/docs/contribute/unish.md#drush-test-traits">Drush Test Traits</a>.</li>
 <li>Once your drush.services.yml files is ready, run <code>drush cr</code> to get your command recognized by the Drupal container.</li>
@@ -5146,7 +5146,7 @@
 <div class="highlight"><pre><span></span><code><span class="w">  </span><span class="nt">&quot;extra&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="nt">&quot;drush&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">      </span><span class="nt">&quot;services&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nt">&quot;drush.services.yml&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^11&quot;</span>
+<span class="w">        </span><span class="nt">&quot;drush.services.yml&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^12&quot;</span>
 <span class="w">      </span><span class="p">}</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="w">  </span><span class="p">}</span>
@@ -5155,14 +5155,14 @@ If for some reason you need to load different services for different versions of
 <div class="highlight"><pre><span></span><code><span class="w">  </span><span class="nt">&quot;extra&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="nt">&quot;drush&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">      </span><span class="nt">&quot;services&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nt">&quot;drush-11-99.services.yml&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^11.99&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;drush.services.yml&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^11&quot;</span>
+<span class="w">        </span><span class="nt">&quot;drush-12-99.services.yml&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^12.99&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;drush.services.yml&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^12&quot;</span>
 <span class="w">      </span><span class="p">}</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="w">  </span><span class="p">}</span>
 </code></pre></div>
-In this example, the file <code>drush-11-99.services.yml</code> loads commandfile classes that require features only available in Drush 11.99 and later, and drush.services.yml loads an older commandfile implementation for earlier versions of Drush.</p>
-<p>It is also possible to use <a href="https://getcomposer.org/doc/articles/versions.md#version-range">version ranges</a> to exactly specify which version of Drush the services file should be used with (e.g. <code>"drush.services.yml": "&gt;=11 &lt;11.99"</code>).</p>
+In this example, the file <code>drush-12-99.services.yml</code> loads commandfile classes that require features only available in Drush 12.99 and later, and drush.services.yml loads an older commandfile implementation for earlier versions of Drush.</p>
+<p>It is also possible to use <a href="https://getcomposer.org/doc/articles/versions.md#version-range">version ranges</a> to exactly specify which version of Drush the services file should be used with (e.g. <code>"drush.services.yml": "&gt;=12 &lt;12.99"</code>).</p>
 <p>In cases where a Composer package contains one or more sub-modules with their own <code>drush.services.yml</code> files (such as Drupal distributions or suites of modules), a minimal <code>composer.json</code> file can be added to the sub-module's directory, containing only the <code>extra.drush.services</code>section as described above.</p>
 <h2 id="altering-drush-command-info">Altering Drush Command Info<a class="headerlink" href="#altering-drush-command-info" title="Permanent link">&para;</a></h2>
 <p>Drush command info (annotations/attributes) can be altered from other modules. This is done by creating and registering 'command info alterers'. Alterers are class services that are able to intercept and manipulate an existing command annotation.</p>
@@ -5177,7 +5177,7 @@ In this example, the file <code>drush-11-99.services.yml</code> loads commandfil
 <h2 id="symfony-console-commands">Symfony Console Commands<a class="headerlink" href="#symfony-console-commands" title="Permanent link">&para;</a></h2>
 <p>Drush lists and runs Symfony Console commands, in addition to more typical annotated commands. See <a href="https://github.com/drush-ops/drush/blob/eed106ae4510d5a2df89f8e7fd54b41ffb0aa5fa/tests/integration/AnnotatedCommandCase.php#L178-L180">this test</a> and this <a href="https://github.com/drush-ops/drush/tree/HEAD/tests/fixtures/modules/woot/src/Commands/GreetCommand.php">commandfile</a>.</p>
 <h2 id="site-wide-drush-commands">Site-Wide Drush Commands<a class="headerlink" href="#site-wide-drush-commands" title="Permanent link">&para;</a></h2>
-<p>Commandfiles that are installed in a Drupal site and are not bundled inside a Drupal module are called 'site-wide' commandfiles. Site-wide commands may either be added directly to the Drupal site's repository (e.g. for site-specific policy files), or via <code>composer require</code>. See the <a href="https://github.com/drush-ops/drush/tree/11.x/examples/Commands">examples/Commands</a> folder for examples. In general, it's better to use modules to carry your Drush commands, as module-based commands may <a href="#specifying-the-services-file">participate in Drupal's dependency injection via the drush.services.yml</a>.</p>
+<p>Commandfiles that are installed in a Drupal site and are not bundled inside a Drupal module are called 'site-wide' commandfiles. Site-wide commands may either be added directly to the Drupal site's repository (e.g. for site-specific policy files), or via <code>composer require</code>. See the <a href="https://github.com/drush-ops/drush/tree/12.x/examples/Commands">examples/Commands</a> folder for examples. In general, it's better to use modules to carry your Drush commands, as module-based commands may <a href="#specifying-the-services-file">participate in Drupal's dependency injection via the drush.services.yml</a>.</p>
 <p>If you still prefer using site-wide commandfiles, here are some examples of valid commandfile names and namespaces:</p>
 <ol>
 <li>Simple<ul>
@@ -5256,7 +5256,7 @@ With this configuration in place, global commands may be placed as described in 
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">March 15, 2023</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">March 16, 2023</span>
       
     
   </small>
