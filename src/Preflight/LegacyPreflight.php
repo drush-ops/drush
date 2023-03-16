@@ -41,21 +41,6 @@ class LegacyPreflight
         define('DRUSH_BASE_PATH', $environment->drushBasePath());
 
         /*
-         * @deprecated. Use Drush::getVersion().
-         */
-        define('DRUSH_VERSION', Drush::getVersion());
-
-        /*
-         * @deprecated. Use Drush::getMajorVersion().
-         */
-        define('DRUSH_MAJOR_VERSION', Drush::getMajorVersion());
-
-        /*
-         * @deprecated. Use Drush::getMinorVersion().
-         */
-        define('DRUSH_MINOR_VERSION', Drush::getMinorVersion());
-
-        /*
          * @deprecated.
          */
         define('DRUSH_COMMAND', $applicationPath);

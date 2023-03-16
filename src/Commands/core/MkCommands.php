@@ -65,7 +65,6 @@ final class MkCommands extends DrushCommands implements SiteAliasManagerAwareInt
 
     public function createAnnotatedCommands(Application $application_generate, Application $application_drush): array
     {
-        $application = new Application('temp');
         $definition = $application_drush->get('generate')->getDefinition();
         foreach ($application_generate->all() as $command) {
             $annotated = new AnnotatedCommand($command->getName());
@@ -83,10 +82,7 @@ final class MkCommands extends DrushCommands implements SiteAliasManagerAwareInt
                 $values['version'] = '11.0';
             }
             $annotated->setAnnotationData(new AnnotationData($values));
-            // Hack, until we have https://github.com/consolidation/annotated-command/pull/247
-            $method = new \ReflectionMethod($annotated, 'addUsageOrExample');
-            $method->setAccessible(true);
-            $method->invoke($annotated, 'drush generate ' . $command->getName(), $command->getDescription());
+            $annotated->addUsageOrExample('drush generate ' . $command->getName(), $command->getDescription());
             $commands[$command->getName()] = $annotated;
         }
         return $commands;

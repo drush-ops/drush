@@ -76,36 +76,6 @@ class MigrateRunnerTest extends UnishIntegrationTestCase
         $this->assertEquals('test_migration_tagged', trim($output[5]['id']));
         $this->assertNull($output[6]['id']);
 
-        // Check that --names-only takes precedence over --fields.
-        $this->drush('migrate:status', [], [
-          'names-only' => null,
-          'fields' => 'id,status,imported',
-          'format' => 'json',
-        ]);
-        $output = $this->getOutputFromJSON();
-        $this->assertArrayHasKey('id', $output[0]);
-        $this->assertArrayNotHasKey('status', $output[0]);
-        $this->assertArrayNotHasKey('total', $output[0]);
-        $this->assertArrayNotHasKey('imported', $output[0]);
-        $this->assertArrayNotHasKey('needing_update', $output[0]);
-        $this->assertArrayNotHasKey('unprocessed', $output[0]);
-        $this->assertArrayNotHasKey('last_imported', $output[0]);
-        // Check that the deprecation warning is printed.
-        $this->assertStringContainsString('The --names-only option is deprecated in Drush 10.5.1 and is removed from Drush 11.0.0. Use --field=id instead.', $this->getErrorOutput());
-
-        // Check improper usage of --names-only with --field.
-        $this->drush('migrate:status', [], [
-          'field' => 'status',
-          'names-only' => null,
-        ], self::EXIT_ERROR);
-        $this->assertStringContainsString('Cannot use --names-only with --field=status.', $this->getErrorOutput());
-
-        $actualIds = array_column($output, 'id');
-        $this->assertCount(3, $actualIds);
-        $this->assertContains('test_migration', $actualIds);
-        $this->assertContains('test_migration_tagged', $actualIds);
-        $this->assertContains('test_migration_untagged', $actualIds);
-
         // Check that invalid migration IDs are reported.
         $this->drush('migrate:status', ['non_existing,test_migration,another_invalid'], [], self::EXIT_ERROR);
         $this->assertStringContainsString('Invalid migration IDs: non_existing, another_invalid', $this->getErrorOutput());
