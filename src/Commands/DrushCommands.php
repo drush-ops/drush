@@ -24,6 +24,7 @@ use Robo\Common\IO;
 use Robo\Contract\ConfigAwareInterface;
 use Robo\Contract\IOAwareInterface;
 use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Filesystem\Path;
 
@@ -91,7 +92,7 @@ abstract class DrushCommands implements IOAwareInterface, LoggerAwareInterface, 
         if ($extension == 'md') {
             $parser = new CliMarkdown();
             $rendered = $parser->render(file_get_contents($file));
-            $this->output()->write($rendered);
+            $this->output()->write($rendered, false, OutputInterface::OUTPUT_RAW);
             return;
         }
 
