@@ -75,12 +75,12 @@ class ArtCommands extends DrushCommands implements CustomEventAwareInterface
     /**
      * Ruminations on the true meaning and philosophy of artwork.
      */
-    #[CLI\Command(name: 'artwork:explain', aliases: [])]
-    #[CLI\Topics(isTopic: true)]
+    #[CLI\Command(name: 'artwork:explain')]
+    #[CLI\Topics(isTopic: true, path: __DIR__ . '/art-topic.md')]
     #[CLI\Help(hidden: true)]
-    public function ruminate()
+    public function ruminate(): void
     {
-        self::printFile(__DIR__ . '/art-topic.md');
+        self::printFile($this->commandData);
     }
 
     /**
