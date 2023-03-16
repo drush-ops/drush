@@ -12,9 +12,9 @@ use Drush\Boot\AutoloaderAwareInterface;
 use Drush\Boot\AutoloaderAwareTrait;
 use Drush\Boot\DrupalBootLevels;
 use Drush\Commands\DrushCommands;
-use Drush\Commands\generate\ApplicationFactory;
 use Drush\Commands\help\HelpCLIFormatter;
 use Drush\Commands\help\ListCommands;
+use Drush\Drupal\Commands\generate\ApplicationFactory;
 use Drush\Drush;
 use Drush\SiteAlias\SiteAliasManagerAwareInterface;
 use Symfony\Component\Console\Application;
@@ -36,7 +36,7 @@ final class MkCommands extends DrushCommands implements SiteAliasManagerAwareInt
      * This command is an early step when building the www.drush.org static site. Adapt it to build a similar site listing the commands that are available on your site. Also see Drush's [Github Actions workflow](https://github.com/drush-ops/drush/blob/12.x/.github/workflows/main.yml).
      */
     #[CLI\Command(name: 'mk:docs')]
-    #[CLI\Bootstrap(level: DrupalBootLevels::MAX)]
+    #[CLI\Bootstrap(level: DrupalBootLevels::FULL)]
     #[CLI\Usage(name: 'drush mk:docs', description: 'Build many .md files in the docs/commands and docs/generators directories.')]
     public function docs(): void
     {
@@ -54,9 +54,7 @@ final class MkCommands extends DrushCommands implements SiteAliasManagerAwareInt
         $destination = 'generators';
         $destination_path = Path::join($dir_root, 'docs', $destination);
         $this->prepare($destination_path);
-        $factory = new ApplicationFactory($this->logger(), $this->getConfig());
-        $factory->setAutoloader($this->autoloader());
-        $application_generate = $factory->create();
+        $application_generate = (new ApplicationFactory(\Drupal::getContainer(), $this->autoloader(), $this->logger()))->create();
         $all = $this->createAnnotatedCommands($application_generate, Drush::getApplication());
         $namespaced = ListCommands::categorize($all);
         [$nav_generators, $pages_generators, $map_generators] = $this->writeContentFilesAndBuildNavAndBuildRedirectMap($namespaced, $destination, $dir_root, $destination_path);
@@ -79,6 +77,7 @@ final class MkCommands extends DrushCommands implements SiteAliasManagerAwareInt
             $annotated->setHelp($command->getHelp());
             $annotated->setAliases($command->getAliases());
             $annotated->setTopics(['docs:generators']);
+            $annotated->setHidden($command->isHidden());
             $values = [];
             if (in_array($command->getName(), ['entity:bundle-class'])) {
                 $values['version'] = '11.0';
@@ -90,7 +89,6 @@ final class MkCommands extends DrushCommands implements SiteAliasManagerAwareInt
             $method->invoke($annotated, 'drush generate ' . $command->getName(), $command->getDescription());
             $commands[$command->getName()] = $annotated;
         }
-        unset($commands['list'], $commands['help']);
         return $commands;
     }
 
