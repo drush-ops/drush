@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace Drush\Drupal\Commands\generate;
 
 use Composer\Autoload\ClassLoader;
-use DrupalCodeGenerator\Application;
-use DrupalCodeGenerator\Event\GeneratorInfoAlter;
 use Drush\Attributes as CLI;
 use Drush\Commands\DrushCommands;
 use Drush\Commands\help\ListCommands;
@@ -43,18 +41,9 @@ final class GenerateCommands extends DrushCommands
     #[CLI\Topics(topics: ['docs:generators'])]
     public function generate(string $generator = '', $options = ['replace' => false, 'working-dir' => self::REQ, 'answer' => [], 'destination' => self::REQ, 'dry-run' => false]): int
     {
-
-        $this->container->get('event_dispatcher')
-            ->addListener(GeneratorInfoAlter::class, [self::class, 'alterGenerators']);
-
         $application = (new ApplicationFactory($this->container, $this->autoloader, $this->logger()))->create();
 
-        // Disallow default Symfony console commands.
-        if ($generator == 'help' || $generator == 'completion') {
-            $generator = null;
-        }
-
-        if (!$generator) {
+        if (!$generator || $generator == 'list') {
             $all = $application->all();
             unset($all['help'], $all['list'], $all['completion']);
             $namespaced = ListCommands::categorize($all);
@@ -92,14 +81,5 @@ final class GenerateCommands extends DrushCommands
         }
 
         return $application->run(new ArgvInput($argv), $this->output());
-    }
-
-    /**
-     * Implements hook GeneratorInfoAlter.
-     */
-    public static function alterGenerators(GeneratorInfoAlter $event): void
-    {
-        $event->generators['theme-settings']->setName('theme:settings');
-        $event->generators['plugin-manager']->setName('plugin:manager');
     }
 }

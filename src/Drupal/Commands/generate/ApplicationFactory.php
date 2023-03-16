@@ -7,6 +7,7 @@ namespace Drush\Drupal\Commands\generate;
 use Composer\Autoload\ClassLoader;
 use DrupalCodeGenerator\Application;
 use DrupalCodeGenerator\Command\BaseGenerator;
+use DrupalCodeGenerator\Event\GeneratorInfoAlter;
 use Drush\Drupal\Commands\generate\Generators\Drush\DrushAliasFile;
 use Drush\Drupal\Commands\generate\Generators\Drush\DrushCommandFile;
 use Drush\Drupal\DrushServiceModifier;
@@ -28,11 +29,17 @@ class ApplicationFactory
      */
     public function create(): Application
     {
+        $this->container->get('event_dispatcher')
+            ->addListener(GeneratorInfoAlter::class, [self::class, 'alterGenerators']);
         $application = Application::create($this->container);
         $application->setAutoExit(false);
 
         $generators = $this->discover();
         $application->addCommands($generators);
+        // Hide default Symfony console commands.
+        foreach (['help', 'list', 'completion', '_complete'] as $name) {
+            $application->get($name)->setHidden(true);
+        }
         return $application;
     }
 
@@ -60,7 +67,7 @@ class ApplicationFactory
         $classes = (new RelativeNamespaceDiscovery($this->autoloader))
             ->setRelativeNamespace('Drush\Generators')
             ->setSearchPattern('/.*Generator\.php$/')->getClasses();
-        $classes = $this->filterExists($classes);
+        $classes = $this->filterCLassExists($classes);
         return $this->getGenerators($classes);
     }
 
@@ -70,7 +77,7 @@ class ApplicationFactory
      * @param array $classes
      * @return array
      */
-    public function filterExists(array $classes): array
+    public function filterCLassExists(array $classes): array
     {
         $exists = [];
         foreach ($classes as $class) {
@@ -106,6 +113,15 @@ class ApplicationFactory
                     && !$reflectionClass->isTrait();
             })
         );
+    }
+
+    /**
+     * Implements hook GeneratorInfoAlter.
+     */
+    public static function alterGenerators(GeneratorInfoAlter $event): void
+    {
+        $event->generators['theme-settings']->setName('theme:settings');
+        $event->generators['plugin-manager']->setName('plugin:manager');
     }
 
     public function logger(): LoggerInterface

@@ -77,6 +77,7 @@ final class MkCommands extends DrushCommands implements SiteAliasManagerAwareInt
             $annotated->setHelp($command->getHelp());
             $annotated->setAliases($command->getAliases());
             $annotated->setTopics(['docs:generators']);
+            $annotated->setHidden($command->isHidden());
             $values = [];
             if (in_array($command->getName(), ['entity:bundle-class'])) {
                 $values['version'] = '11.0';
@@ -88,7 +89,6 @@ final class MkCommands extends DrushCommands implements SiteAliasManagerAwareInt
             $method->invoke($annotated, 'drush generate ' . $command->getName(), $command->getDescription());
             $commands[$command->getName()] = $annotated;
         }
-        unset($commands['list'], $commands['help'], $commands['completion'], $commands['_complete']);
         return $commands;
     }
 
