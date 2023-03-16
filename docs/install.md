@@ -26,6 +26,13 @@ Drupal Compatibility
     <th>7</th> <th>8</th> <th>9</th> <th>10</th>
   </tr>
   <tr>
+    <td> Drush 12 </td>
+    <td> 8.1+ </td>
+    <!-- TBD -->
+    <td> TBD </td>
+    <td></td> <td></td> <td></td> <td><b>✅</b></td>
+  </tr>
+  <tr>
     <td> Drush 11 </td>
     <td> 7.4+ </td>
     <!-- TBD -->
