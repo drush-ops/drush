@@ -5068,12 +5068,12 @@
     <span class="sd">/**</span>
 <span class="sd">     * Ruminations on the true meaning and philosophy of artwork.</span>
 <span class="sd">     */</span>
-    <span class="c1">#[CLI\Command(name: &#39;artwork:explain&#39;, aliases: [])]</span>
-    <span class="c1">#[CLI\Topics(isTopic: true)]</span>
+    <span class="c1">#[CLI\Command(name: &#39;artwork:explain&#39;)]</span>
+    <span class="c1">#[CLI\Topics(isTopic: true, path: __DIR__ . &#39;/art-topic.md&#39;)]</span>
     <span class="c1">#[CLI\Help(hidden: true)]</span>
-    <span class="k">public</span> <span class="k">function</span> <span class="nf">ruminate</span><span class="p">()</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">ruminate</span><span class="p">()</span><span class="o">:</span> <span class="nx">void</span>
     <span class="p">{</span>
-        <span class="nx">self</span><span class="o">::</span><span class="na">printFile</span><span class="p">(</span><span class="no">__DIR__</span> <span class="o">.</span> <span class="s1">&#39;/art-topic.md&#39;</span><span class="p">);</span>
+        <span class="nx">self</span><span class="o">::</span><span class="na">printFile</span><span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">commandData</span><span class="p">);</span>
     <span class="p">}</span>
 
     <span class="sd">/**</span>
