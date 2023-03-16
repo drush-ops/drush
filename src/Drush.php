@@ -16,7 +16,6 @@ use Consolidation\SiteAlias\SiteAliasManager;
 use Consolidation\SiteProcess\ProcessBase;
 use Consolidation\SiteProcess\SiteProcess;
 use Drush\SiteAlias\ProcessManager;
-use League\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 use RuntimeException;
 use Symfony\Component\Console\Application;

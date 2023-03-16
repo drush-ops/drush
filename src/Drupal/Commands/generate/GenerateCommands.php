@@ -6,25 +6,13 @@ namespace Drush\Drupal\Commands\generate;
 
 use Composer\Autoload\ClassLoader;
 use DrupalCodeGenerator\Application;
-use DrupalCodeGenerator\Command\BaseGenerator;
-use DrupalCodeGenerator\Command\Generator;
-use DrupalCodeGenerator\Command\GeneratorInterface;
 use DrupalCodeGenerator\Event\GeneratorInfoAlter;
 use Drush\Attributes as CLI;
-use Drush\Boot\AutoloaderAwareInterface;
-use Drush\Boot\AutoloaderAwareTrait;
 use Drush\Commands\DrushCommands;
 use Drush\Commands\help\ListCommands;
-use Drush\Drupal\Commands\generate\Generators\Drush\DrushAliasFile;
-use Drush\Drupal\Commands\generate\Generators\Drush\DrushCommandFile;
-use Drush\Drupal\DrushServiceModifier;
-use Robo\ClassDiscovery\RelativeNamespaceDiscovery;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-/**
- * Drush generate command.
- */
 final class GenerateCommands extends DrushCommands
 {
     private ContainerInterface $container;
@@ -59,26 +47,10 @@ final class GenerateCommands extends DrushCommands
         $this->container->get('event_dispatcher')
             ->addListener(GeneratorInfoAlter::class, [self::class, 'alterGenerators']);
 
-        $application = Application::create($this->container);
-        $application->setAutoExit(false);
-
-        $global_generators = $this->discoverPsr4Generators();
-
-        $module_generators = [];
-        if ($this->container->has(DrushServiceModifier::DRUSH_GENERATOR_SERVICES)) {
-            $module_generators = $this->container->get(DrushServiceModifier::DRUSH_GENERATOR_SERVICES)->getCommandList();
-        }
-
-        $generators = [
-            new DrushCommandFile(),
-            new DrushAliasFile(),
-            ...$global_generators,
-            ...$module_generators,
-        ];
-        $application->addCommands($generators);
+        $application = (new ApplicationFactory($this->container, $this->autoloader, $this->logger()))->create();
 
         // Disallow default Symfony console commands.
-        if ($generator == 'help' || $generator == 'list' || $generator == 'completion') {
+        if ($generator == 'help' || $generator == 'completion') {
             $generator = null;
         }
 
@@ -120,60 +92,6 @@ final class GenerateCommands extends DrushCommands
         }
 
         return $application->run(new ArgvInput($argv), $this->output());
-    }
-
-    protected function discoverPsr4Generators(): array
-    {
-        $classes = (new RelativeNamespaceDiscovery($this->autoloader))
-            ->setRelativeNamespace('Drush\Generators')
-            ->setSearchPattern('/.*Generator\.php$/')->getClasses();
-        $classes = $this->filterExists($classes);
-        return $this->getGenerators($classes);
-    }
-
-    /**
-     * Check each class for existence.
-     *
-     * @param array $classes
-     * @return array
-     */
-    protected function filterExists(array $classes): array
-    {
-        $exists = [];
-        foreach ($classes as $class) {
-            try {
-                // DCG v1 generators extend a non-existent class, so this check is needed.
-                if (class_exists($class)) {
-                    $exists[] = $class;
-                }
-            } catch (\Throwable $e) {
-                $this->logger()->notice($e->getMessage());
-            }
-        }
-        return $exists;
-    }
-
-    /**
-     * Validate and instantiate generator classes.
-     *
-     * @param array $classes
-     * @return BaseGenerator[]
-     * @throws \ReflectionException
-     */
-    protected function getGenerators(array $classes): array
-    {
-        return array_map(
-            function (string $class): BaseGenerator {
-                return new $class();
-            },
-            array_filter($classes, function (string $class): bool {
-                $reflectionClass = new \ReflectionClass($class);
-                return $reflectionClass->isSubclassOf(BaseGenerator::class)
-                    && !$reflectionClass->isAbstract()
-                    && !$reflectionClass->isInterface()
-                    && !$reflectionClass->isTrait();
-            })
-        );
     }
 
     /**
