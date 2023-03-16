@@ -21,7 +21,7 @@
         <link rel="next" href="../bootstrap/">
       
       <link rel="icon" href="../img/favicon.ico">
-      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.1.2">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.1.3">
     
     
       
@@ -29,7 +29,7 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.7bf56d0a.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.c4a75a56.min.css">
       
         
         <link rel="stylesheet" href="../assets/stylesheets/palette.a0c5b2b5.min.css">
@@ -3638,36 +3638,22 @@
   
   
     <li class="md-nav__item">
-      <a href="_complete/" class="md-nav__link">
-        _complete
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="completion/" class="md-nav__link">
-        completion
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
       <a href="composer/" class="md-nav__link">
         composer
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="console_symfony-command/" class="md-nav__link">
+        console:symfony-command
       </a>
     </li>
   
@@ -3764,20 +3750,6 @@
   
   
     <li class="md-nav__item">
-      <a href="migration/" class="md-nav__link">
-        migration
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
       <a href="module/" class="md-nav__link">
         module
       </a>
@@ -3792,22 +3764,8 @@
   
   
     <li class="md-nav__item">
-      <a href="module-file/" class="md-nav__link">
-        module-file
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="phpstorm-metadata/" class="md-nav__link">
-        phpstorm-metadata
+      <a href="phpstorm-meta/" class="md-nav__link">
+        phpstorm-meta
       </a>
     </li>
   
@@ -4124,36 +4082,8 @@
   
   
     <li class="md-nav__item">
-      <a href="misc_html-page/" class="md-nav__link">
-        misc:html-page
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
       <a href="misc_nginx-virtual-host/" class="md-nav__link">
         misc:nginx-virtual-host
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="misc_project/" class="md-nav__link">
-        misc:project
       </a>
     </li>
   
@@ -4876,20 +4806,6 @@
   
   
     <li class="md-nav__item">
-      <a href="theme_file/" class="md-nav__link">
-        theme:file
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
       <a href="theme_settings/" class="md-nav__link">
         theme:settings
       </a>
@@ -5008,8 +4924,8 @@
   
   
     <li class="md-nav__item">
-      <a href="yml_module-info/" class="md-nav__link">
-        yml:module-info
+      <a href="yml_migration/" class="md-nav__link">
+        yml:migration
       </a>
     </li>
   
@@ -5078,20 +4994,6 @@
   
   
     <li class="md-nav__item">
-      <a href="yml_theme-info/" class="md-nav__link">
-        yml:theme-info
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
       <a href="yml_theme-libraries/" class="md-nav__link">
         yml:theme-libraries
       </a>
@@ -5137,11 +5039,11 @@
 <p>Drush's generators reuse classes provided by the excellent <a href="https://github.com/Chi-teck/drupal-code-generator">Drupal Code Generator</a> project. See its <a href="https://github.com/Chi-teck/drupal-code-generator/tree/3.x/src/Command">Commands directory</a> for inspiration.</p>
 <h2 id="writing-custom-generators">Writing Custom Generators<a class="headerlink" href="#writing-custom-generators" title="Permanent link">&para;</a></h2>
 <p>Drupal modules may supply their own Generators, just like they can supply Commands.</p>
-<p>See <a href="https://github.com/drush-ops/drush/blob/11.x/tests/fixtures/modules/woot">Woot module</a>, which Drush uses for testing. Specifically,</p>
+<p>See <a href="https://github.com/drush-ops/drush/blob/12.x/tests/fixtures/modules/woot">Woot module</a>, which Drush uses for testing. Specifically,</p>
 <ol>
 <li>Write a class similar to <a href="https://github.com/drush-ops/drush/tree/11.x/tests/fixtures/modules/woot/src/Generators/">ExampleGenerator</a>. Implement your custom logic in the generate() method. Typically this class is placed under the src/Generators directory.</li>
 <li>Add a .twig file to the same directory. This template specifies what gets output from the generator.</li>
-<li>Add your class to your module's drush.services.yml file (<a href="https://github.com/drush-ops/drush/blob/11.x/tests/fixtures/modules/woot/drush.services.yml">example</a>). Use the tag <code>drush.generator.v2</code> instead of <code>drush.command</code>.</li>
+<li>Add your class to your module's drush.services.yml file (<a href="https://github.com/drush-ops/drush/blob/12.x/tests/fixtures/modules/woot/drush.services.yml">example</a>). Use the tag <code>drush.generator.v3</code> instead of <code>drush.command</code>.</li>
 <li>Perform a <code>drush cache:rebuild</code> to compile your drush.services.yml changes into the Drupal container.</li>
 </ol>
 <h2 id="global-generators">Global Generators<a class="headerlink" href="#global-generators" title="Permanent link">&para;</a></h2>
@@ -5170,7 +5072,7 @@
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">October 5, 2022</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">March 15, 2023</span>
       
     
   </small>
@@ -5261,7 +5163,7 @@
     <script id="__config" type="application/json">{"base": "..", "features": ["navigation.tabs", "navigation.tabs.sticky", "toc.integrate"], "search": "../assets/javascripts/workers/search.208ed371.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
-      <script src="../assets/javascripts/bundle.fc8c2696.min.js"></script>
+      <script src="../assets/javascripts/bundle.efa0ade1.min.js"></script>
       
     
   </body>

@@ -21,7 +21,7 @@
         <link rel="next" href="../example.prompt.sh/">
       
       <link rel="icon" href="../../img/favicon.ico">
-      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.1.2">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.1.3">
     
     
       
@@ -29,7 +29,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.7bf56d0a.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.c4a75a56.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.a0c5b2b5.min.css">
@@ -3593,36 +3593,22 @@
   
   
     <li class="md-nav__item">
-      <a href="../../generators/_complete/" class="md-nav__link">
-        _complete
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../generators/completion/" class="md-nav__link">
-        completion
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../../generators/composer/" class="md-nav__link">
         composer
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../generators/console_symfony-command/" class="md-nav__link">
+        console:symfony-command
       </a>
     </li>
   
@@ -3719,20 +3705,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../../generators/migration/" class="md-nav__link">
-        migration
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../../generators/module/" class="md-nav__link">
         module
       </a>
@@ -3747,22 +3719,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../../generators/module-file/" class="md-nav__link">
-        module-file
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../generators/phpstorm-metadata/" class="md-nav__link">
-        phpstorm-metadata
+      <a href="../../generators/phpstorm-meta/" class="md-nav__link">
+        phpstorm-meta
       </a>
     </li>
   
@@ -4079,36 +4037,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../../generators/misc_html-page/" class="md-nav__link">
-        misc:html-page
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../../generators/misc_nginx-virtual-host/" class="md-nav__link">
         misc:nginx-virtual-host
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../generators/misc_project/" class="md-nav__link">
-        misc:project
       </a>
     </li>
   
@@ -4831,20 +4761,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../../generators/theme_file/" class="md-nav__link">
-        theme:file
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../../generators/theme_settings/" class="md-nav__link">
         theme:settings
       </a>
@@ -4963,8 +4879,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../../generators/yml_module-info/" class="md-nav__link">
-        yml:module-info
+      <a href="../../generators/yml_migration/" class="md-nav__link">
+        yml:migration
       </a>
     </li>
   
@@ -5033,20 +4949,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../../generators/yml_theme-info/" class="md-nav__link">
-        yml:theme-info
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../../generators/yml_theme-libraries/" class="md-nav__link">
         yml:theme-libraries
       </a>
@@ -5093,17 +4995,13 @@
 
 <span class="k">namespace</span> <span class="nx">Drush\Commands</span><span class="p">;</span>
 
-<span class="k">use</span> <span class="nx">Drush\Attributes\Command</span><span class="p">;</span>
-<span class="k">use</span> <span class="nx">Drush\Attributes\Help</span><span class="p">;</span>
-<span class="k">use</span> <span class="nx">Drush\Attributes\Option</span><span class="p">;</span>
-<span class="k">use</span> <span class="nx">Drush\Attributes\Argument</span><span class="p">;</span>
-<span class="k">use</span> <span class="nx">Drush\Attributes\Usage</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Drush\Attributes</span> <span class="k">as</span> <span class="nx">CLI</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Drush\Exec\ExecTrait</span><span class="p">;</span>
 
 <span class="sd">/**</span>
 <span class="sd"> * Run these commands using the --include option - e.g. `drush --include=/path/to/drush/examples xkcd`</span>
 <span class="sd"> *</span>
-<span class="sd"> * For an example of a Drush extension with tests for Drush 9 and Drush 8:</span>
+<span class="sd"> * For an example of a Drush extension with tests for Drush:</span>
 <span class="sd"> * - https://github.com/drush-ops/example-drush-extension</span>
 <span class="sd"> */</span>
 
@@ -5113,42 +5011,16 @@
 
     <span class="sd">/**</span>
 <span class="sd">     * Retrieve and display xkcd cartoons.</span>
-<span class="sd">     *</span>
-<span class="sd">     * @command xkcd:fetch</span>
-<span class="sd">     * @param $search Optional argument to retrieve the cartoons matching an index number, keyword search or &quot;random&quot;. If omitted the latest cartoon will be retrieved.</span>
-<span class="sd">     * @option image-viewer Command to use to view images (e.g. xv, firefox). Defaults to &quot;display&quot; (from ImageMagick).</span>
-<span class="sd">     * @option google-custom-search-api-key Google Custom Search API Key, available from https://code.google.com/apis/console/. Default key limited to 100 queries/day globally.</span>
-<span class="sd">     * @usage drush xkcd</span>
-<span class="sd">     *   Retrieve and display the latest cartoon.</span>
-<span class="sd">     * @usage drush xkcd sandwich</span>
-<span class="sd">     *   Retrieve and display cartoons about sandwiches.</span>
-<span class="sd">     * @usage drush xkcd 123 --image-viewer=eog</span>
-<span class="sd">     *   Retrieve and display cartoon #123 in eog.</span>
-<span class="sd">     * @usage drush xkcd random --image-viewer=firefox</span>
-<span class="sd">     *   Retrieve and display a random cartoon in Firefox.</span>
-<span class="sd">     * @aliases xkcd</span>
 <span class="sd">     */</span>
+    <span class="c1">#[CLI\Command(name: &#39;xkcd:fetch&#39;, aliases: [&#39;xkcd&#39;])]</span>
+    <span class="c1">#[CLI\Option(name: &#39;search&#39;, description: &#39;Optional argument to retrieve the cartoons matching an index number, keyword search or &quot;random&quot;. If omitted the latest cartoon will be retrieved.&#39;)]</span>
+    <span class="c1">#[CLI\Option(name: &#39;image-viewer&#39;, description: &#39;Command to use to view images (e.g. xv, firefox). Defaults to &quot;display&quot; (from ImageMagick).&#39;)]</span>
+    <span class="c1">#[CLI\Option(name: &#39;google-custom-search-api-key&#39;, description: &#39;Google Custom Search API Key, available from https://code.google.com/apis/console/. Default key limited to 100 queries/day globally.&#39;)]</span>
+    <span class="c1">#[CLI\Usage(name: &#39;drush xkcd&#39;, description: &#39;Retrieve and display the latest cartoon.&#39;)]</span>
+    <span class="c1">#[CLI\Usage(name: &#39;drush xkcd sandwich&#39;, description: &#39;Retrieve and display cartoons about sandwiches.&#39;)]</span>
+    <span class="c1">#[CLI\Usage(name: &#39;drush xkcd 123 --image-viewer=eog&#39;, description: &#39;Retrieve and display cartoon #123 in eog.&#39;)]</span>
+    <span class="c1">#[CLI\Usage(name: &#39;drush xkcd random --image-viewer=firefox&#39;, description: &#39;Retrieve and display a random cartoon in Firefox.&#39;)]</span>
     <span class="k">public</span> <span class="k">function</span> <span class="nf">fetch</span><span class="p">(</span><span class="nv">$search</span> <span class="o">=</span> <span class="k">null</span><span class="p">,</span> <span class="nv">$options</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;image-viewer&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;open&#39;</span><span class="p">,</span> <span class="s1">&#39;google-custom-search-api-key&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;AIzaSyDpE01VDNNT73s6CEeJRdSg5jukoG244ek&#39;</span><span class="p">])</span>
-    <span class="p">{</span>
-        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">doFetch</span><span class="p">(</span><span class="nv">$search</span><span class="p">,</span> <span class="nv">$options</span><span class="p">);</span>
-    <span class="p">}</span>
-
-    <span class="sd">/**</span>
-<span class="sd">     * This command uses PHP8 Attributes instead of annotations. This</span>
-<span class="sd">     * is recommended for commandfiles that only need to run on PHP8+. All</span>
-<span class="sd">     * Attributes provided by Drush core are listed at</span>
-<span class="sd">     * https://www.drush.org/latest/api/Drush/Attributes.html</span>
-<span class="sd">     */</span>
-    <span class="c1">#[Command(name: &#39;xkcd:fetch-attributes&#39;, aliases: [&#39;xkcd-attributes&#39;])]</span>
-    <span class="c1">#[Argument(name: &#39;search&#39;, description: &#39;Optional argument to retrieve the cartoons matching an index number, keyword search or &quot;random&quot;. If omitted the latest cartoon will be retrieved.&#39;)]</span>
-    <span class="c1">#[Option(name: &#39;image-viewer&#39;, description: &#39;Command to use to view images (e.g. xv, firefox). Defaults to &quot;display&quot; (from ImageMagick).&#39;)]</span>
-    <span class="c1">#[Option(name: &#39;google-custom-search-api-key&#39;, description: &#39;Google Custom Search API Key, available from https://code.google.com/apis/console/. Default key limited to 100 queries/day globally.&#39;)]</span>
-    <span class="c1">#[Help(description: &#39;Retrieve and display xkcd cartoons (attribute variant).&#39;)]</span>
-    <span class="c1">#[Usage(name: &#39;drush xkcd&#39;, description: &#39;Retrieve and display the latest cartoon&#39;)]</span>
-    <span class="c1">#[Usage(name: &#39;drush xkcd sandwich&#39;, description: &#39;Retrieve and display cartoons about sandwiches.&#39;)]</span>
-    <span class="c1">#[Usage(name: &#39;drush xkcd 123 --image-viewer=eog&#39;, description: &#39;Retrieve and display cartoon #123 in eog.&#39;)]</span>
-    <span class="c1">#[Usage(name: &#39;drush xkcd random --image-viewer=firefox&#39;, description: &#39;Retrieve and display a random cartoon in Firefox.&#39;)]</span>
-    <span class="k">public</span> <span class="k">function</span> <span class="nf">fetchAttributes</span><span class="p">(</span><span class="nv">$search</span> <span class="o">=</span> <span class="k">null</span><span class="p">,</span> <span class="nv">$options</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;image-viewer&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;open&#39;</span><span class="p">,</span> <span class="s1">&#39;google-custom-search-api-key&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;AIzaSyDpE01VDNNT73s6CEeJRdSg5jukoG244ek&#39;</span><span class="p">])</span>
     <span class="p">{</span>
         <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">doFetch</span><span class="p">(</span><span class="nv">$search</span><span class="p">,</span> <span class="nv">$options</span><span class="p">);</span>
     <span class="p">}</span>
@@ -5189,7 +5061,7 @@
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">October 3, 2021</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">March 15, 2023</span>
       
     
   </small>
@@ -5280,7 +5152,7 @@
     <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "toc.integrate"], "search": "../../assets/javascripts/workers/search.208ed371.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.fc8c2696.min.js"></script>
+      <script src="../../assets/javascripts/bundle.efa0ade1.min.js"></script>
       
     
   </body>

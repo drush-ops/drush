@@ -21,7 +21,7 @@
         <link rel="next" href="../dependency-injection/">
       
       <link rel="icon" href="../img/favicon.ico">
-      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.1.2">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.1.3">
     
     
       
@@ -29,7 +29,7 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.7bf56d0a.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.c4a75a56.min.css">
       
         
         <link rel="stylesheet" href="../assets/stylesheets/palette.a0c5b2b5.min.css">
@@ -3634,36 +3634,22 @@
   
   
     <li class="md-nav__item">
-      <a href="../generators/_complete/" class="md-nav__link">
-        _complete
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../generators/completion/" class="md-nav__link">
-        completion
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../generators/composer/" class="md-nav__link">
         composer
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../generators/console_symfony-command/" class="md-nav__link">
+        console:symfony-command
       </a>
     </li>
   
@@ -3760,20 +3746,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../generators/migration/" class="md-nav__link">
-        migration
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../generators/module/" class="md-nav__link">
         module
       </a>
@@ -3788,22 +3760,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../generators/module-file/" class="md-nav__link">
-        module-file
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../generators/phpstorm-metadata/" class="md-nav__link">
-        phpstorm-metadata
+      <a href="../generators/phpstorm-meta/" class="md-nav__link">
+        phpstorm-meta
       </a>
     </li>
   
@@ -4120,36 +4078,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../generators/misc_html-page/" class="md-nav__link">
-        misc:html-page
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../generators/misc_nginx-virtual-host/" class="md-nav__link">
         misc:nginx-virtual-host
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../generators/misc_project/" class="md-nav__link">
-        misc:project
       </a>
     </li>
   
@@ -4872,20 +4802,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../generators/theme_file/" class="md-nav__link">
-        theme:file
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../generators/theme_settings/" class="md-nav__link">
         theme:settings
       </a>
@@ -5004,8 +4920,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../generators/yml_module-info/" class="md-nav__link">
-        yml:module-info
+      <a href="../generators/yml_migration/" class="md-nav__link">
+        yml:migration
       </a>
     </li>
   
@@ -5074,20 +4990,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../generators/yml_theme-info/" class="md-nav__link">
-        yml:theme-info
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../generators/yml_theme-libraries/" class="md-nav__link">
         yml:theme-libraries
       </a>
@@ -5131,23 +5033,22 @@
   <h1>Hooks</h1>
 
 <h2 id="core-hooks">Core Hooks<a class="headerlink" href="#core-hooks" title="Permanent link">&para;</a></h2>
-<p>All commandfiles may implement methods that are called by Drush at various times in the request cycle. To implement one, add a <code>@hook validate</code> (for example) to the top of your method.</p>
+<p>All commandfiles may implement methods that are called by Drush at various times in the request cycle. To implement one, add a <code>#[CLI\Hook(type: HookManager::ARGUMENT_VALIDATOR, target: 'pm:install')]</code> (for example) to the top of your method.</p>
 <ul>
 <li><a href="https://github.com/consolidation/annotated-command#hooks">Documentation about available hooks</a>.</li>
-<li>To see how core commands implement a hook, you can <a href="https://github.com/drush-ops/drush/search?q=&quot;%40hook+validate&quot;&amp;type=Code&amp;utf8=%E2%9C%93">search the Drush source code</a>. This link uses validate hook as an example.</li>
+<li>To see how core commands implement a hook, you can <a href="https://github.com/drush-ops/drush/search?q=&quot;%40#[CLI\Hook]&quot;&amp;type=Code&amp;utf8=%E2%9C%93">search the Drush source code</a>.</li>
 </ul>
 <h2 id="custom-hooks">Custom Hooks<a class="headerlink" href="#custom-hooks" title="Permanent link">&para;</a></h2>
-<p>Drush commands can define custom events that other command files can hook. You can find examples in <a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/core/CacheCommands.php">CacheCommands</a> and <a href="https://github.com/drush-ops/drush/blob/11.x/src/Drupal/Commands/sql/SanitizeCommands.php">SanitizeCommands</a></p>
+<p>Drush commands can define custom events that other command files can hook. You can find examples in <a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/CacheCommands.php">CacheCommands</a> and <a href="https://github.com/drush-ops/drush/blob/12.x/src/Drupal/Commands/sql/SanitizeCommands.php">SanitizeCommands</a></p>
 <p>First, the command must implement CustomEventAwareInterface and use CustomEventAwareTrait, as described in the <a href="../dependency-injection/">dependency injection</a> documentation.</p>
-<p>Then, the command may ask the provided hook manager to return a list of handlers with a certain annotation. In the example below, the <code>my-event</code> label is used:
+<p>Then, the command may ask the provided hook manager to return a list of handlers with a certain attribute. In the example below, the <code>my-event</code> label is used:
 <div class="highlight"><pre><span></span><code>    <span class="sd">/**</span>
 <span class="sd">     * This command uses a custom event &#39;my-event&#39; to collect data.  Note that</span>
 <span class="sd">     * the event handlers will not be found unless the hook manager is</span>
 <span class="sd">     * injected into this command handler object via `setHookManager()`</span>
 <span class="sd">     * (defined in CustomEventAwareTrait).</span>
-<span class="sd">     *</span>
-<span class="sd">     * @command example:command</span>
 <span class="sd">     */</span>
+    <span class="c1">#[CLI\Command(name: &#39;example:command&#39;)]  </span>
     <span class="k">public</span> <span class="k">function</span> <span class="nf">exampleCommand</span><span class="p">()</span>
     <span class="p">{</span>
         <span class="nv">$myEventHandlers</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">getCustomEventHandlers</span><span class="p">(</span><span class="s1">&#39;my-event&#39;</span><span class="p">);</span>
@@ -5164,7 +5065,7 @@
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="sd">/**</span>
-<span class="sd"> * #[CLI/Hook(type: &#39;on-event&#39;, target: &#39;my-event&#39;)]</span>
+<span class="sd"> * #[CLI\Hook(type: HookManager::ON_EVENT, selector: &#39;my-event&#39;)]</span>
 <span class="sd"> */</span>
 <span class="k">public</span> <span class="k">function</span> <span class="nf">hookOne</span><span class="p">()</span>
 <span class="p">{</span>
@@ -5190,7 +5091,7 @@
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">December 29, 2021</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">March 15, 2023</span>
       
     
   </small>
@@ -5281,7 +5182,7 @@
     <script id="__config" type="application/json">{"base": "..", "features": ["navigation.tabs", "navigation.tabs.sticky", "toc.integrate"], "search": "../assets/javascripts/workers/search.208ed371.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
-      <script src="../assets/javascripts/bundle.fc8c2696.min.js"></script>
+      <script src="../assets/javascripts/bundle.efa0ade1.min.js"></script>
       
     
   </body>

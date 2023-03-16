@@ -21,7 +21,7 @@
         <link rel="next" href="../PolicyCommands.php/">
       
       <link rel="icon" href="../../img/favicon.ico">
-      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.1.2">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.1.3">
     
     
       
@@ -29,7 +29,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.7bf56d0a.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.c4a75a56.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.a0c5b2b5.min.css">
@@ -3593,36 +3593,22 @@
   
   
     <li class="md-nav__item">
-      <a href="../../generators/_complete/" class="md-nav__link">
-        _complete
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../generators/completion/" class="md-nav__link">
-        completion
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../../generators/composer/" class="md-nav__link">
         composer
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../generators/console_symfony-command/" class="md-nav__link">
+        console:symfony-command
       </a>
     </li>
   
@@ -3719,20 +3705,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../../generators/migration/" class="md-nav__link">
-        migration
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../../generators/module/" class="md-nav__link">
         module
       </a>
@@ -3747,22 +3719,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../../generators/module-file/" class="md-nav__link">
-        module-file
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../generators/phpstorm-metadata/" class="md-nav__link">
-        phpstorm-metadata
+      <a href="../../generators/phpstorm-meta/" class="md-nav__link">
+        phpstorm-meta
       </a>
     </li>
   
@@ -4079,36 +4037,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../../generators/misc_html-page/" class="md-nav__link">
-        misc:html-page
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../../generators/misc_nginx-virtual-host/" class="md-nav__link">
         misc:nginx-virtual-host
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../generators/misc_project/" class="md-nav__link">
-        misc:project
       </a>
     </li>
   
@@ -4831,20 +4761,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../../generators/theme_file/" class="md-nav__link">
-        theme:file
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../../generators/theme_settings/" class="md-nav__link">
         theme:settings
       </a>
@@ -4963,8 +4879,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../../generators/yml_module-info/" class="md-nav__link">
-        yml:module-info
+      <a href="../../generators/yml_migration/" class="md-nav__link">
+        yml:migration
       </a>
     </li>
   
@@ -5033,20 +4949,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../../generators/yml_theme-info/" class="md-nav__link">
-        yml:theme-info
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../../generators/yml_theme-libraries/" class="md-nav__link">
         yml:theme-libraries
       </a>
@@ -5097,12 +4999,12 @@
 <span class="k">use</span> <span class="nx">Consolidation\AnnotatedCommand\CommandData</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Consolidation\AnnotatedCommand\Events\CustomEventAwareInterface</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Consolidation\AnnotatedCommand\Events\CustomEventAwareTrait</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Consolidation\AnnotatedCommand\Hooks\HookManager</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Consolidation\OutputFormatters\StructuredData\RowsOfFields</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Drush\Attributes</span> <span class="k">as</span> <span class="nx">CLI</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Drush\Style\DrushStyle</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Symfony\Component\Console\Input\InputInterface</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Symfony\Component\Console\Output\OutputInterface</span><span class="p">;</span>
-<span class="k">use</span> <span class="nx">Symfony\Component\Console\Style\SymfonyStyle</span><span class="p">;</span>
-<span class="k">use</span> <span class="nx">Drush\Style\DrushStyle</span><span class="p">;</span>
-<span class="k">use</span> <span class="nx">Drush\Utils\StringUtils</span><span class="p">;</span>
 
 <span class="sd">/**</span>
 <span class="sd"> * Run these commands using the --include option - e.g. `drush --include=/path/to/drush/examples art sandwich`</span>
@@ -5114,7 +5016,7 @@
 <span class="sd"> * This file is a good example of the first of those bullets (a commandfile) but</span>
 <span class="sd"> * since it isn&#39;t part of a module, it does not implement drush.services.yml.</span>
 <span class="sd"> *</span>
-<span class="sd"> * See [Drush Test Traits](https://github.com/drush-ops/drush/blob/11.x/docs/contribute/unish.md#about-the-test-suites) for info on testing Drush commands.</span>
+<span class="sd"> * See [Drush Test Traits](https://github.com/drush-ops/drush/blob/12.x/docs/contribute/unish.md#about-the-test-suites) for info on testing Drush commands.</span>
 <span class="sd"> */</span>
 
 <span class="k">class</span> <span class="nc">ArtCommands</span> <span class="k">extends</span> <span class="nx">DrushCommands</span> <span class="k">implements</span> <span class="nx">CustomEventAwareInterface</span>
@@ -5122,17 +5024,14 @@
     <span class="k">use</span> <span class="nx">CustomEventAwareTrait</span><span class="p">;</span>
 
     <span class="sd">/** @var string[] */</span>
-    <span class="k">protected</span> <span class="nv">$arts</span><span class="p">;</span>
+    <span class="k">protected</span> <span class="o">?</span><span class="k">array</span> <span class="nv">$arts</span><span class="p">;</span>
 
     <span class="sd">/**</span>
 <span class="sd">     * Show a fabulous picture.</span>
-<span class="sd">     *</span>
-<span class="sd">     * @command artwork:show</span>
-<span class="sd">     * @aliases arts</span>
-<span class="sd">     * @param $art The name of the art to display</span>
-<span class="sd">     * @usage drush art sandwich</span>
-<span class="sd">     *   Show a marvelous picture of a sandwich with pickles.</span>
 <span class="sd">     */</span>
+    <span class="c1">#[CLI\Command(name: &#39;artwork:show&#39;, aliases: [&#39;arts&#39;])]</span>
+    <span class="c1">#[CLI\Argument(name: &#39;art&#39;, description: &#39;The name of the art to display&#39;)]</span>
+    <span class="c1">#[CLI\Usage(name: &#39;drush art sandwich&#39;, description: &#39;Show a marvelous picture of a sandwich with pickles.&#39;)]</span>
     <span class="k">public</span> <span class="k">function</span> <span class="nf">art</span><span class="p">(</span><span class="nv">$art</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
     <span class="p">{</span>
         <span class="nv">$data</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">getArt</span><span class="p">();</span>
@@ -5149,19 +5048,12 @@
 
     <span class="sd">/**</span>
 <span class="sd">     * Show a table of information about available art.</span>
-<span class="sd">     *</span>
-<span class="sd">     * @command artwork:list</span>
-<span class="sd">     * @aliases artls</span>
-<span class="sd">     * @field-labels</span>
-<span class="sd">     *   name: Name</span>
-<span class="sd">     *   description: Description</span>
-<span class="sd">     *   path: Path</span>
-<span class="sd">     * @default-fields name,description</span>
-<span class="sd">     *</span>
-<span class="sd">     * @filter-default-field name</span>
-<span class="sd">     * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields</span>
 <span class="sd">     */</span>
-    <span class="k">public</span> <span class="k">function</span> <span class="nf">listArt</span><span class="p">(</span><span class="nv">$options</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;format&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;table&#39;</span><span class="p">])</span>
+    <span class="c1">#[CLI\Command(name: &#39;artwork:list&#39;, aliases: [&#39;artls&#39;])]</span>
+    <span class="c1">#[CLI\FieldLabels(labels: [&#39;name&#39; =&gt; &#39;Name&#39;, &#39;description&#39; =&gt; &#39;Description&#39;, &#39;path&#39; =&gt; &#39;Path&#39;])]</span>
+    <span class="c1">#[CLI\DefaultTableFields(fields: [&#39;name&#39;, &#39;description&#39;])]</span>
+    <span class="c1">#[CLI\FilterDefaultField(field: &#39;name&#39;)]</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">listArt</span><span class="p">(</span><span class="nv">$options</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;format&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;table&#39;</span><span class="p">])</span><span class="o">:</span> <span class="nx">RowsOfFields</span>
     <span class="p">{</span>
         <span class="nv">$data</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">getArt</span><span class="p">();</span>
         <span class="k">return</span> <span class="k">new</span> <span class="nx">RowsOfFields</span><span class="p">(</span><span class="nv">$data</span><span class="p">);</span>
@@ -5175,11 +5067,10 @@
 
     <span class="sd">/**</span>
 <span class="sd">     * Ruminations on the true meaning and philosophy of artwork.</span>
-<span class="sd">     *</span>
-<span class="sd">     * @command artwork:explain</span>
-<span class="sd">     * @hidden</span>
-<span class="sd">     * @topic</span>
 <span class="sd">     */</span>
+    <span class="c1">#[CLI\Command(name: &#39;artwork:explain&#39;, aliases: [])]</span>
+    <span class="c1">#[CLI\Topics(isTopic: true)]</span>
+    <span class="c1">#[CLI\Help(hidden: true)]</span>
     <span class="k">public</span> <span class="k">function</span> <span class="nf">ruminate</span><span class="p">()</span>
     <span class="p">{</span>
         <span class="nx">self</span><span class="o">::</span><span class="na">printFile</span><span class="p">(</span><span class="no">__DIR__</span> <span class="o">.</span> <span class="s1">&#39;/art-topic.md&#39;</span><span class="p">);</span>
@@ -5188,10 +5079,9 @@
     <span class="sd">/**</span>
 <span class="sd">     * Return the available built-in art. Any Drush commandfile may provide</span>
 <span class="sd">     * more art by implementing a &#39;drush-art&#39; on-event hook. This on-event</span>
-<span class="sd">     * hook is defined in the &#39;findArt&#39; method beolw.</span>
-<span class="sd">     *</span>
-<span class="sd">     * @hook on-event drush-art</span>
+<span class="sd">     * hook is defined in the &#39;findArt&#39; method below.</span>
 <span class="sd">     */</span>
+    <span class="c1">#[CLI\Hook(type: HookManager::ON_EVENT, selector: &#39;drush-art&#39;)]</span>
     <span class="k">public</span> <span class="k">function</span> <span class="nf">builtInArt</span><span class="p">()</span>
     <span class="p">{</span>
         <span class="k">return</span> <span class="p">[</span>
@@ -5208,9 +5098,7 @@
         <span class="p">];</span>
     <span class="p">}</span>
 
-    <span class="sd">/**</span>
-<span class="sd">     * @hook interact artwork:show</span>
-<span class="sd">     */</span>
+    <span class="c1">#[CLI\Hook(type: HookManager::INTERACT, target: &#39;artwork:show&#39;)]</span>
     <span class="k">public</span> <span class="k">function</span> <span class="nf">interact</span><span class="p">(</span><span class="nx">InputInterface</span> <span class="nv">$input</span><span class="p">,</span> <span class="nx">OutputInterface</span> <span class="nv">$output</span><span class="p">,</span> <span class="nx">AnnotationData</span> <span class="nv">$annotationData</span><span class="p">)</span>
     <span class="p">{</span>
         <span class="nv">$io</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">DrushStyle</span><span class="p">(</span><span class="nv">$input</span><span class="p">,</span> <span class="nv">$output</span><span class="p">);</span>
@@ -5225,9 +5113,7 @@
         <span class="p">}</span>
     <span class="p">}</span>
 
-    <span class="sd">/**</span>
-<span class="sd">     * @hook validate artwork:show</span>
-<span class="sd">     */</span>
+    <span class="c1">#[CLI\Hook(type: HookManager::ARGUMENT_VALIDATOR, target: &#39;artwork:show&#39;)]</span>
     <span class="k">public</span> <span class="k">function</span> <span class="nf">artValidate</span><span class="p">(</span><span class="nx">CommandData</span> <span class="nv">$commandData</span><span class="p">)</span>
     <span class="p">{</span>
         <span class="nv">$art</span> <span class="o">=</span> <span class="nv">$commandData</span><span class="o">-&gt;</span><span class="na">input</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">getArgument</span><span class="p">(</span><span class="s1">&#39;art&#39;</span><span class="p">);</span>
@@ -5240,7 +5126,7 @@
     <span class="sd">/**</span>
 <span class="sd">     * Get a list of available artwork. Cache result for future fast access.</span>
 <span class="sd">     */</span>
-    <span class="k">protected</span> <span class="k">function</span> <span class="nf">getArt</span><span class="p">()</span>
+    <span class="k">protected</span> <span class="k">function</span> <span class="nf">getArt</span><span class="p">()</span><span class="o">:</span> <span class="k">array</span>
     <span class="p">{</span>
         <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nb">isset</span><span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">arts</span><span class="p">))</span> <span class="p">{</span>
             <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">arts</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">findArt</span><span class="p">();</span>
@@ -5263,11 +5149,9 @@
     <span class="p">}</span>
 
     <span class="sd">/**</span>
-<span class="sd">     * Given a list of artwork, converte to a &#39;key&#39; =&gt; &#39;Name: Description&#39; array.</span>
-<span class="sd">     * @param array $data</span>
-<span class="sd">     * @return array</span>
+<span class="sd">     * Given a list of artwork, convert to a &#39;key&#39; =&gt; &#39;Name: Description&#39; array.</span>
 <span class="sd">     */</span>
-    <span class="k">protected</span> <span class="k">function</span> <span class="nf">convertArtListToKeyValue</span><span class="p">(</span><span class="nv">$data</span><span class="p">)</span>
+    <span class="k">protected</span> <span class="k">function</span> <span class="nf">convertArtListToKeyValue</span><span class="p">(</span><span class="k">array</span> <span class="nv">$data</span><span class="p">)</span><span class="o">:</span> <span class="k">array</span>
     <span class="p">{</span>
         <span class="nv">$result</span> <span class="o">=</span> <span class="p">[];</span>
         <span class="k">foreach</span> <span class="p">(</span><span class="nv">$data</span> <span class="k">as</span> <span class="nv">$key</span> <span class="o">=&gt;</span> <span class="nv">$item</span><span class="p">)</span> <span class="p">{</span>
@@ -5283,7 +5167,7 @@
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">October 3, 2021</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">March 15, 2023</span>
       
     
   </small>
@@ -5374,7 +5258,7 @@
     <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "toc.integrate"], "search": "../../assets/javascripts/workers/search.208ed371.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.fc8c2696.min.js"></script>
+      <script src="../../assets/javascripts/bundle.efa0ade1.min.js"></script>
       
     
   </body>
