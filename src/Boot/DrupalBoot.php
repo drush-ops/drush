@@ -45,7 +45,7 @@ abstract class DrupalBoot extends BaseBoot
         return false;
     }
 
-    public function validRoot($path)
+    public function validRoot(?string $path): bool
     {
     }
 
@@ -53,7 +53,7 @@ abstract class DrupalBoot extends BaseBoot
     {
     }
 
-    public function confPath($require_settings = true, $reset = false)
+    public function confPath(bool $require_settings = true, bool $reset = false): ?string
     {
     }
 
@@ -182,7 +182,7 @@ abstract class DrupalBoot extends BaseBoot
     /**
      * Bootstrap the Drupal database.
      */
-    public function bootstrapDrupalDatabase(BootstrapManager $manager)
+    public function bootstrapDrupalDatabase(BootstrapManager $manager): void
     {
         // We presume that our derived classes will connect and then
         // either fail, or call us via parent::
@@ -192,7 +192,7 @@ abstract class DrupalBoot extends BaseBoot
     /**
      * Attempt to load the full Drupal system.
      */
-    public function bootstrapDrupalFull(BootstrapManager $manager)
+    public function bootstrapDrupalFull(BootstrapManager $manager): void
     {
     }
 }

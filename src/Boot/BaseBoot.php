@@ -11,8 +11,8 @@ abstract class BaseBoot implements Boot, LoggerAwareInterface
 {
     use LoggerAwareTrait;
 
-    protected $uri = false;
-    protected $phase = DrupalBootLevels::NONE;
+    protected string|bool $uri = false;
+    protected int $phase = DrupalBootLevels::NONE;
 
     public function __construct()
     {
@@ -29,7 +29,7 @@ abstract class BaseBoot implements Boot, LoggerAwareInterface
         return $this->uri;
     }
 
-    public function setUri($uri)
+    public function setUri($uri): void
     {
         $this->uri = $uri;
     }
@@ -39,12 +39,12 @@ abstract class BaseBoot implements Boot, LoggerAwareInterface
         return $this->phase;
     }
 
-    public function setPhase(int $phase)
+    public function setPhase(int $phase): void
     {
         $this->phase = $phase;
     }
 
-    public function validRoot($path)
+    public function validRoot(?string $path): bool
     {
     }
 
@@ -75,10 +75,10 @@ abstract class BaseBoot implements Boot, LoggerAwareInterface
         ];
     }
 
-    public function lookUpPhaseIndex($phase)
+    public function lookUpPhaseIndex($phase): ?int
     {
         if (is_numeric($phase)) {
-            return $phase;
+            return (int) $phase;
         }
         $phaseMap = $this->bootstrapPhaseMap();
         if (isset($phaseMap[$phase])) {
@@ -86,7 +86,7 @@ abstract class BaseBoot implements Boot, LoggerAwareInterface
         }
 
         if ((!str_starts_with($phase, 'DRUSH_BOOTSTRAP_')) || (!defined($phase))) {
-            return;
+            return null;
         }
         return constant($phase);
     }

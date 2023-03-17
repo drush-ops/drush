@@ -23,20 +23,9 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
 {
     use AutoloaderAwareTrait;
 
-    /**
-     * @var LoggerInterface
-     */
-    protected $drupalLoggerAdapter;
-
-    /**
-     * @var DrupalKernelInterface
-     */
-    protected $kernel;
-
-    /**
-     * @var Request
-     */
-    protected $request;
+    protected ?LoggrInterface $drupalLoggerAdapter = null;
+    protected ?DrupalKernelInterface $kernel = null;
+    protected Request $request;
 
     public function getRequest(): Request
     {
@@ -70,7 +59,7 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
         parent::setLogger($logger);
     }
 
-    public function validRoot($path)
+    public function validRoot(?string $path): bool
     {
         if (!empty($path) && is_dir($path) && file_exists($path . '/autoload.php')) {
             // Additional check for the presence of core/composer.json to
@@ -78,7 +67,7 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
             $candidate = 'core/includes/common.inc';
             if (file_exists($path . '/' . $candidate) && file_exists($path . '/core/core.services.yml')) {
                 if (file_exists($path . '/core/misc/drupal.js') || file_exists($path . '/core/assets/js/drupal.js')) {
-                    return $candidate;
+                    return true;
                 }
             }
         }
@@ -97,12 +86,8 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
      * Beware, this function populates Database::Connection info.
      *
      * See https://github.com/drush-ops/drush/issues/3903.
-     * @param bool $require_settings
-     * @param bool $reset
-     *
-     * @return string|void
      */
-    public function confPath($require_settings = true, $reset = false)
+    public function confPath(bool $require_settings = true, bool $reset = false): ?string
     {
 
         if (\Drupal::hasService('kernel')) {
@@ -114,7 +99,7 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
         return $site_path;
     }
 
-    public function bootstrapDrupalCore(BootstrapManager $manager, $drupal_root): string
+    public function bootstrapDrupalCore(BootstrapManager $manager, string $drupal_root): string
     {
         return Path::join($drupal_root, 'core');
     }
@@ -154,7 +139,7 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
 
     /**
      * Called by bootstrapDrupalSite to do the main work
-     * of the drush drupal site bootstrap.
+     * of the Drush drupal site bootstrap.
      */
     public function bootstrapDoDrupalSite(BootstrapManager $manager): void
     {

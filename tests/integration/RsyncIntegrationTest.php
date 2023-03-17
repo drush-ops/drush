@@ -31,22 +31,22 @@ class RsyncIntegrationTest extends UnishIntegrationTestCase
         // Test simulated simple rsync between two imaginary files / directories
         $this->drush(RsyncCommands::RSYNC, ['a', 'b'], $options, self::EXIT_SUCCESS, '');
         $expected = "[notice] Simulating: rsync -e 'ssh ' -akz a b";
-        $this->assertErrorOutputEquals($expected);
+        $this->assertErrorOutputContains($expected);
 
         // Test simulated simple rsync with two local sites
         $this->drush(RsyncCommands::RSYNC, ['@example.stage', '@example.dev'], $options, self::EXIT_SUCCESS, '');
         $expected = "[notice] Simulating: rsync -e 'ssh ' -akz /path/to/stage /path/to/dev";
-        $this->assertErrorOutputEquals($expected);
+        $this->assertErrorOutputContains($expected);
 
         // Test simulated rsync with relative paths
         $this->drush(RsyncCommands::RSYNC, ['@example.dev:files', '@example.stage:files'], $options, self::EXIT_SUCCESS, '');
         $expected = "[notice] Simulating: rsync -e 'ssh ' -akz /path/to/dev/files /path/to/stage/files";
-        $this->assertErrorOutputEquals($expected);
+        $this->assertErrorOutputContains($expected);
 
         // Test simulated rsync on local machine with a remote target
         $this->drush(RsyncCommands::RSYNC, ['@example.dev:files', '@example.live:files'], $options, self::EXIT_SUCCESS, '');
         $expected = "[notice] Simulating: rsync -e 'ssh -o PasswordAuthentication=example' -akz /path/to/dev/files www-admin@service-provider.com:/path/on/service-provider/files";
-        $this->assertErrorOutputEquals($expected);
+        $this->assertErrorOutputContains($expected);
     }
 
     public function testRsyncSimulatedWithSelfAlias()

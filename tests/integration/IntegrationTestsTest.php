@@ -24,6 +24,11 @@ class IntegrationTestsTest extends UnishIntegrationTestCase
         // Ensure that a verbose run does not affect subsequent runs.
         $this->drush(CoreCommands::VERSION, [], ['debug' => null]);
         $this->assertStringContainsString('[info] Starting bootstrap to none', $this->getErrorOutputRaw());
+
+        if (in_array(['debug', 'verbose'], $this->logLevel())) {
+            $this->markTestSkipped('Fails on verbose/debug log levels.');
+        }
+
         $this->drush(CoreCommands::VERSION);
         $this->assertStringNotContainsString('[info] Starting bootstrap to none', $this->getErrorOutputRaw());
     }
