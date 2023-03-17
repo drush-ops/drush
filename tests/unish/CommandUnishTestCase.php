@@ -14,33 +14,21 @@ abstract class CommandUnishTestCase extends UnishTestCase
 
     /**
      * Code coverage data collected during a single test.
-     *
-     * @var array
      */
-    protected $coverage_data = [];
+    protected array $coverage_data = [];
 
     /**
      * Accessor for the last output, non-trimmed.
-     *
-     * @return string
-     *   Raw output as text.
-     *
-     * @access public
      */
-    public function getOutputRaw()
+    public function getOutputRaw(): string
     {
         return $this->process ? $this->process->getOutput() : '';
     }
 
     /**
      * Accessor for the last stderr output, non-trimmed.
-     *
-     * @return string
-     *   Raw stderr as text.
-     *
-     * @access public
      */
-    public function getErrorOutputRaw()
+    public function getErrorOutputRaw(): string
     {
         return $this->process ? $this->process->getErrorOutput() : '';
     }
@@ -93,13 +81,11 @@ abstract class CommandUnishTestCase extends UnishTestCase
       *   Any code to append to the command. For example, redirection like 2>&1.
       * @param array $env
       *   Environment variables to pass along to the subprocess.
-      * @return integer
-      *   An exit code.
       */
     public function drush($command, array $args = [], array $options = [], $site_specification = null, $cd = null, $expected_return = self::EXIT_SUCCESS, $suffix = null, $env = [])
     {
         list($cmd, $coverage_file) = $this->prepareDrushCommand($command, $args, $options, $site_specification, $suffix);
-        $return = $this->execute($cmd, $expected_return, $cd, $env);
+        $this->execute($cmd, $expected_return, $cd, $env);
 
         // Save code coverage information.
         if (!empty($coverage_file)) {
@@ -109,10 +95,10 @@ abstract class CommandUnishTestCase extends UnishTestCase
             $this->coverage_data[] = $data;
         }
 
-        return $return;
+        // return $return;
     }
 
-    protected function prepareDrushCommand($command, array $args = [], array $options = [], $site_specification = null, $suffix = null)
+    protected function prepareDrushCommand($command, array $args = [], array $options = [], $site_specification = null, $suffix = null): array
     {
         // cd is added for the benefit of siteSshTest which tests a strict command.
         $global_option_list = ['simulate', 'root', 'uri', 'include', 'config', 'alias-path', 'ssh-options', 'cd'];
@@ -200,12 +186,12 @@ abstract class CommandUnishTestCase extends UnishTestCase
         return [$cmd, $coverage_file];
     }
 
-    protected function getLogMessage($entry)
+    protected function getLogMessage(array $entry): string
     {
         return $this->interpolate($entry['message'], $entry);
     }
 
-    protected function interpolate($message, array $context)
+    protected function interpolate(string $message, array $context): string
     {
         // build a replacement array with braces around the context keys
         $replace = [];
@@ -218,7 +204,7 @@ abstract class CommandUnishTestCase extends UnishTestCase
         return strtr($message, $replace);
     }
 
-    protected function assertOutputEquals($expected, $filter = '')
+    protected function assertOutputEquals($expected, $filter = ''): void
     {
         $output = $this->getSimplifiedOutput();
         if (!empty($filter)) {
@@ -234,12 +220,12 @@ abstract class CommandUnishTestCase extends UnishTestCase
      * absolute paths and duplicate whitespace removed, to avoid false negatives
      * on minor differences.
      *
-     * @param string $expected
+     * @param $expected
      *   The expected output.
-     * @param string $filter
+     * @param $filter
      *   Optional regular expression that should be ignored in the error output.
      */
-    protected function assertErrorOutputEquals($expected, $filter = '')
+    protected function assertErrorOutputEquals(string $expected, string $filter = ''): void
     {
         $output = $this->getSimplifiedErrorOutput();
         if (!empty($filter)) {
@@ -248,7 +234,7 @@ abstract class CommandUnishTestCase extends UnishTestCase
         $this->assertEquals($expected, $output);
     }
 
-    public function pathsToSimplify()
+    public function pathsToSimplify(): array
     {
         $basedir = dirname(dirname(__DIR__));
 
