@@ -15,18 +15,18 @@ use Symfony\Component\Filesystem\Path;
  */
 class Environment
 {
-    protected $homeDir;
-    protected $originalCwd;
-    protected $etcPrefix;
-    protected $sharePrefix;
-    protected $drushBasePath;
-    protected $vendorDir;
+    protected string $homeDir;
+    protected string $originalCwd;
+    protected string $etcPrefix;
+    protected string $sharePrefix;
+    protected string $drushBasePath;
+    protected string $vendorDir;
 
-    protected $docPrefix;
-    protected $configFileVariant;
+    protected ?string $docPrefix;
+    protected string $configFileVariant;
 
-    protected $loader;
-    protected $siteLoader;
+    protected ClassLoader $loader;
+    protected ?Classloader $siteLoader = null;
 
     /**
      * Environment constructor
@@ -34,7 +34,7 @@ class Environment
      * @param string $cwd The current working directory at the time Drush was called.
      * @param string $autoloadFile Path to the autoload.php file.
      */
-    public function __construct($homeDir, $cwd, $autoloadFile)
+    public function __construct(string $homeDir, string $cwd, string $autoloadFile)
     {
         $this->homeDir = $homeDir;
         $this->originalCwd = Path::canonicalize(FsUtils::realpath($cwd));
