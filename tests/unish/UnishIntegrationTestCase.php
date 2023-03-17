@@ -58,7 +58,7 @@ abstract class UnishIntegrationTestCase extends UnishTestCase
      *   A string that will be written to a tmp file. Note that the command you
      *   are testing must implement StdinAwareInterface.
      */
-    public function drush(string $command, array $args = [], array $options = [], int $expected_return = self::EXIT_SUCCESS, string|bool $stdin = false): ?int
+    public function drush(string $command, array $args = [], array $options = [], ?int $expected_return = self::EXIT_SUCCESS, string|bool $stdin = false): ?int
     {
         // Install the SUT if necessary
         if (!RuntimeController::instance()->initialized()) {
