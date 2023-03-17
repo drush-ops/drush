@@ -25,7 +25,7 @@ class IntegrationTestsTest extends UnishIntegrationTestCase
         $this->drush(CoreCommands::VERSION, [], ['debug' => null]);
         $this->assertStringContainsString('[info] Starting bootstrap to none', $this->getErrorOutputRaw());
 
-        if (in_array(['debug', 'verbose'], $this->logLevel())) {
+        if (in_array($this->logLevel(), ['debug', 'verbose'])) {
             $this->markTestSkipped('Fails on verbose/debug log levels.');
         }
 
