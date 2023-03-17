@@ -25,8 +25,7 @@ use Drush\Runtime\RedispatchHook;
  */
 class RemoteCommandProxy extends Command
 {
-    /** @var RedispatchHook */
-    protected $redispatchHook;
+    protected RedispatchHook $redispatchHook;
 
     public function __construct($name, RedispatchHook $redispatchHook)
     {

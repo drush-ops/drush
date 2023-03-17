@@ -10,7 +10,7 @@ namespace Drush\Command;
  */
 class ServiceCommandlist
 {
-    protected $commandList = [];
+    protected array $commandList = [];
 
     public function addCommandReference($command): void
     {
