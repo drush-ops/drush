@@ -16,7 +16,7 @@ use Psr\Log\LoggerInterface;
  */
 class EmptyBoot extends BaseBoot
 {
-    public function validRoot($path): bool
+    public function validRoot(?string $path): bool
     {
         return false;
     }
