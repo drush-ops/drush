@@ -127,10 +127,10 @@ if the user did not explicitly specify a URI.</p></p>                </div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    true
+                    bool
                 </div>
                 <div class="col-md-8">
-                    <a href="#method_validRoot">validRoot</a>($path)
+                    <a href="#method_validRoot">validRoot</a>(string|null $path)
         
                                             <p><p>This function determines if the specified path points to
 the root directory of a CMS that can be bootstrapped by
@@ -284,9 +284,9 @@ if the user did not explicitly specify a URI.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_validRoot">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Boot/Boot.php#L39">at line 39</a></div>
-        <code>                    true
-    <strong>validRoot</strong>($path)
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Boot/Boot.php#L35">at line 35</a></div>
+        <code>                    bool
+    <strong>validRoot</strong>(string|null $path)
         </code>
     </h3>
     <div class="details">    
@@ -304,9 +304,9 @@ one class will return TRUE for any given $path.</p></p>
 
                     <table class="table table-condensed">
                     <tr>
-                <td></td>
+                <td>string|null</td>
                 <td>$path</td>
-                <td><p>to a directory to test</p></td>
+                <td></td>
             </tr>
             </table>
 
@@ -315,8 +315,8 @@ one class will return TRUE for any given $path.</p></p>
 
                     <table class="table table-condensed">
         <tr>
-            <td>true</td>
-            <td><p>if $path is a valid root directory</p></td>
+            <td>bool</td>
+            <td></td>
         </tr>
     </table>
 
@@ -329,7 +329,7 @@ one class will return TRUE for any given $path.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_getVersion">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Boot/Boot.php#L49">at line 49</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Boot/Boot.php#L45">at line 45</a></div>
         <code>                    string|null
     <strong>getVersion</strong>(string $root)
         </code>
@@ -371,7 +371,7 @@ one class will return TRUE for any given $path.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_bootstrapPhases">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Boot/Boot.php#L62">at line 62</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Boot/Boot.php#L58">at line 58</a></div>
         <code>                    array
     <strong>bootstrapPhases</strong>()
         </code>
@@ -419,7 +419,7 @@ phase.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_bootstrapPhaseMap">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Boot/Boot.php#L69">at line 69</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Boot/Boot.php#L65">at line 65</a></div>
         <code>                    array
     <strong>bootstrapPhaseMap</strong>()
         </code>
@@ -453,7 +453,7 @@ phase index constant (e.g. DRUSH_BOOTSTRAP_DRUPAL_FULL).</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_lookUpPhaseIndex">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Boot/Boot.php#L74">at line 74</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Boot/Boot.php#L70">at line 70</a></div>
         <code>                    
     <strong>lookUpPhaseIndex</strong>($phase)
         </code>
@@ -486,7 +486,7 @@ phase index constant (e.g. DRUSH_BOOTSTRAP_DRUPAL_FULL).</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_reportCommandError">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Boot/Boot.php#L84">at line 84</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Boot/Boot.php#L80">at line 80</a></div>
         <code>                    
     <strong>reportCommandError</strong>($command)
         </code>
@@ -522,7 +522,7 @@ to be overridden.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_terminate">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Boot/Boot.php#L91">at line 91</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Boot/Boot.php#L87">at line 87</a></div>
         <code>                    void
     <strong>terminate</strong>()
         </code>

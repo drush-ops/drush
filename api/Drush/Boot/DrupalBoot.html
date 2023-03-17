@@ -195,7 +195,7 @@ if the user did not explicitly specify a URI.</p></p>                </div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    
+                    void
                 </div>
                 <div class="col-md-8">
                     <a href="#method_setPhase">setPhase</a>(int $phase)
@@ -207,10 +207,10 @@ if the user did not explicitly specify a URI.</p></p>                </div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    true
+                    bool
                 </div>
                 <div class="col-md-8">
-                    <a href="#method_validRoot">validRoot</a>($path)
+                    <a href="#method_validRoot">validRoot</a>(string|null $path)
         
                                             <p><p>This function determines if the specified path points to
 the root directory of a CMS that can be bootstrapped by
@@ -322,10 +322,10 @@ phase index constant (e.g. DRUSH_BOOTSTRAP_DRUPAL_FULL).</p></p>                
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    
+                    string|null
                 </div>
                 <div class="col-md-8">
-                    <a href="#method_confPath">confPath</a>($require_settings = true, $reset = false)
+                    <a href="#method_confPath">confPath</a>(bool $require_settings = true, bool $reset = false)
         
                                             <p class="no-description">No description</p>
                                     </div>
@@ -403,7 +403,7 @@ phase index constant (e.g. DRUSH_BOOTSTRAP_DRUPAL_FULL).</p></p>                
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    
+                    void
                 </div>
                 <div class="col-md-8">
                     <a href="#method_bootstrapDrupalDatabase">bootstrapDrupalDatabase</a>(<a href="../../Drush/Boot/BootstrapManager.html"><abbr title="Drush\Boot\BootstrapManager">BootstrapManager</abbr></a> $manager)
@@ -413,7 +413,7 @@ phase index constant (e.g. DRUSH_BOOTSTRAP_DRUPAL_FULL).</p></p>                
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    
+                    void
                 </div>
                 <div class="col-md-8">
                     <a href="#method_bootstrapDrupalFull">bootstrapDrupalFull</a>(<a href="../../Drush/Boot/BootstrapManager.html"><abbr title="Drush\Boot\BootstrapManager">BootstrapManager</abbr></a> $manager)
@@ -597,7 +597,7 @@ if the user did not explicitly specify a URI.</p></p>
                     <h3 id="method_setPhase">
         <div class="location">in <a href="../../Drush/Boot/BaseBoot.html#method_setPhase">
 <abbr title="Drush\Boot\BaseBoot">BaseBoot</abbr></a> <a href="https://github.com/drush-ops/drush/blob/12.x/src/Boot/BaseBoot.php#L42">at line 42</a></div>
-        <code>                    
+        <code>                    void
     <strong>setPhase</strong>(int $phase)
         </code>
     </h3>
@@ -621,6 +621,15 @@ if the user did not explicitly specify a URI.</p></p>
             </table>
 
             
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>void</td>
+            <td></td>
+        </tr>
+    </table>
+
             
             
             
@@ -631,8 +640,8 @@ if the user did not explicitly specify a URI.</p></p>
                     <div class="method-item">
                     <h3 id="method_validRoot">
         <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Boot/DrupalBoot.php#L48">at line 48</a></div>
-        <code>                    true
-    <strong>validRoot</strong>($path)
+        <code>                    bool
+    <strong>validRoot</strong>(string|null $path)
         </code>
     </h3>
     <div class="details">    
@@ -650,9 +659,9 @@ one class will return TRUE for any given $path.</p></p>
 
                     <table class="table table-condensed">
                     <tr>
-                <td></td>
+                <td>string|null</td>
                 <td>$path</td>
-                <td><p>to a directory to test</p></td>
+                <td></td>
             </tr>
             </table>
 
@@ -661,8 +670,8 @@ one class will return TRUE for any given $path.</p></p>
 
                     <table class="table table-condensed">
         <tr>
-            <td>true</td>
-            <td><p>if $path is a valid root directory</p></td>
+            <td>bool</td>
+            <td></td>
         </tr>
     </table>
 
@@ -994,8 +1003,8 @@ phase index constant (e.g. DRUSH_BOOTSTRAP_DRUPAL_FULL).</p></p>
                     <div class="method-item">
                     <h3 id="method_confPath">
         <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Boot/DrupalBoot.php#L56">at line 56</a></div>
-        <code>                    
-    <strong>confPath</strong>($require_settings = true, $reset = false)
+        <code>                    string|null
+    <strong>confPath</strong>(bool $require_settings = true, bool $reset = false)
         </code>
     </h3>
     <div class="details">    
@@ -1011,18 +1020,27 @@ phase index constant (e.g. DRUSH_BOOTSTRAP_DRUPAL_FULL).</p></p>
 
                     <table class="table table-condensed">
                     <tr>
-                <td></td>
+                <td>bool</td>
                 <td>$require_settings</td>
                 <td></td>
             </tr>
                     <tr>
-                <td></td>
+                <td>bool</td>
                 <td>$reset</td>
                 <td></td>
             </tr>
             </table>
 
             
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string|null</td>
+            <td></td>
+        </tr>
+    </table>
+
             
             
             
@@ -1298,7 +1316,7 @@ phase.</p></p>
                     <div class="method-item">
                     <h3 id="method_bootstrapDrupalDatabase">
         <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Boot/DrupalBoot.php#L185">at line 185</a></div>
-        <code>                    
+        <code>                    void
     <strong>bootstrapDrupalDatabase</strong>(<a href="../../Drush/Boot/BootstrapManager.html"><abbr title="Drush\Boot\BootstrapManager">BootstrapManager</abbr></a> $manager)
         </code>
     </h3>
@@ -1321,6 +1339,15 @@ phase.</p></p>
             </table>
 
             
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>void</td>
+            <td></td>
+        </tr>
+    </table>
+
             
             
             
@@ -1331,7 +1358,7 @@ phase.</p></p>
                     <div class="method-item">
                     <h3 id="method_bootstrapDrupalFull">
         <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Boot/DrupalBoot.php#L195">at line 195</a></div>
-        <code>                    
+        <code>                    void
     <strong>bootstrapDrupalFull</strong>(<a href="../../Drush/Boot/BootstrapManager.html"><abbr title="Drush\Boot\BootstrapManager">BootstrapManager</abbr></a> $manager)
         </code>
     </h3>
@@ -1354,6 +1381,15 @@ phase.</p></p>
             </table>
 
             
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>void</td>
+            <td></td>
+        </tr>
+    </table>
+
             
             
             

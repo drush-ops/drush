@@ -189,7 +189,7 @@ if the user did not explicitly specify a URI.</p></p>                </div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    
+                    void
                 </div>
                 <div class="col-md-8">
                     <a href="#method_setPhase">setPhase</a>(int $phase)
@@ -200,10 +200,10 @@ if the user did not explicitly specify a URI.</p></p>                </div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    true
+                    bool
                 </div>
                 <div class="col-md-8">
-                    <a href="#method_validRoot">validRoot</a>($path)
+                    <a href="#method_validRoot">validRoot</a>(string|null $path)
         
                                             <p><p>This function determines if the specified path points to
 the root directory of a CMS that can be bootstrapped by
@@ -467,7 +467,7 @@ if the user did not explicitly specify a URI.</p></p>
                     <div class="method-item">
                     <h3 id="method_setPhase">
         <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Boot/BaseBoot.php#L42">at line 42</a></div>
-        <code>                    
+        <code>                    void
     <strong>setPhase</strong>(int $phase)
         </code>
     </h3>
@@ -491,6 +491,15 @@ if the user did not explicitly specify a URI.</p></p>
             </table>
 
             
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>void</td>
+            <td></td>
+        </tr>
+    </table>
+
             
             
             
@@ -501,8 +510,8 @@ if the user did not explicitly specify a URI.</p></p>
                     <div class="method-item">
                     <h3 id="method_validRoot">
         <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Boot/BaseBoot.php#L47">at line 47</a></div>
-        <code>                    true
-    <strong>validRoot</strong>($path)
+        <code>                    bool
+    <strong>validRoot</strong>(string|null $path)
         </code>
     </h3>
     <div class="details">    
@@ -520,9 +529,9 @@ one class will return TRUE for any given $path.</p></p>
 
                     <table class="table table-condensed">
                     <tr>
-                <td></td>
+                <td>string|null</td>
                 <td>$path</td>
-                <td><p>to a directory to test</p></td>
+                <td></td>
             </tr>
             </table>
 
@@ -531,8 +540,8 @@ one class will return TRUE for any given $path.</p></p>
 
                     <table class="table table-condensed">
         <tr>
-            <td>true</td>
-            <td><p>if $path is a valid root directory</p></td>
+            <td>bool</td>
+            <td></td>
         </tr>
     </table>
 
