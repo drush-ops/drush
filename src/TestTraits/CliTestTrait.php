@@ -57,7 +57,7 @@ trait CliTestTrait
      *
      * @access public
      */
-    public function getErrorOutputRaw()
+    public function getErrorOutputRaw(): string
     {
         return $this->process ? $this->process->getErrorOutput() : '';
     }

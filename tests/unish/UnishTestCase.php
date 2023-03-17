@@ -294,7 +294,7 @@ abstract class UnishTestCase extends TestCase
         }
     }
 
-    public static function escapeshellarg($arg)
+    public static function escapeshellarg(string $arg): string
     {
         // Short-circuit escaping for simple params (keep stuff readable)
         if (preg_match('|^[a-zA-Z0-9.:/_-]*$|', $arg)) {
@@ -306,7 +306,7 @@ abstract class UnishTestCase extends TestCase
         }
     }
 
-    public static function _escapeshellargWindows($arg)
+    public static function _escapeshellargWindows(string $arg): string
     {
         // Double up existing backslashes
         $arg = preg_replace('/\\\/', '\\\\\\\\', $arg);
