@@ -27,7 +27,7 @@ abstract class CommandUnishTestCase extends UnishTestCase
      *
      * @access public
      */
-    public function getOutputRaw()
+    public function getOutputRaw(): string
     {
         return $this->process ? $this->process->getOutput() : '';
     }

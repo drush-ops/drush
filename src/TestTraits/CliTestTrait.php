@@ -17,50 +17,34 @@ trait CliTestTrait
 
     /**
      * Default timeout for commands. By default, there is no timeout.
-     *
-     * @var int
      */
-    private $defaultTimeout = 0;
+    private int $defaultTimeout = 0;
 
     /**
      * Timeout for command.
      *
      * Reset to $defaultTimeout after executing a command.
-     *
-     * @var int
      */
-    protected $timeout = 0;
+    protected int $timeout = 0;
 
     /**
      * Default idle timeout for commands.
-     *
-     * @var int
      */
-    private $defaultIdleTimeout = 0;
+    private int $defaultIdleTimeout = 0;
 
     /**
      * Idle timeouts for commands.
      *
      * Reset to $defaultIdleTimeout after executing a command.
-     *
-     * @var int
      */
-    protected $idleTimeout = 0;
+    protected int $idleTimeout = 0;
 
-    /**
-     * @var Process
-     */
     protected $process = null;
 
     /**
      * Accessor for the last output, non-trimmed.
-     *
-     * @return string
-     *   Raw output as text.
-     *
-     * @access public
      */
-    public function getOutputRaw()
+    public function getOutputRaw(): string
     {
         return $this->process ? $this->process->getOutput() : '';
     }
@@ -81,16 +65,16 @@ trait CliTestTrait
     /**
      * Run a command and return the process without waiting for it to finish.
      *
-     * @param string|array $command
+     * @param $command
      *   The actual command line to run.
-     * @param sting cd
+     * @param cd
      *   The directory to run the command in.
-     * @param array $env
+     * @param $env
      *  Extra environment variables.
-     * @param string $input
+     * @param $input
      *   A string representing the STDIN that is piped to the command.
      */
-    public function startExecute($command, $cd = null, $env = null, $input = null)
+    public function startExecute(string|array $command, ?string $cd = null, ?array $env = null, ?string $input = null)
     {
         try {
             // Process uses a default timeout of 60 seconds, set it to 0 (none).
@@ -116,18 +100,18 @@ trait CliTestTrait
     /**
      * Actually runs the command.
      *
-     * @param array|string $command
+     * @param $command
      *   The actual command line to run.
-     * @param integer $expected_return
+     * @param $expected_return
      *   The return code to expect
-     * @param string cd
+     * @param cd
      *   The directory to run the command in.
-     * @param array $env
+     * @param $env
      *  Extra environment variables.
-     * @param string $input
+     * @param $input
      *   A string representing the STDIN that is piped to the command.
      */
-    public function execute($command, int $expected_return = 0, $cd = null, $env = null, $input = null)
+    public function execute(array|string $command, int $expected_return = 0, ?string $cd = null, ?array $env = null, ?string $input = null): void
     {
         try {
             // Process uses a default timeout of 60 seconds, set it to 0 (none).
@@ -172,7 +156,7 @@ trait CliTestTrait
         }
     }
 
-    public static function escapeshellarg($arg)
+    public static function escapeshellarg(string $arg): string
     {
         // Short-circuit escaping for simple params (keep stuff readable)
         if (preg_match('|^[a-zA-Z0-9.:/_-]*$|', $arg)) {
@@ -184,12 +168,12 @@ trait CliTestTrait
         }
     }
 
-    public static function isWindows()
+    public static function isWindows(): bool
     {
         return strtoupper(substr(PHP_OS, 0, 3)) === 'WIN';
     }
 
-    public static function _escapeshellargWindows($arg)
+    public static function _escapeshellargWindows(string $arg): string
     {
         // Double up existing backslashes
         $arg = preg_replace('/\\\/', '\\\\\\\\', $arg);
@@ -208,10 +192,8 @@ trait CliTestTrait
 
     /**
      * Borrowed from \Symfony\Component\Process\Exception\ProcessTimedOutException
-     *
-     * @return string
      */
-    public function buildProcessMessage()
+    public function buildProcessMessage(): string
     {
         $error = sprintf(
             "%s\n\nExit Code: %s(%s)\n\nWorking directory: %s",
@@ -239,13 +221,13 @@ trait CliTestTrait
      * absolute paths and duplicate whitespace removed, to avoid false negatives
      * on minor differences.
      *
-     * @param string $expected
+     * @param $expected
      *   The expected output.
-     * @param string $filter
+     * @param $filter
      *   Optional regular expression that should be ignored in the error output.
      */
 
-    protected function assertOutputEquals(string $expected, string $filter = '')
+    protected function assertOutputEquals(string $expected, string $filter = ''): void
     {
         $output = $this->getSimplifiedOutput();
         if (!empty($filter)) {
@@ -261,12 +243,12 @@ trait CliTestTrait
      * absolute paths and duplicate whitespace removed, to avoid false negatives
      * on minor differences.
      *
-     * @param string $expected
+     * @param $expected
      *   The expected output.
-     * @param string $filter
+     * @param $filter
      *   Optional regular expression that should be ignored in the error output.
      */
-    protected function assertErrorOutputEquals(string $expected, string $filter = '')
+    protected function assertErrorOutputEquals(string $expected, string $filter = ''): void
     {
         $output = $this->getSimplifiedErrorOutput();
         if (!empty($filter)) {
