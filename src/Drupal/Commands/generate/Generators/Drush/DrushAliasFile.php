@@ -5,11 +5,12 @@ declare(strict_types=1);
 namespace Drush\Drupal\Commands\generate\Generators\Drush;
 
 use DrupalCodeGenerator\Asset\AssetCollection as Assets;
+use DrupalCodeGenerator\Attribute\Generator;
 use DrupalCodeGenerator\Command\BaseGenerator;
 use DrupalCodeGenerator\GeneratorType;
 use Drush\Drush;
 
-#[\DrupalCodeGenerator\Attribute\Generator(
+#[Generator(
     name: 'drush:alias-file',
     description: 'Generates a Drush site alias file.',
     aliases: ['daf'],
