@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Drupal\woot\Generators;
 
 use Drupal\Core\Extension\ModuleHandlerInterface;
-use DrupalCodeGenerator\Asset\Assets;
+use DrupalCodeGenerator\Asset\AssetCollection as Assets;
 use DrupalCodeGenerator\Attribute\Generator;
 use DrupalCodeGenerator\Command\BaseGenerator;
 use DrupalCodeGenerator\GeneratorType;
