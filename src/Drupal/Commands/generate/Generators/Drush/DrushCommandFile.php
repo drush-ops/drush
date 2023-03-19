@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Drush\Drupal\Commands\generate\Generators\Drush;
 
-use DrupalCodeGenerator\Asset\Assets;
+use DrupalCodeGenerator\Asset\AssetCollection as Assets;
 use DrupalCodeGenerator\Attribute\Generator;
 use DrupalCodeGenerator\Command\BaseGenerator;
 use DrupalCodeGenerator\GeneratorType;
