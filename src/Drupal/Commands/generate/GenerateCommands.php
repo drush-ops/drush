@@ -8,6 +8,9 @@ use Composer\Autoload\ClassLoader;
 use Drush\Attributes as CLI;
 use Drush\Commands\DrushCommands;
 use Drush\Commands\help\ListCommands;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Completion\CompletionInput;
+use Symfony\Component\Console\Completion\CompletionSuggestions;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -39,6 +42,7 @@ final class GenerateCommands extends DrushCommands
     #[CLI\Usage(name: 'drush generate controller --answer=Example --answer=example', description: 'Generate a controller class and pre-fill the first two questions in the wizard.')]
     #[CLI\Usage(name: 'drush generate controller -vvv --dry-run', description: 'Learn all the potential answers so you can re-run with several --answer options.')]
     #[CLI\Topics(topics: ['docs:generators'])]
+    #[CLI\Complete(method_name_or_callable: 'generatorNameComplete')]
     public function generate(string $generator = '', $options = ['replace' => false, 'working-dir' => self::REQ, 'answer' => [], 'destination' => self::REQ, 'dry-run' => false]): int
     {
         $application = (new ApplicationFactory($this->container, $this->autoloader, $this->logger()))->create();
@@ -50,6 +54,12 @@ final class GenerateCommands extends DrushCommands
             $preamble = dt('Run `drush generate [command]` and answer a few questions in order to write starter code to your project.');
             ListCommands::renderListCLI($application, $namespaced, $this->output(), $preamble);
             return self::EXIT_SUCCESS;
+        }
+
+        // Symfony console app does not provide any way to remove registered commands.
+        if ($generator === 'completion') {
+            $this->io()->getErrorStyle()->error('Command "completion" is not defined.');
+            return Command::FAILURE;
         }
 
         // Create an isolated input.
@@ -81,5 +91,20 @@ final class GenerateCommands extends DrushCommands
         }
 
         return $application->run(new ArgvInput($argv), $this->output());
+    }
+
+    /**
+     * Generates completion for generator names.
+     */
+    public function generatorNameComplete(CompletionInput $input, CompletionSuggestions $suggestions): void
+    {
+        if ($input->mustSuggestArgumentValuesFor('generator')) {
+            $application = (new ApplicationFactory($this->container, $this->autoloader, $this->logger()))->create();
+            foreach ($application->all() as $name => $command) {
+                if ($command->isEnabled() && !$command->isHidden()) {
+                    $suggestions->suggestValue($name);
+                }
+            }
+        }
     }
 }
