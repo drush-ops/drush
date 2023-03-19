@@ -38,7 +38,7 @@ class MigrateRunnerTest extends TestCase
             '223',
             [['223']],
           ],
-          'single ID with delimiters' => [
+          'single ID containing delimiter' => [
             '"223,3425"',
             [['223,3425']],
           ],
@@ -49,6 +49,10 @@ class MigrateRunnerTest extends TestCase
           'multiple with multiple columns' => [
             '1:foo,235:bar, 543:"x:o"',
             [['1', 'foo'], ['235', 'bar'], ['543', 'x:o']],
+          ],
+          'multiple with 1st column as string' => [
+            '"i:1":2,"i:2":1,\'i:3\':3',
+            [['i:1', '2'], ['i:2', '1'], ['i:3', '3']],
           ],
         ];
     }
