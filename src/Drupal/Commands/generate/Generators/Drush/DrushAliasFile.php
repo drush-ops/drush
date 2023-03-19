@@ -27,7 +27,7 @@ class DrushAliasFile extends BaseGenerator
 
         $vars['prefix'] = $ir->ask('File prefix (one word)', 'self');
         $vars['root'] = $ir->ask('Path to Drupal root', Drush::bootstrapManager()->getRoot());
-        $vars['uri'] = $ir->ask('Drupal uri', Drush::bootstrapManager()->getUri());
+        $vars['uri'] = $ir->ask('Drupal uri', Drush::bootstrapManager()->getUri() ?: NULL);
         $vars['host'] = $ir->ask('Remote host');
 
         if ($vars['host']) {
