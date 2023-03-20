@@ -85,8 +85,8 @@
     </div>
 
     
-    <p>final         class
-    <strong>LegacyCommands</strong>        extends <a href="../../Drush/Commands/DrushCommands.html"><abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a>        (<a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/LegacyCommands.php">View source</a>)
+    <p>        class
+    <strong>LegacyCommands</strong>        extends <a href="../../Drush/Commands/DrushCommands.html"><abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a>        (<a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/LegacyCommands.php">View source</a>)
 </p>
 
         
@@ -328,9 +328,9 @@ DrushConfig as return type. Helps with IDE completion.</p></p>                </
                     void
                 </div>
                 <div class="col-md-8">
-                    <a href="#method_saconvert">saconvert</a>()
+                    <a href="#method_init">init</a>()
         
-                                            <p><p>site:alias-convert has been removed. Please use Drush 11 or convert by hand.</p></p>                </div>
+                                            <p><p>The core:init command was removed. Please edit your .bashrc manually.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -338,9 +338,102 @@ DrushConfig as return type. Helps with IDE completion.</p></p>                </
                     void
                 </div>
                 <div class="col-md-8">
-                    <a href="#method_secphp">secphp</a>()
+                    <a href="#method_disable">disable</a>()
         
-                                            <p><p>pm:security-php has been removed. Please use <code>composer audit</code> command.</p></p>                </div>
+                                            <p><p>Drupal 8+ does not support disabling modules. See pm:uninstall command.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    void
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_info">info</a>()
+        
+                                            <p><p>The pm-info command was removed. Please see <code>drush pm:list</code> and <code>composer show</code></p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    void
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_projectInfo">projectInfo</a>()
+        
+                                            <p><p>The pm-projectinfo command was removed. Please see <code>drush pm:list</code> and <code>composer show</code></p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    void
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_refresh">refresh</a>()
+        
+                                            <p><p>The pm-refresh command was removed. It is no longer useful.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    void
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_updatestatus">updatestatus</a>()
+        
+                                            <p><p>The pm-updatestatus command was removed. Please see <code>composer show</code>
+and <code>composer update --dry-run</code>. For security release notification,
+see <code>drush pm:security</code>.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    void
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_updatecode">updatecode</a>()
+        
+                                            <p><p>The pm-updatecode command was removed. Please see
+<code>composer update --dry-run</code> and <code>composer update</code>.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    void
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_releaseNotes">releaseNotes</a>()
+        
+                                            <p><p>The pm-releasenotes command was removed. No replacement available.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    void
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_releases">releases</a>()
+        
+                                            <p><p>The pm-releases command was removed. Please see <code>composer show &lt;packagename&gt;</code></p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    void
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_download">download</a>()
+        
+                                            <p><p>dl has been removed. Please build your site using Composer. Add new projects with composer require drupal/[project-name]. Use <a href="https://www.drupal.org/project/composer_generate">https://www.drupal.org/project/composer_generate</a> to build a composer.json which represents the enabled modules on your site.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    void
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_execute">execute</a>()
+        
+                                            <p><p>core:execute has been removed. Please try <code>site:ssh</code> command.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
             </div>
@@ -352,7 +445,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>                </
                     <div class="method-item">
                     <h3 id="method_startBrowser">
         <div class="location">in <a href="../../Drush/Exec/ExecTrait.html#method_startBrowser">
-<abbr title="Drush\Exec\ExecTrait">ExecTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/12.x/src/Exec/ExecTrait.php#L29">at line 29</a></div>
+<abbr title="Drush\Exec\ExecTrait">ExecTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/11.x/src/Exec/ExecTrait.php#L27">at line 27</a></div>
         <code>                    bool
     <strong>startBrowser</strong>($uri = null, int $sleep = 0, int|null $port = null, string|bool $browser = false)
         </code>
@@ -413,7 +506,7 @@ default browser could not be found.</p></td>
                     <div class="method-item">
                     <h3 id="method_programExists">
         <div class="location">in <a href="../../Drush/Exec/ExecTrait.html#method_programExists">
-<abbr title="Drush\Exec\ExecTrait">ExecTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/12.x/src/Exec/ExecTrait.php#L93">at line 93</a></div>
+<abbr title="Drush\Exec\ExecTrait">ExecTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/11.x/src/Exec/ExecTrait.php#L91">at line 91</a></div>
         <code>        static            
     <strong>programExists</strong>($program)
         </code>
@@ -448,7 +541,7 @@ default browser could not be found.</p></td>
                     <div class="method-item">
                     <h3 id="method_getEditor">
         <div class="location">in <a href="../../Drush/Exec/ExecTrait.html#method_getEditor">
-<abbr title="Drush\Exec\ExecTrait">ExecTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/12.x/src/Exec/ExecTrait.php#L105">at line 105</a></div>
+<abbr title="Drush\Exec\ExecTrait">ExecTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/11.x/src/Exec/ExecTrait.php#L103">at line 103</a></div>
         <code>        static            
     <strong>getEditor</strong>(string|null $editor = null)
         </code>
@@ -483,7 +576,7 @@ default browser could not be found.</p></td>
                     <div class="method-item">
                     <h3 id="method_getConfig">
         <div class="location">in <a href="../../Drush/Config/ConfigAwareTrait.html#method_getConfig">
-<abbr title="Drush\Config\ConfigAwareTrait">ConfigAwareTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/12.x/src/Config/ConfigAwareTrait.php#L21">at line 21</a></div>
+<abbr title="Drush\Config\ConfigAwareTrait">ConfigAwareTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/11.x/src/Config/ConfigAwareTrait.php#L19">at line 19</a></div>
         <code>                    <a href="../../Drush/Config/DrushConfig.html"><abbr title="Drush\Config\DrushConfig">DrushConfig</abbr></a>
     <strong>getConfig</strong>()
         </code>
@@ -528,7 +621,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
                     <div class="method-item">
                     <h3 id="method___construct">
         <div class="location">in <a href="../../Drush/Commands/DrushCommands.html#method___construct">
-<abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a> <a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/DrushCommands.php#L51">at line 51</a></div>
+<abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a> <a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/DrushCommands.php#L48">at line 48</a></div>
         <code>                    
     <strong>__construct</strong>()
         </code>
@@ -553,7 +646,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
                     <div class="method-item">
                     <h3 id="method_io">
         <div class="location">in <a href="../../Drush/Commands/DrushCommands.html#method_io">
-<abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a> <a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/DrushCommands.php#L58">at line 58</a></div>
+<abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a> <a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/DrushCommands.php#L55">at line 55</a></div>
         <code>            protected        <abbr title="Symfony\Component\Console\Style\SymfonyStyle">SymfonyStyle</abbr>
     <strong>io</strong>()
         </code>
@@ -586,7 +679,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
                     <div class="method-item">
                     <h3 id="method_logger">
         <div class="location">in <a href="../../Drush/Commands/DrushCommands.html#method_logger">
-<abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a> <a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/DrushCommands.php#L70">at line 70</a></div>
+<abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a> <a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/DrushCommands.php#L67">at line 67</a></div>
         <code>            protected        <abbr title="Drush\Commands\Drush\Log\DrushLoggerManager">DrushLoggerManager</abbr>|null
     <strong>logger</strong>()
         </code>
@@ -619,7 +712,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
                     <div class="method-item">
                     <h3 id="method_printFile">
         <div class="location">in <a href="../../Drush/Commands/DrushCommands.html#method_printFile">
-<abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a> <a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/DrushCommands.php#L81">at line 81</a></div>
+<abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a> <a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/DrushCommands.php#L78">at line 78</a></div>
         <code>            protected        void
     <strong>printFile</strong>(string $file)
         </code>
@@ -662,7 +755,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
                     <div class="method-item">
                     <h3 id="method_preHook">
         <div class="location">in <a href="../../Drush/Commands/DrushCommands.html#method_preHook">
-<abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a> <a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/DrushCommands.php#L103">at line 103</a></div>
+<abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a> <a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/DrushCommands.php#L104">at line 104</a></div>
         <code>                    
     <strong>preHook</strong>(<abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr> $commandData)
         </code>
@@ -696,7 +789,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
                     <div class="method-item">
                     <h3 id="method_printFileTopic">
         <div class="location">in <a href="../../Drush/Commands/DrushCommands.html#method_printFileTopic">
-<abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a> <a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/DrushCommands.php#L115">at line 115</a></div>
+<abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a> <a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/DrushCommands.php#L115">at line 115</a></div>
         <code>            protected        
     <strong>printFileTopic</strong>(<abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr> $commandData)
         </code>
@@ -730,7 +823,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
                     <div class="method-item">
                     <h3 id="method_getStack">
         <div class="location">in <a href="../../Drush/Commands/DrushCommands.html#method_getStack">
-<abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a> <a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/DrushCommands.php#L126">at line 126</a></div>
+<abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a> <a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/DrushCommands.php#L126">at line 126</a></div>
         <code>            protected        <abbr title="GuzzleHttp\HandlerStack">HandlerStack</abbr>
     <strong>getStack</strong>()
         </code>
@@ -772,10 +865,10 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
 
             </div>
                     <div class="method-item">
-                    <h3 id="method_saconvert">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/LegacyCommands.php#L14">at line 14</a></div>
+                    <h3 id="method_init">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/LegacyCommands.php#L14">at line 14</a></div>
         <code>                    void
-    <strong>saconvert</strong>()
+    <strong>init</strong>()
         </code>
     </h3>
     <div class="details">    
@@ -783,7 +876,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             
 
         <div class="method-description">
-                            <p><p>site:alias-convert has been removed. Please use Drush 11 or convert by hand.</p></p>                        
+                            <p><p>The core:init command was removed. Please edit your .bashrc manually.</p></p>                        
         </div>
         <div class="tags">
             
@@ -804,10 +897,10 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
 
             </div>
                     <div class="method-item">
-                    <h3 id="method_secphp">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/LegacyCommands.php#L24">at line 24</a></div>
+                    <h3 id="method_disable">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/LegacyCommands.php#L26">at line 26</a></div>
         <code>                    void
-    <strong>secphp</strong>()
+    <strong>disable</strong>()
         </code>
     </h3>
     <div class="details">    
@@ -815,7 +908,298 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             
 
         <div class="method-description">
-                            <p><p>pm:security-php has been removed. Please use <code>composer audit</code> command.</p></p>                        
+                            <p><p>Drupal 8+ does not support disabling modules. See pm:uninstall command.</p></p>                        
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>void</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_info">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/LegacyCommands.php#L38">at line 38</a></div>
+        <code>                    void
+    <strong>info</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>The pm-info command was removed. Please see <code>drush pm:list</code> and <code>composer show</code></p></p>                        
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>void</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_projectInfo">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/LegacyCommands.php#L51">at line 51</a></div>
+        <code>                    void
+    <strong>projectInfo</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>The pm-projectinfo command was removed. Please see <code>drush pm:list</code> and <code>composer show</code></p></p>                        
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>void</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_refresh">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/LegacyCommands.php#L63">at line 63</a></div>
+        <code>                    void
+    <strong>refresh</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>The pm-refresh command was removed. It is no longer useful.</p></p>                        
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>void</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_updatestatus">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/LegacyCommands.php#L77">at line 77</a></div>
+        <code>                    void
+    <strong>updatestatus</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>The pm-updatestatus command was removed. Please see <code>composer show</code>
+and <code>composer update --dry-run</code>. For security release notification,
+see <code>drush pm:security</code>.</p></p>                        
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>void</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_updatecode">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/LegacyCommands.php#L91">at line 91</a></div>
+        <code>                    void
+    <strong>updatecode</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>The pm-updatecode command was removed. Please see
+<code>composer update --dry-run</code> and <code>composer update</code>.</p></p>                <p><p>For security release notification, see <code>drush pm:security</code>.</p></p>        
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>void</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_releaseNotes">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/LegacyCommands.php#L103">at line 103</a></div>
+        <code>                    void
+    <strong>releaseNotes</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>The pm-releasenotes command was removed. No replacement available.</p></p>                        
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>void</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_releases">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/LegacyCommands.php#L115">at line 115</a></div>
+        <code>                    void
+    <strong>releases</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>The pm-releases command was removed. Please see <code>composer show &lt;packagename&gt;</code></p></p>                        
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>void</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_download">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/LegacyCommands.php#L127">at line 127</a></div>
+        <code>                    void
+    <strong>download</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>dl has been removed. Please build your site using Composer. Add new projects with composer require drupal/[project-name]. Use <a href="https://www.drupal.org/project/composer_generate">https://www.drupal.org/project/composer_generate</a> to build a composer.json which represents the enabled modules on your site.</p></p>                        
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>void</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_execute">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/LegacyCommands.php#L139">at line 139</a></div>
+        <code>                    void
+    <strong>execute</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>core:execute has been removed. Please try <code>site:ssh</code> command.</p></p>                        
         </div>
         <div class="tags">
             

@@ -86,7 +86,7 @@
 
     
     <p>        class
-    <strong>Environment</strong>        (<a href="https://github.com/drush-ops/drush/blob/12.x/src/Config/Environment.php">View source</a>)
+    <strong>Environment</strong>        (<a href="https://github.com/drush-ops/drush/blob/11.x/src/Config/Environment.php">View source</a>)
 </p>
 
         
@@ -262,7 +262,7 @@ array.</p></p>                </div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    <abbr title="Drush\Config\bool|string">bool|string</abbr>
+                    bool|string
                 </div>
                 <div class="col-md-8">
                     <a href="#method_getSiteSetAliasName">getSiteSetAliasName</a>()
@@ -368,7 +368,7 @@ loading drush.yml and drush10.yml, etc.</p></p>                </div>
                     <a href="../../Drush/Config/Environment.html"><abbr title="Drush\Config\Environment">Environment</abbr></a>
                 </div>
                 <div class="col-md-8">
-                    <a href="#method_setEtcPrefix">setEtcPrefix</a>(mixed $etcPrefix)
+                    <a href="#method_setEtcPrefix">setEtcPrefix</a>(string $etcPrefix)
         
                                             <p><p>Set the directory prefix to locate the directory that Drush will
 use as /etc (e.g. during the functional tests).</p></p>                </div>
@@ -400,7 +400,7 @@ elsewhere.</p></p>                </div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    <abbr title="Drush\Config\string|bool">string|bool</abbr>
+                    string|bool
                 </div>
                 <div class="col-md-8">
                     <a href="#method_findDocsPath">findDocsPath</a>(string $drushBasePath)
@@ -411,7 +411,7 @@ share prefix is changed.</p></p>                </div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    <abbr title="Drush\Config\bool|string">bool|string</abbr>
+                    string|bool
                 </div>
                 <div class="col-md-8">
                     <a href="#method_findFromCandidates">findFromCandidates</a>(array $candidates)
@@ -481,7 +481,7 @@ share prefix is changed.</p></p>                </div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    <abbr title="Drush\Config\string|false">string|false</abbr>
+                    string|false
                 </div>
                 <div class="col-md-8">
                     <a href="#method_getSiteSetAliasFilePath">getSiteSetAliasFilePath</a>(string $filename_prefix = &#039;drush-drupal-site-&#039;)
@@ -497,7 +497,7 @@ share prefix is changed.</p></p>                </div>
             <div id="method-details">
                     <div class="method-item">
                     <h3 id="method___construct">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Config/Environment.php#L37">at line 37</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Config/Environment.php#L35">at line 35</a></div>
         <code>                    
     <strong>__construct</strong>(string $homeDir, string $cwd, string $autoloadFile)
         </code>
@@ -540,7 +540,7 @@ share prefix is changed.</p></p>                </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_loadSiteAutoloader">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Config/Environment.php#L50">at line 50</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Config/Environment.php#L48">at line 48</a></div>
         <code>                    <abbr title="Composer\Autoload\ClassLoader">ClassLoader</abbr>
     <strong>loadSiteAutoloader</strong>(string $root)
         </code>
@@ -582,7 +582,7 @@ share prefix is changed.</p></p>                </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_getUsername">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Config/Environment.php#L85">at line 85</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Config/Environment.php#L83">at line 83</a></div>
         <code>            protected        string
     <strong>getUsername</strong>()
         </code>
@@ -614,7 +614,7 @@ share prefix is changed.</p></p>                </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_getTmp">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Config/Environment.php#L101">at line 101</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Config/Environment.php#L99">at line 99</a></div>
         <code>            protected        string
     <strong>getTmp</strong>()
         </code>
@@ -647,7 +647,7 @@ share prefix is changed.</p></p>                </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_exportConfigData">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Config/Environment.php#L157">at line 157</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Config/Environment.php#L155">at line 155</a></div>
         <code>                    array
     <strong>exportConfigData</strong>()
         </code>
@@ -667,7 +667,7 @@ array.</p></p>
                     <table class="table table-condensed">
         <tr>
             <td>array</td>
-            <td><p>Nested associative array that is overlayed on configuration.</p></td>
+            <td><p>associative array that is overlayed on configuration.</p></td>
         </tr>
     </table>
 
@@ -697,7 +697,7 @@ array.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_drushBasePath">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Config/Environment.php#L193">at line 193</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Config/Environment.php#L191">at line 191</a></div>
         <code>                    string
     <strong>drushBasePath</strong>()
         </code>
@@ -730,8 +730,8 @@ array.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_getSiteSetAliasName">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Config/Environment.php#L201">at line 201</a></div>
-        <code>                    <abbr title="Drush\Config\bool|string">bool|string</abbr>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Config/Environment.php#L201">at line 201</a></div>
+        <code>                    bool|string
     <strong>getSiteSetAliasName</strong>()
         </code>
     </h3>
@@ -748,7 +748,7 @@ array.</p></p>
 
                     <table class="table table-condensed">
         <tr>
-            <td><abbr title="Drush\Config\bool|string">bool|string</abbr></td>
+            <td>bool|string</td>
             <td></td>
         </tr>
     </table>
@@ -762,7 +762,7 @@ array.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_homeDir">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Config/Environment.php#L216">at line 216</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Config/Environment.php#L216">at line 216</a></div>
         <code>                    string
     <strong>homeDir</strong>()
         </code>
@@ -794,7 +794,7 @@ array.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_userConfigPath">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Config/Environment.php#L224">at line 224</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Config/Environment.php#L224">at line 224</a></div>
         <code>                    string
     <strong>userConfigPath</strong>()
         </code>
@@ -826,7 +826,7 @@ array.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_setConfigFileVariant">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Config/Environment.php#L229">at line 229</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Config/Environment.php#L229">at line 229</a></div>
         <code>                    void
     <strong>setConfigFileVariant</strong>($variant)
         </code>
@@ -869,7 +869,7 @@ array.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_getConfigFileVariant">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Config/Environment.php#L239">at line 239</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Config/Environment.php#L239">at line 239</a></div>
         <code>                    
     <strong>getConfigFileVariant</strong>()
         </code>
@@ -894,7 +894,7 @@ loading drush.yml and drush10.yml, etc.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_cwd">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Config/Environment.php#L247">at line 247</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Config/Environment.php#L247">at line 247</a></div>
         <code>                    string
     <strong>cwd</strong>()
         </code>
@@ -926,7 +926,7 @@ loading drush.yml and drush10.yml, etc.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_vendorPath">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Config/Environment.php#L255">at line 255</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Config/Environment.php#L255">at line 255</a></div>
         <code>                    string
     <strong>vendorPath</strong>()
         </code>
@@ -958,7 +958,7 @@ loading drush.yml and drush10.yml, etc.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_loader">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Config/Environment.php#L263">at line 263</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Config/Environment.php#L263">at line 263</a></div>
         <code>                    <abbr title="Drush\Config\Composer\Autoload\ClassLoader">ClassLoader</abbr>|null
     <strong>loader</strong>()
         </code>
@@ -990,7 +990,7 @@ loading drush.yml and drush10.yml, etc.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_setLoader">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Config/Environment.php#L273">at line 273</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Config/Environment.php#L273">at line 273</a></div>
         <code>                    void
     <strong>setLoader</strong>(<abbr title="Composer\Autoload\ClassLoader">ClassLoader</abbr> $loader)
         </code>
@@ -1032,7 +1032,7 @@ loading drush.yml and drush10.yml, etc.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_applyEnvironment">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Config/Environment.php#L281">at line 281</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Config/Environment.php#L281">at line 281</a></div>
         <code>                    <a href="../../Drush/Config/Environment.html"><abbr title="Drush\Config\Environment">Environment</abbr></a>
     <strong>applyEnvironment</strong>()
         </code>
@@ -1064,9 +1064,9 @@ loading drush.yml and drush10.yml, etc.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_setEtcPrefix">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Config/Environment.php#L296">at line 296</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Config/Environment.php#L296">at line 296</a></div>
         <code>                    <a href="../../Drush/Config/Environment.html"><abbr title="Drush\Config\Environment">Environment</abbr></a>
-    <strong>setEtcPrefix</strong>(mixed $etcPrefix)
+    <strong>setEtcPrefix</strong>(string $etcPrefix)
         </code>
     </h3>
     <div class="details">    
@@ -1082,7 +1082,7 @@ use as /etc (e.g. during the functional tests).</p></p>
 
                     <table class="table table-condensed">
                     <tr>
-                <td>mixed</td>
+                <td>string</td>
                 <td>$etcPrefix</td>
                 <td></td>
             </tr>
@@ -1107,7 +1107,7 @@ use as /etc (e.g. during the functional tests).</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_setSharePrefix">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Config/Environment.php#L308">at line 308</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Config/Environment.php#L308">at line 308</a></div>
         <code>                    <a href="../../Drush/Config/Environment.html"><abbr title="Drush\Config\Environment">Environment</abbr></a>
     <strong>setSharePrefix</strong>(string $sharePrefix)
         </code>
@@ -1150,7 +1150,7 @@ use as /user/share (e.g. during the functional tests).</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_docsPath">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Config/Environment.php#L323">at line 323</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Config/Environment.php#L323">at line 323</a></div>
         <code>                    string|null
     <strong>docsPath</strong>()
         </code>
@@ -1185,8 +1185,8 @@ elsewhere.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_findDocsPath">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Config/Environment.php#L335">at line 335</a></div>
-        <code>            protected        <abbr title="Drush\Config\string|bool">string|bool</abbr>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Config/Environment.php#L337">at line 337</a></div>
+        <code>            protected        string|bool
     <strong>findDocsPath</strong>(string $drushBasePath)
         </code>
     </h3>
@@ -1214,7 +1214,7 @@ share prefix is changed.</p></p>
 
                     <table class="table table-condensed">
         <tr>
-            <td><abbr title="Drush\Config\string|bool">string|bool</abbr></td>
+            <td>string|bool</td>
             <td></td>
         </tr>
     </table>
@@ -1228,8 +1228,8 @@ share prefix is changed.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_findFromCandidates">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Config/Environment.php#L347">at line 347</a></div>
-        <code>            protected        <abbr title="Drush\Config\bool|string">bool|string</abbr>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Config/Environment.php#L351">at line 351</a></div>
+        <code>            protected        string|bool
     <strong>findFromCandidates</strong>(array $candidates)
         </code>
     </h3>
@@ -1256,7 +1256,7 @@ share prefix is changed.</p></p>
 
                     <table class="table table-condensed">
         <tr>
-            <td><abbr title="Drush\Config\bool|string">bool|string</abbr></td>
+            <td>string|bool</td>
             <td></td>
         </tr>
     </table>
@@ -1270,7 +1270,7 @@ share prefix is changed.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_systemPathPrefix">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Config/Environment.php#L360">at line 360</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Config/Environment.php#L364">at line 364</a></div>
         <code>        static    protected        string
     <strong>systemPathPrefix</strong>(string $override = &#039;&#039;, string $defaultPrefix = &#039;&#039;)
         </code>
@@ -1317,7 +1317,7 @@ share prefix is changed.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_systemConfigPath">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Config/Environment.php#L371">at line 371</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Config/Environment.php#L375">at line 375</a></div>
         <code>                    string
     <strong>systemConfigPath</strong>()
         </code>
@@ -1349,7 +1349,7 @@ share prefix is changed.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_systemCommandFilePath">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Config/Environment.php#L379">at line 379</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Config/Environment.php#L383">at line 383</a></div>
         <code>                    string
     <strong>systemCommandFilePath</strong>()
         </code>
@@ -1381,7 +1381,7 @@ share prefix is changed.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_isWindows">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Config/Environment.php#L387">at line 387</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Config/Environment.php#L391">at line 391</a></div>
         <code>        static            bool
     <strong>isWindows</strong>($os = null)
         </code>
@@ -1423,7 +1423,7 @@ share prefix is changed.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_verifyCLI">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Config/Environment.php#L398">at line 398</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Config/Environment.php#L402">at line 402</a></div>
         <code>                    bool
     <strong>verifyCLI</strong>()
         </code>
@@ -1456,7 +1456,7 @@ and false if being run through cgi or mod_php.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_calculateColumns">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Config/Environment.php#L406">at line 406</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Config/Environment.php#L410">at line 410</a></div>
         <code>                    int
     <strong>calculateColumns</strong>()
         </code>
@@ -1488,8 +1488,8 @@ and false if being run through cgi or mod_php.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_getSiteSetAliasFilePath">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Config/Environment.php#L420">at line 420</a></div>
-        <code>            protected        <abbr title="Drush\Config\string|false">string|false</abbr>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Config/Environment.php#L424">at line 424</a></div>
+        <code>            protected        string|false
     <strong>getSiteSetAliasFilePath</strong>(string $filename_prefix = &#039;drush-drupal-site-&#039;)
         </code>
     </h3>
@@ -1516,7 +1516,7 @@ and false if being run through cgi or mod_php.</p></p>
 
                     <table class="table table-condensed">
         <tr>
-            <td><abbr title="Drush\Config\string|false">string|false</abbr></td>
+            <td>string|false</td>
             <td><p>Returns the full path to temp file if possible, or FALSE if not.</p></td>
         </tr>
     </table>
