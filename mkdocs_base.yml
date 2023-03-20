@@ -28,7 +28,7 @@ plugins:
   - search
   - mike:
       canonical_version: latest
-      alias_type: symlink
+      alias_type: redirect
   - git-revision-date-localized:
       exclude:
         - commands/*
