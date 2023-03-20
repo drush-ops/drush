@@ -24,6 +24,7 @@ edit_uri: blob/12.x/docs
 extra_css:
   - css/extra.drush.css
 plugins:
+  - edit_url
   - search
   - mike:
       canonical_version: latest
