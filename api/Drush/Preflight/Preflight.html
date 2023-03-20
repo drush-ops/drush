@@ -86,7 +86,7 @@
 
     
     <p>        class
-    <strong>Preflight</strong>        (<a href="https://github.com/drush-ops/drush/blob/11.x/src/Preflight/Preflight.php">View source</a>)
+    <strong>Preflight</strong>        (<a href="https://github.com/drush-ops/drush/blob/12.x/src/Preflight/Preflight.php">View source</a>)
 </p>
 
         
@@ -347,7 +347,7 @@ those result in a site, then we will fall back to the vendor path.</p></p>      
                     
                 </div>
                 <div class="col-md-8">
-                    <a href="#method_setSelectedSite">setSelectedSite</a>(string $selectedRoot, string|bool $fallbackPath = false, $originalSelection = null)
+                    <a href="#method_setSelectedSite">setSelectedSite</a>(mixed $selectedRoot, <abbr title="Drush\Preflight\string|bool">string|bool</abbr> $fallbackPath = false, $originalSelection = null)
         
                                             <p><p>Use the DrupalFinder to locate the Drupal Root + Composer Root at
 the selected root, or, if nothing is found there, at a fallback path.</p></p>                </div>
@@ -391,7 +391,7 @@ the selected root, or, if nothing is found there, at a fallback path.</p></p>   
             <div id="method-details">
                     <div class="method-item">
                     <h3 id="method___construct">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Preflight/Preflight.php#L65">at line 65</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Preflight/Preflight.php#L67">at line 67</a></div>
         <code>                    
     <strong>__construct</strong>(<a href="../../Drush/Config/Environment.html"><abbr title="Drush\Config\Environment">Environment</abbr></a> $environment, $verify = null, $configLocator = null, $preflightLog = null)
         </code>
@@ -439,7 +439,7 @@ the selected root, or, if nothing is found there, at a fallback path.</p></p>   
             </div>
                     <div class="method-item">
                     <h3 id="method_logger">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Preflight/Preflight.php#L74">at line 74</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Preflight/Preflight.php#L76">at line 76</a></div>
         <code>                    <a href="../../Drush/Preflight/PreflightLog.html"><abbr title="Drush\Preflight\PreflightLog">PreflightLog</abbr></a>
     <strong>logger</strong>()
         </code>
@@ -472,7 +472,7 @@ the selected root, or, if nothing is found there, at a fallback path.</p></p>   
             </div>
                     <div class="method-item">
                     <h3 id="method_setLogger">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Preflight/Preflight.php#L82">at line 82</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Preflight/Preflight.php#L84">at line 84</a></div>
         <code>                    void
     <strong>setLogger</strong>(<a href="../../Drush/Preflight/PreflightLog.html"><abbr title="Drush\Preflight\PreflightLog">PreflightLog</abbr></a> $logger)
         </code>
@@ -515,7 +515,7 @@ the selected root, or, if nothing is found there, at a fallback path.</p></p>   
             </div>
                     <div class="method-item">
                     <h3 id="method_init">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Preflight/Preflight.php#L91">at line 91</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Preflight/Preflight.php#L93">at line 93</a></div>
         <code>                    void
     <strong>init</strong>()
         </code>
@@ -548,7 +548,7 @@ legacy systems.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_remapOptions">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Preflight/Preflight.php#L117">at line 117</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Preflight/Preflight.php#L119">at line 119</a></div>
         <code>            protected        array
     <strong>remapOptions</strong>()
         </code>
@@ -592,7 +592,7 @@ We also need this prior to Dependency Injection, though.</p>
             </div>
                     <div class="method-item">
                     <h3 id="method_remapCommandAliases">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Preflight/Preflight.php#L141">at line 141</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Preflight/Preflight.php#L143">at line 143</a></div>
         <code>            protected        array
     <strong>remapCommandAliases</strong>()
         </code>
@@ -628,7 +628,7 @@ aliases with their longhand equivalents.</p></p>                <p><p>This shoul
             </div>
                     <div class="method-item">
                     <h3 id="method_preflightArgs">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Preflight/Preflight.php#L160">at line 160</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Preflight/Preflight.php#L162">at line 162</a></div>
         <code>                    <a href="../../Drush/Preflight/PreflightArgs.html"><abbr title="Drush\Preflight\PreflightArgs">PreflightArgs</abbr></a>
     <strong>preflightArgs</strong>($argv)
         </code>
@@ -671,7 +671,7 @@ with an ArgvInput.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_prepareConfig">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Preflight/Preflight.php#L177">at line 177</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Preflight/Preflight.php#L179">at line 179</a></div>
         <code>                    void
     <strong>prepareConfig</strong>(<a href="../../Drush/Config/Environment.html"><abbr title="Drush\Config\Environment">Environment</abbr></a> $environment)
         </code>
@@ -714,7 +714,7 @@ settings, paths and so on into it.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_createInput">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Preflight/Preflight.php#L186">at line 186</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Preflight/Preflight.php#L188">at line 188</a></div>
         <code>                    <abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr>
     <strong>createInput</strong>()
         </code>
@@ -747,7 +747,7 @@ settings, paths and so on into it.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_getCommandFilePaths">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Preflight/Preflight.php#L191">at line 191</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Preflight/Preflight.php#L193">at line 193</a></div>
         <code>                    array
     <strong>getCommandFilePaths</strong>()
         </code>
@@ -780,7 +780,7 @@ settings, paths and so on into it.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_loadSiteAutoloader">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Preflight/Preflight.php#L202">at line 202</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Preflight/Preflight.php#L204">at line 204</a></div>
         <code>                    <abbr title="Composer\Autoload\ClassLoader">ClassLoader</abbr>
     <strong>loadSiteAutoloader</strong>()
         </code>
@@ -813,7 +813,7 @@ settings, paths and so on into it.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_loadSymfonyCompatabilityAutoloader">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Preflight/Preflight.php#L207">at line 207</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Preflight/Preflight.php#L209">at line 209</a></div>
         <code>                    <abbr title="Composer\Autoload\ClassLoader">ClassLoader</abbr>
     <strong>loadSymfonyCompatabilityAutoloader</strong>()
         </code>
@@ -846,7 +846,7 @@ settings, paths and so on into it.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_config">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Preflight/Preflight.php#L239">at line 239</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Preflight/Preflight.php#L241">at line 241</a></div>
         <code>                    <a href="../../Drush/Config/DrushConfig.html"><abbr title="Drush\Config\DrushConfig">DrushConfig</abbr></a>
     <strong>config</strong>()
         </code>
@@ -879,7 +879,7 @@ settings, paths and so on into it.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_preflight">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Preflight/Preflight.php#L248">at line 248</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Preflight/Preflight.php#L250">at line 250</a></div>
         <code>                    bool
     <strong>preflight</strong>($argv)
         </code>
@@ -922,7 +922,7 @@ settings, paths and so on into it.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_findSelectedSite">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Preflight/Preflight.php#L346">at line 346</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Preflight/Preflight.php#L348">at line 348</a></div>
         <code>            protected        
     <strong>findSelectedSite</strong>()
         </code>
@@ -946,9 +946,9 @@ those result in a site, then we will fall back to the vendor path.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_setSelectedSite">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Preflight/Preflight.php#L365">at line 365</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Preflight/Preflight.php#L367">at line 367</a></div>
         <code>            protected        
-    <strong>setSelectedSite</strong>(string $selectedRoot, string|bool $fallbackPath = false, $originalSelection = null)
+    <strong>setSelectedSite</strong>(mixed $selectedRoot, <abbr title="Drush\Preflight\string|bool">string|bool</abbr> $fallbackPath = false, $originalSelection = null)
         </code>
     </h3>
     <div class="details">    
@@ -964,14 +964,14 @@ the selected root, or, if nothing is found there, at a fallback path.</p></p>
 
                     <table class="table table-condensed">
                     <tr>
-                <td>string</td>
+                <td>mixed</td>
                 <td>$selectedRoot</td>
                 <td><p>The location to being searching for a site</p></td>
             </tr>
                     <tr>
-                <td>string|bool</td>
+                <td><abbr title="Drush\Preflight\string|bool">string|bool</abbr></td>
                 <td>$fallbackPath</td>
-                <td><p>The secondary location to search (usualy the vendor director)</p></td>
+                <td><p>The secondary location to search (usually the vendor director)</p></td>
             </tr>
                     <tr>
                 <td></td>
@@ -990,7 +990,7 @@ the selected root, or, if nothing is found there, at a fallback path.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_drupalFinder">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Preflight/Preflight.php#L389">at line 389</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Preflight/Preflight.php#L391">at line 391</a></div>
         <code>                    <abbr title="DrupalFinder\DrupalFinder">DrupalFinder</abbr>
     <strong>drupalFinder</strong>()
         </code>
@@ -1022,7 +1022,7 @@ the selected root, or, if nothing is found there, at a fallback path.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_aliasManager">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Preflight/Preflight.php#L397">at line 397</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Preflight/Preflight.php#L399">at line 399</a></div>
         <code>                    <abbr title="Consolidation\SiteAlias\SiteAliasManager">SiteAliasManager</abbr>
     <strong>aliasManager</strong>()
         </code>
@@ -1054,7 +1054,7 @@ the selected root, or, if nothing is found there, at a fallback path.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_environment">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Preflight/Preflight.php#L405">at line 405</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Preflight/Preflight.php#L407">at line 407</a></div>
         <code>                    <a href="../../Drush/Config/Environment.html"><abbr title="Drush\Config\Environment">Environment</abbr></a>
     <strong>environment</strong>()
         </code>
