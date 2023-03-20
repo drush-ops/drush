@@ -3,9 +3,7 @@
 Creating a new Drush command or porting a legacy command is easy. Follow the steps below.
 
 1. Run `drush generate drush-command-file`.
-2. Drush will prompt for the machine name of the module that should "own" the file.
-    1. (optional) See [tips on porting commands from Drush 8 or earlier](https://weitzman.github.io/blog/port-to-drush9)
-    1. The module selected must already exist and be enabled. Use `drush generate module-standard` to create a new module.
+2. Drush will prompt for the machine name of the module that should "own" the file. The module selected must already exist and be enabled. Use `drush generate module-standard` to create a new module.
 3. Drush will then report that it created a commandfile, a drush.services.yml file and a composer.json file. Edit those files as needed.
 4. Use the classes for the core Drush commands at [/src/Drupal/Commands](https://github.com/drush-ops/drush/tree/12.x/src/Drupal/Commands) as inspiration and documentation.
 5. See the [dependency injection docs](dependency-injection.md) for interfaces you can implement to gain access to Drush config, Drupal site aliases, etc.
