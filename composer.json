@@ -17,7 +17,8 @@
   ],
   "support": {
     "forum": "http://drupal.stackexchange.com/questions/tagged/drush",
-    "slack": "https://drupal.slack.com/messages/C62H9CWQM"
+    "slack": "https://drupal.slack.com/messages/C62H9CWQM",
+    "security": "https://github.com/drush-ops/drush/security/advisories"
   },
   "bin": [
     "drush"
