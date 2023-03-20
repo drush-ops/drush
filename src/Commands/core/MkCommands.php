@@ -63,6 +63,9 @@ final class MkCommands extends DrushCommands implements SiteAliasManagerAwareInt
         $this->writeYml($nav_commands, $nav_generators, $map_commands, $map_generators, $dir_root);
     }
 
+    /**
+     * Convert generators into Annotated commands (for Help).
+     */
     public function createAnnotatedCommands(Application $application_generate, Application $application_drush): array
     {
         $definition = $application_drush->get('generate')->getDefinition();

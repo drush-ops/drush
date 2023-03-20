@@ -100,11 +100,6 @@ This command is equivalent to the longer form:
 ```
 See [Additional Site Alias Options](#additional-site-alias-options) for more information.
 
-### Converting Legacy Alias Files
-
-To convert legacy alias (*.aliases.drushrc.php) to yml, run the
-[site:alias-convert](commands/site_alias-convert.md) command.
-
 ### Altering aliases:
 
 See [examples/Commands/SiteAliasAlterCommands.php](https://www.drush.org/latest/examples/SiteAliasAlterCommands.php/)) for an example.
