@@ -55,7 +55,7 @@ Drupal Compatibility
   </tr>
   <tr>
     <td> Drush 8 </td>
-    <td> 5.4.5+ </td>
+    <td> 5.4.5+ †</td>
     <!-- Released Nov 2015 -->
     <td> Nov 2023 </td>
     <td>✅</td> <td><b>⚠️</b></td> <td></td> <td></td>
@@ -95,6 +95,9 @@ Drupal Compatibility
     </tr>
     <tr>
         <td>✓</td> <td>Compatible but no longer supported</td>
+    </tr>
+    <tr>
+        <td>†</td> <td>The Drush 8 phar is built with [Box](https://github.com/box-project/box), which is only compatible with PHP 7.2 and later. If using Drush 8 with an older version of PHP on a Drupal 7 site that is not Composer-managed, install Drush via `git clone` followed by `composer install`.</td>
     </tr>
     
 </table>
