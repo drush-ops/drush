@@ -28,6 +28,7 @@ plugins:
   - search
   - mike:
       canonical_version: latest
+      alias_type: symlink
   - git-revision-date-localized:
       exclude:
         - commands/*
