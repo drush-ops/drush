@@ -8,7 +8,7 @@
       be defined as environment variables. Alternately, you may run the
       tests without defining these variables if you use the default values.
 -->
-<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" bootstrap="bootstrap.php" backupGlobals="false" backupStaticAttributes="false" colors="true" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd">
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" bootstrap="bootstrap.php" backupGlobals="false" colors="true" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.0/phpunit.xsd" cacheDirectory=".phpunit.cache" backupStaticProperties="false">
   <coverage/>
   <testsuites>
     <testsuite name="unit">
@@ -28,7 +28,7 @@
     <!-- <var name="UNISH_DB_URL" value="mysql://root:@127.0.0.1"/> -->
     <!-- <var name="UNISH_DB_URL" value="pgsql://postgres:@localhost"/>-->
     <!-- <var name="UNISH_DB_URL" value="sqlite://none/of/this/matters"/> -->
-    <!-- <env name="SYMFONY_DEPRECATIONS_HELPER" value="disabled"/>-->
+    <env name="SYMFONY_DEPRECATIONS_HELPER" value="disabled"/>
     <includePath>.</includePath>
   </php>
 </phpunit>
