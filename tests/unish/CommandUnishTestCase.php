@@ -139,7 +139,7 @@ abstract class CommandUnishTestCase extends UnishTestCase
         // Insert code coverage argument before command, in order for it to be
         // parsed as a global option. This matters for commands like ssh and rsync
         // where options after the command are passed along to external commands.
-//        $coverage_file = null;
+        $coverage_file = null;
 //        $result = $this->getTestResultObject();
 //        if ($result->getCollectCodeCoverageInformation()) {
 //            $coverage_file = tempnam($this->getSandbox(), 'drush_coverage');
