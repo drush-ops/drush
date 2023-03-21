@@ -59,8 +59,7 @@
     "phpunit/phpunit": ">=9",
     "rector/rector": "^0.12",
     "squizlabs/php_codesniffer": "^3.7",
-    "vlucas/phpdotenv": "^2.4",
-    "yoast/phpunit-polyfills": "^0.2.0"
+    "vlucas/phpdotenv": "^2.4"
   },
   "conflict": {
     "drupal/core": "< 10.0",
