@@ -87,7 +87,7 @@ class MigrateRunnerTest extends TestCase
           'no filter' => [
             [],
             [],
-            $this->getMapTableData(),
+            self::getMapTableData(),
           ],
           'filter only on source' => [
             [
@@ -131,10 +131,6 @@ class MigrateRunnerTest extends TestCase
         ];
     }
 
-    /**
-     * @param \Drush\Drupal\Migrate\MigrateIdMapFilter $filteredIdMap
-     * @param array $expectedRows
-     */
     protected function assertFilteredIdMap(MigrateIdMapFilter $filteredIdMap, array $expectedRows): void
     {
         $actualRows = [];
@@ -246,7 +242,7 @@ class MigrateRunnerTest extends TestCase
         ];
     }
 
-    protected function getMapTableData(): array
+    protected static function getMapTableData(): array
     {
         return [
           [1, 'foo', 'bar', 99],
