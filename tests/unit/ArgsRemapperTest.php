@@ -33,7 +33,7 @@ class ArgsRemapperTest extends TestCase
     /**
      * Provides arguments for ::ArgsRemapper
      */
-    public function argsProvider()
+    public static function argsProvider()
     {
         return [
             [

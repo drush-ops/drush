@@ -29,10 +29,8 @@ class MigrateRunnerTest extends TestCase
 
     /**
      * Data provider for testBuildIdList.
-     *
-     * @return array
      */
-    public function dataProviderParseIdList(): array
+    public static function dataProviderParseIdList(): array
     {
         return [
           'empty' => [
@@ -82,10 +80,8 @@ class MigrateRunnerTest extends TestCase
 
     /**
      * Data provider for testMigrateIdMapFilter.
-     *
-     * @return array
      */
-    public function dataProviderMigrateIdMapFilter(): array
+    public static function dataProviderMigrateIdMapFilter(): array
     {
         return [
           'no filter' => [
