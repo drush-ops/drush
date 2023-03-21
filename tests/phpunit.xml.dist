@@ -1,3 +1,4 @@
+<?xml version="1.0"?>
 <!--
 
       Copy and rename this file to phpunit.xml to customize.
@@ -7,11 +8,8 @@
       be defined as environment variables. Alternately, you may run the
       tests without defining these variables if you use the default values.
 -->
-<phpunit
-    bootstrap="bootstrap.php"
-    backupGlobals="false"
-    backupStaticAttributes="false"
-    colors="true">
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" bootstrap="bootstrap.php" backupGlobals="false" backupStaticAttributes="false" colors="true" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd">
+  <coverage/>
   <testsuites>
     <testsuite name="unit">
       <directory suffix="Test.php">unit</directory>
@@ -23,18 +21,14 @@
       <directory>functional</directory>
     </testsuite>
   </testsuites>
-
   <php>
     <!-- These variables may alternatively be set as environment variables. -->
-
     <!--Uncomment and edit one of the lines below depending on DB platform.-->
     <!--DB User must have create/drop permissions-->
     <!-- <var name="UNISH_DB_URL" value="mysql://root:@127.0.0.1"/> -->
     <!-- <var name="UNISH_DB_URL" value="pgsql://postgres:@localhost"/>-->
     <!-- <var name="UNISH_DB_URL" value="sqlite://none/of/this/matters"/> -->
-
-    <env name="SYMFONY_DEPRECATIONS_HELPER" value="disabled"/>
-
+    <!-- <env name="SYMFONY_DEPRECATIONS_HELPER" value="disabled"/>-->
     <includePath>.</includePath>
   </php>
 </phpunit>
