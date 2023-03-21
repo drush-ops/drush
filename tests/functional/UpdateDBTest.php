@@ -101,7 +101,7 @@ class UpdateDBTest extends CommandUnishTestCase
     /**
      * Data provider for ::testFailedUpdate().
      */
-    public function failedUpdateProvider()
+    public static function failedUpdateProvider()
     {
         return [
             [
