@@ -140,13 +140,13 @@ abstract class CommandUnishTestCase extends UnishTestCase
         // parsed as a global option. This matters for commands like ssh and rsync
         // where options after the command are passed along to external commands.
         $coverage_file = null;
-        $result = $this->getTestResultObject();
-        if ($result->getCollectCodeCoverageInformation()) {
-            $coverage_file = tempnam($this->getSandbox(), 'drush_coverage');
-            if ($coverage_file) {
-                $cmd[] = "--drush-coverage=" . $coverage_file;
-            }
-        }
+//        $result = $this->getTestResultObject();
+//        if ($result->getCollectCodeCoverageInformation()) {
+//            $coverage_file = tempnam($this->getSandbox(), 'drush_coverage');
+//            if ($coverage_file) {
+//                $cmd[] = "--drush-coverage=" . $coverage_file;
+//            }
+//        }
 
         // Insert site specification and drush command.
         $cmd[] = empty($site_specification) ? null : self::escapeshellarg($site_specification);

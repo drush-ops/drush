@@ -11,7 +11,7 @@ use Drush\Drupal\Commands\core\MaintCommands;
  *
  * @group commands
  */
-class MaintenanceTest extends UnishIntegrationTestCase
+class MaintTest extends UnishIntegrationTestCase
 {
     public function testMaint()
     {

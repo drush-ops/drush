@@ -29,10 +29,8 @@ class MigrateRunnerTest extends TestCase
 
     /**
      * Data provider for testBuildIdList.
-     *
-     * @return array
      */
-    public function dataProviderParseIdList(): array
+    public static function dataProviderParseIdList(): array
     {
         return [
           'empty' => [
@@ -82,16 +80,14 @@ class MigrateRunnerTest extends TestCase
 
     /**
      * Data provider for testMigrateIdMapFilter.
-     *
-     * @return array
      */
-    public function dataProviderMigrateIdMapFilter(): array
+    public static function dataProviderMigrateIdMapFilter(): array
     {
         return [
           'no filter' => [
             [],
             [],
-            $this->getMapTableData(),
+            self::getMapTableData(),
           ],
           'filter only on source' => [
             [
@@ -135,10 +131,6 @@ class MigrateRunnerTest extends TestCase
         ];
     }
 
-    /**
-     * @param \Drush\Drupal\Migrate\MigrateIdMapFilter $filteredIdMap
-     * @param array $expectedRows
-     */
     protected function assertFilteredIdMap(MigrateIdMapFilter $filteredIdMap, array $expectedRows): void
     {
         $actualRows = [];
@@ -250,7 +242,7 @@ class MigrateRunnerTest extends TestCase
         ];
     }
 
-    protected function getMapTableData(): array
+    protected static function getMapTableData(): array
     {
         return [
           [1, 'foo', 'bar', 99],
