@@ -4,11 +4,10 @@ namespace Unish;
 
 use Composer\Semver\Comparator;
 use Consolidation\SiteAlias\SiteAlias;
-use Consolidation\SiteProcess\SiteProcess;
-use Yoast\PHPUnitPolyfills\TestCases\TestCase;
+use Consolidation\SiteProcess\ProcessManager;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Path;
 use Symfony\Component\Yaml\Yaml;
-use Consolidation\SiteProcess\ProcessManager;
 
 abstract class UnishTestCase extends TestCase
 {
