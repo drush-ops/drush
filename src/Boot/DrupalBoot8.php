@@ -194,7 +194,7 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
 
     public function bootstrapDrupalDatabase(BootstrapManager $manager): void
     {
-        // D8 omits this bootstrap level as nothing special needs to be done.
+        // Nothing special needs to be done.
         parent::bootstrapDrupalDatabase($manager);
     }
 
