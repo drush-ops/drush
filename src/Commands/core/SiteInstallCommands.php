@@ -47,7 +47,7 @@ final class SiteInstallCommands extends DrushCommands implements SiteAliasManage
     #[CLI\Option(name: 'site-name', description: 'Site name')]
     #[CLI\Option(name: 'site-mail', description: '<info>From:</info> for system mailings.')]
     #[CLI\Option(name: 'sites-subdir', description: 'Name of directory under <info>sites</info> which should be created.')]
-    #[CLI\Option(name: 'existing-config', description: 'Configuration from <info>sync</info> directory should be imported during installation. Use with Drupal 8.6+.')]
+    #[CLI\Option(name: 'existing-config', description: 'Configuration from <info>sync</info> directory should be imported during installation.')]
     #[CLI\Usage(name: 'drush si expert --locale=uk', description: '(Re)install using the expert install profile. Set default language to Ukrainian.')]
     #[CLI\Usage(name: 'drush si --db-url=mysql://root:pass@localhost:port/dbname', description: 'Install using the specified DB params.')]
     #[CLI\Usage(name: 'drush si --db-url=sqlite://sites/example.com/files/.ht.sqlite', description: 'Install using SQLite')]

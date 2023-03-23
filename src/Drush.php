@@ -31,13 +31,13 @@ use Symfony\Component\Process\Process;
 /**
  * Static Service Container wrapper.
  *
- * This code is analogous to the \Drupal class in Drupal 8.
+ * This code is analogous to the \Drupal class.
  *
  * We would like to move Drush towards the model of using constructor
  * injection rather than globals. This class serves as a unified global
  * accessor to arbitrary services for use by legacy Drush code.
  *
- * Advice from Drupal 8's 'Drupal' class:
+ * Advice from Drupal's 'Drupal' class:
  *
  * This class exists only to support legacy code that cannot be dependency
  * injected. If your code needs it, consider refactoring it to be object
