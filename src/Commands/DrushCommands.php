@@ -43,7 +43,7 @@ abstract class DrushCommands implements IOAwareInterface, LoggerAwareInterface, 
     // Used to signal that the command completed successfully, but we still want to indicate a failure to the caller.
     const EXIT_FAILURE_WITH_CLARITY = 3;
 
-    protected CommandData $commandData;
+    protected ?CommandData $commandData = null;
 
     public function __construct()
     {

@@ -123,7 +123,11 @@ class UserCommands extends DrushCommands
      * @option $mail A comma delimited list of emails to lookup (an alternative to names).
      * @aliases ublk,user-block
      * @usage drush user:block user3
-     *   Block the users whose name is user3
+     *   Block the user whose name is <info>user3</info>
+     * @usage drush user:cancel user3 --delete-content
+     *   <info>Delete</info> the user whose name is <info>user3</info> and delete her content.
+     * @usage drush user:cancel user3 --reassign-content
+     *   <info>Delete</info> the user whose name is <info>user3</info> and reassign her content to the anonymous user.
      */
     public function block(string $names = '', $options = ['uid' => self::REQ, 'mail' => self::REQ]): void
     {
@@ -168,7 +172,7 @@ class UserCommands extends DrushCommands
      * @option $uid A comma delimited list of user ids to lookup (an alternative to names).
      * @option $mail A comma delimited list of emails to lookup (an alternative to names).
      * @aliases urol,user-add-role
-     * @usage drush user-add-role "editor" user3
+     * @usage drush user:role:add 'editor' user3
      *   Add the editor role to user3
      */
     public function addRole(string $role, string $names = '', $options = ['uid' => self::REQ, 'mail' => self::REQ]): void
@@ -190,13 +194,13 @@ class UserCommands extends DrushCommands
      * @command user:role:remove
      *
      * @validate-entity-load user_role role
-     * @param string $role The name of the role to add
+     * @param string $role The machine name of the role to remove
      * @param string $names A comma delimited list of user names.
      * @option $uid A comma delimited list of user ids to lookup (an alternative to names).
      * @option $mail A comma delimited list of emails to lookup (an alternative to names).
      * @aliases urrol,user-remove-role
-     * @usage drush user:remove-role "power user" user3
-     *   Remove the "power user" role from user3
+     * @usage drush user:role:remove 'power_user' user3
+     *   Remove the 'power_user' role from user3
      */
     public function removeRole(string $role, string $names = '', $options = ['uid' => self::REQ, 'mail' => self::REQ]): void
     {
@@ -220,7 +224,7 @@ class UserCommands extends DrushCommands
      * @option password The password for the new account
      * @option mail The email address for the new account
      * @aliases ucrt,user-create
-     * @usage drush user:create newuser --mail="person@example.com" --password="letmein"
+     * @usage drush user:create newuser --mail='person@example.com' --password='letmein'
      *   Create a new user account with the name newuser, the email address person@example.com, and the password letmein
      */
     public function create(string $name, $options = ['password' => self::REQ, 'mail' => self::REQ])
@@ -261,29 +265,38 @@ class UserCommands extends DrushCommands
     }
 
     /**
-     * Cancel user account(s) with the specified name(s).
+     * Block or delete user account(s) with the specified name(s).
+     *
+     * - Existing content may be deleted or reassigned to the Anonymous user. See options.
+     * - By default only nodes are deleted or reassigned. Custom entity types need own code to
+     * support cancellation. See https://www.drupal.org/project/drupal/issues/3043725 for updates.
      *
      * @command user:cancel
      *
      * @param string $names A comma delimited list of user names.
      * @option delete-content Delete the user, and all content created by the user
+     * @option reassign-content Delete the user and make its content belong to the anonymous user.
      * @option $uid A comma delimited list of user ids to lookup (an alternative to names).
      * @option $mail A comma delimited list of emails to lookup (an alternative to names).
      * @aliases ucan,user-cancel
      * @usage drush user:cancel username
-     *   Cancel the user account with the name username and anonymize all content created by that user.
+     *   Block the user account with the name username.
      * @usage drush user:cancel --delete-content username
-     *   Delete the user account with the name username and delete all content created by that user.
+     *   Delete the user account with the name <info>username<info> and delete all content created by that user.
+     * @usage drush user:cancel --reassign-content username
+     *   Delete the user account with the name <info>username<info> and assign all her content to the anonymous user.
      */
-    public function cancel(string $names, $options = ['delete-content' => false, 'uid' => self::REQ, 'mail' => self::REQ]): void
+    public function cancel(string $names, $options = ['delete-content' => false, 'reassign-content' => false, 'uid' => self::REQ, 'mail' => self::REQ]): void
     {
         $accounts = $this->getAccounts($names, $options);
         foreach ($accounts as $id => $account) {
             if ($options['delete-content']) {
                 $this->logger()->warning(dt('All content created by !name will be deleted.', ['!name' => $account->getAccountName()]));
+            } else if ($options['reassign-content']) {
+                $this->logger()->warning(dt('All content created by !name will be assigned to anonymous user.', ['!name' => $account->getAccountName()]));
             }
             if ($this->io()->confirm('Cancel user account?: ')) {
-                $method = $options['delete-content'] ? 'user_cancel_delete' : 'user_cancel_block';
+                $method = $options['delete-content'] ? 'user_cancel_delete' : ($options['reassign-content'] ? 'user_cancel_reassign' : 'user_cancel_block');
                 user_cancel([], $account->id(), $method);
                 drush_backend_batch_process();
                 // Drupal logs a message for us.
@@ -299,7 +312,7 @@ class UserCommands extends DrushCommands
      * @param string $name The name of the account to modify.
      * @param string $password The new password for the account.
      * @aliases upwd,user-password
-     * @usage drush user:password someuser "correct horse battery staple"
+     * @usage drush user:password someuser 'correct horse battery staple'
      *   Set the password for the username someuser. See https://xkcd.com/936
      */
     public function password(string $name, string $password): void

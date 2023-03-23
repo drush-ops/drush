@@ -160,6 +160,24 @@ EOT;
         return '';
     }
 
+    protected static function appendOptionsGlobal($application): string
+    {
+        if ($opts = $application->getDefinition()->getOptions()) {
+            $body = '';
+            foreach ($opts as $key => $value) {
+                if (!in_array($key, HelpCLIFormatter::OPTIONS_GLOBAL_IMPORTANT)) {
+                    continue;
+                }
+                // The values don't go through standard formatting since we want to show http://default not the uri that was used when running this command.
+                $body .= '- ** ' . HelpCLIFormatter::formatOptionKeys(self::optionToArray($value)) . '**. ' . self::cliTextToMarkdown($value->getDescription()) . "\n";
+            }
+            $body .= '- To see all global options, run <code>drush topic</code> and pick the first choice.' . "\n";
+            $body = "#### Global Options\n\n$body\n";
+            return $body;
+        }
+        return '';
+    }
+
     protected static function appendArguments($command): string
     {
         if ($args = $command->getDefinition()->getArguments()) {
@@ -328,6 +346,9 @@ EOT;
                 }
                 $body .= self::appendArguments($command);
                 $body .= self::appendOptions($command);
+                if ($destination == 'commands') {
+                    $body .= self::appendOptionsGlobal($command->getApplication());
+                }
                 if ($command instanceof AnnotatedCommand) {
                     $body .= self::appendTopics($command, $destination_path);
                 }

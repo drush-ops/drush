@@ -25,8 +25,8 @@ install:
   - SET PATH=C:\Program Files\MySql\MySQL Server 5.7\bin\;%PATH%
   - choco search php --exact --all-versions -r
   #Install PHP per https://blog.wyrihaximus.net/2016/11/running-php-unit-tests-on-windows-using-appveyor-and-chocolatey/
-  - ps: appveyor-retry cinst --limit-output --ignore-checksums -y php --version 7.4.27
-  - cd c:\tools\php74
+  - ps: appveyor-retry cinst --limit-output --ignore-checksums -y php --version 8.0.26
+  - cd c:\tools\php80
   - copy php.ini-production php.ini
 
   # https://github.com/php-coveralls/php-coveralls/pull/223/files
@@ -47,10 +47,10 @@ install:
   - echo extension=php_pdo_pgsql.dll >> php.ini
   - echo extension=php_pdo_sqlite.dll >> php.ini
   - echo extension=php_pgsql.dll >> php.ini
-  - echo extension=php_gd2.dll >> php.ini
+  - echo extension=php_gd.dll >> php.ini
   - echo extension=php_fileinfo.dll >> php.ini
   - echo memory_limit=256M >> php.ini
-  - SET PATH=C:\tools\php74;%PATH%
+  - SET PATH=C:\tools\php80;%PATH%
   #Install Composer
   - cd %APPVEYOR_BUILD_FOLDER%
   #- appveyor DownloadFile https://getcomposer.org/composer.phar
