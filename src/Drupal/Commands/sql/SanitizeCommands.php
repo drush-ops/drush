@@ -1,34 +1,35 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drush\Drupal\Commands\sql;
 
 use Consolidation\AnnotatedCommand\Events\CustomEventAwareInterface;
 use Consolidation\AnnotatedCommand\Events\CustomEventAwareTrait;
+use Drush\Attributes as CLI;
 use Drush\Commands\DrushCommands;
 use Drush\Exceptions\UserAbortException;
 
-class SanitizeCommands extends DrushCommands implements CustomEventAwareInterface
+final class SanitizeCommands extends DrushCommands implements CustomEventAwareInterface
 {
     use CustomEventAwareTrait;
+
+    const SANITIZE = 'sql:sanitize';
 
     /**
      * Sanitize the database by removing or obfuscating user data.
      *
      * Commandfiles may add custom operations by implementing:
      *
-     *     - `@hook on-event sql-sanitize-confirms`. Display summary to user before confirmation.
-     *     - `@hook post-command sql-sanitize`. Run queries or call APIs to perform sanitizing
+     *     - `#[CLI\Hook(type: HookManager::ON_EVENT, target: 'sql-sanitize-confirms')]`. Display summary to user before confirmation.
+     *     - `#[CLI\Hook(type: HookManager::POST_COMMAND_HOOK, target: 'sql:sanitize')]`. Run queries or call APIs to perform sanitizing
      *
-     * Several working commandfiles may be found at https://github.com/drush-ops/drush/tree/11.x/src/Drupal/Commands/sql
-     *
-     * @command sql:sanitize
-     * @aliases sqlsan,sql-sanitize
-     * @usage drush sql:sanitize --sanitize-password=no
-     *   Sanitize database without modifying any passwords.
-     * @usage drush sql:sanitize --allowlist-fields=field_biography,field_phone_number
-     *   Sanitizes database but exempts two user fields from modification.
-     * @topics docs:hooks
+     * Several working commandfiles may be found at https://github.com/drush-ops/drush/tree/12.x/src/Drupal/Commands/sql
      */
+    #[CLI\Command(name: self::SANITIZE, aliases: ['sqlsan','sql-sanitize'])]
+    #[CLI\Usage(name: 'drush sql:sanitize --sanitize-password=no', description: 'Sanitize database without modifying any passwords.')]
+    #[CLI\Usage(name: 'drush sql:sanitize --allowlist-fields=field_biography,field_phone_number', description: 'Sanitizes database but exempts two user fields from modification.')]
+    #[CLI\Topics(topics: ['docs:hooks'])]
     public function sanitize(): void
     {
      /**

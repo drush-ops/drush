@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drush\Command;
 
 use Symfony\Component\Console\Command\Command;
@@ -23,8 +25,7 @@ use Drush\Runtime\RedispatchHook;
  */
 class RemoteCommandProxy extends Command
 {
-    /** @var RedispatchHook */
-    protected $redispatchHook;
+    protected RedispatchHook $redispatchHook;
 
     public function __construct($name, RedispatchHook $redispatchHook)
     {

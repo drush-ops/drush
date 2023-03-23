@@ -1,16 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drush\Commands\core;
 
 use Consolidation\AnnotatedCommand\AnnotatedCommand;
 use Consolidation\AnnotatedCommand\AnnotationData;
 use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
+use Drush\Attributes as CLI;
 use Drush\Boot\AutoloaderAwareInterface;
 use Drush\Boot\AutoloaderAwareTrait;
+use Drush\Boot\DrupalBootLevels;
 use Drush\Commands\DrushCommands;
-use Drush\Commands\generate\ApplicationFactory;
 use Drush\Commands\help\HelpCLIFormatter;
 use Drush\Commands\help\ListCommands;
+use Drush\Drupal\Commands\generate\ApplicationFactory;
 use Drush\Drush;
 use Drush\SiteAlias\SiteAliasManagerAwareInterface;
 use Symfony\Component\Console\Application;
@@ -21,7 +25,7 @@ use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Path;
 use Symfony\Component\Yaml\Yaml;
 
-class MkCommands extends DrushCommands implements SiteAliasManagerAwareInterface, AutoloaderAwareInterface
+final class MkCommands extends DrushCommands implements SiteAliasManagerAwareInterface, AutoloaderAwareInterface
 {
     use SiteAliasManagerAwareTrait;
     use AutoloaderAwareTrait;
@@ -29,13 +33,11 @@ class MkCommands extends DrushCommands implements SiteAliasManagerAwareInterface
     /**
      * Build a Markdown document for each Drush command/generator that is available on a site.
      *
-     * This command is an early step when building the www.drush.org static site. Adapt it to build a similar site listing the commands that are available on your site. Also see Drush's [Github Actions workflow](https://github.com/drush-ops/drush/blob/11.x/.github/workflows/main.yml).
-     *
-     * @command mk:docs
-     * @bootstrap max
-     * @usage drush mk:docs
-     *   Build many .md files in the docs/commands and docs/generators directories.
+     * This command is an early step when building the www.drush.org static site. Adapt it to build a similar site listing the commands that are available on your site. Also see Drush's [Github Actions workflow](https://github.com/drush-ops/drush/blob/12.x/.github/workflows/main.yml).
      */
+    #[CLI\Command(name: 'mk:docs')]
+    #[CLI\Bootstrap(level: DrupalBootLevels::FULL)]
+    #[CLI\Usage(name: 'drush mk:docs', description: 'Build many .md files in the docs/commands and docs/generators directories.')]
     public function docs(): void
     {
         $dir_root = Drush::bootstrapManager()->getComposerRoot();
@@ -52,9 +54,7 @@ class MkCommands extends DrushCommands implements SiteAliasManagerAwareInterface
         $destination = 'generators';
         $destination_path = Path::join($dir_root, 'docs', $destination);
         $this->prepare($destination_path);
-        $factory = new ApplicationFactory($this->logger(), $this->getConfig());
-        $factory->setAutoloader($this->autoloader());
-        $application_generate = $factory->create();
+        $application_generate = (new ApplicationFactory(\Drupal::getContainer(), $this->autoloader(), $this->logger()))->create();
         $all = $this->createAnnotatedCommands($application_generate, Drush::getApplication());
         $namespaced = ListCommands::categorize($all);
         [$nav_generators, $pages_generators, $map_generators] = $this->writeContentFilesAndBuildNavAndBuildRedirectMap($namespaced, $destination, $dir_root, $destination_path);
@@ -63,9 +63,11 @@ class MkCommands extends DrushCommands implements SiteAliasManagerAwareInterface
         $this->writeYml($nav_commands, $nav_generators, $map_commands, $map_generators, $dir_root);
     }
 
+    /**
+     * Convert generators into Annotated commands (for Help).
+     */
     public function createAnnotatedCommands(Application $application_generate, Application $application_drush): array
     {
-        $application = new Application('temp');
         $definition = $application_drush->get('generate')->getDefinition();
         foreach ($application_generate->all() as $command) {
             $annotated = new AnnotatedCommand($command->getName());
@@ -77,18 +79,15 @@ class MkCommands extends DrushCommands implements SiteAliasManagerAwareInterface
             $annotated->setHelp($command->getHelp());
             $annotated->setAliases($command->getAliases());
             $annotated->setTopics(['docs:generators']);
+            $annotated->setHidden($command->isHidden());
             $values = [];
             if (in_array($command->getName(), ['entity:bundle-class'])) {
                 $values['version'] = '11.0';
             }
             $annotated->setAnnotationData(new AnnotationData($values));
-            // Hack, until we have https://github.com/consolidation/annotated-command/pull/247
-            $method = new \ReflectionMethod($annotated, 'addUsageOrExample');
-            $method->setAccessible(true);
-            $method->invoke($annotated, 'drush generate ' . $command->getName(), $command->getDescription());
+            $annotated->addUsageOrExample('drush generate ' . $command->getName(), $command->getDescription());
             $commands[$command->getName()] = $annotated;
         }
-        unset($commands['list'], $commands['help']);
         return $commands;
     }
 
@@ -131,7 +130,7 @@ EOT;
                             $value = "- [$topic_description]($target_relative) ($name)";
                         } else {
                             $rel_from_root = Path::makeRelative($abs, DRUSH_BASE_PATH);
-                            $value = "- [$topic_description](https://raw.githubusercontent.com/drush-ops/drush/11.x/$rel_from_root) ($name)";
+                            $value = "- [$topic_description](https://raw.githubusercontent.com/drush-ops/drush/12.x/$rel_from_root) ($name)";
                         }
                     }
                 }
@@ -209,7 +208,7 @@ EOT;
         if ($command instanceof AnnotatedCommand) {
             $path = Path::makeRelative($command->getAnnotationData()->get('_path'), $root);
         }
-        $edit_url = $path ? "https://github.com/drush-ops/drush/blob/11.x/$path" : '';
+        $edit_url = $path ? "https://github.com/drush-ops/drush/blob/12.x/$path" : '';
         $body = <<<EOT
 ---
 edit_url: $edit_url

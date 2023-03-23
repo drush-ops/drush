@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drush\Preflight;
 
 use Consolidation\SiteAlias\SiteAliasName;
@@ -126,7 +128,7 @@ class ArgsPreprocessor
      * @param $opt The option string to check
      * @return [$methodName, $optionValue, $acceptsValueFromNextArg]
      */
-    protected function findMethodForOptionWithValues($optionsTable, $opt): array
+    protected function findMethodForOptionWithValues(array $optionsTable, string $opt): array
     {
         // Skip $opt if it is empty, or if it is not an option.
         if (empty($opt) || ($opt[0] != '-')) {
@@ -156,7 +158,7 @@ class ArgsPreprocessor
      *   to 'true'.
      * @return [$methodName, $optionValue, $acceptsValueFromNextArg]
      */
-    protected function checkMatchingOption($opt, $keyParam, $methodName): array
+    protected function checkMatchingOption(string $opt, string $keyParam, string $methodName): array
     {
         // Test to see if $key ends in '='; remove the character if present.
         // If the char is removed, it means the option accepts a value.
@@ -165,7 +167,7 @@ class ArgsPreprocessor
         $acceptsValueFromNextArg = $keyParam[strlen($keyParam) - 1] != '~';
 
         // If $opt does not begin with $key, then it cannot be a match.
-        if ($key !== substr($opt, 0, strlen($key))) {
+        if (!str_starts_with($opt, $key)) {
             return [false, false, false];
         }
 

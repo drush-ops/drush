@@ -1,6 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Unish;
+
+use Drush\Drupal\Commands\core\DrupalCommands;
 
 /**
  * Tests for core commands.
@@ -42,13 +46,13 @@ EOT;
         file_put_contents($conf_dir . '/modules/my_module/my_module.module', $module);
         $this->drush('pm-install', ['my_module'], $options);
 
-        $this->drush('cron', [], $options);
+        $this->drush(DrupalCommands::CRON, [], $options);
         $this->assertStringContainsString('Message: test', $this->getErrorOutput());
         // Change the deployment identifier.
         chmod($conf_dir, 0777);
         chmod($conf_dir . '/settings.php', 0777);
         file_put_contents($conf_dir . '/settings.php', "\n\$settings['deployment_identifier'] = 'a_random_thing';\n", FILE_APPEND);
-        $this->drush('cron', [], $options);
+        $this->drush(DrupalCommands::CRON, [], $options);
         $this->assertStringContainsString('Message: test', $this->getErrorOutput());
     }
 }

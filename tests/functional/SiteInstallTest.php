@@ -1,6 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Unish;
+
+use Drush\Commands\core\StatusCommands;
+use Drush\Commands\sql\SqlCommands;
 
 /**
  * @group base
@@ -20,12 +25,12 @@ class SiteInstallTest extends CommandUnishTestCase
             $this->installDrupal('dev', true, ['db-prefix' => 'drupal_']);
 
             // Run 'core-status' and insure that we can bootstrap Drupal.
-            $this->drush('core-status', [], ['fields' => 'bootstrap']);
+            $this->drush(StatusCommands::STATUS, [], ['fields' => 'bootstrap']);
             $output = $this->getOutput();
             $this->assertStringContainsString('Successful', $output);
 
             // Issue a query and check the result to verify the connection.
-            $this->drush('sql:query', ["SELECT uid FROM drupal_users where uid = 1;"]);
+            $this->drush(SqlCommands::QUERY, ["SELECT uid FROM drupal_users where uid = 1;"]);
             $output = $this->getOutput();
             $this->assertStringContainsString('1', $output);
         }

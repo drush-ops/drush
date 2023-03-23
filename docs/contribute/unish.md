@@ -5,7 +5,7 @@ high quality, our tests are run on every push. See [CircleCi](https://circleci.c
 1. `git clone https://github.com/drush-ops/drush.git`
 1. `cd drush`
 1. `composer install`
-1. Review the configuration settings in [tests/phpunit.xml.dist](https://github.com/drush-ops/drush/blob/11.x/tests/phpunit.xml.dist). If customization is needed, copy phpunit.xml.dist to phpunit.xml and edit away.
+1. Review the configuration settings in [tests/phpunit.xml.dist](https://github.com/drush-ops/drush/blob/12.x/tests/phpunit.xml.dist). If customization is needed, copy phpunit.xml.dist to phpunit.xml and edit away.
 1. Run all test suites: `composer test`
 
 ## DDEV

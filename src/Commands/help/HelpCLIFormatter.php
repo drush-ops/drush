@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drush\Commands\help;
 
 use Consolidation\OutputFormatters\FormatterManager;
@@ -70,7 +72,7 @@ class HelpCLIFormatter implements FormatterInterface
             if (!in_array($key, self::OPTIONS_GLOBAL_IMPORTANT)) {
                 continue;
             }
-            $name = $name = '--' . $key;
+            $name = '--' . $key;
             if ($value->getShortcut()) {
                 $name = '-' . $value->getShortcut() . ', ' . $name;
             }
@@ -116,13 +118,11 @@ class HelpCLIFormatter implements FormatterInterface
                 $value = '[' . $value . ']';
             }
         }
-
-        $synopsis = sprintf(
+        return sprintf(
             '%s%s',
             $option['shortcut']  ? sprintf('-%s, ', $option['shortcut']) : ' ',
             sprintf('--%s%s', $option['name'], $value)
         );
-        return $synopsis;
     }
 
     public static function formatOptionDescription($option): string
@@ -177,7 +177,7 @@ class HelpCLIFormatter implements FormatterInterface
     {
         $application = Drush::getApplication();
         $def = $application->getDefinition();
-        return array_key_exists($name, $def->getOptions()) || substr($name, 0, 6) == 'notify' || substr($name, 0, 3) == 'xh-' || substr($name, 0, 9) == 'druplicon';
+        return array_key_exists($name, $def->getOptions()) || str_starts_with($name, 'notify') || str_starts_with($name, 'xh-') || str_starts_with($name, 'druplicon');
     }
 
     public function optionRows(OutputInterface $output, array $options, string $title): array
@@ -186,7 +186,12 @@ class HelpCLIFormatter implements FormatterInterface
         $output->writeln('');
         $output->writeln("<comment>$title:</comment>");
         foreach ($options as $option) {
-            if (substr($option['name'], 0, 8) !== '--notify' && substr($option['name'], 0, 5) !== '--xh-' && substr($option['name'], 0, 11) !== '--druplicon') {
+            if (
+                !str_starts_with($option['name'], '--notify') && !str_starts_with(
+                    $option['name'],
+                    '--xh-'
+                ) && !str_starts_with($option['name'], '--druplicon')
+            ) {
                  $rows[] = [$this->formatOptionKeys($option), $this->formatOptionDescription($option)];
             }
         }

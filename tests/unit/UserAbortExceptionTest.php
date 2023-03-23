@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Unish;
 
+use Drush\Exceptions\UserAbortException;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -15,10 +18,10 @@ class UserAbortExceptionTest extends TestCase
     /**
      * @covers \Drush\Exceptions\UserAbortException
      */
-    public function testUserAbortException()
+    public function testUserAbortException(): never
     {
         $this->expectException('\Drush\Exceptions\UserAbortException');
-        throw new \Drush\Exceptions\UserAbortException('This is an exception');
+        throw new UserAbortException('This is an exception');
     }
 
     /**
@@ -29,10 +32,10 @@ class UserAbortExceptionTest extends TestCase
         $abort = null;
 
         try {
-            $abort = new \Drush\Exceptions\UserAbortException('This is an exception');
+            $abort = new UserAbortException('This is an exception');
         } catch (\Throwable $e) {
             // We should not get here, because no one threw the exception
-            $abort = new \Drush\Exceptions\UserAbortException('Abort after failure', 1, $e);
+            $abort = new UserAbortException('Abort after failure', 1, $e);
         }
 
         $this->assertEquals('This is an exception', $abort->getMessage());
@@ -53,7 +56,7 @@ class UserAbortExceptionTest extends TestCase
         } catch (\Throwable $e) {
             $this->expectException('\Drush\Exceptions\UserAbortException');
             // There really isn't any use-case for this, but our API allows it.
-            throw new \Drush\Exceptions\UserAbortException('Abort after failure', 1, $e);
+            throw new UserAbortException('Abort after failure', 1, $e);
         }
     }
 
@@ -67,9 +70,9 @@ class UserAbortExceptionTest extends TestCase
         } catch (\Exception $e) {
             $this->expectException('\Drush\Exceptions\UserAbortException');
             // There really isn't any use-case for this, but our API allows it.
-            throw new \Drush\Exceptions\UserAbortException('Abort after failure', 1, $e);
+            throw new UserAbortException('Abort after failure', 1, $e);
         } catch (\Throwable $e) {
-            throw new \Drush\Exceptions\UserAbortException('We should never get here', 1, $e);
+            throw new UserAbortException('We should never get here', 1, $e);
         }
     }
 }

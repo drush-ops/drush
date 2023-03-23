@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drush\Config;
 
 use Consolidation\Config\ConfigInterface;
@@ -239,13 +241,11 @@ class ConfigLocator
 
     /**
      * Add the Drush project directory as a configuration search location.
-     *
-     * @param $drushProjectDir Path to the drush project directory.
      */
-    public function addDrushConfig($drushProjectDir): self
+    public function addDrushConfig(string $drushProjectDir): self
     {
         if (!$this->isLocal) {
-            $this->addConfigPaths(self::DRUSH_CONTEXT, [ $drushProjectDir ]);
+            $this->addConfigPaths(self::DRUSH_CONTEXT, [$drushProjectDir]);
         }
         return $this;
     }
@@ -256,17 +256,17 @@ class ConfigLocator
      *
      * @param Path to the selected Drupal site
      */
-    public function addSitewideConfig($siteRoot)
+    public function addSitewideConfig($siteRoot): ?self
     {
         // There might not be a site.
         if (!is_dir($siteRoot)) {
-            return;
+            return null;
         }
 
         // We might have already processed this root.
         $siteRoot = realpath($siteRoot);
         if (in_array($siteRoot, $this->siteRoots)) {
-            return;
+            return null;
         }
 
         // Remember that we've seen this location.
@@ -373,11 +373,8 @@ class ConfigLocator
 
     /**
      * Get the site aliases according to preflight arguments and environment.
-     *
-     * @param $paths
-     * @param Environment $environment
      */
-    public function getSiteAliasPaths($paths, Environment $environment): array
+    public function getSiteAliasPaths(array $paths, Environment $environment): array
     {
         // In addition to the paths passed in to us (from --alias-path
         // commandline options), add some site-local locations.
@@ -404,7 +401,7 @@ class ConfigLocator
      * @param $commandPaths
      * @param $root
      */
-    public function getCommandFilePaths($commandPaths, $root): array
+    public function getCommandFilePaths(array $commandPaths, string $root): array
     {
         $builtin = $this->getBuiltinCommandFilePaths();
         $included = $this->getIncludedCommandFilePaths($commandPaths);
@@ -440,7 +437,7 @@ class ConfigLocator
             // Check to see if there is a `#` in the include path.
             // This indicates an include path that has a namespace,
             // e.g. `namespace#/path`.
-            if (is_numeric($key) && strpos($commandPath, '#') !== false) {
+            if (is_numeric($key) && str_contains($commandPath, '#')) {
                 [$key, $commandPath] = explode('#', $commandPath, 2);
             }
             $sep = ($this->config->isWindows()) ? ';' : ':';

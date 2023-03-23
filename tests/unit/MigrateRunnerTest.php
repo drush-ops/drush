@@ -1,10 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drush\Drupal\Migrate;
 
 use Composer\Semver\Comparator;
 use Drupal\Core\Database\Driver\sqlite\Connection;
 use Drupal\migrate\Plugin\MigrationInterface;
+use Drupal\migrate\Plugin\MigrationPluginManagerInterface;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Filesystem\Path;
@@ -26,10 +29,8 @@ class MigrateRunnerTest extends TestCase
 
     /**
      * Data provider for testBuildIdList.
-     *
-     * @return array
      */
-    public function dataProviderParseIdList(): array
+    public static function dataProviderParseIdList(): array
     {
         return [
           'empty' => [
@@ -65,14 +66,13 @@ class MigrateRunnerTest extends TestCase
      */
     public function testMigrateIdMapFilter(array $sourceIdList, array $destinationIdList, array $expectedRows): void
     {
-        // @todo Change this to an "integration" type test if need be.
-        $this->markTestSkipped('Drupal 10 has changed and we are now seeing test failures. See https://app.circleci.com/pipelines/github/drush-ops/drush/4197');
-
-        $migration = $this->getMockBuilder(MigrationInterface::class)->getMock();
+        $migration = $this->createMock(MigrationInterface::class);
+        $migration->expects($this->any())->method('id')->willReturn('foo');
+        $migrationManager = $this->createMock(MigrationPluginManagerInterface::class);
         $eventDispatcher = $this->getMockBuilder(EventDispatcherInterface::class)->getMock();
         $db = $this->getDatabaseConnection();
         require_once 'TestSqlIdMap.php';
-        $idMap = new TestSqlIdMap($db, [], 'sql', [], $migration, $eventDispatcher);
+        $idMap = new TestSqlIdMap($db, [], 'sql', [], $migration, $eventDispatcher, $migrationManager);
 
         $filteredIdMap = new MigrateIdMapFilter($idMap, $sourceIdList, $destinationIdList);
         $this->assertFilteredIdMap($filteredIdMap, $expectedRows);
@@ -80,16 +80,14 @@ class MigrateRunnerTest extends TestCase
 
     /**
      * Data provider for testMigrateIdMapFilter.
-     *
-     * @return array
      */
-    public function dataProviderMigrateIdMapFilter(): array
+    public static function dataProviderMigrateIdMapFilter(): array
     {
         return [
           'no filter' => [
             [],
             [],
-            $this->getMapTableData(),
+            self::getMapTableData(),
           ],
           'filter only on source' => [
             [
@@ -133,10 +131,6 @@ class MigrateRunnerTest extends TestCase
         ];
     }
 
-    /**
-     * @param \Drush\Drupal\Migrate\MigrateIdMapFilter $filteredIdMap
-     * @param array $expectedRows
-     */
     protected function assertFilteredIdMap(MigrateIdMapFilter $filteredIdMap, array $expectedRows): void
     {
         $actualRows = [];
@@ -248,7 +242,7 @@ class MigrateRunnerTest extends TestCase
         ];
     }
 
-    protected function getMapTableData(): array
+    protected static function getMapTableData(): array
     {
         return [
           [1, 'foo', 'bar', 99],

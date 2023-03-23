@@ -1,6 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Unish;
+
+use Drush\Drupal\Commands\core\ImageCommands;
+use Drush\Drupal\Commands\pm\PmCommands;
 
 /**
  * Tests image-flush command
@@ -11,7 +16,7 @@ class ImageTest extends UnishIntegrationTestCase
 {
     public function testImage()
     {
-        $this->drush('pm-install', ['image']);
+        $this->drush(PmCommands::INSTALL, ['image']);
         $logo = 'core/misc/menu-expanded.png';
         $styles_dir = $this->webroot() . '/sites/default/files/styles/';
         $thumbnail = $styles_dir . 'thumbnail/public/' . $logo;
@@ -22,20 +27,20 @@ class ImageTest extends UnishIntegrationTestCase
 
         // Test that "drush image-derive" works.
         $style_name = 'thumbnail';
-        $this->drush('image-derive', [$style_name, $logo]);
+        $this->drush(ImageCommands::DERIVE, [$style_name, $logo]);
         $this->assertFileExists($thumbnail);
 
         // Test that "drush image-flush thumbnail" deletes derivatives created by the thumbnail image style.
-        $this->drush('image-flush', [$style_name], ['all' => null]);
+        $this->drush(ImageCommands::FLUSH, [$style_name], ['all' => null]);
         $this->assertFileDoesNotExist($thumbnail);
 
         // Check that "drush image-flush --all" deletes all image styles by creating two different ones and testing its
         // existence afterwards.
-        $this->drush('image-derive', ['thumbnail', $logo]);
+        $this->drush(ImageCommands::DERIVE, ['thumbnail', $logo]);
         $this->assertFileExists($thumbnail);
-        $this->drush('image-derive', ['medium', $logo]);
+        $this->drush(ImageCommands::DERIVE, ['medium', $logo]);
         $this->assertFileExists($medium);
-        $this->drush('image-flush', [], ['all' => null]);
+        $this->drush(ImageCommands::FLUSH, [], ['all' => null]);
         $this->assertFileDoesNotExist($thumbnail);
         $this->assertFileDoesNotExist($medium);
     }

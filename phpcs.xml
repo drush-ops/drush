@@ -9,6 +9,7 @@
 <!--    Keep us sane-->
     <rule ref="Generic.ControlStructures.InlineControlStructure.NotAllowed"><severity>0</severity></rule>
     <rule ref="PSR2.Methods.MethodDeclaration.Underscore"><severity>0</severity></rule>
+    <rule ref="PSR12.Files.FileHeader.IncorrectOrder"><severity>0</severity></rule>
 
     <arg name="warning-severity" value="0"/>
     <arg value="s" />

@@ -1,6 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Unish;
+
+use Drush\Commands\core\PhpCommands;
+use Drush\Drupal\Commands\core\WatchdogCommands;
+use Drush\Drupal\Commands\pm\PmCommands;
 
 /**
  * @group commands
@@ -9,12 +15,12 @@ class WatchdogTest extends UnishIntegrationTestCase
 {
     public function testWatchdogShow()
     {
-        $this->drush('pm-install', ['dblog']);
-        $this->drush('watchdog-delete', ['all'], ['yes' => true]);
+        $this->drush(PmCommands::INSTALL, ['dblog']);
+        $this->drush(WatchdogCommands::DELETE, ['all'], ['yes' => true]);
 
         $eval1 = "\\Drupal::logger('drush')->notice('Unish rocks.');";
-        $this->drush('php-eval', [$eval1]);
-        $this->drush('watchdog-show', [], ['count' => 50]);
+        $this->drush(PhpCommands::EVAL, [$eval1]);
+        $this->drush(WatchdogCommands::SHOW, [], ['count' => 50]);
         $output = $this->getOutput();
         $this->assertStringContainsString('Unish rocks.', $output);
 
@@ -26,23 +32,23 @@ class WatchdogTest extends UnishIntegrationTestCase
         $char = '*';
         $message = str_repeat($char, $message_chars);
         $eval2 = "\\Drupal::logger('drush')->notice('$message');";
-        $this->drush('php-eval', [$eval2]);
-        $this->drush('watchdog-show');
+        $this->drush(PhpCommands::EVAL, [$eval2]);
+        $this->drush(WatchdogCommands::SHOW);
         $output = $this->getOutput();
         $this->assertStringContainsString('Unish rocks', $output);
         $this->assertGreaterThan(substr_count($output, $char), $message_chars);
-        $this->drush('watchdog-show', [], ['extended' => null]);
+        $this->drush(WatchdogCommands::SHOW, [], ['extended' => null]);
         $output = $this->getOutput();
         $this->assertGreaterThanOrEqual($message_chars, substr_count($output, $char));
 
         // Add a warning message and an alert message, for testing the severity parameters.
         $eval3 = "\\Drupal::logger('drush')->warning('Rocking Unish.');";
-        $this->drush('php-eval', [$eval3]);
+        $this->drush(PhpCommands::EVAL, [$eval3]);
         $eval4 = "\\Drupal::logger('drush')->alert('Beware! Rocks of Unish ahead');";
-        $this->drush('php-eval', [$eval4]);
+        $this->drush(PhpCommands::EVAL, [$eval4]);
 
         // Test the 'severity' parameter, to show only messages with a severity of Notice.
-        $this->drush('watchdog-show', [], ['severity' => 'Notice']);
+        $this->drush(WatchdogCommands::SHOW, [], ['severity' => 'Notice']);
         $output = $this->getOutput();
         $this->assertStringContainsString('Unish rocks.', $output);
         $this->assertStringContainsString('Notice', $output);
@@ -51,7 +57,7 @@ class WatchdogTest extends UnishIntegrationTestCase
 
         // Test the 'severity-min' parameter, to show all messages with a severity of Warning
         // and higher. This should not include the notice message.
-        $this->drush('watchdog-show', [], ['severity-min' => 'Warning']);
+        $this->drush(WatchdogCommands::SHOW, [], ['severity-min' => 'Warning']);
         $output = $this->getOutput();
         $this->assertStringNotContainsString('Notice', $output);
         $this->assertStringContainsString('Warning', $output);
@@ -61,28 +67,28 @@ class WatchdogTest extends UnishIntegrationTestCase
     public function testWatchdogDelete()
     {
         // Test deleting all messages.
-        $this->drush('watchdog-delete', ['all'], ['yes' => true]);
+        $this->drush(WatchdogCommands::DELETE, ['all'], ['yes' => true]);
         $output = $this->getErrorOutput();
         $this->assertStringContainsString('All watchdog messages have been deleted', $output);
-        $this->drush('watchdog-show');
+        $this->drush(WatchdogCommands::SHOW);
         $output = $this->getOutput();
         $this->assertEquals('', $output);
 
         // Create messages.
         $eval1 = "\\Drupal::logger('other')->info('Scrub');";
-        $this->drush('php-eval', [$eval1]);
+        $this->drush(PhpCommands::EVAL, [$eval1]);
         $eval2 = "\\Drupal::logger('drush')->notice('Delete');";
-        $this->drush('php-eval', [$eval2]);
+        $this->drush(PhpCommands::EVAL, [$eval2]);
         $eval3 = "\\Drupal::logger('drush')->warning('Eliminate');";
-        $this->drush('php-eval', [$eval3]);
+        $this->drush(PhpCommands::EVAL, [$eval3]);
         $eval4 = "\\Drupal::logger('drush')->error('Obliterate');";
-        $this->drush('php-eval', [$eval4]);
+        $this->drush(PhpCommands::EVAL, [$eval4]);
         $eval5 = "\\Drupal::logger('drush')->critical('*** Exterminate!');";
-        $this->drush('php-eval', [$eval5]);
+        $this->drush(PhpCommands::EVAL, [$eval5]);
         $this->showAll();
 
         // Show that all the messages have been stored.
-        $this->drush('watchdog-show');
+        $this->drush(WatchdogCommands::SHOW);
         $output = $this->getOutput();
         $this->assertStringContainsString('Scrub', $output);
         $this->assertStringContainsString('Delete', $output);
@@ -101,14 +107,14 @@ class WatchdogTest extends UnishIntegrationTestCase
         // $this->showAll();
 
         // Test deleting messages by severity.
-        $this->drush('watchdog-delete', [], ['severity' => 'Warning', 'yes' => true]);
+        $this->drush(WatchdogCommands::DELETE, [], ['severity' => 'Warning', 'yes' => true]);
         $output = $this->getErrorOutput();
         $this->assertStringContainsString('1 watchdog messages have been deleted', $output);
         $this->assertStringNotContainsString('Eliminate', $output);
         $this->showAll();
 
         // Test deleting messages by type.
-        $this->drush('watchdog-delete', [], ['type' => 'other', 'yes' => true]);
+        $this->drush(WatchdogCommands::DELETE, [], ['type' => 'other', 'yes' => true]);
         $output = $this->getErrorOutput();
         $this->assertStringContainsString('1 watchdog messages have been deleted', $output);
         $this->assertStringNotContainsString('Scrub', $output);
@@ -117,21 +123,21 @@ class WatchdogTest extends UnishIntegrationTestCase
         // Test deleting a watchdog message by filtering on text.
         // @todo Investigate why using '\*\*\*' to match '***' does not work on
         // sqlite CircleCI tests when it passes on mysql and postgres tests.
-        $this->drush('watchdog-delete', ['\*\*\*'], ['yes' => true]);
+        $this->drush(WatchdogCommands::DELETE, ['\*\*\*'], ['yes' => true]);
         $output = $this->getErrorOutput();
         $this->showAll();
         // So also delete by matching ordinary words.
-        $this->drush('watchdog-delete', ['Exterminate'], ['yes' => true]);
+        $this->drush(WatchdogCommands::DELETE, ['Exterminate'], ['yes' => true]);
         $output .= $this->getErrorOutput();
         $this->showAll();
         $this->assertStringContainsString('1 watchdog messages have been deleted.', $output);
         $this->assertStringNotContainsString('Exterminate', $output);
 
         // Finally delete all messages.
-        $this->drush('watchdog-delete', ['all'], ['yes' => true]);
+        $this->drush(WatchdogCommands::DELETE, ['all'], ['yes' => true]);
         $output = $this->getErrorOutput();
         $this->assertStringContainsString('All watchdog messages have been deleted', $output);
-        $this->drush('watchdog-show');
+        $this->drush(WatchdogCommands::SHOW);
         $output = $this->getOutput();
         $this->assertEquals('', $output);
         $this->showAll();
@@ -142,7 +148,7 @@ class WatchdogTest extends UnishIntegrationTestCase
         // Helper (debug) function to show all watchdog messages.
         static $count;
         $count += 1;
-        $this->drush('watchdog-show');
+        $this->drush(WatchdogCommands::SHOW);
         $output = $this->getOutput();
         print "\n>>>>> {$count}\n" . $output . "\n";
     }

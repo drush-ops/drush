@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drush\TestTraits;
 
 /**
@@ -12,29 +14,18 @@ trait OutputUtilsTrait
 {
     /**
      * Accessor for the last output, non-trimmed.
-     *
-     * @return string
-     *   Raw output as text.
-     *
-     * @access public
      */
-    abstract public function getOutputRaw();
+    abstract public function getOutputRaw(): string;
 
     /**
      * Accessor for the last stderr output, non-trimmed.
-     *
-     * @return string
-     *   Raw stderr as text.
-     *
-     * @access public
      */
-    abstract public function getErrorOutputRaw();
+    abstract public function getErrorOutputRaw(): string;
 
     /**
-     * Get command output and simplify away things like full paths and extra
-     * whitespace.
+     * Get command output and simplify things like full paths and extra whitespace.
      */
-    protected function getSimplifiedOutput()
+    protected function getSimplifiedOutput(): string
     {
         return $this->simplifyOutput($this->getOutput());
     }
@@ -46,21 +37,15 @@ trait OutputUtilsTrait
      *   A simplified version of the error output that has things like full
      *   paths and superfluous whitespace removed from it.
      */
-    protected function getSimplifiedErrorOutput()
+    protected function getSimplifiedErrorOutput(): string
     {
         return $this->simplifyOutput($this->getErrorOutput());
     }
 
     /**
      * Remove things like full paths and extra whitespace from the given string.
-     *
-     * @param string $output
-     *   The output string to simplify.
-     *
-     * @return string
-     *   The simplified output.
      */
-    protected function simplifyOutput(string $output)
+    protected function simplifyOutput(string $output): string
     {
         // We do not care if Drush inserts a -t or not in the string. Depends on whether there is a tty.
         $output = preg_replace('# -t #', ' ', $output);
@@ -85,59 +70,39 @@ trait OutputUtilsTrait
         return $output;
     }
 
-    public function pathsToSimplify()
+    public function pathsToSimplify(): array
     {
         return [];
     }
 
     /**
      * Accessor for the last output, trimmed.
-     *
-     * @return string
-     *   Trimmed output as text.
-     *
-     * @access public
      */
-    public function getOutput()
+    public function getOutput(): string
     {
         return trim($this->getOutputRaw());
     }
 
     /**
      * Accessor for the last stderr output, trimmed.
-     *
-     * @return string
-     *   Trimmed stderr as text.
-     *
-     * @access public
      */
-    public function getErrorOutput()
+    public function getErrorOutput(): string
     {
         return trim($this->getErrorOutputRaw());
     }
 
     /**
      * Accessor for the last output, rtrimmed and split on newlines.
-     *
-     * @return array
-     *   Output as array of lines.
-     *
-     * @access public
      */
-    public function getOutputAsList()
+    public function getOutputAsList(): array
     {
         return array_map('rtrim', explode("\n", $this->getOutput()));
     }
 
     /**
      * Accessor for the last stderr output, rtrimmed and split on newlines.
-     *
-     * @return array
-     *   Stderr as array of lines.
-     *
-     * @access public
      */
-    public function getErrorOutputAsList()
+    public function getErrorOutputAsList(): array
     {
         return array_map('rtrim', explode("\n", $this->getErrorOutput()));
     }
@@ -145,13 +110,10 @@ trait OutputUtilsTrait
     /**
      * Accessor for the last output, decoded from json.
      *
-     * @param string $key
+     * @param $key
      *   Optionally return only a top level element from the json object.
-     *
-     * @return array
-     *   Decoded array.
      */
-    public function getOutputFromJSON($key = null)
+    public function getOutputFromJSON(string|int $key = null): mixed
     {
         $output = $this->getOutput();
         $json = json_decode($output, true);

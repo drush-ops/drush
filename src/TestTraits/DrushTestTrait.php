@@ -1,31 +1,30 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drush\TestTraits;
 
 /**
  * DrushTestTrait provides a `drush()` method that may be
  * used to write functional tests for Drush extensions.
  *
- * More information is available at https://github.com/drush-ops/drush/blob/11.x/docs/contribute/unish.md#drush-test-traits.
+ * More information is available at https://github.com/drush-ops/drush/blob/12.x/docs/contribute/unish.md#drush-test-traits.
  */
 trait DrushTestTrait
 {
     use CliTestTrait;
 
-    /**
-     * @return string
-     */
-    public function getPathToDrush()
+    public function getPathToDrush(): string
     {
-        return dirname(dirname(__DIR__)) . '/drush';
+        return dirname(__DIR__, 2) . '/drush';
     }
 
     /**
      * Invoke drush in via execute().
      *
-     * @param command
+     * @param $command
      *   A defined drush command such as 'cron', 'status' or any of the available ones such as 'drush pm'.
-     * @param args
+     * @param $args
      *   Command arguments.
      * @param $options
      *   An associative array containing options.
@@ -37,10 +36,10 @@ trait DrushTestTrait
      *   The expected exit code, e.g. 0 or 1 or some other expected value.
      * @param $suffix
      *   Any code to append to the command. For example, redirection like 2>&1.
-     * @param array $env
+     * @param $env
      *   Environment variables to pass along to the subprocess.
      */
-    public function drush($command, array $args = [], array $options = [], $site_specification = null, $cd = null, $expected_return = 0, $suffix = null, array $env = [])
+    public function drush($command, array $args = [], array $options = [], ?string $site_specification = null, ?string $cd = null, int $expected_return = 0, ?string $suffix = null, array $env = []): void
     {
         // Set UA for SimpleTests which typically extend BrowserTestCase (i.e. contrib modules).
         if (isset($this->databasePrefix) && function_exists('drupal_generate_test_ua') && !isset($env['HTTP_USER_AGENT'])) {
@@ -83,14 +82,9 @@ trait DrushTestTrait
     }
 
     /**
-     * Given an option key / value pair, convert to a
-     * "--key=value" string.
-     *
-     * @param string $key The option name
-     * @param string $value The option value (or empty)
-     * @return string
+     * Given an option key / value pair, convert to a "--key=value" string.
      */
-    protected function convertKeyValueToFlag(string $key, ?string $value)
+    protected function convertKeyValueToFlag(string $key, ?string $value): string
     {
         if (!isset($value)) {
             return "--$key";
@@ -101,9 +95,9 @@ trait DrushTestTrait
     /**
      * Return the major version of Drush
      *
-     * @return string e.g. "8" or "9"
+     * @return int e.g. 11 or 12 or ...
      */
-    public function drushMajorVersion()
+    public function drushMajorVersion(): int
     {
         static $major;
 

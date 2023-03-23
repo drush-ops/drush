@@ -1,16 +1,23 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Custom\Library\Drush\Generators;
 
-use DrupalCodeGenerator\Command\Generator;
+use DrupalCodeGenerator\Asset\AssetCollection;
+use DrupalCodeGenerator\Attribute\Generator;
+use DrupalCodeGenerator\Command\BaseGenerator;
+use DrupalCodeGenerator\GeneratorType;
 
-class CustomGenerator extends Generator
+#[Generator(
+    name: 'drush:testing-generator',
+    description: 'An internal generator used for tests',
+    type: GeneratorType::OTHER,
+)]
+class CustomGenerator extends BaseGenerator
 {
-    protected string $name = 'drush:testing-generator';
-    protected string $description = 'An internal generator used for tests';
-
-    public function generate(&$vars): void
+    public function generate(array &$vars, AssetCollection $assets): void
     {
-        $this->addFile('drush/foo.bar');
+        $assets->addFile('drush/foo.bar');
     }
 }

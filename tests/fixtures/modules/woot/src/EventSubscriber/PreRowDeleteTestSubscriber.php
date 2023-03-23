@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\woot\EventSubscriber;
 
 use Drupal\migrate\Event\MigrateRowDeleteEvent;
@@ -18,9 +20,6 @@ class PreRowDeleteTestSubscriber implements EventSubscriberInterface
         return ['migrate.pre_row_delete' => 'onPreRowDelete'];
     }
 
-    /**
-     * @param \Drupal\migrate\Event\MigrateRowDeleteEvent $event
-     */
     public function onPreRowDelete(MigrateRowDeleteEvent $event): void
     {
         // @see \Unish\MigrateRunnerTest::testMigrateImportAndRollback()

@@ -1,11 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drush\Preflight;
 
-use Drush\Drush;
 use Drush\Config\Environment;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
+use Drush\Drush;
 use Symfony\Component\Filesystem\Path;
 
 /**
@@ -39,21 +39,6 @@ class LegacyPreflight
          * @deprecated. Use $config->get('drush.base-dir') instead.
          */
         define('DRUSH_BASE_PATH', $environment->drushBasePath());
-
-        /*
-         * @deprecated. Use Drush::getVersion().
-         */
-        define('DRUSH_VERSION', Drush::getVersion());
-
-        /*
-         * @deprecated. Use Drush::getMajorVersion().
-         */
-        define('DRUSH_MAJOR_VERSION', Drush::getMajorVersion());
-
-        /*
-         * @deprecated. Use Drush::getMinorVersion().
-         */
-        define('DRUSH_MINOR_VERSION', Drush::getMinorVersion());
 
         /*
          * @deprecated.
