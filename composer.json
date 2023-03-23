@@ -52,14 +52,13 @@
     "webflo/drupal-finder": "^1.2"
   },
   "require-dev": {
-    "composer/installers": "^1.12",
+    "composer/installers": "^2",
     "cweagans/composer-patches": "~1.0",
     "drupal/core-recommended": "^10",
     "drupal/semver_example": "2.3.0",
     "phpunit/phpunit": ">=9",
     "rector/rector": "^0.12",
-    "squizlabs/php_codesniffer": "^3.7",
-    "vlucas/phpdotenv": "^2.4"
+    "squizlabs/php_codesniffer": "^3.7"
   },
   "conflict": {
     "drupal/core": "< 10.0",
@@ -78,9 +77,6 @@
     },
     "classmap": [
         "sut/core/modules/migrate/src"
-    ],
-    "files": [
-      "tests/load.environment.php"
     ]
   },
   "config": {
