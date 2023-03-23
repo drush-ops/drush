@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\woot\Plugin\migrate\source;
 
 use Drupal\migrate\Exception\RequirementsException;
@@ -28,7 +30,7 @@ class TestSourceWithMissedRequirements extends SourcePluginBase implements Requi
         return ['id' => ['type' => 'integer']];
     }
 
-    public function checkRequirements(): array
+    public function checkRequirements(): never
     {
         throw new RequirementsException('message', [
           'type1' => ['a', 'b', 'c'],

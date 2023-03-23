@@ -1,7 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drush;
 
+use Drush\Boot\DrupalBootLevels;
+use Robo\Runner;
 use Composer\Autoload\ClassLoader;
 use Consolidation\AnnotatedCommand\AnnotatedCommand;
 use Consolidation\AnnotatedCommand\CommandFileDiscovery;
@@ -53,14 +57,17 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
      */
     public function configureGlobalOptions()
     {
-        $this->getDefinition()
-            ->addOption(
-                new InputOption('--debug', 'd', InputOption::VALUE_NONE, 'Equivalent to -vv')
-            );
+        // Symfony 6.1+ has a --debug option for its completion command.
+        if ($this->getDefinition()->hasOption('--debug')) {
+            $this->getDefinition()
+                ->addOption(
+                    new InputOption('--debug', 'd', InputOption::VALUE_NONE, 'Equivalent to -vv')
+                );
+        }
 
         $this->getDefinition()
             ->addOption(
-                new InputOption('--yes', 'y', InputOption::VALUE_NONE, 'Equivalent to --no-interaction.')
+                new InputOption('--yes', 'y', InputOption::VALUE_NONE, 'Auto-accept the default for all user prompts. Equivalent to --no-interaction.')
             );
 
         // Note that -n belongs to Symfony Console's --no-interaction.
@@ -77,7 +84,7 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
 
         $this->getDefinition()
             ->addOption(
-                new InputOption('--uri', '-l', InputOption::VALUE_REQUIRED, 'Which multisite from the selected root to use.')
+                new InputOption('--uri', '-l', InputOption::VALUE_REQUIRED, 'A base URL for building links and selecting a multi-site. Defaults to <info>https://default</info>.')
             );
 
         $this->getDefinition()
@@ -171,8 +178,7 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
         if ($uri) {
             return $uri;
         }
-        $uri = $this->bootstrapManager()->selectUri($cwd);
-        return $uri;
+        return $this->bootstrapManager()->selectUri($cwd);
     }
 
     /**
@@ -220,7 +226,7 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
             $this->bootstrapManager->bootstrapMax();
             $this->logger->debug('Done with bootstrap max in Application::bootstrapAndFind(): trying to find {command} again.', ['command' => $name]);
 
-            if (!$this->bootstrapManager()->hasBootstrapped(DRUSH_BOOTSTRAP_DRUPAL_ROOT)) {
+            if (!$this->bootstrapManager()->hasBootstrapped(DrupalBootLevels::ROOT)) {
                 // Unable to progress in the bootstrap. Give friendly error message.
                 throw new CommandNotFoundException(dt('Command !command was not found. Pass --root or a @siteAlias in order to run Drupal-specific commands.', ['!command' => $name]));
             }
@@ -229,11 +235,11 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
             try {
                 return parent::find($name);
             } catch (CommandNotFoundException $e) {
-                if (!$this->bootstrapManager()->hasBootstrapped(DRUSH_BOOTSTRAP_DRUPAL_DATABASE)) {
+                if (!$this->bootstrapManager()->hasBootstrapped(DrupalBootLevels::DATABASE)) {
                     // Unable to bootstrap to DB. Give targetted error message.
                     throw new CommandNotFoundException(dt('Command !command was not found. Drush was unable to query the database. As a result, many commands are unavailable. Re-run your command with --debug to see relevant log messages.', ['!command' => $name]));
                 }
-                if (!$this->bootstrapManager()->hasBootstrapped(DRUSH_BOOTSTRAP_DRUPAL_FULL)) {
+                if (!$this->bootstrapManager()->hasBootstrapped(DrupalBootLevels::FULL)) {
                     // Unable to fully bootstrap. Give targetted error message.
                     throw new CommandNotFoundException(dt('Command !command was not found. Drush successfully connected to the database but was unable to fully bootstrap your site. As a result, many commands are unavailable. Re-run your command with --debug to see relevant log messages.', ['!command' => $name]));
                 } else {
@@ -324,7 +330,7 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
         // Use the robo runner to register commands with Symfony application.
         // This method could / should be refactored in Robo so that we can use
         // it without creating a Runner object that we would not otherwise need.
-        $runner = new \Robo\Runner();
+        $runner = new Runner();
         $runner->registerCommandClasses($this, $commandClasses);
     }
 

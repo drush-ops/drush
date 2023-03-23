@@ -1,8 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drush\Drupal\Commands\core;
 
 use Consolidation\AnnotatedCommand\AnnotatedCommand;
+use Drush\Attributes as CLI;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Drush\Psysh\DrushCommand;
@@ -14,31 +17,29 @@ use Drush\Utils\FsUtils;
 use Psy\Configuration;
 use Psy\VersionUpdater\Checker;
 
-class CliCommands extends DrushCommands
+final class CliCommands extends DrushCommands
 {
+    const DOCS_REPL = 'docs:repl';
+    const PHP = 'php:cli';
+
     /**
      * Drush's PHP Shell.
-     *
-     * @command docs:repl
-     * @aliases docs-repl
-     * @hidden
-     * @topic ../../../../docs/repl.md
      */
+    #[CLI\Command(name: self::DOCS_REPL, aliases: ['docs-repl'])]
+    #[CLI\Help(hidden: true)]
+    #[CLI\Topics(path: '../../../../docs/repl.md')]
     public function docs(): void
     {
         self::printFileTopic($this->commandData);
     }
 
     /**
-     * @command php:cli
-     * @description Open an interactive shell on a Drupal site.
-     * @aliases php,core:cli,core-cli
-     * @option $version-history Use command history based on Drupal version
-     *   (Default is per site).
-     * @option $cwd A directory to change to before launching the shell. Default is the project root directory
-     * @topics docs:repl
-     * @remote-tty
+     * Open an interactive shell on a Drupal site.
      */
+    #[CLI\Command(name: self::PHP, aliases: ['php,core:cli', 'core-cli'])]
+    #[CLI\Option(name: 'version-history', description: 'Use command history based on Drupal version. Default is per site.')]
+    #[CLI\Option(name: 'cwd', description: 'A directory to change to before launching the shell. Default is the project root directory')]
+    #[CLI\Topics(topics: [self::DOCS_REPL])]
     public function cli(array $options = ['version-history' => false, 'cwd' => self::REQ]): void
     {
         $configuration = new Configuration();
@@ -107,7 +108,7 @@ class CliCommands extends DrushCommands
 
         $ignored_commands = [
             'help',
-            'php:cli',
+            self::PHP,
             'core:cli',
             'php',
             'php:eval',
@@ -118,10 +119,7 @@ class CliCommands extends DrushCommands
         ];
         $php_keywords = $this->getPhpKeywords();
 
-        /** @var AnnotatedCommand $command */
         foreach ($commands as $name => $command) {
-            $definition = $command->getDefinition();
-
             // Ignore some commands that don't make sense inside PsySH, are PHP keywords
             // are hidden, or are aliases.
             if (in_array($name, $ignored_commands) || in_array($name, $php_keywords) || ($name !== $command->getName())) {

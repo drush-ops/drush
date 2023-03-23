@@ -1,40 +1,38 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drush\Commands\core;
 
 use Consolidation\SiteProcess\Util\Escape;
+use Drush\Attributes as CLI;
+use Drush\Boot\DrupalBootLevels;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
 use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
 use Drush\Exec\ExecTrait;
 
-class EditCommands extends DrushCommands implements SiteAliasManagerAwareInterface
+final class EditCommands extends DrushCommands implements SiteAliasManagerAwareInterface
 {
     use SiteAliasManagerAwareTrait;
     use ExecTrait;
 
+    const EDIT = 'core:edit';
+
     /**
      * Edit drush.yml, site alias, and Drupal settings.php files.
-     *
-     * @command core:edit
-     * @bootstrap max
-     * @param $filter A substring for filtering the list of files. Omit this argument to choose from loaded files.
-     * @optionset_get_editor
-     * @usage drush core:config
-     *   Pick from a list of config/alias/settings files. Open selected in editor.
-     * @usage drush --bg core-config
-     *   Return to shell prompt as soon as the editor window opens.
-     * @usage drush core:config etc
-     *   Edit the global configuration file.
-     * @usage drush core:config demo.alia
-     * Edit a particular alias file.
-     * @usage drush core:config sett
-     *   Edit settings.php for the current Drupal site.
-     * @usage drush core:config --choice=2
-     *  Edit the second file in the choice list.
-     * @aliases conf,config,core-edit
      */
+    #[CLI\Command(name: self::EDIT, aliases: ['conf', 'config', 'core-edit'])]
+    #[CLI\Argument(name: 'filter', description: 'A substring for filtering the list of files. Omit this argument to choose from loaded files.')]
+    #[CLI\Usage(name: 'drush core:edit', description: 'Pick from a list of config/alias/settings files. Open selected in editor.')]
+    #[CLI\Usage(name: 'drush --bg core-config', description: 'Return to shell prompt as soon as the editor window opens.')]
+    #[CLI\Usage(name: 'drush core:edit etc', description: 'Edit the global configuration file.')]
+    #[CLI\Usage(name: 'drush core:edit demo.alia', description: 'Edit a particular alias file.')]
+    #[CLI\Usage(name: 'drush core:edit sett', description: 'Edit settings.php for the current Drupal site.')]
+    #[CLI\Usage(name: 'drush core:edit --choice=2', description: 'Edit the second file in the choice list.')]
+    #[CLI\Bootstrap(level: DrupalBootLevels::MAX)]
+    #[CLI\HookSelector(name: 'optionset_get_editor')]
     public function edit($filter = null, array $options = []): void
     {
         $all = $this->load();
@@ -42,7 +40,7 @@ class EditCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
         // Apply any filter that was supplied.
         if ($filter) {
             foreach ($all as $file => $display) {
-                if (strpos($file, $filter) === false) {
+                if (!str_contains($file, $filter)) {
                     unset($all[$file]);
                 }
             }
@@ -69,7 +67,7 @@ class EditCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
 
     public function load($headers = true): array
     {
-        $php_header = $php = $rcs_header = $rcs = $aliases_header = $aliases = $drupal_header = $drupal = [];
+        $php_header = $rcs_header = $aliases_header = $drupal_header = $drupal = [];
         $php = $this->phpIniFiles();
         if (!empty($php)) {
             if ($headers) {
@@ -100,7 +98,7 @@ class EditCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
             }
         }
 
-        if (Drush::bootstrapManager()->hasBootstrapped(DRUSH_BOOTSTRAP_DRUPAL_FULL)) {
+        if (Drush::bootstrapManager()->hasBootstrapped(DrupalBootLevels::FULL)) {
             $site_root = \Drupal::service('kernel')->getSitePath();
             $path = realpath($site_root . '/settings.php');
             $drupal[$path] = $path;

@@ -1,8 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drush\Commands\core;
 
 use Drupal;
+use Drush\Attributes as CLI;
 use Drush\Boot\DrupalBootLevels;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
@@ -17,13 +20,14 @@ use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Filesystem\Path;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Yaml\Yaml;
 use Traversable;
-use Webmozart\PathUtil\Path;
 
-class ArchiveDumpCommands extends DrushCommands
+final class ArchiveDumpCommands extends DrushCommands
 {
+    const DUMP = 'archive:dump';
     private Filesystem $filesystem;
     private string $archiveDir;
     private string $drupalFilesDir;
@@ -44,59 +48,42 @@ class ArchiveDumpCommands extends DrushCommands
      * Backup your code, files, and database into a single file.
      *
      * The following paths would be excluded from a code archive:
-     *  - ".git"
-     *  - "vendor"
-     *  - "[docroot]/sites/@/settings.@.php"
+     *
+     *  - .git
+     *  - vendor
+     *  - [docroot]/sites/@/settings.@.php
      *  - Drupal files directory
      *  - Composer packages installed paths (`composer info --path --format=json`)
      *
      * The following directories would be excluded from a file archive:
+     *
      * - css
      * - js
      * - styles
      * - php
-     *
-     * @command archive:dump
-     * @validate-php-extension Phar
-     * @aliases ard
-     *
-     * @option destination The full path and filename in which the archive should be stored. If omitted, it will be saved to the drush-backups directory.
-     * @option overwrite Overwrite destination file if exists.
-     * @option code Archive codebase.
-     * @option exclude-code-paths Comma-separated list of paths (or regular expressions matching paths) to exclude from the code archive.
-     * @option files Archive Drupal files.
-     * @option db Archive database SQL dump.
-     * @option description Describe the archive contents.
-     * @option tags Add tags to the archive manifest. Delimit several by commas.
-     * @option generator The generator name to store in the MANIFEST.yml file. The default is "Drush archive-dump".
-     * @option generatorversion The generator version number to store in the MANIFEST file. The default is Drush version.
-     *
-     * @usage drush archive:dump
-     *   Create a site archive file in a temporary directory containing code, database and Drupal files.
-     * @usage drush archive:dump --destination=/path/to/archive.tar.gz
-     *   Create /path/to/archive.tar.gz file containing code, database and Drupal files.
-     * @usage drush archive:dump --destination=/path/to/archive.tar.gz --overwrite
-     *   Create (or overwrite if exists) /path/to/archive.tar.gz file containing code, database and Drupal files.
-     * @usage drush archive:dump --code --destination=/path/to/archive.tar.gz
-     *   Create /path/to/archive.tar.gz file containing the code only.
-     * @usage drush archive:dump --exclude-code-paths=foo_bar.txt,web/sites/.+/settings.php --destination=/path/to/archive.tar.gz
-     *   Create /path/to/archive.tar.gz file containing code, database and Drupal files but excluding foo_bar.txt file and settings.php files if found in web/sites/* subdirectories.
-     * @usage drush archive:dump --files --destination=/path/to/archive.tar.gz
-     *   Create /path/to/archive.tar.gz file containing the Drupal files only.
-     * @usage drush archive:dump --database --destination=/path/to/archive.tar.gz
-     *   Create /path/to/archive.tar.gz archive file containing the database dump only.
-     *
-     * @optionset_sql
-     * @optionset_table_selection
-     *
-     * @bootstrap max configuration
-     *
-     * @param array $options
-     *
-     * @return string
-     *
-     * @throws \Exception
      */
+    #[CLI\Command(name: self::DUMP, aliases: ['ard'])]
+    #[CLI\ValidatePhpExtensions(extensions: ['Phar'])]
+    #[CLI\Option(name: 'destination', description: 'The full path and filename in which the archive should be stored. If omitted, it will be saved to the drush-backups directory.')]
+    #[CLI\Option(name: 'overwrite', description: 'Overwrite destination file if exists.')]
+    #[CLI\Option(name: 'code', description: 'Archive codebase.')]
+    #[CLI\Option(name: 'exclude-code-paths', description: 'Comma-separated list of paths (or regular expressions matching paths) to exclude from the code archive.')]
+    #[CLI\Option(name: 'files', description: 'Archive Drupal files.')]
+    #[CLI\Option(name: 'db', description: 'Archive database SQL dump.')]
+    #[CLI\Option(name: 'description', description: 'Describe the archive contents.')]
+    #[CLI\Option(name: 'tags', description: 'Add tags to the archive manifest. Delimit several by commas.')]
+    #[CLI\Option(name: 'generator', description: 'The generator name to store in the MANIFEST.yml file. The default is "Drush archive-dump".')]
+    #[CLI\Option(name: 'generatorversion', description: 'The generator version number to store in the MANIFEST file. The default is Drush version.')]
+    #[CLI\Usage(name: 'drush archive:dump', description: 'Create a site archive file in a temporary directory containing code, database and Drupal files.')]
+    #[CLI\Usage(name: 'drush archive:dump --destination=/path/to/archive.tar.gz', description: 'Create /path/to/archive.tar.gz file containing code, database and Drupal files.')]
+    #[CLI\Usage(name: 'drush archive:dump --destination=/path/to/archive.tar.gz --overwrite', description: 'Create (or overwrite if exists) /path/to/archive.tar.gz file containing code, database and Drupal files.')]
+    #[CLI\Usage(name: 'drush archive:dump --code --destination=/path/to/archive.tar.gz', description: 'Create /path/to/archive.tar.gz file containing the code only.')]
+    #[CLI\Usage(name: 'drush archive:dump --exclude-code-paths=foo_bar.txt,web/sites/.+/settings.php --destination=/path/to/archive.tar.gz', description: 'Create /path/to/archive.tar.gz file containing code, database and Drupal files but excluding foo_bar.txt file and settings.php files if found in web/sites/* subdirectories.')]
+    #[CLI\Usage(name: 'drush archive:dump --files --destination=/path/to/archive.tar.gz', description: 'Create /path/to/archive.tar.gz file containing the Drupal files only.')]
+    #[CLI\Usage(name: 'drush archive:dump --database --destination=/path/to/archive.tar.gz', description: 'Create /path/to/archive.tar.gz archive file containing the database dump only.')]
+    #[CLI\OptionsetTableSelection]
+    #[CLI\OptionsetSql]
+    #[CLI\Bootstrap(level: DrupalBootLevels::MAX, max_level: DrupalBootLevels::CONFIGURATION)]
     public function dump(array $options = [
         'code' => false,
         'files' => false,
@@ -339,7 +326,7 @@ class ArchiveDumpCommands extends DrushCommands
         $installedPackagesRelativePaths = array_unique(
             array_filter(
                 $installedPackagesRelativePaths,
-                fn($path) => '' !== $path && 0 !== strpos($path, 'vendor')
+                fn($path) => '' !== $path && !str_starts_with($path, 'vendor')
             )
         );
         $excludeDirs = array_merge($excludeDirs, $installedPackagesRelativePaths);
@@ -444,7 +431,7 @@ class ArchiveDumpCommands extends DrushCommands
                     FilesystemIterator::SKIP_DOTS
                 ),
                 function ($file) use ($excludes, $path) {
-                    $localFileName = str_replace($path, '', $file);
+                    $localFileName = str_replace($path, '', (string)$file);
                     $localFileName = str_replace('\\', '/', $localFileName);
                     $localFileName = trim($localFileName, '\/');
 
@@ -459,7 +446,7 @@ class ArchiveDumpCommands extends DrushCommands
                         }
                     }
 
-                    $this->validateSensitiveData($file, $localFileName);
+                    $this->validateSensitiveData((string)$file, $localFileName);
 
                     return true;
                 }
@@ -578,23 +565,19 @@ class ArchiveDumpCommands extends DrushCommands
 
     /**
      * Provides basic verification/correction on destination option.
-     *
-     * @param string $destination
-     *
-     * @return void
      */
-    private function destinationCleanup($destination)
+    private function destinationCleanup(string $destination): string
     {
         // User input may be in the wrong format, this performs some basic
         // corrections. The correct format should include a .tar.gz.
-        if (substr($destination, -7) !== ".tar.gz") {
+        if (!str_ends_with($destination, ".tar.gz")) {
             // If the user provided .tar but not .gz.
-            if (substr($destination, -4) === ".tar") {
+            if (str_ends_with($destination, ".tar")) {
                 return $destination . ".gz";
             }
 
             // If neither, the user provided a directory.
-            if (substr($destination, -1) === "/") {
+            if (str_ends_with($destination, "/")) {
                 return $destination . "archive.tar.gz";
             } else {
                 return $destination . "/archive.tar.gz";

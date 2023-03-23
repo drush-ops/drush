@@ -5,7 +5,7 @@ use Consolidation\AnnotatedCommand\AnnotationData;
 use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\AnnotatedCommand\Events\CustomEventAwareInterface;
 use Consolidation\AnnotatedCommand\Events\CustomEventAwareTrait;
-use Consolidation\Log\ConsoleLogLevel;
+use Drush\Log\SuccessInterface;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Drush\Drush;
 use Symfony\Component\Console\Input\ArgvInput;
@@ -44,8 +44,8 @@ class SimpleSutCommands extends DrushCommands
      */
     public function customLogger(InputInterface $argv, AnnotationData $annotationData): void
     {
-        $verbosityLevelMap = [ConsoleLogLevel::SUCCESS => OutputInterface::VERBOSITY_NORMAL];
-        $formatLevelMap = [ConsoleLogLevel::SUCCESS => \Psr\Log\LogLevel::INFO];
+        $verbosityLevelMap = [SuccessInterface::SUCCESS => OutputInterface::VERBOSITY_NORMAL];
+        $formatLevelMap = [SuccessInterface::SUCCESS => \Psr\Log\LogLevel::INFO];
         // One could use Monolog if desired.
         // Drush expects custom loggers to always write to stderr, so dont use ConsoleLogger directly,
         $newLogger = new ConsoleLogger(Drush::output(), $verbosityLevelMap, $formatLevelMap);

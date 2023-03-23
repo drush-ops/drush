@@ -1,6 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Unish;
+
+use Drush\Commands\sql\SqlCommands;
 
 /**
  * Tests sql-connect command
@@ -16,7 +20,7 @@ class SqlConnectTest extends CommandUnishTestCase
     {
         $this->setUpDrupal(1, true);
         // Get the connection details with sql-connect and check its structure.
-        $this->drush('sql-connect');
+        $this->drush(SqlCommands::CONNECT);
         $connectionString = $this->getOutput();
 
         // Not all drivers need -e option like sqlite

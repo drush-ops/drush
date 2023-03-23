@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\woot\Commands;
 
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
@@ -15,7 +17,7 @@ class WootCommands
      * @command woot
      * @aliases wt
      */
-    public function woot()
+    public function woot(): string
     {
         return 'Woot!';
     }
@@ -34,7 +36,7 @@ class WootCommands
      * @usage bet alpha --flip
      *   Concatinate "alpha" and "bet".
      */
-    public function myCat($one, $two = '', $options = ['flip' => false])
+    public function myCat($one, $two = '', $options = ['flip' => false]): string
     {
         if ($options['flip']) {
             return "{$two}{$one}";
@@ -59,9 +61,8 @@ class WootCommands
      * @usage try:formatters --fields=III,II
      *   Emit other fields.
      * @aliases try-formatters
-     * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
      */
-    public function tryFormatters($options = ['format' => 'table', 'fields' => ''])
+    public function tryFormatters($options = ['format' => 'table', 'fields' => '']): RowsOfFields
     {
         $outputData = [
             'en' => [ 'first' => 'One',  'second' => 'Two',  'third' => 'Three' ],

@@ -3,7 +3,10 @@
 namespace Drush\Commands;
 
 use Consolidation\AnnotatedCommand\CommandData;
+use Consolidation\AnnotatedCommand\Hooks\HookManager;
+use Drush\Attributes as CLI;
 use Drush\Commands\DrushCommands;
+use Drush\Commands\sql\SqlSyncCommands;
 use Drush\Drush;
 use Drush\Exec\ExecTrait;
 use Symfony\Component\Filesystem\Filesystem;
@@ -21,12 +24,11 @@ class SyncViaHttpCommands extends DrushCommands
    * allow the new option to be specified on the command line.  Without
    * this, Drush will fail with an error when a user attempts to use
    * an unknown option.
-   *
-   * @hook option sql-sync
-   * @option http-sync Copy the database via http instead of rsync.  Value is the url that the existing database dump can be found at.
-   * @option http-sync-user Username for the protected directory containing the sql dump.
-   * @option http-sync-password Password for the same directory.
    */
+    #[CLI\Hook(type: HookManager::OPTION_HOOK, target: SqlSyncCommands::SYNC)]
+    #[CLI\Option(name: 'http-sync', description: 'Copy the database via http instead of rsync.  Value is the url that the existing database dump can be found at.')]
+    #[CLI\Option(name: 'http-sync-user', description: 'Username for the protected directory containing the sql dump.')]
+    #[CLI\Option(name: 'http-sync-password', description: 'Password for the same directory.')]
     public function optionsetSqlSync()
     {
     }
@@ -36,9 +38,8 @@ class SyncViaHttpCommands extends DrushCommands
      * specified.  If it has been, then disable the normal ssh + rsync
      * dump-and-transfer that sql-sync usually does, and transfer the
      * database dump via an http download.
-     *
-     * @hook pre-command sql-sync
      */
+    #[CLI\Hook(type: HookManager::PRE_COMMAND_HOOK, target: SqlSyncCommands::SYNC)]
     public function preSqlSync(CommandData $commandData)
     {
         $sql_dump_download_url = $commandData->input()->getOption('http-sync');

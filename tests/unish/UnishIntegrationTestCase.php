@@ -1,20 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Unish;
 
-use Drush\Config\Environment;
-use Drush\Drush;
-use Drush\Preflight\Preflight;
-use Drush\Runtime\DependencyInjection;
-use Drush\Runtime\Runtime;
-use Drush\Symfony\LessStrictArgvInput;
-use PHPUnit\Framework\TestResult;
-use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Process\Exception\ProcessTimedOutException;
-use Symfony\Component\Process\Process;
-use Unish\Controllers\RuntimeController;
 use Drush\TestTraits\OutputUtilsTrait;
-use Webmozart\PathUtil\Path;
+use Symfony\Component\Console\Output\OutputInterface;
+use Unish\Controllers\RuntimeController;
 
 /**
  * UnishIntegrationTestCase will prepare a single Drupal site and
@@ -32,13 +24,13 @@ abstract class UnishIntegrationTestCase extends UnishTestCase
 {
     use OutputUtilsTrait;
 
-    protected $stdout = '';
-    protected $stderr = '';
+    protected string $stdout = '';
+    protected string $stderr = '';
 
     /**
      * @inheritdoc
      */
-    public function getOutputRaw()
+    public function getOutputRaw(): string
     {
         return $this->stdout;
     }
@@ -46,7 +38,7 @@ abstract class UnishIntegrationTestCase extends UnishTestCase
     /**
      * @inheritdoc
      */
-    public function getErrorOutputRaw()
+    public function getErrorOutputRaw(): string
     {
         return $this->stderr;
     }
@@ -56,19 +48,17 @@ abstract class UnishIntegrationTestCase extends UnishTestCase
      *
      * @param $command
      *   A defined drush command such as 'cron', 'status' and so on
-     * @param array $args
+     * @param $args
      *   Command arguments.
-     * @param array $options
+     * @param $options
      *   An associative array containing options.
-     * @param int $expected_return
+     * @param $expected_return
      *   The expected exit code. Usually self::EXIT_ERROR or self::EXIT_SUCCESS.
-     * @param string|bool $stdin
+     * @param $stdin
      *   A string that will be written to a tmp file. Note that the command you
      *   are testing must implement StdinAwareInterface.
-     * @return integer
-     *   An exit code.
      */
-    public function drush($command, array $args = [], array $options = [], $expected_return = self::EXIT_SUCCESS, $stdin = false)
+    public function drush(string $command, array $args = [], array $options = [], ?int $expected_return = self::EXIT_SUCCESS, string|bool $stdin = false): ?int
     {
         // Install the SUT if necessary
         if (!RuntimeController::instance()->initialized()) {
@@ -108,14 +98,14 @@ abstract class UnishIntegrationTestCase extends UnishTestCase
         return $return;
     }
 
-    protected function setStdin($contents)
+    protected function setStdin($contents): void
     {
         $path = $this->writeToTmpFile($contents);
         $stdinHandler = RuntimeController::instance()->stdinHandler();
         $stdinHandler->redirect($path);
     }
 
-    protected function buildCommandLine($command, $args, $options)
+    protected function buildCommandLine($command, $args, $options): array
     {
         $global_option_list = ['simulate', 'root', 'uri', 'include', 'config', 'alias-path', 'ssh-options', 'cd'];
         $options += ['root' => $this->webroot(), 'uri' => self::INTEGRATION_TEST_ENV]; // Default value.
@@ -152,7 +142,8 @@ abstract class UnishIntegrationTestCase extends UnishTestCase
 
         // Insert drush command arguments.
         foreach ($args as $arg) {
-            $cmd[] = $arg;
+            // Cast because on CLI all args are strings.
+            $cmd[] = (string)$arg;
         }
         // insert drush command options
         foreach ($options as $key => $values) {
@@ -176,7 +167,7 @@ abstract class UnishIntegrationTestCase extends UnishTestCase
         return $cmd;
     }
 
-    protected function assertOutputEquals($expected, $filter = '')
+    protected function assertOutputEquals($expected, $filter = ''): void
     {
         $output = $this->getSimplifiedOutput();
         if (!empty($filter)) {
@@ -192,12 +183,12 @@ abstract class UnishIntegrationTestCase extends UnishTestCase
      * absolute paths and duplicate whitespace removed, to avoid false negatives
      * on minor differences.
      *
-     * @param string $expected
+     * @param $expected
      *   The expected output.
-     * @param string $filter
+     * @param $filter
      *   Optional regular expression that should be ignored in the error output.
      */
-    protected function assertErrorOutputEquals($expected, $filter = '')
+    protected function assertErrorOutputEquals(string $expected, string $filter = ''): void
     {
         $output = $this->getSimplifiedErrorOutput();
         if (!empty($filter)) {
@@ -213,12 +204,12 @@ abstract class UnishIntegrationTestCase extends UnishTestCase
      * absolute paths and duplicate whitespace removed, to avoid false negatives
      * on minor differences.
      *
-     * @param string $expected
+     * @param $expected
      *   The expected output.
-     * @param string $filter
+     * @param $filter
      *   Optional regular expression that should be ignored in the error output.
      */
-    protected function assertErrorOutputContains($expected, $filter = '')
+    protected function assertErrorOutputContains(string $expected, string $filter = ''): void
     {
         $output = $this->getSimplifiedErrorOutput();
         if (!empty($filter)) {

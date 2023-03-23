@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drush\Utils;
 
 use Drush\Drush;
 use Drush\Sql\SqlBase;
 use finfo;
 use Symfony\Component\Filesystem\Filesystem;
-use Webmozart\PathUtil\Path;
+use Symfony\Component\Filesystem\Path;
 
 class FsUtils
 {
@@ -308,7 +310,7 @@ class FsUtils
                 '.sql'     => 'application/octet-stream',
             ];
             foreach ($extension_mimetype as $extension => $ct) {
-                if (substr($path, -strlen($extension)) === $extension) {
+                if (str_ends_with($path, $extension)) {
                     $content_type = $ct;
                     break;
                 }

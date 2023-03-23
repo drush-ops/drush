@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\woot\EventSubscriber;
 
+use Drush\Drush;
 use Drush\Drupal\Migrate\MigrateEvents;
 use Drush\Drupal\Migrate\MigratePrepareRowEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -21,15 +24,13 @@ class ProcessRowTestSubscriber implements EventSubscriberInterface
 
     /**
      * Reacts when a migrate row is being prepared.
-     *
-     * @param \Drush\Drupal\Migrate\MigratePrepareRowEvent $event The prepare row migrate event.
      */
     public function onPrepareRow(MigratePrepareRowEvent $event)
     {
         // Log only in MigrateRunnerTest::testMigrateImportAndRollback() test.
         // @see \Unish\MigrateRunnerTest::testMigrateImportAndRollback()
         if (\Drupal::state()->get('woot.migrate_runner.trigger_failures')) {
-            \Drush\Drush::logger()
+            Drush::logger()
               ->notice("MigrateEvents::DRUSH_MIGRATE_PREPARE_ROW fired for row with ID {$event->getRow()->getSourceProperty('id')}");
         }
     }

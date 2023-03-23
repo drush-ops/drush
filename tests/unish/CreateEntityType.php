@@ -2,7 +2,7 @@
 
 namespace Unish;
 
-use Webmozart\PathUtil\Path;
+use Symfony\Component\Filesystem\Path;
 
 class CreateEntityType
 {
@@ -12,35 +12,68 @@ class CreateEntityType
     public static function createContentEntity($testCase): void
     {
         $answers = [
-            'name' => 'Unish Article',
-            'machine_name' => 'unish_article',
-            'description' => 'A test module',
-            'package' => 'Unish',
-            'dependencies' => 'drupal:text',
+             // Module name?
+            'Unish Article',
+             // Module machine name?
+            'unish_article',
+             // Module description?
+            'A test module.',
+             // Package.
+            'Unish',
+             // Dependencies (comma separated).
+            'drupal:text',
+             // Would you like to create module file?
+            'No',
+             // Would you like to create install file?
+            'No',
+             // Would you like to create README.md file?
+            'No',
         ];
         $testCase->drush('generate', ['module'], ['verbose' => null, 'answer' => $answers, 'destination' => Path::join($testCase->webroot(), 'modules/contrib')], null, null, $testCase::EXIT_SUCCESS, null, ['SHELL_INTERACTIVE' => 1]);
 
         // Create a content entity type and enable its module.
         // Note that only the values below are used. The keys are for documentation.
         $answers = [
-            'name' => 'unish_article',
-            'entity_type_label' => 'UnishArticle',
-            'entity_type_id' => 'unish_article',
-            'entity_base_path' => 'admin/content/unish_article',
-            'fieldable' => 'yes',
-            'revisionable' => 'no',
-            'translatable' => 'no',
-            'bundle' => 'Yes',
-            'canonical page' => 'No',
-            'entity template' => 'No',
-            'CRUD permissions' => 'No',
-            'label base field' => 'Yes',
-            'status_base_field' => 'yes',
-            'created_base_field' => 'yes',
-            'changed_base_field' => 'yes',
-            'author_base_field' => 'yes',
-            'description_base_field' => 'no',
-            'rest_configuration' => 'no',
+            // Module machine name.
+            'unish_article',
+            // Module name.
+            'Unish Article',
+            // Entity type label.
+            'Unish Article',
+            // Entity type ID.
+            'unish_article',
+            // Entity class.
+            'UnishArticle',
+            // Entity base path.
+            '/admin/content/unish_article',
+            // Make the entity type fieldable?
+            'yes',
+            // Make the entity type revisionable?
+            'no',
+            // Make the entity type translatable?
+            'no',
+            // The entity type has bundle?
+            'Yes',
+            // Create canonical page?
+            'No',
+            // Create entity template?
+            'No',
+            // Create CRUD permissions?
+            'No',
+            // Add "label" base field?
+            'Yes',
+            // Add "status" base field?
+            'yes',
+            // Add "created" base field?
+            'yes',
+            // Add "changed" base field?
+            'yes',
+            // Add "author" base field?
+            'yes',
+            // Add "description" base field?
+            'no',
+            // Create REST configuration for the entity?
+            'no',
         ];
         $testCase->drush('generate', ['content-entity'], ['answer' => $answers, 'destination' => Path::join($testCase::webroot(), 'modules/contrib/unish_article')], null, null, $testCase::EXIT_SUCCESS, null, ['SHELL_INTERACTIVE' => 1]);
     }

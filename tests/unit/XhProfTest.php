@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Unish;
 
 use Drush\Commands\core\XhprofCommands;
@@ -30,7 +32,7 @@ class XhProfTest extends TestCase
   /**
    * Provides drush XHProf options and the results we expect from xh_flags().
    */
-    public function xhOptionProvider()
+    public static function xhOptionProvider()
     {
 
         if (!defined('XHPROF_FLAGS_NO_BUILTINS')) {

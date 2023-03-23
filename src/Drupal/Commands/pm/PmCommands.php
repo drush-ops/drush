@@ -1,8 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drush\Drupal\Commands\pm;
 
 use Consolidation\AnnotatedCommand\CommandData;
+use Consolidation\AnnotatedCommand\Hooks\HookManager;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Extension\MissingDependencyException;
@@ -10,13 +13,18 @@ use Drupal\Core\Extension\ModuleExtensionList;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Extension\ModuleInstallerInterface;
 use Drupal\Core\Extension\ThemeHandlerInterface;
+use Drush\Attributes as CLI;
+use Drush\Boot\DrupalBootLevels;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Drush\Exceptions\UserAbortException;
 use Drush\Utils\StringUtils;
 
-class PmCommands extends DrushCommands
+final class PmCommands extends DrushCommands
 {
+    const INSTALL = 'pm:install';
+    const UNINSTALL = 'pm:uninstall';
+    const LIST = 'pm:list';
     protected $configFactory;
 
     protected $moduleInstaller;
@@ -64,15 +72,11 @@ class PmCommands extends DrushCommands
 
     /**
      * Enable one or more modules.
-     *
-     * @command pm:install
-     * @param $modules A comma delimited list of modules.
-     * @aliases in, install, pm-install, en, pm-enable, pm:enable
-     * @bootstrap root
-     *
-     * @usage drush pm:install --simulate content_moderation
-     *    Display what modules would be installed but don't install them.
      */
+    #[CLI\Command(name: self::INSTALL, aliases: ['in', 'install', 'pm-install', 'en', 'pm-enable', 'pm:enable'])]
+    #[CLI\Argument(name: 'modules', description: 'A comma delimited list of modules.')]
+    #[CLI\Usage(name: 'drush pm:install --simulate content_moderation', description: "Display what modules would be installed but don't install them.")]
+    #[CLI\Bootstrap(level: DrupalBootLevels::ROOT)]
     public function install(array $modules): void
     {
         $modules = StringUtils::csvToArray($modules);
@@ -102,14 +106,9 @@ class PmCommands extends DrushCommands
 
     /**
      * Run requirements checks on the module installation.
-     *
-     * @hook validate pm:install
-     *
-     * @throws UserAbortException
-     * @throws MissingDependencyException
-     *
      * @see \drupal_check_module()
      */
+    #[CLI\Hook(type: HookManager::ARGUMENT_VALIDATOR, target: 'pm:install')]
     public function validateEnableModules(CommandData $commandData): void
     {
         $modules = $commandData->input()->getArgument('modules');
@@ -158,18 +157,25 @@ class PmCommands extends DrushCommands
 
     /**
      * Uninstall one or more modules and their dependent modules.
-     *
-     * @command pm:uninstall
-     * @param $modules A comma delimited list of modules.
-     * @aliases un,pmu,pm-uninstall
-     *
-     * @usage drush pm:uninstall --simulate field_ui
-     *      Display what modules would be uninstalled but don't uninstall them.
      */
+    #[CLI\Command(name: self::UNINSTALL, aliases: ['un', 'pmu', 'pm-uninstall'])]
+    #[CLI\Argument(name: 'modules', description: 'A comma delimited list of modules.')]
+    #[CLI\Usage(name: 'drush pm:uninstall --simulate field_ui', description: "Display what modules would be uninstalled but don't uninstall them.")]
     public function uninstall(array $modules): void
     {
         $modules = StringUtils::csvToArray($modules);
-        $list = $this->addUninstallDependencies($modules);
+
+        $installed_modules = array_filter($modules, function ($module) {
+            return $this->getModuleHandler()->moduleExists($module);
+        });
+        if ($installed_modules === []) {
+            throw new \Exception(dt('The following module(s) are not installed: !list. No modules to uninstall.', ['!list' => implode(', ', $modules)]));
+        }
+        if ($installed_modules !== $modules) {
+            $this->logger()->warning(dt('The following module(s) are not installed and will not be uninstalled: !list', ['!list' => implode(', ', array_diff($modules, $installed_modules))]));
+        }
+
+        $list = $this->addUninstallDependencies($installed_modules);
         if (Drush::simulate()) {
             $this->output()->writeln(dt('The following extensions will be uninstalled: !list', ['!list' => implode(', ', $list)]));
             return;
@@ -187,9 +193,7 @@ class PmCommands extends DrushCommands
         $this->logger()->success(dt('Successfully uninstalled: !list', ['!list' => implode(', ', $list)]));
     }
 
-    /**
-     * @hook validate pm-uninstall
-     */
+    #[CLI\Hook(type: HookManager::ARGUMENT_VALIDATOR, target: 'pm:uninstall')]
     public function validateUninstall(CommandData $commandData): void
     {
         if ($modules = $commandData->input()->getArgument('modules')) {
@@ -207,26 +211,25 @@ class PmCommands extends DrushCommands
 
     /**
      * Show a list of available extensions (modules and themes).
-     *
-     * @command pm:list
-     * @option type Only show extensions having a given type. Choices: module, theme.
-     * @option status Only show extensions having a given status. Choices: enabled or disabled.
-     * @option core Only show extensions that are in Drupal core.
-     * @option no-core Only show extensions that are not provided by Drupal core.
-     * @option package Only show extensions having a given project packages (e.g. Development).
-     * @field-labels
-     *   package: Package
-     *   project: Project
-     *   display_name: Name
-     *   name: Name
-     *   type: Type
-     *   path: Path
-     *   status: Status
-     *   version: Version
-     * @default-fields package,display_name,status,version
-     * @aliases pml,pm-list
-     * @filter-default-field display_name
      */
+    #[CLI\Command(name: self::LIST, aliases: ['pml', 'pm-list'])]
+    #[CLI\Option(name: 'type', description: 'Only show extensions having a given type. Choices: module, theme.', suggestedValues: ['module', 'theme'])]
+    #[CLI\Option(name: 'status', description: 'Only show extensions having a given status. Choices: enabled or disabled.', suggestedValues: ['enabled', 'disabled'])]
+    #[CLI\Option(name: 'core', description: 'Only show extensions that are in Drupal core.')]
+    #[CLI\Option(name: 'no-core', description: 'Only show extensions that are not provided by Drupal core.')]
+    #[CLI\Option(name: 'package', description: 'Only show extensions having a given project packages (e.g. Development).')]
+    #[CLI\FieldLabels(labels: [
+        'package' => 'Package',
+        'project' => 'Project',
+        'display_name' => 'Name',
+        'name' => 'Name',
+        'type' => 'Type',
+        'path' => 'Path',
+        'status' => 'Status',
+        'version' => 'Version',
+    ])]
+    #[CLI\DefaultTableFields(fields: ['package', 'display_name', 'status', 'version'])]
+    #[CLI\FilterDefaultField(field: 'display_name')]
     public function pmList($options = ['format' => 'table', 'type' => 'module,theme', 'status' => 'enabled,disabled', 'package' => self::REQ, 'core' => false, 'no-core' => false]): RowsOfFields
     {
         $rows = [];
@@ -235,7 +238,7 @@ class PmCommands extends DrushCommands
         $themes = $this->getThemeHandler()->rebuildThemeData();
         $both = array_merge($modules, $themes);
 
-        $package_filter = StringUtils::csvToArray(strtolower($options['package']));
+        $package_filter = StringUtils::csvToArray(strtolower((string) $options['package']));
         $type_filter = StringUtils::csvToArray(strtolower($options['type']));
         $status_filter = StringUtils::csvToArray(strtolower($options['status']));
 

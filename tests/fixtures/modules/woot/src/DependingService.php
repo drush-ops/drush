@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\woot;
 
 use Drupal\drush_empty_module\MuchServiceManyWow;

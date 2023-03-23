@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drush\Drupal\Commands\field;
 
 use Drupal\Core\Entity\EntityFieldManagerInterface;
@@ -7,6 +9,7 @@ use Drupal\Core\Entity\EntityTypeBundleInfoInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Field\BaseFieldDefinition;
 use Drupal\Core\Field\Entity\BaseFieldOverride;
+use Drush\Attributes as CLI;
 use Drush\Commands\DrushCommands;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
@@ -39,38 +42,21 @@ class FieldBaseOverrideCreateCommands extends DrushCommands
     /**
      * Create a new base field override
      *
-     * @command field:base-override-create
-     * @aliases bfoc
-     *
-     * @param string $entityType
-     *      The machine name of the entity type
-     * @param string $bundle
-     *      The machine name of the bundle
-     *
-     * @option field-name
-     *      A unique machine-readable name containing letters, numbers, and underscores.
-     * @option field-label
-     *      The field label
-     * @option field-description
-     *      The field description
-     * @option is-required
-     *      Whether the field is required
-     *
-     * @option show-machine-names
-     *      Show machine names instead of labels in option lists.
-     *
-     * @usage drush field:base-field-override-create
-     *      Create a base field override by answering the prompts.
-     * @usage drush field:base-field-override-create taxonomy_term tag
-     *      Create a base field override and fill in the remaining information through prompts.
-     * @usage drush field:base-field-override-create taxonomy_term tag --field-name=name --field-label=Label --is-required=1
-     *      Create a base field override in a completely non-interactive way.
-     *
      * @see \Drupal\field_ui\Form\FieldConfigEditForm
      * @see \Drupal\field_ui\Form\FieldStorageConfigEditForm
-     *
-     * @version 11.0
      */
+    #[CLI\Command(name: 'field:base-override-create', aliases: ['bfoc'])]
+    #[CLI\Argument(name: 'entityType', description: 'The machine name of the entity type.')]
+    #[CLI\Argument(name: 'bundle', description: 'The machine name of the bundle.')]
+    #[CLI\Option(name: 'field-name', description: 'A unique machine-readable name containing letters, numbers, and underscores.')]
+    #[CLI\Option(name: 'field-label', description: 'The field label')]
+    #[CLI\Option(name: 'field-description', description: 'The field description')]
+    #[CLI\Option(name: 'is-required', description: 'Whether the field is required')]
+    #[CLI\Option(name: 'show-machine-names', description: 'Show machine names instead of labels in option lists.')]
+    #[CLI\Usage(name: 'field:base-field-override-create', description: 'Create a base field override by answering the prompts.')]
+    #[CLI\Usage(name: 'field:base-field-override-create taxonomy_term tag', description: 'Create a base field override and fill in the remaining information through prompts.')]
+    #[CLI\Usage(name: 'field:base-field-override-create taxonomy_term tag --field-name=name --field-label=Label --is-required=1', description: 'Create a base field override in a completely non-interactive way.')]
+    #[CLI\Version(version: '11.0')]
     public function create(?string $entityType = null, ?string $bundle = null, array $options = [
         'field-name' => InputOption::VALUE_REQUIRED,
         'field-label' => InputOption::VALUE_REQUIRED,
@@ -89,8 +75,8 @@ class FieldBaseOverrideCreateCommands extends DrushCommands
         $this->input->setOption('field-name', $fieldName);
 
         if ($fieldName === '') {
-            throw new \InvalidArgumentException(dt('The %optionName option is required.', [
-                '%optionName' => 'field-name',
+            throw new \InvalidArgumentException(dt('The !optionName option is required.', [
+                '!optionName' => 'field-name',
             ]));
         }
 
@@ -100,9 +86,9 @@ class FieldBaseOverrideCreateCommands extends DrushCommands
 
         if ($definition === null) {
             throw new \InvalidArgumentException(
-                t("Base field with name ':fieldName' does not exist on bundle ':bundle'.", [
-                    ':fieldName' => $fieldName,
-                    ':bundle' => $bundle,
+                dt("Base field with name '!fieldName' does not exist on bundle '!bundle'.", [
+                    '!fieldName' => $fieldName,
+                    '!bundle' => $bundle,
                 ])
             );
         }

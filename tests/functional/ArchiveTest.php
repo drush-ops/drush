@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Unish;
 
 use PharData;
+use Symfony\Component\Filesystem\Path;
 use Symfony\Component\Process\Process;
 use Unish\Utils\FSUtils;
-use Webmozart\PathUtil\Path;
 
 /**
  * @group slow
@@ -64,7 +66,7 @@ class ArchiveTest extends CommandUnishTestCase
         $this->fixtureDatabaseSettings = json_decode($this->getOutput(), true);
         $this->fixtureDatabaseSettings['db-name'] = 'archive_dump_restore_test_' .  mt_rand();
         $dbUrlParts = explode(':', self::getDbUrl());
-        $this->fixtureDatabaseSettings['db-password'] = substr($dbUrlParts[2], 0, strpos($dbUrlParts[2], '@'));
+        $this->fixtureDatabaseSettings['db-password'] = substr($dbUrlParts[2], 0, (int)strpos((string)$dbUrlParts[2], '@'));
         $fixtureDbUrl = self::getDbUrl() . '/' . $this->fixtureDatabaseSettings['db-name'];
 
         $this->archiveRestoreOptions = [

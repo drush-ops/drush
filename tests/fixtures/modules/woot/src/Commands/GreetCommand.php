@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\woot\Commands;
 
 use Symfony\Component\Console\Command\Command;
@@ -16,7 +18,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class GreetCommand extends Command
 {
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('demo:greet')
@@ -35,7 +37,7 @@ class GreetCommand extends Command
         ;
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): void
     {
         $name = $input->getArgument('name');
         if ($name) {

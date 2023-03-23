@@ -1,16 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drush\Config;
 
+use Unish\Utils\Fixtures;
 use PHPUnit\Framework\TestCase;
-use Webmozart\PathUtil\Path;
+use Symfony\Component\Filesystem\Path;
 
 /**
  * Test the config loader. Also exercises the EnvironmentConfigLoader.
  */
 class ConfigLocatorTest extends TestCase
 {
-    use \Unish\Utils\Fixtures;
+    use Fixtures;
 
     /**
      * Test a config locator initialized only with data from the fixture's environment
