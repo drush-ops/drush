@@ -408,7 +408,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>                </
                     static&nbsp;void
                 </div>
                 <div class="col-md-8">
-                    <a href="#method_updateDoOne">updateDoOne</a>(string $module, int $number, array $dependency_map, DrushBatchContext $context)
+                    <a href="#method_updateDoOne">updateDoOne</a>(string $module, int $number, array $dependency_map, array $context)
         
                                             <p><p>Perform one update and store the results which will later be displayed on
 the finished page.</p></p>                </div>
@@ -419,7 +419,7 @@ the finished page.</p></p>                </div>
                     static&nbsp;void
                 </div>
                 <div class="col-md-8">
-                    <a href="#method_updateDoOnePostUpdate">updateDoOnePostUpdate</a>(string $function, DrushBatchContext $context)
+                    <a href="#method_updateDoOnePostUpdate">updateDoOnePostUpdate</a>(string $function, array $context)
         
                                             <p><p>Batch command that executes a single post-update.</p></p>                </div>
                 <div class="col-md-2"></div>
@@ -944,7 +944,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_updatedb">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/UpdateDBCommands.php#L36">at line 36</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/UpdateDBCommands.php#L35">at line 35</a></div>
         <code>                    int
     <strong>updatedb</strong>($options = [&#039;cache-clear&#039; =&gt; true, &#039;post-updates&#039; =&gt; true])
         </code>
@@ -986,7 +986,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_updatedbStatus">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/UpdateDBCommands.php#L94">at line 94</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/UpdateDBCommands.php#L93">at line 93</a></div>
         <code>                    <abbr title="Drush\Commands\core\Consolidation\OutputFormatters\StructuredData\RowsOfFields">RowsOfFields</abbr>|null
     <strong>updatedbStatus</strong>($options = [&#039;format&#039; =&gt; &#039;table&#039;, &#039;post-updates&#039; =&gt; true])
         </code>
@@ -1028,7 +1028,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_process">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/UpdateDBCommands.php#L128">at line 128</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/UpdateDBCommands.php#L127">at line 127</a></div>
         <code>                    <abbr title="Consolidation\OutputFormatters\StructuredData\UnstructuredListData">UnstructuredListData</abbr>
     <strong>process</strong>(string $batch_id, $options = [&#039;format&#039; =&gt; &#039;json&#039;])
         </code>
@@ -1075,9 +1075,9 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_updateDoOne">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/UpdateDBCommands.php#L161">at line 161</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/UpdateDBCommands.php#L160">at line 160</a></div>
         <code>        static            void
-    <strong>updateDoOne</strong>(string $module, int $number, array $dependency_map, DrushBatchContext $context)
+    <strong>updateDoOne</strong>(string $module, int $number, array $dependency_map, array $context)
         </code>
     </h3>
     <div class="details">    
@@ -1114,7 +1114,7 @@ have not yet been run.</p>
                 <td><p>The update dependency map.</p></td>
             </tr>
                     <tr>
-                <td>DrushBatchContext</td>
+                <td>array</td>
                 <td>$context</td>
                 <td><p>The batch context object.</p></td>
             </tr>
@@ -1139,9 +1139,9 @@ have not yet been run.</p>
             </div>
                     <div class="method-item">
                     <h3 id="method_updateDoOnePostUpdate">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/UpdateDBCommands.php#L262">at line 262</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/UpdateDBCommands.php#L257">at line 257</a></div>
         <code>        static            void
-    <strong>updateDoOnePostUpdate</strong>(string $function, DrushBatchContext $context)
+    <strong>updateDoOnePostUpdate</strong>(string $function, array $context)
         </code>
     </h3>
     <div class="details">    
@@ -1162,7 +1162,7 @@ have not yet been run.</p>
 The batch context object.</p></td>
             </tr>
                     <tr>
-                <td>DrushBatchContext</td>
+                <td>array</td>
                 <td>$context</td>
                 <td></td>
             </tr>
@@ -1187,7 +1187,7 @@ The batch context object.</p></td>
             </div>
                     <div class="method-item">
                     <h3 id="method_updateFinished">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/UpdateDBCommands.php#L353">at line 353</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/UpdateDBCommands.php#L344">at line 344</a></div>
         <code>                    void
     <strong>updateFinished</strong>(bool $success, array $results, array $operations)
         </code>
@@ -1239,7 +1239,7 @@ The batch context object.</p></td>
             </div>
                     <div class="method-item">
                     <h3 id="method_updateBatch">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/UpdateDBCommands.php#L368">at line 368</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/UpdateDBCommands.php#L359">at line 359</a></div>
         <code>                    bool
     <strong>updateBatch</strong>($options)
         </code>
@@ -1281,7 +1281,7 @@ The batch context object.</p></td>
             </div>
                     <div class="method-item">
                     <h3 id="method_restoreMaintMode">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/UpdateDBCommands.php#L454">at line 454</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/UpdateDBCommands.php#L445">at line 445</a></div>
         <code>        static            void
     <strong>restoreMaintMode</strong>($status)
         </code>
@@ -1324,7 +1324,7 @@ The batch context object.</p></td>
             </div>
                     <div class="method-item">
                     <h3 id="method_getUpdateList">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/UpdateDBCommands.php#L460">at line 460</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/UpdateDBCommands.php#L451">at line 451</a></div>
         <code>                    array
     <strong>getUpdateList</strong>()
         </code>
@@ -1357,7 +1357,7 @@ The batch context object.</p></td>
             </div>
                     <div class="method-item">
                     <h3 id="method_cacheRebuild">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/UpdateDBCommands.php#L486">at line 486</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/UpdateDBCommands.php#L477">at line 477</a></div>
         <code>        static            void
     <strong>cacheRebuild</strong>()
         </code>
@@ -1405,7 +1405,7 @@ HTTP request of the batch.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_getUpdatedbStatus">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/UpdateDBCommands.php#L507">at line 507</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/UpdateDBCommands.php#L498">at line 498</a></div>
         <code>                    array
     <strong>getUpdatedbStatus</strong>(array $options)
         </code>
@@ -1453,7 +1453,7 @@ pending update.</li>
             </div>
                     <div class="method-item">
                     <h3 id="method_updateCheckRequirements">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/UpdateDBCommands.php#L564">at line 564</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/UpdateDBCommands.php#L555">at line 555</a></div>
         <code>                    bool
     <strong>updateCheckRequirements</strong>()
         </code>
