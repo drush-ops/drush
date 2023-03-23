@@ -15,7 +15,6 @@ use Drupal\Core\Update\UpdateRegistry;
 use Drupal\Core\Utility\Error;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
-use DrushBatchContext;
 use Drush\Exceptions\UserAbortException;
 use Psr\Log\LogLevel;
 
@@ -154,7 +153,7 @@ final class DeployHookCommands extends DrushCommands implements SiteAliasManager
     /**
      * Batch command that executes a single deploy hook.
      */
-    public static function updateDoOneDeployHook(string $function, DrushBatchContext $context): void
+    public static function updateDoOneDeployHook(string $function, array $context): void
     {
         $ret = [];
 
@@ -232,12 +231,8 @@ final class DeployHookCommands extends DrushCommands implements SiteAliasManager
         if (!empty($ret['#abort'])) {
             // Record this function in the list of updates that were aborted.
             $context['results']['#abort'][] = $function;
-            // Setting this value will output an error message.
-            // @see \DrushBatchContext::offsetSet()
-            $context['error_message'] = "Deploy hook failed: $function";
+            Drush::logger()->error("Deploy hook failed: $function");
         } elseif ($context['finished'] == 1 && empty($ret['#abort'])) {
-            // Setting this value will output a success message.
-            // @see \DrushBatchContext::offsetSet()
             $context['message'] = "Performed: $function";
         }
     }
