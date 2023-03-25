@@ -45,7 +45,7 @@ final class MaintCommands extends DrushCommands
      * Set maintenance mode.
      */
     #[CLI\Command(name: self::SET, aliases: ['mset'])]
-    #[CLI\Argument(name: 'value', description: 'The value to assign to the state key')]
+    #[CLI\Argument(name: 'value', description: 'The value to assign to the state key', suggestedValues: ['0', '1'])]
     #[CLI\Usage(name: 'drush maint:set 1', description: 'Put site into Maintenance mode.')]
     #[CLI\Usage(name: 'drush maint:set 0', description: 'Remove site from Maintenance mode.')]
     #[CLI\Version(version: '11.5')]

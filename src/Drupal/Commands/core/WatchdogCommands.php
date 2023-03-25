@@ -17,6 +17,8 @@ use Drupal\Component\Utility\Unicode;
 use Drupal\Component\Utility\Html;
 use Drush\Drupal\DrupalUtil;
 use Drush\Exceptions\UserAbortException;
+use Symfony\Component\Console\Completion\CompletionInput;
+use Symfony\Component\Console\Completion\CompletionSuggestions;
 use Symfony\Component\Console\Output\OutputInterface;
 
 final class WatchdogCommands extends DrushCommands
@@ -57,6 +59,7 @@ final class WatchdogCommands extends DrushCommands
     #[CLI\ValidateModulesEnabled(modules: ['dblog'])]
     #[CLI\FilterDefaultField(field: 'message')]
     #[CLI\DefaultTableFields(fields: ['wid', 'date', 'type', 'severity', 'message'])]
+    #[CLI\Complete(method_name_or_callable: 'watchdogComplete')]
     public function show($substring = '', $options = ['format' => 'table', 'count' => 10, 'severity' => self::REQ, 'severity-min' => self::REQ, 'type' => self::REQ, 'extended' => false]): ?RowsOfFields
     {
         $where = $this->where($options['type'], $options['severity'], $substring, 'AND', $options['severity-min']);
@@ -103,6 +106,7 @@ final class WatchdogCommands extends DrushCommands
     #[CLI\ValidateModulesEnabled(modules: ['dblog'])]
     #[CLI\FilterDefaultField(field: 'message')]
     #[CLI\DefaultTableFields(fields: ['wid', 'date', 'type', 'severity', 'message'])]
+    #[CLI\Complete(method_name_or_callable: 'watchdogComplete')]
     public function watchdogList($substring = '', $options = ['format' => 'table', 'count' => 10, 'extended' => false]): RowsOfFields
     {
         return $this->show($substring, $options);
@@ -124,6 +128,7 @@ final class WatchdogCommands extends DrushCommands
     #[CLI\Usage(name: 'drush watchdog:tail --type=php', description: 'Continuously tail watchdog messages, filtering on type equals php.')]
     #[CLI\ValidateModulesEnabled(modules: ['dblog'])]
     #[CLI\Version(version: '10.6')]
+    #[CLI\Complete(method_name_or_callable: 'watchdogComplete')]
     public function tail(OutputInterface $output, $substring = '', $options = ['severity' => self::REQ, 'severity-min' => self::REQ, 'type' => self::REQ, 'extended' => false]): void
     {
         $where = $this->where($options['type'], $options['severity'], $substring, 'AND', $options['severity-min']);
@@ -196,6 +201,7 @@ final class WatchdogCommands extends DrushCommands
     #[CLI\Usage(name: '@usage drush watchdog:delete --severity=Notice', description: 'Delete all messages with a severity of notice.')]
     #[CLI\Usage(name: 'drush watchdog:delete --type=cron', description: 'Delete all messages of type cron.')]
     #[CLI\ValidateModulesEnabled(modules: ['dblog'])]
+    #[CLI\Complete(method_name_or_callable: 'watchdogComplete')]
     public function delete($substring = '', $options = ['severity' => self::REQ, 'type' => self::REQ]): void
     {
         if ($substring == 'all') {
@@ -385,5 +391,15 @@ final class WatchdogCommands extends DrushCommands
     public static function messageTypes(): array
     {
         return _dblog_get_message_types();
+    }
+
+    public function watchdogComplete(CompletionInput $input, CompletionSuggestions $suggestions): void
+    {
+        if ($input->mustSuggestOptionValuesFor('severity') || $input->mustSuggestOptionValuesFor('severity-min')) {
+            $suggestions->suggestValues(RfcLogLevel::getLevels());
+        }
+        if ($input->mustSuggestOptionValuesFor('type')) {
+            $suggestions->suggestValues(self::messageTypes());
+        }
     }
 }
