@@ -12,6 +12,8 @@ use Drush\Commands\DrushCommands;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Drush\SiteAlias\SiteAliasManagerAwareInterface;
 use Drush\Utils\StringUtils;
+use Symfony\Component\Console\Completion\CompletionInput;
+use Symfony\Component\Console\Completion\CompletionSuggestions;
 
 final class RoleCommands extends DrushCommands implements SiteAliasManagerAwareInterface
 {
@@ -48,6 +50,7 @@ final class RoleCommands extends DrushCommands implements SiteAliasManagerAwareI
     #[CLI\Argument(name: 'machine_name', description: 'The symbolic machine name for the role.')]
     #[CLI\ValidateEntityLoad(entityType: 'user_role', argumentName: 'machine_name')]
     #[CLI\Usage(name: "drush role:delete 'test_role'", description: "Delete the role 'test_role'.")]
+    #[CLI\Complete(method_name_or_callable: 'roleComplete')]
     public function delete($machine_name): void
     {
         $role = Role::load($machine_name);
@@ -65,6 +68,7 @@ final class RoleCommands extends DrushCommands implements SiteAliasManagerAwareI
     #[CLI\Usage(name: "drush role:perm:add anonymous 'post comments,access content'", description: 'Allow anon users to post comments and access content.')]
     #[CLI\ValidateEntityLoad(entityType: 'user_role', argumentName: 'machine_name')]
     #[CLI\ValidatePermissions(argName: 'permissions')]
+    #[CLI\Complete(method_name_or_callable: 'roleComplete')]
     public function roleAddPerm($machine_name, $permissions): void
     {
         $perms = StringUtils::csvToArray($permissions);
@@ -82,6 +86,7 @@ final class RoleCommands extends DrushCommands implements SiteAliasManagerAwareI
     #[CLI\Usage(name: "drush role:remove-perm anonymous", description: 'Remove 2 permissions from anon users.')]
     #[CLI\ValidateEntityLoad(entityType: 'user_role', argumentName: 'machine_name')]
     #[CLI\ValidatePermissions(argName: 'permissions')]
+    #[CLI\Complete(method_name_or_callable: 'roleComplete')]
     public function roleRemovePerm($machine_name, $permissions): void
     {
         $perms = StringUtils::csvToArray($permissions);
@@ -125,5 +130,12 @@ final class RoleCommands extends DrushCommands implements SiteAliasManagerAwareI
             return implode(',', $cellData);
         }
         return $cellData;
+    }
+
+    public function roleComplete(CompletionInput $input, CompletionSuggestions $suggestions): void
+    {
+        if ($input->mustSuggestArgumentValuesFor('machine_name')) {
+            $suggestions->suggestValues(array_keys(Role::loadMultiple()));
+        }
     }
 }

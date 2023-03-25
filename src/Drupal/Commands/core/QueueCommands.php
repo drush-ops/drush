@@ -18,6 +18,8 @@ use Drupal\Core\Queue\SuspendQueueException;
 use Drush\Attributes as CLI;
 use Drush\Commands\DrushCommands;
 use Drupal\Core\Queue\QueueGarbageCollectionInterface;
+use Symfony\Component\Console\Completion\CompletionInput;
+use Symfony\Component\Console\Completion\CompletionSuggestions;
 
 final class QueueCommands extends DrushCommands
 {
@@ -65,6 +67,7 @@ final class QueueCommands extends DrushCommands
     #[CLI\Option(name: 'items-limit', description: 'The maximum number of items allowed to run the queue.')]
     #[CLI\Option(name: 'lease-time', description: 'The maximum number of seconds that an item remains claimed.')]
     #[CLI\HookSelector(name: self::VALIDATE_QUEUE, value: 'name')]
+    #[CLI\Complete(method_name_or_callable: 'queueComplete')]
     public function run(string $name, $options = ['time-limit' => self::REQ, 'items-limit' => self::REQ, 'lease-time' => self::REQ]): void
     {
         $time_limit = (int) $options['time-limit'];
@@ -144,6 +147,7 @@ final class QueueCommands extends DrushCommands
     #[CLI\Command(name: self::DELETE, aliases: ['queue-delete'])]
     #[CLI\Argument(name: 'name', description: 'The name of the queue to run, as defined in either hook_queue_info or hook_cron_queue_info.')]
     #[CLI\HookSelector(name: self::VALIDATE_QUEUE, value: 'name')]
+    #[CLI\Complete(method_name_or_callable: 'queueComplete')]
     public function delete($name): void
     {
         $queue = $this->getQueue($name);
@@ -179,5 +183,12 @@ final class QueueCommands extends DrushCommands
     public function getQueue($name): QueueInterface
     {
         return $this->getQueueService()->get($name);
+    }
+
+    public function queueComplete(CompletionInput $input, CompletionSuggestions $suggestions): void
+    {
+        if ($input->mustSuggestArgumentValuesFor('name')) {
+            $suggestions->suggestValues(array_keys(self::getQueues()));
+        }
     }
 }

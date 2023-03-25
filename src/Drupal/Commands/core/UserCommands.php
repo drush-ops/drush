@@ -10,10 +10,13 @@ use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\AnnotatedCommand\CommandError;
 use Consolidation\OutputFormatters\Options\FormatterOptions;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
+use Drupal\user\Entity\Role;
 use Drupal\user\Entity\User;
 use Drush\Attributes as CLI;
 use Drush\Commands\DrushCommands;
 use Drush\Utils\StringUtils;
+use Symfony\Component\Console\Completion\CompletionInput;
+use Symfony\Component\Console\Completion\CompletionSuggestions;
 
 final class UserCommands extends DrushCommands
 {
@@ -161,6 +164,7 @@ final class UserCommands extends DrushCommands
     #[CLI\Option(name: 'mail', description: 'A comma delimited list of emails to lookup (an alternative to names).')]
     #[CLI\Usage(name: 'drush user:role:add \'editor\' user3', description: 'Add the editor role to user3')]
     #[CLI\ValidateEntityLoad(entityType: 'user_role', argumentName: 'role')]
+    #[CLI\Complete(method_name_or_callable: 'roleComplete')]
     public function addRole(string $role, string $names = '', $options = ['uid' => self::REQ, 'mail' => self::REQ]): void
     {
         $accounts = $this->getAccounts($names, $options);
@@ -184,6 +188,7 @@ final class UserCommands extends DrushCommands
     #[CLI\Option(name: 'mail', description: 'A comma delimited list of emails to lookup (an alternative to names).')]
     #[CLI\Usage(name: "drush user:role:remove 'power_user' user3", description: "Remove the power_user role from user3")]
     #[CLI\ValidateEntityLoad(entityType: 'user_role', argumentName: 'role')]
+    #[CLI\Complete(method_name_or_callable: 'roleComplete')]
     public function removeRole(string $role, string $names = '', $options = ['uid' => self::REQ, 'mail' => self::REQ]): void
     {
         $accounts = $this->getAccounts($names, $options);
@@ -364,5 +369,12 @@ final class UserCommands extends DrushCommands
         }
 
         return  $accounts;
+    }
+
+    public function roleComplete(CompletionInput $input, CompletionSuggestions $suggestions): void
+    {
+        if ($input->mustSuggestArgumentValuesFor('role')) {
+            $suggestions->suggestValues(array_keys(Role::loadMultiple()));
+        }
     }
 }
