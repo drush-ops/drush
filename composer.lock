@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ab20ad5c9948f7c1e36b6198e0db6630",
+    "content-hash": "6d70f09596a744bd1235f1a3115826d3",
     "packages": [
         {
             "name": "chi-teck/drupal-code-generator",
-            "version": "3.x-dev",
+            "version": "3.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Chi-teck/drupal-code-generator.git",
-                "reference": "24ada60c7fa7f4ba84855ddc681b4c7bab2c8cdd"
+                "reference": "ccaca62c878e2857635cf8571125fb6f90a9b556"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Chi-teck/drupal-code-generator/zipball/24ada60c7fa7f4ba84855ddc681b4c7bab2c8cdd",
-                "reference": "24ada60c7fa7f4ba84855ddc681b4c7bab2c8cdd",
+                "url": "https://api.github.com/repos/Chi-teck/drupal-code-generator/zipball/ccaca62c878e2857635cf8571125fb6f90a9b556",
+                "reference": "ccaca62c878e2857635cf8571125fb6f90a9b556",
                 "shasum": ""
             },
             "require": {
@@ -47,7 +47,6 @@
                 "symfony/yaml": "^6.2",
                 "vimeo/psalm": "^5.4"
             },
-            "default-branch": true,
             "bin": [
                 "bin/dcg"
             ],
@@ -64,9 +63,9 @@
             "description": "Drupal code generator",
             "support": {
                 "issues": "https://github.com/Chi-teck/drupal-code-generator/issues",
-                "source": "https://github.com/Chi-teck/drupal-code-generator/tree/3.x"
+                "source": "https://github.com/Chi-teck/drupal-code-generator/tree/3.0.0"
             },
-            "time": "2023-03-15T03:40:01+00:00"
+            "time": "2023-03-26T07:06:55+00:00"
         },
         {
             "name": "composer/semver",
@@ -7412,15 +7411,14 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
-        "chi-teck/drupal-code-generator": 20,
         "consolidation/annotated-command": 20
     },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
         "php": ">=8.1",
-        "composer-runtime-api": "^2.2",
-        "ext-dom": "*"
+        "ext-dom": "*",
+        "composer-runtime-api": "^2.2"
     },
     "platform-dev": [],
     "platform-overrides": {
