@@ -129,7 +129,7 @@ function _drush_backend_batch_process($command = 'batch-process', $args = [], $o
     // Assign an arbitrary id: don't rely on a serial column in the 'batch'
     // table, since non-progressive batches skip database storage completely.
     /** @var \Drupal\Core\Batch\BatchStorageInterface $batch_storage */
-    $batch_storage = \Drupal::service(BatchStorageInterface::class);
+    $batch_storage = \Drupal::service('batch.storage');
     if (method_exists($batch_storage, 'getId')) {
       try {
         $batch['id'] = $batch_storage->getId();
