@@ -460,14 +460,4 @@ class Drush
         // Add in the 'runtime.context' items, which includes --include, --alias-path et. al.
         return $options + array_filter(self::config()->get(PreflightArgs::DRUSH_RUNTIME_CONTEXT_NAMESPACE));
     }
-
-    /**
-     * Read the drush info file.
-     */
-    private static function drushReadDrushInfo(): array
-    {
-        $drush_info_file = dirname(__FILE__) . '/../drush.info';
-
-        return parse_ini_file($drush_info_file);
-    }
 }
