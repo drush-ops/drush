@@ -4,12 +4,11 @@ declare(strict_types=1);
 
 namespace Drush\Drupal;
 
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Composer\Semver\Semver;
 use Drupal\Core\DependencyInjection\ServiceModifierInterface;
 use Drupal\Core\Site\Settings;
 use Drush\Drush;
-use Drush\Log\LogLevel;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Common functionality for overridden kernels.
@@ -101,12 +100,12 @@ trait DrupalKernelTrait
         // Note that:
         //  - We list all of the individual service files we use here.
         //  - These commands are not available until Drupal is bootstrapped.
-        $this->addDrushServiceProvider("_drush__config", DRUSH_BASE_PATH . '/src/Drupal/Commands/config/drush.services.yml');
-        $this->addDrushServiceProvider("_drush__core", DRUSH_BASE_PATH . '/src/Drupal/Commands/core/drush.services.yml');
-        $this->addDrushServiceProvider("_drush__field", DRUSH_BASE_PATH . '/src/Drupal/Commands/field/drush.services.yml');
-        $this->addDrushServiceProvider("_drush__generate", DRUSH_BASE_PATH . '/src/Drupal/Commands/generate/drush.services.yml');
-        $this->addDrushServiceProvider("_drush__pm", DRUSH_BASE_PATH . '/src/Drupal/Commands/pm/drush.services.yml');
-        $this->addDrushServiceProvider("_drush__sql", DRUSH_BASE_PATH . '/src/Drupal/Commands/sql/drush.services.yml');
+        $this->addDrushServiceProvider("_drush__config", Drush::config()->get('drush.base-dir') . '/src/Drupal/Commands/config/drush.services.yml');
+        $this->addDrushServiceProvider("_drush__core", Drush::config()->get('drush.base-dir') . '/src/Drupal/Commands/core/drush.services.yml');
+        $this->addDrushServiceProvider("_drush__field", Drush::config()->get('drush.base-dir') . '/src/Drupal/Commands/field/drush.services.yml');
+        $this->addDrushServiceProvider("_drush__generate", Drush::config()->get('drush.base-dir') . '/src/Drupal/Commands/generate/drush.services.yml');
+        $this->addDrushServiceProvider("_drush__pm", Drush::config()->get('drush.base-dir') . '/src/Drupal/Commands/pm/drush.services.yml');
+        $this->addDrushServiceProvider("_drush__sql", Drush::config()->get('drush.base-dir') . '/src/Drupal/Commands/sql/drush.services.yml');
 
         // TODO: We could potentially also add service providers from:
         //  - DRUSH_BASE_PATH . '/drush/drush.services.yml');

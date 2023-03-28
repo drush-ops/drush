@@ -36,11 +36,6 @@ class LegacyPreflight
         define('DRUSH_REQUEST_TIME', microtime(true));
 
         /*
-         * @deprecated. Use $config->get('drush.base-dir') instead.
-         */
-        define('DRUSH_BASE_PATH', $environment->drushBasePath());
-
-        /*
          * @deprecated.
          */
         define('DRUSH_COMMAND', $applicationPath);

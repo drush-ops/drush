@@ -8,9 +8,13 @@ use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\AnnotatedCommand\Hooks\HookManager;
 use Drush\Attributes as CLI;
 use Drush\Commands\DrushCommands;
+use Drush\Config\ConfigAwareTrait;
+use Robo\Contract\ConfigAwareInterface;
 
-final class DrupliconCommands extends DrushCommands
+final class DrupliconCommands extends DrushCommands implements ConfigAwareInterface
 {
+    use ConfigAwareTrait;
+
     protected bool $printed = false;
 
     #[CLI\Hook(type: HookManager::OPTION_HOOK, target: '*')]
@@ -36,7 +40,7 @@ final class DrupliconCommands extends DrushCommands
         $commandName = $annotationData['command'];
         if ($commandData->input()->hasOption('druplicon') && $commandData->input()->getOption('druplicon')) {
             $this->logger()->debug(dt('Displaying Druplicon for "!command" command.', ['!command' => $commandName]));
-            $misc_dir = DRUSH_BASE_PATH . '/misc';
+            $misc_dir = $this->config->get('drush.base-dir') . '/misc';
             if ($commandData->input()->getOption('no-ansi')) {
                 $content = file_get_contents($misc_dir . '/druplicon-no_color.txt');
             } else {

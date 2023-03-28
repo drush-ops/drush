@@ -6,16 +6,19 @@ namespace Drush\Commands\core;
 
 use Consolidation\SiteProcess\Util\Tty;
 use Drush\Boot\DrupalBootLevels;
+use Drush\Config\ConfigAwareTrait;
 use Drush\Drush;
 use Drupal\Core\Url;
 use Drush\Attributes as CLI;
 use Drush\Commands\DrushCommands;
 use Drush\Exec\ExecTrait;
+use Robo\Contract\ConfigAwareInterface;
 use Symfony\Component\Filesystem\Path;
 
-final class RunserverCommands extends DrushCommands
+final class RunserverCommands extends DrushCommands implements ConfigAwareInterface
 {
     use ExecTrait;
+    use ConfigAwareTrait;
 
     const RUNSERVER = 'runserver';
     protected $uri;
@@ -68,7 +71,7 @@ final class RunserverCommands extends DrushCommands
             $this->startBrowser($link, 2);
         }
         // Start the server using 'php -S'.
-        $router = Path::join(DRUSH_BASE_PATH, '/misc/d8-rs-router.php');
+        $router = Path::join($this->config->get('drush.base-dir'), '/misc/d8-rs-router.php');
         $php = $this->getConfig()->get('php', 'php');
         $process = $this->processManager()->process([$php, '-S', $addr . ':' . $uri['port'], $router]);
         $process->setTimeout(null);
