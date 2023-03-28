@@ -20,18 +20,22 @@ use Drupal\migrate\Plugin\MigrationPluginManagerInterface;
 use Drupal\migrate\Plugin\RequirementsInterface;
 use Drush\Attributes as CLI;
 use Drush\Commands\DrushCommands;
+use Drush\Config\ConfigAwareTrait;
 use Drush\Drupal\Migrate;
 use Drush\Drupal\Migrate\MigrateExecutable;
 use Drush\Drupal\Migrate\MigrateMessage;
 use Drush\Drupal\Migrate\MigrateUtils;
 use Drush\Utils\StringUtils;
+use Robo\Contract\ConfigAwareInterface;
 use Symfony\Component\Filesystem\Path;
 
 /**
  * Migrate runner commands.
  */
-class MigrateRunnerCommands extends DrushCommands
+class MigrateRunnerCommands extends DrushCommands implements ConfigAwareInterface
 {
+    use ConfigAwareTrait;
+
     /**
      * The key-value store service.
      */
@@ -342,7 +346,7 @@ class MigrateRunnerCommands extends DrushCommands
         ];
 
         // Include the file providing a migrate_prepare_row hook implementation.
-        require_once Path::join(DRUSH_BASE_PATH, 'src/Drupal/Migrate/migrate_runner.inc');
+        require_once Path::join($this->config->get('drush.base-dir'), 'src/Drupal/Migrate/migrate_runner.inc');
         // If the 'migrate_prepare_row' hook implementations are already cached,
         // make sure that system_migrate_prepare_row() is picked-up.
         \Drupal::moduleHandler()->resetImplementations();

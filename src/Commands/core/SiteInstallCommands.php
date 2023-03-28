@@ -14,6 +14,7 @@ use Drush\Attributes as CLI;
 use Drush\Boot\DrupalBootLevels;
 use Drush\Boot\Kernels;
 use Drush\Commands\DrushCommands;
+use Drush\Config\ConfigAwareTrait;
 use Drush\Drush;
 use Drush\Exceptions\UserAbortException;
 use Drupal\Core\Config\FileStorage;
@@ -22,12 +23,14 @@ use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
 use Drush\Exec\ExecTrait;
 use Drush\Sql\SqlBase;
 use Drush\Utils\StringUtils;
+use Robo\Contract\ConfigAwareInterface;
 use Symfony\Component\Filesystem\Path;
 
-final class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAwareInterface
+final class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAwareInterface, ConfigAwareInterface
 {
-    use SiteAliasManagerAwareTrait;
+    use ConfigAwareTrait;
     use ExecTrait;
+    use SiteAliasManagerAwareTrait;
 
     const INSTALL = 'site:install';
 
@@ -140,7 +143,7 @@ final class SiteInstallCommands extends DrushCommands implements SiteAliasManage
         $this->logger()->notice(dt($msg));
 
         // Define some functions which alter away the install_finished task.
-        require_once Path::join(DRUSH_BASE_PATH, 'includes/site_install.inc');
+        require_once Path::join($this->config->get('drush.base-dir'), 'includes/site_install.inc');
 
         require_once DRUSH_DRUPAL_CORE . '/includes/install.core.inc';
         // This can lead to an exit() in Drupal. See install_display_output() (e.g. config validation failure).

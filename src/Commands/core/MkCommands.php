@@ -14,9 +14,11 @@ use Drush\Boot\DrupalBootLevels;
 use Drush\Commands\DrushCommands;
 use Drush\Commands\help\HelpCLIFormatter;
 use Drush\Commands\help\ListCommands;
+use Drush\Config\ConfigAwareTrait;
 use Drush\Drupal\Commands\generate\ApplicationFactory;
 use Drush\Drush;
 use Drush\SiteAlias\SiteAliasManagerAwareInterface;
+use Robo\Contract\ConfigAwareInterface;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -124,12 +126,13 @@ EOT;
                     $commandfile_path = dirname($topic_command->getAnnotationData()->get('_path'));
                     $abs = Path::makeAbsolute($docs_relative, $commandfile_path);
                     if (file_exists($abs)) {
-                        $docs_path = Path::join(DRUSH_BASE_PATH, 'docs');
+                        $base = Drush::config()->get('drush.base-dir');
+                        $docs_path = Path::join($base, 'docs');
                         if (Path::isBasePath($docs_path, $abs)) {
                             $target_relative = Path::makeRelative($abs, $dir_commands);
                             $value = "- [$topic_description]($target_relative) ($name)";
                         } else {
-                            $rel_from_root = Path::makeRelative($abs, DRUSH_BASE_PATH);
+                            $rel_from_root = Path::makeRelative($abs, $base);
                             $value = "- [$topic_description](https://raw.githubusercontent.com/drush-ops/drush/12.x/$rel_from_root) ($name)";
                         }
                     }
