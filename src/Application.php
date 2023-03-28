@@ -92,12 +92,6 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
                 new InputOption('--simulate', null, InputOption::VALUE_NONE, 'Run in simulated mode (show what would have happened).')
             );
 
-        // TODO: Implement handling for 'pipe'
-        $this->getDefinition()
-            ->addOption(
-                new InputOption('--pipe', null, InputOption::VALUE_NONE, 'Select the canonical script-friendly output format. Deprecated - use --format.')
-            );
-
         $this->getDefinition()
             ->addOption(
                 new InputOption('--define', '-D', InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'Define a configuration item value.', [])

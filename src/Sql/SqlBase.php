@@ -23,7 +23,7 @@ use Consolidation\Config\Util\Interpolator;
  * Contrib and custom database drivers can provide their own implementation by
  * extending from this class, and naming the class like 'SqlMydriver'. Note that
  * the camelcasing is required, as well as it is mandatory that the namespace of
- * the extending class be 'Drush\Sql'. In order to avoid autoloadier
+ * the extending class be 'Drush\Sql'. In order to avoid autoloader
  * collisions, it is recommended to place the class outside of the 'src'
  * directory of the module providing the database driver, then adding a
  * 'classmap' entry to the autoload class of the module's composer.json file.
