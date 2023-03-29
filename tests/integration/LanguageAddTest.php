@@ -61,4 +61,10 @@ class LanguageAddTest extends UnishIntegrationTestCase
         unlink(Path::join($translationDir, 'drush_empty_module.nl.po'));
         rmdir($translationDir);
     }
+
+    protected function tearDown(): void
+    {
+        $this->drush(PmCommands::UNINSTALL, ['language']);
+        parent::tearDown();
+    }
 }
