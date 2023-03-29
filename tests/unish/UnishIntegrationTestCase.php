@@ -222,6 +222,4 @@ abstract class UnishIntegrationTestCase extends UnishTestCase
     {
         throw new \Exception('Drupal is already setup in an integration test');
     }
-
-
 }
