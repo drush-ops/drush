@@ -20,12 +20,12 @@ class LanguageAddTest extends UnishIntegrationTestCase
 
     public function testLanguageInfoAdd()
     {
-        $this->drush(LanguageCommands::INFO, []);
+        $this->drush(LanguageCommands::INFO);
         $this->assertStringContainsString('English (en)', $this->getSimplifiedOutput());
 
         $this->drush(LanguageCommands::ADD, ['nl,fr'], ['skip-translations' => null]);
 
-        $this->drush(LanguageCommands::INFO, []);
+        $this->drush(LanguageCommands::INFO);
         $this->assertStringContainsString('Dutch (nl)', $this->getSimplifiedOutput());
         $this->assertStringContainsString('French (fr)', $this->getSimplifiedOutput());
     }
@@ -54,7 +54,7 @@ class LanguageAddTest extends UnishIntegrationTestCase
         $this->drush(PmCommands::INSTALL, ['drush_empty_module']);
         $this->drush(LanguageCommands::ADD, ['nl']);
 
-        $this->drush(WatchdogCommands::SHOW, []);
+        $this->drush(WatchdogCommands::SHOW);
         $this->assertStringContainsString('Translations imported:', $this->getSimplifiedOutput());
 
         // Clean up the mess this test creates.
