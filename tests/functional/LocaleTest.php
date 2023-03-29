@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Unish;
 
 use Drush\Commands\sql\SqlCommands;
+use Drush\Drupal\Commands\core\LanguageCommands;
 use Drush\Drupal\Commands\core\LocaleCommands;
 use Drush\Drupal\Commands\pm\PmCommands;
 use Symfony\Component\Filesystem\Path;
@@ -28,7 +29,7 @@ class LocaleTest extends CommandUnishTestCase
             $this->setUpDrupal(1, true);
         }
         $this->drush(PmCommands::INSTALL, ['language', 'locale']);
-        $this->drush('language:add', ['nl'], ['skip-translations' => null]);
+        $this->drush(LanguageCommands::ADD, ['nl'], ['skip-translations' => null]);
 
         $this->sourceFile = Path::join(__DIR__, '/resources/drush_empty_module.nl.po');
 
