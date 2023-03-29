@@ -4,27 +4,18 @@ declare(strict_types=1);
 
 namespace Unish;
 
-use Drupal\Core\Language\Language;
-use Drupal\language\Entity\ConfigurableLanguage;
 use Drush\Drupal\Commands\config\ConfigCommands;
 use Drush\Drupal\Commands\core\LanguageCommands;
 use Drush\Drupal\Commands\core\WatchdogCommands;
 use Drush\Drupal\Commands\pm\PmCommands;
 use Symfony\Component\Filesystem\Path;
 
-/**
- *  @group slow
- *  @group pm
- */
-class LanguageAddTest extends CommandUnishTestCase
+class LanguageAddTest extends UnishIntegrationTestCase
 {
     protected function setup(): void
     {
         parent::setUp();
-        if (empty($this->getSites())) {
-            $this->setUpDrupal(1, true);
-            $this->drush(PmCommands::INSTALL, ['language']);
-        }
+        $this->drush(PmCommands::INSTALL, ['language']);
     }
 
     public function testLanguageInfoAdd()
@@ -55,7 +46,7 @@ class LanguageAddTest extends CommandUnishTestCase
         $this->drush(ConfigCommands::SET, ['locale.settings', 'translation.use_source', 'locale']);
         $this->drush(ConfigCommands::SET, ['locale.settings', 'translation.default_filename', '%project.%language.po']);
         $this->drush(ConfigCommands::SET, ['locale.settings', 'translation.path', '../translations']);
-        $source = Path::join(__DIR__, 'resources/drush_empty_module.nl.po');
+        $source = Path::join(__DIR__, '../functional/resources/drush_empty_module.nl.po');
         $translationDir = Path::join($this->webroot(), '../translations');
         $this->mkdir($translationDir);
         copy($source, Path::join($translationDir, 'drush_empty_module.nl.po'));
