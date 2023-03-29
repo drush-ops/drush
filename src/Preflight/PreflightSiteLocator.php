@@ -1,20 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drush\Preflight;
 
-use Drush\Config\Environment;
-use Drush\Preflight\PreflightArgsInterface;
 use Consolidation\SiteAlias\SiteAlias;
 use Consolidation\SiteAlias\SiteAliasManager;
 use Consolidation\SiteAlias\SiteAliasName;
 use Consolidation\SiteAlias\SiteSpecParser;
+use Drush\Config\Environment;
 
 class PreflightSiteLocator
 {
-    /**
-     * @var SiteAliasManager
-     */
-    protected $siteAliasManager;
+    protected SiteAliasManager $siteAliasManager;
 
     public function __construct(SiteAliasManager $siteAliasManager)
     {
@@ -31,10 +29,8 @@ class PreflightSiteLocator
      * @param PreflightArgsInterface $preflightArgs An alias name or site specification
      * @param Environment $environment
      * @param string $root The default Drupal root (from site:set, --root or cwd)
-     *
-     * @return SiteAlias|false
      */
-    public function findSite(PreflightArgsInterface $preflightArgs, Environment $environment, string $root)
+    public function findSite(PreflightArgsInterface $preflightArgs, Environment $environment, string $root): SiteAlias|false
     {
         $self = $this->determineSelf($preflightArgs, $environment, $root);
 
@@ -51,14 +47,8 @@ class PreflightSiteLocator
      * Either look up the specified alias name / site spec,
      * or, if those are invalid, then generate one from
      * the provided root and URI.
-     *
-     * @param PreflightArgsInterface $preflightArgs
-     * @param Environment $environment
-     * @param $root
-     *
-     * @return SiteAlias|false
      */
-    protected function determineSelf(PreflightArgsInterface $preflightArgs, Environment $environment, $root)
+    protected function determineSelf(PreflightArgsInterface $preflightArgs, Environment $environment, $root): SiteAlias|false
     {
         if ($preflightArgs->hasAlias()) {
             $aliasName = $preflightArgs->alias();
@@ -95,11 +85,8 @@ class PreflightSiteLocator
 
     /**
      * Generate @self from the provided root and URI.
-     *
-     * @param PreflightArgsInterface $preflightArgs
-     * @param $root
      */
-    protected function buildSelf(PreflightArgsInterface $preflightArgs, $root): SiteAlias
+    protected function buildSelf(PreflightArgsInterface $preflightArgs, ?string $root): SiteAlias
     {
         // If there is no root, then return '@none'
         if (!$root) {

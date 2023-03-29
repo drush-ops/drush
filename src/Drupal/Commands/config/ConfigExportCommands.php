@@ -1,49 +1,35 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drush\Drupal\Commands\config;
 
-use Consolidation\AnnotatedCommand\CommandData;
+use Consolidation\AnnotatedCommand\Hooks\HookManager;
 use Drupal\Core\Config\ConfigManagerInterface;
 use Drupal\Core\Config\StorageComparer;
 use Drupal\Core\Config\FileStorage;
 use Drupal\Core\Config\StorageInterface;
 use Drupal\Core\Site\Settings;
+use Drush\Attributes as CLI;
 use Drush\Commands\DrushCommands;
-use Drush\Drush;
 use Drush\Exceptions\UserAbortException;
 use Symfony\Component\Console\Output\BufferedOutput;
 use Symfony\Component\Filesystem\Path;
 
-class ConfigExportCommands extends DrushCommands
+final class ConfigExportCommands extends DrushCommands
 {
-    /**
-     * @var ConfigManagerInterface
-     */
-    protected $configManager;
+    const EXPORT = 'config:export';
 
-    /**
-     * @var StorageInterface
-     */
-    protected $configStorage;
-
-    /**
-     * @var StorageInterface
-     */
-    protected $configStorageSync;
-
-    /**
-     * @var StorageInterface
-     */
-    protected $configStorageExport;
+    protected ConfigManagerInterface $configManager;
+    protected StorageInterface $configStorage;
+    protected ?StorageInterface $configStorageSync;
+    protected ?StorageInterface $configStorageExport;
 
     public function getConfigManager(): ConfigManagerInterface
     {
         return $this->configManager;
     }
 
-    /**
-     * @param StorageInterface $exportStorage
-     */
     public function setExportStorage(StorageInterface $exportStorage): void
     {
         $this->configStorageExport = $exportStorage;
@@ -73,11 +59,6 @@ class ConfigExportCommands extends DrushCommands
         $this->configStorageSync = $syncStorage;
     }
 
-    /**
-     * @param ConfigManagerInterface $configManager
-     * @param StorageInterface $configStorage
-     * @param StorageInterface $configStorageSync
-     */
     public function __construct(ConfigManagerInterface $configManager, StorageInterface $configStorage)
     {
         parent::__construct();
@@ -87,19 +68,15 @@ class ConfigExportCommands extends DrushCommands
 
     /**
      * Export Drupal configuration to a directory.
-     *
-     * @command config:export
-     * @option add Run `git add -p` after exporting. This lets you choose which config changes to sync for commit.
-     * @option commit Run `git add -A` and `git commit` after exporting.  This commits everything that was exported without prompting.
-     * @option message Commit comment for the exported configuration.  Optional; may only be used with --commit.
-     * @option destination An arbitrary directory that should receive the exported files. A backup directory is used when no value is provided.
-     * @option diff Show preview as a diff, instead of a change list.
-     * @usage drush config:export
-     *   Export configuration files to the site's config directory.
-     * @usage drush config:export --destination
-     *   Export configuration; Save files in a backup directory named config-export.
-     * @aliases cex,config-export
      */
+    #[CLI\Command(name: self::EXPORT, aliases: ['cex', 'config-export'])]
+    #[CLI\Option(name: 'add', description: 'Run `git add -p` after exporting. This lets you choose which config changes to sync for commit.')]
+    #[CLI\Option(name: 'commit', description: 'Run `git add -A` and `git commit` after exporting.  This commits everything that was exported without prompting.')]
+    #[CLI\Option(name: 'message', description: 'Commit comment for the exported configuration.  Optional; may only be used with --commit.')]
+    #[CLI\Option(name: 'destination', description: 'An arbitrary directory that should receive the exported files. A backup directory is used when no value is provided.')]
+    #[CLI\Option(name: 'diff', description: 'Show preview as a diff, instead of a change list.')]
+    #[CLI\Usage(name: 'drush config:export', description: 'Export configuration files to the site\'s config directory.')]
+    #[CLI\Usage(name: 'drush config:export --destination', description: 'Export configuration; Save files in a backup directory named config-export.')]
     public function export($options = ['add' => false, 'commit' => false, 'message' => self::REQ, 'destination' => self::OPT, 'diff' => false, 'format' => null]): array
     {
         // Get destination directory.
@@ -193,11 +170,8 @@ class ConfigExportCommands extends DrushCommands
         }
     }
 
-    /**
-     * @hook validate config-export
-     * @param CommandData $commandData
-     */
-    public function validate(CommandData $commandData): void
+    #[CLI\Hook(type: HookManager::ARGUMENT_VALIDATOR, target: self::EXPORT)]
+    public function validate($commandData): void
     {
         $destination = $commandData->input()->getOption('destination');
 

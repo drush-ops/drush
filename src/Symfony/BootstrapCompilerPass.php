@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drush\Symfony;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;

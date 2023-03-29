@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drush\Boot;
 
 use Psr\Log\LoggerAwareInterface;
@@ -9,8 +11,8 @@ abstract class BaseBoot implements Boot, LoggerAwareInterface
 {
     use LoggerAwareTrait;
 
-    protected $uri = false;
-    protected $phase = false;
+    protected string|bool $uri = false;
+    protected int $phase = DrupalBootLevels::NONE;
 
     public function __construct()
     {
@@ -27,7 +29,7 @@ abstract class BaseBoot implements Boot, LoggerAwareInterface
         return $this->uri;
     }
 
-    public function setUri($uri)
+    public function setUri($uri): void
     {
         $this->uri = $uri;
     }
@@ -37,12 +39,12 @@ abstract class BaseBoot implements Boot, LoggerAwareInterface
         return $this->phase;
     }
 
-    public function setPhase(int $phase)
+    public function setPhase(int $phase): void
     {
         $this->phase = $phase;
     }
 
-    public function validRoot($path)
+    public function validRoot(?string $path): bool
     {
     }
 
@@ -59,36 +61,32 @@ abstract class BaseBoot implements Boot, LoggerAwareInterface
         // No longer used.
     }
 
-    public function bootstrapPhases(): array
-    {
-        return [
-            DRUSH_BOOTSTRAP_DRUSH => 'bootstrapDrush',
-        ];
-    }
-
     public function bootstrapPhaseMap(): array
     {
         return [
-            'none' => DRUSH_BOOTSTRAP_DRUSH,
-            'drush' => DRUSH_BOOTSTRAP_DRUSH,
-            'max' => DRUSH_BOOTSTRAP_MAX,
-            'root' => DRUSH_BOOTSTRAP_DRUPAL_ROOT,
-            'site' => DRUSH_BOOTSTRAP_DRUPAL_SITE,
-            'configuration' => DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION,
-            'database' => DRUSH_BOOTSTRAP_DRUPAL_DATABASE,
-            'full' => DRUSH_BOOTSTRAP_DRUPAL_FULL
+            'none' => DrupalBootLevels::NONE,
+            'drush' => DrupalBootLevels::NONE,
+            'max' => DrupalBootLevels::MAX,
+            'root' => DrupalBootLevels::ROOT,
+            'site' => DrupalBootLevels::SITE,
+            'configuration' => DrupalBootLevels::CONFIGURATION,
+            'database' => DrupalBootLevels::DATABASE,
+            'full' => DrupalBootLevels::FULL
         ];
     }
 
-    public function lookUpPhaseIndex($phase)
+    public function lookUpPhaseIndex($phase): ?int
     {
+        if (is_numeric($phase)) {
+            return (int) $phase;
+        }
         $phaseMap = $this->bootstrapPhaseMap();
         if (isset($phaseMap[$phase])) {
             return $phaseMap[$phase];
         }
 
-        if ((substr($phase, 0, 16) != 'DRUSH_BOOTSTRAP_') || (!defined($phase))) {
-            return;
+        if ((!str_starts_with($phase, 'DRUSH_BOOTSTRAP_')) || (!defined($phase))) {
+            return null;
         }
         return constant($phase);
     }

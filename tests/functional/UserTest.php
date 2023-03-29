@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Unish;
 
 use Symfony\Component\Filesystem\Path;
@@ -118,7 +120,7 @@ class UserTest extends CommandUnishTestCase
         $this->assertEquals("2", $output, 'User can login with new password.');
     }
 
-    public function testUserLoginNoBootstrappedSite()
+    public function testUserLoginNoBootstrappedSite(): never
     {
         $this->markTestSkipped('TODO: @none should prevent selection of site at cwd');
         // Check if user-login on a non-bootstrapped environment returns error.

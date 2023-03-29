@@ -1,13 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drush\Commands\core;
 
 use Consolidation\AnnotatedCommand\CommandData;
+use Consolidation\AnnotatedCommand\Hooks\HookManager;
 use Drupal\Component\FileCache\FileCacheFactory;
 use Drupal\Core\Database\Database;
 use Drupal\Core\Installer\Exception\AlreadyInstalledException;
 use Drupal\Core\Site\Settings;
+use Drush\Attributes as CLI;
+use Drush\Boot\DrupalBootLevels;
+use Drush\Boot\Kernels;
 use Drush\Commands\DrushCommands;
+use Drush\Config\ConfigAwareTrait;
 use Drush\Drush;
 use Drush\Exceptions\UserAbortException;
 use Drupal\Core\Config\FileStorage;
@@ -16,56 +23,49 @@ use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
 use Drush\Exec\ExecTrait;
 use Drush\Sql\SqlBase;
 use Drush\Utils\StringUtils;
+use Robo\Contract\ConfigAwareInterface;
 use Symfony\Component\Filesystem\Path;
 
-class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAwareInterface
+final class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAwareInterface, ConfigAwareInterface
 {
-    use SiteAliasManagerAwareTrait;
+    use ConfigAwareTrait;
     use ExecTrait;
+    use SiteAliasManagerAwareTrait;
+
+    const INSTALL = 'site:install';
 
     /**
      * Install Drupal along with modules/themes/configuration/profile.
-     *
-     * @command site:install
-     * @param $profile An install profile name. Defaults to <info>standard</info> unless an install profile is marked as a distribution. Additional info for the install profile may also be provided with additional arguments. The key is in the form <info>[form name].[parameter name]</info>
-     * @option db-url A Drupal 6 style database URL. Required for initial install, not re-install. If omitted and required, Drush prompts for this item.
-     * @option db-prefix An optional table prefix to use for initial install.
-     * @option db-su Account to use when creating a new database. Must have Grant permission (mysql only). Optional.
-     * @option db-su-pw Password for the <info>db-su</info> account. Optional.
-     * @option account-name uid1 name.
-     * @option account-pass uid1 pass. Defaults to a randomly generated password. If desired, set a fixed password in config.yml.
-     * @option account-mail uid1 email.
-     * @option locale A short language code. Sets the default site language. Language files must already be present.
-     * @option site-name
-     * @option site-mail <info>From:</info> for system mailings.
-     * @option sites-subdir Name of directory under <info>sites</info> which should be created.
-     * @option config-dir Deprecated - only use with Drupal 8.5-. A path pointing to a full set of configuration which should be installed during installation.
-     * @option existing-config Configuration from <info>sync</info> directory should be imported during installation. Use with Drupal 8.6+.
-     * @usage drush si expert --locale=uk
-     *   (Re)install using the expert install profile. Set default language to Ukrainian.
-     * @usage drush si --db-url=mysql://root:pass@localhost:port/dbname
-     *   Install using the specified DB params.
-     * @usage drush si --db-url=sqlite://sites/example.com/files/.ht.sqlite
-     *   Install using SQLite
-     * @usage drush si --db-url=sqlite://:memory:
-     *   Install using SQLite in-memory database.
-     * @usage drush si --account-pass=mom
-     *   Re-install with specified uid1 password.
-     * @usage drush si --existing-config
-     *   Install based on the yml files stored in the config export/import directory.
-     * @usage drush si standard install_configure_form.enable_update_status_emails=NULL
-     *   Disable email notification during install and later. If your server has no mail transfer agent, this gets rid of an error during install.
-     * @bootstrap root
-     * @kernel installer
-     * @aliases si,sin,site-install
-     *
      */
+    #[CLI\Command(name: self::INSTALL, aliases: ['si', 'sin', 'site-install'])]
+    #[CLI\Argument(name: 'profile', description: 'An install profile name. Defaults to <info>standard</info> unless an install profile is marked as a distribution. Additional info for the install profile may also be provided with additional arguments. The key is in the form <info>[form name].[parameter name]</info>')]
+    #[CLI\Option(name: 'db-url', description: 'A Drupal 6 style database URL. Required for initial install, not re-install. If omitted and required, Drush prompts for this item.')]
+    #[CLI\Option(name: 'db-prefix', description: 'An optional table prefix to use for initial install.')]
+    #[CLI\Option(name: 'db-su', description: 'Account to use when creating a new database. Must have Grant permission (mysql only). Optional.')]
+    #[CLI\Option(name: 'db-su-pw', description: 'Password for the <info>db-su</info> account. Optional.')]
+    #[CLI\Option(name: 'account-name', description: 'uid1 name.')]
+    #[CLI\Option(name: 'account-pass', description: 'uid1 pass. Defaults to a randomly generated password. If desired, set a fixed password in config.yml.')]
+    #[CLI\Option(name: 'account-mail', description: 'uid1 email.')]
+    #[CLI\Option(name: 'locale', description: 'A short language code. Sets the default site language. Language files must already be present.')]
+    #[CLI\Option(name: 'site-name', description: 'Site name')]
+    #[CLI\Option(name: 'site-mail', description: '<info>From:</info> for system mailings.')]
+    #[CLI\Option(name: 'sites-subdir', description: 'Name of directory under <info>sites</info> which should be created.')]
+    #[CLI\Option(name: 'existing-config', description: 'Configuration from <info>sync</info> directory should be imported during installation.')]
+    #[CLI\Usage(name: 'drush si expert --locale=uk', description: '(Re)install using the expert install profile. Set default language to Ukrainian.')]
+    #[CLI\Usage(name: 'drush si --db-url=mysql://root:pass@localhost:port/dbname', description: 'Install using the specified DB params.')]
+    #[CLI\Usage(name: 'drush si --db-url=sqlite://sites/example.com/files/.ht.sqlite', description: 'Install using SQLite')]
+    #[CLI\Usage(name: 'drush si --db-url=sqlite://:memory:', description: 'Install using SQLite in-memory database.')]
+    #[CLI\Usage(name: 'drush si --account-pass=mom', description: 'Re-install with specified uid1 password.')]
+    #[CLI\Usage(name: 'drush si --existing-config', description: 'Install based on the yml files stored in the config export/import directory.')]
+    #[CLI\Usage(name: 'drush si standard install_configure_form.enable_update_status_emails=NULL', description: 'Disable email notification during install and later. If your server has no mail transfer agent, this gets rid of an error during install.')]
+    #[CLI\Bootstrap(level: DrupalBootLevels::ROOT)]
+    #[CLI\Kernel(name: Kernels::INSTALLER)]
     public function install(array $profile, $options = ['db-url' => self::REQ, 'db-prefix' => self::REQ, 'db-su' => self::REQ, 'db-su-pw' => self::REQ, 'account-name' => 'admin', 'account-mail' => 'admin@example.com', 'site-mail' => 'admin@example.com', 'account-pass' => self::REQ, 'locale' => 'en', 'site-name' => 'Drush Site-Install', 'site-pass' => self::REQ, 'sites-subdir' => self::REQ, 'config-dir' => self::REQ, 'existing-config' => false]): void
     {
         $additional = $profile;
         $profile = array_shift($additional) ?: '';
         $form_options = [];
-        foreach ((array)$additional as $arg) {
+        foreach ($additional as $arg) {
             list($key, $value) = explode('=', $arg, 2);
 
             // Allow for numeric and NULL values to be passed in.
@@ -143,7 +143,7 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
         $this->logger()->notice(dt($msg));
 
         // Define some functions which alter away the install_finished task.
-        require_once Path::join(DRUSH_BASE_PATH, 'includes/site_install.inc');
+        require_once Path::join($this->config->get('drush.base-dir'), 'includes/site_install.inc');
 
         require_once DRUSH_DRUPAL_CORE . '/includes/install.core.inc';
         // This can lead to an exit() in Drupal. See install_display_output() (e.g. config validation failure).
@@ -203,7 +203,7 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
             try {
                 install_begin_request($class_loader, $install_state);
                 $profile = _install_select_profile($install_state);
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 // This is only a best effort to provide a better default, no harm done
                 // if it fails.
             }
@@ -225,9 +225,7 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
         return !empty($files);
     }
 
-    /**
-     * @hook validate site-install
-     */
+    #[CLI\Hook(type: HookManager::ARGUMENT_VALIDATOR, target: self::INSTALL)]
     public function validate(CommandData $commandData): void
     {
         $bootstrapManager = Drush::bootstrapManager();
@@ -247,17 +245,15 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
 
         try {
             // Try to get any already configured database information.
-            $annotationData = Drush::getApplication()->find('site:install')->getAnnotationData();
-            $bootstrapManager->bootstrapMax(DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION, $annotationData);
+            $annotationData = Drush::getApplication()->find(self::INSTALL)->getAnnotationData();
+            $bootstrapManager->bootstrapMax(DrupalBootLevels::CONFIGURATION, $annotationData);
 
             // See https://github.com/drush-ops/drush/issues/3903.
             // We may have bootstrapped with /default/settings.php instead of the sites-subdir one.
-            if ($sites_subdir && "sites/$sites_subdir" !== $bootstrapManager->bootstrap()->confpath(true)) {
+            if ($sites_subdir && "sites/$sites_subdir" !== $bootstrapManager->bootstrap()->confpath()) {
                 Database::removeConnection('default');
             }
-
-            $sql = SqlBase::create($commandData->input()->getOptions());
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             // Ask questions to get our data.
             // TODO: we should only 'ask' in hook interact, never in hook validate
             if ($commandData->input()->getOption('db-url') == '') {
@@ -282,9 +278,8 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
 
     /**
      * Perform setup tasks before installation.
-     *
-     * @hook pre-command site-install
      */
+    #[CLI\Hook(type: HookManager::PRE_COMMAND_HOOK, target: self::INSTALL)]
     public function pre(CommandData $commandData): void
     {
         $db_spec = [];
@@ -347,7 +342,7 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
 
         // Can't install without sites subdirectory and settings.php.
         if (!file_exists($confPath)) {
-            if (!drush_mkdir($confPath) && !$this->getConfig()->simulate()) {
+            if ((new \Symfony\Component\Filesystem\Filesystem())->mkdir($confPath) && !$this->getConfig()->simulate()) {
                 throw new \Exception(dt('Failed to create directory @confPath', ['@confPath' => $confPath]));
             }
         } else {
@@ -370,7 +365,7 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
         // We need to be at least at DRUSH_BOOTSTRAP_DRUPAL_SITE to select the site uri to install to
         define('MAINTENANCE_MODE', 'install');
         $bootstrapManager = Drush::bootstrapManager();
-        $bootstrapManager->doBootstrap(DRUSH_BOOTSTRAP_DRUPAL_SITE);
+        $bootstrapManager->doBootstrap(DrupalBootLevels::SITE);
 
         if ($program_exists && !$sql->dropOrCreate()) {
             $this->logger()->warning(dt('Failed to drop or create the database. Do it yourself before installing. @error', ['@error' => $sql->getProcess()->getErrorOutput()]));
@@ -397,7 +392,6 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
         // Find the dir from sites.php file
         $sites_file = $root . '/sites/sites.php';
         if (file_exists($sites_file)) {
-            /** @var array $sites */
             $sites = [];
             include $sites_file;
             if (!empty($sites) && array_key_exists($uri, $sites)) {

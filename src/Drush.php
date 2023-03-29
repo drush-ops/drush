@@ -1,12 +1,10 @@
 <?php
 
-/**
- * @file
- * Contains \Drush.
- */
+declare(strict_types=1);
 
 namespace Drush;
 
+use Composer\InstalledVersions;
 use Robo\Runner;
 use Robo\Robo;
 use Drush\Config\DrushConfig;
@@ -18,7 +16,6 @@ use Consolidation\SiteAlias\SiteAliasManager;
 use Consolidation\SiteProcess\ProcessBase;
 use Consolidation\SiteProcess\SiteProcess;
 use Drush\SiteAlias\ProcessManager;
-use League\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 use RuntimeException;
 use Symfony\Component\Console\Application;
@@ -34,13 +31,13 @@ use Symfony\Component\Process\Process;
 /**
  * Static Service Container wrapper.
  *
- * This code is analogous to the \Drupal class in Drupal 8.
+ * This code is analogous to the \Drupal class.
  *
  * We would like to move Drush towards the model of using constructor
  * injection rather than globals. This class serves as a unified global
  * accessor to arbitrary services for use by legacy Drush code.
  *
- * Advice from Drupal 8's 'Drupal' class:
+ * Advice from Drupal's 'Drupal' class:
  *
  * This class exists only to support legacy code that cannot be dependency
  * injected. If your code needs it, consider refactoring it to be object
@@ -88,8 +85,7 @@ class Drush
     public static function getVersion()
     {
         if (!self::$version) {
-            $drush_info = self::drushReadDrushInfo();
-            self::$version = $drush_info['drush_version'];
+            self::$version = InstalledVersions::getVersion('drush/drush');
         }
         return self::$version;
     }
@@ -463,15 +459,5 @@ class Drush
 
         // Add in the 'runtime.context' items, which includes --include, --alias-path et. al.
         return $options + array_filter(self::config()->get(PreflightArgs::DRUSH_RUNTIME_CONTEXT_NAMESPACE));
-    }
-
-    /**
-     * Read the drush info file.
-     */
-    private static function drushReadDrushInfo(): array
-    {
-        $drush_info_file = dirname(__FILE__) . '/../drush.info';
-
-        return parse_ini_file($drush_info_file);
     }
 }

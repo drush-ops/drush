@@ -1,15 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drush\Config;
 
-use Robo\Config\Config;
 use Consolidation\Config\Util\ConfigOverlay;
-use Symfony\Component\Filesystem\Exception\IOException;
-use Symfony\Component\Filesystem\Filesystem;
+use Robo\Config\Config;
+
 // TODO: Not sure if we should have a reference to PreflightArgs here.
 // Maybe these constants should be in config, and PreflightArgs can
 // reference them from there as well.
-use Drush\Preflight\PreflightArgs;
 
 /**
  * Accessors for common Drush config keys.
@@ -59,9 +59,8 @@ class DrushConfig extends ConfigOverlay
 
     /**
      * Return the list of paths to active Drush configuration files.
-     * @return array
      */
-    public function configPaths()
+    public function configPaths(): array
     {
         return $this->get('runtime.config.paths', []);
     }

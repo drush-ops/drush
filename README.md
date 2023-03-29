@@ -5,6 +5,7 @@ Drush is a command line shell and Unix scripting interface for Drupal. Please se
 Support
 -----------
 * See www.drush.org for documentation.
-* Post support requests to [Drupal Answers](http://drupal.stackexchange.com/questions/tagged/drush). Tag question with 'drush'.
+* Post support requests to [Drupal Answers](http://drupal.stackexchange.com/questions/tagged/drush). Tag questions with 'drush'.
 * Report bugs and request features in the [GitHub Drush Issue Queue](https://github.com/drush-ops/drush/issues).
+* Report security vulnerabilities privately, [in GitHub](https://github.com/drush-ops/drush/security/advisories).
 * Use pull requests (PRs) to contribute to Drush. 

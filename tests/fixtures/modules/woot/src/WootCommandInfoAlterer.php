@@ -1,17 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\woot;
 
+use Drupal\Core\Logger\LoggerChannelInterface;
 use Consolidation\AnnotatedCommand\CommandInfoAltererInterface;
 use Consolidation\AnnotatedCommand\Parser\CommandInfo;
 use Drupal\Core\Logger\LoggerChannelFactoryInterface;
 
 class WootCommandInfoAlterer implements CommandInfoAltererInterface
 {
-    /**
-     * @var \Drupal\Core\Logger\LoggerChannelInterface
-     */
-    protected $logger;
+    protected LoggerChannelInterface $logger;
 
     public function __construct(LoggerChannelFactoryInterface $loggerFactory)
     {

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Unish;
 
 use Drush\Preflight\ArgsRemapper;
@@ -31,7 +33,7 @@ class ArgsRemapperTest extends TestCase
     /**
      * Provides arguments for ::ArgsRemapper
      */
-    public function argsProvider()
+    public static function argsProvider()
     {
         return [
             [

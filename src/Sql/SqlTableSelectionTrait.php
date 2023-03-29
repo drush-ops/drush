@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drush\Sql;
 
 use Drush\Utils\StringUtils;
@@ -76,7 +78,7 @@ trait SqlTableSelectionTrait
         $expanded_db_tables = [];
         foreach ($tables as $k => $table) {
             // Only deal with table names containing a wildcard.
-            if (strpos($table, '*') !== false) {
+            if (str_contains($table, '*')) {
                 $pattern = '/^' . str_replace('*', '.*', $table) . '$/i';
                 // Merge those existing tables which match the pattern with the rest of
                 // the expanded table names.

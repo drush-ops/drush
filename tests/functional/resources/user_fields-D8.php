@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Drupal\field\Entity\FieldStorageConfig;
 use Drupal\field\Entity\FieldConfig;
 use Drupal\user\Entity\User;

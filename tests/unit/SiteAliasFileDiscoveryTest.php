@@ -1,14 +1,23 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drush\SiteAlias;
 
 use PHPUnit\Framework\TestCase;
 use Consolidation\SiteAlias\SiteAliasFileDiscovery;
+use Unish\Utils\Fixtures;
+use Unish\Utils\FunctionUtils;
 
 class SiteAliasFileDiscoveryTest extends TestCase
 {
-    use \Unish\Utils\Fixtures;
-    use \Unish\Utils\FunctionUtils;
+    use Fixtures;
+    use FunctionUtils;
+
+    /**
+     * @var SiteAliasFileDiscovery|mixed
+     */
+    public $sut;
 
     public function setup(): void
     {
@@ -30,15 +39,6 @@ class SiteAliasFileDiscoveryTest extends TestCase
 
         $path = $this->sut->findSingleSiteAliasFile('missing');
         $this->assertFalse($path);
-    }
-
-    public function testFindAllLegacyAliasFiles()
-    {
-        $this->sut->addSearchLocation($this->fixturesDir() . '/sitealiases/legacy');
-
-        $result = $this->sut->findAllLegacyAliasFiles();
-        $paths = $this->simplifyToBasenamesWithLocation($result);
-        $this->assertEquals('legacy/cc.aliases.drushrc.php,legacy/one.alias.drushrc.php,legacy/pantheon.aliases.drushrc.php,legacy/server.aliases.drushrc.php', implode(',', $paths));
     }
 
     protected function assertLocation($expected, $path)

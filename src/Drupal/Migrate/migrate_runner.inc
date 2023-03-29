@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Drupal\migrate\Plugin\MigrateSourceInterface;
 use Drupal\migrate\Plugin\MigrationInterface;
 use Drupal\migrate\Row;

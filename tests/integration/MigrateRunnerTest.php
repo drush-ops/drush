@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Unish;
 
 use Drupal\migrate\Plugin\MigrationInterface;
@@ -74,36 +76,6 @@ class MigrateRunnerTest extends UnishIntegrationTestCase
         $this->assertEquals('test_migration_tagged', trim($output[5]['id']));
         $this->assertNull($output[6]['id']);
 
-        // Check that --names-only takes precedence over --fields.
-        $this->drush('migrate:status', [], [
-          'names-only' => null,
-          'fields' => 'id,status,imported',
-          'format' => 'json',
-        ]);
-        $output = $this->getOutputFromJSON();
-        $this->assertArrayHasKey('id', $output[0]);
-        $this->assertArrayNotHasKey('status', $output[0]);
-        $this->assertArrayNotHasKey('total', $output[0]);
-        $this->assertArrayNotHasKey('imported', $output[0]);
-        $this->assertArrayNotHasKey('needing_update', $output[0]);
-        $this->assertArrayNotHasKey('unprocessed', $output[0]);
-        $this->assertArrayNotHasKey('last_imported', $output[0]);
-        // Check that the deprecation warning is printed.
-        $this->assertStringContainsString('The --names-only option is deprecated in Drush 10.5.1 and is removed from Drush 11.0.0. Use --field=id instead.', $this->getErrorOutput());
-
-        // Check improper usage of --names-only with --field.
-        $this->drush('migrate:status', [], [
-          'field' => 'status',
-          'names-only' => null,
-        ], self::EXIT_ERROR);
-        $this->assertStringContainsString('Cannot use --names-only with --field=status.', $this->getErrorOutput());
-
-        $actualIds = array_column($output, 'id');
-        $this->assertCount(3, $actualIds);
-        $this->assertContains('test_migration', $actualIds);
-        $this->assertContains('test_migration_tagged', $actualIds);
-        $this->assertContains('test_migration_untagged', $actualIds);
-
         // Check that invalid migration IDs are reported.
         $this->drush('migrate:status', ['non_existing,test_migration,another_invalid'], [], self::EXIT_ERROR);
         $this->assertStringContainsString('Invalid migration IDs: non_existing, another_invalid', $this->getErrorOutput());
@@ -143,7 +115,7 @@ class MigrateRunnerTest extends UnishIntegrationTestCase
     public function testMigrateImportAndRollback(): void
     {
         // Reset status just in case.
-        $this->drush('migrate:reset-status', ['test_migration'], []);
+        $this->drush('migrate:reset-status', ['test_migration']);
 
         // Trigger logging in ProcessRowTestSubscriber::onPrepareRow().
         // @see \Drupal\woot\EventSubscriber\ProcessRowTestSubscriber::onPrepareRow()
@@ -179,7 +151,7 @@ class MigrateRunnerTest extends UnishIntegrationTestCase
         // @see \Drupal\woot\EventSubscriber\PreRowDeleteTestSubscriber::onPreRowDelete()
         $this->drush('migrate:rollback', [], ['all' => null], self::EXIT_ERROR);
         $this->assertStringContainsString('Earthquake while rolling back', $this->getErrorOutputRaw());
-        $this->drush('migrate:reset', ['test_migration']);
+        $this->drush('migrate:reset-status', ['test_migration']);
 
         // Reset the flag, so we won't fail the rollback again.
         $this->drush('state:delete', ['woot.migrate_runner.trigger_failures']);
@@ -216,7 +188,7 @@ class MigrateRunnerTest extends UnishIntegrationTestCase
     public function testMigrateImportAndRollbackWithIdList(): void
     {
         // Enlarge the source recordset to 50 rows.
-        $this->drush('state:set', ['woot.migrate_runner.source_data_amount', 50]);
+        $this->drush('state:set', ['woot.migrate_runner.source_data_amount', '50']);
 
         $this->drush('migrate:import', ['test_migration'], [
             // Intentionally added 56, which is out of bounds.
@@ -254,7 +226,7 @@ class MigrateRunnerTest extends UnishIntegrationTestCase
      */
     public function testMissingSourceRows(): void
     {
-        $this->drush('state:set', ['woot.migrate_runner.source_data_amount', 5]);
+        $this->drush('state:set', ['woot.migrate_runner.source_data_amount', '5']);
         $this->drush('migrate:import', ['test_migration']);
         $this->assertStringContainsString('[notice] Processed 5 items (5 created, 0 updated, 0 failed, 0 ignored)', $this->getErrorOutput());
         $this->drush('sql:query', ['SELECT title FROM node_field_data']);
@@ -283,7 +255,7 @@ class MigrateRunnerTest extends UnishIntegrationTestCase
         // @todo Find a way to stop a migration that runs.
         $this->assertStringContainsString('Migration test_migration is idle', $this->getErrorOutput());
 
-        $this->drush('migrate:reset', ['test_migration']);
+        $this->drush('migrate:reset-status', ['test_migration']);
         // @todo Find a way to reset a migration that is not idle.
         $this->assertStringContainsString('Migration test_migration is already Idle', $this->getErrorOutput());
     }
@@ -294,7 +266,7 @@ class MigrateRunnerTest extends UnishIntegrationTestCase
      */
     public function testMigrateMessagesAndFieldSource(): void
     {
-        $this->drush('state:set', ['woot.migrate_runner.source_data_amount', 20]);
+        $this->drush('state:set', ['woot.migrate_runner.source_data_amount', '20']);
         $this->drush('state:set', ['woot.migrate_runner.trigger_failures', true]);
 
         $this->drush('migrate:import', ['test_migration'], [
@@ -365,7 +337,7 @@ class MigrateRunnerTest extends UnishIntegrationTestCase
     {
         // Set the test_migration source to 300 records.
         // @see woot_migration_plugins_alter()
-        $this->drush('state:set', ['woot.migrate_runner.source_data_amount', 300]);
+        $this->drush('state:set', ['woot.migrate_runner.source_data_amount', '300']);
         $this->drush('migrate:import', ['test_migration'], [
             'feedback' => 20,
             'limit' => 199,
@@ -373,7 +345,7 @@ class MigrateRunnerTest extends UnishIntegrationTestCase
         ]);
 
         $importOutput = array_values(array_filter(array_map('trim', $this->getErrorOutputAsList()), function (string $line): bool {
-            return strpos($line, '[notice]') === 0;
+            return str_starts_with($line, '[notice]');
         }));
 
         $this->assertCount(10, $importOutput);
@@ -433,7 +405,7 @@ class MigrateRunnerTest extends UnishIntegrationTestCase
      */
     public function testCommandProgressBar(): void
     {
-        $this->drush('state:set', ['woot.migrate_runner.source_data_amount', 50]);
+        $this->drush('state:set', ['woot.migrate_runner.source_data_amount', '50']);
 
         // Check an import and rollback with progress bar.
         $this->drush('migrate:import', ['test_migration']);

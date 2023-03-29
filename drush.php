@@ -48,21 +48,19 @@ use Symfony\Component\Filesystem\Path;
 $cwd = isset($_SERVER['PWD']) && is_dir($_SERVER['PWD']) ? $_SERVER['PWD'] : getcwd();
 
 // Set up autoloader
-$loader = false;
-// See https://getcomposer.org/doc/articles/vendor-binaries.md#finding-the-composer-autoloader-from-a-binary
-if ((isset($_composer_autoload_path) && file_exists($autoloadFile = $_composer_autoload_path))
-    || file_exists($autoloadFile = __DIR__ . '/vendor/autoload.php')
-    || file_exists($autoloadFile = __DIR__ . '/../autoload.php')
-    || file_exists($autoloadFile = __DIR__ . '/../../autoload.php')
-) {
-    $loader = include_once($autoloadFile);
-} else {
-    throw new \Exception("Could not locate autoload.php. cwd is $cwd; __DIR__ is " . __DIR__);
+$candidates = [
+    $_composer_autoload_path ?? __DIR__ . '/../vendor/autoload.php', // https://getcomposer.org/doc/articles/vendor-binaries.md#finding-the-composer-autoloader-from-a-binary
+    __DIR__ . '/vendor/autoload.php', // For development of Drush itself.
+];
+foreach ($candidates as $candidate) {
+    if (file_exists($candidate)) {
+        $autoloadFile = $candidate;
+        break;
+    }
 }
-
-// For Symfony 4 only, include our "Path" class (introduced in Symfony 5.4)
-if (!class_exists('\Symfony\Component\Filesystem\Path')) {
-    include __DIR__ . "/src-symfony-compatibility/Filesystem/Path.php";
+$loader = include $autoloadFile;
+if (!$loader) {
+    throw new \Exception("Could not locate autoload.php. cwd is $cwd; __DIR__ is " . __DIR__);
 }
 
 // Set up environment

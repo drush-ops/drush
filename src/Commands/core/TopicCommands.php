@@ -1,13 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drush\Commands\core;
 
-use Consolidation\AnnotatedCommand\AnnotationData;
 use Consolidation\AnnotatedCommand\AnnotatedCommand;
+use Consolidation\AnnotatedCommand\AnnotationData;
 use Consolidation\AnnotatedCommand\CommandData;
+use Consolidation\AnnotatedCommand\Hooks\HookManager;
+use Drush\Attributes as CLI;
+use Drush\Boot\DrupalBootLevels;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
-use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Completion\CompletionInput;
 use Symfony\Component\Console\Completion\CompletionSuggestions;
@@ -15,25 +19,21 @@ use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class TopicCommands extends DrushCommands
+final class TopicCommands extends DrushCommands
 {
+    const TOPIC = 'core:topic';
+
     /**
      * Read detailed documentation on a given topic.
-     *
-     * @command core:topic
-     * @param $topic_name  The name of the topic you wish to view. If omitted, list all topic descriptions (and names in parenthesis).
-     * @usage drush topic
-     *   Pick from all available topics.
-     * @usage drush topic docs-repl
-     *   Show documentation for the Drush interactive shell
-     * @usage drush docs:r
-     *   Filter topics for those starting with 'docs-r'.
-     * @complete topicComplete
-     * @remote-tty
-     * @aliases topic,core-topic
-     * @bootstrap max
-     * @topics docs:readme
      */
+    #[CLI\Command(name: self::TOPIC, aliases: ['topic', 'core-topic'])]
+    #[CLI\Argument(name: 'topic_name', description: 'The name of the topic you wish to view. If omitted, list all topic descriptions (and names in parenthesis).')]
+    #[CLI\Usage(name: 'drush topic', description: 'Pick from all available topics.')]
+    #[CLI\Usage(name: 'drush topic docs-repl', description: 'Show documentation for the Drush interactive shell')]
+    #[CLI\Usage(name: 'drush docs:r', description: "Filter topics for those starting with 'docs-r'.")]
+    #[CLI\Complete(method_name_or_callable: 'topicComplete')]
+    #[CLI\Bootstrap(level: DrupalBootLevels::MAX)]
+    #[CLI\Topics(topics: ['docs:readme'])]
     public function topic($topic_name): int
     {
         $application = Drush::getApplication();
@@ -41,9 +41,7 @@ class TopicCommands extends DrushCommands
         return $application->run($input);
     }
 
-    /**
-     * @hook interact topic
-     */
+    #[CLI\Hook(type: HookManager::INTERACT, target: 'topic')]
     public function interact(InputInterface $input, OutputInterface $output): void
     {
         $topics = self::getAllTopics();
@@ -51,7 +49,7 @@ class TopicCommands extends DrushCommands
         if (!empty($topic_name)) {
             // Filter the topics to those matching the query.
             foreach ($topics as $key => $topic) {
-                if (strstr($key, $topic_name) === false) {
+                if (!str_contains($key, $topic_name)) {
                     unset($topics[$key]);
                 }
             }
@@ -67,9 +65,7 @@ class TopicCommands extends DrushCommands
         }
     }
 
-    /**
-     * @hook validate topic
-     */
+    #[CLI\Hook(type: HookManager::ARGUMENT_VALIDATOR, target: 'topic')]
     public function validate(CommandData $commandData): void
     {
         $topic_name = $commandData->input()->getArgument('topic_name');
@@ -92,7 +88,6 @@ class TopicCommands extends DrushCommands
      */
     public static function getAllTopics(): array
     {
-        /** @var Application $application */
         $application = Drush::getApplication();
         $all = $application->all();
         foreach ($all as $key => $command) {
@@ -104,6 +99,6 @@ class TopicCommands extends DrushCommands
                 }
             }
         }
-        return $topics;
+        return $topics ?? [];
     }
 }

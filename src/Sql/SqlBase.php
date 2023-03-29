@@ -1,9 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drush\Sql;
 
 use Consolidation\SiteProcess\Util\Escape;
 use Drupal\Core\Database\Database;
+use Drush\Boot\DrupalBootLevels;
 use Drush\Drush;
 use Drush\Utils\FsUtils;
 use Drush\Config\ConfigAwareTrait;
@@ -20,7 +23,7 @@ use Consolidation\Config\Util\Interpolator;
  * Contrib and custom database drivers can provide their own implementation by
  * extending from this class, and naming the class like 'SqlMydriver'. Note that
  * the camelcasing is required, as well as it is mandatory that the namespace of
- * the extending class be 'Drush\Sql'. In order to avoid autoloadier
+ * the extending class be 'Drush\Sql'. In order to avoid autoloader
  * collisions, it is recommended to place the class outside of the 'src'
  * directory of the module providing the database driver, then adding a
  * 'classmap' entry to the autoload class of the module's composer.json file.
@@ -227,7 +230,7 @@ abstract class SqlBase implements ConfigAwareInterface
         if (empty($pipefail)) {
             return $cmd;
         }
-        if (strpos($pipefail, '{{cmd}}') === false) {
+        if (!str_contains($pipefail, '{{cmd}}')) {
             return $pipefail . ' ' . $cmd;
         }
         $interpolator = new Interpolator();
@@ -393,7 +396,7 @@ abstract class SqlBase implements ConfigAwareInterface
     public function queryPrefix($query): ?string
     {
         // Inject table prefixes as needed.
-        if (Drush::bootstrapManager()->hasBootstrapped(DRUSH_BOOTSTRAP_DRUPAL_DATABASE)) {
+        if (Drush::bootstrapManager()->hasBootstrapped(DrupalBootLevels::DATABASE)) {
             // Enable prefix processing which can be dangerous so off by default. See http://drupal.org/node/1219850.
             if ($this->getOption('db-prefix')) {
                 $query = Database::getConnection()->prefixTables($query);
@@ -467,7 +470,7 @@ abstract class SqlBase implements ConfigAwareInterface
         if ($this->dbExists()) {
             return $this->drop($this->listTablesQuoted());
         } else {
-            return $this->createdb();
+            return $this->createdb(true);
         }
     }
 
@@ -588,7 +591,7 @@ abstract class SqlBase implements ConfigAwareInterface
         $db_url_default = is_array($db_url) ? $db_url['default'] : $db_url;
 
         // If it's a sqlite database, pick the database path and we're done.
-        if (strpos($db_url_default, 'sqlite://') === 0) {
+        if (str_starts_with($db_url_default, 'sqlite://')) {
             $db_spec = [
                 'driver'   => 'sqlite',
                 'database' => substr($db_url_default, strlen('sqlite://')),

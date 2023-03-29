@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drush\SiteAlias\Util;
 
 use Symfony\Component\Yaml\Yaml;

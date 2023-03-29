@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 $url = parse_url($_SERVER["REQUEST_URI"]);
 if (file_exists('.' . urldecode($url['path']))) {
-  // Serve the requested resource as-is.
-  return FALSE;
+    // Serve the requested resource as-is.
+    return false;
 }
 
 // The built in webserver incorrectly sets $_SERVER['SCRIPT_NAME'] when URLs
@@ -14,18 +16,18 @@ if (file_exists('.' . urldecode($url['path']))) {
 // index-file.
 $path = $url['path'];
 $script = 'index.php';
-if (strpos($path, '.php') !== FALSE) {
+if (str_contains($path, '.php')) {
   // Work backwards through the path to check if a script exists. Otherwise
   // fallback to index.php.
-  do {
-    $path = dirname($path);
-    if (preg_match('/\.php$/', $path) && is_file('.' . $path)) {
-      // Discovered that the path contains an existing PHP file. Use that as the
-      // script to include.
-      $script = ltrim($path, '/');
-      break;
-    }
-  } while ($path !== '/' && $path !== '.');
+    do {
+        $path = dirname($path);
+        if (preg_match('/\.php$/', $path) && is_file('.' . $path)) {
+          // Discovered that the path contains an existing PHP file. Use that as the
+          // script to include.
+            $script = ltrim($path, '/');
+            break;
+        }
+    } while ($path !== '/' && $path !== '.');
 }
 
 // Update $_SERVER variables to point to the correct index-file.

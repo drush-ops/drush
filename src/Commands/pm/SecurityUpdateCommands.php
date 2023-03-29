@@ -1,28 +1,29 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drush\Commands\pm;
 
+use Drush\Boot\DrupalBootLevels;
 use GuzzleHttp\Client;
 use Composer\Semver\Semver;
 use Consolidation\AnnotatedCommand\CommandResult;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
-use Consolidation\OutputFormatters\StructuredData\UnstructuredData;
+use Drush\Attributes as CLI;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
-use Enlightn\SecurityChecker\SecurityChecker;
 use Exception;
 use Symfony\Component\Filesystem\Path;
 
 /**
  * Check Drupal Composer packages for security updates.
  */
-class SecurityUpdateCommands extends DrushCommands
+final class SecurityUpdateCommands extends DrushCommands
 {
+    const SECURITY = 'pm:security';
+
     /**
      * Return path to composer.lock
-     *
-     * @return string
-     * @throws \Exception
      */
     public static function composerLockPath(): string
     {
@@ -41,27 +42,16 @@ class SecurityUpdateCommands extends DrushCommands
      *
      * This uses the [Drupal security advisories package](https://github.com/drupal-composer/drupal-security-advisories) to determine if updates
      * are available. An exit code of 3 indicates that the check completed, and insecure packages were found.
-     *
-     * @command pm:security
-     * @aliases sec,pm-security
-     * @option no-dev Only check production dependencies.
-     * @usage drush pm:security --format=json
-     *   Get security data in JSON format.
-     * @usage HTTP_PROXY=tcp://localhost:8125 pm:security
-     *   Proxy Guzzle requests through an http proxy.
-     * @bootstrap none
-     * @table-style default
-     * @field-labels
-     *   name: Name
-     *   version: Installed Version
-     * @default-fields name,version
-     *
-     * @filter-default-field name
-     * @return RowsOfFields
-     *
-     * @throws \Exception
      */
-    public function security(array $options = ['no-dev' => false])
+    #[CLI\Command(name: self::SECURITY, aliases: ['sec', 'pm-security'])]
+    #[CLI\Option(name: 'no-dev', description: 'Only check production dependencies.')]
+    #[CLI\Usage(name: 'drush pm:security --format=json', description: 'Get security data in JSON format.')]
+    #[CLI\Usage(name: 'HTTP_PROXY=tcp://localhost:8125 pm:security', description: 'Proxy Guzzle requests through an http proxy.')]
+    #[CLI\Bootstrap(level: DrupalBootLevels::NONE)]
+    #[CLI\FieldLabels(labels: ['name' => 'Name', 'version' => 'Installed Version'])]
+    #[CLI\DefaultTableFields(fields: ['name', 'version'])]
+    #[CLI\FilterDefaultField(field: 'version')]
+    public function security(array $options = ['no-dev' => false]): RowsOfFields|CommandResult|null
     {
         $security_advisories_composer_json = $this->fetchAdvisoryComposerJson();
         $composer_lock_data = $this->loadSiteComposerLock();
@@ -99,25 +89,17 @@ class SecurityUpdateCommands extends DrushCommands
      * drupal-security-advisories repository or fetches it from another source
      * if the environment variable DRUSH_SECURITY_ADVISORIES_URL is set. The
      * environment variable is not a supported API.
-     *
-     * @return mixed
-     *
-     * @throws \Exception
      */
-    protected function fetchAdvisoryComposerJson()
+    protected function fetchAdvisoryComposerJson(): mixed
     {
         $client = new Client(['handler' => $this->getStack()]);
         $security_advisories_composer_url = getenv('DRUSH_SECURITY_ADVISORIES_URL') ?: 'https://raw.githubusercontent.com/drupal-composer/drupal-security-advisories/9.x/composer.json';
         $response = $client->get($security_advisories_composer_url);
-        $security_advisories_composer_json = json_decode($response->getBody(), true);
-        return $security_advisories_composer_json;
+        return json_decode((string)$response->getBody(), true);
     }
 
     /**
      * Loads the contents of the local Drupal application's composer.lock file.
-     *
-     *
-     * @throws \Exception
      */
     protected function loadSiteComposerLock(): array
     {
@@ -156,42 +138,5 @@ class SecurityUpdateCommands extends DrushCommands
             }
         }
         return $updates;
-    }
-
-    /**
-     * Check non-Drupal PHP packages for pending security updates.
-     *
-     * Packages are discovered via composer.lock file. An exit code of 3
-     * indicates that the check completed, and insecure packages were found.
-     *
-     * @param array $options
-     *
-     * @return UnstructuredData
-     * @throws \Exception
-     * @command pm:security-php
-     * @validate-php-extension json
-     * @aliases sec-php,pm-security-php
-     * @option no-dev Only check production dependencies.
-     * @bootstrap none
-     *
-     * @usage drush pm:security-php --format=json
-     *   Get security data in JSON format.
-     * @usage HTTP_PROXY=tcp://localhost:8125 pm:security
-     *   Proxy Guzzle requests through an http proxy.
-     */
-    public function securityPhp(array $options = ['format' => 'yaml', 'no-dev' => false])
-    {
-        $result = (new SecurityChecker())->check(self::composerLockPath(), $options['no-dev']);
-        if ($result) {
-            $suggested_command = "composer why " . implode(' && composer why ', array_keys($result));
-            $this->logger()->warning('One or more of your dependencies has an outstanding security update.');
-            $this->logger()->notice("Run <comment>$suggested_command</comment> to learn what module requires the package.");
-            return CommandResult::dataWithExitCode(new UnstructuredData($result), self::EXIT_FAILURE_WITH_CLARITY);
-        }
-        $this->logger()->success("There are no outstanding security updates for your dependencies.");
-        if ($options['format'] === 'table') {
-            return null;
-        }
-        return new RowsOfFields([]);
     }
 }

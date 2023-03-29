@@ -1,20 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drush\Runtime;
 
 use Consolidation\AnnotatedCommand\AnnotationData;
 use Consolidation\AnnotatedCommand\Hooks\InitializeHookInterface;
-use Consolidation\SiteAlias\SiteAlias;
 use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
 use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
 use Consolidation\SiteProcess\ProcessManager;
 use Consolidation\SiteProcess\Util\Tty;
-use Drush\Drush;
-use Drush\Log\LogLevel;
+use Drush\Attributes\HandleRemoteCommands;
 use Drush\Config\ConfigAwareTrait;
+use Drush\Drush;
 use Robo\Contract\ConfigAwareInterface;
 use Symfony\Component\Console\Input\InputInterface;
-use Drush\Utils\TerminalUtils;
 
 /**
  * The RedispatchHook is installed as an init hook that runs before
@@ -50,11 +50,11 @@ class RedispatchHook implements InitializeHookInterface, ConfigAwareInterface, S
         //   - redispatch to a different site-local Drush on same system
         //   - site-list handling (REMOVED)
         // These redispatches need to be done regardless of the presence
-        // of a @handle-remote-commands annotation.
+        // of a HandlRemoteCommands Attribute.
 
-        // If the command has the @handle-remote-commands annotation, then
+        // If the command has the HandlRemoteCommands Attribute, then
         // short-circuit redispatches to remote hosts.
-        if ($annotationData->has('handle-remote-commands')) {
+        if ($annotationData->has(HandleRemoteCommands::NAME)) {
             return;
         }
         return $this->redispatchIfRemote($input);
@@ -116,7 +116,7 @@ class RedispatchHook implements InitializeHookInterface, ConfigAwareInterface, S
     protected function alterArgsForRedispatch(array $redispatchArgs): array
     {
         return array_filter($redispatchArgs, function ($item) {
-            return strpos($item, '-D') !== 0;
+            return !str_starts_with($item, '-D');
         });
     }
 
@@ -126,7 +126,7 @@ class RedispatchHook implements InitializeHookInterface, ConfigAwareInterface, S
      *
      * @param int $exit_code.
      */
-    protected function exitEarly(int $exit_code): void
+    protected function exitEarly(int $exit_code): never
     {
         Drush::logger()->debug('Redispatch hook exit early');
 

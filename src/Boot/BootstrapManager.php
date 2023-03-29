@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drush\Boot;
 
 use Psr\Log\LoggerInterface;
@@ -53,7 +55,7 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
     public function getPhase()
     {
         if (!$this->hasBootstrap()) {
-            return DRUSH_BOOTSTRAP_NONE;
+            return DrupalBootLevels::NONE;
         }
         return $this->bootstrap()->getPhase();
     }
@@ -275,7 +277,7 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
 
         // Once we start bootstrapping past the DRUSH_BOOTSTRAP_DRUSH phase, we
         // will latch the bootstrap object, and prevent it from changing.
-        if ($phase > DRUSH_BOOTSTRAP_DRUSH) {
+        if ($phase > DrupalBootLevels::NONE) {
             $this->latch($bootstrap);
         }
 

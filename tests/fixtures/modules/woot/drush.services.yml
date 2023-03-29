@@ -16,11 +16,11 @@ services:
     class: Drupal\woot\Commands\AnnotatedGreetCommand
     tags:
       -  { name: console.command }
-  example.generator:
+  woot.example.generator:
       class: Drupal\woot\Generators\ExampleGenerator
       arguments: ['@module_handler']
       tags:
-        -  { name: drush.generator.v2 }
+        -  { name: drush.generator.v3 }
   woot.command_info_alter:
     class: Drupal\woot\WootCommandInfoAlterer
     arguments: ['@logger.factory']

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drush\Drupal\Commands\field;
 
 use Drupal\Core\Entity\EntityTypeBundleInfoInterface;
@@ -34,7 +36,7 @@ trait EntityTypeBundleAskTrait
         }
 
         if (!$answer = $this->io()->choice('Entity type', $choices)) {
-            throw new \InvalidArgumentException(t('The entityType argument is required.'));
+            throw new \InvalidArgumentException(dt('The entityType argument is required.'));
         }
 
         return $answer;
@@ -50,7 +52,7 @@ trait EntityTypeBundleAskTrait
 
         if ($bundleEntityType && $bundleInfo === []) {
             throw new \InvalidArgumentException(
-                t('Entity type with id \':entityType\' does not have any bundles.', [':entityType' => $entityTypeId])
+                dt("Entity type with id '!entityType' does not have any bundles.", ['!entityType' => $entityTypeId])
             );
         }
 
@@ -65,7 +67,7 @@ trait EntityTypeBundleAskTrait
         }
 
         if (!$answer = $this->io()->choice('Bundle', $choices)) {
-            throw new \InvalidArgumentException(t('The bundle argument is required.'));
+            throw new \InvalidArgumentException(dt('The bundle argument is required.'));
         }
 
         return $answer;

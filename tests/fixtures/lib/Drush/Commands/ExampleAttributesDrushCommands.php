@@ -52,7 +52,6 @@ class ExampleAttributesDrushCommands extends DrushCommands
     #[CLI\Option(name: 'negate', description: 'Whether or not the result should be negated.')]
     #[CLI\Option(name: 'color', description: 'What color are you feeling.', suggestedValues: ['red', 'blue', 'green'])]
     #[CLI\Usage(name: '2 2 --negate', description: 'Add two plus two and then negate.')]
-    #[CLI\Misc(data: ['dup' => ['one', 'two']])]
     public function testArithmatic($one, $two = 2, $negate = false, $color = self::REQ)
     {
         $result = $one + $two;

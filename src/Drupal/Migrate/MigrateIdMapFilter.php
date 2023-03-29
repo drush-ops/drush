@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drush\Drupal\Migrate;
 
 use Drupal\migrate\Plugin\MigrateIdMapInterface;
@@ -22,9 +24,9 @@ class MigrateIdMapFilter extends \FilterIterator
     /**
      * @param MigrateIdMapInterface $idMap
      *   The ID map.
-     * @param array|null $sourceIdList
+     * @param array $sourceIdList
      *   The source ID list to filter on.
-     * @param array|null $destinationIdList
+     * @param array $destinationIdList
      *   The destination ID list to filter on.
      */
     public function __construct(MigrateIdMapInterface $idMap, array $sourceIdList = [], array $destinationIdList = [])

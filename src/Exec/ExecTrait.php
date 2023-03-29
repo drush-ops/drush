@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drush\Exec;
 
 use Consolidation\SiteProcess\Util\Shell;
@@ -17,14 +19,11 @@ trait ExecTrait
      *   Optional URI or site path to open in browser. If omitted, or if a site path
      *   is specified, the current site home page uri will be prepended if the site's
      *   hostname resolves.
-     * @param $sleep
-     * @param $port
-     * @param string|bool $browser
      * @return
      *   TRUE if browser was opened. FALSE if browser was disabled by the user or a
      *   default browser could not be found.
      */
-    public function startBrowser($uri = null, int $sleep = 0, ?int $port = null, $browser = false): bool
+    public function startBrowser(?string $uri = null, int $sleep = 0, ?int $port = null, string|bool $browser = false): bool
     {
         if ($browser) {
             // We can only open a browser if we have a DISPLAY environment variable on
@@ -84,11 +83,8 @@ trait ExecTrait
 
     /*
      * Determine if program exists on user's PATH.
-     *
-     * @return bool
-     *   True if program exists on PATH.
      */
-    public static function programExists($program)
+    public static function programExists($program): bool
     {
         $command = Escape::isWindows() ? "where $program" : "command -v $program";
         $process = Drush::shell($command);
@@ -100,7 +96,7 @@ trait ExecTrait
         return $process->isSuccessful();
     }
 
-    public static function getEditor(?string $editor = null)
+    public static function getEditor(?string $editor = null): string
     {
         // See http://drupal.org/node/1740294
         return $editor ? "$editor %s" : '${VISUAL-${EDITOR-vi}} %s';

@@ -4,11 +4,10 @@ namespace Unish;
 
 use Composer\Semver\Comparator;
 use Consolidation\SiteAlias\SiteAlias;
-use Consolidation\SiteProcess\SiteProcess;
-use Yoast\PHPUnitPolyfills\TestCases\TestCase;
+use Consolidation\SiteProcess\ProcessManager;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Path;
 use Symfony\Component\Yaml\Yaml;
-use Consolidation\SiteProcess\ProcessManager;
 
 abstract class UnishTestCase extends TestCase
 {
@@ -294,7 +293,7 @@ abstract class UnishTestCase extends TestCase
         }
     }
 
-    public static function escapeshellarg($arg)
+    public static function escapeshellarg(string $arg): string
     {
         // Short-circuit escaping for simple params (keep stuff readable)
         if (preg_match('|^[a-zA-Z0-9.:/_-]*$|', $arg)) {
@@ -306,7 +305,7 @@ abstract class UnishTestCase extends TestCase
         }
     }
 
-    public static function _escapeshellargWindows($arg)
+    public static function _escapeshellargWindows(string $arg): string
     {
         // Double up existing backslashes
         $arg = preg_replace('/\\\/', '\\\\\\\\', $arg);
@@ -419,6 +418,10 @@ abstract class UnishTestCase extends TestCase
      */
     public static function recursiveDelete($dir, $force = true, $follow_symlinks = false, $exclude = [])
     {
+        if (is_null($dir)) {
+            return true;
+        }
+
         // Do not delete symlinked files, only unlink symbolic links
         if (is_link($dir) && !$follow_symlinks) {
             return unlink($dir);
@@ -434,7 +437,7 @@ abstract class UnishTestCase extends TestCase
             }
             return unlink($dir);
         }
-        if (self::recursiveDeleteDirContents($dir, $force, $exclude) === false) {
+        if (!self::recursiveDeleteDirContents($dir, $force, $exclude)) {
             return false;
         }
         // Don't delete the directory itself if we are retaining some of its contents
@@ -532,7 +535,7 @@ abstract class UnishTestCase extends TestCase
             $this->createSettings($subdir);
         }
         // Create basic site alias data with root and uri
-        $siteAliasData = $this->aliasFileData(array_keys($sites), $aliasGroup);
+        $siteAliasData = $this->aliasFileData(array_keys($sites));
         // Add in caller-provided site alias data
         $siteAliasData = array_merge_recursive($siteAliasData, $sites);
         $this->writeSiteAliases($siteAliasData, $aliasGroup);
@@ -740,9 +743,11 @@ EOT;
     public static function setEnv(array $vars)
     {
         foreach ($vars as $k => $v) {
-            putenv($k . '=' . $v);
             // Value must be a string. See \Symfony\Component\Process\Process::getDefaultEnv.
-            $_SERVER[$k] = (string) $v;
+            $v = (string) $v;
+            putenv($k . '=' . $v);
+            $_SERVER[$k] = $v;
+            $_ENV[$k] = $v;
         }
     }
 

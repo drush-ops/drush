@@ -1,26 +1,26 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drush\Commands\core;
 
 use Consolidation\AnnotatedCommand\CommandData;
+use Consolidation\AnnotatedCommand\Hooks\HookManager;
 use Consolidation\SiteProcess\Util\Escape;
+use Drush\Attributes as CLI;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Symfony\Component\Filesystem\Path;
 
-class NotifyCommands extends DrushCommands
+final class NotifyCommands extends DrushCommands
 {
-    /**
-     * @hook option *
-     * @option notify Notify upon command completion. If set to a number, commands that finish in fewer seconds won't notify.
-     */
+    #[CLI\Hook(type: HookManager::OPTION_HOOK, target: '*')]
+    #[CLI\Option(name: 'notify', description: "Notify upon command completion. If set to a number, commands that finish in fewer seconds won't notify.")]
     public function optionsetNotify(): void
     {
     }
 
-    /**
-     * @hook pre-command *
-     */
+    #[CLI\Hook(type: HookManager::PRE_COMMAND_HOOK, target: '*')]
     public function registerShutdown(CommandData $commandData): void
     {
         register_shutdown_function([$this, 'shutdown'], $commandData);
@@ -64,8 +64,6 @@ class NotifyCommands extends DrushCommands
      *
      * @param string $msg
      *   Message text for delivery.
-     *
-     *   TRUE on success, FALSE on failure
      */
     public static function shutdownSendText(string $msg, CommandData $commandData): bool
     {
@@ -81,7 +79,7 @@ class NotifyCommands extends DrushCommands
                     break;
                 case 'Linux':
                 default:
-                    $icon = Path::join(DRUSH_BASE_PATH, 'drush_logo-black.png');
+                    $icon = Path::join(Drush::config()->get('drush.base-dir'), 'drush_logo-black.png');
                     $cmd = "notify-send %s -i $icon";
                     $error_message = dt('notify-send command failed. Please install it as per http://coderstalk.blogspot.com/2010/02/how-to-install-notify-send-in-ubuntu.html.');
                     break;

@@ -1,8 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Unish;
 
 use Drupal\Core\Field\FieldStorageDefinitionInterface;
+use Drush\Commands\core\PhpCommands;
+use Drush\Drupal\Commands\pm\PmCommands;
 use Symfony\Component\Filesystem\Path;
 
 /**
@@ -17,8 +21,8 @@ class FieldTest extends CommandUnishTestCase
             $this->setUpDrupal(1, true);
             // Create a content entity with bundles.
             CreateEntityType::createContentEntity($this);
-            $this->drush('pm-install', ['text,field_ui,unish_article']);
-            $this->drush('php:script', ['create_unish_article_bundles'], ['script-path' => Path::join(__DIR__, 'resources')]);
+            $this->drush(PmCommands::INSTALL, ['text,field_ui,unish_article']);
+            $this->drush(PhpCommands::SCRIPT, ['create_unish_article_bundles'], ['script-path' => Path::join(__DIR__, 'resources')]);
         }
     }
 
@@ -43,7 +47,7 @@ class FieldTest extends CommandUnishTestCase
         $this->assertStringContainsString("Successfully created field 'field_test3' on unish_article type with bundle 'alpha'", $this->getErrorOutputRaw());
         $this->assertStringContainsString("http://dev/admin/structure/unish_article_types/manage/alpha/fields/unish_article.alpha.field_test3", $this->getSimplifiedErrorOutput());
         $php = "return Drupal::entityTypeManager()->getStorage('field_config')->load('unish_article.alpha.field_test3')->getSettings()";
-        $this->drush('php:eval', [$php], ['format' => 'json']);
+        $this->drush(PhpCommands::EVAL, [$php], ['format' => 'json']);
         $settings = $this->getOutputFromJSON();
         $this->assertSame('unish_article', $settings['target_type']);
         $this->assertEquals(['beta' => 'beta'], $settings['handler_settings']['target_bundles']);

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drush\Commands\help;
 
 use Consolidation\AnnotatedCommand\Help\HelpDocument;
@@ -16,10 +18,5 @@ class DrushHelpDocument extends HelpDocument
         $command->setApplication(null);
 
         return parent::generateBaseHelpDom($command);
-    }
-
-    protected function alterHelpDocument(Command $command, \DomDocument $dom): \DomDocument
-    {
-        return parent::alterHelpDocument($command, $dom);
     }
 }
