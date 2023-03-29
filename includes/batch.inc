@@ -25,7 +25,6 @@
  * implementations.
  */
 
-use Drupal\Core\Batch\BatchStorageInterface;
 use Drupal\Core\Database\Database;
 use Drupal\Core\Database\IntegrityConstraintViolationException;
 use Drush\Drush;
