@@ -114,6 +114,7 @@ function _drush_backend_batch_process($command = 'batch-process', $args = [], $o
         $batch['id'] = $batch_storage->getId();
       }
       catch (IntegrityConstraintViolationException $e) {
+        // Remove calls to nextId() once 10.0 is no longer supported.
         $batch['id'] = \Drupal::database()->nextId();
       }
     }
