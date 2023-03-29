@@ -301,6 +301,11 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
+         <loc>https://www.drush.org/latest/latest/commands/improved_echo/</loc>
+         <lastmod>2023-03-29</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>https://www.drush.org/latest/latest/commands/jn_get/</loc>
          <lastmod>2023-03-29</lastmod>
          <changefreq>daily</changefreq>
@@ -546,6 +551,11 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
+         <loc>https://www.drush.org/latest/latest/commands/test_arithmatic/</loc>
+         <lastmod>2023-03-29</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>https://www.drush.org/latest/latest/commands/theme_install/</loc>
          <lastmod>2023-03-29</lastmod>
          <changefreq>daily</changefreq>
@@ -617,6 +627,11 @@
     </url>
     <url>
          <loc>https://www.drush.org/latest/latest/commands/user_unblock/</loc>
+         <lastmod>2023-03-29</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://www.drush.org/latest/latest/commands/validatestuff/</loc>
          <lastmod>2023-03-29</lastmod>
          <changefreq>daily</changefreq>
     </url>
