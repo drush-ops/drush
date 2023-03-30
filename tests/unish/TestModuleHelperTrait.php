@@ -11,7 +11,7 @@ use Symfony\Component\Filesystem\Path;
 trait TestModuleHelperTrait
 {
     /**
-     * Copies the testing modules from a specific path into Drupal.
+     * Copies the testing modules from a specific path into Drupal. Copies are auto-deleted during tearDown().
      *
      * @param array $modules A list of testing modules.
      * @param string $sourcePath The path under which the modules are placed.
@@ -36,16 +36,6 @@ trait TestModuleHelperTrait
                 $module_info = "core_version_requirement: ^8 || ^9 || ^10\n$module_info";
                 file_put_contents($info_path, $module_info);
             }
-        }
-    }
-
-    public function tearDownModulesForTests(array $modules): void
-    {
-        $webRoot = $this->webroot();
-        foreach ($modules as $module) {
-            $targetDir = Path::join($webRoot, "modules/unish/$module");
-            $this->assertFileExists($targetDir);
-            $this->recursiveDelete($targetDir);
         }
     }
 }

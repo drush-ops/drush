@@ -66,9 +66,6 @@ class RoleTest extends UnishIntegrationTestCase
         $this->drush(RoleCommands::DELETE, [$rid]);
         $this->drush(RoleCommands::LIST);
         $this->assertStringNotContainsString($rid, $this->getOutput());
-
-        // Cleanup.
-        // $this->tearDownModulesForTests([self::USER_FORM_TEST]);
     }
 
     public function tearDown(): void
