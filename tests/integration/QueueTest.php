@@ -12,23 +12,24 @@ use Symfony\Component\Filesystem\Path;
 /**
  * @group commands
  */
-class QueueTest extends CommandUnishTestCase
+class QueueTest extends UnishIntegrationTestCase
 {
     use TestModuleHelperTrait;
 
-  /**
+    const WOOT = 'woot';
+
+    /**
    * Tests the RequeueException.
    */
     public function testRequeueException()
     {
-        $sites = $this->setUpDrupal(1, true);
 
         // Copy the 'woot' module over to the Drupal site we just set up.
-        $this->setupModulesForTests(['woot'], Path::join(__DIR__, '/../fixtures/modules'));
+        $this->setupModulesForTests([self::WOOT], Path::join(__DIR__, '../fixtures/modules'));
 
         // Enable woot module, which contains a queue worker that throws a
         // RequeueException.
-        $this->drush(PmCommands::INSTALL, ['woot'], [], null, null, self::EXIT_SUCCESS);
+        $this->drush(PmCommands::INSTALL, [self::WOOT], [], null, '', self::EXIT_SUCCESS);
 
         // Add an item to the queue.
         $this->drush(PhpCommands::SCRIPT, ['requeue_script'], ['script-path' => __DIR__ . '/resources']);
@@ -61,14 +62,12 @@ class QueueTest extends CommandUnishTestCase
    */
     public function testCustomExceptionAndCommands()
     {
-        $this->setUpDrupal(1, true);
-
         // Copy the 'woot' module over to the Drupal site we just set up.
-        $this->setupModulesForTests(['woot'], Path::join(__DIR__, '/../fixtures/modules'));
+        $this->setupModulesForTests([self::WOOT], Path::join(__DIR__, '../fixtures/modules'));
 
         // Enable woot module, which contains a queue worker that throws a
         // custom exception.
-        $this->drush(PmCommands::INSTALL, ['woot'], [], null, null, self::EXIT_SUCCESS);
+        $this->drush(PmCommands::INSTALL, [self::WOOT], [], null, '', self::EXIT_SUCCESS);
 
         // Add a couple of items to the queue.
         $this->drush(PhpCommands::SCRIPT, ['queue_custom_exception_script'], ['script-path' => __DIR__ . '/resources']);
@@ -102,5 +101,12 @@ class QueueTest extends CommandUnishTestCase
         $this->drush(QueueCommands::LIST, [], ['format' => 'json']);
         $output = $this->getOutputFromJSON('woot_custom_exception');
         $this->assertEquals(0, $output['items'], 'Queue was successfully deleted.');
+    }
+
+    public function tearDown(): void
+    {
+        $this->drush(PmCommands::UNINSTALL, [self::WOOT]);
+        $this->tearDownModulesForTests([self::WOOT]);
+        parent::tearDown();
     }
 }
