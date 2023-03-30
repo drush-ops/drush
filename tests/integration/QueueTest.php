@@ -18,18 +18,20 @@ class QueueTest extends UnishIntegrationTestCase
 
     const WOOT = 'woot';
 
+    public function setUp(): void
+    {
+        parent::setUp();
+        $this->setupModulesForTests([self::WOOT], Path::join(__DIR__, '../fixtures/modules'));
+
+        // Enable woot module, which contains a queue worker that throws a RequeueException.
+        $this->drush(PmCommands::INSTALL, [self::WOOT], [], null, '', self::EXIT_SUCCESS);
+    }
+
     /**
    * Tests the RequeueException.
    */
     public function testRequeueException()
     {
-
-        // Copy the 'woot' module over to the Drupal site we just set up.
-        $this->setupModulesForTests([self::WOOT], Path::join(__DIR__, '../fixtures/modules'));
-
-        // Enable woot module, which contains a queue worker that throws a
-        // RequeueException.
-        $this->drush(PmCommands::INSTALL, [self::WOOT], [], null, '', self::EXIT_SUCCESS);
 
         // Add an item to the queue.
         $this->drush(PhpCommands::SCRIPT, ['requeue_script'], ['script-path' => __DIR__ . '/resources']);
@@ -106,7 +108,6 @@ class QueueTest extends UnishIntegrationTestCase
     public function tearDown(): void
     {
         $this->drush(PmCommands::UNINSTALL, [self::WOOT]);
-        $this->tearDownModulesForTests([self::WOOT]);
         parent::tearDown();
     }
 }
