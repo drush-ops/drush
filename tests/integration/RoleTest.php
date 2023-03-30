@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Unish;
 
+use Drupal\Core\Site\Settings;
+use Drush\Commands\core\CoreCommands;
 use Drush\Drupal\Commands\core\RoleCommands;
 use Drush\Drupal\Commands\pm\PmCommands;
 use Symfony\Component\Filesystem\Path;
@@ -17,9 +19,13 @@ class RoleTest extends UnishIntegrationTestCase
     public function setup(): void
     {
         parent::setUp();
-        // In D8+, the testing profile has no perms.
-        // Copy the module to where Drupal expects it.
-        $this->setupModulesForTests([self::USER_FORM_TEST], Path::join($this->webroot(), 'core/modules/user/tests/modules'));
+        // Install Drupal if needed.
+        $this->drush(CoreCommands::VERSION);
+        // Help Drupal discover a test-only module within core's user module.
+        $instance = Settings::getInstance();
+        $all = $instance->getAll();
+        $all['extension_discovery_scan_tests'] = true;
+        $instance = new Settings($all);
         $this->drush(PmCommands::INSTALL, [self::USER_FORM_TEST]);
     }
 
@@ -71,6 +77,11 @@ class RoleTest extends UnishIntegrationTestCase
     public function tearDown(): void
     {
         $this->drush(PmCommands::UNINSTALL, [self::USER_FORM_TEST]);
+        // Revert our discovery change.
+        $instance = Settings::getInstance();
+        $all = $instance->getAll();
+        $all['extension_discovery_scan_tests'] = false;
+        $instance = new Settings($all);
         parent::tearDown();
     }
 }
