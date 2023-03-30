@@ -32,7 +32,6 @@ class ModuleGeneratorTest extends UnishIntegrationTestCase
     {
 
         $this->drush(PmCommands::UNINSTALL, ['woot']);
-        $this->tearDownModulesForTests(['woot']);
         parent::tearDown();
     }
 }
