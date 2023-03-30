@@ -16,10 +16,11 @@ class RoleTest extends UnishIntegrationTestCase
 
     public function setup(): void
     {
+        parent::setUp();
         // In D8+, the testing profile has no perms.
         // Copy the module to where Drupal expects it.
-        parent::setUp();
         $this->setupModulesForTests([self::USER_FORM_TEST], Path::join($this->webroot(), 'core/modules/user/tests/modules'));
+        $this->drush(PmCommands::INSTALL, [self::USER_FORM_TEST]);
     }
 
 
@@ -28,8 +29,6 @@ class RoleTest extends UnishIntegrationTestCase
      */
     public function testRole()
     {
-        $this->drush(PmCommands::INSTALL, [self::USER_FORM_TEST]);
-
         $this->drush(RoleCommands::LIST);
         $output = $this->getOutput();
         $this->assertStringNotContainsString('cancel other accounts', $output);
