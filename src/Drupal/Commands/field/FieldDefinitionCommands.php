@@ -12,9 +12,6 @@ use Drupal\Core\Field\WidgetPluginManager;
 use Drush\Attributes as CLI;
 use Drush\Commands\DrushCommands;
 
-/**
- * Defines field definition Drush commands.
- */
 final class FieldDefinitionCommands extends DrushCommands {
 
     public function __construct(
