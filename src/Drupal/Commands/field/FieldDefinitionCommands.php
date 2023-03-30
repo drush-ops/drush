@@ -32,10 +32,11 @@ final class FieldDefinitionCommands extends DrushCommands {
             'settings' => 'Settings',
         ],
     )]
-    #[CLI\Help(
-        description: 'Lists field types.',
-        synopsis: 'drush field:types [options]',
-    )]
+    #[CLI\Help(description: 'Lists field types.')]
+    #[CLI\Usage(
+        name: 'drush field:types',
+        description: 'List all registered field types.'),
+    ]
     #[CLI\FilterDefaultField(field: 'id')]
     public function types(array $options = ['format' => 'yaml']): RowsOfFields {
         $processor = static fn(array $definition): array => [
@@ -52,7 +53,7 @@ final class FieldDefinitionCommands extends DrushCommands {
     }
 
     #[CLI\Command(name: 'field:widgets')]
-    #[CLI\Option(name: 'field-type', description: 'Applicable field type')]
+    #[CLI\Option(name: 'field-type', description: 'Applicable field type.')]
     #[CLI\FieldLabels(
         labels: [
             'id' => 'ID',
@@ -65,10 +66,11 @@ final class FieldDefinitionCommands extends DrushCommands {
         ],
     )]
     #[CLI\DefaultFields(fields: ['id', 'label', 'default_settings', 'field_types'])]
-    #[CLI\Help(
-        description: 'Lists field widgets.',
-        synopsis: 'drush field:widgets [options]',
-    )]
+    #[CLI\Help(description: 'Lists field widgets.')]
+    #[CLI\Usage(
+        name: 'drush field:widgets --field-type=entity_reference',
+        description: 'Lists field widgets applicable for entity reference fields.'),
+    ]
     #[CLI\FilterDefaultField(field: 'id')]
     public function widgets(array $options = ['format' => 'yaml', 'field-type' => NULL]): RowsOfFields {
         $processor = static fn(array $definition): array => [
@@ -87,7 +89,7 @@ final class FieldDefinitionCommands extends DrushCommands {
     }
 
     #[CLI\Command(name: 'field:formatters')]
-    #[CLI\Option(name: 'field-type', description: 'Applicable field type')]
+    #[CLI\Option(name: 'field-type', description: 'Applicable field type.')]
     #[CLI\FieldLabels(
         labels: [
             'id' => 'ID',
@@ -100,10 +102,11 @@ final class FieldDefinitionCommands extends DrushCommands {
         ],
     )]
     #[CLI\DefaultFields(fields: ['id', 'label', 'default_settings', 'field_types'])]
-    #[CLI\Help(
-        description: 'Lists field formatters.',
-        synopsis: 'drush field:formatters [options]',
-    )]
+    #[CLI\Help(description: 'Lists field formatters.')]
+    #[CLI\Usage(
+        name: 'drush field:formatters --field-type=entity_reference',
+        description: 'Lists field formatters applicable for entity reference fields.'),
+    ]
     #[CLI\FilterDefaultField(field: 'id')]
     public function formatters(array $options = ['format' => 'yaml', 'field-type' => NULL]): RowsOfFields {
         $processor = static fn(array $definition): array => [
