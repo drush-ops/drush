@@ -406,8 +406,7 @@ abstract class UnishTestCase extends TestCase
      *   Whether or not to try everything possible to delete the directory, even if
      *   it's read-only. Defaults to FALSE.
      * @param bool $follow_symlinks
-     *   Whether or not to delete symlinked files. Defaults to FALSE--simply
-     *   unlinking symbolic links.
+     *   Whether or not to delete symlinked files. Defaults to FALSE
      * @param string[] $exclude
      *   Top-level items to retain
      *

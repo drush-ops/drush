@@ -5,32 +5,24 @@ declare(strict_types=1);
 namespace Unish;
 
 use Drush\Commands\sql\SqlCommands;
+use Drush\Drupal\Commands\core\LanguageCommands;
 use Drush\Drupal\Commands\core\LocaleCommands;
 use Drush\Drupal\Commands\pm\PmCommands;
 use Symfony\Component\Filesystem\Path;
 
-/**
- *  @group slow
- *  @group pm
- */
-class LocaleTest extends CommandUnishTestCase
+class LocaleTest extends UnishIntegrationTestCase
 {
     /**
      * File name of Gettext PO source file.
-     *
-     * @var string
      */
-    protected $sourceFile;
+    protected ?string $sourceFile;
 
     public function setup(): void
     {
-        if (!$this->getSites()) {
-            $this->setUpDrupal(1, true);
-        }
         $this->drush(PmCommands::INSTALL, ['language', 'locale']);
-        $this->drush('language:add', ['nl'], ['skip-translations' => null]);
+        $this->drush(LanguageCommands::ADD, ['nl'], ['skip-translations' => null]);
 
-        $this->sourceFile = Path::join(__DIR__, '/resources/drush_empty_module.nl.po');
+        $this->sourceFile = Path::join(__DIR__, '../functional/resources/drush_empty_module.nl.po');
 
         $this->drush(LocaleCommands::IMPORT, ['nl', $this->sourceFile]);
         $this->assertTranslation('Drush Empty Module', 'NL Drush Empty Module', 'nl', 0);
@@ -101,14 +93,7 @@ class LocaleTest extends CommandUnishTestCase
         $this->assertTranslation('Drush Empty Module', 'NL Drush Empty Module', 'nl', 1);
     }
 
-    /**
-     * @param string $source
-     * @param string $translation
-     * @param string $langcode
-     * @param int $custom
-     * @param string $context
-     */
-    private function assertTranslation($source, $translation, $langcode, $custom = 0, $context = '')
+    private function assertTranslation(string $source, string $translation, string $langcode, int $custom = 0, string $context = ''): void
     {
         $this->drush(SqlCommands::QUERY, ["SELECT ls.source, ls.context, lt.translation, lt.language, lt.customized FROM locales_source ls JOIN locales_target lt ON ls.lid = lt.lid WHERE ls.source = '$source' AND ls.context = '$context' AND lt.language = '$langcode'"]);
         $output = $this->getOutputAsList();
@@ -116,14 +101,7 @@ class LocaleTest extends CommandUnishTestCase
         $this->assertMatchesRegularExpression($expected, array_pop($output));
     }
 
-    /**
-     * @param $source
-     * @param $translation
-     * @param $langcode
-     *
-     * @throws \Exception
-     */
-    private function assertGettextTranslation($source, $translation)
+    private function assertGettextTranslation(string $source, string $translation): void
     {
         if (strlen($source) > 71 || strlen($translation) > 71) {
             throw new \Exception('This assertion can handle strings up to 71 characters.');

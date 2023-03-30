@@ -217,4 +217,9 @@ abstract class UnishIntegrationTestCase extends UnishTestCase
         }
         $this->assertStringContainsString($expected, $output);
     }
+
+    public function setupDrupal($num_sites = 1, $install = false, $options = [])
+    {
+        throw new \Exception('Drupal is already setup in an integration test');
+    }
 }
