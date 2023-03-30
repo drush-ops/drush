@@ -76,6 +76,6 @@ class CreateEntityType
             // Create REST configuration for the entity?
             'no',
         ];
-        $testCase->drush(GenerateCommandsAlias::GENERATE, ['content-entity'], ['answer' => $answers, 'destination' => Path::join($testCase::webroot(), 'modules/contrib/unish_article')], null, null, $testCase::EXIT_SUCCESS, null, ['SHELL_INTERACTIVE' => 1]);
+        $testCase->drush(GenerateCommands::GENERATE, ['content-entity'], ['answer' => $answers, 'destination' => Path::join($testCase::webroot(), 'modules/contrib/unish_article')], null, null, $testCase::EXIT_SUCCESS, null, ['SHELL_INTERACTIVE' => 1]);
     }
 }
