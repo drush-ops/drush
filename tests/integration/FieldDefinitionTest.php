@@ -13,14 +13,12 @@ class FieldDefinitionTest extends UnishIntegrationTestCase
     {
         $this->drush(FieldDefinitionCommands::TYPES, [], ['format' => 'json']);
         $json = $this->getOutputFromJSON();
-        $this->log(print_r($json, true));
         $this->assertArrayHasKey('boolean', $json);
         $this->assertEquals('On', $json['boolean']['settings']['on_label']);
 
         $this->drush(PmCommands::INSTALL, ['file'], ['yes' => true]);
         $this->drush(FieldDefinitionCommands::WIDGETS, [], ['format' => 'json']);
         $json = $this->getOutputFromJSON();
-        $this->log(print_r($json, true));
         $this->assertArrayHasKey('file_generic', $json);
         $this->assertEquals('throbber', $json['file_generic']['default_settings']['progress_indicator']);
         $this->assertArrayHasKey('number', $json);
