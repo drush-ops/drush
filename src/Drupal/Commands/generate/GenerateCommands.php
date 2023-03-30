@@ -16,6 +16,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 
 final class GenerateCommands extends DrushCommands
 {
+    const GENERATE = 'generate';
     private ContainerInterface $container;
     private ClassLoader $autoloader;
 
@@ -31,7 +32,7 @@ final class GenerateCommands extends DrushCommands
      * Drush asks questions so that the generated code is as polished as possible. After
      * generating, Drush lists the files that were created.
      */
-    #[CLI\Command(name: 'generate', aliases: ['gen'])]
+    #[CLI\Command(name: self::GENERATE, aliases: ['gen'])]
     #[CLI\Argument(name: 'generator', description: 'A generator name. Omit to pick from available Generators.')]
     #[CLI\Option(name: 'working-dir', description: 'Absolute path to working directory.')]
     #[CLI\Option(name: 'dry-run', description: 'Output the generated code but not save it to file system.')]
