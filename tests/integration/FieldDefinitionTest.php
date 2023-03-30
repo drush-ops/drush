@@ -12,6 +12,7 @@ class FieldDefinitionTest extends UnishIntegrationTestCase
     {
         $this->drush(FieldDefinitionCommands::TYPES, [], ['format' => 'json']);
         $json = $this->getOutputFromJSON();
+        $this->log(print_r($json, true));
         $this->assertArrayHasKey('text_with_summary', $json);
         $this->assertEquals(0, $json['text_with_summary']['settings']['display_summary']);
 
