@@ -64,18 +64,12 @@ class QueueTest extends UnishIntegrationTestCase
    */
     public function testCustomExceptionAndCommands()
     {
-        // Copy the 'woot' module over to the Drupal site we just set up.
-        $this->setupModulesForTests([self::WOOT], Path::join(__DIR__, '../fixtures/modules'));
-
-        // Enable woot module, which contains a queue worker that throws a
-        // custom exception.
-        $this->drush(PmCommands::INSTALL, [self::WOOT], [], null, '', self::EXIT_SUCCESS);
-
         // Add a couple of items to the queue.
         $this->drush(PhpCommands::SCRIPT, ['queue_custom_exception_script'], ['script-path' => __DIR__ . '/resources']);
 
         // Check that the queue exists and it has two items in it.
         $this->drush(QueueCommands::LIST, [], ['format' => 'json']);
+        // The woot module, which contains a queue worker that throws a custom exception.
         $output = $this->getOutputFromJSON('woot_custom_exception');
         $this->assertEquals(2, $output['items'], 'Items were successfully added to the queue.');
 
