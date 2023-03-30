@@ -72,7 +72,7 @@ final class FieldDefinitionCommands extends DrushCommands {
         description: 'Lists field widgets applicable for entity reference fields.'),
     ]
     #[CLI\FilterDefaultField(field: 'id')]
-    public function widgets(array $options = ['format' => 'yaml', 'field-type' => NULL]): RowsOfFields {
+    public function widgets(array $options = ['format' => 'yaml', 'field-type' => self::REQ]): RowsOfFields {
         $processor = static fn(array $definition): array => [
             'id' => $definition['id'],
             'label' => (string) $definition['label'],
@@ -108,7 +108,7 @@ final class FieldDefinitionCommands extends DrushCommands {
         description: 'Lists field formatters applicable for entity reference fields.'),
     ]
     #[CLI\FilterDefaultField(field: 'id')]
-    public function formatters(array $options = ['format' => 'yaml', 'field-type' => NULL]): RowsOfFields {
+    public function formatters(array $options = ['format' => 'yaml', 'field-type' => self::REQ]): RowsOfFields {
         $processor = static fn(array $definition): array => [
             'id' => $definition['id'],
             'label' => (string) $definition['label'],
