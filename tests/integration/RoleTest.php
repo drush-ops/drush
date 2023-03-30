@@ -14,14 +14,20 @@ class RoleTest extends UnishIntegrationTestCase
 
     const USER_FORM_TEST = 'user_form_test';
 
+    public function setup(): void
+    {
+        // In D8+, the testing profile has no perms.
+        // Copy the module to where Drupal expects it.
+        parent::setUp();
+        $this->setupModulesForTests([self::USER_FORM_TEST], Path::join($this->webroot(), 'core/modules/user/tests/modules'));
+    }
+
+
     /**
      * Create, edit, block, and cancel users.
      */
     public function testRole()
     {
-        // In D8+, the testing profile has no perms.
-        // Copy the module to where Drupal expects it.
-        $this->setupModulesForTests([self::USER_FORM_TEST], Path::join($this->webroot(), 'core/modules/user/tests/modules'));
         $this->drush(PmCommands::INSTALL, [self::USER_FORM_TEST]);
 
         $this->drush(RoleCommands::LIST);
@@ -63,6 +69,12 @@ class RoleTest extends UnishIntegrationTestCase
         $this->assertStringNotContainsString($rid, $this->getOutput());
 
         // Cleanup.
-        $this->tearDownModulesForTests([self::USER_FORM_TEST]);
+        // $this->tearDownModulesForTests([self::USER_FORM_TEST]);
+    }
+
+    public function tearDown(): void
+    {
+        $this->drush(PmCommands::UNINSTALL, [self::USER_FORM_TEST]);
+        parent::tearDown();
     }
 }

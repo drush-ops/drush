@@ -42,7 +42,6 @@ trait TestModuleHelperTrait
     public function tearDownModulesForTests(array $modules): void
     {
         $webRoot = $this->webroot();
-        $fileSystem = new Filesystem();
         foreach ($modules as $module) {
             $targetDir = Path::join($webRoot, "modules/unish/$module");
             $this->assertFileExists($targetDir);
