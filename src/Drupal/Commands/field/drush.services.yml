@@ -43,3 +43,11 @@ services:
       - '@entity_field.manager'
     tags:
       - { name: drush.command }
+  field.definition.commands:
+    class: Drush\Drupal\Commands\field\FieldDefinitionCommands
+    arguments:
+      - '@plugin.manager.field.field_type'
+      - '@plugin.manager.field.widget'
+      - '@plugin.manager.field.formatter'
+    tags:
+      - { name: drush.command }
