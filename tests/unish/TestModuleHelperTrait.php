@@ -11,7 +11,7 @@ use Symfony\Component\Filesystem\Path;
 trait TestModuleHelperTrait
 {
     /**
-     * Copies the testing modules from a specific path into Drupal.
+     * Copies the testing modules from a specific path into Drupal. Copies are auto-deleted during tearDown().
      *
      * @param array $modules A list of testing modules.
      * @param string $sourcePath The path under which the modules are placed.
@@ -26,15 +26,7 @@ trait TestModuleHelperTrait
             $targetDir = Path::join($webRoot, "modules/unish/$module");
             $fileSystem->mkdir($targetDir);
             $this->recursiveCopy($sourceDir, $targetDir);
-
-            // If we are copying a module out of the `core` directory, it
-            // might not have the necessary 'core_version_requirement' entry.
-            $info_path = $targetDir . "/$module.info.yml";
-            $module_info = file_get_contents($info_path);
-            if (strpos($module_info, 'core_version_requirement') === false) {
-                $module_info = "core_version_requirement: ^8 || ^9 || ^10\n$module_info";
-                file_put_contents($info_path, $module_info);
-            }
+            $this->assertFileExists($targetDir);
         }
     }
 }

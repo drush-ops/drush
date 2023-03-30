@@ -4,29 +4,37 @@ declare(strict_types=1);
 
 namespace Unish;
 
+use Drupal\Core\Site\Settings;
+use Drush\Commands\core\CoreCommands;
 use Drush\Drupal\Commands\core\RoleCommands;
+use Drush\Drupal\Commands\pm\PmCommands;
 use Symfony\Component\Filesystem\Path;
 
-/**
- *  @group slow
- *  @group commands
- */
-class RoleTest extends CommandUnishTestCase
+class RoleTest extends UnishIntegrationTestCase
 {
     use TestModuleHelperTrait;
+
+    const USER_FORM_TEST = 'user_form_test';
+
+    public function setup(): void
+    {
+        parent::setUp();
+        // Install Drupal if needed.
+        $this->drush(CoreCommands::VERSION);
+        // Help Drupal discover a test-only module within core's user module.
+        $instance = Settings::getInstance();
+        $all = $instance->getAll();
+        $all['extension_discovery_scan_tests'] = true;
+        $instance = new Settings($all);
+        $this->drush(PmCommands::INSTALL, [self::USER_FORM_TEST]);
+    }
+
 
     /**
      * Create, edit, block, and cancel users.
      */
     public function testRole()
     {
-        $this->setUpDrupal(1, true);
-
-        // In D8+, the testing profile has no perms.
-        // Copy the module to where Drupal expects it.
-        $this->setupModulesForTests(['user_form_test'], Path::join($this->webroot(), 'core/modules/user/tests/modules'));
-        $this->drush('pm-install', ['user_form_test']);
-
         $this->drush(RoleCommands::LIST);
         $output = $this->getOutput();
         $this->assertStringNotContainsString('cancel other accounts', $output);
@@ -64,5 +72,16 @@ class RoleTest extends CommandUnishTestCase
         $this->drush(RoleCommands::DELETE, [$rid]);
         $this->drush(RoleCommands::LIST);
         $this->assertStringNotContainsString($rid, $this->getOutput());
+    }
+
+    public function tearDown(): void
+    {
+        $this->drush(PmCommands::UNINSTALL, [self::USER_FORM_TEST]);
+        // Revert our discovery change.
+        $instance = Settings::getInstance();
+        $all = $instance->getAll();
+        $all['extension_discovery_scan_tests'] = false;
+        $instance = new Settings($all);
+        parent::tearDown();
     }
 }
