@@ -5,13 +5,10 @@ declare(strict_types=1);
 namespace Unish;
 
 use Drush\Drupal\Commands\core\RoleCommands;
+use Drush\Drupal\Commands\pm\PmCommands;
 use Symfony\Component\Filesystem\Path;
 
-/**
- *  @group slow
- *  @group commands
- */
-class RoleTest extends CommandUnishTestCase
+class RoleTest extends UnishIntegrationTestCase
 {
     use TestModuleHelperTrait;
 
@@ -20,12 +17,10 @@ class RoleTest extends CommandUnishTestCase
      */
     public function testRole()
     {
-        $this->setUpDrupal(1, true);
-
         // In D8+, the testing profile has no perms.
         // Copy the module to where Drupal expects it.
         $this->setupModulesForTests(['user_form_test'], Path::join($this->webroot(), 'core/modules/user/tests/modules'));
-        $this->drush('pm-install', ['user_form_test']);
+        $this->drush(PmCommands::INSTALL, ['user_form_test']);
 
         $this->drush(RoleCommands::LIST);
         $output = $this->getOutput();
@@ -64,5 +59,8 @@ class RoleTest extends CommandUnishTestCase
         $this->drush(RoleCommands::DELETE, [$rid]);
         $this->drush(RoleCommands::LIST);
         $this->assertStringNotContainsString($rid, $this->getOutput());
+
+        $this->drush(PmCommands::UNINSTALL, ['user_form_test']);
+        $this->recursiveDelete(Path::join($this->webroot(), "modules/unish/user_form_test"));
     }
 }
