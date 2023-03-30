@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Unish;
 
 use Drush\Drupal\Commands\field\FieldDefinitionCommands;
+use Drush\Drupal\Commands\pm\PmCommands;
 
 class FieldDefinitionTest extends UnishIntegrationTestCase
 {
@@ -13,11 +14,13 @@ class FieldDefinitionTest extends UnishIntegrationTestCase
         $this->drush(FieldDefinitionCommands::TYPES, [], ['format' => 'json']);
         $json = $this->getOutputFromJSON();
         $this->log(print_r($json, true));
-        $this->assertArrayHasKey('text_with_summary', $json);
-        $this->assertEquals(0, $json['text_with_summary']['settings']['display_summary']);
+        $this->assertArrayHasKey('boolean', $json);
+        $this->assertEquals('On', $json['boolean']['settings']['on_label']);
 
+        $this->drush(PmCommands::INSTALL, ['file'], ['yes' => true]);
         $this->drush(FieldDefinitionCommands::WIDGETS, [], ['format' => 'json']);
         $json = $this->getOutputFromJSON();
+        $this->log(print_r($json, true));
         $this->assertArrayHasKey('file_generic', $json);
         $this->assertEquals('throbber', $json['file_generic']['default_settings']['progress_indicator']);
         $this->assertArrayHasKey('number', $json);
@@ -31,5 +34,10 @@ class FieldDefinitionTest extends UnishIntegrationTestCase
         $json = $this->getOutputFromJSON();
         $this->assertArrayHasKey('file_video', $json);
         $this->assertFalse($json['file_video']['default_settings']['muted']);
+    }
+
+    public function tearDown(): void
+    {
+        $this->drush(PmCommands::UNINSTALL, ['file'], ['yes' => true]);
     }
 }
