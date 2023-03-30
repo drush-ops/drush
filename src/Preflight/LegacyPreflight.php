@@ -18,35 +18,6 @@ use Symfony\Component\Filesystem\Path;
 class LegacyPreflight
 {
     /**
-     * Define legacy constants.
-     */
-    public static function defineConstants(Environment $environment, $applicationPath): void
-    {
-        // 'define' is undesirable in that it will error if the same identifier
-        // is defined more than once. Ideally we would inject the legacy preflight
-        // object into the Preflight class, and wherever else it was needed,
-        // and omit it for the integration tests. This is probably not practicable
-        // at the moment, though.
-        if (defined('DRUSH_REQUEST_TIME')) {
-            return;
-        }
-
-        $applicationPath = Path::makeAbsolute($applicationPath, $environment->cwd());
-
-        define('DRUSH_REQUEST_TIME', microtime(true));
-
-        /*
-         * @deprecated. Use $config->get('drush.base-dir') instead.
-         */
-        define('DRUSH_BASE_PATH', $environment->drushBasePath());
-
-        /*
-         * @deprecated.
-         */
-        define('DRUSH_COMMAND', $applicationPath);
-    }
-
-    /**
      * Include old code. It is an aspirational goal to remove or refactor
      * all of this into more modular, class-based code.
      */

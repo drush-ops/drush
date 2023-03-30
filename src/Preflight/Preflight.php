@@ -92,9 +92,8 @@ class Preflight
      */
     public function init(): void
     {
-        // Define legacy constants, and include legacy files that Drush still needs
+        // Include legacy files that Drush still needs
         LegacyPreflight::includeCode($this->environment->drushBasePath());
-        LegacyPreflight::defineConstants($this->environment, $this->preflightArgs->applicationPath());
     }
 
     /**
@@ -353,7 +352,7 @@ class Preflight
 
         // Try two approaches.
         $selectedRoot = $this->preflightArgs->selectedSite($this->environment->cwd());
-        $fallBackPath = $this->preflightArgs->selectedSite(DRUSH_COMMAND);
+        $fallBackPath = $this->preflightArgs->selectedSite($this->config()->get('runtime.drush-script'));
         return $this->setSelectedSite($selectedRoot, $fallBackPath);
     }
 

@@ -54,10 +54,6 @@ final class SanitizeUserFieldsCommands extends DrushCommands implements Sanitize
         $conn = $this->getDatabase();
         $field_definitions = $this->getEntityFieldManager()->getFieldDefinitions('user', 'user');
         $field_storage = $this->getEntityFieldManager()->getFieldStorageDefinitions('user');
-        /** @deprecated Use $options['allowlist-fields'] instead. */
-        foreach (explode(',', $options['whitelist-fields']) as $key) {
-            unset($field_definitions[$key], $field_storage[$key]);
-        }
         foreach (explode(',', $options['allowlist-fields']) as $key) {
             unset($field_definitions[$key], $field_storage[$key]);
         }
@@ -133,7 +129,7 @@ final class SanitizeUserFieldsCommands extends DrushCommands implements Sanitize
 
     #[CLI\Hook(type: HookManager::OPTION_HOOK, target: 'sql-sanitize')]
     #[CLI\Option(name: 'allowlist-fields', description: 'A comma delimited list of fields exempt from sanitization.')]
-    public function options($options = ['whitelist-fields' => '', 'allowlist-fields' => '']): void
+    public function options($options = ['allowlist-fields' => '']): void
     {
     }
 }

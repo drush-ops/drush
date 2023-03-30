@@ -128,7 +128,7 @@ jobs:
       - run: cp .docker/zz-php.ini /usr/local/etc/php/conf.d/
       - run: php --version
       - run: composer -n config platform.php --unset
-      - run: composer -n require --dev drupal/core-recommended:10.0.x-dev --no-update
+      - run: composer -n require --dev drupal/core-recommended:10.1.x-dev --no-update
       - run: composer -n update
       - run: composer -n show
       - run: mkdir -p /tmp/results

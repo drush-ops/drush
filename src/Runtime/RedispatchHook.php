@@ -6,18 +6,15 @@ namespace Drush\Runtime;
 
 use Consolidation\AnnotatedCommand\AnnotationData;
 use Consolidation\AnnotatedCommand\Hooks\InitializeHookInterface;
-use Consolidation\SiteAlias\SiteAlias;
 use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
 use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
 use Consolidation\SiteProcess\ProcessManager;
 use Consolidation\SiteProcess\Util\Tty;
 use Drush\Attributes\HandleRemoteCommands;
-use Drush\Drush;
-use Drush\Log\LogLevel;
 use Drush\Config\ConfigAwareTrait;
+use Drush\Drush;
 use Robo\Contract\ConfigAwareInterface;
 use Symfony\Component\Console\Input\InputInterface;
-use Drush\Utils\TerminalUtils;
 
 /**
  * The RedispatchHook is installed as an init hook that runs before

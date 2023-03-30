@@ -35,7 +35,7 @@ class Logger extends RoboLogger
     {
         // Append timer and memory values.
         if (Drush::debug()) {
-            $timer = round(microtime(true) - DRUSH_REQUEST_TIME, 2);
+            $timer = round(microtime(true) - (int) $_SERVER['REQUEST_TIME'], 2);
             $suffix = sprintf(' [%s sec, %s]', $timer, self::formatSize(memory_get_usage()));
             $message .= $suffix;
         }
