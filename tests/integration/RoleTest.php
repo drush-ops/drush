@@ -12,6 +12,8 @@ class RoleTest extends UnishIntegrationTestCase
 {
     use TestModuleHelperTrait;
 
+    const USER_FORM_TEST = 'user_form_test';
+
     /**
      * Create, edit, block, and cancel users.
      */
@@ -19,8 +21,8 @@ class RoleTest extends UnishIntegrationTestCase
     {
         // In D8+, the testing profile has no perms.
         // Copy the module to where Drupal expects it.
-        $this->setupModulesForTests(['user_form_test'], Path::join($this->webroot(), 'core/modules/user/tests/modules'));
-        $this->drush(PmCommands::INSTALL, ['user_form_test']);
+        $this->setupModulesForTests([self::USER_FORM_TEST], Path::join($this->webroot(), 'core/modules/user/tests/modules'));
+        $this->drush(PmCommands::INSTALL, [self::USER_FORM_TEST]);
 
         $this->drush(RoleCommands::LIST);
         $output = $this->getOutput();
@@ -60,7 +62,7 @@ class RoleTest extends UnishIntegrationTestCase
         $this->drush(RoleCommands::LIST);
         $this->assertStringNotContainsString($rid, $this->getOutput());
 
-        $this->drush(PmCommands::UNINSTALL, ['user_form_test']);
-        $this->recursiveDelete(Path::join($this->webroot(), "modules/unish/user_form_test"));
+        // Cleanup.
+        $this->tearDownModulesForTests([self::USER_FORM_TEST]);
     }
 }

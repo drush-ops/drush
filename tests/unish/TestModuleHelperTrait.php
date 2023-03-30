@@ -31,10 +31,20 @@ trait TestModuleHelperTrait
             // might not have the necessary 'core_version_requirement' entry.
             $info_path = $targetDir . "/$module.info.yml";
             $module_info = file_get_contents($info_path);
-            if (strpos($module_info, 'core_version_requirement') === false) {
+            if (!str_contains($module_info, 'core_version_requirement')) {
                 $module_info = "core_version_requirement: ^8 || ^9 || ^10\n$module_info";
                 file_put_contents($info_path, $module_info);
             }
+        }
+    }
+
+    public function tearDownModulesForTests(array $modules): void {
+        $webRoot = $this->webroot();
+        $fileSystem = new Filesystem();
+        foreach ($modules as $module) {
+            $targetDir = Path::join($webRoot, "modules/unish/$module");
+            $this->assertFileExists($targetDir);
+            $this->recursiveDelete($targetDir);
         }
     }
 }
