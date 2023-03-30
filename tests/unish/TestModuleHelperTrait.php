@@ -26,6 +26,7 @@ trait TestModuleHelperTrait
             $targetDir = Path::join($webRoot, "modules/unish/$module");
             $fileSystem->mkdir($targetDir);
             $this->recursiveCopy($sourceDir, $targetDir);
+            $this->assertFileExists($targetDir);
 
             // If we are copying a module out of the `core` directory, it
             // might not have the necessary 'core_version_requirement' entry.
