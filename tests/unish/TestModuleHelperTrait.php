@@ -27,15 +27,6 @@ trait TestModuleHelperTrait
             $fileSystem->mkdir($targetDir);
             $this->recursiveCopy($sourceDir, $targetDir);
             $this->assertFileExists($targetDir);
-
-            // If we are copying a module out of the `core` directory, it
-            // might not have the necessary 'core_version_requirement' entry.
-            $info_path = $targetDir . "/$module.info.yml";
-            $module_info = file_get_contents($info_path);
-            if (!str_contains($module_info, 'core_version_requirement')) {
-                $module_info = "core_version_requirement: ^8 || ^9 || ^10\n$module_info";
-                file_put_contents($info_path, $module_info);
-            }
         }
     }
 }
