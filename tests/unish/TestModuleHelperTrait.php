@@ -39,7 +39,8 @@ trait TestModuleHelperTrait
         }
     }
 
-    public function tearDownModulesForTests(array $modules): void {
+    public function tearDownModulesForTests(array $modules): void
+    {
         $webRoot = $this->webroot();
         $fileSystem = new Filesystem();
         foreach ($modules as $module) {
