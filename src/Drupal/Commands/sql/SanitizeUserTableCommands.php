@@ -19,7 +19,6 @@ use Symfony\Component\Console\Input\InputInterface;
  */
 final class SanitizeUserTableCommands extends DrushCommands implements SanitizePluginInterface
 {
-
     public function __construct(
         protected \Drupal\Core\Database\Connection $database,
         protected PasswordInterface $passwordHasher,
