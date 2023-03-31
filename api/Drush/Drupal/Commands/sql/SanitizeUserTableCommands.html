@@ -194,33 +194,6 @@
                 <td><small>from&nbsp;<a href="../../../../Drush/Commands/DrushCommands.html#property_commandData">
 <abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a></small></td>
             </tr>
-                    <tr>
-                <td class="type" id="property_database">
-                                        protected                                        
-                                                                                
-                                    </td>
-                <td>$database</td>
-                <td class="last"></td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td class="type" id="property_passwordHasher">
-                                        protected                                        
-                                                                                
-                                    </td>
-                <td>$passwordHasher</td>
-                <td class="last"></td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td class="type" id="property_entityTypeManager">
-                                        protected                                        
-                                                                                
-                                    </td>
-                <td>$entityTypeManager</td>
-                <td class="last"></td>
-                <td></td>
-            </tr>
             </table>
 
     
@@ -279,7 +252,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>                </
                     
                 </div>
                 <div class="col-md-8">
-                    <a href="#method___construct">__construct</a>($database, $passwordHasher, $entityTypeManager)
+                    <a href="#method___construct">__construct</a>(<abbr title="Drupal\Core\Database\Connection">Connection</abbr> $database, <abbr title="Drupal\Core\Password\PasswordInterface">PasswordInterface</abbr> $passwordHasher, <abbr title="Drupal\Core\Entity\EntityTypeManagerInterface">EntityTypeManagerInterface</abbr> $entityTypeManager)
         
                                             <p class="no-description">No description</p>
                                     </div>
@@ -595,9 +568,9 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method___construct">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Drupal/Commands/sql/SanitizeUserTableCommands.php#L24">at line 24</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Drupal/Commands/sql/SanitizeUserTableCommands.php#L22">at line 22</a></div>
         <code>                    
-    <strong>__construct</strong>($database, $passwordHasher, $entityTypeManager)
+    <strong>__construct</strong>(<abbr title="Drupal\Core\Database\Connection">Connection</abbr> $database, <abbr title="Drupal\Core\Password\PasswordInterface">PasswordInterface</abbr> $passwordHasher, <abbr title="Drupal\Core\Entity\EntityTypeManagerInterface">EntityTypeManagerInterface</abbr> $entityTypeManager)
         </code>
     </h3>
     <div class="details">    
@@ -613,17 +586,17 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
 
                     <table class="table table-condensed">
                     <tr>
-                <td></td>
+                <td><abbr title="Drupal\Core\Database\Connection">Connection</abbr></td>
                 <td>$database</td>
                 <td></td>
             </tr>
                     <tr>
-                <td></td>
+                <td><abbr title="Drupal\Core\Password\PasswordInterface">PasswordInterface</abbr></td>
                 <td>$passwordHasher</td>
                 <td></td>
             </tr>
                     <tr>
-                <td></td>
+                <td><abbr title="Drupal\Core\Entity\EntityTypeManagerInterface">EntityTypeManagerInterface</abbr></td>
                 <td>$entityTypeManager</td>
                 <td></td>
             </tr>
@@ -860,7 +833,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_sanitize">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Drupal/Commands/sql/SanitizeUserTableCommands.php#L35">at line 35</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Drupal/Commands/sql/SanitizeUserTableCommands.php#L33">at line 33</a></div>
         <code>                    
     <strong>sanitize</strong>($result, <abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr> $commandData)
         </code>
@@ -900,7 +873,7 @@ database sanitizer for sql-sync.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_options">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Drupal/Commands/sql/SanitizeUserTableCommands.php#L88">at line 88</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Drupal/Commands/sql/SanitizeUserTableCommands.php#L86">at line 86</a></div>
         <code>                    void
     <strong>options</strong>($options = [&#039;sanitize-email&#039; =&gt; &#039;user+%uid@localhost.localdomain&#039;, &#039;sanitize-password&#039; =&gt; null])
         </code>
@@ -943,7 +916,7 @@ database sanitizer for sql-sync.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_messages">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Drupal/Commands/sql/SanitizeUserTableCommands.php#L95">at line 95</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Drupal/Commands/sql/SanitizeUserTableCommands.php#L93">at line 93</a></div>
         <code>                    string[]
     <strong>messages</strong>(array $messages, <abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr> $input)
         </code>
@@ -990,7 +963,7 @@ database sanitizer for sql-sync.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_isEnabled">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Drupal/Commands/sql/SanitizeUserTableCommands.php#L110">at line 110</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Drupal/Commands/sql/SanitizeUserTableCommands.php#L108">at line 108</a></div>
         <code>            protected        bool
     <strong>isEnabled</strong>(string|null $value)
         </code>

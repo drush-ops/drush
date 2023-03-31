@@ -214,30 +214,23 @@
             </tr>
                     <tr>
                 <td class="type" id="property_entityTypeBundleInfo">
-                                        protected                                        <abbr title="Drupal\Core\Entity\EntityTypeBundleInfoInterface">EntityTypeBundleInfoInterface</abbr>
+                                                                                <abbr title="Drupal\Core\Entity\EntityTypeBundleInfoInterface">EntityTypeBundleInfoInterface</abbr>
                                                                                 
                                     </td>
                 <td>$entityTypeBundleInfo</td>
                 <td class="last"></td>
-                <td></td>
+                <td><small>from&nbsp;<a href="../../../../Drush/Drupal/Commands/field/EntityTypeBundleAskTrait.html#property_entityTypeBundleInfo">
+<abbr title="Drush\Drupal\Commands\field\EntityTypeBundleAskTrait">EntityTypeBundleAskTrait</abbr></a></small></td>
             </tr>
                     <tr>
                 <td class="type" id="property_entityTypeManager">
-                                        protected                                        <abbr title="Drupal\Core\Entity\EntityTypeManagerInterface">EntityTypeManagerInterface</abbr>
+                                                                                <abbr title="Drupal\Core\Entity\EntityTypeManagerInterface">EntityTypeManagerInterface</abbr>
                                                                                 
                                     </td>
                 <td>$entityTypeManager</td>
                 <td class="last"></td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td class="type" id="property_entityFieldManager">
-                                        protected                                        <abbr title="Drupal\Core\Entity\EntityFieldManagerInterface">EntityFieldManagerInterface</abbr>
-                                                                                
-                                    </td>
-                <td>$entityFieldManager</td>
-                <td class="last"></td>
-                <td></td>
+                <td><small>from&nbsp;<a href="../../../../Drush/Drupal/Commands/field/EntityTypeBundleValidationTrait.html#property_entityTypeManager">
+<abbr title="Drush\Drupal\Commands\field\EntityTypeBundleValidationTrait">EntityTypeBundleValidationTrait</abbr></a></small></td>
             </tr>
             </table>
 
@@ -706,7 +699,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method___construct">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Drupal/Commands/field/FieldBaseOverrideCreateCommands.php#L32">at line 32</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Drupal/Commands/field/FieldBaseOverrideCreateCommands.php#L25">at line 25</a></div>
         <code>                    
     <strong>__construct</strong>(<abbr title="Drupal\Core\Entity\EntityTypeManagerInterface">EntityTypeManagerInterface</abbr> $entityTypeManager, <abbr title="Drupal\Core\Entity\EntityTypeBundleInfoInterface">EntityTypeBundleInfoInterface</abbr> $entityTypeBundleInfo, <abbr title="Drupal\Core\Entity\EntityFieldManagerInterface">EntityFieldManagerInterface</abbr> $entityFieldManager)
         </code>
@@ -1132,7 +1125,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_create">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Drupal/Commands/field/FieldBaseOverrideCreateCommands.php#L48">at line 48</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Drupal/Commands/field/FieldBaseOverrideCreateCommands.php#L38">at line 38</a></div>
         <code>                    void
     <strong>create</strong>(string|null $entityType = null, string|null $bundle = null, array $options = [&#039;field-name&#039; =&gt; InputOption::VALUE_REQUIRED, &#039;field-label&#039; =&gt; InputOption::VALUE_REQUIRED, &#039;field-description&#039; =&gt; InputOption::VALUE_REQUIRED, &#039;is-required&#039; =&gt; InputOption::VALUE_REQUIRED, &#039;show-machine-names&#039; =&gt; InputOption::VALUE_OPTIONAL])
         </code>
@@ -1201,7 +1194,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_askFieldName">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Drupal/Commands/field/FieldBaseOverrideCreateCommands.php#L119">at line 119</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Drupal/Commands/field/FieldBaseOverrideCreateCommands.php#L109">at line 109</a></div>
         <code>            protected        string|null
     <strong>askFieldName</strong>(string $entityType)
         </code>
@@ -1244,7 +1237,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_askFieldLabel">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Drupal/Commands/field/FieldBaseOverrideCreateCommands.php#L133">at line 133</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Drupal/Commands/field/FieldBaseOverrideCreateCommands.php#L123">at line 123</a></div>
         <code>            protected        string
     <strong>askFieldLabel</strong>(string $default)
         </code>
@@ -1287,7 +1280,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_askFieldDescription">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Drupal/Commands/field/FieldBaseOverrideCreateCommands.php#L138">at line 138</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Drupal/Commands/field/FieldBaseOverrideCreateCommands.php#L128">at line 128</a></div>
         <code>            protected        string|null
     <strong>askFieldDescription</strong>(string|null $default)
         </code>
@@ -1330,7 +1323,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_askRequired">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Drupal/Commands/field/FieldBaseOverrideCreateCommands.php#L143">at line 143</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Drupal/Commands/field/FieldBaseOverrideCreateCommands.php#L133">at line 133</a></div>
         <code>            protected        bool
     <strong>askRequired</strong>(bool $default)
         </code>
@@ -1373,7 +1366,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_createBaseFieldOverride">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Drupal/Commands/field/FieldBaseOverrideCreateCommands.php#L148">at line 148</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Drupal/Commands/field/FieldBaseOverrideCreateCommands.php#L138">at line 138</a></div>
         <code>            protected        <abbr title="Drupal\Core\Field\Entity\BaseFieldOverride">BaseFieldOverride</abbr>
     <strong>createBaseFieldOverride</strong>(string $entityType, string $bundle, string $fieldName, $fieldLabel, $fieldDescription, bool $isRequired)
         </code>
@@ -1441,7 +1434,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_logResult">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Drupal/Commands/field/FieldBaseOverrideCreateCommands.php#L163">at line 163</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Drupal/Commands/field/FieldBaseOverrideCreateCommands.php#L153">at line 153</a></div>
         <code>            protected        void
     <strong>logResult</strong>(<abbr title="Drupal\Core\Field\Entity\BaseFieldOverride">BaseFieldOverride</abbr> $baseFieldOverride)
         </code>
@@ -1484,7 +1477,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_getBaseFieldDefinition">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Drupal/Commands/field/FieldBaseOverrideCreateCommands.php#L175">at line 175</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Drupal/Commands/field/FieldBaseOverrideCreateCommands.php#L165">at line 165</a></div>
         <code>            protected        <abbr title="Drush\Drupal\Commands\field\Drupal\Core\Field\BaseFieldDefinition">BaseFieldDefinition</abbr>|null
     <strong>getBaseFieldDefinition</strong>(string $entityType, string $fieldName)
         </code>

@@ -194,33 +194,6 @@
                 <td><small>from&nbsp;<a href="../../../../Drush/Commands/DrushCommands.html#property_commandData">
 <abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a></small></td>
             </tr>
-                    <tr>
-                <td class="type" id="property_database">
-                                        protected                                        
-                                                                                
-                                    </td>
-                <td>$database</td>
-                <td class="last"></td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td class="type" id="property_entityFieldManager">
-                                        protected                                        
-                                                                                
-                                    </td>
-                <td>$entityFieldManager</td>
-                <td class="last"></td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td class="type" id="property_entityTypeManager">
-                                        protected                                        
-                                                                                
-                                    </td>
-                <td>$entityTypeManager</td>
-                <td class="last"></td>
-                <td></td>
-            </tr>
             </table>
 
     
@@ -279,7 +252,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>                </
                     
                 </div>
                 <div class="col-md-8">
-                    <a href="#method___construct">__construct</a>($database, $entityFieldManager, $entityTypeManager)
+                    <a href="#method___construct">__construct</a>(<abbr title="Drupal\Core\Database\Connection">Connection</abbr> $database, <abbr title="Drupal\Core\Entity\EntityFieldManagerInterface">EntityFieldManagerInterface</abbr> $entityFieldManager, <abbr title="Drupal\Core\Entity\EntityTypeManagerInterface">EntityTypeManagerInterface</abbr> $entityTypeManager)
         
                                             <p class="no-description">No description</p>
                                     </div>
@@ -606,9 +579,9 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method___construct">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Drupal/Commands/sql/SanitizeUserFieldsCommands.php#L22">at line 22</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Drupal/Commands/sql/SanitizeUserFieldsCommands.php#L20">at line 20</a></div>
         <code>                    
-    <strong>__construct</strong>($database, $entityFieldManager, $entityTypeManager)
+    <strong>__construct</strong>(<abbr title="Drupal\Core\Database\Connection">Connection</abbr> $database, <abbr title="Drupal\Core\Entity\EntityFieldManagerInterface">EntityFieldManagerInterface</abbr> $entityFieldManager, <abbr title="Drupal\Core\Entity\EntityTypeManagerInterface">EntityTypeManagerInterface</abbr> $entityTypeManager)
         </code>
     </h3>
     <div class="details">    
@@ -624,17 +597,17 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
 
                     <table class="table table-condensed">
                     <tr>
-                <td></td>
+                <td><abbr title="Drupal\Core\Database\Connection">Connection</abbr></td>
                 <td>$database</td>
                 <td></td>
             </tr>
                     <tr>
-                <td></td>
+                <td><abbr title="Drupal\Core\Entity\EntityFieldManagerInterface">EntityFieldManagerInterface</abbr></td>
                 <td>$entityFieldManager</td>
                 <td></td>
             </tr>
                     <tr>
-                <td></td>
+                <td><abbr title="Drupal\Core\Entity\EntityTypeManagerInterface">EntityTypeManagerInterface</abbr></td>
                 <td>$entityTypeManager</td>
                 <td></td>
             </tr>
@@ -871,7 +844,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_getDatabase">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Drupal/Commands/sql/SanitizeUserFieldsCommands.php#L32">at line 32</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Drupal/Commands/sql/SanitizeUserFieldsCommands.php#L30">at line 30</a></div>
         <code>                    mixed
     <strong>getDatabase</strong>()
         </code>
@@ -904,7 +877,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_getEntityFieldManager">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Drupal/Commands/sql/SanitizeUserFieldsCommands.php#L40">at line 40</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Drupal/Commands/sql/SanitizeUserFieldsCommands.php#L38">at line 38</a></div>
         <code>                    mixed
     <strong>getEntityFieldManager</strong>()
         </code>
@@ -937,7 +910,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_sanitize">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Drupal/Commands/sql/SanitizeUserFieldsCommands.php#L50">at line 50</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Drupal/Commands/sql/SanitizeUserFieldsCommands.php#L48">at line 48</a></div>
         <code>                    
     <strong>sanitize</strong>($result, <abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr> $commandData)
         </code>
@@ -983,7 +956,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_messages">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Drupal/Commands/sql/SanitizeUserFieldsCommands.php#L124">at line 124</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Drupal/Commands/sql/SanitizeUserFieldsCommands.php#L122">at line 122</a></div>
         <code>                    string[]
     <strong>messages</strong>(array $messages, <abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr> $input)
         </code>
@@ -1030,7 +1003,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_options">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Drupal/Commands/sql/SanitizeUserFieldsCommands.php#L130">at line 130</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Drupal/Commands/sql/SanitizeUserFieldsCommands.php#L128">at line 128</a></div>
         <code>                    void
     <strong>options</strong>($options = [&#039;allowlist-fields&#039; =&gt; &#039;&#039;])
         </code>
