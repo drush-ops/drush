@@ -22,21 +22,14 @@ final class ViewsCommands extends DrushCommands
     const LIST = 'views:list';
     const ENABLE = 'views:enable';
     const DISABLE = 'views:disable';
-    protected $configFactory;
-
-    protected $moduleHandler;
-
-    protected $entityTypeManager;
-
-    protected $renderer;
 
 
-    public function __construct(ConfigFactoryInterface $configFactory, ModuleHandlerInterface $moduleHandler, EntityTypeManagerInterface $entityTypeManager, RendererInterface $renderer)
-    {
-        $this->moduleHandler = $moduleHandler;
-        $this->entityTypeManager = $entityTypeManager;
-        $this->renderer = $renderer;
-        $this->configFactory = $configFactory;
+    public function __construct(
+        protected ConfigFactoryInterface $configFactory,
+        protected ModuleHandlerInterface $moduleHandler,
+        protected EntityTypeManagerInterface $entityTypeManager,
+        protected RendererInterface $renderer
+    ) {
     }
 
     public function getConfigFactory(): ConfigFactoryInterface

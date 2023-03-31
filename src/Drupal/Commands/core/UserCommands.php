@@ -29,11 +29,8 @@ final class UserCommands extends DrushCommands
     const CANCEL = 'user:cancel';
     const PASSWORD = 'user:password';
 
-    protected DateFormatterInterface $dateFormatter;
-
-    public function __construct($dateFormatter)
+    public function __construct(protected DateFormatterInterface $dateFormatter)
     {
-        $this->dateFormatter = $dateFormatter;
     }
 
     /**
