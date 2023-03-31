@@ -20,16 +20,10 @@ final class TwigCommands extends DrushCommands
 {
     const UNUSED = 'twig:unused';
     const COMPILE = 'twig:compile';
-    /**
-     * @var TwigEnvironment
-     */
-    protected $twig;
 
-  /**
-     * @var ModuleHandlerInterface
-     */
-    protected $moduleHandler;
-    private ExtensionList $extensionList;
+    public function __construct(protected TwigEnvironment $twig, protected ModuleHandlerInterface $moduleHandler, private ExtensionList $extensionList)
+    {
+    }
 
     public function getTwig(): TwigEnvironment
     {
@@ -41,18 +35,7 @@ final class TwigCommands extends DrushCommands
         return $this->moduleHandler;
     }
 
-  /**
-     * @param TwigEnvironment $twig
-     * @param ModuleHandlerInterface $moduleHandler
-     */
-    public function __construct(TwigEnvironment $twig, ModuleHandlerInterface $moduleHandler, ExtensionList $extensionList)
-    {
-        $this->twig = $twig;
-        $this->moduleHandler = $moduleHandler;
-        $this->extensionList = $extensionList;
-    }
-
-  /**
+    /**
      * Find potentially unused Twig templates.
      *
      * Immediately before running this command, web crawl your entire web site. Or
@@ -92,9 +75,9 @@ final class TwigCommands extends DrushCommands
         return new RowsOfFields($unused);
     }
 
-  /**
-   * Compile all Twig template(s).
-   */
+    /**
+     * Compile all Twig template(s).
+     */
     #[CLI\Command(name: self::COMPILE, aliases: ['twigc', 'twig-compile'])]
     public function twigCompile(): void
     {

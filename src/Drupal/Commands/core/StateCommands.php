@@ -19,11 +19,9 @@ final class StateCommands extends DrushCommands implements StdinAwareInterface
     const GET = 'state:get';
     const SET = 'state:set';
     const DELETE = 'state:delete';
-    protected $state;
 
-    public function __construct(StateInterface $state)
+    public function __construct(protected StateInterface $state)
     {
-        $this->state = $state;
     }
 
     public function getState(): StateInterface
