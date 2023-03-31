@@ -29,14 +29,16 @@ final class QueueCommands extends DrushCommands
     const DELETE = 'queue:delete';
 
     /**
-     * Keep track of queue definitions.
+     * @var QueueWorkerManagerInterface
      */
-    protected static array $queues = [];
+    protected QueueWorkerManagerInterface $workerManager;
 
-    public function __construct(
-        protected QueueWorkerManagerInterface $workerManager,
-        protected QueueFactory $queueService
-    ) {
+    protected $queueService;
+
+    public function __construct(QueueWorkerManagerInterface $workerManager, QueueFactory $queueService)
+    {
+        $this->workerManager = $workerManager;
+        $this->queueService = $queueService;
     }
 
     public function getWorkerManager(): QueueWorkerManagerInterface
@@ -48,6 +50,13 @@ final class QueueCommands extends DrushCommands
     {
         return $this->queueService;
     }
+
+    /**
+     * Keep track of queue definitions.
+     *
+     * @var array
+     */
+    protected static $queues;
 
     /**
      * Run a specific queue by name.
