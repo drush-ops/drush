@@ -38,39 +38,17 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
 
     const CREATE = 'field:create';
 
-    /** @var FieldTypePluginManagerInterface */
-    protected $fieldTypePluginManager;
-    /** @var WidgetPluginManager */
-    protected $widgetPluginManager;
-    /** @var SelectionPluginManagerInterface */
-    protected $selectionPluginManager;
-    /** @var EntityTypeManagerInterface */
-    protected $entityTypeManager;
-    /** @var EntityTypeBundleInfoInterface */
-    protected $entityTypeBundleInfo;
-    /** @var EntityFieldManagerInterface */
-    protected $entityFieldManager;
-    /** @var ModuleHandlerInterface */
-    protected $moduleHandler;
-    /** @var ContentTranslationManagerInterface */
-    protected $contentTranslationManager;
+    protected ContentTranslationManagerInterface $contentTranslationManager;
 
     public function __construct(
-        FieldTypePluginManagerInterface $fieldTypePluginManager,
-        WidgetPluginManager $widgetPluginManager,
-        SelectionPluginManagerInterface $selectionPluginManager,
-        EntityTypeManagerInterface $entityTypeManager,
-        EntityTypeBundleInfoInterface $entityTypeBundleInfo,
-        ModuleHandlerInterface $moduleHandler,
-        EntityFieldManagerInterface $entityFieldManager
+        protected FieldTypePluginManagerInterface $fieldTypePluginManager,
+        protected WidgetPluginManager $widgetPluginManager,
+        protected SelectionPluginManagerInterface $selectionPluginManager,
+        protected EntityTypeManagerInterface $entityTypeManager,
+        protected EntityTypeBundleInfoInterface $entityTypeBundleInfo,
+        protected ModuleHandlerInterface $moduleHandler,
+        protected EntityFieldManagerInterface $entityFieldManager
     ) {
-        $this->fieldTypePluginManager = $fieldTypePluginManager;
-        $this->widgetPluginManager = $widgetPluginManager;
-        $this->selectionPluginManager = $selectionPluginManager;
-        $this->entityTypeManager = $entityTypeManager;
-        $this->entityTypeBundleInfo = $entityTypeBundleInfo;
-        $this->moduleHandler = $moduleHandler;
-        $this->entityFieldManager = $entityFieldManager;
     }
 
     public function setContentTranslationManager(ContentTranslationManagerInterface $manager): void

@@ -6,6 +6,8 @@ namespace Drush\Drupal\Commands\sql;
 
 use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\AnnotatedCommand\Hooks\HookManager;
+use Drupal\Core\Entity\EntityFieldManagerInterface;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drush\Attributes as CLI;
 use Drush\Commands\DrushCommands;
 use Symfony\Component\Console\Input\InputInterface;
@@ -15,15 +17,11 @@ use Symfony\Component\Console\Input\InputInterface;
  */
 final class SanitizeUserFieldsCommands extends DrushCommands implements SanitizePluginInterface
 {
-    protected $database;
-    protected $entityFieldManager;
-    protected $entityTypeManager;
-
-    public function __construct($database, $entityFieldManager, $entityTypeManager)
-    {
-        $this->database = $database;
-        $this->entityFieldManager = $entityFieldManager;
-        $this->entityTypeManager = $entityTypeManager;
+    public function __construct(
+        protected \Drupal\Core\Database\Connection $database,
+        protected EntityFieldManagerInterface $entityFieldManager,
+        protected EntityTypeManagerInterface $entityTypeManager
+    ) {
     }
 
     /**

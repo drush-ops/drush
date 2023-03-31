@@ -18,13 +18,11 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 final class GenerateCommands extends DrushCommands
 {
     const GENERATE = 'generate';
-    private ContainerInterface $container;
-    private ClassLoader $autoloader;
 
-    public function __construct(ContainerInterface $container, ClassLoader $autoloader)
-    {
-        $this->container = $container;
-        $this->autoloader = $autoloader;
+    public function __construct(
+        private ContainerInterface $container,
+        private ClassLoader $autoloader
+    ) {
     }
 
     /**

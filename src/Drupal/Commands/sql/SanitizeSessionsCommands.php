@@ -8,6 +8,7 @@ use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\AnnotatedCommand\Hooks\HookManager;
 use Drush\Attributes as CLI;
 use Drush\Commands\DrushCommands;
+use Drupal\Core\Database\Connection;
 use Symfony\Component\Console\Input\InputInterface;
 
 /**
@@ -15,11 +16,8 @@ use Symfony\Component\Console\Input\InputInterface;
  */
 final class SanitizeSessionsCommands extends DrushCommands implements SanitizePluginInterface
 {
-    protected $database;
-
-    public function __construct($database)
+    public function __construct(protected Connection $database)
     {
-        $this->database = $database;
     }
 
     /**
