@@ -13,12 +13,10 @@ final class ThemeCommands extends DrushCommands
 {
     const INSTALL = 'theme:install';
     const UNINSTALL = 'theme:uninstall';
-    protected ThemeInstallerInterface $themeInstaller;
 
-    public function __construct(ThemeInstallerInterface $themeInstaller)
+    public function __construct(protected ThemeInstallerInterface $themeInstaller)
     {
         parent::__construct();
-        $this->themeInstaller = $themeInstaller;
     }
 
     /**

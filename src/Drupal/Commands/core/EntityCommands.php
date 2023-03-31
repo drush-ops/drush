@@ -17,11 +17,9 @@ final class EntityCommands extends DrushCommands
 {
     const DELETE = 'entity:delete';
     const SAVE = 'entity:save';
-    protected $entityTypeManager;
 
-    public function __construct(EntityTypeManagerInterface $entityTypeManager)
+    public function __construct(protected EntityTypeManagerInterface $entityTypeManager)
     {
-        $this->entityTypeManager = $entityTypeManager;
     }
 
     /**

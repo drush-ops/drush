@@ -6,6 +6,8 @@ namespace Drush\Drupal\Commands\sql;
 
 use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\AnnotatedCommand\Hooks\HookManager;
+use Drupal\Core\Database\Connection;
+use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drush\Attributes as CLI;
 use Drush\Boot\DrupalBootLevels;
 use Drush\Commands\DrushCommands;
@@ -17,13 +19,10 @@ use Symfony\Component\Console\Input\InputInterface;
  */
 final class SanitizeCommentsCommands extends DrushCommands implements SanitizePluginInterface
 {
-    protected $database;
-    protected $moduleHandler;
-
-    public function __construct($database, $moduleHandler)
-    {
-        $this->database = $database;
-        $this->moduleHandler = $moduleHandler;
+    public function __construct(
+        protected Connection $database,
+        protected ModuleHandlerInterface $moduleHandler
+    ) {
     }
 
     /**

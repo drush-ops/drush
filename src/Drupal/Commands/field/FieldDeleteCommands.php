@@ -22,17 +22,10 @@ class FieldDeleteCommands extends DrushCommands
     use EntityTypeBundleAskTrait;
     use EntityTypeBundleValidationTrait;
 
-    /** @var EntityTypeManagerInterface */
-    protected $entityTypeManager;
-    /** @var EntityTypeBundleInfo */
-    protected $entityTypeBundleInfo;
-
     public function __construct(
-        EntityTypeManagerInterface $entityTypeManager,
-        EntityTypeBundleInfo $entityTypeBundleInfo
+        protected EntityTypeManagerInterface $entityTypeManager,
+        protected EntityTypeBundleInfo $entityTypeBundleInfo
     ) {
-        $this->entityTypeManager = $entityTypeManager;
-        $this->entityTypeBundleInfo = $entityTypeBundleInfo;
     }
 
     /**

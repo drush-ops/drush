@@ -6,6 +6,8 @@ namespace Drush\Drupal\Commands\sql;
 
 use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\AnnotatedCommand\Hooks\HookManager;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Core\Password\PasswordInterface;
 use Drush\Attributes as CLI;
 use Drush\Commands\DrushCommands;
 use Drush\Sql\SqlBase;
@@ -17,15 +19,11 @@ use Symfony\Component\Console\Input\InputInterface;
  */
 final class SanitizeUserTableCommands extends DrushCommands implements SanitizePluginInterface
 {
-    protected $database;
-    protected $passwordHasher;
-    protected $entityTypeManager;
-
-    public function __construct($database, $passwordHasher, $entityTypeManager)
-    {
-        $this->database = $database;
-        $this->passwordHasher = $passwordHasher;
-        $this->entityTypeManager = $entityTypeManager;
+    public function __construct(
+        protected \Drupal\Core\Database\Connection $database,
+        protected PasswordInterface $passwordHasher,
+        protected EntityTypeManagerInterface $entityTypeManager
+    ) {
     }
 
     /**

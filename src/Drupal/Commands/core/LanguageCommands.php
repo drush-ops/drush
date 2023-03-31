@@ -16,15 +16,6 @@ final class LanguageCommands extends DrushCommands
 {
     const ADD = 'language:add';
     const INFO = 'language:info';
-    /**
-     * @var LanguageManagerInterface
-     */
-    protected $languageManager;
-
-    /**
-     * @var ModuleHandlerInterface
-     */
-    protected $moduleHandler;
 
     public function getLanguageManager(): LanguageManagerInterface
     {
@@ -36,10 +27,8 @@ final class LanguageCommands extends DrushCommands
         return $this->moduleHandler;
     }
 
-    public function __construct(LanguageManagerInterface $languageManager, ModuleHandlerInterface $moduleHandler)
+    public function __construct(protected LanguageManagerInterface $languageManager, protected ModuleHandlerInterface $moduleHandler)
     {
-        $this->languageManager = $languageManager;
-        $this->moduleHandler = $moduleHandler;
     }
 
     #[CLI\Command(name: self::ADD, aliases: ['language-add'])]

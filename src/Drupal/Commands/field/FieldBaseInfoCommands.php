@@ -17,21 +17,11 @@ class FieldBaseInfoCommands extends DrushCommands
     use EntityTypeBundleValidationTrait;
     use FieldDefinitionRowsOfFieldsTrait;
 
-    /** @var EntityTypeManagerInterface */
-    protected $entityTypeManager;
-    /** @var EntityTypeBundleInfoInterface */
-    protected $entityTypeBundleInfo;
-    /** @var EntityFieldManagerInterface */
-    protected $entityFieldManager;
-
     public function __construct(
-        EntityTypeManagerInterface $entityTypeManager,
-        EntityTypeBundleInfoInterface $entityTypeBundleInfo,
-        EntityFieldManagerInterface $entityFieldManager
+        protected EntityTypeManagerInterface $entityTypeManager,
+        protected EntityTypeBundleInfoInterface $entityTypeBundleInfo,
+        protected EntityFieldManagerInterface $entityFieldManager
     ) {
-        $this->entityTypeManager = $entityTypeManager;
-        $this->entityTypeBundleInfo = $entityTypeBundleInfo;
-        $this->entityFieldManager = $entityFieldManager;
     }
 
     /**

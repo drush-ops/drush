@@ -25,24 +25,15 @@ final class PmCommands extends DrushCommands
     const INSTALL = 'pm:install';
     const UNINSTALL = 'pm:uninstall';
     const LIST = 'pm:list';
-    protected $configFactory;
 
-    protected $moduleInstaller;
-
-    protected $moduleHandler;
-
-    protected $themeHandler;
-
-    protected $extensionListModule;
-
-    public function __construct(ConfigFactoryInterface $configFactory, ModuleInstallerInterface $moduleInstaller, ModuleHandlerInterface $moduleHandler, ThemeHandlerInterface $themeHandler, ModuleExtensionList $extensionListModule)
-    {
+    public function __construct(
+        protected ConfigFactoryInterface $configFactory,
+        protected ModuleInstallerInterface $moduleInstaller,
+        protected ModuleHandlerInterface $moduleHandler,
+        protected ThemeHandlerInterface $themeHandler,
+        protected ModuleExtensionList $extensionListModule
+    ) {
         parent::__construct();
-        $this->configFactory = $configFactory;
-        $this->moduleInstaller = $moduleInstaller;
-        $this->moduleHandler = $moduleHandler;
-        $this->themeHandler = $themeHandler;
-        $this->extensionListModule = $extensionListModule;
     }
 
     public function getConfigFactory(): ConfigFactoryInterface

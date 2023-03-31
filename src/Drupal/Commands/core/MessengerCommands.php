@@ -7,20 +7,13 @@ namespace Drush\Drupal\Commands\core;
 use Consolidation\AnnotatedCommand\Hooks\HookManager;
 use Drupal\Core\Messenger\MessengerInterface;
 use Drush\Attributes as CLI;
-use Drush\Boot\DrupalBootLevels;
 use Drush\Commands\DrushCommands;
 use Drush\Drupal\DrupalUtil;
 
 final class MessengerCommands extends DrushCommands
 {
-    protected MessengerInterface $messenger;
-
-    /**
-     * @inheritDoc
-     */
-    public function __construct(MessengerInterface $messenger)
+    public function __construct(protected MessengerInterface $messenger)
     {
-        $this->messenger = $messenger;
     }
 
     #[CLI\Hook(type: HookManager::PRE_COMMAND_HOOK, target: '*')]

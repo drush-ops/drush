@@ -20,8 +20,6 @@ final class ConfigExportCommands extends DrushCommands
 {
     const EXPORT = 'config:export';
 
-    protected ConfigManagerInterface $configManager;
-    protected StorageInterface $configStorage;
     protected ?StorageInterface $configStorageSync;
     protected ?StorageInterface $configStorageExport;
 
@@ -59,11 +57,9 @@ final class ConfigExportCommands extends DrushCommands
         $this->configStorageSync = $syncStorage;
     }
 
-    public function __construct(ConfigManagerInterface $configManager, StorageInterface $configStorage)
+    public function __construct(protected ConfigManagerInterface $configManager, protected StorageInterface $configStorage)
     {
         parent::__construct();
-        $this->configManager = $configManager;
-        $this->configStorage = $configStorage;
     }
 
     /**
