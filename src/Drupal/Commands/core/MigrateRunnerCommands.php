@@ -73,7 +73,7 @@ class MigrateRunnerCommands extends DrushCommands implements ConfigAwareInterfac
     #[CLI\Usage(name: 'migrate:status classification,article', description: 'Retrieve status for specific migrations')]
     #[CLI\Usage(name: 'migrate:status --field=id', description: 'Retrieve a raw list of migration IDs.')]
     #[CLI\Usage(name: 'ms --fields=id,status --format=json', description: 'Retrieve a Json serialized list of migrations, each item containing only the migration ID and its status.')]
-    #[CLI\Topics(topics: [DocsCommands::MIGRATE)]
+    #[CLI\Topics(topics: [DocsCommands::MIGRATE])]
     #[CLI\ValidateModulesEnabled(modules: ['migrate'])]
     #[CLI\FieldLabels(labels: [
         'id' => 'Migration ID',
