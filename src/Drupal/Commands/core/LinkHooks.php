@@ -17,7 +17,6 @@ use Symfony\Component\Console\Input\InputOption;
 
 final class LinkHooks extends DrushCommands
 {
-
     public function __construct(
         protected ModuleHandlerInterface $moduleHandler
     ) {
