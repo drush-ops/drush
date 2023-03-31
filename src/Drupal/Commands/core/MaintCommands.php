@@ -15,11 +15,8 @@ final class MaintCommands extends DrushCommands
     const SET = 'maint:set';
     const STATUS = 'maint:status';
 
-    protected StateInterface $state;
-
-    public function __construct(StateInterface $state)
+    public function __construct(protected StateInterface $state)
     {
-        $this->state = $state;
     }
 
     public function getState(): StateInterface

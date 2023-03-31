@@ -42,16 +42,6 @@ class MigrateRunnerCommands extends DrushCommands implements ConfigAwareInterfac
      */
     protected KeyValueStoreInterface $keyValue;
 
-    /**
-     * Constructs a new class instance.
-     *
-     * @param DateFormatterInterface $dateFormatter
-     *   Date formatter service.
-     * @param KeyValueFactoryInterface $keyValueFactory
-     *   The key-value factory service.
-     * @param MigrationPluginManagerInterface|null $migrationPluginManager
-     *   The migration plugin manager service.
-     */
     public function __construct(
         protected DateFormatterInterface $dateFormatter,
         KeyValueFactoryInterface $keyValueFactory,

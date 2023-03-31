@@ -17,13 +17,10 @@ use Symfony\Component\Console\Input\InputOption;
 
 final class LinkHooks extends DrushCommands
 {
-    /** @var ModuleHandlerInterface */
-    protected $moduleHandler;
 
     public function __construct(
-        ModuleHandlerInterface $moduleHandler
+        protected ModuleHandlerInterface $moduleHandler
     ) {
-        $this->moduleHandler = $moduleHandler;
     }
 
     #[CLI\Hook(type: HookManager::OPTION_HOOK, target: FieldCreateCommands::CREATE)]

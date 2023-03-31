@@ -27,14 +27,6 @@ final class LocaleCommands extends DrushCommands
     const EXPORT = 'locale:export';
     const IMPORT = 'locale:import';
 
-    protected LanguageManagerInterface $languageManager;
-
-    protected ConfigFactoryInterface $configFactory;
-
-    protected ModuleHandlerInterface $moduleHandler;
-
-    protected StateInterface $state;
-
     protected function getLanguageManager(): LanguageManagerInterface
     {
         return $this->languageManager;
@@ -50,20 +42,13 @@ final class LocaleCommands extends DrushCommands
         return $this->moduleHandler;
     }
 
-    /**
-     * @return mixed
-     */
     public function getState(): StateInterface
     {
         return $this->state;
     }
 
-    public function __construct(LanguageManagerInterface $languageManager, ConfigFactoryInterface $configFactory, ModuleHandlerInterface $moduleHandler, StateInterface $state)
+    public function __construct(protected LanguageManagerInterface $languageManager, protected ConfigFactoryInterface $configFactory, protected ModuleHandlerInterface $moduleHandler, protected StateInterface $state)
     {
-        $this->languageManager = $languageManager;
-        $this->configFactory = $configFactory;
-        $this->moduleHandler = $moduleHandler;
-        $this->state = $state;
     }
 
     /**
