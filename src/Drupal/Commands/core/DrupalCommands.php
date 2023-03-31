@@ -20,9 +20,6 @@ final class DrupalCommands extends DrushCommands
     const CRON = 'core:cron';
     const REQUIREMENTS = 'core:requirements';
     const ROUTE = 'core:route';
-    protected CronInterface $cron;
-    protected ModuleHandlerInterface $moduleHandler;
-    protected RouteProviderInterface $routeProvider;
 
     public function getCron(): CronInterface
     {
@@ -39,11 +36,8 @@ final class DrupalCommands extends DrushCommands
         return $this->routeProvider;
     }
 
-    public function __construct(CronInterface $cron, ModuleHandlerInterface $moduleHandler, RouteProviderInterface $routeProvider)
+    public function __construct(protected CronInterface $cron, protected ModuleHandlerInterface $moduleHandler, protected RouteProviderInterface $routeProvider)
     {
-        $this->cron = $cron;
-        $this->moduleHandler = $moduleHandler;
-        $this->routeProvider = $routeProvider;
     }
 
     /**

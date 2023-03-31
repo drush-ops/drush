@@ -35,19 +35,8 @@ use Symfony\Component\Filesystem\Path;
 class ConfigImportCommands extends DrushCommands
 {
     const IMPORT = 'config:import';
-    protected ConfigManagerInterface $configManager;
-    protected StorageInterface $configStorage;
-    protected $configStorageSync;
-    protected CacheBackendInterface $configCache;
-    protected EventDispatcherInterface $eventDispatcher;
-    protected LockBackendInterface $lock;
-    protected TypedConfigManagerInterface $configTyped;
-    protected ModuleInstallerInterface $moduleInstaller;
-    protected ThemeHandlerInterface $themeHandler;
-    protected TranslationInterface $stringTranslation;
+    protected ?StorageInterface $configStorageSync;
     protected ?ImportStorageTransformer $importStorageTransformer;
-    protected ModuleHandlerInterface $moduleHandler;
-    protected ModuleExtensionList $moduleExtensionList;
 
     public function getConfigManager(): ConfigManagerInterface
     {
@@ -130,30 +119,19 @@ class ConfigImportCommands extends DrushCommands
     }
 
     public function __construct(
-        ConfigManagerInterface $configManager,
-        StorageInterface $configStorage,
-        CacheBackendInterface $configCache,
-        ModuleHandlerInterface $moduleHandler,
-        EventDispatcherInterface $eventDispatcher,
-        LockBackendInterface $lock,
-        TypedConfigManagerInterface $configTyped,
-        ModuleInstallerInterface $moduleInstaller,
-        ThemeHandlerInterface $themeHandler,
-        TranslationInterface $stringTranslation,
-        ModuleExtensionList $moduleExtensionList
+        protected ConfigManagerInterface $configManager,
+        protected StorageInterface $configStorage,
+        protected CacheBackendInterface $configCache,
+        protected ModuleHandlerInterface $moduleHandler,
+        protected EventDispatcherInterface $eventDispatcher,
+        protected LockBackendInterface $lock,
+        protected TypedConfigManagerInterface $configTyped,
+        protected ModuleInstallerInterface $moduleInstaller,
+        protected ThemeHandlerInterface $themeHandler,
+        protected TranslationInterface $stringTranslation,
+        protected ModuleExtensionList $moduleExtensionList
     ) {
         parent::__construct();
-        $this->configManager = $configManager;
-        $this->configStorage = $configStorage;
-        $this->configCache = $configCache;
-        $this->moduleHandler = $moduleHandler;
-        $this->eventDispatcher = $eventDispatcher;
-        $this->lock = $lock;
-        $this->configTyped = $configTyped;
-        $this->moduleInstaller = $moduleInstaller;
-        $this->themeHandler = $themeHandler;
-        $this->stringTranslation = $stringTranslation;
-        $this->moduleExtensionList = $moduleExtensionList;
     }
 
     /**
