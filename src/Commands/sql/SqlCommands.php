@@ -12,6 +12,7 @@ use Consolidation\SiteProcess\Util\Tty;
 use Drush\Attributes as CLI;
 use Drupal\Core\Database\Database;
 use Drush\Boot\DrupalBootLevels;
+use Drush\Commands\core\DocsCommands;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Drush\Exceptions\UserAbortException;
@@ -106,7 +107,7 @@ final class SqlCommands extends DrushCommands implements StdinAwareInterface
     #[CLI\Command(name: self::DROP, aliases: ['sql-drop'])]
     #[CLI\Bootstrap(level: DrupalBootLevels::MAX, max_level: DrupalBootLevels::CONFIGURATION)]
     #[CLI\OptionsetSql]
-    #[CLI\Topics(topics: ['docs:policy'])]
+    #[CLI\Topics(topics: [DocsCommands::POLICY])]
     public function drop($options = []): void
     {
         $sql = SqlBase::create($options);
@@ -127,7 +128,7 @@ final class SqlCommands extends DrushCommands implements StdinAwareInterface
     #[CLI\Option(name: 'extra', description: 'Add custom options to the connect string (e.g. --extra=--skip-column-names)')]
     #[CLI\Bootstrap(level: DrupalBootLevels::MAX, max_level: DrupalBootLevels::CONFIGURATION)]
     #[CLI\OptionsetSql]
-    #[CLI\Topics(topics: ['docs:policy'])]
+    #[CLI\Topics(topics: [DocsCommands::POLICY])]
     #[CLI\Usage(name: 'drush sql:cli', description: 'Open a SQL command-line interface using Drupal\'s credentials.')]
     #[CLI\Usage(name: 'drush sql:cli --extra=--progress-reports', description: 'Open a SQL CLI and skip reading table information.')]
     #[CLI\Usage(name: 'drush sql:cli < example.sql', description: 'Import sql statements from a file into the current database.')]

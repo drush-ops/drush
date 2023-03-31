@@ -32,7 +32,7 @@ final class SiteCommands extends DrushCommands implements SiteAliasManagerAwareI
     #[CLI\Usage(name: 'drush site:set', description: 'Without an argument, any existing site becomes unset.')]
     #[CLI\HandleRemoteCommands]
     #[CLI\ValidatePhpExtensions(['posix'])]
-    #[CLI\Topics(topics: ['docs:aliases'])]
+    #[CLI\Topics(topics: [DocsCommands::ALIASES])]
     public function siteSet(string $site = '@none'): void
     {
         $filename = $this->getConfig()->get('runtime.site-file-current');
@@ -95,7 +95,7 @@ final class SiteCommands extends DrushCommands implements SiteAliasManagerAwareI
     #[CLI\FilterDefaultField(field: 'id')]
     #[CLI\Usage(name: 'drush site:alias', description: 'List all alias records known to drush.')]
     #[CLI\Usage(name: 'drush site:alias @dev', description: 'Print an alias record for the alias <info>dev</info>.')]
-    #[CLI\Topics(topics: ['docs:aliases'])]
+    #[CLI\Topics(topics: [DocsCommands::ALIASES])]
     public function siteAlias($site = null, array $options = ['format' => 'yaml']): ?UnstructuredListData
     {
         // First check to see if the user provided a specification that matches

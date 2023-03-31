@@ -47,7 +47,7 @@ final class PhpCommands extends DrushCommands implements StdinAwareInterface
     #[CLI\Usage(name: 'drush php:script -', description: 'Run PHP code from standard input.')]
     #[CLI\Usage(name: 'drush php:script', description: 'List all available scripts.')]
     #[CLI\Usage(name: 'drush php:script foo -- apple --cider', description: 'Run foo.php script with argument <info>apple</info> and option <info>cider</info>. Note the <info>--</info> separator.')]
-    #[CLI\Topics(topics: ['docs:script'])]
+    #[CLI\Topics(topics: [DocsCommands::SCRIPT])]
     #[CLI\Bootstrap(level: DrupalBootLevels::MAX)]
     public function script(array $extra, $options = ['format' => 'var_export', 'script-path' => self::REQ])
     {

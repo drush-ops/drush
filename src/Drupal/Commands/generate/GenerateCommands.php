@@ -6,6 +6,7 @@ namespace Drush\Drupal\Commands\generate;
 
 use Composer\Autoload\ClassLoader;
 use Drush\Attributes as CLI;
+use Drush\Commands\core\DocsCommands;
 use Drush\Commands\DrushCommands;
 use Drush\Commands\help\ListCommands;
 use Symfony\Component\Console\Command\Command;
@@ -42,7 +43,7 @@ final class GenerateCommands extends DrushCommands
     #[CLI\Usage(name: 'drush generate drush-command-file', description: 'Generate a Drush commandfile for your module.')]
     #[CLI\Usage(name: 'drush generate controller --answer=Example --answer=example', description: 'Generate a controller class and pre-fill the first two questions in the wizard.')]
     #[CLI\Usage(name: 'drush generate controller -vvv --dry-run', description: 'Learn all the potential answers so you can re-run with several --answer options.')]
-    #[CLI\Topics(topics: ['docs:generators'])]
+    #[CLI\Topics(topics: [DocsCommands::GENERATORS])]
     #[CLI\Complete(method_name_or_callable: 'generatorNameComplete')]
     public function generate(string $generator = '', $options = ['replace' => false, 'working-dir' => self::REQ, 'answer' => [], 'destination' => self::REQ, 'dry-run' => false]): int
     {

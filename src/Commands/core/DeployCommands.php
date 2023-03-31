@@ -26,7 +26,7 @@ final class DeployCommands extends DrushCommands implements SiteAliasManagerAwar
     #[CLI\Command(name: self::DEPLOY)]
     #[CLI\Usage(name: 'drush deploy -v -y', description: 'Run updates with verbose logging and accept all prompts.')]
     #[CLI\Version(version: '10.3')]
-    #[CLI\Topics(topics: ['docs:deploy'])]
+    #[CLI\Topics(topics: [DocsCommands::DEPLOY])]
     public function deploy(): void
     {
         $self = $this->siteAliasManager()->getSelf();

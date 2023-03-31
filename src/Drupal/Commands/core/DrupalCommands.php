@@ -10,6 +10,7 @@ use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Routing\RouteProviderInterface;
 use Drupal\Core\Url;
 use Drush\Attributes as CLI;
+use Drush\Commands\core\DocsCommands;
 use Drush\Commands\DrushCommands;
 use Drush\Drupal\DrupalUtil;
 use Drush\Utils\StringUtils;
@@ -50,7 +51,7 @@ final class DrupalCommands extends DrushCommands
      */
     #[CLI\Command(name: self::CRON, aliases: ['cron', 'core-cron'])]
     #[CLI\Usage(name: 'drush maint:status && drush core:cron', description: 'Run cron unless maintenance mode is enabled')]
-    #[CLI\Topics(topics: ['docs:cron'])]
+    #[CLI\Topics(topics: [DocsCommands::CRON])]
     public function cron(): void
     {
         $this->getCron()->run();

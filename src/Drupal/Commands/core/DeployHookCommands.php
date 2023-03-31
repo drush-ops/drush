@@ -6,6 +6,7 @@ namespace Drush\Drupal\Commands\core;
 
 use Drush\Attributes as CLI;
 use Drush\Boot\DrupalBootLevels;
+use Drush\Commands\core\DocsCommands;
 use Drush\Log\SuccessInterface;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Consolidation\OutputFormatters\StructuredData\UnstructuredListData;
@@ -56,7 +57,7 @@ final class DeployHookCommands extends DrushCommands implements SiteAliasManager
     #[CLI\FieldLabels(labels: ['module' => 'Module', 'hook' => 'Hook', 'description' => 'Description'])]
     #[CLI\DefaultTableFields(fields: ['module', 'hook', 'description'])]
     #[CLI\FilterDefaultField(field: 'hook')]
-    #[CLI\Topics(topics: ['docs:deploy'])]
+    #[CLI\Topics(topics: [DocsCommands::DEPLOY])]
     public function status(): RowsOfFields
     {
         $updates = self::getRegistry()->getPendingUpdateInformation();
@@ -81,7 +82,7 @@ final class DeployHookCommands extends DrushCommands implements SiteAliasManager
      */
     #[CLI\Command(name: self::HOOK)]
     #[CLI\Usage(name: 'drush ' . self::HOOK, description: 'Run pending deploy hooks.')]
-    #[CLI\Topics(topics: ['docs:deploy'])]
+    #[CLI\Topics(topics: [DocsCommands::DEPLOY])]
     #[CLI\Version(version: '10.3')]
     public function run(): int
     {
@@ -252,7 +253,7 @@ final class DeployHookCommands extends DrushCommands implements SiteAliasManager
      */
     #[CLI\Command(name: self::MARK_COMPLETE)]
     #[CLI\Usage(name: 'drush deploy:mark-complete', description: 'Skip all pending deploy hooks and mark them as complete.')]
-    #[CLI\Topics(topics: ['docs-deploy'])]
+    #[CLI\Topics(topics: [DocsCommands::DEPLOY])]
     #[CLI\Version(version: '10.6.1')]
     public function markComplete(): int
     {

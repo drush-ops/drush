@@ -33,7 +33,7 @@ final class TopicCommands extends DrushCommands
     #[CLI\Usage(name: 'drush docs:r', description: "Filter topics for those starting with 'docs-r'.")]
     #[CLI\Complete(method_name_or_callable: 'topicComplete')]
     #[CLI\Bootstrap(level: DrupalBootLevels::MAX)]
-    #[CLI\Topics(topics: ['docs:readme'])]
+    #[CLI\Topics(topics: [DocsCommands::README])]
     public function topic($topic_name): int
     {
         $application = Drush::getApplication();

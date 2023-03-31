@@ -19,6 +19,7 @@ use Drupal\migrate\Plugin\MigrationInterface;
 use Drupal\migrate\Plugin\MigrationPluginManagerInterface;
 use Drupal\migrate\Plugin\RequirementsInterface;
 use Drush\Attributes as CLI;
+use Drush\Commands\core\DocsCommands;
 use Drush\Commands\DrushCommands;
 use Drush\Config\ConfigAwareTrait;
 use Drush\Drupal\Migrate;
@@ -72,7 +73,7 @@ class MigrateRunnerCommands extends DrushCommands implements ConfigAwareInterfac
     #[CLI\Usage(name: 'migrate:status classification,article', description: 'Retrieve status for specific migrations')]
     #[CLI\Usage(name: 'migrate:status --field=id', description: 'Retrieve a raw list of migration IDs.')]
     #[CLI\Usage(name: 'ms --fields=id,status --format=json', description: 'Retrieve a Json serialized list of migrations, each item containing only the migration ID and its status.')]
-    #[CLI\Topics(topics: ['docs:migrate'])]
+    #[CLI\Topics(topics: [DocsCommands::MIGRATE])]
     #[CLI\ValidateModulesEnabled(modules: ['migrate'])]
     #[CLI\FieldLabels(labels: [
         'id' => 'Migration ID',
@@ -314,7 +315,7 @@ class MigrateRunnerCommands extends DrushCommands implements ConfigAwareInterfac
     #[CLI\Usage(name: 'migrate:import node_revision --idlist=1:2,2:3,3:5', description: 'Import the node revision record with source IDs [1,2], [2,3], and [3,5]')]
     #[CLI\Usage(name: 'migrate:import user --limit=50 --feedback=20', description: 'Import 50 users and show process message every 20th record')]
     #[CLI\Usage(name: 'migrate:import --all --delete', description: 'Perform all migrations and delete the destination items that are missing from source')]
-    #[CLI\Topics(topics: ['docs:migrate'])]
+    #[CLI\Topics(topics: [DocsCommands::MIGRATE])]
     #[CLI\ValidateModulesEnabled(modules: ['migrate'])]
     #[CLI\Version(version: '10.4')]
     public function import(?string $migrationIds = null, array $options = ['all' => false, 'tag' => self::REQ, 'limit' => self::REQ, 'feedback' => self::REQ, 'idlist' => self::REQ, 'update' => false, 'force' => false, 'execute-dependencies' => false, 'timestamp' => false, 'total' => false, 'progress' => true, 'delete' => false]): void
@@ -430,7 +431,7 @@ class MigrateRunnerCommands extends DrushCommands implements ConfigAwareInterfac
     #[CLI\Usage(name: 'migrate:rollback --tag=user,main_content', description: 'Rollback all migrations tagged with <info>user</info> and <info>main_content</info> tags')]
     #[CLI\Usage(name: 'migrate:rollback classification,article', description: 'Rollback terms and nodes imported by <info>classification</info> and <info>article</info> migrations')]
     #[CLI\Usage(name: 'migrate:rollback user --idlist=5', description: 'Rollback imported user record with source ID 5')]
-    #[CLI\Topics(topics: ['docs:migrate'])]
+    #[CLI\Topics(topics: [DocsCommands::MIGRATE])]
     #[CLI\ValidateModulesEnabled(modules: ['migrate'])]
     #[CLI\Version(version: '10.4')]
     public function rollback(?string $migrationIds = null, array $options = ['all' => false, 'tag' => self::REQ, 'feedback' => self::REQ, 'idlist' => self::REQ, 'progress' => true]): void
@@ -468,7 +469,7 @@ class MigrateRunnerCommands extends DrushCommands implements ConfigAwareInterfac
      */
     #[CLI\Command(name: 'migrate:stop', aliases: ['mst', 'migrate-stop'])]
     #[CLI\Argument(name: 'migrationId', description: 'The ID of migration to stop.')]
-    #[CLI\Topics(topics: ['docs:migrate'])]
+    #[CLI\Topics(topics: [DocsCommands::MIGRATE])]
     #[CLI\ValidateModulesEnabled(modules: ['migrate'])]
     #[Migrate\ValidateMigrationId()]
     #[CLI\Version(version: '10.4')]
@@ -500,7 +501,7 @@ class MigrateRunnerCommands extends DrushCommands implements ConfigAwareInterfac
      */
     #[CLI\Command(name: 'migrate:reset-status', aliases: ['mrs', 'migrate-reset-status'])]
     #[CLI\Argument(name: 'migrationId', description: 'The ID of migration to reset.')]
-    #[CLI\Topics(topics: ['docs:migrate'])]
+    #[CLI\Topics(topics: [DocsCommands::MIGRATE])]
     #[CLI\ValidateModulesEnabled(modules: ['migrate'])]
     #[Migrate\ValidateMigrationId()]
     #[CLI\Version(version: '10.4')]
@@ -528,7 +529,7 @@ class MigrateRunnerCommands extends DrushCommands implements ConfigAwareInterfac
     #[CLI\Usage(name: 'migrate:messages article', description: 'Show all messages for the <info>article</info> migration')]
     #[CLI\Usage(name: 'migrate:messages node_revision --idlist=1:2,2:3,3:5', description: 'Show messages related to node revision records with source IDs [1,2], [2,3], and [3,5].')]
     #[CLI\Usage(name: 'migrate:messages custom_node_revision --idlist=1:"r:1",2:"r:3"', description: 'Show messages related to node revision records with source IDs [1,"r:1"], and [2,"r:3"].')]
-    #[CLI\Topics(topics: ['docs:migrate'])]
+    #[CLI\Topics(topics: [DocsCommands::MIGRATE])]
     #[CLI\ValidateModulesEnabled(modules: ['migrate'])]
     #[Migrate\ValidateMigrationId()]
     #[CLI\FieldLabels(labels: [
