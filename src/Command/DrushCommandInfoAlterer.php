@@ -6,6 +6,7 @@ namespace Drush\Command;
 
 use Consolidation\AnnotatedCommand\CommandInfoAltererInterface;
 use Consolidation\AnnotatedCommand\Parser\CommandInfo;
+use Drush\Commands\core\DocsCommands;
 
 class DrushCommandInfoAlterer implements CommandInfoAltererInterface
 {
@@ -25,7 +26,7 @@ class DrushCommandInfoAlterer implements CommandInfoAltererInterface
                 $commandInfo->removeAnnotation('topics');
                 $commandInfo->addAnnotation('topics', $values);
             }
-            $commandInfo->addAnnotation('topics', 'docs:output-formats-filters');
+            $commandInfo->addAnnotation('topics', DocsCommands::OUTPUT_FORMATS_FILTERS);
         }
     }
 }

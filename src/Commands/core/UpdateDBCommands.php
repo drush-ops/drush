@@ -36,7 +36,7 @@ final class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAw
     #[CLI\Option(name: 'cache-clear', description: 'Clear caches upon completion.')]
     #[CLI\Option(name: 'post-updates', description: 'Run post updates after hook_update_n.')]
     #[CLI\Bootstrap(level: DrupalBootLevels::FULL)]
-    #[CLI\Topics(topics: ['docs:deploy'])]
+    #[CLI\Topics(topics: [DocsCommands::DEPLOY])]
     #[CLI\Kernel(name: 'update')]
     public function updatedb($options = ['cache-clear' => true, 'post-updates' => true]): int
     {

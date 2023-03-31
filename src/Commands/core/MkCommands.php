@@ -80,7 +80,7 @@ final class MkCommands extends DrushCommands implements SiteAliasManagerAwareInt
             $annotated->setDescription($command->getDescription());
             $annotated->setHelp($command->getHelp());
             $annotated->setAliases($command->getAliases());
-            $annotated->setTopics(['docs:generators']);
+            $annotated->setTopics([DocsCommands::GENERATORS]);
             $annotated->setHidden($command->isHidden());
             $values = [];
             if (in_array($command->getName(), ['entity:bundle-class'])) {

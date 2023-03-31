@@ -9,6 +9,7 @@ use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\AnnotatedCommand\Hooks\HookManager;
 use Drush\Attributes as CLI;
 use Drush\Boot\DrupalBootLevels;
+use Drush\Commands\core\DocsCommands;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
 
@@ -26,7 +27,7 @@ class HelpCommands extends DrushCommands
     #[CLI\Usage(name: 'drush help --format=xml', description: 'Show all available commands in XML format.')]
     #[CLI\Usage(name: 'drush help --format=json', description: 'All available commands, in JSON format.')]
     #[CLI\Bootstrap(level: DrupalBootLevels::MAX)]
-    #[CLI\Topics(topics: ['docs:readme'])]
+    #[CLI\Topics(topics: [DocsCommands::README])]
     public function help($command_name = '', $options = ['format' => 'helpcli', 'include-field-labels' => false, 'table-style' => 'compact']): DrushHelpDocument
     {
         $application = Drush::getApplication();
