@@ -53,7 +53,7 @@ class ErrorHandler implements LoggerAwareInterface, HandlerInterface
 
             if ($errno == E_RECOVERABLE_ERROR && $halt_on_error) {
                 $this->logger->error(dt('E_RECOVERABLE_ERROR encountered; aborting. To ignore recoverable errors, run again with --halt-on-error=0'));
-                exit(DRUSH_APPLICATION_ERROR);
+                exit(255);
             }
 
             return true;
