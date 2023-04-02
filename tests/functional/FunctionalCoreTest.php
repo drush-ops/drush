@@ -25,6 +25,8 @@ class FunctionalCoreTest extends CommandUnishTestCase
 
     public function testSiteSelectionViaCwd()
     {
+        $this->markTestSkipped("Drush 12.x no longer supports site selection via cwd");
+
         // $cwd = getcwd();
         foreach (['dev', 'stage'] as $uri) {
             $conf_dir = $this->webroot() . '/sites/' . $uri;

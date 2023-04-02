@@ -113,6 +113,8 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
     {
         // TODO: Throw if we already bootstrapped a framework?
 
+        // TODO: We shouldn't get here unless there is a root;
+        // Drush 12.x is not allowed to exist without a Drupal site.
         if (!isset($root)) {
             $root = $this->getConfig()->cwd();
         }

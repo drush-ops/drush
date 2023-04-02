@@ -263,14 +263,17 @@ class Preflight
         // This will also load certain config values into the preflight args.
         $this->preflightArgs->applyToConfig($config);
 
-        // Determine the path to the preferred site (the one that shares
-        // `vendor` with Drush)
-        $preferredSite = $this->preferredSite();
+        // We will only bootstrap the Drupal site that shares the vendor
+        // directory with Drush. If any other site is selected, e.g. with
+        // a site alias, then a redispatch will happen.
+        $root = $this->preferredSite();
 
-        // Determine the local site targeted, if any.
+        // TODO: We might redispatch to some other site later, but THROW
+        // now if there is no root. Drush 12.x won't run if it is in a vendor
+        // directory with a Drupal site.
+
         // Extend configuration and alias files to include files in
         // target site.
-        $root = $this->findSelectedSite() ?? $preferredSite;
         $this->configLocator->addSitewideConfig($root);
         $this->configLocator->setComposerRoot($this->drupalFinder()->getComposerRoot());
 
@@ -282,7 +285,8 @@ class Preflight
         $this->aliasManager = (new SiteAliasManager($aliasFileLoader))->addSearchLocations($paths);
         $this->aliasManager->setReferenceData($config->export());
 
-        // Find the local site
+        // If the user specified an alias or `--root` on the command line,
+        // find any associated local site
         $siteLocator = new PreflightSiteLocator($this->aliasManager);
         $selfSiteAlias = $siteLocator->findSite($this->preflightArgs, $this->environment, $root);
 
@@ -294,11 +298,26 @@ class Preflight
             $this->aliasManager->setSelf($selfSiteAlias);
             $this->configLocator->addAliasConfig($selfSiteAlias->exportConfig());
 
-            // Process the selected alias. This might change the selected site,
-            // which might cause a redispatch.
-            if ($this->drupalFinder->locateRoot($selfSiteAlias->localRoot())) {
-                $root = $this->drupalFinder()->getDrupalRoot();
+            // Check to see if the alias on the command line points at
+            // a local Drupal site that is not the site at $root
+            $localAliasDrupalFinder = new DrupalFinder();
+            $foundAlternateRoot = $localAliasDrupalFinder->locateRoot($selfSiteAlias->localRoot());
+            if ($foundAlternateRoot) {
+                $alteredRoot = $localAliasDrupalFinder->getDrupalRoot();
+
+                // Now that we have our final Drupal root, check to see if there is
+                // a site-local Drush. If there is, we will redispatch to it.
+                // NOTE: termination handlers have not been set yet, so it is okay
+                // to exit early without taking special action.
+                $status = RedispatchToSiteLocal::redispatchIfSiteLocalDrush($argv, $alteredRoot, $this->environment->vendorPath(), $this->logger());
+                if ($status) {
+                    return $status;
+                }
             }
+            // TODO: Maybe we need to be more strict here; redispatchIfSiteLocalDrush
+            // might return without dispatching if there IS a local Drupal site found,
+            // but it does not contain a site-local Drush.
+            // Failing if ($alteredRoot != $root || !$foundAlternateRoot) might be sufficient.
         }
 
         // Now that we have our final Drupal root, check to see if there is
@@ -345,65 +364,8 @@ class Preflight
     protected function preferredSite()
     {
         $projectRoot = dirname($this->environment->vendorPath());
-        if ($this->drupalFinder->locateRoot($projectRoot)) {
-            return $this->drupalFinder()->getDrupalRoot();
-        }
-
-        return null;
-    }
-
-    /**
-     * Find the site the user selected based on --root or cwd. If neither of
-     * those result in a site, then we will fall back to the vendor path.
-     */
-    protected function findSelectedSite()
-    {
-        // TODO: If we want to support ONLY site-local Drush (which is
-        // DIFFERENT than --local), then skip the call to `$preflightArgs->selectedSite`
-        // and just assign `false` to $selectedRoot.
-
-        // Try two approaches.
-        $selectedRoot = $this->preflightArgs->selectedSite($this->environment->cwd());
-        $fallBackPath = $this->preflightArgs->selectedSite($this->config()->get('runtime.drush-script'));
-        return $this->setSelectedSite($selectedRoot, $fallBackPath);
-    }
-
-    /**
-     * Use the DrupalFinder to locate the Drupal Root + Composer Root at
-     * the selected root, or, if nothing is found there, at a fallback path.
-     *
-     * @param mixed $selectedRoot The location to being searching for a site
-     * @param string|bool $fallbackPath The secondary location to search (usually the vendor director)
-     */
-    protected function setSelectedSite(mixed $selectedRoot, string|bool $fallbackPath = false, $originalSelection = null)
-    {
-        if ($selectedRoot || $fallbackPath) {
-            $foundRoot = $this->drupalFinder->locateRoot($selectedRoot);
-            // If we did not find a site at the selected root, check the
-            // PARENT directory of the fallback path. This will find a site
-            // that Drush is installed in while avoiding the SUT.
-            if (!$foundRoot && $fallbackPath) {
-                $foundRoot = $this->drupalFinder->locateRoot(dirname(dirname($fallbackPath)));
-            }
-            // If we can't find a site that Drush is installed in, and
-            // Drush has been installed with a sut (git or composer dev install),
-            // then look for the sut.
-            if (!$foundRoot && $fallbackPath && is_dir($fallbackPath . '/sut') && is_dir($fallbackPath . '/vendor')) {
-                $foundRoot = $this->drupalFinder->locateRoot($fallbackPath);
-            }
-            return $this->drupalFinder()->getDrupalRoot();
-        }
-
-        // If there isn't a --root option, try to find a Drupal root
-        // near the cwd.
-        $cwd = $this->environment->cwd();
-        if ($this->drupalFinder->locateRoot($cwd)) {
-            return $this->drupalFinder()->getDrupalRoot();
-        }
-
-        // No Drupal site selected; we will use the preferred site, or
-        // a site selected via a local alias.
-        return null;
+        $this->drupalFinder->locateRoot($projectRoot);
+        return $this->drupalFinder()->getDrupalRoot();
     }
 
     /**
