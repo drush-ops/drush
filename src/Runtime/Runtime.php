@@ -157,6 +157,6 @@ class Runtime
      */
     public static function exitCode()
     {
-        return Drush::config()->get(self::DRUSH_RUNTIME_EXIT_CODE_NAMESPACE, DRUSH_SUCCESS);
+        return Drush::config()->get(self::DRUSH_RUNTIME_EXIT_CODE_NAMESPACE, 0);
     }
 }
