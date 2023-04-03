@@ -148,6 +148,7 @@ class ArchiveTest extends CommandUnishTestCase
                 'code-source-path' => Path::join($this->extractPath, 'code'),
             ])
         );
+
         $this->assertTrue(is_file(Path::join($this->restorePath, 'sut', $testFileName)));
         $this->assertTrue(is_file(Path::join($this->restorePath, 'composer.json')));
         $this->assertTrue(!is_dir(Path::join($this->restorePath, 'vendor')));
@@ -175,6 +176,7 @@ class ArchiveTest extends CommandUnishTestCase
             $this->archiveRestoreOptions
         );
         $this->installComposerDependencies();
+        $this->addDrushViaPathRepository();
         $this->assertRestoredSiteStatus();
 
         // Restore the Drupal files from a source path.
@@ -190,6 +192,8 @@ class ArchiveTest extends CommandUnishTestCase
             ])
         );
         $this->assertTrue(is_file(Path::join($this->restorePath, $filesRelativePath, $testFileName)));
+        $this->installComposerDependencies();
+        $this->addDrushViaPathRepository();
         $this->assertRestoredSiteStatus();
 
         // Restore the database from a source path.
@@ -201,6 +205,8 @@ class ArchiveTest extends CommandUnishTestCase
                 'db-source-path' => Path::join($this->extractPath, 'database', 'database.sql'),
             ])
         );
+        $this->installComposerDependencies();
+        $this->addDrushViaPathRepository();
         $this->assertRestoredSiteStatus();
 
         // Restore database with invalid --db-url.
@@ -220,6 +226,8 @@ class ArchiveTest extends CommandUnishTestCase
             'Failed to get database specification:',
             $this->getErrorOutput()
         );
+        $this->installComposerDependencies();
+        $this->addDrushViaPathRepository();
         $this->assertRestoredSiteStatus();
 
         // Restore database with --db-url option with an invalid host.
@@ -246,6 +254,8 @@ class ArchiveTest extends CommandUnishTestCase
             sprintf('Failed to create database %s.', $this->fixtureDatabaseSettings['db-name']),
             $this->getErrorOutput()
         );
+        $this->installComposerDependencies();
+        $this->addDrushViaPathRepository();
         $this->assertRestoredSiteStatus();
 
         // Restore database with a set of database connection options.
@@ -265,6 +275,8 @@ class ArchiveTest extends CommandUnishTestCase
                 ]
             )
         );
+        $this->installComposerDependencies();
+        $this->addDrushViaPathRepository();
         $this->assertRestoredSiteStatus();
 
         // Restore database with a set of database connection options with an invalid host.
@@ -291,6 +303,8 @@ class ArchiveTest extends CommandUnishTestCase
             sprintf('Failed to create database %s.', $this->fixtureDatabaseSettings['db-name']),
             $this->getErrorOutput()
         );
+        $this->installComposerDependencies();
+        $this->addDrushViaPathRepository();
         $this->assertRestoredSiteStatus();
 
         // Restore archive from a non-existing file.
@@ -307,6 +321,8 @@ class ArchiveTest extends CommandUnishTestCase
             'arch.tar.gz is not found',
             $this->getErrorOutput()
         );
+        $this->installComposerDependencies();
+        $this->addDrushViaPathRepository();
         $this->assertRestoredSiteStatus();
 
         // Restore database without database connection settings.
@@ -328,7 +344,22 @@ class ArchiveTest extends CommandUnishTestCase
             'Database connection settings are required if --destination-path',
             $this->getErrorOutput()
         );
+        $this->installComposerDependencies();
+        $this->addDrushViaPathRepository();
         $this->assertRestoredSiteStatus();
+    }
+
+    private function addDrushViaPathRepository(): void
+    {
+        // When the Drush SUT is archived, it does not include Drush itself,
+        // because Drush is the project root, and therefore does not appear in the
+        // composer.json of the archived Drupal site. Drush 12.x+ cannot bootstrap
+        // any site other than the one it shares its vendor directory with. We
+        // must therefore add Drush via a Composer PATH repository in the site
+        // created via archive restore before we can run Drush commands on it.
+        $this->execOnRestoredSite(['composer', 'config', 'repositories.drush', 'path', dirname(self::getDrush())]);
+        $this->execOnRestoredSite(['composer', 'config', 'name', 'my-org/my-site']);
+        $this->execOnRestoredSite(['composer', 'require', 'drush/drush:*']);
     }
 
     /**
@@ -358,11 +389,16 @@ class ArchiveTest extends CommandUnishTestCase
      */
     private function installComposerDependencies(): void
     {
-        $process = new Process(['composer', 'install'], $this->restorePath, null, null, 180);
+        $this->execOnRestoredSite(['composer', 'install']);
+    }
+
+    private function execOnRestoredSite(array $cmdArgs): void
+    {
+        $process = new Process($cmdArgs, $this->restorePath, null, null, 180);
         $process->run();
         $this->assertTrue(
             $process->isSuccessful(),
-            sprintf('"composer install" has failed: %s', $process->getErrorOutput())
+            sprintf('"%s" has failed: %s', implode(' ', $cmdArgs), $process->getErrorOutput())
         );
     }
 }
