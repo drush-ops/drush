@@ -12,7 +12,7 @@ use Symfony\Component\Filesystem\Path;
  *
  * ## Responsibilities of this script ##
  *
- *   - Locate and include the Composer autoload file for Drush.
+ *   - Include the Composer autoload file.
  *   - Set up the environment (record user home directory, cwd, etc.).
  *   - Call the Preflight object to do all necessary setup and execution.
  *   - Exit with status code returned
