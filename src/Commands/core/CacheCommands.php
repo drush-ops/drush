@@ -207,17 +207,16 @@ final class CacheCommands extends DrushCommands implements CustomEventAwareInter
         // We no longer clear APC and similar caches as they are useless on CLI.
         // See https://github.com/drush-ops/drush/pull/2450
         $root  = Drush::bootstrapManager()->getRoot();
-        $autoloader = $this->loadDrupalAutoloader($root);
         require_once DRUSH_DRUPAL_CORE . '/includes/utility.inc';
 
         $request = Drush::bootstrap()->getRequest();
         DrupalKernel::bootEnvironment();
 
         $site_path = DrupalKernel::findSitePath($request);
-        Settings::initialize($root, $site_path, $autoloader);
+        Settings::initialize($root, $site_path, $this->autoloader());
 
         // drupal_rebuild() calls drupal_flush_all_caches() itself, so we don't do it manually.
-        drupal_rebuild($autoloader, $request);
+        drupal_rebuild($this->autoloader(), $request);
         $this->logger()->success(dt('Cache rebuild complete.'));
     }
 
@@ -335,26 +334,5 @@ final class CacheCommands extends DrushCommands implements CustomEventAwareInter
     public static function clearPlugin(): void
     {
         \Drupal::getContainer()->get('plugin.cache_clearer')->clearCachedDefinitions();
-    }
-
-    /**
-     * Loads the Drupal autoloader and returns the instance.
-     */
-    public function loadDrupalAutoloader($drupal_root)
-    {
-        static $autoloader = false;
-
-        $autoloadFilePath = $drupal_root . '/autoload.php';
-        if (!$autoloader && file_exists($autoloadFilePath)) {
-            $autoloader = require $autoloadFilePath;
-        }
-
-        if ($autoloader === true) {
-            // The autoloader was already required. Assume that Drush and Drupal share an autoloader per
-            // "Point autoload.php to the proper vendor directory" - https://www.drupal.org/node/2404989
-            $autoloader = $this->autoloader();
-        }
-
-        return $autoloader;
     }
 }
