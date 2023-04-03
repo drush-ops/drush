@@ -268,9 +268,10 @@ class Preflight
         // a site alias, then a redispatch will happen.
         $root = $this->preferredSite();
 
-        // TODO: We might redispatch to some other site later, but THROW
-        // now if there is no root. Drush 12.x won't run if it is in a vendor
-        // directory with a Drupal site.
+        // We also prohibit global installs of Drush (without a Drupal site).
+        if (empty($root)) {
+            throw new \Exception("Globally installed Drush no longer supported.");
+        }
 
         // Extend configuration and alias files to include files in
         // target site.

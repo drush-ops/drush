@@ -43,14 +43,8 @@ use Symfony\Component\Filesystem\Path;
  *
  * ## Viable Drush configurations ##
  *
- * As of Drush 12, only a site-local Drush will bootstrap Drupal. Any
- * other installation configuration may only be used as a launcher. A
- * site-local Drush may also be used as a launcher. The built-in launcher
- * may be used to run certain Drush commands that do not require an
- * existing site to bootstrap, such as the `archive:restore` command.
- * Beyond that, the built-in launcher may only be used to run commands
- * in a remote Drupal site, or in another local site with a site-local
- * Drush.
+ * As of Drush 12, only a site-local Drush will bootstrap Drupal.
+ * A globally installed Drush is no longer supported.
  *
  * The following directory layouts are supported:
  *
@@ -88,13 +82,6 @@ use Symfony\Component\Filesystem\Path;
  *           ├── sut
  *           │   ├── core
  *           │   └── index.php
- *           └── vendor
- *               └── autoload.php
- *
- * Global Drush: (Only usable as a launcher; `composer install --no-dev`)
- *
- *   [*3]    drush
- *           ├── drush.php
  *           └── vendor
  *               └── autoload.php
  *
