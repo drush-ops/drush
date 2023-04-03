@@ -268,11 +268,6 @@ class Preflight
         // a site alias, then a redispatch will happen.
         $root = $this->preferredSite();
 
-        // We also prohibit global installs of Drush (without a Drupal site).
-        if (empty($root)) {
-            throw new \Exception("Globally installed Drush no longer supported.");
-        }
-
         // Extend configuration and alias files to include files in
         // target site.
         $this->configLocator->addSitewideConfig($root);
@@ -291,57 +286,42 @@ class Preflight
         $siteLocator = new PreflightSiteLocator($this->aliasManager);
         $selfSiteAlias = $siteLocator->findSite($this->preflightArgs, $this->environment, $root);
 
-        // If we did not find a local site, then we are destined to fail
-        // UNLESS RedispatchToSiteLocal::redispatchIfSiteLocalDrush takes over.
-        // Before we try to redispatch to the site-local Drush, though, we must
-        // initialize the alias manager & c. based on any alias record we did find.
-        if ($selfSiteAlias) {
-            $this->aliasManager->setSelf($selfSiteAlias);
-            $this->configLocator->addAliasConfig($selfSiteAlias->exportConfig());
-
-            // Check to see if the alias on the command line points at
-            // a local Drupal site that is not the site at $root
-            $localAliasDrupalFinder = new DrupalFinder();
-            $foundAlternateRoot = $localAliasDrupalFinder->locateRoot($selfSiteAlias->localRoot());
-            if ($foundAlternateRoot) {
-                $alteredRoot = $localAliasDrupalFinder->getDrupalRoot();
-
-                // Now that we have our final Drupal root, check to see if there is
-                // a site-local Drush. If there is, we will redispatch to it.
-                // NOTE: termination handlers have not been set yet, so it is okay
-                // to exit early without taking special action.
-                $status = RedispatchToSiteLocal::redispatchIfSiteLocalDrush($argv, $alteredRoot, $this->environment->vendorPath(), $this->logger());
-                if ($status) {
-                    return $status;
-                }
-            }
-            // TODO: Maybe we need to be more strict here; redispatchIfSiteLocalDrush
-            // might return without dispatching if there IS a local Drupal site found,
-            // but it does not contain a site-local Drush.
-            // Failing if ($alteredRoot != $root || !$foundAlternateRoot) might be sufficient.
-        }
-
-        // Now that we have our final Drupal root, check to see if there is
-        // a site-local Drush. If there is, we will redispatch to it.
-        // NOTE: termination handlers have not been set yet, so it is okay
-        // to exit early without taking special action.
-        $status = RedispatchToSiteLocal::redispatchIfSiteLocalDrush($argv, $root, $this->environment->vendorPath(), $this->logger());
-        if ($status) {
-            return $status;
-        }
-
-        // If the site locator couldn't find a local site, and we did not
-        // redispatch to a site-local Drush, then we cannot continue.
-        // This can happen when using Drush 9 to call a site-local Drush 8
-        // using an alias record that is only defined in a Drush 8 format.
-        // TODO: We can remove this when we drop support for Drush 8 aliases (already done?)
+        // Note that PreflightSiteLocator::findSite only returns 'false'
+        // when preflightArgs->alias() returns an alias name. In all other
+        // instances we will get an alias record, even if it is only a
+        // placeholder 'self' with the root holding the cwd.
         if (!$selfSiteAlias) {
-            // Note that PreflightSiteLocator::findSite only returns 'false'
-            // when preflightArgs->alias() returns an alias name. In all other
-            // instances we will get an alias record, even if it is only a
-            // placeholder 'self' with the root holding the cwd.
             $aliasName = $this->preflightArgs->alias();
             throw new \Exception("The alias $aliasName could not be found.");
+        }
+
+        // Record the self alias that we just built or loaded, and apply
+        // any configuration it might contain.
+        $this->aliasManager->setSelf($selfSiteAlias);
+        $this->configLocator->addAliasConfig($selfSiteAlias->exportConfig());
+
+        // Check to see if the alias on the command line points at
+        // a local Drupal site that is not the site at $root
+        $localAliasDrupalFinder = new DrupalFinder();
+        $foundAlternateRoot = $localAliasDrupalFinder->locateRoot($selfSiteAlias->localRoot());
+        if ($foundAlternateRoot) {
+            $alteredRoot = $localAliasDrupalFinder->getDrupalRoot();
+
+            // Now that we have our final Drupal root, check to see if there is
+            // a site-local Drush. If there is, we will redispatch to it.
+            // NOTE: termination handlers have not been set yet, so it is okay
+            // to exit early without taking special action.
+            $status = RedispatchToSiteLocal::redispatchIfSiteLocalDrush($argv, $alteredRoot, $this->environment->vendorPath(), $this->logger());
+            if ($status) {
+                return $status;
+            }
+
+            // If the Drupal site changed, and the alternate site does not
+            // contain its own copy of Drush, then we cannot continue.
+            if ($alteredRoot != $root) {
+                $aliasName = $this->preflightArgs->alias();
+                throw new \Exception("The alias $aliasName references a Drupal site that does not contain its own copy of Drush. Please add Drush to this site to use it.");
+            }
         }
 
         // Remember the paths to all the files we loaded, so that we can
@@ -366,7 +346,14 @@ class Preflight
     {
         $projectRoot = dirname($this->environment->vendorPath());
         $this->drupalFinder->locateRoot($projectRoot);
-        return $this->drupalFinder()->getDrupalRoot();
+        $root = $this->drupalFinder()->getDrupalRoot();
+
+        // We prohibit global installs of Drush (without a Drupal site).
+        if (empty($root)) {
+            throw new \Exception("Globally installed Drush is no longer supported; Drush must be installed inside a Drupal site.");
+        }
+
+        return $root;
     }
 
     /**
