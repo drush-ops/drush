@@ -401,7 +401,7 @@ class ConfigLocator
      * @param $commandPaths
      * @param $root
      */
-    public function getCommandFilePaths(array $commandPaths, string|bool $root): array
+    public function getCommandFilePaths(array $commandPaths, string $root): array
     {
         $builtin = $this->getBuiltinCommandFilePaths();
         $included = $this->getIncludedCommandFilePaths($commandPaths);
@@ -463,9 +463,6 @@ class ConfigLocator
      */
     protected function getSiteCommandFilePaths($root): array
     {
-        if (empty($root)) {
-            return [];
-        }
         $directories = ["$root/drush", dirname($root) . '/drush', "$root/sites/all/drush"];
 
         return array_filter($directories, 'is_dir');
