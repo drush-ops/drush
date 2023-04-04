@@ -84,7 +84,8 @@ abstract class CommandUnishTestCase extends UnishTestCase
       */
     public function drush($command, array $args = [], array $options = [], $site_specification = null, $cd = null, $expected_return = self::EXIT_SUCCESS, $suffix = null, $env = [])
     {
-        list($cmd, $coverage_file) = $this->prepareDrushCommand($command, $args, $options, $site_specification, $suffix);
+        list($cmd, $coverage_file) = $this->prepareDrushCommand($command, $args, $options, $site_specification, $suffix, $cd);
+        $env['COLUMNS'] = '9999';
         $this->execute($cmd, $expected_return, $cd, $env);
 
         // Save code coverage information.
@@ -98,13 +99,20 @@ abstract class CommandUnishTestCase extends UnishTestCase
         // return $return;
     }
 
-    protected function prepareDrushCommand($command, array $args = [], array $options = [], $site_specification = null, $suffix = null): array
+    protected function prepareDrushCommand($command, array $args = [], array $options = [], $site_specification = null, $suffix = null, $cd = null): array
     {
         // cd is added for the benefit of siteSshTest which tests a strict command.
         $global_option_list = ['simulate', 'root', 'uri', 'include', 'config', 'alias-path', 'ssh-options', 'cd'];
         $options += ['uri' => 'dev']; // Default value.
         $hide_stderr = false;
-        $cmd[] = self::getDrush();
+        $drushExecutable = self::getDrush();
+        if ($cd) {
+            $project = dirname($cd);
+            if (file_exists("$project/vendor/bin/drush")) {
+                $drushExecutable = "$project/vendor/bin/drush";
+            }
+        }
+        $cmd[] = $drushExecutable;
 
         // Insert global options.
         foreach ($options as $key => $values) {

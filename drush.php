@@ -10,8 +10,9 @@ use Symfony\Component\Filesystem\Path;
 /**
  * This script runs Drush.
  *
- * Responsibilities of this script:
- *   - Locate and include the Composer autoload file for Drush.
+ * ## Responsibilities of this script ##
+ *
+ *   - Include the Composer autoload file.
  *   - Set up the environment (record user home directory, cwd, etc.).
  *   - Call the Preflight object to do all necessary setup and execution.
  *   - Exit with status code returned
@@ -21,6 +22,7 @@ use Symfony\Component\Filesystem\Path;
  * This script will only be tested via the functional tests.
  *
  * The Drush bootstrap goes through the following steps:
+ *
  *   - (ArgsPreprocessor) Preprocess the commandline arguments, considering only:
  *     - The named alias `@sitealias` (removed from arguments if present)
  *     - The --root option (read and retained)
@@ -38,6 +40,61 @@ use Symfony\Component\Filesystem\Path;
  *     - Run commands and command hooks via annotated commands library
  *     - Catch 'command not found' exception, bootstrap Drupal and run again
  *   - Return status code
+ *
+ * ## Viable Drush configurations ##
+ *
+ * As of Drush 12, only a site-local Drush will bootstrap Drupal.
+ * A globally installed Drush is no longer supported.
+ *
+ * The following directory layouts are supported:
+ *
+ * Drush binary in site-local configuration in recommended Drupal site: (typical)
+ *
+ *         drupal
+ *         ├── web
+ *         │   ├── core
+ *         │   └── index.php
+ *         └── vendor
+ *             ├── autoload.php
+ *   [*1]      ├── bin
+ *             │   └── drush.php -> ../drush/drush/drush.php
+ *   [*2]      └── drush
+ *                 └── drush
+ *                     └── drush.php
+ *
+ * Drush binary in site-local configuration in a legacy Drupal site: (unusual)
+ *
+ *         drupal
+ *         ├── core
+ *         ├── index.php
+ *         └── vendor
+ *             ├── autoload.php
+ *   [*1]      ├── bin
+ *             │   └── drush.php -> ../drush/drush/drush.php
+ *   [*2]      └── drush
+ *                 └── drush
+ *                     └── drush.php
+ *
+ * Drush project: (Only used when developing Drush)
+ *
+ *   [*3]    drush
+ *           ├── drush.php
+ *           ├── sut
+ *           │   ├── core
+ *           │   └── index.php
+ *           └── vendor
+ *               └── autoload.php
+ *
+ * The possible locations that __DIR__ may point to in the supported
+ * configurations are indicated by [*1], [*2] and [*3] in the diagrams
+ * above.
+ *
+ * Note that in the case of the Drush project, the Drupal site used for
+ * testing during development, called the "System Under Test", or "sut",
+ * counts as a site-local configuration, since the `vendor` directory is
+ * common between Drush and Drupal. Drush uses information from the
+ * project root to find the Drupal root, so it does not matter what the
+ * 'web' directory is called.
  */
 
 // We use PWD if available because getcwd() resolves symlinks, which  could take
