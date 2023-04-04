@@ -145,7 +145,7 @@ final class QueueCommands extends DrushCommands
      * Delete all items in a specific queue.
      */
     #[CLI\Command(name: self::DELETE, aliases: ['queue-delete'])]
-    #[CLI\Argument(name: 'name', description: 'The name of the queue to run, as defined in either hook_queue_info or hook_cron_queue_info.')]
+    #[CLI\Argument(name: 'name', description: 'The name of the queue to delete, as defined in either hook_queue_info or hook_cron_queue_info.')]
     #[CLI\HookSelector(name: self::VALIDATE_QUEUE, value: 'name')]
     #[CLI\Complete(method_name_or_callable: 'queueComplete')]
     public function delete($name): void

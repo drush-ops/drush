@@ -32,6 +32,8 @@ class QueueTest extends UnishIntegrationTestCase
    */
     public function testRequeueException()
     {
+        // Start with empty queue.
+        $this->drush(QueueCommands::DELETE, ['woot_requeue_exception']);
 
         // Add an item to the queue.
         $this->drush(PhpCommands::SCRIPT, ['requeue_script'], ['script-path' => __DIR__ . '/resources']);
@@ -64,6 +66,9 @@ class QueueTest extends UnishIntegrationTestCase
    */
     public function testCustomExceptionAndCommands()
     {
+        // Start with empty queue.
+        $this->drush(QueueCommands::DELETE, ['woot_custom_exception']);
+
         // Add a couple of items to the queue.
         $this->drush(PhpCommands::SCRIPT, ['queue_custom_exception_script'], ['script-path' => __DIR__ . '/resources']);
 
