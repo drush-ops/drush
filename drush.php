@@ -75,7 +75,7 @@ use Symfony\Component\Filesystem\Path;
  *                 └── drush
  *                     └── drush.php
  *
- * Drush project: (Only used when developing Drush; `composer install --dev`)
+ * Drush project: (Only used when developing Drush)
  *
  *   [*3]    drush
  *           ├── drush.php
