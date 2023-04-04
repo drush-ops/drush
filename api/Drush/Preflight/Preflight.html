@@ -292,17 +292,6 @@ settings, paths and so on into it.</p></p>                </div>
                     <abbr title="Composer\Autoload\ClassLoader">ClassLoader</abbr>
                 </div>
                 <div class="col-md-8">
-                    <a href="#method_loadSiteAutoloader">loadSiteAutoloader</a>()
-        
-                                            <p class="no-description">No description</p>
-                                    </div>
-                <div class="col-md-2"></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    <abbr title="Composer\Autoload\ClassLoader">ClassLoader</abbr>
-                </div>
-                <div class="col-md-8">
                     <a href="#method_loadSymfonyCompatabilityAutoloader">loadSymfonyCompatabilityAutoloader</a>()
         
                                             <p class="no-description">No description</p>
@@ -336,21 +325,10 @@ settings, paths and so on into it.</p></p>                </div>
                     
                 </div>
                 <div class="col-md-8">
-                    <a href="#method_findSelectedSite">findSelectedSite</a>()
+                    <a href="#method_preferredSite">preferredSite</a>()
         
-                                            <p><p>Find the site the user selected based on --root or cwd. If neither of
-those result in a site, then we will fall back to the vendor path.</p></p>                </div>
-                <div class="col-md-2"></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    
-                </div>
-                <div class="col-md-8">
-                    <a href="#method_setSelectedSite">setSelectedSite</a>(mixed $selectedRoot, <abbr title="Drush\Preflight\string|bool">string|bool</abbr> $fallbackPath = false, $originalSelection = null)
-        
-                                            <p><p>Use the DrupalFinder to locate the Drupal Root + Composer Root at
-the selected root, or, if nothing is found there, at a fallback path.</p></p>                </div>
+                                            <p><p>Find the Drupal root of the preferred Drupal site (the one
+that shares the <code>vendor</code> directory with Drush).</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -779,41 +757,8 @@ settings, paths and so on into it.</p></p>
 
             </div>
                     <div class="method-item">
-                    <h3 id="method_loadSiteAutoloader">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Preflight/Preflight.php#L203">at line 203</a></div>
-        <code>                    <abbr title="Composer\Autoload\ClassLoader">ClassLoader</abbr>
-    <strong>loadSiteAutoloader</strong>()
-        </code>
-    </h3>
-    <div class="details">    
-    
-            
-
-        <div class="method-description">
-                            <p class="no-description">No description</p>
-                    
-        </div>
-        <div class="tags">
-            
-                            <h4>Return Value</h4>
-
-                    <table class="table table-condensed">
-        <tr>
-            <td><abbr title="Composer\Autoload\ClassLoader">ClassLoader</abbr></td>
-            <td></td>
-        </tr>
-    </table>
-
-            
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
                     <h3 id="method_loadSymfonyCompatabilityAutoloader">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Preflight/Preflight.php#L208">at line 208</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Preflight/Preflight.php#L203">at line 203</a></div>
         <code>                    <abbr title="Composer\Autoload\ClassLoader">ClassLoader</abbr>
     <strong>loadSymfonyCompatabilityAutoloader</strong>()
         </code>
@@ -846,7 +791,7 @@ settings, paths and so on into it.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_config">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Preflight/Preflight.php#L240">at line 240</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Preflight/Preflight.php#L235">at line 235</a></div>
         <code>                    <a href="../../Drush/Config/DrushConfig.html"><abbr title="Drush\Config\DrushConfig">DrushConfig</abbr></a>
     <strong>config</strong>()
         </code>
@@ -879,7 +824,7 @@ settings, paths and so on into it.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_preflight">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Preflight/Preflight.php#L249">at line 249</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Preflight/Preflight.php#L244">at line 244</a></div>
         <code>                    bool
     <strong>preflight</strong>($argv)
         </code>
@@ -921,10 +866,10 @@ settings, paths and so on into it.</p></p>
 
             </div>
                     <div class="method-item">
-                    <h3 id="method_findSelectedSite">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Preflight/Preflight.php#L347">at line 347</a></div>
+                    <h3 id="method_preferredSite">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Preflight/Preflight.php#L345">at line 345</a></div>
         <code>            protected        
-    <strong>findSelectedSite</strong>()
+    <strong>preferredSite</strong>()
         </code>
     </h3>
     <div class="details">    
@@ -932,54 +877,10 @@ settings, paths and so on into it.</p></p>
             
 
         <div class="method-description">
-                            <p><p>Find the site the user selected based on --root or cwd. If neither of
-those result in a site, then we will fall back to the vendor path.</p></p>                        
+                            <p><p>Find the Drupal root of the preferred Drupal site (the one
+that shares the <code>vendor</code> directory with Drush).</p></p>                        
         </div>
         <div class="tags">
-            
-            
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
-                    <h3 id="method_setSelectedSite">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Preflight/Preflight.php#L366">at line 366</a></div>
-        <code>            protected        
-    <strong>setSelectedSite</strong>(mixed $selectedRoot, <abbr title="Drush\Preflight\string|bool">string|bool</abbr> $fallbackPath = false, $originalSelection = null)
-        </code>
-    </h3>
-    <div class="details">    
-    
-            
-
-        <div class="method-description">
-                            <p><p>Use the DrupalFinder to locate the Drupal Root + Composer Root at
-the selected root, or, if nothing is found there, at a fallback path.</p></p>                        
-        </div>
-        <div class="tags">
-                            <h4>Parameters</h4>
-
-                    <table class="table table-condensed">
-                    <tr>
-                <td>mixed</td>
-                <td>$selectedRoot</td>
-                <td><p>The location to being searching for a site</p></td>
-            </tr>
-                    <tr>
-                <td><abbr title="Drush\Preflight\string|bool">string|bool</abbr></td>
-                <td>$fallbackPath</td>
-                <td><p>The secondary location to search (usually the vendor director)</p></td>
-            </tr>
-                    <tr>
-                <td></td>
-                <td>$originalSelection</td>
-                <td></td>
-            </tr>
-            </table>
-
             
             
             
@@ -990,7 +891,7 @@ the selected root, or, if nothing is found there, at a fallback path.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_drupalFinder">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Preflight/Preflight.php#L390">at line 390</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Preflight/Preflight.php#L362">at line 362</a></div>
         <code>                    <abbr title="DrupalFinder\DrupalFinder">DrupalFinder</abbr>
     <strong>drupalFinder</strong>()
         </code>
@@ -1022,7 +923,7 @@ the selected root, or, if nothing is found there, at a fallback path.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_aliasManager">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Preflight/Preflight.php#L398">at line 398</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Preflight/Preflight.php#L370">at line 370</a></div>
         <code>                    <abbr title="Consolidation\SiteAlias\SiteAliasManager">SiteAliasManager</abbr>
     <strong>aliasManager</strong>()
         </code>
@@ -1054,7 +955,7 @@ the selected root, or, if nothing is found there, at a fallback path.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_environment">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Preflight/Preflight.php#L406">at line 406</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Preflight/Preflight.php#L378">at line 378</a></div>
         <code>                    <a href="../../Drush/Config/Environment.html"><abbr title="Drush\Config\Environment">Environment</abbr></a>
     <strong>environment</strong>()
         </code>
