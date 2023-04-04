@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Unish;
 
 use Composer\Semver\Comparator;
@@ -19,12 +21,12 @@ abstract class UnishTestCase extends TestCase
     const UNISH_EXITCODE_USER_ABORT = 75; // Same as DRUSH_EXITCODE_USER_ABORT
     const INTEGRATION_TEST_ENV = 'default';
 
-    protected $processManager;
+    protected ?ProcessManager $processManager = null;
 
     /**
      * Process of last executed command.
      */
-    protected ?Process $process;
+    protected ?Process $process = null;
 
     /**
      * A list of Drupal sites that have been recently installed. They key is the
@@ -40,23 +42,23 @@ abstract class UnishTestCase extends TestCase
 
     private static ?string $usergroup = null;
 
-    public function __construct(?string $name = null, array $data = [], string $dataName = '')
+    public function __construct(?string $name = null, array $data = [], $dataName = '')
     {
         parent::__construct($name, $data, $dataName);
 
         // We read from env then globals then default to mysql.
-        self::$db_url = getenv('UNISH_DB_URL') ?: (isset($GLOBALS['UNISH_DB_URL']) ? $GLOBALS['UNISH_DB_URL'] : 'mysql://root:@127.0.0.1');
+        self::$db_url = getenv('UNISH_DB_URL') ?: ($GLOBALS['UNISH_DB_URL'] ?? 'mysql://root:@127.0.0.1');
 
         // require_once __DIR__ . '/unish.inc';
         // list($unish_tmp, $unish_sandbox, $unish_drush_dir) = \unishGetPaths();
-        $unish_sandbox = Path::join(dirname(dirname(__DIR__)), 'sandbox');
+        $unish_sandbox = Path::join(dirname(__DIR__, 2), 'sandbox');
         self::mkdir($unish_sandbox);
         $unish_cache = Path::join($unish_sandbox, 'cache');
 
         self::$drush = Path::join(self::getComposerRoot(), 'drush');
 
         self::$sandbox = $unish_sandbox;
-        self::$usergroup = isset($GLOBALS['UNISH_USERGROUP']) ? $GLOBALS['UNISH_USERGROUP'] : null;
+        self::$usergroup = $GLOBALS['UNISH_USERGROUP'] ?? null;
 
         self::setEnv(['CACHE_PREFIX' => $unish_cache]);
         $home = $unish_sandbox . '/home';
@@ -101,7 +103,7 @@ abstract class UnishTestCase extends TestCase
 
     public static function getComposerRoot(): string
     {
-        return Path::canonicalize(dirname(dirname(__DIR__)));
+        return Path::canonicalize(dirname(__DIR__, 2));
     }
 
     /**
@@ -198,7 +200,7 @@ abstract class UnishTestCase extends TestCase
      *     - verbose
      *     - debug
      */
-    public function log(?string $message, $type = 'notice'): void
+    public function log(?string $message, string $type = 'notice'): void
     {
         $line = "\nLog: $message\n";
         switch ($this->logLevel()) {
@@ -299,10 +301,8 @@ abstract class UnishTestCase extends TestCase
      *
      * @param $length
      *   Number of characters the generated string should contain.
-     * @return
-     *   The generated string.
      */
-    public function randomString($length = 10): string
+    public function randomString(int $length = 10): string
     {
         // This variable contains the list of allowable characters for the
         // password. Note that the number 0 and the letter 'O' have been
@@ -479,7 +479,7 @@ abstract class UnishTestCase extends TestCase
 
     public function dbUrl(string $env): string
     {
-        return substr(self::getDbUrl(), 0, 6) == 'sqlite'  ?  "sqlite://sites/$env/files/unish.sqlite" : self::getDbUrl() . '/unish_' . $env;
+        return str_starts_with(self::getDbUrl(), 'sqlite') ?  "sqlite://sites/$env/files/unish.sqlite" : self::getDbUrl() . '/unish_' . $env;
     }
 
     public function dbDriver($db_url = null): array|false|int|null|string
@@ -621,7 +621,7 @@ EOT;
         }
     }
 
-    protected function processManager()
+    protected function processManager(): ProcessManager
     {
         if (!$this->processManager) {
             $this->processManager = new ProcessManager();
