@@ -39,7 +39,7 @@ trait CliTestTrait
      */
     protected int $idleTimeout = 0;
 
-    protected $process = null;
+    protected ?Process $process = null;
 
     /**
      * Accessor for the last output, non-trimmed.

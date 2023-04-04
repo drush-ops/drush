@@ -24,7 +24,7 @@ abstract class UnishTestCase extends TestCase
     /**
      * Process of last executed command.
      */
-    protected Process $process;
+    protected ?Process $process;
 
     /**
      * A list of Drupal sites that have been recently installed. They key is the
