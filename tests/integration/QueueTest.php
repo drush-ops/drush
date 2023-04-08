@@ -21,7 +21,6 @@ class QueueTest extends UnishIntegrationTestCase
     public function setUp(): void
     {
         parent::setUp();
-        $this->setupModulesForTests([self::WOOT], Path::join(__DIR__, '../fixtures/modules'));
 
         // Enable woot module, which contains a queue worker that throws a RequeueException.
         $this->drush(PmCommands::INSTALL, [self::WOOT], [], null, '', self::EXIT_SUCCESS);

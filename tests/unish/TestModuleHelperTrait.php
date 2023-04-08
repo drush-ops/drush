@@ -11,7 +11,9 @@ use Symfony\Component\Filesystem\Path;
 trait TestModuleHelperTrait
 {
     /**
-     * Copies the testing modules from a specific path into Drupal. Copies are auto-deleted during tearDown().
+     * Copies the testing modules from a specific path into Drupal.
+     *
+     * @deprecated No longer used and may soon be removed.
      *
      * @param array $modules A list of testing modules.
      * @param string $sourcePath The path under which the modules are placed.

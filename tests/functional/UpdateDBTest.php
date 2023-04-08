@@ -62,7 +62,6 @@ class UpdateDBTest extends CommandUnishTestCase
         $options = [
             'yes' => null,
         ];
-        $this->setupModulesForTests(['woot'], Path::join(__DIR__, '/../fixtures/modules'));
         $this->drush('pm-install', ['woot'], $options);
 
         // Force a pending update.
@@ -146,7 +145,6 @@ class UpdateDBTest extends CommandUnishTestCase
         $options = [
             'yes' => null,
         ];
-        $this->setupModulesForTests(['woot'], Path::join(__DIR__, '/../fixtures/modules'));
         $this->drush('pm-install', ['woot'], $options);
 
         // Force re-run of woot_update_8104().
@@ -196,7 +194,6 @@ class UpdateDBTest extends CommandUnishTestCase
         $options = [
             'include' => __DIR__,
         ];
-        $this->setupModulesForTests(['woot'], Path::join(__DIR__, '/../fixtures/modules'));
         $this->drush('pm-install', ['woot'], $options);
 
         // Force re-run of the post-update woot_post_update_install_drush_empty_module().
@@ -244,7 +241,6 @@ YAML_FRAGMENT;
         $options = [
             'yes' => null,
         ];
-        $this->setupModulesForTests(['woot'], Path::join(__DIR__, '/../fixtures/modules'));
         $this->drush('pm-install', ['woot'], $options);
 
         // Force re-run of woot_update_8104() which is expected to be completed successfully.
@@ -279,7 +275,6 @@ YAML_FRAGMENT;
             'yes' => null,
         ];
         $this->setUpDrupal(1, true);
-        $this->setupModulesForTests(['woot'], Path::join(__DIR__, '/../fixtures/modules'));
         $this->drush('pm:install', ['woot'], $options);
 
         // Force re-run of woot_update_8105().
@@ -322,7 +317,6 @@ POST_UPDATE;
             'yes' => null,
         ];
         $this->setUpDrupal(1, true);
-        $this->setupModulesForTests(['woot'], Path::join(__DIR__, '/../fixtures/modules'));
         $this->drush('pm:install', ['woot'], $options);
 
         // Force re-run of woot_update_8106().
@@ -348,7 +342,6 @@ POST_UPDATE;
             'yes' => null,
         ];
         $this->setUpDrupal(1, true);
-        $this->setupModulesForTests(['woot'], Path::join(__DIR__, '/../fixtures/modules'));
         $this->drush('pm:install', ['woot'], $options);
 
         // Force re-run of woot_post_update_install_taxonomy().
@@ -375,7 +368,7 @@ POST_UPDATE;
             Path::join($this->webroot(), self::WOOT_SERVICES_PATH),
         ];
         foreach ($filenames as $filename) {
-            if (file_exists($filename)) {
+            if (file_exists($filename . '.BAK')) {
                 rename($filename . '.BAK', $filename);
             }
         }

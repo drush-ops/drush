@@ -134,7 +134,6 @@ XML
         $options = [
             'include' => __DIR__,
         ];
-        $this->setupModulesForTests(['woot'], Path::join(__DIR__, '/../fixtures/modules'));
         $this->drush(PmCommands::INSTALL, ['woot'], $options);
 
         // Export the configuration.
@@ -203,7 +202,7 @@ YAML_FRAGMENT;
             Path::join($this->webroot(), self::WOOT_SERVICES_PATH),
         ];
         foreach ($filenames as $filename) {
-            if (file_exists($filename)) {
+            if (file_exists($filename . '.BAK')) {
                 rename($filename . '.BAK', $filename);
             }
         }
