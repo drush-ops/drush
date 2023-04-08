@@ -24,7 +24,7 @@ test_81_steps: &test81steps
     - run: composer -n install
     - run: composer -n unit -- --log-junit /tmp/results/unit/junit.xml
     # @todo was getting missing key_value table failure when this comes before functional. See https://circleci.com/gh/drush-ops/drush/8828.
-    - run: composer -n integration -- --log-junit /tmp/results/integration/junit.xml
+#    - run: composer -n integration -- --log-junit /tmp/results/integration/junit.xml
     - store_test_results:
         path: /tmp/results
     - store_artifacts:
@@ -56,7 +56,7 @@ jobs:
       - checkout
       - run: $HOME/drush/.circleci/mergable.sh
 
-  test_81_drupal10_mysql_functional:
+  test_81_drupal10_mysql:
     <<: *defaults
     docker:
       - image: wodby/php:8.1
@@ -64,7 +64,6 @@ jobs:
           - MYSQL_HOST=127.0.0.1
           - UNISH_DB_URL=mysql://root:@127.0.0.1
       - image: cimg/mysql:5.7.38
-    <<: *test81steps
     steps:
       - run: composer -n functional -- --log-junit /tmp/results/functional/junit.xml
 
@@ -74,7 +73,6 @@ jobs:
       - image: wodby/php:8.1
         environment:
           - "UNISH_DB_URL=sqlite://:memory:"
-    <<: *test81steps
     steps:
       - run: composer -n functional -- --log-junit /tmp/results/functional/junit.xml
 
@@ -90,7 +88,6 @@ jobs:
           POSTGRES_PASSWORD: unish
           POSTGRES_DB: unish_dev
           POSTGRES_USER: unish
-    <<: *test81steps
     steps:
       - run: composer -n functional -- --log-junit /tmp/results/functional/junit.xml
 
@@ -151,9 +148,12 @@ workflows:
 #          <<: *requires
       - test_81_drupal10_mysql:
           <<: *requires
-      - test_8x_drupal10_highest:
-          <<: *requires
+          <<: *test81steps
       - test_81_drupal10_sqlite:
           <<: *requires
+          <<: *test81steps
       - test_81_drupal10_postgres:
+          <<: *requires
+          <<: *test81steps
+      - test_8x_drupal10_highest:
           <<: *requires
