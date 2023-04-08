@@ -9,6 +9,9 @@ abstract class CommandUnishTestCase extends UnishTestCase
 {
     use CliTestTrait;
 
+    public const WOOT_SERVICES_PATH = 'modules/unish/woot/woot.services.yml';
+    public const WOOT_INFO_PATH = 'modules/unish/woot/woot.info.yml';
+
     /**
      * Code coverage data collected during a single test.
      */

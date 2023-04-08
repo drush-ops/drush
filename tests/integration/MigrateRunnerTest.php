@@ -21,7 +21,6 @@ class MigrateRunnerTest extends UnishIntegrationTestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->setupModulesForTests(['woot'], Path::join(__DIR__, '/../fixtures/modules'));
         $this->drush('pm:install', ['migrate', 'node', 'woot']);
     }
 

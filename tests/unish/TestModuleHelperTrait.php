@@ -11,13 +11,18 @@ use Symfony\Component\Filesystem\Path;
 trait TestModuleHelperTrait
 {
     /**
-     * Copies the testing modules from a specific path into Drupal. Copies are auto-deleted during tearDown().
+     * Copies the testing modules from a specific path into Drupal.
+     *
+     * @deprecated No longer used and may soon be removed.
      *
      * @param array $modules A list of testing modules.
      * @param string $sourcePath The path under which the modules are placed.
      */
     public function setupModulesForTests(array $modules, $sourcePath)
     {
+        // Woot module has moved to sut.
+        return;
+
         $webRoot = $this->webroot();
         $fileSystem = new Filesystem();
         foreach ($modules as $module) {

@@ -14,21 +14,37 @@ requires: &requires
     - check_mergable
     - code_style
 
-test_81_steps: &test81steps
-  steps:
-    - checkout
-    - run: cp .docker/zz-php.ini /usr/local/etc/php/conf.d/
-    - run: mkdir -p /tmp/results
-    - run: composer -n install
-    - run: composer -n lint
-    - run: composer -n unit -- --log-junit /tmp/results/unit/unit.junit.xml
-    - run: composer -n functional -- --log-junit /tmp/results/functional/functional.junit.xml
-    # @todo was getting missing key_value table failure when this comes before functional. See https://circleci.com/gh/drush-ops/drush/8828.
-    - run: composer -n integration -- --log-junit /tmp/results/integration/integration.junit.xml
+post_steps: &poststeps
+  post-steps:
     - store_test_results:
         path: /tmp/results
     - store_artifacts:
         path: /tmp/results
+
+executors:
+  mysql:
+    docker:
+      - image: wodby/php:8.1
+        environment:
+          - MYSQL_HOST=127.0.0.1
+          - UNISH_DB_URL=mysql://root:@127.0.0.1
+      - image: cimg/mysql:5.7.38
+  sqlite:
+    docker:
+      - image: wodby/php:8.1
+        environment:
+          - "UNISH_DB_URL=sqlite://:memory:"
+  postgres:
+    docker:
+      - image: wodby/php:8.1
+        environment:
+          - UNISH_DB_URL=pgsql://unish:unish@127.0.0.1
+      - image: wodby/postgres:14
+        environment:
+          POSTGRES_DB_EXTENSIONS: pg_trgm
+          POSTGRES_PASSWORD: unish
+          POSTGRES_DB: unish_dev
+          POSTGRES_USER: unish
 
 version: 2.1
 jobs:
@@ -42,6 +58,7 @@ jobs:
     steps:
       - checkout
       - run: cp .docker/zz-php.ini /usr/local/etc/php/conf.d/
+      - run: composer -n validate --no-check-all
       - run: composer -n install
       - run: composer -n cs
 
@@ -56,45 +73,21 @@ jobs:
       - checkout
       - run: $HOME/drush/.circleci/mergable.sh
 
-  composer_validate:
+  test_81_drupal10:
+    parameters:
+      dbms:
+        type: executor
+      suite:
+        type: string
     <<: *defaults
-    docker:
-      - image: wodby/php:8.1
+    executor: << parameters.dbms >>
     steps:
       - checkout
-      - run: composer validate --no-interaction --no-check-all
-
-  test_81_drupal10_mysql:
-    <<: *defaults
-    docker:
-      - image: wodby/php:8.1
-        environment:
-          - MYSQL_HOST=127.0.0.1
-          - UNISH_DB_URL=mysql://root:@127.0.0.1
-      - image: cimg/mysql:5.7.38
-    <<: *test81steps
-
-  test_81_drupal10_sqlite:
-    <<: *defaults
-    docker:
-      - image: wodby/php:8.1
-        environment:
-          - "UNISH_DB_URL=sqlite://:memory:"
-    <<: *test81steps
-
-  test_81_drupal10_postgres:
-    <<: *defaults
-    docker:
-      - image: wodby/php:8.1
-        environment:
-          - UNISH_DB_URL=pgsql://unish:unish@127.0.0.1
-      - image: wodby/postgres:14
-        environment:
-          POSTGRES_DB_EXTENSIONS: pg_trgm
-          POSTGRES_PASSWORD: unish
-          POSTGRES_DB: unish_dev
-          POSTGRES_USER: unish
-    <<: *test81steps
+      - run: cp .docker/zz-php.ini /usr/local/etc/php/conf.d/
+      - run: mkdir -p /tmp/results
+      - run: composer -n install
+      - run: composer -n unit -- --log-junit /tmp/results/unit/junit.xml
+      - run: composer -n << parameters.suite >> -- --log-junit /tmp/results/<< parameters.suite >>/junit.xml
 
   # Drupal 9.2.8 for Security test coverage for drupal/core
 #  test_80_drupal92_security:
@@ -120,9 +113,7 @@ jobs:
     docker:
       - image: wodby/php:latest
         environment:
-          - MYSQL_HOST=127.0.0.1
-          - UNISH_DB_URL=mysql://root:@127.0.0.1
-      - image: cimg/mysql:5.7.38
+          - "UNISH_DB_URL=sqlite://:memory:"
     steps:
       - checkout
       - run: cp .docker/zz-php.ini /usr/local/etc/php/conf.d/
@@ -132,16 +123,9 @@ jobs:
       - run: composer -n update
       - run: composer -n show
       - run: mkdir -p /tmp/results
-      - run: composer -n lint
-      - run: composer -n unit -- --log-junit /tmp/results/unit/unit.junit.xml
-      - run: composer -n functional -- --log-junit /tmp/results/functional/functional.junit.xml
-      - run: composer -n integration -- --log-junit /tmp/results/integration/integration.junit.xml
-      - store_test_results:
-          path: /tmp/results
-      - store_artifacts:
-          path: /tmp/results
-      - store_artifacts:
-          path: ./sut/sites
+      - run: composer -n unit -- --log-junit /tmp/results/unit/junit.xml
+      - run: composer -n functional -- --log-junit /tmp/results/functional/junit.xml
+      - run: composer -n integration -- --log-junit /tmp/results/integration/junit.xml
 
 workflows:
   version: 2
@@ -149,14 +133,15 @@ workflows:
     jobs:
       - code_style
       - check_mergable
-      - composer_validate
 #      - test_80_drupal92_security:
 #          <<: *requires
-      - test_81_drupal10_mysql:
+      - test_81_drupal10:
           <<: *requires
+          <<: *poststeps
+          matrix:
+            parameters:
+              dbms: [ sqlite, mysql, postgres ]
+              suite: [ "integration", "functional" ]
       - test_8x_drupal10_highest:
           <<: *requires
-      - test_81_drupal10_sqlite:
-          <<: *requires
-      - test_81_drupal10_postgres:
-          <<: *requires
+          <<: *poststeps

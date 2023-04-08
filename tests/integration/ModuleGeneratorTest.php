@@ -21,7 +21,6 @@ class ModuleGeneratorTest extends UnishIntegrationTestCase
      */
     public function testModuleGenerators(): void
     {
-        $this->setupModulesForTests(['woot'], Path::join(__DIR__, '/../fixtures/modules'));
         $this->drush(PmCommands::INSTALL, ['woot']);
         $this->drush(CacheCommands::CLEAR, ['drush']);
         $this->drush(GenerateCommands::GENERATE, ['list']);
