@@ -81,6 +81,11 @@ jobs:
       - run: $HOME/drush/.circleci/mergable.sh
 
   test_81_drupal10:
+    parameters:
+      dbms:
+        type: executor
+      suite:
+        type: string
     <<: *defaults
     executor: << parameters.dbms >>
     steps:
