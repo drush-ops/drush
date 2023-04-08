@@ -141,7 +141,7 @@ workflows:
       #- composer_validate
 #      - test_80_drupal92_security:
 #          <<: *requires
-      - all-tests:
+      - test_81_drupal10:
           <<: *requires
           <<: *test81steps
           matrix:
