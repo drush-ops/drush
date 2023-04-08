@@ -144,7 +144,8 @@ XML
 
         // Introduce a new service in the Woot module that depends on a service
         // in the Devel module (which is not yet enabled).
-        $filename = Path::join($root, 'modules/unish/woot/woot.services.yml');
+        $filename = Path::join($root, self::WOOT_SERVICES_PATH);
+        copy($filename, $filename . '.BAK');
         $serviceDefinition = <<<YAML_FRAGMENT
   woot.depending_service:
     class: Drupal\woot\DependingService
@@ -152,7 +153,8 @@ XML
 YAML_FRAGMENT;
         file_put_contents($filename, $serviceDefinition, FILE_APPEND);
 
-        $filename = Path::join($root, 'modules/unish/woot/woot.info.yml');
+        $filename = Path::join($root, self::WOOT_INFO_PATH);
+        copy($filename, $filename . '.BAK');
         $moduleDependency = <<<YAML_FRAGMENT
 dependencies:
   - drush_empty_module
@@ -191,5 +193,20 @@ YAML_FRAGMENT;
     {
         $this->drush(StatusCommands::STATUS, [], ['format' => 'json', 'fields' => 'config-sync']);
         return $this->webroot() . '/' . $this->getOutputFromJSON('config-sync');
+    }
+
+    protected function tearDown(): void
+    {
+        // Undo our yml mess.
+        $filenames = [
+            Path::join($this->webroot(), self::WOOT_INFO_PATH),
+            Path::join($this->webroot(), self::WOOT_SERVICES_PATH),
+        ];
+        foreach ($filenames as $filename) {
+            if (file_exists($filename)) {
+                rename($filename . '.BAK', $filename);
+            }
+        }
+        parent::tearDown();
     }
 }
