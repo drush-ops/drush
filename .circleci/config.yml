@@ -75,6 +75,8 @@ jobs:
         environment:
           - "UNISH_DB_URL=sqlite://:memory:"
     <<: *test81steps
+    steps:
+      - run: composer -n functional -- --log-junit /tmp/results/functional/junit.xml
 
   test_81_drupal10_postgres:
     <<: *defaults
@@ -89,6 +91,8 @@ jobs:
           POSTGRES_DB: unish_dev
           POSTGRES_USER: unish
     <<: *test81steps
+    steps:
+      - run: composer -n functional -- --log-junit /tmp/results/functional/junit.xml
 
   # Drupal 9.2.8 for Security test coverage for drupal/core
 #  test_80_drupal92_security:
