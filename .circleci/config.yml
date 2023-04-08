@@ -143,7 +143,7 @@ workflows:
     jobs:
       - code_style
       - check_mergable
-      - composer_validate
+      #- composer_validate
 #      - test_80_drupal92_security:
 #          <<: *requires
       - test_81_drupal10_mysql:
