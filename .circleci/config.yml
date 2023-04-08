@@ -82,7 +82,6 @@ jobs:
     <<: *defaults
     executor: << parameters.dbms >>
     steps:
-      pre-steps:
       - checkout
       - run: cp .docker/zz-php.ini /usr/local/etc/php/conf.d/
       - run: mkdir -p /tmp/results
