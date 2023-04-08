@@ -18,6 +18,9 @@ trait TestModuleHelperTrait
      */
     public function setupModulesForTests(array $modules, $sourcePath)
     {
+        // Woot module has moved to sut.
+        return;
+
         $webRoot = $this->webroot();
         $fileSystem = new Filesystem();
         foreach ($modules as $module) {

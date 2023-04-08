@@ -19,7 +19,6 @@ test_81_steps: &test81steps
     - checkout
     - run: cp .docker/zz-php.ini /usr/local/etc/php/conf.d/
     - run: mkdir -p /tmp/results
-    - run: composer -n validate --no-check-all
     - run: composer -n install
     - run: composer -n unit -- --log-junit /tmp/results/unit/junit.xml
     # @todo was getting missing key_value table failure when this comes before functional. See https://circleci.com/gh/drush-ops/drush/8828.
@@ -66,6 +65,7 @@ jobs:
     steps:
       - checkout
       - run: cp .docker/zz-php.ini /usr/local/etc/php/conf.d/
+      - run: composer -n validate --no-check-all
       - run: composer -n install
       - run: composer -n cs
 
@@ -115,9 +115,7 @@ jobs:
     docker:
       - image: wodby/php:latest
         environment:
-          - MYSQL_HOST=127.0.0.1
-          - UNISH_DB_URL=mysql://root:@127.0.0.1
-      - image: cimg/mysql:5.7.38
+          - "UNISH_DB_URL=sqlite://:memory:"
     steps:
       - checkout
       - run: cp .docker/zz-php.ini /usr/local/etc/php/conf.d/
