@@ -31,7 +31,7 @@ final class GenerateCommands extends DrushCommands
      * Drush asks questions so that the generated code is as polished as possible. After
      * generating, Drush lists the files that were created.
      *
-     * See https://github.com/grasmash/yaml-cli for a README and bug reports.
+     * See https://github.com/Chi-teck/drupal-code-generator for a README and bug reports.
      */
     #[CLI\Command(name: self::GENERATE, aliases: ['gen'])]
     #[CLI\Argument(name: 'generator', description: 'A generator name. Omit to pick from available Generators.')]
