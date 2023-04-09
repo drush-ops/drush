@@ -222,6 +222,8 @@ EOT;
         $body .= "# {$command->getName()}\n\n";
         if ($command instanceof AnnotatedCommand && $version = $command->getAnnotationData()->get('version')) {
             $body .= ":octicons-tag-24: $version+\n\n";
+        } elseif (str_starts_with($command->getName(), 'yaml:')) {
+            $body .= ":octicons-tag-24: 12.0+\n\n";
         }
         if ($command->getDescription()) {
             $body .= self::cliTextToMarkdown($command->getDescription()) . "\n\n";
