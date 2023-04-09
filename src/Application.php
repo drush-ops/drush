@@ -4,24 +4,30 @@ declare(strict_types=1);
 
 namespace Drush;
 
-use Drush\Boot\DrupalBootLevels;
-use Robo\Runner;
 use Composer\Autoload\ClassLoader;
 use Consolidation\AnnotatedCommand\AnnotatedCommand;
 use Consolidation\AnnotatedCommand\CommandFileDiscovery;
 use Consolidation\Filter\Hooks\FilterHooks;
 use Consolidation\SiteAlias\SiteAliasManager;
 use Drush\Boot\BootstrapManager;
+use Drush\Boot\DrupalBootLevels;
 use Drush\Command\RemoteCommandProxy;
 use Drush\Commands\DrushCommands;
 use Drush\Config\ConfigAwareTrait;
 use Drush\Runtime\RedispatchHook;
 use Drush\Runtime\TildeExpansionHook;
+use Grasmash\YamlCli\Command\GetValueCommand;
+use Grasmash\YamlCli\Command\LintCommand;
+use Grasmash\YamlCli\Command\UnsetKeyCommand;
+use Grasmash\YamlCli\Command\UpdateKeyCommand;
+use Grasmash\YamlCli\Command\UpdateValueCommand;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use Robo\ClassDiscovery\RelativeNamespaceDiscovery;
 use Robo\Contract\ConfigAwareInterface;
+use Robo\Runner;
 use Symfony\Component\Console\Application as SymfonyApplication;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Exception\CommandNotFoundException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -310,6 +316,9 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
         // any of the configuration steps we do here.
         $this->configureIO($input, $output);
 
+        // Directly add the yaml-cli commands.
+        $this->addCommands($this->discoverYamlCliCommands());
+
         $commandClasses = array_unique(array_merge(
             $this->discoverCommandsFromConfiguration(),
             $this->discoverCommands($commandfileSearchpath, '\Drush'),
@@ -414,5 +423,28 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
         $output->writeln('', OutputInterface::VERBOSITY_QUIET);
 
         $this->doRenderThrowable($e, $output);
+    }
+
+    private function discoverYamlCliCommands(): array
+    {
+        $classes_yaml = [
+            GetValueCommand::class,
+            LintCommand::class,
+            UpdateKeyCommand::class,
+            UnsetKeyCommand::class,
+            UpdateValueCommand::class
+        ];
+
+        foreach ($classes_yaml as $class_yaml) {
+            /** @var Command $instance */
+            $instance = new $class_yaml();
+            // Namespace the commands.
+            $name = $instance->getName();
+            $instance->setName('yaml:' . $name);
+            $instance->setAliases(['y:' . $name]);
+            $instance->setHelp('See https://github.com/grasmash/yaml-cli for a README and bug reports.');
+            $instances[] = $instance;
+        }
+        return $instances;
     }
 }
