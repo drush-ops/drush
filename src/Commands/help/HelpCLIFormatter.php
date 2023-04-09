@@ -32,12 +32,31 @@ class HelpCLIFormatter implements FormatterInterface
             $output->writeln($data['help']);
         }
 
+        $rows = [];
         if (array_key_exists('examples', $data)) {
+            // Examples come from Annotated commands.
             $output->writeln('');
             $output->writeln('<comment>Examples:</comment>');
             foreach ($data['examples'] as $example) {
                 $rows[] = [' ' . $example['usage'], $example['description']];
             }
+        } elseif (array_key_exists('usages', $data)) {
+            // Usages come from Console commands.
+            // Don't show the last two Usages which come from synopsis and alias. See \Symfony\Component\Console\Descriptor\XmlDescriptor::getCommandDocument.
+            array_pop($data['usages']);
+            array_pop($data['usages']);
+            if ($data['usages']) {
+                $output->writeln('');
+                $output->writeln('<comment>Examples:</comment>');
+                foreach ($data['usages'] as $usage) {
+                    if (!str_starts_with($usage, 'drush')) {
+                        $usage = sprintf('%s %s', 'drush', $usage);
+                    }
+                    $rows[] = [$usage, ''];
+                }
+            }
+        }
+        if ($rows) {
             $formatterManager->write($output, 'table', new RowsOfFields($rows), $options);
         }
 

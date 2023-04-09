@@ -37,7 +37,7 @@ class GreetCommand extends Command
         ;
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output): void
+    protected function execute(InputInterface $input, OutputInterface $output)
     {
         $name = $input->getArgument('name');
         if ($name) {
@@ -51,5 +51,6 @@ class GreetCommand extends Command
         }
 
         $output->writeln($text);
+        return 0;
     }
 }
