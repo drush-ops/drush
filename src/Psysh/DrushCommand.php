@@ -60,7 +60,7 @@ class DrushCommand extends BaseCommand
     /**
      * {@inheritdoc}
      */
-    protected function execute(InputInterface $input, OutputInterface $output): void
+    protected function execute(InputInterface $input, OutputInterface $output)
     {
         $args = $input->getArguments();
         $first = array_shift($args);

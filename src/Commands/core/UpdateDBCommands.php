@@ -25,20 +25,16 @@ final class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAw
     const UPDATEDB = 'updatedb';
     const STATUS = 'updatedb:status';
     const BATCH_PROCESS = 'updatedb:batch-process';
-    protected $cache_clear;
-
-    protected $maintenanceModeOriginalState;
+    protected ?bool $cache_clear;
 
     /**
      * Apply any database updates required (as with running update.php).
      */
     #[CLI\Command(name: self::UPDATEDB, aliases: ['updb'])]
-    #[CLI\Option(name: 'cache-clear', description: 'Clear caches upon completion.')]
-    #[CLI\Option(name: 'post-updates', description: 'Run post updates after hook_update_n.')]
     #[CLI\Bootstrap(level: DrupalBootLevels::FULL)]
     #[CLI\Topics(topics: [DocsCommands::DEPLOY])]
     #[CLI\Kernel(name: 'update')]
-    public function updatedb($options = ['cache-clear' => true, 'post-updates' => true]): int
+    public function updatedb(): int
     {
         $this->cache_clear = $options['cache-clear'];
         require_once DRUPAL_ROOT . '/core/includes/install.inc';
@@ -56,10 +52,7 @@ final class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAw
             }
         }
 
-        $status_options = [
-            'no-post-updates' => !$options['post-updates'],
-            'strict' => 0,
-        ];
+        $status_options = ['strict' => 0];
         $status_options = array_merge(Drush::redispatchOptions(), $status_options);
 
         $process = $this->processManager()->drush($this->siteAliasManager()->getSelf(), self::STATUS, [], $status_options);
@@ -91,7 +84,6 @@ final class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAw
      * List any pending database updates.
      */
     #[CLI\Command(name: self::STATUS, aliases: ['updbst', 'updatedb-status'])]
-    #[CLI\Option(name: 'post-updates', description: 'Show post updates.')]
     #[CLI\Bootstrap(level: DrupalBootLevels::FULL)]
     #[CLI\Kernel(name: 'update')]
     #[CLI\FieldLabels(labels: [
@@ -102,7 +94,7 @@ final class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAw
     ])]
     #[CLI\DefaultTableFields(fields: ['module', 'update_id', 'type', 'description'])]
     #[CLI\FilterDefaultField(field: 'type')]
-    public function updatedbStatus($options = ['format' => 'table', 'post-updates' => true]): ?RowsOfFields
+    public function updatedbStatus($options = ['format' => 'table']): ?RowsOfFields
     {
         require_once DRUSH_DRUPAL_CORE . '/includes/install.inc';
         drupal_load_updates();
@@ -194,10 +186,6 @@ final class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAw
                 // PHP 7 introduces Throwable, which covers both Error and Exception throwables.
                 $ret['#abort'] = ['success' => false, 'query' => $e->getMessage()];
                 Drush::logger()->error($e->getMessage());
-            } catch (\Exception $e) {
-                // In order to be compatible with PHP 5 we also catch regular Exceptions.
-                $ret['#abort'] = ['success' => false, 'query' => $e->getMessage()];
-                Drush::logger()->error($e->getMessage());
             }
 
             if ($context['log']) {
@@ -237,12 +225,7 @@ final class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAw
 
         // Record the schema update if it was completed successfully.
         if ($context['finished'] >= 1 && empty($ret['#abort'])) {
-            // TODO: setInstalledVersion in update.update_hook_registry introduced in Drupal 9.3.0
-            if (!function_exists('drupal_set_installed_schema_version')) {
-                \Drupal::service("update.update_hook_registry")->setInstalledVersion($module, $number);
-            } else {
-                drupal_set_installed_schema_version($module, $number);
-            }
+            \Drupal::service("update.update_hook_registry")->setInstalledVersion($module, $number);
             $context['message'] = "Update completed: $function";
         }
     }
@@ -394,17 +377,15 @@ final class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAw
             }
         }
 
-        // Lastly, apply post update hooks if specified.
-        if ($options['post-updates']) {
-            $post_updates = \Drupal::service('update.post_update_registry')->getPendingUpdateFunctions();
-            if ($post_updates) {
-                if ($operations) {
-                    // Only needed if we performed updates earlier.
-                    $operations[] = ['\Drush\Commands\core\UpdateDBCommands::cacheRebuild', []];
-                }
-                foreach ($post_updates as $function) {
-                    $operations[] = ['\Drush\Commands\core\UpdateDBCommands::updateDoOnePostUpdate', [$function]];
-                }
+        // Lastly, apply post update hooks.
+        $post_updates = \Drupal::service('update.post_update_registry')->getPendingUpdateFunctions();
+        if ($post_updates) {
+            if ($operations) {
+                // Only needed if we performed updates earlier.
+                $operations[] = ['\Drush\Commands\core\UpdateDBCommands::cacheRebuild', []];
+            }
+            foreach ($post_updates as $function) {
+                $operations[] = ['\Drush\Commands\core\UpdateDBCommands::updateDoOnePostUpdate', [$function]];
             }
         }
 
@@ -529,18 +510,16 @@ final class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAw
         /** @var \Drupal\Core\Update\UpdateRegistry $post_update_registry */
         $post_update_registry = \Drupal::service('update.post_update_registry');
         $post_updates = $post_update_registry->getPendingUpdateInformation();
-        if ($options['post-updates']) {
-            foreach ($post_updates as $module => $post_update) {
-                foreach ($post_update as $key => $list) {
-                    if ($key == 'pending') {
-                        foreach ($list as $id => $item) {
-                            $return[$module . '-post-' . $id] = [
-                                'module' => $module,
-                                'update_id' => $id,
-                                'description' => trim($item),
-                                'type' => 'post-update'
-                            ];
-                        }
+        foreach ($post_updates as $module => $post_update) {
+            foreach ($post_update as $key => $list) {
+                if ($key == 'pending') {
+                    foreach ($list as $id => $item) {
+                        $return[$module . '-post-' . $id] = [
+                            'module' => $module,
+                            'update_id' => $id,
+                            'description' => trim($item),
+                            'type' => 'post-update'
+                        ];
                     }
                 }
             }
