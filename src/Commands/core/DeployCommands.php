@@ -34,11 +34,8 @@ final class DeployCommands extends DrushCommands implements SiteAliasManagerAwar
         $manager = $this->processManager();
 
         $this->logger()->notice("Database updates start.");
-        $options = ['no-cache-clear' => true];
-        $process = $manager->drush($self, UpdateDBCommands::UPDATEDB, [], $options + $redispatchOptions);
+        $process = $manager->drush($self, UpdateDBCommands::UPDATEDB, [], $redispatchOptions);
         $process->mustRun($process->showRealtime());
-
-        $this->cacheRebuild($manager, $self, $redispatchOptions);
 
         $this->logger()->success("Config import start.");
         $process = $manager->drush($self, ConfigImportCommands::IMPORT, [], $redispatchOptions);

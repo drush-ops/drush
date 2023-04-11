@@ -25,7 +25,6 @@ final class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAw
     const UPDATEDB = 'updatedb';
     const STATUS = 'updatedb:status';
     const BATCH_PROCESS = 'updatedb:batch-process';
-    protected ?bool $cache_clear;
 
     /**
      * Apply any database updates required (as with running update.php).
@@ -36,7 +35,6 @@ final class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAw
     #[CLI\Kernel(name: 'update')]
     public function updatedb(): int
     {
-        $this->cache_clear = $options['cache-clear'];
         require_once DRUPAL_ROOT . '/core/includes/install.inc';
         require_once DRUPAL_ROOT . '/core/includes/update.inc';
         drupal_load_updates();
@@ -66,8 +64,7 @@ final class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAw
             if ($this->getConfig()->simulate()) {
                 $success = true;
             } else {
-                $success = $this->updateBatch($options);
-                // Caches were just cleared in updateFinished callback.
+                $success = $this->updateBatch();
             }
 
             $level = $success ? SuccessInterface::SUCCESS : LogLevel::ERROR;
@@ -76,6 +73,11 @@ final class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAw
             $this->logger()->success(dt('No pending updates.'));
             $success = true;
         }
+        // Flush all caches regardless of whether updates ran. When Drupal
+        // core performs database updates it also clears the cache at the
+        // end. This ensures that we are compatible with updates that rely
+        // on this behavior.
+        drupal_flush_all_caches();
 
         return $success ? self::EXIT_SUCCESS : self::EXIT_FAILURE;
     }
@@ -326,20 +328,13 @@ final class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAw
      */
     public function updateFinished(bool $success, array $results, array $operations): void
     {
-        if ($this->cache_clear) {
-            // Flush all caches at the end of the batch operation. When Drupal
-            // core performs database updates it also clears the cache at the
-            // end. This ensures that we are compatible with updates that rely
-            // on this behavior.
-            drupal_flush_all_caches();
-        }
+        // No longer used. Flush moved to \Drush\Commands\core\UpdateDBCommands::updatedb.
     }
 
     /**
      * Start the database update batch process.
-     * @param $options
      */
-    public function updateBatch($options): bool
+    public function updateBatch(): bool
     {
         $start = $this->getUpdateList();
         // Resolve any update dependencies to determine the actual updates that will
