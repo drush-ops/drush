@@ -17,7 +17,7 @@ class UpdateDBTest extends CommandUnishTestCase
 {
     use TestModuleHelperTrait;
 
-    protected ?string $pathPostUpdate;
+    protected ?string $pathPostUpdate = null;
 
     public function testUpdateDBStatus()
     {
