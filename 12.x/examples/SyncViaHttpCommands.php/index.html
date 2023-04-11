@@ -5233,10 +5233,10 @@
 <span class="sd">   * this, Drush will fail with an error when a user attempts to use</span>
 <span class="sd">   * an unknown option.</span>
 <span class="sd">   */</span>
-    <span class="c1">#[CLI\Hook(type: HookManager::OPTION_HOOK, target: SqlSyncCommands::SYNC)]</span>
-    <span class="c1">#[CLI\Option(name: &#39;http-sync&#39;, description: &#39;Copy the database via http instead of rsync.  Value is the url that the existing database dump can be found at.&#39;)]</span>
-    <span class="c1">#[CLI\Option(name: &#39;http-sync-user&#39;, description: &#39;Username for the protected directory containing the sql dump.&#39;)]</span>
-    <span class="c1">#[CLI\Option(name: &#39;http-sync-password&#39;, description: &#39;Password for the same directory.&#39;)]</span>
+    <span class="p">#[</span><span class="nd">CLI\Hook</span><span class="p">(</span><span class="nx">type</span><span class="o">:</span> <span class="nx">HookManager</span><span class="o">::</span><span class="na">OPTION_HOOK</span><span class="p">,</span> <span class="nx">target</span><span class="o">:</span> <span class="nx">SqlSyncCommands</span><span class="o">::</span><span class="na">SYNC</span><span class="p">)]</span>
+    <span class="p">#[</span><span class="nd">CLI\Option</span><span class="p">(</span><span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;http-sync&#39;</span><span class="p">,</span> <span class="nx">description</span><span class="o">:</span> <span class="s1">&#39;Copy the database via http instead of rsync.  Value is the url that the existing database dump can be found at.&#39;</span><span class="p">)]</span>
+    <span class="p">#[</span><span class="nd">CLI\Option</span><span class="p">(</span><span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;http-sync-user&#39;</span><span class="p">,</span> <span class="nx">description</span><span class="o">:</span> <span class="s1">&#39;Username for the protected directory containing the sql dump.&#39;</span><span class="p">)]</span>
+    <span class="p">#[</span><span class="nd">CLI\Option</span><span class="p">(</span><span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;http-sync-password&#39;</span><span class="p">,</span> <span class="nx">description</span><span class="o">:</span> <span class="s1">&#39;Password for the same directory.&#39;</span><span class="p">)]</span>
     <span class="k">public</span> <span class="k">function</span> <span class="nf">optionsetSqlSync</span><span class="p">()</span>
     <span class="p">{</span>
     <span class="p">}</span>
@@ -5247,7 +5247,7 @@
 <span class="sd">     * dump-and-transfer that sql-sync usually does, and transfer the</span>
 <span class="sd">     * database dump via an http download.</span>
 <span class="sd">     */</span>
-    <span class="c1">#[CLI\Hook(type: HookManager::PRE_COMMAND_HOOK, target: SqlSyncCommands::SYNC)]</span>
+    <span class="p">#[</span><span class="nd">CLI\Hook</span><span class="p">(</span><span class="nx">type</span><span class="o">:</span> <span class="nx">HookManager</span><span class="o">::</span><span class="na">PRE_COMMAND_HOOK</span><span class="p">,</span> <span class="nx">target</span><span class="o">:</span> <span class="nx">SqlSyncCommands</span><span class="o">::</span><span class="na">SYNC</span><span class="p">)]</span>
     <span class="k">public</span> <span class="k">function</span> <span class="nf">preSqlSync</span><span class="p">(</span><span class="nx">CommandData</span> <span class="nv">$commandData</span><span class="p">)</span>
     <span class="p">{</span>
         <span class="nv">$sql_dump_download_url</span> <span class="o">=</span> <span class="nv">$commandData</span><span class="o">-&gt;</span><span class="na">input</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">getOption</span><span class="p">(</span><span class="s1">&#39;http-sync&#39;</span><span class="p">);</span>

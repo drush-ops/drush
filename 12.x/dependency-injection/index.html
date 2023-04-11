@@ -5300,7 +5300,7 @@ See the <a href="https://www.drupal.org/docs/8/api/services-and-dependency-injec
   <span class="sd">/**</span>
 <span class="sd">   * Prints the current alias name and info.</span>
 <span class="sd">   */</span>
-  <span class="c1">#[CLI\Command(name: &#39;mymodule:myAlias&#39;)]</span>
+  <span class="p">#[</span><span class="nd">CLI\Command</span><span class="p">(</span><span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;mymodule:myAlias&#39;</span><span class="p">)]</span>
   <span class="k">public</span> <span class="k">function</span> <span class="nf">myAlias</span><span class="p">()</span><span class="o">:</span> <span class="nx">ListDataFromKeys</span> 
   <span class="p">{</span>
     <span class="nv">$selfAlias</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">siteAliasManager</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">getSelf</span><span class="p">();</span>

@@ -5263,7 +5263,7 @@
 <span class="sd">     * injected into this command handler object via `setHookManager()`</span>
 <span class="sd">     * (defined in CustomEventAwareTrait).</span>
 <span class="sd">     */</span>
-    <span class="c1">#[CLI\Command(name: &#39;example:command&#39;)]  </span>
+    <span class="p">#[</span><span class="nd">CLI\Command</span><span class="p">(</span><span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;example:command&#39;</span><span class="p">)]</span>  
     <span class="k">public</span> <span class="k">function</span> <span class="nf">exampleCommand</span><span class="p">()</span>
     <span class="p">{</span>
         <span class="nv">$myEventHandlers</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">getCustomEventHandlers</span><span class="p">(</span><span class="s1">&#39;my-event&#39;</span><span class="p">);</span>

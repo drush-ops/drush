@@ -5227,7 +5227,7 @@
     <span class="sd">/**</span>
 <span class="sd">     * A few example alterations to site aliases.</span>
 <span class="sd">     */</span>
-    <span class="c1">#[CLI\Hook(type: HookManager::PRE_INITIALIZE, target: &#39;*&#39;)]</span>
+    <span class="p">#[</span><span class="nd">CLI\Hook</span><span class="p">(</span><span class="nx">type</span><span class="o">:</span> <span class="nx">HookManager</span><span class="o">::</span><span class="na">PRE_INITIALIZE</span><span class="p">,</span> <span class="nx">target</span><span class="o">:</span> <span class="s1">&#39;*&#39;</span><span class="p">)]</span>
     <span class="k">public</span> <span class="k">function</span> <span class="nf">alter</span><span class="p">(</span><span class="nx">InputInterface</span> <span class="nv">$input</span><span class="p">,</span> <span class="nx">AnnotationData</span> <span class="nv">$annotationData</span><span class="p">)</span>
     <span class="p">{</span>
         <span class="nv">$self</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">siteAliasManager</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">getSelf</span><span class="p">();</span>

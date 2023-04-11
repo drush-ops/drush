@@ -5233,7 +5233,7 @@
 <span class="sd">     *</span>
 <span class="sd">     * @throws \Exception</span>
 <span class="sd">     */</span>
-    <span class="c1">#[CLI\Hook(type: HookManager::ARGUMENT_VALIDATOR, target: SqlSyncCommands::SYNC)]</span>
+    <span class="p">#[</span><span class="nd">CLI\Hook</span><span class="p">(</span><span class="nx">type</span><span class="o">:</span> <span class="nx">HookManager</span><span class="o">::</span><span class="na">ARGUMENT_VALIDATOR</span><span class="p">,</span> <span class="nx">target</span><span class="o">:</span> <span class="nx">SqlSyncCommands</span><span class="o">::</span><span class="na">SYNC</span><span class="p">)]</span>
     <span class="k">public</span> <span class="k">function</span> <span class="nf">sqlSyncValidate</span><span class="p">(</span><span class="nx">CommandData</span> <span class="nv">$commandData</span><span class="p">)</span>
     <span class="p">{</span>
         <span class="k">if</span> <span class="p">(</span><span class="nv">$commandData</span><span class="o">-&gt;</span><span class="na">input</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">getArgument</span><span class="p">(</span><span class="s1">&#39;destination&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;@prod&#39;</span><span class="p">)</span> <span class="p">{</span>
@@ -5244,7 +5244,7 @@
     <span class="sd">/**</span>
 <span class="sd">     * Limit rsync operations to production site.</span>
 <span class="sd">     */</span>
-    <span class="c1">#[CLI\Hook(type: HookManager::ARGUMENT_VALIDATOR, target: RsyncCommands::RSYNC)]</span>
+    <span class="p">#[</span><span class="nd">CLI\Hook</span><span class="p">(</span><span class="nx">type</span><span class="o">:</span> <span class="nx">HookManager</span><span class="o">::</span><span class="na">ARGUMENT_VALIDATOR</span><span class="p">,</span> <span class="nx">target</span><span class="o">:</span> <span class="nx">RsyncCommands</span><span class="o">::</span><span class="na">RSYNC</span><span class="p">)]</span>
     <span class="k">public</span> <span class="k">function</span> <span class="nf">rsyncValidate</span><span class="p">(</span><span class="nx">CommandData</span> <span class="nv">$commandData</span><span class="p">)</span>
     <span class="p">{</span>
         <span class="k">if</span> <span class="p">(</span><span class="nb">preg_match</span><span class="p">(</span><span class="s2">&quot;/^@prod/&quot;</span><span class="p">,</span> <span class="nv">$commandData</span><span class="o">-&gt;</span><span class="na">input</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">getArgument</span><span class="p">(</span><span class="s1">&#39;destination&#39;</span><span class="p">)))</span> <span class="p">{</span>
@@ -5255,7 +5255,7 @@
     <span class="sd">/**</span>
 <span class="sd">     * Unauthorized may not execute updates.</span>
 <span class="sd">     */</span>
-    <span class="c1">#[CLI\Hook(type: HookManager::ARGUMENT_VALIDATOR, target: UpdateDBCommands::UPDATEDB)]</span>
+    <span class="p">#[</span><span class="nd">CLI\Hook</span><span class="p">(</span><span class="nx">type</span><span class="o">:</span> <span class="nx">HookManager</span><span class="o">::</span><span class="na">ARGUMENT_VALIDATOR</span><span class="p">,</span> <span class="nx">target</span><span class="o">:</span> <span class="nx">UpdateDBCommands</span><span class="o">::</span><span class="na">UPDATEDB</span><span class="p">)]</span>
     <span class="k">public</span> <span class="k">function</span> <span class="nf">validateUpdateDb</span><span class="p">(</span><span class="nx">CommandData</span> <span class="nv">$commandData</span><span class="p">)</span>
     <span class="p">{</span>
         <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nv">$commandData</span><span class="o">-&gt;</span><span class="na">input</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">getOption</span><span class="p">(</span><span class="s1">&#39;secret&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;mysecret&#39;</span><span class="p">)</span> <span class="p">{</span>
@@ -5263,8 +5263,8 @@
         <span class="p">}</span>
     <span class="p">}</span>
 
-    <span class="c1">#[CLI\Hook(type: HookManager::OPTION_HOOK, target: UpdateDBCommands::UPDATEDB)]</span>
-    <span class="c1">#[CLI\Option(name: &#39;secret&#39;, description: &#39;A required token else user may not run updatedb command.&#39;)]</span>
+    <span class="p">#[</span><span class="nd">CLI\Hook</span><span class="p">(</span><span class="nx">type</span><span class="o">:</span> <span class="nx">HookManager</span><span class="o">::</span><span class="na">OPTION_HOOK</span><span class="p">,</span> <span class="nx">target</span><span class="o">:</span> <span class="nx">UpdateDBCommands</span><span class="o">::</span><span class="na">UPDATEDB</span><span class="p">)]</span>
+    <span class="p">#[</span><span class="nd">CLI\Option</span><span class="p">(</span><span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;secret&#39;</span><span class="p">,</span> <span class="nx">description</span><span class="o">:</span> <span class="s1">&#39;A required token else user may not run updatedb command.&#39;</span><span class="p">)]</span>
     <span class="k">public</span> <span class="k">function</span> <span class="nf">optionsetUpdateDb</span><span class="p">(</span><span class="nv">$options</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;secret&#39;</span> <span class="o">=&gt;</span> <span class="nx">self</span><span class="o">::</span><span class="na">REQ</span><span class="p">])</span>
     <span class="p">{</span>
     <span class="p">}</span>
