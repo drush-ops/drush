@@ -30,10 +30,11 @@ final class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAw
      * Apply any database updates required (as with running update.php).
      */
     #[CLI\Command(name: self::UPDATEDB, aliases: ['updb'])]
+    #[CLI\Option(name: 'cache-clear', description: 'Clear caches upon completion.')]
     #[CLI\Bootstrap(level: DrupalBootLevels::FULL)]
     #[CLI\Topics(topics: [DocsCommands::DEPLOY])]
     #[CLI\Kernel(name: 'update')]
-    public function updatedb(): int
+    public function updatedb($options = ['cache-clear' => true]): int
     {
         require_once DRUPAL_ROOT . '/core/includes/install.inc';
         require_once DRUPAL_ROOT . '/core/includes/update.inc';
@@ -77,7 +78,9 @@ final class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAw
         // core performs database updates it also clears the cache at the
         // end. This ensures that we are compatible with updates that rely
         // on this behavior.
-        drupal_flush_all_caches();
+        if ($options['cache-clear']) {
+            drupal_flush_all_caches();
+        }
 
         return $success ? self::EXIT_SUCCESS : self::EXIT_FAILURE;
     }
