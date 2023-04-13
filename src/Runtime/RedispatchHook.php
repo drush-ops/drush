@@ -27,22 +27,16 @@ class RedispatchHook implements InitializeHookInterface, ConfigAwareInterface, S
     use ConfigAwareTrait;
     use SiteAliasManagerAwareTrait;
 
-    /** @var ProcessManager */
-    protected $processManager;
-
-    public function __construct(ProcessManager $processManager)
+    public function __construct(protected ProcessManager $processManager)
     {
-        $this->processManager = $processManager;
     }
 
     /**
      * Check to see if it is necessary to redispatch to a remote site.
+     *
      * We do not redispatch to local sites here; usually, local sites may
      * simply be selected and require no redispatch. When a local redispatch
      * is needed, it happens in the RedispatchToSiteLocal class.
-     *
-     * @param InputInterface $input
-     * @param AnnotationData $annotationData
      */
     public function initialize(InputInterface $input, AnnotationData $annotationData)
     {
@@ -50,9 +44,9 @@ class RedispatchHook implements InitializeHookInterface, ConfigAwareInterface, S
         //   - redispatch to a different site-local Drush on same system
         //   - site-list handling (REMOVED)
         // These redispatches need to be done regardless of the presence
-        // of a HandlRemoteCommands Attribute.
+        // of a HandleRemoteCommands Attribute.
 
-        // If the command has the HandlRemoteCommands Attribute, then
+        // If the command has the HandleRemoteCommands Attribute, then
         // short-circuit redispatches to remote hosts.
         if ($annotationData->has(HandleRemoteCommands::NAME)) {
             return;
@@ -63,8 +57,6 @@ class RedispatchHook implements InitializeHookInterface, ConfigAwareInterface, S
     /**
      * Check to see if the target of the command is remote. Call redispatch
      * if it is.
-     *
-     * @param InputInterface $input
      */
     public function redispatchIfRemote(InputInterface $input)
     {
@@ -77,10 +69,8 @@ class RedispatchHook implements InitializeHookInterface, ConfigAwareInterface, S
 
     /**
      * Called from RemoteCommandProxy::execute() to run remote commands.
-     *
-     * @param InputInterface $input
      */
-    public function redispatch(InputInterface $input)
+    public function redispatch(InputInterface $input): never
     {
         // Get the command arguments, and shift off the Drush command.
         $redispatchArgs = $this->getConfig()->get('runtime.argv');
@@ -105,7 +95,7 @@ class RedispatchHook implements InitializeHookInterface, ConfigAwareInterface, S
         }
         $process->mustRun($process->showRealtime());
 
-        return $this->exitEarly($process->getExitCode());
+        $this->exitEarly($process->getExitCode());
     }
 
     /**

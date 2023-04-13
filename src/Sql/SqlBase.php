@@ -42,10 +42,10 @@ abstract class SqlBase implements ConfigAwareInterface
     use ConfigAwareTrait;
 
     // Default code appended to sql connections.
-    public $queryExtra = '';
+    public string $queryExtra = '';
 
     // The way you pass a sql file when issueing a query.
-    public $queryFile = '<';
+    public string $queryFile = '<';
 
     protected Process $process;
 
