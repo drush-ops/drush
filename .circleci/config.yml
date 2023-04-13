@@ -22,19 +22,24 @@ post_steps: &poststeps
         path: /tmp/results
 
 executors:
-  mysql:
+  mysql-stable:
     docker:
       - image: wodby/php:8.1
         environment:
           - MYSQL_HOST=127.0.0.1
           - UNISH_DB_URL=mysql://root:@127.0.0.1
       - image: cimg/mysql:5.7.38
-  sqlite:
+  sqlite-stable:
     docker:
       - image: wodby/php:8.1
         environment:
           - "UNISH_DB_URL=sqlite://:memory:"
-  postgres:
+  sqlite-highest:
+    docker:
+      - image: wodby/php:latest
+        environment:
+          - "UNISH_DB_URL=sqlite://:memory:"
+  postgres-stable:
     docker:
       - image: wodby/php:8.1
         environment:
@@ -73,19 +78,34 @@ jobs:
       - checkout
       - run: $HOME/drush/.circleci/mergable.sh
 
-  test_81_drupal10:
+  test:
     parameters:
       dbms:
-        type: executor
+        type: string
       suite:
         type: string
+      release:
+        type: string
     <<: *defaults
-    executor: << parameters.dbms >>
+    executor: << parameters.dbms >>-<< parameters.release >>
     steps:
       - checkout
       - run: cp .docker/zz-php.ini /usr/local/etc/php/conf.d/
       - run: mkdir -p /tmp/results
-      - run: composer -n install
+      - when:
+          condition:
+            and:
+              - equal: [ stable, << parameters.release >> ] 
+          steps:
+            - run: composer -n install
+      - unless:
+          condition:
+            and:
+              - equal: [ stable, << parameters.release >> ] 
+          steps:
+            - run: composer -n config platform.php --unset
+            - run: composer -n require --dev drupal/core-recommended:10.1.x-dev --no-update
+            - run: composer -n update
       - run: composer -n unit -- --log-junit /tmp/results/unit/junit.xml
       - run: composer -n << parameters.suite >> -- --log-junit /tmp/results/<< parameters.suite >>/junit.xml
 
@@ -106,42 +126,33 @@ jobs:
 #      - run: composer -n update
 #      - run: composer -n phpunit -- --testsuite integration --filter=testInsecureDrupalPackage --stop-on-skipped
 
-  # PHP tip test with Drupal 10 tip
-  #   Determines whether a newer version of a dependency has broken Drush.
-  test_8x_drupal10_highest:
-    <<: *defaults
-    docker:
-      - image: wodby/php:latest
-        environment:
-          - "UNISH_DB_URL=sqlite://:memory:"
-    steps:
-      - checkout
-      - run: cp .docker/zz-php.ini /usr/local/etc/php/conf.d/
-      - run: php --version
-      - run: composer -n config platform.php --unset
-      - run: composer -n require --dev drupal/core-recommended:10.1.x-dev --no-update
-      - run: composer -n update
-      - run: composer -n show
-      - run: mkdir -p /tmp/results
-      - run: composer -n unit -- --log-junit /tmp/results/unit/junit.xml
-      - run: composer -n functional -- --log-junit /tmp/results/functional/junit.xml
-      - run: composer -n integration -- --log-junit /tmp/results/integration/junit.xml
-
 workflows:
-  version: 2
   drush:
     jobs:
       - code_style
       - check_mergable
 #      - test_80_drupal92_security:
 #          <<: *requires
-      - test_81_drupal10:
+      - test:
           <<: *requires
           <<: *poststeps
           matrix:
             parameters:
-              dbms: [ sqlite, mysql, postgres ]
-              suite: [ "integration", "functional" ]
-      - test_8x_drupal10_highest:
-          <<: *requires
-          <<: *poststeps
+              dbms: [sqlite, mysql, postgres]
+              suite: [integration, functional]
+              release: [stable, highest]
+            exclude:
+              # Only run highest test on sqlite. Excluding each suite is unfortnate but needed.
+              - release: highest
+                dbms: mysql
+                suite: integration
+              - release: highest
+                dbms: mysql
+                suite: functional
+              - release: highest
+                dbms: postgres
+                suite: integration
+              - release: highest
+                dbms: postgres
+                suite: functional  
+
