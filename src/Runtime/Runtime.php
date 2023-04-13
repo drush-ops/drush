@@ -21,7 +21,6 @@ use Drush\Preflight\Preflight;
  */
 class Runtime
 {
-
     const DRUSH_RUNTIME_COMPLETED_NAMESPACE = 'runtime.execution.completed';
     const DRUSH_RUNTIME_EXIT_CODE_NAMESPACE = 'runtime.exit_code';
 
