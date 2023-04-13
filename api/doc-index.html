@@ -868,8 +868,6 @@ array and tries to build an appropriate PsySH command for it.</p></dd><dt><a hre
                     <dd><p>Help command.</p></dd><dt><a href="Drush/Runtime/DependencyInjection.html"><abbr title="Drush\Runtime\DependencyInjection">DependencyInjection</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Runtime.html">Drush\Runtime</a></em></dt>
                     <dd><p>Prepare our Dependency Injection Container</p></dd><dt><a href="Drush/Runtime/DependencyInjection.html#method_desiredHandlers">
 <abbr title="Drush\Runtime\DependencyInjection">DependencyInjection</abbr>::desiredHandlers</a>() &mdash; <em>Method in class <a href="Drush/Runtime/DependencyInjection.html"><abbr title="Drush\Runtime\DependencyInjection">DependencyInjection</abbr></a></em></dt>
-                    <dd></dd><dt>$<a href="Drush/Runtime/Runtime.html#property_di">
-<abbr title="Drush\Runtime\Runtime">Runtime</abbr>#di</a> &mdash; <em>Property in class <a href="Drush/Runtime/Runtime.html"><abbr title="Drush\Runtime\Runtime">Runtime</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Runtime/Runtime.html#method_doRun">
 <abbr title="Drush\Runtime\Runtime">Runtime</abbr>::doRun</a>() &mdash; <em>Method in class <a href="Drush/Runtime/Runtime.html"><abbr title="Drush\Runtime\Runtime">Runtime</abbr></a></em></dt>
                     <dd><p>Start up Drush</p></dd><dt><a href="Drush/SiteAlias/ProcessManager.html#method_drush">
@@ -989,7 +987,7 @@ handler takes over.</p></dd><dt><a href="Drush/Runtime/ErrorHandler.html#method_
                     <dd><p>Abort the current execution without causing distress to our
 shutdown handler.</p></dd><dt><a href="Drush/Runtime/Runtime.html#method_exitCode">
 <abbr title="Drush\Runtime\Runtime">Runtime</abbr>::exitCode</a>() &mdash; <em>Method in class <a href="Drush/Runtime/Runtime.html"><abbr title="Drush\Runtime\Runtime">Runtime</abbr></a></em></dt>
-                    <dd></dd><dt><a href="Drush/Sql/SqlTableSelectionTrait.html#method_expandAndFilterTables">
+                    <dd><p>Get the exit code for current request.</p></dd><dt><a href="Drush/Sql/SqlTableSelectionTrait.html#method_expandAndFilterTables">
 <abbr title="Drush\Sql\SqlTableSelectionTrait">SqlTableSelectionTrait</abbr>::expandAndFilterTables</a>() &mdash; <em>Method in class <a href="Drush/Sql/SqlTableSelectionTrait.html"><abbr title="Drush\Sql\SqlTableSelectionTrait">SqlTableSelectionTrait</abbr></a></em></dt>
                     <dd><p>Given the table names in the input array that may contain wildcards (<code>*</code>),
 expand the table names so that the array returned only contains table names
@@ -2032,11 +2030,7 @@ that shares the <code>vendor</code> directory with Drush).</p></dd><dt><a href="
                     <dd><p>Add everything in the provided array to the list returned by <code>args()</code></p></dd><dt><a href="Drush/Preflight/PreflightLog.html"><abbr title="Drush\Preflight\PreflightLog">PreflightLog</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Preflight.html">Drush\Preflight</a></em></dt>
                     <dd></dd><dt><a href="Drush/Preflight/PreflightSiteLocator.html"><abbr title="Drush\Preflight\PreflightSiteLocator">PreflightSiteLocator</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Preflight.html">Drush\Preflight</a></em></dt>
                     <dd></dd><dt><a href="Drush/Preflight/PreflightVerify.html"><abbr title="Drush\Preflight\PreflightVerify">PreflightVerify</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Preflight.html">Drush\Preflight</a></em></dt>
-                    <dd><p>Helper methods to verify preflight state.</p></dd><dt>$<a href="Drush/Runtime/RedispatchHook.html#property_processManager">
-<abbr title="Drush\Runtime\RedispatchHook">RedispatchHook</abbr>#processManager</a> &mdash; <em>Property in class <a href="Drush/Runtime/RedispatchHook.html"><abbr title="Drush\Runtime\RedispatchHook">RedispatchHook</abbr></a></em></dt>
-                    <dd></dd><dt>$<a href="Drush/Runtime/Runtime.html#property_preflight">
-<abbr title="Drush\Runtime\Runtime">Runtime</abbr>#preflight</a> &mdash; <em>Property in class <a href="Drush/Runtime/Runtime.html"><abbr title="Drush\Runtime\Runtime">Runtime</abbr></a></em></dt>
-                    <dd></dd><dt><a href="Drush/SiteAlias/ProcessManager.html"><abbr title="Drush\SiteAlias\ProcessManager">ProcessManager</abbr></a> &mdash; <em>Class in namespace <a href="Drush/SiteAlias.html">Drush\SiteAlias</a></em></dt>
+                    <dd><p>Helper methods to verify preflight state.</p></dd><dt><a href="Drush/SiteAlias/ProcessManager.html"><abbr title="Drush\SiteAlias\ProcessManager">ProcessManager</abbr></a> &mdash; <em>Class in namespace <a href="Drush/SiteAlias.html">Drush\SiteAlias</a></em></dt>
                     <dd><p>The Drush ProcessManager adds a few Drush-specific service methods.</p></dd><dt><a href="Drush/SiteAlias/ProcessManager.html#method_process">
 <abbr title="Drush\SiteAlias\ProcessManager">ProcessManager</abbr>::process</a>() &mdash; <em>Method in class <a href="Drush/SiteAlias/ProcessManager.html"><abbr title="Drush\SiteAlias\ProcessManager">ProcessManager</abbr></a></em></dt>
                     <dd><p>Run a bash fragment locally.</p></dd><dt>$<a href="Drush/Sql/SqlBase.html#property_process">
@@ -2506,7 +2500,7 @@ database sanitizer for sql-sync.</p></dd><dt>$<a href="Drush/Drupal/DrupalKernel
 <abbr title="Drush\Runtime\Runtime">Runtime</abbr>::setCompleted</a>() &mdash; <em>Method in class <a href="Drush/Runtime/Runtime.html"><abbr title="Drush\Runtime\Runtime">Runtime</abbr></a></em></dt>
                     <dd><p>Mark the current request as having completed successfully.</p></dd><dt><a href="Drush/Runtime/Runtime.html#method_setExitCode">
 <abbr title="Drush\Runtime\Runtime">Runtime</abbr>::setExitCode</a>() &mdash; <em>Method in class <a href="Drush/Runtime/Runtime.html"><abbr title="Drush\Runtime\Runtime">Runtime</abbr></a></em></dt>
-                    <dd></dd><dt><a href="Drush/Runtime/ShutdownHandler.html"><abbr title="Drush\Runtime\ShutdownHandler">ShutdownHandler</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Runtime.html">Drush\Runtime</a></em></dt>
+                    <dd><p>Mark the exit code for current request.</p></dd><dt><a href="Drush/Runtime/ShutdownHandler.html"><abbr title="Drush\Runtime\ShutdownHandler">ShutdownHandler</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Runtime.html">Drush\Runtime</a></em></dt>
                     <dd><p>Drush's shutdown handler</p></dd><dt><a href="Drush/Runtime/ShutdownHandler.html#method_shutdownHandler">
 <abbr title="Drush\Runtime\ShutdownHandler">ShutdownHandler</abbr>::shutdownHandler</a>() &mdash; <em>Method in class <a href="Drush/Runtime/ShutdownHandler.html"><abbr title="Drush\Runtime\ShutdownHandler">ShutdownHandler</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/SiteAlias/ProcessManager.html#method_siteProcess">
@@ -2900,9 +2894,9 @@ need to be expanded.</p></dd>        </dl><h2 id="letter_">_</h2>
 <abbr title="Drush\Runtime\RedispatchHook">RedispatchHook</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/Runtime/RedispatchHook.html"><abbr title="Drush\Runtime\RedispatchHook">RedispatchHook</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Runtime/Runtime.html#method___construct">
 <abbr title="Drush\Runtime\Runtime">Runtime</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/Runtime/Runtime.html"><abbr title="Drush\Runtime\Runtime">Runtime</abbr></a></em></dt>
-                    <dd><p>Runtime constructor</p></dd><dt><a href="Drush/SiteAlias/SiteAliasFileLoader.html#method___construct">
+                    <dd></dd><dt><a href="Drush/SiteAlias/SiteAliasFileLoader.html#method___construct">
 <abbr title="Drush\SiteAlias\SiteAliasFileLoader">SiteAliasFileLoader</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/SiteAlias/SiteAliasFileLoader.html"><abbr title="Drush\SiteAlias\SiteAliasFileLoader">SiteAliasFileLoader</abbr></a></em></dt>
-                    <dd><p>SiteAliasFileLoader constructor</p></dd><dt><a href="Drush/Sql/SqlBase.html#method___construct">
+                    <dd></dd><dt><a href="Drush/Sql/SqlBase.html#method___construct">
 <abbr title="Drush\Sql\SqlBase">SqlBase</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/Sql/SqlBase.html"><abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a></em></dt>
                     <dd><p>Typically, SqlBase instances are constructed via SqlBase::create($options).</p></dd><dt><a href="Drush/TestTraits/CliTestTrait.html#method__escapeshellargWindows">
 <abbr title="Drush\TestTraits\CliTestTrait">CliTestTrait</abbr>::_escapeshellargWindows</a>() &mdash; <em>Method in class <a href="Drush/TestTraits/CliTestTrait.html"><abbr title="Drush\TestTraits\CliTestTrait">CliTestTrait</abbr></a></em></dt>

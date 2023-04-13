@@ -121,20 +121,6 @@ current command and instead run the command remotely.</p></p>                   
             </div>
     
     
-            <h2>Properties</h2>
-
-            <table class="table table-condensed">
-                    <tr>
-                <td class="type" id="property_processManager">
-                                        protected                                        <abbr title="Consolidation\SiteProcess\ProcessManager">ProcessManager</abbr>
-                                                                                
-                                    </td>
-                <td>$processManager</td>
-                <td class="last"></td>
-                <td></td>
-            </tr>
-            </table>
-
     
             <h2>Methods</h2>
 
@@ -185,7 +171,7 @@ if it is.</p></p>                </div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    
+                    <abbr title="Drush\Runtime\never">never</abbr>
                 </div>
                 <div class="col-md-8">
                     <a href="#method_redispatch">redispatch</a>(<abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr> $input)
@@ -267,7 +253,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method___construct">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Runtime/RedispatchHook.php#L33">at line 33</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Runtime/RedispatchHook.php#L30">at line 30</a></div>
         <code>                    
     <strong>__construct</strong>(<abbr title="Consolidation\SiteProcess\ProcessManager">ProcessManager</abbr> $processManager)
         </code>
@@ -301,7 +287,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_initialize">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Runtime/RedispatchHook.php#L47">at line 47</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Runtime/RedispatchHook.php#L41">at line 41</a></div>
         <code>                    
     <strong>initialize</strong>(<abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr> $input, <abbr title="Consolidation\AnnotatedCommand\AnnotationData">AnnotationData</abbr> $annotationData)
         </code>
@@ -341,7 +327,7 @@ is needed, it happens in the RedispatchToSiteLocal class.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_redispatchIfRemote">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Runtime/RedispatchHook.php#L69">at line 69</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Runtime/RedispatchHook.php#L61">at line 61</a></div>
         <code>                    
     <strong>redispatchIfRemote</strong>(<abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr> $input)
         </code>
@@ -375,8 +361,8 @@ if it is.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_redispatch">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Runtime/RedispatchHook.php#L83">at line 83</a></div>
-        <code>                    
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Runtime/RedispatchHook.php#L73">at line 73</a></div>
+        <code>                    <abbr title="Drush\Runtime\never">never</abbr>
     <strong>redispatch</strong>(<abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr> $input)
         </code>
     </h3>
@@ -399,6 +385,15 @@ if it is.</p></p>
             </table>
 
             
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><abbr title="Drush\Runtime\never">never</abbr></td>
+            <td></td>
+        </tr>
+    </table>
+
             
             
             
@@ -408,7 +403,7 @@ if it is.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_alterArgsForRedispatch">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Runtime/RedispatchHook.php#L116">at line 116</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Runtime/RedispatchHook.php#L106">at line 106</a></div>
         <code>            protected        array
     <strong>alterArgsForRedispatch</strong>(array $redispatchArgs)
         </code>
@@ -451,7 +446,7 @@ provided via -D.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_exitEarly">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Runtime/RedispatchHook.php#L129">at line 129</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Runtime/RedispatchHook.php#L119">at line 119</a></div>
         <code>            protected        <abbr title="Drush\Runtime\never">never</abbr>
     <strong>exitEarly</strong>(int $exit_code)
         </code>
