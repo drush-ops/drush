@@ -35,7 +35,7 @@ use Drush\SiteAlias\ProcessManager;
  */
 class DependencyInjection
 {
-    protected $handlers = [];
+    protected array $handlers = [];
 
     public function desiredHandlers($handlerList): void
     {

@@ -21,24 +21,12 @@ use Drush\Preflight\Preflight;
  */
 class Runtime
 {
-    /** @var Preflight */
-    protected $preflight;
-
-    /** @var DependencyInjection */
-    protected $di;
 
     const DRUSH_RUNTIME_COMPLETED_NAMESPACE = 'runtime.execution.completed';
     const DRUSH_RUNTIME_EXIT_CODE_NAMESPACE = 'runtime.exit_code';
 
-    /**
-     * Runtime constructor
-     *
-     * @param Preflight $preflight the preflight object
-     */
-    public function __construct(Preflight $preflight, DependencyInjection $di)
+    public function __construct(protected Preflight $preflight, protected DependencyInjection $di)
     {
-        $this->preflight = $preflight;
-        $this->di = $di;
     }
 
     /**
@@ -46,7 +34,7 @@ class Runtime
      * Typically, this will happen only for code that fails fast during
      * preflight. Later code should catch and handle its own exceptions.
      */
-    public function run($argv)
+    public function run($argv): int
     {
         try {
             $output = new ConsoleOutput();
@@ -65,7 +53,7 @@ class Runtime
     /**
      * Start up Drush
      */
-    protected function doRun($argv, $output)
+    protected function doRun($argv, $output): int
     {
         // Do the preflight steps
         $status = $this->preflight->preflight($argv);
@@ -138,11 +126,10 @@ class Runtime
     }
 
     /**
-     * @deprecated
-     *   Used by backend.inc
-     *
      * Mark the exit code for current request.
-     * @param int $code
+     *
+     * @deprecated
+     *   Was used by backend.inc
      */
     public static function setExitCode(int $code): void
     {
@@ -150,10 +137,10 @@ class Runtime
     }
 
     /**
-     * @deprecated
-     *   Used by backend.inc
-     *
      * Get the exit code for current request.
+     *
+     * @deprecated
+     *   Was used by backend.inc
      */
     public static function exitCode()
     {
