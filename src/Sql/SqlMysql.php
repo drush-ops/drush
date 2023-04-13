@@ -109,7 +109,7 @@ EOT;
 
             // For MariaDB, ALTER USER was introduced in version 10.2. Support
             // for 10.1 ended in October 2020.
-            $sql[] = sprintf("ALTER USER %s IDENTIFIED BY '%s';", $user, $dbSpec['password']);
+            $sql[] = sprintf("ALTER USER %s IDENTIFIED BY '%s';", $user, str_replace(['/', ':', "'"], ['//', '/:', "//'"], $dbSpec['password']));
             $sql[] = sprintf('GRANT ALL PRIVILEGES ON %s.* TO %s;', $dbname, $user);
             $sql[] = 'FLUSH PRIVILEGES;';
         }
