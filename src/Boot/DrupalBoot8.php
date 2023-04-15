@@ -71,6 +71,7 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
                 }
             }
         }
+        return false;
     }
 
     public function getVersion($drupal_root): string
