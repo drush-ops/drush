@@ -10,7 +10,6 @@ use Drush\Config\Environment;
  */
 class DrupalFinder
 {
-
     public function __construct(private Environment $environment)
     {
     }
