@@ -17,7 +17,7 @@ use Drush\Command\GlobalOptionsEventListener;
 use Drush\Drush;
 use Drush\Symfony\DrushStyleInjector;
 use Drush\Cache\CommandCache;
-use Drush\DrupalFinder\DrupalFinder;
+use Drush\DrupalFinder\DrushDrupalFinder;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Application;
@@ -51,7 +51,7 @@ class DependencyInjection
         InputInterface $input,
         OutputInterface $output,
         ClassLoader $loader,
-        DrupalFinder $drupalFinder,
+        DrushDrupalFinder $drupalFinder,
         SiteAliasManager $aliasManager
     ): Container {
 
@@ -96,7 +96,7 @@ class DependencyInjection
     }
 
     // Add Drush Services to league/container 3.x
-    protected function addDrushServices($container, ClassLoader $loader, DrupalFinder $drupalFinder, SiteAliasManager $aliasManager, DrushConfig $config, OutputInterface $output): void
+    protected function addDrushServices($container, ClassLoader $loader, DrushDrupalFinder $drupalFinder, SiteAliasManager $aliasManager, DrushConfig $config, OutputInterface $output): void
     {
         // Override Robo's logger with a LoggerManager that delegates to the Drush logger.
         Robo::addShared($container, 'logger', '\Drush\Log\DrushLoggerManager')

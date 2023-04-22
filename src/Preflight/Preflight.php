@@ -6,7 +6,8 @@ namespace Drush\Preflight;
 
 use Composer\Autoload\ClassLoader;
 use Consolidation\SiteAlias\SiteAliasManager;
-use Drush\DrupalFinder\DrupalFinder;
+use DrupalFinder\DrupalFinder;
+use Drush\DrupalFinder\DrushDrupalFinder;
 use Drush\Config\ConfigLocator;
 use Drush\Config\DrushConfig;
 use Drush\Config\Environment;
@@ -42,7 +43,7 @@ class Preflight
     protected $configLocator;
 
     /**
-     * @var DrupalFinder
+     * @var DrushDrupalFinder
      */
     protected $drupalFinder;
 
@@ -69,7 +70,7 @@ class Preflight
         $this->environment = $environment;
         $this->verify = $verify ?: new PreflightVerify();
         $this->configLocator = $configLocator ?: new ConfigLocator('DRUSH_', $environment->getConfigFileVariant());
-        $this->drupalFinder = new DrupalFinder($environment);
+        $this->drupalFinder = new DrushDrupalFinder($environment);
         $this->logger = $preflightLog ?: new PreflightLog();
     }
 
@@ -304,7 +305,7 @@ class Preflight
         // a local Drupal site that is not the site at $root
         $localAliasDrupalFinder = new DrupalFinder($this->environment());
         // @todo deal with this.
-        $foundAlternateRoot = false; //$localAliasDrupalFinder->locateRoot($selfSiteAlias->localRoot());
+        $foundAlternateRoot = $localAliasDrupalFinder->locateRoot($selfSiteAlias->localRoot());
         if ($foundAlternateRoot) {
             $alteredRoot = $localAliasDrupalFinder->getDrupalRoot();
 
@@ -360,7 +361,7 @@ class Preflight
     /**
      * Return the Drupal Finder
      */
-    public function drupalFinder(): DrupalFinder
+    public function drupalFinder(): DrushDrupalFinder
     {
         return $this->drupalFinder;
     }

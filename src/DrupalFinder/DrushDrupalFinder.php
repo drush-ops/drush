@@ -8,7 +8,7 @@ use Drush\Config\Environment;
 /**
  * A replacement for DrupalFinder. We may go back to that once it uses InstalledVersions from Composer.
  */
-class DrupalFinder
+class DrushDrupalFinder
 {
     public function __construct(private Environment $environment)
     {
@@ -45,6 +45,6 @@ class DrupalFinder
      */
     public function getVendorDir()
     {
-        return $this->environment->vendorPath();
+        return realpath($this->environment->vendorPath());
     }
 }
