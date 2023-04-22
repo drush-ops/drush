@@ -304,7 +304,6 @@ class Preflight
         // Check to see if the alias on the command line points at
         // a local Drupal site that is not the site at $root
         $localAliasDrupalFinder = new DrupalFinder($this->environment());
-        // @todo deal with this.
         $foundAlternateRoot = $localAliasDrupalFinder->locateRoot($selfSiteAlias->localRoot());
         if ($foundAlternateRoot) {
             $alteredRoot = $localAliasDrupalFinder->getDrupalRoot();

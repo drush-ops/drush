@@ -23,7 +23,7 @@ class DrushDrupalFinder
     public function getDrupalRoot()
     {
         $core = InstalledVersions::getInstallPath('drupal/core');
-        return $core ? dirname($core) : false;
+        return $core ? realpath(dirname($core)) : false;
     }
 
     /**
