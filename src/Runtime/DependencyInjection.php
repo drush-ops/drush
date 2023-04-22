@@ -17,7 +17,7 @@ use Drush\Command\GlobalOptionsEventListener;
 use Drush\Drush;
 use Drush\Symfony\DrushStyleInjector;
 use Drush\Cache\CommandCache;
-use DrupalFinder\DrupalFinder;
+use Drush\DrupalFinder\DrupalFinder;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Application;
