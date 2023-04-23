@@ -133,6 +133,7 @@ final class ConfigCommands extends DrushCommands implements StdinAwareInterface,
     #[CLI\Usage(name: 'drush config:set --input-format=yaml user.role.authenticated permissions [foo,bar]', description: 'Use a sequence as value for the key <info>permissions</info> of <info>user.role.authenticated</info> config object.')]
     #[CLI\Usage(name: "drush config:set --input-format=yaml system.site page {403: '403', front: home}", description: 'Use a mapping as value for the key <info>page</info> of <info>system.site</info> config object.')]
     #[CLI\Usage(name: 'drush config:set --input-format=yaml user.role.authenticated ? "{label: \'Auth user\', weight: 5}"', description: 'Update two top level keys (label, weight) in the <info>system.site</info> config object.')]
+    #[CLI\Usage(name: 'cat tmp.yml | drush config:set --input-format=yaml user.mail ? -', description: 'Update the <info>user.mail</info> config object in its entirety.')]
     #[CLI\Complete(method_name_or_callable: 'configComplete')]
     public function set($config_name, $key, $value, $options = ['input-format' => 'string'])
     {
