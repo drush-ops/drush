@@ -21,7 +21,7 @@
         <link rel="next" href="../config_status/">
       
       <link rel="icon" href="../../img/favicon.ico">
-      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.1.6">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.1.7">
     
     
       
@@ -91,7 +91,7 @@
     
     
     
-    <body dir="ltr" data-md-color-scheme="preference" data-md-color-primary="" data-md-color-accent="">
+    <body dir="ltr" data-md-color-scheme="preference" data-md-color-primary="indigo" data-md-color-accent="indigo">
   
     
     
@@ -5282,6 +5282,7 @@
 <li><code>drush config:set --input-format=yaml user.role.authenticated permissions [foo,bar]</code>. Use a sequence as value for the key <em>permissions</em> of <em>user.role.authenticated</em> config object.</li>
 <li><code>drush config:set --input-format=yaml system.site page {403: '403', front: home}</code>. Use a mapping as value for the key <em>page</em> of <em>system.site</em> config object.</li>
 <li><code>drush config:set --input-format=yaml user.role.authenticated ? "{label: 'Auth user', weight: 5}"</code>. Update two top level keys (label, weight) in the <em>system.site</em> config object.</li>
+<li><code>cat tmp.yml | drush config:set --input-format=yaml user.mail ? -</code>. Update the <em>user.mail</em> config object in its entirety.</li>
 </ul>
 <h4 id="arguments">Arguments<a class="headerlink" href="#arguments" title="Permanent link">&para;</a></h4>
 <ul>
