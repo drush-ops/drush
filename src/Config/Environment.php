@@ -49,7 +49,6 @@ class Environment
      */
     protected function getUsername(): string
     {
-        $name = null;
         if (!$name = getenv("username")) { // Windows
             if (!$name = getenv("USER")) {
                 // If USER not defined, use posix
@@ -60,7 +59,7 @@ class Environment
                 }
             }
         }
-        return $name;
+        return $name ?: '';
     }
 
     protected function getTmp(): string
