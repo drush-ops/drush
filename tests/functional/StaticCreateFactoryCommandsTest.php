@@ -14,7 +14,8 @@ class StaticCreateFactoryCommandsTest extends CommandUnishTestCase
      */
     public function testStaticCreateFactoryCommands(): void
     {
+        $this->setUpDrupal(1, true);
         $this->drush('site:path');
-        $this->assertStringContainsString('The site path is: sites/default', $this->getOutput());
+        $this->assertStringContainsString('The site path is: sites/dev', $this->getOutput());
     }
 }
