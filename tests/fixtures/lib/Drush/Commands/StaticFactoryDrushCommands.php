@@ -16,7 +16,7 @@ class StaticFactoryDrushCommands extends DrushCommands
         $this->kernel = $kernel;
     }
 
-    public static function create(ContainerInterface $container)
+    public static function create(ContainerInterface $container): self
     {
         return new static($container->get('kernel'));
     }
