@@ -2,32 +2,26 @@
 
 namespace Custom\Library\Drush\Commands;
 
-use Consolidation\AnnotatedCommand\Hooks\HookManager;
-use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Drush\Attributes as CLI;
-use Drush\Attributes as DR;
-use Consolidation\AnnotatedCommand\Attributes as AC;
-use Drush\Boot\DrupalBootLevels;
 use Drush\Commands\DrushCommands;
-use Symfony\Component\Console\Completion\CompletionInput;
-use Symfony\Component\Console\Completion\CompletionSuggestions;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Drupal\Core\DrupalKernel;
 
 class StaticFactoryDrushCommands extends DrushCommands
 {
-    protected $kernel;
+    protected DrupalKernel $kernel;
 
-    protected function __construct(ContainerInterface $container)
+    protected function __construct(DrupalKernel $kernel)
     {
-        $this->kernel = $container->get('kernel');
+        $this->kernel = $kernel;
     }
 
     public static function create(ContainerInterface $container)
     {
-        return new static($container);
+        return new static($container->get('kernel'));
     }
 
-    #[CLI\Command(name: 'site:path', aliases: ['c'])]
+    #[CLI\Command(name: 'site:path')]
     #[CLI\Help(description: "This command asks the Kernel for the site path.", hidden: true)]
     public function mySitePath()
     {
