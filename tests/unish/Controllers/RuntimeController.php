@@ -145,11 +145,6 @@ class RuntimeController
         // Ensure that the bootstrap object gets its root and uri set
         $this->application->refineUriSelection($root);
 
-        // Get the bootstrap manager and either:
-        // - re-inject the cached bootstrap object into the bootstrap manager
-        // - do a full bootstrap and cache the bootstrap object
-        $this->handleBootstrap();
-
         // Add global options and copy their values into Config.
         $this->application->configureGlobalOptions();
 
@@ -157,6 +152,11 @@ class RuntimeController
         // from the search paths we found above.  After this point, the input
         // and output objects are ready & we can start using the logger, etc.
         $this->application->configureAndRegisterCommands($this->input, $this->output(), $commandfileSearchpath, $loader);
+
+        // Get the bootstrap manager and either:
+        // - re-inject the cached bootstrap object into the bootstrap manager
+        // - do a full bootstrap and cache the bootstrap object
+        $this->handleBootstrap();
     }
 
     protected function handleBootstrap()
