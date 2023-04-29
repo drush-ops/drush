@@ -359,10 +359,6 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
         $runner->registerCommandClasses($this, $commandClasses);
     }
 
-    protected function hasStaticCreateFactory(string $class)
-    {
-    }
-
     protected function discoverCommandsFromConfiguration()
     {
         $commandList = [];
