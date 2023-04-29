@@ -9,7 +9,7 @@ use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
 use Consolidation\SiteProcess\ProcessManager;
 use Drush\Attributes as CLI;
 use Drush\Commands\DrushCommands;
-use Drush\Drupal\Commands\config\ConfigImportCommands;
+use Drush\Commands\config\ConfigImportCommands;
 use Drush\Drupal\Commands\core\DeployHookCommands;
 use Drush\Drush;
 use Drush\SiteAlias\SiteAliasManagerAwareInterface;

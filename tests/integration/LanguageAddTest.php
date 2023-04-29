@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Unish;
 
-use Drush\Drupal\Commands\config\ConfigCommands;
+use Drush\Commands\config\ConfigCommands;
 use Drush\Drupal\Commands\core\LanguageCommands;
 use Drush\Drupal\Commands\core\WatchdogCommands;
 use Drush\Drupal\Commands\pm\PmCommands;

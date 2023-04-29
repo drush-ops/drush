@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Drush\Drupal\Commands\config;
+namespace Drush\Commands\config;
 
 use Consolidation\AnnotatedCommand\Hooks\HookManager;
 use Drush\Boot\DrupalBootLevels;
@@ -31,6 +31,7 @@ use Drupal\Core\StringTranslation\TranslationInterface;
 use Drush\Commands\DrushCommands;
 use Drush\Exceptions\UserAbortException;
 use Symfony\Component\Filesystem\Path;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class ConfigImportCommands extends DrushCommands
 {
@@ -132,6 +133,28 @@ class ConfigImportCommands extends DrushCommands
         protected ModuleExtensionList $moduleExtensionList
     ) {
         parent::__construct();
+    }
+
+    public static function create(ContainerInterface $container): self
+    {
+        $commandHandler = new static(
+            $container->get('config.manager'),
+            $container->get('config.storage'),
+            $container->get('cache.config'),
+            $container->get('module_handler'),
+            $container->get('event_dispatcher'),
+            $container->get('lock'),
+            $container->get('config.typed'),
+            $container->get('module_installer'),
+            $container->get('theme_handler'),
+            $container->get('string_translation'),
+            $container->get('extension.list.module'),
+        );
+
+        $commandHandler->setImportTransformer($container->get('config.import_transformer'));
+        $commandHandler->setConfigStorageSync($container->get('config.storage.sync'));
+
+        return $commandHandler;
     }
 
     /**

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Drush\Drupal\Commands\config;
+namespace Drush\Commands\config;
 
 use Consolidation\AnnotatedCommand\Hooks\HookManager;
 use Drupal\Core\Config\ConfigManagerInterface;
@@ -15,6 +15,7 @@ use Drush\Commands\DrushCommands;
 use Drush\Exceptions\UserAbortException;
 use Symfony\Component\Console\Output\BufferedOutput;
 use Symfony\Component\Filesystem\Path;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 final class ConfigExportCommands extends DrushCommands
 {
@@ -60,6 +61,19 @@ final class ConfigExportCommands extends DrushCommands
     public function __construct(protected ConfigManagerInterface $configManager, protected StorageInterface $configStorage)
     {
         parent::__construct();
+    }
+
+    public static function create(ContainerInterface $container): self
+    {
+        $commandHandler = new static(
+            $container->get('config.manager'),
+            $container->get('config.storage')
+        );
+
+        $commandHandler->setExportStorage($container->get('config.storage.export'));
+        $commandHandler->setConfigStorageSync($container->get('config.storage.sync'));
+
+        return $commandHandler;
     }
 
     /**

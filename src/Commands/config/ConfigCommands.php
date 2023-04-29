@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Drush\Drupal\Commands\config;
+namespace Drush\Commands\config;
 
 use Consolidation\AnnotatedCommand\Hooks\HookManager;
 use Drupal\Core\Config\ConfigDirectoryNotDefinedException;
@@ -32,6 +32,7 @@ use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Filesystem\Path;
 use Symfony\Component\Yaml\Parser;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 final class ConfigCommands extends DrushCommands implements StdinAwareInterface, SiteAliasManagerAwareInterface
 {
@@ -57,9 +58,22 @@ final class ConfigCommands extends DrushCommands implements StdinAwareInterface,
     }
 
 
-    public function __construct(protected ConfigFactoryInterface $configFactory, protected StorageInterface $configStorage)
+    protected function __construct(protected ConfigFactoryInterface $configFactory, protected StorageInterface $configStorage)
     {
         parent::__construct();
+    }
+
+    public static function create(ContainerInterface $container): self
+    {
+        $commandHandler = new static(
+            $container->get('config.factory'),
+            $container->get('config.storage')
+        );
+
+        $commandHandler->setExportStorage($container->get('config.storage.export'));
+        $commandHandler->setImportTransformer($container->get('config.import_transformer'));
+
+        return $commandHandler;
     }
 
     /**
