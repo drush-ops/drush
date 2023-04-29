@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Unish;
 
 use Drush\Commands\config\ConfigPullCommands;
-use Drush\Drupal\Commands\config\ConfigCommands;
-use Drush\Drupal\Commands\config\ConfigImportCommands;
+use Drush\Commands\config\ConfigCommands;
+use Drush\Commands\config\ConfigImportCommands;
 use Symfony\Component\Filesystem\Path;
 
 /**

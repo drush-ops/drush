@@ -6,7 +6,7 @@ namespace Unish;
 
 use Drupal\Core\Language\Language;
 use Drupal\language\Entity\ConfigurableLanguage;
-use Drush\Drupal\Commands\config\ConfigCommands;
+use Drush\Commands\config\ConfigCommands;
 use Drush\Drupal\Commands\core\LanguageCommands;
 use Drush\Drupal\Commands\core\WatchdogCommands;
 use Drush\Drupal\Commands\pm\PmCommands;
