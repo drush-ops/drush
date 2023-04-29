@@ -280,6 +280,24 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
                 $runner->registerCommandClass($application, $commandHandler);
             }
         }
+
+        // Finally, instantiate all of the classes we discovered in
+        // configureAndRegisterCommands that have static create factory methods.
+        $bootstrapCommandClasses = $application->bootstrapCommandClasses();
+        foreach ($bootstrapCommandClasses as $class) {
+            $commandHandler = NULL;
+            try {
+                $commandHandler = $class::create($container);
+            } catch (\Exception $e) {
+            }
+            // Fail silently if the command handler could not be
+            // instantiated, e.g. if it tries to fetch services from
+            // a module that has not been enabled.
+            if ($commandHandler) {
+                $manager->inflect($commandHandler);
+                $runner->registerCommandClass($application, $commandHandler);
+            }
+        }
     }
 
     /**
