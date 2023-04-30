@@ -57,7 +57,7 @@
     "cweagans/composer-patches": "~1.0",
     "drupal/core-recommended": "^10",
     "drupal/semver_example": "2.3.0",
-    "phpunit/phpunit": ">=9",
+    "phpunit/phpunit": "^9",
     "rector/rector": "^0.12",
     "squizlabs/php_codesniffer": "^3.7"
   },
