@@ -59,7 +59,7 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
     protected $tildeExpansionHook;
 
     /** @var string[] */
-    protected $bootstrapCommandClasses = [];
+    protected array $bootstrapCommandClasses = [];
 
     /**
      * Add global options to the Application and their default values to Config.
