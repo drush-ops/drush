@@ -18,6 +18,7 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\Filesystem\Path;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Consolidation\AnnotatedCommand\CommandFileDiscovery;
 
 class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
 {
@@ -282,12 +283,25 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
         }
 
         // Finally, instantiate all of the classes we discovered in
-        // configureAndRegisterCommands that have static create factory methods.
+        // configureAndRegisterCommands, and all of the classes we find
+        // via 'discoverModuleCommands' that have static create factory methods.
         $bootstrapCommandClasses = $application->bootstrapCommandClasses();
+        foreach ($container->getParameter('container.modules') as $moduleId => $moduleInfo) {
+            $path = dirname(DRUPAL_ROOT . '/' . $moduleInfo['pathname']) . '/src/Drush/';
+            $commandsInThisModule = $this->discoverModuleCommands([$path], "\\Drupal\\" . $moduleId . "\\Drush");
+            $bootstrapCommandClasses = array_merge($bootstrapCommandClasses, $commandsInThisModule);
+        }
+
         foreach ($bootstrapCommandClasses as $class) {
             $commandHandler = null;
             try {
-                $commandHandler = $class::create($container);
+                // We insist that the command class have a static 'create' method.
+                // We could make this optional, but doing so would run the risk
+                // of double-instantiating Drush service commands, if anyone decided
+                // to put those in the same namespace (\Drupal\modulename\Drush\Commands)
+                if ($this->hasStaticCreateFactory($class)) {
+                    $commandHandler = $class::create($container);
+                }
             } catch (\Exception $e) {
             }
             // Fail silently if the command handler could not be
@@ -298,6 +312,34 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
                 $runner->registerCommandClass($application, $commandHandler);
             }
         }
+    }
+
+    protected function hasStaticCreateFactory($class)
+    {
+        if (!method_exists($class, 'create')) {
+            return false;
+        }
+
+        $reflectionMethod = new \ReflectionMethod($class, 'create');
+        return $reflectionMethod->isStatic();
+    }
+
+    /**
+     * Discover module commands. This is the preferred way to find module
+     * commands in Drush 12+.
+     */
+    protected function discoverModuleCommands(array $directoryList, string $baseNamespace): array
+    {
+        $discovery = new CommandFileDiscovery();
+        $discovery
+            ->setIncludeFilesAtBase(true)
+            ->setSearchDepth(1)
+            ->ignoreNamespacePart('src')
+            ->setSearchLocations(['Commands', 'Hooks', 'Generators', 'CommandInfoAlterer'])
+            ->setSearchPattern('#.*(Command|Hook|Generator|CommandInfoAlterer)s?.php$#');
+        $baseNamespace = ltrim($baseNamespace, '\\');
+        $commandClasses = $discovery->discover($directoryList, $baseNamespace);
+        return array_values($commandClasses);
     }
 
     /**
