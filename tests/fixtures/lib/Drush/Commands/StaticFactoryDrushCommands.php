@@ -7,6 +7,15 @@ use Drush\Commands\DrushCommands;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\DrupalKernel;
 
+/**
+ * Composer library commandfiles discovered by virtue of being located
+ * in Drush/Commands directory + namespace, relative to some entry in
+ * the library's `autoload` section in its composer.json file.
+ *
+ * The static 'create' function (the static factory) is used to
+ * initialize the command instance, similar to the pattern used
+ * by Drupal forms.
+ */
 class StaticFactoryDrushCommands extends DrushCommands
 {
     protected DrupalKernel $kernel;

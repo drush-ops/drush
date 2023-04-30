@@ -38,7 +38,7 @@
     "consolidation/annotated-command": "^4.8.2",
     "consolidation/config": "^2.1.2",
     "consolidation/filter-via-dot-access-data": "^2.0.2",
-    "consolidation/robo": "^4.0.5",
+    "consolidation/robo": "^4.0.6",
     "consolidation/site-alias": "^4",
     "consolidation/site-process": "^5.2.0",
     "grasmash/yaml-cli": "^3.1",

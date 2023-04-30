@@ -9,7 +9,13 @@ use Drush\Commands\DrushCommands;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * Commandfiles must be listed in a module's drush.services.yml file.
+ * Module commandfiles discovered by virtue of being located in the
+ * Drush/Commands directory + namespace, relative to the module
+ * the commandfile appears in.
+ *
+ * The static 'create' function (the static factory) is used to
+ * initialize the command instance, similar to the pattern used
+ * by Drupal forms.
  */
 class WootStaticFactoryCommands extends DrushCommands
 {

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b57a2f5eb0799abd20c00d0d6478afb0",
+    "content-hash": "7927768d854c80c850a71b2e10c998a2",
     "packages": [
         {
             "name": "chi-teck/drupal-code-generator",
@@ -422,16 +422,16 @@
         },
         {
             "name": "consolidation/robo",
-            "version": "4.0.5",
+            "version": "4.0.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/consolidation/robo.git",
-                "reference": "30ebe1926a57836bce436c67eb650135ad0220d0"
+                "reference": "55a272370940607649e5c46eb173c5c54f7c166d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/consolidation/robo/zipball/30ebe1926a57836bce436c67eb650135ad0220d0",
-                "reference": "30ebe1926a57836bce436c67eb650135ad0220d0",
+                "url": "https://api.github.com/repos/consolidation/robo/zipball/55a272370940607649e5c46eb173c5c54f7c166d",
+                "reference": "55a272370940607649e5c46eb173c5c54f7c166d",
                 "shasum": ""
             },
             "require": {
@@ -489,9 +489,9 @@
             "description": "Modern task runner",
             "support": {
                 "issues": "https://github.com/consolidation/robo/issues",
-                "source": "https://github.com/consolidation/robo/tree/4.0.5"
+                "source": "https://github.com/consolidation/robo/tree/4.0.6"
             },
-            "time": "2023-04-30T21:24:43+00:00"
+            "time": "2023-04-30T21:49:04+00:00"
         },
         {
             "name": "consolidation/self-update",
