@@ -38,7 +38,7 @@
     "consolidation/annotated-command": "4.x-dev",
     "consolidation/config": "^2.1.2",
     "consolidation/filter-via-dot-access-data": "^2.0.2",
-    "consolidation/robo": "^4.0.3",
+    "consolidation/robo": "dev-robo-register",
     "consolidation/site-alias": "^4",
     "consolidation/site-process": "^5.2.0",
     "grasmash/yaml-cli": "^3.1",
