@@ -321,8 +321,12 @@ holding the command name.</p></dd><dt><a href="Drush/Runtime/DependencyInjection
                     <dd><p>Checks that the error output matches the expected output.</p></dd>        </dl><h2 id="letterB">B</h2>
         <dl id="indexB"><dt>$<a href="Drush/Application.html#property_bootstrapManager">
 <abbr title="Drush\Application">Application</abbr>#bootstrapManager</a> &mdash; <em>Property in class <a href="Drush/Application.html"><abbr title="Drush\Application">Application</abbr></a></em></dt>
+                    <dd></dd><dt>$<a href="Drush/Application.html#property_bootstrapCommandClasses">
+<abbr title="Drush\Application">Application</abbr>#bootstrapCommandClasses</a> &mdash; <em>Property in class <a href="Drush/Application.html"><abbr title="Drush\Application">Application</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Application.html#method_bootstrapManager">
 <abbr title="Drush\Application">Application</abbr>::bootstrapManager</a>() &mdash; <em>Method in class <a href="Drush/Application.html"><abbr title="Drush\Application">Application</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/Application.html#method_bootstrapCommandClasses">
+<abbr title="Drush\Application">Application</abbr>::bootstrapCommandClasses</a>() &mdash; <em>Method in class <a href="Drush/Application.html"><abbr title="Drush\Application">Application</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Application.html#method_bootstrapAndFind">
 <abbr title="Drush\Application">Application</abbr>::bootstrapAndFind</a>() &mdash; <em>Method in class <a href="Drush/Application.html"><abbr title="Drush\Application">Application</abbr></a></em></dt>
                     <dd><p>Look up a command. Bootstrap further if necessary.</p></dd><dt><a href="Drush/Attributes/Bootstrap.html"><abbr title="Drush\Attributes\Bootstrap">Bootstrap</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Attributes.html">Drush\Attributes</a></em></dt>
@@ -738,6 +742,11 @@ may contain csv strings, into an array of items.</p></dd>        </dl><h2 id="le
                     <dd></dd><dt><a href="Drush/Boot/DrupalBoot8.html"><abbr title="Drush\Boot\DrupalBoot8">DrupalBoot8</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Boot.html">Drush\Boot</a></em></dt>
                     <dd></dd><dt>$<a href="Drush/Boot/DrupalBoot8.html#property_drupalLoggerAdapter">
 <abbr title="Drush\Boot\DrupalBoot8">DrupalBoot8</abbr>#drupalLoggerAdapter</a> &mdash; <em>Property in class <a href="Drush/Boot/DrupalBoot8.html"><abbr title="Drush\Boot\DrupalBoot8">DrupalBoot8</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/Boot/DrupalBoot8.html#method_discoverModuleCommands">
+<abbr title="Drush\Boot\DrupalBoot8">DrupalBoot8</abbr>::discoverModuleCommands</a>() &mdash; <em>Method in class <a href="Drush/Boot/DrupalBoot8.html"><abbr title="Drush\Boot\DrupalBoot8">DrupalBoot8</abbr></a></em></dt>
+                    <dd><p>Discover module commands. This is the preferred way to find module
+commands in Drush 12+.</p></dd><dt><a href="Drush/Boot/DrupalBoot8.html#method_discoverCommandInfoAlterers">
+<abbr title="Drush\Boot\DrupalBoot8">DrupalBoot8</abbr>::discoverCommandInfoAlterers</a>() &mdash; <em>Method in class <a href="Drush/Boot/DrupalBoot8.html"><abbr title="Drush\Boot\DrupalBoot8">DrupalBoot8</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Boot/DrupalBootLevels.html"><abbr title="Drush\Boot\DrupalBootLevels">DrupalBootLevels</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Boot.html">Drush\Boot</a></em></dt>
                     <dd><p>A value class with bootstrap levels.</p></dd><dt><a href="Drush/Command/DrushCommandInfoAlterer.html"><abbr title="Drush\Command\DrushCommandInfoAlterer">DrushCommandInfoAlterer</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Command.html">Drush\Command</a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/DrushCommands.html"><abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands.html">Drush\Commands</a></em></dt>
@@ -1510,7 +1519,9 @@ for structure only, or have structure and data dumped.</p></dd><dt><a href="Drus
 <abbr title="Drush\Boot\BootstrapManager">BootstrapManager</abbr>::hasBootstrap</a>() &mdash; <em>Method in class <a href="Drush/Boot/BootstrapManager.html"><abbr title="Drush\Boot\BootstrapManager">BootstrapManager</abbr></a></em></dt>
                     <dd><p>hasBootstrap determines whether the manager has a bootstrap object yet.</p></dd><dt><a href="Drush/Boot/BootstrapManager.html#method_hasBootstrapped">
 <abbr title="Drush\Boot\BootstrapManager">BootstrapManager</abbr>::hasBootstrapped</a>() &mdash; <em>Method in class <a href="Drush/Boot/BootstrapManager.html"><abbr title="Drush\Boot\BootstrapManager">BootstrapManager</abbr></a></em></dt>
-                    <dd><p>Determine whether a given bootstrap phase has been completed.</p></dd><dt><a href="Drush/Commands/core/DocsCommands.html#method_hooks">
+                    <dd><p>Determine whether a given bootstrap phase has been completed.</p></dd><dt><a href="Drush/Boot/DrupalBoot8.html#method_hasStaticCreateFactory">
+<abbr title="Drush\Boot\DrupalBoot8">DrupalBoot8</abbr>::hasStaticCreateFactory</a>() &mdash; <em>Method in class <a href="Drush/Boot/DrupalBoot8.html"><abbr title="Drush\Boot\DrupalBoot8">DrupalBoot8</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/core/DocsCommands.html#method_hooks">
 <abbr title="Drush\Commands\core\DocsCommands">DocsCommands</abbr>::hooks</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/DocsCommands.html"><abbr title="Drush\Commands\core\DocsCommands">DocsCommands</abbr></a></em></dt>
                     <dd><p>Drush hooks.</p></dd><dt><a href="Drush/Commands/core/SiteInstallCommands.html#method_hasConfigFiles">
 <abbr title="Drush\Commands\core\SiteInstallCommands">SiteInstallCommands</abbr>::hasConfigFiles</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/SiteInstallCommands.html"><abbr title="Drush\Commands\core\SiteInstallCommands">SiteInstallCommands</abbr></a></em></dt>
