@@ -184,7 +184,7 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
         return $this->bootstrapManager()->selectUri($cwd);
     }
 
-    public function bootstrapCommandClasses()
+    public function bootstrapCommandClasses(): array
     {
         return $this->bootstrapCommandClasses;
     }
