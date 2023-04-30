@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f7268e5e27d39b6a5bca54f9a10f9551",
+    "content-hash": "b57a2f5eb0799abd20c00d0d6478afb0",
     "packages": [
         {
             "name": "chi-teck/drupal-code-generator",
@@ -150,16 +150,16 @@
         },
         {
             "name": "consolidation/annotated-command",
-            "version": "4.x-dev",
+            "version": "4.8.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/consolidation/annotated-command.git",
-                "reference": "6e113e7dc404fc014cb8a99812ce93b68d4c4a32"
+                "reference": "7f5dd1aafb93a10593ed70f3caa6a0cd5a32f0e3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/consolidation/annotated-command/zipball/6e113e7dc404fc014cb8a99812ce93b68d4c4a32",
-                "reference": "6e113e7dc404fc014cb8a99812ce93b68d4c4a32",
+                "url": "https://api.github.com/repos/consolidation/annotated-command/zipball/7f5dd1aafb93a10593ed70f3caa6a0cd5a32f0e3",
+                "reference": "7f5dd1aafb93a10593ed70f3caa6a0cd5a32f0e3",
                 "shasum": ""
             },
             "require": {
@@ -176,7 +176,6 @@
                 "squizlabs/php_codesniffer": "^3",
                 "yoast/phpunit-polyfills": "^0.2.0"
             },
-            "default-branch": true,
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -201,9 +200,9 @@
             "description": "Initialize Symfony Console commands from annotated command class methods.",
             "support": {
                 "issues": "https://github.com/consolidation/annotated-command/issues",
-                "source": "https://github.com/consolidation/annotated-command/tree/4.x"
+                "source": "https://github.com/consolidation/annotated-command/tree/4.8.2"
             },
-            "time": "2023-03-29T13:02:48+00:00"
+            "time": "2023-03-11T19:32:28+00:00"
         },
         {
             "name": "consolidation/config",
@@ -423,20 +422,20 @@
         },
         {
             "name": "consolidation/robo",
-            "version": "dev-robo-register",
+            "version": "4.0.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/consolidation/robo.git",
-                "reference": "0114900f33afeebaf2f4a4c1085c35183f5cba05"
+                "reference": "30ebe1926a57836bce436c67eb650135ad0220d0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/consolidation/robo/zipball/0114900f33afeebaf2f4a4c1085c35183f5cba05",
-                "reference": "0114900f33afeebaf2f4a4c1085c35183f5cba05",
+                "url": "https://api.github.com/repos/consolidation/robo/zipball/30ebe1926a57836bce436c67eb650135ad0220d0",
+                "reference": "30ebe1926a57836bce436c67eb650135ad0220d0",
                 "shasum": ""
             },
             "require": {
-                "consolidation/annotated-command": "^4.7",
+                "consolidation/annotated-command": "^4.8.1",
                 "consolidation/config": "^2.0.1",
                 "consolidation/log": "^2.0.2 || ^3",
                 "consolidation/output-formatters": "^4.1.2",
@@ -490,9 +489,9 @@
             "description": "Modern task runner",
             "support": {
                 "issues": "https://github.com/consolidation/robo/issues",
-                "source": "https://github.com/consolidation/robo/tree/robo-register"
+                "source": "https://github.com/consolidation/robo/tree/4.0.5"
             },
-            "time": "2023-04-30T19:36:24+00:00"
+            "time": "2023-04-30T21:24:43+00:00"
         },
         {
             "name": "consolidation/self-update",
@@ -7467,10 +7466,7 @@
     ],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": {
-        "consolidation/annotated-command": 20,
-        "consolidation/robo": 20
-    },
+    "stability-flags": [],
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {

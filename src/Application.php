@@ -25,7 +25,7 @@ use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use Robo\ClassDiscovery\RelativeNamespaceDiscovery;
 use Robo\Contract\ConfigAwareInterface;
-use Robo\Runner;
+use Robo\Robo;
 use Symfony\Component\Console\Application as SymfonyApplication;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Exception\CommandNotFoundException;
@@ -352,11 +352,8 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
         // unset($commandClasses[__DIR__ . '/Commands/help/HelpCommands.php']);
         // unset($commandClasses[__DIR__ . '/Commands/help/ListCommands.php']);
 
-        // Use the robo runner to register commands with Symfony application.
-        // This method could / should be refactored in Robo so that we can use
-        // it without creating a Runner object that we would not otherwise need.
-        $runner = new Runner();
-        $runner->registerCommandClasses($this, $commandClasses);
+        // Register our commands with Robo, our application framework.
+        Robo::register($this, $commandClasses);
     }
 
     protected function discoverCommandsFromConfiguration()

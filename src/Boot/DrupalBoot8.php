@@ -247,7 +247,6 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
     public function addDrupalModuleDrushCommands($manager): void
     {
         $application = Drush::getApplication();
-        $runner = Drush::runner();
 
         // We have to get the service command list from the container, because
         // it is constructed in an indirect way during the container initialization.
