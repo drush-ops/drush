@@ -1,9 +1,0 @@
-{% import '@lib/di.twig' as di %}
-services:
-  {{ machine_name }}.commands:
-    class: Drupal\{{ machine_name }}\Commands\{{ class }}
-{% if services %}
-    arguments: [{{ di.arguments(services) }}]
-{% endif %}
-    tags:
-      - { name: drush.command }

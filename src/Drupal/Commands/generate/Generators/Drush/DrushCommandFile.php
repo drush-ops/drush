@@ -31,11 +31,6 @@ class DrushCommandFile extends BaseGenerator
         $vars['class'] = $ir->askClass(default: '{machine_name|camelize}Commands');
         $vars['services'] = $ir->askServices(false, ['token']);
 
-        $assets->addFile('src/Commands/{class}.php', 'drush-command-file.php.twig');
-        $assets->addServicesFile('drush.services.yml')->template('drush.services.yml.twig');
-
-        $vars['drush_major_version'] = Drush::getMajorVersion();
-        $assets->addFile('composer.json', 'dcf-composer.json.twig')
-            ->resolver(new ComposerJsonResolver());
+        $assets->addFile('src/Drush/Commands/{class}.php', 'drush-command-file.php.twig');
     }
 }
