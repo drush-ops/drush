@@ -31,6 +31,6 @@ class DrushCommandFile extends BaseGenerator
         $vars['class'] = $ir->askClass(default: '{machine_name|camelize}Commands');
         $vars['services'] = $ir->askServices(false, ['token']);
 
-        $assets->addFile('src/Commands/{class}.php', 'drush-command-file.php.twig');
+        $assets->addFile('src/Drush/Commands/{class}.php', 'drush-command-file.php.twig');
     }
 }

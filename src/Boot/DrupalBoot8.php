@@ -258,10 +258,10 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
         $bootstrapCommandClasses = $application->bootstrapCommandClasses();
         $commandInfoAlterers = [];
         foreach ($container->getParameter('container.modules') as $moduleId => $moduleInfo) {
-            $path = dirname(DRUPAL_ROOT . '/' . $moduleInfo['pathname']) . '/src';
-            $commandsInThisModule = $this->discoverModuleCommands([$path], "\\Drupal\\" . $moduleId);
+            $path = dirname(DRUPAL_ROOT . '/' . $moduleInfo['pathname']) . '/src/Drush/';
+            $commandsInThisModule = $this->discoverModuleCommands([$path], "\\Drupal\\" . $moduleId . "\\Drush");
             $bootstrapCommandClasses = array_merge($bootstrapCommandClasses, $commandsInThisModule);
-            $commandInfoAlterersInThisModule = $this->discoverCommandInfoAlterers([$path], "\\Drupal\\" . $moduleId);
+            $commandInfoAlterersInThisModule = $this->discoverCommandInfoAlterers([$path], "\\Drupal\\" . $moduleId . "\\Drush");
             $commandInfoAlterers = array_merge($commandInfoAlterers, $commandInfoAlterersInThisModule);
         }
 
