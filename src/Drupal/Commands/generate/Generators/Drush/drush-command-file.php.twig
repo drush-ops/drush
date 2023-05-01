@@ -8,6 +8,7 @@ use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Drush\Attributes as CLI;
 use Drush\Commands\DrushCommands;
   {% if services %}
+use Symfony\Component\DependencyInjection\ContainerInterface;
 {{ di.use(services) }}
   {% endif %}
 {% endsort %}
@@ -29,6 +30,15 @@ final class {{ class }} extends DrushCommands {
 {{ di.signature(services) }}
   ) {
     parent::__construct();
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container) {
+    return new static(
+{{ di.container(services) }}
+    );
   }
 {% endif %}
 
