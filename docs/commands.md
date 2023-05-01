@@ -1,14 +1,17 @@
 # Creating Custom Drush Commands
 
+!!! tip
+
+    Drush 11 and prior required [dependency injection via a drush.services.yml file](https://www.drush.org/11.x/dependency-injection/#services-files). This approach is deprecated in Drush 12 and will be removed in Drush 13. See [create() method](dependency-injection.md#create-method)
+
 Creating a new Drush command or porting a legacy command is easy. Follow the steps below.
 
 1. Run `drush generate drush-command-file`.
 2. Drush will prompt for the machine name of the module that should "own" the file. The module selected must already exist and be enabled. Use `drush generate module-standard` to create a new module.
-3. Drush will then report that it created a commandfile, a drush.services.yml file and a composer.json file. Edit those files as needed.
+3. Drush will then report that it created a commandfile. Edit as needed.
 4. Use the classes for the core Drush commands at [/src/Drupal/Commands](https://github.com/drush-ops/drush/tree/12.x/src/Drupal/Commands) as inspiration and documentation.
 5. See the [dependency injection docs](dependency-injection.md) for interfaces you can implement to gain access to Drush config, Drupal site aliases, etc.
 6. Write PHPUnit tests based on [Drush Test Traits](https://github.com/drush-ops/drush/blob/12.x/docs/contribute/unish.md#drush-test-traits).
-7. Once your drush.services.yml files is ready, run `drush cr` to get your command recognized by the Drupal container.
 
 ## Attributes or Annotations
 The following are both valid ways to declare a command:
@@ -54,35 +57,6 @@ The following are both valid ways to declare a command:
 - A commandfile that will only be used on PHP8+ should [use PHP Attributes](https://github.com/drush-ops/drush/pull/4821) instead of Annotations.
 - [See all Attributes provided by Drush core](https://www.drush.org/api/Drush/Attributes.html).
 
-## Specifying the Services File
-
-A module's composer.json file stipulates the filename where the Drush services (e.g. the Drush command files) are defined. The default services file is `drush.services.yml`, which is defined in the extra section of the composer.json file as follows:
-```json
-  "extra": {
-    "drush": {
-      "services": {
-        "drush.services.yml": "^12"
-      }
-    }
-  }
-```
-If for some reason you need to load different services for different versions of Drush, simply define multiple services files in the `services` section. The first one found will be used. For example:
-```json
-  "extra": {
-    "drush": {
-      "services": {
-        "drush-12-99.services.yml": "^12.99",
-        "drush.services.yml": "^12"
-      }
-    }
-  }
-```
-In this example, the file `drush-12-99.services.yml` loads commandfile classes that require features only available in Drush 12.99 and later, and drush.services.yml loads an older commandfile implementation for earlier versions of Drush.
-
-It is also possible to use [version ranges](https://getcomposer.org/doc/articles/versions.md#version-range) to exactly specify which version of Drush the services file should be used with (e.g. `"drush.services.yml": ">=12 <12.99"`).
-
-In cases where a Composer package contains one or more sub-modules with their own `drush.services.yml` files (such as Drupal distributions or suites of modules), a minimal `composer.json` file can be added to the sub-module's directory, containing only the `extra.drush.services`section as described above.
-
 ## Altering Drush Command Info
 Drush command info (annotations/attributes) can be altered from other modules. This is done by creating and registering 'command info alterers'. Alterers are class services that are able to intercept and manipulate an existing command annotation.
 
@@ -93,15 +67,15 @@ In order to alter an existing command info, follow the steps below:
 1. In that class, implement the alteration logic in the `alterCommandInfo()` method.
 1. Along with the alter code, it's strongly recommended to log a debug message explaining what exactly was altered. This makes things easier on others who may need to debug the interaction of the alter code with other modules. Also it's a good practice to inject the the logger in the class constructor.
 
-For an example, see the alterer class provided by the testing 'woot' module: `tests/fixtures/modules/woot/src/WootCommandInfoAlterer.php`.
+For an example, see [WootCommandInfoAlterer](https://github.com/drush-ops/drush/blob/12.x/sut/modules/unish/woot/src/WootCommandInfoAlterer.php) provided by the testing 'woot' module.
 
 ## Symfony Console Commands
 Drush lists and runs Symfony Console commands, in addition to more typical annotated commands. See [this test](https://github.com/drush-ops/drush/blob/eed106ae4510d5a2df89f8e7fd54b41ffb0aa5fa/tests/integration/AnnotatedCommandCase.php#L178-L180) and this [commandfile](https://github.com/drush-ops/drush/tree/HEAD/tests/fixtures/modules/woot/src/Commands/GreetCommand.php).
 
 ## Site-Wide Drush Commands
-Commandfiles that are installed in a Drupal site and are not bundled inside a Drupal module are called 'site-wide' commandfiles. Site-wide commands may either be added directly to the Drupal site's repository (e.g. for site-specific policy files), or via `composer require`. See the [examples/Commands](https://github.com/drush-ops/drush/tree/12.x/examples/Commands) folder for examples. In general, it's better to use modules to carry your Drush commands, as module-based commands may [participate in Drupal's dependency injection via the drush.services.yml](#specifying-the-services-file).
+Commandfiles that are installed in a Drupal site and are not bundled inside a Drupal module are called 'site-wide' commandfiles. Site-wide commands may either be added directly to the Drupal site's repository (e.g. for site-specific policy files), or via `composer require`. See the [examples/Commands](https://github.com/drush-ops/drush/tree/12.x/examples/Commands) folder for examples. In general, it's preferable to use modules to carry your Drush commands.
 
-If you still prefer using site-wide commandfiles, here are some examples of valid commandfile names and namespaces:
+Here are some examples of valid commandfile names and namespaces:
 
 1. Simple
      - Filename: $PROJECT_ROOT/drush/Commands/ExampleCommands.php

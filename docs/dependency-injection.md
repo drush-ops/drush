@@ -25,18 +25,30 @@ There are two ways that a class can receive its dependencies. One is called “c
 ```
 A class should use one or the other of these methods. The code that is responsible for providing the dependencies a class need is usually an object called the dependency injection container.
 
-Services Files
+create() method
 ------------------
 
-Drush command files can request that Drupal inject services by using a drush.services.yml file. See [creating commands](commands.md) for instructions on how to use the Drupal Code Generator to create a simple command file starter with a drush.services.yml file. An initial services file will look something like this:
-```yaml
-services:
-  my_module.commands:
-    class: \Drupal\my_module\Commands\MyModuleiCommands
-    tags:
-      - { name: drush.command }
+!!! tip
+
+    Drush 11 and prior required [dependency injection via a drush.services.yml file](https://www.drush.org/11.x/dependency-injection/#services-files). This approach is deprecated in Drush 12 and will be removed in Drush 13.
+
+Drush command files can inject services by adding a create() method to the commandfile. See [creating commands](commands.md) for instructions on how to use the Drupal Code Generator to create a simple command file starter. A create() method and a constructor will look something like this:
+```php
+class WootStaticFactoryCommands extends DrushCommands
+{
+    protected $configFactory;
+
+    protected function __construct($configFactory)
+    {
+        $this->configFactory = $configFactory;
+    }
+
+    public static function create(ContainerInterface $container): self
+    {
+        return new static($container->get('config.factory'));
+    }
 ```
-See the [Drupal Documentation](https://www.drupal.org/docs/8/api/services-and-dependency-injection/services-and-dependency-injection-in-drupal-8) for details on how to inject Drupal services into your command file. The process is exactly the same as using a Drupal services.yml file to inject services into your module classes.
+See the [Drupal Documentation](https://www.drupal.org/docs/drupal-apis/services-and-dependency-injection/services-and-dependency-injection-in-drupal-8#s-injecting-dependencies-into-controllers-forms-and-blocks) for details on how to inject Drupal services into your command file. Drush's approach mimics Drupal's blocks, forms, and controllers.
 
 Inflection
 -------------
