@@ -73,9 +73,9 @@ For an example, see [WootCommandInfoAlterer](https://github.com/drush-ops/drush/
 Drush lists and runs Symfony Console commands, in addition to more typical annotated commands. See [this test](https://github.com/drush-ops/drush/blob/eed106ae4510d5a2df89f8e7fd54b41ffb0aa5fa/tests/integration/AnnotatedCommandCase.php#L178-L180) and this [commandfile](https://github.com/drush-ops/drush/tree/HEAD/tests/fixtures/modules/woot/src/Commands/GreetCommand.php).
 
 ## Site-Wide Drush Commands
-Commandfiles that are installed in a Drupal site and are not bundled inside a Drupal module are called 'site-wide' commandfiles. Site-wide commands may either be added directly to the Drupal site's repository (e.g. for site-specific policy files), or via `composer require`. See the [examples/Commands](https://github.com/drush-ops/drush/tree/12.x/examples/Commands) folder for examples. In general, it's better to use modules to carry your Drush commands, as module-based commands can have dependencies injected.
+Commandfiles that are installed in a Drupal site and are not bundled inside a Drupal module are called 'site-wide' commandfiles. Site-wide commands may either be added directly to the Drupal site's repository (e.g. for site-specific policy files), or via `composer require`. See the [examples/Commands](https://github.com/drush-ops/drush/tree/12.x/examples/Commands) folder for examples. In general, it's preferable to use modules to carry your Drush commands.
 
-If you still prefer using site-wide commandfiles, here are some examples of valid commandfile names and namespaces:
+Here are some examples of valid commandfile names and namespaces:
 
 1. Simple
      - Filename: $PROJECT_ROOT/drush/Commands/ExampleCommands.php
