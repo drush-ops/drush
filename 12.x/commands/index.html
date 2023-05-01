@@ -684,13 +684,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#specifying-the-services-file" class="md-nav__link">
-    Specifying the Services File
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#altering-drush-command-info" class="md-nav__link">
     Altering Drush Command Info
   </a>
@@ -5216,15 +5209,18 @@
 
 
 <h1 id="creating-custom-drush-commands">Creating Custom Drush Commands<a class="headerlink" href="#creating-custom-drush-commands" title="Permanent link">&para;</a></h1>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>Drush 11 and prior required <a href="https://www.drush.org/11.x/dependency-injection/#services-files">dependency injection via a drush.services.yml file</a>. This approach is deprecated in Drush 12 and will be removed in Drush 13. See <a href="../dependency-injection/#create-method">create() method</a></p>
+</div>
 <p>Creating a new Drush command or porting a legacy command is easy. Follow the steps below.</p>
 <ol>
 <li>Run <code>drush generate drush-command-file</code>.</li>
 <li>Drush will prompt for the machine name of the module that should "own" the file. The module selected must already exist and be enabled. Use <code>drush generate module-standard</code> to create a new module.</li>
-<li>Drush will then report that it created a commandfile, a drush.services.yml file and a composer.json file. Edit those files as needed.</li>
+<li>Drush will then report that it created a commandfile. Edit as needed.</li>
 <li>Use the classes for the core Drush commands at <a href="https://github.com/drush-ops/drush/tree/12.x/src/Drupal/Commands">/src/Drupal/Commands</a> as inspiration and documentation.</li>
 <li>See the <a href="../dependency-injection/">dependency injection docs</a> for interfaces you can implement to gain access to Drush config, Drupal site aliases, etc.</li>
 <li>Write PHPUnit tests based on <a href="https://github.com/drush-ops/drush/blob/12.x/docs/contribute/unish.md#drush-test-traits">Drush Test Traits</a>.</li>
-<li>Once your drush.services.yml files is ready, run <code>drush cr</code> to get your command recognized by the Drupal container.</li>
 </ol>
 <h2 id="attributes-or-annotations">Attributes or Annotations<a class="headerlink" href="#attributes-or-annotations" title="Permanent link">&para;</a></h2>
 <p>The following are both valid ways to declare a command:</p>
@@ -5270,29 +5266,6 @@
 <li>A commandfile that will only be used on PHP8+ should <a href="https://github.com/drush-ops/drush/pull/4821">use PHP Attributes</a> instead of Annotations.</li>
 <li><a href="https://www.drush.org/api/Drush/Attributes.html">See all Attributes provided by Drush core</a>.</li>
 </ul>
-<h2 id="specifying-the-services-file">Specifying the Services File<a class="headerlink" href="#specifying-the-services-file" title="Permanent link">&para;</a></h2>
-<p>A module's composer.json file stipulates the filename where the Drush services (e.g. the Drush command files) are defined. The default services file is <code>drush.services.yml</code>, which is defined in the extra section of the composer.json file as follows:
-<div class="highlight"><pre><span></span><code><span class="w">  </span><span class="nt">&quot;extra&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;drush&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;services&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nt">&quot;drush.services.yml&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^12&quot;</span>
-<span class="w">      </span><span class="p">}</span>
-<span class="w">    </span><span class="p">}</span>
-<span class="w">  </span><span class="p">}</span>
-</code></pre></div>
-If for some reason you need to load different services for different versions of Drush, simply define multiple services files in the <code>services</code> section. The first one found will be used. For example:
-<div class="highlight"><pre><span></span><code><span class="w">  </span><span class="nt">&quot;extra&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;drush&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;services&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nt">&quot;drush-12-99.services.yml&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^12.99&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;drush.services.yml&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^12&quot;</span>
-<span class="w">      </span><span class="p">}</span>
-<span class="w">    </span><span class="p">}</span>
-<span class="w">  </span><span class="p">}</span>
-</code></pre></div>
-In this example, the file <code>drush-12-99.services.yml</code> loads commandfile classes that require features only available in Drush 12.99 and later, and drush.services.yml loads an older commandfile implementation for earlier versions of Drush.</p>
-<p>It is also possible to use <a href="https://getcomposer.org/doc/articles/versions.md#version-range">version ranges</a> to exactly specify which version of Drush the services file should be used with (e.g. <code>"drush.services.yml": "&gt;=12 &lt;12.99"</code>).</p>
-<p>In cases where a Composer package contains one or more sub-modules with their own <code>drush.services.yml</code> files (such as Drupal distributions or suites of modules), a minimal <code>composer.json</code> file can be added to the sub-module's directory, containing only the <code>extra.drush.services</code>section as described above.</p>
 <h2 id="altering-drush-command-info">Altering Drush Command Info<a class="headerlink" href="#altering-drush-command-info" title="Permanent link">&para;</a></h2>
 <p>Drush command info (annotations/attributes) can be altered from other modules. This is done by creating and registering 'command info alterers'. Alterers are class services that are able to intercept and manipulate an existing command annotation.</p>
 <p>In order to alter an existing command info, follow the steps below:</p>
@@ -5302,12 +5275,12 @@ In this example, the file <code>drush-12-99.services.yml</code> loads commandfil
 <li>In that class, implement the alteration logic in the <code>alterCommandInfo()</code> method.</li>
 <li>Along with the alter code, it's strongly recommended to log a debug message explaining what exactly was altered. This makes things easier on others who may need to debug the interaction of the alter code with other modules. Also it's a good practice to inject the the logger in the class constructor.</li>
 </ol>
-<p>For an example, see the alterer class provided by the testing 'woot' module: <code>tests/fixtures/modules/woot/src/WootCommandInfoAlterer.php</code>.</p>
+<p>For an example, see <a href="https://github.com/drush-ops/drush/blob/12.x/sut/modules/unish/woot/src/WootCommandInfoAlterer.php">WootCommandInfoAlterer</a> provided by the testing 'woot' module.</p>
 <h2 id="symfony-console-commands">Symfony Console Commands<a class="headerlink" href="#symfony-console-commands" title="Permanent link">&para;</a></h2>
 <p>Drush lists and runs Symfony Console commands, in addition to more typical annotated commands. See <a href="https://github.com/drush-ops/drush/blob/eed106ae4510d5a2df89f8e7fd54b41ffb0aa5fa/tests/integration/AnnotatedCommandCase.php#L178-L180">this test</a> and this <a href="https://github.com/drush-ops/drush/tree/HEAD/tests/fixtures/modules/woot/src/Commands/GreetCommand.php">commandfile</a>.</p>
 <h2 id="site-wide-drush-commands">Site-Wide Drush Commands<a class="headerlink" href="#site-wide-drush-commands" title="Permanent link">&para;</a></h2>
-<p>Commandfiles that are installed in a Drupal site and are not bundled inside a Drupal module are called 'site-wide' commandfiles. Site-wide commands may either be added directly to the Drupal site's repository (e.g. for site-specific policy files), or via <code>composer require</code>. See the <a href="https://github.com/drush-ops/drush/tree/12.x/examples/Commands">examples/Commands</a> folder for examples. In general, it's better to use modules to carry your Drush commands, as module-based commands may <a href="#specifying-the-services-file">participate in Drupal's dependency injection via the drush.services.yml</a>.</p>
-<p>If you still prefer using site-wide commandfiles, here are some examples of valid commandfile names and namespaces:</p>
+<p>Commandfiles that are installed in a Drupal site and are not bundled inside a Drupal module are called 'site-wide' commandfiles. Site-wide commands may either be added directly to the Drupal site's repository (e.g. for site-specific policy files), or via <code>composer require</code>. See the <a href="https://github.com/drush-ops/drush/tree/12.x/examples/Commands">examples/Commands</a> folder for examples. In general, it's preferable to use modules to carry your Drush commands.</p>
+<p>Here are some examples of valid commandfile names and namespaces:</p>
 <ol>
 <li>Simple<ul>
 <li>Filename: $PROJECT_ROOT/drush/Commands/ExampleCommands.php</li>
@@ -5385,7 +5358,7 @@ With this configuration in place, global commands may be placed as described in 
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">March 20, 2023</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">May 1, 2023</span>
       
     
   </small>
@@ -5400,7 +5373,7 @@ With this configuration in place, global commands may be placed as described in 
     
         <div class="md-source-date">
             <small>
-                Authors: <span class='git-page-authors git-authors'><a href='mailto:clau.cristea@gmail.com'>Claudiu Cristea</a>, <a href='mailto:danepowell@users.noreply.github.com'>Dane Powell</a>, <a href='mailto:greg.1.anderson@greenknowe.org'>Greg Anderson</a>, <a href='mailto:neclimdul@gmail.com'>James Gilliland</a>, <a href='mailto:mike@mstenta.net'>Michael Stenta</a>, <a href='mailto:weitzman@tejasa.com'>Moshe Weitzman</a>, <a href='mailto:nelus87@gmail.com'>Niels van Aken</a></span>
+                Authors: <span class='git-page-authors git-authors'><a href='mailto:clau.cristea@gmail.com'>Claudiu Cristea</a>, <a href='mailto:danepowell@users.noreply.github.com'>Dane Powell</a>, <a href='mailto:greg.1.anderson@greenknowe.org'>Greg Anderson</a>, <a href='mailto:neclimdul@gmail.com'>James Gilliland</a>, <a href='mailto:weitzman@tejasa.com'>Moshe Weitzman</a>, <a href='mailto:nelus87@gmail.com'>Niels van Aken</a></span>
             </small>
         </div>
     

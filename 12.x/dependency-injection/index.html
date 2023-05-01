@@ -712,8 +712,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#services-files" class="md-nav__link">
-    Services Files
+  <a href="#create-method" class="md-nav__link">
+    create() method
   </a>
   
 </li>
@@ -5191,15 +5191,27 @@
     <span class="p">}</span>
 </code></pre></div>
 A class should use one or the other of these methods. The code that is responsible for providing the dependencies a class need is usually an object called the dependency injection container.</p>
-<h2 id="services-files">Services Files<a class="headerlink" href="#services-files" title="Permanent link">&para;</a></h2>
-<p>Drush command files can request that Drupal inject services by using a drush.services.yml file. See <a href="../commands/">creating commands</a> for instructions on how to use the Drupal Code Generator to create a simple command file starter with a drush.services.yml file. An initial services file will look something like this:
-<div class="highlight"><pre><span></span><code><span class="nt">services</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">my_module.commands</span><span class="p">:</span>
-<span class="w">    </span><span class="nt">class</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">\Drupal\my_module\Commands\MyModuleiCommands</span>
-<span class="w">    </span><span class="nt">tags</span><span class="p">:</span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt"> name</span><span class="p">:</span><span class="w"> </span><span class="nv">drush.command</span><span class="w"> </span><span class="p p-Indicator">}</span>
+<h2 id="create-method">create() method<a class="headerlink" href="#create-method" title="Permanent link">&para;</a></h2>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>Drush 11 and prior required <a href="https://www.drush.org/11.x/dependency-injection/#services-files">dependency injection via a drush.services.yml file</a>. This approach is deprecated in Drush 12 and will be removed in Drush 13.</p>
+</div>
+<p>Drush command files can inject services by adding a create() method to the commandfile. See <a href="../commands/">creating commands</a> for instructions on how to use the Drupal Code Generator to create a simple command file starter. A create() method and a constructor will look something like this:
+<div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">WootStaticFactoryCommands</span> <span class="k">extends</span> <span class="nx">DrushCommands</span>
+<span class="p">{</span>
+    <span class="k">protected</span> <span class="nv">$configFactory</span><span class="p">;</span>
+
+    <span class="k">protected</span> <span class="k">function</span> <span class="fm">__construct</span><span class="p">(</span><span class="nv">$configFactory</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">configFactory</span> <span class="o">=</span> <span class="nv">$configFactory</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">create</span><span class="p">(</span><span class="nx">ContainerInterface</span> <span class="nv">$container</span><span class="p">)</span><span class="o">:</span> <span class="nx">self</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="k">new</span> <span class="k">static</span><span class="p">(</span><span class="nv">$container</span><span class="o">-&gt;</span><span class="na">get</span><span class="p">(</span><span class="s1">&#39;config.factory&#39;</span><span class="p">));</span>
+    <span class="p">}</span>
 </code></pre></div>
-See the <a href="https://www.drupal.org/docs/8/api/services-and-dependency-injection/services-and-dependency-injection-in-drupal-8">Drupal Documentation</a> for details on how to inject Drupal services into your command file. The process is exactly the same as using a Drupal services.yml file to inject services into your module classes.</p>
+See the <a href="https://www.drupal.org/docs/drupal-apis/services-and-dependency-injection/services-and-dependency-injection-in-drupal-8#s-injecting-dependencies-into-controllers-forms-and-blocks">Drupal Documentation</a> for details on how to inject Drupal services into your command file. Drush's approach mimics Drupal's blocks, forms, and controllers.</p>
 <h2 id="inflection">Inflection<a class="headerlink" href="#inflection" title="Permanent link">&para;</a></h2>
 <p>Drush will also inject dependencies that it provides using a technique called inflection. Inflection is a kind of dependency injection that works by way of a set of provided inflection interfaces, one for each available service. Each of these interfaces will define one or more setter methods (usually only one); these will automatically be called by Drush when the commandfile object is instantiated. The command only needs to implement this method and save the provided object in a class field. There is usually a corresponding trait that may be included via a <code>use</code> statement to fulfill this requirement.</p>
 <p>For example:</p>
@@ -5243,7 +5255,7 @@ See the <a href="https://www.drupal.org/docs/8/api/services-and-dependency-injec
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">March 15, 2023</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">May 1, 2023</span>
       
     
   </small>
@@ -5258,7 +5270,7 @@ See the <a href="https://www.drupal.org/docs/8/api/services-and-dependency-injec
     
         <div class="md-source-date">
             <small>
-                Authors: <span class='git-page-authors git-authors'><a href='mailto:esolitos@gmail.com'>Esolitos Marlon</a>, <a href='mailto:greg.1.anderson@greenknowe.org'>Greg Anderson</a>, <a href='mailto:jcisio@gmail.com'>Hai-Nam Nguyen</a>, <a href='mailto:mark.gerarts@gmail.com'>Mark Gerarts</a>, <a href='mailto:weitzman@tejasa.com'>Moshe Weitzman</a>, <a href='mailto:richardbporter@users.noreply.github.com'>Richard B. Porter</a></span>
+                Authors: <span class='git-page-authors git-authors'><a href='mailto:esolitos@gmail.com'>Esolitos Marlon</a>, <a href='mailto:greg.1.anderson@greenknowe.org'>Greg Anderson</a>, <a href='mailto:mark.gerarts@gmail.com'>Mark Gerarts</a>, <a href='mailto:weitzman@tejasa.com'>Moshe Weitzman</a>, <a href='mailto:richardbporter@users.noreply.github.com'>Richard B. Porter</a></span>
             </small>
         </div>
     
