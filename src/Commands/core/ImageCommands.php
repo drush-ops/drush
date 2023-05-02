@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Drush\Drupal\Commands\core;
+namespace Drush\Commands\core;
 
 use Consolidation\AnnotatedCommand\AnnotationData;
 use Consolidation\AnnotatedCommand\Hooks\HookManager;
@@ -11,6 +11,7 @@ use Drush\Attributes as CLI;
 use Drush\Commands\DrushCommands;
 use Drush\Utils\StringUtils;
 use Symfony\Component\Console\Input\InputInterface;
+use Drush\Boot\DrupalBootLevels;
 
 final class ImageCommands extends DrushCommands
 {
@@ -28,6 +29,7 @@ final class ImageCommands extends DrushCommands
     #[CLI\Usage(name: 'drush image:flush --all', description: 'Flush all derived images. They will be regenerated on demand.')]
     #[CLI\ValidateEntityLoad(entityType: 'image_style', argumentName: 'style_names')]
     #[CLI\ValidateModulesEnabled(modules: ['image'])]
+    #[CLI\Bootstrap(level: DrupalBootLevels::FULL)]
     public function flush($style_names, $options = ['all' => false]): void
     {
         foreach (ImageStyle::loadMultiple(StringUtils::csvToArray($style_names)) as $style_name => $style) {
@@ -74,6 +76,7 @@ final class ImageCommands extends DrushCommands
     #[CLI\ValidateFileExists(argName: 'source')]
     #[CLI\ValidateEntityLoad(entityType: 'image_style', argumentName: 'style_name')]
     #[CLI\ValidateModulesEnabled(modules: ['image'])]
+    #[CLI\Bootstrap(level: DrupalBootLevels::FULL)]
     public function derive($style_name, $source)
     {
         $image_style = ImageStyle::load($style_name);

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Drush\Drupal\Commands\core;
+namespace Drush\Commands\core;
 
 use Consolidation\AnnotatedCommand\Hooks\HookManager;
 use Consolidation\OutputFormatters\StructuredData\PropertyList;
@@ -20,6 +20,7 @@ use Drush\Exceptions\UserAbortException;
 use Symfony\Component\Console\Completion\CompletionInput;
 use Symfony\Component\Console\Completion\CompletionSuggestions;
 use Symfony\Component\Console\Output\OutputInterface;
+use Drush\Boot\DrupalBootLevels;
 
 final class WatchdogCommands extends DrushCommands
 {
@@ -60,6 +61,7 @@ final class WatchdogCommands extends DrushCommands
     #[CLI\FilterDefaultField(field: 'message')]
     #[CLI\DefaultTableFields(fields: ['wid', 'date', 'type', 'severity', 'message'])]
     #[CLI\Complete(method_name_or_callable: 'watchdogComplete')]
+    #[CLI\Bootstrap(level: DrupalBootLevels::FULL)]
     public function show($substring = '', $options = ['format' => 'table', 'count' => 10, 'severity' => self::REQ, 'severity-min' => self::REQ, 'type' => self::REQ, 'extended' => false]): ?RowsOfFields
     {
         $where = $this->where($options['type'], $options['severity'], $substring, 'AND', $options['severity-min']);
@@ -107,6 +109,7 @@ final class WatchdogCommands extends DrushCommands
     #[CLI\FilterDefaultField(field: 'message')]
     #[CLI\DefaultTableFields(fields: ['wid', 'date', 'type', 'severity', 'message'])]
     #[CLI\Complete(method_name_or_callable: 'watchdogComplete')]
+    #[CLI\Bootstrap(level: DrupalBootLevels::FULL)]
     public function watchdogList($substring = '', $options = ['format' => 'table', 'count' => 10, 'extended' => false]): RowsOfFields
     {
         return $this->show($substring, $options);
@@ -129,6 +132,7 @@ final class WatchdogCommands extends DrushCommands
     #[CLI\ValidateModulesEnabled(modules: ['dblog'])]
     #[CLI\Version(version: '10.6')]
     #[CLI\Complete(method_name_or_callable: 'watchdogComplete')]
+    #[CLI\Bootstrap(level: DrupalBootLevels::FULL)]
     public function tail(OutputInterface $output, $substring = '', $options = ['severity' => self::REQ, 'severity-min' => self::REQ, 'type' => self::REQ, 'extended' => false]): void
     {
         $where = $this->where($options['type'], $options['severity'], $substring, 'AND', $options['severity-min']);
@@ -202,6 +206,7 @@ final class WatchdogCommands extends DrushCommands
     #[CLI\Usage(name: 'drush watchdog:delete --type=cron', description: 'Delete all messages of type cron.')]
     #[CLI\ValidateModulesEnabled(modules: ['dblog'])]
     #[CLI\Complete(method_name_or_callable: 'watchdogComplete')]
+    #[CLI\Bootstrap(level: DrupalBootLevels::FULL)]
     public function delete($substring = '', $options = ['severity' => self::REQ, 'type' => self::REQ]): void
     {
         if ($substring == 'all') {
@@ -244,6 +249,7 @@ final class WatchdogCommands extends DrushCommands
     #[CLI\Command(name: self::SHOW_ONE, aliases: ['wd-one', 'watchdog-show-one'])]
     #[CLI\Argument(name: 'id', description: 'Watchdog Id')]
     #[CLI\ValidateModulesEnabled(modules: ['dblog'])]
+    #[CLI\Bootstrap(level: DrupalBootLevels::FULL)]
     public function showOne($id, $options = ['format' => 'yaml']): PropertyList
     {
         $rsc = Database::getConnection()->select('watchdog', 'w')
