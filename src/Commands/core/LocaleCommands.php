@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Drush\Drupal\Commands\core;
+namespace Drush\Commands\core;
 
 use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\AnnotatedCommand\Hooks\HookManager;
@@ -18,6 +18,7 @@ use Drush\Attributes as CLI;
 use Drush\Commands\DrushCommands;
 use Drush\Exceptions\CommandFailedException;
 use Drush\Utils\StringUtils;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 final class LocaleCommands extends DrushCommands
 {
@@ -49,6 +50,18 @@ final class LocaleCommands extends DrushCommands
 
     public function __construct(protected LanguageManagerInterface $languageManager, protected ConfigFactoryInterface $configFactory, protected ModuleHandlerInterface $moduleHandler, protected StateInterface $state)
     {
+    }
+
+    public static function create(ContainerInterface $container): self
+    {
+        $commandHandler = new static(
+            $container->get('language_manager'),
+            $container->get('config.factory'),
+            $container->get('module_handler'),
+            $container->get('state')
+        );
+
+        return $commandHandler;
     }
 
     /**

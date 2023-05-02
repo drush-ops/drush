@@ -10,7 +10,7 @@ use Consolidation\SiteProcess\ProcessManager;
 use Drush\Attributes as CLI;
 use Drush\Commands\DrushCommands;
 use Drush\Commands\config\ConfigImportCommands;
-use Drush\Drupal\Commands\core\DeployHookCommands;
+use Drush\Commands\core\DeployHookCommands;
 use Drush\Drush;
 use Drush\SiteAlias\SiteAliasManagerAwareInterface;
 use Drush\Boot\DrupalBootLevels;

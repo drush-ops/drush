@@ -2,11 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Drush\Drupal\Commands\core;
+namespace Drush\Commands\core;
 
 use Drupal\Core\State\StateInterface;
 use Drush\Attributes as CLI;
 use Drush\Commands\DrushCommands;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 final class MaintCommands extends DrushCommands
 {
@@ -17,6 +18,15 @@ final class MaintCommands extends DrushCommands
 
     public function __construct(protected StateInterface $state)
     {
+    }
+
+    public static function create(ContainerInterface $container): self
+    {
+        $commandHandler = new static(
+            $container->get('state')
+        );
+
+        return $commandHandler;
     }
 
     public function getState(): StateInterface

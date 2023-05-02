@@ -10,7 +10,7 @@ use Drush\Commands\core\StatusCommands;
 use Drush\Commands\config\ConfigCommands;
 use Drush\Commands\config\ConfigExportCommands;
 use Drush\Commands\config\ConfigImportCommands;
-use Drush\Drupal\Commands\core\StateCommands;
+use Drush\Commands\core\StateCommands;
 use Drush\Drupal\Commands\pm\PmCommands;
 use Symfony\Component\Filesystem\Path;
 

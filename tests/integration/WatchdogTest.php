@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Unish;
 
 use Drush\Commands\core\PhpCommands;
-use Drush\Drupal\Commands\core\WatchdogCommands;
+use Drush\Commands\core\WatchdogCommands;
 use Drush\Drupal\Commands\pm\PmCommands;
 
 /**

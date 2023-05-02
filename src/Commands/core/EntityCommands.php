@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Drush\Drupal\Commands\core;
+namespace Drush\Commands\core;
 
 use Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException;
 use Drupal\Component\Plugin\Exception\PluginNotFoundException;
@@ -12,6 +12,7 @@ use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drush\Attributes as CLI;
 use Drush\Commands\DrushCommands;
 use Drush\Utils\StringUtils;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 final class EntityCommands extends DrushCommands
 {
@@ -20,6 +21,15 @@ final class EntityCommands extends DrushCommands
 
     public function __construct(protected EntityTypeManagerInterface $entityTypeManager)
     {
+    }
+
+    public static function create(ContainerInterface $container): self
+    {
+        $commandHandler = new static(
+            $container->get('entity_type.manager'),
+        );
+
+        return $commandHandler;
     }
 
     /**

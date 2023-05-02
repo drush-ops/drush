@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Drush\Drupal\Commands\core;
+namespace Drush\Commands\core;
 
 use Drush\Attributes as CLI;
 use Drush\Boot\DrupalBootLevels;
@@ -105,7 +105,7 @@ final class DeployHookCommands extends DrushCommands implements SiteAliasManager
         if (!$this->getConfig()->simulate()) {
             $operations = [];
             foreach ($pending as $function) {
-                $operations[] = ['\Drush\Drupal\Commands\core\DeployHookCommands::updateDoOneDeployHook', [$function]];
+                $operations[] = ['\Drush\Commands\core\DeployHookCommands::updateDoOneDeployHook', [$function]];
             }
 
             $batch = [

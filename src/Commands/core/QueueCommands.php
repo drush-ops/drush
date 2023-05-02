@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Drush\Drupal\Commands\core;
+namespace Drush\Commands\core;
 
 use Consolidation\AnnotatedCommand\Hooks\HookManager;
 use Drupal\Core\Queue\QueueInterface;
@@ -20,6 +20,7 @@ use Drush\Commands\DrushCommands;
 use Drupal\Core\Queue\QueueGarbageCollectionInterface;
 use Symfony\Component\Console\Completion\CompletionInput;
 use Symfony\Component\Console\Completion\CompletionSuggestions;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 final class QueueCommands extends DrushCommands
 {
@@ -39,6 +40,16 @@ final class QueueCommands extends DrushCommands
     {
         $this->workerManager = $workerManager;
         $this->queueService = $queueService;
+    }
+
+    public static function create(ContainerInterface $container): self
+    {
+        $commandHandler = new static(
+            $container->get('plugin.manager.queue_worker'),
+            $container->get('queue')
+        );
+
+        return $commandHandler;
     }
 
     public function getWorkerManager(): QueueWorkerManagerInterface

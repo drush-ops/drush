@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Unish;
 
 use Drush\Commands\sql\SqlCommands;
-use Drush\Drupal\Commands\core\LanguageCommands;
-use Drush\Drupal\Commands\core\LocaleCommands;
+use Drush\Commands\core\LanguageCommands;
+use Drush\Commands\core\LocaleCommands;
 use Drush\Drupal\Commands\pm\PmCommands;
 use Symfony\Component\Filesystem\Path;
 

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Drush\Drupal\Commands\core;
+namespace Drush\Commands\core;
 
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Drupal\Core\Extension\ExtensionList;
@@ -15,6 +15,7 @@ use Drush\Drush;
 use Drush\Utils\StringUtils;
 use Symfony\Component\Filesystem\Path;
 use Symfony\Component\Finder\Finder;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 final class TwigCommands extends DrushCommands
 {
@@ -23,6 +24,17 @@ final class TwigCommands extends DrushCommands
 
     public function __construct(protected TwigEnvironment $twig, protected ModuleHandlerInterface $moduleHandler, private ExtensionList $extensionList)
     {
+    }
+
+    public static function create(ContainerInterface $container): self
+    {
+        $commandHandler = new static(
+            $container->get('twig'),
+            $container->get('module_handler'),
+            $container->get('extension.list.module')
+        );
+
+        return $commandHandler;
     }
 
     public function getTwig(): TwigEnvironment
