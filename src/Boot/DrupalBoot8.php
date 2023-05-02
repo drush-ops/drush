@@ -247,6 +247,7 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
     public function addDrupalModuleDrushCommands($manager): void
     {
         $application = Drush::getApplication();
+        $drushContainer = Drush::getContainer();
 
         // We have to get the service command list from the container, because
         // it is constructed in an indirect way during the container initialization.
@@ -309,7 +310,7 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
                 // of double-instantiating Drush service commands, if anyone decided
                 // to put those in the same namespace (\Drupal\modulename\Drush\Commands)
                 if ($this->hasStaticCreateFactory($class)) {
-                    $commandHandler = $class::create($container);
+                    $commandHandler = $class::create($container, $drushContainer);
                 }
             } catch (\Exception $e) {
             }
