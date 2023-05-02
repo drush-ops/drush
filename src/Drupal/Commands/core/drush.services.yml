@@ -1,12 +1,4 @@
 services:
-  batch.commands:
-    class: \Drush\Drupal\Commands\core\BatchCommands
-    tags:
-      -  { name: drush.command }
-  cli.commands:
-    class: \Drush\Drupal\Commands\core\CliCommands
-    tags:
-      -  { name: drush.command }
   drupal.commands:
     class: \Drush\Drupal\Commands\core\DrupalCommands
     arguments: ['@cron', '@module_handler', '@router.route_provider']

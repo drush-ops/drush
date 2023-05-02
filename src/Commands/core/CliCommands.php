@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Drush\Drupal\Commands\core;
+namespace Drush\Commands\core;
 
 use Consolidation\AnnotatedCommand\AnnotatedCommand;
 use Drush\Attributes as CLI;
@@ -16,6 +16,7 @@ use Drush\Runtime\Runtime;
 use Drush\Utils\FsUtils;
 use Psy\Configuration;
 use Psy\VersionUpdater\Checker;
+use Drush\Boot\DrupalBootLevels;
 
 final class CliCommands extends DrushCommands
 {
@@ -27,7 +28,8 @@ final class CliCommands extends DrushCommands
      */
     #[CLI\Command(name: self::DOCS_REPL, aliases: ['docs-repl'])]
     #[CLI\Help(hidden: true)]
-    #[CLI\Topics(path: '../../../../docs/repl.md')]
+    #[CLI\Topics(path: '../../../docs/repl.md')]
+    #[CLI\Bootstrap(level: DrupalBootLevels::FULL)]
     public function docs(): void
     {
         self::printFileTopic($this->commandData);
@@ -40,6 +42,7 @@ final class CliCommands extends DrushCommands
     #[CLI\Option(name: 'version-history', description: 'Use command history based on Drupal version. Default is per site.')]
     #[CLI\Option(name: 'cwd', description: 'A directory to change to before launching the shell. Default is the project root directory')]
     #[CLI\Topics(topics: [self::DOCS_REPL])]
+    #[CLI\Bootstrap(level: DrupalBootLevels::FULL)]
     public function cli(array $options = ['version-history' => false, 'cwd' => self::REQ]): void
     {
         $configuration = new Configuration();
