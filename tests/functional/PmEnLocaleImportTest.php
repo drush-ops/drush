@@ -7,8 +7,8 @@ namespace Unish;
 use Drupal\Core\Language\Language;
 use Drupal\language\Entity\ConfigurableLanguage;
 use Drush\Commands\config\ConfigCommands;
-use Drush\Drupal\Commands\core\LanguageCommands;
-use Drush\Drupal\Commands\core\WatchdogCommands;
+use Drush\Commands\core\LanguageCommands;
+use Drush\Commands\core\WatchdogCommands;
 use Drush\Drupal\Commands\pm\PmCommands;
 use Symfony\Component\Filesystem\Path;
 

@@ -57,7 +57,6 @@ final class ConfigCommands extends DrushCommands implements StdinAwareInterface,
         return $this->configFactory;
     }
 
-
     protected function __construct(protected ConfigFactoryInterface $configFactory, protected StorageInterface $configStorage)
     {
         parent::__construct();

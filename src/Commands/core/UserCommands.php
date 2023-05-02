@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Drush\Drupal\Commands\core;
+namespace Drush\Commands\core;
 
 use Consolidation\AnnotatedCommand\Hooks\HookManager;
 use Drupal\Core\Datetime\DateFormatterInterface;
@@ -17,6 +17,7 @@ use Drush\Commands\DrushCommands;
 use Drush\Utils\StringUtils;
 use Symfony\Component\Console\Completion\CompletionInput;
 use Symfony\Component\Console\Completion\CompletionSuggestions;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 final class UserCommands extends DrushCommands
 {
@@ -31,6 +32,15 @@ final class UserCommands extends DrushCommands
 
     public function __construct(protected DateFormatterInterface $dateFormatter)
     {
+    }
+
+    public static function create(ContainerInterface $container): self
+    {
+        $commandHandler = new static(
+            $container->get('date.formatter')
+        );
+
+        return $commandHandler;
     }
 
     /**
@@ -207,7 +217,7 @@ final class UserCommands extends DrushCommands
     #[CLI\Option(name: 'password', description: 'The password for the new account')]
     #[CLI\Option(name: 'mail', description: 'The email address for the new account')]
     #[CLI\Usage(name: "drush user:create newuser --mail='person@example.com' --password='letmein'", description: 'Create a new user account with the name newuser, the email address person@example.com, and the password letmein')]
-    public function create(string $name, $options = ['password' => self::REQ, 'mail' => self::REQ])
+    public function createUser(string $name, $options = ['password' => self::REQ, 'mail' => self::REQ])
     {
         $new_user = [
             'name' => $name,

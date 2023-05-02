@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Drush\Drupal\Commands\core;
+namespace Drush\Commands\core;
 
 use Consolidation\AnnotatedCommand\Hooks\HookManager;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
@@ -14,6 +14,7 @@ use Drush\Attributes as CLI;
 use Drush\Commands\DrushCommands;
 use Drupal\views\Views;
 use Drush\Utils\StringUtils;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 final class ViewsCommands extends DrushCommands
 {
@@ -30,6 +31,18 @@ final class ViewsCommands extends DrushCommands
         protected EntityTypeManagerInterface $entityTypeManager,
         protected RendererInterface $renderer
     ) {
+    }
+
+    public static function create(ContainerInterface $container): self
+    {
+        $commandHandler = new static(
+            $container->get('config.factory'),
+            $container->get('module_handler'),
+            $container->get('entity_type.manager'),
+            $container->get('renderer')
+        );
+
+        return $commandHandler;
     }
 
     public function getConfigFactory(): ConfigFactoryInterface

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Drush\Drupal\Commands\core;
+namespace Drush\Commands\core;
 
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Drupal\Core\CronInterface;
@@ -14,6 +14,7 @@ use Drush\Commands\core\DocsCommands;
 use Drush\Commands\DrushCommands;
 use Drush\Drupal\DrupalUtil;
 use Drush\Utils\StringUtils;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 final class DrupalCommands extends DrushCommands
 {
@@ -38,6 +39,17 @@ final class DrupalCommands extends DrushCommands
 
     public function __construct(protected CronInterface $cron, protected ModuleHandlerInterface $moduleHandler, protected RouteProviderInterface $routeProvider)
     {
+    }
+
+    public static function create(ContainerInterface $container): self
+    {
+        $commandHandler = new static(
+            $container->get('cron'),
+            $container->get('module_handler'),
+            $container->get('router.route_provider')
+        );
+
+        return $commandHandler;
     }
 
     /**

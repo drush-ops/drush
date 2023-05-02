@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Unish;
 
-use Drush\Drupal\Commands\core\ImageCommands;
+use Drush\Commands\core\ImageCommands;
 use Drush\Drupal\Commands\pm\PmCommands;
 
 /**

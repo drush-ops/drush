@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Drush\Drupal\Commands\core;
+namespace Drush\Commands\core;
 
 use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\AnnotatedCommand\CommandError;
@@ -29,6 +29,7 @@ use Drush\Drupal\Migrate\MigrateUtils;
 use Drush\Utils\StringUtils;
 use Robo\Contract\ConfigAwareInterface;
 use Symfony\Component\Filesystem\Path;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Migrate runner commands.
@@ -49,6 +50,17 @@ class MigrateRunnerCommands extends DrushCommands implements ConfigAwareInterfac
     ) {
         parent::__construct();
         $this->keyValue = $keyValueFactory->get('migrate_last_imported');
+    }
+
+    public static function create(ContainerInterface $container): self
+    {
+        $commandHandler = new static(
+            $container->get('date.formatter'),
+            $container->get('keyvalue'),
+            $container->get('plugin.manager.migration')
+        );
+
+        return $commandHandler;
     }
 
     /**
