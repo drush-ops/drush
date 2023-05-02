@@ -4,10 +4,6 @@ services:
     arguments: ['@cron', '@module_handler', '@router.route_provider']
     tags:
       -  { name: drush.command }
-  deploy_hook.commands:
-    class: \Drush\Drupal\Commands\core\DeployHookCommands
-    tags:
-      -  { name: drush.command }
   entity.commands:
       class: \Drush\Drupal\Commands\core\EntityCommands
       arguments: ['@entity_type.manager']
@@ -19,14 +15,6 @@ services:
       - '@module_handler'
     tags:
       -  { name: drush.command }
-  image.commands:
-    class: \Drush\Drupal\Commands\core\ImageCommands
-    tags:
-      -  { name: drush.command }
-  jsonapi.commands:
-    class: \Drush\Drupal\Commands\core\JsonapiCommands
-    tags:
-      - { name: drush.command }
   language.commands:
     class: \Drush\Drupal\Commands\core\LanguageCommands
     arguments: ['@language_manager', '@module_handler']
@@ -57,10 +45,6 @@ services:
     arguments: ['@plugin.manager.queue_worker', '@queue']
     tags:
       -  { name: drush.command }
-  role.commands:
-    class: \Drush\Drupal\Commands\core\RoleCommands
-    tags:
-      -  { name: drush.command }
   state.commands:
     class: \Drush\Drupal\Commands\core\StateCommands
     arguments: ['@state']
@@ -79,9 +63,5 @@ services:
   views.commands:
     class: \Drush\Drupal\Commands\core\ViewsCommands
     arguments: ['@config.factory', '@module_handler', '@entity_type.manager', '@renderer']
-    tags:
-      -  { name: drush.command }
-  watchdog.commands:
-    class: \Drush\Drupal\Commands\core\WatchdogCommands
     tags:
       -  { name: drush.command }

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Drush\Drupal\Commands\core;
+namespace Drush\Commands\core;
 
 use Consolidation\OutputFormatters\Options\FormatterOptions;
 use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
@@ -14,6 +14,7 @@ use Drush\SiteAlias\SiteAliasManagerAwareInterface;
 use Drush\Utils\StringUtils;
 use Symfony\Component\Console\Completion\CompletionInput;
 use Symfony\Component\Console\Completion\CompletionSuggestions;
+use Drush\Boot\DrupalBootLevels;
 
 final class RoleCommands extends DrushCommands implements SiteAliasManagerAwareInterface
 {
@@ -32,6 +33,7 @@ final class RoleCommands extends DrushCommands implements SiteAliasManagerAwareI
     #[CLI\Argument(name: 'machine_name', description: 'The symbolic machine name for the role.')]
     #[CLI\Argument(name: 'human_readable_name', description: 'A descriptive name for the role.')]
     #[CLI\Usage(name: "drush role:create 'test_role' 'Test role'", description: "Create a new role with a machine name of 'test_role', and a human-readable name of 'Test role'.")]
+    #[CLI\Bootstrap(level: DrupalBootLevels::FULL)]
     public function create($machine_name, $human_readable_name = null)
     {
         $role = Role::create([
@@ -51,6 +53,7 @@ final class RoleCommands extends DrushCommands implements SiteAliasManagerAwareI
     #[CLI\ValidateEntityLoad(entityType: 'user_role', argumentName: 'machine_name')]
     #[CLI\Usage(name: "drush role:delete 'test_role'", description: "Delete the role 'test_role'.")]
     #[CLI\Complete(method_name_or_callable: 'roleComplete')]
+    #[CLI\Bootstrap(level: DrupalBootLevels::FULL)]
     public function delete($machine_name): void
     {
         $role = Role::load($machine_name);
@@ -69,6 +72,7 @@ final class RoleCommands extends DrushCommands implements SiteAliasManagerAwareI
     #[CLI\ValidateEntityLoad(entityType: 'user_role', argumentName: 'machine_name')]
     #[CLI\ValidatePermissions(argName: 'permissions')]
     #[CLI\Complete(method_name_or_callable: 'roleComplete')]
+    #[CLI\Bootstrap(level: DrupalBootLevels::FULL)]
     public function roleAddPerm($machine_name, $permissions): void
     {
         $perms = StringUtils::csvToArray($permissions);
@@ -87,6 +91,7 @@ final class RoleCommands extends DrushCommands implements SiteAliasManagerAwareI
     #[CLI\ValidateEntityLoad(entityType: 'user_role', argumentName: 'machine_name')]
     #[CLI\ValidatePermissions(argName: 'permissions')]
     #[CLI\Complete(method_name_or_callable: 'roleComplete')]
+    #[CLI\Bootstrap(level: DrupalBootLevels::FULL)]
     public function roleRemovePerm($machine_name, $permissions): void
     {
         $perms = StringUtils::csvToArray($permissions);
@@ -106,6 +111,7 @@ final class RoleCommands extends DrushCommands implements SiteAliasManagerAwareI
     #[CLI\Usage(name: "drush role:list --filter='administer nodes'", description: 'Display a list of roles that have the administer nodes permission assigned.')]
     #[CLI\FieldLabels(labels: ['rid' => 'ID', 'label' => 'Role Label', 'perms' => 'Permissions'])]
     #[CLI\FilterDefaultField(field: 'perms')]
+    #[CLI\Bootstrap(level: DrupalBootLevels::FULL)]
     public function roleList($options = ['format' => 'yaml']): RowsOfFields
     {
         $rows = [];
