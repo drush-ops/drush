@@ -57,7 +57,7 @@ class MigrateRunnerCommands extends DrushCommands implements ConfigAwareInterfac
         $commandHandler = new static(
             $container->get('date.formatter'),
             $container->get('keyvalue'),
-            $container->get('plugin.manager.migration')
+            $container->get('plugin.manager.migration', ContainerInterface::NULL_ON_INVALID_REFERENCE)
         );
 
         return $commandHandler;

@@ -313,6 +313,7 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
                     $commandHandler = $class::create($container, $drushContainer);
                 }
             } catch (\Exception $e) {
+                $this->logger->debug(dt("Failed to instantiate command handler !class: !message", ['!class' => $class, '!message' => $e->getMessage()]));
             }
             // Fail silently if the command handler could not be
             // instantiated, e.g. if it tries to fetch services from
