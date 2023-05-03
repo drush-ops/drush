@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Unish;
 
 use Drush\Commands\core\ImageCommands;
-use Drush\Drupal\Commands\pm\PmCommands;
+use Drush\Commands\pm\PmCommands;
 
 /**
  * Tests image-flush command

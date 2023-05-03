@@ -6,7 +6,7 @@ namespace Unish;
 
 use Drupal\Core\Field\FieldStorageDefinitionInterface;
 use Drush\Commands\core\PhpCommands;
-use Drush\Drupal\Commands\pm\PmCommands;
+use Drush\Commands\pm\PmCommands;
 use Symfony\Component\Filesystem\Path;
 
 /**

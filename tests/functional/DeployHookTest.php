@@ -7,7 +7,7 @@ namespace Unish;
 use Drush\Commands\core\StatusCommands;
 use Drush\Commands\core\DeployHookCommands;
 use Drush\Commands\core\StateCommands;
-use Drush\Drupal\Commands\pm\PmCommands;
+use Drush\Commands\pm\PmCommands;
 use Symfony\Component\Filesystem\Path;
 
 /**

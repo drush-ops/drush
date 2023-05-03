@@ -7,7 +7,7 @@ namespace Unish;
 use Drush\Commands\sql\SqlCommands;
 use Drush\Commands\core\LanguageCommands;
 use Drush\Commands\core\LocaleCommands;
-use Drush\Drupal\Commands\pm\PmCommands;
+use Drush\Commands\pm\PmCommands;
 use Symfony\Component\Filesystem\Path;
 
 class LocaleTest extends UnishIntegrationTestCase

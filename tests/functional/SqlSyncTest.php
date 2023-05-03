@@ -8,7 +8,7 @@ use Drush\Commands\core\PhpCommands;
 use Drush\Commands\sql\SqlCommands;
 use Drush\Commands\sql\SqlSyncCommands;
 use Drush\Commands\core\UserCommands;
-use Drush\Drupal\Commands\pm\PmCommands;
+use Drush\Commands\pm\PmCommands;
 use Drush\Commands\sql\SanitizeCommands;
 
 /**
