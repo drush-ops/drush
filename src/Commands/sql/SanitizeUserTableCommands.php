@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Drush\Drupal\Commands\sql;
+namespace Drush\Commands\sql;
 
 use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\AnnotatedCommand\Hooks\HookManager;
@@ -13,6 +13,7 @@ use Drush\Commands\DrushCommands;
 use Drush\Sql\SqlBase;
 use Drush\Utils\StringUtils;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * A sql-sanitize plugin.
@@ -24,6 +25,17 @@ final class SanitizeUserTableCommands extends DrushCommands implements SanitizeP
         protected PasswordInterface $passwordHasher,
         protected EntityTypeManagerInterface $entityTypeManager
     ) {
+    }
+
+    public static function create(ContainerInterface $container): self
+    {
+        $commandHandler = new static(
+            $container->get('database'),
+            $container->get('password'),
+            $container->get('entity_type.manager')
+        );
+
+        return $commandHandler;
     }
 
     /**

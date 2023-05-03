@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Drush\Drupal\Commands\sql;
+namespace Drush\Commands\sql;
 
 use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\AnnotatedCommand\Hooks\HookManager;
@@ -13,6 +13,7 @@ use Drush\Boot\DrupalBootLevels;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * This class is a good example of a sql-sanitize plugin.
@@ -23,6 +24,16 @@ final class SanitizeCommentsCommands extends DrushCommands implements SanitizePl
         protected Connection $database,
         protected ModuleHandlerInterface $moduleHandler
     ) {
+    }
+
+    public static function create(ContainerInterface $container): self
+    {
+        $commandHandler = new static(
+            $container->get('database'),
+            $container->get('module_handler')
+        );
+
+        return $commandHandler;
     }
 
     /**

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Drush\Drupal\Commands\sql;
+namespace Drush\Commands\sql;
 
 use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\AnnotatedCommand\Hooks\HookManager;
@@ -11,6 +11,7 @@ use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drush\Attributes as CLI;
 use Drush\Commands\DrushCommands;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * This class is a good example of how to build a sql-sanitize plugin.
@@ -22,6 +23,17 @@ final class SanitizeUserFieldsCommands extends DrushCommands implements Sanitize
         protected EntityFieldManagerInterface $entityFieldManager,
         protected EntityTypeManagerInterface $entityTypeManager
     ) {
+    }
+
+    public static function create(ContainerInterface $container): self
+    {
+        $commandHandler = new static(
+            $container->get('database'),
+            $container->get('entity_field.manager'),
+            $container->get('entity_type.manager')
+        );
+
+        return $commandHandler;
     }
 
     /**
