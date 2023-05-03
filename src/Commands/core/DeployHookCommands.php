@@ -58,6 +58,7 @@ final class DeployHookCommands extends DrushCommands implements SiteAliasManager
     #[CLI\DefaultTableFields(fields: ['module', 'hook', 'description'])]
     #[CLI\FilterDefaultField(field: 'hook')]
     #[CLI\Topics(topics: [DocsCommands::DEPLOY])]
+    #[CLI\Bootstrap(level: DrupalBootLevels::FULL)]
     public function status(): RowsOfFields
     {
         $updates = self::getRegistry()->getPendingUpdateInformation();
@@ -84,6 +85,7 @@ final class DeployHookCommands extends DrushCommands implements SiteAliasManager
     #[CLI\Usage(name: 'drush ' . self::HOOK, description: 'Run pending deploy hooks.')]
     #[CLI\Topics(topics: [DocsCommands::DEPLOY])]
     #[CLI\Version(version: '10.3')]
+    #[CLI\Bootstrap(level: DrupalBootLevels::FULL)]
     public function run(): int
     {
         $pending = self::getRegistry()->getPendingUpdateFunctions();
@@ -255,6 +257,7 @@ final class DeployHookCommands extends DrushCommands implements SiteAliasManager
     #[CLI\Usage(name: 'drush deploy:mark-complete', description: 'Skip all pending deploy hooks and mark them as complete.')]
     #[CLI\Topics(topics: [DocsCommands::DEPLOY])]
     #[CLI\Version(version: '10.6.1')]
+    #[CLI\Bootstrap(level: DrupalBootLevels::FULL)]
     public function markComplete(): int
     {
         $pending = self::getRegistry()->getPendingUpdateFunctions();
