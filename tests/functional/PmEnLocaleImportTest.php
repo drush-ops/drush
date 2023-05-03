@@ -9,7 +9,7 @@ use Drupal\language\Entity\ConfigurableLanguage;
 use Drush\Commands\config\ConfigCommands;
 use Drush\Commands\core\LanguageCommands;
 use Drush\Commands\core\WatchdogCommands;
-use Drush\Drupal\Commands\pm\PmCommands;
+use Drush\Commands\pm\PmCommands;
 use Symfony\Component\Filesystem\Path;
 
 /**

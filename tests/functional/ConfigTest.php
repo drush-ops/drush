@@ -11,7 +11,7 @@ use Drush\Commands\config\ConfigCommands;
 use Drush\Commands\config\ConfigExportCommands;
 use Drush\Commands\config\ConfigImportCommands;
 use Drush\Commands\core\StateCommands;
-use Drush\Drupal\Commands\pm\PmCommands;
+use Drush\Commands\pm\PmCommands;
 use Symfony\Component\Filesystem\Path;
 
 /**

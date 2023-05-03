@@ -6,7 +6,7 @@ namespace Unish;
 
 use Drush\Commands\core\PhpCommands;
 use Drush\Commands\core\UpdateDBCommands;
-use Drush\Drupal\Commands\pm\PmCommands;
+use Drush\Commands\pm\PmCommands;
 use Symfony\Component\Filesystem\Path;
 
 /**

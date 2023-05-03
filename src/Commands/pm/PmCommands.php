@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Drush\Drupal\Commands\pm;
+namespace Drush\Commands\pm;
 
 use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\AnnotatedCommand\Hooks\HookManager;
@@ -19,6 +19,7 @@ use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Drush\Exceptions\UserAbortException;
 use Drush\Utils\StringUtils;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 final class PmCommands extends DrushCommands
 {
@@ -34,6 +35,19 @@ final class PmCommands extends DrushCommands
         protected ModuleExtensionList $extensionListModule
     ) {
         parent::__construct();
+    }
+
+    public static function create(ContainerInterface $container): self
+    {
+        $commandHandler = new static(
+            $container->get('config.factory'),
+            $container->get('module_installer'),
+            $container->get('module_handler'),
+            $container->get('theme_handler'),
+            $container->get('extension.list.module')
+        );
+
+        return $commandHandler;
     }
 
     public function getConfigFactory(): ConfigFactoryInterface
