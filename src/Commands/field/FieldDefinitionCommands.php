@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Drush\Drupal\Commands\field;
+namespace Drush\Commands\field;
 
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Consolidation\OutputFormatters\StructuredData\UnstructuredListData;
@@ -12,6 +12,7 @@ use Drupal\Core\Field\FormatterPluginManager;
 use Drupal\Core\Field\WidgetPluginManager;
 use Drush\Attributes as CLI;
 use Drush\Commands\DrushCommands;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 final class FieldDefinitionCommands extends DrushCommands
 {
@@ -25,6 +26,17 @@ final class FieldDefinitionCommands extends DrushCommands
         private readonly FormatterPluginManager $formatterPluginManager,
     ) {
         parent::__construct();
+    }
+
+    public static function create(ContainerInterface $container): self
+    {
+        $commandHandler = new static(
+            $container->get('plugin.manager.field.field_type'),
+            $container->get('plugin.manager.field.widget'),
+            $container->get('plugin.manager.field.formatter')
+        );
+
+        return $commandHandler;
     }
 
     #[CLI\Command(name: self::TYPES)]

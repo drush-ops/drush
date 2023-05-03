@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Drush\Drupal\Commands\field;
+namespace Drush\Commands\field;
 
 use Consolidation\AnnotatedCommand\Events\CustomEventAwareInterface;
 use Consolidation\AnnotatedCommand\Events\CustomEventAwareTrait;
@@ -26,6 +26,7 @@ use Drush\Attributes as CLI;
 use Drush\Commands\DrushCommands;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Question\ChoiceQuestion;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 use function dt;
 use function t;
@@ -49,6 +50,23 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
         protected ModuleHandlerInterface $moduleHandler,
         protected EntityFieldManagerInterface $entityFieldManager
     ) {
+    }
+
+    public static function create(ContainerInterface $container): self
+    {
+        $commandHandler = new static(
+            $container->get('plugin.manager.field.field_type'),
+            $container->get('plugin.manager.field.widget'),
+            $container->get('plugin.manager.entity_reference_selection'),
+            $container->get('entity_type.manager'),
+            $container->get('entity_type.bundle.info'),
+            $container->get('module_handler'),
+            $container->get('entity_field.manager')
+        );
+
+        $commandHandler->setContentTranslationManager($container->get('content_translation.manager'));
+
+        return $commandHandler;
     }
 
     public function setContentTranslationManager(ContentTranslationManagerInterface $manager): void
@@ -82,7 +100,7 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
     #[CLI\Usage(name: 'field-create taxonomy_term tag', description: 'Create a field and fill in the remaining information through prompts.')]
     #[CLI\Usage(name: 'field-create taxonomy_term tag --field-name=field_tag_label --field-label=Label --field-type=string --field-widget=string_textfield --is-required=1 --cardinality=2', description: 'Create a field in a completely non-interactive way.')]
     #[CLI\Version(version: '11.0')]
-    public function create(?string $entityType = null, ?string $bundle = null, array $options = [
+    public function fieldCreate(?string $entityType = null, ?string $bundle = null, array $options = [
         'field-name' => InputOption::VALUE_REQUIRED,
         'field-label' => InputOption::VALUE_REQUIRED,
         'field-description' => InputOption::VALUE_OPTIONAL,

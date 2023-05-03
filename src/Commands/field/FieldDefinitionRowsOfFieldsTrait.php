@@ -2,10 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Drush\Drupal\Commands\field;
+namespace Drush\Commands\field;
 
 use Consolidation\OutputFormatters\Options\FormatterOptions;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 trait FieldDefinitionRowsOfFieldsTrait
 {

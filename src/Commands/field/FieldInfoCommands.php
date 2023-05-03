@@ -2,13 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Drush\Drupal\Commands\field;
+namespace Drush\Commands\field;
 
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Drupal\Core\Entity\EntityTypeBundleInfoInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drush\Attributes as CLI;
 use Drush\Commands\DrushCommands;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class FieldInfoCommands extends DrushCommands
 {
@@ -20,6 +21,16 @@ class FieldInfoCommands extends DrushCommands
         protected EntityTypeManagerInterface $entityTypeManager,
         protected EntityTypeBundleInfoInterface $entityTypeBundleInfo
     ) {
+    }
+
+    public static function create(ContainerInterface $container): self
+    {
+        $commandHandler = new static(
+            $container->get('entity_type.manager'),
+            $container->get('entity_type.bundle.info')
+        );
+
+        return $commandHandler;
     }
 
     /**
