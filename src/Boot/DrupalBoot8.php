@@ -20,6 +20,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Consolidation\AnnotatedCommand\CommandFileDiscovery;
 use Robo\Robo;
+use Drush\Runtime\ServiceInstantiator;
 
 class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
 {
@@ -247,12 +248,21 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
     public function addDrupalModuleDrushCommands($manager): void
     {
         $application = Drush::getApplication();
+        $drushContainer = Drush::getContainer();
+
+        $this->logger->debug(dt("Loading drupal module drush commands & etc.", []));
 
         // We have to get the service command list from the container, because
         // it is constructed in an indirect way during the container initialization.
         // The upshot is that the list of console commands is not available
         // until after $kernel->boot() is called.
         $container = \Drupal::getContainer();
+
+        // Drush services adapter
+        $drushServiceFiles = $this->kernel->getDrushServiceFiles();
+        $serviceInstantiator = new ServiceInstantiator($container, $drushContainer);
+        $serviceInstantiator->loadServiceFiles($drushServiceFiles);
+        $drushCommandHandlers = $serviceInstantiator->taggedServices('drush.command');
 
         // Find the containerless commands, generators and command info alterers
         $bootstrapCommandClasses = $application->bootstrapCommandClasses();
@@ -309,7 +319,7 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
                 // of double-instantiating Drush service commands, if anyone decided
                 // to put those in the same namespace (\Drupal\modulename\Drush\Commands)
                 if ($this->hasStaticCreateFactory($class)) {
-                    $commandHandler = $class::create($container);
+                    $commandHandler = $class::create($container, $drushContainer);
                 }
             } catch (\Exception $e) {
             }
@@ -320,6 +330,10 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
                 $manager->inflect($commandHandler);
                 Robo::register($application, $commandHandler);
             }
+        }
+        foreach ($drushCommandHandlers as $commandHandler) {
+            $manager->inflect($commandHandler);
+            Robo::register($application, $commandHandler);
         }
     }
 

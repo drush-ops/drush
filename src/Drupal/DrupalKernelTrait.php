@@ -17,6 +17,13 @@ trait DrupalKernelTrait
 {
     /** @var ServiceModifierInterface[] */
     protected $serviceModifiers = [];
+    protected $serviceFinder;
+    protected $drushServiceYamls = [];
+
+    public function getDrushServiceFiles()
+    {
+        return $this->drushServiceYamls;
+    }
 
     /**
      * Add a service modifier to the container builder.
@@ -209,7 +216,11 @@ trait DrupalKernelTrait
     protected function addDrushServiceProvider($serviceProviderName, $serviceYmlPath = '')
     {
         if (($serviceYmlPath !== null) && file_exists($serviceYmlPath)) {
-            $this->serviceYamls['app'][$serviceProviderName] = $serviceYmlPath;
+            // Keep our own list of service files
+            $this->drushServiceYamls[$serviceProviderName] = $serviceYmlPath;
+            // This is how we used to add our drush.services.yml file
+            // to the Drush service container. This is no longer necessary.
+            //$this->serviceYamls['app'][$serviceProviderName] = $serviceYmlPath;
         }
     }
 }
