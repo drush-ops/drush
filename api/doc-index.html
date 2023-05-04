@@ -792,7 +792,8 @@ commands in Drush 12+.</p></dd><dt><a href="Drush/Boot/DrupalBoot8.html#method_d
                     <dd><p>Return the directory where Drush's documentation is stored. Usually
 this is within the Drush application, but some Drush RPM distributions
 &amp; c. for Linux platforms slice-and-dice the contents and put the docs
-elsewhere.</p></dd><dt><a href="Drush/Drupal/Commands/config/ConfigCommands.html#method_delete">
+elsewhere.</p></dd><dt><a href="Drush/DrupalFinder/DrushDrupalFinder.html"><abbr title="Drush\DrupalFinder\DrushDrupalFinder">DrushDrupalFinder</abbr></a> &mdash; <em>Class in namespace <a href="Drush/DrupalFinder.html">Drush\DrupalFinder</a></em></dt>
+                    <dd><p>A replacement for DrupalFinder. We may go back to that once it uses InstalledVersions from Composer.</p></dd><dt><a href="Drush/Drupal/Commands/config/ConfigCommands.html#method_delete">
 <abbr title="Drush\Drupal\Commands\config\ConfigCommands">ConfigCommands</abbr>::delete</a>() &mdash; <em>Method in class <a href="Drush/Drupal/Commands/config/ConfigCommands.html"><abbr title="Drush\Drupal\Commands\config\ConfigCommands">ConfigCommands</abbr></a></em></dt>
                     <dd><p>Delete a configuration key, or a whole object(s).</p></dd><dt><a href="Drush/Drupal/Commands/config/ConfigExportCommands.html#method_doExport">
 <abbr title="Drush\Drupal\Commands\config\ConfigExportCommands">ConfigExportCommands</abbr>::doExport</a>() &mdash; <em>Method in class <a href="Drush/Drupal/Commands/config/ConfigExportCommands.html"><abbr title="Drush\Drupal\Commands\config\ConfigExportCommands">ConfigExportCommands</abbr></a></em></dt>
@@ -1195,7 +1196,13 @@ file or a 'Commands' or 'src/Commands' directory.</p></dd><dt><a href="Drush/Con
 the Drush major version number. This is for
 loading drush.yml and drush10.yml, etc.</p></dd><dt><a href="Drush/Config/Environment.html#method_getSiteSetAliasFilePath">
 <abbr title="Drush\Config\Environment">Environment</abbr>::getSiteSetAliasFilePath</a>() &mdash; <em>Method in class <a href="Drush/Config/Environment.html"><abbr title="Drush\Config\Environment">Environment</abbr></a></em></dt>
-                    <dd><p>Returns the filename for the file that stores the DRUPAL_SITE variable.</p></dd><dt><a href="Drush/Drupal/Commands/config/ConfigCommands.html#method_getConfigFactory">
+                    <dd><p>Returns the filename for the file that stores the DRUPAL_SITE variable.</p></dd><dt><a href="Drush/DrupalFinder/DrushDrupalFinder.html#method_getDrupalRoot">
+<abbr title="Drush\DrupalFinder\DrushDrupalFinder">DrushDrupalFinder</abbr>::getDrupalRoot</a>() &mdash; <em>Method in class <a href="Drush/DrupalFinder/DrushDrupalFinder.html"><abbr title="Drush\DrupalFinder\DrushDrupalFinder">DrushDrupalFinder</abbr></a></em></dt>
+                    <dd><p>Get the Drupal root.</p></dd><dt><a href="Drush/DrupalFinder/DrushDrupalFinder.html#method_getComposerRoot">
+<abbr title="Drush\DrupalFinder\DrushDrupalFinder">DrushDrupalFinder</abbr>::getComposerRoot</a>() &mdash; <em>Method in class <a href="Drush/DrupalFinder/DrushDrupalFinder.html"><abbr title="Drush\DrupalFinder\DrushDrupalFinder">DrushDrupalFinder</abbr></a></em></dt>
+                    <dd><p>Get the Composer root.</p></dd><dt><a href="Drush/DrupalFinder/DrushDrupalFinder.html#method_getVendorDir">
+<abbr title="Drush\DrupalFinder\DrushDrupalFinder">DrushDrupalFinder</abbr>::getVendorDir</a>() &mdash; <em>Method in class <a href="Drush/DrupalFinder/DrushDrupalFinder.html"><abbr title="Drush\DrupalFinder\DrushDrupalFinder">DrushDrupalFinder</abbr></a></em></dt>
+                    <dd><p>Get the vendor path.</p></dd><dt><a href="Drush/Drupal/Commands/config/ConfigCommands.html#method_getConfigFactory">
 <abbr title="Drush\Drupal\Commands\config\ConfigCommands">ConfigCommands</abbr>::getConfigFactory</a>() &mdash; <em>Method in class <a href="Drush/Drupal/Commands/config/ConfigCommands.html"><abbr title="Drush\Drupal\Commands\config\ConfigCommands">ConfigCommands</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Drupal/Commands/config/ConfigCommands.html#method_getConfigStorageExport">
 <abbr title="Drush\Drupal\Commands\config\ConfigCommands">ConfigCommands</abbr>::getConfigStorageExport</a>() &mdash; <em>Method in class <a href="Drush/Drupal/Commands/config/ConfigCommands.html"><abbr title="Drush\Drupal\Commands\config\ConfigCommands">ConfigCommands</abbr></a></em></dt>
@@ -2807,7 +2814,9 @@ need to be expanded.</p></dd>        </dl><h2 id="letter_">_</h2>
 <abbr title="Drush\Config\ConfigLocator">ConfigLocator</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/Config/ConfigLocator.html"><abbr title="Drush\Config\ConfigLocator">ConfigLocator</abbr></a></em></dt>
                     <dd><p>ConfigLocator constructor</p></dd><dt><a href="Drush/Config/Environment.html#method___construct">
 <abbr title="Drush\Config\Environment">Environment</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/Config/Environment.html"><abbr title="Drush\Config\Environment">Environment</abbr></a></em></dt>
-                    <dd><p>Environment constructor</p></dd><dt><a href="Drush/Drupal/Commands/config/ConfigCommands.html#method___construct">
+                    <dd><p>Environment constructor</p></dd><dt><a href="Drush/DrupalFinder/DrushDrupalFinder.html#method___construct">
+<abbr title="Drush\DrupalFinder\DrushDrupalFinder">DrushDrupalFinder</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/DrupalFinder/DrushDrupalFinder.html"><abbr title="Drush\DrupalFinder\DrushDrupalFinder">DrushDrupalFinder</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/Drupal/Commands/config/ConfigCommands.html#method___construct">
 <abbr title="Drush\Drupal\Commands\config\ConfigCommands">ConfigCommands</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/Drupal/Commands/config/ConfigCommands.html"><abbr title="Drush\Drupal\Commands\config\ConfigCommands">ConfigCommands</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Drupal/Commands/config/ConfigExportCommands.html#method___construct">
 <abbr title="Drush\Drupal\Commands\config\ConfigExportCommands">ConfigExportCommands</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/Drupal/Commands/config/ConfigExportCommands.html"><abbr title="Drush\Drupal\Commands\config\ConfigExportCommands">ConfigExportCommands</abbr></a></em></dt>
