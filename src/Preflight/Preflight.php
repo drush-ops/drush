@@ -14,6 +14,7 @@ use Drush\Config\Environment;
 use Drush\SiteAlias\SiteAliasFileLoader;
 use RuntimeException;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Filesystem\Path;
 use Symfony\Component\HttpKernel\Kernel;
 
 /**
@@ -306,7 +307,7 @@ class Preflight
         $localAliasDrupalFinder = new DrupalFinder($this->environment());
         $foundAlternateRoot = $localAliasDrupalFinder->locateRoot($selfSiteAlias->localRoot());
         if ($foundAlternateRoot) {
-            $alteredRoot = $localAliasDrupalFinder->getDrupalRoot();
+            $alteredRoot = Path::canonicalize($localAliasDrupalFinder->getDrupalRoot());
 
             // Now that we have our final Drupal root, check to see if there is
             // a site-local Drush. If there is, we will redispatch to it.
