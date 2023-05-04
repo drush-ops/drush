@@ -322,7 +322,7 @@ class Preflight
             // contain its own copy of Drush, then we cannot continue.
             if ($alteredRoot != $root) {
                 $aliasName = $this->preflightArgs->alias();
-                throw new \Exception("AR=$alteredRoot, ROOT=$root The alias $aliasName references a Drupal site that does not contain its own copy of Drush. Please add Drush to this site to use it.");
+                throw new \Exception("The alias $aliasName references a Drupal site that does not contain its own copy of Drush. Please add Drush to this site to use it.");
             }
         }
 
