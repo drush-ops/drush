@@ -4,6 +4,7 @@ namespace Drush\DrupalFinder;
 
 use Composer\InstalledVersions;
 use Drush\Config\Environment;
+use Symfony\Component\Filesystem\Path;
 
 /**
  * A replacement for DrupalFinder. We may go back to that once it uses InstalledVersions from Composer.
@@ -23,7 +24,7 @@ class DrushDrupalFinder
     public function getDrupalRoot()
     {
         $core = InstalledVersions::getInstallPath('drupal/core');
-        return $core ? realpath(dirname($core)) : false;
+        return $core ? Path::canonicalize(realpath(dirname($core))) : false;
     }
 
     /**
@@ -45,6 +46,6 @@ class DrushDrupalFinder
      */
     public function getVendorDir()
     {
-        return realpath($this->environment->vendorPath());
+        return Path::canonicalize(realpath($this->environment->vendorPath()));
     }
 }
