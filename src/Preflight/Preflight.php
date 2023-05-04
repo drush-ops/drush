@@ -7,12 +7,14 @@ namespace Drush\Preflight;
 use Composer\Autoload\ClassLoader;
 use Consolidation\SiteAlias\SiteAliasManager;
 use DrupalFinder\DrupalFinder;
+use Drush\DrupalFinder\DrushDrupalFinder;
 use Drush\Config\ConfigLocator;
 use Drush\Config\DrushConfig;
 use Drush\Config\Environment;
 use Drush\SiteAlias\SiteAliasFileLoader;
 use RuntimeException;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Filesystem\Path;
 use Symfony\Component\HttpKernel\Kernel;
 
 /**
@@ -42,7 +44,7 @@ class Preflight
     protected $configLocator;
 
     /**
-     * @var DrupalFinder
+     * @var DrushDrupalFinder
      */
     protected $drupalFinder;
 
@@ -69,7 +71,7 @@ class Preflight
         $this->environment = $environment;
         $this->verify = $verify ?: new PreflightVerify();
         $this->configLocator = $configLocator ?: new ConfigLocator('DRUSH_', $environment->getConfigFileVariant());
-        $this->drupalFinder = new DrupalFinder();
+        $this->drupalFinder = new DrushDrupalFinder($environment);
         $this->logger = $preflightLog ?: new PreflightLog();
     }
 
@@ -302,10 +304,10 @@ class Preflight
 
         // Check to see if the alias on the command line points at
         // a local Drupal site that is not the site at $root
-        $localAliasDrupalFinder = new DrupalFinder();
+        $localAliasDrupalFinder = new DrupalFinder($this->environment());
         $foundAlternateRoot = $localAliasDrupalFinder->locateRoot($selfSiteAlias->localRoot());
         if ($foundAlternateRoot) {
-            $alteredRoot = $localAliasDrupalFinder->getDrupalRoot();
+            $alteredRoot = Path::canonicalize($localAliasDrupalFinder->getDrupalRoot());
 
             // Now that we have our final Drupal root, check to see if there is
             // a site-local Drush. If there is, we will redispatch to it.
@@ -345,7 +347,7 @@ class Preflight
     protected function preferredSite()
     {
         $projectRoot = dirname($this->environment->vendorPath());
-        $this->drupalFinder->locateRoot($projectRoot);
+        // $this->drupalFinder->locateRoot($projectRoot);
         $root = $this->drupalFinder()->getDrupalRoot();
 
         // We prohibit global installs of Drush (without a Drupal site).
@@ -359,7 +361,7 @@ class Preflight
     /**
      * Return the Drupal Finder
      */
-    public function drupalFinder(): DrupalFinder
+    public function drupalFinder(): DrushDrupalFinder
     {
         return $this->drupalFinder;
     }

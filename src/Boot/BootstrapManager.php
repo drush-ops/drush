@@ -14,7 +14,7 @@ use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
 use Consolidation\SiteProcess\ProcessManagerAwareInterface;
 use Consolidation\AnnotatedCommand\Input\StdinAwareInterface;
 use Consolidation\AnnotatedCommand\AnnotationData;
-use DrupalFinder\DrupalFinder;
+use Drush\DrupalFinder\DrushDrupalFinder;
 use Drush\Config\ConfigAwareTrait;
 use League\Container\ContainerAwareInterface;
 use League\Container\ContainerAwareTrait;
@@ -30,7 +30,7 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
     use ContainerAwareTrait;
 
     /**
-     * @var DrupalFinder
+     * @var DrushDrupalFinder
      */
     protected $drupalFinder;
 
@@ -80,15 +80,15 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
         }
     }
 
-    public function drupalFinder(): DrupalFinder
+    public function drupalFinder(): DrushDrupalFinder
     {
         if (!isset($this->drupalFinder)) {
-            $this->drupalFinder = new DrupalFinder();
+            $this->drupalFinder = new DrushDrupalFinder();
         }
         return $this->drupalFinder;
     }
 
-    public function setDrupalFinder(DrupalFinder $drupalFinder): void
+    public function setDrupalFinder(DrushDrupalFinder $drupalFinder): void
     {
         $this->drupalFinder = $drupalFinder;
     }
