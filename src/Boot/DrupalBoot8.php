@@ -21,6 +21,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Consolidation\AnnotatedCommand\CommandFileDiscovery;
 use Robo\Robo;
 use Drush\Runtime\ServiceInstantiator;
+use Drush\Runtime\DrushServiceFinder;
 
 class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
 {
@@ -259,10 +260,10 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
         $container = \Drupal::getContainer();
 
         // Drush services adapter
-        $drushServiceFiles = $this->kernel->getDrushServiceFiles();
+        $drushServiceFinder = new DrushServiceFinder(\Drupal::moduleHandler(), Drush::config());
+        $drushServiceFiles = $drushServiceFinder->getDrushServiceFiles();
         $serviceInstantiator = new ServiceInstantiator($container, $drushContainer);
         $serviceInstantiator->loadServiceFiles($drushServiceFiles);
-        $drushCommandHandlers = $serviceInstantiator->taggedServices('drush.command');
 
         // Find the containerless commands, generators and command info alterers
         $bootstrapCommandClasses = $application->bootstrapCommandClasses();
@@ -276,19 +277,23 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
         }
 
         // Find the command info alterers in Drush services.
+/*
         if ($container->has(DrushServiceModifier::DRUSH_COMMAND_INFO_ALTERER_SERVICES)) {
             $serviceCommandInfoAltererList = $container->get(DrushServiceModifier::DRUSH_COMMAND_INFO_ALTERER_SERVICES);
             $commandFactory = Drush::commandFactory();
             $commandInfoAlterers = array_merge($commandInfoAlterers, $serviceCommandInfoAltererList->getCommandList());
         }
+*/
+        $commandInfoAlterers = array_merge($commandInfoAlterers, $serviceInstantiator->taggedServices('drush.command_info_alterer'));
 
         // Set the command info alterers.
-        foreach ($serviceCommandInfoAltererList->getCommandList() as $altererHandler) {
+        foreach ($commandInfoAlterers as $altererHandler) {
             $commandFactory->addCommandInfoAlterer($altererHandler);
             $this->logger->debug(dt('Commands are potentially altered in !class.', ['!class' => get_class($altererHandler)]));
         }
 
         // Register the Drush Symfony Console commands found in Drush services
+/*
         if ($container->has(DrushServiceModifier::DRUSH_CONSOLE_SERVICES)) {
             $serviceCommandList = $container->get(DrushServiceModifier::DRUSH_CONSOLE_SERVICES);
             foreach ($serviceCommandList->getCommandList() as $command) {
@@ -297,8 +302,17 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
                 $application->add($command);
             }
         }
+*/
+        $drushServicesConsoleCommands = $serviceInstantiator->taggedServices('console.command');
+        foreach ($drushServicesConsoleCommands as $command) {
+            $manager->inflect($commandHandler);
+            $this->logger->debug(dt('Add a command: !name', ['!name' => $command->getName()]));
+            $application->add($command);
+        }
+
 
         // Do the same thing with the annotation commands.
+/*
         if ($container->has(DrushServiceModifier::DRUSH_COMMAND_SERVICES)) {
             $serviceCommandList = $container->get(DrushServiceModifier::DRUSH_COMMAND_SERVICES);
             foreach ($serviceCommandList->getCommandList() as $commandHandler) {
@@ -306,6 +320,14 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
                 $this->logger->debug(dt('Add a commandfile class: !name', ['!name' => get_class($commandHandler)]));
                 Robo::register($application, $commandHandler);
             }
+        }
+*/
+        // Add annotation commands from drush.services.yml
+        $drushServicesCommandHandlers = $serviceInstantiator->taggedServices('drush.command');
+        foreach ($drushServicesCommandHandlers as $commandHandler) {
+            $manager->inflect($commandHandler);
+            $this->logger->debug(dt('Add a commandfile class: !name', ['!name' => get_class($commandHandler)]));
+            Robo::register($application, $commandHandler);
         }
 
         // Finally, instantiate all of the classes we discovered in
@@ -330,10 +352,6 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
                 $manager->inflect($commandHandler);
                 Robo::register($application, $commandHandler);
             }
-        }
-        foreach ($drushCommandHandlers as $commandHandler) {
-            $manager->inflect($commandHandler);
-            Robo::register($application, $commandHandler);
         }
     }
 

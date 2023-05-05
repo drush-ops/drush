@@ -99,6 +99,11 @@ trait DrupalKernelTrait
         // Let Drupal discover all of its service providers
         parent::discoverServiceProviders();
 
+        $this->discoverDrushServiceProviders();
+    }
+
+    protected function discoverDrushServiceProviders()
+    {
         // Add those Drush service providers from Drush core that
         // need references to the Drupal DI container. This includes
         // Drush commands, and those services needed by those Drush
