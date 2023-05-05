@@ -10,7 +10,6 @@ use Drush\Drush;
 use Symfony\Component\Console\Application;
 use Composer\Autoload\ClassLoader;
 use Drush\Command\DrushCommandInfoAlterer;
-
 use Psr\Container\ContainerInterface;
 use League\Container\Container as DrushContainer;
 use Symfony\Component\Yaml\Yaml;
@@ -35,7 +34,7 @@ class ServiceInstantiator
             $serviceFileContents = '';
             $serviceFileData = [];
 
-            if(file_exists($serviceFile)) {
+            if (file_exists($serviceFile)) {
                 $serviceFileContents = file_get_contents($serviceFile);
             }
             if (!empty($serviceFileContents)) {
@@ -189,7 +188,7 @@ class ServiceInstantiator
             return [false, substr($arg, 1)];
         }
 
-        return [true, $arg];        
+        return [true, $arg];
     }
 
     protected function atLeastOneValue($args)

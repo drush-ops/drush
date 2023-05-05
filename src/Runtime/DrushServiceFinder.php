@@ -10,7 +10,6 @@ use Drush\Drush;
 use Symfony\Component\Console\Application;
 use Composer\Autoload\ClassLoader;
 use Drush\Command\DrushCommandInfoAlterer;
-
 use Psr\Container\ContainerInterface;
 use League\Container\Container as DrushContainer;
 use Drush\Drupal\DrupalKernelTrait;
@@ -28,7 +27,8 @@ class DrushServiceFinder
     protected $drushServiceYamls = [];
 
     public function __construct(protected $moduleHandler, protected $drushConfig)
-    {}
+    {
+    }
 
     public function getDrushServiceFiles()
     {
