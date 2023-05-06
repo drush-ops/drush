@@ -42,7 +42,7 @@ class DrushServiceFinder
         $moduleFilenames = [];
 
         foreach ($modules as $module => $extension) {
-            $moduleFilenames[$module] = $extension->getPath();
+            $moduleFilenames[$module] = $extension->getPathname();
         }
 
         return $moduleFilenames;

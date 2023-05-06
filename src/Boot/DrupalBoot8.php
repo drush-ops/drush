@@ -277,10 +277,10 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
         }
 
         // Find the command info alterers in Drush services.
+        $commandFactory = Drush::commandFactory();
 /*
         if ($container->has(DrushServiceModifier::DRUSH_COMMAND_INFO_ALTERER_SERVICES)) {
             $serviceCommandInfoAltererList = $container->get(DrushServiceModifier::DRUSH_COMMAND_INFO_ALTERER_SERVICES);
-            $commandFactory = Drush::commandFactory();
             $commandInfoAlterers = array_merge($commandInfoAlterers, $serviceCommandInfoAltererList->getCommandList());
         }
 */
