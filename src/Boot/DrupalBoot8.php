@@ -305,7 +305,7 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
 */
         $drushServicesConsoleCommands = $serviceInstantiator->taggedServices('console.command');
         foreach ($drushServicesConsoleCommands as $command) {
-            $manager->inflect($commandHandler);
+            $manager->inflect($command);
             $this->logger->debug(dt('Add a command: !name', ['!name' => $command->getName()]));
             $application->add($command);
         }
