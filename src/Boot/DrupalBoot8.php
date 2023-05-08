@@ -20,8 +20,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Consolidation\AnnotatedCommand\CommandFileDiscovery;
 use Robo\Robo;
-use Drush\Runtime\ServiceInstantiator;
-use Drush\Runtime\DrushServiceFinder;
+use Drush\Runtime\LegacyServiceInstantiator;
+use Drush\Runtime\LegacyServiceFinder;
 
 class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
 {
@@ -30,6 +30,9 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
     protected ?LoggrInterface $drupalLoggerAdapter = null;
     protected ?DrupalKernelInterface $kernel = null;
     protected Request $request;
+
+    public function __construct(protected $serviceManager)
+    {}
 
     public function getRequest(): Request
     {
@@ -260,10 +263,10 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
         $container = \Drupal::getContainer();
 
         // Drush services adapter
-        $drushServiceFinder = new DrushServiceFinder(\Drupal::moduleHandler(), Drush::config());
-        $drushServiceFiles = $drushServiceFinder->getDrushServiceFiles();
-        $serviceInstantiator = new ServiceInstantiator($container, $drushContainer);
-        $serviceInstantiator->loadServiceFiles($drushServiceFiles);
+        $serviceFinder = new LegacyServiceFinder(\Drupal::moduleHandler(), Drush::config());
+        $drushServiceFiles = $serviceFinder->getDrushServiceFiles();
+        $legacyServiceInstantiator = new LegacyServiceInstantiator($container, $drushContainer);
+        $legacyServiceInstantiator->loadServiceFiles($drushServiceFiles);
 
         // Find the containerless commands, generators and command info alterers
         $bootstrapCommandClasses = $application->bootstrapCommandClasses();
@@ -276,6 +279,10 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
             $commandInfoAlterers = array_merge($commandInfoAlterers, $commandInfoAlterersInThisModule);
         }
 
+        // Look up the generators from the legacy service instantiator and inject
+        // them into the service manager.
+        $this->serviceManager->injectGenerators($legacyServiceInstantiator->taggedServices('drush.generator.v3'));
+
         // Find the command info alterers in Drush services.
         $commandFactory = Drush::commandFactory();
 /*
@@ -284,7 +291,7 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
             $commandInfoAlterers = array_merge($commandInfoAlterers, $serviceCommandInfoAltererList->getCommandList());
         }
 */
-        $commandInfoAlterers = array_merge($commandInfoAlterers, $serviceInstantiator->taggedServices('drush.command_info_alterer'));
+        $commandInfoAlterers = array_merge($commandInfoAlterers, $legacyServiceInstantiator->taggedServices('drush.command_info_alterer'));
 
         // Set the command info alterers.
         foreach ($commandInfoAlterers as $altererHandler) {
@@ -303,7 +310,7 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
             }
         }
 */
-        $drushServicesConsoleCommands = $serviceInstantiator->taggedServices('console.command');
+        $drushServicesConsoleCommands = $legacyServiceInstantiator->taggedServices('console.command');
         foreach ($drushServicesConsoleCommands as $command) {
             $manager->inflect($command);
             $this->logger->debug(dt('Add a command: !name', ['!name' => $command->getName()]));
@@ -323,7 +330,7 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
         }
 */
         // Add annotation commands from drush.services.yml
-        $drushServicesCommandHandlers = $serviceInstantiator->taggedServices('drush.command');
+        $drushServicesCommandHandlers = $legacyServiceInstantiator->taggedServices('drush.command');
         foreach ($drushServicesCommandHandlers as $commandHandler) {
             $manager->inflect($commandHandler);
             $this->logger->debug(dt('Add a commandfile class: !name', ['!name' => get_class($commandHandler)]));

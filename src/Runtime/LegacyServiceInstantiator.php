@@ -16,9 +16,14 @@ use Symfony\Component\Yaml\Yaml;
 use Robo\Robo;
 
 /**
- * Use Dependency Injection Container to instantiate services.
+ * Use the Symfony Dependency Injection Container to instantiate services.
+ *
+ * This factory class is used solely for backwards compatability with
+ * Drupal modules that still use drush.services.ymls to define Drush
+ * Commands, Generators & etc.; this mechanism is deprecated, though.
+ * Modules should instead use the static factory `create` mechanism.
  */
-class ServiceInstantiator
+class LegacyServiceInstantiator
 {
     protected ContainerInterface $drushServicesContainer;
     protected array $tags = [];

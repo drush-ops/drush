@@ -117,7 +117,10 @@ class DependencyInjection
             ->addMethodCall('addDefaultSimplifiers', []);
 
         // Add some of our own objects to the container
-        Robo::addShared($container, 'bootstrap.drupal8', 'Drush\Boot\DrupalBoot8');
+        Robo::addShared($container, 'service.manager', 'Drush\Runtime\ServiceManager')
+            ->addArgument('loader');
+        Robo::addShared($container, 'bootstrap.drupal8', 'Drush\Boot\DrupalBoot8')
+            ->addArgument('service.manager');
         Robo::addShared($container, 'bootstrap.manager', 'Drush\Boot\BootstrapManager')
             ->addMethodCall('setDrupalFinder', [$drupalFinder]);
         // TODO: Can we somehow add these via discovery (e.g. backdrop extension?)

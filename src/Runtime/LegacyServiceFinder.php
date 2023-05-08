@@ -13,11 +13,17 @@ use Drush\Command\DrushCommandInfoAlterer;
 use Psr\Container\ContainerInterface;
 use League\Container\Container as DrushContainer;
 use Drush\Drupal\DrupalKernelTrait;
+use Drush\Config\DrushConfig;
 
 /**
  * Find drush.services.yml files.
+ *
+ * This discovery class is used solely for backwards compatability with
+ * Drupal modules that still use drush.services.ymls to define Drush
+ * Commands, Generators & etc.; this mechanism is deprecated, though.
+ * Modules should instead use the static factory `create` mechanism.
  */
-class DrushServiceFinder
+class  LegacyServiceFinder
 {
     // We get the discovery code we need from the DrupalKernelTrait.
     // We could also just move the code from there to here eventually,
@@ -26,13 +32,15 @@ class DrushServiceFinder
 
     protected $drushServiceYamls = [];
 
-    public function __construct(protected $moduleHandler, protected $drushConfig)
+    public function __construct(protected $moduleHandler, protected DrushConfig $drushConfig)
     {
     }
 
     public function getDrushServiceFiles()
     {
-        $this->discoverDrushServiceProviders();
+        if (empty($drushServiceYamls)) {
+            $this->discoverDrushServiceProviders();
+        }
         return $this->drushServiceYamls;
     }
 
