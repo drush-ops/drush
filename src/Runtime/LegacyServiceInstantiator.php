@@ -11,7 +11,6 @@ use Symfony\Component\Console\Application;
 use Composer\Autoload\ClassLoader;
 use Drush\Command\DrushCommandInfoAlterer;
 use Psr\Container\ContainerInterface;
-use League\Container\Container as DrushContainer;
 use Symfony\Component\Yaml\Yaml;
 use Robo\Robo;
 
@@ -25,13 +24,11 @@ use Robo\Robo;
  */
 class LegacyServiceInstantiator
 {
-    protected ContainerInterface $drushServicesContainer;
+    protected array $drushServicesContainer = [];
     protected array $tags = [];
 
-    public function __construct(protected ContainerInterface $container, protected ContainerInterface $drushContainer)
-    {
-        $this->drushServicesContainer = new DrushContainer();
-    }
+    public function __construct(protected ContainerInterface $container)
+    {}
 
     public function loadServiceFiles(array $serviceFiles)
     {
@@ -66,7 +63,7 @@ class LegacyServiceInstantiator
                 $info['calls'] ?? []
             );
 
-            Robo::addShared($this->drushServicesContainer, $serviceName, $service);
+            $this->drushServicesContainer[$serviceName] = $service;
 
             // If `tags` to contains an item with `name: drush.command`,
             // then we should do something special with it
@@ -145,18 +142,13 @@ class LegacyServiceInstantiator
         if ($arg[0] == '@') {
             // Check to see if a previous drush.services.yml instantiated
             // this service; return any service found.
-            $result = $this->resolveFromContainer($this->drushServicesContainer, substr($arg, 1), false);
-            if ($result) {
-                return $result;
+            $drushServiceName = ltrim(substr($arg, 1), '?');
+            if (isset($this->drushServicesContainer[$drushServiceName])) {
+                return $this->drushServicesContainer[$drushServiceName];
             }
 
             // If the service is not found in the dynamic container
             return $this->resolveFromContainer($this->container, substr($arg, 1));
-        }
-
-        // Use '*' instead of '@' to pull from the Drush container.
-        if ($arg[0] == '*') {
-            return $this->resolveFromContainer($this->drushContainer, substr($arg, 1));
         }
 
         return $arg;
@@ -167,13 +159,13 @@ class LegacyServiceInstantiator
      * not found, unless the service name begins with `?` (e.g.
      * `@?drupal.service` or `*?drush.service`).
      */
-    protected function resolveFromContainer($container, string $arg, bool $checkRequired = true)
+    protected function resolveFromContainer($container, string $arg)
     {
         [$required, $arg] = $this->isRequired($arg);
 
         // Exit early if the container does not have the service
         if (!$container->has($arg)) {
-            if ($checkRequired && $required) {
+            if ($required) {
                 throw new \Exception("Big badda boom! This should be the same thing that the Drupal / Symfony DI container throws.");
             }
 

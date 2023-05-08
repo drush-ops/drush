@@ -266,7 +266,7 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
         // Drush services adapter
         $serviceFinder = new LegacyServiceFinder(\Drupal::moduleHandler(), Drush::config());
         $drushServiceFiles = $serviceFinder->getDrushServiceFiles();
-        $legacyServiceInstantiator = new LegacyServiceInstantiator($container, $drushContainer);
+        $legacyServiceInstantiator = new LegacyServiceInstantiator($container);
         $legacyServiceInstantiator->loadServiceFiles($drushServiceFiles);
 
         // Find the containerless commands, generators and command info alterers
