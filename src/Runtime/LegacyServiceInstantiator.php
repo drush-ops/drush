@@ -28,7 +28,8 @@ class LegacyServiceInstantiator
     protected array $tags = [];
 
     public function __construct(protected ContainerInterface $container)
-    {}
+    {
+    }
 
     public function loadServiceFiles(array $serviceFiles)
     {
