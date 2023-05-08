@@ -12,7 +12,7 @@ use Symfony\Component\Filesystem\Path;
 /**
  * @group commands
  */
-class ModuleGeneratorTest extends UnishIntegrationTestCase
+class ModuleGeneratorTest extends CommandUnishTestCase
 {
     use TestModuleHelperTrait;
 
@@ -21,6 +21,8 @@ class ModuleGeneratorTest extends UnishIntegrationTestCase
      */
     public function testModuleGenerators(): void
     {
+        $this->setUpDrupal(1, true);
+
         $this->drush(PmCommands::INSTALL, ['woot']);
         $this->drush(CacheCommands::CLEAR, ['drush']);
         $this->drush(GenerateCommands::GENERATE, ['list']);
