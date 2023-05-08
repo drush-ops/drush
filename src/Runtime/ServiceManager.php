@@ -20,21 +20,21 @@ use Drush\Config\DrushConfig;
  *
  * This class manages the various services / plugins supported by Drush.
  * The primary examples of these include:
- * 
+ *
  *   - Command files
  *   - Hooks
  *   - Symfony Console commands
  *   - Command info alterers
  *   - Generators
- * 
+ *
  * Most services are discovered via the PSR-4 discovery mechanism. Legacy
  * services are injected into this object by the bootstrap handler
  * (DrushBoot8) using the LegacyServiceFinder and LegacyServiceInstantiator
  * classes.
- * 
+ *
  * TODO: That's the intention, anyway. For now, we just stuff gererators here.
  */
-class  ServiceManager
+class ServiceManager
 {
     protected $generators = [];
 
@@ -53,6 +53,5 @@ class  ServiceManager
             ...$this->generators,
             ...$additionalGenerators
         ];
-
     }
 }

@@ -23,7 +23,7 @@ use Drush\Config\DrushConfig;
  * Commands, Generators & etc.; this mechanism is deprecated, though.
  * Modules should instead use the static factory `create` mechanism.
  */
-class  LegacyServiceFinder
+class LegacyServiceFinder
 {
     // We get the discovery code we need from the DrupalKernelTrait.
     // We could also just move the code from there to here eventually,

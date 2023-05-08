@@ -32,7 +32,8 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
     protected Request $request;
 
     public function __construct(protected $serviceManager)
-    {}
+    {
+    }
 
     public function getRequest(): Request
     {
