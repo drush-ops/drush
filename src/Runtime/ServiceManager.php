@@ -14,6 +14,7 @@ use Psr\Container\ContainerInterface;
 use League\Container\Container as DrushContainer;
 use Drush\Drupal\DrupalKernelTrait;
 use Drush\Config\DrushConfig;
+use Robo\ClassDiscovery\RelativeNamespaceDiscovery;
 
 /**
  * Manage Drush services.
@@ -40,6 +41,14 @@ class ServiceManager
 
     public function __construct(protected ClassLoader $autoloader)
     {
+    }
+
+    public function discoverPsr4Generators(): array
+    {
+        $classes = (new RelativeNamespaceDiscovery($this->autoloader))
+            ->setRelativeNamespace('Drush\Generators')
+            ->setSearchPattern('/.*Generator\.php$/')->getClasses();
+        return $classes;
     }
 
     public function getGenerators()

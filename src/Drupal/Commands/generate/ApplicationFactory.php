@@ -12,14 +12,12 @@ use Drush\Drupal\Commands\generate\Generators\Drush\DrushAliasFile;
 use Drush\Drupal\Commands\generate\Generators\Drush\DrushCommandFile;
 use Drush\Drupal\DrushServiceModifier;
 use Psr\Log\LoggerInterface;
-use Robo\ClassDiscovery\RelativeNamespaceDiscovery;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class ApplicationFactory
 {
     public function __construct(
         private ContainerInterface $container,
-        private ClassLoader $autoloader,
         private LoggerInterface $logger
     ) {
     }
@@ -45,11 +43,13 @@ class ApplicationFactory
 
     public function discover(): array
     {
-        $global_generators = $this->discoverPsr4Generators();
-
         $module_generators = [];
         $serviceManager = \Drush\Drush::service('service.manager');
         $module_generators = $serviceManager->getGenerators();
+
+        $global_generator_classes = $serviceManager->discoverPsr4Generators();
+        $global_generator_classes = $this->filterCLassExists($global_generator_classes);
+        $global_generators = $this->getGenerators($global_generator_classes);
 
         $generators = [
             new DrushCommandFile(),
@@ -58,15 +58,6 @@ class ApplicationFactory
             ...$module_generators,
         ];
         return $generators;
-    }
-
-    public function discoverPsr4Generators(): array
-    {
-        $classes = (new RelativeNamespaceDiscovery($this->autoloader))
-            ->setRelativeNamespace('Drush\Generators')
-            ->setSearchPattern('/.*Generator\.php$/')->getClasses();
-        $classes = $this->filterCLassExists($classes);
-        return $this->getGenerators($classes);
     }
 
     /**
