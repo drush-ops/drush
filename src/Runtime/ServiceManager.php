@@ -151,7 +151,7 @@ class ServiceManager implements ConfigAwareInterface
                     && !$reflectionClass->isAbstract()
                     && !$reflectionClass->isInterface()
                     && !$reflectionClass->isTrait();
-            });
+        });
     }
 
     /**
