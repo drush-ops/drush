@@ -94,13 +94,7 @@ class ApplicationFactory
             function (string $class): BaseGenerator {
                 return new $class();
             },
-            array_filter($classes, function (string $class): bool {
-                $reflectionClass = new \ReflectionClass($class);
-                return $reflectionClass->isSubclassOf(BaseGenerator::class)
-                    && !$reflectionClass->isAbstract()
-                    && !$reflectionClass->isInterface()
-                    && !$reflectionClass->isTrait();
-            })
+            $classes
         );
     }
 

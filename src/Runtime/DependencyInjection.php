@@ -118,7 +118,8 @@ class DependencyInjection
 
         // Add some of our own objects to the container
         Robo::addShared($container, 'service.manager', 'Drush\Runtime\ServiceManager')
-            ->addArgument('loader');
+            ->addArgument('loader')
+            ->addMethodCall('setConfig', ['config']);
         Robo::addShared($container, 'bootstrap.drupal8', 'Drush\Boot\DrupalBoot8')
             ->addArgument('service.manager');
         Robo::addShared($container, 'bootstrap.manager', 'Drush\Boot\BootstrapManager')
@@ -188,5 +189,6 @@ class DependencyInjection
         $application->setTildeExpansionHook($container->get('tildeExpansion.hook'));
         $application->setDispatcher($container->get('eventDispatcher'));
         $application->setConfig($container->get('config'));
+        $application->setServiceManager($container->get('service.manager'));
     }
 }
