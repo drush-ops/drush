@@ -271,9 +271,12 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
         $commandInfoAlterers = [];
         foreach ($moduleHandler->getModuleList() as $moduleId => $extension) {
             $path = DRUPAL_ROOT . '/' . $extension->getPath() . '/src/Drush/';
-            $commandsInThisModule = $this->discoverModuleCommands([$path], "\\Drupal\\" . $moduleId . "\\Drush");
+            $commandsInThisModule = $this->serviceManager->discoverModuleCommands([$path], "\\Drupal\\" . $moduleId . "\\Drush");
+            // TODO: Maybe $bootstrapCommandClasses could use a better name.
+            // These are commandhandlers that have static create factory methods.
             $bootstrapCommandClasses = array_merge($bootstrapCommandClasses, $commandsInThisModule);
-            $commandInfoAlterersInThisModule = $this->discoverCommandInfoAlterers([$path], "\\Drupal\\" . $moduleId . "\\Drush");
+            // TODO: Support PSR-4 command info alterers, like bootstrapCommandClasses?
+            $commandInfoAlterersInThisModule = $this->serviceManager->discoverModuleCommandInfoAlterers([$path], "\\Drupal\\" . $moduleId . "\\Drush");
             $commandInfoAlterers = array_merge($commandInfoAlterers, $commandInfoAlterersInThisModule);
         }
 
@@ -284,6 +287,8 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
 
         // Find the command info alterers in Drush services.
         $commandFactory = Drush::commandFactory();
+        // TODO: $commandInfoAlterers are class names, taggedServices are
+        // instantiated classes. Let's not mix these.
         $commandInfoAlterers = array_merge($commandInfoAlterers, $legacyServiceInstantiator->taggedServices('drush.command_info_alterer'));
 
         // Set the command info alterers. We must do this prior to calling
@@ -345,38 +350,6 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
 
         $reflectionMethod = new \ReflectionMethod($class, 'create');
         return $reflectionMethod->isStatic();
-    }
-
-    /**
-     * Discover module commands. This is the preferred way to find module
-     * commands in Drush 12+.
-     */
-    protected function discoverModuleCommands(array $directoryList, string $baseNamespace): array
-    {
-        $discovery = new CommandFileDiscovery();
-        $discovery
-            ->setIncludeFilesAtBase(true)
-            ->setSearchDepth(1)
-            ->ignoreNamespacePart('src')
-            ->setSearchLocations(['Commands', 'Hooks', 'Generators'])
-            ->setSearchPattern('#.*(Command|Hook|Generator)s?.php$#');
-        $baseNamespace = ltrim($baseNamespace, '\\');
-        $commandClasses = $discovery->discover($directoryList, $baseNamespace);
-        return array_values($commandClasses);
-    }
-
-    protected function discoverCommandInfoAlterers(array $directoryList, string $baseNamespace): array
-    {
-        $discovery = new CommandFileDiscovery();
-        $discovery
-            ->setIncludeFilesAtBase(true)
-            ->setSearchDepth(1)
-            ->ignoreNamespacePart('src')
-            ->setSearchLocations(['CommandInfoAlterers'])
-            ->setSearchPattern('#.*CommandInfoAlterer.php$#');
-        $baseNamespace = ltrim($baseNamespace, '\\');
-        $commandClasses = $discovery->discover($directoryList, $baseNamespace);
-        return array_values($commandClasses);
     }
 
     /**

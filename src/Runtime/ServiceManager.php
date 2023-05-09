@@ -155,6 +155,45 @@ class ServiceManager implements ConfigAwareInterface
     }
 
     /**
+     * Discover module commands. This is the preferred way to find module
+     * commands in Drush 12+.
+     *
+     * @return string[]
+     */
+    public function discoverModuleCommands(array $directoryList, string $baseNamespace): array
+    {
+        $discovery = new CommandFileDiscovery();
+        $discovery
+            ->setIncludeFilesAtBase(true)
+            ->setSearchDepth(1)
+            ->ignoreNamespacePart('src')
+            ->setSearchLocations(['Commands', 'Hooks', 'Generators'])
+            ->setSearchPattern('#.*(Command|Hook|Generator)s?.php$#');
+        $baseNamespace = ltrim($baseNamespace, '\\');
+        $commandClasses = $discovery->discover($directoryList, $baseNamespace);
+        return array_values($commandClasses);
+    }
+
+    /**
+     * Discover command info alterers in modules.
+     *
+     * @return string[]
+     */
+    public function discoverModuleCommandInfoAlterers(array $directoryList, string $baseNamespace): array
+    {
+        $discovery = new CommandFileDiscovery();
+        $discovery
+            ->setIncludeFilesAtBase(true)
+            ->setSearchDepth(1)
+            ->ignoreNamespacePart('src')
+            ->setSearchLocations(['CommandInfoAlterers'])
+            ->setSearchPattern('#.*CommandInfoAlterer.php$#');
+        $baseNamespace = ltrim($baseNamespace, '\\');
+        $commandClasses = $discovery->discover($directoryList, $baseNamespace);
+        return array_values($commandClasses);
+    }
+
+    /**
      * Instantiate commands from Grasmash\YamlCli that we want to expose
      * as Drush commands.
      *

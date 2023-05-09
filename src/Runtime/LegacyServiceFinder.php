@@ -26,8 +26,7 @@ use Drush\Config\DrushConfig;
 class LegacyServiceFinder
 {
     // We get the discovery code we need from the DrupalKernelTrait.
-    // We could also just move the code from there to here eventually,
-    // as that trait won't be needed once this class is used exclusively.
+    // TODO: Just move the code from DrupalKernelTrait to this class.
     use DrupalKernelTrait;
 
     protected $drushServiceYamls = [];
