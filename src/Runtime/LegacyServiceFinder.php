@@ -38,7 +38,7 @@ class LegacyServiceFinder
 
     public function getDrushServiceFiles()
     {
-        if (empty($drushServiceYamls)) {
+        if (empty($this->drushServiceYamls)) {
             $this->discoverDrushServiceProviders();
         }
         return $this->drushServiceYamls;
