@@ -258,9 +258,10 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
         // The upshot is that the list of console commands is not available
         // until after $kernel->boot() is called.
         $container = \Drupal::getContainer();
+        $moduleHandler = \Drupal::moduleHandler();
 
         // Legacy service adapters for drush.services.yml files.
-        $serviceFinder = new LegacyServiceFinder(\Drupal::moduleHandler(), Drush::config());
+        $serviceFinder = new LegacyServiceFinder($moduleHandler, Drush::config());
         $drushServiceFiles = $serviceFinder->getDrushServiceFiles();
         $legacyServiceInstantiator = new LegacyServiceInstantiator($container);
         $legacyServiceInstantiator->loadServiceFiles($drushServiceFiles);
@@ -268,8 +269,8 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
         // Find the containerless commands, generators and command info alterers
         $bootstrapCommandClasses = $application->bootstrapCommandClasses();
         $commandInfoAlterers = [];
-        foreach ($container->getParameter('container.modules') as $moduleId => $moduleInfo) {
-            $path = dirname(DRUPAL_ROOT . '/' . $moduleInfo['pathname']) . '/src/Drush/';
+        foreach ($moduleHandler->getModuleList() as $moduleId => $extension) {
+            $path = DRUPAL_ROOT . '/' . $extension->getPath() . '/src/Drush/';
             $commandsInThisModule = $this->discoverModuleCommands([$path], "\\Drupal\\" . $moduleId . "\\Drush");
             $bootstrapCommandClasses = array_merge($bootstrapCommandClasses, $commandsInThisModule);
             $commandInfoAlterersInThisModule = $this->discoverCommandInfoAlterers([$path], "\\Drupal\\" . $moduleId . "\\Drush");
