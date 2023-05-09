@@ -51,13 +51,6 @@ class ApplicationFactory
         $serviceManager = \Drush\Drush::service('service.manager');
         $module_generators = $serviceManager->getGenerators();
 
-/*
-        if ($this->container->has(DrushServiceModifier::DRUSH_GENERATOR_SERVICES)) {
-            $module_generators = $this->container->get(DrushServiceModifier::DRUSH_GENERATOR_SERVICES)->getCommandList(
-            );
-        }
-*/
-
         $generators = [
             new DrushCommandFile(),
             new DrushAliasFile(),

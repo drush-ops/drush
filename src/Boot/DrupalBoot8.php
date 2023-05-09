@@ -12,7 +12,6 @@ use Drupal\Core\DrupalKernel;
 use Drupal\Core\Session\AnonymousUserSession;
 use Drush\Config\ConfigLocator;
 use Drush\Drupal\DrushLoggerServiceProvider;
-use Drush\Drupal\DrushServiceModifier;
 use Drush\Drush;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Filesystem\Path;
@@ -223,9 +222,6 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
         $allow_dumping = $kernel !== Kernels::UPDATE;
         /** @var DrupalKernelInterface kernel */
         $this->kernel = $kernel_factory($request, $classloader, 'prod', $allow_dumping, $manager->getRoot());
-        // Include Drush services in the container.
-        // @see Drush\Drupal\DrupalKernel::addServiceModifier()
-        $this->kernel->addServiceModifier(new DrushServiceModifier());
 
         // Unset drupal error handler and restore Drush's one.
         restore_error_handler();
@@ -263,7 +259,7 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
         // until after $kernel->boot() is called.
         $container = \Drupal::getContainer();
 
-        // Drush services adapter
+        // Legacy service adapters for drush.services.yml files.
         $serviceFinder = new LegacyServiceFinder(\Drupal::moduleHandler(), Drush::config());
         $drushServiceFiles = $serviceFinder->getDrushServiceFiles();
         $legacyServiceInstantiator = new LegacyServiceInstantiator($container);
@@ -281,36 +277,23 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
         }
 
         // Look up the generators from the legacy service instantiator and inject
-        // them into the service manager.
+        // them into the service manager. The `generate` command will get the
+        // generators from the service manager.
         $this->serviceManager->injectGenerators($legacyServiceInstantiator->taggedServices('drush.generator.v3'));
 
         // Find the command info alterers in Drush services.
         $commandFactory = Drush::commandFactory();
-/*
-        if ($container->has(DrushServiceModifier::DRUSH_COMMAND_INFO_ALTERER_SERVICES)) {
-            $serviceCommandInfoAltererList = $container->get(DrushServiceModifier::DRUSH_COMMAND_INFO_ALTERER_SERVICES);
-            $commandInfoAlterers = array_merge($commandInfoAlterers, $serviceCommandInfoAltererList->getCommandList());
-        }
-*/
         $commandInfoAlterers = array_merge($commandInfoAlterers, $legacyServiceInstantiator->taggedServices('drush.command_info_alterer'));
 
-        // Set the command info alterers.
+        // Set the command info alterers. We must do this prior to calling
+        // Robo::register to add any commands, as that is the point where the
+        // alteration will happen.
         foreach ($commandInfoAlterers as $altererHandler) {
             $commandFactory->addCommandInfoAlterer($altererHandler);
             $this->logger->debug(dt('Commands are potentially altered in !class.', ['!class' => get_class($altererHandler)]));
         }
 
         // Register the Drush Symfony Console commands found in Drush services
-/*
-        if ($container->has(DrushServiceModifier::DRUSH_CONSOLE_SERVICES)) {
-            $serviceCommandList = $container->get(DrushServiceModifier::DRUSH_CONSOLE_SERVICES);
-            foreach ($serviceCommandList->getCommandList() as $command) {
-                $manager->inflect($command);
-                $this->logger->debug(dt('Add a command: !name', ['!name' => $command->getName()]));
-                $application->add($command);
-            }
-        }
-*/
         $drushServicesConsoleCommands = $legacyServiceInstantiator->taggedServices('console.command');
         foreach ($drushServicesConsoleCommands as $command) {
             $manager->inflect($command);
@@ -318,18 +301,6 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
             $application->add($command);
         }
 
-
-        // Do the same thing with the annotation commands.
-/*
-        if ($container->has(DrushServiceModifier::DRUSH_COMMAND_SERVICES)) {
-            $serviceCommandList = $container->get(DrushServiceModifier::DRUSH_COMMAND_SERVICES);
-            foreach ($serviceCommandList->getCommandList() as $commandHandler) {
-                $manager->inflect($commandHandler);
-                $this->logger->debug(dt('Add a commandfile class: !name', ['!name' => get_class($commandHandler)]));
-                Robo::register($application, $commandHandler);
-            }
-        }
-*/
         // Add annotation commands from drush.services.yml
         $drushServicesCommandHandlers = $legacyServiceInstantiator->taggedServices('drush.command');
         foreach ($drushServicesCommandHandlers as $commandHandler) {
@@ -355,7 +326,9 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
             }
             // Fail silently if the command handler could not be
             // instantiated, e.g. if it tries to fetch services from
-            // a module that has not been enabled.
+            // a module that has not been enabled. Note that Robo::register
+            // can accept either Annotated Command command handlers or
+            // Symfony Console Command objects.
             if ($commandHandler) {
                 $manager->inflect($commandHandler);
                 Robo::register($application, $commandHandler);
