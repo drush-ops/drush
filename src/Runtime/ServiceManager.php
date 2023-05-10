@@ -42,8 +42,6 @@ use Symfony\Component\Console\Application;
  * services are injected into this object by the bootstrap handler
  * (DrushBoot8) using the LegacyServiceFinder and LegacyServiceInstantiator
  * classes.
- *
- * TODO: That's the intention, anyway. For now, we just stuff gererators here.
  */
 class ServiceManager implements ConfigAwareInterface
 {

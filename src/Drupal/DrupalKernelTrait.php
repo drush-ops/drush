@@ -93,5 +93,4 @@ trait DrupalKernelTrait
         // Let Drupal discover all of its service providers
         parent::discoverServiceProviders();
     }
-
 }
