@@ -21,6 +21,9 @@ use Robo\Robo;
  * Drupal modules that still use drush.services.ymls to define Drush
  * Commands, Generators & etc.; this mechanism is deprecated, though.
  * Modules should instead use the static factory `create` mechanism.
+ *
+ * This object is only in scope during bootstrap; see the DrupalBoot8 class.
+ * After it has been used there, it is not referenced by any other code.
  */
 class LegacyServiceInstantiator
 {
@@ -52,8 +55,9 @@ class LegacyServiceInstantiator
 
     /**
      * Given a drush.services.yml file (parsed into an array),
-     * instantiate all of the services referenced therein, and
-     * cache them in our dynamic service container.
+     * instantiate all of the services referenced therein.
+     * The services created may be retrieved via the `taggedServices()`
+     * method.
      */
     public function instantiateServices(array $services)
     {
@@ -79,6 +83,10 @@ class LegacyServiceInstantiator
         }
     }
 
+    /**
+     * After `instantiateServices()` runs, the resulting instantiated
+     * service objects can be retrieved via this method.
+     */
     public function taggedServices($tagName)
     {
         return $this->tags[$tagName] ?? [];
