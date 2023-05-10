@@ -104,9 +104,11 @@ use Symfony\Component\Filesystem\Path;
 // directory.
 $cwd = isset($_SERVER['PWD']) && is_dir($_SERVER['PWD']) ? $_SERVER['PWD'] : getcwd();
 
+$autoloadFile = FALSE;
 // Set up autoloader
 $candidates = [
     $_composer_autoload_path ?? __DIR__ . '/../vendor/autoload.php', // https://getcomposer.org/doc/articles/vendor-binaries.md#finding-the-composer-autoloader-from-a-binary
+    dirname(__DIR__, 2) . '/autoload.php', // Needed for \Drush\TestTraits\DrushTestTrait::getPathToDrush
     __DIR__ . '/vendor/autoload.php', // For development of Drush itself.
 ];
 foreach ($candidates as $candidate) {
@@ -115,9 +117,12 @@ foreach ($candidates as $candidate) {
         break;
     }
 }
+if (!$autoloadFile) {
+    throw new \Exception("Could not locate autoload.php. cwd is $cwd; __DIR__ is " . __DIR__);
+}
 $loader = include $autoloadFile;
 if (!$loader) {
-    throw new \Exception("Could not locate autoload.php. cwd is $cwd; __DIR__ is " . __DIR__);
+    throw new \Exception("Invalid autoloadfile: $autoloadFile. cwd is $cwd; __DIR__ is " . __DIR__);
 }
 
 // Set up environment
