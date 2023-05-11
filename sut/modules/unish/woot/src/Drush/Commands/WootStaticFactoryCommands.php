@@ -35,9 +35,8 @@ class WootStaticFactoryCommands extends DrushCommands
      * Woot factory-aly.
      *
      * @command woot-factory
-     * @aliases wt
      */
-    public function woot($count = 10)
+    public function wootFactory($count = 10)
     {
         $a = 1;
         $b = 1;

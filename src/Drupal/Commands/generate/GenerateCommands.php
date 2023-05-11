@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Drush\Drupal\Commands\generate;
 
-use Composer\Autoload\ClassLoader;
 use Drush\Attributes as CLI;
 use Drush\Commands\core\DocsCommands;
 use Drush\Commands\DrushCommands;
@@ -20,8 +19,7 @@ final class GenerateCommands extends DrushCommands
     const GENERATE = 'generate';
 
     public function __construct(
-        private ContainerInterface $container,
-        private ClassLoader $autoloader
+        private ContainerInterface $container
     ) {
     }
 
@@ -47,7 +45,7 @@ final class GenerateCommands extends DrushCommands
     #[CLI\Complete(method_name_or_callable: 'generatorNameComplete')]
     public function generate(string $generator = '', $options = ['replace' => false, 'working-dir' => self::REQ, 'answer' => [], 'destination' => self::REQ, 'dry-run' => false]): int
     {
-        $application = (new ApplicationFactory($this->container, $this->autoloader, $this->logger()))->create();
+        $application = (new ApplicationFactory($this->container, $this->logger()))->create();
 
         if (!$generator || $generator == 'list') {
             $all = $application->all();

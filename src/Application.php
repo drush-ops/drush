@@ -6,21 +6,14 @@ namespace Drush;
 
 use Composer\Autoload\ClassLoader;
 use Consolidation\AnnotatedCommand\AnnotatedCommand;
-use Consolidation\AnnotatedCommand\CommandFileDiscovery;
-use Consolidation\Filter\Hooks\FilterHooks;
 use Consolidation\SiteAlias\SiteAliasManager;
 use Drush\Boot\BootstrapManager;
 use Drush\Boot\DrupalBootLevels;
 use Drush\Command\RemoteCommandProxy;
-use Drush\Commands\DrushCommands;
 use Drush\Config\ConfigAwareTrait;
 use Drush\Runtime\RedispatchHook;
 use Drush\Runtime\TildeExpansionHook;
-use Grasmash\YamlCli\Command\GetValueCommand;
-use Grasmash\YamlCli\Command\LintCommand;
-use Grasmash\YamlCli\Command\UnsetKeyCommand;
-use Grasmash\YamlCli\Command\UpdateKeyCommand;
-use Grasmash\YamlCli\Command\UpdateValueCommand;
+use Drush\Runtime\ServiceManager;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use Robo\ClassDiscovery\RelativeNamespaceDiscovery;
@@ -58,8 +51,8 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
     /** @var TildeExpansionHook */
     protected $tildeExpansionHook;
 
-    /** @var string[] */
-    protected array $bootstrapCommandClasses = [];
+    /** @var ServiceManager */
+    protected $serviceManager;
 
     /**
      * Add global options to the Application and their default values to Config.
@@ -137,6 +130,11 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
         $this->tildeExpansionHook = $tildeExpansionHook;
     }
 
+    public function setServiceManager(ServiceManager $serviceManager)
+    {
+        $this->serviceManager = $serviceManager;
+    }
+
     /**
      * Return the framework uri selected by the user.
      */
@@ -182,11 +180,6 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
             return $uri;
         }
         return $this->bootstrapManager()->selectUri($cwd);
-    }
-
-    public function bootstrapCommandClasses(): array
-    {
-        return $this->bootstrapCommandClasses;
     }
 
     /**
@@ -325,28 +318,10 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
         $this->configureIO($input, $output);
 
         // Directly add the yaml-cli commands.
-        $this->addCommands($this->discoverYamlCliCommands());
+        $this->addCommands($this->serviceManager->instantiateYamlCliCommands());
 
-        $commandClasses = array_unique(array_merge(
-            $this->discoverCommandsFromConfiguration(),
-            $this->discoverCommands($commandfileSearchpath, '\Drush'),
-            $this->discoverPsr4Commands($classLoader),
-            [FilterHooks::class]
-        ));
-
-        // If a command class has a static `create` method, then we will
-        // postpone instantiating it until after we bootstrap Drupal.
-        $this->bootstrapCommandClasses = array_filter($commandClasses, function (string $class): bool {
-            if (!method_exists($class, 'create')) {
-                return false;
-            }
-
-            $reflectionMethod = new \ReflectionMethod($class, 'create');
-            return $reflectionMethod->isStatic();
-        });
-
-        // Remove the command classes that we put into the bootstrap command classes.
-        $commandClasses = array_diff($commandClasses, $this->bootstrapCommandClasses);
+        // Find the command handlers that we can instantiate without bootstrapping Drupal
+        $commandClasses = $this->serviceManager->discover($commandfileSearchpath, '\Drush');
 
         // Uncomment the lines below to use Console's built in help and list commands.
         // unset($commandClasses[__DIR__ . '/Commands/help/HelpCommands.php']);
@@ -354,74 +329,6 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
 
         // Register our commands with Robo, our application framework.
         Robo::register($this, $commandClasses);
-    }
-
-    protected function discoverCommandsFromConfiguration()
-    {
-        $commandList = [];
-        foreach ($this->config->get('drush.commands', []) as $key => $value) {
-            if (is_numeric($key)) {
-                $classname = $value;
-                $commandList[] = $classname;
-            } else {
-                $classname = ltrim($key, '\\');
-                $commandList[$value] = $classname;
-            }
-        }
-        $this->loadCommandClasses($commandList);
-        return array_values($commandList);
-    }
-
-    /**
-     * Ensure that any discovered class that is not part of the autoloader
-     * is, in fact, included.
-     */
-    protected function loadCommandClasses($commandClasses)
-    {
-        foreach ($commandClasses as $file => $commandClass) {
-            if (!class_exists($commandClass)) {
-                include $file;
-            }
-        }
-    }
-
-    /**
-     * Discovers command classes.
-     */
-    protected function discoverCommands(array $directoryList, string $baseNamespace): array
-    {
-        $discovery = new CommandFileDiscovery();
-        $discovery
-            ->setIncludeFilesAtBase(true)
-            ->setSearchDepth(3)
-            ->ignoreNamespacePart('contrib', 'Commands')
-            ->ignoreNamespacePart('custom', 'Commands')
-            ->ignoreNamespacePart('src')
-            ->setSearchLocations(['Commands', 'Hooks', 'Generators'])
-            ->setSearchPattern('#.*(Command|Hook|Generator)s?.php$#');
-        $baseNamespace = ltrim($baseNamespace, '\\');
-        $commandClasses = $discovery->discover($directoryList, $baseNamespace);
-        $this->loadCommandClasses($commandClasses);
-        return array_values($commandClasses);
-    }
-
-    /**
-     * Discovers commands that are PSR4 auto-loaded.
-     */
-    protected function discoverPsr4Commands(ClassLoader $classLoader): array
-    {
-        $classes = (new RelativeNamespaceDiscovery($classLoader))
-            ->setRelativeNamespace('Drush\Commands')
-            ->setSearchPattern('/.*DrushCommands\.php$/')
-            ->getClasses();
-
-        return array_filter($classes, function (string $class): bool {
-            $reflectionClass = new \ReflectionClass($class);
-            return $reflectionClass->isSubclassOf(DrushCommands::class)
-                && !$reflectionClass->isAbstract()
-                && !$reflectionClass->isInterface()
-                && !$reflectionClass->isTrait();
-        });
     }
 
     /**
@@ -442,28 +349,5 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
         $output->writeln('', OutputInterface::VERBOSITY_QUIET);
 
         $this->doRenderThrowable($e, $output);
-    }
-
-    private function discoverYamlCliCommands(): array
-    {
-        $classes_yaml = [
-            GetValueCommand::class,
-            LintCommand::class,
-            UpdateKeyCommand::class,
-            UnsetKeyCommand::class,
-            UpdateValueCommand::class
-        ];
-
-        foreach ($classes_yaml as $class_yaml) {
-            /** @var Command $instance */
-            $instance = new $class_yaml();
-            // Namespace the commands.
-            $name = $instance->getName();
-            $instance->setName('yaml:' . $name);
-            $instance->setAliases(['y:' . $name]);
-            $instance->setHelp('See https://github.com/grasmash/yaml-cli for a README and bug reports.');
-            $instances[] = $instance;
-        }
-        return $instances;
     }
 }
