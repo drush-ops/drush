@@ -13,6 +13,7 @@ use Drush\Command\DrushCommandInfoAlterer;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\Yaml\Yaml;
 use Robo\Robo;
+use Symfony\Component\DependencyInjection\Exception\ParameterNotFoundException;
 
 /**
  * Use the Symfony Dependency Injection Container to instantiate services.
@@ -216,7 +217,7 @@ class LegacyServiceInstantiator
         // Exit early if the container does not have the service
         if (!$container->has($arg)) {
             if ($required) {
-                throw new \Exception("Big badda boom! This should be the same thing that the Drupal / Symfony DI container throws.");
+                throw new ParameterNotFoundException($arg);
             }
 
             return null;
