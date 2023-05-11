@@ -9,7 +9,7 @@ use Drush\Commands\sql\SqlCommands;
 use Drush\Commands\sql\SqlSyncCommands;
 use Drush\Commands\core\UserCommands;
 use Drush\Commands\pm\PmCommands;
-use Drush\Commands\sql\SanitizeCommands;
+use Drush\Drupal\Commands\sql\SanitizeCommands;
 
 /**
  * @group slow

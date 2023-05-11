@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Drush\Commands\sql;
+namespace Drush\Drupal\Commands\sql;
 
 use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\AnnotatedCommand\Hooks\HookManager;
@@ -10,7 +10,6 @@ use Drush\Attributes as CLI;
 use Drush\Commands\DrushCommands;
 use Drupal\Core\Database\Connection;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * This class is a good example of how to build a sql-sanitize plugin.
@@ -19,15 +18,6 @@ final class SanitizeSessionsCommands extends DrushCommands implements SanitizePl
 {
     public function __construct(protected Connection $database)
     {
-    }
-
-    public static function create(ContainerInterface $container): self
-    {
-        $commandHandler = new static(
-            $container->get('database')
-        );
-
-        return $commandHandler;
     }
 
     /**
