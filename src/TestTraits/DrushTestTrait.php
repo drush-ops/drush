@@ -84,12 +84,12 @@ trait DrushTestTrait
     /**
      * Given an option key / value pair, convert to a "--key=value" string.
      */
-    protected function convertKeyValueToFlag(string $key, ?string $value): string
+    protected function convertKeyValueToFlag(string $key, mixed $value): string
     {
-        if (!isset($value)) {
+        if (!isset($value) || $value === true) {
             return "--$key";
         }
-        return "--$key=" . self::escapeshellarg($value);
+        return "--$key=" . self::escapeshellarg((string)$value);
     }
 
     /**
