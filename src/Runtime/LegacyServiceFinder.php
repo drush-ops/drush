@@ -27,6 +27,23 @@ class LegacyServiceFinder
     {
     }
 
+    /**
+     * Get all service files that this class can discover.
+     *
+     * @return string[]
+     *   List of discovered drush.service.yml files
+     */
+    public function getDrushServiceFiles(): array
+    {
+        if (empty($this->drushServiceYamls)) {
+            $this->discoverDrushServiceProviders();
+        }
+        return $this->drushServiceYamls;
+    }
+
+    /**
+     * Search for drush.service.yml files in discoverable locaions.
+     */
     protected function discoverDrushServiceProviders()
     {
         // Add those Drush service providers from Drush core that
@@ -37,12 +54,12 @@ class LegacyServiceFinder
         // Note that:
         //  - We list all of the individual service files we use here.
         //  - These commands are not available until Drupal is bootstrapped.
-        $this->addDrushServiceProvider("_drush__config", Drush::config()->get('drush.base-dir') . '/src/Drupal/Commands/config/drush.services.yml');
-        $this->addDrushServiceProvider("_drush__core", Drush::config()->get('drush.base-dir') . '/src/Drupal/Commands/core/drush.services.yml');
-        $this->addDrushServiceProvider("_drush__field", Drush::config()->get('drush.base-dir') . '/src/Drupal/Commands/field/drush.services.yml');
-        $this->addDrushServiceProvider("_drush__generate", Drush::config()->get('drush.base-dir') . '/src/Drupal/Commands/generate/drush.services.yml');
-        $this->addDrushServiceProvider("_drush__pm", Drush::config()->get('drush.base-dir') . '/src/Drupal/Commands/pm/drush.services.yml');
-        $this->addDrushServiceProvider("_drush__sql", Drush::config()->get('drush.base-dir') . '/src/Drupal/Commands/sql/drush.services.yml');
+        $this->addDrushServiceProvider("_drush__config", $this->drushConfig->get('drush.base-dir') . '/src/Drupal/Commands/config/drush.services.yml');
+        $this->addDrushServiceProvider("_drush__core", $this->drushConfig->get('drush.base-dir') . '/src/Drupal/Commands/core/drush.services.yml');
+        $this->addDrushServiceProvider("_drush__field", $this->drushConfig->get('drush.base-dir') . '/src/Drupal/Commands/field/drush.services.yml');
+        $this->addDrushServiceProvider("_drush__generate", $this->drushConfig->get('drush.base-dir') . '/src/Drupal/Commands/generate/drush.services.yml');
+        $this->addDrushServiceProvider("_drush__pm", $this->drushConfig->get('drush.base-dir') . '/src/Drupal/Commands/pm/drush.services.yml');
+        $this->addDrushServiceProvider("_drush__sql", $this->drushConfig->get('drush.base-dir') . '/src/Drupal/Commands/sql/drush.services.yml');
 
         // Also add Drush services from all modules
         $module_filenames = $this->getModuleFileNames();
@@ -55,6 +72,9 @@ class LegacyServiceFinder
     /**
      * Determine whether or not the Drush services.yml file is applicable
      * for this version of Drush.
+     *
+     * @param string $module Module name
+     * @param string $filename Full path to modules .info.yml file
      */
     protected function addModuleDrushServiceProvider($module, $filename)
     {
@@ -62,6 +82,13 @@ class LegacyServiceFinder
         $this->addDrushServiceProvider("_drush.$module", $serviceYmlPath);
     }
 
+    /**
+     * @param string $module Module name
+     * @param string $dir Full path to module base dir
+     *
+     * @return string[]
+     *   List of discovered drush.service.yml files
+     */
     protected function findModuleDrushServiceProvider($module, $dir)
     {
         $services = $this->findModuleDrushServiceProviderFromComposer($dir);
@@ -71,6 +98,13 @@ class LegacyServiceFinder
         return $this->findAppropriateServicesFile($module, $services, $dir);
     }
 
+    /**
+     * @param string $module Module name
+     * @param string $dir Full path to module base dir
+     *
+     * @return string
+     *   One discovered drush.service.yml file
+     */
     protected function findDefaultServicesFile($module, $dir)
     {
         $result = $dir . "/drush.services.yml";
@@ -96,6 +130,11 @@ class LegacyServiceFinder
      * There may be multiple drush service files listed; the first
      * one that has a version constraint that matches the Drush version
      * is used.
+     *
+     * @param string $dir Full path to module base dir
+     *
+     * @return array
+     *   Drush services section from module's composer.json file
      */
     protected function findModuleDrushServiceProviderFromComposer($dir)
     {
@@ -115,6 +154,14 @@ class LegacyServiceFinder
         return $info['extra']['drush']['services'];
     }
 
+    /**
+     * @param string $module Module name
+     * @param array $services List of services from module's composer.json file
+     * @param string $dir Full path to module base dir
+     *
+     * @return string
+     *   One discovered drush.service.yml file
+     */
     protected function findAppropriateServicesFile($module, $services, $dir)
     {
         $version = Drush::getVersion();
@@ -133,6 +180,9 @@ class LegacyServiceFinder
 
     /**
      * Add a services.yml file if it exists.
+     *
+     * @param string $serviceProviderName Arbitrary name for temporary use only
+     * @param string $serviceYmlPath Path to drush.services.yml file
      */
     protected function addDrushServiceProvider($serviceProviderName, $serviceYmlPath = '')
     {
@@ -145,14 +195,12 @@ class LegacyServiceFinder
         }
     }
 
-    public function getDrushServiceFiles()
-    {
-        if (empty($this->drushServiceYamls)) {
-            $this->discoverDrushServiceProviders();
-        }
-        return $this->drushServiceYamls;
-    }
-
+    /**
+     * Find Drupal modules
+     *
+     * @return string[]
+     *   List of paths to all modules' .info.yml files.
+     */
     protected function getModuleFileNames()
     {
         $modules = $this->moduleHandler->getModuleList();

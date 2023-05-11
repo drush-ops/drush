@@ -34,6 +34,13 @@ class LegacyServiceInstantiator
     {
     }
 
+    /**
+     * Instantiate all of the objects declared by drush.services.yml
+     * files, and store them internally in this class for later retreival
+     * by type.
+     *
+     * @param array $serviceFiles List of drush.services.yml files
+     */
     public function loadServiceFiles(array $serviceFiles)
     {
         foreach ($serviceFiles as $serviceFile) {
@@ -58,6 +65,8 @@ class LegacyServiceInstantiator
      * instantiate all of the services referenced therein.
      * The services created may be retrieved via the `taggedServices()`
      * method.
+     *
+     * @param array $serviceFiles List of drush.services.yml files
      */
     public function instantiateServices(array $services)
     {
@@ -86,6 +95,10 @@ class LegacyServiceInstantiator
     /**
      * After `instantiateServices()` runs, the resulting instantiated
      * service objects can be retrieved via this method.
+     *
+     * @param string $tagName Name of service (e.g. 'drush.command') to retrieve
+     *
+     * @return object[] Command handlers with the specified tag
      */
     public function taggedServices($tagName)
     {
@@ -94,6 +107,13 @@ class LegacyServiceInstantiator
 
     /**
      * Create one named service.
+     *
+     * @param string $class Class containing implementation
+     * @param string[] $arguments Parameters to class constructor
+     * @param array Method names and arguments to call after object is instantiated
+     *
+     * @return object
+     *   Instantiated command handler from the service file
      */
     public function create($class, array $arguments, array $calls)
     {
@@ -108,8 +128,10 @@ class LegacyServiceInstantiator
      * Instantiate an object with the given arguments.
      * Arguments are first looked up from the Drupal container
      * or from our dynamic service container if they begin
-     * with an `@`. Items from the Drush container may be
-     * retreived by prepending the Drush service name with `*`.
+     * with an `@`.
+     *
+     * @param string $class Class containing implementation
+     * @param string[] $arguments Parameters to class constructor
      */
     public function instantiateObject($class, array $arguments)
     {
@@ -120,6 +142,10 @@ class LegacyServiceInstantiator
     /**
      * Call a method of an object with the provided arguments.
      * Arguments are resolved against the container first.
+     *
+     * @param object $object Command handler to initialize
+     * @param string $method Name of method to call
+     * @param array $arguments Arguments to pass to class method
      */
     public function call($object, $method, array $arguments)
     {
@@ -132,6 +158,11 @@ class LegacyServiceInstantiator
     /**
      * Resolve arguments against our containers. Arguments that
      * do not map to one of our containers are returned unchanged.
+     *
+     * @param array $arguments Arguments to resolve
+     *
+     * @return array
+     *   Arguments after they have been resolved by DI container
      */
     protected function resolveArguments(array $arguments)
     {
@@ -141,6 +172,11 @@ class LegacyServiceInstantiator
     /**
      * Look up one argument in the appropriate container, or
      * return it as-is.
+     *
+     * @param array $argument Argument to resolve
+     *
+     * @return object
+     *   Argument after it has been resolved by DI container
      */
     protected function resolveArgument($arg)
     {
@@ -167,6 +203,11 @@ class LegacyServiceInstantiator
      * Look up in the provided container; throw an exception if
      * not found, unless the service name begins with `?` (e.g.
      * `@?drupal.service` or `*?drush.service`).
+     *
+     * @param Container $container Drupal DI container
+     * @param string $arg Argument to resolve
+     *
+     * @param object Resolved object from DI container
      */
     protected function resolveFromContainer($container, string $arg)
     {
@@ -187,6 +228,13 @@ class LegacyServiceInstantiator
     /**
      * Check to see if the provided argument begins with a `?`;
      * those that do not are required.
+     *
+     * @param string $arg
+     *
+     * @return bool, string
+     *   Boolean indicating whether the object is required to be in the container,
+     *   and a string with the name of the object to look up (passed input with
+     *   any leading ? removed).
      */
     protected function isRequired(string $arg)
     {
@@ -197,6 +245,16 @@ class LegacyServiceInstantiator
         return [true, $arg];
     }
 
+    /**
+     * Helper function to determine whether or not any of the arguments
+     * resolved. `set` methods with non-required DI container references
+     * are not called at all if the optional references are not in the container.
+     *
+     * @param string $arg Name of reference
+     *
+     * @return bool
+     *   True if at least one argument is not empty
+     */
     protected function atLeastOneValue($args)
     {
         foreach ($args as $arg) {
