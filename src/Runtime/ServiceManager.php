@@ -254,12 +254,10 @@ class ServiceManager implements ConfigAwareInterface
         foreach ($bootstrapCommandClasses as $class) {
             $commandHandler = null;
             try {
-                // We insist that the command class have a static 'create' method.
-                // We could make this optional, but doing so would run the risk
-                // of double-instantiating Drush service commands, if anyone decided
-                // to put those in the same namespace (\Drupal\modulename\Drush\Commands)
                 if ($this->hasStaticCreateFactory($class)) {
                     $commandHandler = $class::create($container, $drushContainer);
+                } else {
+                    $commandHandler = new $class();
                 }
             } catch (\Exception $e) {
             }

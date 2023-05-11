@@ -287,9 +287,8 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
 
         // Find the command info alterers in Drush services.
         $commandFactory = Drush::commandFactory();
-        // TODO: $commandInfoAlterers are class names, taggedServices are
-        // instantiated classes. Let's not mix these.
-        $commandInfoAlterers = array_merge($commandInfoAlterers, $legacyServiceInstantiator->taggedServices('drush.command_info_alterer'));
+        $commandInfoAltererInstances = $this->serviceManager->instantiateServices($commandInfoAlterers, $container, $drushContainer);
+        $commandInfoAlterers = array_merge($commandInfoAltererInstances, $legacyServiceInstantiator->taggedServices('drush.command_info_alterer'));
 
         // Set the command info alterers. We must do this prior to calling
         // Robo::register to add any commands, as that is the point where the
