@@ -48,6 +48,8 @@ class ServiceManager implements ConfigAwareInterface
     use ConfigAwareTrait;
 
     protected $generators = [];
+    /** @var string[] */
+    protected array $bootstrapCommandClasses = [];
 
     public function __construct(protected ClassLoader $autoloader)
     {
@@ -64,6 +66,30 @@ class ServiceManager implements ConfigAwareInterface
                 include $file;
             }
         }
+    }
+
+    public function bootstrapCommandClasses(): array
+    {
+        return $this->bootstrapCommandClasses;
+    }
+
+    public function discover($commandfileSearchpath, $baseNamespace)
+    {
+        $commandClasses = array_unique(array_merge(
+            $this->discoverCommandsFromConfiguration(),
+            $this->discoverCommands($commandfileSearchpath, '\Drush'),
+            $this->discoverPsr4Commands(),
+            [FilterHooks::class]
+        ));
+
+        // If a command class has a static `create` method, then we will
+        // postpone instantiating it until after we bootstrap Drupal.
+        $this->bootstrapCommandClasses = array_filter($commandClasses, [$this, 'hasStaticCreateFactory']);
+
+        // Remove the command classes that we put into the bootstrap command classes.
+        $commandClasses = array_diff($commandClasses, $this->bootstrapCommandClasses);
+
+        return $commandClasses;
     }
 
     /**
@@ -219,6 +245,46 @@ class ServiceManager implements ConfigAwareInterface
         }
         return $instances;
     }
+
+    public function instantiateServices(array $bootstrapCommandClasses, $container, $drushContainer)
+    {
+        $commandHandlers = [];
+
+        foreach ($bootstrapCommandClasses as $class) {
+            $commandHandler = null;
+            try {
+                // We insist that the command class have a static 'create' method.
+                // We could make this optional, but doing so would run the risk
+                // of double-instantiating Drush service commands, if anyone decided
+                // to put those in the same namespace (\Drupal\modulename\Drush\Commands)
+                if ($this->hasStaticCreateFactory($class)) {
+                    $commandHandler = $class::create($container, $drushContainer);
+                }
+            } catch (\Exception $e) {
+            }
+            // Fail silently if the command handler could not be
+            // instantiated, e.g. if it tries to fetch services from
+            // a module that has not been enabled. Note that Robo::register
+            // can accept either Annotated Command command handlers or
+            // Symfony Console Command objects.
+            if ($commandHandler) {
+                $commandHandlers[] = $commandHandler;
+            }
+        }
+
+        return $commandHandlers;
+    }
+
+    protected function hasStaticCreateFactory($class)
+    {
+        if (!method_exists($class, 'create')) {
+            return false;
+        }
+
+        $reflectionMethod = new \ReflectionMethod($class, 'create');
+        return $reflectionMethod->isStatic();
+    }
+
 
     public function getGenerators()
     {

@@ -246,7 +246,7 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
         $this->kernel->getContainer()->get('current_user')->setAccount(new AnonymousUserSession());
     }
 
-    public function addDrupalModuleDrushCommands($manager): void
+    public function addDrupalModuleDrushCommands(BootstrapManager $manager): void
     {
         $application = Drush::getApplication();
         $drushContainer = Drush::getContainer();
@@ -267,7 +267,7 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
         $legacyServiceInstantiator->loadServiceFiles($drushServiceFiles);
 
         // Find the containerless commands, generators and command info alterers
-        $bootstrapCommandClasses = $application->bootstrapCommandClasses();
+        $bootstrapCommandClasses = $this->serviceManager->bootstrapCommandClasses();
         $commandInfoAlterers = [];
         foreach ($moduleHandler->getModuleList() as $moduleId => $extension) {
             $path = DRUPAL_ROOT . '/' . $extension->getPath() . '/src/Drush/';
@@ -315,41 +315,16 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
             Robo::register($application, $commandHandler);
         }
 
-        // Finally, instantiate all of the classes we discovered in
+        // Instantiate all of the classes we discovered in
         // configureAndRegisterCommands, and all of the classes we find
         // via 'discoverModuleCommands' that have static create factory methods.
-        foreach ($bootstrapCommandClasses as $class) {
-            $commandHandler = null;
-            try {
-                // We insist that the command class have a static 'create' method.
-                // We could make this optional, but doing so would run the risk
-                // of double-instantiating Drush service commands, if anyone decided
-                // to put those in the same namespace (\Drupal\modulename\Drush\Commands)
-                if ($this->hasStaticCreateFactory($class)) {
-                    $commandHandler = $class::create($container, $drushContainer);
-                }
-            } catch (\Exception $e) {
-            }
-            // Fail silently if the command handler could not be
-            // instantiated, e.g. if it tries to fetch services from
-            // a module that has not been enabled. Note that Robo::register
-            // can accept either Annotated Command command handlers or
-            // Symfony Console Command objects.
-            if ($commandHandler) {
-                $manager->inflect($commandHandler);
-                Robo::register($application, $commandHandler);
-            }
-        }
-    }
+        $commandHandlers = $this->serviceManager->instantiateServices($bootstrapCommandClasses, $container, $drushContainer);
 
-    protected function hasStaticCreateFactory($class)
-    {
-        if (!method_exists($class, 'create')) {
-            return false;
+        // Inflect and register all command handlers
+        foreach ($commandHandlers as $commandHandler) {
+            $manager->inflect($commandHandler);
+            Robo::register($application, $commandHandler);
         }
-
-        $reflectionMethod = new \ReflectionMethod($class, 'create');
-        return $reflectionMethod->isStatic();
     }
 
     /**

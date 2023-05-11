@@ -55,9 +55,6 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
     /** @var ServiceManager */
     protected $serviceManager;
 
-    /** @var string[] */
-    protected array $bootstrapCommandClasses = [];
-
     /**
      * Add global options to the Application and their default values to Config.
      */
@@ -184,11 +181,6 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
             return $uri;
         }
         return $this->bootstrapManager()->selectUri($cwd);
-    }
-
-    public function bootstrapCommandClasses(): array
-    {
-        return $this->bootstrapCommandClasses;
     }
 
     /**
@@ -329,26 +321,8 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
         // Directly add the yaml-cli commands.
         $this->addCommands($this->serviceManager->instantiateYamlCliCommands());
 
-        $commandClasses = array_unique(array_merge(
-            $this->serviceManager->discoverCommandsFromConfiguration(),
-            $this->serviceManager->discoverCommands($commandfileSearchpath, '\Drush'),
-            $this->serviceManager->discoverPsr4Commands(),
-            [FilterHooks::class]
-        ));
-
-        // If a command class has a static `create` method, then we will
-        // postpone instantiating it until after we bootstrap Drupal.
-        $this->bootstrapCommandClasses = array_filter($commandClasses, function (string $class): bool {
-            if (!method_exists($class, 'create')) {
-                return false;
-            }
-
-            $reflectionMethod = new \ReflectionMethod($class, 'create');
-            return $reflectionMethod->isStatic();
-        });
-
-        // Remove the command classes that we put into the bootstrap command classes.
-        $commandClasses = array_diff($commandClasses, $this->bootstrapCommandClasses);
+        // Find the command handlers that we can instantiate without bootstrapping Drupal
+        $commandClasses = $this->serviceManager->discover($commandfileSearchpath, '\Drush');
 
         // Uncomment the lines below to use Console's built in help and list commands.
         // unset($commandClasses[__DIR__ . '/Commands/help/HelpCommands.php']);
