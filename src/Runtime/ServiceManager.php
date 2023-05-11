@@ -6,6 +6,7 @@ namespace Drush\Runtime;
 
 use Composer\Autoload\ClassLoader;
 use Consolidation\AnnotatedCommand\CommandFileDiscovery;
+use Consolidation\Filter\Hooks\FilterHooks;
 use DrupalCodeGenerator\Command\BaseGenerator;
 use Drush\Command\DrushCommandInfoAlterer;
 use Drush\Commands\DrushCommands;

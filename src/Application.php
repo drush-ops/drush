@@ -6,7 +6,6 @@ namespace Drush;
 
 use Composer\Autoload\ClassLoader;
 use Consolidation\AnnotatedCommand\AnnotatedCommand;
-use Consolidation\Filter\Hooks\FilterHooks;
 use Consolidation\SiteAlias\SiteAliasManager;
 use Drush\Boot\BootstrapManager;
 use Drush\Boot\DrupalBootLevels;
