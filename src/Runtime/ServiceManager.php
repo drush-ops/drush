@@ -20,9 +20,8 @@ use Grasmash\YamlCli\Command\LintCommand;
 use Grasmash\YamlCli\Command\UnsetKeyCommand;
 use Grasmash\YamlCli\Command\UpdateKeyCommand;
 use Grasmash\YamlCli\Command\UpdateValueCommand;
-use League\Container\Container as DrushContainer;
-use League\Container\Container;
-use Psr\Container\ContainerInterface;
+use Drupal\Component\DependencyInjection\ContainerInterface as DrupalContainer;
+use Psr\Container\ContainerInterface as DrushContainer;
 use Robo\ClassDiscovery\RelativeNamespaceDiscovery;
 use Robo\Contract\ConfigAwareInterface;
 use Symfony\Component\Console\Application;
@@ -59,8 +58,10 @@ class ServiceManager implements ConfigAwareInterface
     /**
      * Ensure that any discovered class that is not part of the autoloader
      * is, in fact, included.
+     *
+     * @param array Associative array mapping path => class.
      */
-    protected function loadCommandClasses($commandClasses)
+    protected function loadCommandClasses(array $commandClasses): void
     {
         foreach ($commandClasses as $file => $commandClass) {
             if (!class_exists($commandClass)) {
@@ -69,12 +70,31 @@ class ServiceManager implements ConfigAwareInterface
         }
     }
 
+    /**
+     * Return cached of deferred commandhander objects.
+     *
+     * @return string[]
+     *   List of class names to instantiate at bootstrap time.
+     */
     public function bootstrapCommandClasses(): array
     {
         return $this->bootstrapCommandClasses;
     }
 
-    public function discover($commandfileSearchpath, $baseNamespace)
+    /**
+     * Discover all of the different kinds of command handler objects
+     * in the places where Drush can find them. Called during preflight;
+     * some command classes are returned right away, and others are saved
+     * to be handled later during Drupal bootstrap.
+     *
+     * @param string[] $commandfileSearchpath List of directories to search
+     * @param string $baseNamespace The namespace to use at the base of each
+     *   search diretory. Namespace components mirror directory structure.
+     *
+     * @return string[]
+     *   List of command classes
+     */
+    public function discover(array $commandfileSearchpath, string $baseNamespace): array
     {
         $commandClasses = array_unique(array_merge(
             $this->discoverCommandsFromConfiguration(),
@@ -97,8 +117,9 @@ class ServiceManager implements ConfigAwareInterface
      * Discover commands explicitly declared in configuration.
      *
      * @return string[]
+     *   List of command classes
      */
-    public function discoverCommandsFromConfiguration()
+    public function discoverCommandsFromConfiguration(): array
     {
         $commandList = [];
         foreach ($this->config->get('drush.commands', []) as $key => $value) {
@@ -117,7 +138,12 @@ class ServiceManager implements ConfigAwareInterface
     /**
      * Discovers command classes from a provided search path.
      *
+     * @param string[] $directoryList List of directories to search
+     * @param string $baseNamespace The namespace to use at the base of each
+     *   search diretory. Namespace components mirror directory structure.
+     *
      * @return string[]
+     *   List of command classes
      */
     public function discoverCommands(array $directoryList, string $baseNamespace): array
     {
@@ -141,6 +167,7 @@ class ServiceManager implements ConfigAwareInterface
      * library command handlers.
      *
      * @return string[]
+     *   List of command classes
      */
     public function discoverPsr4Commands(): array
     {
@@ -162,6 +189,7 @@ class ServiceManager implements ConfigAwareInterface
      * Discover PSR-4 autoloaded classes that implement DCG generators.
      *
      * @return string[]
+     *   List of generator classes
      */
     public function discoverPsr4Generators(): array
     {
@@ -184,6 +212,7 @@ class ServiceManager implements ConfigAwareInterface
      * commands in Drush 12+.
      *
      * @return string[]
+     *   List of command classes
      */
     public function discoverModuleCommands(array $directoryList, string $baseNamespace): array
     {
@@ -201,6 +230,10 @@ class ServiceManager implements ConfigAwareInterface
 
     /**
      * Discover command info alterers in modules.
+     *
+     * @param string[] $directoryList List of directories to search
+     * @param string $baseNamespace The namespace to use at the base of each
+     *   search diretory. Namespace components mirror directory structure.
      *
      * @return string[]
      */
@@ -223,6 +256,7 @@ class ServiceManager implements ConfigAwareInterface
      * as Drush commands.
      *
      * @return Command[]
+     *   List of Symfony Command objects
      */
     public function instantiateYamlCliCommands(): array
     {
@@ -247,7 +281,20 @@ class ServiceManager implements ConfigAwareInterface
         return $instances;
     }
 
-    public function instantiateServices(array $bootstrapCommandClasses, $container, $drushContainer)
+    /**
+     * Instantiate objects given a lsit of classes. For each class, if it has
+     * a static `create` factory, use that to instantiate it, passing both the
+     * Drupal and Drush DI containers. If there is no static factory, then
+     * instantiate it via 'new $class'
+     *
+     * @param string[] $bootstrapCommandClasses Classes to instantiate.
+     * @param Drupal\Component\DependencyInjection\ContainerInterface $container
+     * @param Psr\Container\ContainerInterface $drushContainer
+     *
+     * @return object[]
+     *   List of instantiated service objects
+     */
+    public function instantiateServices(array $bootstrapCommandClasses, DrupalContainer $container, DrushContainer $drushContainer)
     {
         $commandHandlers = [];
 
@@ -274,7 +321,15 @@ class ServiceManager implements ConfigAwareInterface
         return $commandHandlers;
     }
 
-    protected function hasStaticCreateFactory($class)
+    /**
+     * Check to see if the provided class has a static `create` method.
+     *
+     * @param string $class The name of the class to check
+     *
+     * @return bool
+     *   True if class has a static `create` method.
+     */
+    protected function hasStaticCreateFactory(string $class): bool
     {
         if (!method_exists($class, 'create')) {
             return false;
@@ -284,13 +339,23 @@ class ServiceManager implements ConfigAwareInterface
         return $reflectionMethod->isStatic();
     }
 
-
-    public function getGenerators()
+    /**
+     * Return generators stored here via `injectGenerators()`
+     *
+     * @return object[]
+     *   List of instantiated generators
+     */
+    public function getGenerators(): array
     {
         return $this->generators;
     }
 
-    public function injectGenerators($additionalGenerators)
+    /**
+     * Store instantiated generators here for later use by the Generate commands.
+     *
+     * @param object[] List of instantiated generators
+     */
+    public function injectGenerators(array $additionalGenerators): void
     {
         $this->generators = [
             ...$this->generators,
