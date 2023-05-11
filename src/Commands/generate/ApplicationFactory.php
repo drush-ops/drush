@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Drush\Drupal\Commands\generate;
+namespace Drush\Commands\generate;
 
 use Composer\Autoload\ClassLoader;
 use DrupalCodeGenerator\Application;
 use DrupalCodeGenerator\Command\BaseGenerator;
 use DrupalCodeGenerator\Event\GeneratorInfoAlter;
-use Drush\Drupal\Commands\generate\Generators\Drush\DrushAliasFile;
-use Drush\Drupal\Commands\generate\Generators\Drush\DrushCommandFile;
+use Drush\Commands\generate\Generators\Drush\DrushAliasFile;
+use Drush\Commands\generate\Generators\Drush\DrushCommandFile;
 use Drush\Drupal\DrushServiceModifier;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;

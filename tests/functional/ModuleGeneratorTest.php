@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Unish;
 
 use Drush\Commands\core\CacheCommands;
-use Drush\Drupal\Commands\generate\GenerateCommands;
+use Drush\Commands\generate\GenerateCommands;
 use Drush\Commands\pm\PmCommands;
 use Symfony\Component\Filesystem\Path;
 

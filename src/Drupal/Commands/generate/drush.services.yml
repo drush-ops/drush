@@ -1,6 +1,0 @@
-services:
-  generate.commands:
-    class: \Drush\Drupal\Commands\generate\GenerateCommands
-    arguments: ['@service_container']
-    tags:
-      -  { name: drush.command }

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Drush\Drupal\Commands\generate;
+namespace Drush\Commands\generate;
 
 use Drush\Attributes as CLI;
 use Drush\Commands\core\DocsCommands;
@@ -18,9 +18,18 @@ final class GenerateCommands extends DrushCommands
 {
     const GENERATE = 'generate';
 
-    public function __construct(
+    protected function __construct(
         private ContainerInterface $container
     ) {
+    }
+
+    public static function create(ContainerInterface $container): self
+    {
+        $commandHandler = new static(
+            $container
+        );
+
+        return $commandHandler;
     }
 
     /**

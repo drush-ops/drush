@@ -13,7 +13,7 @@ use Drush\Commands\DrushCommands;
 use Drush\Commands\help\HelpCLIFormatter;
 use Drush\Commands\help\ListCommands;
 use Drush\Config\ConfigAwareTrait;
-use Drush\Drupal\Commands\generate\ApplicationFactory;
+use Drush\Commands\generate\ApplicationFactory;
 use Drush\Drush;
 use Drush\SiteAlias\SiteAliasManagerAwareInterface;
 use Robo\Contract\ConfigAwareInterface;
