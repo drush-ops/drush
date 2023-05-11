@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="robots" content="index, follow, all" />
+    <title>Drush\Runtime\LegacyServiceInstantiator | Drush API %version%</title>
+
+            <link rel="stylesheet" type="text/css" href="../../css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="../../css/bootstrap-theme.min.css">
+        <link rel="stylesheet" type="text/css" href="../../css/doctum.css">
+        <link rel="stylesheet" type="text/css" href="../../fonts/doctum-font.css">
+        <script src="../../js/jquery-3.5.1.slim.min.js"></script>
+        <script async defer src="../../doctum.js"></script>
+        <script async defer src="../../js/bootstrap.min.js"></script>
+        <script async defer src="../../js/autocomplete.min.js"></script>
+        <meta name="MobileOptimized" content="width">
+        <meta name="HandheldFriendly" content="true">
+        <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+
+    </head>
+
+    <body id="class" data-name="class:Drush_Runtime_LegacyServiceInstantiator" data-root-path="../../" data-search-index-url="../../doctum-search.json">
+            <div id="content">
+        <div id="left-column">
+                <div id="control-panel">
+                <div class="search-bar hidden" id="search-progress-bar-container">
+            <div class="progress">
+                <div class="progress-bar" role="progressbar" id="search-progress-bar"
+                    aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%"></div>
+            </div>
+        </div>
+        <form id="search-form" action="../../search.html">
+            <span class="icon icon-search"></span>
+            <input name="search"
+                   id="doctum-search-auto-complete"
+                   class="typeahead form-control"
+                   type="search"
+                   placeholder="Search"
+                   spellcheck="false"
+                   autocorrect="off"
+                   autocomplete="off"
+                   autocapitalize="off">
+            <div class="auto-complete-results" id="auto-complete-results"></div>
+        </form>
+    </div>
+
+                <div id="api-tree"></div>
+
+        </div>
+        <div id="right-column">
+                <nav id="site-nav" class="navbar navbar-default" role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-elements">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="../../index.html">Drush API %version%</a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar-elements">
+                <ul class="nav navbar-nav">
+                    <li><a href="../../classes.html">Classes</a></li>
+                    <li><a href="../../namespaces.html">Namespaces</a></li>
+                    <li><a href="../../interfaces.html">Interfaces</a></li>
+                    <li><a href="../../traits.html">Traits</a></li>
+                    <li><a href="../../doc-index.html">Index</a></li>
+                    <li><a href="../../search.html">Search</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+                        <div class="namespace-breadcrumbs">
+            <ol class="breadcrumb">
+                <li><span class="label label-default">class</span></li>
+                        <li><a href="../../Drush.html">Drush</a></li><li class="backslash">\</li><li><a href="../../Drush/Runtime.html">Runtime</a></li><li class="backslash">\</li><li>LegacyServiceInstantiator</li>
+            </ol>
+        </div>
+                <div id="page-content">
+    <div class="page-header">
+        <h1>LegacyServiceInstantiator    
+            </h1>
+    </div>
+
+    
+    <p>        class
+    <strong>LegacyServiceInstantiator</strong>        (<a href="https://github.com/drush-ops/drush/blob/12.x/src/Runtime/LegacyServiceInstantiator.php">View source</a>)
+</p>
+
+        
+    
+        
+
+            <div class="description">
+            <p><p>Use the Symfony Dependency Injection Container to instantiate services.</p></p>            <p><p>This factory class is used solely for backwards compatability with
+Drupal modules that still use drush.services.ymls to define Drush
+Commands, Generators &amp; etc.; this mechanism is deprecated, though.
+Modules should instead use the static factory <code>create</code> mechanism.</p>
+<p>This object is only in scope during bootstrap; see the DrupalBoot8 class.
+After it has been used there, it is not referenced by any other code.</p></p>        </div>
+            
+        
+    
+            <h2>Properties</h2>
+
+            <table class="table table-condensed">
+                    <tr>
+                <td class="type" id="property_drushServicesContainer">
+                                        protected                                        
+                                                                                
+                                    </td>
+                <td>$drushServicesContainer</td>
+                <td class="last"></td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_tags">
+                                        protected                                        
+                                                                                
+                                    </td>
+                <td>$tags</td>
+                <td class="last"></td>
+                <td></td>
+            </tr>
+            </table>
+
+    
+            <h2>Methods</h2>
+
+            <div class="container-fluid underlined">
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method___construct">__construct</a>(<abbr title="Psr\Container\ContainerInterface">ContainerInterface</abbr> $container)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_loadServiceFiles">loadServiceFiles</a>(array $serviceFiles)
+        
+                                            <p><p>Instantiate all of the objects declared by drush.services.yml
+files, and store them internally in this class for later retreival
+by type.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_instantiateServices">instantiateServices</a>(array $services)
+        
+                                            <p><p>Given a drush.services.yml file (parsed into an array),
+instantiate all of the services referenced therein.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    object[]
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_taggedServices">taggedServices</a>(string $tagName)
+        
+                                            <p><p>After <code>instantiateServices()</code> runs, the resulting instantiated
+service objects can be retrieved via this method.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    object
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_create">create</a>(string $class, array $arguments, array $calls)
+        
+                                            <p><p>Create one named service.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_instantiateObject">instantiateObject</a>(string $class, array $arguments)
+        
+                                            <p><p>Instantiate an object with the given arguments.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_call">call</a>(object $object, string $method, array $arguments)
+        
+                                            <p><p>Call a method of an object with the provided arguments.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    array
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_resolveArguments">resolveArguments</a>(array $arguments)
+        
+                                            <p><p>Resolve arguments against our containers. Arguments that
+do not map to one of our containers are returned unchanged.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    object
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_resolveArgument">resolveArgument</a>($arg)
+        
+                                            <p><p>Look up one argument in the appropriate container, or
+return it as-is.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_resolveFromContainer">resolveFromContainer</a>(<abbr title="League\Container\Container">Container</abbr> $container, string $arg)
+        
+                                            <p><p>Look up in the provided container; throw an exception if
+not found, unless the service name begins with <code>?</code> (e.g.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_isRequired">isRequired</a>(string $arg)
+        
+                                            <p><p>Check to see if the provided argument begins with a <code>?</code>;
+those that do not are required.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    bool
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_atLeastOneValue">atLeastOneValue</a>($args)
+        
+                                            <p><p>Helper function to determine whether or not any of the arguments
+resolved. <code>set</code> methods with non-required DI container references
+are not called at all if the optional references are not in the container.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+            </div>
+
+
+        <h2>Details</h2>
+
+            <div id="method-details">
+                    <div class="method-item">
+                    <h3 id="method___construct">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Runtime/LegacyServiceInstantiator.php#L34">at line 34</a></div>
+        <code>                    
+    <strong>__construct</strong>(<abbr title="Psr\Container\ContainerInterface">ContainerInterface</abbr> $container)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Psr\Container\ContainerInterface">ContainerInterface</abbr></td>
+                <td>$container</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_loadServiceFiles">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Runtime/LegacyServiceInstantiator.php#L45">at line 45</a></div>
+        <code>                    
+    <strong>loadServiceFiles</strong>(array $serviceFiles)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Instantiate all of the objects declared by drush.services.yml
+files, and store them internally in this class for later retreival
+by type.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>array</td>
+                <td>$serviceFiles</td>
+                <td><p>List of drush.services.yml files</p></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_instantiateServices">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Runtime/LegacyServiceInstantiator.php#L72">at line 72</a></div>
+        <code>                    
+    <strong>instantiateServices</strong>(array $services)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Given a drush.services.yml file (parsed into an array),
+instantiate all of the services referenced therein.</p></p>                <p><p>The services created may be retrieved via the <code>taggedServices()</code>
+method.</p></p>        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>array</td>
+                <td>$services</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_taggedServices">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Runtime/LegacyServiceInstantiator.php#L104">at line 104</a></div>
+        <code>                    object[]
+    <strong>taggedServices</strong>(string $tagName)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>After <code>instantiateServices()</code> runs, the resulting instantiated
+service objects can be retrieved via this method.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$tagName</td>
+                <td><p>Name of service (e.g. 'drush.command') to retrieve</p></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>object[]</td>
+            <td><p>Command handlers with the specified tag</p></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_create">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Runtime/LegacyServiceInstantiator.php#L119">at line 119</a></div>
+        <code>                    object
+    <strong>create</strong>(string $class, array $arguments, array $calls)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Create one named service.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$class</td>
+                <td><p>Class containing implementation</p></td>
+            </tr>
+                    <tr>
+                <td>array</td>
+                <td>$arguments</td>
+                <td><p>Parameters to class constructor</p></td>
+            </tr>
+                    <tr>
+                <td>array</td>
+                <td>$calls</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>object</td>
+            <td><p>Instantiated command handler from the service file</p></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_instantiateObject">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Runtime/LegacyServiceInstantiator.php#L137">at line 137</a></div>
+        <code>                    
+    <strong>instantiateObject</strong>(string $class, array $arguments)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Instantiate an object with the given arguments.</p></p>                <p><p>Arguments are first looked up from the Drupal container
+or from our dynamic service container if they begin
+with an <code>@</code>.</p></p>        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$class</td>
+                <td><p>Class containing implementation</p></td>
+            </tr>
+                    <tr>
+                <td>array</td>
+                <td>$arguments</td>
+                <td><p>Parameters to class constructor</p></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_call">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Runtime/LegacyServiceInstantiator.php#L151">at line 151</a></div>
+        <code>                    
+    <strong>call</strong>(object $object, string $method, array $arguments)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Call a method of an object with the provided arguments.</p></p>                <p><p>Arguments are resolved against the container first.</p></p>        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>object</td>
+                <td>$object</td>
+                <td><p>Command handler to initialize</p></td>
+            </tr>
+                    <tr>
+                <td>string</td>
+                <td>$method</td>
+                <td><p>Name of method to call</p></td>
+            </tr>
+                    <tr>
+                <td>array</td>
+                <td>$arguments</td>
+                <td><p>Arguments to pass to class method</p></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_resolveArguments">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Runtime/LegacyServiceInstantiator.php#L168">at line 168</a></div>
+        <code>            protected        array
+    <strong>resolveArguments</strong>(array $arguments)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Resolve arguments against our containers. Arguments that
+do not map to one of our containers are returned unchanged.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>array</td>
+                <td>$arguments</td>
+                <td><p>Arguments to resolve</p></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>array</td>
+            <td><p>Arguments after they have been resolved by DI container</p></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_resolveArgument">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Runtime/LegacyServiceInstantiator.php#L182">at line 182</a></div>
+        <code>            protected        object
+    <strong>resolveArgument</strong>($arg)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Look up one argument in the appropriate container, or
+return it as-is.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$arg</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>object</td>
+            <td><p>Argument after it has been resolved by DI container</p></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_resolveFromContainer">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Runtime/LegacyServiceInstantiator.php#L213">at line 213</a></div>
+        <code>            protected        
+    <strong>resolveFromContainer</strong>(<abbr title="League\Container\Container">Container</abbr> $container, string $arg)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Look up in the provided container; throw an exception if
+not found, unless the service name begins with <code>?</code> (e.g.</p></p>                <p><p><code>@?drupal.service</code> or <code>*?drush.service</code>).</p></p>        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="League\Container\Container">Container</abbr></td>
+                <td>$container</td>
+                <td><p>Drupal DI container</p></td>
+            </tr>
+                    <tr>
+                <td>string</td>
+                <td>$arg</td>
+                <td><p>Argument to resolve</p></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_isRequired">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Runtime/LegacyServiceInstantiator.php#L240">at line 240</a></div>
+        <code>            protected        
+    <strong>isRequired</strong>(string $arg)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Check to see if the provided argument begins with a <code>?</code>;
+those that do not are required.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$arg</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_atLeastOneValue">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Runtime/LegacyServiceInstantiator.php#L259">at line 259</a></div>
+        <code>            protected        bool
+    <strong>atLeastOneValue</strong>($args)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Helper function to determine whether or not any of the arguments
+resolved. <code>set</code> methods with non-required DI container references
+are not called at all if the optional references are not in the container.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$args</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>bool</td>
+            <td><p>True if at least one argument is not empty</p></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+            </div>
+
+    
+</div><div id="footer">
+        Generated by <a href="https://github.com/code-lts/doctum">Doctum, a API Documentation generator and fork of Sami</a>.</div></div>
+    </div>
+    </body>
+
+</html>

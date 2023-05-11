@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="robots" content="index, follow, all" />
+    <title>Drush\Runtime\LegacyServiceFinder | Drush API %version%</title>
+
+            <link rel="stylesheet" type="text/css" href="../../css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="../../css/bootstrap-theme.min.css">
+        <link rel="stylesheet" type="text/css" href="../../css/doctum.css">
+        <link rel="stylesheet" type="text/css" href="../../fonts/doctum-font.css">
+        <script src="../../js/jquery-3.5.1.slim.min.js"></script>
+        <script async defer src="../../doctum.js"></script>
+        <script async defer src="../../js/bootstrap.min.js"></script>
+        <script async defer src="../../js/autocomplete.min.js"></script>
+        <meta name="MobileOptimized" content="width">
+        <meta name="HandheldFriendly" content="true">
+        <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+
+    </head>
+
+    <body id="class" data-name="class:Drush_Runtime_LegacyServiceFinder" data-root-path="../../" data-search-index-url="../../doctum-search.json">
+            <div id="content">
+        <div id="left-column">
+                <div id="control-panel">
+                <div class="search-bar hidden" id="search-progress-bar-container">
+            <div class="progress">
+                <div class="progress-bar" role="progressbar" id="search-progress-bar"
+                    aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%"></div>
+            </div>
+        </div>
+        <form id="search-form" action="../../search.html">
+            <span class="icon icon-search"></span>
+            <input name="search"
+                   id="doctum-search-auto-complete"
+                   class="typeahead form-control"
+                   type="search"
+                   placeholder="Search"
+                   spellcheck="false"
+                   autocorrect="off"
+                   autocomplete="off"
+                   autocapitalize="off">
+            <div class="auto-complete-results" id="auto-complete-results"></div>
+        </form>
+    </div>
+
+                <div id="api-tree"></div>
+
+        </div>
+        <div id="right-column">
+                <nav id="site-nav" class="navbar navbar-default" role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-elements">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="../../index.html">Drush API %version%</a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar-elements">
+                <ul class="nav navbar-nav">
+                    <li><a href="../../classes.html">Classes</a></li>
+                    <li><a href="../../namespaces.html">Namespaces</a></li>
+                    <li><a href="../../interfaces.html">Interfaces</a></li>
+                    <li><a href="../../traits.html">Traits</a></li>
+                    <li><a href="../../doc-index.html">Index</a></li>
+                    <li><a href="../../search.html">Search</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+                        <div class="namespace-breadcrumbs">
+            <ol class="breadcrumb">
+                <li><span class="label label-default">class</span></li>
+                        <li><a href="../../Drush.html">Drush</a></li><li class="backslash">\</li><li><a href="../../Drush/Runtime.html">Runtime</a></li><li class="backslash">\</li><li>LegacyServiceFinder</li>
+            </ol>
+        </div>
+                <div id="page-content">
+    <div class="page-header">
+        <h1>LegacyServiceFinder    
+            </h1>
+    </div>
+
+    
+    <p>        class
+    <strong>LegacyServiceFinder</strong>        (<a href="https://github.com/drush-ops/drush/blob/12.x/src/Runtime/LegacyServiceFinder.php">View source</a>)
+</p>
+
+        
+    
+        
+
+            <div class="description">
+            <p><p>Find drush.services.yml files.</p></p>            <p><p>This discovery class is used solely for backwards compatability with
+Drupal modules that still use drush.services.ymls to define Drush
+Commands, Generators &amp; etc.; this mechanism is deprecated, though.
+Modules should instead use the static factory <code>create</code> mechanism.</p></p>        </div>
+            
+        
+    
+            <h2>Properties</h2>
+
+            <table class="table table-condensed">
+                    <tr>
+                <td class="type" id="property_drushServiceYamls">
+                                        protected                                        
+                                                                                
+                                    </td>
+                <td>$drushServiceYamls</td>
+                <td class="last"></td>
+                <td></td>
+            </tr>
+            </table>
+
+    
+            <h2>Methods</h2>
+
+            <div class="container-fluid underlined">
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method___construct">__construct</a>($moduleHandler, <a href="../../Drush/Config/DrushConfig.html"><abbr title="Drush\Config\DrushConfig">DrushConfig</abbr></a> $drushConfig)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    array
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_getDrushServiceFiles">getDrushServiceFiles</a>()
+        
+                                            <p><p>Get all service files that this class can discover.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_discoverDrushServiceProviders">discoverDrushServiceProviders</a>()
+        
+                                            <p><p>Search for drush.service.yml files in discoverable locaions.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_addModuleDrushServiceProvider">addModuleDrushServiceProvider</a>(string $module, string $filename)
+        
+                                            <p><p>Determine whether or not the Drush services.yml file is applicable
+for this version of Drush.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    string[]
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_findModuleDrushServiceProvider">findModuleDrushServiceProvider</a>(string $module, string $dir)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    string
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_findDefaultServicesFile">findDefaultServicesFile</a>(string $module, string $dir)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    array
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_findModuleDrushServiceProviderFromComposer">findModuleDrushServiceProviderFromComposer</a>(string $dir)
+        
+                                            <p><p>In composer.json, the Drush version constraints will appear
+in the 'extra' section like so:</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    string
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_findAppropriateServicesFile">findAppropriateServicesFile</a>(string $module, array $services, string $dir)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_addDrushServiceProvider">addDrushServiceProvider</a>(string $serviceProviderName, string $serviceYmlPath = &#039;&#039;)
+        
+                                            <p><p>Add a services.yml file if it exists.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    string[]
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_getModuleFileNames">getModuleFileNames</a>()
+        
+                                            <p><p>Find Drupal modules</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+            </div>
+
+
+        <h2>Details</h2>
+
+            <div id="method-details">
+                    <div class="method-item">
+                    <h3 id="method___construct">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Runtime/LegacyServiceFinder.php#L26">at line 26</a></div>
+        <code>                    
+    <strong>__construct</strong>($moduleHandler, <a href="../../Drush/Config/DrushConfig.html"><abbr title="Drush\Config\DrushConfig">DrushConfig</abbr></a> $drushConfig)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$moduleHandler</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><a href="../../Drush/Config/DrushConfig.html"><abbr title="Drush\Config\DrushConfig">DrushConfig</abbr></a></td>
+                <td>$drushConfig</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getDrushServiceFiles">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Runtime/LegacyServiceFinder.php#L36">at line 36</a></div>
+        <code>                    array
+    <strong>getDrushServiceFiles</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Get all service files that this class can discover.</p></p>                        
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>array</td>
+            <td><p>List of discovered drush.service.yml files</p></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_discoverDrushServiceProviders">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Runtime/LegacyServiceFinder.php#L47">at line 47</a></div>
+        <code>            protected        
+    <strong>discoverDrushServiceProviders</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Search for drush.service.yml files in discoverable locaions.</p></p>                        
+        </div>
+        <div class="tags">
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_addModuleDrushServiceProvider">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Runtime/LegacyServiceFinder.php#L79">at line 79</a></div>
+        <code>            protected        
+    <strong>addModuleDrushServiceProvider</strong>(string $module, string $filename)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Determine whether or not the Drush services.yml file is applicable
+for this version of Drush.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$module</td>
+                <td><p>Module name</p></td>
+            </tr>
+                    <tr>
+                <td>string</td>
+                <td>$filename</td>
+                <td><p>Full path to modules .info.yml file</p></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_findModuleDrushServiceProvider">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Runtime/LegacyServiceFinder.php#L92">at line 92</a></div>
+        <code>            protected        string[]
+    <strong>findModuleDrushServiceProvider</strong>(string $module, string $dir)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$module</td>
+                <td><p>Module name</p></td>
+            </tr>
+                    <tr>
+                <td>string</td>
+                <td>$dir</td>
+                <td><p>Full path to module base dir</p></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string[]</td>
+            <td><p>List of discovered drush.service.yml files</p></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_findDefaultServicesFile">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Runtime/LegacyServiceFinder.php#L108">at line 108</a></div>
+        <code>            protected        string
+    <strong>findDefaultServicesFile</strong>(string $module, string $dir)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$module</td>
+                <td><p>Module name</p></td>
+            </tr>
+                    <tr>
+                <td>string</td>
+                <td>$dir</td>
+                <td><p>Full path to module base dir</p></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string</td>
+            <td><p>One discovered drush.service.yml file</p></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_findModuleDrushServiceProviderFromComposer">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Runtime/LegacyServiceFinder.php#L139">at line 139</a></div>
+        <code>            protected        array
+    <strong>findModuleDrushServiceProviderFromComposer</strong>(string $dir)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>In composer.json, the Drush version constraints will appear
+in the 'extra' section like so:</p></p>                <p><p>&quot;extra&quot;: {
+&quot;drush&quot;: {
+&quot;services&quot;: {
+&quot;drush.services.yml&quot;: &quot;^9&quot;
+}
+}
+}</p>
+<p>There may be multiple drush service files listed; the first
+one that has a version constraint that matches the Drush version
+is used.</p></p>        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$dir</td>
+                <td><p>Full path to module base dir</p></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>array</td>
+            <td><p>Drush services section from module's composer.json file</p></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_findAppropriateServicesFile">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Runtime/LegacyServiceFinder.php#L165">at line 165</a></div>
+        <code>            protected        string
+    <strong>findAppropriateServicesFile</strong>(string $module, array $services, string $dir)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$module</td>
+                <td><p>Module name</p></td>
+            </tr>
+                    <tr>
+                <td>array</td>
+                <td>$services</td>
+                <td><p>List of services from module's composer.json file</p></td>
+            </tr>
+                    <tr>
+                <td>string</td>
+                <td>$dir</td>
+                <td><p>Full path to module base dir</p></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string</td>
+            <td><p>One discovered drush.service.yml file</p></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_addDrushServiceProvider">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Runtime/LegacyServiceFinder.php#L187">at line 187</a></div>
+        <code>            protected        
+    <strong>addDrushServiceProvider</strong>(string $serviceProviderName, string $serviceYmlPath = &#039;&#039;)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Add a services.yml file if it exists.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$serviceProviderName</td>
+                <td><p>Arbitrary name for temporary use only</p></td>
+            </tr>
+                    <tr>
+                <td>string</td>
+                <td>$serviceYmlPath</td>
+                <td><p>Path to drush.services.yml file</p></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getModuleFileNames">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Runtime/LegacyServiceFinder.php#L204">at line 204</a></div>
+        <code>            protected        string[]
+    <strong>getModuleFileNames</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Find Drupal modules</p></p>                        
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string[]</td>
+            <td><p>List of paths to all modules' .info.yml files.</p></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+            </div>
+
+    
+</div><div id="footer">
+        Generated by <a href="https://github.com/code-lts/doctum">Doctum, a API Documentation generator and fork of Sami</a>.</div></div>
+    </div>
+    </body>
+
+</html>
