@@ -23,7 +23,7 @@ There are two ways that a class can receive its dependencies. One is called “c
         $this->service = $service;
     }
 ```
-A class should use one or the other of these methods. The code that is responsible for providing the dependencies a class need is usually an object called the dependency injection container.
+The code that is responsible for providing the dependencies a class needs is usually an object called the dependency injection container.
 
 create() method
 ------------------
