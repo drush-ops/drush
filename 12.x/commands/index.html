@@ -21,7 +21,7 @@
         <link rel="next" href="../hooks/">
       
       <link rel="icon" href="../img/favicon.ico">
-      <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-9.1.11">
+      <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-9.1.12">
     
     
       
@@ -5213,13 +5213,13 @@
 <p class="admonition-title">Tip</p>
 <p>Drush 11 and prior required <a href="https://www.drush.org/11.x/dependency-injection/#services-files">dependency injection via a drush.services.yml file</a>. This approach is deprecated in Drush 12 and will be removed in Drush 13. See <a href="../dependency-injection/#create-method">create() method</a></p>
 </div>
-<p>Creating a new Drush command or porting a legacy command is easy. Follow the steps below.</p>
+<p>Creating a new Drush command is easy. Follow the steps below.</p>
 <ol>
 <li>Run <code>drush generate drush-command-file</code>.</li>
 <li>Drush will prompt for the machine name of the module that should "own" the file. The module selected must already exist and be enabled. Use <code>drush generate module-standard</code> to create a new module.</li>
 <li>Drush will then report that it created a commandfile. Edit as needed.</li>
-<li>Use the classes for the core Drush commands at <a href="https://github.com/drush-ops/drush/tree/12.x/src/Drupal/Commands">/src/Drupal/Commands</a> as inspiration and documentation.</li>
-<li>See the <a href="../dependency-injection/">dependency injection docs</a> for interfaces you can implement to gain access to Drush config, Drupal site aliases, etc.</li>
+<li>Use the classes for the core Drush commands at <a href="https://github.com/drush-ops/drush/tree/12.x/src/Commands">/src/Commands</a> as inspiration and documentation.</li>
+<li>See the <a href="../dependency-injection/">dependency injection docs</a> for interfaces you can implement to gain access to Drush config, Drupal site aliases, etc. Also note the <a href="../dependency-injection/#create-method">create() method</a> for injecting Drupal or Drush dependencies.</li>
 <li>Write PHPUnit tests based on <a href="https://github.com/drush-ops/drush/blob/12.x/docs/contribute/unish.md#drush-test-traits">Drush Test Traits</a>.</li>
 </ol>
 <h2 id="attributes-or-annotations">Attributes or Annotations<a class="headerlink" href="#attributes-or-annotations" title="Permanent link">&para;</a></h2>
@@ -5358,7 +5358,7 @@ With this configuration in place, global commands may be placed as described in 
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">May 1, 2023</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">May 12, 2023</span>
       
     
   </small>
@@ -5373,7 +5373,7 @@ With this configuration in place, global commands may be placed as described in 
     
         <div class="md-source-date">
             <small>
-                Authors: <span class='git-page-authors git-authors'><a href='mailto:clau.cristea@gmail.com'>Claudiu Cristea</a>, <a href='mailto:danepowell@users.noreply.github.com'>Dane Powell</a>, <a href='mailto:greg.1.anderson@greenknowe.org'>Greg Anderson</a>, <a href='mailto:neclimdul@gmail.com'>James Gilliland</a>, <a href='mailto:weitzman@tejasa.com'>Moshe Weitzman</a>, <a href='mailto:nelus87@gmail.com'>Niels van Aken</a></span>
+                Authors: <span class='git-page-authors git-authors'><a href='mailto:clau.cristea@gmail.com'>Claudiu Cristea</a>, <a href='mailto:greg.1.anderson@greenknowe.org'>Greg Anderson</a>, <a href='mailto:neclimdul@gmail.com'>James Gilliland</a>, <a href='mailto:weitzman@tejasa.com'>Moshe Weitzman</a>, <a href='mailto:nelus87@gmail.com'>Niels van Aken</a></span>
             </small>
         </div>
     
@@ -5449,7 +5449,7 @@ With this configuration in place, global commands may be placed as described in 
     <script id="__config" type="application/json">{"base": "..", "features": ["navigation.tabs", "navigation.tabs.sticky", "toc.integrate", "content.action.edit", "content.action.view"], "search": "../assets/javascripts/workers/search.208ed371.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
-      <script src="../assets/javascripts/bundle.fac441b0.min.js"></script>
+      <script src="../assets/javascripts/bundle.c2be25ad.min.js"></script>
       
     
   </body>
