@@ -151,8 +151,12 @@ class ConfigImportCommands extends DrushCommands
             $container->get('extension.list.module'),
         );
 
-        $commandHandler->setImportTransformer($container->get('config.import_transformer', ContainerInterface::NULL_ON_INVALID_REFERENCE));
-        $commandHandler->setConfigStorageSync($container->get('config.storage.sync', ContainerInterface::NULL_ON_INVALID_REFERENCE));
+        if ($container->has('config.import_transformer')) {
+            $commandHandler->setImportTransformer($container->get('config.import_transformer'));
+        }
+        if ($container->has('config.storage.sync')) {
+            $commandHandler->setConfigStorageSync($container->get('config.storage.sync'));
+        }
 
         return $commandHandler;
     }

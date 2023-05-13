@@ -70,8 +70,12 @@ final class ConfigExportCommands extends DrushCommands
             $container->get('config.storage')
         );
 
-        $commandHandler->setExportStorage($container->get('config.storage.export', ContainerInterface::NULL_ON_INVALID_REFERENCE));
-        $commandHandler->setConfigStorageSync($container->get('config.storage.sync', ContainerInterface::NULL_ON_INVALID_REFERENCE));
+        if ($container->has('config.storage.export')) {
+            $commandHandler->setExportStorage($container->get('config.storage.export'));
+        }
+        if ($container->has('config.storage.sync')) {
+            $commandHandler->setConfigStorageSync($container->get('config.storage.sync'));
+        }
 
         return $commandHandler;
     }

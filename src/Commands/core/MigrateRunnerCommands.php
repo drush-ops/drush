@@ -42,11 +42,11 @@ class MigrateRunnerCommands extends DrushCommands implements ConfigAwareInterfac
      * The key-value store service.
      */
     protected KeyValueStoreInterface $keyValue;
+    protected ?MigrationPluginManagerInterface $migrationPluginManager = null;
 
     public function __construct(
         protected DateFormatterInterface $dateFormatter,
-        KeyValueFactoryInterface $keyValueFactory,
-        protected ?MigrationPluginManagerInterface $migrationPluginManager = null
+        KeyValueFactoryInterface $keyValueFactory
     ) {
         parent::__construct();
         $this->keyValue = $keyValueFactory->get('migrate_last_imported');
@@ -54,13 +54,25 @@ class MigrateRunnerCommands extends DrushCommands implements ConfigAwareInterfac
 
     public static function create(ContainerInterface $container): self
     {
+        $migrationPluginManager = null;
+
         $commandHandler = new static(
             $container->get('date.formatter'),
-            $container->get('keyvalue'),
-            $container->get('plugin.manager.migration', ContainerInterface::NULL_ON_INVALID_REFERENCE)
+            $container->get('keyvalue')
         );
 
+        if ($container->has('plugin.manager.migration')) {
+            $commandHandler->setMigrationPluginManager($container->get('plugin.manager.migration'));
+        }
+
         return $commandHandler;
+    }
+
+    /**
+     * Provide a migration plugin manager.
+     */
+    public function setMigrationPluginManager(MigrationPluginManagerInterface $migrationPluginManager) {
+        $this->migrationPluginManager = $migrationPluginManager;
     }
 
     /**

@@ -64,7 +64,9 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
             $container->get('entity_field.manager')
         );
 
-        $commandHandler->setContentTranslationManager($container->get('content_translation.manager', ContainerInterface::NULL_ON_INVALID_REFERENCE));
+        if ($container->has('content_translation.manager')) {
+            $commandHandler->setContentTranslationManager($container->get('content_translation.manager'));
+        }
 
         return $commandHandler;
     }

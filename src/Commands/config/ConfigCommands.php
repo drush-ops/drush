@@ -69,8 +69,12 @@ final class ConfigCommands extends DrushCommands implements StdinAwareInterface,
             $container->get('config.storage')
         );
 
-        $commandHandler->setExportStorage($container->get('config.storage.export', ContainerInterface::NULL_ON_INVALID_REFERENCE));
-        $commandHandler->setImportTransformer($container->get('config.import_transformer', ContainerInterface::NULL_ON_INVALID_REFERENCE));
+        if ($container->has('config.storage.export')) {
+            $commandHandler->setExportStorage($container->get('config.storage.export'));
+        }
+        if ($container->has('config.import_transformer')) {
+            $commandHandler->setImportTransformer($container->get('config.import_transformer'));
+        }
 
         return $commandHandler;
     }
