@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Unish;
 
 use Drush\Commands\core\PhpCommands;
-use Drush\Drupal\Commands\core\QueueCommands;
-use Drush\Drupal\Commands\pm\PmCommands;
+use Drush\Commands\core\QueueCommands;
+use Drush\Commands\pm\PmCommands;
 use Symfony\Component\Filesystem\Path;
 
 /**

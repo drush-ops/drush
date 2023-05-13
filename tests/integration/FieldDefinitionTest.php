@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Unish;
 
-use Drush\Drupal\Commands\field\FieldDefinitionCommands;
-use Drush\Drupal\Commands\pm\PmCommands;
+use Drush\Commands\field\FieldDefinitionCommands;
+use Drush\Commands\pm\PmCommands;
 
 class FieldDefinitionTest extends UnishIntegrationTestCase
 {

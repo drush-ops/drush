@@ -9,7 +9,7 @@ use Symfony\Component\Filesystem\Path;
 
 /**
  * @group commands
- * @coversDefaultClass \Drush\Drupal\Commands\core\MigrateRunnerCommands
+ * @coversDefaultClass \Drush\Commands\core\MigrateRunnerCommands
  */
 class MigrateRunnerTest extends UnishIntegrationTestCase
 {
@@ -43,7 +43,7 @@ class MigrateRunnerTest extends UnishIntegrationTestCase
         $this->assertContains('test_migration_untagged', $actualIds);
 
         // Debug message registered for 'test_migration_source_issues'.
-        // @see \Drush\Drupal\Commands\core\MigrateRunnerCommands::getMigrationList()
+        // @see \Drush\Commands\core\MigrateRunnerCommands::getMigrationList()
         $this->assertStringContainsString("[debug] Migration 'test_migration_source_issues' is skipped as its source plugin has missed requirements: type1: a. type1: b. type1: c. type2: x. type2: y. type2: z.", $this->getErrorOutputRaw());
 
         // With arguments.

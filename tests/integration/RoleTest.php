@@ -6,8 +6,8 @@ namespace Unish;
 
 use Drupal\Core\Site\Settings;
 use Drush\Commands\core\CoreCommands;
-use Drush\Drupal\Commands\core\RoleCommands;
-use Drush\Drupal\Commands\pm\PmCommands;
+use Drush\Commands\core\RoleCommands;
+use Drush\Commands\pm\PmCommands;
 use Symfony\Component\Filesystem\Path;
 
 class RoleTest extends UnishIntegrationTestCase

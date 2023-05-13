@@ -12,7 +12,6 @@
 *       @weitzman @greg-1-anderson
 
 /src/Commands/Config/ @bircher
-/src/Drupal/Commands/config/ @bircher
 
 /src/Drupal/Commands/core/MigrateRunnerCommands.php @claudiu-cristea
 /src/Drupal/Migrate/ @claudiu-cristea
@@ -22,9 +21,9 @@
 /src/Commands/core/RunServerCommands.php @grugnog
 
 /includes/batch.inc @jonhattan
-/src/Drupal/Commands/core/BatchCommands.php @jonhattan
+/src/Commands/core/BatchCommands.php @jonhattan
 
-/src/Drupal/Commands/core/CLICommands.php @damiankloip
+/src/Commands/core/CLICommands.php @damiankloip
 /src/Psysh @damiankloip
 
 /src/Commands/core/UpdateDBCommands.php @pfrenssen

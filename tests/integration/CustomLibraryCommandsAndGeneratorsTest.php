@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Unish;
 
-use Drush\Drupal\Commands\generate\GenerateCommands;
+use Drush\Commands\generate\GenerateCommands;
 
 /**
  * @group commands

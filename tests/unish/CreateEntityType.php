@@ -2,7 +2,7 @@
 
 namespace Unish;
 
-use Drush\Drupal\Commands\generate\GenerateCommands;
+use Drush\Commands\generate\GenerateCommands;
 use Symfony\Component\Filesystem\Path;
 
 class CreateEntityType

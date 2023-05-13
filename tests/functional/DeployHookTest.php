@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Unish;
 
 use Drush\Commands\core\StatusCommands;
-use Drush\Drupal\Commands\core\DeployHookCommands;
-use Drush\Drupal\Commands\core\StateCommands;
-use Drush\Drupal\Commands\pm\PmCommands;
+use Drush\Commands\core\DeployHookCommands;
+use Drush\Commands\core\StateCommands;
+use Drush\Commands\pm\PmCommands;
 use Symfony\Component\Filesystem\Path;
 
 /**

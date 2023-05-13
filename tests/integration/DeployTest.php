@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Unish;
 
 use Drush\Commands\core\DeployCommands;
-use Drush\Drupal\Commands\config\ConfigExportCommands;
+use Drush\Commands\config\ConfigExportCommands;
 
 /**
  * @group commands

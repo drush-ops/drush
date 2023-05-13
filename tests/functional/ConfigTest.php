@@ -7,11 +7,11 @@ namespace Unish;
 use Drupal\Core\Serialization\Yaml;
 use Drush\Commands\core\PhpCommands;
 use Drush\Commands\core\StatusCommands;
-use Drush\Drupal\Commands\config\ConfigCommands;
-use Drush\Drupal\Commands\config\ConfigExportCommands;
-use Drush\Drupal\Commands\config\ConfigImportCommands;
-use Drush\Drupal\Commands\core\StateCommands;
-use Drush\Drupal\Commands\pm\PmCommands;
+use Drush\Commands\config\ConfigCommands;
+use Drush\Commands\config\ConfigExportCommands;
+use Drush\Commands\config\ConfigImportCommands;
+use Drush\Commands\core\StateCommands;
+use Drush\Commands\pm\PmCommands;
 use Symfony\Component\Filesystem\Path;
 
 /**

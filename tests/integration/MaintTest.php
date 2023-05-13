@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Unish;
 
-use Drush\Drupal\Commands\core\MaintCommands;
+use Drush\Commands\core\MaintCommands;
 
 /**
  * Tests Maintenance commands

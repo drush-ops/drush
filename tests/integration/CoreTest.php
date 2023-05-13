@@ -6,9 +6,9 @@ namespace Unish;
 
 use Drush\Commands\core\CoreCommands;
 use Drush\Commands\core\DrupalDirectoryCommands;
-use Drush\Drupal\Commands\core\DrupalCommands;
-use Drush\Drupal\Commands\pm\PmCommands;
-use Drush\Drupal\Commands\pm\ThemeCommands;
+use Drush\Commands\core\DrupalCommands;
+use Drush\Commands\pm\PmCommands;
+use Drush\Commands\pm\ThemeCommands;
 use Symfony\Component\Filesystem\Path;
 use Symfony\Component\Yaml\Yaml;
 
