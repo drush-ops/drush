@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="robots" content="index, follow, all" />
-    <title>Drush\Commands\generate\Generators\Drush\DrushCommandFile | Drush API %version%</title>
+    <title>Drush\Commands\generate\Generators\Drush\ComposerJsonResolver | Drush API %version%</title>
 
             <link rel="stylesheet" type="text/css" href="../../../../../css/bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="../../../../../css/bootstrap-theme.min.css">
@@ -19,7 +19,7 @@
 
     </head>
 
-    <body id="class" data-name="class:Drush_Commands_generate_Generators_Drush_DrushCommandFile" data-root-path="../../../../../" data-search-index-url="../../../../../doctum-search.json">
+    <body id="class" data-name="class:Drush_Commands_generate_Generators_Drush_ComposerJsonResolver" data-root-path="../../../../../" data-search-index-url="../../../../../doctum-search.json">
             <div id="content">
         <div id="left-column">
                 <div id="control-panel">
@@ -75,24 +75,26 @@
                         <div class="namespace-breadcrumbs">
             <ol class="breadcrumb">
                 <li><span class="label label-default">class</span></li>
-                        <li><a href="../../../../../Drush.html">Drush</a></li><li class="backslash">\</li><li><a href="../../../../../Drush/Commands.html">Commands</a></li><li class="backslash">\</li><li><a href="../../../../../Drush/Commands/generate.html">generate</a></li><li class="backslash">\</li><li><a href="../../../../../Drush/Commands/generate/Generators.html">Generators</a></li><li class="backslash">\</li><li><a href="../../../../../Drush/Commands/generate/Generators/Drush.html">Drush</a></li><li class="backslash">\</li><li>DrushCommandFile</li>
+                        <li><a href="../../../../../Drush.html">Drush</a></li><li class="backslash">\</li><li><a href="../../../../../Drush/Commands.html">Commands</a></li><li class="backslash">\</li><li><a href="../../../../../Drush/Commands/generate.html">generate</a></li><li class="backslash">\</li><li><a href="../../../../../Drush/Commands/generate/Generators.html">Generators</a></li><li class="backslash">\</li><li><a href="../../../../../Drush/Commands/generate/Generators/Drush.html">Drush</a></li><li class="backslash">\</li><li>ComposerJsonResolver</li>
             </ol>
         </div>
                 <div id="page-content">
     <div class="page-header">
-        <h1>DrushCommandFile    
+        <h1>ComposerJsonResolver    
             </h1>
     </div>
 
     
-    <p>        class
-    <strong>DrushCommandFile</strong>        extends <abbr title="DrupalCodeGenerator\Command\BaseGenerator">BaseGenerator</abbr>        (<a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/generate/Generators/Drush/DrushCommandFile.php">View source</a>)
+    <p>final         class
+    <strong>ComposerJsonResolver</strong>        implements        <abbr title="DrupalCodeGenerator\Asset\Resolver\ResolverInterface">ResolverInterface</abbr>        (<a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/generate/Generators/Drush/ComposerJsonResolver.php">View source</a>)
 </p>
 
         
     
         
 
+            <div class="description">
+            <p><p>Ensures that existing composer.json file has drush services entry.</p></p>                    </div>
             
         
     
@@ -102,10 +104,10 @@
             <div class="container-fluid underlined">
                     <div class="row">
                 <div class="col-md-2 type">
-                    void
+                    <abbr title="Drush\Commands\generate\Generators\Drush\DrupalCodeGenerator\Asset\File">File</abbr>|null
                 </div>
                 <div class="col-md-8">
-                    <a href="#method_generate">generate</a>(array $vars, <abbr title="DrupalCodeGenerator\Asset\AssetCollection">AssetCollection</abbr> $assets)
+                    <a href="#method_resolve">resolve</a>(<abbr title="DrupalCodeGenerator\Asset\Asset">Asset</abbr> $asset, string $path)
         
                                             <p>{@inheritdoc}</p>                </div>
                 <div class="col-md-2"></div>
@@ -117,10 +119,10 @@
 
             <div id="method-details">
                     <div class="method-item">
-                    <h3 id="method_generate">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/generate/Generators/Drush/DrushCommandFile.php#L25">at line 25</a></div>
-        <code>            protected        void
-    <strong>generate</strong>(array $vars, <abbr title="DrupalCodeGenerator\Asset\AssetCollection">AssetCollection</abbr> $assets)
+                    <h3 id="method_resolve">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/generate/Generators/Drush/ComposerJsonResolver.php#L20">at line 20</a></div>
+        <code>                    <abbr title="Drush\Commands\generate\Generators\Drush\DrupalCodeGenerator\Asset\File">File</abbr>|null
+    <strong>resolve</strong>(<abbr title="DrupalCodeGenerator\Asset\Asset">Asset</abbr> $asset, string $path)
         </code>
     </h3>
     <div class="details">    
@@ -135,13 +137,13 @@
 
                     <table class="table table-condensed">
                     <tr>
-                <td>array</td>
-                <td>$vars</td>
+                <td><abbr title="DrupalCodeGenerator\Asset\Asset">Asset</abbr></td>
+                <td>$asset</td>
                 <td></td>
             </tr>
                     <tr>
-                <td><abbr title="DrupalCodeGenerator\Asset\AssetCollection">AssetCollection</abbr></td>
-                <td>$assets</td>
+                <td>string</td>
+                <td>$path</td>
                 <td></td>
             </tr>
             </table>
@@ -151,7 +153,7 @@
 
                     <table class="table table-condensed">
         <tr>
-            <td>void</td>
+            <td><abbr title="Drush\Commands\generate\Generators\Drush\DrupalCodeGenerator\Asset\File">File</abbr>|null</td>
             <td></td>
         </tr>
     </table>

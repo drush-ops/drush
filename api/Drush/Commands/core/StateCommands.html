@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="robots" content="index, follow, all" />
-    <title>Drush\Commands\core\DeployCommands | Drush API %version%</title>
+    <title>Drush\Commands\core\StateCommands | Drush API %version%</title>
 
             <link rel="stylesheet" type="text/css" href="../../../css/bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="../../../css/bootstrap-theme.min.css">
@@ -19,7 +19,7 @@
 
     </head>
 
-    <body id="class" data-name="class:Drush_Commands_core_DeployCommands" data-root-path="../../../" data-search-index-url="../../../doctum-search.json">
+    <body id="class" data-name="class:Drush_Commands_core_StateCommands" data-root-path="../../../" data-search-index-url="../../../doctum-search.json">
             <div id="content">
         <div id="left-column">
                 <div id="control-panel">
@@ -75,18 +75,18 @@
                         <div class="namespace-breadcrumbs">
             <ol class="breadcrumb">
                 <li><span class="label label-default">class</span></li>
-                        <li><a href="../../../Drush.html">Drush</a></li><li class="backslash">\</li><li><a href="../../../Drush/Commands.html">Commands</a></li><li class="backslash">\</li><li><a href="../../../Drush/Commands/core.html">core</a></li><li class="backslash">\</li><li>DeployCommands</li>
+                        <li><a href="../../../Drush.html">Drush</a></li><li class="backslash">\</li><li><a href="../../../Drush/Commands.html">Commands</a></li><li class="backslash">\</li><li><a href="../../../Drush/Commands/core.html">core</a></li><li class="backslash">\</li><li>StateCommands</li>
             </ol>
         </div>
                 <div id="page-content">
     <div class="page-header">
-        <h1>DeployCommands    
+        <h1>StateCommands    
             </h1>
     </div>
 
     
     <p>final         class
-    <strong>DeployCommands</strong>        extends <a href="../../../Drush/Commands/DrushCommands.html"><abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a>        implements        <a href="../../../Drush/SiteAlias/SiteAliasManagerAwareInterface.html"><abbr title="Drush\SiteAlias\SiteAliasManagerAwareInterface">SiteAliasManagerAwareInterface</abbr></a>        (<a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/DeployCommands.php">View source</a>)
+    <strong>StateCommands</strong>        extends <a href="../../../Drush/Commands/DrushCommands.html"><abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a>        implements        <abbr title="Consolidation\AnnotatedCommand\Input\StdinAwareInterface">StdinAwareInterface</abbr>        (<a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/StateCommands.php">View source</a>)
 </p>
 
         
@@ -100,7 +100,7 @@
     <div class="container-fluid underlined">
                     <div class="row">
                 <div class="col-md-6">
-                    <abbr title="Consolidation\SiteAlias\SiteAliasManagerAwareTrait">SiteAliasManagerAwareTrait</abbr>    </div>
+                    <abbr title="Consolidation\AnnotatedCommand\Input\StdinAwareTrait">StdinAwareTrait</abbr>    </div>
                 <div class="col-md-6"></div>
             </div>
                     <div class="row">
@@ -183,7 +183,25 @@
             </tr>
                     <tr>
                 <td>
-                                                                                                                        DEPLOY
+                                                                                                                        GET
+                                    </td>
+                <td class="last">
+                    <p><em></em></p>
+                    <p></p>
+                </td>
+            </tr>
+                    <tr>
+                <td>
+                                                                                                                        SET
+                                    </td>
+                <td class="last">
+                    <p><em></em></p>
+                    <p></p>
+                </td>
+            </tr>
+                    <tr>
+                <td>
+                                                                                                                        DELETE
                                     </td>
                 <td class="last">
                     <p><em></em></p>
@@ -264,12 +282,11 @@ DrushConfig as return type. Helps with IDE completion.</p></p>                </
                     
                 </div>
                 <div class="col-md-8">
-                    <a href="#method___construct">__construct</a>()
+                    <a href="#method___construct">__construct</a>(<abbr title="Drupal\Core\State\StateInterface">StateInterface</abbr> $state)
         
                                             <p class="no-description">No description</p>
                                     </div>
-                <div class="col-md-2"><small>from&nbsp;<a href="../../../Drush/Commands/DrushCommands.html#method___construct">
-<abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a></small></div>
+                <div class="col-md-2"></div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
@@ -339,12 +356,34 @@ DrushConfig as return type. Helps with IDE completion.</p></p>                </
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    void
+                    static&nbsp;<a href="../../../Drush/Commands/core/StateCommands.html"><abbr title="Drush\Commands\core\StateCommands">StateCommands</abbr></a>
                 </div>
                 <div class="col-md-8">
-                    <a href="#method_deploy">deploy</a>()
+                    <a href="#method_create">create</a>(<abbr title="Symfony\Component\DependencyInjection\ContainerInterface">ContainerInterface</abbr> $container)
         
-                                            <p><p>Run several commands after performing a code deployment.</p></p>                </div>
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    <abbr title="Drupal\Core\State\StateInterface">StateInterface</abbr>
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_getState">getState</a>()
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    <abbr title="Consolidation\OutputFormatters\StructuredData\PropertyList">PropertyList</abbr>
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_get">get</a>(string $key, $options = [&#039;format&#039; =&gt; &#039;string&#039;])
+        
+                                            <p><p>Display a state value.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -352,7 +391,27 @@ DrushConfig as return type. Helps with IDE completion.</p></p>                </
                     void
                 </div>
                 <div class="col-md-8">
-                    <a href="#method_cacheRebuild">cacheRebuild</a>(<abbr title="Consolidation\SiteProcess\ProcessManager">ProcessManager</abbr> $manager, <abbr title="Consolidation\SiteAlias\SiteAlias">SiteAlias</abbr> $self, array $redispatchOptions)
+                    <a href="#method_set">set</a>(string $key, $value, $options = [&#039;input-format&#039; =&gt; &#039;auto&#039;])
+        
+                                            <p><p>Set a state value.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    void
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_delete">delete</a>(string $key)
+        
+                                            <p><p>Delete a state entry.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    static&nbsp;mixed
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_format">format</a>(mixed $value, string $format)
         
                                             <p class="no-description">No description</p>
                                     </div>
@@ -560,10 +619,9 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method___construct">
-        <div class="location">in <a href="../../../Drush/Commands/DrushCommands.html#method___construct">
-<abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a> <a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/DrushCommands.php#L51">at line 51</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/StateCommands.php#L24">at line 24</a></div>
         <code>                    
-    <strong>__construct</strong>()
+    <strong>__construct</strong>(<abbr title="Drupal\Core\State\StateInterface">StateInterface</abbr> $state)
         </code>
     </h3>
     <div class="details">    
@@ -575,6 +633,16 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
                     
         </div>
         <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Drupal\Core\State\StateInterface">StateInterface</abbr></td>
+                <td>$state</td>
+                <td></td>
+            </tr>
+            </table>
+
             
             
             
@@ -805,10 +873,10 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
 
             </div>
                     <div class="method-item">
-                    <h3 id="method_deploy">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/DeployCommands.php#L27">at line 27</a></div>
-        <code>                    void
-    <strong>deploy</strong>()
+                    <h3 id="method_create">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/StateCommands.php#L28">at line 28</a></div>
+        <code>        static            <a href="../../../Drush/Commands/core/StateCommands.html"><abbr title="Drush\Commands\core\StateCommands">StateCommands</abbr></a>
+    <strong>create</strong>(<abbr title="Symfony\Component\DependencyInjection\ContainerInterface">ContainerInterface</abbr> $container)
         </code>
     </h3>
     <div class="details">    
@@ -816,9 +884,152 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             
 
         <div class="method-description">
-                            <p><p>Run several commands after performing a code deployment.</p></p>                        
+                            <p class="no-description">No description</p>
+                    
         </div>
         <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Symfony\Component\DependencyInjection\ContainerInterface">ContainerInterface</abbr></td>
+                <td>$container</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><a href="../../../Drush/Commands/core/StateCommands.html"><abbr title="Drush\Commands\core\StateCommands">StateCommands</abbr></a></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getState">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/StateCommands.php#L37">at line 37</a></div>
+        <code>                    <abbr title="Drupal\Core\State\StateInterface">StateInterface</abbr>
+    <strong>getState</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><abbr title="Drupal\Core\State\StateInterface">StateInterface</abbr></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_get">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/StateCommands.php#L45">at line 45</a></div>
+        <code>                    <abbr title="Consolidation\OutputFormatters\StructuredData\PropertyList">PropertyList</abbr>
+    <strong>get</strong>(string $key, $options = [&#039;format&#039; =&gt; &#039;string&#039;])
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Display a state value.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$key</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$options</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><abbr title="Consolidation\OutputFormatters\StructuredData\PropertyList">PropertyList</abbr></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_set">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/StateCommands.php#L58">at line 58</a></div>
+        <code>                    void
+    <strong>set</strong>(string $key, $value, $options = [&#039;input-format&#039; =&gt; &#039;auto&#039;])
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Set a state value.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$key</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$value</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$options</td>
+                <td></td>
+            </tr>
+            </table>
+
             
                             <h4>Return Value</h4>
 
@@ -837,10 +1048,52 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
 
             </div>
                     <div class="method-item">
-                    <h3 id="method_cacheRebuild">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/DeployCommands.php#L58">at line 58</a></div>
+                    <h3 id="method_delete">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/StateCommands.php#L89">at line 89</a></div>
         <code>                    void
-    <strong>cacheRebuild</strong>(<abbr title="Consolidation\SiteProcess\ProcessManager">ProcessManager</abbr> $manager, <abbr title="Consolidation\SiteAlias\SiteAlias">SiteAlias</abbr> $self, array $redispatchOptions)
+    <strong>delete</strong>(string $key)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Delete a state entry.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$key</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>void</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_format">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/StateCommands.php#L107">at line 107</a></div>
+        <code>        static            mixed
+    <strong>format</strong>(mixed $value, string $format)
         </code>
     </h3>
     <div class="details">    
@@ -856,18 +1109,13 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
 
                     <table class="table table-condensed">
                     <tr>
-                <td><abbr title="Consolidation\SiteProcess\ProcessManager">ProcessManager</abbr></td>
-                <td>$manager</td>
+                <td>mixed</td>
+                <td>$value</td>
                 <td></td>
             </tr>
                     <tr>
-                <td><abbr title="Consolidation\SiteAlias\SiteAlias">SiteAlias</abbr></td>
-                <td>$self</td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td>array</td>
-                <td>$redispatchOptions</td>
+                <td>string</td>
+                <td>$format</td>
                 <td></td>
             </tr>
             </table>
@@ -877,7 +1125,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
 
                     <table class="table table-condensed">
         <tr>
-            <td>void</td>
+            <td>mixed</td>
             <td></td>
         </tr>
     </table>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="robots" content="index, follow, all" />
-    <title>Drush\Commands\core\DeployCommands | Drush API %version%</title>
+    <title>Drush\Commands\core\RoleCommands | Drush API %version%</title>
 
             <link rel="stylesheet" type="text/css" href="../../../css/bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="../../../css/bootstrap-theme.min.css">
@@ -19,7 +19,7 @@
 
     </head>
 
-    <body id="class" data-name="class:Drush_Commands_core_DeployCommands" data-root-path="../../../" data-search-index-url="../../../doctum-search.json">
+    <body id="class" data-name="class:Drush_Commands_core_RoleCommands" data-root-path="../../../" data-search-index-url="../../../doctum-search.json">
             <div id="content">
         <div id="left-column">
                 <div id="control-panel">
@@ -75,18 +75,18 @@
                         <div class="namespace-breadcrumbs">
             <ol class="breadcrumb">
                 <li><span class="label label-default">class</span></li>
-                        <li><a href="../../../Drush.html">Drush</a></li><li class="backslash">\</li><li><a href="../../../Drush/Commands.html">Commands</a></li><li class="backslash">\</li><li><a href="../../../Drush/Commands/core.html">core</a></li><li class="backslash">\</li><li>DeployCommands</li>
+                        <li><a href="../../../Drush.html">Drush</a></li><li class="backslash">\</li><li><a href="../../../Drush/Commands.html">Commands</a></li><li class="backslash">\</li><li><a href="../../../Drush/Commands/core.html">core</a></li><li class="backslash">\</li><li>RoleCommands</li>
             </ol>
         </div>
                 <div id="page-content">
     <div class="page-header">
-        <h1>DeployCommands    
+        <h1>RoleCommands    
             </h1>
     </div>
 
     
     <p>final         class
-    <strong>DeployCommands</strong>        extends <a href="../../../Drush/Commands/DrushCommands.html"><abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a>        implements        <a href="../../../Drush/SiteAlias/SiteAliasManagerAwareInterface.html"><abbr title="Drush\SiteAlias\SiteAliasManagerAwareInterface">SiteAliasManagerAwareInterface</abbr></a>        (<a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/DeployCommands.php">View source</a>)
+    <strong>RoleCommands</strong>        extends <a href="../../../Drush/Commands/DrushCommands.html"><abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a>        implements        <a href="../../../Drush/SiteAlias/SiteAliasManagerAwareInterface.html"><abbr title="Drush\SiteAlias\SiteAliasManagerAwareInterface">SiteAliasManagerAwareInterface</abbr></a>        (<a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/RoleCommands.php">View source</a>)
 </p>
 
         
@@ -183,7 +183,43 @@
             </tr>
                     <tr>
                 <td>
-                                                                                                                        DEPLOY
+                                                                                                                        CREATE
+                                    </td>
+                <td class="last">
+                    <p><em></em></p>
+                    <p></p>
+                </td>
+            </tr>
+                    <tr>
+                <td>
+                                                                                                                        DELETE
+                                    </td>
+                <td class="last">
+                    <p><em></em></p>
+                    <p></p>
+                </td>
+            </tr>
+                    <tr>
+                <td>
+                                                                                                                        PERM_ADD
+                                    </td>
+                <td class="last">
+                    <p><em></em></p>
+                    <p></p>
+                </td>
+            </tr>
+                    <tr>
+                <td>
+                                                                                                                        PERM_REMOVE
+                                    </td>
+                <td class="last">
+                    <p><em></em></p>
+                    <p></p>
+                </td>
+            </tr>
+                    <tr>
+                <td>
+                                                                                                                        LIST
                                     </td>
                 <td class="last">
                     <p><em></em></p>
@@ -339,12 +375,12 @@ DrushConfig as return type. Helps with IDE completion.</p></p>                </
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    void
+                    
                 </div>
                 <div class="col-md-8">
-                    <a href="#method_deploy">deploy</a>()
+                    <a href="#method_create">create</a>($machine_name, $human_readable_name = null)
         
-                                            <p><p>Run several commands after performing a code deployment.</p></p>                </div>
+                                            <p><p>Create a new role.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -352,7 +388,58 @@ DrushConfig as return type. Helps with IDE completion.</p></p>                </
                     void
                 </div>
                 <div class="col-md-8">
-                    <a href="#method_cacheRebuild">cacheRebuild</a>(<abbr title="Consolidation\SiteProcess\ProcessManager">ProcessManager</abbr> $manager, <abbr title="Consolidation\SiteAlias\SiteAlias">SiteAlias</abbr> $self, array $redispatchOptions)
+                    <a href="#method_delete">delete</a>($machine_name)
+        
+                                            <p><p>Delete a role.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    void
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_roleAddPerm">roleAddPerm</a>($machine_name, $permissions)
+        
+                                            <p><p>Grant specified permission(s) to a role.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    void
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_roleRemovePerm">roleRemovePerm</a>($machine_name, $permissions)
+        
+                                            <p><p>Remove specified permission(s) from a role.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    <abbr title="Consolidation\OutputFormatters\StructuredData\RowsOfFields">RowsOfFields</abbr>
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_roleList">roleList</a>($options = [&#039;format&#039; =&gt; &#039;yaml&#039;])
+        
+                                            <p><p>Display a list of all roles defined on the system.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    string
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_renderPermsCell">renderPermsCell</a>($key, $cellData, <abbr title="Consolidation\OutputFormatters\Options\FormatterOptions">FormatterOptions</abbr> $options)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    void
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_roleComplete">roleComplete</a>(<abbr title="Symfony\Component\Console\Completion\CompletionInput">CompletionInput</abbr> $input, <abbr title="Symfony\Component\Console\Completion\CompletionSuggestions">CompletionSuggestions</abbr> $suggestions)
         
                                             <p class="no-description">No description</p>
                                     </div>
@@ -805,10 +892,10 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
 
             </div>
                     <div class="method-item">
-                    <h3 id="method_deploy">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/DeployCommands.php#L27">at line 27</a></div>
-        <code>                    void
-    <strong>deploy</strong>()
+                    <h3 id="method_create">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/RoleCommands.php#L32">at line 32</a></div>
+        <code>                    
+    <strong>create</strong>($machine_name, $human_readable_name = null)
         </code>
     </h3>
     <div class="details">    
@@ -816,9 +903,57 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             
 
         <div class="method-description">
-                            <p><p>Run several commands after performing a code deployment.</p></p>                        
+                            <p><p>Create a new role.</p></p>                        
         </div>
         <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$machine_name</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$human_readable_name</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_delete">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/RoleCommands.php#L51">at line 51</a></div>
+        <code>                    void
+    <strong>delete</strong>($machine_name)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Delete a role.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$machine_name</td>
+                <td></td>
+            </tr>
+            </table>
+
             
                             <h4>Return Value</h4>
 
@@ -837,10 +972,148 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
 
             </div>
                     <div class="method-item">
-                    <h3 id="method_cacheRebuild">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/DeployCommands.php#L58">at line 58</a></div>
+                    <h3 id="method_roleAddPerm">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/RoleCommands.php#L67">at line 67</a></div>
         <code>                    void
-    <strong>cacheRebuild</strong>(<abbr title="Consolidation\SiteProcess\ProcessManager">ProcessManager</abbr> $manager, <abbr title="Consolidation\SiteAlias\SiteAlias">SiteAlias</abbr> $self, array $redispatchOptions)
+    <strong>roleAddPerm</strong>($machine_name, $permissions)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Grant specified permission(s) to a role.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$machine_name</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$permissions</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>void</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_roleRemovePerm">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/RoleCommands.php#L87">at line 87</a></div>
+        <code>                    void
+    <strong>roleRemovePerm</strong>($machine_name, $permissions)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Remove specified permission(s) from a role.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$machine_name</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$permissions</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>void</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_roleList">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/RoleCommands.php#L110">at line 110</a></div>
+        <code>                    <abbr title="Consolidation\OutputFormatters\StructuredData\RowsOfFields">RowsOfFields</abbr>
+    <strong>roleList</strong>($options = [&#039;format&#039; =&gt; &#039;yaml&#039;])
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Display a list of all roles defined on the system.</p></p>                <p><p>If a role name is provided as an argument, then all of the permissions of
+that role will be listed.  If a permission name is provided as an option,
+then all of the roles that have been granted that permission will be listed.</p></p>        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$options</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><abbr title="Consolidation\OutputFormatters\StructuredData\RowsOfFields">RowsOfFields</abbr></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_renderPermsCell">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/RoleCommands.php#L133">at line 133</a></div>
+        <code>                    string
+    <strong>renderPermsCell</strong>($key, $cellData, <abbr title="Consolidation\OutputFormatters\Options\FormatterOptions">FormatterOptions</abbr> $options)
         </code>
     </h3>
     <div class="details">    
@@ -856,18 +1129,66 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
 
                     <table class="table table-condensed">
                     <tr>
-                <td><abbr title="Consolidation\SiteProcess\ProcessManager">ProcessManager</abbr></td>
-                <td>$manager</td>
+                <td></td>
+                <td>$key</td>
                 <td></td>
             </tr>
                     <tr>
-                <td><abbr title="Consolidation\SiteAlias\SiteAlias">SiteAlias</abbr></td>
-                <td>$self</td>
+                <td></td>
+                <td>$cellData</td>
                 <td></td>
             </tr>
                     <tr>
-                <td>array</td>
-                <td>$redispatchOptions</td>
+                <td><abbr title="Consolidation\OutputFormatters\Options\FormatterOptions">FormatterOptions</abbr></td>
+                <td>$options</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_roleComplete">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/RoleCommands.php#L141">at line 141</a></div>
+        <code>                    void
+    <strong>roleComplete</strong>(<abbr title="Symfony\Component\Console\Completion\CompletionInput">CompletionInput</abbr> $input, <abbr title="Symfony\Component\Console\Completion\CompletionSuggestions">CompletionSuggestions</abbr> $suggestions)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Symfony\Component\Console\Completion\CompletionInput">CompletionInput</abbr></td>
+                <td>$input</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><abbr title="Symfony\Component\Console\Completion\CompletionSuggestions">CompletionSuggestions</abbr></td>
+                <td>$suggestions</td>
                 <td></td>
             </tr>
             </table>

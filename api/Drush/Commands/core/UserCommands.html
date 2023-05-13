@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="robots" content="index, follow, all" />
-    <title>Drush\Commands\core\DeployCommands | Drush API %version%</title>
+    <title>Drush\Commands\core\UserCommands | Drush API %version%</title>
 
             <link rel="stylesheet" type="text/css" href="../../../css/bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="../../../css/bootstrap-theme.min.css">
@@ -19,7 +19,7 @@
 
     </head>
 
-    <body id="class" data-name="class:Drush_Commands_core_DeployCommands" data-root-path="../../../" data-search-index-url="../../../doctum-search.json">
+    <body id="class" data-name="class:Drush_Commands_core_UserCommands" data-root-path="../../../" data-search-index-url="../../../doctum-search.json">
             <div id="content">
         <div id="left-column">
                 <div id="control-panel">
@@ -75,18 +75,18 @@
                         <div class="namespace-breadcrumbs">
             <ol class="breadcrumb">
                 <li><span class="label label-default">class</span></li>
-                        <li><a href="../../../Drush.html">Drush</a></li><li class="backslash">\</li><li><a href="../../../Drush/Commands.html">Commands</a></li><li class="backslash">\</li><li><a href="../../../Drush/Commands/core.html">core</a></li><li class="backslash">\</li><li>DeployCommands</li>
+                        <li><a href="../../../Drush.html">Drush</a></li><li class="backslash">\</li><li><a href="../../../Drush/Commands.html">Commands</a></li><li class="backslash">\</li><li><a href="../../../Drush/Commands/core.html">core</a></li><li class="backslash">\</li><li>UserCommands</li>
             </ol>
         </div>
                 <div id="page-content">
     <div class="page-header">
-        <h1>DeployCommands    
+        <h1>UserCommands    
             </h1>
     </div>
 
     
     <p>final         class
-    <strong>DeployCommands</strong>        extends <a href="../../../Drush/Commands/DrushCommands.html"><abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a>        implements        <a href="../../../Drush/SiteAlias/SiteAliasManagerAwareInterface.html"><abbr title="Drush\SiteAlias\SiteAliasManagerAwareInterface">SiteAliasManagerAwareInterface</abbr></a>        (<a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/DeployCommands.php">View source</a>)
+    <strong>UserCommands</strong>        extends <a href="../../../Drush/Commands/DrushCommands.html"><abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a>        (<a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/UserCommands.php">View source</a>)
 </p>
 
         
@@ -98,11 +98,6 @@
 
         
     <div class="container-fluid underlined">
-                    <div class="row">
-                <div class="col-md-6">
-                    <abbr title="Consolidation\SiteAlias\SiteAliasManagerAwareTrait">SiteAliasManagerAwareTrait</abbr>    </div>
-                <div class="col-md-6"></div>
-            </div>
                     <div class="row">
                 <div class="col-md-6">
                     <abbr title="Consolidation\SiteProcess\ProcessManagerAwareTrait">ProcessManagerAwareTrait</abbr>    </div>
@@ -183,7 +178,70 @@
             </tr>
                     <tr>
                 <td>
-                                                                                                                        DEPLOY
+                                                                                                                        INFORMATION
+                                    </td>
+                <td class="last">
+                    <p><em></em></p>
+                    <p></p>
+                </td>
+            </tr>
+                    <tr>
+                <td>
+                                                                                                                        BLOCK
+                                    </td>
+                <td class="last">
+                    <p><em></em></p>
+                    <p></p>
+                </td>
+            </tr>
+                    <tr>
+                <td>
+                                                                                                                        UNBLOCK
+                                    </td>
+                <td class="last">
+                    <p><em></em></p>
+                    <p></p>
+                </td>
+            </tr>
+                    <tr>
+                <td>
+                                                                                                                        ROLE_ADD
+                                    </td>
+                <td class="last">
+                    <p><em></em></p>
+                    <p></p>
+                </td>
+            </tr>
+                    <tr>
+                <td>
+                                                                                                                        ROLE_REMOVE
+                                    </td>
+                <td class="last">
+                    <p><em></em></p>
+                    <p></p>
+                </td>
+            </tr>
+                    <tr>
+                <td>
+                                                                                                                        CREATE
+                                    </td>
+                <td class="last">
+                    <p><em></em></p>
+                    <p></p>
+                </td>
+            </tr>
+                    <tr>
+                <td>
+                                                                                                                        CANCEL
+                                    </td>
+                <td class="last">
+                    <p><em></em></p>
+                    <p></p>
+                </td>
+            </tr>
+                    <tr>
+                <td>
+                                                                                                                        PASSWORD
                                     </td>
                 <td class="last">
                     <p><em></em></p>
@@ -264,12 +322,11 @@ DrushConfig as return type. Helps with IDE completion.</p></p>                </
                     
                 </div>
                 <div class="col-md-8">
-                    <a href="#method___construct">__construct</a>()
+                    <a href="#method___construct">__construct</a>(<abbr title="Drupal\Core\Datetime\DateFormatterInterface">DateFormatterInterface</abbr> $dateFormatter)
         
                                             <p class="no-description">No description</p>
                                     </div>
-                <div class="col-md-2"><small>from&nbsp;<a href="../../../Drush/Commands/DrushCommands.html#method___construct">
-<abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a></small></div>
+                <div class="col-md-2"></div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
@@ -339,12 +396,34 @@ DrushConfig as return type. Helps with IDE completion.</p></p>                </
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    void
+                    static&nbsp;<a href="../../../Drush/Commands/core/UserCommands.html"><abbr title="Drush\Commands\core\UserCommands">UserCommands</abbr></a>
                 </div>
                 <div class="col-md-8">
-                    <a href="#method_deploy">deploy</a>()
+                    <a href="#method_create">create</a>(<abbr title="Symfony\Component\DependencyInjection\ContainerInterface">ContainerInterface</abbr> $container)
         
-                                            <p><p>Run several commands after performing a code deployment.</p></p>                </div>
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    <abbr title="Consolidation\OutputFormatters\StructuredData\RowsOfFields">RowsOfFields</abbr>
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_information">information</a>(string $names = &#039;&#039;, $options = [&#039;format&#039; =&gt; &#039;table&#039;, &#039;uid&#039; =&gt; self::REQ, &#039;mail&#039; =&gt; self::REQ])
+        
+                                            <p><p>Print information about the specified user(s).</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_renderRolesCell">renderRolesCell</a>($key, $cellData, <abbr title="Consolidation\OutputFormatters\Options\FormatterOptions">FormatterOptions</abbr> $options)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -352,7 +431,107 @@ DrushConfig as return type. Helps with IDE completion.</p></p>                </
                     void
                 </div>
                 <div class="col-md-8">
-                    <a href="#method_cacheRebuild">cacheRebuild</a>(<abbr title="Consolidation\SiteProcess\ProcessManager">ProcessManager</abbr> $manager, <abbr title="Consolidation\SiteAlias\SiteAlias">SiteAlias</abbr> $self, array $redispatchOptions)
+                    <a href="#method_block">block</a>(string $names = &#039;&#039;, $options = [&#039;uid&#039; =&gt; self::REQ, &#039;mail&#039; =&gt; self::REQ])
+        
+                                            <p><p>Block the specified user(s).</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    void
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_unblock">unblock</a>(string $names = &#039;&#039;, $options = [&#039;uid&#039; =&gt; self::REQ, &#039;mail&#039; =&gt; self::REQ])
+        
+                                            <p><p>Unblock the specified user(s).</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    void
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_addRole">addRole</a>(string $role, string $names = &#039;&#039;, $options = [&#039;uid&#039; =&gt; self::REQ, &#039;mail&#039; =&gt; self::REQ])
+        
+                                            <p><p>Add a role to the specified user accounts.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    void
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_removeRole">removeRole</a>(string $role, string $names = &#039;&#039;, $options = [&#039;uid&#039; =&gt; self::REQ, &#039;mail&#039; =&gt; self::REQ])
+        
+                                            <p><p>Remove a role from the specified user accounts.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_createUser">createUser</a>(string $name, $options = [&#039;password&#039; =&gt; self::REQ, &#039;mail&#039; =&gt; self::REQ])
+        
+                                            <p><p>Create a user account.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    void
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_createValidate">createValidate</a>(<abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr> $commandData)
+        
+                                            <p><p>Assure that provided username is available.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    void
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_cancel">cancel</a>(string $names, $options = [&#039;delete-content&#039; =&gt; false, &#039;reassign-content&#039; =&gt; false, &#039;uid&#039; =&gt; self::REQ, &#039;mail&#039; =&gt; self::REQ])
+        
+                                            <p><p>Block or delete user account(s) with the specified name(s).</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    void
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_password">password</a>(string $name, string $password)
+        
+                                            <p><p>Set the password for the user account with the specified name.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    array
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_infoArray">infoArray</a>($account)
+        
+                                            <p><p>A flatter and simpler array presentation of a Drupal $user object.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    array
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_getAccounts">getAccounts</a>(string $names = &#039;&#039;, array $options = [])
+        
+                                            <p><p>Get accounts from name variables or uid &amp; mail options.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    void
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_roleComplete">roleComplete</a>(<abbr title="Symfony\Component\Console\Completion\CompletionInput">CompletionInput</abbr> $input, <abbr title="Symfony\Component\Console\Completion\CompletionSuggestions">CompletionSuggestions</abbr> $suggestions)
         
                                             <p class="no-description">No description</p>
                                     </div>
@@ -560,10 +739,9 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method___construct">
-        <div class="location">in <a href="../../../Drush/Commands/DrushCommands.html#method___construct">
-<abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a> <a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/DrushCommands.php#L51">at line 51</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/UserCommands.php#L33">at line 33</a></div>
         <code>                    
-    <strong>__construct</strong>()
+    <strong>__construct</strong>(<abbr title="Drupal\Core\Datetime\DateFormatterInterface">DateFormatterInterface</abbr> $dateFormatter)
         </code>
     </h3>
     <div class="details">    
@@ -575,6 +753,16 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
                     
         </div>
         <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Drupal\Core\Datetime\DateFormatterInterface">DateFormatterInterface</abbr></td>
+                <td>$dateFormatter</td>
+                <td></td>
+            </tr>
+            </table>
+
             
             
             
@@ -805,10 +993,10 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
 
             </div>
                     <div class="method-item">
-                    <h3 id="method_deploy">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/DeployCommands.php#L27">at line 27</a></div>
-        <code>                    void
-    <strong>deploy</strong>()
+                    <h3 id="method_create">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/UserCommands.php#L37">at line 37</a></div>
+        <code>        static            <a href="../../../Drush/Commands/core/UserCommands.html"><abbr title="Drush\Commands\core\UserCommands">UserCommands</abbr></a>
+    <strong>create</strong>(<abbr title="Symfony\Component\DependencyInjection\ContainerInterface">ContainerInterface</abbr> $container)
         </code>
     </h3>
     <div class="details">    
@@ -816,9 +1004,158 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             
 
         <div class="method-description">
-                            <p><p>Run several commands after performing a code deployment.</p></p>                        
+                            <p class="no-description">No description</p>
+                    
         </div>
         <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Symfony\Component\DependencyInjection\ContainerInterface">ContainerInterface</abbr></td>
+                <td>$container</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><a href="../../../Drush/Commands/core/UserCommands.html"><abbr title="Drush\Commands\core\UserCommands">UserCommands</abbr></a></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_information">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/UserCommands.php#L49">at line 49</a></div>
+        <code>                    <abbr title="Consolidation\OutputFormatters\StructuredData\RowsOfFields">RowsOfFields</abbr>
+    <strong>information</strong>(string $names = &#039;&#039;, $options = [&#039;format&#039; =&gt; &#039;table&#039;, &#039;uid&#039; =&gt; self::REQ, &#039;mail&#039; =&gt; self::REQ])
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Print information about the specified user(s).</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$names</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$options</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><abbr title="Consolidation\OutputFormatters\StructuredData\RowsOfFields">RowsOfFields</abbr></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_renderRolesCell">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/UserCommands.php#L118">at line 118</a></div>
+        <code>                    
+    <strong>renderRolesCell</strong>($key, $cellData, <abbr title="Consolidation\OutputFormatters\Options\FormatterOptions">FormatterOptions</abbr> $options)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$key</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$cellData</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><abbr title="Consolidation\OutputFormatters\Options\FormatterOptions">FormatterOptions</abbr></td>
+                <td>$options</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_block">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/UserCommands.php#L129">at line 129</a></div>
+        <code>                    void
+    <strong>block</strong>(string $names = &#039;&#039;, $options = [&#039;uid&#039; =&gt; self::REQ, &#039;mail&#039; =&gt; self::REQ])
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Block the specified user(s).</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$names</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$options</td>
+                <td></td>
+            </tr>
+            </table>
+
             
                             <h4>Return Value</h4>
 
@@ -837,10 +1174,437 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
 
             </div>
                     <div class="method-item">
-                    <h3 id="method_cacheRebuild">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/DeployCommands.php#L58">at line 58</a></div>
+                    <h3 id="method_unblock">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/UserCommands.php#L149">at line 149</a></div>
         <code>                    void
-    <strong>cacheRebuild</strong>(<abbr title="Consolidation\SiteProcess\ProcessManager">ProcessManager</abbr> $manager, <abbr title="Consolidation\SiteAlias\SiteAlias">SiteAlias</abbr> $self, array $redispatchOptions)
+    <strong>unblock</strong>(string $names = &#039;&#039;, $options = [&#039;uid&#039; =&gt; self::REQ, &#039;mail&#039; =&gt; self::REQ])
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Unblock the specified user(s).</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$names</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$options</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>void</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_addRole">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/UserCommands.php#L167">at line 167</a></div>
+        <code>                    void
+    <strong>addRole</strong>(string $role, string $names = &#039;&#039;, $options = [&#039;uid&#039; =&gt; self::REQ, &#039;mail&#039; =&gt; self::REQ])
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Add a role to the specified user accounts.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$role</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>string</td>
+                <td>$names</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$options</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>void</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_removeRole">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/UserCommands.php#L191">at line 191</a></div>
+        <code>                    void
+    <strong>removeRole</strong>(string $role, string $names = &#039;&#039;, $options = [&#039;uid&#039; =&gt; self::REQ, &#039;mail&#039; =&gt; self::REQ])
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Remove a role from the specified user accounts.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$role</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>string</td>
+                <td>$names</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$options</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>void</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_createUser">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/UserCommands.php#L215">at line 215</a></div>
+        <code>                    
+    <strong>createUser</strong>(string $name, $options = [&#039;password&#039; =&gt; self::REQ, &#039;mail&#039; =&gt; self::REQ])
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Create a user account.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$name</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$options</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_createValidate">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/UserCommands.php#L242">at line 242</a></div>
+        <code>                    void
+    <strong>createValidate</strong>(<abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr> $commandData)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Assure that provided username is available.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr></td>
+                <td>$commandData</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>void</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_cancel">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/UserCommands.php#L263">at line 263</a></div>
+        <code>                    void
+    <strong>cancel</strong>(string $names, $options = [&#039;delete-content&#039; =&gt; false, &#039;reassign-content&#039; =&gt; false, &#039;uid&#039; =&gt; self::REQ, &#039;mail&#039; =&gt; self::REQ])
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Block or delete user account(s) with the specified name(s).</p></p>                <p><ul>
+<li>Existing content may be deleted or reassigned to the Anonymous user. See options.</li>
+<li>By default only nodes are deleted or reassigned. Custom entity types need own code to
+support cancellation. See <a href="https://www.drupal.org/project/drupal/issues/3043725">https://www.drupal.org/project/drupal/issues/3043725</a> for updates.</li>
+</ul></p>        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$names</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$options</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>void</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_password">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/UserCommands.php#L293">at line 293</a></div>
+        <code>                    void
+    <strong>password</strong>(string $name, string $password)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Set the password for the user account with the specified name.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$name</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>string</td>
+                <td>$password</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>void</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_infoArray">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/UserCommands.php#L313">at line 313</a></div>
+        <code>                    array
+    <strong>infoArray</strong>($account)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>A flatter and simpler array presentation of a Drupal $user object.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$account</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>array</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getAccounts">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/UserCommands.php#L344">at line 344</a></div>
+        <code>            protected        array
+    <strong>getAccounts</strong>(string $names = &#039;&#039;, array $options = [])
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Get accounts from name variables or uid &amp; mail options.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$names</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>array</td>
+                <td>$options</td>
+                <td><p>A array of loaded accounts.</p></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>array</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+                            <h4>Exceptions</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><a target="_blank" rel="noopener" href="https://www.php.net/Exception">Exception</a></td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_roleComplete">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/UserCommands.php#L381">at line 381</a></div>
+        <code>                    void
+    <strong>roleComplete</strong>(<abbr title="Symfony\Component\Console\Completion\CompletionInput">CompletionInput</abbr> $input, <abbr title="Symfony\Component\Console\Completion\CompletionSuggestions">CompletionSuggestions</abbr> $suggestions)
         </code>
     </h3>
     <div class="details">    
@@ -856,18 +1620,13 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
 
                     <table class="table table-condensed">
                     <tr>
-                <td><abbr title="Consolidation\SiteProcess\ProcessManager">ProcessManager</abbr></td>
-                <td>$manager</td>
+                <td><abbr title="Symfony\Component\Console\Completion\CompletionInput">CompletionInput</abbr></td>
+                <td>$input</td>
                 <td></td>
             </tr>
                     <tr>
-                <td><abbr title="Consolidation\SiteAlias\SiteAlias">SiteAlias</abbr></td>
-                <td>$self</td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td>array</td>
-                <td>$redispatchOptions</td>
+                <td><abbr title="Symfony\Component\Console\Completion\CompletionSuggestions">CompletionSuggestions</abbr></td>
+                <td>$suggestions</td>
                 <td></td>
             </tr>
             </table>

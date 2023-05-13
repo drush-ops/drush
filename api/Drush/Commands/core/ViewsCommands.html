@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="robots" content="index, follow, all" />
-    <title>Drush\Commands\core\DeployCommands | Drush API %version%</title>
+    <title>Drush\Commands\core\ViewsCommands | Drush API %version%</title>
 
             <link rel="stylesheet" type="text/css" href="../../../css/bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="../../../css/bootstrap-theme.min.css">
@@ -19,7 +19,7 @@
 
     </head>
 
-    <body id="class" data-name="class:Drush_Commands_core_DeployCommands" data-root-path="../../../" data-search-index-url="../../../doctum-search.json">
+    <body id="class" data-name="class:Drush_Commands_core_ViewsCommands" data-root-path="../../../" data-search-index-url="../../../doctum-search.json">
             <div id="content">
         <div id="left-column">
                 <div id="control-panel">
@@ -75,18 +75,18 @@
                         <div class="namespace-breadcrumbs">
             <ol class="breadcrumb">
                 <li><span class="label label-default">class</span></li>
-                        <li><a href="../../../Drush.html">Drush</a></li><li class="backslash">\</li><li><a href="../../../Drush/Commands.html">Commands</a></li><li class="backslash">\</li><li><a href="../../../Drush/Commands/core.html">core</a></li><li class="backslash">\</li><li>DeployCommands</li>
+                        <li><a href="../../../Drush.html">Drush</a></li><li class="backslash">\</li><li><a href="../../../Drush/Commands.html">Commands</a></li><li class="backslash">\</li><li><a href="../../../Drush/Commands/core.html">core</a></li><li class="backslash">\</li><li>ViewsCommands</li>
             </ol>
         </div>
                 <div id="page-content">
     <div class="page-header">
-        <h1>DeployCommands    
+        <h1>ViewsCommands    
             </h1>
     </div>
 
     
     <p>final         class
-    <strong>DeployCommands</strong>        extends <a href="../../../Drush/Commands/DrushCommands.html"><abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a>        implements        <a href="../../../Drush/SiteAlias/SiteAliasManagerAwareInterface.html"><abbr title="Drush\SiteAlias\SiteAliasManagerAwareInterface">SiteAliasManagerAwareInterface</abbr></a>        (<a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/DeployCommands.php">View source</a>)
+    <strong>ViewsCommands</strong>        extends <a href="../../../Drush/Commands/DrushCommands.html"><abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a>        (<a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/ViewsCommands.php">View source</a>)
 </p>
 
         
@@ -98,11 +98,6 @@
 
         
     <div class="container-fluid underlined">
-                    <div class="row">
-                <div class="col-md-6">
-                    <abbr title="Consolidation\SiteAlias\SiteAliasManagerAwareTrait">SiteAliasManagerAwareTrait</abbr>    </div>
-                <div class="col-md-6"></div>
-            </div>
                     <div class="row">
                 <div class="col-md-6">
                     <abbr title="Consolidation\SiteProcess\ProcessManagerAwareTrait">ProcessManagerAwareTrait</abbr>    </div>
@@ -183,7 +178,43 @@
             </tr>
                     <tr>
                 <td>
-                                                                                                                        DEPLOY
+                                                                                                                        DEV
+                                    </td>
+                <td class="last">
+                    <p><em></em></p>
+                    <p></p>
+                </td>
+            </tr>
+                    <tr>
+                <td>
+                                                                                                                        EXECUTE
+                                    </td>
+                <td class="last">
+                    <p><em></em></p>
+                    <p></p>
+                </td>
+            </tr>
+                    <tr>
+                <td>
+                                                                                                                        LIST
+                                    </td>
+                <td class="last">
+                    <p><em></em></p>
+                    <p></p>
+                </td>
+            </tr>
+                    <tr>
+                <td>
+                                                                                                                        ENABLE
+                                    </td>
+                <td class="last">
+                    <p><em></em></p>
+                    <p></p>
+                </td>
+            </tr>
+                    <tr>
+                <td>
+                                                                                                                        DISABLE
                                     </td>
                 <td class="last">
                     <p><em></em></p>
@@ -264,12 +295,11 @@ DrushConfig as return type. Helps with IDE completion.</p></p>                </
                     
                 </div>
                 <div class="col-md-8">
-                    <a href="#method___construct">__construct</a>()
+                    <a href="#method___construct">__construct</a>(<abbr title="Drupal\Core\Config\ConfigFactoryInterface">ConfigFactoryInterface</abbr> $configFactory, <abbr title="Drupal\Core\Extension\ModuleHandlerInterface">ModuleHandlerInterface</abbr> $moduleHandler, <abbr title="Drupal\Core\Entity\EntityTypeManagerInterface">EntityTypeManagerInterface</abbr> $entityTypeManager, <abbr title="Drupal\Core\Render\RendererInterface">RendererInterface</abbr> $renderer)
         
                                             <p class="no-description">No description</p>
                                     </div>
-                <div class="col-md-2"><small>from&nbsp;<a href="../../../Drush/Commands/DrushCommands.html#method___construct">
-<abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a></small></div>
+                <div class="col-md-2"></div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
@@ -339,12 +369,57 @@ DrushConfig as return type. Helps with IDE completion.</p></p>                </
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    void
+                    static&nbsp;<a href="../../../Drush/Commands/core/ViewsCommands.html"><abbr title="Drush\Commands\core\ViewsCommands">ViewsCommands</abbr></a>
                 </div>
                 <div class="col-md-8">
-                    <a href="#method_deploy">deploy</a>()
+                    <a href="#method_create">create</a>(<abbr title="Symfony\Component\DependencyInjection\ContainerInterface">ContainerInterface</abbr> $container)
         
-                                            <p><p>Run several commands after performing a code deployment.</p></p>                </div>
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    <abbr title="Drupal\Core\Config\ConfigFactoryInterface">ConfigFactoryInterface</abbr>
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_getConfigFactory">getConfigFactory</a>()
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    <abbr title="Drupal\Core\Extension\ModuleHandlerInterface">ModuleHandlerInterface</abbr>
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_getModuleHandler">getModuleHandler</a>()
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    <abbr title="Drupal\Core\Entity\EntityTypeManagerInterface">EntityTypeManagerInterface</abbr>
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_getEntityTypeManager">getEntityTypeManager</a>()
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    <abbr title="Drupal\Core\Render\RendererInterface">RendererInterface</abbr>
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_getRenderer">getRenderer</a>()
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -352,10 +427,69 @@ DrushConfig as return type. Helps with IDE completion.</p></p>                </
                     void
                 </div>
                 <div class="col-md-8">
-                    <a href="#method_cacheRebuild">cacheRebuild</a>(<abbr title="Consolidation\SiteProcess\ProcessManager">ProcessManager</abbr> $manager, <abbr title="Consolidation\SiteAlias\SiteAlias">SiteAlias</abbr> $self, array $redispatchOptions)
+                    <a href="#method_dev">dev</a>()
         
-                                            <p class="no-description">No description</p>
-                                    </div>
+                                            <p><p>Set several Views settings to more developer-oriented values.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    <abbr title="Drush\Commands\core\Consolidation\OutputFormatters\StructuredData\RowsOfFields">RowsOfFields</abbr>|null
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_vlist">vlist</a>($options = [&#039;name&#039; =&gt; self::REQ, &#039;tags&#039; =&gt; self::REQ, &#039;status&#039; =&gt; self::REQ, &#039;format&#039; =&gt; &#039;table&#039;])
+        
+                                            <p><p>Get a list of all views in the system.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    string|null
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_execute">execute</a>(string $view_name, $display = null, $view_args = null, $options = [&#039;count&#039; =&gt; 0, &#039;show-admin-links&#039; =&gt; false])
+        
+                                            <p><p>Execute a view and show a count of the results, or the rendered HTML.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    <abbr title="Drush\Commands\core\Consolidation\OutputFormatters\StructuredData\RowsOfFields">RowsOfFields</abbr>|null
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_analyze">analyze</a>()
+        
+                                            <p><p>Get a list of all Views and analyze warnings.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    void
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_enable">enable</a>(string $views)
+        
+                                            <p><p>Enable the specified views.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    void
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_disable">disable</a>(string $views)
+        
+                                            <p><p>Disable the specified views.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    void
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_cacheClear">cacheClear</a>($types, $include_bootstrapped_types)
+        
+                                            <p><p>Adds a cache clear option for views.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
             </div>
@@ -560,10 +694,9 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method___construct">
-        <div class="location">in <a href="../../../Drush/Commands/DrushCommands.html#method___construct">
-<abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a> <a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/DrushCommands.php#L51">at line 51</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/ViewsCommands.php#L28">at line 28</a></div>
         <code>                    
-    <strong>__construct</strong>()
+    <strong>__construct</strong>(<abbr title="Drupal\Core\Config\ConfigFactoryInterface">ConfigFactoryInterface</abbr> $configFactory, <abbr title="Drupal\Core\Extension\ModuleHandlerInterface">ModuleHandlerInterface</abbr> $moduleHandler, <abbr title="Drupal\Core\Entity\EntityTypeManagerInterface">EntityTypeManagerInterface</abbr> $entityTypeManager, <abbr title="Drupal\Core\Render\RendererInterface">RendererInterface</abbr> $renderer)
         </code>
     </h3>
     <div class="details">    
@@ -575,6 +708,31 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
                     
         </div>
         <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Drupal\Core\Config\ConfigFactoryInterface">ConfigFactoryInterface</abbr></td>
+                <td>$configFactory</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><abbr title="Drupal\Core\Extension\ModuleHandlerInterface">ModuleHandlerInterface</abbr></td>
+                <td>$moduleHandler</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><abbr title="Drupal\Core\Entity\EntityTypeManagerInterface">EntityTypeManagerInterface</abbr></td>
+                <td>$entityTypeManager</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><abbr title="Drupal\Core\Render\RendererInterface">RendererInterface</abbr></td>
+                <td>$renderer</td>
+                <td></td>
+            </tr>
+            </table>
+
             
             
             
@@ -805,10 +963,10 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
 
             </div>
                     <div class="method-item">
-                    <h3 id="method_deploy">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/DeployCommands.php#L27">at line 27</a></div>
-        <code>                    void
-    <strong>deploy</strong>()
+                    <h3 id="method_create">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/ViewsCommands.php#L36">at line 36</a></div>
+        <code>        static            <a href="../../../Drush/Commands/core/ViewsCommands.html"><abbr title="Drush\Commands\core\ViewsCommands">ViewsCommands</abbr></a>
+    <strong>create</strong>(<abbr title="Symfony\Component\DependencyInjection\ContainerInterface">ContainerInterface</abbr> $container)
         </code>
     </h3>
     <div class="details">    
@@ -816,7 +974,182 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             
 
         <div class="method-description">
-                            <p><p>Run several commands after performing a code deployment.</p></p>                        
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Symfony\Component\DependencyInjection\ContainerInterface">ContainerInterface</abbr></td>
+                <td>$container</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><a href="../../../Drush/Commands/core/ViewsCommands.html"><abbr title="Drush\Commands\core\ViewsCommands">ViewsCommands</abbr></a></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getConfigFactory">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/ViewsCommands.php#L48">at line 48</a></div>
+        <code>                    <abbr title="Drupal\Core\Config\ConfigFactoryInterface">ConfigFactoryInterface</abbr>
+    <strong>getConfigFactory</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><abbr title="Drupal\Core\Config\ConfigFactoryInterface">ConfigFactoryInterface</abbr></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getModuleHandler">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/ViewsCommands.php#L53">at line 53</a></div>
+        <code>                    <abbr title="Drupal\Core\Extension\ModuleHandlerInterface">ModuleHandlerInterface</abbr>
+    <strong>getModuleHandler</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><abbr title="Drupal\Core\Extension\ModuleHandlerInterface">ModuleHandlerInterface</abbr></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getEntityTypeManager">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/ViewsCommands.php#L58">at line 58</a></div>
+        <code>                    <abbr title="Drupal\Core\Entity\EntityTypeManagerInterface">EntityTypeManagerInterface</abbr>
+    <strong>getEntityTypeManager</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><abbr title="Drupal\Core\Entity\EntityTypeManagerInterface">EntityTypeManagerInterface</abbr></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getRenderer">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/ViewsCommands.php#L63">at line 63</a></div>
+        <code>                    <abbr title="Drupal\Core\Render\RendererInterface">RendererInterface</abbr>
+    <strong>getRenderer</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><abbr title="Drupal\Core\Render\RendererInterface">RendererInterface</abbr></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_dev">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/ViewsCommands.php#L71">at line 71</a></div>
+        <code>                    void
+    <strong>dev</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Set several Views settings to more developer-oriented values.</p></p>                        
         </div>
         <div class="tags">
             
@@ -837,10 +1170,10 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
 
             </div>
                     <div class="method-item">
-                    <h3 id="method_cacheRebuild">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/DeployCommands.php#L58">at line 58</a></div>
-        <code>                    void
-    <strong>cacheRebuild</strong>(<abbr title="Consolidation\SiteProcess\ProcessManager">ProcessManager</abbr> $manager, <abbr title="Consolidation\SiteAlias\SiteAlias">SiteAlias</abbr> $self, array $redispatchOptions)
+                    <h3 id="method_vlist">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/ViewsCommands.php#L114">at line 114</a></div>
+        <code>                    <abbr title="Drush\Commands\core\Consolidation\OutputFormatters\StructuredData\RowsOfFields">RowsOfFields</abbr>|null
+    <strong>vlist</strong>($options = [&#039;name&#039; =&gt; self::REQ, &#039;tags&#039; =&gt; self::REQ, &#039;status&#039; =&gt; self::REQ, &#039;format&#039; =&gt; &#039;table&#039;])
         </code>
     </h3>
     <div class="details">    
@@ -848,26 +1181,235 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             
 
         <div class="method-description">
-                            <p class="no-description">No description</p>
-                    
+                            <p><p>Get a list of all views in the system.</p></p>                        
         </div>
         <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
-                <td><abbr title="Consolidation\SiteProcess\ProcessManager">ProcessManager</abbr></td>
-                <td>$manager</td>
+                <td></td>
+                <td>$options</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><abbr title="Drush\Commands\core\Consolidation\OutputFormatters\StructuredData\RowsOfFields">RowsOfFields</abbr>|null</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_execute">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/ViewsCommands.php#L204">at line 204</a></div>
+        <code>                    string|null
+    <strong>execute</strong>(string $view_name, $display = null, $view_args = null, $options = [&#039;count&#039; =&gt; 0, &#039;show-admin-links&#039; =&gt; false])
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Execute a view and show a count of the results, or the rendered HTML.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$view_name</td>
                 <td></td>
             </tr>
                     <tr>
-                <td><abbr title="Consolidation\SiteAlias\SiteAlias">SiteAlias</abbr></td>
-                <td>$self</td>
+                <td></td>
+                <td>$display</td>
                 <td></td>
             </tr>
                     <tr>
-                <td>array</td>
-                <td>$redispatchOptions</td>
+                <td></td>
+                <td>$view_args</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$options</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string|null</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_analyze">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/ViewsCommands.php#L242">at line 242</a></div>
+        <code>                    <abbr title="Drush\Commands\core\Consolidation\OutputFormatters\StructuredData\RowsOfFields">RowsOfFields</abbr>|null
+    <strong>analyze</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Get a list of all Views and analyze warnings.</p></p>                        
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><abbr title="Drush\Commands\core\Consolidation\OutputFormatters\StructuredData\RowsOfFields">RowsOfFields</abbr>|null</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_enable">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/ViewsCommands.php#L271">at line 271</a></div>
+        <code>                    void
+    <strong>enable</strong>(string $views)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Enable the specified views.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$views</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>void</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_disable">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/ViewsCommands.php#L290">at line 290</a></div>
+        <code>                    void
+    <strong>disable</strong>(string $views)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Disable the specified views.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$views</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>void</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_cacheClear">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/ViewsCommands.php#L309">at line 309</a></div>
+        <code>                    void
+    <strong>cacheClear</strong>($types, $include_bootstrapped_types)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Adds a cache clear option for views.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$types</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$include_bootstrapped_types</td>
                 <td></td>
             </tr>
             </table>
