@@ -71,7 +71,8 @@ class MigrateRunnerCommands extends DrushCommands implements ConfigAwareInterfac
     /**
      * Provide a migration plugin manager.
      */
-    public function setMigrationPluginManager(MigrationPluginManagerInterface $migrationPluginManager) {
+    public function setMigrationPluginManager(MigrationPluginManagerInterface $migrationPluginManager)
+    {
         $this->migrationPluginManager = $migrationPluginManager;
     }
 
