@@ -38,7 +38,6 @@ final class CacheCommands extends DrushCommands implements CustomEventAwareInter
     const REBUILD = 'cache:rebuild';
 
     public function __construct(
-        private ContainerInterface $container,
         private CacheTagsInvalidatorInterface $invalidator,
         private $themeRegistry,
         private $routerBuilder,
@@ -52,7 +51,6 @@ final class CacheCommands extends DrushCommands implements CustomEventAwareInter
     public static function create(ContainerInterface $container, $drush_container): self
     {
         $commandHandler = new static(
-            $container,
             $container->get('cache_tags.invalidator'),
             $container->get('theme.registry'),
             $container->get('router.builder'),
