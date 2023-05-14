@@ -6,14 +6,11 @@ namespace Drush\Commands\core;
 
 use Consolidation\AnnotatedCommand\Hooks\HookManager;
 use Drupal\Core\Cache\CacheTagsInvalidatorInterface;
-use Drupal\Core\Routing\RouteBuilderInterface;
 use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\AnnotatedCommand\Events\CustomEventAwareInterface;
 use Consolidation\AnnotatedCommand\Events\CustomEventAwareTrait;
 use Consolidation\OutputFormatters\StructuredData\PropertyList;
 use Drush\Attributes as CLI;
-use Drush\Boot\AutoloaderAwareInterface;
-use Drush\Boot\AutoloaderAwareTrait;
 use Drush\Boot\BootstrapManager;
 use Drush\Boot\DrupalBootLevels;
 use Drush\Commands\DrushCommands;
@@ -29,10 +26,9 @@ use Symfony\Component\Filesystem\Exception\IOException;
 /*
  * Interact with Drupal's Cache API.
  */
-final class CacheCommands extends DrushCommands implements CustomEventAwareInterface, AutoloaderAwareInterface, StdinAwareInterface
+final class CacheCommands extends DrushCommands implements CustomEventAwareInterface, StdinAwareInterface
 {
     use CustomEventAwareTrait;
-    use AutoloaderAwareTrait;
     use StdinAwareTrait;
 
     const GET = 'cache:get';
@@ -238,10 +234,11 @@ final class CacheCommands extends DrushCommands implements CustomEventAwareInter
         DrupalKernel::bootEnvironment();
 
         $site_path = DrupalKernel::findSitePath($request);
-        Settings::initialize($root, $site_path, $this->autoloader());
+        $class_loader = $this->bootstrapManager->autoloader();
+        Settings::initialize($root, $site_path, $class_loader);
 
         // drupal_rebuild() calls drupal_flush_all_caches() itself, so we don't do it manually.
-        drupal_rebuild($this->autoloader(), $request);
+        drupal_rebuild($class_loader, $request);
         $this->logger()->success(dt('Cache rebuild complete.'));
     }
 
