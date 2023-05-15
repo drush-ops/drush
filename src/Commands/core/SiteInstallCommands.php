@@ -18,7 +18,6 @@ use Drush\Boot\DrupalBootLevels;
 use Drush\Boot\Kernels;
 use Drush\Commands\DrushCommands;
 use Drush\Config\ConfigAwareTrait;
-use Drush\Drush;
 use Drush\Exceptions\UserAbortException;
 use Drupal\Core\Config\FileStorage;
 use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
@@ -43,6 +42,7 @@ final class SiteInstallCommands extends DrushCommands implements SiteAliasManage
         private Application $application,
         private BootstrapManager $bootstrapManager
     ) {
+        parent::__construct();
     }
 
     public static function create(ContainerInterface $container, $drush_container): self

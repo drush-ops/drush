@@ -30,6 +30,7 @@ final class LoginCommands extends DrushCommands implements SiteAliasManagerAware
 
     public function __construct(protected TimeInterface $time, protected LanguageManagerInterface $languageManager, private BootstrapManager $bootstrapManager)
     {
+        parent::__construct();
     }
 
     public static function create(ContainerInterface $container, $drush_container): self

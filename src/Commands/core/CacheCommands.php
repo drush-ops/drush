@@ -46,6 +46,7 @@ final class CacheCommands extends DrushCommands implements CustomEventAwareInter
         private $pluginCacheClearer,
         private BootstrapManager $bootstrapManager
     ) {
+        parent::__construct();
     }
 
     public static function create(ContainerInterface $container, $drush_container): self
