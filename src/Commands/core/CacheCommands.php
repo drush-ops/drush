@@ -46,6 +46,7 @@ final class CacheCommands extends DrushCommands implements CustomEventAwareInter
         private $pluginCacheClearer,
         private BootstrapManager $bootstrapManager
     ) {
+        parent::__construct();
     }
 
     public static function create(ContainerInterface $container, $drush_container): self
@@ -57,7 +58,6 @@ final class CacheCommands extends DrushCommands implements CustomEventAwareInter
             $container->get('asset.js.collection_optimizer'),
             $container->get('asset.css.collection_optimizer'),
             $container->get('plugin.cache_clearer'),
-            // Note: pulling from Drush container, not Drupal.
             $drush_container->get('bootstrap.manager')
         );
 
