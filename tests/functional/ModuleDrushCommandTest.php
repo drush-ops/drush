@@ -27,7 +27,8 @@ class ModuleDrushCommandTest extends CommandUnishTestCase
         $this->drush('woot-factory', [], [], null, null, self::EXIT_ERROR);
 
         // Install the woot module; this should make the commands available
-        $this->drush(PmCommands::INSTALL, ['woot']);
+        $this->setupModulesForTests(['woot'], Path::join(__DIR__, '/../fixtures/modules'));
+        $this->drush('pm-install', ['woot']);
 
         $this->drush('woot', [], []);
         $this->assertStringContainsString('Woot!', $this->getOutput());
