@@ -307,7 +307,7 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
             foreach ($serviceCommandList->getCommandList() as $commandHandler) {
                 $manager->inflect($commandHandler);
                 $this->logger->debug(dt('Add a commandfile class: !name', ['!name' => get_class($commandHandler)]));
-                $runner->registerCommandClasses($application, $commandHandler);
+                $runner->registerCommandClass($application, $commandHandler);
             }
         }
 
@@ -331,7 +331,7 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
             // a module that has not been enabled.
             if ($commandHandler) {
                 $manager->inflect($commandHandler);
-                $runner->registerCommandClasses($application, $commandHandler);
+                $runner->registerCommandClass($application, $commandHandler);
             }
         }
     }
