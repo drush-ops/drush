@@ -220,7 +220,7 @@ class SqlCommands extends DrushCommands implements StdinAwareInterface
      * @usage drush sql:dump --result-file=../18.sql
      *   Save SQL dump to the directory above Drupal root.
      * @usage drush sql:dump --skip-tables-key=common
-     *   Skip standard tables. See [Drush configuration](../using-drush-configuration)
+     *   Skip standard tables. See [Drush configuration](../../using-drush-configuration)
      * @usage drush sql:dump --extra-dump=--no-data
      *   Pass extra option to <info>mysqldump</info> command.
      * @hidden-options create-db
