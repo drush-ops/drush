@@ -204,7 +204,7 @@ final class SqlCommands extends DrushCommands implements StdinAwareInterface
     #[CLI\Option(name: 'extra', description: 'Add custom arguments/options when connecting to database (used internally to list tables).')]
     #[CLI\Option(name: 'extra-dump', description: 'Add custom arguments/options to the dumping of the database (e.g. <info>mysqldump</info> command).')]
     #[CLI\Usage(name: 'drush sql:dump --result-file=../18.sql', description: 'Save SQL dump to the directory above Drupal root.')]
-    #[CLI\Usage(name: 'drush sql:dump --skip-tables-key=common', description: 'Skip standard tables. See [Drush configuration](../using-drush-configuration)')]
+    #[CLI\Usage(name: 'drush sql:dump --skip-tables-key=common', description: 'Skip standard tables. See [Drush configuration](../../using-drush-configuration)')]
     #[CLI\Usage(name: 'drush sql:dump --extra-dump=--no-data', description: 'Pass extra option to <info>mysqldump</info> command.')]
     #[CLI\FieldLabels(labels: ['path' => 'Path'])]
     public function dump($options = ['result-file' => self::REQ, 'create-db' => false, 'data-only' => false, 'ordered-dump' => false, 'gzip' => false, 'extra' => self::REQ, 'extra-dump' => self::REQ, 'format' => 'null']): PropertyList
