@@ -3,14 +3,11 @@
 Creating a new Drush command or porting a legacy command is easy. Follow the steps below.
 
 1. Run `drush generate drush-command-file`.
-2. Drush will prompt for the machine name of the module that should "own" the file.
-    1. (optional) Drush will also prompt for the path to a legacy command file to port. See [tips on porting commands to Drush 11](https://weitzman.github.io/blog/port-to-drush9)
-    1. The module selected must already exist and be enabled. Use `drush generate module-standard` to create a new module.
-3. Drush will then report that it created a commandfile, a drush.services.yml file and a composer.json file. Edit those files as needed.
-4. Use the classes for the core Drush commands at [/src/Drupal/Commands](https://github.com/drush-ops/drush/tree/11.x/src/Drupal/Commands) as inspiration and documentation.
-5. See the [dependency injection docs](dependency-injection.md) for interfaces you can implement to gain access to Drush config, Drupal site aliases, etc.
-6. Write PHPUnit tests based on [Drush Test Traits](https://github.com/drush-ops/drush/blob/11.x/docs/contribute/unish.md#drush-test-traits).
-7. Once your drush.services.yml files is ready, run `drush cr` to get your command recognized by the Drupal container.
+2. Drush will prompt for the machine name of the module that should "own" the file. The module selected must already exist and be enabled. Use `drush generate module-standard` to create a new module.
+3. Drush will then report that it created a commandfile. Edit as needed.
+4. Use the classes for the core Drush commands at [/src/Commands](https://github.com/drush-ops/drush/tree/12.x/src/Commands) as inspiration and documentation.
+5. See the [dependency injection docs](dependency-injection.md) for interfaces you can implement to gain access to Drush config, Drupal site aliases, etc. Also note the [create() method](dependency-injection.md#create-method) for injecting Drupal or Drush dependencies.
+6. Write PHPUnit tests based on [Drush Test Traits](https://github.com/drush-ops/drush/blob/12.x/docs/contribute/unish.md#drush-test-traits).
 
 ## Attributes or Annotations
 The following are both valid ways to declare a command:
