@@ -48,6 +48,9 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
     /** @var TildeExpansionHook */
     protected $tildeExpansionHook;
 
+    /** @var string[] */
+    protected array $bootstrapCommandClasses = [];
+
     /**
      * Add global options to the Application and their default values to Config.
      */
@@ -176,6 +179,11 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
         }
         $uri = $this->bootstrapManager()->selectUri($cwd);
         return $uri;
+    }
+
+    public function bootstrapCommandClasses(): array
+    {
+        return $this->bootstrapCommandClasses;
     }
 
     /**
@@ -319,6 +327,20 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
             $this->discoverPsr4Commands($classLoader),
             [FilterHooks::class]
         ));
+
+        // If a command class has a static `create` method, then we will
+        // postpone instantiating it until after we bootstrap Drupal.
+        $this->bootstrapCommandClasses = array_filter($commandClasses, function (string $class): bool {
+            if (!method_exists($class, 'create')) {
+                return false;
+            }
+
+            $reflectionMethod = new \ReflectionMethod($class, 'create');
+            return $reflectionMethod->isStatic();
+        });
+
+        // Remove the command classes that we put into the bootstrap command classes.
+        $commandClasses = array_diff($commandClasses, $this->bootstrapCommandClasses);
 
         // Uncomment the lines below to use Console's built in help and list commands.
         // unset($commandClasses[__DIR__ . '/Commands/help/HelpCommands.php']);

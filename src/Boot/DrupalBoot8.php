@@ -16,6 +16,8 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\Filesystem\Path;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Consolidation\AnnotatedCommand\CommandFileDiscovery;
+use Robo\Robo;
 
 class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
 {
@@ -265,16 +267,31 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
         // until after $kernel->boot() is called.
         $container = \Drupal::getContainer();
 
-        // Set the command info alterers.
+        // Find the containerless commands, generators and command info alterers
+        $bootstrapCommandClasses = $application->bootstrapCommandClasses();
+        $commandInfoAlterers = [];
+        foreach ($container->getParameter('container.modules') as $moduleId => $moduleInfo) {
+            $path = dirname(DRUPAL_ROOT . '/' . $moduleInfo['pathname']) . '/src/Drush/';
+            $commandsInThisModule = $this->discoverModuleCommands([$path], "\\Drupal\\" . $moduleId . "\\Drush");
+            $bootstrapCommandClasses = array_merge($bootstrapCommandClasses, $commandsInThisModule);
+            $commandInfoAlterersInThisModule = $this->discoverCommandInfoAlterers([$path], "\\Drupal\\" . $moduleId . "\\Drush");
+            $commandInfoAlterers = array_merge($commandInfoAlterers, $commandInfoAlterersInThisModule);
+        }
+
+        // Find the command info alterers in Drush services.
         if ($container->has(DrushServiceModifier::DRUSH_COMMAND_INFO_ALTERER_SERVICES)) {
             $serviceCommandInfoAltererList = $container->get(DrushServiceModifier::DRUSH_COMMAND_INFO_ALTERER_SERVICES);
             $commandFactory = Drush::commandFactory();
-            foreach ($serviceCommandInfoAltererList->getCommandList() as $altererHandler) {
-                $commandFactory->addCommandInfoAlterer($altererHandler);
-                $this->logger->debug(dt('Commands are potentially altered in !class.', ['!class' => get_class($altererHandler)]));
-            }
+            $commandInfoAlterers = array_merge($commandInfoAlterers, $serviceCommandInfoAltererList->getCommandList());
         }
 
+        // Set the command info alterers.
+        foreach ($serviceCommandInfoAltererList->getCommandList() as $altererHandler) {
+            $commandFactory->addCommandInfoAlterer($altererHandler);
+            $this->logger->debug(dt('Commands are potentially altered in !class.', ['!class' => get_class($altererHandler)]));
+        }
+
+        // Register the Drush Symfony Console commands found in Drush services
         if ($container->has(DrushServiceModifier::DRUSH_CONSOLE_SERVICES)) {
             $serviceCommandList = $container->get(DrushServiceModifier::DRUSH_CONSOLE_SERVICES);
             foreach ($serviceCommandList->getCommandList() as $command) {
@@ -283,6 +300,7 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
                 $application->add($command);
             }
         }
+
         // Do the same thing with the annotation commands.
         if ($container->has(DrushServiceModifier::DRUSH_COMMAND_SERVICES)) {
             $serviceCommandList = $container->get(DrushServiceModifier::DRUSH_COMMAND_SERVICES);
@@ -292,6 +310,72 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
                 $runner->registerCommandClass($application, $commandHandler);
             }
         }
+
+        // Finally, instantiate all of the classes we discovered in
+        // configureAndRegisterCommands, and all of the classes we find
+        // via 'discoverModuleCommands' that have static create factory methods.
+        foreach ($bootstrapCommandClasses as $class) {
+            $commandHandler = null;
+            try {
+                // We insist that the command class have a static 'create' method.
+                // We could make this optional, but doing so would run the risk
+                // of double-instantiating Drush service commands, if anyone decided
+                // to put those in the same namespace (\Drupal\modulename\Drush\Commands)
+                if ($this->hasStaticCreateFactory($class)) {
+                    $commandHandler = $class::create($container);
+                }
+            } catch (\Exception $e) {
+            }
+            // Fail silently if the command handler could not be
+            // instantiated, e.g. if it tries to fetch services from
+            // a module that has not been enabled.
+            if ($commandHandler) {
+                $manager->inflect($commandHandler);
+                $runner->registerCommandClass($application, $commandHandler);
+            }
+        }
+    }
+
+    protected function hasStaticCreateFactory($class)
+    {
+        if (!method_exists($class, 'create')) {
+            return false;
+        }
+
+        $reflectionMethod = new \ReflectionMethod($class, 'create');
+        return $reflectionMethod->isStatic();
+    }
+
+    /**
+     * Discover module commands. This is the preferred way to find module
+     * commands in Drush 12+.
+     */
+    protected function discoverModuleCommands(array $directoryList, string $baseNamespace): array
+    {
+        $discovery = new CommandFileDiscovery();
+        $discovery
+            ->setIncludeFilesAtBase(true)
+            ->setSearchDepth(1)
+            ->ignoreNamespacePart('src')
+            ->setSearchLocations(['Commands', 'Hooks', 'Generators'])
+            ->setSearchPattern('#.*(Command|Hook|Generator)s?.php$#');
+        $baseNamespace = ltrim($baseNamespace, '\\');
+        $commandClasses = $discovery->discover($directoryList, $baseNamespace);
+        return array_values($commandClasses);
+    }
+
+    protected function discoverCommandInfoAlterers(array $directoryList, string $baseNamespace): array
+    {
+        $discovery = new CommandFileDiscovery();
+        $discovery
+            ->setIncludeFilesAtBase(true)
+            ->setSearchDepth(1)
+            ->ignoreNamespacePart('src')
+            ->setSearchLocations(['CommandInfoAlterers'])
+            ->setSearchPattern('#.*CommandInfoAlterer.php$#');
+        $baseNamespace = ltrim($baseNamespace, '\\');
+        $commandClasses = $discovery->discover($directoryList, $baseNamespace);
+        return array_values($commandClasses);
     }
 
     /**

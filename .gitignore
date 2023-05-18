@@ -17,6 +17,8 @@ api
 sut/*
 !sut/drush
 sut/drush/sites/*test.site.yml
+!sut/modules
+sut/modules/contrib
 /sandbox/
 .env
 # Test fixtures
