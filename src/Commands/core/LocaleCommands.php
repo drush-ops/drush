@@ -210,27 +210,27 @@ final class LocaleCommands extends DrushCommands
     }
 
     /**
-     * Imports multiple translations from the defined directory.
+     * Imports multiple translation files from the defined directory.
      *
      * @throws \Exception
      */
     #[CLI\Command(name: self::IMPORT_ALL, aliases: ['locale-import-all', 'locale:import:all'])]
-    #[CLI\Argument(name: 'directory', description: 'The path to directory with .po files to import.')]
+    #[CLI\Argument(name: 'directory', description: 'The path to directory with translation files to import.')]
     #[CLI\Option(name: 'type', description: 'String types to include, defaults to <info>not-customized</info>. Recognized values: <info>not-customized</info>, <info>customized</info>')]
     #[CLI\Option(name: 'override', description: 'Whether and how imported strings will override existing translations. Defaults to the Import behavior configured in the admin interface. Recognized values: <info>none</info>, <info>customized</info>, <info>not-customized</info>, <info>all</info>')]
-    #[CLI\Usage(name: 'drush locale:import-all /var/www/translations', description: 'Import all custom translations from the defined directory.')]
-    #[CLI\Usage(name: 'drush locale:import-all --types=customized --override=all', description: 'Import all custom translations from the defined directory and override any existing translation.')]
+    #[CLI\Usage(name: 'drush locale:import-all /var/www/translations', description: 'Import all translations from the defined directory (non-recursively). Supported filename patterns are: {project}-{version}.{langcode}.po, {prefix}.{langcode}.po or {langcode}.po.')]
+    #[CLI\Usage(name: 'drush locale:import-all /var/www/translations/custom --types=customized --override=all', description: 'Import all custom translations from the defined directory (non-recursively) and override any existing translation. Supported filename patterns are: {project}-{version}.{langcode}.po, {prefix}.{langcode}.po or {langcode}.po.')]
     #[CLI\ValidateModulesEnabled(modules: ['locale'])]
     public function importAll($directory, $options = ['type' => self::OPT, 'override' => self::OPT])
     {
         if (!is_dir($directory)) {
-            throw new \Exception('The destination directory does not exist.');
+            throw new \Exception('The defined directory does not exist.');
         }
 
         // Look for .po files in defined directory
         $poFiles = glob($directory . DIRECTORY_SEPARATOR . '*.po');
         if (empty($poFiles)) {
-            throw new \Exception('Translation files not found in the destination directory.');
+            throw new \Exception('Translation files not found in the defined directory.');
         }
 
         $this->getModuleHandler()->loadInclude('locale', 'translation.inc');
@@ -253,7 +253,7 @@ final class LocaleCommands extends DrushCommands
                 ];
                 $poFile = locale_translate_file_attach_properties($poFile, $translationOptions);
                 if ($poFile->langcode == LanguageInterface::LANGCODE_NOT_SPECIFIED) {
-                    $this->logger->warning(dt('Can not autodetect language of file @file', [
+                    $this->logger->warning(dt('Can not autodetect language of file @file. Supported filename patterns are: {project}-{version}.{langcode}.po, {prefix}.{langcode}.po or {langcode}.po.', [
                        '@file' => $file,
                     ]));
                     continue;
