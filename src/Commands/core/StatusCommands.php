@@ -172,6 +172,9 @@ final class StatusCommands extends DrushCommands implements SiteAliasManagerAwar
 
     public function renderStatusCell($key, $cellData, FormatterOptions $options)
     {
+        if ($key == 'drush-version') {
+            return Drush::sanitizeVersionString($cellData);
+        }
         if (is_array($cellData)) {
             return implode("\n", $cellData);
         }

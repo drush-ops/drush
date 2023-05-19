@@ -11,6 +11,7 @@ use Drush\Drush;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
 use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
+use Consolidation\OutputFormatters\Options\FormatterOptions;
 
 final class CoreCommands extends DrushCommands implements SiteAliasManagerAwareInterface
 {
@@ -72,6 +73,16 @@ final class CoreCommands extends DrushCommands implements SiteAliasManagerAwareI
     #[CLI\FieldLabels(labels: ['drush-version' => 'Drush version'])]
     public function version($options = ['format' => 'table']): PropertyList
     {
-        return new PropertyList(['drush-version' => Drush::getVersion()]);
+        $versionPropertyList = new PropertyList(['drush-version' => Drush::getVersion()]);
+        $versionPropertyList->addRendererFunction(
+            function ($key, $cellData, FormatterOptions $options) {
+                if ($key == 'drush-version') {
+                    return Drush::sanitizeVersionString($cellData);
+                }
+                return $cellData;
+            }
+        );
+
+        return $versionPropertyList;
     }
 }

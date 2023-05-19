@@ -90,6 +90,14 @@ class Drush
         return self::$version;
     }
 
+    /**
+     * Convert internal Composer dev version to ".x"
+     */
+    public static function sanitizeVersionString($version)
+    {
+        return preg_replace('#\.9+\.9+\.9+#', '.x', $version);
+    }
+
     public static function getMajorVersion(): string
     {
         if (!self::$majorVersion) {
