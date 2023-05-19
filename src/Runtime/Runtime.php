@@ -71,7 +71,7 @@ class Runtime
 
         // Create the Symfony Application et. al.
         $input = $this->preflight->createInput();
-        $application = new Application('Drush Commandline Tool', Drush::getVersion());
+        $application = new Application('Drush Commandline Tool', Drush::sanitizeVersionString(Drush::getVersion()));
 
         // Set up the DI container.
         $container = $this->di->initContainer(
