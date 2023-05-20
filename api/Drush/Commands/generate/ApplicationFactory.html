@@ -86,7 +86,7 @@
 
     
     <p>        class
-    <strong>ApplicationFactory</strong>        implements        <a href="../../../Drush/Boot/AutoloaderAwareInterface.html"><abbr title="Drush\Boot\AutoloaderAwareInterface">AutoloaderAwareInterface</abbr></a>        (<a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/generate/ApplicationFactory.php">View source</a>)
+    <strong>ApplicationFactory</strong>        (<a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/generate/ApplicationFactory.php">View source</a>)
 </p>
 
         
@@ -94,51 +94,8 @@
         
 
             
-                <h2>Traits</h2>
-
         
-    <div class="container-fluid underlined">
-                    <div class="row">
-                <div class="col-md-6">
-                    <a href="../../../Drush/Boot/AutoloaderAwareTrait.html"><abbr title="Drush\Boot\AutoloaderAwareTrait">AutoloaderAwareTrait</abbr></a>    </div>
-                <div class="col-md-6"></div>
-            </div>
-            </div>
     
-    
-            <h2>Properties</h2>
-
-            <table class="table table-condensed">
-                    <tr>
-                <td class="type" id="property_loader">
-                                        protected                                        
-                                                                                
-                                    </td>
-                <td>$loader</td>
-                <td class="last"></td>
-                <td><small>from&nbsp;<a href="../../../Drush/Boot/AutoloaderAwareTrait.html#property_loader">
-<abbr title="Drush\Boot\AutoloaderAwareTrait">AutoloaderAwareTrait</abbr></a></small></td>
-            </tr>
-                    <tr>
-                <td class="type" id="property_logger">
-                                        protected                                        <abbr title="Psr\Log\LoggerInterface">LoggerInterface</abbr>
-                                                                                
-                                    </td>
-                <td>$logger</td>
-                <td class="last"></td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td class="type" id="property_config">
-                                        protected                                        
-                                                                                
-                                    </td>
-                <td>$config</td>
-                <td class="last"></td>
-                <td></td>
-            </tr>
-            </table>
-
     
             <h2>Methods</h2>
 
@@ -148,65 +105,7 @@
                     
                 </div>
                 <div class="col-md-8">
-                    <a href="#method_setAutoloader">setAutoloader</a>($loader)
-        
-                                            <p class="no-description">No description</p>
-                                    </div>
-                <div class="col-md-2"><small>from&nbsp;<a href="../../../Drush/Boot/AutoloaderAwareTrait.html#method_setAutoloader">
-<abbr title="Drush\Boot\AutoloaderAwareTrait">AutoloaderAwareTrait</abbr></a></small></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    
-                </div>
-                <div class="col-md-8">
-                    <a href="#method_autoloader">autoloader</a>()
-        
-                                            <p class="no-description">No description</p>
-                                    </div>
-                <div class="col-md-2"><small>from&nbsp;<a href="../../../Drush/Boot/AutoloaderAwareTrait.html#method_autoloader">
-<abbr title="Drush\Boot\AutoloaderAwareTrait">AutoloaderAwareTrait</abbr></a></small></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    
-                </div>
-                <div class="col-md-8">
-                    <a href="#method_hasAutoloader">hasAutoloader</a>()
-        
-                                            <p class="no-description">No description</p>
-                                    </div>
-                <div class="col-md-2"><small>from&nbsp;<a href="../../../Drush/Boot/AutoloaderAwareTrait.html#method_hasAutoloader">
-<abbr title="Drush\Boot\AutoloaderAwareTrait">AutoloaderAwareTrait</abbr></a></small></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    
-                </div>
-                <div class="col-md-8">
-                    <a href="#method___construct">__construct</a>(<abbr title="Psr\Log\LoggerInterface">LoggerInterface</abbr> $logger, $config)
-        
-                                            <p class="no-description">No description</p>
-                                    </div>
-                <div class="col-md-2"></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    <abbr title="Psr\Log\LoggerInterface">LoggerInterface</abbr>
-                </div>
-                <div class="col-md-8">
-                    <a href="#method_logger">logger</a>()
-        
-                                            <p class="no-description">No description</p>
-                                    </div>
-                <div class="col-md-2"></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    
-                </div>
-                <div class="col-md-8">
-                    <a href="#method_getConfig">getConfig</a>()
+                    <a href="#method___construct">__construct</a>(<abbr title="Symfony\Component\DependencyInjection\ContainerInterface">ContainerInterface</abbr> $container, <abbr title="Psr\Log\LoggerInterface">LoggerInterface</abbr> $logger)
         
                                             <p class="no-description">No description</p>
                                     </div>
@@ -227,7 +126,7 @@
                     array
                 </div>
                 <div class="col-md-8">
-                    <a href="#method_discoverGlobalPathsDeprecated">discoverGlobalPathsDeprecated</a>()
+                    <a href="#method_discover">discover</a>()
         
                                             <p class="no-description">No description</p>
                                     </div>
@@ -238,18 +137,7 @@
                     array
                 </div>
                 <div class="col-md-8">
-                    <a href="#method_discoverPsr4Generators">discoverPsr4Generators</a>()
-        
-                                            <p class="no-description">No description</p>
-                                    </div>
-                <div class="col-md-2"></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    array
-                </div>
-                <div class="col-md-8">
-                    <a href="#method_filterExists">filterExists</a>(array $classes)
+                    <a href="#method_filterCLassExists">filterCLassExists</a>(array $classes)
         
                                             <p><p>Check each class for existence.</p></p>                </div>
                 <div class="col-md-2"></div>
@@ -264,6 +152,27 @@
                                             <p><p>Validate and instantiate generator classes.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    static&nbsp;void
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_alterGenerators">alterGenerators</a>(<abbr title="DrupalCodeGenerator\Event\GeneratorInfoAlter">GeneratorInfoAlter</abbr> $event)
+        
+                                            <p><p>Implements hook GeneratorInfoAlter.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    <abbr title="Psr\Log\LoggerInterface">LoggerInterface</abbr>
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_logger">logger</a>()
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
             </div>
 
 
@@ -271,11 +180,10 @@
 
             <div id="method-details">
                     <div class="method-item">
-                    <h3 id="method_setAutoloader">
-        <div class="location">in <a href="../../../Drush/Boot/AutoloaderAwareTrait.html#method_setAutoloader">
-<abbr title="Drush\Boot\AutoloaderAwareTrait">AutoloaderAwareTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/11.x/src/Boot/AutoloaderAwareTrait.php#L9">at line 9</a></div>
+                    <h3 id="method___construct">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/generate/ApplicationFactory.php#L19">at line 19</a></div>
         <code>                    
-    <strong>setAutoloader</strong>($loader)
+    <strong>__construct</strong>(<abbr title="Symfony\Component\DependencyInjection\ContainerInterface">ContainerInterface</abbr> $container, <abbr title="Psr\Log\LoggerInterface">LoggerInterface</abbr> $logger)
         </code>
     </h3>
     <div class="details">    
@@ -291,158 +199,17 @@
 
                     <table class="table table-condensed">
                     <tr>
-                <td></td>
-                <td>$loader</td>
+                <td><abbr title="Symfony\Component\DependencyInjection\ContainerInterface">ContainerInterface</abbr></td>
+                <td>$container</td>
                 <td></td>
             </tr>
-            </table>
-
-            
-            
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
-                    <h3 id="method_autoloader">
-        <div class="location">in <a href="../../../Drush/Boot/AutoloaderAwareTrait.html#method_autoloader">
-<abbr title="Drush\Boot\AutoloaderAwareTrait">AutoloaderAwareTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/11.x/src/Boot/AutoloaderAwareTrait.php#L14">at line 14</a></div>
-        <code>                    
-    <strong>autoloader</strong>()
-        </code>
-    </h3>
-    <div class="details">    
-    
-            
-
-        <div class="method-description">
-                            <p class="no-description">No description</p>
-                    
-        </div>
-        <div class="tags">
-            
-            
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
-                    <h3 id="method_hasAutoloader">
-        <div class="location">in <a href="../../../Drush/Boot/AutoloaderAwareTrait.html#method_hasAutoloader">
-<abbr title="Drush\Boot\AutoloaderAwareTrait">AutoloaderAwareTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/11.x/src/Boot/AutoloaderAwareTrait.php#L19">at line 19</a></div>
-        <code>                    
-    <strong>hasAutoloader</strong>()
-        </code>
-    </h3>
-    <div class="details">    
-    
-            
-
-        <div class="method-description">
-                            <p class="no-description">No description</p>
-                    
-        </div>
-        <div class="tags">
-            
-            
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
-                    <h3 id="method___construct">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/generate/ApplicationFactory.php#L38">at line 38</a></div>
-        <code>                    
-    <strong>__construct</strong>(<abbr title="Psr\Log\LoggerInterface">LoggerInterface</abbr> $logger, $config)
-        </code>
-    </h3>
-    <div class="details">    
-    
-            
-
-        <div class="method-description">
-                            <p class="no-description">No description</p>
-                    
-        </div>
-        <div class="tags">
-                            <h4>Parameters</h4>
-
-                    <table class="table table-condensed">
                     <tr>
                 <td><abbr title="Psr\Log\LoggerInterface">LoggerInterface</abbr></td>
                 <td>$logger</td>
                 <td></td>
             </tr>
-                    <tr>
-                <td></td>
-                <td>$config</td>
-                <td></td>
-            </tr>
             </table>
 
-            
-            
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
-                    <h3 id="method_logger">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/generate/ApplicationFactory.php#L44">at line 44</a></div>
-        <code>                    <abbr title="Psr\Log\LoggerInterface">LoggerInterface</abbr>
-    <strong>logger</strong>()
-        </code>
-    </h3>
-    <div class="details">    
-    
-            
-
-        <div class="method-description">
-                            <p class="no-description">No description</p>
-                    
-        </div>
-        <div class="tags">
-            
-                            <h4>Return Value</h4>
-
-                    <table class="table table-condensed">
-        <tr>
-            <td><abbr title="Psr\Log\LoggerInterface">LoggerInterface</abbr></td>
-            <td></td>
-        </tr>
-    </table>
-
-            
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
-                    <h3 id="method_getConfig">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/generate/ApplicationFactory.php#L49">at line 49</a></div>
-        <code>                    
-    <strong>getConfig</strong>()
-        </code>
-    </h3>
-    <div class="details">    
-    
-            
-
-        <div class="method-description">
-                            <p class="no-description">No description</p>
-                    
-        </div>
-        <div class="tags">
             
             
             
@@ -453,7 +220,7 @@
             </div>
                     <div class="method-item">
                     <h3 id="method_create">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/generate/ApplicationFactory.php#L57">at line 57</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/generate/ApplicationFactory.php#L28">at line 28</a></div>
         <code>                    <abbr title="DrupalCodeGenerator\Application">Application</abbr>
     <strong>create</strong>()
         </code>
@@ -484,10 +251,10 @@
 
             </div>
                     <div class="method-item">
-                    <h3 id="method_discoverGlobalPathsDeprecated">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/generate/ApplicationFactory.php#L127">at line 127</a></div>
-        <code>            protected        array
-    <strong>discoverGlobalPathsDeprecated</strong>()
+                    <h3 id="method_discover">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/generate/ApplicationFactory.php#L44">at line 44</a></div>
+        <code>                    array
+    <strong>discover</strong>()
         </code>
     </h3>
     <div class="details">    
@@ -517,43 +284,10 @@
 
             </div>
                     <div class="method-item">
-                    <h3 id="method_discoverPsr4Generators">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/generate/ApplicationFactory.php#L137">at line 137</a></div>
-        <code>            protected        array
-    <strong>discoverPsr4Generators</strong>()
-        </code>
-    </h3>
-    <div class="details">    
-    
-            
-
-        <div class="method-description">
-                            <p class="no-description">No description</p>
-                    
-        </div>
-        <div class="tags">
-            
-                            <h4>Return Value</h4>
-
-                    <table class="table table-condensed">
-        <tr>
-            <td>array</td>
-            <td></td>
-        </tr>
-    </table>
-
-            
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
-                    <h3 id="method_filterExists">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/generate/ApplicationFactory.php#L152">at line 152</a></div>
-        <code>            protected        array
-    <strong>filterExists</strong>(array $classes)
+                    <h3 id="method_filterCLassExists">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/generate/ApplicationFactory.php#L69">at line 69</a></div>
+        <code>                    array
+    <strong>filterCLassExists</strong>(array $classes)
         </code>
     </h3>
     <div class="details">    
@@ -593,8 +327,8 @@
             </div>
                     <div class="method-item">
                     <h3 id="method_getGenerators">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/generate/ApplicationFactory.php#L175">at line 175</a></div>
-        <code>            protected        array
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/generate/ApplicationFactory.php#L91">at line 91</a></div>
+        <code>                    array
     <strong>getGenerators</strong>(array $classes)
         </code>
     </h3>
@@ -636,6 +370,81 @@
             </tr>
             </table>
 
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_alterGenerators">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/generate/ApplicationFactory.php#L104">at line 104</a></div>
+        <code>        static            void
+    <strong>alterGenerators</strong>(<abbr title="DrupalCodeGenerator\Event\GeneratorInfoAlter">GeneratorInfoAlter</abbr> $event)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Implements hook GeneratorInfoAlter.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="DrupalCodeGenerator\Event\GeneratorInfoAlter">GeneratorInfoAlter</abbr></td>
+                <td>$event</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>void</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_logger">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/generate/ApplicationFactory.php#L110">at line 110</a></div>
+        <code>                    <abbr title="Psr\Log\LoggerInterface">LoggerInterface</abbr>
+    <strong>logger</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><abbr title="Psr\Log\LoggerInterface">LoggerInterface</abbr></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
             
             
                     </div>
