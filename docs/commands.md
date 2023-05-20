@@ -72,7 +72,7 @@ For an example, see [WootCommandInfoAlterer](https://github.com/drush-ops/drush/
 ## Symfony Console Commands
 Drush lists and runs Symfony Console commands, in addition to more typical annotated commands. See [this test](https://github.com/drush-ops/drush/blob/eed106ae4510d5a2df89f8e7fd54b41ffb0aa5fa/tests/integration/AnnotatedCommandCase.php#L178-L180) and this [commandfile](https://github.com/drush-ops/drush/tree/HEAD/tests/fixtures/modules/woot/src/Commands/GreetCommand.php).
 
-### Auto-discovered commands (PSR4)
+## Auto-discovered commands (PSR4)
 
 Such commands are auto-discovered by their class PSR4 namespace and class/file name suffix. Drush will auto-discover commands if:
 
