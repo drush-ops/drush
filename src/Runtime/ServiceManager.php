@@ -438,9 +438,6 @@ class ServiceManager
         if ($object instanceof StdinAwareInterface) {
             $object->setStdinHandler($container->get('stdinHandler'));
         }
-        if ($object instanceof ContainerAwareInterface) {
-            $object->setContainer($container->get('container'));
-        }
         if ($object instanceof InputAwareInterface) {
             $object->setInput($container->get('input'));
         }

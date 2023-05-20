@@ -16,17 +16,14 @@ use Consolidation\AnnotatedCommand\Input\StdinAwareInterface;
 use Consolidation\AnnotatedCommand\AnnotationData;
 use Drush\DrupalFinder\DrushDrupalFinder;
 use Drush\Config\ConfigAwareTrait;
-use League\Container\ContainerAwareInterface;
-use League\Container\ContainerAwareTrait;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use Robo\Contract\ConfigAwareInterface;
 
-class BootstrapManager implements LoggerAwareInterface, ConfigAwareInterface, ContainerAwareInterface
+class BootstrapManager implements LoggerAwareInterface, ConfigAwareInterface
 {
     use LoggerAwareTrait;
     use ConfigAwareTrait;
-    use ContainerAwareTrait;
 
     /**
      * @var DrushDrupalFinder
