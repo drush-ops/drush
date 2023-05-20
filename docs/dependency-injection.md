@@ -89,7 +89,6 @@ Any additional services that are desired must be injected by implementing the ap
 
 Additional Interfaces:
 
-- AutoloaderAwareInterface: Provides access to the class loader.
 - SiteAliasManagerAwareInterface: The site alias manager [allows alias records to be obtained](site-alias-manager.md).
 - CustomEventAwareInterface: Allows command files to [define and fire custom events](hooks.md) that other command files can hook.
 - ContainerAwareInterface: Provides Drush's dependency injection container.

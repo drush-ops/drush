@@ -10,7 +10,6 @@ use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Robo\Robo;
 use Drush\Formatters\DrushFormatterManager;
-use Drush\Boot\AutoloaderAwareInterface;
 use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
 use Consolidation\SiteProcess\ProcessManagerAwareInterface;
 use Drush\Command\GlobalOptionsEventListener;
@@ -122,7 +121,8 @@ class DependencyInjection
             ->addArgument('config')
             ->addArgument('logger');
         Robo::addShared($container, 'bootstrap.drupal8', 'Drush\Boot\DrupalBoot8')
-            ->addArgument('service.manager');
+            ->addArgument('service.manager')
+            ->addArgument('loader');
         Robo::addShared($container, 'bootstrap.manager', 'Drush\Boot\BootstrapManager')
             ->addMethodCall('setDrupalFinder', [$drupalFinder])
             ->addMethodCall('add', ['bootstrap.drupal8']);
@@ -148,8 +148,6 @@ class DependencyInjection
         Robo::addShared($container, 'shutdownHandler', 'Drush\Runtime\ShutdownHandler');
 
         // Add inflectors. @see \Drush\Boot\BaseBoot::inflect
-        $container->inflector(AutoloaderAwareInterface::class)
-            ->invokeMethod('setAutoloader', ['loader']);
         $container->inflector(SiteAliasManagerAwareInterface::class)
             ->invokeMethod('setSiteAliasManager', ['site.alias.manager']);
         $container->inflector(ProcessManagerAwareInterface::class)

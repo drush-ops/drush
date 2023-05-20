@@ -22,10 +22,9 @@ use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use Robo\Contract\ConfigAwareInterface;
 
-class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface, ConfigAwareInterface, ContainerAwareInterface
+class BootstrapManager implements LoggerAwareInterface, ConfigAwareInterface, ContainerAwareInterface
 {
     use LoggerAwareTrait;
-    use AutoloaderAwareTrait;
     use ConfigAwareTrait;
     use ContainerAwareTrait;
 
@@ -48,6 +47,11 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
      * @var int
      */
     protected $phase;
+
+
+    public function __construct()
+    {
+    }
 
     /**
      * @return int
@@ -170,11 +174,6 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
     {
         foreach ($this->bootstrapCandidates as $candidate) {
             if ($candidate->validRoot($path)) {
-                // This is not necessary when the autoloader is inflected
-                // TODO: The autoloader is inflected in the symfony dispatch, but not the traditional Drush dispatcher
-                if ($candidate instanceof AutoloaderAwareInterface) {
-                    $candidate->setAutoloader($this->autoloader());
-                }
                 return $candidate;
             }
         }

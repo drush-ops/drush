@@ -11,13 +11,24 @@ namespace Drush\Commands;
 
 use Drupal\Core\DrupalKernel;
 use Drupal\Core\Site\Settings;
-use Drush\Boot\AutoloaderAwareInterface;
-use Drush\Boot\AutoloaderAwareTrait;
 use Drush\Drush;
 
-class TestFixtureCommands extends DrushCommands implements AutoloaderAwareInterface
+class TestFixtureCommands extends DrushCommands
 {
-    use AutoloaderAwareTrait;
+    protected function __construct(
+        private $autoloader
+    ) {
+        parent::__construct();
+    }
+
+    public static function createEarly(DrushContainer $drush_container): self
+    {
+        $commandHandler = new static(
+            $drush_container->get('loader')
+        );
+
+        return $commandHandler;
+    }
 
   // Obsolete:
   //   unit-invoke
@@ -98,7 +109,6 @@ class TestFixtureCommands extends DrushCommands implements AutoloaderAwareInterf
      */
     public function drushUnitInvalidateContainer()
     {
-        $autoloader = $this->loadDrupalAutoloader(DRUPAL_ROOT);
         $request = Drush::bootstrap()->getRequest();
         $sitePath = DrupalKernel::findSitePath($request);
 
@@ -108,7 +118,7 @@ class TestFixtureCommands extends DrushCommands implements AutoloaderAwareInterf
 
         // Initialize database connections and apply configuration from
         // settings.php.
-        Settings::initialize(DRUPAL_ROOT, $sitePath, $autoloader);
+        Settings::initialize(DRUPAL_ROOT, $sitePath, $this->autoloader);
 
         $kernel = new DrupalKernel('prod', $autoloader);
         $kernel->setSitePath($sitePath);
@@ -117,28 +127,5 @@ class TestFixtureCommands extends DrushCommands implements AutoloaderAwareInterf
         // delete the compiled container from the cache backend.
         $kernel->boot();
         $kernel->invalidateContainer();
-    }
-
-    /**
-     * Loads the Drupal autoloader and returns the instance.
-     *
-     * @see \Drush\Commands\core\CacheCommands::loadDrupalAutoloader()
-     */
-    protected function loadDrupalAutoloader($drupal_root)
-    {
-        static $autoloader = false;
-
-        $autoloadFilePath = $drupal_root . '/autoload.php';
-        if (!$autoloader && file_exists($autoloadFilePath)) {
-            $autoloader = require $autoloadFilePath;
-        }
-
-        if ($autoloader === true) {
-            // The autoloader was already required. Assume that Drush and Drupal share an autoloader per
-            // "Point autoload.php to the proper vendor directory" - https://www.drupal.org/node/2404989
-            $autoloader = $this->autoloader();
-        }
-
-        return $autoloader;
     }
 }

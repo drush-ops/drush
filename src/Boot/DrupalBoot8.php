@@ -22,15 +22,13 @@ use Robo\Robo;
 use Drush\Runtime\LegacyServiceInstantiator;
 use Drush\Runtime\LegacyServiceFinder;
 
-class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
+class DrupalBoot8 extends DrupalBoot
 {
-    use AutoloaderAwareTrait;
-
     protected ?LoggrInterface $drupalLoggerAdapter = null;
     protected ?DrupalKernelInterface $kernel = null;
     protected Request $request;
 
-    public function __construct(protected $serviceManager)
+    public function __construct(protected $serviceManager, protected $autoloader)
     {
     }
 
@@ -83,10 +81,6 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
 
     public function getVersion($drupal_root): string
     {
-        // Are the class constants available?
-        if (!$this->hasAutoloader()) {
-            throw new \Exception('Cannot access Drupal class constants - Drupal autoloader not loaded yet.');
-        }
         return \Drupal::VERSION;
     }
 
@@ -216,12 +210,11 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
         if (!empty($annotationData)) {
             $kernel = $annotationData->get('kernel', Kernels::DRUPAL);
         }
-        $classloader = $this->autoloader();
         $request = $this->getRequest();
         $kernel_factory = Kernels::getKernelFactory($kernel);
         $allow_dumping = $kernel !== Kernels::UPDATE;
         /** @var DrupalKernelInterface kernel */
-        $this->kernel = $kernel_factory($request, $classloader, 'prod', $allow_dumping, $manager->getRoot());
+        $this->kernel = $kernel_factory($request, $this->autoloader, 'prod', $allow_dumping, $manager->getRoot());
 
         // Unset drupal error handler and restore Drush's one.
         restore_error_handler();
