@@ -140,11 +140,11 @@ With this configuration in place, global commands may be placed as described in 
 
 !!! tip
 1. The filename must be have a name like Commands/ExampleCommands.php
-1. The prefix `Example` can be whatever string you want.
-1. The file must end in `Commands.php`
-1. The directory above `Commands` must be one of:
-1.  A Folder listed in the 'include' option. Include may be provided via [config](#global-drush-commands) or via CLI.
-1.  ../drush, /drush or /sites/all/drush. These paths are relative to Drupal root.
+   1. The prefix `Example` can be whatever string you want.
+   1. The file must end in `Commands.php`
+    1. The directory above `Commands` must be one of:
+        1.  A Folder listed in the 'include' option. Include may be provided via [config](#global-drush-commands) or via CLI.
+        1.  ../drush, /drush or /sites/all/drush. These paths are relative to Drupal root.
 
 It is recommended that you avoid global Drush commands, and favor site-wide or PSR4 discovered commandfiles instead. If you really need a command or commands that are not part of any Drupal site, consider making a stand-alone script or custom .phar instead. See [ahoy](https://github.com/ahoy-cli/ahoy), [Robo](https://github.com/consolidation/robo) and [g1a/starter](https://github.com/g1a/starter) as potential starting points.
 
