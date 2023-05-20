@@ -139,15 +139,12 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
     }
 
     /**
-     * Return the bootstrap object in use.  This will
-     * be the latched bootstrap object if we have started
-     * bootstrapping; otherwise, it will be whichever bootstrap
-     * object is best for the selected root.
+     * Crete the bootstrap object if necessary, then return it.
      */
     public function bootstrap(): Boot
     {
         if (!$this->bootstrap) {
-            $this->bootstrap = $this->selectBootstrapClass();
+            $this->bootstrap = $this->bootstrapObjectForRoot($this->getRoot());
         }
         return $this->bootstrap;
     }
@@ -182,31 +179,6 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
             }
         }
         return new EmptyBoot();
-    }
-
-    /**
-     * Select the bootstrap class to use.  If this is called multiple
-     * times, the bootstrap class returned might change on subsequent
-     * calls, if the root directory changes.  Once the bootstrap object
-     * starts changing the state of the system, however, it will
-     * be 'latched', and further calls to Drush::bootstrap()
-     * will always return the same object.
-     */
-    protected function selectBootstrapClass(): Boot
-    {
-        // Once we have selected a Drupal root, we will reduce our bootstrap
-        // candidates down to just the one used to select this site root.
-        return $this->bootstrapObjectForRoot($this->getRoot());
-    }
-
-    /**
-     * Once bootstrapping has started, we stash the bootstrap
-     * object being used, and do not allow it to change any
-     * longer.
-     */
-    public function latch(Boot $bootstrap): void
-    {
-        $this->bootstrap = $bootstrap;
     }
 
     /**
@@ -263,12 +235,6 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
         // level, but no site root could be found.
         if (!isset($phases[$phase])) {
             throw new \Exception(dt("We could not find an applicable site for that command."));
-        }
-
-        // Once we start bootstrapping past the DRUSH_BOOTSTRAP_DRUSH phase, we
-        // will latch the bootstrap object, and prevent it from changing.
-        if ($phase > DrupalBootLevels::NONE) {
-            $this->latch($bootstrap);
         }
 
         foreach ($phases as $phase_index => $current_phase) {
