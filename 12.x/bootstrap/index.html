@@ -5205,7 +5205,29 @@
 <h1 id="the-drush-bootstrap-process">The Drush Bootstrap Process<a class="headerlink" href="#the-drush-bootstrap-process" title="Permanent link">&para;</a></h1>
 <p>When preparing to run a command, Drush works by <em>bootstrapping</em> the Drupal environment in very much the same way that is done during a normal page request from the web server, so most Drush commands run in the context of a fully-initialized website.</p>
 <p>For efficiency and convenience, some Drush commands can work without first bootstrapping a Drupal site, or by only partially bootstrapping a site. This is faster than a full bootstrap. It is also a matter of convenience, because some commands are useful even when you don't have a working Drupal site.</p>
-<p>Commands may specify their bootstrap level with a <code>@bootstrap</code> annotation. Commands supplied by Drupal modules are always <code>@bootstrap full</code>.</p>
+<p>Commands may specify their bootstrap level with via an attribute or an annotation. Commands supplied by Drupal modules are always <code>@bootstrap full</code>.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">PHP8 Attribute</label><label for="__tabbed_1_2">Annotation</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="k">use</span> <span class="nx">Drush\Attributes</span> <span class="k">as</span> <span class="nx">CLI</span><span class="p">;</span>
+
+<span class="p">#[</span><span class="nd">CLI\Bootstrap</span><span class="p">(</span><span class="nx">level</span><span class="o">:</span> <span class="nx">DrupalBootLevels</span><span class="o">::</span><span class="na">NONE</span><span class="p">)]</span>
+<span class="k">public</span> <span class="k">function</span> <span class="nf">fetch</span><span class="p">(</span><span class="nv">$search</span> <span class="o">=</span> <span class="k">null</span><span class="p">,</span> <span class="nv">$options</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;image-viewer&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;open&#39;</span><span class="p">,</span> <span class="s1">&#39;google-custom-search-api-key&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;AIza&#39;</span><span class="p">])</span> <span class="p">{</span>
+    <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">doFetch</span><span class="p">(</span><span class="nv">$search</span><span class="p">,</span> <span class="nv">$options</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="sd">/**</span>
+<span class="sd"> * @bootstrap none</span>
+<span class="sd">*/</span>
+<span class="k">public</span> <span class="k">function</span> <span class="nf">fetch</span><span class="p">(</span><span class="nv">$search</span> <span class="o">=</span> <span class="k">null</span><span class="p">,</span> <span class="nv">$options</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;image-viewer&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;open&#39;</span><span class="p">,</span> <span class="s1">&#39;google-custom-search-api-key&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;AIza&#39;</span><span class="p">])</span> <span class="p">{</span>
+    <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">doFetch</span><span class="p">(</span><span class="nv">$search</span><span class="p">,</span> <span class="nv">$options</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+</div>
+</div>
+</div>
 <p>Prior to bootstrapping, Drush goes through the <em>preflight</em> process, where the following things occur:</p>
 <div class="admonition example">
 <p class="admonition-title">Preflight</p>
@@ -5219,7 +5241,7 @@
 <li>The command is dispatched via the Symfony Console component.</li>
 </ol>
 </div>
-<p>Bootstrapping is done from a Symfony Console command hook. The different bootstrap levels are discribed below.</p>
+<p>Bootstrapping is done from a Symfony Console command hook. The different bootstrap levels are described below.</p>
 <h2 id="bootstrap-none">@bootstrap none<a class="headerlink" href="#bootstrap-none" title="Permanent link">&para;</a></h2>
 <p>Only run Drush <em>preflight</em>, without considering Drupal at all. Any code that operates on the Drush installation, and not specifically any Drupal directory, should bootstrap to this phase.</p>
 <h2 id="bootstrap-root">@bootstrap root<a class="headerlink" href="#bootstrap-root" title="Permanent link">&para;</a></h2>
@@ -5240,7 +5262,7 @@
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">April 3, 2021</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">May 20, 2023</span>
       
     
   </small>
