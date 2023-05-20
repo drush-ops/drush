@@ -4,7 +4,29 @@ When preparing to run a command, Drush works by *bootstrapping* the Drupal envir
 
 For efficiency and convenience, some Drush commands can work without first bootstrapping a Drupal site, or by only partially bootstrapping a site. This is faster than a full bootstrap. It is also a matter of convenience, because some commands are useful even when you don't have a working Drupal site.
 
-Commands may specify their bootstrap level with a `@bootstrap` annotation. Commands supplied by Drupal modules are always `@bootstrap full`.
+Commands may specify their bootstrap level with via an attribute or an annotation. Commands supplied by Drupal modules are always `@bootstrap full`.
+
+=== "PHP8 Attribute"
+
+    ```php
+    use Drush\Attributes as CLI;
+
+    #[CLI\Bootstrap(level: DrupalBootLevels::NONE)]
+    public function fetch($search = null, $options = ['image-viewer' => 'open', 'google-custom-search-api-key' => 'AIza']) {
+        $this->doFetch($search, $options);
+    }
+    ```
+
+=== "Annotation"
+
+    ```php
+    /**
+     * @bootstrap none
+    */
+    public function fetch($search = null, $options = ['image-viewer' => 'open', 'google-custom-search-api-key' => 'AIza']) {
+        $this->doFetch($search, $options);
+    }
+    ```
 
 Prior to bootstrapping, Drush goes through the *preflight* process, where the following things occur:
 
@@ -17,7 +39,7 @@ Prior to bootstrapping, Drush goes through the *preflight* process, where the fo
     1. Global commandfiles are loaded. Commandfiles with a drush.services.yml are loaded later, during `bootstrap @full`. 
     1. The command is dispatched via the Symfony Console component.
 
-Bootstrapping is done from a Symfony Console command hook. The different bootstrap levels are discribed below.
+Bootstrapping is done from a Symfony Console command hook. The different bootstrap levels are described below.
 
 @bootstrap none
 -----------------------
