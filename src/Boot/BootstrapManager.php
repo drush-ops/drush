@@ -41,11 +41,6 @@ class BootstrapManager implements LoggerAwareInterface, ConfigAwareInterface
      */
     protected $phase;
 
-
-    public function __construct()
-    {
-    }
-
     /**
      * @return int
      */
