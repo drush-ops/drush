@@ -154,7 +154,7 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
      */
     public function injectBootstrap(Boot $bootstrap): void
     {
-        $this->inflect($bootstrap);
+        $bootstrap->setLogger($this->getLogger);
         $this->bootstrap = $bootstrap;
 
         // Our bootstrap object is always a DrupalBoot8.
@@ -452,47 +452,5 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
     public function logger(): ?LoggerInterface
     {
         return $this->logger;
-    }
-
-    // TODO: This is moving to the ServiceManager class. We'll remove
-    // it here after cleaning up the bootstrap a bit.
-    public function inflect($object): void
-    {
-        // See \Drush\Runtime\DependencyInjection::addDrushServices and
-        // \Robo\Robo\addInflectors
-        $container = $this->getContainer();
-        if ($object instanceof ConfigAwareInterface) {
-            $object->setConfig($container->get('config'));
-        }
-        if ($object instanceof LoggerAwareInterface) {
-            $object->setLogger($container->get('logger'));
-        }
-        if ($object instanceof ContainerAwareInterface) {
-            $object->setContainer($container->get('container'));
-        }
-        if ($object instanceof InputAwareInterface) {
-            $object->setInput($container->get('input'));
-        }
-        if ($object instanceof OutputAwareInterface) {
-            $object->setOutput($container->get('output'));
-        }
-        if ($object instanceof ProgressIndicatorAwareInterface) {
-            $object->setProgressIndicator($container->get('progressIndicator'));
-        }
-        if ($object instanceof CustomEventAwareInterface) {
-            $object->setHookManager($container->get('hookManager'));
-        }
-        if ($object instanceof VerbosityThresholdInterface) {
-            $object->setOutputAdapter($container->get('outputAdapter'));
-        }
-        if ($object instanceof SiteAliasManagerAwareInterface) {
-            $object->setSiteAliasManager($container->get('site.alias.manager'));
-        }
-        if ($object instanceof ProcessManagerAwareInterface) {
-            $object->setProcessManager($container->get('process.manager'));
-        }
-        if ($object instanceof StdinAwareInterface) {
-            $object->setStdinHandler($container->get('stdinHandler'));
-        }
     }
 }

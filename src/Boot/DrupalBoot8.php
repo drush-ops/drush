@@ -301,7 +301,7 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
         // Register the Drush Symfony Console commands found in Drush services
         $drushServicesConsoleCommands = $legacyServiceInstantiator->taggedServices('console.command');
         foreach ($drushServicesConsoleCommands as $command) {
-            $manager->inflect($command);
+            $this->serviceManager->inflect($drushContainer, $command);
             $this->logger->debug(dt('Add a command: !name', ['!name' => $command->getName()]));
             $application->add($command);
         }
@@ -309,7 +309,7 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
         // Add annotation commands from drush.services.yml
         $drushServicesCommandHandlers = $legacyServiceInstantiator->taggedServices('drush.command');
         foreach ($drushServicesCommandHandlers as $commandHandler) {
-            $manager->inflect($commandHandler);
+            $this->serviceManager->inflect($drushContainer, $commandHandler);
             $this->logger->debug(dt('Add a commandfile class: !name', ['!name' => get_class($commandHandler)]));
             Robo::register($application, $commandHandler);
         }
