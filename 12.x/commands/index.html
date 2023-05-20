@@ -695,6 +695,19 @@
     Symfony Console Commands
   </a>
   
+    <nav class="md-nav" aria-label="Symfony Console Commands">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#auto-discovered-commands-psr4" class="md-nav__link">
+    Auto-discovered commands (PSR4)
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -715,13 +728,6 @@
           <li class="md-nav__item">
   <a href="#commands-discovered-by-configuration" class="md-nav__link">
     Commands discovered by configuration
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#auto-discovered-commands" class="md-nav__link">
-    Auto-discovered commands
   </a>
   
 </li>
@@ -5278,6 +5284,20 @@
 <p>For an example, see <a href="https://github.com/drush-ops/drush/blob/12.x/sut/modules/unish/woot/src/WootCommandInfoAlterer.php">WootCommandInfoAlterer</a> provided by the testing 'woot' module.</p>
 <h2 id="symfony-console-commands">Symfony Console Commands<a class="headerlink" href="#symfony-console-commands" title="Permanent link">&para;</a></h2>
 <p>Drush lists and runs Symfony Console commands, in addition to more typical annotated commands. See <a href="https://github.com/drush-ops/drush/blob/eed106ae4510d5a2df89f8e7fd54b41ffb0aa5fa/tests/integration/AnnotatedCommandCase.php#L178-L180">this test</a> and this <a href="https://github.com/drush-ops/drush/tree/HEAD/tests/fixtures/modules/woot/src/Commands/GreetCommand.php">commandfile</a>.</p>
+<h3 id="auto-discovered-commands-psr4">Auto-discovered commands (PSR4)<a class="headerlink" href="#auto-discovered-commands-psr4" title="Permanent link">&para;</a></h3>
+<p>Such commands are auto-discovered by their class PSR4 namespace and class/file name suffix. Drush will auto-discover commands if:</p>
+<ul>
+<li>The commands class is PSR4 auto-loadable.</li>
+<li>The commands class namespace, relative to base namespace, is <code>Drush\Commands</code>. For instance, if a Drush command provider third party library maps this PSR4 autoload entry:
+  <div class="highlight"><pre><span></span><code><span class="nt">&quot;autoload&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;psr-4&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;My\\Custom\\Library\\&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;src&quot;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+  then the Drush global commands class namespace should be <code>My\Custom\Library\Drush\Commands</code> and the class file should be located under the <code>src/Drush/Commands</code> directory.</li>
+<li>The class and file name ends with <code>*DrushCommands</code>, e.g. <code>FooDrushCommands</code>.</li>
+</ul>
 <h2 id="site-wide-drush-commands">Site-Wide Drush Commands<a class="headerlink" href="#site-wide-drush-commands" title="Permanent link">&para;</a></h2>
 <p>Commandfiles that are installed in a Drupal site and are not bundled inside a Drupal module are called 'site-wide' commandfiles. Site-wide commands may either be added directly to the Drupal site's repository (e.g. for site-specific policy files), or via <code>composer require</code>. See the <a href="https://github.com/drush-ops/drush/tree/12.x/examples/Commands">examples/Commands</a> folder for examples. In general, it's preferable to use modules to carry your Drush commands.</p>
 <p>Here are some examples of valid commandfile names and namespaces:</p>
@@ -5310,6 +5330,10 @@ Using <code>require</code> in place of <code>conflict</code> is not recommended.
 <h2 id="global-drush-commands">Global Drush Commands<a class="headerlink" href="#global-drush-commands" title="Permanent link">&para;</a></h2>
 <p>Commandfiles that are not part of any Drupal site are called 'global' commandfiles.</p>
 <h3 id="commands-discovered-by-configuration">Commands discovered by configuration<a class="headerlink" href="#commands-discovered-by-configuration" title="Permanent link">&para;</a></h3>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+</div>
+<p>Configuration discovery has been deprecated and will be removed in a future version of Drush.</p>
 <p>Global commandfiles discoverable by configuration are not supported by default; in order to enable them, you must configure your <code>drush.yml</code> configuration file to add an <code>include</code> search location.</p>
 <p>For example:</p>
 <p><div class="highlight"><pre><span></span><code><span class="nt">drush</span><span class="p">:</span>
@@ -5320,45 +5344,31 @@ Using <code>require</code> in place of <code>conflict</code> is not recommended.
 With this configuration in place, global commands may be placed as described in the Site-Wide Drush Commands section above. Global commandfiles may not declare any dependencies of their own; they may only use those dependencies already available via the autoloader.</p>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
+</div>
 <ol>
-<li>The filename must be have a name like Commands/ExampleCommands.php<ol>
+<li>The filename must be have a name like Commands/ExampleCommands.php</li>
 <li>The prefix <code>Example</code> can be whatever string you want.</li>
-<li>The file must end in <code>Commands.php</code></li>
-</ol>
-</li>
-<li>The directory above <code>Commands</code> must be one of: <ol>
+<li>The file must end in <code>Commands.php</code><ol>
+<li>The directory above <code>Commands</code> must be one of:<ol>
 <li>A Folder listed in the 'include' option. Include may be provided via <a href="#global-drush-commands">config</a> or via CLI.</li>
 <li>../drush, /drush or /sites/all/drush. These paths are relative to Drupal root.</li>
 </ol>
 </li>
 </ol>
-</div>
-<p>It is recommended that you avoid global Drush commands, and favor site-wide commandfiles instead. If you really need a command or commands that are not part of any Drupal site, consider making a stand-alone script or custom .phar instead. See <a href="https://github.com/ahoy-cli/ahoy">ahoy</a>, <a href="https://github.com/consolidation/robo">Robo</a> and <a href="https://github.com/g1a/starter">g1a/starter</a> as potential starting points.</p>
+</li>
+</ol>
+<p>It is recommended that you avoid global Drush commands, and favor site-wide or PSR4 discovered commandfiles instead. If you really need a command or commands that are not part of any Drupal site, consider making a stand-alone script or custom .phar instead. See <a href="https://github.com/ahoy-cli/ahoy">ahoy</a>, <a href="https://github.com/consolidation/robo">Robo</a> and <a href="https://github.com/g1a/starter">g1a/starter</a> as potential starting points.</p>
 <div class="admonition warning">
 <p class="admonition-title">Symlinked packages</p>
-<p>While it is good practice to make your custom commands into a Composer package, please beware that symlinked packages (by using the composer repository type <a href="https://getcomposer.org/doc/05-repositories.md#path">Path</a>) will <strong>not</strong> be discovered by Drush. When in development, it is recommended to <a href="https://github.com/drush-ops/drush/blob/12.x/examples/example.drush.yml#L52-L67">specify your package's</a> path in your <code>drush.yml</code> to have quick access to your commands.</p>
 </div>
-<h3 id="auto-discovered-commands">Auto-discovered commands<a class="headerlink" href="#auto-discovered-commands" title="Permanent link">&para;</a></h3>
-<p>Such commands are auto-discovered by their class PSR4 namespace and class/file name suffix. Drush will auto-discover commands if:</p>
-<ul>
-<li>The commands class is PSR4 auto-loadable.</li>
-<li>The commands class namespace, relative to base namespace, is <code>Drush\Commands</code>. For instance, if a Drush command provider third party library maps this PSR4 autoload entry:
-  <div class="highlight"><pre><span></span><code><span class="nt">&quot;autoload&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;psr-4&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;My\\Custom\\Library\\&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;src&quot;</span>
-<span class="w">  </span><span class="p">}</span>
-<span class="p">}</span>
-</code></pre></div>
-  then the Drush global commands class namespace should be <code>My\Custom\Library\Drush\Commands</code> and the class file should be located under the <code>src/Drush/Commands</code> directory.</li>
-<li>The class and file name ends with <code>*DrushCommands</code>, e.g. <code>FooDrushCommands</code>.</li>
-</ul>
+<p>While it is good practice to make your custom commands into a Composer package, please beware that symlinked packages (by using the composer repository type <a href="https://getcomposer.org/doc/05-repositories.md#path">Path</a>) will <strong>not</strong> be discovered by Drush. When in development, it is recommended to <a href="https://github.com/drush-ops/drush/blob/12.x/examples/example.drush.yml#L52-L67">specify your package's</a> path in your <code>drush.yml</code> to have quick access to your commands.</p>
 
   <hr>
 <div class="md-source-file">
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">May 12, 2023</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">May 20, 2023</span>
       
     
   </small>
