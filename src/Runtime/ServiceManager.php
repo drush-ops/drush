@@ -140,7 +140,7 @@ class ServiceManager implements ConfigAwareInterface
      *
      * @param string[] $directoryList List of directories to search
      * @param string $baseNamespace The namespace to use at the base of each
-     *   search diretory. Namespace components mirror directory structure.
+     *   search directory. Namespace components mirror directory structure.
      *
      * @return string[]
      *   List of command classes

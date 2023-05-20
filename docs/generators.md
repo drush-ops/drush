@@ -6,14 +6,14 @@ Drush's generators reuse classes provided by the excellent [Drupal Code Generato
 ## Writing Custom Generators
 Drupal modules may supply their own Generators, just like they can supply Commands.
 
-See [Woot module](https://github.com/drush-ops/drush/blob/12.x/tests/fixtures/modules/woot), which Drush uses for testing. Specifically,
+See [Woot module](https://github.com/drush-ops/drush/tree/12.x/sut/modules/unish/woot/src/Generators), which Drush uses for testing. Specifically,
 
-  1. Write a class similar to [ExampleGenerator](https://github.com/drush-ops/drush/tree/12.x/tests/fixtures/modules/woot/src/Generators/). Implement your custom logic in the generate() method. Typically this class is placed under the src/Generators directory.
+  1. Write a class similar to [ExampleGenerator](https://github.com/drush-ops/drush/tree/12.x/sut/modules/unish/woot/src/Generators). Implement your custom logic in the generate() method. Typically this class is placed under the src/Generators directory.
   2. Add a .twig file to the same directory. This template specifies what gets output from the generator.
-  4. Add your class to your module's drush.services.yml file ([example](https://github.com/drush-ops/drush/blob/12.x/tests/fixtures/modules/woot/drush.services.yml)). Use the tag `drush.generator.v3` instead of `drush.command`.
+  4. Add your class to your module's drush.services.yml file ([example](https://github.com/drush-ops/drush/blob/12.x/sut/modules/unish/woot/drush.services.yml#L19-L23)). Use the tag `drush.generator.v3` instead of `drush.command`.
   5. Perform a `drush cache:rebuild` to compile your drush.services.yml changes into the Drupal container.
 
-## Global Generators
+## Auto-discovered Generators (PSR4)
 
 Generators that don't ship inside Drupal modules are called *global* generators. In general, it is better to use modules to carry your generators. If you still prefer using a global generator, please note:
 
