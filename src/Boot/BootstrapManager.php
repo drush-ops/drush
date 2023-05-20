@@ -154,7 +154,7 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
      */
     public function injectBootstrap(Boot $bootstrap): void
     {
-        $bootstrap->setLogger($this->getLogger);
+        $bootstrap->setLogger($this->logger());
         $this->bootstrap = $bootstrap;
 
         // Our bootstrap object is always a DrupalBoot8.
@@ -447,7 +447,7 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
     }
 
     /**
-     * Allow those with an instance to us to the BootstrapManager to use its logger
+     * Allow those with a reference to the BootstrapManager to use its logger
      */
     public function logger(): ?LoggerInterface
     {
