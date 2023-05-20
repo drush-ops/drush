@@ -312,19 +312,22 @@ class ServiceManager
 
         $this->logger->debug("instantiateServices {with} Drupal DI container", ['with' => empty($container) ? 'WITHOUT' : 'with']);
 
-        // Remove any non-instantiable classes found via discovery, most
+        // Remove any abstract classes found via discovery, most
         // particularly DrushCommands (our abstract base class).
+        // n.b. we cannot simply use 'isInstantiable' here because
+        // the constructor is typically protected when using a static create method
         $bootstrapCommandClasses = array_filter($bootstrapCommandClasses, function ($class) {
             $reflection = new \ReflectionClass($class);
-            return $reflection->isInstantiable();
+            return !$reflection->isAbstract();
         });
 
         foreach ($bootstrapCommandClasses as $class) {
             $commandHandler = null;
+
             try {
                 if ($container && $this->hasStaticCreateFactory($class)) {
                     $commandHandler = $class::create($container, $drushContainer);
-                } elseif ($this->hasStaticCreateEarlyFactory($class)) {
+                } elseif (!$container && $this->hasStaticCreateEarlyFactory($class)) {
                     $commandHandler = $class::createEarly($drushContainer);
                 } else {
                     $commandHandler = new $class();
