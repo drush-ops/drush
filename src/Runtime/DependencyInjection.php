@@ -119,13 +119,12 @@ class DependencyInjection
         // Add some of our own objects to the container
         Robo::addShared($container, 'service.manager', 'Drush\Runtime\ServiceManager')
             ->addArgument('loader')
-            ->addMethodCall('setConfig', ['config']);
+            ->addArgument('config')
+            ->addArgument('logger');
         Robo::addShared($container, 'bootstrap.drupal8', 'Drush\Boot\DrupalBoot8')
             ->addArgument('service.manager');
         Robo::addShared($container, 'bootstrap.manager', 'Drush\Boot\BootstrapManager')
-            ->addMethodCall('setDrupalFinder', [$drupalFinder]);
-        // TODO: Can we somehow add these via discovery (e.g. backdrop extension?)
-        $container->extend('bootstrap.manager')
+            ->addMethodCall('setDrupalFinder', [$drupalFinder])
             ->addMethodCall('add', ['bootstrap.drupal8']);
         Robo::addShared($container, 'bootstrap.hook', 'Drush\Boot\BootstrapHook')
           ->addArgument('bootstrap.manager');

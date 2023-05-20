@@ -15,6 +15,7 @@ use Drush\Config\DrushConfig;
 use Drush\Drupal\DrupalKernelTrait;
 use Drush\Drush;
 use Drush\Log\Logger;
+use Psr\Log\LoggerInterface;
 use Grasmash\YamlCli\Command\GetValueCommand;
 use Grasmash\YamlCli\Command\LintCommand;
 use Grasmash\YamlCli\Command\UnsetKeyCommand;
@@ -23,8 +24,18 @@ use Grasmash\YamlCli\Command\UpdateValueCommand;
 use Drupal\Component\DependencyInjection\ContainerInterface as DrupalContainer;
 use Psr\Container\ContainerInterface as DrushContainer;
 use Robo\ClassDiscovery\RelativeNamespaceDiscovery;
-use Robo\Contract\ConfigAwareInterface;
 use Symfony\Component\Console\Application;
+use Symfony\Component\Console\Input\InputAwareInterface;
+use Robo\Contract\OutputAwareInterface;
+use Robo\Contract\ProgressIndicatorAwareInterface;
+use Consolidation\AnnotatedCommand\Events\CustomEventAwareInterface;
+use Robo\Contract\VerbosityThresholdInterface;
+use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
+use Consolidation\SiteProcess\ProcessManagerAwareInterface;
+use Consolidation\AnnotatedCommand\Input\StdinAwareInterface;
+use League\Container\ContainerAwareInterface;
+use Psr\Log\LoggerAwareInterface;
+use Robo\Contract\ConfigAwareInterface;
 
 /**
  * Manage Drush services.
@@ -43,16 +54,17 @@ use Symfony\Component\Console\Application;
  * (DrushBoot8) using the LegacyServiceFinder and LegacyServiceInstantiator
  * classes.
  */
-class ServiceManager implements ConfigAwareInterface
+class ServiceManager
 {
-    use ConfigAwareTrait;
-
     protected $generators = [];
     /** @var string[] */
     protected array $bootstrapCommandClasses = [];
 
-    public function __construct(protected ClassLoader $autoloader)
-    {
+    public function __construct(
+        protected ClassLoader $autoloader,
+        protected DrushConfig $config,
+        protected LoggerInterface $logger
+    ) {
     }
 
     /**
@@ -294,27 +306,36 @@ class ServiceManager implements ConfigAwareInterface
      * @return object[]
      *   List of instantiated service objects
      */
-    public function instantiateServices(array $bootstrapCommandClasses, DrupalContainer $container, DrushContainer $drushContainer)
+    public function instantiateServices(array $bootstrapCommandClasses, DrushContainer $drushContainer, ?DrupalContainer $container = null)
     {
         $commandHandlers = [];
+
+        $this->logger->debug("instantiateServices {with} Drupal DI container", ['with' => empty($container) ? 'WITHOUT' : 'with']);
+
+        // Remove any non-instantiable classes found via discovery, most
+        // particularly DrushCommands (our abstract base class).
+        $bootstrapCommandClasses = array_filter($bootstrapCommandClasses, function ($class) {
+            $reflection = new \ReflectionClass($class);
+            return $reflection->isInstantiable();
+        });
 
         foreach ($bootstrapCommandClasses as $class) {
             $commandHandler = null;
             try {
-                if ($this->hasStaticCreateFactory($class)) {
+                if ($container && $this->hasStaticCreateFactory($class)) {
                     $commandHandler = $class::create($container, $drushContainer);
+                } elseif ($this->hasStaticCreateEarlyFactory($class)) {
+                    $commandHandler = $class::createEarly($drushContainer);
                 } else {
                     $commandHandler = new $class();
                 }
-            } catch (\Exception $e) {
-            }
-            // Fail silently if the command handler could not be
-            // instantiated, e.g. if it tries to fetch services from
-            // a module that has not been enabled. Note that Robo::register
-            // can accept either Annotated Command command handlers or
-            // Symfony Console Command objects.
-            if ($commandHandler) {
+
+                // Inject any additional dependencies needed by any
+                // "*AwareInterface" used by the handler
+                $this->inflect($drushContainer, $commandHandler);
                 $commandHandlers[] = $commandHandler;
+            } catch (\Exception $e) {
+                $this->logger->debug("Cound not instantiate {class}: {message}", ['class' => $class, 'message' => $e->getMessage()]);
             }
         }
 
@@ -331,11 +352,38 @@ class ServiceManager implements ConfigAwareInterface
      */
     protected function hasStaticCreateFactory(string $class): bool
     {
-        if (!method_exists($class, 'create')) {
+        return static::hasStaticMethod($class, 'create');
+    }
+
+    /**
+     * Check to see if the provided class has a static `createEarly` method.
+     *
+     * @param string $class The name of the class to check
+     *
+     * @return bool
+     *   True if class has a static `createEarly` method.
+     */
+    protected function hasStaticCreateEarlyFactory(string $class): bool
+    {
+        return static::hasStaticMethod($class, 'createEarly');
+    }
+
+    /**
+     * Check to see if the provided class has the specified static method.
+     *
+     * @param string $class The name of the class to check
+     * @param string $methodName The name of the method the class should have
+     *
+     * @return bool
+     *   True if class has a static method with the specified name.
+     */
+    protected function hasStaticMethod(string $class, string $methodName): bool
+    {
+        if (!method_exists($class, $methodName)) {
             return false;
         }
 
-        $reflectionMethod = new \ReflectionMethod($class, 'create');
+        $reflectionMethod = new \ReflectionMethod($class, $methodName);
         return $reflectionMethod->isStatic();
     }
 
@@ -361,5 +409,50 @@ class ServiceManager implements ConfigAwareInterface
             ...$this->generators,
             ...$additionalGenerators
         ];
+    }
+
+    /**
+     * Inject any dependencies needed via the "*AwareInterface" pattern
+     *
+     * @param DrushContainer $container The DI contaner
+     * @param mixed $object The object to be inflected
+     */
+    public function inflect(DrushContainer $container, $object): void
+    {
+        if ($object instanceof ConfigAwareInterface) {
+            $object->setConfig($container->get('config'));
+        }
+        if ($object instanceof LoggerAwareInterface) {
+            $object->setLogger($container->get('logger'));
+        }
+        // TODO: Should we remove the inflectors below?
+        if ($object instanceof SiteAliasManagerAwareInterface) {
+            $object->setSiteAliasManager($container->get('site.alias.manager'));
+        }
+        if ($object instanceof ProcessManagerAwareInterface) {
+            $object->setProcessManager($container->get('process.manager'));
+        }
+        if ($object instanceof StdinAwareInterface) {
+            $object->setStdinHandler($container->get('stdinHandler'));
+        }
+        // TODO: Definitely remove all of the inflectors below this line
+        if ($object instanceof ContainerAwareInterface) {
+            $object->setContainer($container->get('container'));
+        }
+        if ($object instanceof InputAwareInterface) {
+            $object->setInput($container->get('input'));
+        }
+        if ($object instanceof OutputAwareInterface) {
+            $object->setOutput($container->get('output'));
+        }
+        if ($object instanceof ProgressIndicatorAwareInterface) {
+            $object->setProgressIndicator($container->get('progressIndicator'));
+        }
+        if ($object instanceof CustomEventAwareInterface) {
+            $object->setHookManager($container->get('hookManager'));
+        }
+        if ($object instanceof VerbosityThresholdInterface) {
+            $object->setOutputAdapter($container->get('outputAdapter'));
+        }
     }
 }
