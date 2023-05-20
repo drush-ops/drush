@@ -12,6 +12,7 @@ namespace Drush\Commands;
 use Drupal\Core\DrupalKernel;
 use Drupal\Core\Site\Settings;
 use Drush\Drush;
+use Psr\Container\ContainerInterface as DrushContainer;
 
 class TestFixtureCommands extends DrushCommands
 {
