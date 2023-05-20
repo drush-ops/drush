@@ -306,7 +306,7 @@ class ServiceManager
      * @return object[]
      *   List of instantiated service objects
      */
-    public function instantiateServices(array $bootstrapCommandClasses, DrushContainer $drushContainer, ?DrupalContainer $container = null)
+    public function instantiateServices(array $bootstrapCommandClasses, DrushContainer $drushContainer, ?DrupalContainer $container = null): array
     {
         $commandHandlers = [];
 
