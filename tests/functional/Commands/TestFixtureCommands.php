@@ -110,6 +110,7 @@ class TestFixtureCommands extends DrushCommands
      */
     public function drushUnitInvalidateContainer()
     {
+        $autoloader = $this->loadDrupalAutoloader(DRUPAL_ROOT);
         $request = Drush::bootstrap()->getRequest();
         $sitePath = DrupalKernel::findSitePath($request);
 
@@ -128,5 +129,28 @@ class TestFixtureCommands extends DrushCommands
         // delete the compiled container from the cache backend.
         $kernel->boot();
         $kernel->invalidateContainer();
+    }
+
+    /**
+     * Loads the Drupal autoloader and returns the instance.
+     *
+     * @see \Drush\Commands\core\CacheCommands::loadDrupalAutoloader()
+     */
+    protected function loadDrupalAutoloader($drupal_root)
+    {
+        static $autoloader = false;
+
+        $autoloadFilePath = $drupal_root . '/autoload.php';
+        if (!$autoloader && file_exists($autoloadFilePath)) {
+            $autoloader = require $autoloadFilePath;
+        }
+
+        if ($autoloader === true) {
+            // The autoloader was already required. Assume that Drush and Drupal share an autoloader per
+            // "Point autoload.php to the proper vendor directory" - https://www.drupal.org/node/2404989
+            $autoloader = $this->autoloader;
+        }
+
+        return $autoloader;
     }
 }
