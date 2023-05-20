@@ -27,9 +27,7 @@ use Robo\ClassDiscovery\RelativeNamespaceDiscovery;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Input\InputAwareInterface;
 use Robo\Contract\OutputAwareInterface;
-use Robo\Contract\ProgressIndicatorAwareInterface;
 use Consolidation\AnnotatedCommand\Events\CustomEventAwareInterface;
-use Robo\Contract\VerbosityThresholdInterface;
 use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
 use Consolidation\SiteProcess\ProcessManagerAwareInterface;
 use Consolidation\AnnotatedCommand\Input\StdinAwareInterface;
@@ -431,27 +429,24 @@ class ServiceManager
         if ($object instanceof ProcessManagerAwareInterface) {
             $object->setProcessManager($container->get('process.manager'));
         }
-        // TODO: remove inflectors below this line?
-        if ($object instanceof SiteAliasManagerAwareInterface) {
-            $object->setSiteAliasManager($container->get('site.alias.manager'));
-        }
-        if ($object instanceof StdinAwareInterface) {
-            $object->setStdinHandler($container->get('stdinHandler'));
-        }
+        // InputAwareInterface and OutputAwareInterface are needed by
+        // the Robo IO trait that saves and restores input/output state,
+        // so they must be maintained until that system is retired.
         if ($object instanceof InputAwareInterface) {
             $object->setInput($container->get('input'));
         }
         if ($object instanceof OutputAwareInterface) {
             $object->setOutput($container->get('output'));
         }
-        if ($object instanceof ProgressIndicatorAwareInterface) {
-            $object->setProgressIndicator($container->get('progressIndicator'));
+        // These may be removed in future versions of Drush
+        if ($object instanceof SiteAliasManagerAwareInterface) {
+            $object->setSiteAliasManager($container->get('site.alias.manager'));
+        }
+        if ($object instanceof StdinAwareInterface) {
+            $object->setStdinHandler($container->get('stdinHandler'));
         }
         if ($object instanceof CustomEventAwareInterface) {
             $object->setHookManager($container->get('hookManager'));
-        }
-        if ($object instanceof VerbosityThresholdInterface) {
-            $object->setOutputAdapter($container->get('outputAdapter'));
         }
     }
 }

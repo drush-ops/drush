@@ -43,15 +43,38 @@ class WootStaticFactoryCommands extends DrushCommands
         $this->configFactory = $configFactory;
     }
 
-    public static function create(ContainerInterface $container): self
+    public static function create(ContainerInterface $container, DrushContainer $drush): self
     {
         return new static($container->get('config.factory'));
     }
 ```
 See the [Drupal Documentation](https://www.drupal.org/docs/drupal-apis/services-and-dependency-injection/services-and-dependency-injection-in-drupal-8#s-injecting-dependencies-into-controllers-forms-and-blocks) for details on how to inject Drupal services into your command file. Drush's approach mimics Drupal's blocks, forms, and controllers.
 
+Note that if you do not need to pull any services from the Drush container, then you may
+omit the second parameter to the `create()` method.
+
+createEarly() method
+------------------
+
+Drush commands that need to be instantiated prior to bootstrap may do so by
+utilizing the `createEarly()` static factory. This method looks and functions
+exacty like the `create()` static factory, except it is only passed the Drush
+container. The Drupal container is not avalable to command handlers that use
+`createEarly()`.
+
+Note also that Drush commands packaged with Drupal modules are not discovered
+until after Dupal bootstraps, and therefore cannot use `createEarly()`. This
+mechanism is only usable by PSR-4 discovered commands packaged with Composer
+projects that are *not* Drupal modules.
+
 Inflection
 -------------
+
+!!! tip
+
+    Inflection is deprecated in Drush 12; use `create()` or `createEarly()` instead.
+    Some classes are no longer available for inflection in Drush 12, and more (or potentially all)
+    may be removed in Drush 13.
 
 Drush will also inject dependencies that it provides using a technique called inflection. Inflection is a kind of dependency injection that works by way of a set of provided inflection interfaces, one for each available service. Each of these interfaces will define one or more setter methods (usually only one); these will automatically be called by Drush when the commandfile object is instantiated. The command only needs to implement this method and save the provided object in a class field. There is usually a corresponding trait that may be included via a `use` statement to fulfill this requirement.
 

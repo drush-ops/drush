@@ -5,11 +5,7 @@ declare(strict_types=1);
 namespace Drush\Boot;
 
 use Psr\Log\LoggerInterface;
-use Symfony\Component\Console\Input\InputAwareInterface;
-use Robo\Contract\OutputAwareInterface;
-use Robo\Contract\ProgressIndicatorAwareInterface;
 use Consolidation\AnnotatedCommand\Events\CustomEventAwareInterface;
-use Robo\Contract\VerbosityThresholdInterface;
 use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
 use Consolidation\SiteProcess\ProcessManagerAwareInterface;
 use Consolidation\AnnotatedCommand\Input\StdinAwareInterface;
