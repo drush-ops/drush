@@ -712,22 +712,9 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#global-drush-commands" class="md-nav__link">
-    Global Drush Commands
+  <a href="#global-commands-discovered-by-configuration" class="md-nav__link">
+    Global commands discovered by configuration
   </a>
-  
-    <nav class="md-nav" aria-label="Global Drush Commands">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#commands-discovered-by-configuration" class="md-nav__link">
-    Commands discovered by configuration
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -5211,7 +5198,7 @@
 <h1 id="creating-custom-drush-commands">Creating Custom Drush Commands<a class="headerlink" href="#creating-custom-drush-commands" title="Permanent link">&para;</a></h1>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
-<p>Drush 11 and prior required <a href="https://www.drush.org/11.x/dependency-injection/#services-files">dependency injection via a drush.services.yml file</a>. This approach is deprecated in Drush 12 and will be removed in Drush 13. See <a href="../dependency-injection/#create-method">create() method</a></p>
+<p>Drush 11 and prior required <a href="https://www.drush.org/11.x/dependency-injection/#services-files">dependency injection via a drush.services.yml file</a>. This approach is deprecated in Drush 12 and will be removed in Drush 13. See <a href="../dependency-injection/#create-method">create() method</a>.</p>
 </div>
 <p>Creating a new Drush command is easy. Follow the steps below.</p>
 <ol>
@@ -5264,7 +5251,7 @@
 </div>
 <ul>
 <li>A commandfile that will only be used on PHP8+ should <a href="https://github.com/drush-ops/drush/pull/4821">use PHP Attributes</a> instead of Annotations.</li>
-<li><a href="https://www.drush.org/api/Drush/Attributes.html">See all Attributes provided by Drush core</a>.</li>
+<li><a href="https://www.drush.org/api/Drush/Attributes.html">See Attributes provided by Drush core</a>. Custom code can add additional attributes.</li>
 </ul>
 <h2 id="altering-drush-command-info">Altering Drush Command Info<a class="headerlink" href="#altering-drush-command-info" title="Permanent link">&para;</a></h2>
 <p>Drush command info (annotations/attributes) can be altered from other modules. This is done by creating and registering 'command info alterers'. Alterers are class services that are able to intercept and manipulate an existing command annotation.</p>
@@ -5292,6 +5279,16 @@
   then the Drush global commands class namespace should be <code>My\Custom\Library\Drush\Commands</code> and the class file should be located under the <code>src/Drush/Commands</code> directory.</li>
 <li>The class and file name ends with <code>*DrushCommands</code>, e.g. <code>FooDrushCommands</code>.</li>
 </ul>
+<p>Auto-discovered commandfiles should declare their Drush version compatibility via a <code>conflict</code> directive. For example, a Composer-managed site-wide command that works with both Drush 11 and Drush 12 might contain something similar to the following in its composer.json file:
+<div class="highlight"><pre><span></span><code><span class="w">    </span><span class="nt">&quot;conflict&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;drush/drush&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&lt;11.0&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="p">}</span>
+</code></pre></div>
+Using <code>require</code> in place of <code>conflict</code> is not recommended.</p>
+<div class="admonition warning">
+<p class="admonition-title">Symlinked packages</p>
+<p>While it is good practice to make your custom commands into a Composer package, please beware that symlinked packages (by using the composer repository type <a href="https://getcomposer.org/doc/05-repositories.md#path">Path</a>) will <strong>not</strong> be discovered by Drush. When in development, it is recommended to <a href="https://github.com/drush-ops/drush/blob/12.x/examples/example.drush.yml#L52-L67">specify your package's</a> path in your <code>drush.yml</code> to have quick access to your commands.</p>
+</div>
 <h2 id="site-wide-drush-commands">Site-Wide Drush Commands<a class="headerlink" href="#site-wide-drush-commands" title="Permanent link">&para;</a></h2>
 <p>Commandfiles that are installed in a Drupal site and are not bundled inside a Drupal module are called 'site-wide' commandfiles. Site-wide commands may either be added directly to the Drupal site's repository (e.g. for site-specific policy files), or via <code>composer require</code>. See the <a href="https://github.com/drush-ops/drush/tree/12.x/examples/Commands">examples/Commands</a> folder for examples. In general, it's preferable to use modules to carry your Drush commands.</p>
 <p>Here are some examples of valid commandfile names and namespaces:</p>
@@ -5313,21 +5310,13 @@
 </li>
 </ol>
 <p>Note: Make sure you do <em>not</em> include <code>src</code> in the path to your command. Your command may not be discovered and have additional problems.</p>
-<p>Installing commands as part of a Composer project requires that the project's type be <code>drupal-drush</code>, and that the <code>installer-paths</code> in the Drupal site's composer.json file contains <code>"drush/Commands/contrib/{$name}": ["type:drupal-drush"]</code>. It is also possible to commit projects with a similar layout using a directory named <code>custom</code> in place of <code>contrib</code>; if this is done, then the directory <code>custom</code> will not be considered to be part of the commandfile's namespace.</p>
-<p>If a site-wide commandfile is added via a Composer package, then it may declare any dependencies that it may need in its composer.json file. Site-wide commandfiles that are committed directly to a site's repository only have access to the dependencies already available in the site. Site-wide commandfiles should declare their Drush version compatibility via a <code>conflict</code> directive. For example, a Composer-managed site-wide command that works with both Drush 8 and Drush 9 might contain something similar to the following in its composer.json file:
-<div class="highlight"><pre><span></span><code><span class="w">    </span><span class="nt">&quot;conflict&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nt">&quot;drush/drush&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&lt;8.2 || &gt;=9.0 &lt;9.6 || &gt;=10.0&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="p">}</span>
-</code></pre></div>
-Using <code>require</code> in place of <code>conflict</code> is not recommended.</p>
+<p>If a commandfile is added via a Composer package, then it may declare any dependencies that it may need in its composer.json file. Site-wide commandfiles that are committed directly to a site's repository only have access to the dependencies already available in the site. </p>
 <p>A site-wide commandfile should have tests that run with each (major) version of Drush that is supported. You may model your test suite after the <a href="https://github.com/drush-ops/example-drush-extension">example drush extension</a> project.</p>
-<h2 id="global-drush-commands">Global Drush Commands<a class="headerlink" href="#global-drush-commands" title="Permanent link">&para;</a></h2>
-<p>Commandfiles that are not part of any Drupal site are called 'global' commandfiles.</p>
-<h3 id="commands-discovered-by-configuration">Commands discovered by configuration<a class="headerlink" href="#commands-discovered-by-configuration" title="Permanent link">&para;</a></h3>
+<h2 id="global-commands-discovered-by-configuration">Global commands discovered by configuration<a class="headerlink" href="#global-commands-discovered-by-configuration" title="Permanent link">&para;</a></h2>
 <div class="admonition warning">
-<p class="admonition-title">Warning</p>
+<p class="admonition-title">Deprecation</p>
+<p>Configuration discovery has been deprecated and will be removed in a future version of Drush. It is recommended that you avoid global Drush commands, and favor site-wide or PSR4 discovered commandfiles instead. If you really need commands that are not part of any Drupal site, consider making a stand-alone script or custom .phar instead. See <a href="https://github.com/ahoy-cli/ahoy">ahoy</a>, <a href="https://github.com/consolidation/robo">Robo</a> and <a href="https://github.com/g1a/starter">g1a/starter</a> as potential starting points.</p>
 </div>
-<p>Configuration discovery has been deprecated and will be removed in a future version of Drush.</p>
 <p>Global commandfiles discoverable by configuration are not supported by default; in order to enable them, you must configure your <code>drush.yml</code> configuration file to add an <code>include</code> search location.</p>
 <p>For example:</p>
 <p><div class="highlight"><pre><span></span><code><span class="nt">drush</span><span class="p">:</span>
@@ -5338,7 +5327,6 @@ Using <code>require</code> in place of <code>conflict</code> is not recommended.
 With this configuration in place, global commands may be placed as described in the Site-Wide Drush Commands section above. Global commandfiles may not declare any dependencies of their own; they may only use those dependencies already available via the autoloader.</p>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
-</div>
 <ol>
 <li>The filename must be have a name like Commands/ExampleCommands.php</li>
 <li>The prefix <code>Example</code> can be whatever string you want.</li>
@@ -5351,11 +5339,7 @@ With this configuration in place, global commands may be placed as described in 
 </ol>
 </li>
 </ol>
-<p>It is recommended that you avoid global Drush commands, and favor site-wide or PSR4 discovered commandfiles instead. If you really need a command or commands that are not part of any Drupal site, consider making a stand-alone script or custom .phar instead. See <a href="https://github.com/ahoy-cli/ahoy">ahoy</a>, <a href="https://github.com/consolidation/robo">Robo</a> and <a href="https://github.com/g1a/starter">g1a/starter</a> as potential starting points.</p>
-<div class="admonition warning">
-<p class="admonition-title">Symlinked packages</p>
 </div>
-<p>While it is good practice to make your custom commands into a Composer package, please beware that symlinked packages (by using the composer repository type <a href="https://getcomposer.org/doc/05-repositories.md#path">Path</a>) will <strong>not</strong> be discovered by Drush. When in development, it is recommended to <a href="https://github.com/drush-ops/drush/blob/12.x/examples/example.drush.yml#L52-L67">specify your package's</a> path in your <code>drush.yml</code> to have quick access to your commands.</p>
 
   <hr>
 <div class="md-source-file">
@@ -5377,7 +5361,7 @@ With this configuration in place, global commands may be placed as described in 
     
         <div class="md-source-date">
             <small>
-                Authors: <span class='git-page-authors git-authors'><a href='mailto:clau.cristea@gmail.com'>Claudiu Cristea</a>, <a href='mailto:greg.1.anderson@greenknowe.org'>Greg Anderson</a>, <a href='mailto:neclimdul@gmail.com'>James Gilliland</a>, <a href='mailto:weitzman@tejasa.com'>Moshe Weitzman</a>, <a href='mailto:nelus87@gmail.com'>Niels van Aken</a></span>
+                Authors: <span class='git-page-authors git-authors'><a href='mailto:clau.cristea@gmail.com'>Claudiu Cristea</a>, <a href='mailto:greg.1.anderson@greenknowe.org'>Greg Anderson</a>, <a href='mailto:neclimdul@gmail.com'>James Gilliland</a>, <a href='mailto:weitzman@tejasa.com'>Moshe Weitzman</a></span>
             </small>
         </div>
     
