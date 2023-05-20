@@ -572,7 +572,9 @@ available in the search paths provided via Preflight</p></dd><dt><a href="Drush/
 <abbr title="Drush\Commands\core\QueueCommands">QueueCommands</abbr>::create</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/QueueCommands.html"><abbr title="Drush\Commands\core\QueueCommands">QueueCommands</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/core/RoleCommands.html#method_create">
 <abbr title="Drush\Commands\core\RoleCommands">RoleCommands</abbr>::create</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/RoleCommands.html"><abbr title="Drush\Commands\core\RoleCommands">RoleCommands</abbr></a></em></dt>
-                    <dd><p>Create a new role.</p></dd><dt><a href="Drush/Commands/core/StateCommands.html#method_create">
+                    <dd><p>Create a new role.</p></dd><dt><a href="Drush/Commands/core/SiteInstallCommands.html#method_createEarly">
+<abbr title="Drush\Commands\core\SiteInstallCommands">SiteInstallCommands</abbr>::createEarly</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/SiteInstallCommands.html"><abbr title="Drush\Commands\core\SiteInstallCommands">SiteInstallCommands</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/core/StateCommands.html#method_create">
 <abbr title="Drush\Commands\core\StateCommands">StateCommands</abbr>::create</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/StateCommands.html"><abbr title="Drush\Commands\core\StateCommands">StateCommands</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/core/TwigCommands.html#method_create">
 <abbr title="Drush\Commands\core\TwigCommands">TwigCommands</abbr>::create</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/TwigCommands.html"><abbr title="Drush\Commands\core\TwigCommands">TwigCommands</abbr></a></em></dt>
@@ -1652,7 +1654,11 @@ for structure only, or have structure and data dumped.</p></dd><dt><a href="Drus
                     <dd><p>HandlerInterface represents a PHP system handler (e.g. the error reporting
 handler, the shutdown handler) that may be globally installed.</p></dd><dt><a href="Drush/Runtime/ServiceManager.html#method_hasStaticCreateFactory">
 <abbr title="Drush\Runtime\ServiceManager">ServiceManager</abbr>::hasStaticCreateFactory</a>() &mdash; <em>Method in class <a href="Drush/Runtime/ServiceManager.html"><abbr title="Drush\Runtime\ServiceManager">ServiceManager</abbr></a></em></dt>
-                    <dd><p>Check to see if the provided class has a static <code>create</code> method.</p></dd><dt><a href="Drush/SiteAlias/HostPath.html"><abbr title="Drush\SiteAlias\HostPath">HostPath</abbr></a> &mdash; <em>Class in namespace <a href="Drush/SiteAlias.html">Drush\SiteAlias</a></em></dt>
+                    <dd><p>Check to see if the provided class has a static <code>create</code> method.</p></dd><dt><a href="Drush/Runtime/ServiceManager.html#method_hasStaticCreateEarlyFactory">
+<abbr title="Drush\Runtime\ServiceManager">ServiceManager</abbr>::hasStaticCreateEarlyFactory</a>() &mdash; <em>Method in class <a href="Drush/Runtime/ServiceManager.html"><abbr title="Drush\Runtime\ServiceManager">ServiceManager</abbr></a></em></dt>
+                    <dd><p>Check to see if the provided class has a static <code>createEarly</code> method.</p></dd><dt><a href="Drush/Runtime/ServiceManager.html#method_hasStaticMethod">
+<abbr title="Drush\Runtime\ServiceManager">ServiceManager</abbr>::hasStaticMethod</a>() &mdash; <em>Method in class <a href="Drush/Runtime/ServiceManager.html"><abbr title="Drush\Runtime\ServiceManager">ServiceManager</abbr></a></em></dt>
+                    <dd><p>Check to see if the provided class has the specified static method.</p></dd><dt><a href="Drush/SiteAlias/HostPath.html"><abbr title="Drush\SiteAlias\HostPath">HostPath</abbr></a> &mdash; <em>Class in namespace <a href="Drush/SiteAlias.html">Drush\SiteAlias</a></em></dt>
                     <dd><p>A host path is a path on some machine. The machine may be specified
 by a label, and the label may be an @alias or a site specification.</p></dd>        </dl><h2 id="letterI">I</h2>
         <dl id="indexI"><dt><a href="Drush/Attributes/InteractConfigName.html"><abbr title="Drush\Attributes\InteractConfigName">InteractConfigName</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Attributes.html">Drush\Attributes</a></em></dt>
@@ -1795,7 +1801,9 @@ a static <code>create</code> factory, use that to instantiate it, passing both t
 Drupal and Drush DI containers. If there is no static factory, then
 instantiate it via 'new $class'</p></dd><dt><a href="Drush/Runtime/ServiceManager.html#method_injectGenerators">
 <abbr title="Drush\Runtime\ServiceManager">ServiceManager</abbr>::injectGenerators</a>() &mdash; <em>Method in class <a href="Drush/Runtime/ServiceManager.html"><abbr title="Drush\Runtime\ServiceManager">ServiceManager</abbr></a></em></dt>
-                    <dd><p>Store instantiated generators here for later use by the Generate commands.</p></dd><dt><a href="Drush/Runtime/ShutdownHandler.html#method_installHandler">
+                    <dd><p>Store instantiated generators here for later use by the Generate commands.</p></dd><dt><a href="Drush/Runtime/ServiceManager.html#method_inflect">
+<abbr title="Drush\Runtime\ServiceManager">ServiceManager</abbr>::inflect</a>() &mdash; <em>Method in class <a href="Drush/Runtime/ServiceManager.html"><abbr title="Drush\Runtime\ServiceManager">ServiceManager</abbr></a></em></dt>
+                    <dd><p>Inject any dependencies needed via the &quot;*AwareInterface&quot; pattern</p></dd><dt><a href="Drush/Runtime/ShutdownHandler.html#method_installHandler">
 <abbr title="Drush\Runtime\ShutdownHandler">ShutdownHandler</abbr>::installHandler</a>() &mdash; <em>Method in class <a href="Drush/Runtime/ShutdownHandler.html"><abbr title="Drush\Runtime\ShutdownHandler">ShutdownHandler</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/SiteAlias/Util/InternalYamlDataFileLoader.html"><abbr title="Drush\SiteAlias\Util\InternalYamlDataFileLoader">InternalYamlDataFileLoader</abbr></a> &mdash; <em>Class in namespace <a href="Drush/SiteAlias/Util.html">Drush\SiteAlias\Util</a></em></dt>
                     <dd></dd><dt>$<a href="Drush/TestTraits/CliTestTrait.html#property_idleTimeout">
@@ -2957,6 +2965,8 @@ need to be expanded.</p></dd>        </dl><h2 id="letter_">_</h2>
 <abbr title="Drush\Commands\core\QueueCommands">QueueCommands</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/QueueCommands.html"><abbr title="Drush\Commands\core\QueueCommands">QueueCommands</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/core/RsyncCommands.html#method___construct">
 <abbr title="Drush\Commands\core\RsyncCommands">RsyncCommands</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/RsyncCommands.html"><abbr title="Drush\Commands\core\RsyncCommands">RsyncCommands</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/core/SiteInstallCommands.html#method___construct">
+<abbr title="Drush\Commands\core\SiteInstallCommands">SiteInstallCommands</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/SiteInstallCommands.html"><abbr title="Drush\Commands\core\SiteInstallCommands">SiteInstallCommands</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/core/StateCommands.html#method___construct">
 <abbr title="Drush\Commands\core\StateCommands">StateCommands</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/StateCommands.html"><abbr title="Drush\Commands\core\StateCommands">StateCommands</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/core/TwigCommands.html#method___construct">
