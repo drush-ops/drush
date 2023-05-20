@@ -420,23 +420,24 @@ class ServiceManager
      */
     public function inflect(DrushContainer $container, $object): void
     {
+        // Commonly used services
         if ($object instanceof ConfigAwareInterface) {
             $object->setConfig($container->get('config'));
         }
         if ($object instanceof LoggerAwareInterface) {
             $object->setLogger($container->get('logger'));
         }
-        // TODO: Should we remove the inflectors below?
-        if ($object instanceof SiteAliasManagerAwareInterface) {
-            $object->setSiteAliasManager($container->get('site.alias.manager'));
-        }
+        // Made available by DrushCommands (must preserve for basic bc)
         if ($object instanceof ProcessManagerAwareInterface) {
             $object->setProcessManager($container->get('process.manager'));
+        }
+        // TODO: remove inflectors below this line?
+        if ($object instanceof SiteAliasManagerAwareInterface) {
+            $object->setSiteAliasManager($container->get('site.alias.manager'));
         }
         if ($object instanceof StdinAwareInterface) {
             $object->setStdinHandler($container->get('stdinHandler'));
         }
-        // TODO: Definitely remove all of the inflectors below this line
         if ($object instanceof ContainerAwareInterface) {
             $object->setContainer($container->get('container'));
         }
