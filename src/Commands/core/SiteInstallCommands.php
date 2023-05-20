@@ -14,30 +14,27 @@ use Drush\Attributes as CLI;
 use Drush\Boot\DrupalBootLevels;
 use Drush\Boot\Kernels;
 use Drush\Commands\DrushCommands;
-use Drush\Config\ConfigAwareTrait;
 use Drush\Drush;
 use Drush\Exceptions\UserAbortException;
 use Drupal\Core\Config\FileStorage;
-use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
-use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
 use Drush\Exec\ExecTrait;
 use Drush\Sql\SqlBase;
 use Drush\Utils\StringUtils;
 use Psr\Container\ContainerInterface as DrushContainer;
-use Robo\Contract\ConfigAwareInterface;
 use Symfony\Component\Filesystem\Path;
 use Drush\Boot\BootstrapManager;
+use Consolidation\SiteAlias\SiteAliasManager;
+use Drush\Config\DrushConfig;
 
-final class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAwareInterface, ConfigAwareInterface
+final class SiteInstallCommands extends DrushCommands
 {
-    use ConfigAwareTrait;
     use ExecTrait;
-    use SiteAliasManagerAwareTrait;
 
     const INSTALL = 'site:install';
 
     public function __construct(
-        private BootstrapManager $bootstrapManager
+        private BootstrapManager $bootstrapManager,
+        private SiteAliasManager $siteAliasManager
     ) {
         parent::__construct();
     }
@@ -45,7 +42,8 @@ final class SiteInstallCommands extends DrushCommands implements SiteAliasManage
     public static function createEarly(DrushContainer $drush_container): self
     {
         $commandHandler = new static(
-            $drush_container->get('bootstrap.manager')
+            $drush_container->get('bootstrap.manager'),
+            $drush_container->get('site.alias.manager')
         );
 
         return $commandHandler;
@@ -304,7 +302,7 @@ final class SiteInstallCommands extends DrushCommands implements SiteAliasManage
 
         // This command is 'bootstrap root', so we should always have a
         // Drupal root. If we do not, $aliasRecord->root will throw.
-        $aliasRecord = $this->siteAliasManager()->getSelf();
+        $aliasRecord = $this->siteAliasManager->getSelf();
         $root = $aliasRecord->root();
 
         $dir = $commandData->input()->getOption('sites-subdir');
@@ -350,14 +348,13 @@ final class SiteInstallCommands extends DrushCommands implements SiteAliasManage
             $this->io()->listing($msg);
         }
 
-
         if (!$this->io()->confirm(dt('Do you want to continue?'))) {
             throw new UserAbortException();
         }
 
         // Can't install without sites subdirectory and settings.php.
         if (!file_exists($confPath)) {
-            if ((new \Symfony\Component\Filesystem\Filesystem())->mkdir($confPath) && !$this->getConfig()->simulate()) {
+            if ((new \Symfony\Component\Filesystem\Filesystem())->mkdir($confPath) && !$this->config->simulate()) {
                 throw new \Exception(dt('Failed to create directory @confPath', ['@confPath' => $confPath]));
             }
         } else {
@@ -365,14 +362,14 @@ final class SiteInstallCommands extends DrushCommands implements SiteAliasManage
         }
 
         if (!drush_file_not_empty($settingsfile)) {
-            if (!drush_op('copy', 'sites/default/default.settings.php', $settingsfile) && !$this->getConfig()->simulate()) {
+            if (!drush_op('copy', 'sites/default/default.settings.php', $settingsfile) && !$this->config->simulate()) {
                 throw new \Exception(dt('Failed to copy sites/default/default.settings.php to @settingsfile', ['@settingsfile' => $settingsfile]));
             }
         }
 
         // Write an empty sites.php if we using multi-site.
         if ($sitesfile_write) {
-            if (!drush_op('copy', 'sites/example.sites.php', $sitesfile) && !$this->getConfig()->simulate()) {
+            if (!drush_op('copy', 'sites/example.sites.php', $sitesfile) && !$this->config->simulate()) {
                 throw new \Exception(dt('Failed to copy sites/example.sites.php to @sitesfile', ['@sitesfile' => $sitesfile]));
             }
         }

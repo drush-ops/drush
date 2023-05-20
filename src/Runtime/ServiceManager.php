@@ -310,8 +310,6 @@ class ServiceManager
     {
         $commandHandlers = [];
 
-        $this->logger->debug("instantiateServices {with} Drupal DI container", ['with' => empty($container) ? 'WITHOUT' : 'with']);
-
         // Remove any abstract classes found via discovery, most
         // particularly DrushCommands (our abstract base class).
         // n.b. we cannot simply use 'isInstantiable' here because
