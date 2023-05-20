@@ -330,12 +330,12 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
 
         // Instantiate our command handler objects with the service manager
         // (handles 'createEarly' static factories)
-        $commanInstances = $this->serviceManager->instantiateServices($commandClasses, Drush::getContainer());
+        $commandInstances = $this->serviceManager->instantiateServices($commandClasses, Drush::getContainer());
 
         // Register our commands with Robo, our application framework.
         // Note that Robo::register can accept either Annotated Command
         // command handlers or Symfony Console Command objects.
-        Robo::register($this, $commanInstances);
+        Robo::register($this, $commandInstances);
     }
 
     /**
