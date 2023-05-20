@@ -488,6 +488,8 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
         return $this->logger;
     }
 
+    // TODO: This is moving to the ServiceManager class. We'll remove
+    // it here after cleaning up the bootstrap a bit.
     public function inflect($object): void
     {
         // See \Drush\Runtime\DependencyInjection::addDrushServices and

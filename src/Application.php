@@ -8,6 +8,7 @@ use Composer\Autoload\ClassLoader;
 use Consolidation\AnnotatedCommand\AnnotatedCommand;
 use Consolidation\SiteAlias\SiteAliasManager;
 use Drush\Boot\BootstrapManager;
+use Drush\Drush;
 use Drush\Boot\DrupalBootLevels;
 use Drush\Command\RemoteCommandProxy;
 use Drush\Config\ConfigAwareTrait;
@@ -327,8 +328,14 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
         // unset($commandClasses[__DIR__ . '/Commands/help/HelpCommands.php']);
         // unset($commandClasses[__DIR__ . '/Commands/help/ListCommands.php']);
 
+        // Instantiate our command handler objects with the service manager
+        // (handles 'createEarly' static factories)
+        $commandInstances = $this->serviceManager->instantiateServices($commandClasses, Drush::getContainer());
+
         // Register our commands with Robo, our application framework.
-        Robo::register($this, $commandClasses);
+        // Note that Robo::register can accept either Annotated Command
+        // command handlers or Symfony Console Command objects.
+        Robo::register($this, $commandInstances);
     }
 
     /**

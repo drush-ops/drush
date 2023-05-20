@@ -287,7 +287,7 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
 
         // Find the command info alterers in Drush services.
         $commandFactory = Drush::commandFactory();
-        $commandInfoAltererInstances = $this->serviceManager->instantiateServices($commandInfoAlterers, $container, $drushContainer);
+        $commandInfoAltererInstances = $this->serviceManager->instantiateServices($commandInfoAlterers, $drushContainer, $container);
         $commandInfoAlterers = array_merge($commandInfoAltererInstances, $legacyServiceInstantiator->taggedServices('drush.command_info_alterer'));
 
         // Set the command info alterers. We must do this prior to calling
@@ -317,11 +317,10 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
         // Instantiate all of the classes we discovered in
         // configureAndRegisterCommands, and all of the classes we find
         // via 'discoverModuleCommands' that have static create factory methods.
-        $commandHandlers = $this->serviceManager->instantiateServices($bootstrapCommandClasses, $container, $drushContainer);
+        $commandHandlers = $this->serviceManager->instantiateServices($bootstrapCommandClasses, $drushContainer, $container);
 
         // Inflect and register all command handlers
         foreach ($commandHandlers as $commandHandler) {
-            $manager->inflect($commandHandler);
             Robo::register($application, $commandHandler);
         }
     }
