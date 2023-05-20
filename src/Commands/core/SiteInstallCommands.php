@@ -245,8 +245,7 @@ final class SiteInstallCommands extends DrushCommands implements SiteAliasManage
 
         try {
             // Try to get any already configured database information.
-            $annotationData = Drush::getApplication()->find(self::INSTALL)->getAnnotationData();
-            $bootstrapManager->bootstrapMax(DrupalBootLevels::CONFIGURATION, $annotationData);
+            $bootstrapManager->bootstrapMax(DrupalBootLevels::CONFIGURATION, $commandData->annotationData());
 
             // See https://github.com/drush-ops/drush/issues/3903.
             // We may have bootstrapped with /default/settings.php instead of the sites-subdir one.
