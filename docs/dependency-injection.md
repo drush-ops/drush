@@ -27,6 +27,7 @@ The code that is responsible for providing the dependencies a class needs is usu
 
 create() method
 ------------------
+:octicons-tag-24: 12.0+
 
 !!! tip
 
@@ -55,7 +56,7 @@ omit the second parameter to the `create()` method.
 
 createEarly() method
 ------------------
-
+:octicons-tag-24: 12.0+
 Drush commands that need to be instantiated prior to bootstrap may do so by
 utilizing the `createEarly()` static factory. This method looks and functions
 exacty like the `create()` static factory, except it is only passed the Drush
