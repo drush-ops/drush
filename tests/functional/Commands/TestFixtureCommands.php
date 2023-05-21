@@ -11,13 +11,25 @@ namespace Drush\Commands;
 
 use Drupal\Core\DrupalKernel;
 use Drupal\Core\Site\Settings;
-use Drush\Boot\AutoloaderAwareInterface;
-use Drush\Boot\AutoloaderAwareTrait;
 use Drush\Drush;
+use Psr\Container\ContainerInterface as DrushContainer;
 
-class TestFixtureCommands extends DrushCommands implements AutoloaderAwareInterface
+class TestFixtureCommands extends DrushCommands
 {
-    use AutoloaderAwareTrait;
+    protected function __construct(
+        private $autoloader
+    ) {
+        parent::__construct();
+    }
+
+    public static function createEarly(DrushContainer $drush_container): self
+    {
+        $commandHandler = new static(
+            $drush_container->get('loader')
+        );
+
+        return $commandHandler;
+    }
 
   // Obsolete:
   //   unit-invoke
@@ -108,7 +120,7 @@ class TestFixtureCommands extends DrushCommands implements AutoloaderAwareInterf
 
         // Initialize database connections and apply configuration from
         // settings.php.
-        Settings::initialize(DRUPAL_ROOT, $sitePath, $autoloader);
+        Settings::initialize(DRUPAL_ROOT, $sitePath, $this->autoloader);
 
         $kernel = new DrupalKernel('prod', $autoloader);
         $kernel->setSitePath($sitePath);
@@ -136,7 +148,7 @@ class TestFixtureCommands extends DrushCommands implements AutoloaderAwareInterf
         if ($autoloader === true) {
             // The autoloader was already required. Assume that Drush and Drupal share an autoloader per
             // "Point autoload.php to the proper vendor directory" - https://www.drupal.org/node/2404989
-            $autoloader = $this->autoloader();
+            $autoloader = $this->autoloader;
         }
 
         return $autoloader;

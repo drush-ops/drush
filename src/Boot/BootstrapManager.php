@@ -5,29 +5,21 @@ declare(strict_types=1);
 namespace Drush\Boot;
 
 use Psr\Log\LoggerInterface;
-use Symfony\Component\Console\Input\InputAwareInterface;
-use Robo\Contract\OutputAwareInterface;
-use Robo\Contract\ProgressIndicatorAwareInterface;
 use Consolidation\AnnotatedCommand\Events\CustomEventAwareInterface;
-use Robo\Contract\VerbosityThresholdInterface;
 use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
 use Consolidation\SiteProcess\ProcessManagerAwareInterface;
 use Consolidation\AnnotatedCommand\Input\StdinAwareInterface;
 use Consolidation\AnnotatedCommand\AnnotationData;
 use Drush\DrupalFinder\DrushDrupalFinder;
 use Drush\Config\ConfigAwareTrait;
-use League\Container\ContainerAwareInterface;
-use League\Container\ContainerAwareTrait;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use Robo\Contract\ConfigAwareInterface;
 
-class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface, ConfigAwareInterface, ContainerAwareInterface
+class BootstrapManager implements LoggerAwareInterface, ConfigAwareInterface
 {
     use LoggerAwareTrait;
-    use AutoloaderAwareTrait;
     use ConfigAwareTrait;
-    use ContainerAwareTrait;
 
     /**
      * @var DrushDrupalFinder
@@ -139,15 +131,12 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
     }
 
     /**
-     * Return the bootstrap object in use.  This will
-     * be the latched bootstrap object if we have started
-     * bootstrapping; otherwise, it will be whichever bootstrap
-     * object is best for the selected root.
+     * Crete the bootstrap object if necessary, then return it.
      */
     public function bootstrap(): Boot
     {
         if (!$this->bootstrap) {
-            $this->bootstrap = $this->selectBootstrapClass();
+            $this->bootstrap = $this->bootstrapObjectForRoot($this->getRoot());
         }
         return $this->bootstrap;
     }
@@ -157,7 +146,7 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
      */
     public function injectBootstrap(Boot $bootstrap): void
     {
-        $this->inflect($bootstrap);
+        $bootstrap->setLogger($this->logger());
         $this->bootstrap = $bootstrap;
 
         // Our bootstrap object is always a DrupalBoot8.
@@ -173,40 +162,10 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
     {
         foreach ($this->bootstrapCandidates as $candidate) {
             if ($candidate->validRoot($path)) {
-                // This is not necessary when the autoloader is inflected
-                // TODO: The autoloader is inflected in the symfony dispatch, but not the traditional Drush dispatcher
-                if ($candidate instanceof AutoloaderAwareInterface) {
-                    $candidate->setAutoloader($this->autoloader());
-                }
                 return $candidate;
             }
         }
         return new EmptyBoot();
-    }
-
-    /**
-     * Select the bootstrap class to use.  If this is called multiple
-     * times, the bootstrap class returned might change on subsequent
-     * calls, if the root directory changes.  Once the bootstrap object
-     * starts changing the state of the system, however, it will
-     * be 'latched', and further calls to Drush::bootstrap()
-     * will always return the same object.
-     */
-    protected function selectBootstrapClass(): Boot
-    {
-        // Once we have selected a Drupal root, we will reduce our bootstrap
-        // candidates down to just the one used to select this site root.
-        return $this->bootstrapObjectForRoot($this->getRoot());
-    }
-
-    /**
-     * Once bootstrapping has started, we stash the bootstrap
-     * object being used, and do not allow it to change any
-     * longer.
-     */
-    public function latch(Boot $bootstrap): void
-    {
-        $this->bootstrap = $bootstrap;
     }
 
     /**
@@ -263,12 +222,6 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
         // level, but no site root could be found.
         if (!isset($phases[$phase])) {
             throw new \Exception(dt("We could not find an applicable site for that command."));
-        }
-
-        // Once we start bootstrapping past the DRUSH_BOOTSTRAP_DRUSH phase, we
-        // will latch the bootstrap object, and prevent it from changing.
-        if ($phase > DrupalBootLevels::NONE) {
-            $this->latch($bootstrap);
         }
 
         foreach ($phases as $phase_index => $current_phase) {
@@ -481,52 +434,10 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
     }
 
     /**
-     * Allow those with an instance to us to the BootstrapManager to use its logger
+     * Allow those with a reference to the BootstrapManager to use its logger
      */
     public function logger(): ?LoggerInterface
     {
         return $this->logger;
-    }
-
-    // TODO: This is moving to the ServiceManager class. We'll remove
-    // it here after cleaning up the bootstrap a bit.
-    public function inflect($object): void
-    {
-        // See \Drush\Runtime\DependencyInjection::addDrushServices and
-        // \Robo\Robo\addInflectors
-        $container = $this->getContainer();
-        if ($object instanceof ConfigAwareInterface) {
-            $object->setConfig($container->get('config'));
-        }
-        if ($object instanceof LoggerAwareInterface) {
-            $object->setLogger($container->get('logger'));
-        }
-        if ($object instanceof ContainerAwareInterface) {
-            $object->setContainer($container->get('container'));
-        }
-        if ($object instanceof InputAwareInterface) {
-            $object->setInput($container->get('input'));
-        }
-        if ($object instanceof OutputAwareInterface) {
-            $object->setOutput($container->get('output'));
-        }
-        if ($object instanceof ProgressIndicatorAwareInterface) {
-            $object->setProgressIndicator($container->get('progressIndicator'));
-        }
-        if ($object instanceof CustomEventAwareInterface) {
-            $object->setHookManager($container->get('hookManager'));
-        }
-        if ($object instanceof VerbosityThresholdInterface) {
-            $object->setOutputAdapter($container->get('outputAdapter'));
-        }
-        if ($object instanceof SiteAliasManagerAwareInterface) {
-            $object->setSiteAliasManager($container->get('site.alias.manager'));
-        }
-        if ($object instanceof ProcessManagerAwareInterface) {
-            $object->setProcessManager($container->get('process.manager'));
-        }
-        if ($object instanceof StdinAwareInterface) {
-            $object->setStdinHandler($container->get('stdinHandler'));
-        }
     }
 }

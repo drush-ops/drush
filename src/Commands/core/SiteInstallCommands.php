@@ -25,6 +25,7 @@ use Symfony\Component\Filesystem\Path;
 use Drush\Boot\BootstrapManager;
 use Consolidation\SiteAlias\SiteAliasManager;
 use Drush\Config\DrushConfig;
+use Composer\Autoload\ClassLoader;
 
 final class SiteInstallCommands extends DrushCommands
 {
@@ -34,7 +35,8 @@ final class SiteInstallCommands extends DrushCommands
 
     public function __construct(
         private BootstrapManager $bootstrapManager,
-        private SiteAliasManager $siteAliasManager
+        private SiteAliasManager $siteAliasManager,
+        private ClassLoader $autoloader
     ) {
         parent::__construct();
     }
@@ -43,7 +45,8 @@ final class SiteInstallCommands extends DrushCommands
     {
         $commandHandler = new static(
             $drush_container->get('bootstrap.manager'),
-            $drush_container->get('site.alias.manager')
+            $drush_container->get('site.alias.manager'),
+            $drush_container->get('loader')
         );
 
         return $commandHandler;
@@ -94,8 +97,7 @@ final class SiteInstallCommands extends DrushCommands
         }
 
         $this->serverGlobals($this->bootstrapManager->getUri());
-        $class_loader = $this->bootstrapManager->autoloader();
-        $profile = $this->determineProfile($profile, $options, $class_loader);
+        $profile = $this->determineProfile($profile, $options);
 
         $account_pass = $options['account-pass'] ?: StringUtils::generatePassword();
 
@@ -164,7 +166,7 @@ final class SiteInstallCommands extends DrushCommands
         // This can lead to an exit() in Drupal. See install_display_output() (e.g. config validation failure).
         // @todo Get Drupal to not call that function when on the CLI.
         try {
-            drush_op('install_drupal', $class_loader, $settings, [$this, 'taskCallback']);
+            drush_op('install_drupal', $this->autoloader, $settings, [$this, 'taskCallback']);
         } catch (AlreadyInstalledException $e) {
             if ($sql && !$this->programExists($sql->command())) {
                 throw new \Exception(dt('Drush was unable to drop all tables because `@program` was not found, and therefore Drupal threw an AlreadyInstalledException. Ensure `@program` is available in your PATH.', ['@program' => $sql->command()]));
@@ -185,7 +187,7 @@ final class SiteInstallCommands extends DrushCommands
     }
 
 
-    protected function determineProfile($profile, $options, $class_loader)
+    protected function determineProfile($profile, $options)
     {
         // Try to get profile from existing config if not provided as an argument.
         // @todo Arguably Drupal core [$boot->getKernel()->getInstallProfile()] could do this - https://github.com/drupal/drupal/blob/8.6.x/core/lib/Drupal/Core/DrupalKernel.php#L1606 reads from DB storage but not file storage.
@@ -216,7 +218,7 @@ final class SiteInstallCommands extends DrushCommands
             require_once DRUSH_DRUPAL_CORE . '/includes/install.core.inc';
             $install_state = ['interactive' => false] + install_state_defaults();
             try {
-                install_begin_request($class_loader, $install_state);
+                install_begin_request($this->autoloader, $install_state);
                 $profile = _install_select_profile($install_state);
             } catch (\Exception) {
                 // This is only a best effort to provide a better default, no harm done
