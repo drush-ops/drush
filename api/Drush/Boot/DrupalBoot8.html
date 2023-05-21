@@ -86,7 +86,7 @@
 
     
     <p>        class
-    <strong>DrupalBoot8</strong>        extends <a href="../../Drush/Boot/DrupalBoot.html"><abbr title="Drush\Boot\DrupalBoot">DrupalBoot</abbr></a>        implements        <a href="../../Drush/Boot/AutoloaderAwareInterface.html"><abbr title="Drush\Boot\AutoloaderAwareInterface">AutoloaderAwareInterface</abbr></a>        (<a href="https://github.com/drush-ops/drush/blob/12.x/src/Boot/DrupalBoot8.php">View source</a>)
+    <strong>DrupalBoot8</strong>        extends <a href="../../Drush/Boot/DrupalBoot.html"><abbr title="Drush\Boot\DrupalBoot">DrupalBoot</abbr></a>        (<a href="https://github.com/drush-ops/drush/blob/12.x/src/Boot/DrupalBoot8.php">View source</a>)
 </p>
 
         
@@ -98,11 +98,6 @@
 
         
     <div class="container-fluid underlined">
-                    <div class="row">
-                <div class="col-md-6">
-                    <a href="../../Drush/Boot/AutoloaderAwareTrait.html"><abbr title="Drush\Boot\AutoloaderAwareTrait">AutoloaderAwareTrait</abbr></a>    </div>
-                <div class="col-md-6"></div>
-            </div>
                     <div class="row">
                 <div class="col-md-6">
                     <abbr title="Psr\Log\LoggerAwareTrait">LoggerAwareTrait</abbr>    </div>
@@ -133,16 +128,6 @@
                 <td class="last"></td>
                 <td><small>from&nbsp;<a href="../../Drush/Boot/BaseBoot.html#property_phase">
 <abbr title="Drush\Boot\BaseBoot">BaseBoot</abbr></a></small></td>
-            </tr>
-                    <tr>
-                <td class="type" id="property_loader">
-                                        protected                                        
-                                                                                
-                                    </td>
-                <td>$loader</td>
-                <td class="last"></td>
-                <td><small>from&nbsp;<a href="../../Drush/Boot/AutoloaderAwareTrait.html#property_loader">
-<abbr title="Drush\Boot\AutoloaderAwareTrait">AutoloaderAwareTrait</abbr></a></small></td>
             </tr>
                     <tr>
                 <td class="type" id="property_drupalLoggerAdapter">
@@ -182,7 +167,7 @@
                     
                 </div>
                 <div class="col-md-8">
-                    <a href="#method___construct">__construct</a>($serviceManager)
+                    <a href="#method___construct">__construct</a>($serviceManager, $autoloader)
         
                                             <p class="no-description">No description</p>
                                     </div>
@@ -469,42 +454,6 @@ phase index constant (e.g. DRUSH_BOOTSTRAP_DRUPAL_FULL).</p></p>                
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    
-                </div>
-                <div class="col-md-8">
-                    <a href="#method_setAutoloader">setAutoloader</a>($loader)
-        
-                                            <p class="no-description">No description</p>
-                                    </div>
-                <div class="col-md-2"><small>from&nbsp;<a href="../../Drush/Boot/AutoloaderAwareTrait.html#method_setAutoloader">
-<abbr title="Drush\Boot\AutoloaderAwareTrait">AutoloaderAwareTrait</abbr></a></small></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    
-                </div>
-                <div class="col-md-8">
-                    <a href="#method_autoloader">autoloader</a>()
-        
-                                            <p class="no-description">No description</p>
-                                    </div>
-                <div class="col-md-2"><small>from&nbsp;<a href="../../Drush/Boot/AutoloaderAwareTrait.html#method_autoloader">
-<abbr title="Drush\Boot\AutoloaderAwareTrait">AutoloaderAwareTrait</abbr></a></small></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    
-                </div>
-                <div class="col-md-8">
-                    <a href="#method_hasAutoloader">hasAutoloader</a>()
-        
-                                            <p class="no-description">No description</p>
-                                    </div>
-                <div class="col-md-2"><small>from&nbsp;<a href="../../Drush/Boot/AutoloaderAwareTrait.html#method_hasAutoloader">
-<abbr title="Drush\Boot\AutoloaderAwareTrait">AutoloaderAwareTrait</abbr></a></small></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
                     <abbr title="Symfony\Component\HttpFoundation\Request">Request</abbr>
                 </div>
                 <div class="col-md-8">
@@ -604,9 +553,9 @@ of the Drush drupal site bootstrap.</p></p>                </div>
             <div id="method-details">
                     <div class="method-item">
                     <h3 id="method___construct">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Boot/DrupalBoot8.php#L33">at line 33</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Boot/DrupalBoot8.php#L31">at line 31</a></div>
         <code>                    
-    <strong>__construct</strong>($serviceManager)
+    <strong>__construct</strong>($serviceManager, $autoloader)
         </code>
     </h3>
     <div class="details">    
@@ -624,6 +573,11 @@ of the Drush drupal site bootstrap.</p></p>                </div>
                     <tr>
                 <td></td>
                 <td>$serviceManager</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$autoloader</td>
                 <td></td>
             </tr>
             </table>
@@ -824,7 +778,7 @@ if the user did not explicitly specify a URI.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_validRoot">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Boot/DrupalBoot8.php#L69">at line 69</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Boot/DrupalBoot8.php#L67">at line 67</a></div>
         <code>                    bool
     <strong>validRoot</strong>(string|null $path)
         </code>
@@ -869,7 +823,7 @@ one class will return TRUE for any given $path.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_getVersion">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Boot/DrupalBoot8.php#L84">at line 84</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Boot/DrupalBoot8.php#L82">at line 82</a></div>
         <code>                    string|null
     <strong>getVersion</strong>($drupal_root)
         </code>
@@ -1116,7 +1070,7 @@ phase index constant (e.g. DRUSH_BOOTSTRAP_DRUPAL_FULL).</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_terminate">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Boot/DrupalBoot8.php#L331">at line 331</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Boot/DrupalBoot8.php#L324">at line 324</a></div>
         <code>                    void
     <strong>terminate</strong>()
         </code>
@@ -1188,7 +1142,7 @@ phase index constant (e.g. DRUSH_BOOTSTRAP_DRUPAL_FULL).</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_confPath">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Boot/DrupalBoot8.php#L98">at line 98</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Boot/DrupalBoot8.php#L92">at line 92</a></div>
         <code>                    string|null
     <strong>confPath</strong>(bool $require_settings = true, bool $reset = false)
         </code>
@@ -1367,7 +1321,7 @@ out more context about the codebase, such as the version of Drupal.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_bootstrapDrupalSiteValidate">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Boot/DrupalBoot8.php#L115">at line 115</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Boot/DrupalBoot8.php#L109">at line 109</a></div>
         <code>                    
     <strong>bootstrapDrupalSiteValidate</strong>(<a href="../../Drush/Boot/BootstrapManager.html"><abbr title="Drush\Boot\BootstrapManager">BootstrapManager</abbr></a> $manager)
         </code>
@@ -1436,7 +1390,7 @@ Additionally we load an optional drush.yml file in the site directory.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_bootstrapDrupalConfiguration">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Boot/DrupalBoot8.php#L209">at line 209</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Boot/DrupalBoot8.php#L203">at line 203</a></div>
         <code>                    
     <strong>bootstrapDrupalConfiguration</strong>(<a href="../../Drush/Boot/BootstrapManager.html"><abbr title="Drush\Boot\BootstrapManager">BootstrapManager</abbr></a> $manager, <abbr title="Consolidation\AnnotatedCommand\AnnotationData">AnnotationData</abbr> $annotationData = null)
         </code>
@@ -1474,7 +1428,7 @@ Additionally we load an optional drush.yml file in the site directory.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_bootstrapDrupalDatabaseValidate">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Boot/DrupalBoot8.php#L178">at line 178</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Boot/DrupalBoot8.php#L172">at line 172</a></div>
         <code>                    
     <strong>bootstrapDrupalDatabaseValidate</strong>(<a href="../../Drush/Boot/BootstrapManager.html"><abbr title="Drush\Boot\BootstrapManager">BootstrapManager</abbr></a> $manager)
         </code>
@@ -1509,7 +1463,7 @@ phase.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_bootstrapDrupalDatabase">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Boot/DrupalBoot8.php#L203">at line 203</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Boot/DrupalBoot8.php#L197">at line 197</a></div>
         <code>                    void
     <strong>bootstrapDrupalDatabase</strong>(<a href="../../Drush/Boot/BootstrapManager.html"><abbr title="Drush\Boot\BootstrapManager">BootstrapManager</abbr></a> $manager)
         </code>
@@ -1551,7 +1505,7 @@ phase.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_bootstrapDrupalFull">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Boot/DrupalBoot8.php#L235">at line 235</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Boot/DrupalBoot8.php#L228">at line 228</a></div>
         <code>                    void
     <strong>bootstrapDrupalFull</strong>(<a href="../../Drush/Boot/BootstrapManager.html"><abbr title="Drush\Boot\BootstrapManager">BootstrapManager</abbr></a> $manager)
         </code>
@@ -1592,93 +1546,8 @@ phase.</p></p>
 
             </div>
                     <div class="method-item">
-                    <h3 id="method_setAutoloader">
-        <div class="location">in <a href="../../Drush/Boot/AutoloaderAwareTrait.html#method_setAutoloader">
-<abbr title="Drush\Boot\AutoloaderAwareTrait">AutoloaderAwareTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/12.x/src/Boot/AutoloaderAwareTrait.php#L11">at line 11</a></div>
-        <code>                    
-    <strong>setAutoloader</strong>($loader)
-        </code>
-    </h3>
-    <div class="details">    
-    
-            
-
-        <div class="method-description">
-                            <p class="no-description">No description</p>
-                    
-        </div>
-        <div class="tags">
-                            <h4>Parameters</h4>
-
-                    <table class="table table-condensed">
-                    <tr>
-                <td></td>
-                <td>$loader</td>
-                <td></td>
-            </tr>
-            </table>
-
-            
-            
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
-                    <h3 id="method_autoloader">
-        <div class="location">in <a href="../../Drush/Boot/AutoloaderAwareTrait.html#method_autoloader">
-<abbr title="Drush\Boot\AutoloaderAwareTrait">AutoloaderAwareTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/12.x/src/Boot/AutoloaderAwareTrait.php#L16">at line 16</a></div>
-        <code>                    
-    <strong>autoloader</strong>()
-        </code>
-    </h3>
-    <div class="details">    
-    
-            
-
-        <div class="method-description">
-                            <p class="no-description">No description</p>
-                    
-        </div>
-        <div class="tags">
-            
-            
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
-                    <h3 id="method_hasAutoloader">
-        <div class="location">in <a href="../../Drush/Boot/AutoloaderAwareTrait.html#method_hasAutoloader">
-<abbr title="Drush\Boot\AutoloaderAwareTrait">AutoloaderAwareTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/12.x/src/Boot/AutoloaderAwareTrait.php#L21">at line 21</a></div>
-        <code>                    
-    <strong>hasAutoloader</strong>()
-        </code>
-    </h3>
-    <div class="details">    
-    
-            
-
-        <div class="method-description">
-                            <p class="no-description">No description</p>
-                    
-        </div>
-        <div class="tags">
-            
-            
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
                     <h3 id="method_getRequest">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Boot/DrupalBoot8.php#L37">at line 37</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Boot/DrupalBoot8.php#L35">at line 35</a></div>
         <code>                    <abbr title="Symfony\Component\HttpFoundation\Request">Request</abbr>
     <strong>getRequest</strong>()
         </code>
@@ -1711,7 +1580,7 @@ phase.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_setRequest">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Boot/DrupalBoot8.php#L42">at line 42</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Boot/DrupalBoot8.php#L40">at line 40</a></div>
         <code>                    void
     <strong>setRequest</strong>(<abbr title="Symfony\Component\HttpFoundation\Request">Request</abbr> $request)
         </code>
@@ -1754,7 +1623,7 @@ phase.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_getKernel">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Boot/DrupalBoot8.php#L47">at line 47</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Boot/DrupalBoot8.php#L45">at line 45</a></div>
         <code>                    <abbr title="Drupal\Core\DrupalKernelInterface">DrupalKernelInterface</abbr>
     <strong>getKernel</strong>()
         </code>
@@ -1787,7 +1656,7 @@ phase.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_setLogger">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Boot/DrupalBoot8.php#L61">at line 61</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Boot/DrupalBoot8.php#L59">at line 59</a></div>
         <code>                    void
     <strong>setLogger</strong>(<abbr title="Psr\Log\LoggerInterface">LoggerInterface</abbr> $logger)
         </code>
@@ -1835,7 +1704,7 @@ update the logger reference in that adapter.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_bootstrapDrupalCore">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Boot/DrupalBoot8.php#L110">at line 110</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Boot/DrupalBoot8.php#L104">at line 104</a></div>
         <code>                    string
     <strong>bootstrapDrupalCore</strong>(<a href="../../Drush/Boot/BootstrapManager.html"><abbr title="Drush\Boot\BootstrapManager">BootstrapManager</abbr></a> $manager, string $drupal_root)
         </code>
@@ -1883,7 +1752,7 @@ update the logger reference in that adapter.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_bootstrapDoDrupalSite">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Boot/DrupalBoot8.php#L152">at line 152</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Boot/DrupalBoot8.php#L146">at line 146</a></div>
         <code>                    void
     <strong>bootstrapDoDrupalSite</strong>(<a href="../../Drush/Boot/BootstrapManager.html"><abbr title="Drush\Boot\BootstrapManager">BootstrapManager</abbr></a> $manager)
         </code>
@@ -1926,7 +1795,7 @@ of the Drush drupal site bootstrap.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_bootstrapDrupalConfigurationValidate">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Boot/DrupalBoot8.php#L166">at line 166</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Boot/DrupalBoot8.php#L160">at line 160</a></div>
         <code>                    bool
     <strong>bootstrapDrupalConfigurationValidate</strong>(<a href="../../Drush/Boot/BootstrapManager.html"><abbr title="Drush\Boot\BootstrapManager">BootstrapManager</abbr></a> $manager)
         </code>
@@ -1969,7 +1838,7 @@ of the Drush drupal site bootstrap.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_addDrupalModuleDrushCommands">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Boot/DrupalBoot8.php#L249">at line 249</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Boot/DrupalBoot8.php#L242">at line 242</a></div>
         <code>                    void
     <strong>addDrupalModuleDrushCommands</strong>(<a href="../../Drush/Boot/BootstrapManager.html"><abbr title="Drush\Boot\BootstrapManager">BootstrapManager</abbr></a> $manager)
         </code>

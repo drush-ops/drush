@@ -305,7 +305,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>                </
                     
                 </div>
                 <div class="col-md-8">
-                    <a href="#method___construct">__construct</a>(<abbr title="Drupal\Core\Cache\CacheTagsInvalidatorInterface">CacheTagsInvalidatorInterface</abbr> $invalidator, $themeRegistry, $routerBuilder, $jsOptimizer, $cssOptimizer, $pluginCacheClearer, <a href="../../../Drush/Boot/BootstrapManager.html"><abbr title="Drush\Boot\BootstrapManager">BootstrapManager</abbr></a> $bootstrapManager)
+                    <a href="#method___construct">__construct</a>(<abbr title="Drupal\Core\Cache\CacheTagsInvalidatorInterface">CacheTagsInvalidatorInterface</abbr> $invalidator, $themeRegistry, $routerBuilder, $jsOptimizer, $cssOptimizer, $pluginCacheClearer, <a href="../../../Drush/Boot/BootstrapManager.html"><abbr title="Drush\Boot\BootstrapManager">BootstrapManager</abbr></a> $bootstrapManager, <abbr title="Composer\Autoload\ClassLoader">ClassLoader</abbr> $autoloader)
         
                                             <p class="no-description">No description</p>
                                     </div>
@@ -768,9 +768,9 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method___construct">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/CacheCommands.php#L40">at line 40</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/CacheCommands.php#L41">at line 41</a></div>
         <code>                    
-    <strong>__construct</strong>(<abbr title="Drupal\Core\Cache\CacheTagsInvalidatorInterface">CacheTagsInvalidatorInterface</abbr> $invalidator, $themeRegistry, $routerBuilder, $jsOptimizer, $cssOptimizer, $pluginCacheClearer, <a href="../../../Drush/Boot/BootstrapManager.html"><abbr title="Drush\Boot\BootstrapManager">BootstrapManager</abbr></a> $bootstrapManager)
+    <strong>__construct</strong>(<abbr title="Drupal\Core\Cache\CacheTagsInvalidatorInterface">CacheTagsInvalidatorInterface</abbr> $invalidator, $themeRegistry, $routerBuilder, $jsOptimizer, $cssOptimizer, $pluginCacheClearer, <a href="../../../Drush/Boot/BootstrapManager.html"><abbr title="Drush\Boot\BootstrapManager">BootstrapManager</abbr></a> $bootstrapManager, <abbr title="Composer\Autoload\ClassLoader">ClassLoader</abbr> $autoloader)
         </code>
     </h3>
     <div class="details">    
@@ -818,6 +818,11 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
                     <tr>
                 <td><a href="../../../Drush/Boot/BootstrapManager.html"><abbr title="Drush\Boot\BootstrapManager">BootstrapManager</abbr></a></td>
                 <td>$bootstrapManager</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><abbr title="Composer\Autoload\ClassLoader">ClassLoader</abbr></td>
+                <td>$autoloader</td>
                 <td></td>
             </tr>
             </table>
@@ -1053,7 +1058,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_create">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/CacheCommands.php#L52">at line 52</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/CacheCommands.php#L54">at line 54</a></div>
         <code>        static            <a href="../../../Drush/Commands/core/CacheCommands.html"><abbr title="Drush\Commands\core\CacheCommands">CacheCommands</abbr></a>
     <strong>create</strong>(<abbr title="Symfony\Component\DependencyInjection\ContainerInterface">ContainerInterface</abbr> $container, $drush_container)
         </code>
@@ -1101,7 +1106,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_get">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/CacheCommands.php#L70">at line 70</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/CacheCommands.php#L73">at line 73</a></div>
         <code>                    <abbr title="Consolidation\OutputFormatters\StructuredData\PropertyList">PropertyList</abbr>
     <strong>get</strong>($cid, $bin = &#039;default&#039;, $options = [&#039;format&#039; =&gt; &#039;json&#039;])
         </code>
@@ -1153,7 +1158,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_tags">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/CacheCommands.php#L98">at line 98</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/CacheCommands.php#L101">at line 101</a></div>
         <code>                    void
     <strong>tags</strong>(string $tags)
         </code>
@@ -1195,7 +1200,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_clear">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/CacheCommands.php#L112">at line 112</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/CacheCommands.php#L115">at line 115</a></div>
         <code>                    
     <strong>clear</strong>(string $type, array $args, $options = [&#039;cache-clear&#039; =&gt; true])
         </code>
@@ -1238,7 +1243,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_interact">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/CacheCommands.php#L134">at line 134</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/CacheCommands.php#L137">at line 137</a></div>
         <code>                    void
     <strong>interact</strong>($input, $output)
         </code>
@@ -1286,7 +1291,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_set">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/CacheCommands.php#L155">at line 155</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/CacheCommands.php#L158">at line 158</a></div>
         <code>                    
     <strong>set</strong>($cid, $data, $bin = &#039;default&#039;, $expire = null, $tags = null, $options = [&#039;input-format&#039; =&gt; &#039;string&#039;, &#039;cache-get&#039; =&gt; false])
         </code>
@@ -1344,7 +1349,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_setPrepareData">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/CacheCommands.php#L178">at line 178</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/CacheCommands.php#L181">at line 181</a></div>
         <code>            protected        
     <strong>setPrepareData</strong>($data, $options)
         </code>
@@ -1383,7 +1388,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_rebuild">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/CacheCommands.php#L216">at line 216</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/CacheCommands.php#L219">at line 219</a></div>
         <code>                    
     <strong>rebuild</strong>($options = [&#039;cache-clear&#039; =&gt; true])
         </code>
@@ -1416,7 +1421,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_validate">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/CacheCommands.php#L243">at line 243</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/CacheCommands.php#L245">at line 245</a></div>
         <code>                    void
     <strong>validate</strong>(<abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr> $commandData)
         </code>
@@ -1459,7 +1464,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_getTypes">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/CacheCommands.php#L268">at line 268</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/CacheCommands.php#L270">at line 270</a></div>
         <code>                    array
     <strong>getTypes</strong>($include_bootstrapped_types = false)
         </code>
@@ -1501,7 +1506,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_clearDrush">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/CacheCommands.php#L296">at line 296</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/CacheCommands.php#L298">at line 298</a></div>
         <code>                    void
     <strong>clearDrush</strong>()
         </code>
@@ -1533,7 +1538,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_clearBins">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/CacheCommands.php#L310">at line 310</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/CacheCommands.php#L312">at line 312</a></div>
         <code>                    void
     <strong>clearBins</strong>($args = [&#039;default&#039;])
         </code>
@@ -1575,7 +1580,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_clearThemeRegistry">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/CacheCommands.php#L319">at line 319</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/CacheCommands.php#L321">at line 321</a></div>
         <code>                    void
     <strong>clearThemeRegistry</strong>()
         </code>
@@ -1608,7 +1613,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_clearRouter">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/CacheCommands.php#L324">at line 324</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/CacheCommands.php#L326">at line 326</a></div>
         <code>                    void
     <strong>clearRouter</strong>()
         </code>
@@ -1641,7 +1646,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_clearCssJs">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/CacheCommands.php#L329">at line 329</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/CacheCommands.php#L331">at line 331</a></div>
         <code>                    void
     <strong>clearCssJs</strong>()
         </code>
@@ -1674,7 +1679,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_clearContainer">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/CacheCommands.php#L336">at line 336</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/CacheCommands.php#L338">at line 338</a></div>
         <code>                    void
     <strong>clearContainer</strong>()
         </code>
@@ -1707,7 +1712,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_clearRender">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/CacheCommands.php#L345">at line 345</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/CacheCommands.php#L347">at line 347</a></div>
         <code>                    void
     <strong>clearRender</strong>()
         </code>
@@ -1739,7 +1744,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_clearPlugin">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/CacheCommands.php#L350">at line 350</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/CacheCommands.php#L352">at line 352</a></div>
         <code>                    void
     <strong>clearPlugin</strong>()
         </code>
