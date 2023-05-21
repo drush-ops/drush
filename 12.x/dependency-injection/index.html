@@ -719,6 +719,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#createearly-method" class="md-nav__link">
+    createEarly() method
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#inflection" class="md-nav__link">
     Inflection
   </a>
@@ -5206,13 +5213,31 @@ The code that is responsible for providing the dependencies a class needs is usu
         <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">configFactory</span> <span class="o">=</span> <span class="nv">$configFactory</span><span class="p">;</span>
     <span class="p">}</span>
 
-    <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">create</span><span class="p">(</span><span class="nx">ContainerInterface</span> <span class="nv">$container</span><span class="p">)</span><span class="o">:</span> <span class="nx">self</span>
+    <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">create</span><span class="p">(</span><span class="nx">ContainerInterface</span> <span class="nv">$container</span><span class="p">,</span> <span class="nx">DrushContainer</span> <span class="nv">$drush</span><span class="p">)</span><span class="o">:</span> <span class="nx">self</span>
     <span class="p">{</span>
         <span class="k">return</span> <span class="k">new</span> <span class="k">static</span><span class="p">(</span><span class="nv">$container</span><span class="o">-&gt;</span><span class="na">get</span><span class="p">(</span><span class="s1">&#39;config.factory&#39;</span><span class="p">));</span>
     <span class="p">}</span>
 </code></pre></div>
 See the <a href="https://www.drupal.org/docs/drupal-apis/services-and-dependency-injection/services-and-dependency-injection-in-drupal-8#s-injecting-dependencies-into-controllers-forms-and-blocks">Drupal Documentation</a> for details on how to inject Drupal services into your command file. Drush's approach mimics Drupal's blocks, forms, and controllers.</p>
+<p>Note that if you do not need to pull any services from the Drush container, then you may
+omit the second parameter to the <code>create()</code> method.</p>
+<h2 id="createearly-method">createEarly() method<a class="headerlink" href="#createearly-method" title="Permanent link">&para;</a></h2>
+<p>Drush commands that need to be instantiated prior to bootstrap may do so by
+utilizing the <code>createEarly()</code> static factory. This method looks and functions
+exacty like the <code>create()</code> static factory, except it is only passed the Drush
+container. The Drupal container is not avalable to command handlers that use
+<code>createEarly()</code>.</p>
+<p>Note also that Drush commands packaged with Drupal modules are not discovered
+until after Dupal bootstraps, and therefore cannot use <code>createEarly()</code>. This
+mechanism is only usable by PSR-4 discovered commands packaged with Composer
+projects that are <em>not</em> Drupal modules.</p>
 <h2 id="inflection">Inflection<a class="headerlink" href="#inflection" title="Permanent link">&para;</a></h2>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>Inflection is deprecated in Drush 12; use <code>create()</code> or <code>createEarly()</code> instead.
+Some classes are no longer available for inflection in Drush 12, and more (or potentially all)
+may be removed in Drush 13.</p>
+</div>
 <p>Drush will also inject dependencies that it provides using a technique called inflection. Inflection is a kind of dependency injection that works by way of a set of provided inflection interfaces, one for each available service. Each of these interfaces will define one or more setter methods (usually only one); these will automatically be called by Drush when the commandfile object is instantiated. The command only needs to implement this method and save the provided object in a class field. There is usually a corresponding trait that may be included via a <code>use</code> statement to fulfill this requirement.</p>
 <p>For example:</p>
 <div class="highlight"><pre><span></span><code><span class="o">&lt;?</span><span class="nx">php</span>
@@ -5243,10 +5268,8 @@ See the <a href="https://www.drupal.org/docs/drupal-apis/services-and-dependency
 <p>Any additional services that are desired must be injected by implementing the appropriate inflection interface.</p>
 <p>Additional Interfaces:</p>
 <ul>
-<li>AutoloaderAwareInterface: Provides access to the class loader.</li>
 <li>SiteAliasManagerAwareInterface: The site alias manager <a href="../site-alias-manager/">allows alias records to be obtained</a>.</li>
 <li>CustomEventAwareInterface: Allows command files to <a href="../hooks/">define and fire custom events</a> that other command files can hook.</li>
-<li>ContainerAwareInterface: Provides Drush's dependency injection container.</li>
 </ul>
 <p>Note that although the autoloader and Drush dependency injection container is available and may be injected into your command file if needed, this should be avoided. Favor using services that can be injected from Drupal or Drush. Some of the objects in the container are not part of the Drush public API, and may not maintain compatibility in minor and patch releases.</p>
 
@@ -5255,7 +5278,7 @@ See the <a href="https://www.drupal.org/docs/drupal-apis/services-and-dependency
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">May 12, 2023</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">May 21, 2023</span>
       
     
   </small>
