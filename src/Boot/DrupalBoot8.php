@@ -13,6 +13,7 @@ use Drupal\Core\Session\AnonymousUserSession;
 use Drush\Config\ConfigLocator;
 use Drush\Drupal\DrushLoggerServiceProvider;
 use Drush\Drush;
+use Drush\Runtime\ServiceManager;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Filesystem\Path;
 use Symfony\Component\HttpFoundation\Request;
@@ -28,7 +29,7 @@ class DrupalBoot8 extends DrupalBoot
     protected ?DrupalKernelInterface $kernel = null;
     protected Request $request;
 
-    public function __construct(protected $serviceManager, protected $autoloader)
+    public function __construct(protected ServiceManager $serviceManager, protected $autoloader)
     {
     }
 
@@ -259,7 +260,7 @@ class DrupalBoot8 extends DrupalBoot
         $legacyServiceInstantiator = new LegacyServiceInstantiator($container);
         $legacyServiceInstantiator->loadServiceFiles($drushServiceFiles);
 
-        // Find the containerless commands, generators and command info alterers
+        // Find the containerless commands, and command info alterers
         $bootstrapCommandClasses = $this->serviceManager->bootstrapCommandClasses();
         $commandInfoAlterers = [];
         foreach ($moduleHandler->getModuleList() as $moduleId => $extension) {
@@ -272,11 +273,6 @@ class DrupalBoot8 extends DrupalBoot
             $commandInfoAlterersInThisModule = $this->serviceManager->discoverModuleCommandInfoAlterers([$path], "\\Drupal\\" . $moduleId . "\\Drush");
             $commandInfoAlterers = array_merge($commandInfoAlterers, $commandInfoAlterersInThisModule);
         }
-
-        // Look up the generators from the legacy service instantiator and inject
-        // them into the service manager. The `generate` command will get the
-        // generators from the service manager.
-        $this->serviceManager->injectGenerators($legacyServiceInstantiator->taggedServices('drush.generator.v3'));
 
         // Find the command info alterers in Drush services.
         $commandFactory = Drush::commandFactory();

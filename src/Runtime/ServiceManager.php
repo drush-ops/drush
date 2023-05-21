@@ -205,7 +205,7 @@ class ServiceManager
     {
         $classes = (new RelativeNamespaceDiscovery($this->autoloader))
             ->setRelativeNamespace('Drush\Generators')
-            ->setSearchPattern('/.*Generator\.php$/')
+            ->setSearchPattern('/.*DrushGenerator\.php$/')
             ->getClasses();
 
         return array_filter($classes, function (string $class): bool {
@@ -231,8 +231,8 @@ class ServiceManager
             ->setIncludeFilesAtBase(true)
             ->setSearchDepth(1)
             ->ignoreNamespacePart('src')
-            ->setSearchLocations(['Commands', 'Hooks', 'Generators'])
-            ->setSearchPattern('#.*(Command|Hook|Generator)s?.php$#');
+            ->setSearchLocations(['Commands', 'Hooks'])
+            ->setSearchPattern('#.*(Command|Hook)s?.php$#');
         $baseNamespace = ltrim($baseNamespace, '\\');
         $commandClasses = $discovery->discover($directoryList, $baseNamespace);
         return array_values($commandClasses);
@@ -387,14 +387,23 @@ class ServiceManager
     }
 
     /**
-     * Return generators stored here via `injectGenerators()`
+     * Return generators that ship in modules.
      *
-     * @return object[]
-     *   List of instantiated generators
+     * @return string[]
+     *   List of generator classes
      */
-    public function getGenerators(): array
+    public function discoverModuleGenerators(array $directoryList, string $baseNamespace): array
     {
-        return $this->generators;
+        $discovery = new CommandFileDiscovery();
+        $discovery
+            ->setIncludeFilesAtBase(true)
+            ->setSearchDepth(1)
+            ->ignoreNamespacePart('src')
+            ->setSearchLocations(['Generators'])
+            ->setSearchPattern('#.*(Generator)s?.php$#');
+        $baseNamespace = ltrim($baseNamespace, '\\');
+        $commandClasses = $discovery->discover($directoryList, $baseNamespace);
+        return array_values($commandClasses);
     }
 
     /**
@@ -402,13 +411,13 @@ class ServiceManager
      *
      * @param object[] List of instantiated generators
      */
-    public function injectGenerators(array $additionalGenerators): void
-    {
-        $this->generators = [
-            ...$this->generators,
-            ...$additionalGenerators
-        ];
-    }
+//    public function injectGenerators(array $additionalGenerators): void
+//    {
+//        $this->generators = [
+//            ...$this->generators,
+//            ...$additionalGenerators
+//        ];
+//    }
 
     /**
      * Inject any dependencies needed via the "*AwareInterface" pattern

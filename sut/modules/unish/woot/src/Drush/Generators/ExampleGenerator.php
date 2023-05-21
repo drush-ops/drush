@@ -2,13 +2,18 @@
 
 declare(strict_types=1);
 
-namespace Drupal\woot\Generators;
+namespace Drupal\woot\Drush\Generators;
 
+use Drupal\Core\Config\ConfigFactoryInterface;
+use Drupal\Core\Extension\ModuleExtensionList;
 use Drupal\Core\Extension\ModuleHandlerInterface;
+use Drupal\Core\Extension\ModuleInstallerInterface;
+use Drupal\Core\Extension\ThemeHandlerInterface;
 use DrupalCodeGenerator\Asset\AssetCollection as Assets;
 use DrupalCodeGenerator\Attribute\Generator;
 use DrupalCodeGenerator\Command\BaseGenerator;
 use DrupalCodeGenerator\GeneratorType;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 #[Generator(
     name: 'woot:example',
@@ -22,12 +27,19 @@ class ExampleGenerator extends BaseGenerator
     /**
      * Illustrates how to inject a dependency into a Generator.
      */
-    protected ModuleHandlerInterface $moduleHandler;
-
-    public function __construct(ModuleHandlerInterface $moduleHandler = null)
-    {
+    public function __construct(
+        protected ModuleHandlerInterface $moduleHandler,
+    ) {
         parent::__construct();
-        $this->moduleHandler = $moduleHandler;
+    }
+
+    public static function create(ContainerInterface $container): self
+    {
+        $commandHandler = new static(
+            $container->get('module_handler'),
+        );
+
+        return $commandHandler;
     }
 
     protected function generate(array &$vars, Assets $assets): void

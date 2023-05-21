@@ -4,22 +4,26 @@ declare(strict_types=1);
 
 namespace Drush\Commands\generate;
 
-use Composer\Autoload\ClassLoader;
 use DrupalCodeGenerator\Application;
 use DrupalCodeGenerator\Command\BaseGenerator;
 use DrupalCodeGenerator\Event\GeneratorInfoAlter;
 use Drush\Commands\generate\Generators\Drush\DrushAliasFile;
 use Drush\Commands\generate\Generators\Drush\DrushCommandFile;
-use Drush\Drupal\DrushServiceModifier;
+use Drush\Runtime\ServiceManager;
+use Psr\Container\ContainerInterface as DrushContainer;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class ApplicationFactory
 {
+    private ServiceManager $serviceManager;
+
     public function __construct(
         private ContainerInterface $container,
+        private DrushContainer $drush_container,
         private LoggerInterface $logger
     ) {
+        $this->serviceManager = $this->drush_container->get('service.manager');
     }
 
     /**
@@ -43,13 +47,19 @@ class ApplicationFactory
 
     public function discover(): array
     {
-        $module_generators = [];
-        $serviceManager = \Drush\Drush::service('service.manager');
-        $module_generators = $serviceManager->getGenerators();
+        $module_generator_classes = [];
+        foreach ($this->container->get('module_handler')->getModuleList() as $moduleId => $extension) {
+            $path = DRUPAL_ROOT . '/' . $extension->getPath() . '/src/Drush/';
+            $module_generator_classes = array_merge(
+                $module_generator_classes,
+                $this->serviceManager->discoverModuleGenerators([$path], "\\Drupal\\" . $moduleId . "\\Drush")
+            );
+        }
+        $module_generators = $this->serviceManager->instantiateServices($module_generator_classes, $this->drush_container, $this->container);
 
-        $global_generator_classes = $serviceManager->discoverPsr4Generators();
+        $global_generator_classes = $this->serviceManager->discoverPsr4Generators();
         $global_generator_classes = $this->filterCLassExists($global_generator_classes);
-        $global_generators = $this->getGenerators($global_generator_classes);
+        $global_generators = $this->serviceManager->instantiateServices($global_generator_classes, $this->drush_container, $this->container);
 
         $generators = [
             new DrushCommandFile(),
@@ -80,22 +90,6 @@ class ApplicationFactory
             }
         }
         return $exists;
-    }
-
-    /**
-     * Validate and instantiate generator classes.
-     *
-     * @return BaseGenerator[]
-     * @throws \ReflectionException
-     */
-    public function getGenerators(array $classes): array
-    {
-        return array_map(
-            function (string $class): BaseGenerator {
-                return new $class();
-            },
-            $classes
-        );
     }
 
     /**
