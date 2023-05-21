@@ -6,34 +6,27 @@ namespace Drush\Runtime;
 
 use Composer\Autoload\ClassLoader;
 use Consolidation\AnnotatedCommand\CommandFileDiscovery;
+use Consolidation\AnnotatedCommand\Events\CustomEventAwareInterface;
+use Consolidation\AnnotatedCommand\Input\StdinAwareInterface;
 use Consolidation\Filter\Hooks\FilterHooks;
+use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
+use Consolidation\SiteProcess\ProcessManagerAwareInterface;
+use Drupal\Component\DependencyInjection\ContainerInterface as DrupalContainer;
 use DrupalCodeGenerator\Command\BaseGenerator;
-use Drush\Command\DrushCommandInfoAlterer;
 use Drush\Commands\DrushCommands;
-use Drush\Config\ConfigAwareTrait;
 use Drush\Config\DrushConfig;
-use Drush\Drupal\DrupalKernelTrait;
-use Drush\Drush;
-use Drush\Log\Logger;
-use Psr\Log\LoggerInterface;
 use Grasmash\YamlCli\Command\GetValueCommand;
 use Grasmash\YamlCli\Command\LintCommand;
 use Grasmash\YamlCli\Command\UnsetKeyCommand;
 use Grasmash\YamlCli\Command\UpdateKeyCommand;
 use Grasmash\YamlCli\Command\UpdateValueCommand;
-use Drupal\Component\DependencyInjection\ContainerInterface as DrupalContainer;
 use Psr\Container\ContainerInterface as DrushContainer;
-use Robo\ClassDiscovery\RelativeNamespaceDiscovery;
-use Symfony\Component\Console\Application;
-use Symfony\Component\Console\Input\InputAwareInterface;
-use Robo\Contract\OutputAwareInterface;
-use Consolidation\AnnotatedCommand\Events\CustomEventAwareInterface;
-use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
-use Consolidation\SiteProcess\ProcessManagerAwareInterface;
-use Consolidation\AnnotatedCommand\Input\StdinAwareInterface;
-use League\Container\ContainerAwareInterface;
 use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerInterface;
+use Robo\ClassDiscovery\RelativeNamespaceDiscovery;
 use Robo\Contract\ConfigAwareInterface;
+use Robo\Contract\OutputAwareInterface;
+use Symfony\Component\Console\Input\InputAwareInterface;
 
 /**
  * Manage Drush services.
@@ -54,7 +47,6 @@ use Robo\Contract\ConfigAwareInterface;
  */
 class ServiceManager
 {
-    protected $generators = [];
     /** @var string[] */
     protected array $bootstrapCommandClasses = [];
 
@@ -405,19 +397,6 @@ class ServiceManager
         $commandClasses = $discovery->discover($directoryList, $baseNamespace);
         return array_values($commandClasses);
     }
-
-    /**
-     * Store instantiated generators here for later use by the Generate commands.
-     *
-     * @param object[] List of instantiated generators
-     */
-//    public function injectGenerators(array $additionalGenerators): void
-//    {
-//        $this->generators = [
-//            ...$this->generators,
-//            ...$additionalGenerators
-//        ];
-//    }
 
     /**
      * Inject any dependencies needed via the "*AwareInterface" pattern
