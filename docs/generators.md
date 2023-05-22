@@ -25,7 +25,7 @@ Generators that don't ship inside Drupal modules are called *global* generators.
    }
    ```
    then the Drush global generator class namespace should be `My\Custom\Library\Drush\Generators` and the class file should be located under the `src/Drush/Generators` directory.
-1. The filename must have a name like FooDrushGenerator.php. The prefix `Foo` can be whatever string you want. The file must end in `DrushGenerator.php`
+1. The filename must have a name like FooGenerator.php. The prefix `Foo` can be whatever string you want. The file must end in `Generator.php`.
 
 ## Site-wide Generators
 
