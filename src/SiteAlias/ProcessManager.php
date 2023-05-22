@@ -35,17 +35,21 @@ class ProcessManager extends ConsolidationProcessManager
      */
     public function drushSiteProcess(SiteAliasInterface $siteAlias, array $args = [], array $options = [], array $options_double_dash = []): ProcessBase
     {
+        $drushScript = $this->drushScript($siteAlias);
+
         // Fill in the root and URI from the site alias, if the caller
         // did not already provide them in $options.
         if ($siteAlias->has('uri')) {
             $options += [ 'uri' => $siteAlias->uri(), ];
         }
-        if ($siteAlias->hasRoot()) {
+        // Include the --root parameter only if calling a global Drush.
+        // This is deprecated in Drush 12, and will be removed in Drush 13.
+        if ($siteAlias->hasRoot() && ($drushScript == "drush")) {
             $options += [ 'root' => $siteAlias->root(), ];
         }
 
         // The executable is always 'drush' (at some path or another)
-        array_unshift($args, $this->drushScript($siteAlias));
+        array_unshift($args, $drushScript);
 
         return $this->siteProcess($siteAlias, $args, $options, $options_double_dash);
     }
@@ -65,6 +69,10 @@ class ProcessManager extends ConsolidationProcessManager
         // If the provided site alias is for a remote site / container et. al.,
         // then use the 'drush' in the $PATH.
         if ($this->hasTransport($siteAlias)) {
+            if ($siteAlias->hasRoot()) {
+                return Path::join($siteAlias->root(), '../vendor/bin/drush');
+            }
+
             return $defaultDrushScript;
         }
 
