@@ -46,6 +46,8 @@ class LegacyServiceFinder
      */
     protected function discoverDrushServiceProviders()
     {
+        $this->addDrushServiceProvider("_drush__sql", $this->drushConfig->get('drush.base-dir') . '/src/Drupal/Commands/sql/drush.services.yml');
+
         // Add Drush services from all modules
         $module_filenames = $this->getModuleFileNames();
         // Load each module's serviceProvider class.
