@@ -27,7 +27,7 @@ The code that is responsible for providing the dependencies a class needs is usu
 
 create() method
 ------------------
-:octicons-tag-24: 12.0+
+:octicons-tag-24: 11.6+
 
 !!! tip
 
