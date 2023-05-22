@@ -160,7 +160,6 @@ class LegacyServiceFinder
         }
 
         // Regardless, we still return a services file.
-        Drush::logger()->debug(dt('{module} commands loaded even though its constraint ({constraints}) is incompatible with Drush {version}. Broaden the constraint in {composer} (see \'extra\drush\services\' section) to remove this message.', ['module' => $module, 'composer' => $dir . '/composer.json', 'constraints' => implode(',', $services), 'version' => $version]));
         return $dir . '/' . $serviceYmlPath;
     }
 
