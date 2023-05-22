@@ -18,6 +18,7 @@ use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Drush\Exceptions\UserAbortException;
 use Psr\Log\LogLevel;
+use Symfony\Component\Console\Style\SymfonyStyle;
 
 final class DeployHookCommands extends DrushCommands implements SiteAliasManagerAwareInterface
 {
@@ -86,7 +87,7 @@ final class DeployHookCommands extends DrushCommands implements SiteAliasManager
     #[CLI\Topics(topics: [DocsCommands::DEPLOY])]
     #[CLI\Version(version: '10.3')]
     #[CLI\Bootstrap(level: DrupalBootLevels::FULL)]
-    public function run(): int
+    public function run(SymfonyStyle $io): int
     {
         $pending = self::getRegistry()->getPendingUpdateFunctions();
 
@@ -99,7 +100,7 @@ final class DeployHookCommands extends DrushCommands implements SiteAliasManager
         $process->mustRun();
         $this->output()->writeln($process->getOutput());
 
-        if (!$this->io()->confirm(dt('Do you wish to run the specified pending deploy hooks?'))) {
+        if (!$io->confirm(dt('Do you wish to run the specified pending deploy hooks?'))) {
             throw new UserAbortException();
         }
 

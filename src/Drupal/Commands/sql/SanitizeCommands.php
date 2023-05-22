@@ -10,6 +10,7 @@ use Drush\Attributes as CLI;
 use Drush\Commands\core\DocsCommands;
 use Drush\Commands\DrushCommands;
 use Drush\Exceptions\UserAbortException;
+use Symfony\Component\Console\Style\SymfonyStyle;
 
 final class SanitizeCommands extends DrushCommands implements CustomEventAwareInterface
 {
@@ -31,7 +32,7 @@ final class SanitizeCommands extends DrushCommands implements CustomEventAwareIn
     #[CLI\Usage(name: 'drush sql:sanitize --sanitize-password=no', description: 'Sanitize database without modifying any passwords.')]
     #[CLI\Usage(name: 'drush sql:sanitize --allowlist-fields=field_biography,field_phone_number', description: 'Sanitizes database but exempts two user fields from modification.')]
     #[CLI\Topics(topics: [DocsCommands::HOOKS])]
-    public function sanitize(): void
+    public function sanitize(SymfonyStyle $io): void
     {
      /**
      * In order to present only one prompt, collect all confirmations from
@@ -46,9 +47,9 @@ final class SanitizeCommands extends DrushCommands implements CustomEventAwareIn
         }
         if (!empty($messages)) {
             $this->output()->writeln(dt('The following operations will be performed:'));
-            $this->io()->listing($messages);
+            $io->listing($messages);
         }
-        if (!$this->io()->confirm(dt('Do you want to sanitize the current database?'))) {
+        if (!$io->confirm(dt('Do you want to sanitize the current database?'))) {
             throw new UserAbortException();
         }
 

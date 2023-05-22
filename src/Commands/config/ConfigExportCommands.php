@@ -16,6 +16,7 @@ use Drush\Exceptions\UserAbortException;
 use Symfony\Component\Console\Output\BufferedOutput;
 use Symfony\Component\Filesystem\Path;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
 
 final class ConfigExportCommands extends DrushCommands
 {
@@ -91,13 +92,13 @@ final class ConfigExportCommands extends DrushCommands
     #[CLI\Option(name: 'diff', description: 'Show preview as a diff, instead of a change list.')]
     #[CLI\Usage(name: 'drush config:export', description: 'Export configuration files to the site\'s config directory.')]
     #[CLI\Usage(name: 'drush config:export --destination', description: 'Export configuration; Save files in a backup directory named config-export.')]
-    public function export($options = ['add' => false, 'commit' => false, 'message' => self::REQ, 'destination' => self::OPT, 'diff' => false, 'format' => null]): array
+    public function export(SymfonyStyle $io, $options = ['add' => false, 'commit' => false, 'message' => self::REQ, 'destination' => self::OPT, 'diff' => false, 'format' => null]): array
     {
         // Get destination directory.
         $destination_dir = ConfigCommands::getDirectory($options['destination']);
 
         // Do the actual config export operation.
-        $preview = $this->doExport($options, $destination_dir);
+        $preview = $this->doExport($io, $options, $destination_dir);
 
         // Do the VCS operations.
         $this->doAddCommit($options, $destination_dir, $preview);
@@ -105,7 +106,7 @@ final class ConfigExportCommands extends DrushCommands
         return ['destination-dir' => $destination_dir];
     }
 
-    public function doExport($options, $destination_dir)
+    public function doExport(SymfonyStyle $io, $options, $destination_dir)
     {
         $sync_directory = Settings::get('config_sync_directory');
 
@@ -142,7 +143,7 @@ final class ConfigExportCommands extends DrushCommands
                 $this->logger()->notice($preamble . $preview);
             }
 
-            if (!$this->io()->confirm(dt('The .yml files in your export directory (!target) will be deleted and replaced with the active config.', ['!target' => $destination_dir]))) {
+            if (!$io->confirm(dt('The .yml files in your export directory (!target) will be deleted and replaced with the active config.', ['!target' => $destination_dir]))) {
                 throw new UserAbortException();
             }
 

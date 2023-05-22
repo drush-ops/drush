@@ -15,6 +15,7 @@ use Drush\Commands\DrushCommands;
 use Drupal\views\Views;
 use Drush\Utils\StringUtils;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
 
 final class ViewsCommands extends DrushCommands
 {
@@ -212,7 +213,7 @@ final class ViewsCommands extends DrushCommands
     #[CLI\Usage(name: 'drush views:execute my_view page_1 3,foo', description: "Show the rendered HTML of my_view:page_1 where the first two contextual filter values are 3 and 'foo' respectively.")]
     #[CLI\ValidateEntityLoad(entityType: 'view', argumentName: 'view_name')]
     #[CLI\ValidateModulesEnabled(modules: ['views'])]
-    public function execute(string $view_name, $display = null, $view_args = null, $options = ['count' => 0, 'show-admin-links' => false]): ?string
+    public function execute(SymfonyStyle $io, string $view_name, $display = null, $view_args = null, $options = ['count' => 0, 'show-admin-links' => false]): ?string
     {
 
         $view = Views::getView($view_name);
@@ -226,7 +227,7 @@ final class ViewsCommands extends DrushCommands
             $this->logger()->success(dt('No results returned for this View.'));
             return null;
         } elseif ($options['count']) {
-            $this->io()->writeln($view->result);
+            $io->writeln($view->result);
             return null;
         } else {
             // Don't show admin links in markup by default.

@@ -18,6 +18,7 @@ use Drush\Utils\StringUtils;
 use Symfony\Component\Console\Completion\CompletionInput;
 use Symfony\Component\Console\Completion\CompletionSuggestions;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
 
 final class UserCommands extends DrushCommands
 {
@@ -269,7 +270,7 @@ final class UserCommands extends DrushCommands
     #[CLI\Usage(name: 'drush user:cancel username', description: 'Block the user account with the name username.')]
     #[CLI\Usage(name: 'drush user:cancel --delete-content username', description: 'Delete the user account with the name <info>username<info> and delete all content created by that user.')]
     #[CLI\Usage(name: 'drush user:cancel --reassign-content username', description: 'Delete the user account with the name <info>username<info> and assign all her content to the anonymous user.')]
-    public function cancel(string $names, $options = ['delete-content' => false, 'reassign-content' => false, 'uid' => self::REQ, 'mail' => self::REQ]): void
+    public function cancel(SymfonyStyle $io, string $names, $options = ['delete-content' => false, 'reassign-content' => false, 'uid' => self::REQ, 'mail' => self::REQ]): void
     {
         $accounts = $this->getAccounts($names, $options);
         foreach ($accounts as $id => $account) {
@@ -278,7 +279,7 @@ final class UserCommands extends DrushCommands
             } elseif ($options['reassign-content']) {
                 $this->logger()->warning(dt('All content created by !name will be assigned to anonymous user.', ['!name' => $account->getAccountName()]));
             }
-            if ($this->io()->confirm('Cancel user account?: ')) {
+            if ($io->confirm('Cancel user account?: ')) {
                 $method = $options['delete-content'] ? 'user_cancel_delete' : ($options['reassign-content'] ? 'user_cancel_reassign' : 'user_cancel_block');
                 user_cancel([], $account->id(), $method);
                 drush_backend_batch_process();

@@ -18,6 +18,7 @@ use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
 use Drush\Backend\BackendPathEvaluator;
 use Drush\Config\ConfigLocator;
 use Symfony\Component\Console\Event\ConsoleCommandEvent;
+use Symfony\Component\Console\Style\SymfonyStyle;
 
 final class RsyncCommands extends DrushCommands implements SiteAliasManagerAwareInterface
 {
@@ -58,12 +59,12 @@ final class RsyncCommands extends DrushCommands implements SiteAliasManagerAware
     #[CLI\Usage(name: 'drush rsync @dev @stage -- --exclude=*.sql --delete', description: 'Rsync Drupal root from the Drush alias dev to the alias stage, excluding all .sql files and delete all files on the destination that are no longer on the source.')]
     #[CLI\Usage(name: 'drush rsync @dev @stage --ssh-options="-o StrictHostKeyChecking=no" -- --delete', description: 'Customize how rsync connects with remote host via SSH. rsync options like --delete are placed after a --.')]
     #[CLI\Topics(topics: [DocsCommands::ALIASES])]
-    public function rsync($source, $target, array $extra, $options = ['exclude-paths' => self::REQ, 'include-paths' => self::REQ, 'mode' => 'akz']): void
+    public function rsync(SymfonyStyle $io, $source, $target, array $extra, $options = ['exclude-paths' => self::REQ, 'include-paths' => self::REQ, 'mode' => 'akz']): void
     {
         // Prompt for confirmation. This is destructive.
         if (!$this->getConfig()->simulate()) {
             $replacements = ['!source' => $this->sourceEvaluatedPath->fullyQualifiedPathPreservingTrailingSlash(), '!target' => $this->targetEvaluatedPath->fullyQualifiedPath()];
-            if (!$this->io()->confirm(dt("Copy new and override existing files at !target. The source is !source?", $replacements))) {
+            if (!$io->confirm(dt("Copy new and override existing files at !target. The source is !source?", $replacements))) {
                 throw new UserAbortException();
             }
         }

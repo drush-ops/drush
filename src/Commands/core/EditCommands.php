@@ -12,6 +12,7 @@ use Drush\Drush;
 use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
 use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
 use Drush\Exec\ExecTrait;
+use Symfony\Component\Console\Style\SymfonyStyle;
 
 final class EditCommands extends DrushCommands implements SiteAliasManagerAwareInterface
 {
@@ -33,7 +34,7 @@ final class EditCommands extends DrushCommands implements SiteAliasManagerAwareI
     #[CLI\Usage(name: 'drush core:edit --choice=2', description: 'Edit the second file in the choice list.')]
     #[CLI\Bootstrap(level: DrupalBootLevels::MAX)]
     #[CLI\HookSelector(name: 'optionset_get_editor')]
-    public function edit($filter = null, array $options = []): void
+    public function edit(SymfonyStyle $io, $filter = null, array $options = []): void
     {
         $all = $this->load();
 
@@ -50,7 +51,7 @@ final class EditCommands extends DrushCommands implements SiteAliasManagerAwareI
         if (count($all) == 1) {
             $filepath = current($all);
         } else {
-            $choice = $this->io()->choice(dt("Choose a file to edit"), $all);
+            $choice = $io->choice(dt("Choose a file to edit"), $all);
             $filepath = $choice;
             // We don't yet support launching editor at a start line.
             if ($pos = strpos($filepath, ':')) {

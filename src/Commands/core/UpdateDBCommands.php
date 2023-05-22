@@ -17,6 +17,7 @@ use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Drush\Exceptions\UserAbortException;
 use Psr\Log\LogLevel;
+use Symfony\Component\Console\Style\SymfonyStyle;
 
 final class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInterface
 {
@@ -34,7 +35,7 @@ final class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAw
     #[CLI\Bootstrap(level: DrupalBootLevels::FULL)]
     #[CLI\Topics(topics: [DocsCommands::DEPLOY])]
     #[CLI\Kernel(name: 'update')]
-    public function updatedb($options = ['cache-clear' => true]): int
+    public function updatedb(SymfonyStyle $io, $options = ['cache-clear' => true]): int
     {
         require_once DRUPAL_ROOT . '/core/includes/install.inc';
         require_once DRUPAL_ROOT . '/core/includes/update.inc';
@@ -46,7 +47,7 @@ final class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAw
 
         // Check requirements before updating.
         if (!$this->updateCheckRequirements()) {
-            if (!$this->io()->confirm(dt('Requirements check reports errors. Do you wish to continue?'))) {
+            if (!$io->confirm(dt('Requirements check reports errors. Do you wish to continue?'))) {
                 throw new UserAbortException();
             }
         }
@@ -59,7 +60,7 @@ final class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAw
         if ($output = $process->getOutput()) {
             // We have pending updates - let's run em.
             $this->output()->writeln($output);
-            if (!$this->io()->confirm(dt('Do you wish to run the specified pending updates?'))) {
+            if (!$io->confirm(dt('Do you wish to run the specified pending updates?'))) {
                 throw new UserAbortException();
             }
             if ($this->getConfig()->simulate()) {

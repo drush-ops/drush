@@ -24,6 +24,7 @@ use Exception;
 use PharData;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Path;
+use Symfony\Component\Console\Style\SymfonyStyle;
 use Throwable;
 
 final class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAwareInterface
@@ -88,6 +89,7 @@ final class ArchiveRestoreCommands extends DrushCommands implements SiteAliasMan
     #[CLI\Bootstrap(level: DrupalBootLevels::NONE)]
     #[CLI\ValidatePhpExtensions(extensions: ['Phar'])]
     public function restore(
+        SymfonyStyle $io,
         string $path = null,
         ?string $site = null,
         array $options = [
@@ -177,7 +179,7 @@ final class ArchiveRestoreCommands extends DrushCommands implements SiteAliasMan
             }
 
             if (
-                !$this->io()->confirm(
+                !$io->confirm(
                     dt(
                         'Destination path !path already exists. Are you sure you want to delete !path directory before restoring the archive into it?',
                         [
@@ -202,12 +204,12 @@ final class ArchiveRestoreCommands extends DrushCommands implements SiteAliasMan
 
         if ($options['code']) {
             $codeComponentPath = $options['code-source-path'] ?? Path::join($extractDir, self::COMPONENT_CODE);
-            $this->importCode($codeComponentPath);
+            $this->importCode($io, $codeComponentPath);
         }
 
         if ($options['files']) {
             $filesComponentPath = $options['files-source-path'] ?? Path::join($extractDir, self::COMPONENT_FILES);
-            $this->importFiles($filesComponentPath, $options);
+            $this->importFiles($io, $filesComponentPath, $options);
         }
 
         if ($options['db']) {
@@ -270,7 +272,7 @@ final class ArchiveRestoreCommands extends DrushCommands implements SiteAliasMan
      *
      * @throws \Exception
      */
-    protected function importCode(string $source): void
+    protected function importCode(SymfonyStyle $io, string $source): void
     {
         $this->logger()->info('Importing code...');
 
@@ -278,7 +280,7 @@ final class ArchiveRestoreCommands extends DrushCommands implements SiteAliasMan
             throw new Exception(dt('Directory !path not found.', ['!path' => $source]));
         }
 
-        $this->rsyncFiles($source, $this->getDestinationPath());
+        $this->rsyncFiles($io, $source, $this->getDestinationPath());
 
         $composerJsonPath = Path::join($this->getDestinationPath(), 'composer.json');
         if (is_file($composerJsonPath)) {
@@ -299,7 +301,7 @@ final class ArchiveRestoreCommands extends DrushCommands implements SiteAliasMan
      *
      * @throws \Exception
      */
-    protected function importFiles(string $source, array $options): void
+    protected function importFiles(SymfonyStyle $io, string $source, array $options): void
     {
         $this->logger()->info('Importing files...');
 
@@ -312,7 +314,7 @@ final class ArchiveRestoreCommands extends DrushCommands implements SiteAliasMan
         if (
             is_dir($destinationAbsolute) &&
             (!$options['code'] || !$options['overwrite']) &&
-            !$this->io()->confirm(
+            !$io->confirm(
                 dt(
                     'Destination Drupal files path !path already exists. Are you sure you want restore Drupal files archive into it?',
                     [
@@ -325,7 +327,7 @@ final class ArchiveRestoreCommands extends DrushCommands implements SiteAliasMan
         }
 
         $this->filesystem->mkdir($destinationAbsolute);
-        $this->rsyncFiles($source, $destinationAbsolute);
+        $this->rsyncFiles($io, $source, $destinationAbsolute);
     }
 
     /**
@@ -433,13 +435,13 @@ final class ArchiveRestoreCommands extends DrushCommands implements SiteAliasMan
      *
      * @throws \Exception
      */
-    protected function rsyncFiles(string $source, string $destination): void
+    protected function rsyncFiles(SymfonyStyle $io, string $source, string $destination): void
     {
         $source = rtrim($source, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
         $destination = rtrim($destination, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
 
         if (
-            !$this->io()->confirm(
+            !$io->confirm(
                 dt(
                     'Are you sure you want to sync files from "!source" to "!destination"?',
                     [
@@ -556,7 +558,7 @@ final class ArchiveRestoreCommands extends DrushCommands implements SiteAliasMan
 
         if (
             $isDbExist &&
-            !$this->io()->confirm(
+            !$io->confirm(
                 dt(
                     'Are you sure you want to drop the database "!database" (username: !user, password: !password, port: !port, prefix: !prefix) and import the database dump "!path"?',
                     [

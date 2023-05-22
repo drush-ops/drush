@@ -8,6 +8,7 @@ use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Drush\Commands\DrushCommands;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Psr\Container\ContainerInterface as DrushContainer;
+use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
  * Module commandfiles discovered by virtue of being located in the
@@ -37,16 +38,16 @@ class WootStaticFactoryCommands extends DrushCommands
      *
      * @command woot-factory
      */
-    public function wootFactory($count = 10)
+    public function wootFactory(SymfonyStyle $io, $count = 10)
     {
         $a = 1;
         $b = 1;
 
         $siteName = $this->configFactory->get('system.site')->get('name');
-        $this->io()->writeln('Woot factorial command with a static factory method in site ' . $siteName);
+        $io->writeln('Woot factorial command with a static factory method in site ' . $siteName);
 
         foreach (range(1,$count) as $i) {
-            $this->io()->writeln("Woot " . $a);
+            $io->writeln("Woot " . $a);
             $t = $a + $b;
             $a = $b;
             $b = $t;

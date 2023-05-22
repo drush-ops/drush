@@ -20,6 +20,7 @@ use Drush\Drush;
 use Drush\Exceptions\UserAbortException;
 use Drush\Utils\StringUtils;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
 
 final class PmCommands extends DrushCommands
 {
@@ -82,7 +83,7 @@ final class PmCommands extends DrushCommands
     #[CLI\Argument(name: 'modules', description: 'A comma delimited list of modules.')]
     #[CLI\Usage(name: 'drush pm:install --simulate content_moderation', description: "Display what modules would be installed but don't install them.")]
     #[CLI\Bootstrap(level: DrupalBootLevels::ROOT)]
-    public function install(array $modules): void
+    public function install(SymfonyStyle $io, array $modules): void
     {
         $modules = StringUtils::csvToArray($modules);
         $todo = $this->addInstallDependencies($modules);
@@ -95,7 +96,7 @@ final class PmCommands extends DrushCommands
             return;
         } elseif (array_values($todo) !== $modules) {
             $this->output()->writeln(dt('The following module(s) will be enabled: !list', $todo_str));
-            if (!$this->io()->confirm(dt('Do you want to continue?'))) {
+            if (!$io->confirm(dt('Do you want to continue?'))) {
                 throw new UserAbortException();
             }
         }
@@ -153,8 +154,9 @@ final class PmCommands extends DrushCommands
         }
 
         if ($error) {
+            $io = new DrushStyle($commandData->input(), $commandData->output());
             // Allow the user to bypass the install requirements.
-            if (!$this->io()->confirm(dt('The module install requirements failed. Do you wish to continue?'), false)) {
+            if (!$io->confirm(dt('The module install requirements failed. Do you wish to continue?'), false)) {
                 throw new UserAbortException();
             }
         }
@@ -166,7 +168,7 @@ final class PmCommands extends DrushCommands
     #[CLI\Command(name: self::UNINSTALL, aliases: ['un', 'pmu', 'pm-uninstall'])]
     #[CLI\Argument(name: 'modules', description: 'A comma delimited list of modules.')]
     #[CLI\Usage(name: 'drush pm:uninstall --simulate field_ui', description: "Display what modules would be uninstalled but don't uninstall them.")]
-    public function uninstall(array $modules): void
+    public function uninstall(SymfonyStyle $io, array $modules): void
     {
         $modules = StringUtils::csvToArray($modules);
 
@@ -188,7 +190,7 @@ final class PmCommands extends DrushCommands
 
         if (array_values($list) !== $modules) {
             $this->output()->writeln(dt('The following extensions will be uninstalled: !list', ['!list' => implode(', ', $list)]));
-            if (!$this->io()->confirm(dt('Do you want to continue?'))) {
+            if (!$io->confirm(dt('Do you want to continue?'))) {
                 throw new UserAbortException();
             }
         }

@@ -32,6 +32,7 @@ use Drush\Commands\DrushCommands;
 use Drush\Exceptions\UserAbortException;
 use Symfony\Component\Filesystem\Path;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
 
 class ConfigImportCommands extends DrushCommands
 {
@@ -173,7 +174,7 @@ class ConfigImportCommands extends DrushCommands
     #[CLI\Usage(name: 'drush config:import --partial --source=/app/config', description: 'Import from the /app/config directory which typically contains one or a few yaml files.')]
     #[CLI\Usage(name: 'cat tmp.yml | drush config:set --input-format=yaml user.mail ? -', description: 'Update the <info>user.mail</info> config object in its entirety.')]
     #[CLI\Topics(topics: [DocsCommands::DEPLOY])]
-    public function import(array $options = ['source' => self::REQ, 'partial' => false, 'diff' => false])
+    public function import(SymfonyStyle $io, array $options = ['source' => self::REQ, 'partial' => false, 'diff' => false])
     {
         // Determine source directory.
         $source_storage_dir = ConfigCommands::getDirectory($options['source']);
@@ -224,7 +225,7 @@ class ConfigImportCommands extends DrushCommands
             $this->output()->writeln($output);
         }
 
-        if (!$this->io()->confirm(dt('Import the listed configuration changes?'))) {
+        if (!$io->confirm(dt('Import the listed configuration changes?'))) {
             throw new UserAbortException();
         }
         return drush_op([$this, 'doImport'], $storage_comparer);

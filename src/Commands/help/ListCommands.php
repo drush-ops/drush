@@ -19,6 +19,7 @@ use Symfony\Component\Console\Descriptor\XmlDescriptor;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Terminal;
+use Symfony\Component\Console\Style\SymfonyStyle;
 
 class ListCommands extends DrushCommands
 {
@@ -34,7 +35,7 @@ class ListCommands extends DrushCommands
     #[CLI\Usage(name: 'drush list', description: 'List all commands.')]
     #[CLI\Usage(name: 'drush list --filter=devel_generate', description: 'Show only commands starting with devel-')]
     #[CLI\Usage(name: 'drush list --format=xml', description: 'List all commands in Symfony compatible xml format.')]
-    public function helpList($options = ['format' => 'listcli', 'raw' => false, 'filter' => self::REQ]): ?string
+    public function helpList(SymfonyStyle $io, $options = ['format' => 'listcli', 'raw' => false, 'filter' => self::REQ]): ?string
     {
         $application = Drush::getApplication();
         $all = $application->all();
@@ -62,7 +63,7 @@ class ListCommands extends DrushCommands
             $preamble = dt('Run `drush help [command]` to view command-specific help.  Run `drush topic` to read even more documentation.');
             $this->renderListCLI($application, $namespaced, $this->output(), $preamble);
             if (!Drush::bootstrapManager()->hasBootstrapped((DrupalBootLevels::ROOT))) {
-                $this->io()->note(dt('Drupal root not found. Pass --root or a @siteAlias in order to see Drupal-specific commands.'));
+                $io->note(dt('Drupal root not found. Pass --root or a @siteAlias in order to see Drupal-specific commands.'));
             }
             return null;
         } elseif ($options['format'] == 'xml') {

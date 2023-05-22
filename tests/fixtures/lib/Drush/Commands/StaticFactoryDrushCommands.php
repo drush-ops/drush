@@ -6,6 +6,7 @@ use Drush\Attributes as CLI;
 use Drush\Commands\DrushCommands;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\DrupalKernel;
+use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
  * Composer library commandfiles discovered by virtue of being located
@@ -32,8 +33,8 @@ class StaticFactoryDrushCommands extends DrushCommands
 
     #[CLI\Command(name: 'site:path')]
     #[CLI\Help(description: "This command asks the Kernel for the site path.", hidden: true)]
-    public function mySitePath()
+    public function mySitePath(SymfonyStyle $io)
     {
-        $this->io()->text('The site path is: ' . $this->kernel->getSitePath());
+        $io->text('The site path is: ' . $this->kernel->getSitePath());
     }
 }

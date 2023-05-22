@@ -13,6 +13,7 @@ use Symfony\Component\Console\Completion\CompletionInput;
 use Symfony\Component\Console\Completion\CompletionSuggestions;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
 
 final class GenerateCommands extends DrushCommands
 {
@@ -52,7 +53,7 @@ final class GenerateCommands extends DrushCommands
     #[CLI\Usage(name: 'drush generate controller -vvv --dry-run', description: 'Learn all the potential answers so you can re-run with several --answer options.')]
     #[CLI\Topics(topics: [DocsCommands::GENERATORS])]
     #[CLI\Complete(method_name_or_callable: 'generatorNameComplete')]
-    public function generate(string $generator = '', $options = ['replace' => false, 'working-dir' => self::REQ, 'answer' => [], 'destination' => self::REQ, 'dry-run' => false]): int
+    public function generate(SymfonyStyle $io, string $generator = '', $options = ['replace' => false, 'working-dir' => self::REQ, 'answer' => [], 'destination' => self::REQ, 'dry-run' => false]): int
     {
         $application = (new ApplicationFactory($this->container, $this->logger()))->create();
 
@@ -67,7 +68,7 @@ final class GenerateCommands extends DrushCommands
 
         // Symfony console app does not provide any way to remove registered commands.
         if ($generator === 'completion') {
-            $this->io()->getErrorStyle()->error('Command "completion" is not defined.');
+            $io->getErrorStyle()->error('Command "completion" is not defined.');
             return Command::FAILURE;
         }
 

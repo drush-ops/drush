@@ -13,6 +13,7 @@ use Drush\Attributes as CLI;
 use Drush\Commands\DrushCommands;
 use Drush\Utils\StringUtils;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
 
 final class EntityCommands extends DrushCommands
 {
@@ -49,7 +50,7 @@ final class EntityCommands extends DrushCommands
     #[CLI\Usage(name: 'drush entity:delete user', description: 'Delete all users except uid=1.')]
     #[CLI\Usage(name: 'drush entity:delete node --exclude=9,14,81', description: 'Delete all nodes except node 9, 14 and 81.')]
     #[CLI\Usage(name: 'drush entity:delete node --chunks=5', description: 'Delete all node entities in steps of 5.')]
-    public function delete(string $entity_type, $ids = null, array $options = ['bundle' => self::REQ, 'exclude' => self::REQ, 'chunks' => 50]): void
+    public function delete(SymfonyStyle $io, string $entity_type, $ids = null, array $options = ['bundle' => self::REQ, 'exclude' => self::REQ, 'chunks' => 50]): void
     {
         $query = $this->getQuery($entity_type, $ids, $options);
         $result = $query->execute();
@@ -62,12 +63,12 @@ final class EntityCommands extends DrushCommands
         if (empty($result)) {
             $this->logger()->success(dt('No matching entities found.'));
         } else {
-            $this->io()->progressStart(count($result));
+            $io->progressStart(count($result));
             foreach (array_chunk($result, $options['chunks'], true) as $chunk) {
                 drush_op([$this, 'doDelete'], $entity_type, $chunk);
-                $this->io()->progressAdvance(count($chunk));
+                $io->progressAdvance(count($chunk));
             }
-            $this->io()->progressFinish();
+            $io->progressFinish();
             $this->logger()->success(dt("Deleted !type entity Ids: !ids", ['!type' => $entity_type, '!ids' => implode(', ', array_values($result))]));
         }
     }
@@ -105,7 +106,7 @@ final class EntityCommands extends DrushCommands
     #[CLI\Usage(name: 'drush entity:save user', description: 'Re-save all users.')]
     #[CLI\Usage(name: 'drush entity:save node --chunks=5', description: 'Re-save all node entities in steps of 5.')]
     #[CLI\Version(version: '11.0')]
-    public function loadSave(string $entity_type, $ids = null, array $options = ['bundle' => self::REQ, 'exclude' => self::REQ, 'chunks' => 50]): void
+    public function loadSave(SymfonyStyle $io, string $entity_type, $ids = null, array $options = ['bundle' => self::REQ, 'exclude' => self::REQ, 'chunks' => 50]): void
     {
         $query = $this->getQuery($entity_type, $ids, $options);
         $result = $query->execute();
@@ -113,12 +114,12 @@ final class EntityCommands extends DrushCommands
         if (empty($result)) {
             $this->logger()->success(dt('No matching entities found.'));
         } else {
-            $this->io()->progressStart(count($result));
+            $io->progressStart(count($result));
             foreach (array_chunk($result, $options['chunks'], true) as $chunk) {
                 drush_op([$this, 'doSave'], $entity_type, $chunk);
-                $this->io()->progressAdvance(count($chunk));
+                $io->progressAdvance(count($chunk));
             }
-            $this->io()->progressFinish();
+            $io->progressFinish();
             $this->logger()->success(dt("Saved !type entity ids: !ids", ['!type' => $entity_type, '!ids' => implode(', ', array_values($result))]));
         }
     }

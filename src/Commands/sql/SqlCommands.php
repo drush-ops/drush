@@ -20,6 +20,7 @@ use Drush\Exec\ExecTrait;
 use Drush\Sql\SqlBase;
 use Consolidation\OutputFormatters\StructuredData\PropertyList;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
 
 final class SqlCommands extends DrushCommands implements StdinAwareInterface
 {
@@ -86,13 +87,13 @@ final class SqlCommands extends DrushCommands implements StdinAwareInterface
     #[CLI\Usage(name: 'drush sql:create --db-su=root --db-su-pw=rootpassword --db-url="mysql://drupal_db_user:drupal_db_password@127.0.0.1/drupal_db"', description: 'Create the database as specified in the db-url option.')]
     #[CLI\Bootstrap(level: DrupalBootLevels::MAX, max_level: DrupalBootLevels::CONFIGURATION)]
     #[CLI\OptionsetSql]
-    public function create($options = ['db-su' => self::REQ, 'db-su-pw' => self::REQ]): void
+    public function create(SymfonyStyle $io, $options = ['db-su' => self::REQ, 'db-su-pw' => self::REQ]): void
     {
         $sql = SqlBase::create($options);
         $db_spec = $sql->getDbSpec();
 
         $this->output()->writeln(dt("Creating database !target. Any existing database will be dropped!", ['!target' => $db_spec['database']]));
-        if (!$this->getConfig()->simulate() && !$this->io()->confirm(dt('Do you really want to continue?'))) {
+        if (!$this->getConfig()->simulate() && !$io->confirm(dt('Do you really want to continue?'))) {
             throw new UserAbortException();
         }
 
@@ -108,11 +109,11 @@ final class SqlCommands extends DrushCommands implements StdinAwareInterface
     #[CLI\Bootstrap(level: DrupalBootLevels::MAX, max_level: DrupalBootLevels::CONFIGURATION)]
     #[CLI\OptionsetSql]
     #[CLI\Topics(topics: [DocsCommands::POLICY])]
-    public function drop($options = []): void
+    public function drop(SymfonyStyle $io, $options = []): void
     {
         $sql = SqlBase::create($options);
         $db_spec = $sql->getDbSpec();
-        if (!$this->io()->confirm(dt('Do you really want to drop all tables in the database !db?', ['!db' => $db_spec['database']]))) {
+        if (!$io->confirm(dt('Do you really want to drop all tables in the database !db?', ['!db' => $db_spec['database']]))) {
             throw new UserAbortException();
         }
         $tables = $sql->listTablesQuoted();

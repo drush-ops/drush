@@ -3,6 +3,7 @@
 namespace Custom\Library\Drush\Commands;
 
 use Drush\Commands\DrushCommands;
+use Symfony\Component\Console\Style\SymfonyStyle;
 
 class CustomDrushCommands extends DrushCommands
 {
@@ -12,8 +13,8 @@ class CustomDrushCommands extends DrushCommands
      * @command custom_cmd
      * @hidden
      */
-    public function customCommand(): void
+    public function customCommand(SymfonyStyle $io): void
     {
-        $this->io()->text('Hello world!');
+        $io->text('Hello world!');
     }
 }
