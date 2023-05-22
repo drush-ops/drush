@@ -6,25 +6,27 @@ namespace Drush\Runtime;
 
 use Composer\Autoload\ClassLoader;
 use Consolidation\AnnotatedCommand\CommandFileDiscovery;
+use Consolidation\AnnotatedCommand\Events\CustomEventAwareInterface;
+use Consolidation\AnnotatedCommand\Input\StdinAwareInterface;
 use Consolidation\Filter\Hooks\FilterHooks;
+use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
+use Consolidation\SiteProcess\ProcessManagerAwareInterface;
+use Drupal\Component\DependencyInjection\ContainerInterface as DrupalContainer;
 use DrupalCodeGenerator\Command\BaseGenerator;
-use Drush\Command\DrushCommandInfoAlterer;
 use Drush\Commands\DrushCommands;
-use Drush\Config\ConfigAwareTrait;
 use Drush\Config\DrushConfig;
-use Drush\Drupal\DrupalKernelTrait;
-use Drush\Drush;
-use Drush\Log\Logger;
 use Grasmash\YamlCli\Command\GetValueCommand;
 use Grasmash\YamlCli\Command\LintCommand;
 use Grasmash\YamlCli\Command\UnsetKeyCommand;
 use Grasmash\YamlCli\Command\UpdateKeyCommand;
 use Grasmash\YamlCli\Command\UpdateValueCommand;
-use Drupal\Component\DependencyInjection\ContainerInterface as DrupalContainer;
 use Psr\Container\ContainerInterface as DrushContainer;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerInterface;
 use Robo\ClassDiscovery\RelativeNamespaceDiscovery;
 use Robo\Contract\ConfigAwareInterface;
-use Symfony\Component\Console\Application;
+use Robo\Contract\OutputAwareInterface;
+use Symfony\Component\Console\Input\InputAwareInterface;
 
 /**
  * Manage Drush services.
@@ -43,16 +45,16 @@ use Symfony\Component\Console\Application;
  * (DrushBoot8) using the LegacyServiceFinder and LegacyServiceInstantiator
  * classes.
  */
-class ServiceManager implements ConfigAwareInterface
+class ServiceManager
 {
-    use ConfigAwareTrait;
-
-    protected $generators = [];
     /** @var string[] */
     protected array $bootstrapCommandClasses = [];
 
-    public function __construct(protected ClassLoader $autoloader)
-    {
+    public function __construct(
+        protected ClassLoader $autoloader,
+        protected DrushConfig $config,
+        protected LoggerInterface $logger
+    ) {
     }
 
     /**
@@ -140,7 +142,7 @@ class ServiceManager implements ConfigAwareInterface
      *
      * @param string[] $directoryList List of directories to search
      * @param string $baseNamespace The namespace to use at the base of each
-     *   search diretory. Namespace components mirror directory structure.
+     *   search directory. Namespace components mirror directory structure.
      *
      * @return string[]
      *   List of command classes
@@ -221,8 +223,8 @@ class ServiceManager implements ConfigAwareInterface
             ->setIncludeFilesAtBase(true)
             ->setSearchDepth(1)
             ->ignoreNamespacePart('src')
-            ->setSearchLocations(['Commands', 'Hooks', 'Generators'])
-            ->setSearchPattern('#.*(Command|Hook|Generator)s?.php$#');
+            ->setSearchLocations(['Commands', 'Hooks'])
+            ->setSearchPattern('#.*(Command|Hook)s?.php$#');
         $baseNamespace = ltrim($baseNamespace, '\\');
         $commandClasses = $discovery->discover($directoryList, $baseNamespace);
         return array_values($commandClasses);
@@ -294,27 +296,37 @@ class ServiceManager implements ConfigAwareInterface
      * @return object[]
      *   List of instantiated service objects
      */
-    public function instantiateServices(array $bootstrapCommandClasses, DrupalContainer $container, DrushContainer $drushContainer)
+    public function instantiateServices(array $bootstrapCommandClasses, DrushContainer $drushContainer, ?DrupalContainer $container = null): array
     {
         $commandHandlers = [];
 
+        // Remove any abstract classes found via discovery, most
+        // particularly DrushCommands (our abstract base class).
+        // n.b. we cannot simply use 'isInstantiable' here because
+        // the constructor is typically protected when using a static create method
+        $bootstrapCommandClasses = array_filter($bootstrapCommandClasses, function ($class) {
+            $reflection = new \ReflectionClass($class);
+            return !$reflection->isAbstract();
+        });
+
         foreach ($bootstrapCommandClasses as $class) {
             $commandHandler = null;
+
             try {
-                if ($this->hasStaticCreateFactory($class)) {
+                if ($container && $this->hasStaticCreateFactory($class)) {
                     $commandHandler = $class::create($container, $drushContainer);
+                } elseif (!$container && $this->hasStaticCreateEarlyFactory($class)) {
+                    $commandHandler = $class::createEarly($drushContainer);
                 } else {
                     $commandHandler = new $class();
                 }
-            } catch (\Exception $e) {
-            }
-            // Fail silently if the command handler could not be
-            // instantiated, e.g. if it tries to fetch services from
-            // a module that has not been enabled. Note that Robo::register
-            // can accept either Annotated Command command handlers or
-            // Symfony Console Command objects.
-            if ($commandHandler) {
+
+                // Inject any additional dependencies needed by any
+                // "*AwareInterface" used by the handler
+                $this->inflect($drushContainer, $commandHandler);
                 $commandHandlers[] = $commandHandler;
+            } catch (\Exception $e) {
+                $this->logger->debug("Cound not instantiate {class}: {message}", ['class' => $class, 'message' => $e->getMessage()]);
             }
         }
 
@@ -331,35 +343,98 @@ class ServiceManager implements ConfigAwareInterface
      */
     protected function hasStaticCreateFactory(string $class): bool
     {
-        if (!method_exists($class, 'create')) {
+        return static::hasStaticMethod($class, 'create');
+    }
+
+    /**
+     * Check to see if the provided class has a static `createEarly` method.
+     *
+     * @param string $class The name of the class to check
+     *
+     * @return bool
+     *   True if class has a static `createEarly` method.
+     */
+    protected function hasStaticCreateEarlyFactory(string $class): bool
+    {
+        return static::hasStaticMethod($class, 'createEarly');
+    }
+
+    /**
+     * Check to see if the provided class has the specified static method.
+     *
+     * @param string $class The name of the class to check
+     * @param string $methodName The name of the method the class should have
+     *
+     * @return bool
+     *   True if class has a static method with the specified name.
+     */
+    protected function hasStaticMethod(string $class, string $methodName): bool
+    {
+        if (!method_exists($class, $methodName)) {
             return false;
         }
 
-        $reflectionMethod = new \ReflectionMethod($class, 'create');
+        $reflectionMethod = new \ReflectionMethod($class, $methodName);
         return $reflectionMethod->isStatic();
     }
 
     /**
-     * Return generators stored here via `injectGenerators()`
+     * Return generators that ship in modules.
      *
-     * @return object[]
-     *   List of instantiated generators
+     * @return string[]
+     *   List of generator classes
      */
-    public function getGenerators(): array
+    public function discoverModuleGenerators(array $directoryList, string $baseNamespace): array
     {
-        return $this->generators;
+        $discovery = new CommandFileDiscovery();
+        $discovery
+            ->setIncludeFilesAtBase(true)
+            ->setSearchDepth(1)
+            ->ignoreNamespacePart('src')
+            ->setSearchLocations(['Generators'])
+            ->setSearchPattern('#.*(Generator)s?.php$#');
+        $baseNamespace = ltrim($baseNamespace, '\\');
+        $commandClasses = $discovery->discover($directoryList, $baseNamespace);
+        return array_values($commandClasses);
     }
 
     /**
-     * Store instantiated generators here for later use by the Generate commands.
+     * Inject any dependencies needed via the "*AwareInterface" pattern
      *
-     * @param object[] List of instantiated generators
+     * @param DrushContainer $container The DI contaner
+     * @param mixed $object The object to be inflected
      */
-    public function injectGenerators(array $additionalGenerators): void
+    public function inflect(DrushContainer $container, $object): void
     {
-        $this->generators = [
-            ...$this->generators,
-            ...$additionalGenerators
-        ];
+        // Commonly used services
+        if ($object instanceof ConfigAwareInterface) {
+            $object->setConfig($container->get('config'));
+        }
+        if ($object instanceof LoggerAwareInterface) {
+            $object->setLogger($container->get('logger'));
+        }
+        // Made available by DrushCommands (must preserve for basic bc)
+        if ($object instanceof ProcessManagerAwareInterface) {
+            $object->setProcessManager($container->get('process.manager'));
+        }
+        // InputAwareInterface and OutputAwareInterface are needed by
+        // the Robo IO trait that saves and restores input/output state,
+        // so they must be maintained until that system is retired.
+        if ($object instanceof InputAwareInterface) {
+            $object->setInput($container->get('input'));
+        }
+        if ($object instanceof OutputAwareInterface) {
+            $object->setOutput($container->get('output'));
+        }
+        // These may be removed in future versions of Drush
+        if ($object instanceof SiteAliasManagerAwareInterface) {
+            $object->setSiteAliasManager($container->get('site.alias.manager'));
+        }
+        if ($object instanceof StdinAwareInterface) {
+            $object->setStdinHandler($container->get('stdinHandler'));
+        }
+        if ($object instanceof CustomEventAwareInterface) {
+            $object->setHookManager($container->get('hookManager'));
+        }
     }
 }

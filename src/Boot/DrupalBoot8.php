@@ -13,6 +13,7 @@ use Drupal\Core\Session\AnonymousUserSession;
 use Drush\Config\ConfigLocator;
 use Drush\Drupal\DrushLoggerServiceProvider;
 use Drush\Drush;
+use Drush\Runtime\ServiceManager;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Filesystem\Path;
 use Symfony\Component\HttpFoundation\Request;
@@ -22,15 +23,13 @@ use Robo\Robo;
 use Drush\Runtime\LegacyServiceInstantiator;
 use Drush\Runtime\LegacyServiceFinder;
 
-class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
+class DrupalBoot8 extends DrupalBoot
 {
-    use AutoloaderAwareTrait;
-
     protected ?LoggrInterface $drupalLoggerAdapter = null;
     protected ?DrupalKernelInterface $kernel = null;
     protected Request $request;
 
-    public function __construct(protected $serviceManager)
+    public function __construct(protected ServiceManager $serviceManager, protected $autoloader)
     {
     }
 
@@ -83,10 +82,6 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
 
     public function getVersion($drupal_root): string
     {
-        // Are the class constants available?
-        if (!$this->hasAutoloader()) {
-            throw new \Exception('Cannot access Drupal class constants - Drupal autoloader not loaded yet.');
-        }
         return \Drupal::VERSION;
     }
 
@@ -216,12 +211,11 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
         if (!empty($annotationData)) {
             $kernel = $annotationData->get('kernel', Kernels::DRUPAL);
         }
-        $classloader = $this->autoloader();
         $request = $this->getRequest();
         $kernel_factory = Kernels::getKernelFactory($kernel);
         $allow_dumping = $kernel !== Kernels::UPDATE;
         /** @var DrupalKernelInterface kernel */
-        $this->kernel = $kernel_factory($request, $classloader, 'prod', $allow_dumping, $manager->getRoot());
+        $this->kernel = $kernel_factory($request, $this->autoloader, 'prod', $allow_dumping, $manager->getRoot());
 
         // Unset drupal error handler and restore Drush's one.
         restore_error_handler();
@@ -266,7 +260,7 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
         $legacyServiceInstantiator = new LegacyServiceInstantiator($container);
         $legacyServiceInstantiator->loadServiceFiles($drushServiceFiles);
 
-        // Find the containerless commands, generators and command info alterers
+        // Find the containerless commands, and command info alterers
         $bootstrapCommandClasses = $this->serviceManager->bootstrapCommandClasses();
         $commandInfoAlterers = [];
         foreach ($moduleHandler->getModuleList() as $moduleId => $extension) {
@@ -280,14 +274,9 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
             $commandInfoAlterers = array_merge($commandInfoAlterers, $commandInfoAlterersInThisModule);
         }
 
-        // Look up the generators from the legacy service instantiator and inject
-        // them into the service manager. The `generate` command will get the
-        // generators from the service manager.
-        $this->serviceManager->injectGenerators($legacyServiceInstantiator->taggedServices('drush.generator.v3'));
-
         // Find the command info alterers in Drush services.
         $commandFactory = Drush::commandFactory();
-        $commandInfoAltererInstances = $this->serviceManager->instantiateServices($commandInfoAlterers, $container, $drushContainer);
+        $commandInfoAltererInstances = $this->serviceManager->instantiateServices($commandInfoAlterers, $drushContainer, $container);
         $commandInfoAlterers = array_merge($commandInfoAltererInstances, $legacyServiceInstantiator->taggedServices('drush.command_info_alterer'));
 
         // Set the command info alterers. We must do this prior to calling
@@ -301,7 +290,7 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
         // Register the Drush Symfony Console commands found in Drush services
         $drushServicesConsoleCommands = $legacyServiceInstantiator->taggedServices('console.command');
         foreach ($drushServicesConsoleCommands as $command) {
-            $manager->inflect($command);
+            $this->serviceManager->inflect($drushContainer, $command);
             $this->logger->debug(dt('Add a command: !name', ['!name' => $command->getName()]));
             $application->add($command);
         }
@@ -309,7 +298,7 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
         // Add annotation commands from drush.services.yml
         $drushServicesCommandHandlers = $legacyServiceInstantiator->taggedServices('drush.command');
         foreach ($drushServicesCommandHandlers as $commandHandler) {
-            $manager->inflect($commandHandler);
+            $this->serviceManager->inflect($drushContainer, $commandHandler);
             $this->logger->debug(dt('Add a commandfile class: !name', ['!name' => get_class($commandHandler)]));
             Robo::register($application, $commandHandler);
         }
@@ -317,11 +306,10 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
         // Instantiate all of the classes we discovered in
         // configureAndRegisterCommands, and all of the classes we find
         // via 'discoverModuleCommands' that have static create factory methods.
-        $commandHandlers = $this->serviceManager->instantiateServices($bootstrapCommandClasses, $container, $drushContainer);
+        $commandHandlers = $this->serviceManager->instantiateServices($bootstrapCommandClasses, $drushContainer, $container);
 
         // Inflect and register all command handlers
         foreach ($commandHandlers as $commandHandler) {
-            $manager->inflect($commandHandler);
             Robo::register($application, $commandHandler);
         }
     }

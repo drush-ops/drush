@@ -14,25 +14,43 @@ use Drush\Attributes as CLI;
 use Drush\Boot\DrupalBootLevels;
 use Drush\Boot\Kernels;
 use Drush\Commands\DrushCommands;
-use Drush\Config\ConfigAwareTrait;
 use Drush\Drush;
 use Drush\Exceptions\UserAbortException;
 use Drupal\Core\Config\FileStorage;
-use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
-use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
 use Drush\Exec\ExecTrait;
 use Drush\Sql\SqlBase;
 use Drush\Utils\StringUtils;
-use Robo\Contract\ConfigAwareInterface;
+use Psr\Container\ContainerInterface as DrushContainer;
 use Symfony\Component\Filesystem\Path;
+use Drush\Boot\BootstrapManager;
+use Consolidation\SiteAlias\SiteAliasManager;
+use Drush\Config\DrushConfig;
+use Composer\Autoload\ClassLoader;
 
-final class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAwareInterface, ConfigAwareInterface
+final class SiteInstallCommands extends DrushCommands
 {
-    use ConfigAwareTrait;
     use ExecTrait;
-    use SiteAliasManagerAwareTrait;
 
     const INSTALL = 'site:install';
+
+    public function __construct(
+        private BootstrapManager $bootstrapManager,
+        private SiteAliasManager $siteAliasManager,
+        private ClassLoader $autoloader
+    ) {
+        parent::__construct();
+    }
+
+    public static function createEarly(DrushContainer $drush_container): self
+    {
+        $commandHandler = new static(
+            $drush_container->get('bootstrap.manager'),
+            $drush_container->get('site.alias.manager'),
+            $drush_container->get('loader')
+        );
+
+        return $commandHandler;
+    }
 
     /**
      * Install Drupal along with modules/themes/configuration/profile.
@@ -51,7 +69,7 @@ final class SiteInstallCommands extends DrushCommands implements SiteAliasManage
     #[CLI\Option(name: 'site-mail', description: '<info>From:</info> for system mailings.')]
     #[CLI\Option(name: 'sites-subdir', description: 'Name of directory under <info>sites</info> which should be created.')]
     #[CLI\Option(name: 'existing-config', description: 'Configuration from <info>sync</info> directory should be imported during installation.')]
-    #[CLI\Usage(name: 'drush si expert --locale=uk', description: '(Re)install using the expert install profile. Set default language to Ukrainian.')]
+    #[CLI\Usage(name: 'drush si demo_umami --locale=da', description: '(Re)install using the Umami install profile. Set default language to Danish.')]
     #[CLI\Usage(name: 'drush si --db-url=mysql://root:pass@localhost:port/dbname', description: 'Install using the specified DB params.')]
     #[CLI\Usage(name: 'drush si --db-url=sqlite://sites/example.com/files/.ht.sqlite', description: 'Install using SQLite')]
     #[CLI\Usage(name: 'drush si --db-url=sqlite://:memory:', description: 'Install using SQLite in-memory database.')]
@@ -78,9 +96,8 @@ final class SiteInstallCommands extends DrushCommands implements SiteAliasManage
             $form_options[$key] = $value;
         }
 
-        $this->serverGlobals(Drush::bootstrapManager()->getUri());
-        $class_loader = Drush::service('loader');
-        $profile = $this->determineProfile($profile, $options, $class_loader);
+        $this->serverGlobals($this->bootstrapManager->getUri());
+        $profile = $this->determineProfile($profile, $options);
 
         $account_pass = $options['account-pass'] ?: StringUtils::generatePassword();
 
@@ -149,7 +166,7 @@ final class SiteInstallCommands extends DrushCommands implements SiteAliasManage
         // This can lead to an exit() in Drupal. See install_display_output() (e.g. config validation failure).
         // @todo Get Drupal to not call that function when on the CLI.
         try {
-            drush_op('install_drupal', $class_loader, $settings, [$this, 'taskCallback']);
+            drush_op('install_drupal', $this->autoloader, $settings, [$this, 'taskCallback']);
         } catch (AlreadyInstalledException $e) {
             if ($sql && !$this->programExists($sql->command())) {
                 throw new \Exception(dt('Drush was unable to drop all tables because `@program` was not found, and therefore Drupal threw an AlreadyInstalledException. Ensure `@program` is available in your PATH.', ['@program' => $sql->command()]));
@@ -170,7 +187,7 @@ final class SiteInstallCommands extends DrushCommands implements SiteAliasManage
     }
 
 
-    protected function determineProfile($profile, $options, $class_loader)
+    protected function determineProfile($profile, $options)
     {
         // Try to get profile from existing config if not provided as an argument.
         // @todo Arguably Drupal core [$boot->getKernel()->getInstallProfile()] could do this - https://github.com/drupal/drupal/blob/8.6.x/core/lib/Drupal/Core/DrupalKernel.php#L1606 reads from DB storage but not file storage.
@@ -185,7 +202,7 @@ final class SiteInstallCommands extends DrushCommands implements SiteAliasManage
         }
 
         if (empty($profile)) {
-            $boot = Drush::bootstrap();
+            $boot = $this->bootstrapManager->bootstrap();
             $profile = $boot->getKernel()->getInstallProfile();
         }
 
@@ -201,7 +218,7 @@ final class SiteInstallCommands extends DrushCommands implements SiteAliasManage
             require_once DRUSH_DRUPAL_CORE . '/includes/install.core.inc';
             $install_state = ['interactive' => false] + install_state_defaults();
             try {
-                install_begin_request($class_loader, $install_state);
+                install_begin_request($this->autoloader, $install_state);
                 $profile = _install_select_profile($install_state);
             } catch (\Exception) {
                 // This is only a best effort to provide a better default, no harm done
@@ -228,7 +245,6 @@ final class SiteInstallCommands extends DrushCommands implements SiteAliasManage
     #[CLI\Hook(type: HookManager::ARGUMENT_VALIDATOR, target: self::INSTALL)]
     public function validate(CommandData $commandData): void
     {
-        $bootstrapManager = Drush::bootstrapManager();
         if ($sites_subdir = $commandData->input()->getOption('sites-subdir')) {
             $lower = strtolower($sites_subdir);
             if ($sites_subdir != $lower) {
@@ -236,7 +252,7 @@ final class SiteInstallCommands extends DrushCommands implements SiteAliasManage
                 $commandData->input()->setOption('sites-subdir', $lower);
             }
             // Make sure that we will bootstrap to the 'sites-subdir' site.
-            $bootstrapManager->setUri('http://' . $sites_subdir);
+            $this->bootstrapManager->setUri('http://' . $sites_subdir);
         }
 
         if ($config = $commandData->input()->getOption('config-dir')) {
@@ -245,12 +261,11 @@ final class SiteInstallCommands extends DrushCommands implements SiteAliasManage
 
         try {
             // Try to get any already configured database information.
-            $annotationData = Drush::getApplication()->find(self::INSTALL)->getAnnotationData();
-            $bootstrapManager->bootstrapMax(DrupalBootLevels::CONFIGURATION, $annotationData);
+            $this->bootstrapManager->bootstrapMax(DrupalBootLevels::CONFIGURATION, $commandData->annotationData());
 
             // See https://github.com/drush-ops/drush/issues/3903.
             // We may have bootstrapped with /default/settings.php instead of the sites-subdir one.
-            if ($sites_subdir && "sites/$sites_subdir" !== $bootstrapManager->bootstrap()->confpath()) {
+            if ($sites_subdir && "sites/$sites_subdir" !== $this->bootstrapManager->bootstrap()->confpath()) {
                 Database::removeConnection('default');
             }
         } catch (\Exception) {
@@ -289,7 +304,7 @@ final class SiteInstallCommands extends DrushCommands implements SiteAliasManage
 
         // This command is 'bootstrap root', so we should always have a
         // Drupal root. If we do not, $aliasRecord->root will throw.
-        $aliasRecord = $this->siteAliasManager()->getSelf();
+        $aliasRecord = $this->siteAliasManager->getSelf();
         $root = $aliasRecord->root();
 
         $dir = $commandData->input()->getOption('sites-subdir');
@@ -335,14 +350,13 @@ final class SiteInstallCommands extends DrushCommands implements SiteAliasManage
             $this->io()->listing($msg);
         }
 
-
         if (!$this->io()->confirm(dt('Do you want to continue?'))) {
             throw new UserAbortException();
         }
 
         // Can't install without sites subdirectory and settings.php.
         if (!file_exists($confPath)) {
-            if ((new \Symfony\Component\Filesystem\Filesystem())->mkdir($confPath) && !$this->getConfig()->simulate()) {
+            if ((new \Symfony\Component\Filesystem\Filesystem())->mkdir($confPath) && !$this->config->simulate()) {
                 throw new \Exception(dt('Failed to create directory @confPath', ['@confPath' => $confPath]));
             }
         } else {
@@ -350,22 +364,21 @@ final class SiteInstallCommands extends DrushCommands implements SiteAliasManage
         }
 
         if (!drush_file_not_empty($settingsfile)) {
-            if (!drush_op('copy', 'sites/default/default.settings.php', $settingsfile) && !$this->getConfig()->simulate()) {
+            if (!drush_op('copy', 'sites/default/default.settings.php', $settingsfile) && !$this->config->simulate()) {
                 throw new \Exception(dt('Failed to copy sites/default/default.settings.php to @settingsfile', ['@settingsfile' => $settingsfile]));
             }
         }
 
         // Write an empty sites.php if we using multi-site.
         if ($sitesfile_write) {
-            if (!drush_op('copy', 'sites/example.sites.php', $sitesfile) && !$this->getConfig()->simulate()) {
+            if (!drush_op('copy', 'sites/example.sites.php', $sitesfile) && !$this->config->simulate()) {
                 throw new \Exception(dt('Failed to copy sites/example.sites.php to @sitesfile', ['@sitesfile' => $sitesfile]));
             }
         }
 
         // We need to be at least at DRUSH_BOOTSTRAP_DRUPAL_SITE to select the site uri to install to
         define('MAINTENANCE_MODE', 'install');
-        $bootstrapManager = Drush::bootstrapManager();
-        $bootstrapManager->doBootstrap(DrupalBootLevels::SITE);
+        $this->bootstrapManager->doBootstrap(DrupalBootLevels::SITE);
 
         if ($program_exists && !$sql->dropOrCreate()) {
             $this->logger()->warning(dt('Failed to drop or create the database. Do it yourself before installing. @error', ['@error' => $sql->getProcess()->getErrorOutput()]));

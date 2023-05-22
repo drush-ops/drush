@@ -22,6 +22,7 @@ use Consolidation\AnnotatedCommand\Input\StdinAwareInterface;
 use Consolidation\AnnotatedCommand\Input\StdinAwareTrait;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Filesystem\Exception\IOException;
+use Composer\Autoload\ClassLoader;
 
 /*
  * Interact with Drupal's Cache API.
@@ -44,7 +45,8 @@ final class CacheCommands extends DrushCommands implements CustomEventAwareInter
         private $jsOptimizer,
         private $cssOptimizer,
         private $pluginCacheClearer,
-        private BootstrapManager $bootstrapManager
+        private BootstrapManager $bootstrapManager,
+        private ClassLoader $autoloader
     ) {
         parent::__construct();
     }
@@ -58,7 +60,8 @@ final class CacheCommands extends DrushCommands implements CustomEventAwareInter
             $container->get('asset.js.collection_optimizer'),
             $container->get('asset.css.collection_optimizer'),
             $container->get('plugin.cache_clearer'),
-            $drush_container->get('bootstrap.manager')
+            $drush_container->get('bootstrap.manager'),
+            $drush_container->get('loader')
         );
 
         return $commandHandler;
@@ -232,11 +235,10 @@ final class CacheCommands extends DrushCommands implements CustomEventAwareInter
         DrupalKernel::bootEnvironment();
 
         $site_path = DrupalKernel::findSitePath($request);
-        $class_loader = $this->bootstrapManager->autoloader();
-        Settings::initialize($root, $site_path, $class_loader);
+        Settings::initialize($root, $site_path, $this->autoloader);
 
         // drupal_rebuild() calls drupal_flush_all_caches() itself, so we don't do it manually.
-        drupal_rebuild($class_loader, $request);
+        drupal_rebuild($this->autoloader, $request);
         $this->logger()->success(dt('Cache rebuild complete.'));
     }
 

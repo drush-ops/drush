@@ -7,6 +7,7 @@ namespace Drupal\woot\Drush\Commands;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Drush\Commands\DrushCommands;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Psr\Container\ContainerInterface as DrushContainer;
 
 /**
  * Module commandfiles discovered by virtue of being located in the
@@ -26,7 +27,7 @@ class WootStaticFactoryCommands extends DrushCommands
         $this->configFactory = $configFactory;
     }
 
-    public static function create(ContainerInterface $container): self
+    public static function create(ContainerInterface $container, DrushContainer $drush_container): self
     {
         return new static($container->get('config.factory'));
     }
