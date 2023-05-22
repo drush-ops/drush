@@ -69,7 +69,7 @@ final class SiteInstallCommands extends DrushCommands
     #[CLI\Option(name: 'site-mail', description: '<info>From:</info> for system mailings.')]
     #[CLI\Option(name: 'sites-subdir', description: 'Name of directory under <info>sites</info> which should be created.')]
     #[CLI\Option(name: 'existing-config', description: 'Configuration from <info>sync</info> directory should be imported during installation.')]
-    #[CLI\Usage(name: 'drush si expert --locale=uk', description: '(Re)install using the expert install profile. Set default language to Ukrainian.')]
+    #[CLI\Usage(name: 'drush si demo_umami --locale=da', description: '(Re)install using the Umami install profile. Set default language to Danish.')]
     #[CLI\Usage(name: 'drush si --db-url=mysql://root:pass@localhost:port/dbname', description: 'Install using the specified DB params.')]
     #[CLI\Usage(name: 'drush si --db-url=sqlite://sites/example.com/files/.ht.sqlite', description: 'Install using SQLite')]
     #[CLI\Usage(name: 'drush si --db-url=sqlite://:memory:', description: 'Install using SQLite in-memory database.')]
