@@ -197,7 +197,7 @@ class ServiceManager
     {
         $classes = (new RelativeNamespaceDiscovery($this->autoloader))
             ->setRelativeNamespace('Drush\Generators')
-            ->setSearchPattern('/.*DrushGenerator\.php$/')
+            ->setSearchPattern('/.*Generator\.php$/')
             ->getClasses();
 
         return array_filter($classes, function (string $class): bool {

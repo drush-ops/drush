@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Drush\Commands\generate;
 
 use DrupalCodeGenerator\Application;
-use DrupalCodeGenerator\Command\BaseGenerator;
 use DrupalCodeGenerator\Event\GeneratorInfoAlter;
 use Drush\Commands\generate\Generators\Drush\DrushAliasFile;
 use Drush\Commands\generate\Generators\Drush\DrushCommandFile;

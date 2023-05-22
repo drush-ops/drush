@@ -14,7 +14,7 @@ use DrupalCodeGenerator\GeneratorType;
     description: 'An internal generator used for tests',
     type: GeneratorType::OTHER,
 )]
-class CustomDrushGenerator extends BaseGenerator
+class CustomGenerator extends BaseGenerator
 {
     public function generate(array &$vars, AssetCollection $assets): void
     {
