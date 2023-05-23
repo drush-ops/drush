@@ -6,7 +6,7 @@ namespace Drush\Attributes;
 
 use Attribute;
 use Consolidation\AnnotatedCommand\Parser\CommandInfo;
-use Drush\Drupal\Commands\config\ConfigCommands;
+use Drush\Commands\config\ConfigCommands;
 
 #[Attribute(Attribute::TARGET_METHOD)]
 class InteractConfigName

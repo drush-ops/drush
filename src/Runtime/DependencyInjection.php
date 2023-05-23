@@ -10,14 +10,13 @@ use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Robo\Robo;
 use Drush\Formatters\DrushFormatterManager;
-use Drush\Boot\AutoloaderAwareInterface;
 use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
 use Consolidation\SiteProcess\ProcessManagerAwareInterface;
 use Drush\Command\GlobalOptionsEventListener;
 use Drush\Drush;
 use Drush\Symfony\DrushStyleInjector;
 use Drush\Cache\CommandCache;
-use DrupalFinder\DrupalFinder;
+use Drush\DrupalFinder\DrushDrupalFinder;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Application;
@@ -35,7 +34,7 @@ use Drush\SiteAlias\ProcessManager;
  */
 class DependencyInjection
 {
-    protected $handlers = [];
+    protected array $handlers = [];
 
     public function desiredHandlers($handlerList): void
     {
@@ -51,7 +50,7 @@ class DependencyInjection
         InputInterface $input,
         OutputInterface $output,
         ClassLoader $loader,
-        DrupalFinder $drupalFinder,
+        DrushDrupalFinder $drupalFinder,
         SiteAliasManager $aliasManager
     ): Container {
 
@@ -96,7 +95,7 @@ class DependencyInjection
     }
 
     // Add Drush Services to league/container 3.x
-    protected function addDrushServices($container, ClassLoader $loader, DrupalFinder $drupalFinder, SiteAliasManager $aliasManager, DrushConfig $config, OutputInterface $output): void
+    protected function addDrushServices($container, ClassLoader $loader, DrushDrupalFinder $drupalFinder, SiteAliasManager $aliasManager, DrushConfig $config, OutputInterface $output): void
     {
         // Override Robo's logger with a LoggerManager that delegates to the Drush logger.
         Robo::addShared($container, 'logger', '\Drush\Log\DrushLoggerManager')
@@ -117,11 +116,15 @@ class DependencyInjection
             ->addMethodCall('addDefaultSimplifiers', []);
 
         // Add some of our own objects to the container
-        Robo::addShared($container, 'bootstrap.drupal8', 'Drush\Boot\DrupalBoot8');
+        Robo::addShared($container, 'service.manager', 'Drush\Runtime\ServiceManager')
+            ->addArgument('loader')
+            ->addArgument('config')
+            ->addArgument('logger');
+        Robo::addShared($container, 'bootstrap.drupal8', 'Drush\Boot\DrupalBoot8')
+            ->addArgument('service.manager')
+            ->addArgument('loader');
         Robo::addShared($container, 'bootstrap.manager', 'Drush\Boot\BootstrapManager')
-            ->addMethodCall('setDrupalFinder', [$drupalFinder]);
-        // TODO: Can we somehow add these via discovery (e.g. backdrop extension?)
-        $container->extend('bootstrap.manager')
+            ->addMethodCall('setDrupalFinder', [$drupalFinder])
             ->addMethodCall('add', ['bootstrap.drupal8']);
         Robo::addShared($container, 'bootstrap.hook', 'Drush\Boot\BootstrapHook')
           ->addArgument('bootstrap.manager');
@@ -145,8 +148,6 @@ class DependencyInjection
         Robo::addShared($container, 'shutdownHandler', 'Drush\Runtime\ShutdownHandler');
 
         // Add inflectors. @see \Drush\Boot\BaseBoot::inflect
-        $container->inflector(AutoloaderAwareInterface::class)
-            ->invokeMethod('setAutoloader', ['loader']);
         $container->inflector(SiteAliasManagerAwareInterface::class)
             ->invokeMethod('setSiteAliasManager', ['site.alias.manager']);
         $container->inflector(ProcessManagerAwareInterface::class)
@@ -185,5 +186,6 @@ class DependencyInjection
         $application->setTildeExpansionHook($container->get('tildeExpansion.hook'));
         $application->setDispatcher($container->get('eventDispatcher'));
         $application->setConfig($container->get('config'));
+        $application->setServiceManager($container->get('service.manager'));
     }
 }

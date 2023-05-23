@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Drush\TestTraits;
 
-use Symfony\Component\Process\Process;
 use Symfony\Component\Process\Exception\ProcessTimedOutException;
+use Symfony\Component\Process\Process;
 
 /**
  * CliTestTrait provides an `execute()` method that is useful
@@ -39,7 +39,7 @@ trait CliTestTrait
      */
     protected int $idleTimeout = 0;
 
-    protected $process = null;
+    protected ?Process $process = null;
 
     /**
      * Accessor for the last output, non-trimmed.
@@ -74,7 +74,7 @@ trait CliTestTrait
      * @param $input
      *   A string representing the STDIN that is piped to the command.
      */
-    public function startExecute(string|array $command, ?string $cd = null, ?array $env = null, ?string $input = null)
+    public function startExecute(string|array $command, ?string $cd = null, ?array $env = null, ?string $input = null): Process
     {
         try {
             // Process uses a default timeout of 60 seconds, set it to 0 (none).
@@ -121,7 +121,7 @@ trait CliTestTrait
             // symfony/process:4.2 array|::fromShellCommandline().
             // symfony/process:5.x array|::fromShellCommandline().
             if (!is_array($command) && method_exists(Process::class, 'fromShellCommandline')) {
-                $this->process = Process::fromShellCommandline((string) $command, $cd, $env, $input, 0);
+                $this->process = Process::fromShellCommandline($command, $cd, $env, $input, 0);
             } else {
                 $this->process = new Process($command, $cd, $env, $input, 0);
             }

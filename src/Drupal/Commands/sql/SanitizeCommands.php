@@ -7,6 +7,7 @@ namespace Drush\Drupal\Commands\sql;
 use Consolidation\AnnotatedCommand\Events\CustomEventAwareInterface;
 use Consolidation\AnnotatedCommand\Events\CustomEventAwareTrait;
 use Drush\Attributes as CLI;
+use Drush\Commands\core\DocsCommands;
 use Drush\Commands\DrushCommands;
 use Drush\Exceptions\UserAbortException;
 
@@ -29,7 +30,7 @@ final class SanitizeCommands extends DrushCommands implements CustomEventAwareIn
     #[CLI\Command(name: self::SANITIZE, aliases: ['sqlsan','sql-sanitize'])]
     #[CLI\Usage(name: 'drush sql:sanitize --sanitize-password=no', description: 'Sanitize database without modifying any passwords.')]
     #[CLI\Usage(name: 'drush sql:sanitize --allowlist-fields=field_biography,field_phone_number', description: 'Sanitizes database but exempts two user fields from modification.')]
-    #[CLI\Topics(topics: ['docs:hooks'])]
+    #[CLI\Topics(topics: [DocsCommands::HOOKS])]
     public function sanitize(): void
     {
      /**

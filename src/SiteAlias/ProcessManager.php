@@ -29,7 +29,8 @@ class ProcessManager extends ConsolidationProcessManager
 
     /**
      * drushSiteProcess should be avoided in favor of the drush method above.
-     * drushSiteProcess exists specifically for use by the RedispatchHook,
+     *
+     * @internal drushSiteProcess exists specifically for use by the RedispatchHook,
      * which does not have specific knowledge about which argument is the command.
      */
     public function drushSiteProcess(SiteAliasInterface $siteAlias, array $args = [], array $options = [], array $options_double_dash = []): ProcessBase

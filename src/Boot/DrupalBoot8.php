@@ -12,20 +12,26 @@ use Drupal\Core\DrupalKernel;
 use Drupal\Core\Session\AnonymousUserSession;
 use Drush\Config\ConfigLocator;
 use Drush\Drupal\DrushLoggerServiceProvider;
-use Drush\Drupal\DrushServiceModifier;
 use Drush\Drush;
+use Drush\Runtime\ServiceManager;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Filesystem\Path;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Consolidation\AnnotatedCommand\CommandFileDiscovery;
+use Robo\Robo;
+use Drush\Runtime\LegacyServiceInstantiator;
+use Drush\Runtime\LegacyServiceFinder;
 
-class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
+class DrupalBoot8 extends DrupalBoot
 {
-    use AutoloaderAwareTrait;
-
     protected ?LoggrInterface $drupalLoggerAdapter = null;
     protected ?DrupalKernelInterface $kernel = null;
     protected Request $request;
+
+    public function __construct(protected ServiceManager $serviceManager, protected $autoloader)
+    {
+    }
 
     public function getRequest(): Request
     {
@@ -71,14 +77,11 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
                 }
             }
         }
+        return false;
     }
 
     public function getVersion($drupal_root): string
     {
-        // Are the class constants available?
-        if (!$this->hasAutoloader()) {
-            throw new \Exception('Cannot access Drupal class constants - Drupal autoloader not loaded yet.');
-        }
         return \Drupal::VERSION;
     }
 
@@ -208,15 +211,11 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
         if (!empty($annotationData)) {
             $kernel = $annotationData->get('kernel', Kernels::DRUPAL);
         }
-        $classloader = $this->autoloader();
         $request = $this->getRequest();
         $kernel_factory = Kernels::getKernelFactory($kernel);
         $allow_dumping = $kernel !== Kernels::UPDATE;
         /** @var DrupalKernelInterface kernel */
-        $this->kernel = $kernel_factory($request, $classloader, 'prod', $allow_dumping, $manager->getRoot());
-        // Include Drush services in the container.
-        // @see Drush\Drupal\DrupalKernel::addServiceModifier()
-        $this->kernel->addServiceModifier(new DrushServiceModifier());
+        $this->kernel = $kernel_factory($request, $this->autoloader, 'prod', $allow_dumping, $manager->getRoot());
 
         // Unset drupal error handler and restore Drush's one.
         restore_error_handler();
@@ -241,43 +240,77 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
         $this->kernel->getContainer()->get('current_user')->setAccount(new AnonymousUserSession());
     }
 
-    public function addDrupalModuleDrushCommands($manager): void
+    public function addDrupalModuleDrushCommands(BootstrapManager $manager): void
     {
         $application = Drush::getApplication();
-        $runner = Drush::runner();
+        $drushContainer = Drush::getContainer();
+
+        $this->logger->debug(dt("Loading drupal module drush commands & etc.", []));
 
         // We have to get the service command list from the container, because
         // it is constructed in an indirect way during the container initialization.
         // The upshot is that the list of console commands is not available
         // until after $kernel->boot() is called.
         $container = \Drupal::getContainer();
+        $moduleHandler = \Drupal::moduleHandler();
 
-        // Set the command info alterers.
-        if ($container->has(DrushServiceModifier::DRUSH_COMMAND_INFO_ALTERER_SERVICES)) {
-            $serviceCommandInfoAltererList = $container->get(DrushServiceModifier::DRUSH_COMMAND_INFO_ALTERER_SERVICES);
-            $commandFactory = Drush::commandFactory();
-            foreach ($serviceCommandInfoAltererList->getCommandList() as $altererHandler) {
-                $commandFactory->addCommandInfoAlterer($altererHandler);
-                $this->logger->debug(dt('Commands are potentially altered in !class.', ['!class' => get_class($altererHandler)]));
-            }
+        // Legacy service adapters for drush.services.yml files.
+        $serviceFinder = new LegacyServiceFinder($moduleHandler, Drush::config());
+        $drushServiceFiles = $serviceFinder->getDrushServiceFiles();
+        $legacyServiceInstantiator = new LegacyServiceInstantiator($container);
+        $legacyServiceInstantiator->loadServiceFiles($drushServiceFiles);
+
+        // Find the containerless commands, and command info alterers
+        $bootstrapCommandClasses = $this->serviceManager->bootstrapCommandClasses();
+        $commandInfoAlterers = [];
+        foreach ($moduleHandler->getModuleList() as $moduleId => $extension) {
+            $path = DRUPAL_ROOT . '/' . $extension->getPath() . '/src/Drush/';
+            $commandsInThisModule = $this->serviceManager->discoverModuleCommands([$path], "\\Drupal\\" . $moduleId . "\\Drush");
+            // TODO: Maybe $bootstrapCommandClasses could use a better name.
+            // These are commandhandlers that have static create factory methods.
+            $bootstrapCommandClasses = array_merge($bootstrapCommandClasses, $commandsInThisModule);
+            // TODO: Support PSR-4 command info alterers, like bootstrapCommandClasses?
+            $commandInfoAlterersInThisModule = $this->serviceManager->discoverModuleCommandInfoAlterers([$path], "\\Drupal\\" . $moduleId . "\\Drush");
+            $commandInfoAlterers = array_merge($commandInfoAlterers, $commandInfoAlterersInThisModule);
         }
 
-        if ($container->has(DrushServiceModifier::DRUSH_CONSOLE_SERVICES)) {
-            $serviceCommandList = $container->get(DrushServiceModifier::DRUSH_CONSOLE_SERVICES);
-            foreach ($serviceCommandList->getCommandList() as $command) {
-                $manager->inflect($command);
-                $this->logger->debug(dt('Add a command: !name', ['!name' => $command->getName()]));
-                $application->add($command);
-            }
+        // Find the command info alterers in Drush services.
+        $commandFactory = Drush::commandFactory();
+        $commandInfoAltererInstances = $this->serviceManager->instantiateServices($commandInfoAlterers, $drushContainer, $container);
+        $commandInfoAlterers = array_merge($commandInfoAltererInstances, $legacyServiceInstantiator->taggedServices('drush.command_info_alterer'));
+
+        // Set the command info alterers. We must do this prior to calling
+        // Robo::register to add any commands, as that is the point where the
+        // alteration will happen.
+        foreach ($commandInfoAlterers as $altererHandler) {
+            $commandFactory->addCommandInfoAlterer($altererHandler);
+            $this->logger->debug(dt('Commands are potentially altered in !class.', ['!class' => get_class($altererHandler)]));
         }
-        // Do the same thing with the annotation commands.
-        if ($container->has(DrushServiceModifier::DRUSH_COMMAND_SERVICES)) {
-            $serviceCommandList = $container->get(DrushServiceModifier::DRUSH_COMMAND_SERVICES);
-            foreach ($serviceCommandList->getCommandList() as $commandHandler) {
-                $manager->inflect($commandHandler);
-                $this->logger->debug(dt('Add a commandfile class: !name', ['!name' => get_class($commandHandler)]));
-                $runner->registerCommandClass($application, $commandHandler);
-            }
+
+        // Register the Drush Symfony Console commands found in Drush services
+        $drushServicesConsoleCommands = $legacyServiceInstantiator->taggedServices('console.command');
+        foreach ($drushServicesConsoleCommands as $command) {
+            $this->serviceManager->inflect($drushContainer, $command);
+            $this->logger->debug(dt('Add a command: !name', ['!name' => $command->getName()]));
+            $application->add($command);
+        }
+
+        // Add annotation commands from drush.services.yml
+        $drushServicesCommandHandlers = $legacyServiceInstantiator->taggedServices('drush.command');
+        foreach ($drushServicesCommandHandlers as $commandHandler) {
+            $this->serviceManager->inflect($drushContainer, $commandHandler);
+            $this->logger->debug(dt('Add a commandfile class: !name', ['!name' => get_class($commandHandler)]));
+            Robo::register($application, $commandHandler);
+        }
+
+        // Instantiate all of the classes we discovered in
+        // configureAndRegisterCommands, and all of the classes we find
+        // via 'discoverModuleCommands' that have static create factory methods.
+        $commandHandlers = $this->serviceManager->instantiateServices($bootstrapCommandClasses, $drushContainer, $container);
+
+        // Inflect and register all command handlers
+        foreach ($commandHandlers as $commandHandler) {
+            Robo::register($application, $commandHandler);
         }
     }
 

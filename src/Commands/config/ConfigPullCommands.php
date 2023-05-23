@@ -7,6 +7,7 @@ namespace Drush\Commands\config;
 use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\AnnotatedCommand\Hooks\HookManager;
 use Drush\Attributes as CLI;
+use Drush\Commands\core\DocsCommands;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Consolidation\SiteAlias\HostPath;
@@ -30,7 +31,7 @@ final class ConfigPullCommands extends DrushCommands implements SiteAliasManager
     #[CLI\Option(name: 'runner', description: 'Where to run the rsync command; defaults to the local site. Can also be <info>source</info> or <info>destination</info>.')]
     #[CLI\Usage(name: 'drush config:pull @prod @stage', description: 'Export config from @prod and transfer to @stage.')]
     #[CLI\Usage(name: 'drush config:pull @prod @self:../config/sync', description: 'Export config and transfer to a custom directory. Relative paths are calculated from Drupal root.')]
-    #[CLI\Topics(topics: ['docs:aliases', 'docs:config:exporting'])]
+    #[CLI\Topics(topics: [DocsCommands::ALIASES, DocsCommands::CONFIG_EXPORTING])]
     #[CLI\FieldLabels(labels: ['path' => 'Path'])]
     public function pull(string $source, string $destination, array $options = ['safe' => false, 'runner' => null, 'format' => 'null']): PropertyList
     {

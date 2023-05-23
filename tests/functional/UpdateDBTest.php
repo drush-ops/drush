@@ -6,7 +6,7 @@ namespace Unish;
 
 use Drush\Commands\core\PhpCommands;
 use Drush\Commands\core\UpdateDBCommands;
-use Drush\Drupal\Commands\pm\PmCommands;
+use Drush\Commands\pm\PmCommands;
 use Symfony\Component\Filesystem\Path;
 
 /**
@@ -17,7 +17,7 @@ class UpdateDBTest extends CommandUnishTestCase
 {
     use TestModuleHelperTrait;
 
-    protected $pathPostUpdate;
+    protected ?string $pathPostUpdate = null;
 
     public function testUpdateDBStatus()
     {
@@ -62,7 +62,6 @@ class UpdateDBTest extends CommandUnishTestCase
         $options = [
             'yes' => null,
         ];
-        $this->setupModulesForTests(['woot'], Path::join(__DIR__, '/../fixtures/modules'));
         $this->drush('pm-install', ['woot'], $options);
 
         // Force a pending update.
@@ -146,7 +145,6 @@ class UpdateDBTest extends CommandUnishTestCase
         $options = [
             'yes' => null,
         ];
-        $this->setupModulesForTests(['woot'], Path::join(__DIR__, '/../fixtures/modules'));
         $this->drush('pm-install', ['woot'], $options);
 
         // Force re-run of woot_update_8104().
@@ -196,7 +194,6 @@ class UpdateDBTest extends CommandUnishTestCase
         $options = [
             'include' => __DIR__,
         ];
-        $this->setupModulesForTests(['woot'], Path::join(__DIR__, '/../fixtures/modules'));
         $this->drush('pm-install', ['woot'], $options);
 
         // Force re-run of the post-update woot_post_update_install_drush_empty_module().
@@ -209,7 +206,8 @@ class UpdateDBTest extends CommandUnishTestCase
 
         // Introduce a new service in the Woot module that depends on a service
         // in the Devel module (which is not yet enabled).
-        $filename = Path::join($root, 'modules/unish/woot/woot.services.yml');
+        $filename = Path::join($root, self::WOOT_SERVICES_PATH);
+        copy($filename, $filename . '.BAK');
         $serviceDefinition = <<<YAML_FRAGMENT
   woot.depending_service:
     class: Drupal\woot\DependingService
@@ -217,7 +215,8 @@ class UpdateDBTest extends CommandUnishTestCase
 YAML_FRAGMENT;
         file_put_contents($filename, $serviceDefinition, FILE_APPEND);
 
-        $filename = Path::join($root, 'modules/unish/woot/woot.info.yml');
+        $filename = Path::join($root, self::WOOT_INFO_PATH);
+        copy($filename, $filename . '.BAK');
         $moduleDependency = <<<YAML_FRAGMENT
 dependencies:
   - drush_empty_module
@@ -242,7 +241,6 @@ YAML_FRAGMENT;
         $options = [
             'yes' => null,
         ];
-        $this->setupModulesForTests(['woot'], Path::join(__DIR__, '/../fixtures/modules'));
         $this->drush('pm-install', ['woot'], $options);
 
         // Force re-run of woot_update_8104() which is expected to be completed successfully.
@@ -277,7 +275,6 @@ YAML_FRAGMENT;
             'yes' => null,
         ];
         $this->setUpDrupal(1, true);
-        $this->setupModulesForTests(['woot'], Path::join(__DIR__, '/../fixtures/modules'));
         $this->drush('pm:install', ['woot'], $options);
 
         // Force re-run of woot_update_8105().
@@ -320,7 +317,6 @@ POST_UPDATE;
             'yes' => null,
         ];
         $this->setUpDrupal(1, true);
-        $this->setupModulesForTests(['woot'], Path::join(__DIR__, '/../fixtures/modules'));
         $this->drush('pm:install', ['woot'], $options);
 
         // Force re-run of woot_update_8106().
@@ -346,7 +342,6 @@ POST_UPDATE;
             'yes' => null,
         ];
         $this->setUpDrupal(1, true);
-        $this->setupModulesForTests(['woot'], Path::join(__DIR__, '/../fixtures/modules'));
         $this->drush('pm:install', ['woot'], $options);
 
         // Force re-run of woot_post_update_install_taxonomy().
@@ -366,6 +361,18 @@ POST_UPDATE;
     public function tearDown(): void
     {
         $this->recursiveDelete($this->pathPostUpdate, true);
+
+        // Undo our yml mess.
+        $filenames = [
+            Path::join($this->webroot(), self::WOOT_INFO_PATH),
+            Path::join($this->webroot(), self::WOOT_SERVICES_PATH),
+        ];
+        foreach ($filenames as $filename) {
+            if (file_exists($filename . '.BAK')) {
+                rename($filename . '.BAK', $filename);
+            }
+        }
+
         parent::tearDown();
     }
 

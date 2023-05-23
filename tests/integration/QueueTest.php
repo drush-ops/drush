@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Unish;
 
 use Drush\Commands\core\PhpCommands;
-use Drush\Drupal\Commands\core\QueueCommands;
-use Drush\Drupal\Commands\pm\PmCommands;
+use Drush\Commands\core\QueueCommands;
+use Drush\Commands\pm\PmCommands;
 use Symfony\Component\Filesystem\Path;
 
 /**
@@ -21,7 +21,6 @@ class QueueTest extends UnishIntegrationTestCase
     public function setUp(): void
     {
         parent::setUp();
-        $this->setupModulesForTests([self::WOOT], Path::join(__DIR__, '../fixtures/modules'));
 
         // Enable woot module, which contains a queue worker that throws a RequeueException.
         $this->drush(PmCommands::INSTALL, [self::WOOT], [], null, '', self::EXIT_SUCCESS);
@@ -32,6 +31,8 @@ class QueueTest extends UnishIntegrationTestCase
    */
     public function testRequeueException()
     {
+        // Start with empty queue.
+        $this->drush(QueueCommands::DELETE, ['woot_requeue_exception']);
 
         // Add an item to the queue.
         $this->drush(PhpCommands::SCRIPT, ['requeue_script'], ['script-path' => __DIR__ . '/resources']);
@@ -64,6 +65,9 @@ class QueueTest extends UnishIntegrationTestCase
    */
     public function testCustomExceptionAndCommands()
     {
+        // Start with empty queue.
+        $this->drush(QueueCommands::DELETE, ['woot_custom_exception']);
+
         // Add a couple of items to the queue.
         $this->drush(PhpCommands::SCRIPT, ['queue_custom_exception_script'], ['script-path' => __DIR__ . '/resources']);
 

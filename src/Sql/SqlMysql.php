@@ -8,7 +8,7 @@ use PDO;
 
 class SqlMysql extends SqlBase
 {
-    public $queryExtra = '-A';
+    public string $queryExtra = '-A';
 
     public function command(): string
     {

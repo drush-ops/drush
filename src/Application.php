@@ -4,24 +4,24 @@ declare(strict_types=1);
 
 namespace Drush;
 
-use Drush\Boot\DrupalBootLevels;
-use Robo\Runner;
 use Composer\Autoload\ClassLoader;
 use Consolidation\AnnotatedCommand\AnnotatedCommand;
-use Consolidation\AnnotatedCommand\CommandFileDiscovery;
-use Consolidation\Filter\Hooks\FilterHooks;
 use Consolidation\SiteAlias\SiteAliasManager;
 use Drush\Boot\BootstrapManager;
+use Drush\Drush;
+use Drush\Boot\DrupalBootLevels;
 use Drush\Command\RemoteCommandProxy;
-use Drush\Commands\DrushCommands;
 use Drush\Config\ConfigAwareTrait;
 use Drush\Runtime\RedispatchHook;
 use Drush\Runtime\TildeExpansionHook;
+use Drush\Runtime\ServiceManager;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use Robo\ClassDiscovery\RelativeNamespaceDiscovery;
 use Robo\Contract\ConfigAwareInterface;
+use Robo\Robo;
 use Symfony\Component\Console\Application as SymfonyApplication;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Exception\CommandNotFoundException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -51,6 +51,9 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
 
     /** @var TildeExpansionHook */
     protected $tildeExpansionHook;
+
+    /** @var ServiceManager */
+    protected $serviceManager;
 
     /**
      * Add global options to the Application and their default values to Config.
@@ -126,6 +129,11 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
     public function setTildeExpansionHook(TildeExpansionHook $tildeExpansionHook)
     {
         $this->tildeExpansionHook = $tildeExpansionHook;
+    }
+
+    public function setServiceManager(ServiceManager $serviceManager)
+    {
+        $this->serviceManager = $serviceManager;
     }
 
     /**
@@ -310,90 +318,24 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
         // any of the configuration steps we do here.
         $this->configureIO($input, $output);
 
-        $commandClasses = array_unique(array_merge(
-            $this->discoverCommandsFromConfiguration(),
-            $this->discoverCommands($commandfileSearchpath, '\Drush'),
-            $this->discoverPsr4Commands($classLoader),
-            [FilterHooks::class]
-        ));
+        // Directly add the yaml-cli commands.
+        $this->addCommands($this->serviceManager->instantiateYamlCliCommands());
+
+        // Find the command handlers that we can instantiate without bootstrapping Drupal
+        $commandClasses = $this->serviceManager->discover($commandfileSearchpath, '\Drush');
 
         // Uncomment the lines below to use Console's built in help and list commands.
         // unset($commandClasses[__DIR__ . '/Commands/help/HelpCommands.php']);
         // unset($commandClasses[__DIR__ . '/Commands/help/ListCommands.php']);
 
-        // Use the robo runner to register commands with Symfony application.
-        // This method could / should be refactored in Robo so that we can use
-        // it without creating a Runner object that we would not otherwise need.
-        $runner = new Runner();
-        $runner->registerCommandClasses($this, $commandClasses);
-    }
+        // Instantiate our command handler objects with the service manager
+        // (handles 'createEarly' static factories)
+        $commandInstances = $this->serviceManager->instantiateServices($commandClasses, Drush::getContainer());
 
-    protected function discoverCommandsFromConfiguration()
-    {
-        $commandList = [];
-        foreach ($this->config->get('drush.commands', []) as $key => $value) {
-            if (is_numeric($key)) {
-                $classname = $value;
-                $commandList[] = $classname;
-            } else {
-                $classname = ltrim($key, '\\');
-                $commandList[$value] = $classname;
-            }
-        }
-        $this->loadCommandClasses($commandList);
-        return array_values($commandList);
-    }
-
-    /**
-     * Ensure that any discovered class that is not part of the autoloader
-     * is, in fact, included.
-     */
-    protected function loadCommandClasses($commandClasses)
-    {
-        foreach ($commandClasses as $file => $commandClass) {
-            if (!class_exists($commandClass)) {
-                include $file;
-            }
-        }
-    }
-
-    /**
-     * Discovers command classes.
-     */
-    protected function discoverCommands(array $directoryList, string $baseNamespace): array
-    {
-        $discovery = new CommandFileDiscovery();
-        $discovery
-            ->setIncludeFilesAtBase(true)
-            ->setSearchDepth(3)
-            ->ignoreNamespacePart('contrib', 'Commands')
-            ->ignoreNamespacePart('custom', 'Commands')
-            ->ignoreNamespacePart('src')
-            ->setSearchLocations(['Commands', 'Hooks', 'Generators'])
-            ->setSearchPattern('#.*(Command|Hook|Generator)s?.php$#');
-        $baseNamespace = ltrim($baseNamespace, '\\');
-        $commandClasses = $discovery->discover($directoryList, $baseNamespace);
-        $this->loadCommandClasses($commandClasses);
-        return array_values($commandClasses);
-    }
-
-    /**
-     * Discovers commands that are PSR4 auto-loaded.
-     */
-    protected function discoverPsr4Commands(ClassLoader $classLoader): array
-    {
-        $classes = (new RelativeNamespaceDiscovery($classLoader))
-            ->setRelativeNamespace('Drush\Commands')
-            ->setSearchPattern('/.*DrushCommands\.php$/')
-            ->getClasses();
-
-        return array_filter($classes, function (string $class): bool {
-            $reflectionClass = new \ReflectionClass($class);
-            return $reflectionClass->isSubclassOf(DrushCommands::class)
-                && !$reflectionClass->isAbstract()
-                && !$reflectionClass->isInterface()
-                && !$reflectionClass->isTrait();
-        });
+        // Register our commands with Robo, our application framework.
+        // Note that Robo::register can accept either Annotated Command
+        // command handlers or Symfony Console Command objects.
+        Robo::register($this, $commandInstances);
     }
 
     /**

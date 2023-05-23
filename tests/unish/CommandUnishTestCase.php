@@ -2,15 +2,15 @@
 
 namespace Unish;
 
-use Symfony\Component\Process\Process;
-use Symfony\Component\Process\Exception\ProcessTimedOutException;
-use PHPUnit\Framework\TestResult;
-use Drush\TestTraits\OutputUtilsTrait;
 use Drush\TestTraits\CliTestTrait;
+use Symfony\Component\Process\Process;
 
 abstract class CommandUnishTestCase extends UnishTestCase
 {
     use CliTestTrait;
+
+    public const WOOT_SERVICES_PATH = 'modules/unish/woot/woot.services.yml';
+    public const WOOT_INFO_PATH = 'modules/unish/woot/woot.info.yml';
 
     /**
      * Code coverage data collected during a single test.
@@ -56,7 +56,7 @@ abstract class CommandUnishTestCase extends UnishTestCase
      * @return Process
      *   A Symfony Process object.
      */
-    public function drushBackground($command, array $args = [], array $options = [], $site_specification = null, $cd = null, $suffix = null, $env = [])
+    public function drushBackground(string $command, array $args = [], array $options = [], $site_specification = null, $cd = null, $suffix = null, $env = [])
     {
         list($cmd, ) = $this->prepareDrushCommand($command, $args, $options, $site_specification, $suffix);
         return $this->startExecute(explode(' ', $cmd), $cd, $env);
@@ -82,9 +82,10 @@ abstract class CommandUnishTestCase extends UnishTestCase
       * @param array $env
       *   Environment variables to pass along to the subprocess.
       */
-    public function drush($command, array $args = [], array $options = [], $site_specification = null, $cd = null, $expected_return = self::EXIT_SUCCESS, $suffix = null, $env = [])
+    public function drush(string $command, array $args = [], array $options = [], ?string $site_specification = null, ?string $cd = null, int $expected_return = self::EXIT_SUCCESS, ?string $suffix = null, array $env = []): void
     {
-        list($cmd, $coverage_file) = $this->prepareDrushCommand($command, $args, $options, $site_specification, $suffix);
+        list($cmd, $coverage_file) = $this->prepareDrushCommand($command, $args, $options, $site_specification, $suffix, $cd);
+        $env['COLUMNS'] = '9999';
         $this->execute($cmd, $expected_return, $cd, $env);
 
         // Save code coverage information.
@@ -98,13 +99,20 @@ abstract class CommandUnishTestCase extends UnishTestCase
         // return $return;
     }
 
-    protected function prepareDrushCommand($command, array $args = [], array $options = [], $site_specification = null, $suffix = null): array
+    protected function prepareDrushCommand(string $command, array $args = [], array $options = [], ?string $site_specification = null, ?string $suffix = null, ?string $cd = null): array
     {
         // cd is added for the benefit of siteSshTest which tests a strict command.
         $global_option_list = ['simulate', 'root', 'uri', 'include', 'config', 'alias-path', 'ssh-options', 'cd'];
         $options += ['uri' => 'dev']; // Default value.
         $hide_stderr = false;
-        $cmd[] = self::getDrush();
+        $drushExecutable = self::getDrush();
+        if ($cd) {
+            $project = dirname($cd);
+            if (file_exists("$project/vendor/bin/drush")) {
+                $drushExecutable = "$project/vendor/bin/drush";
+            }
+        }
+        $cmd[] = $drushExecutable;
 
         // Insert global options.
         foreach ($options as $key => $values) {
@@ -204,7 +212,7 @@ abstract class CommandUnishTestCase extends UnishTestCase
         return strtr($message, $replace);
     }
 
-    protected function assertOutputEquals($expected, $filter = ''): void
+    protected function assertOutputEquals(?string $expected, string $filter = ''): void
     {
         $output = $this->getSimplifiedOutput();
         if (!empty($filter)) {

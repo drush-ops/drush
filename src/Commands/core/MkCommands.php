@@ -8,14 +8,12 @@ use Consolidation\AnnotatedCommand\AnnotatedCommand;
 use Consolidation\AnnotatedCommand\AnnotationData;
 use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
 use Drush\Attributes as CLI;
-use Drush\Boot\AutoloaderAwareInterface;
-use Drush\Boot\AutoloaderAwareTrait;
 use Drush\Boot\DrupalBootLevels;
 use Drush\Commands\DrushCommands;
 use Drush\Commands\help\HelpCLIFormatter;
 use Drush\Commands\help\ListCommands;
 use Drush\Config\ConfigAwareTrait;
-use Drush\Drupal\Commands\generate\ApplicationFactory;
+use Drush\Commands\generate\ApplicationFactory;
 use Drush\Drush;
 use Drush\SiteAlias\SiteAliasManagerAwareInterface;
 use Robo\Contract\ConfigAwareInterface;
@@ -27,10 +25,9 @@ use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Path;
 use Symfony\Component\Yaml\Yaml;
 
-final class MkCommands extends DrushCommands implements SiteAliasManagerAwareInterface, AutoloaderAwareInterface
+final class MkCommands extends DrushCommands implements SiteAliasManagerAwareInterface
 {
     use SiteAliasManagerAwareTrait;
-    use AutoloaderAwareTrait;
 
     /**
      * Build a Markdown document for each Drush command/generator that is available on a site.
@@ -56,7 +53,7 @@ final class MkCommands extends DrushCommands implements SiteAliasManagerAwareInt
         $destination = 'generators';
         $destination_path = Path::join($dir_root, 'docs', $destination);
         $this->prepare($destination_path);
-        $application_generate = (new ApplicationFactory(\Drupal::getContainer(), $this->autoloader(), $this->logger()))->create();
+        $application_generate = (new ApplicationFactory(\Drupal::getContainer(), $this->logger()))->create();
         $all = $this->createAnnotatedCommands($application_generate, Drush::getApplication());
         $namespaced = ListCommands::categorize($all);
         [$nav_generators, $pages_generators, $map_generators] = $this->writeContentFilesAndBuildNavAndBuildRedirectMap($namespaced, $destination, $dir_root, $destination_path);
@@ -80,7 +77,7 @@ final class MkCommands extends DrushCommands implements SiteAliasManagerAwareInt
             $annotated->setDescription($command->getDescription());
             $annotated->setHelp($command->getHelp());
             $annotated->setAliases($command->getAliases());
-            $annotated->setTopics(['docs:generators']);
+            $annotated->setTopics([DocsCommands::GENERATORS]);
             $annotated->setHidden($command->isHidden());
             $values = [];
             if (in_array($command->getName(), ['entity:bundle-class'])) {
@@ -222,6 +219,8 @@ EOT;
         $body .= "# {$command->getName()}\n\n";
         if ($command instanceof AnnotatedCommand && $version = $command->getAnnotationData()->get('version')) {
             $body .= ":octicons-tag-24: $version+\n\n";
+        } elseif (str_starts_with($command->getName(), 'yaml:')) {
+            $body .= ":octicons-tag-24: 12.0+\n\n";
         }
         if ($command->getDescription()) {
             $body .= self::cliTextToMarkdown($command->getDescription()) . "\n\n";

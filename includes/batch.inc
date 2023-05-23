@@ -26,6 +26,7 @@
  */
 
 use Drupal\Core\Database\Database;
+use Drupal\Core\Database\IntegrityConstraintViolationException;
 use Drush\Drush;
 
 /**
@@ -105,7 +106,20 @@ function _drush_backend_batch_process($command = 'batch-process', $args = [], $o
 
     // Assign an arbitrary id: don't rely on a serial column in the 'batch'
     // table, since non-progressive batches skip database storage completely.
-    $batch['id'] = \Drupal::database()->nextId();
+    /** @var \Drupal\Core\Batch\BatchStorageInterface $batch_storage */
+    $batch_storage = \Drupal::service('batch.storage');
+    if (method_exists($batch_storage, 'getId')) {
+      try {
+        $batch['id'] = $batch_storage->getId();
+      }
+      catch (IntegrityConstraintViolationException) {
+        // Remove calls to nextId() once 10.0 is no longer supported.
+        $batch['id'] = \Drupal::database()->nextId();
+      }
+    }
+    else {
+      $batch['id'] = \Drupal::database()->nextId();
+    }
     $args[] = $batch['id'];
 
     $batch['progressive'] = TRUE;
@@ -117,8 +131,6 @@ function _drush_backend_batch_process($command = 'batch-process', $args = [], $o
     }
 
     // Store the batch.
-    /** @var \Drupal\Core\Batch\BatchStorage $batch_storage */
-    $batch_storage = \Drupal::service('batch.storage');
     $batch_storage->create($batch);
     $finished = FALSE;
 

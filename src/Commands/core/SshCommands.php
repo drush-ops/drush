@@ -29,7 +29,7 @@ final class SshCommands extends DrushCommands implements SiteAliasManagerAwareIn
     #[CLI\Usage(name: 'drush @prod ssh ls /tmp', description: 'Run <info>ls /tmp</info> on <info>@prod</info> site.')]
     #[CLI\Usage(name: 'drush @prod ssh git pull', description: 'Run <info>git pull</info> on the Drupal root directory on the <info>@prod</info> site.')]
     #[CLI\Usage(name: 'drush ssh git pull', description: 'Run <info>git pull</info> on the local Drupal root directory.')]
-    #[CLI\Topics(topics: ['docs:aliases'])]
+    #[CLI\Topics(topics: [DocsCommands::ALIASES])]
     public function ssh(array $code, $options = ['cd' => self::REQ]): void
     {
         $alias = $this->siteAliasManager()->getSelf();

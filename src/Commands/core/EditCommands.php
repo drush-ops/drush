@@ -98,15 +98,17 @@ final class EditCommands extends DrushCommands implements SiteAliasManagerAwareI
             }
         }
 
-        if (Drush::bootstrapManager()->hasBootstrapped(DrupalBootLevels::FULL)) {
-            $site_root = \Drupal::service('kernel')->getSitePath();
+        $bootstrapManager = Drush::bootstrapManager();
+        if ($bootstrapManager->hasBootstrapped(DrupalBootLevels::FULL)) {
+            $boot = $bootstrapManager->bootstrap();
+            $site_root = $boot->getKernel()->getSitePath();
             $path = realpath($site_root . '/settings.php');
             $drupal[$path] = $path;
             if (file_exists($site_root . '/settings.local.php')) {
                 $path = realpath($site_root . '/settings.local.php');
                 $drupal[$path] = $path;
             }
-            if ($path = realpath(DRUPAL_ROOT . '/.htaccess')) {
+            if ($path = realpath($bootstrapManager->getRoot() . '/.htaccess')) {
                 $drupal[$path] = $path;
             }
             if ($headers) {
@@ -132,10 +134,6 @@ final class EditCommands extends DrushCommands implements SiteAliasManagerAwareI
         $home = $this->getConfig()->home();
         if ($bashrc = self::findBashrc($home)) {
             $bashFiles[$bashrc] = $bashrc;
-        }
-        $prompt = $home . '/.drush/drush.prompt.sh';
-        if (file_exists($prompt)) {
-            $bashFiles[$prompt] = $prompt;
         }
         return $bashFiles;
     }

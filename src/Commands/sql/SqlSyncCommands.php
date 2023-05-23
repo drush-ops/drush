@@ -7,6 +7,7 @@ namespace Drush\Commands\sql;
 use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\AnnotatedCommand\Hooks\HookManager;
 use Drush\Attributes as CLI;
+use Drush\Commands\core\DocsCommands;
 use Drush\Commands\core\RsyncCommands;
 use Drush\Commands\core\StatusCommands;
 use Drush\Commands\DrushCommands;
@@ -42,7 +43,7 @@ final class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwa
     #[CLI\Usage(name: 'drush sql:sync @source @self', description: "Copy the database from the site with the alias 'source' to the local site.")]
     #[CLI\Usage(name: 'drush sql:sync @self @target', description: "Copy the database from the local site to the site with the alias 'target'.")]
     #[CLI\Usage(name: 'drush sql:sync #prod #dev', description: 'Copy the database from the site in /sites/prod to the site in /sites/dev (multisite installation).')]
-    #[CLI\Topics(topics: ['docs:aliases', 'docs:policy', 'docs:configuration', 'docs:example-sync-via-http'])]
+    #[CLI\Topics(topics: [DocsCommands::ALIASES, DocsCommands::POLICY, DocsCommands::CONFIGURATION, DocsCommands::EXAMPLE_SYNC_VIA_HTTP])]
     public function sqlsync($source, $target, $options = ['no-dump' => false, 'no-sync' => false, 'runner' => self::REQ, 'create-db' => false, 'db-su' => self::REQ, 'db-su-pw' => self::REQ, 'target-dump' => self::REQ, 'source-dump' => self::OPT, 'extra-dump' => self::REQ]): void
     {
         $manager = $this->siteAliasManager();

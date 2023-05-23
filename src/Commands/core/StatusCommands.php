@@ -78,7 +78,7 @@ final class StatusCommands extends DrushCommands implements SiteAliasManagerAwar
     ])]
     #[CLI\DefaultTableFields(fields: ['drupal-version', 'uri', 'db-driver', 'db-hostname', 'db-port', 'db-username', 'db-name', 'db-status', 'bootstrap', 'theme', 'admin-theme', 'php-bin', 'php-conf', 'php-os', 'php-version', 'drush-script', 'drush-version', 'drush-temp', 'drush-conf', 'install-profile', 'root', 'site', 'files', 'private', 'temp'])]
     #[CLI\Bootstrap(level: DrupalBootLevels::MAX)]
-    #[CLI\Topics(topics: ['docs:readme'])]
+    #[CLI\Topics(topics: [DocsCommands::README])]
     public function status($options = ['project' => self::REQ, 'format' => 'table']): PropertyList
     {
         $data = $this->getPropertyList($options);
@@ -172,6 +172,9 @@ final class StatusCommands extends DrushCommands implements SiteAliasManagerAwar
 
     public function renderStatusCell($key, $cellData, FormatterOptions $options)
     {
+        if ($key == 'drush-version') {
+            return Drush::sanitizeVersionString($cellData);
+        }
         if (is_array($cellData)) {
             return implode("\n", $cellData);
         }

@@ -25,6 +25,8 @@ class FunctionalCoreTest extends CommandUnishTestCase
 
     public function testSiteSelectionViaCwd()
     {
+        $this->markTestSkipped("Drush 12.x no longer supports site selection via cwd");
+
         // $cwd = getcwd();
         foreach (['dev', 'stage'] as $uri) {
             $conf_dir = $this->webroot() . '/sites/' . $uri;
@@ -167,7 +169,7 @@ class FunctionalCoreTest extends CommandUnishTestCase
         file_put_contents($drush_config_file, Yaml::dump($drush_yml_options, PHP_INT_MAX, 2));
         file_put_contents($a_drush_config_file, Yaml::dump($a_drush_yml_options, PHP_INT_MAX, 2));
         file_put_contents($b_drush_config_file, Yaml::dump($b_drush_yml_options, PHP_INT_MAX, 2));
-        $this->drush(StatusCommands::STATUS, [], $command_options, null, $this->getSut());
+        $this->drush(StatusCommands::STATUS, [], $command_options);
         unlink($drush_config_file);
         unlink($a_drush_config_file);
         unlink($b_drush_config_file);

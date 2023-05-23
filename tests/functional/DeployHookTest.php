@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Unish;
 
 use Drush\Commands\core\StatusCommands;
-use Drush\Drupal\Commands\core\DeployHookCommands;
-use Drush\Drupal\Commands\core\StateCommands;
-use Drush\Drupal\Commands\pm\PmCommands;
+use Drush\Commands\core\DeployHookCommands;
+use Drush\Commands\core\StateCommands;
+use Drush\Commands\pm\PmCommands;
 use Symfony\Component\Filesystem\Path;
 
 /**
@@ -25,7 +25,6 @@ class DeployHookTest extends CommandUnishTestCase
         $options = [
             'yes' => null,
         ];
-        $this->setupModulesForTests(['woot'], Path::join(__DIR__, '/../fixtures/modules'));
         $this->drush(PmCommands::INSTALL, ['woot'], $options);
 
         // Run deploy hooks.
@@ -65,7 +64,6 @@ class DeployHookTest extends CommandUnishTestCase
     public function testSkipDeployHooks()
     {
         $this->setUpDrupal(1, true);
-        $this->setupModulesForTests(['woot'], Path::join(__DIR__, '/../fixtures/modules'));
         $this->drush(PmCommands::INSTALL, ['woot'], ['yes' => null]);
 
         $options = [
@@ -107,7 +105,6 @@ class DeployHookTest extends CommandUnishTestCase
         $options = [
             'yes' => null,
         ];
-        $this->setupModulesForTests(['woot_deploy'], Path::join(__DIR__, '/../fixtures/modules'));
         $this->drush(PmCommands::INSTALL, ['woot_deploy'], $options);
 
         // Run deploy hooks.

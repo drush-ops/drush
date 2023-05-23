@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Unish;
 
 use Composer\Semver\Comparator;
@@ -7,6 +9,7 @@ use Consolidation\SiteAlias\SiteAlias;
 use Consolidation\SiteProcess\ProcessManager;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Path;
+use Symfony\Component\Process\Process;
 use Symfony\Component\Yaml\Yaml;
 
 abstract class UnishTestCase extends TestCase
@@ -18,48 +21,44 @@ abstract class UnishTestCase extends TestCase
     const UNISH_EXITCODE_USER_ABORT = 75; // Same as DRUSH_EXITCODE_USER_ABORT
     const INTEGRATION_TEST_ENV = 'default';
 
-    protected $processManager;
+    protected ?ProcessManager $processManager = null;
 
     /**
      * Process of last executed command.
-     *
-     * @var Process
      */
-    protected $process;
+    protected ?Process $process = null;
 
     /**
      * A list of Drupal sites that have been recently installed. They key is the
      * site name and values are details about each site.
-     *
-     * @var array
      */
-    private static $sites = [];
+    private static array $sites = [];
 
-    private static $sandbox;
+    private static string $sandbox;
 
-    private static $drush;
+    private static string $drush;
 
-    private static $db_url;
+    private static string $db_url;
 
-    private static $usergroup = null;
+    private static ?string $usergroup = null;
 
-    public function __construct($name = null, array $data = [], $dataName = '')
+    public function __construct(?string $name = null, array $data = [], $dataName = '')
     {
         parent::__construct($name, $data, $dataName);
 
         // We read from env then globals then default to mysql.
-        self::$db_url = getenv('UNISH_DB_URL') ?: (isset($GLOBALS['UNISH_DB_URL']) ? $GLOBALS['UNISH_DB_URL'] : 'mysql://root:@127.0.0.1');
+        self::$db_url = getenv('UNISH_DB_URL') ?: ($GLOBALS['UNISH_DB_URL'] ?? 'mysql://root:@127.0.0.1');
 
         // require_once __DIR__ . '/unish.inc';
         // list($unish_tmp, $unish_sandbox, $unish_drush_dir) = \unishGetPaths();
-        $unish_sandbox = Path::join(dirname(dirname(__DIR__)), 'sandbox');
+        $unish_sandbox = Path::join(dirname(__DIR__, 2), 'sandbox');
         self::mkdir($unish_sandbox);
         $unish_cache = Path::join($unish_sandbox, 'cache');
 
         self::$drush = Path::join(self::getComposerRoot(), 'drush');
 
         self::$sandbox = $unish_sandbox;
-        self::$usergroup = isset($GLOBALS['UNISH_USERGROUP']) ? $GLOBALS['UNISH_USERGROUP'] : null;
+        self::$usergroup = $GLOBALS['UNISH_USERGROUP'] ?? null;
 
         self::setEnv(['CACHE_PREFIX' => $unish_cache]);
         $home = $unish_sandbox . '/home';
@@ -73,65 +72,45 @@ abstract class UnishTestCase extends TestCase
         self::setEnv(['FIXTURES_DIR' => Path::join(dirname(__DIR__), 'fixtures')]);
     }
 
-    /**
-     * @return array
-     */
-    public static function getSites()
+    public static function getSites(): array
     {
         return self::$sites;
     }
 
-    /**
-     * @return array
-     */
-    public static function getAliases()
+    public static function getAliases(): array
     {
         // Prefix @sut. onto each site.
         foreach (self::$sites as $key => $site) {
             $aliases[$key] = '@sut.' . $key;
         }
-        return $aliases;
+        return $aliases ?? [];
     }
 
-    public static function getUri($site = 'dev')
+    public static function getUri($site = 'dev'): string
     {
         return self::$sites[$site]['uri'];
     }
 
-    /**
-     * @return string
-     */
-    public static function getDrush()
+    public static function getDrush(): string
     {
         return self::$drush;
     }
 
-    /**
-     * @return string
-     */
-    public static function getSandbox()
+    public static function getSandbox(): string
     {
         return self::$sandbox;
     }
 
-    /**
-     * @return string
-     */
-    public static function getSut()
+    public static function getComposerRoot(): string
     {
-        return self::getComposerRoot();
-    }
-
-    public static function getComposerRoot()
-    {
-        return Path::canonicalize(dirname(dirname(__DIR__)));
+        return Path::canonicalize(dirname(__DIR__, 2));
     }
 
     /**
      * - Remove sandbox directory.
      * - Empty /modules, /profiles, /themes in SUT.
      */
-    public static function cleanDirs()
+    public static function cleanDirs(): void
     {
         $dirty = getenv('UNISH_DIRTY');
 
@@ -170,18 +149,12 @@ abstract class UnishTestCase extends TestCase
         }
     }
 
-    /**
-     * @return string
-     */
-    public static function getDbUrl()
+    public static function getDbUrl(): string
     {
         return self::$db_url;
     }
 
-    /**
-     * @return string
-     */
-    public static function getUserGroup()
+    public static function getUserGroup(): string
     {
         return self::$usergroup;
     }
@@ -221,14 +194,13 @@ abstract class UnishTestCase extends TestCase
     /**
      * Print a log message to the console.
      *
-     * @param string $message
-     * @param string $type
+     * @param $type
      *   Supported types are:
      *     - notice
      *     - verbose
      *     - debug
      */
-    public function log($message, $type = 'notice')
+    public function log(?string $message, string $type = 'notice'): void
     {
         $line = "\nLog: $message\n";
         switch ($this->logLevel()) {
@@ -259,7 +231,7 @@ abstract class UnishTestCase extends TestCase
         }
     }
 
-    public static function isWindows()
+    public static function isWindows(): bool
     {
         return strtoupper(substr(PHP_OS, 0, 3)) == "WIN";
     }
@@ -269,7 +241,7 @@ abstract class UnishTestCase extends TestCase
      *
      * Useful for longer running tests to indicate they're working.
      */
-    public function tick()
+    public function tick(): void
     {
         static $chars = ['/', '-', '\\', '|'];
         static $counter = 0;
@@ -284,7 +256,7 @@ abstract class UnishTestCase extends TestCase
      * Checks operating system and returns
      * supported bit bucket folder.
      */
-    public function bitBucket()
+    public function bitBucket(): string
     {
         if (!$this->isWindows()) {
             return '/dev/null';
@@ -329,10 +301,8 @@ abstract class UnishTestCase extends TestCase
      *
      * @param $length
      *   Number of characters the generated string should contain.
-     * @return
-     *   The generated string.
      */
-    public function randomString($length = 10)
+    public function randomString(int $length = 10): string
     {
         // This variable contains the list of allowable characters for the
         // password. Note that the number 0 and the letter 'O' have been
@@ -356,7 +326,7 @@ abstract class UnishTestCase extends TestCase
         return $pass;
     }
 
-    public static function mkdir($path)
+    public static function mkdir($path): bool
     {
         if (!is_dir($path)) {
             if (self::mkdir(dirname($path))) {
@@ -369,7 +339,7 @@ abstract class UnishTestCase extends TestCase
         return true;
     }
 
-    public static function recursiveCopy($src, $dst)
+    public static function recursiveCopy($src, $dst): void
     {
         $dir = opendir($src);
         self::mkdir($dst);
@@ -406,8 +376,7 @@ abstract class UnishTestCase extends TestCase
      *   Whether or not to try everything possible to delete the directory, even if
      *   it's read-only. Defaults to FALSE.
      * @param bool $follow_symlinks
-     *   Whether or not to delete symlinked files. Defaults to FALSE--simply
-     *   unlinking symbolic links.
+     *   Whether or not to delete symlinked files. Defaults to FALSE
      * @param string[] $exclude
      *   Top-level items to retain
      *
@@ -469,7 +438,7 @@ abstract class UnishTestCase extends TestCase
      *
      * @see drush_delete_dir_contents()
      */
-    public static function recursiveDeleteDirContents($dir, $force = false, $exclude = [])
+    public static function recursiveDeleteDirContents($dir, $force = false, $exclude = []): bool
     {
         $scandir = @scandir($dir);
         if (!is_array($scandir)) {
@@ -493,31 +462,27 @@ abstract class UnishTestCase extends TestCase
         return true;
     }
 
-    public static function webroot()
+    public static function webroot(): string
     {
-        return Path::join(self::getSut(), 'sut');
+        return Path::join(self::getComposerRoot(), 'sut');
     }
 
-    public static function webrootSlashDrush()
+    public static function webrootSlashDrush(): string
     {
         return Path::join(self::webroot(), 'drush');
     }
 
-    public static function directoryCache($subdir = '')
+    public static function directoryCache($subdir = ''): string
     {
         return getenv('CACHE_PREFIX') . '/' . $subdir;
     }
 
-    /**
-     * @param $env
-     * @return string
-     */
-    public function dbUrl($env)
+    public function dbUrl(string $env): string
     {
-        return substr(self::getDbUrl(), 0, 6) == 'sqlite'  ?  "sqlite://sites/$env/files/unish.sqlite" : self::getDbUrl() . '/unish_' . $env;
+        return str_starts_with(self::getDbUrl(), 'sqlite') ?  "sqlite://sites/$env/files/unish.sqlite" : self::getDbUrl() . '/unish_' . $env;
     }
 
-    public function dbDriver($db_url = null)
+    public function dbDriver($db_url = null): array|false|int|null|string
     {
         return parse_url($db_url ?: self::getDbUrl(), PHP_URL_SCHEME);
     }
@@ -526,10 +491,10 @@ abstract class UnishTestCase extends TestCase
      * Create some fixture sites that only have a 'settings.php' file
      * with a database record.
      *
-     * @param array $sites key=site_subdir value=array of extra alias data
-     * @param string $aliasGroup Write aliases into a file named group.alias.yml
+     * @param $sites key=site_subdir value=array of extra alias data
+     * @param $aliasGroup Write aliases into a file named group.alias.yml
      */
-    public function setupSettings(array $sites, $aliasGroup = 'fixture')
+    public function setupSettings(array $sites, string $aliasGroup = 'fixture'): void
     {
         foreach ($sites as $subdir => $extra) {
             $this->createSettings($subdir);
@@ -541,7 +506,7 @@ abstract class UnishTestCase extends TestCase
         $this->writeSiteAliases($siteAliasData, $aliasGroup);
     }
 
-    public function createSettings($subdir)
+    public function createSettings($subdir): void
     {
         $settingsContents = <<<EOT
 <?php
@@ -569,7 +534,7 @@ EOT;
      *
      * It is no longer supported to pass alternative versions of Drupal or an alternative install_profile.
      */
-    public function setupDrupal($num_sites = 1, $install = false, $options = [])
+    public function setupDrupal($num_sites = 1, $install = false, $options = []): array
     {
         $sites_subdirs_all = ['dev', 'stage', 'prod'];
         $sites_subdirs = array_slice($sites_subdirs_all, 0, $num_sites);
@@ -599,12 +564,12 @@ EOT;
      * @param string $version2
      * @return bool
      */
-    public function isDrupalGreaterThanOrEqualTo($version2)
+    public function isDrupalGreaterThanOrEqualTo($version2): bool
     {
         return Comparator::greaterThanOrEqualTo(\Drupal::VERSION, $version2);
     }
 
-    public function aliasFileData($sites_subdirs)
+    public function aliasFileData($sites_subdirs): array
     {
         $root = $this->webroot();
         // Stash details about each site.
@@ -629,7 +594,7 @@ EOT;
      *
      * @param $sites
      */
-    public function writeSiteAliases($sites, $aliasGroup = 'sut')
+    public function writeSiteAliases($sites, $aliasGroup = 'sut'): void
     {
         $target = Path::join(self::webrootSlashDrush(), "sites/$aliasGroup.site.yml");
         $this->mkdir(dirname($target));
@@ -641,7 +606,7 @@ EOT;
      *
      * It is no longer supported to pass alternative versions of Drupal or an alternative install_profile.
      */
-    public function installDrupal($env = 'dev', $install = false, $options = [], $refreshSettings = true)
+    public function installDrupal($env = 'dev', $install = false, $options = [], $refreshSettings = true): void
     {
         $root = $this->webroot();
         $uri = $env;
@@ -656,7 +621,7 @@ EOT;
         }
     }
 
-    protected function processManager()
+    protected function processManager(): ProcessManager
     {
         if (!$this->processManager) {
             $this->processManager = new ProcessManager();
@@ -664,7 +629,7 @@ EOT;
         return $this->processManager;
     }
 
-    protected function checkInstallSut($uri = self::INTEGRATION_TEST_ENV)
+    protected function checkInstallSut($uri = self::INTEGRATION_TEST_ENV): void
     {
         $sutAlias = $this->sutAlias($uri);
         $options = [
@@ -679,7 +644,7 @@ EOT;
         }
     }
 
-    protected function installSut($uri = self::INTEGRATION_TEST_ENV, $optionsFromTest = [], $refreshSettings = true)
+    protected function installSut($uri = self::INTEGRATION_TEST_ENV, $optionsFromTest = [], $refreshSettings = true): void
     {
         $root = $this->webroot();
         $siteDir = "$root/sites/$uri";
@@ -716,7 +681,7 @@ EOT;
     /**
      * The sitewide directory for Drupal extensions.
      */
-    public function drupalSitewideDirectory()
+    public function drupalSitewideDirectory(): string
     {
         return '/sites/all';
     }
@@ -725,7 +690,7 @@ EOT;
      * Write the provided string to a temporary file that will be
      * automatically deleted one exit.
      */
-    protected function writeToTmpFile($contents)
+    protected function writeToTmpFile($contents): string
     {
         $transient = Path::join($this->getSandbox(), 'transient');
         self::mkdir($transient);
@@ -740,7 +705,7 @@ EOT;
      * @param array $vars
      *   The variables to set.
      */
-    public static function setEnv(array $vars)
+    public static function setEnv(array $vars): void
     {
         foreach ($vars as $k => $v) {
             // Value must be a string. See \Symfony\Component\Process\Process::getDefaultEnv.
@@ -753,10 +718,8 @@ EOT;
 
     /**
      * Borrowed from \Symfony\Component\Process\Exception\ProcessTimedOutException
-     *
-     * @return string
      */
-    public function buildProcessMessage()
+    public function buildProcessMessage(): string
     {
         $error = sprintf(
             "%s\n\nExit Code: %s(%s)\n\nWorking directory: %s",

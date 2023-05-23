@@ -41,30 +41,22 @@ abstract class SqlBase implements ConfigAwareInterface
     use SqlTableSelectionTrait;
     use ConfigAwareTrait;
 
-    // An Drupal style array containing specs for connecting to database.
-    public array $dbSpec;
-
     // Default code appended to sql connections.
-    public $queryExtra = '';
+    public string $queryExtra = '';
 
     // The way you pass a sql file when issueing a query.
-    public $queryFile = '<';
+    public string $queryFile = '<';
 
-    // An options array.
-    public $options;
-
-    /**
-     * @var Process
-     */
-    protected $process;
+    protected Process $process;
 
     /**
      * Typically, SqlBase instances are constructed via SqlBase::create($options).
      */
-    public function __construct($db_spec, $options)
-    {
-        $this->dbSpec = $db_spec;
-        $this->options = $options;
+    public function __construct(
+        // A Drupal style array containing specs for connecting to database.
+        public array $dbSpec,
+        public array $options
+    ) {
     }
 
     /**
@@ -164,7 +156,7 @@ abstract class SqlBase implements ConfigAwareInterface
     /**
      * A string for connecting to a database.
      *
-     * @param bool $hide_password
+     * @param $hide_password
      *  If TRUE, DBMS should try to hide password from process list.
      *  On mysql, that means using --defaults-file to supply the user+password.
      */
@@ -180,7 +172,7 @@ abstract class SqlBase implements ConfigAwareInterface
      * @return
      *   Returns path to dump file, or false on failure.
      */
-    public function dump()
+    public function dump(): string|bool|null
     {
         /** @var string|bool $file Path where dump file should be stored. If TRUE, generate a path based on usual backup directory and current date.*/
         $file = $this->getOption('result-file');
@@ -295,7 +287,7 @@ abstract class SqlBase implements ConfigAwareInterface
      * @param $result_file
      *   A path to save query results to. Can be drush_bit_bucket() if desired.
      *
-     * @return boolean
+     * @return bool
      *   TRUE on success, FALSE on failure
      */
     public function query(string $query, $input_file = null, $result_file = ''): ?bool

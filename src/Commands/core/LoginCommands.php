@@ -4,8 +4,14 @@ declare(strict_types=1);
 
 namespace Drush\Commands\core;
 
+use Drupal\Component\Datetime\TimeInterface;
+use Drupal\Core\Config\ConfigFactoryInterface;
+use Drupal\Core\Extension\ModuleHandlerInterface;
+use Drupal\Core\Language\LanguageManagerInterface;
+use Drupal\Core\State\StateInterface;
 use Drush\Attributes as CLI;
 use Drupal\user\Entity\User;
+use Drush\Boot\BootstrapManager;
 use Drush\Boot\DrupalBootLevels;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
@@ -13,6 +19,7 @@ use Drush\Exec\ExecTrait;
 use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
 use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
 use Drupal\Core\Url;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 final class LoginCommands extends DrushCommands implements SiteAliasManagerAwareInterface
 {
@@ -20,6 +27,22 @@ final class LoginCommands extends DrushCommands implements SiteAliasManagerAware
     use ExecTrait;
 
     const LOGIN = 'user:login';
+
+    public function __construct(protected TimeInterface $time, protected LanguageManagerInterface $languageManager, private BootstrapManager $bootstrapManager)
+    {
+        parent::__construct();
+    }
+
+    public static function create(ContainerInterface $container, $drush_container): self
+    {
+        $commandHandler = new static(
+            $container->get('datetime.time'),
+            $container->get('language_manager'),
+            $drush_container->get('bootstrap.manager')
+        );
+
+        return $commandHandler;
+    }
 
     /**
      * Display a one time login link for user ID 1, or another user.
@@ -47,7 +70,7 @@ final class LoginCommands extends DrushCommands implements SiteAliasManagerAware
             $process->mustRun();
             $link = $process->getOutput();
         } else {
-            if (!Drush::bootstrapManager()->doBootstrap(DrupalBootLevels::FULL)) {
+            if (!$this->bootstrapManager->doBootstrap(DrupalBootLevels::FULL)) {
                 throw new \Exception(dt('Unable to bootstrap Drupal.'));
             }
 
@@ -72,7 +95,7 @@ final class LoginCommands extends DrushCommands implements SiteAliasManagerAware
                 throw new \InvalidArgumentException(dt('Account !name is blocked and thus cannot login. The user:unblock command may be helpful.', ['!name' => $account->getAccountName()]));
             }
 
-            $timestamp = \Drupal::time()->getRequestTime();
+            $timestamp = $this->time->getRequestTime();
             $link = Url::fromRoute(
                 'user.reset.login',
                 [
@@ -83,7 +106,7 @@ final class LoginCommands extends DrushCommands implements SiteAliasManagerAware
                 [
                   'absolute' => true,
                   'query' => $path ? ['destination' => $path] : [],
-                  'language' => \Drupal::languageManager()->getLanguage($account->getPreferredLangcode()),
+                  'language' => $this->languageManager->getLanguage($account->getPreferredLangcode()),
                 ]
             )->toString();
         }
