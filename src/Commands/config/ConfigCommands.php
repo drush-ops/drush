@@ -171,9 +171,9 @@ final class ConfigCommands extends DrushCommands implements StdinAwareInterface,
             $data = [];
         }
 
-        // Special handling for empty array.
+        // Special handling for null.
         if (strtolower($data) == 'null') {
-            $data = NULL;
+            $data = null;
         }
 
         if ($options['input-format'] === 'yaml') {
