@@ -147,6 +147,7 @@ final class ConfigCommands extends DrushCommands implements StdinAwareInterface,
     #[CLI\Usage(name: 'drush config:set system.site name MySite', description: 'Sets a value for the key <info>name</info> of <info>system.site</info> config object.')]
     #[CLI\Usage(name: 'drush config:set system.site page.front /path/to/page', description: 'Sets the given URL path as value for the config item with key <info>page.front</info> of <info>system.site</info> config object.')]
     #[CLI\Usage(name: 'drush config:set system.site \'[]\'', description: 'Sets the given key to an empty array.')]
+    #[CLI\Usage(name: 'drush config:set system.site \'NULL\'', description: 'Sets the given key to NULL.')]
     #[CLI\Usage(name: 'drush config:set --input-format=yaml user.role.authenticated permissions [foo,bar]', description: 'Use a sequence as value for the key <info>permissions</info> of <info>user.role.authenticated</info> config object.')]
     #[CLI\Usage(name: "drush config:set --input-format=yaml system.site page {403: '403', front: home}", description: 'Use a mapping as value for the key <info>page</info> of <info>system.site</info> config object.')]
     #[CLI\Usage(name: 'drush config:set --input-format=yaml user.role.authenticated ? "{label: \'Auth user\', weight: 5}"', description: 'Update two top level keys (label, weight) in the <info>system.site</info> config object.')]
@@ -168,6 +169,11 @@ final class ConfigCommands extends DrushCommands implements StdinAwareInterface,
         // Special handling for empty array.
         if ($data == '[]') {
             $data = [];
+        }
+
+        // Special handling for null.
+        if (strtolower($data) == 'null') {
+            $data = null;
         }
 
         if ($options['input-format'] === 'yaml') {
