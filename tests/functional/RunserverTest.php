@@ -23,7 +23,7 @@ class RunserverTest extends CommandUnishTestCase
             $this->log(sprintf('%s - Killing process with ID %d', date('r'), $pid), 'info');
             exec('kill ' . $pid);
         });
-        $file = file_get_contents('http://127.0.0.1:8888');
-        $this->assertStringContainsString('Enter your Drush Site-Install username', $file);
+        $file = file_get_contents('http://localhost:8888');
+        $this->assertStringContainsString('Choose language', $file);
     }
 }
