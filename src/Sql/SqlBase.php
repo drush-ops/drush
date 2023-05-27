@@ -601,14 +601,29 @@ abstract class SqlBase implements ConfigAwareInterface
                     'path'   => null,
                 ];
                 $url = (object)array_map('urldecode', $url);
-                $db_spec = [
-                    'driver'   => $url->scheme,
-                    'username' => $url->user,
-                    'password' => $url->pass,
-                    'host' => $url->host,
-                    'port' => $url->port,
-                    'database' => ltrim($url->path, '/'),
-                ];
+
+                // Use unix socket file path if we have one (unix:///tmp/mysql.sock).
+                if ($url->host == 'unix') {
+                    // Clean the path from leading slashes.
+                    $path = substr($url->path, 2);
+
+                    $db_spec = [
+                        'driver'   => $url->scheme,
+                        'username' => $url->user,
+                        'password' => $url->pass,
+                        'unix_socket' => substr($path, 0, strrpos($path, '/')),
+                        'database' => substr($path, strrpos($path, '/') + 1),
+                    ];
+                } else {
+                    $db_spec = [
+                        'driver'   => $url->scheme,
+                        'username' => $url->user,
+                        'password' => $url->pass,
+                        'host' => $url->host,
+                        'port' => $url->port,
+                        'database' => ltrim($url->path, '/'),
+                    ];
+                }
             }
         }
 
