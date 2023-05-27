@@ -135,8 +135,8 @@ final class RunserverCommands extends DrushCommands implements ConfigAwareInterf
         }
         // FILTER_VALIDATE_IP expects '[' and ']' to be removed from IPv6 addresses.
         // We check for colon from the right, since IPv6 addresses contain colons.
-        $to_path = trim(substr($uri, 0, strpos($uri, '/')), '[]');
-        $to_port = trim(substr($uri, 0, strrpos($uri, ':')), '[]');
+        $to_path = trim(substr($uri, 0, (int)strpos($uri, '/')), '[]');
+        $to_port = trim(substr($uri, 0, (int)strrpos($uri, ':')), '[]');
         if (filter_var(trim($uri, '[]'), FILTER_VALIDATE_IP) || filter_var($to_path, FILTER_VALIDATE_IP) || filter_var($to_port, FILTER_VALIDATE_IP)) {
             // 'IP', 'IP/path' or 'IP:port' shorthand, insert a schema to allow parsing.
             $uri = 'http://' . $uri;
