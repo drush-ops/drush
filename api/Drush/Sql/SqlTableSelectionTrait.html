@@ -86,7 +86,7 @@
 
     
     <p>        trait
-    <strong>SqlTableSelectionTrait</strong>        (<a href="https://github.com/drush-ops/drush/blob/11.x/src/Sql/SqlTableSelectionTrait.php">View source</a>)
+    <strong>SqlTableSelectionTrait</strong>        (<a href="https://github.com/drush-ops/drush/blob/12.x/src/Sql/SqlTableSelectionTrait.php">View source</a>)
 </p>
 
         
@@ -127,7 +127,7 @@ that exist in the database.</p></p>                </div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    
+                    array
                 </div>
                 <div class="col-md-8">
                     <a href="#method_expandWildcardTables">expandWildcardTables</a>(array $tables, array $db_tables)
@@ -137,7 +137,7 @@ that exist in the database.</p></p>                </div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    <abbr title="Drush\Sql\An">An</abbr>
+                    array
                 </div>
                 <div class="col-md-8">
                     <a href="#method_filterTables">filterTables</a>(array $tables, array $db_tables)
@@ -150,7 +150,7 @@ that exist in the database.</p></p>                </div>
                     array
                 </div>
                 <div class="col-md-8">
-                    <a href="#method_getTableSelection">getTableSelection</a>($options)
+                    <a href="#method_getTableSelection">getTableSelection</a>(array $options)
         
                                             <p><p>Construct an array that places table names in appropriate
 buckets based on whether the table is to be skipped, included
@@ -162,7 +162,7 @@ for structure only, or have structure and data dumped.</p></p>                </
                     array
                 </div>
                 <div class="col-md-8">
-                    <a href="#method_getRawTableList">getRawTableList</a>($option_name, array $options)
+                    <a href="#method_getRawTableList">getRawTableList</a>(string $option_name, array $options)
         
                                             <p><p>Consult the specified options and return the list of tables specified.</p></p>                </div>
                 <div class="col-md-2"></div>
@@ -175,7 +175,7 @@ for structure only, or have structure and data dumped.</p></p>                </
             <div id="method-details">
                     <div class="method-item">
                     <h3 id="method_getExpandedTableSelection">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Sql/SqlTableSelectionTrait.php#L25">at line 25</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Sql/SqlTableSelectionTrait.php#L25">at line 25</a></div>
         <code>                    array
     <strong>getExpandedTableSelection</strong>(array $options, array $all_tables)
         </code>
@@ -210,7 +210,7 @@ option-provided lists into a list of actual table names.</p></p>
                     <table class="table table-condensed">
         <tr>
             <td>array</td>
-            <td><p>An array of tables with each table name in the appropriate
+            <td><p>array of tables with each table name in the appropriate
 element of the array.</p></td>
         </tr>
     </table>
@@ -224,7 +224,7 @@ element of the array.</p></td>
             </div>
                     <div class="method-item">
                     <h3 id="method_expandAndFilterTables">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Sql/SqlTableSelectionTrait.php#L54">at line 54</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Sql/SqlTableSelectionTrait.php#L54">at line 54</a></div>
         <code>                    array
     <strong>expandAndFilterTables</strong>(array $tables, array $db_tables)
         </code>
@@ -261,7 +261,7 @@ that exist in the database.</p></p>
                     <table class="table table-condensed">
         <tr>
             <td>array</td>
-            <td><p>An array of tables with non-existant tables removed.</p></td>
+            <td><p>array of tables with non-existant tables removed.</p></td>
         </tr>
     </table>
 
@@ -274,8 +274,8 @@ that exist in the database.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_expandWildcardTables">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Sql/SqlTableSelectionTrait.php#L73">at line 73</a></div>
-        <code>                    
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Sql/SqlTableSelectionTrait.php#L73">at line 73</a></div>
+        <code>                    array
     <strong>expandWildcardTables</strong>(array $tables, array $db_tables)
         </code>
     </h3>
@@ -303,6 +303,15 @@ that exist in the database.</p></p>
             </table>
 
             
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>array</td>
+            <td></td>
+        </tr>
+    </table>
+
             
             
             
@@ -312,8 +321,8 @@ that exist in the database.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_filterTables">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Sql/SqlTableSelectionTrait.php#L100">at line 100</a></div>
-        <code>                    <abbr title="Drush\Sql\An">An</abbr>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Sql/SqlTableSelectionTrait.php#L100">at line 100</a></div>
+        <code>                    array
     <strong>filterTables</strong>(array $tables, array $db_tables)
         </code>
     </h3>
@@ -345,7 +354,7 @@ that exist in the database.</p></p>
 
                     <table class="table table-condensed">
         <tr>
-            <td><abbr title="Drush\Sql\An">An</abbr></td>
+            <td>array</td>
             <td><p>array with only valid table names (i.e. all of which actually exist in
 the database).</p></td>
         </tr>
@@ -360,9 +369,9 @@ the database).</p></td>
             </div>
                     <div class="method-item">
                     <h3 id="method_getTableSelection">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Sql/SqlTableSelectionTrait.php#L125">at line 125</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Sql/SqlTableSelectionTrait.php#L125">at line 125</a></div>
         <code>                    array
-    <strong>getTableSelection</strong>($options)
+    <strong>getTableSelection</strong>(array $options)
         </code>
     </h3>
     <div class="details">    
@@ -384,7 +393,7 @@ for structure only, or have structure and data dumped.</p></p>                <p
 
                     <table class="table table-condensed">
                     <tr>
-                <td></td>
+                <td>array</td>
                 <td>$options</td>
                 <td></td>
             </tr>
@@ -396,7 +405,7 @@ for structure only, or have structure and data dumped.</p></p>                <p
                     <table class="table table-condensed">
         <tr>
             <td>array</td>
-            <td><p>An array of table names with each table name in the appropriate
+            <td><p>array of table names with each table name in the appropriate
 element of the array.</p></td>
         </tr>
     </table>
@@ -410,9 +419,9 @@ element of the array.</p></td>
             </div>
                     <div class="method-item">
                     <h3 id="method_getRawTableList">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Sql/SqlTableSelectionTrait.php#L148">at line 148</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Sql/SqlTableSelectionTrait.php#L148">at line 148</a></div>
         <code>                    array
-    <strong>getRawTableList</strong>($option_name, array $options)
+    <strong>getRawTableList</strong>(string $option_name, array $options)
         </code>
     </h3>
     <div class="details">    
@@ -427,7 +436,7 @@ element of the array.</p></td>
 
                     <table class="table table-condensed">
                     <tr>
-                <td></td>
+                <td>string</td>
                 <td>$option_name</td>
                 <td></td>
             </tr>
@@ -444,7 +453,7 @@ element of the array.</p></td>
                     <table class="table table-condensed">
         <tr>
             <td>array</td>
-            <td><p>Returns an array of tables based on the first option
+            <td><p>an array of tables based on the first option
 found, or an empty array if there were no matches.</p></td>
         </tr>
     </table>
