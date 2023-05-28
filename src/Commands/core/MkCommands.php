@@ -10,17 +10,17 @@ use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
 use Drush\Attributes as CLI;
 use Drush\Boot\DrupalBootLevels;
 use Drush\Commands\DrushCommands;
+use Drush\Commands\generate\ApplicationFactory;
 use Drush\Commands\help\HelpCLIFormatter;
 use Drush\Commands\help\ListCommands;
-use Drush\Config\ConfigAwareTrait;
-use Drush\Commands\generate\ApplicationFactory;
 use Drush\Drush;
 use Drush\SiteAlias\SiteAliasManagerAwareInterface;
-use Robo\Contract\ConfigAwareInterface;
+use Psr\Container\ContainerInterface as DrushContainer;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Path;
 use Symfony\Component\Yaml\Yaml;
@@ -28,6 +28,22 @@ use Symfony\Component\Yaml\Yaml;
 final class MkCommands extends DrushCommands implements SiteAliasManagerAwareInterface
 {
     use SiteAliasManagerAwareTrait;
+
+    protected function __construct(
+        private ContainerInterface $container,
+        private DrushContainer $drush_container,
+    ) {
+    }
+
+    public static function create(ContainerInterface $container, DrushContainer $drush_container): self
+    {
+        $commandHandler = new static(
+            $container,
+            $drush_container,
+        );
+
+        return $commandHandler;
+    }
 
     /**
      * Build a Markdown document for each Drush command/generator that is available on a site.
@@ -53,7 +69,7 @@ final class MkCommands extends DrushCommands implements SiteAliasManagerAwareInt
         $destination = 'generators';
         $destination_path = Path::join($dir_root, 'docs', $destination);
         $this->prepare($destination_path);
-        $application_generate = (new ApplicationFactory(\Drupal::getContainer(), $this->logger()))->create();
+        $application_generate = (new ApplicationFactory($this->container, $this->drush_container, $this->logger()))->create();
         $all = $this->createAnnotatedCommands($application_generate, Drush::getApplication());
         $namespaced = ListCommands::categorize($all);
         [$nav_generators, $pages_generators, $map_generators] = $this->writeContentFilesAndBuildNavAndBuildRedirectMap($namespaced, $destination, $dir_root, $destination_path);
