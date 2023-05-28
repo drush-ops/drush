@@ -1134,20 +1134,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../../commands/birds/" class="md-nav__link">
-        birds
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../../commands/browse/" class="md-nav__link">
         browse
       </a>
@@ -3999,20 +3985,6 @@
 
             
           
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../generators/drush_testing-generator/" class="md-nav__link">
-        drush:testing-generator
-      </a>
-    </li>
-  
-
-            
-          
         </ul>
       </nav>
     </li>
@@ -5215,10 +5187,12 @@ high quality, our tests are run on every push. See <a href="https://circleci.com
 <li>Run only tests matching a regex: <code>composer functional -- --filter testUserRole</code></li>
 <li>Skip slow tests (usually those with network usage): <code>composer functional -- --exclude-group slow</code></li>
 <li>XML results: <code>composer functional -- --log-junit results.xml</code></li>
-<li>Ad-hoc testing with the SUT</li>
+<li>Ad-hoc testing with the SUT<ul>
 <li><code>composer sut:si</code>. <a href="https://github.com/drush-ops/drush/blob/dde2793453ed96cc8b9e5bbc1b66e3d8d26be1f6/composer.json#L117">See composer.json for details</a>.</li>
 <li><code>UNISH_DIRTY=1 composer functional -- --filter testUserRole</code></li>
 <li><code>./drush @sut.dev status</code></li>
+</ul>
+</li>
 </ul>
 <h2 id="about-the-test-suites">About the Test Suites<a class="headerlink" href="#about-the-test-suites" title="Permanent link">&para;</a></h2>
 <ul>
@@ -5245,7 +5219,7 @@ high quality, our tests are run on every push. See <a href="https://circleci.com
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">March 15, 2023</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">May 28, 2023</span>
       
     
   </small>

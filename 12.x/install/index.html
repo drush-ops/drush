@@ -1106,20 +1106,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../commands/birds/" class="md-nav__link">
-        birds
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../commands/browse/" class="md-nav__link">
         browse
       </a>
@@ -3971,20 +3957,6 @@
 
             
           
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../generators/drush_testing-generator/" class="md-nav__link">
-        drush:testing-generator
-      </a>
-    </li>
-  
-
-            
-          
         </ul>
       </nav>
     </li>
@@ -5164,8 +5136,9 @@
 <p>See the <a href="http://docs.drush.org/en/8.x">Drush 8</a> or <a href="https://docs.drush.org/en/9.x">Drush 9</a> docs for installing prior versions of Drush.</p>
 </div>
 <ol>
-<li>It is required that Drupal sites be built using Composer, with Drush listed as a dependency. Popular starter templates for that include <a href="https://github.com/drupal-composer/drupal-project">drupal-project</a> (Drush is included) and <a href="https://www.drupal.org/docs/develop/using-composer/using-composer-to-install-drupal-and-manage-dependencies">recommended-project</a> (Drush must be added). If your Composer project doesn't yet depend on Drush, run <code>composer require drush/drush</code> to add it. After this step, you may call Drush via <code>vendor/bin/drush</code>.</li>
-<li>Optional. To be able to call <code>drush</code> from anywhere, install the <a href="https://github.com/drush-ops/drush-launcher">Drush Launcher</a>. That is a small program which listens on your $PATH and hands control to a site-local Drush that is in the /vendor directory of your Composer project.</li>
+<li><strong>Composer</strong>. It is required that Drupal sites be built using Composer, with Drush listed as a dependency. See <a href="https://www.drupal.org/docs/develop/using-composer/using-composer-to-install-drupal-and-manage-dependencies">recommended-project</a> (Drush must be added). If your Composer project doesn't yet depend on Drush, run <code>composer require drush/drush</code> to add it. After this step, you may call Drush via <code>vendor/bin/drush</code>.</li>
+<li><strong>Completion</strong>. Optional. Append to .bashrc or equivalent for ZSH or <a href="https://fishshell.com/">Fish shell</a>. Run <code>drush completion --help</code> for more details.  </li>
+<li><strong>Launcher</strong>. Optional. To be able to call <code>drush</code> from anywhere, install the <a href="https://github.com/drush-ops/drush-launcher">Drush Launcher</a>. That is a small program which listens on your $PATH and hands control to a site-local Drush that is in the /vendor directory of your Composer project.</li>
 </ol>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -5265,7 +5238,7 @@
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">March 16, 2023</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">May 28, 2023</span>
       
     
   </small>

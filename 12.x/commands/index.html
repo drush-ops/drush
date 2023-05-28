@@ -101,7 +101,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#creating-custom-drush-commands" class="md-skip">
+        <a href="#creating-custom-commands" class="md-skip">
           Skip to content
         </a>
       
@@ -684,8 +684,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#altering-drush-command-info" class="md-nav__link">
-    Altering Drush Command Info
+  <a href="#altering-command-info" class="md-nav__link">
+    Altering Command Info
   </a>
   
 </li>
@@ -705,8 +705,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#site-wide-drush-commands" class="md-nav__link">
-    Site-Wide Drush Commands
+  <a href="#site-wide-commands" class="md-nav__link">
+    Site-wide Commands
   </a>
   
 </li>
@@ -1133,20 +1133,6 @@
     <li class="md-nav__item">
       <a href="all/" class="md-nav__link">
         all
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="birds/" class="md-nav__link">
-        birds
       </a>
     </li>
   
@@ -4010,20 +3996,6 @@
 
             
           
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../generators/drush_testing-generator/" class="md-nav__link">
-        drush:testing-generator
-      </a>
-    </li>
-  
-
-            
-          
         </ul>
       </nav>
     </li>
@@ -5195,7 +5167,7 @@
   
 
 
-<h1 id="creating-custom-drush-commands">Creating Custom Drush Commands<a class="headerlink" href="#creating-custom-drush-commands" title="Permanent link">&para;</a></h1>
+<h1 id="creating-custom-commands">Creating Custom Commands<a class="headerlink" href="#creating-custom-commands" title="Permanent link">&para;</a></h1>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
 <p>Drush 11 and prior required <a href="https://www.drush.org/11.x/dependency-injection/#services-files">dependency injection via a drush.services.yml file</a>. This approach is deprecated in Drush 12 and will be removed in Drush 13. See <a href="../dependency-injection/#create-method">create() method</a>.</p>
@@ -5253,7 +5225,7 @@
 <li>A commandfile that will only be used on PHP8+ should <a href="https://github.com/drush-ops/drush/pull/4821">use PHP Attributes</a> instead of Annotations.</li>
 <li><a href="https://www.drush.org/api/Drush/Attributes.html">See Attributes provided by Drush core</a>. Custom code can add additional attributes.</li>
 </ul>
-<h2 id="altering-drush-command-info">Altering Drush Command Info<a class="headerlink" href="#altering-drush-command-info" title="Permanent link">&para;</a></h2>
+<h2 id="altering-command-info">Altering Command Info<a class="headerlink" href="#altering-command-info" title="Permanent link">&para;</a></h2>
 <p>Drush command info (annotations/attributes) can be altered from other modules. This is done by creating and registering 'command info alterers'. Alterers are class services that are able to intercept and manipulate an existing command annotation.</p>
 <p>In order to alter an existing command info, follow the steps below:</p>
 <ol>
@@ -5289,8 +5261,8 @@ Using <code>require</code> in place of <code>conflict</code> is not recommended.
 <p class="admonition-title">Symlinked packages</p>
 <p>While it is good practice to make your custom commands into a Composer package, please beware that symlinked packages (by using the composer repository type <a href="https://getcomposer.org/doc/05-repositories.md#path">Path</a>) will <strong>not</strong> be discovered by Drush. When in development, it is recommended to <a href="https://github.com/drush-ops/drush/blob/12.x/examples/example.drush.yml#L52-L67">specify your package's</a> path in your <code>drush.yml</code> to have quick access to your commands.</p>
 </div>
-<h2 id="site-wide-drush-commands">Site-Wide Drush Commands<a class="headerlink" href="#site-wide-drush-commands" title="Permanent link">&para;</a></h2>
-<p>Commandfiles that are installed in a Drupal site and are not bundled inside a Drupal module are called 'site-wide' commandfiles. Site-wide commands may either be added directly to the Drupal site's repository (e.g. for site-specific policy files), or via <code>composer require</code>. See the <a href="https://github.com/drush-ops/drush/tree/12.x/examples/Commands">examples/Commands</a> folder for examples. In general, it's preferable to use modules to carry your Drush commands.</p>
+<h2 id="site-wide-commands">Site-wide Commands<a class="headerlink" href="#site-wide-commands" title="Permanent link">&para;</a></h2>
+<p>Commandfiles that are installed in a Drupal site and are not bundled inside a Drupal module are called <em>site-wide</em> commandfiles. Site-wide commands may either be added directly to the Drupal site's repository (e.g. for site-specific policy files), or via <code>composer require</code>. See the <a href="https://github.com/drush-ops/drush/tree/12.x/examples/Commands">examples/Commands</a> folder for examples. In general, it's preferable to use modules to carry your Drush commands.</p>
 <p>Here are some examples of valid commandfile names and namespaces:</p>
 <ol>
 <li>Simple<ul>
@@ -5346,7 +5318,7 @@ With this configuration in place, global commands may be placed as described in 
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">May 20, 2023</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">May 22, 2023</span>
       
     
   </small>

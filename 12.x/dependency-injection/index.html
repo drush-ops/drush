@@ -1131,20 +1131,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../commands/birds/" class="md-nav__link">
-        birds
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../commands/browse/" class="md-nav__link">
         browse
       </a>
@@ -3996,20 +3982,6 @@
 
             
           
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../generators/drush_testing-generator/" class="md-nav__link">
-        drush:testing-generator
-      </a>
-    </li>
-  
-
-            
-          
         </ul>
       </nav>
     </li>
@@ -5199,6 +5171,7 @@
 </code></pre></div>
 The code that is responsible for providing the dependencies a class needs is usually an object called the dependency injection container.</p>
 <h2 id="create-method">create() method<a class="headerlink" href="#create-method" title="Permanent link">&para;</a></h2>
+<p><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7.75 6.5a1.25 1.25 0 1 0 0 2.5 1.25 1.25 0 0 0 0-2.5Z"/><path d="M2.5 1h8.44a1.5 1.5 0 0 1 1.06.44l10.25 10.25a1.5 1.5 0 0 1 0 2.12l-8.44 8.44a1.5 1.5 0 0 1-2.12 0L1.44 12A1.497 1.497 0 0 1 1 10.94V2.5A1.5 1.5 0 0 1 2.5 1Zm0 1.5v8.44l10.25 10.25 8.44-8.44L10.94 2.5Z"/></svg></span> 11.6+</p>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
 <p>Drush 11 and prior required <a href="https://www.drush.org/11.x/dependency-injection/#services-files">dependency injection via a drush.services.yml file</a>. This approach is deprecated in Drush 12 and will be removed in Drush 13.</p>
@@ -5222,7 +5195,8 @@ See the <a href="https://www.drupal.org/docs/drupal-apis/services-and-dependency
 <p>Note that if you do not need to pull any services from the Drush container, then you may
 omit the second parameter to the <code>create()</code> method.</p>
 <h2 id="createearly-method">createEarly() method<a class="headerlink" href="#createearly-method" title="Permanent link">&para;</a></h2>
-<p>Drush commands that need to be instantiated prior to bootstrap may do so by
+<p><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7.75 6.5a1.25 1.25 0 1 0 0 2.5 1.25 1.25 0 0 0 0-2.5Z"/><path d="M2.5 1h8.44a1.5 1.5 0 0 1 1.06.44l10.25 10.25a1.5 1.5 0 0 1 0 2.12l-8.44 8.44a1.5 1.5 0 0 1-2.12 0L1.44 12A1.497 1.497 0 0 1 1 10.94V2.5A1.5 1.5 0 0 1 2.5 1Zm0 1.5v8.44l10.25 10.25 8.44-8.44L10.94 2.5Z"/></svg></span> 12.0+
+Drush commands that need to be instantiated prior to bootstrap may do so by
 utilizing the <code>createEarly()</code> static factory. This method looks and functions
 exacty like the <code>create()</code> static factory, except it is only passed the Drush
 container. The Drupal container is not avalable to command handlers that use
@@ -5278,7 +5252,7 @@ may be removed in Drush 13.</p>
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">May 21, 2023</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">May 22, 2023</span>
       
     
   </small>

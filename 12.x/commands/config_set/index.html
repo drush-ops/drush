@@ -1069,20 +1069,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../birds/" class="md-nav__link">
-        birds
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../browse/" class="md-nav__link">
         browse
       </a>
@@ -4005,20 +3991,6 @@
 
             
           
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../generators/drush_testing-generator/" class="md-nav__link">
-        drush:testing-generator
-      </a>
-    </li>
-  
-
-            
-          
         </ul>
       </nav>
     </li>
@@ -5197,6 +5169,7 @@
 <li><code>drush config:set system.site name MySite</code>. Sets a value for the key <em>name</em> of <em>system.site</em> config object.</li>
 <li><code>drush config:set system.site page.front /path/to/page</code>. Sets the given URL path as value for the config item with key <em>page.front</em> of <em>system.site</em> config object.</li>
 <li><code>drush config:set system.site '[]'</code>. Sets the given key to an empty array.</li>
+<li><code>drush config:set system.site 'NULL'</code>. Sets the given key to NULL.</li>
 <li><code>drush config:set --input-format=yaml user.role.authenticated permissions [foo,bar]</code>. Use a sequence as value for the key <em>permissions</em> of <em>user.role.authenticated</em> config object.</li>
 <li><code>drush config:set --input-format=yaml system.site page {403: '403', front: home}</code>. Use a mapping as value for the key <em>page</em> of <em>system.site</em> config object.</li>
 <li><code>drush config:set --input-format=yaml user.role.authenticated ? "{label: 'Auth user', weight: 5}"</code>. Update two top level keys (label, weight) in the <em>system.site</em> config object.</li>

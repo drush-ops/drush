@@ -746,6 +746,13 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#site-wide-generators" class="md-nav__link">
+    Site-wide Generators
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1105,20 +1112,6 @@
     <li class="md-nav__item">
       <a href="../commands/all/" class="md-nav__link">
         all
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../commands/birds/" class="md-nav__link">
-        birds
       </a>
     </li>
   
@@ -3982,20 +3975,6 @@
 
             
           
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="drush_testing-generator/" class="md-nav__link">
-        drush:testing-generator
-      </a>
-    </li>
-  
-
-            
-          
         </ul>
       </nav>
     </li>
@@ -5176,11 +5155,9 @@
 <ol>
 <li>Write a class similar to <a href="https://github.com/drush-ops/drush/tree/12.x/sut/modules/unish/woot/src/Generators">ExampleGenerator</a>. Implement your custom logic in the generate() method. Typically this class is placed under the src/Generators directory.</li>
 <li>Add a .twig file to the same directory. This template specifies what gets output from the generator.</li>
-<li>Add your class to your module's drush.services.yml file (<a href="https://github.com/drush-ops/drush/blob/12.x/sut/modules/unish/woot/drush.services.yml#L19-L23">example</a>). Use the tag <code>drush.generator.v3</code> instead of <code>drush.command</code>.</li>
-<li>Perform a <code>drush cache:rebuild</code> to compile your drush.services.yml changes into the Drupal container.</li>
 </ol>
 <h2 id="auto-discovered-generators-psr4">Auto-discovered Generators (PSR4)<a class="headerlink" href="#auto-discovered-generators-psr4" title="Permanent link">&para;</a></h2>
-<p>Generators that don't ship inside Drupal modules are called <em>global</em> generators. In general, it is better to use modules to carry your generators. If you still prefer using a global generator, please note:</p>
+<p>Generators that don't ship inside Drupal modules are called <em>global</em> generators. For example see <a href="https://github.com/drush-ops/drush/blob/12.x/tests/fixtures/lib/Drush/Generators/CustomDrushGenerator.php">CustomDrushGenerator</a>. In general, it is better to use modules to carry your generators. If you still prefer using a global generator, please note:</p>
 <ol>
 <li>The generator class should be PSR4 auto-loadable.</li>
 <li>The generator class namespace, relative to base namespace, should be <code>Drush\Generators</code>. For instance, if a Drush generator provider third party library maps this PSR4 autoload entry:
@@ -5191,21 +5168,19 @@
 <span class="p">}</span>
 </code></pre></div>
    then the Drush global generator class namespace should be <code>My\Custom\Library\Drush\Generators</code> and the class file should be located under the <code>src/Drush/Generators</code> directory.</li>
-<li>The global generator namespace should start with <code>\Drush\Generators</code> but this might be subject to change in the following release.</li>
-<li>The filename must have a name like FooGenerator.php. The prefix <code>Foo</code> can be whatever string you want. The file must end in <code>Generator.php</code></li>
-<li>When the namespace starts with <code>\Drush\Generators</code>, the directory above Generators must be one of:<ol>
-<li>A Folder listed in the <em>--include</em> option. include may be provided via config or via CLI.</li>
-<li><code>../drush</code>, <code>/drush</code> or <code>/sites/all/drush</code>. These paths are relative to Drupal root.</li>
+<li>The filename must have a name like FooGenerator.php. The prefix <code>Foo</code> can be whatever string you want. The file must end in <code>Generator.php</code>.</li>
 </ol>
-</li>
-</ol>
+<h2 id="site-wide-generators">Site-wide Generators<a class="headerlink" href="#site-wide-generators" title="Permanent link">&para;</a></h2>
+<p>Sitewide generators (as opposed to auto-discovered PSR4) have a namespace that starts with <code>\Drush\Generators</code>, the directory above Generators must be one of:
+    1.  A Folder listed in the <em>--include</em> option. include may be provided via config or via CLI.
+    1.  <code>../drush</code>, <code>/drush</code> or <code>/sites/all/drush</code>. These paths are relative to Drupal root.</p>
 
   <hr>
 <div class="md-source-file">
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">May 20, 2023</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">May 22, 2023</span>
       
     
   </small>
