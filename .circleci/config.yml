@@ -24,7 +24,7 @@ post_steps: &poststeps
 executors:
   mysql-stable:
     docker:
-      - image: wodby/php:8.1-dev
+      - image: wodby/php:8.1
         environment:
           - MYSQL_HOST=127.0.0.1
           - UNISH_DB_URL=mysql://root:@127.0.0.1
@@ -106,8 +106,6 @@ jobs:
             - run: composer -n config platform.php --unset
             - run: composer -n require --dev drupal/core-recommended:10.1.x-dev --no-update
             - run: composer -n update
-      # Used by runserver at this time.
-      - run: echo 127.0.0.1 devhost | sudo tee -a /etc/hosts
       - run: composer -n unit -- --log-junit /tmp/results/unit/junit.xml
       - run: composer -n << parameters.suite >> -- --log-junit /tmp/results/<< parameters.suite >>/junit.xml
 
