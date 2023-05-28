@@ -271,7 +271,22 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
+         <loc>https://www.drush.org/latest/latest/commands/field_formatters/</loc>
+         <lastmod>2023-05-28</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>https://www.drush.org/latest/latest/commands/field_info/</loc>
+         <lastmod>2023-05-28</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://www.drush.org/latest/latest/commands/field_types/</loc>
+         <lastmod>2023-05-28</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://www.drush.org/latest/latest/commands/field_widgets/</loc>
          <lastmod>2023-05-28</lastmod>
          <changefreq>daily</changefreq>
     </url>
@@ -292,6 +307,11 @@
     </url>
     <url>
          <loc>https://www.drush.org/latest/latest/commands/image_flush/</loc>
+         <lastmod>2023-05-28</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://www.drush.org/latest/latest/commands/improved_echo/</loc>
          <lastmod>2023-05-28</lastmod>
          <changefreq>daily</changefreq>
     </url>
@@ -541,6 +561,11 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
+         <loc>https://www.drush.org/latest/latest/commands/test_arithmatic/</loc>
+         <lastmod>2023-05-28</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>https://www.drush.org/latest/latest/commands/theme_install/</loc>
          <lastmod>2023-05-28</lastmod>
          <changefreq>daily</changefreq>
@@ -612,6 +637,11 @@
     </url>
     <url>
          <loc>https://www.drush.org/latest/latest/commands/user_unblock/</loc>
+         <lastmod>2023-05-28</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://www.drush.org/latest/latest/commands/validatestuff/</loc>
          <lastmod>2023-05-28</lastmod>
          <changefreq>daily</changefreq>
     </url>
