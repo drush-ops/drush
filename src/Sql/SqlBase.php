@@ -600,7 +600,8 @@ abstract class SqlBase implements ConfigAwareInterface
                     'port'   => null,
                     'path'   => null,
                 ];
-                $url = (object)array_map('urldecode', $url);
+                // Suppress deprecation notice when any value in $url is null.
+                $url = (object)@array_map('urldecode', $url);
                 $db_spec = [
                     'driver'   => $url->scheme,
                     'username' => $url->user,
