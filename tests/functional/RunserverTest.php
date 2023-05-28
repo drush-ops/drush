@@ -23,6 +23,7 @@ class RunserverTest extends CommandUnishTestCase
             $this->log(sprintf('%s - Killing process with ID %d', date('r'), $pid), 'info');
             exec('kill ' . $pid);
         });
+        sleep(3);
         $file = file_get_contents('http://localhost:8888');
         $this->assertStringContainsString('Choose language', $file);
     }
