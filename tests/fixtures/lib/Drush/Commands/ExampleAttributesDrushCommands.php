@@ -90,6 +90,7 @@ class ExampleAttributesDrushCommands extends DrushCommands
     }
 
     #[CLI\Command(name: 'birds')]
+    #[CLI\Help(description: 'List birds and their color.', hidden: true)]
     #[CLI\FieldLabels(labels: ['name' => 'Name', 'color' => 'Color'])]
     #[CLI\DefaultFields(fields: ['color'])]
     #[CLI\FilterDefaultField(field: 'name')]
