@@ -12,6 +12,7 @@ use DrupalCodeGenerator\GeneratorType;
 #[Generator(
     name: 'drush:testing-generator',
     description: 'An internal generator used for tests',
+    hidden: true,
     type: GeneratorType::OTHER,
 )]
 class CustomGenerator extends BaseGenerator
