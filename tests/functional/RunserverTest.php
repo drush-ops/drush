@@ -24,7 +24,7 @@ class RunserverTest extends CommandUnishTestCase
             exec('kill ' . $pid);
         });
         sleep(3);
-        $file = file_get_contents('http://localhost:8888');
+        $file = file_get_contents('http://devhost:8888');
         $this->assertStringContainsString('Choose language', $file);
     }
 }
