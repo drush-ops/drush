@@ -30,7 +30,7 @@ class ExampleAttributesDrushCommands extends DrushCommands
     }
 
     #[CLI\Command(name: 'improved:echo', aliases: ['c'])]
-    #[CLI\Help(description: 'This is the improved:echo command', synopsis: "This command will concatenate two parameters. If the --flip flag\nis provided, then the result is the concatenation of two and one.")]
+    #[CLI\Help(description: 'This is the improved:echo command', synopsis: "This command will concatenate two parameters. If the --flip flag\nis provided, then the result is the concatenation of two and one.", hidden: true)]
     #[CLI\Argument(name: 'args', description: 'Any number of arguments separated by spaces.')]
     #[CLI\Option(name: 'flip', description: 'Whether or not the second parameter should come first in the result.')]
     #[CLI\Usage(name: 'bet alpha --flip', description: 'Concatenate "alpha" and "bet".')]
@@ -43,7 +43,7 @@ class ExampleAttributesDrushCommands extends DrushCommands
     }
 
     #[CLI\Command(name: 'test:arithmatic', aliases: ['arithmatic'])]
-    #[CLI\Help(description: 'This is the test:arithmatic command', synopsis: "This command will add one and two. If the --negate flag\nis provided, then the result is negated.")]
+    #[CLI\Help(description: 'This is the test:arithmatic command', synopsis: "This command will add one and two. If the --negate flag\nis provided, then the result is negated.", hidden: true)]
     // suggestedValues available on Symfony 6.1+. Also see the CLI\Complete Attribute below.
     #[CLI\Argument(name: 'one', description: 'The first number to add.', suggestedValues: [1,2,3,4,5])]
     #[CLI\Argument(name: 'two', description: 'The other number to add.')]
@@ -74,7 +74,7 @@ class ExampleAttributesDrushCommands extends DrushCommands
 
     // Use lots of hooks including ValidateEntityLoad and Bootstrap.
     #[AC\Command(name: 'validatestuff')]
-    #[AC\Help(description: 'Exercise some validators')]
+    #[AC\Help(description: 'Exercise some validators', hidden: true)]
     #[AC\Argument(name: 'permissions', description: 'A list of permissions.')]
     #[AC\Argument(name: 'paths', description: 'A list of paths.')]
     #[AC\Argument(name: 'roleName', description: 'A role name')]
