@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Drupal\woot;
 
 use Drupal\Core\Session\AccountProxyInterface;
+use Psr\Log\LoggerInterface;
 
 /**
  * A simulated service for wooting.
@@ -13,9 +14,12 @@ class WootManager
 {
     protected AccountProxyInterface $currentUser;
 
-    public function __construct(AccountProxyInterface $current_user)
+    protected LoggerInterface $logger;
+
+    public function __construct(AccountProxyInterface $current_user, LoggerInterface $logger)
     {
         $this->currentUser = $current_user;
+        $this->logger = $logger;
     }
 
   /**
@@ -27,6 +31,7 @@ class WootManager
    */
     public function woof(): string
     {
+        $this->logger->notice('Message3 - via wootManager::woof() using logger->notice');
         return 'Woof!';
     }
 }

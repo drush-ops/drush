@@ -1,11 +1,16 @@
 services:
+  logger.channel.woot:
+    class: Drupal\Core\Logger\LoggerChannel
+    factory: logger.factory:get
+    arguments: ['woot']
   woot.manager:
     class: Drupal\woot\WootManager
-    arguments: ['@current_user']
+    arguments: ['@current_user', '@logger.channel.woot']
     tags:
       -  { name: drush.command }
   woot.command:
     class: Drupal\woot\Commands\WootCommands
+    arguments: ['@woot.manager']
     tags:
       -  { name: drush.command }
   greet.command:
