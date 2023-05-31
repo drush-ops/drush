@@ -18,19 +18,19 @@ Drupal Compatibility
 -----------------
 <table>
   <tr>
-    <td> Drush 12 </td>
-    <td> 8.1+ </td>
-    <!-- TBD -->
-    <td> TBD </td>
-    <td></td> <td></td> <td></td> <td><b>✅</b></td>
-  </tr>
-  <tr>
     <th rowspan="2"> Drush Version </th> 
     <th rowspan="2"> PHP Version</th>
     <th rowspan="2"> End Of Life </th>
     <th colspan="4"> Drupal versions </th>
   </tr>
     <th>7</th> <th>8</th> <th>9</th> <th>10</th>
+  </tr>
+  <tr>
+    <td> Drush 12 </td>
+    <td> 8.1+ </td>
+    <!-- TBD -->
+    <td> TBD </td>
+    <td></td> <td></td> <td></td> <td><b>✅</b></td>
   </tr>
   <tr>
     <td> Drush 11 </td>
