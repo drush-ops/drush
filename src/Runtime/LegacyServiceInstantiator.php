@@ -72,6 +72,12 @@ class LegacyServiceInstantiator
     public function instantiateServices(array $services)
     {
         foreach ($services as $serviceName => $info) {
+            // Skip legacy generators.
+            $tag_names = \array_column($info['tags'] ?? [], 'name');
+            if (\in_array('drush.generator', $tag_names) || \in_array('drush.generator.v2', $tag_names)) {
+                continue;
+            }
+
             $service = $this->create(
                 $info['class'],
                 $info['arguments'] ?? [],
