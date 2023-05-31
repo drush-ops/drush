@@ -4,8 +4,9 @@
     
     See the [Drush 8](http://docs.drush.org/en/8.x) or [Drush 9](https://docs.drush.org/en/9.x) docs for installing prior versions of Drush.
 
-1. It is required that Drupal sites be built using Composer, with Drush listed as a dependency. Popular starter templates for that include [drupal-project](https://github.com/drupal-composer/drupal-project) (Drush is included) and [recommended-project](https://www.drupal.org/docs/develop/using-composer/using-composer-to-install-drupal-and-manage-dependencies) (Drush must be added). If your Composer project doesn't yet depend on Drush, run `composer require drush/drush` to add it. After this step, you may call Drush via `vendor/bin/drush`.
-1. Optional. To be able to call `drush` from anywhere, install the [Drush Launcher](https://github.com/drush-ops/drush-launcher). That is a small program which listens on your $PATH and hands control to a site-local Drush that is in the /vendor directory of your Composer project.
+1. **Composer**. It is required that Drupal sites be built using Composer, with Drush listed as a dependency. See [recommended-project](https://www.drupal.org/docs/develop/using-composer/using-composer-to-install-drupal-and-manage-dependencies) (Drush must be added). If your Composer project doesn't yet depend on Drush, run `composer require drush/drush` to add it. After this step, you may call Drush via `vendor/bin/drush`.
+1. **Completion**. Optional. Append to .bashrc or equivalent for ZSH or [Fish shell](https://fishshell.com/). Run `drush completion --help` for more details.  
+1. **Launcher**. Optional. To be able to call `drush` from anywhere, install the [Drush Launcher](https://github.com/drush-ops/drush-launcher). That is a small program which listens on your $PATH and hands control to a site-local Drush that is in the /vendor directory of your Composer project.
 
 
 !!! note
