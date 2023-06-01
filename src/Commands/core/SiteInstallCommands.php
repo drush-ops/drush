@@ -268,6 +268,11 @@ final class SiteInstallCommands extends DrushCommands
             if ($sites_subdir && "sites/$sites_subdir" !== $this->bootstrapManager->bootstrap()->confpath()) {
                 Database::removeConnection('default');
             }
+
+            // Try to create an sql accessor object. If we cannot, then we will
+            // presume that we have no database credential information, and we
+            // will prompt the user to provide them in the 'catch' block below.
+            SqlBase::create($commandData->input()->getOptions());
         } catch (\Exception) {
             // Ask questions to get our data.
             // TODO: we should only 'ask' in hook interact, never in hook validate
@@ -283,7 +288,9 @@ final class SiteInstallCommands extends DrushCommands
                 $commandData->input()->setOption('db-url', $db_url);
 
                 try {
-                    $sql = SqlBase::create($commandData->input()->getOptions());
+                    // Try to instantiate an sql accessor object from the
+                    // provided credential values.
+                    SqlBase::create($commandData->input()->getOptions());
                 } catch (\Exception $e) {
                     throw new \Exception(dt('Could not determine database connection parameters. Pass --db-url option.'));
                 }
