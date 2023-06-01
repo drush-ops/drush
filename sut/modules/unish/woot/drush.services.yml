@@ -6,6 +6,7 @@ services:
       -  { name: drush.command }
   woot.command:
     class: Drupal\woot\Commands\WootCommands
+    arguments: ['%app.root%']
     tags:
       -  { name: drush.command }
   greet.command:
