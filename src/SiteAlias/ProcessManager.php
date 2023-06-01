@@ -70,7 +70,7 @@ class ProcessManager extends ConsolidationProcessManager
         // then use the 'drush' in the $PATH.
         if ($this->hasTransport($siteAlias)) {
             if ($siteAlias->hasRoot()) {
-                return Path::join($siteAlias->root(), '../vendor/bin/drush');
+                return Path::join($siteAlias->root(), $this->relativePathToVendorBinDrush());
             }
 
             return $defaultDrushScript;
@@ -79,7 +79,7 @@ class ProcessManager extends ConsolidationProcessManager
         // If the target is a local Drupal site that has a vendor/bin/drush,
         // then use that.
         if ($siteAlias->hasRoot()) {
-            $localDrushScript = Path::join($siteAlias->root(), '../vendor/bin/drush');
+            $localDrushScript = Path::join($siteAlias->root(), $this->relativePathToVendorBinDrush());
             if (file_exists($localDrushScript)) {
                 return $localDrushScript;
             }
@@ -88,6 +88,19 @@ class ProcessManager extends ConsolidationProcessManager
         // Otherwise, use the path to the version of Drush that is running
         // right now (if available).
         return $this->getConfig()->get('runtime.drush-script', $defaultDrushScript);
+    }
+
+    /**
+     * Return the relative path to 'vendor/bin/drush' from the project root.
+     */
+    protected function relativePathToVendorBinDrush()
+    {
+        $absoluteVendorBin = $_composer_bin_dir ?? Path::join($this->getConfig()->get('drush.vendor-dir'), 'bin');
+        $basePath = $this->getConfig()->get('drush.base-dir');
+
+        $relativeVendorBin = Path::makeRelative($absoluteVendorBin, $basePath);
+
+        return Path::join($relativeVendorBin, 'drush');
     }
 
     /**
