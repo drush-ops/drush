@@ -28,7 +28,7 @@ use Symfony\Component\DependencyInjection\Exception\ParameterNotFoundException;
  */
 class LegacyServiceInstantiator
 {
-    protected array $drushServicesContainer = [];
+    protected array $instantiatedDrushServices = [];
     protected array $tags = [];
 
     public function __construct(protected ContainerInterface $container)
@@ -78,7 +78,7 @@ class LegacyServiceInstantiator
                 $info['calls'] ?? []
             );
 
-            $this->drushServicesContainer[$serviceName] = $service;
+            $this->instantiatedDrushServices[$serviceName] = $service;
 
             // If `tags` to contains an item with `name: drush.command`,
             // then we should do something special with it
@@ -185,16 +185,25 @@ class LegacyServiceInstantiator
             return $arg;
         }
 
+        // Instantiate references to services, either in the
+        // Drupal container, or other services created earlier by
+        // some drush.services.yml file.
         if ($arg[0] == '@') {
             // Check to see if a previous drush.services.yml instantiated
             // this service; return any service found.
             $drushServiceName = ltrim(substr($arg, 1), '?');
-            if (isset($this->drushServicesContainer[$drushServiceName])) {
-                return $this->drushServicesContainer[$drushServiceName];
+            if (isset($this->instantiatedDrushServices[$drushServiceName])) {
+                return $this->instantiatedDrushServices[$drushServiceName];
             }
 
             // If the service is not found in the dynamic container
             return $this->resolveFromContainer($this->container, substr($arg, 1));
+        }
+
+        // Look up references to service parameters
+        if (preg_match('#^%.*%$#', $arg)) {
+            $serviceParameterName = trim($arg, '%');
+            return $this->container->getParameter($serviceParameterName);
         }
 
         return $arg;
