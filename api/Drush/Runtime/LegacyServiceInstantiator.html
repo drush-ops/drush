@@ -107,11 +107,11 @@ After it has been used there, it is not referenced by any other code.</p></p>   
 
             <table class="table table-condensed">
                     <tr>
-                <td class="type" id="property_drushServicesContainer">
+                <td class="type" id="property_instantiatedDrushServices">
                                         protected                                        
                                                                                 
                                     </td>
-                <td>$drushServicesContainer</td>
+                <td>$instantiatedDrushServices</td>
                 <td class="last"></td>
                 <td></td>
             </tr>
@@ -637,7 +637,7 @@ return it as-is.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_resolveFromContainer">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Runtime/LegacyServiceInstantiator.php#L213">at line 213</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Runtime/LegacyServiceInstantiator.php#L222">at line 222</a></div>
         <code>            protected        
     <strong>resolveFromContainer</strong>(<abbr title="League\Container\Container">Container</abbr> $container, string $arg)
         </code>
@@ -676,7 +676,7 @@ not found, unless the service name begins with <code>?</code> (e.g.</p></p>     
             </div>
                     <div class="method-item">
                     <h3 id="method_isRequired">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Runtime/LegacyServiceInstantiator.php#L240">at line 240</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Runtime/LegacyServiceInstantiator.php#L249">at line 249</a></div>
         <code>            protected        
     <strong>isRequired</strong>(string $arg)
         </code>
@@ -710,7 +710,7 @@ those that do not are required.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_atLeastOneValue">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Runtime/LegacyServiceInstantiator.php#L259">at line 259</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Runtime/LegacyServiceInstantiator.php#L268">at line 268</a></div>
         <code>            protected        bool
     <strong>atLeastOneValue</strong>($args)
         </code>
