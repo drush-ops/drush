@@ -73,12 +73,24 @@ class FieldEntityReferenceHooks extends DrushCommands
 
     protected function getTargetType(InputInterface $input): string
     {
-        $this->ensureOption('target-type', [$this, 'askReferencedEntityType'], true);
+        $value = $input->getOption('target-type');
 
-        return $this->input->getOption('target-type');
+        if ($value === null && $input->isInteractive()) {
+            $value = $this->askReferencedEntityType();
+        }
+
+        if ($value === null) {
+            throw new \InvalidArgumentException(dt('The %optionName option is required.', [
+                '%optionName' => 'target-type',
+            ]));
+        }
+
+        $input->setOption('target-type', $value);
+
+        return $value;
     }
 
-    protected function getTargetBundles(InputInterface $input): array
+    protected function getTargetBundles(InputInterface $input): ?array
     {
         $targetType = $input->getOption('target-type');
         $targetTypeDefinition = $this->entityTypeManager->getDefinition($targetType);
@@ -118,7 +130,7 @@ class FieldEntityReferenceHooks extends DrushCommands
         return $this->io()->choice('Referenced entity type', $choices);
     }
 
-    protected function askReferencedBundles(string $targetType): array
+    protected function askReferencedBundles(string $targetType): ?array
     {
         $choices = [];
         $bundleInfo = $this->entityTypeBundleInfo->getBundleInfo($targetType);
@@ -135,24 +147,6 @@ class FieldEntityReferenceHooks extends DrushCommands
         $question = (new ChoiceQuestion('Referenced bundles', $choices))
             ->setMultiselect(true);
 
-        return $this->io()->askQuestion($question) ?: [];
+        return $this->io()->askQuestion($question) ?: null;
     }
-
-    protected function ensureOption(string $name, callable $asker, bool $required): void
-    {
-        $value = $this->input->getOption($name);
-
-        if ($value === null && $this->input->isInteractive()) {
-            $value = $asker();
-        }
-
-        if ($required && $value === null) {
-            throw new \InvalidArgumentException(dt('The %optionName option is required.', [
-                '%optionName' => $name,
-            ]));
-        }
-
-        $this->input->setOption($name, $value);
-    }
-
 }
