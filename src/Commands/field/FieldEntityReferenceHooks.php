@@ -2,8 +2,10 @@
 
 namespace Drush\Commands\field;
 
+use Consolidation\AnnotatedCommand\Hooks\HookManager;
 use Drupal\Core\Entity\EntityTypeBundleInfoInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drush\Attributes as CLI;
 use Drush\Commands\DrushCommands;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Question\ChoiceQuestion;
@@ -27,9 +29,7 @@ class FieldEntityReferenceHooks extends DrushCommands
         );
     }
 
-    /**
-     * @hook on-event field-create-field-storage
-     */
+    #[CLI\Hook(type: HookManager::ON_EVENT, target: 'field-create-field-storage')]
     public function hookFieldStorage(array $values, InputInterface $input): array
     {
         if ($input->getOption('field-type') === 'entity_reference') {
@@ -39,9 +39,7 @@ class FieldEntityReferenceHooks extends DrushCommands
         return $values;
     }
 
-    /**
-     * @hook on-event field-create-field-config
-     */
+    #[CLI\Hook(type: HookManager::ON_EVENT, target: 'field-create-field-config')]
     public function hookFieldConfig(array $values, InputInterface $input): array
     {
         if ($input->getOption('field-type') === 'entity_reference') {
