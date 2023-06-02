@@ -490,7 +490,7 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
         // Command files may customize $values as desired.
         $handlers = $this->getCustomEventHandlers('field-create-field-storage');
         foreach ($handlers as $handler) {
-            $handler($values);
+            $values = $handler($values, $this->input);
         }
 
         /** @var FieldStorageConfigInterface $fieldStorage */
