@@ -11,25 +11,25 @@
 # review when someone opens a pull request.
 *       @weitzman @greg-1-anderson
 
-/src/Commands/Config/ @bircher
+/src/Commands/config/ @bircher
 
-/src/Drupal/Commands/core/MigrateRunnerCommands.php @claudiu-cristea
+/src/Commands/core/MigrateRunnerCommands.php @claudiu-cristea
 /src/Drupal/Migrate/ @claudiu-cristea
 
-/src/Drupal/Commands/field/ @DieterHolvoet
+/src/Commands/field/ @DieterHolvoet
 
 /src/Commands/core/RunServerCommands.php @grugnog
 
 /includes/batch.inc @jonhattan
 /src/Commands/core/BatchCommands.php @jonhattan
 
-/src/Commands/core/CLICommands.php @damiankloip
+/src/Commands/core/CliCommands.php @damiankloip
 /src/Psysh @damiankloip
 
 /src/Commands/core/UpdateDBCommands.php @pfrenssen
 
-/src/Drupal/Commands/core/LocaleCommands.php @Sutharsan
+/src/Commands/core/LocaleCommands.php @Sutharsan
 
-/src/Drupal/Commands/core/QueueCommands.php @davereid
+/src/Commands/core/QueueCommands.php @davereid
 
 
