@@ -14,7 +14,6 @@ use Symfony\Component\Console\Question\ChoiceQuestion;
 
 class FieldEntityReferenceHooks extends DrushCommands
 {
-
     use EntityTypeBundleValidationTrait;
 
     /**
