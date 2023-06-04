@@ -747,50 +747,50 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#bootstrap-none" class="md-nav__link">
-    @bootstrap none
+  <a href="#none" class="md-nav__link">
+    none
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#bootstrap-root" class="md-nav__link">
-    @bootstrap root
+  <a href="#root" class="md-nav__link">
+    root
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#bootstrap-site" class="md-nav__link">
-    @bootstrap site
+  <a href="#site" class="md-nav__link">
+    site
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#bootstrap-configuration" class="md-nav__link">
-    @bootstrap configuration
+  <a href="#configuration" class="md-nav__link">
+    configuration
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#bootstrap-database" class="md-nav__link">
-    @bootstrap database
+  <a href="#database" class="md-nav__link">
+    database
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#bootstrap-full" class="md-nav__link">
-    @bootstrap full
+  <a href="#full" class="md-nav__link">
+    full
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#bootstrap-max" class="md-nav__link">
-    @bootstrap max
+  <a href="#max" class="md-nav__link">
+    max
   </a>
   
 </li>
@@ -5219,7 +5219,7 @@
 <h1 id="the-drush-bootstrap-process">The Drush Bootstrap Process<a class="headerlink" href="#the-drush-bootstrap-process" title="Permanent link">&para;</a></h1>
 <p>When preparing to run a command, Drush works by <em>bootstrapping</em> the Drupal environment in very much the same way that is done during a normal page request from the web server, so most Drush commands run in the context of a fully-initialized website.</p>
 <p>For efficiency and convenience, some Drush commands can work without first bootstrapping a Drupal site, or by only partially bootstrapping a site. This is faster than a full bootstrap. It is also a matter of convenience, because some commands are useful even when you don't have a working Drupal site.</p>
-<p>Commands may specify their bootstrap level with via an attribute or an annotation. Commands supplied by Drupal modules are always <code>@bootstrap full</code>.</p>
+<p>Commands may specify their bootstrap level with via an attribute or an annotation. Commands supplied by Drupal modules are always <code>full</code>.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">PHP8 Attribute</label><label for="__tabbed_1_2">Annotation</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
@@ -5251,24 +5251,24 @@
 <li>The site-alias included on the commandline is loaded if present.</li>
 <li>The local selected site is determined, if any.</li>
 <li><a href="../dependency-injection/">Dependency injection</a> is done.</li>
-<li>Global commandfiles are loaded. Commandfiles with a drush.services.yml are loaded later, during <code>bootstrap @full</code>. </li>
+<li>Global commandfiles are loaded. Commandfiles that ship with modules are loaded later, during <code>bootstrap @full</code>. </li>
 <li>The command is dispatched via the Symfony Console component.</li>
 </ol>
 </div>
 <p>Bootstrapping is done from a Symfony Console command hook. The different bootstrap levels are described below.</p>
-<h2 id="bootstrap-none">@bootstrap none<a class="headerlink" href="#bootstrap-none" title="Permanent link">&para;</a></h2>
+<h2 id="none">none<a class="headerlink" href="#none" title="Permanent link">&para;</a></h2>
 <p>Only run Drush <em>preflight</em>, without considering Drupal at all. Any code that operates on the Drush installation, and not specifically any Drupal directory, should bootstrap to this phase.</p>
-<h2 id="bootstrap-root">@bootstrap root<a class="headerlink" href="#bootstrap-root" title="Permanent link">&para;</a></h2>
+<h2 id="root">root<a class="headerlink" href="#root" title="Permanent link">&para;</a></h2>
 <p>Set up and test for a valid Drupal root, either through the --root options, or evaluated based on the current working directory. Any code that interacts with an entire Drupal installation, and not a specific site on the Drupal installation should use this bootstrap phase.</p>
-<h2 id="bootstrap-site">@bootstrap site<a class="headerlink" href="#bootstrap-site" title="Permanent link">&para;</a></h2>
+<h2 id="site">site<a class="headerlink" href="#site" title="Permanent link">&para;</a></h2>
 <p>Set up a Drupal site directory and the correct environment variables to allow Drupal to find the configuration file. If no site is specified with the --uri options, Drush will assume the site is 'default', which mimics Drupal's behaviour.  Note that it is necessary to specify a full URI, e.g. --uri=<a href="http://example.com">http://example.com</a>, in order for certain Drush commands and Drupal modules to behave correctly. See the <a href="../using-drush-configuration/">Drush configuration</a> for more information. Any code that needs to modify or interact with a specific Drupal site's settings.php file should bootstrap to this phase.</p>
-<h2 id="bootstrap-configuration">@bootstrap configuration<a class="headerlink" href="#bootstrap-configuration" title="Permanent link">&para;</a></h2>
+<h2 id="configuration">configuration<a class="headerlink" href="#configuration" title="Permanent link">&para;</a></h2>
 <p>Load the settings from the Drupal sites directory. This phase is analogous to the DRUPAL_BOOTSTRAP_CONFIGURATION bootstrap phase in Drupal itself, and this is also the first step where Drupal specific code is included. This phase is commonly used for code that interacts with the Drupal install API, as both install.php and update.php start at this phase.</p>
-<h2 id="bootstrap-database">@bootstrap database<a class="headerlink" href="#bootstrap-database" title="Permanent link">&para;</a></h2>
+<h2 id="database">database<a class="headerlink" href="#database" title="Permanent link">&para;</a></h2>
 <p>Connect to the Drupal database using the database credentials loaded during the previous bootstrap phase. This phase is analogous to the DRUPAL_BOOTSTRAP_DATABASE bootstrap phase in Drupal. Any code that needs to interact with the Drupal database API needs to be bootstrapped to at least this phase.</p>
-<h2 id="bootstrap-full">@bootstrap full<a class="headerlink" href="#bootstrap-full" title="Permanent link">&para;</a></h2>
+<h2 id="full">full<a class="headerlink" href="#full" title="Permanent link">&para;</a></h2>
 <p>Fully initialize Drupal. This is analogous to the DRUPAL_BOOTSTRAP_FULL bootstrap phase in Drupal. Any code that interacts with the general Drupal API should be bootstrapped to this phase.</p>
-<h2 id="bootstrap-max">@bootstrap max<a class="headerlink" href="#bootstrap-max" title="Permanent link">&para;</a></h2>
+<h2 id="max">max<a class="headerlink" href="#max" title="Permanent link">&para;</a></h2>
 <p>This is not an actual bootstrap phase. Commands that use the "max" bootstrap level will cause Drush to bootstrap as far as possible, and then run the command regardless of the bootstrap phase that was reached. This is useful for Drush commands that work without a bootstrapped site, but that provide additional information or capabilities in the presence of a bootstrapped site. For example, <a href="../commands/core_status/"><code>drush status</code></a> will show progressively more information the farther the site bootstraps.</p>
 
   <hr>
@@ -5276,7 +5276,7 @@
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">May 20, 2023</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">June 4, 2023</span>
       
     
   </small>
