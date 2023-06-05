@@ -46,8 +46,6 @@ class ModuleDrushCommandTest extends CommandUnishTestCase
         $this->drush(PmCommands::INSTALL, ['woot']);
 
         $this->drush('woot-messages', [], []);
-
-        var_dump($this->getErrorOutput());
         $this->assertStringContainsString('Message 1', $this->getErrorOutput());
         $this->assertStringContainsString('Message 2', $this->getErrorOutput());
         $this->assertStringContainsString('Message 3', $this->getErrorOutput());
