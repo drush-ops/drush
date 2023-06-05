@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Drupal\woot;
 
 use Drupal\Core\Session\AccountProxyInterface;
-use Psr\Log\LoggerInterface;  
+use Psr\Log\LoggerInterface;
 
 /**
  * A simulated service for wooting.

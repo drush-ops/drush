@@ -94,8 +94,8 @@
     }
   },
   "scripts": {
-    "cs": "phpcs",
-    "cbf": "phpcbf",
+    "cs": "phpcs --colors --report-full --report-summary --report-source",
+    "cbf": "phpcbf --colors",
     "lint": [
       "find includes -name '*.inc' -print0 | xargs -0 -n1 php -l",
       "find src -name '*.php' -and ! -path 'src/Attributes/*' -print0 | xargs -0 -n1 php -l",
