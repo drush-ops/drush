@@ -63,6 +63,12 @@ class LegacyServiceInstantiator
         }
     }
 
+    /**
+     * Validate service data before using it.
+     *
+     * @param string $serviceFile Path to service file being checked
+     * @param array $serviceFileData Parsed data from drush.services.yml
+     */
     protected function isValidServiceData(string $serviceFile, array $serviceFileData)
     {
         // If there are no services, then silently skip this service file.
@@ -85,6 +91,12 @@ class LegacyServiceInstantiator
         return true;
     }
 
+    /**
+     * Check all elements for required "class" elements.
+     *
+     * @param string $serviceFile Path to service file being checked
+     * @param array $services List of data from 'services' element from drush.services.yml
+     */
     protected function allServicesHaveClassElement(string $serviceFile, array $services)
     {
         foreach ($services as $service => $data)
