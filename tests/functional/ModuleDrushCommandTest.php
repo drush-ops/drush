@@ -34,6 +34,9 @@ class ModuleDrushCommandTest extends CommandUnishTestCase
 
         $this->drush('woot-factory', [], []);
         $this->assertStringContainsString('Woot 55', $this->getOutput());
+
+        $this->drush('woot:root');
+        $this->assertStringContainsString('/sut', $this->getOutput());
     }
 
     /**

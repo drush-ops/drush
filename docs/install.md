@@ -4,9 +4,10 @@
     
     See the [Drush 8](http://docs.drush.org/en/8.x) or [Drush 9](https://docs.drush.org/en/9.x) docs for installing prior versions of Drush.
 
-1. **Composer**. It is required that Drupal sites be built using Composer, with Drush listed as a dependency. See [recommended-project](https://www.drupal.org/docs/develop/using-composer/using-composer-to-install-drupal-and-manage-dependencies) (Drush must be added). If your Composer project doesn't yet depend on Drush, run `composer require drush/drush` to add it. After this step, you may call Drush via `vendor/bin/drush`.
+1. **Composer**. It is required that Drupal sites be built using Composer, with Drush listed as a dependency. See [recommended-project](https://www.drupal.org/docs/develop/using-composer/using-composer-to-install-drupal-and-manage-dependencies) (Drush must be added). If your Composer project doesn't yet depend on Drush, run `composer require drush/drush` to add it.
+1. **Execution**. Change your working directory to your project root, and call Drush via `vendor/bin/drush`. To make this easier, append `./vendor/bin` to the end of your `$PATH`; this allows you to call Drush via `drush` once your working directory is set. If you only have only one Drupal codebase on your system, you may put `/path/to/vendor/bin/drush` in your `$PATH`; if you do this, then it is not necessary to set your working directory before calling Drush.
 1. **Completion**. Optional. Append to .bashrc or equivalent for ZSH or [Fish shell](https://fishshell.com/). Run `drush completion --help` for more details.  
-1. **Launcher**. Optional. To be able to call `drush` from anywhere, install the [Drush Launcher](https://github.com/drush-ops/drush-launcher). That is a small program which listens on your $PATH and hands control to a site-local Drush that is in the /vendor directory of your Composer project.
+1. **Multiple Codebases**. Optional. If using the bash shell, consider installing the [fd](https://github.com/g1a/fd) project, a small set of scripts that make it easier to switch between different project directories quickly, with type completion.
 
 
 !!! note

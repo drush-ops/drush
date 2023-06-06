@@ -22,7 +22,7 @@ class RedispatchTest extends CommandUnishTestCase
     {
         $options = ['uri' => 'OMIT', 'alias-path' => Path::join(__DIR__, 'resources/alias-fixtures'), 'simulate' => null];
         $this->drush(StatusCommands::STATUS, [], $options, '@example.live');
-        $this->assertStringContainsString("[notice] Simulating: ssh -o PasswordAuthentication=example www-admin@service-provider.com '/example/path/to/drush --no-interaction core:status --uri=https://example.com --root=/path/on/service-provider'", $this->getSimplifiedErrorOutput());
+        $this->assertStringContainsString("[notice] Simulating: ssh -o PasswordAuthentication=example www-admin@service-provider.com '/example/path/to/drush --no-interaction core:status --uri=https://example.com'", $this->getSimplifiedErrorOutput());
     }
 
     public function testNonExistentCommand()

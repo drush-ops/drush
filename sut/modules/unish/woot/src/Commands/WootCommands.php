@@ -13,22 +13,20 @@ use Drupal\woot\WootManager;
  */
 class WootCommands
 {
-  /**
-   * The Woot manager service.
-   *
-   * @var \Drupal\woot\WootManager
-   */
-  protected $wootManager;
+    /**
+     * The Woot manager service.
+     *
+     * @var \Drupal\woot\WootManager
+     */
+    protected $wootManager;
 
-  /**
-   * WootCommands constructor.
-   *
-   * @param \Drupal\woot\WootManager $wootManager
-   *   Woot manager service.
-   */
-  public function __construct(WootManager $wootManager) {
-    $this->wootManager = $wootManager;
-  }
+    /**
+     * WootCommands constructor.
+     *
+     * @param \Drupal\woot\WootManager $wootManager
+     *   Woot manager service.
+     */
+    public function __construct(protected string $appRoot, WootManager $wootManager) {}
 
     /**
      * Woot mightily.
@@ -39,6 +37,14 @@ class WootCommands
     public function woot(): string
     {
         return 'Woot!';
+    }
+
+    /**
+     * @command woot:root
+     */
+    public function appRoot(): string
+    {
+        return "The app root is {$this->appRoot}";
     }
 
     /**

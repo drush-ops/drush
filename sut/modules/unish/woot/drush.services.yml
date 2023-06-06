@@ -1,7 +1,7 @@
 services:
   woot.command:
     class: Drupal\woot\Commands\WootCommands
-    arguments: ['@woot.manager']
+    arguments: ['%app.root%', '@woot.manager']
     tags:
       -  { name: drush.command }
   greet.command:
