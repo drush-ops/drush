@@ -99,8 +99,7 @@ class LegacyServiceInstantiator
      */
     protected function allServicesHaveClassElement(string $serviceFile, array $services)
     {
-        foreach ($services as $service => $data)
-        {
+        foreach ($services as $service => $data) {
             if (!isset($data['class'])) {
                 $this->logger->warning(dt('Service @service does not have a class element; skipping @file', ['@service' => $service, '@file' => $serviceFile]));
                 return false;
