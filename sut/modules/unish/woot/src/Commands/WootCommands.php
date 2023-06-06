@@ -13,23 +13,8 @@ use Drupal\woot\WootManager;
  */
 class WootCommands
 {
-    /**
-     * The Woot manager service.
-     *
-     * @var \Drupal\woot\WootManager
-     */
-    protected $wootManager;
 
-    /**
-     * WootCommands constructor.
-     *
-     * @param \Drupal\woot\WootManager $wootManager
-     *   Woot manager service.
-     */
-    public function __construct(protected string $appRoot, WootManager $wootManager)
-    {
-        $this->wootManager = $wootManager;
-    }
+    public function __construct(protected string $appRoot, protected WootManager $wootManager) {}
 
     /**
      * Woot mightily.
