@@ -26,7 +26,10 @@ class WootCommands
      * @param \Drupal\woot\WootManager $wootManager
      *   Woot manager service.
      */
-    public function __construct(protected string $appRoot, WootManager $wootManager) {}
+    public function __construct(protected string $appRoot, WootManager $wootManager)
+    {
+        $this->wootManager = $wootManager;
+    }
 
     /**
      * Woot mightily.
