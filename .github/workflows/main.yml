@@ -47,7 +47,7 @@ jobs:
         run: composer mk:docs
       - name: Mike config
         run: |
-          mike alias 11.x latest
+          mike alias 12.x latest
           mike set-default latest
       - name: Mike deploy
         run: mike deploy --push ${GITHUB_REF_NAME}
