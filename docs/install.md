@@ -39,7 +39,7 @@ Drupal Compatibility
     <td> 7.4+ </td>
     <!-- TBD -->
     <td> Nov 2023 </td>
-    <td></td> <td></td> <td><b>✅</b></td> <td><b>✅</b></td>
+    <td></td> <td></td> <td><b>✅</b></td> <td><b>✓</b></td>
   </tr>
   <tr>
     <td> Drush 10 </td>
