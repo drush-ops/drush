@@ -30,7 +30,7 @@ Drupal Compatibility
   <tr>
     <td> Drush 12 </td>
     <td> 8.1+ </td>
-    <!-- TBD -->
+    <!-- Released Jun 2023 -->
     <td> TBD </td>
     <td></td> <td></td> <td></td> <td><b>✅</b></td>
   </tr>
@@ -38,7 +38,7 @@ Drupal Compatibility
     <td> Drush 11 </td>
     <td> 7.4+ </td>
     <!-- TBD -->
-    <td> TBD </td>
+    <td> Nov 2023 </td>
     <td></td> <td></td> <td><b>✅</b></td> <td><b>✅</b></td>
   </tr>
   <tr>
@@ -59,8 +59,8 @@ Drupal Compatibility
     <td> Drush 8 </td>
     <td> 5.4.5+ </td>
     <!-- Released Nov 2015 -->
-    <td> Nov 2023 </td>
-    <td>✅</td> <td><b>⚠️</b></td> <td></td> <td></td>
+    <td> Jan 2025 </td>
+    <td>✅</td> <td><b>✓️</b></td> <td></td> <td></td>
   </tr>
   <tr>
     <td> Drush 7 </td>
@@ -91,9 +91,6 @@ Drupal Compatibility
     </tr>
     <tr>
         <td>✅</td> <td>Supported and recommended</td>
-    </tr>
-    <tr>
-        <td><b>⚠️</b></td> <td>Supported but not recommended</td>
     </tr>
     <tr>
         <td>✓</td> <td>Compatible but no longer supported</td>
