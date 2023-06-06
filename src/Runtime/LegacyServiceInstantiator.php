@@ -11,6 +11,7 @@ use Symfony\Component\Console\Application;
 use Composer\Autoload\ClassLoader;
 use Drush\Command\DrushCommandInfoAlterer;
 use Psr\Container\ContainerInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Yaml\Yaml;
 use Robo\Robo;
 use Symfony\Component\DependencyInjection\Exception\ParameterNotFoundException;
@@ -31,8 +32,9 @@ class LegacyServiceInstantiator
     protected array $instantiatedDrushServices = [];
     protected array $tags = [];
 
-    public function __construct(protected ContainerInterface $container)
+    public function __construct(protected ContainerInterface $container, LoggerInterface $logger)
     {
+        $this->logger = $logger;
     }
 
     /**
@@ -55,10 +57,45 @@ class LegacyServiceInstantiator
                 $serviceFileData = Yaml::parse($serviceFileContents);
             }
 
-            if (isset($serviceFileData['services'])) {
+            if ($this->isValidServiceData($serviceFile, $serviceFileData)) {
                 $this->instantiateServices($serviceFileData['services']);
             }
         }
+    }
+
+    protected function isValidServiceData(string $serviceFile, array $serviceFileData)
+    {
+        // If there are no services, then silently skip this service file.
+        if (!isset($serviceFileData['services'])) {
+            return false;
+        }
+
+        // We don't support auto-wiring
+        if (!empty($serviceFileData['services']['_defaults']['autowire'])) {
+            $this->logger->warning(dt('Autoloading not supported; skipping @file', ['@file' => $serviceFile]));
+            return false;
+        }
+
+        // Every entry in services must have a 'class' entry
+        if (!$this->allServicesHaveClassElement($serviceFile, $serviceFileData['services'])) {
+            return false;
+        }
+
+        // If we didn't find anything wrong, then assume it's probably okay
+        return true;
+    }
+
+    protected function allServicesHaveClassElement(string $serviceFile, array $services)
+    {
+        foreach ($services as $service => $data)
+        {
+            if (!isset($data['class'])) {
+                $this->logger->warning(dt('Service @service does not have a class element; skipping @file', ['@service' => $service, '@file' => $serviceFile]));
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**
