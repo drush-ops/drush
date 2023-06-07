@@ -17,7 +17,7 @@
  *
  *
  * @param array $sandbox
- *   Stores information for batch updates. See above for more information.
+ *   Stores information for batch updates.
  *
  * @return string|null
  *   Optionally, hook_deploy_NAME() hooks may return a translated string
