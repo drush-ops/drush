@@ -72,7 +72,6 @@ final class WatchdogCommands extends DrushCommands
         if (!empty($where['where'])) {
             $query->where($where['where'], $where['args']);
         }
-        $table = [];
         $rsc = $query->execute();
         while ($result = $rsc->fetchObject()) {
             $row = $this->formatResult($result, $options['extended']);
@@ -80,8 +79,10 @@ final class WatchdogCommands extends DrushCommands
         }
         if (empty($table)) {
             $this->logger()->notice(dt('No log messages available.'));
+            return null;
+        } else {
+            return new RowsOfFields($table);
         }
-        return new RowsOfFields($table);
     }
 
     /**
@@ -109,7 +110,7 @@ final class WatchdogCommands extends DrushCommands
     #[CLI\DefaultTableFields(fields: ['wid', 'date', 'type', 'severity', 'message'])]
     #[CLI\Complete(method_name_or_callable: 'watchdogComplete')]
     #[CLI\Bootstrap(level: DrupalBootLevels::FULL)]
-    public function watchdogList($substring = '', $options = ['format' => 'table', 'count' => 10, 'extended' => false]): RowsOfFields
+    public function watchdogList($substring = '', $options = ['format' => 'table', 'count' => 10, 'extended' => false]): ?RowsOfFields
     {
         $options['severity-min'] = null;
         return $this->show($substring, $options);
