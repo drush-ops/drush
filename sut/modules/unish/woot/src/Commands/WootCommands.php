@@ -13,7 +13,6 @@ use Drupal\woot\WootManager;
  */
 class WootCommands
 {
-
     public function __construct(protected string $appRoot, protected WootManager $wootManager) {}
 
     /**
