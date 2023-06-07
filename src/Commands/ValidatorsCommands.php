@@ -17,14 +17,16 @@ use Symfony\Component\Console\Input\Input;
  */
 final class ValidatorsCommands
 {
+    const VALIDATE_ENTITY_LOAD = 'validate-entity-load';
+
     /**
      * Validate that passed entity names are valid.
      * @see \Drush\Commands\core\ViewsCommands::execute for an example.
      */
-    #[CLI\Hook(type: HookManager::ARGUMENT_VALIDATOR, selector: 'validate-entity-load')]
+    #[CLI\Hook(type: HookManager::ARGUMENT_VALIDATOR, selector: self::VALIDATE_ENTITY_LOAD)]
     public function validateEntityLoad(CommandData $commandData)
     {
-        list($entity_type, $arg_name) = explode(' ', $commandData->annotationData()->get('validate-entity-load', null));
+        list($entity_type, $arg_name) = explode(' ', $commandData->annotationData()->get(self::VALIDATE_ENTITY_LOAD, null));
         $names = StringUtils::csvToArray($commandData->input()->getArgument($arg_name));
         $loaded = \Drupal::entityTypeManager()->getStorage($entity_type)->loadMultiple($names);
         if ($missing = array_diff($names, array_keys($loaded))) {
