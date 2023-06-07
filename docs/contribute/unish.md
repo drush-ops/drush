@@ -15,7 +15,7 @@ Drush's own tests may be run within provided Docker containers via [DDEV](https:
 
 - Start containers: `ddev start`
 - Run a test: `ddev exec drupal composer functional -- --filter testUserRole`
-- See the [DDEV's XDebug docs](https://ddev.readthedocs.io/en/stable/users/step-debugging/) for help on enabling Xdebug.
+- See the [DDEV's XDebug docs](https://ddev.readthedocs.io/en/stable/users/debugging-profiling/step-debugging/) for help on enabling Xdebug.
 
 ## Advanced usage
 - Run only one test suite
