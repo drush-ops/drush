@@ -155,7 +155,7 @@ final class CacheCommands extends DrushCommands implements CustomEventAwareInter
     /**
      * Cache an object expressed in JSON or var_export() format.
      */
-    #[CLI\Command(name: self::SET, aliases: ['cs', 'cset'])]
+    #[CLI\Command(name: self::SET, aliases: ['cs', 'cache-set'])]
     #[CLI\Argument(name: 'cid', description: 'id of the object to set.')]
     #[CLI\Argument(name: 'bin', description: 'The cache bin to store the object in.')]
     #[CLI\Argument(name: 'data', description: 'The object to set in the cache. Use - to read the object from STDIN.')]
