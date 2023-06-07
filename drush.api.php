@@ -15,7 +15,6 @@
  * Drupal also ensures to not execute the same hook_deploy_NAME() function
  * twice.
  *
- *
  * @param array $sandbox
  *   Stores information for batch updates.
  *
