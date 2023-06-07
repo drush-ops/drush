@@ -11,6 +11,7 @@ use Symfony\Component\Console\Application;
 use Composer\Autoload\ClassLoader;
 use Drush\Command\DrushCommandInfoAlterer;
 use Psr\Container\ContainerInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Yaml\Yaml;
 use Robo\Robo;
 use Symfony\Component\DependencyInjection\Exception\ParameterNotFoundException;
@@ -31,8 +32,9 @@ class LegacyServiceInstantiator
     protected array $instantiatedDrushServices = [];
     protected array $tags = [];
 
-    public function __construct(protected ContainerInterface $container)
+    public function __construct(protected ContainerInterface $container, LoggerInterface $logger)
     {
+        $this->logger = $logger;
     }
 
     /**
@@ -55,10 +57,56 @@ class LegacyServiceInstantiator
                 $serviceFileData = Yaml::parse($serviceFileContents);
             }
 
-            if (isset($serviceFileData['services'])) {
+            if ($this->isValidServiceData($serviceFile, $serviceFileData)) {
                 $this->instantiateServices($serviceFileData['services']);
             }
         }
+    }
+
+    /**
+     * Validate service data before using it.
+     *
+     * @param string $serviceFile Path to service file being checked
+     * @param array $serviceFileData Parsed data from drush.services.yml
+     */
+    protected function isValidServiceData(string $serviceFile, array $serviceFileData): bool
+    {
+        // If there are no services, then silently skip this service file.
+        if (!isset($serviceFileData['services'])) {
+            return false;
+        }
+
+        // We don't support auto-wiring
+        if (!empty($serviceFileData['services']['_defaults']['autowire'])) {
+            $this->logger->info(dt('Autowire not supported; skipping @file', ['@file' => $serviceFile]));
+            return false;
+        }
+
+        // Every entry in services must have a 'class' entry
+        if (!$this->allServicesHaveClassElement($serviceFile, $serviceFileData['services'])) {
+            return false;
+        }
+
+        // If we didn't find anything wrong, then assume it's probably okay
+        return true;
+    }
+
+    /**
+     * Check all elements for required "class" elements.
+     *
+     * @param string $serviceFile Path to service file being checked
+     * @param array $services List of data from 'services' element from drush.services.yml
+     */
+    protected function allServicesHaveClassElement(string $serviceFile, array $services): bool
+    {
+        foreach ($services as $service => $data) {
+            if (!isset($data['class'])) {
+                $this->logger->info(dt('Service @service does not have a class element; skipping @file', ['@service' => $service, '@file' => $serviceFile]));
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**

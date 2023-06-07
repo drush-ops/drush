@@ -257,7 +257,7 @@ class DrupalBoot8 extends DrupalBoot
         // Legacy service adapters for drush.services.yml files.
         $serviceFinder = new LegacyServiceFinder($moduleHandler, Drush::config());
         $drushServiceFiles = $serviceFinder->getDrushServiceFiles();
-        $legacyServiceInstantiator = new LegacyServiceInstantiator($container);
+        $legacyServiceInstantiator = new LegacyServiceInstantiator($container, $this->logger);
         $legacyServiceInstantiator->loadServiceFiles($drushServiceFiles);
 
         // Find the containerless commands, and command info alterers
