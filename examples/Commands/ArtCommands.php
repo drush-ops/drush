@@ -2,7 +2,7 @@
 
 namespace Drush\Commands;
 
-use Consolidation\AnnotatedCommand\AnnotationData;
+use Consolidation\AnnotatedCommand\AnnotationData;  
 use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\AnnotatedCommand\Events\CustomEventAwareInterface;
 use Consolidation\AnnotatedCommand\Events\CustomEventAwareTrait;
@@ -28,10 +28,10 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class ArtCommands extends DrushCommands implements CustomEventAwareInterface
 {
-    use CustomEventAwareTrait;
+      use CustomEventAwareTrait;
 
-    /** @var string[] */
-    protected ?array $arts;
+      /** @var string[] */
+      protected ?array $arts;
 
     /**
      * Show a fabulous picture.
@@ -46,7 +46,7 @@ class ArtCommands extends DrushCommands implements CustomEventAwareInterface
         $description = $data[$art]['description'];
         $path = $data[$art]['path'];
         $msg = dt(
-            'Okay. Here is {art}: {description}',
+              'Okay. Here is {art}: {description}',
             ['art' => $name, 'description' => $description]
         );
         $this->output()->writeln("\n" . $msg . "\n");
