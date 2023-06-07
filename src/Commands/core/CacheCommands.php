@@ -37,6 +37,7 @@ final class CacheCommands extends DrushCommands implements CustomEventAwareInter
     const CLEAR = 'cache:clear';
     const SET = 'cache:set';
     const REBUILD = 'cache:rebuild';
+    const EVENT_CLEAR = 'cache-clear';
 
     public function __construct(
         private CacheTagsInvalidatorInterface $invalidator,
@@ -285,7 +286,7 @@ final class CacheCommands extends DrushCommands implements CustomEventAwareInter
         }
 
         // Command files may customize $types as desired.
-        $handlers = $this->getCustomEventHandlers('cache-clear');
+        $handlers = $this->getCustomEventHandlers(self::EVENT_CLEAR);
         foreach ($handlers as $handler) {
               $handler($types, $include_bootstrapped_types);
         }
