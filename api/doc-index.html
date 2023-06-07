@@ -296,7 +296,9 @@ holding the command name.</p></dd><dt><a href="Drush/Runtime/DependencyInjection
                     <dd><p>Determine whether or not the Drush services.yml file is applicable
 for this version of Drush.</p></dd><dt><a href="Drush/Runtime/LegacyServiceFinder.html#method_addDrushServiceProvider">
 <abbr title="Drush\Runtime\LegacyServiceFinder">LegacyServiceFinder</abbr>::addDrushServiceProvider</a>() &mdash; <em>Method in class <a href="Drush/Runtime/LegacyServiceFinder.html"><abbr title="Drush\Runtime\LegacyServiceFinder">LegacyServiceFinder</abbr></a></em></dt>
-                    <dd><p>Add a services.yml file if it exists.</p></dd><dt><a href="Drush/Runtime/LegacyServiceInstantiator.html#method_atLeastOneValue">
+                    <dd><p>Add a services.yml file if it exists.</p></dd><dt><a href="Drush/Runtime/LegacyServiceInstantiator.html#method_allServicesHaveClassElement">
+<abbr title="Drush\Runtime\LegacyServiceInstantiator">LegacyServiceInstantiator</abbr>::allServicesHaveClassElement</a>() &mdash; <em>Method in class <a href="Drush/Runtime/LegacyServiceInstantiator.html"><abbr title="Drush\Runtime\LegacyServiceInstantiator">LegacyServiceInstantiator</abbr></a></em></dt>
+                    <dd><p>Check all elements for required &quot;class&quot; elements.</p></dd><dt><a href="Drush/Runtime/LegacyServiceInstantiator.html#method_atLeastOneValue">
 <abbr title="Drush\Runtime\LegacyServiceInstantiator">LegacyServiceInstantiator</abbr>::atLeastOneValue</a>() &mdash; <em>Method in class <a href="Drush/Runtime/LegacyServiceInstantiator.html"><abbr title="Drush\Runtime\LegacyServiceInstantiator">LegacyServiceInstantiator</abbr></a></em></dt>
                     <dd><p>Helper function to determine whether or not any of the arguments
 resolved. <code>set</code> methods with non-required DI container references
@@ -1773,7 +1775,9 @@ legacy systems.</p></dd><dt><a href="Drush/Preflight/PreflightArgs.html#method_i
 <abbr title="Drush\Runtime\HandlerInterface">HandlerInterface</abbr>::installHandler</a>() &mdash; <em>Method in class <a href="Drush/Runtime/HandlerInterface.html"><abbr title="Drush\Runtime\HandlerInterface">HandlerInterface</abbr></a></em></dt>
                     <dd></dd><dt>$<a href="Drush/Runtime/LegacyServiceInstantiator.html#property_instantiatedDrushServices">
 <abbr title="Drush\Runtime\LegacyServiceInstantiator">LegacyServiceInstantiator</abbr>#instantiatedDrushServices</a> &mdash; <em>Property in class <a href="Drush/Runtime/LegacyServiceInstantiator.html"><abbr title="Drush\Runtime\LegacyServiceInstantiator">LegacyServiceInstantiator</abbr></a></em></dt>
-                    <dd></dd><dt><a href="Drush/Runtime/LegacyServiceInstantiator.html#method_instantiateServices">
+                    <dd></dd><dt><a href="Drush/Runtime/LegacyServiceInstantiator.html#method_isValidServiceData">
+<abbr title="Drush\Runtime\LegacyServiceInstantiator">LegacyServiceInstantiator</abbr>::isValidServiceData</a>() &mdash; <em>Method in class <a href="Drush/Runtime/LegacyServiceInstantiator.html"><abbr title="Drush\Runtime\LegacyServiceInstantiator">LegacyServiceInstantiator</abbr></a></em></dt>
+                    <dd><p>Validate service data before using it.</p></dd><dt><a href="Drush/Runtime/LegacyServiceInstantiator.html#method_instantiateServices">
 <abbr title="Drush\Runtime\LegacyServiceInstantiator">LegacyServiceInstantiator</abbr>::instantiateServices</a>() &mdash; <em>Method in class <a href="Drush/Runtime/LegacyServiceInstantiator.html"><abbr title="Drush\Runtime\LegacyServiceInstantiator">LegacyServiceInstantiator</abbr></a></em></dt>
                     <dd><p>Given a drush.services.yml file (parsed into an array),
 instantiate all of the services referenced therein.</p></dd><dt><a href="Drush/Runtime/LegacyServiceInstantiator.html#method_instantiateObject">
