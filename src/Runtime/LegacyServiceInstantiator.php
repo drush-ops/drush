@@ -69,7 +69,7 @@ class LegacyServiceInstantiator
      * @param string $serviceFile Path to service file being checked
      * @param array $serviceFileData Parsed data from drush.services.yml
      */
-    protected function isValidServiceData(string $serviceFile, array $serviceFileData)
+    protected function isValidServiceData(string $serviceFile, array $serviceFileData): bool
     {
         // If there are no services, then silently skip this service file.
         if (!isset($serviceFileData['services'])) {
@@ -78,7 +78,7 @@ class LegacyServiceInstantiator
 
         // We don't support auto-wiring
         if (!empty($serviceFileData['services']['_defaults']['autowire'])) {
-            $this->logger->warning(dt('Autoloading not supported; skipping @file', ['@file' => $serviceFile]));
+            $this->logger->warning(dt('Autowire not supported; skipping @file', ['@file' => $serviceFile]));
             return false;
         }
 
@@ -97,7 +97,7 @@ class LegacyServiceInstantiator
      * @param string $serviceFile Path to service file being checked
      * @param array $services List of data from 'services' element from drush.services.yml
      */
-    protected function allServicesHaveClassElement(string $serviceFile, array $services)
+    protected function allServicesHaveClassElement(string $serviceFile, array $services): bool
     {
         foreach ($services as $service => $data) {
             if (!isset($data['class'])) {
