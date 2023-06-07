@@ -82,7 +82,7 @@ final class ConfigPullCommands extends DrushCommands implements SiteAliasManager
         return new PropertyList(['path' => $destinationHostPath->getOriginal()]);
     }
 
-    #[CLI\Hook(type: HookManager::ARGUMENT_VALIDATOR, target: 'config-pull')]
+    #[CLI\Hook(type: HookManager::ARGUMENT_VALIDATOR, target: self::PULL)]
     public function validateConfigPull(CommandData $commandData): void
     {
         if ($commandData->input()->getOption('safe')) {

@@ -306,7 +306,7 @@ final class ViewsCommands extends DrushCommands
     /**
      * Adds a cache clear option for views.
      */
-    #[CLI\Hook(type: HookManager::ON_EVENT, target: 'cache-clear')]
+    #[CLI\Hook(type: HookManager::ON_EVENT, target: CacheCommands::EVENT_CLEAR)]
     public function cacheClear(&$types, $include_bootstrapped_types): void
     {
         if ($include_bootstrapped_types && $this->getModuleHandler()->moduleExists('views')) {
