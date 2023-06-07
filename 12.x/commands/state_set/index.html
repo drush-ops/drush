@@ -5211,6 +5211,9 @@
 <li><code>drush sset system.maintenance_mode 1 --input-format=integer</code>. Put site into Maintenance mode.</li>
 <li><code>drush state:set system.cron_last 1406682882 --input-format=integer</code>. Sets a timestamp for last cron run.</li>
 <li><code>php -r "print json_encode(array('drupal', 'simpletest'));"  | drush state-set --input-format=json foo.name -</code>. Set a key to a complex value (e.g. array)</li>
+<li><code>drush state:set twig_debug TRUE</code>. Enable the Twig debug mode (since Drupal 10.1)</li>
+<li><code>drush state:set twig_autoreload TRUE</code>. Enable Twig auto reload (since Drupal 10.1)</li>
+<li><code>drush state:set twig_cache_disable TRUE</code>. Disable the Twig, page, render and dynamic page caches (since Drupal 10.1)</li>
 </ul>
 <h4 id="arguments">Arguments<a class="headerlink" href="#arguments" title="Permanent link">&para;</a></h4>
 <ul>
