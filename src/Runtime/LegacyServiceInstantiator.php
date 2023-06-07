@@ -78,7 +78,7 @@ class LegacyServiceInstantiator
 
         // We don't support auto-wiring
         if (!empty($serviceFileData['services']['_defaults']['autowire'])) {
-            $this->logger->warning(dt('Autowire not supported; skipping @file', ['@file' => $serviceFile]));
+            $this->logger->info(dt('Autowire not supported; skipping @file', ['@file' => $serviceFile]));
             return false;
         }
 
@@ -101,7 +101,7 @@ class LegacyServiceInstantiator
     {
         foreach ($services as $service => $data) {
             if (!isset($data['class'])) {
-                $this->logger->warning(dt('Service @service does not have a class element; skipping @file', ['@service' => $service, '@file' => $serviceFile]));
+                $this->logger->info(dt('Service @service does not have a class element; skipping @file', ['@service' => $service, '@file' => $serviceFile]));
                 return false;
             }
         }
