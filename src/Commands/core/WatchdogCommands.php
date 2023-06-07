@@ -64,7 +64,7 @@ final class WatchdogCommands extends DrushCommands
     #[CLI\Bootstrap(level: DrupalBootLevels::FULL)]
     public function show($substring = '', $options = ['format' => 'table', 'count' => 10, 'severity' => self::REQ, 'severity-min' => self::REQ, 'type' => self::REQ, 'extended' => false]): ?RowsOfFields
     {
-        $where = $this->where($options['type'], $options['severity'], $substring, 'AND', $options['severity-min']);
+        $where = $this->where((string)$options['type'], $options['severity'], $substring, 'AND', $options['severity-min']);
         $query = Database::getConnection()->select('watchdog', 'w')
             ->range(0, $options['count'])
             ->fields('w')
