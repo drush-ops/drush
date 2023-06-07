@@ -20,7 +20,7 @@ Below are the 3 types of update functions run by this command, in order. Choose 
 | --- | --- | --- |
 | [HOOK_update_n()](https://api.drupal.org/api/drupal/core!lib!Drupal!Core!Extension!module.api.php/function/hook_update_N) | Not allowed | Low level changes. |
 | [HOOK_post_update_NAME()](https://api.drupal.org/api/drupal/core!lib!Drupal!Core!Extension!module.api.php/function/hook_post_update_NAME) | Allowed | Runs *before* config is imported. |
-| [HOOK_deploy_NAME()](https://github.com/drush-ops/drush/tree/HEAD/tests/fixtures/modules/woot/woot.deploy.php) | Allowed | Runs *after* config is imported. | 
+| [HOOK_deploy_NAME()](https://github.com/drush-ops/drush/tree/HEAD/drush.api.php) | Allowed | Runs *after* config is imported. | 
 
 ## Configuration
 
