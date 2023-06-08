@@ -32,9 +32,8 @@ class LegacyServiceInstantiator
     protected array $instantiatedDrushServices = [];
     protected array $tags = [];
 
-    public function __construct(protected ContainerInterface $container, LoggerInterface $logger)
+    public function __construct(protected ContainerInterface $container, protected LoggerInterface $logger)
     {
-        $this->logger = $logger;
     }
 
     /**
