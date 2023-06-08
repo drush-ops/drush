@@ -113,7 +113,7 @@ final class PmCommands extends DrushCommands
      * Run requirements checks on the module installation.
      * @see \drupal_check_module()
      */
-    #[CLI\Hook(type: HookManager::ARGUMENT_VALIDATOR, target: 'pm:install')]
+    #[CLI\Hook(type: HookManager::ARGUMENT_VALIDATOR, target: PmCommands::INSTALL)]
     public function validateEnableModules(CommandData $commandData): void
     {
         $modules = $commandData->input()->getArgument('modules');
@@ -198,7 +198,7 @@ final class PmCommands extends DrushCommands
         $this->logger()->success(dt('Successfully uninstalled: !list', ['!list' => implode(', ', $list)]));
     }
 
-    #[CLI\Hook(type: HookManager::ARGUMENT_VALIDATOR, target: 'pm:uninstall')]
+    #[CLI\Hook(type: HookManager::ARGUMENT_VALIDATOR, target: PmCommands::UNINSTALL)]
     public function validateUninstall(CommandData $commandData): void
     {
         if ($modules = $commandData->input()->getArgument('modules')) {

@@ -239,7 +239,7 @@ final class UserCommands extends DrushCommands
     /**
      * Assure that provided username is available.
      */
-    #[CLI\Hook(type: HookManager::ARGUMENT_VALIDATOR, target: 'user:create')]
+    #[CLI\Hook(type: HookManager::ARGUMENT_VALIDATOR, target: self::CREATE)]
     public function createValidate(CommandData $commandData): void
     {
         if ($mail = $commandData->input()->getOption('mail')) {

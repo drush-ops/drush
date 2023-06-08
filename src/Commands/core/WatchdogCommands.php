@@ -64,7 +64,7 @@ final class WatchdogCommands extends DrushCommands
     #[CLI\Bootstrap(level: DrupalBootLevels::FULL)]
     public function show($substring = '', $options = ['format' => 'table', 'count' => 10, 'severity' => self::REQ, 'severity-min' => self::REQ, 'type' => self::REQ, 'extended' => false]): ?RowsOfFields
     {
-        $where = $this->where($options['type'], $options['severity'], $substring, 'AND', $options['severity-min']);
+        $where = $this->where((string)$options['type'], $options['severity'], $substring, 'AND', $options['severity-min']);
         $query = Database::getConnection()->select('watchdog', 'w')
             ->range(0, $options['count'])
             ->fields('w')
@@ -94,7 +94,7 @@ final class WatchdogCommands extends DrushCommands
     #[CLI\Option(name: 'severity', description: 'Restrict to messages of a given severity level (numeric or string).')]
     #[CLI\Option(name: 'type', description: 'Restrict to messages of a given type.')]
     #[CLI\Option(name: 'extended', description: 'Return extended information about each message.')]
-    #[CLI\Usage(name: 'drush watchdog:list', description: 'Prompt for message type or severity, then run watchdog-show.')]
+    #[CLI\Usage(name: 'drush watchdog:list', description: 'Prompt for message type or severity, then run watchdog:show.')]
     #[CLI\FieldLabels(labels: [
         'wid' => 'ID',
         'type' => 'Type',
@@ -110,8 +110,9 @@ final class WatchdogCommands extends DrushCommands
     #[CLI\DefaultTableFields(fields: ['wid', 'date', 'type', 'severity', 'message'])]
     #[CLI\Complete(method_name_or_callable: 'watchdogComplete')]
     #[CLI\Bootstrap(level: DrupalBootLevels::FULL)]
-    public function watchdogList($substring = '', $options = ['format' => 'table', 'count' => 10, 'extended' => false]): RowsOfFields
+    public function watchdogList($substring = '', $options = ['format' => 'table', 'count' => 10, 'extended' => false]): ?RowsOfFields
     {
+        $options['severity-min'] = null;
         return $this->show($substring, $options);
     }
 
@@ -169,7 +170,7 @@ final class WatchdogCommands extends DrushCommands
         }
     }
 
-    #[CLI\Hook(type: HookManager::INTERACT, target: 'watchdog-list')]
+    #[CLI\Hook(type: HookManager::INTERACT, target: self::LIST)]
     public function interactList($input, $output): void
     {
 
