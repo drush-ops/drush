@@ -235,6 +235,7 @@ final class PmCommands extends DrushCommands
     ])]
     #[CLI\DefaultTableFields(fields: ['package', 'display_name', 'status', 'version'])]
     #[CLI\FilterDefaultField(field: 'display_name')]
+    #[CLI\TableEmptyMessage(message: 'There are no items to list')]
     public function pmList($options = ['format' => 'table', 'type' => 'module,theme', 'status' => 'enabled,disabled', 'package' => self::REQ, 'core' => false, 'no-core' => false]): RowsOfFields
     {
         $rows = [];
