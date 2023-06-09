@@ -101,7 +101,9 @@ class SqlPgsql extends SqlBase
         $process = Drush::shell($sql_no_db->connect() . ' -t -c ' . $query, null, $this->getEnv());
         $process->setSimulated(false);
         $process->run();
-        return $process->isSuccessful();
+
+        return $process->isSuccessful()
+            && trim($process->getOutput()) === '1';
     }
 
     public function queryFormat($query)
