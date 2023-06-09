@@ -577,7 +577,8 @@ final class ArchiveRestoreCommands extends DrushCommands implements SiteAliasMan
             throw new Exception(
                 dt('Failed to drop database !database.', ['!database' => $databaseSpec['database']])
             );
-        } elseif (!$sql->createdb(true)) {
+        }
+        if (!$isDbExist && !$sql->createdb(true)) {
             throw new Exception(
                 dt('Failed to create database !database.', ['!database' => $databaseSpec['database']])
             );
