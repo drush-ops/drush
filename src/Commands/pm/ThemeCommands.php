@@ -40,7 +40,7 @@ final class ThemeCommands extends DrushCommands
     /**
      * Install one or more themes.
      */
-    #[CLI\Command(name: self::INSTALL, aliases: ['theme:in', 'thin', 'theme:enable', 'then', 'theme-enable'])]
+    #[CLI\Command(name: self::INSTALL, aliases: ['thin', 'theme:enable', 'then', 'theme-enable'])]
     #[CLI\Argument(name: 'themes', description: 'A comma delimited list of themes.')]
     public function install(array $themes): void
     {
