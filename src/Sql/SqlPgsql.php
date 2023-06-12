@@ -90,6 +90,16 @@ class SqlPgsql extends SqlBase
         return $return;
     }
 
+    public function drop(array $tables): ?bool
+    {
+        $return = true;
+        if ($tables) {
+            $sql = 'DROP TABLE ' . implode(', ', $tables) . ' CASCADE';
+            $return = $this->query($sql);
+        }
+        return $return;
+    }
+
     public function createdbSql($dbname, $quoted = false): string
     {
         if ($quoted) {
