@@ -201,7 +201,11 @@ class ServiceManager
             ->getClasses();
 
         return array_filter($classes, function (string $class): bool {
-                $reflectionClass = new \ReflectionClass($class);
+                try {
+                    $reflectionClass = new \ReflectionClass($class);
+                } catch (\Throwable $e) {
+                    return false;
+                }
                 return $reflectionClass->isSubclassOf(BaseGenerator::class)
                     && !$reflectionClass->isAbstract()
                     && !$reflectionClass->isInterface()
