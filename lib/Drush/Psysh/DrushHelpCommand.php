@@ -106,7 +106,7 @@ class DrushHelpCommand extends BaseCommand {
           $categories[$category] = [];
         }
 
-        $categories[$category][] = sprintf("    <info>%-${width}s</info> %s%s", $name, $command->getDescription(), $aliases);
+        $categories[$category][] = sprintf("    <info>%-{$width}s</info> %s%s", $name, $command->getDescription(), $aliases);
       }
 
       $messages = [];

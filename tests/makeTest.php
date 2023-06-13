@@ -463,11 +463,13 @@ class makeMakefileCase extends CommandUnishTestCase {
   }
 
   function testMakeInclude() {
+    $this->markTestSkipped('Make test must be updated; Drupal 6 is EOL, fixture projects are not available. PRs welcome.');
     $this->runMakefileTest('include');
   }
 
   /** @group make.yml */
   function testMakeIncludeYaml() {
+    $this->markTestSkipped('Make test must be updated; Drupal 6 is EOL, fixture projects are not available. PRs welcome.');
     $this->runMakefileTest('include-yaml');
   }
 

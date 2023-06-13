@@ -211,7 +211,7 @@ class DrupalBoot8 extends DrupalBoot {
     parent::terminate();
 
     if ($this->kernel) {
-      $response = Response::create('');
+      $response = new Response('');
       $this->kernel->terminate($this->request, $response);
     }
   }

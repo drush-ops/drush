@@ -9,6 +9,13 @@ defaults: &defaults
 version: 2.1
 
 executors:
+  linux82:
+    docker:
+      - image: wodby/php:8.2
+        environment:
+          - MYSQL_HOST=127.0.0.1
+          - UNISH_DB_URL=mysql://root:@127.0.0.1
+      - image: circleci/mysql:5.7.31
   linux81:
     docker:
       - image: wodby/php:8.1
@@ -78,21 +85,17 @@ workflows:
     jobs:
       - lint
       - test:
-          name: test-drupal-9.3-php-8.1
-          drupal: "9.3.0"
+          name: test-drupal-8-php-7.4
+          drupal: "8.9.20"
+          os: linux74
+      - test:
+          name: test-drupal-7-php-8.2
+          drupal: "7"
+          os: linux82
+      - test:
+          name: test-drupal-7-php-8.1
+          drupal: "7"
           os: linux81
-      - test:
-          name: test-drupal-9.3-php-8.0
-          drupal: "9.3.0"
-          os: linux80
-      - test:
-          name: test-drupal-9.3-php-7.4
-          drupal: "9.3.0"
-          os: linux74
-      - test:
-          name: test-drupal-9.1-php-7.4
-          drupal: "9.1.15"
-          os: linux74
       - test:
           name: test-drupal-7-php-7.4
           drupal: "7"

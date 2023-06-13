@@ -78,8 +78,8 @@
     }
   },
   "scripts": {
-    "phar:install-tools": "curl -L https://github.com/box-project/box/releases/download/3.14.0/box.phar --output box.phar",
-    "phar:build": "php box.phar compile",
+    "phar:install-tools": "curl -L https://github.com/box-project/box/releases/download/4.3.7/box.phar --output box.phar",
+    "phar:build": "composer install -n --no-dev && php box.phar compile",
     "lint": [
       "find includes -name '*.inc' -print0 | xargs -0 -n1 php -l",
       "find lib/Drush -name '*.php' -print0 | xargs -0 -n1 php -l"

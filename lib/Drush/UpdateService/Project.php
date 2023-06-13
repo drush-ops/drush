@@ -688,7 +688,11 @@ class Project {
       $release_link = $this->parsed['releases'][$version]['release_link'];
       $filename = drush_download_file($release_link, drush_tempnam($project_name));
       @$dom = new \DOMDocument();
-      $success = $dom->loadHTMLFile($filename);
+      $loadOptions = 0;
+      if (!drush_get_context('DRUSH_DEBUG')) {
+        $loadOptions = LIBXML_NOERROR; // Supress load error messages when not in debug mode
+      }
+      $success = $dom->loadHTMLFile($filename, $loadOptions);
       if ($success) {
         drush_log(dt("Successfully parsed and loaded the HTML contained in the release notes' page for !project (!version) project.", array('!project' => $project_name, '!version' => $version)), LogLevel::NOTICE);
       }
@@ -699,8 +703,12 @@ class Project {
       $xml = simplexml_import_dom($dom);
 
       // Extract last update time and the notes.
-      $last_updated = $xml->xpath('//div[contains(@class,"views-field-changed")]');
-      $last_updated = $last_updated[0]->asXML();
+      $last_updated_xml = $xml->xpath('//div[contains(@class,"release-info")]');
+      // Not sure how to navagate these XML nodes, so we'll hack it back to a string
+      $last_updated_xml_string = $last_updated_xml[0]->asXML();
+      $last_updated = preg_replace('#.*Last updated: #', '', $last_updated_xml_string);
+      $last_updated = preg_replace('#\<.*#', '', $last_updated);
+
       $notes = $xml->xpath('//div[contains(@class,"field-name-body")]');
       $notes = (!empty($notes)) ? $notes[0]->asXML() : dt("There're no release notes.");
 
