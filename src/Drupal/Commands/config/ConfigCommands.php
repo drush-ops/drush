@@ -390,7 +390,7 @@ class ConfigCommands extends DrushCommands implements StdinAwareInterface, SiteA
      * @param mixed $directory
      *   A configuration directory. Note; can be boolean.
      */
-    public static function getDirectory(mixed $directory = null): string
+    public static function getDirectory($directory = null): string
     {
         $return = null;
         // If the user provided a directory, use it.

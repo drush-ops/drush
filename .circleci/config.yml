@@ -68,6 +68,18 @@ jobs:
       - image: cimg/mysql:5.7.38
     <<: *test80steps
 
+  # PHP 7.4 test:
+  #   Checks the most common configuration.
+  test_74_drupal9_mysql:
+    <<: *defaults
+    docker:
+      - image: wodby/php:7.4
+        environment:
+          - MYSQL_HOST=127.0.0.1
+          - UNISH_DB_URL=mysql://root:@127.0.0.1
+      - image: cimg/mysql:5.7.38
+    <<: *test80steps
+
   test_80_drupal9_sqlite:
     <<: *defaults
     docker:
