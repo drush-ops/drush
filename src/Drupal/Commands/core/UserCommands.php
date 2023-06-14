@@ -286,7 +286,7 @@ class UserCommands extends DrushCommands
      * @usage drush user:cancel --reassign-content username
      *   Delete the user account with the name <info>username<info> and assign all her content to the anonymous user.
      */
-    public function cancel(string $names, $options = ['delete-content' => false, 'reassign-content' => false, 'uid' => self::REQ, 'mail' => self::REQ]): void
+    public function cancel(string $names = '', $options = ['delete-content' => false, 'reassign-content' => false, 'uid' => self::REQ, 'mail' => self::REQ]): void
     {
         $accounts = $this->getAccounts($names, $options);
         foreach ($accounts as $id => $account) {
