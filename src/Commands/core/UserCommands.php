@@ -269,7 +269,7 @@ final class UserCommands extends DrushCommands
     #[CLI\Usage(name: 'drush user:cancel username', description: 'Block the user account with the name username.')]
     #[CLI\Usage(name: 'drush user:cancel --delete-content username', description: 'Delete the user account with the name <info>username<info> and delete all content created by that user.')]
     #[CLI\Usage(name: 'drush user:cancel --reassign-content username', description: 'Delete the user account with the name <info>username<info> and assign all her content to the anonymous user.')]
-    public function cancel(string $names, $options = ['delete-content' => false, 'reassign-content' => false, 'uid' => self::REQ, 'mail' => self::REQ]): void
+    public function cancel(string $names = '', $options = ['delete-content' => false, 'reassign-content' => false, 'uid' => self::REQ, 'mail' => self::REQ]): void
     {
         $accounts = $this->getAccounts($names, $options);
         foreach ($accounts as $id => $account) {
