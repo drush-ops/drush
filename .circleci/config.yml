@@ -153,6 +153,8 @@ workflows:
     jobs:
       - code_style
       - check_mergable
+      - test_74_drupal9_mysql:
+          <<: *requires
       - test_80_drupal92_security:
           <<: *requires
       - test_80_drupal9_mysql:
