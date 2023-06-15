@@ -244,6 +244,9 @@ final class UserCommands extends DrushCommands
                 return new CommandError("Could not create a new user account with the name " . $name . ".");
             }
         }
+        else {
+            return new RowsOfFields([]);
+        }
     }
 
     /**
