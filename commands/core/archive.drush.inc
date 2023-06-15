@@ -26,6 +26,7 @@ function archive_drush_command() {
       'preserve-symlinks' => 'Preserve symbolic links.',
       'no-core' => 'Exclude Drupal core, so the backup only contains the site specific stuff.',
       'tar-options' => 'Options passed thru to the tar command.',
+      'extra' => 'Options passed thru to the sql command.',
     ),
     'examples' => array(
       'drush archive-dump default,example.com,foo.com' => 'Write an archive containing 3 sites in it.',
@@ -55,6 +56,7 @@ function archive_drush_command() {
       'db-su-pw' => 'Password for the "db-su" account. Optional.',
       'overwrite' => 'Allow drush to overwrite any files in the destination. Default is --no-overwrite.',
       'tar-options' => 'Options passed thru to the tar command.',
+      'extra' => 'Options passed thru to the sql command.',
     ),
     'examples' => array(
       'drush archive-restore ./example.tar.gz' => 'Restore the files and databases for all sites in the archive.',
