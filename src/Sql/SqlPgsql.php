@@ -44,7 +44,7 @@ class SqlPgsql extends SqlBase
 
     public function command(): string
     {
-        return 'psql -q';
+        return 'psql -q ON_ERROR_STOP=1 ';
     }
 
     public function getEnv(): array
@@ -90,6 +90,16 @@ class SqlPgsql extends SqlBase
         return $return;
     }
 
+    public function drop(array $tables): ?bool
+    {
+        $return = true;
+        if ($tables) {
+            $sql = 'DROP TABLE ' . implode(', ', $tables) . ' CASCADE';
+            $return = $this->query($sql);
+        }
+        return $return;
+    }
+
     public function createdbSql($dbname, $quoted = false): string
     {
         if ($quoted) {
@@ -112,9 +122,9 @@ class SqlPgsql extends SqlBase
         $process = Drush::shell($sql_no_db->connect() . ' -t -c ' . escapeshellarg($query), null, $this->getEnv());
         $process->setSimulated(false);
         $process->run();
-        $out = $process->getOutput();
-        // If there is output the DB exists.
-        return (bool)$out;
+
+        return $process->isSuccessful()
+            && trim($process->getOutput()) === '1';
     }
 
     public function queryFormat($query)

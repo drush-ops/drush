@@ -29,6 +29,31 @@ final class UserCommands extends DrushCommands
     const CREATE = 'user:create';
     const CANCEL = 'user:cancel';
     const PASSWORD = 'user:password';
+    const INF_LABELS = [
+        'uid' => 'User ID',
+        'name' => 'User name',
+        'pass' => 'Password',
+        'mail' => 'User mail',
+        'theme' => 'User theme',
+        'signature' => 'Signature',
+        'signature_format' => 'Signature format',
+        'user_created' => 'User created',
+        'created' => 'Created',
+        'user_access' => 'User last access',
+        'access' => 'Last access',
+        'user_login' => 'User last login',
+        'login' => 'Last login',
+        'user_status' => 'User status',
+        'status' => 'Status',
+        'timezone' => 'Time zone',
+        'picture' => 'User picture',
+        'init' => 'Initial user mail',
+        'roles' => 'User roles',
+        'group_audience' => 'Group Audience',
+        'langcode' => 'Language code',
+        'uuid' => 'Uuid',
+    ];
+    const INF_DEFAULT_FIELDS = ['uid', 'name', 'mail', 'roles', 'user_status'];
 
     public function __construct(protected DateFormatterInterface $dateFormatter)
     {
@@ -54,31 +79,8 @@ final class UserCommands extends DrushCommands
     #[CLI\Usage(name: 'drush user:information --mail=someguy@somegal.com', description: 'Display information for a given email account.')]
     #[CLI\Usage(name: 'drush user:information --uid=5', description: 'Display information for a given user id.')]
     #[CLI\Usage(name: 'drush uinf --uid=$(drush sqlq "SELECT GROUP_CONCAT(entity_id) FROM user__roles WHERE roles_target_id = \'administrator\'")', description: 'Display information for all administrators.')]
-    #[CLI\FieldLabels(labels: [
-        'uid' => 'User ID',
-        'name' => 'User name',
-        'pass' =>  'Password',
-        'mail' => 'User mail',
-        'theme' => 'User theme',
-        'signature' => 'Signature',
-        'signature_format' => 'Signature format',
-        'user_created' => 'User created',
-        'created' => 'Created',
-        'user_access' => 'User last access',
-        'access' => 'Last access',
-        'user_login' => 'User last login',
-        'login' => 'Last login',
-        'user_status' => 'User status',
-        'status' => 'Status',
-        'timezone' => 'Time zone',
-        'picture' => 'User picture',
-        'init' => 'Initial user mail',
-        'roles' => 'User roles',
-        'group_audience' => 'Group Audience',
-        'langcode' => 'Language code',
-        'uuid' => 'Uuid',
-    ])]
-    #[CLI\DefaultTableFields(fields: ['uid', 'name', 'mail', 'roles', 'user_status'])]
+    #[CLI\FieldLabels(labels: self::INF_LABELS)]
+    #[CLI\DefaultTableFields(fields: self::INF_DEFAULT_FIELDS)]
     #[CLI\FilterDefaultField(field: 'name')]
     public function information(string $names = '', $options = ['format' => 'table', 'uid' => self::REQ, 'mail' => self::REQ]): RowsOfFields
     {
@@ -216,8 +218,11 @@ final class UserCommands extends DrushCommands
     #[CLI\Argument(name: 'name', description: 'The name of the account to add')]
     #[CLI\Option(name: 'password', description: 'The password for the new account')]
     #[CLI\Option(name: 'mail', description: 'The email address for the new account')]
+    #[CLI\FieldLabels(labels: self::INF_LABELS)]
+    #[CLI\DefaultTableFields(fields: self::INF_DEFAULT_FIELDS)]
+    #[CLI\FilterDefaultField(field: 'name')]
     #[CLI\Usage(name: "drush user:create newuser --mail='person@example.com' --password='letmein'", description: 'Create a new user account with the name newuser, the email address person@example.com, and the password letmein')]
-    public function createUser(string $name, $options = ['password' => self::REQ, 'mail' => self::REQ])
+    public function createUser(string $name, $options = ['format' => 'table', 'password' => self::REQ, 'mail' => self::REQ]): RowsOfFields|CommandError
     {
         $new_user = [
             'name' => $name,
@@ -230,9 +235,16 @@ final class UserCommands extends DrushCommands
             if ($account = User::create($new_user)) {
                 $account->save();
                 $this->logger()->success(dt('Created a new user with uid !uid', ['!uid' => $account->id()]));
+                $outputs[$account->id()] = $this->infoArray($account);
+
+                $result = new RowsOfFields($outputs);
+                $result->addRendererFunction([$this, 'renderRolesCell']);
+                return $result;
             } else {
                 return new CommandError("Could not create a new user account with the name " . $name . ".");
             }
+        } else {
+            return new RowsOfFields([]);
         }
     }
 
@@ -269,7 +281,7 @@ final class UserCommands extends DrushCommands
     #[CLI\Usage(name: 'drush user:cancel username', description: 'Block the user account with the name username.')]
     #[CLI\Usage(name: 'drush user:cancel --delete-content username', description: 'Delete the user account with the name <info>username<info> and delete all content created by that user.')]
     #[CLI\Usage(name: 'drush user:cancel --reassign-content username', description: 'Delete the user account with the name <info>username<info> and assign all her content to the anonymous user.')]
-    public function cancel(string $names, $options = ['delete-content' => false, 'reassign-content' => false, 'uid' => self::REQ, 'mail' => self::REQ]): void
+    public function cancel(string $names = '', $options = ['delete-content' => false, 'reassign-content' => false, 'uid' => self::REQ, 'mail' => self::REQ]): void
     {
         $accounts = $this->getAccounts($names, $options);
         foreach ($accounts as $id => $account) {

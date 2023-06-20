@@ -201,11 +201,15 @@ class ServiceManager
             ->getClasses();
 
         return array_filter($classes, function (string $class): bool {
+            try {
                 $reflectionClass = new \ReflectionClass($class);
-                return $reflectionClass->isSubclassOf(BaseGenerator::class)
-                    && !$reflectionClass->isAbstract()
-                    && !$reflectionClass->isInterface()
-                    && !$reflectionClass->isTrait();
+            } catch (\Throwable $e) {
+                return false;
+            }
+            return $reflectionClass->isSubclassOf(BaseGenerator::class)
+                && !$reflectionClass->isAbstract()
+                && !$reflectionClass->isInterface()
+                && !$reflectionClass->isTrait();
         });
     }
 
