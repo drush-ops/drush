@@ -133,7 +133,7 @@ final class TwigCommands extends DrushCommands
     public function twigDebug(string $mode): void
     {
         if (version_compare('10.1.0', \Drupal::VERSION) < 0) {
-            throw new \Exception('Twig debug only supports Drupal 10.1.0 and above.');
+            throw new \Exception('Twig debug command requires Drupal 10.1.0 and above.');
         }
         $mode = match ($mode) {
             'on' => true,
