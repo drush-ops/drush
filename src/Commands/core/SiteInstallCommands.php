@@ -62,7 +62,7 @@ final class SiteInstallCommands extends DrushCommands
     #[CLI\Option(name: 'db-su', description: 'Account to use when creating a new database. Must have Grant permission (mysql only). Optional.')]
     #[CLI\Option(name: 'db-su-pw', description: 'Password for the <info>db-su</info> account. Optional.')]
     #[CLI\Option(name: 'account-name', description: 'uid1 name.')]
-    #[CLI\Option(name: 'account-pass', description: 'uid1 pass. Defaults to a randomly generated password. If desired, set a fixed password in config.yml.')]
+    #[CLI\Option(name: 'account-pass', description: 'uid1 pass. Defaults to a randomly generated password. If desired, set a fixed password in drush.yml.')]
     #[CLI\Option(name: 'account-mail', description: 'uid1 email.')]
     #[CLI\Option(name: 'locale', description: 'A short language code. Sets the default site language. Language files must already be present.')]
     #[CLI\Option(name: 'site-name', description: 'Site name')]
