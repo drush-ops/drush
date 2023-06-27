@@ -21,7 +21,7 @@
         <link rel="next" href="../sql_sanitize/">
       
       <link rel="icon" href="../../img/favicon.ico">
-      <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-9.1.16">
+      <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-9.1.17">
     
     
       
@@ -5212,7 +5212,7 @@
 <li><code>drush sql:query --db-prefix "SELECT * FROM {users}"</code>. Browse user record. Table prefixes are honored.  Caution: All curly-braces will be stripped.</li>
 <li><code>$(drush sql:connect) &lt; example.sql</code>. Import sql statements from a file into the current database.</li>
 <li><code>drush sql:query --file=example.sql</code>. Alternate way to import sql statements from a file.</li>
-<li><code>drush ev "return db_query('SELECT * FROM users')-&gt;fetchAll()" --format=json</code>. Get data back in JSON format. See <a href="https://github.com/drush-ops/drush/issues/3071#issuecomment-347929777">https://github.com/drush-ops/drush/issues/3071#issuecomment-347929777</a>.</li>
+<li><code>drush php:eval --format=json "return \Drupal\Core\Database\Connection::query('SELECT * FROM users')-&gt;fetchAll()"</code>. Get data back in JSON format. See <a href="https://github.com/drush-ops/drush/issues/3071#issuecomment-347929777">https://github.com/drush-ops/drush/issues/3071#issuecomment-347929777</a>.</li>
 <li><code><code>drush sql:connect</code> -e "select * from users limit 5;"</code>. Results are formatted in a pretty table with borders and column headers.</li>
 </ul>
 <h4 id="arguments">Arguments<a class="headerlink" href="#arguments" title="Permanent link">&para;</a></h4>
@@ -5331,7 +5331,7 @@
     <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "toc.integrate", "content.action.edit", "content.action.view"], "search": "../../assets/javascripts/workers/search.208ed371.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.a51614de.min.js"></script>
+      <script src="../../assets/javascripts/bundle.b425cdc4.min.js"></script>
       
     
   </body>
