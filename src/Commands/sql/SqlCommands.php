@@ -190,7 +190,7 @@ final class SqlCommands extends DrushCommands implements StdinAwareInterface
     /**
      * Exports the Drupal DB as SQL using mysqldump or equivalent.
      *
-     * --createdb is used by sql-sync, since including the DROP TABLE statements interferes with the import when the database is created.
+     * --create-db is used by sql-sync, since including the DROP TABLE statements interferes with the import when the database is created.
      */
     #[CLI\Command(name: self::DUMP, aliases: ['sql-dump'])]
     #[CLI\Bootstrap(level: DrupalBootLevels::MAX, max_level: DrupalBootLevels::CONFIGURATION)]
