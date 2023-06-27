@@ -31,6 +31,7 @@ class DrupalBoot8 extends DrupalBoot
 
     public function __construct(protected ServiceManager $serviceManager, protected $autoloader)
     {
+        register_shutdown_function([$this, 'terminate']);
     }
 
     public function getRequest(): Request
