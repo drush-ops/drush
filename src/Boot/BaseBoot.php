@@ -16,6 +16,7 @@ abstract class BaseBoot implements Boot, LoggerAwareInterface
 
     public function __construct()
     {
+        register_shutdown_function([$this, 'terminate']);
     }
 
     public function findUri($root, $uri): string
