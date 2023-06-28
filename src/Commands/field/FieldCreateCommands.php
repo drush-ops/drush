@@ -24,6 +24,8 @@ use Drupal\field\FieldConfigInterface;
 use Drupal\field\FieldStorageConfigInterface;
 use Drush\Attributes as CLI;
 use Drush\Commands\DrushCommands;
+use Symfony\Component\Console\Completion\CompletionInput;
+use Symfony\Component\Console\Completion\CompletionSuggestions;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -103,6 +105,7 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
     #[CLI\Usage(name: self::CREATE, description: 'Create a field by answering the prompts.')]
     #[CLI\Usage(name: 'field-create taxonomy_term tag', description: 'Create a field and fill in the remaining information through prompts.')]
     #[CLI\Usage(name: 'field-create taxonomy_term tag --field-name=field_tag_label --field-label=Label --field-type=string --field-widget=string_textfield --is-required=1 --cardinality=2', description: 'Create a field in a completely non-interactive way.')]
+    #[CLI\Complete(method_name_or_callable: 'complete')]
     #[CLI\Version(version: '11.0')]
     public function fieldCreate(?string $entityType = null, ?string $bundle = null, array $options = [
         'field-name' => InputOption::VALUE_REQUIRED,
@@ -197,6 +200,20 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
         $this->createFieldDisplay('view');
 
         $this->logResult($field);
+    }
+
+    public function complete(CompletionInput $input, CompletionSuggestions $suggestions): void
+    {
+        if ($input->getCompletionName() === 'entityType') {
+            $suggestions->suggestValues(array_keys($this->getFieldableEntityTypes()));
+        }
+
+        if ($input->getCompletionName() === 'bundle') {
+            $entityTypeId = $input->getArgument('entityType');
+            $bundleInfo = $this->entityTypeBundleInfo->getBundleInfo($entityTypeId);
+
+            $suggestions->suggestValues(array_keys($bundleInfo));
+        }
     }
 
     protected function askExistingFieldName(): ?string
