@@ -31,6 +31,7 @@ class DrupalBoot8 extends DrupalBoot
 
     public function __construct(protected ServiceManager $serviceManager, protected $autoloader)
     {
+        parent::__construct();
     }
 
     public function getRequest(): Request
