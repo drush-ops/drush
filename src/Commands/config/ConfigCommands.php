@@ -166,14 +166,14 @@ final class ConfigCommands extends DrushCommands implements StdinAwareInterface,
             $data = $this->stdin()->contents();
         }
 
-        // Special handling for empty array.
-        if ($data == '[]') {
-            $data = [];
-        }
-
         // Special handling for null.
         if (strtolower($data) == 'null') {
             $data = null;
+        }
+
+        // Special handling for empty array.
+        if ($data == '[]') {
+            $data = [];
         }
 
         if ($options['input-format'] === 'yaml') {
