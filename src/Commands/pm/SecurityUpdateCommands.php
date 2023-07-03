@@ -74,6 +74,7 @@ final class SecurityUpdateCommands extends DrushCommands
     {
         $suggested_command = 'composer require ';
         foreach ($updates as $package) {
+            // Improve guidance for 'recommended' users.
             if ($package['name'] == 'drupal/core' && isset($composer_lock_packages['drupal/core-recommended'])) {
                 $package['name'] = 'drupal/core-recommended';
             }
