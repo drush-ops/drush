@@ -57,7 +57,7 @@ final class SecurityUpdateCommands extends DrushCommands
         $composer_lock_data = $this->loadSiteComposerLock();
         $updates = $this->calculateSecurityUpdates($composer_lock_data, $security_advisories_composer_json, $options['no-dev']);
         if ($updates) {
-            $this->suggestComposerCommand($updates);
+            $this->suggestComposerCommand($updates, $composer_lock_data['packages']);
             return CommandResult::dataWithExitCode(new RowsOfFields($updates), self::EXIT_FAILURE_WITH_CLARITY);
         }
         $this->logger()->success("<info>There are no outstanding security updates for Drupal projects.</info>");
@@ -70,10 +70,14 @@ final class SecurityUpdateCommands extends DrushCommands
     /**
      * Emit suggested Composer command for security updates.
      */
-    public function suggestComposerCommand($updates): void
+    public function suggestComposerCommand($updates, array $composer_lock_packages): void
     {
         $suggested_command = 'composer require ';
         foreach ($updates as $package) {
+            // Improve guidance for 'recommended' users.
+            if ($package['name'] == 'drupal/core' && isset($composer_lock_packages['drupal/core-recommended'])) {
+                $package['name'] = 'drupal/core-recommended';
+            }
             $suggested_command .= $package['name'] . ' ';
         }
         $suggested_command .= '--update-with-dependencies';
