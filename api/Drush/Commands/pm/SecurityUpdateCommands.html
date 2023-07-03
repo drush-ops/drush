@@ -359,7 +359,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>                </
                     void
                 </div>
                 <div class="col-md-8">
-                    <a href="#method_suggestComposerCommand">suggestComposerCommand</a>($updates)
+                    <a href="#method_suggestComposerCommand">suggestComposerCommand</a>($updates, array $composer_lock_packages)
         
                                             <p><p>Emit suggested Composer command for security updates.</p></p>                </div>
                 <div class="col-md-2"></div>
@@ -919,7 +919,7 @@ are available. An exit code of 3 indicates that the check completed, and insecur
                     <h3 id="method_suggestComposerCommand">
         <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/pm/SecurityUpdateCommands.php#L73">at line 73</a></div>
         <code>                    void
-    <strong>suggestComposerCommand</strong>($updates)
+    <strong>suggestComposerCommand</strong>($updates, array $composer_lock_packages)
         </code>
     </h3>
     <div class="details">    
@@ -936,6 +936,11 @@ are available. An exit code of 3 indicates that the check completed, and insecur
                     <tr>
                 <td></td>
                 <td>$updates</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>array</td>
+                <td>$composer_lock_packages</td>
                 <td></td>
             </tr>
             </table>
@@ -959,7 +964,7 @@ are available. An exit code of 3 indicates that the check completed, and insecur
             </div>
                     <div class="method-item">
                     <h3 id="method_fetchAdvisoryComposerJson">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/pm/SecurityUpdateCommands.php#L93">at line 93</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/pm/SecurityUpdateCommands.php#L97">at line 97</a></div>
         <code>            protected        mixed
     <strong>fetchAdvisoryComposerJson</strong>()
         </code>
@@ -994,7 +999,7 @@ environment variable is not a supported API.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_loadSiteComposerLock">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/pm/SecurityUpdateCommands.php#L104">at line 104</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/pm/SecurityUpdateCommands.php#L108">at line 108</a></div>
         <code>            protected        array
     <strong>loadSiteComposerLock</strong>()
         </code>
@@ -1026,7 +1031,7 @@ environment variable is not a supported API.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_calculateSecurityUpdates">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/pm/SecurityUpdateCommands.php#L123">at line 123</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/pm/SecurityUpdateCommands.php#L127">at line 127</a></div>
         <code>            protected        array
     <strong>calculateSecurityUpdates</strong>(array $composer_lock_data, array $security_advisories_composer_json, bool $excludeDev = false)
         </code>
