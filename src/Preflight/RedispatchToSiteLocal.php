@@ -26,7 +26,7 @@ class RedispatchToSiteLocal
      * @return bool
      *   True if redispatch occurred, and was returned successfully.
      */
-    public static function redispatchIfSiteLocalDrush(array $argv, string $root, string $vendor, PreflightLog $preflightLog)
+    public static function redispatchIfSiteLocalDrush(array $argv, string $root, string $vendor, PreflightLog $preflightLog): bool
     {
 
         // Try to find the site-local Drush. If there is none, we are done.
@@ -58,7 +58,12 @@ class RedispatchToSiteLocal
         );
         $command .= ' ' . implode(' ', $args);
         passthru($command, $status);
-        return $status;
+
+        // The $status variable is the exit status of the process, which is an
+        // integer. This method is supposed to return true when successful, so
+        // we need to convert it to a boolean accordingly.
+
+        return $status ? false : true;
     }
 
     /**
