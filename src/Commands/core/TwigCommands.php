@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace Drush\Commands\core;
 
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
+use Drupal\Core\DrupalKernelInterface;
 use Drupal\Core\Extension\ExtensionList;
 use Drupal\Core\PhpStorage\PhpStorageFactory;
+use Drupal\Core\State\StateInterface;
 use Drupal\Core\Template\TwigEnvironment;
 use Drush\Attributes as CLI;
 use Drush\Commands\DrushCommands;
@@ -21,8 +23,9 @@ final class TwigCommands extends DrushCommands
 {
     const UNUSED = 'twig:unused';
     const COMPILE = 'twig:compile';
+    const DEBUG = 'twig:debug';
 
-    public function __construct(protected TwigEnvironment $twig, protected ModuleHandlerInterface $moduleHandler, private ExtensionList $extensionList)
+    public function __construct(protected TwigEnvironment $twig, protected ModuleHandlerInterface $moduleHandler, private ExtensionList $extensionList, private StateInterface $state, private DrupalKernelInterface $kernel)
     {
     }
 
@@ -31,7 +34,9 @@ final class TwigCommands extends DrushCommands
         $commandHandler = new static(
             $container->get('twig'),
             $container->get('module_handler'),
-            $container->get('extension.list.module')
+            $container->get('extension.list.module'),
+            $container->get('state'),
+            $container->get('kernel'),
         );
 
         return $commandHandler;
@@ -116,5 +121,34 @@ final class TwigCommands extends DrushCommands
             $this->getTwig()->loadTemplate($relative);
             $this->logger()->success(dt('Compiled twig template !path', ['!path' => $relative]));
         }
+    }
+
+    /**
+     * Enables Twig debug and disables caching Twig templates.
+     *
+     * @see \Drupal\system\Form\DevelopmentSettingsForm::submitForm()
+     */
+    #[CLI\Command(name: self::DEBUG, aliases: ['twig-debug'])]
+    #[CLI\Argument(name: 'mode', description: 'Debug mode. Recognized values: <info>on</info>, <info>off</info>.', suggestedValues: ['on', 'off'])]
+    public function twigDebug(string $mode): void
+    {
+        // @todo Remove this condition once Drush drops support for Drupal 10.0.
+        if (version_compare(\Drupal::VERSION, '10.1.0') < 0) {
+            throw new \Exception('Twig debug command requires Drupal 10.1.0 and above.');
+        }
+        $mode = match ($mode) {
+            'on' => true,
+            'off' => false,
+            default => throw new \Exception('Twig debug mode must be either "on" or "off".'),
+        };
+        $twig_development = [
+            'twig_debug' => $mode,
+            'twig_cache_disable' => $mode,
+        ];
+        $this->state->setMultiple($twig_development);
+        $this->kernel->invalidateContainer();
+        $this->io()->success(
+            dt('{operation} twig debug.', ['operation' => $mode ? 'Enabled' : 'Disabled']),
+        );
     }
 }
