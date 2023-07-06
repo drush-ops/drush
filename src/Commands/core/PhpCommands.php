@@ -27,7 +27,7 @@ final class PhpCommands extends DrushCommands implements StdinAwareInterface
     #[CLI\Usage(name: 'drush php:eval "\Drupal::service(\'file_system\')->copy(\'$HOME/Pictures/image.jpg\', \'public://image.jpg\');"', description: 'Copies a file whose path is determined by an environment\'s variable. Use of double quotes so the variable $HOME gets replaced by its value.')]
     #[CLI\Usage(name: 'drush php:eval "node_access_rebuild();"', description: 'Rebuild node access permissions.')]
     #[CLI\Bootstrap(level: DrupalBootLevels::MAX)]
-    public function evaluate($code, $options = ['format' => 'var_export'])
+    public function evaluate($code, $options = ['format' => 'var_dump'])
     {
         return eval($code . ';');
     }
