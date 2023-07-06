@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f66675b89de48af07b27b469322a9e8b",
+    "content-hash": "338ce4b80d57c0a055bd5edd55611dca",
     "packages": [
         {
             "name": "chi-teck/drupal-code-generator",
@@ -368,16 +368,16 @@
         },
         {
             "name": "consolidation/output-formatters",
-            "version": "4.3.1",
+            "version": "4.3.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/consolidation/output-formatters.git",
-                "reference": "f65524e9ecd2bd0021c4b18710005caaa6dcbd86"
+                "reference": "06711568b4cd169700ff7e8075db0a9a341ceb58"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/consolidation/output-formatters/zipball/f65524e9ecd2bd0021c4b18710005caaa6dcbd86",
-                "reference": "f65524e9ecd2bd0021c4b18710005caaa6dcbd86",
+                "url": "https://api.github.com/repos/consolidation/output-formatters/zipball/06711568b4cd169700ff7e8075db0a9a341ceb58",
+                "reference": "06711568b4cd169700ff7e8075db0a9a341ceb58",
                 "shasum": ""
             },
             "require": {
@@ -416,9 +416,9 @@
             "description": "Format text by applying transformations provided by plug-in formatters.",
             "support": {
                 "issues": "https://github.com/consolidation/output-formatters/issues",
-                "source": "https://github.com/consolidation/output-formatters/tree/4.3.1"
+                "source": "https://github.com/consolidation/output-formatters/tree/4.3.2"
             },
-            "time": "2023-05-20T03:23:06+00:00"
+            "time": "2023-07-06T04:45:41+00:00"
         },
         {
             "name": "consolidation/robo",
