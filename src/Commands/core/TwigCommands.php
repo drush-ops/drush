@@ -124,15 +124,16 @@ final class TwigCommands extends DrushCommands
     }
 
     /**
-     * Enables Twig debug and disables caching Twig tempaltes.
+     * Enables Twig debug and disables caching Twig templates.
      *
      * @see \Drupal\system\Form\DevelopmentSettingsForm::submitForm()
      */
     #[CLI\Command(name: self::DEBUG, aliases: ['twig-debug'])]
-    #[CLI\Argument(name: 'mode', description: 'Debug mode (on/off).')]
+    #[CLI\Argument(name: 'mode', description: 'Debug mode. Recognized values: <info>on</info>, <info>off</info>.', suggestedValues: ['on', 'off'])]
     public function twigDebug(string $mode): void
     {
-        if (version_compare('10.1.0', \Drupal::VERSION) < 0) {
+        // @todo Remove this condition once Drush drops support for Drupal 10.0.
+        if (version_compare(\Drupal::VERSION, '10.1.0') < 0) {
             throw new \Exception('Twig debug command requires Drupal 10.1.0 and above.');
         }
         $mode = match ($mode) {
