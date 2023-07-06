@@ -571,6 +571,11 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
+         <loc>https://www.drush.org/latest/latest/commands/twig_debug/</loc>
+         <lastmod>2023-07-06</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>https://www.drush.org/latest/latest/commands/twig_unused/</loc>
          <lastmod>2023-07-06</lastmod>
          <changefreq>daily</changefreq>
