@@ -37,14 +37,14 @@ class FieldTextHooks extends DrushCommands
     #[CLI\Hook(type: HookManager::OPTION_HOOK, target: FieldCreateCommands::CREATE)]
     public function hookOption(Command $command, AnnotationData $annotationData): void
     {
-        if (!$this->hasAllowedFormats()) {
+        if (!$this->hasAllowedFormats($this->input()->getOption('field-type'))) {
             return;
         }
 
         $command->addOption(
             'allowed-formats',
             '',
-            InputOption::VALUE_OPTIONAL,
+            InputOption::VALUE_IS_ARRAY | InputOption::VALUE_REQUIRED,
             'Restrict which text formats are allowed, given the user has the required permissions.'
         );
     }
@@ -69,7 +69,17 @@ class FieldTextHooks extends DrushCommands
             return $values;
         }
 
+        $allFormats = filter_formats();
         $allowedFormats = $this->input->getOption('allowed-formats') ?? [];
+
+        $missingFormats = array_diff($allowedFormats, array_keys($allFormats));
+        if ($missingFormats !== []) {
+            throw new \InvalidArgumentException(sprintf(
+                'The following text formats do not exist: %s',
+                implode(', ', $missingFormats)
+            ));
+        }
+
         $values['settings']['allowed_formats'] = $allowedFormats;
 
         return $values;
