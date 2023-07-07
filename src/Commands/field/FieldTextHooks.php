@@ -30,7 +30,7 @@ class FieldTextHooks extends DrushCommands
     }
 
 
-    #[CLI\Hook(type: HookManager::OPTION_HOOK, target: 'field:create')]
+    #[CLI\Hook(type: HookManager::OPTION_HOOK, target: FieldCreateCommands::CREATE)]
     public function hookOption(Command $command, AnnotationData $annotationData): void
     {
         $command->addOption(
