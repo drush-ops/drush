@@ -7,6 +7,7 @@ namespace Drush\Preflight;
 use Composer\Autoload\ClassLoader;
 use Consolidation\SiteAlias\SiteAliasManager;
 use DrupalFinder\DrupalFinder;
+use Drush\Commands\DrushCommands;
 use Drush\DrupalFinder\DrushDrupalFinder;
 use Drush\Config\ConfigLocator;
 use Drush\Config\DrushConfig;
@@ -339,7 +340,7 @@ class Preflight
         // has set it to something higher in one of the config files we loaded.
         $this->verify->confirmPhpVersion($config->get('drush.php.minimum-version'));
 
-        return [false, 0];
+        return [false, DrushCommands::EXIT_SUCCESS];
     }
 
     /**

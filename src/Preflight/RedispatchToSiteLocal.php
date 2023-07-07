@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Drush\Preflight;
 
+use Drush\Commands\DrushCommands;
 use Symfony\Component\Filesystem\Path;
 
 /**
@@ -31,18 +32,18 @@ class RedispatchToSiteLocal
         // Try to find the site-local Drush. If there is none, we are done.
         $siteLocalDrush = static::findSiteLocalDrush($root);
         if (!$siteLocalDrush) {
-            return [false, 0];
+            return [false, DrushCommands::EXIT_SUCCESS];
         }
 
         // If the site-local Drush is us, then we do not need to redispatch.
         if (Path::isBasePath($vendor, $siteLocalDrush)) {
-            return [false, 0];
+            return [false, DrushCommands::EXIT_SUCCESS];
         }
 
         // Do another special check to detect symlinked Drush folder similar
         // to what the SUT sets up for Drush functional tests.
         if (dirname($vendor) === dirname($siteLocalDrush)) {
-            return [false, 0];
+            return [false, DrushCommands::EXIT_SUCCESS];
         }
 
         // Redispatch!
