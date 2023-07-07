@@ -111,11 +111,11 @@ class RuntimeController
         $di = new DependencyInjection();
 
         // Begin our version of Runtime::doRun
-        $status = $this->preflight->preflight($argv);
+        [$preflightDidRedispatch, $exitStatus] = $this->preflight->preflight($argv);
 
         // If preflight signals that we are done, then exit early.
-        if ($status) {
-            return $status;
+        if ($preflightDidRedispatch) {
+            return $exitStatus;
         }
 
         $commandfileSearchpath = $this->preflight->getCommandFilePaths();

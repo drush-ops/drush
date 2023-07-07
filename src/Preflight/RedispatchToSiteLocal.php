@@ -23,27 +23,26 @@ class RedispatchToSiteLocal
      * @param string $vendor The path to the vendor directory
      * @param PreflightLog $preflightLog A basic logger.
      *
-     * @return bool
-     *   True if redispatch occurred, and was returned successfully.
+     * @return array [$preflightDidRedispatch, $exitStatus]
      */
-    public static function redispatchIfSiteLocalDrush(array $argv, string $root, string $vendor, PreflightLog $preflightLog): bool
+    public static function redispatchIfSiteLocalDrush(array $argv, string $root, string $vendor, PreflightLog $preflightLog): array
     {
 
         // Try to find the site-local Drush. If there is none, we are done.
         $siteLocalDrush = static::findSiteLocalDrush($root);
         if (!$siteLocalDrush) {
-            return false;
+            return [false, 0];
         }
 
         // If the site-local Drush is us, then we do not need to redispatch.
         if (Path::isBasePath($vendor, $siteLocalDrush)) {
-            return false;
+            return [false, 0];
         }
 
         // Do another special check to detect symlinked Drush folder similar
         // to what the SUT sets up for Drush functional tests.
         if (dirname($vendor) === dirname($siteLocalDrush)) {
-            return false;
+            return [false, 0];
         }
 
         // Redispatch!
@@ -59,11 +58,7 @@ class RedispatchToSiteLocal
         $command .= ' ' . implode(' ', $args);
         passthru($command, $status);
 
-        // The $status variable is the exit status of the process, which is an
-        // integer. This method is supposed to return true when successful, so
-        // we need to convert it to a boolean accordingly.
-
-        return $status ? false : true;
+        return [true, $status];
     }
 
     /**

@@ -55,11 +55,11 @@ class Runtime
     protected function doRun($argv, $output): int
     {
         // Do the preflight steps
-        $preflightSuccess = $this->preflight->preflight($argv);
+        [$preflightDidRedispatch, $exitStatus] = $this->preflight->preflight($argv);
 
         // If preflight signals that we are done, then exit early.
-        if ($preflightSuccess) {
-            return 0;
+        if ($preflightDidRedispatch) {
+            return $exitStatus;
         }
 
         $commandfileSearchpath = $this->preflight->getCommandFilePaths();
