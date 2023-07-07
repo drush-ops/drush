@@ -5,6 +5,8 @@ namespace Drush\Commands\field;
 use Consolidation\AnnotatedCommand\AnnotationData;
 use Consolidation\AnnotatedCommand\Hooks\HookManager;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Core\Field\FieldTypePluginManagerInterface;
+use Drupal\text\Plugin\Field\FieldType\TextItemBase;
 use Drush\Attributes as CLI;
 use Drush\Commands\DrushCommands;
 use Symfony\Component\Console\Command\Command;
@@ -19,6 +21,7 @@ class FieldTextHooks extends DrushCommands
 
     public function __construct(
         protected EntityTypeManagerInterface $entityTypeManager,
+        protected FieldTypePluginManagerInterface $fieldTypePluginManager,
     ) {
     }
 
@@ -26,6 +29,7 @@ class FieldTextHooks extends DrushCommands
     {
         return new static(
             $container->get('entity_type.manager'),
+            $container->get('plugin.manager.field.field_type'),
         );
     }
 
@@ -33,6 +37,10 @@ class FieldTextHooks extends DrushCommands
     #[CLI\Hook(type: HookManager::OPTION_HOOK, target: FieldCreateCommands::CREATE)]
     public function hookOption(Command $command, AnnotationData $annotationData): void
     {
+        if (!$this->hasAllowedFormats()) {
+            return;
+        }
+
         $command->addOption(
             'allowed-formats',
             '',
@@ -44,7 +52,7 @@ class FieldTextHooks extends DrushCommands
     #[CLI\Hook(type: HookManager::ON_EVENT, target: 'field-create-set-options')]
     public function hookSetOptions(InputInterface $input): void
     {
-        if (!in_array($input->getOption('field-type'), _allowed_formats_field_types(), true)) {
+        if (!$this->hasAllowedFormats($input->getOption('field-type'))) {
             return;
         }
 
@@ -57,7 +65,7 @@ class FieldTextHooks extends DrushCommands
     #[CLI\Hook(type: HookManager::ON_EVENT, target: 'field-create-field-config')]
     public function hookFieldConfig(array $values, InputInterface $input): array
     {
-        if (!in_array($values['field_type'], ['text', 'text_long', 'text_with_summary'], true)) {
+        if (!$this->hasAllowedFormats($values['field_type'])) {
             return $values;
         }
 
@@ -65,6 +73,17 @@ class FieldTextHooks extends DrushCommands
         $values['settings']['allowed_formats'] = $allowedFormats;
 
         return $values;
+    }
+
+    protected function hasAllowedFormats(?string $fieldType = null): bool
+    {
+        if ($fieldType === null) {
+            $defaultFieldSettings = TextItemBase::defaultFieldSettings();
+        } else {
+            $defaultFieldSettings = $this->fieldTypePluginManager->getDefaultFieldSettings($fieldType);
+        }
+
+        return isset($defaultFieldSettings['allowed_formats']);
     }
 
     /**
