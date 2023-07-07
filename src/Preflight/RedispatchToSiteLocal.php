@@ -23,7 +23,7 @@ class RedispatchToSiteLocal
      * @param string $vendor The path to the vendor directory
      * @param PreflightLog $preflightLog A basic logger.
      *
-     * @return array [$preflightDidRedispatch, $exitStatus]
+     * @return array{preflightDidRedispatch: bool, exitStatus: int}
      */
     public static function redispatchIfSiteLocalDrush(array $argv, string $root, string $vendor, PreflightLog $preflightLog): array
     {

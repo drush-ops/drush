@@ -243,7 +243,7 @@ class Preflight
      * @param $argv
      *   True if the request was successfully redispatched remotely. False if the request should proceed.
      *
-     * @return array [$preflightDidRedispatch, $exitStatus]
+     * @return array{preflightDidRedispatch: bool, exitStatus: int}
      */
     public function preflight($argv): array
     {
