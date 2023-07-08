@@ -73,14 +73,14 @@ class FieldTest extends CommandUnishTestCase
 
     public function testFieldInfo()
     {
-        $this->drush('field:create', ['unish_article', 'alpha'], ['field-label' => 'Test', 'field-name' => 'field_test5', 'field-description' => 'baz', 'field-type' => 'entity_reference', 'is-required' => true, 'field-widget' => 'entity_reference_autocomplete', 'cardinality' => FieldStorageDefinitionInterface::CARDINALITY_UNLIMITED, 'target-type' => 'unish_article', 'target-bundle' => 'beta']);
-        $this->assertStringContainsString("Successfully created field 'field_test5' on unish_article type with bundle 'alpha'", $this->getSimplifiedErrorOutput());
+        $this->drush('field:create', ['unish_article', 'alpha'], ['field-label' => 'Test', 'field-name' => 'field_test4', 'field-description' => 'baz', 'field-type' => 'entity_reference', 'is-required' => true, 'field-widget' => 'entity_reference_autocomplete', 'cardinality' => FieldStorageDefinitionInterface::CARDINALITY_UNLIMITED, 'target-type' => 'unish_article', 'target-bundle' => 'beta']);
+        $this->assertStringContainsString("Successfully created field 'field_test4' on unish_article type with bundle 'alpha'", $this->getSimplifiedErrorOutput());
 
         $this->drush('field:info', ['unish_article'], [], null, null, self::EXIT_ERROR);
         $this->assertStringContainsString('The bundle argument is required.', $this->getSimplifiedErrorOutput());
         $this->drush('field:info', ['unish_article', 'alpha'], ['format' => 'json', 'fields' => '*']);
-        $json = $this->getOutputFromJSON('field_test5');
-        $this->assertSame('field_test5', $json['field_name']);
+        $json = $this->getOutputFromJSON('field_test4');
+        $this->assertSame('field_test4', $json['field_name']);
         $this->assertTrue($json['required']);
         $this->assertSame('entity_reference', $json['field_type']);
         $this->assertSame('baz', $json['description']);
