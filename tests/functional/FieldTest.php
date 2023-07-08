@@ -91,22 +91,22 @@ class FieldTest extends CommandUnishTestCase
 
     public function testFieldDelete()
     {
-        $this->drush('field:create', ['unish_article', 'alpha'], ['field-label' => 'Test', 'field-name' => 'field_test5', 'field-description' => 'baz', 'field-type' => 'entity_reference', 'is-required' => true, 'field-widget' => 'entity_reference_autocomplete', 'cardinality' => FieldStorageDefinitionInterface::CARDINALITY_UNLIMITED, 'target-type' => 'unish_article', 'target-bundle' => 'beta']);
-        $this->assertStringContainsString("Successfully created field 'field_test5' on unish_article type with bundle 'alpha'", $this->getSimplifiedErrorOutput());
+        $this->drush('field:create', ['unish_article', 'alpha'], ['field-label' => 'Test', 'field-name' => 'field_test6', 'field-description' => 'baz', 'field-type' => 'entity_reference', 'is-required' => true, 'field-widget' => 'entity_reference_autocomplete', 'cardinality' => FieldStorageDefinitionInterface::CARDINALITY_UNLIMITED, 'target-type' => 'unish_article', 'target-bundle' => 'beta']);
+        $this->assertStringContainsString("Successfully created field 'field_test6' on unish_article type with bundle 'alpha'", $this->getSimplifiedErrorOutput());
 
-        $this->drush('field:delete', ['unish_article'], ['field-name' => 'field_test5'], null, null, self::EXIT_ERROR);
+        $this->drush('field:delete', ['unish_article'], ['field-name' => 'field_test6'], null, null, self::EXIT_ERROR);
         $this->assertStringContainsString('The bundle argument is required.', $this->getErrorOutputRaw());
         $this->drush('field:delete', ['unish_article', 'alpha'], [], null, null, self::EXIT_ERROR);
         $this->assertStringContainsString('The field-name option is required.', $this->getErrorOutputRaw());
 
         $this->drush('field:delete', ['unish_article', 'alpha'], ['field-name' => 'field_testZZZZZ'], null, null, self::EXIT_ERROR);
         $this->assertStringContainsString("Field with name 'field_testZZZZZ' does not exist.", $this->getErrorOutputRaw());
-        $this->drush('field:delete', ['unish_article', 'alpha'], ['field-name' => 'field_test5']);
+        $this->drush('field:delete', ['unish_article', 'alpha'], ['field-name' => 'field_test6']);
         $this->assertStringContainsString(" The field Test has been deleted from the Alpha bundle.", $this->getErrorOutputRaw());
 
         // All bundles
-        $this->drush('field:create', ['unish_article', 'alpha'], ['field-label' => 'Test', 'field-name' => 'field_test5', 'field-description' => 'baz', 'field-type' => 'entity_reference', 'is-required' => true, 'field-widget' => 'entity_reference_autocomplete', 'cardinality' => FieldStorageDefinitionInterface::CARDINALITY_UNLIMITED, 'target-type' => 'unish_article', 'target-bundle' => 'beta']);
-        $this->drush('field:delete', ['unish_article'], ['field-name' => 'field_test5', 'all-bundles' => true]);
+        $this->drush('field:create', ['unish_article', 'alpha'], ['field-label' => 'Test', 'field-name' => 'field_test6', 'field-description' => 'baz', 'field-type' => 'entity_reference', 'is-required' => true, 'field-widget' => 'entity_reference_autocomplete', 'cardinality' => FieldStorageDefinitionInterface::CARDINALITY_UNLIMITED, 'target-type' => 'unish_article', 'target-bundle' => 'beta']);
+        $this->drush('field:delete', ['unish_article'], ['field-name' => 'field_test6', 'all-bundles' => true]);
         $this->assertStringContainsString("The field Test has been deleted from the Alpha bundle.", $this->getErrorOutputRaw());
     }
 
