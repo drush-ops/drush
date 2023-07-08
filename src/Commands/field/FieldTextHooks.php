@@ -3,6 +3,7 @@
 namespace Drush\Commands\field;
 
 use Consolidation\AnnotatedCommand\AnnotationData;
+use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\AnnotatedCommand\Hooks\HookManager;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Field\FieldTypePluginManagerInterface;
@@ -49,6 +50,25 @@ class FieldTextHooks extends DrushCommands
         );
     }
 
+    #[CLI\Hook(type: HookManager::ARGUMENT_VALIDATOR, target: FieldCreateCommands::CREATE)]
+    public function hookValidate(CommandData $commandData): void
+    {
+        if (!$this->hasAllowedFormats($commandData->input()->getOption('field-type'))) {
+            return;
+        }
+
+        $allFormats = filter_formats();
+        $allowedFormats = $this->input->getOption('allowed-formats') ?? [];
+
+        $missingFormats = array_diff($allowedFormats, array_keys($allFormats));
+        if ($missingFormats !== []) {
+            throw new \InvalidArgumentException(sprintf(
+                'The following text formats do not exist: %s',
+                implode(', ', $missingFormats)
+            ));
+        }
+    }
+
     #[CLI\Hook(type: HookManager::ON_EVENT, target: 'field-create-set-options')]
     public function hookSetOptions(InputInterface $input): void
     {
@@ -69,17 +89,7 @@ class FieldTextHooks extends DrushCommands
             return $values;
         }
 
-        $allFormats = filter_formats();
         $allowedFormats = $this->input->getOption('allowed-formats') ?? [];
-
-        $missingFormats = array_diff($allowedFormats, array_keys($allFormats));
-        if ($missingFormats !== []) {
-            throw new \InvalidArgumentException(sprintf(
-                'The following text formats do not exist: %s',
-                implode(', ', $missingFormats)
-            ));
-        }
-
         $values['settings']['allowed_formats'] = $allowedFormats;
 
         return $values;
