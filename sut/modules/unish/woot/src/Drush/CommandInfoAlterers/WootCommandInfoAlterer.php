@@ -2,12 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Drupal\woot;
+namespace Drupal\woot\Drush\CommandInfoAlterers;
 
 use Drupal\Core\Logger\LoggerChannelInterface;
 use Consolidation\AnnotatedCommand\CommandInfoAltererInterface;
 use Consolidation\AnnotatedCommand\Parser\CommandInfo;
 use Drupal\Core\Logger\LoggerChannelFactoryInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class WootCommandInfoAlterer implements CommandInfoAltererInterface
 {
@@ -16,6 +17,15 @@ class WootCommandInfoAlterer implements CommandInfoAltererInterface
     public function __construct(LoggerChannelFactoryInterface $loggerFactory)
     {
         $this->logger = $loggerFactory->get('drush');
+    }
+
+    public static function create(ContainerInterface $container): self
+    {
+        $commandHandler = new static(
+            $container->get('logger.factory')
+        );
+
+        return $commandHandler;
     }
 
     public function alterCommandInfo(CommandInfo $commandInfo, $commandFileInstance)
