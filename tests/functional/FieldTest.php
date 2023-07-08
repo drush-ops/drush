@@ -65,7 +65,7 @@ class FieldTest extends CommandUnishTestCase
         // Allowed formats
         $this->drush('field:create', ['unish_article', 'alpha'], ['field-name' => 'field_test4', 'field-label' => 'Text', 'field-type' => 'string', 'allowed-formats' => 'minimal'], null, null, self::EXIT_ERROR);
         $this->assertStringContainsString('The "--allowed-formats" option does not exist.', $this->getSimplifiedErrorOutput());
-        $this->drush('field:create', ['unish_article', 'alpha'], ['field-name' => 'field_test4', 'field-label' => 'Text', 'field-type' => 'text_long', 'allowed-formats' => 'baz'], null, null, self::EXIT_ERROR);
+        $this->drush('field:create', ['unish_article', 'alpha'], ['field-name' => 'field_test4', 'field-label' => 'Text', 'field-type' => 'text_long', 'cardinality' => 1, 'allowed-formats' => 'baz'], null, null, self::EXIT_ERROR);
         $this->assertStringContainsString('The following text formats do not exist: baz', $this->getSimplifiedErrorOutput());
         $this->drush('field:create', ['unish_article', 'alpha'], ['field-name' => 'field_test4', 'field-label' => 'Text', 'field-type' => 'text_long', 'allowed-formats' => 'plain_text']);
         $this->assertStringContainsString("Successfully created field 'field_test4' on unish_article type with bundle 'alpha'", $this->getErrorOutputRaw());
