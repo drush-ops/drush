@@ -58,11 +58,11 @@ The following are both valid ways to declare a command:
 - [See Attributes provided by Drush core](https://www.drush.org/api/Drush/Attributes.html). Custom code can add additional attributes.
 
 ## Altering Command Info
-Drush command info (annotations/attributes) can be altered from other modules. This is done by creating and registering 'command info alterers'. Alterers are class services that are able to intercept and manipulate an existing command annotation.
+Drush command info (annotations/attributes) can be altered from other modules. This is done by creating and registering _command info alterers_. Alterers are classes that are able to intercept and manipulate an existing command annotation.
 
 In order to alter an existing command info, follow the steps below:
 
-1. In the module that wants to alter a command info, add a service class that implements the `\Consolidation\AnnotatedCommand\CommandInfoAltererInterface`.
+1. In the module that wants to alter a command info, add a class that implements the `\Consolidation\AnnotatedCommand\CommandInfoAltererInterface`.
 1. In the module `drush.services.yml` declare a service pointing to this class and tag the service with the `drush.command_info_alterer` tag.
 1. In that class, implement the alteration logic in the `alterCommandInfo()` method.
 1. Along with the alter code, it's strongly recommended to log a debug message explaining what exactly was altered. This makes things easier on others who may need to debug the interaction of the alter code with other modules. Also it's a good practice to inject the the logger in the class constructor.
