@@ -130,6 +130,7 @@ final class TwigCommands extends DrushCommands
      */
     #[CLI\Command(name: self::DEBUG, aliases: ['twig-debug'])]
     #[CLI\Argument(name: 'mode', description: 'Debug mode. Recognized values: <info>on</info>, <info>off</info>.', suggestedValues: ['on', 'off'])]
+    #[CLI\Version(version: '12.1')]
     public function twigDebug(string $mode): void
     {
         // @todo Remove this condition once Drush drops support for Drupal 10.0.
