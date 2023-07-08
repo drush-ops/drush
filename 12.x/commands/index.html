@@ -5282,12 +5282,13 @@
 <li><a href="https://www.drush.org/api/Drush/Attributes.html">See Attributes provided by Drush core</a>. Custom code can add additional attributes.</li>
 </ul>
 <h2 id="altering-command-info">Altering Command Info<a class="headerlink" href="#altering-command-info" title="Permanent link">&para;</a></h2>
-<p>Drush command info (annotations/attributes) can be altered from other modules. This is done by creating and registering 'command info alterers'. Alterers are class services that are able to intercept and manipulate an existing command annotation.</p>
-<p>In order to alter an existing command info, follow the steps below:</p>
+<p>Drush command info (annotations/attributes) can be altered from other modules. This is done by creating and registering <em>command info alterers</em>. Alterers are classes that are able to intercept and manipulate an existing command annotation.</p>
+<p>In the module that wants to alter a command info, add a class that:</p>
 <ol>
-<li>In the module that wants to alter a command info, add a service class that implements the <code>\Consolidation\AnnotatedCommand\CommandInfoAltererInterface</code>.</li>
-<li>In the module <code>drush.services.yml</code> declare a service pointing to this class and tag the service with the <code>drush.command_info_alterer</code> tag.</li>
-<li>In that class, implement the alteration logic in the <code>alterCommandInfo()</code> method.</li>
+<li>The generator class namespace, relative to base namespace, should be <code>Drupal\&lt;module-name&gt;\Drush\CommandInfoAlterers</code> and the class file should be located under the <code>src/Drush/CommandInfoAlterers</code> directory.</li>
+<li>The filename must have a name like FooCommandInfoAlterer.php. The prefix <code>Foo</code> can be whatever string you want. The file must end in <code>CommandInfoAlterer.php</code>.</li>
+<li>The class must implement the <code>\Consolidation\AnnotatedCommand\CommandInfoAltererInterface</code>.</li>
+<li>Implement the alteration logic in the <code>alterCommandInfo()</code> method.</li>
 <li>Along with the alter code, it's strongly recommended to log a debug message explaining what exactly was altered. This makes things easier on others who may need to debug the interaction of the alter code with other modules. Also it's a good practice to inject the the logger in the class constructor.</li>
 </ol>
 <p>For an example, see <a href="https://github.com/drush-ops/drush/blob/12.x/sut/modules/unish/woot/src/WootCommandInfoAlterer.php">WootCommandInfoAlterer</a> provided by the testing 'woot' module.</p>
@@ -5374,7 +5375,7 @@ With this configuration in place, global commands may be placed as described in 
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">June 7, 2023</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">July 8, 2023</span>
       
     
   </small>
