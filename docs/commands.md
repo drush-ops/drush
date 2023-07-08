@@ -2,7 +2,7 @@
 
 !!! tip
 
-      1. Drush 11 and prior required [dependency injection via a drush.services.yml file](https://www.drush.org/11.x/dependency-injection/#services-files). This approach is deprecated in Drush 12 and will be removed in Drush 13. See [create() method](dependency-injection.md#create-method).
+      1. Drush 12 expects commandfiles to use a [create() method](dependency-injection.md#create-method) to inject Drupal and Drush dependencies. Prior versions used a drush.services.yml file](https://www.drush.org/11.x/dependency-injection/#services-files) which is now deprecated and will be removed in Drush 13.
       1. Drush 12 expects all commandfiles in the `<module-name>/Drush/<Commands|Generators>` directory. The `Drush` subdirectory is a new requirement.
 
 Creating a new Drush command is easy. Follow the steps below.
