@@ -60,11 +60,12 @@ The following are both valid ways to declare a command:
 ## Altering Command Info
 Drush command info (annotations/attributes) can be altered from other modules. This is done by creating and registering _command info alterers_. Alterers are classes that are able to intercept and manipulate an existing command annotation.
 
-In order to alter an existing command info, follow the steps below:
+In the module that wants to alter a command info, add a class that:
 
-1. In the module that wants to alter a command info, add a class that implements the `\Consolidation\AnnotatedCommand\CommandInfoAltererInterface`.
-1. In the module `drush.services.yml` declare a service pointing to this class and tag the service with the `drush.command_info_alterer` tag.
-1. In that class, implement the alteration logic in the `alterCommandInfo()` method.
+1. The generator class namespace, relative to base namespace, should be `Drupal\<module-name>\Drush\CommandInfoAlterers` and the class file should be located under the `src/Drush/CommandInfoAlterers` directory.
+1. The filename must have a name like FooCommandInfoAlterer.php. The prefix `Foo` can be whatever string you want. The file must end in `CommandInfoAlterer.php`.
+1. The class must implement the `\Consolidation\AnnotatedCommand\CommandInfoAltererInterface`.
+1. Implement the alteration logic in the `alterCommandInfo()` method.
 1. Along with the alter code, it's strongly recommended to log a debug message explaining what exactly was altered. This makes things easier on others who may need to debug the interaction of the alter code with other modules. Also it's a good practice to inject the the logger in the class constructor.
 
 For an example, see [WootCommandInfoAlterer](https://github.com/drush-ops/drush/blob/12.x/sut/modules/unish/woot/src/WootCommandInfoAlterer.php) provided by the testing 'woot' module.
