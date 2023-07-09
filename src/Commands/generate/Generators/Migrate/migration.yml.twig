@@ -17,7 +17,7 @@ process:
   title: name
   nid: bid
   uid:
-    plugin: migration
+    plugin: migration_lookup
     migration: beer_user
     source: aid
   sticky:
@@ -25,7 +25,7 @@ process:
     default_value: 0
   field_migrate_example_country: countries
   field_migrate_example_beer_style:
-    plugin: migration
+    plugin: migration_lookup
     migration: beer_term
     source: terms
   # Some Drupal fields may have multiple components we may want to set

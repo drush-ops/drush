@@ -60,6 +60,8 @@ class DrupalCommands extends DrushCommands
      *
      * @command core:cron
      * @aliases cron,core-cron
+     * @usage drush maint:status && drush core:cron
+     *  Run cron unless maintenance mode is enabled
      * @topics docs:cron
      */
     public function cron(): void
@@ -101,6 +103,7 @@ class DrupalCommands extends DrushCommands
         drupal_load_updates();
 
         $requirements = $this->getModuleHandler()->invokeAll('requirements', ['runtime']);
+        $this->getModuleHandler()->alter('requirements', $requirements);
         // If a module uses "$requirements[] = " instead of
         // "$requirements['label'] = ", then build a label from
         // the title.

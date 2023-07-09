@@ -169,7 +169,18 @@ class PmCommands extends DrushCommands
     public function uninstall(array $modules): void
     {
         $modules = StringUtils::csvToArray($modules);
-        $list = $this->addUninstallDependencies($modules);
+
+        $installed_modules = array_filter($modules, function ($module) {
+            return $this->getModuleHandler()->moduleExists($module);
+        });
+        if ($installed_modules === []) {
+            throw new \Exception(dt('The following module(s) are not installed: !list. No modules to uninstall.', ['!list' => implode(', ', $modules)]));
+        }
+        if ($installed_modules !== $modules) {
+            $this->logger()->warning(dt('The following module(s) are not installed and will not be uninstalled: !list', ['!list' => implode(', ', array_diff($modules, $installed_modules))]));
+        }
+
+        $list = $this->addUninstallDependencies($installed_modules);
         if (Drush::simulate()) {
             $this->output()->writeln(dt('The following extensions will be uninstalled: !list', ['!list' => implode(', ', $list)]));
             return;
@@ -235,7 +246,7 @@ class PmCommands extends DrushCommands
         $themes = $this->getThemeHandler()->rebuildThemeData();
         $both = array_merge($modules, $themes);
 
-        $package_filter = StringUtils::csvToArray(strtolower($options['package']));
+        $package_filter = StringUtils::csvToArray(strtolower((string) $options['package']));
         $type_filter = StringUtils::csvToArray(strtolower($options['type']));
         $status_filter = StringUtils::csvToArray(strtolower($options['status']));
 

@@ -43,3 +43,10 @@ services:
       - '@entity_field.manager'
     tags:
       - { name: drush.command }
+  field.entity-reference.hooks:
+    class: \Drush\Drupal\Commands\field\FieldEntityReferenceHooks
+    arguments:
+      - '@entity_type.manager'
+      - '@entity_type.bundle.info'
+    tags:
+      - { name: drush.command }

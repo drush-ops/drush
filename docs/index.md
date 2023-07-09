@@ -6,11 +6,11 @@ Resources
 -----------
 * [Installing and Upgrading](install.md)
 * [Commands](commands/all.md) and [Generators](generators/all.md)
-* [API Documentation](https://www.drush.org/latest/api)
+* [API Documentation](https://www.drush.org/api)
 * [Drush packages available via Composer](https://packagist.org/search/?type=drupal-drush)
 * [A list of modules that include Drush integration](https://www.drupal.org/project/project_module?f[2]=im_vid_3%3A4654&solrsort=ds_project_latest_release+desc)
 * Drush expects all participants to abide by the [Drupal Code of Conduct](https://www.drupal.org/dcoc).
-* Drush 8 is no longer supported, but [here are its docs](https://docs.drush.org/en/8.x/install/).
+* Drush 8 is no longer recommended, but [here are its docs](https://docs.drush.org/en/8.x/install/).
 
 Support
 -----------

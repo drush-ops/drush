@@ -202,10 +202,6 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
             $this->ensureOption('is-translatable', [$this, 'askTranslatable'], false);
             $this->ensureOption('cardinality', [$this, 'askCardinality'], true);
 
-            if ($this->input->getOption('field-type') === 'entity_reference') {
-                $this->ensureOption('target-type', [$this, 'askReferencedEntityType'], true);
-            }
-
             $this->createFieldStorage();
         }
 
@@ -363,44 +359,6 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
 
         return $limit;
     }
-
-    protected function askReferencedEntityType(): string
-    {
-        $definitions = $this->entityTypeManager->getDefinitions();
-        $choices = [];
-
-        foreach ($definitions as $name => $definition) {
-            $label = $this->input->getOption('show-machine-names')
-                ? $name
-                : sprintf('%s: %s', $definition->getGroupLabel()->render(), $definition->getLabel());
-            $choices[$name] = $label;
-        }
-
-        return $this->io()->choice('Referenced entity type', $choices);
-    }
-
-    protected function askReferencedBundles(FieldDefinitionInterface $fieldDefinition): array
-    {
-        $choices = [];
-        $bundleInfo = $this->entityTypeBundleInfo->getBundleInfo(
-            $fieldDefinition->getFieldStorageDefinition()->getSetting('target_type')
-        );
-
-        if (empty($bundleInfo)) {
-            return [];
-        }
-
-        foreach ($bundleInfo as $bundle => $info) {
-            $label = $this->input->getOption('show-machine-names') ? $bundle : $info['label'];
-            $choices[$bundle] = $label;
-        }
-
-        $question = (new ChoiceQuestion('Referenced bundles', $choices))
-            ->setMultiselect(true);
-
-        return $this->io()->askQuestion($question) ?: [];
-    }
-
     protected function createField(): FieldConfigInterface
     {
         $values = [
@@ -423,33 +381,6 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
         $field = $this->entityTypeManager
             ->getStorage('field_config')
             ->create($values);
-
-        if ($this->input->getOption('field-type') === 'entity_reference') {
-            $targetType = $this->input->getOption('target-type');
-            $targetTypeDefinition = $this->entityTypeManager->getDefinition($targetType);
-            // For the 'target_bundles' setting, a NULL value is equivalent to "allow
-            // entities from any bundle to be referenced" and an empty array value is
-            // equivalent to "no entities from any bundle can be referenced".
-            $targetBundles = null;
-
-            if ($targetTypeDefinition->hasKey('bundle')) {
-                if ($referencedBundle = $this->input->getOption('target-bundle')) {
-                    $this->validateBundle($targetType, $referencedBundle);
-                    $referencedBundles = [$referencedBundle];
-                } else {
-                    $referencedBundles = $this->askReferencedBundles($field);
-                }
-
-                if (!empty($referencedBundles)) {
-                    $targetBundles = array_combine($referencedBundles, $referencedBundles);
-                }
-            }
-
-            $settings = $field->getSetting('handler_settings') ?? [];
-            $settings['target_bundles'] = $targetBundles;
-            $field->setSetting('handler_settings', $settings);
-        }
-
         $field->save();
 
         return $field;
@@ -465,14 +396,10 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
             'translatable' => true,
         ];
 
-        if ($targetType = $this->input->getOption('target-type')) {
-            $values['settings']['target_type'] = $targetType;
-        }
-
         // Command files may customize $values as desired.
         $handlers = $this->getCustomEventHandlers('field-create-field-storage');
         foreach ($handlers as $handler) {
-            $handler($values);
+            $values = $handler($values, $this->input);
         }
 
         /** @var FieldStorageConfigInterface $fieldStorage */

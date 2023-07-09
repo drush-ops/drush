@@ -14,7 +14,7 @@ requires: &requires
     - check_mergable
     - code_style
 
-test_74_steps: &test74steps
+test_80_steps: &test80steps
   steps:
     - checkout
     - run: cp .docker/zz-php.ini /usr/local/etc/php/conf.d/
@@ -38,7 +38,7 @@ jobs:
   code_style:
     <<: *defaults
     docker:
-      - image: wodby/php:7.4
+      - image: wodby/php:8.0
     steps:
       - checkout
       - run: cp .docker/zz-php.ini /usr/local/etc/php/conf.d/
@@ -51,35 +51,35 @@ jobs:
   check_mergable:
     <<: *defaults
     docker:
-      - image: circleci/buildpack-deps:buster
+      - image: cimg/base:2022.09
     steps:
       - checkout
       - run: $HOME/drush/.circleci/mergable.sh
 
-  # PHP 7.4 test:
+  # PHP 8.0 test:
   #   Checks the most common configuration.
-  test_74_drupal9_mysql:
+  test_80_drupal9_mysql:
     <<: *defaults
     docker:
-      - image: wodby/php:7.4
+      - image: wodby/php:8.0
         environment:
           - MYSQL_HOST=127.0.0.1
           - UNISH_DB_URL=mysql://root:@127.0.0.1
-      - image: circleci/mysql:5.7.24
-    <<: *test74steps
+      - image: cimg/mysql:5.7.38
+    <<: *test80steps
 
-  test_74_drupal9_sqlite:
+  test_80_drupal9_sqlite:
     <<: *defaults
     docker:
-      - image: wodby/php:7.4
+      - image: wodby/php:8.0
         environment:
           - "UNISH_DB_URL=sqlite://:memory:"
-    <<: *test74steps
+    <<: *test80steps
 
-  test_74_drupal9_postgres:
+  test_80_drupal9_postgres:
     <<: *defaults
     docker:
-      - image: wodby/php:7.4
+      - image: wodby/php:8.0
         environment:
           - UNISH_DB_URL=pgsql://unish:unish@127.0.0.1
       - image: wodby/postgres:10.5
@@ -87,36 +87,35 @@ jobs:
           POSTGRES_PASSWORD: unish
           POSTGRES_DB: unish_dev
           POSTGRES_USER: unish
-    <<: *test74steps
+    <<: *test80steps
 
   # Drupal 9.2.8 for Security test coverage for drupal/core
-  test_74_drupal92_security:
+  test_80_drupal92_security:
     <<: *defaults
     docker:
-      - image: wodby/php:7.4
+      - image: wodby/php:8.0
         environment:
           - MYSQL_HOST=127.0.0.1
           - UNISH_DB_URL=mysql://root:@127.0.0.1
-      - image: circleci/mysql:5.7.24
+      - image: cimg/mysql:5.7.38
     steps:
       - checkout
       - run: cp .docker/zz-php.ini /usr/local/etc/php/conf.d/
       - run: composer -n require --dev drupal/core-recommended:9.2.8 --no-update
-      - run: composer -n require symfony/polyfill-php80:"1.23 as 1.20" --no-update
       - run: php --version
       - run: composer -n update
       - run: composer -n phpunit -- --testsuite integration --filter=testInsecureDrupalPackage --stop-on-skipped
 
   # PHP 8 test with Drupal tip
   #   Determines whether a newer version of a dependency has broken Drush.
-  test_81_drupal10_highest:
+  test_82_drupal10_highest:
     <<: *defaults
     docker:
       - image: wodby/php:latest
         environment:
           - MYSQL_HOST=127.0.0.1
           - UNISH_DB_URL=mysql://root:@127.0.0.1
-      - image: circleci/mysql:5.7.24
+      - image: cimg/mysql:5.7.38
     steps:
       - checkout
       - run: cp .docker/zz-php.ini /usr/local/etc/php/conf.d/
@@ -142,13 +141,13 @@ workflows:
     jobs:
       - code_style
       - check_mergable
-      - test_74_drupal92_security:
+      - test_80_drupal92_security:
           <<: *requires
-      - test_74_drupal9_mysql:
+      - test_80_drupal9_mysql:
           <<: *requires
-      - test_81_drupal10_highest:
+      - test_82_drupal10_highest:
           <<: *requires
-      - test_74_drupal9_sqlite:
+      - test_80_drupal9_sqlite:
           <<: *requires
-      - test_74_drupal9_postgres:
+      - test_80_drupal9_postgres:
           <<: *requires

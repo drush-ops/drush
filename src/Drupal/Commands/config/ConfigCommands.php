@@ -2,6 +2,7 @@
 
 namespace Drush\Drupal\Commands\config;
 
+use Drupal\Core\Config\ConfigDirectoryNotDefinedException;
 use Drupal\Core\Config\ImportStorageTransformer;
 use Consolidation\AnnotatedCommand\CommandError;
 use Consolidation\AnnotatedCommand\CommandData;
@@ -15,17 +16,19 @@ use Drupal\Core\Config\FileStorage;
 use Drupal\Core\Config\StorageComparer;
 use Drupal\Core\Config\StorageInterface;
 use Drupal\Core\Site\Settings;
+use Drush\Boot\DrupalBootLevels;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Drush\Exec\ExecTrait;
 use Drush\SiteAlias\SiteAliasManagerAwareInterface;
 use Drush\Utils\FsUtils;
+use Drush\Utils\StringUtils;
+use Symfony\Component\Console\Completion\CompletionInput;
+use Symfony\Component\Console\Completion\CompletionSuggestions;
 use Symfony\Component\Console\Helper\Table;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\ConsoleOutputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Filesystem\Path;
 use Symfony\Component\Yaml\Parser;
-use Webmozart\PathUtil\Path;
 
 class ConfigCommands extends DrushCommands implements StdinAwareInterface, SiteAliasManagerAwareInterface
 {
@@ -42,6 +45,11 @@ class ConfigCommands extends DrushCommands implements StdinAwareInterface, SiteA
      * @var StorageInterface
      */
     protected $configStorageExport;
+
+    /**
+     * @var StorageInterface
+     */
+    protected $configStorage;
 
     /**
      * @var ImportStorageTransformer
@@ -115,6 +123,7 @@ class ConfigCommands extends DrushCommands implements StdinAwareInterface, SiteA
      * @usage drush config:get system.site page.front
      *   Gets system.site:page.front value.
      * @aliases cget,config-get
+     * @complete configComplete
      */
     public function get($config_name, $key = '', $options = ['format' => 'yaml', 'source' => 'active', 'include-overridden' => false])
     {
@@ -149,6 +158,7 @@ class ConfigCommands extends DrushCommands implements StdinAwareInterface, SiteA
      * @usage drush config:set --input-format=yaml user.role.authenticated ? "{label: 'Auth user', weight: 5}"
      *   Update two top level keys (label, weight) in the <info>system.site</info> config object.
      * @aliases cset,config-set
+     * @complete configComplete
      */
     public function set($config_name, $key, $value, $options = ['input-format' => 'string'])
     {
@@ -218,6 +228,7 @@ class ConfigCommands extends DrushCommands implements StdinAwareInterface, SiteA
      *   Return to shell prompt as soon as the editor window opens.
      * @aliases cedit,config-edit
      * @validate-module-enabled config
+     * @complete configComplete
      */
     public function edit($config_name, $options = []): void
     {
@@ -248,29 +259,34 @@ class ConfigCommands extends DrushCommands implements StdinAwareInterface, SiteA
     }
 
     /**
-     * Delete a configuration key, or a whole object.
+     * Delete a configuration key, or a whole object(s).
      *
      * @command config:delete
      * @validate-config-name
      * @interact-config-name
-     * @param $config_name The config object name, for example "system.site".
-     * @param $key A config key to clear, for example "page.front".
-     * @usage drush config:delete system.site
-     *   Delete the the system.site config object.
+     * @param $config_name The config object name(s). Delimit multiple with commas.
+     * @param $key A config key to clear, May not be used with multiple config names.
+     * @usage drush config:delete system.site,system.rss
+     *   Delete the system.site and system.rss config objects.
      * @usage drush config:delete system.site page.front
      *   Delete the 'page.front' key from the system.site object.
      * @aliases cdel,config-delete
+     * @complete configComplete
      */
     public function delete($config_name, $key = null): void
     {
-        $config = $this->getConfigFactory()->getEditable($config_name);
         if ($key) {
+            $config = $this->getConfigFactory()->getEditable($config_name);
             if ($config->get($key) === null) {
                 throw new \Exception(dt('Configuration key !key not found.', ['!key' => $key]));
             }
             $config->clear($key)->save();
         } else {
-            $config->delete();
+            $names = StringUtils::csvToArray($config_name);
+            foreach ($names as $name) {
+                $config = $this->getConfigFactory()->getEditable($name);
+                $config->delete();
+            }
         }
     }
 
@@ -371,10 +387,10 @@ class ConfigCommands extends DrushCommands implements StdinAwareInterface, SiteA
      *   1. User-provided $directory.
      *   2. Default sync directory
      *
-     * @param string $directory
-     *   A configuration directory.
+     * @param mixed $directory
+     *   A configuration directory. Note; can be boolean.
      */
-    public static function getDirectory($directory = null): string
+    public static function getDirectory(mixed $directory = null): string
     {
         $return = null;
         // If the user provided a directory, use it.
@@ -389,7 +405,10 @@ class ConfigCommands extends DrushCommands implements StdinAwareInterface, SiteA
             }
         } else {
             // If a directory isn't specified, use default sync directory.
-            $return = Settings::get('config_sync_directory');
+            $return = Settings::get('config_sync_directory', false);
+            if ($return === false) {
+                throw new ConfigDirectoryNotDefinedException('The config sync directory is not defined in $settings["config_sync_directory"]');
+            }
         }
         return Path::canonicalize($return);
     }
@@ -474,6 +493,13 @@ class ConfigCommands extends DrushCommands implements StdinAwareInterface, SiteA
         return $table;
     }
 
+    public function configComplete(CompletionInput $input, CompletionSuggestions $suggestions): void
+    {
+        if ($input->mustSuggestArgumentValuesFor('config_name')) {
+            $suggestions->suggestValues($this->getConfigFactory()->listAll());
+        }
+    }
+
     /**
      * @hook interact @interact-config-name
      */
@@ -500,10 +526,13 @@ class ConfigCommands extends DrushCommands implements StdinAwareInterface, SiteA
     {
         $arg_name = $commandData->annotationData()->get('validate-config-name', null) ?: 'config_name';
         $config_name = $commandData->input()->getArgument($arg_name);
-        $config = \Drupal::config($config_name);
-        if ($config->isNew()) {
-            $msg = dt('Config !name does not exist', ['!name' => $config_name]);
-            return new CommandError($msg);
+        $names = StringUtils::csvToArray($config_name);
+        foreach ($names as $name) {
+            $config = \Drupal::config($name);
+            if ($config->isNew()) {
+                $msg = dt('Config !name does not exist', ['!name' => $name]);
+                return new CommandError($msg);
+            }
         }
     }
 
@@ -568,8 +597,11 @@ class ConfigCommands extends DrushCommands implements StdinAwareInterface, SiteA
         self::copyConfig($source_storage, $temp_source_storage);
 
         $prefix = ['diff'];
-        if (self::programExists('git') && $output->isDecorated()) {
-            $prefix = ['git', 'diff', '--color=always'];
+        if (self::programExists('git')) {
+            $prefix = ['git', 'diff'];
+            if ($output->isDecorated()) {
+                $prefix[] = '--color=always';
+            }
         }
         $args = array_merge($prefix, ['-u', $temp_destination_dir, $temp_source_dir]);
         $process = Drush::process($args);

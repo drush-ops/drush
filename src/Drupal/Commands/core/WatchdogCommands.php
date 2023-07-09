@@ -6,6 +6,7 @@ use Consolidation\OutputFormatters\StructuredData\PropertyList;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Drupal\Core\Database\Database;
 use Drupal\Core\Logger\RfcLogLevel;
+use Drupal\Core\Session\AnonymousUserSession;
 use Drupal\user\Entity\User;
 use Drush\Commands\DrushCommands;
 use Drupal\Component\Utility\Unicode;
@@ -22,7 +23,8 @@ class WatchdogCommands extends DrushCommands
      * @command watchdog:show
      * @param $substring A substring to look search in error messages.
      * @option count The number of messages to show.
-     * @option severity Restrict to messages of a given severity level.
+     * @option severity Restrict to messages of a given severity level (numeric or string).
+     * @option severity-min Restrict to messages of a given severity level and higher.
      * @option type Restrict to messages of a given type.
      * @option extended Return extended information about each message.
      * @usage  drush watchdog:show
@@ -33,6 +35,8 @@ class WatchdogCommands extends DrushCommands
      *   Show a listing of most recent 46 messages.
      * @usage drush watchdog:show --severity=Notice
      *   Show a listing of most recent 10 messages with a severity of notice.
+     * @usage drush watchdog:show --severity-min=Warning
+     *   Show a listing of most recent 10 messages with a severity of warning or higher.
      * @usage drush watchdog:show --type=php
      *   Show a listing of most recent 10 messages of type php
      * @aliases wd-show,ws,watchdog-show
@@ -46,13 +50,14 @@ class WatchdogCommands extends DrushCommands
      *   hostname: Hostname
      *   date: Date
      *   username: Username
+     *   uid: Uid
      * @default-fields wid,date,type,severity,message
      * @filter-default-field message
      * @return RowsOfFields
      */
-    public function show($substring = '', $options = ['format' => 'table', 'count' => 10, 'severity' => self::REQ, 'type' => self::REQ, 'extended' => false])
+    public function show($substring = '', $options = ['format' => 'table', 'count' => 10, 'severity' => self::REQ, 'severity-min' => self::REQ, 'type' => self::REQ, 'extended' => false])
     {
-        $where = $this->where($options['type'], $options['severity'], $substring);
+        $where = $this->where($options['type'], $options['severity'], $substring, 'AND', $options['severity-min']);
         $query = Database::getConnection()->select('watchdog', 'w')
             ->range(0, $options['count'])
             ->fields('w')
@@ -109,24 +114,27 @@ class WatchdogCommands extends DrushCommands
      * @command watchdog:tail
      * @param OutputInterface $output
      * @param $substring A substring to look search in error messages.
-     * @option severity Restrict to messages of a given severity level.
+     * @option severity Restrict to messages of a given severity level (numeric or string).
+     * @option severity-min Restrict to messages of a given severity level and higher.
      * @option type Restrict to messages of a given type.
      * @option extended Return extended information about each message.
      * @usage  drush watchdog:tail
      *   Continuously tail watchdog messages.
      * @usage drush watchdog:tail "cron run successful"
-     *   Continously tail watchdog messages, filtering on the string <info>cron run successful</info>.
+     *   Continuously tail watchdog messages, filtering on the string <info>cron run successful</info>.
      * @usage drush watchdog:tail --severity=Notice
-     *   Continously tail watchdog messages, filtering severity of notice.
+     *   Continuously tail watchdog messages, filtering severity of notice.
+     * @usage drush watchdog:tail --severity-min=Warning
+     *   Continuously tail watchdog messages, filtering for a severity of warning or higher.
      * @usage drush watchdog:tail --type=php
-     *   Continously tail watchdog messages, filtering on type equals php.
+     *   Continuously tail watchdog messages, filtering on type equals php.
      * @aliases wd-tail,wt,watchdog-tail
      * @validate-module-enabled dblog
      * @version 10.6
      */
-    public function tail(OutputInterface $output, $substring = '', $options = ['severity' => self::REQ, 'type' => self::REQ, 'extended' => false]): void
+    public function tail(OutputInterface $output, $substring = '', $options = ['severity' => self::REQ, 'severity-min' => self::REQ, 'type' => self::REQ, 'extended' => false]): void
     {
-        $where = $this->where($options['type'], $options['severity'], $substring);
+        $where = $this->where($options['type'], $options['severity'], $substring, 'AND', $options['severity-min']);
         if (empty($where['where'])) {
             $where = [
               'where' => 'wid > :wid',
@@ -201,7 +209,7 @@ class WatchdogCommands extends DrushCommands
      *   Delete messages with id 64.
      * @usage drush watchdog:delete "cron run succesful"
      *   Delete messages containing the string "cron run succesful".
-     * @usage drush watchdog:delete --severity=notice
+     * @usage drush watchdog:delete --severity=Notice
      *   Delete all messages with a severity of notice.
      * @usage drush watchdog:delete --type=cron
      *   Delete all messages of type cron.
@@ -263,7 +271,7 @@ class WatchdogCommands extends DrushCommands
         if (!$result) {
             throw new \Exception(dt('Watchdog message #!wid not found.', ['!wid' => $id]));
         }
-        return new PropertyList($this->formatResult($result));
+        return new PropertyList($this->formatResult($result, true));
     }
 
     /**
@@ -277,10 +285,12 @@ class WatchdogCommands extends DrushCommands
      *   String. Value to filter watchdog messages by.
      * @param $criteria
      *   ('AND', 'OR'). Criteria for the WHERE snippet.
+     * @param $severity_min
+     *   Int or String for the minimum severity to return.
      * @return
      *   An array with structure ('where' => string, 'args' => array())
      */
-    protected function where($type = null, $severity = null, $filter = null, $criteria = 'AND'): array
+    protected function where($type = null, $severity = null, $filter = null, $criteria = 'AND', $severity_min = null): array
     {
         $args = [];
         $conditions = [];
@@ -293,7 +303,19 @@ class WatchdogCommands extends DrushCommands
             $conditions[] = "type = :type";
             $args[':type'] = $type;
         }
-        if (isset($severity)) {
+        if (!empty($severity) && !empty($severity_min)) {
+            $msg = "--severity=!severity  --severity-min=!severity_min\nYou may provide a value for one of these parameters but not both.";
+            throw new \Exception(dt($msg, ['!severity' => $severity, '!severity_min' => $severity_min]));
+        }
+        // From here we know that only one of --severity or --severity-min might
+        // have a value but not both of them.
+        if (!empty($severity) || !empty($severity_min)) {
+            if (empty($severity)) {
+                $severity = $severity_min;
+                $operator = '<=';
+            } else {
+                $operator = '=';
+            }
             $severities = RfcLogLevel::getLevels();
             if (isset($severities[$severity])) {
                 $level = $severity;
@@ -306,10 +328,10 @@ class WatchdogCommands extends DrushCommands
                 foreach ($severities as $key => $value) {
                     $levels[] = "$value($key)";
                 }
-                $msg = "Unknown severity level: !severity.\nValid severity levels are: !levels.";
+                $msg = "Unknown severity level: !severity\nValid severity levels are: !levels.";
                 throw new \Exception(dt($msg, ['!severity' => $severity, '!levels' => implode(', ', $levels)]));
             }
-            $conditions[] = 'severity = :severity';
+            $conditions[] = "severity {$operator} :severity";
             $args[':severity'] = $level;
         }
         if ($filter) {
@@ -342,6 +364,13 @@ class WatchdogCommands extends DrushCommands
         $result->date = date('d/M H:i', $result->timestamp);
         unset($result->timestamp);
 
+        // Username.
+        $result->username = (new AnonymousUserSession())->getAccountName() ?: dt('Anonymous');
+        $account = User::load($result->uid);
+        if ($account && !$account->isAnonymous()) {
+            $result->username = $account->getAccountName();
+        }
+
         // Message.
         $variables = $result->variables;
         if (is_string($variables)) {
@@ -362,9 +391,6 @@ class WatchdogCommands extends DrushCommands
             if (empty($result->referer)) {
                 unset($result->referer);
             }
-            // Username.
-            $result->username = ($account = User::load($result->uid)) ? $account->name : dt('Anonymous');
-            unset($result->uid);
             $message_length = PHP_INT_MAX;
         }
         $result->message = Unicode::truncate(strip_tags(Html::decodeEntities($result->message)), $message_length, false, false);

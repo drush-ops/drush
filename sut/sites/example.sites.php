@@ -56,3 +56,6 @@
 // The following are used by functional tests, at least testOptionsUri():
 $sites["test.uri"] = "dev";
 $sites["test.uri.subpath"] = "stage";
+// For local browsing
+$sites["drush.ddev.site"] = "dev";
+

@@ -1,38 +1,33 @@
-name: Build static sites
+name: Build docs site
 
-# Controls when the action will run. Triggers the workflow on push
-# events but only for the 11.x branch
 on:
   push:
-    branches: [11.x]
+    branches: [11.x, 12.x]
+    tags: ["11.*", "12.*"]
 
 jobs:
   build:
-    name: Build and Push
+    permissions:
+      contents: write # for git push
+    name: Build docs and push
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout 11.x
+      - name: Checkout
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
-
-      - name: Checkout gh-pages branch
-        uses: actions/checkout@v2
-        with:
-          ref: gh-pages
-          path: gh-pages
-          fetch-depth: 0
-
+      - name: Setup Git
+        run: |
+          git config --local user.email "actions@github.com"
+          git config --local user.name "Drush Documentation Bot"
       - name: Set up Python 3.8
         uses: actions/setup-python@v2
         with:
           python-version: '3.8'
-
       - name: Install Python dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install mkdocs-material mkdocs-git-authors-plugin mkdocs-redirects mkdocs-git-revision-date-localized-plugin pymdown-extensions git+https://gitlab.com/blacs30/mkdocs-edit-url.git
-
+          pip install mkdocs-material mike mkdocs-git-authors-plugin mkdocs-redirects mkdocs-git-revision-date-localized-plugin pymdown-extensions git+https://gitlab.com/blacs30/mkdocs-edit-url.git
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
@@ -40,51 +35,40 @@ jobs:
           extensions: dom, curl, gd, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite
           coverage: none
           tools: composer:v2
-
       - name: Install Composer dependencies
         run: composer install --prefer-dist --no-interaction
-
       - name: Install Drupal
         run: composer sut:si
         env:
           UNISH_DB_URL: sqlite://sites/default/files/.ht.sqlite
-
       - name: Drush status
         run: ./drush --uri=dev st
-
       - name: Drush mk:docs
         run: composer mk:docs
-
-      - name: Mkdocs build
-        run: mkdocs build -v --site-dir gh-pages/latest
-
+      - name: Mike config
+        run: |
+          mike alias 11.x latest
+          mike set-default latest
+      - name: Mike deploy
+        run: mike deploy --push ${GITHUB_REF_NAME}
+      # Build Doctum to gh-pages/api in the gh-pages branch.
+      - name: Checkout gh-pages branch
+        uses: actions/checkout@v2
+        with:
+          ref: gh-pages
+          path: gh-pages
+          fetch-depth: 0
+      - name: Git pull
+        run: cd gh-pages && git pull
       - name: Install Doctum
         run: composer doctum-install
-
       - name: Doctum build
         run: |
           rm -rf gh-pages/latest/api
-          composer api
-
-      - name: Checkout CNAME+redirect+404 files
-        # They got wiped and are needed.
-        run: |
-          cd gh-pages && git checkout -- CNAME index.html 404.html
-
-      - name: Commit static site to gh-pages
-        run: |
-          cd gh-pages
-
-          git config --local user.email "actions@github.com"
-          git config --local user.name "Drush Documentation Bot"
-
-          git add -A .
-
-          if git diff-index --quiet HEAD --; then
-            echo "No changes..."
-          else
-            git commit -m "[CI] Build static site"
-          fi
-
-      - name: Git Push
-        run: cd gh-pages && git push
+          composer api -- --only-version=${GITHUB_REF_NAME}
+      - uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: "[CI] Add Doctum build"
+          repository: gh-pages
+          commit_user_name: "Drush Documentation Bot"
+          commit_user_email: "actions@github.com"

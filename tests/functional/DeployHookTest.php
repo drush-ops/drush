@@ -2,7 +2,7 @@
 
 namespace Unish;
 
-use Webmozart\PathUtil\Path;
+use Symfony\Component\Filesystem\Path;
 
 /**
  *  @group slow
@@ -93,5 +93,23 @@ class DeployHookTest extends CommandUnishTestCase
         // Check again to see no pending hooks.
         $this->drush('deploy:hook-status', [], $options, null, null, self::EXIT_SUCCESS);
         $this->assertStringContainsString('[]', $this->getOutput());
+    }
+
+    public function testDeployHooksInModuleWithDeployInName()
+    {
+        $this->setUpDrupal(1, true);
+        $options = [
+            'yes' => null,
+        ];
+        $this->setupModulesForTests(['woot_deploy'], Path::join(__DIR__, '/../fixtures/modules'));
+        $this->drush('pm-install', ['woot_deploy'], $options);
+
+        // Run deploy hooks.
+        $this->drush('deploy:hook', [], $options, null, null, self::EXIT_SUCCESS);
+
+        $this->assertStringContainsString('[notice] Deploy hook started: woot_deploy_deploy_function', $this->getErrorOutput());
+        $this->assertStringContainsString('[notice] This is the update message from woot_deploy_deploy_function', $this->getErrorOutput());
+        $this->assertStringContainsString('[notice] Performed: woot_deploy_deploy_function', $this->getErrorOutput());
+        $this->assertStringContainsString('[success] Finished performing deploy hooks.', $this->getErrorOutput());
     }
 }

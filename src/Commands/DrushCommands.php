@@ -19,9 +19,9 @@ use Robo\Contract\ConfigAwareInterface;
 use Robo\Contract\IOAwareInterface;
 use Robo\Common\IO;
 use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Filesystem\Path;
 use Consolidation\SiteProcess\ProcessManagerAwareTrait;
 use Consolidation\SiteProcess\ProcessManagerAwareInterface;
-use Webmozart\PathUtil\Path;
 
 abstract class DrushCommands implements IOAwareInterface, LoggerAwareInterface, ConfigAwareInterface, ProcessManagerAwareInterface
 {
@@ -43,7 +43,7 @@ abstract class DrushCommands implements IOAwareInterface, LoggerAwareInterface, 
     // Used to signal that the command completed successfully, but we still want to indicate a failure to the caller.
     const EXIT_FAILURE_WITH_CLARITY = 3;
 
-    protected CommandData $commandData;
+    protected ?CommandData $commandData = null;
 
     public function __construct()
     {

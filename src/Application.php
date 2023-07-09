@@ -48,19 +48,25 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
     /** @var TildeExpansionHook */
     protected $tildeExpansionHook;
 
+    /** @var string[] */
+    protected array $bootstrapCommandClasses = [];
+
     /**
      * Add global options to the Application and their default values to Config.
      */
     public function configureGlobalOptions()
     {
-        $this->getDefinition()
-            ->addOption(
-                new InputOption('--debug', 'd', InputOption::VALUE_NONE, 'Equivalent to -vv')
-            );
+        // Symfony 6.1+ has a --debug option for its completion command.
+        if ($this->getDefinition()->hasOption('--debug')) {
+            $this->getDefinition()
+                ->addOption(
+                    new InputOption('--debug', 'd', InputOption::VALUE_NONE, 'Equivalent to -vv')
+                );
+        }
 
         $this->getDefinition()
             ->addOption(
-                new InputOption('--yes', 'y', InputOption::VALUE_NONE, 'Equivalent to --no-interaction.')
+                new InputOption('--yes', 'y', InputOption::VALUE_NONE, 'Auto-accept the default for all user prompts. Equivalent to --no-interaction.')
             );
 
         // Note that -n belongs to Symfony Console's --no-interaction.
@@ -77,7 +83,7 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
 
         $this->getDefinition()
             ->addOption(
-                new InputOption('--uri', '-l', InputOption::VALUE_REQUIRED, 'Which multisite from the selected root to use.')
+                new InputOption('--uri', '-l', InputOption::VALUE_REQUIRED, 'A base URL for building links and selecting a multi-site. Defaults to <info>https://default</info>.')
             );
 
         $this->getDefinition()
@@ -173,6 +179,11 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
         }
         $uri = $this->bootstrapManager()->selectUri($cwd);
         return $uri;
+    }
+
+    public function bootstrapCommandClasses(): array
+    {
+        return $this->bootstrapCommandClasses;
     }
 
     /**
@@ -316,6 +327,20 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
             $this->discoverPsr4Commands($classLoader),
             [FilterHooks::class]
         ));
+
+        // If a command class has a static `create` method, then we will
+        // postpone instantiating it until after we bootstrap Drupal.
+        $this->bootstrapCommandClasses = array_filter($commandClasses, function (string $class): bool {
+            if (!method_exists($class, 'create')) {
+                return false;
+            }
+
+            $reflectionMethod = new \ReflectionMethod($class, 'create');
+            return $reflectionMethod->isStatic();
+        });
+
+        // Remove the command classes that we put into the bootstrap command classes.
+        $commandClasses = array_diff($commandClasses, $this->bootstrapCommandClasses);
 
         // Uncomment the lines below to use Console's built in help and list commands.
         // unset($commandClasses[__DIR__ . '/Commands/help/HelpCommands.php']);

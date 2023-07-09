@@ -9,6 +9,7 @@ use Consolidation\AnnotatedCommand\Events\CustomEventAwareTrait;
 use Consolidation\OutputFormatters\StructuredData\PropertyList;
 use Drush\Boot\AutoloaderAwareInterface;
 use Drush\Boot\AutoloaderAwareTrait;
+use Drush\Boot\DrupalBoot;
 use Drush\Commands\DrushCommands;
 use Drupal\Core\DrupalKernel;
 use Drupal\Core\Site\Settings;
@@ -194,11 +195,9 @@ class CacheCommands extends DrushCommands implements CustomEventAwareInterface, 
     }
 
     /**
-     * Rebuild a Drupal 8 site.
+     * Rebuild all caches.
      *
-     * This is a copy of core/rebuild.php. Additionally
-     * it also clears Drush cache and Drupal's render cache.
-
+     * This is a copy of core/rebuild.php.
      *
      * @command cache:rebuild
      * @option cache-clear Set to 0 to suppress normal cache clearing; the caller should then clear if needed.
@@ -274,6 +273,7 @@ class CacheCommands extends DrushCommands implements CustomEventAwareInterface, 
                 'render' => [$this, 'clearRender'],
                 'plugin' => [$this, 'clearPlugin'],
                 'bin' => [$this, 'clearBins'],
+                'container' => [$this, 'clearContainer'],
             ];
         }
 
@@ -328,6 +328,13 @@ class CacheCommands extends DrushCommands implements CustomEventAwareInterface, 
         _drupal_flush_css_js();
         \Drupal::service('asset.css.collection_optimizer')->deleteAll();
         \Drupal::service('asset.js.collection_optimizer')->deleteAll();
+    }
+
+    public static function clearContainer(): void
+    {
+        /** @var DrupalBoot $boot_object */
+        $boot_object = Drush::bootstrap();
+        $boot_object->getKernel()->invalidateContainer();
     }
 
     /**

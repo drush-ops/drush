@@ -3,7 +3,7 @@
 namespace Unish;
 
 use Drupal\migrate\Plugin\MigrationInterface;
-use Webmozart\PathUtil\Path;
+use Symfony\Component\Filesystem\Path;
 
 /**
  * @group commands
@@ -142,6 +142,9 @@ class MigrateRunnerTest extends UnishIntegrationTestCase
      */
     public function testMigrateImportAndRollback(): void
     {
+        // Reset status just in case.
+        $this->drush('migrate:reset-status', ['test_migration'], []);
+
         // Trigger logging in ProcessRowTestSubscriber::onPrepareRow().
         // @see \Drupal\woot\EventSubscriber\ProcessRowTestSubscriber::onPrepareRow()
         // @see \Drupal\woot\EventSubscriber\PreRowDeleteTestSubscriber::onPreRowDelete()

@@ -21,8 +21,8 @@ class RoleCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
      * @command role:create
      * @param $machine_name The symbolic machine name for the role.
      * @param $human_readable_name A descriptive name for the role.
-     * @usage drush role:create 'test role' 'Test role'
-     *   Create a new role with a machine name of 'test role', and a human-readable name of 'Test role'.
+     * @usage drush role:create 'test_role' 'Test role'
+     *   Create a new role with a machine name of 'test_role', and a human-readable name of 'Test role'.
      * @aliases rcrt,role-create
      */
     public function create($machine_name, $human_readable_name = null)
@@ -42,8 +42,8 @@ class RoleCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
      * @command role:delete
      * @param $machine_name The symbolic machine name for the role.
      * @validate-entity-load user_role machine_name
-     * @usage drush role:delete 'test role'
-     *   Delete the role 'test role'.
+     * @usage drush role:delete 'test_role'
+     *   Delete the role 'test_role'.
      * @aliases rdel,role-delete
      */
     public function delete($machine_name): void

@@ -45,6 +45,11 @@ services:
     arguments: ['@language_manager', '@config.factory', '@module_handler', '@state']
     tags:
       -  { name: drush.command }
+  maint.commands:
+    class: \Drush\Drupal\Commands\core\MaintCommands
+    arguments: [ '@state' ]
+    tags:
+      - { name: drush.command }
   messenger.commands:
       class: \Drush\Drupal\Commands\core\MessengerCommands
       arguments: ['@messenger']
