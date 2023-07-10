@@ -30,14 +30,8 @@ final class ImageCommands extends DrushCommands
     #[CLI\ValidateEntityLoad(entityType: 'image_style', argumentName: 'style_names')]
     #[CLI\ValidateModulesEnabled(modules: ['image'])]
     #[CLI\Bootstrap(level: DrupalBootLevels::FULL)]
-    public function flush($style_names = '', $options = ['all' => false]): void
+    public function flush($style_names, $options = ['all' => false]): void
     {
-        // Needed for non-interactive calls.
-        if ($options['all']) {
-            $styles = array_keys(ImageStyle::loadMultiple());
-            $style_names = implode(",", $styles);
-        }
-
         foreach (ImageStyle::loadMultiple(StringUtils::csvToArray($style_names)) as $style_name => $style) {
             $style->flush();
             $this->logger()->success(dt('Image style !style_name flushed', ['!style_name' => $style_name]));
@@ -50,7 +44,7 @@ final class ImageCommands extends DrushCommands
         $styles = array_keys(ImageStyle::loadMultiple());
         $style_names = $input->getArgument('style_names');
 
-        if (empty($style_names) && !$input->getOption('all')) {
+        if (empty($style_names)) {
             $styles_all = $styles;
             array_unshift($styles_all, 'all');
             $choices = array_combine($styles_all, $styles_all);
@@ -59,6 +53,16 @@ final class ImageCommands extends DrushCommands
                 $style_names = implode(',', $styles);
             }
             $input->setArgument('style_names', $style_names);
+        }
+    }
+
+    #[CLI\Hook(type: HookManager::POST_INITIALIZE, target: self::FLUSH)]
+    public function postInit(InputInterface $input, AnnotationData $annotationData): void
+    {
+        // Needed for non-interactive calls.We use post-init phase because interact() methods run early
+        if ($input->getOption('all')) {
+            $styles = array_keys(ImageStyle::loadMultiple());
+            $input->setArgument('style_names', implode(",", $styles));
         }
     }
 
