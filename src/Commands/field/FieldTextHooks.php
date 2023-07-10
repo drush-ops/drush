@@ -38,6 +38,11 @@ class FieldTextHooks extends DrushCommands
     #[CLI\Hook(type: HookManager::OPTION_HOOK, target: FieldCreateCommands::CREATE)]
     public function hookOption(Command $command, AnnotationData $annotationData): void
     {
+        // The options hook is called by mk:docs - avoid an exception.
+        if (!$this->input()->hasOption('field-type')) {
+            return;
+        }
+
         if (!$this->hasAllowedFormats($this->input()->getOption('field-type'))) {
             return;
         }
