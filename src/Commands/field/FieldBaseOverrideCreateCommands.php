@@ -101,7 +101,7 @@ class FieldBaseOverrideCreateCommands extends DrushCommands
         );
         $this->input->setOption(
             'field-description',
-            $this->input->getOption('field-description') ?? $this->askFieldDescription($definition->getDescription())
+            $this->input->getOption('field-description') ?? $this->askFieldDescription((string) $definition->getDescription())
         );
         $this->input->setOption(
             'is-required',
