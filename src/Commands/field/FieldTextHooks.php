@@ -78,7 +78,7 @@ class FieldTextHooks extends DrushCommands
 
         $input->setOption(
             'allowed-formats',
-            $this->input->getOption('allowed-formats') ?? $this->askAllowedFormats()
+            $this->input->getOption('allowed-formats') ?: $this->askAllowedFormats()
         );
     }
 
