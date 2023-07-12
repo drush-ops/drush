@@ -103,11 +103,6 @@ class DrupalBoot8 extends DrupalBoot
         return $site_path;
     }
 
-    public function bootstrapDrupalCore(BootstrapManager $manager, string $drupal_root): string
-    {
-        return Path::join($drupal_root, 'core');
-    }
-
     public function bootstrapDrupalSiteValidate(BootstrapManager $manager): bool
     {
         parent::bootstrapDrupalSiteValidate($manager);
