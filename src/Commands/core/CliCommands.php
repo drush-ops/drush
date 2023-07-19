@@ -6,6 +6,7 @@ namespace Drush\Commands\core;
 
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drush\Attributes as CLI;
+use Drush\Boot\BootstrapManager;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Drush\Psysh\DrushCommand;
@@ -18,21 +19,25 @@ use Psy\Configuration;
 use Psy\VersionUpdater\Checker;
 use Drush\Boot\DrupalBootLevels;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\Filesystem\Path;
 
 final class CliCommands extends DrushCommands
 {
     const DOCS_REPL = 'docs:repl';
     const PHP = 'php:cli';
 
-    public function __construct(protected EntityTypeManagerInterface $entityTypeManager)
-    {
+    public function __construct(
+        protected EntityTypeManagerInterface $entityTypeManager,
+        private BootstrapManager $bootstrapManager
+    ) {
         parent::__construct();
     }
 
-    public static function create(ContainerInterface $container): self
+    public static function create(ContainerInterface $container, $drush_container): self
     {
         $commandHandler = new static(
             $container->get('entity_type.manager'),
+            $drush_container->get('bootstrap.manager'),
         );
 
         return $commandHandler;
@@ -61,7 +66,14 @@ final class CliCommands extends DrushCommands
     #[CLI\Bootstrap(level: DrupalBootLevels::FULL)]
     public function cli(array $options = ['version-history' => false, 'cwd' => self::REQ]): void
     {
+        // Support local psysh config files at /drush/.psysh.php.
+        $oldcwd = getcwd();
+        $newcwd = Path::join($this->bootstrapManager->getComposerRoot(), 'drush');
+        if (is_dir($newcwd)) {
+            chdir($newcwd);
+        }
         $configuration = new Configuration();
+        chdir($oldcwd);
 
         // Set the Drush specific history file path.
         $configuration->setHistoryFile($this->historyPath($options));
@@ -85,10 +97,10 @@ final class CliCommands extends DrushCommands
         Handle::register();
         $shell->setScopeVariables(['container' => \Drupal::getContainer()]);
 
-        // Add Drupal 8 specific casters to the shell configuration.
+        // Add our casters to the shell configuration.
         $configuration->addCasters($this->getCasters());
 
-        // Add Drush commands to the shell.
+        // Add most Drush commands to the shell.
         $shell->addCommands([new DrushHelpCommand()]);
         $shell->addCommands($this->getDrushCommands());
 
