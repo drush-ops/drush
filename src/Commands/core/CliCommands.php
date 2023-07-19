@@ -67,11 +67,6 @@ final class CliCommands extends DrushCommands
     public function cli(array $options = ['version-history' => false, 'cwd' => self::REQ]): void
     {
         $configuration = new Configuration();
-        // Support a project-specific psysh config file at /drush/.psysh.php.
-        $candidate = Path::join($this->bootstrapManager->getComposerRoot(), 'drush', '.psysh.php');
-        if (is_file($candidate)) {
-            $configuration->setConfigDir($candidate);
-        }
 
         // Set the Drush specific history file path.
         $configuration->setHistoryFile($this->historyPath($options));
@@ -102,6 +97,8 @@ final class CliCommands extends DrushCommands
         $shell->addCommands([new DrushHelpCommand()]);
         $shell->addCommands($this->getDrushCommands());
 
+        $this->makeEntitiesAvailableWithShortClassNames();
+
         // PsySH will never return control to us, but our shutdown handler will still
         // run after the user presses ^D.  Mark this command as completed to avoid a
         // spurious error message.
@@ -122,13 +119,6 @@ final class CliCommands extends DrushCommands
         // the user wants to go before we launch psysh.
         if ($options['cwd']) {
             chdir($options['cwd']);
-        }
-
-        // Make entities available with short class names.
-        foreach ($this->entityTypeManager->getDefinitions() as $definition) {
-            $class = $definition->getClass();
-            $parts = explode('\\', $class);
-            class_alias($class, array_pop($parts));
         }
 
         $shell->run();
@@ -315,5 +305,14 @@ final class CliCommands extends DrushCommands
         'while',
         'xor',
         ];
+    }
+
+    public function makeEntitiesAvailableWithShortClassNames(): void
+    {
+        foreach ($this->entityTypeManager->getDefinitions() as $definition) {
+            $class = $definition->getClass();
+            $parts = explode('\\', $class);
+            class_alias($class, array_pop($parts));
+        }
     }
 }
