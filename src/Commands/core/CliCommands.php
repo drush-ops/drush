@@ -6,7 +6,6 @@ namespace Drush\Commands\core;
 
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drush\Attributes as CLI;
-use Drush\Boot\BootstrapManager;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Drush\Psysh\DrushCommand;
@@ -19,7 +18,6 @@ use Psy\Configuration;
 use Psy\VersionUpdater\Checker;
 use Drush\Boot\DrupalBootLevels;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\Filesystem\Path;
 
 final class CliCommands extends DrushCommands
 {
@@ -27,17 +25,15 @@ final class CliCommands extends DrushCommands
     const PHP = 'php:cli';
 
     public function __construct(
-        protected EntityTypeManagerInterface $entityTypeManager,
-        private BootstrapManager $bootstrapManager
+        protected EntityTypeManagerInterface $entityTypeManager
     ) {
         parent::__construct();
     }
 
-    public static function create(ContainerInterface $container, $drush_container): self
+    public static function create(ContainerInterface $container): self
     {
         $commandHandler = new static(
-            $container->get('entity_type.manager'),
-            $drush_container->get('bootstrap.manager'),
+            $container->get('entity_type.manager')
         );
 
         return $commandHandler;
