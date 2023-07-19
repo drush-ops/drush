@@ -24,15 +24,16 @@ final class CliCommands extends DrushCommands
     const DOCS_REPL = 'docs:repl';
     const PHP = 'php:cli';
 
-    public function __construct(protected EntityTypeManagerInterface $entityTypeManager)
-    {
+    public function __construct(
+        protected EntityTypeManagerInterface $entityTypeManager
+    ) {
         parent::__construct();
     }
 
     public static function create(ContainerInterface $container): self
     {
         $commandHandler = new static(
-            $container->get('entity_type.manager'),
+            $container->get('entity_type.manager')
         );
 
         return $commandHandler;
@@ -85,12 +86,14 @@ final class CliCommands extends DrushCommands
         Handle::register();
         $shell->setScopeVariables(['container' => \Drupal::getContainer()]);
 
-        // Add Drupal 8 specific casters to the shell configuration.
+        // Add our casters to the shell configuration.
         $configuration->addCasters($this->getCasters());
 
-        // Add Drush commands to the shell.
+        // Add most Drush commands to the shell.
         $shell->addCommands([new DrushHelpCommand()]);
         $shell->addCommands($this->getDrushCommands());
+
+        $this->makeEntitiesAvailableWithShortClassNames();
 
         // PsySH will never return control to us, but our shutdown handler will still
         // run after the user presses ^D.  Mark this command as completed to avoid a
@@ -112,13 +115,6 @@ final class CliCommands extends DrushCommands
         // the user wants to go before we launch psysh.
         if ($options['cwd']) {
             chdir($options['cwd']);
-        }
-
-        // Make entities available with short class names.
-        foreach ($this->entityTypeManager->getDefinitions() as $definition) {
-            $class = $definition->getClass();
-            $parts = explode('\\', $class);
-            class_alias($class, array_pop($parts));
         }
 
         $shell->run();
@@ -305,5 +301,14 @@ final class CliCommands extends DrushCommands
         'while',
         'xor',
         ];
+    }
+
+    public function makeEntitiesAvailableWithShortClassNames(): void
+    {
+        foreach ($this->entityTypeManager->getDefinitions() as $definition) {
+            $class = $definition->getClass();
+            $parts = explode('\\', $class);
+            class_alias($class, array_pop($parts));
+        }
     }
 }
