@@ -268,12 +268,11 @@ DrushConfig as return type. Helps with IDE completion.</p></p>                </
                     
                 </div>
                 <div class="col-md-8">
-                    <a href="#method___construct">__construct</a>()
+                    <a href="#method___construct">__construct</a>(<abbr title="Drupal\Core\Entity\EntityTypeManagerInterface">EntityTypeManagerInterface</abbr> $entityTypeManager)
         
                                             <p class="no-description">No description</p>
                                     </div>
-                <div class="col-md-2"><small>from&nbsp;<a href="../../../Drush/Commands/DrushCommands.html#method___construct">
-<abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a></small></div>
+                <div class="col-md-2"></div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
@@ -340,6 +339,17 @@ DrushConfig as return type. Helps with IDE completion.</p></p>                </
                                             <p><p>Get a Guzzle handler stack that uses the Drush logger.</p></p>                </div>
                 <div class="col-md-2"><small>from&nbsp;<a href="../../../Drush/Commands/DrushCommands.html#method_getStack">
 <abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    static&nbsp;<a href="../../../Drush/Commands/core/CliCommands.html"><abbr title="Drush\Commands\core\CliCommands">CliCommands</abbr></a>
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_create">create</a>(<abbr title="Symfony\Component\DependencyInjection\ContainerInterface">ContainerInterface</abbr> $container)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
@@ -603,10 +613,9 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method___construct">
-        <div class="location">in <a href="../../../Drush/Commands/DrushCommands.html#method___construct">
-<abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a> <a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/DrushCommands.php#L51">at line 51</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/CliCommands.php#L27">at line 27</a></div>
         <code>                    
-    <strong>__construct</strong>()
+    <strong>__construct</strong>(<abbr title="Drupal\Core\Entity\EntityTypeManagerInterface">EntityTypeManagerInterface</abbr> $entityTypeManager)
         </code>
     </h3>
     <div class="details">    
@@ -618,6 +627,16 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
                     
         </div>
         <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Drupal\Core\Entity\EntityTypeManagerInterface">EntityTypeManagerInterface</abbr></td>
+                <td>$entityTypeManager</td>
+                <td></td>
+            </tr>
+            </table>
+
             
             
             
@@ -848,8 +867,51 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
 
             </div>
                     <div class="method-item">
+                    <h3 id="method_create">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/CliCommands.php#L32">at line 32</a></div>
+        <code>        static            <a href="../../../Drush/Commands/core/CliCommands.html"><abbr title="Drush\Commands\core\CliCommands">CliCommands</abbr></a>
+    <strong>create</strong>(<abbr title="Symfony\Component\DependencyInjection\ContainerInterface">ContainerInterface</abbr> $container)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Symfony\Component\DependencyInjection\ContainerInterface">ContainerInterface</abbr></td>
+                <td>$container</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><a href="../../../Drush/Commands/core/CliCommands.html"><abbr title="Drush\Commands\core\CliCommands">CliCommands</abbr></a></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
                     <h3 id="method_docs">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/CliCommands.php#L29">at line 29</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/CliCommands.php#L44">at line 44</a></div>
         <code>                    void
     <strong>docs</strong>()
         </code>
@@ -881,7 +943,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_cli">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/CliCommands.php#L41">at line 41</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/CliCommands.php#L56">at line 56</a></div>
         <code>                    void
     <strong>cli</strong>(array $options = [&#039;version-history&#039; =&gt; false, &#039;cwd&#039; =&gt; self::REQ])
         </code>
@@ -923,7 +985,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_getDrushCommands">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/CliCommands.php#L107">at line 107</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/CliCommands.php#L130">at line 130</a></div>
         <code>            protected        array
     <strong>getDrushCommands</strong>()
         </code>
@@ -955,7 +1017,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_getCasters">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/CliCommands.php#L154">at line 154</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/CliCommands.php#L177">at line 177</a></div>
         <code>            protected        array
     <strong>getCasters</strong>()
         </code>
@@ -989,7 +1051,7 @@ for more information.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_historyPath">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/CliCommands.php#L176">at line 176</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/CliCommands.php#L199">at line 199</a></div>
         <code>            protected        string
     <strong>historyPath</strong>(array $options)
         </code>
@@ -1031,7 +1093,7 @@ for more information.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_getPhpKeywords">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/CliCommands.php#L216">at line 216</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/CliCommands.php#L239">at line 239</a></div>
         <code>            protected        array
     <strong>getPhpKeywords</strong>()
         </code>
