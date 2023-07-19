@@ -98,6 +98,13 @@ final class CliCommands extends DrushCommands
             chdir($options['cwd']);
         }
 
+        // Make entities available with short class names.
+        foreach (\Drupal::entityTypeManager()->getDefinitions() as $definition) {
+            $class = $definition->getClass();
+            $parts = explode('\\', $class);
+            class_alias($class, array_pop($parts));
+        }
+
         $shell->run();
     }
 
