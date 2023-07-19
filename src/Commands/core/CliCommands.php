@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Drush\Commands\core;
 
-use Consolidation\AnnotatedCommand\AnnotatedCommand;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drush\Attributes as CLI;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
@@ -17,11 +17,26 @@ use Drush\Utils\FsUtils;
 use Psy\Configuration;
 use Psy\VersionUpdater\Checker;
 use Drush\Boot\DrupalBootLevels;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 final class CliCommands extends DrushCommands
 {
     const DOCS_REPL = 'docs:repl';
     const PHP = 'php:cli';
+
+    public function __construct(protected EntityTypeManagerInterface $entityTypeManager)
+    {
+        parent::__construct();
+    }
+
+    public static function create(ContainerInterface $container): self
+    {
+        $commandHandler = new static(
+            $container->get('entity_type.manager'),
+        );
+
+        return $commandHandler;
+    }
 
     /**
      * Drush's PHP Shell.
@@ -29,7 +44,7 @@ final class CliCommands extends DrushCommands
     #[CLI\Command(name: self::DOCS_REPL, aliases: ['docs-repl'])]
     #[CLI\Help(hidden: true)]
     #[CLI\Topics(path: '../../../docs/repl.md')]
-    #[CLI\Usage(name: self::PHP, description('Entity classes are available without their namespace. For example, Node::load() works instead of Drupal\Node\entity\Noad::load().')]
+    #[CLI\Usage(name: self::PHP, description: 'Entity classes are available without their namespace. For example, Node::load() works instead of Drupal\Node\entity\Node::load().')]
     #[CLI\Bootstrap(level: DrupalBootLevels::FULL)]
     public function docs(): void
     {
@@ -100,7 +115,7 @@ final class CliCommands extends DrushCommands
         }
 
         // Make entities available with short class names.
-        foreach (\Drupal::entityTypeManager()->getDefinitions() as $definition) {
+        foreach ($this->entityTypeManager->getDefinitions() as $definition) {
             $class = $definition->getClass();
             $parts = explode('\\', $class);
             class_alias($class, array_pop($parts));
