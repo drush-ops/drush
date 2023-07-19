@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Drush\Commands\core;
 
-use Consolidation\AnnotatedCommand\AnnotatedCommand;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drush\Attributes as CLI;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
@@ -17,11 +17,26 @@ use Drush\Utils\FsUtils;
 use Psy\Configuration;
 use Psy\VersionUpdater\Checker;
 use Drush\Boot\DrupalBootLevels;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 final class CliCommands extends DrushCommands
 {
     const DOCS_REPL = 'docs:repl';
     const PHP = 'php:cli';
+
+    public function __construct(protected EntityTypeManagerInterface $entityTypeManager)
+    {
+        parent::__construct();
+    }
+
+    public static function create(ContainerInterface $container): self
+    {
+        $commandHandler = new static(
+            $container->get('entity_type.manager'),
+        );
+
+        return $commandHandler;
+    }
 
     /**
      * Drush's PHP Shell.
@@ -42,6 +57,7 @@ final class CliCommands extends DrushCommands
     #[CLI\Option(name: 'version-history', description: 'Use command history based on Drupal version. Default is per site.')]
     #[CLI\Option(name: 'cwd', description: 'A directory to change to before launching the shell. Default is the project root directory')]
     #[CLI\Topics(topics: [self::DOCS_REPL])]
+    #[CLI\Usage(name: '$node = Node::load(1)', description: 'Entity classes are available without their namespace. For example, Node::load(1) works instead of Drupal\Node\entity\Node::load(1).')]
     #[CLI\Bootstrap(level: DrupalBootLevels::FULL)]
     public function cli(array $options = ['version-history' => false, 'cwd' => self::REQ]): void
     {
@@ -96,6 +112,13 @@ final class CliCommands extends DrushCommands
         // the user wants to go before we launch psysh.
         if ($options['cwd']) {
             chdir($options['cwd']);
+        }
+
+        // Make entities available with short class names.
+        foreach ($this->entityTypeManager->getDefinitions() as $definition) {
+            $class = $definition->getClass();
+            $parts = explode('\\', $class);
+            class_alias($class, array_pop($parts));
         }
 
         $shell->run();
