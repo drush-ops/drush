@@ -44,7 +44,6 @@ final class CliCommands extends DrushCommands
     #[CLI\Command(name: self::DOCS_REPL, aliases: ['docs-repl'])]
     #[CLI\Help(hidden: true)]
     #[CLI\Topics(path: '../../../docs/repl.md')]
-    #[CLI\Usage(name: self::PHP, description: 'Entity classes are available without their namespace. For example, Node::load() works instead of Drupal\Node\entity\Node::load().')]
     #[CLI\Bootstrap(level: DrupalBootLevels::FULL)]
     public function docs(): void
     {
@@ -58,6 +57,7 @@ final class CliCommands extends DrushCommands
     #[CLI\Option(name: 'version-history', description: 'Use command history based on Drupal version. Default is per site.')]
     #[CLI\Option(name: 'cwd', description: 'A directory to change to before launching the shell. Default is the project root directory')]
     #[CLI\Topics(topics: [self::DOCS_REPL])]
+    #[CLI\Usage(name: '$node = Node::load(1)', description: 'Entity classes are available without their namespace. For example, Node::load(1) works instead of Drupal\Node\entity\Node::load(1).')]
     #[CLI\Bootstrap(level: DrupalBootLevels::FULL)]
     public function cli(array $options = ['version-history' => false, 'cwd' => self::REQ]): void
     {
