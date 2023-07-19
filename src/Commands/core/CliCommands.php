@@ -66,14 +66,12 @@ final class CliCommands extends DrushCommands
     #[CLI\Bootstrap(level: DrupalBootLevels::FULL)]
     public function cli(array $options = ['version-history' => false, 'cwd' => self::REQ]): void
     {
-        // Support local psysh config files at /drush/.psysh.php.
-        $oldcwd = getcwd();
-        $newcwd = Path::join($this->bootstrapManager->getComposerRoot(), 'drush');
-        if (is_dir($newcwd)) {
-            chdir($newcwd);
-        }
         $configuration = new Configuration();
-        chdir($oldcwd);
+        // Support a project-specific psysh config file at /drush/.psysh.php.
+        $candidate = Path::join($this->bootstrapManager->getComposerRoot(), 'drush', '.psysh.php');
+        if (is_file($candidate)) {
+            $configuration->setConfigDir($candidate);
+        }
 
         // Set the Drush specific history file path.
         $configuration->setHistoryFile($this->historyPath($options));
