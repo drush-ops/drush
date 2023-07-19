@@ -29,6 +29,7 @@ final class CliCommands extends DrushCommands
     #[CLI\Command(name: self::DOCS_REPL, aliases: ['docs-repl'])]
     #[CLI\Help(hidden: true)]
     #[CLI\Topics(path: '../../../docs/repl.md')]
+    #[CLI\Usage(name: self::PHP, description('Entity classes are available without their namespace. For example, Node::load() works instead of Drupal\Node\entity\Noad::load().')]
     #[CLI\Bootstrap(level: DrupalBootLevels::FULL)]
     public function docs(): void
     {
