@@ -5,6 +5,7 @@ namespace Drush\Commands\core;
 use Consolidation\SiteAlias\SiteAlias;
 use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
 use Consolidation\SiteProcess\ProcessManager;
+use Drush\Drupal\Commands\config\ConfigCommands;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Drush\SiteAlias\SiteAliasManagerAwareInterface;
@@ -33,12 +34,31 @@ class DeployCommands extends DrushCommands implements SiteAliasManagerAwareInter
         $redispatchOptions = Drush::redispatchOptions();
         $manager = $this->processManager();
 
+        // Prepare custom options for checking configuration state.
+        $configStatusOptions = $redispatchOptions;
+        $configStatusOptions['format'] = 'php';
+        // Record the current state of configuration.
+        $process = $manager->drush($self, 'config:status', [], $configStatusOptions);
+        $process->mustRun();
+        $originalConfigDiff = unserialize($process->getOutput());
+
         $this->logger()->notice("Database updates start.");
         $options = ['no-cache-clear' => true];
         $process = $manager->drush($self, 'updatedb', [], $options + $redispatchOptions);
         $process->mustRun($process->showRealtime());
 
         $this->cacheRebuild($manager, $self, $redispatchOptions);
+
+        // Record the current state of configuration.
+        $process = $manager->drush($self, 'config:status', [], $configStatusOptions);
+        $process->mustRun();
+        $newConfigDiff = unserialize($process->getOutput());
+
+        // Check for new changes to active configuration that would be lost.
+        if ($originalConfigDiff !== $newConfigDiff) {
+            $this->io()->error('Update hooks altered config that is about to be reverted during config import. Aborting.');
+            return;
+        }
 
         $this->logger()->success("Config import start.");
         $process = $manager->drush($self, 'config:import', [], $redispatchOptions);
