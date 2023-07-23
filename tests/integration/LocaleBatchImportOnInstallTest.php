@@ -95,7 +95,6 @@ class LocaleBatchImportOnInstallTest extends CommandUnishTestCase
           'dblog',
           'drush_empty_module',
         ]);
-        unlink(Path::join($this->translationDir, 'drush_empty_module.nl.po'));
         rmdir($this->translationDir);
 
         parent::tearDown();
