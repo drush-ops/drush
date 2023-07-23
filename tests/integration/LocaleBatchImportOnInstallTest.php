@@ -16,10 +16,10 @@ use Symfony\Component\Filesystem\Path;
 
 /**
  * @group locale
- * @group slow
- *  @group pm
+ * @group pm
+ * @group config
  */
-class LocaleImportTest extends CommandUnishTestCase
+class LocaleBatchImportOnInstallTest extends CommandUnishTestCase
 {
     protected string $translationDir;
 
@@ -57,7 +57,6 @@ class LocaleImportTest extends CommandUnishTestCase
         $this->drush(PmCommands::INSTALL, ['drush_empty_module']);
         $this->drush(WatchdogCommands::SHOW);
         $this->assertStringContainsString('Translations imported:', $this->getSimplifiedOutput());
-
     }
 
     public function testBatchImportTranslationsOnConfigImport()
@@ -88,9 +87,15 @@ class LocaleImportTest extends CommandUnishTestCase
 
     public function tearDown(): void
     {
-        // Clean up the mess this test creates.
+        $this->drush(PmCommands::UNINSTALL, [
+          'language',
+          'locale',
+          'dblog',
+          'drush_empty_module',
+        ]);
         unlink(Path::join($this->translationDir, 'drush_empty_module.nl.po'));
         rmdir($this->translationDir);
+
         parent::tearDown();
     }
 }

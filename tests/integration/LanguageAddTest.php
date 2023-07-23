@@ -46,7 +46,7 @@ class LanguageAddTest extends UnishIntegrationTestCase
         $this->drush(ConfigCommands::SET, ['locale.settings', 'translation.use_source', 'locale']);
         $this->drush(ConfigCommands::SET, ['locale.settings', 'translation.default_filename', '%project.%language.po']);
         $this->drush(ConfigCommands::SET, ['locale.settings', 'translation.path', '../translations']);
-        $source = Path::join(__DIR__, '../functional/resources/drush_empty_module.nl.po');
+        $source = Path::join(__DIR__, '/resources/drush_empty_module.nl.po');
         $translationDir = Path::join($this->webroot(), '../translations');
         $this->mkdir($translationDir);
         copy($source, Path::join($translationDir, 'drush_empty_module.nl.po'));
