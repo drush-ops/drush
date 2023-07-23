@@ -36,7 +36,7 @@ class DeployCommands extends DrushCommands implements SiteAliasManagerAwareInter
 
         // Prepare custom options for checking configuration state.
         $configStatusOptions = $redispatchOptions;
-        $configStatusOptions['format'] = 'php';
+        $configStatusOptions['format'] = 'json';
         // Record the current state of configuration.
         $process = $manager->drush($self, 'config:status', [], $configStatusOptions);
         $process->mustRun();
