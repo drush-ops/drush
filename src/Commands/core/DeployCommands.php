@@ -52,7 +52,7 @@ class DeployCommands extends DrushCommands implements SiteAliasManagerAwareInter
         // Record the current state of configuration.
         $process = $manager->drush($self, 'config:status', [], $configStatusOptions);
         $process->mustRun();
-        $newConfigDiff = unserialize($process->getOutput());
+        $newConfigDiff = $process->getOutputAsJson();
 
         // Check for new changes to active configuration that would be lost.
         if ($originalConfigDiff !== $newConfigDiff) {
