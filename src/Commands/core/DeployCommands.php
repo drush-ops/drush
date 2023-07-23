@@ -40,7 +40,7 @@ class DeployCommands extends DrushCommands implements SiteAliasManagerAwareInter
         // Record the current state of configuration.
         $process = $manager->drush($self, 'config:status', [], $configStatusOptions);
         $process->mustRun();
-        $originalConfigDiff = unserialize($process->getOutput());
+        $originalConfigDiff = $process->getOutputAsJson();
 
         $this->logger()->notice("Database updates start.");
         $options = ['no-cache-clear' => true];
