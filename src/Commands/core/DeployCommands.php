@@ -56,8 +56,7 @@ class DeployCommands extends DrushCommands implements SiteAliasManagerAwareInter
 
         // Check for new changes to active configuration that would be lost.
         if ($originalConfigDiff !== $newConfigDiff) {
-            $this->io()->error('Update hooks altered config that is about to be reverted during config import. Aborting.');
-            return;
+            throw new \RuntimeException('Update hooks altered config that is about to be reverted during config import. Aborting.');
         }
 
         $this->logger()->success("Config import start.");
