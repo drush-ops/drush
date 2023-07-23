@@ -9,6 +9,7 @@ use Drush\Commands\config\ConfigCommands;
 use Drush\Commands\config\ConfigExportCommands;
 use Drush\Commands\config\ConfigImportCommands;
 use Drush\Commands\core\LanguageCommands;
+use Drush\Commands\core\PhpCommands;
 use Drush\Commands\core\StatusCommands;
 use Drush\Commands\core\WatchdogCommands;
 use Drush\Commands\pm\PmCommands;
@@ -87,13 +88,13 @@ class LocaleBatchImportOnInstallTest extends CommandUnishTestCase
 
     public function tearDown(): void
     {
+        $this->drush(PhpCommands::EVAL, ['Drupal\language\Entity\ConfigurableLanguage::load("nl")->delete()']);
         $this->drush(PmCommands::UNINSTALL, [
           'language',
           'locale',
           'dblog',
           'drush_empty_module',
         ]);
-        unlink(Path::join($this->translationDir, 'drush_empty_module.nl.po'));
         rmdir($this->translationDir);
 
         parent::tearDown();
