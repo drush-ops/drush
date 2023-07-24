@@ -308,7 +308,14 @@ final class CliCommands extends DrushCommands
         foreach ($this->entityTypeManager->getDefinitions() as $definition) {
             $class = $definition->getClass();
             $parts = explode('\\', $class);
-            class_alias($class, array_pop($parts));
+            eval(sprintf('class %s extends \%s {
+                public static function loadRevision($id) {
+                    $entity_type_repository = \Drupal::service("entity_type.repository");
+                    $entity_type_manager = \Drupal::entityTypeManager();
+                    $storage = $entity_type_manager->getStorage($entity_type_repository->getEntityTypeFromClass(static::class));
+                    return $storage->loadRevision($id);
+                }
+            }', end($parts), $class));
         }
     }
 }
