@@ -21,7 +21,7 @@
         <link rel="next" href="../state_delete/">
       
       <link rel="icon" href="../../img/favicon.ico">
-      <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-9.1.19">
+      <meta name="generator" content="mkdocs-1.5.1, mkdocs-material-9.1.21">
     
     
       
@@ -5240,27 +5240,27 @@
 </ul>
 <h4 id="options">Options<a class="headerlink" href="#options" title="Permanent link">&para;</a></h4>
 <ul>
-<li><strong> --no-dump</strong>. Do not dump the sql database; always use an existing dump file.</li>
-<li><strong> --no-sync</strong>. Do not rsync the database dump file from source to target.</li>
-<li><strong> --runner=RUNNER</strong>. Where to run the rsync command; defaults to the local site. Can also be <em>source</em> or <em>target</em>.</li>
-<li><strong> --create-db</strong>. Create a new database before importing the database dump on the target machine.</li>
-<li><strong> --db-su=DB-SU</strong>. Account to use when creating a new database (e.g. <em>root</em>).</li>
-<li><strong> --db-su-pw=DB-SU-PW</strong>. Password for the db-su account.</li>
-<li><strong> --target-dump=TARGET-DUMP</strong>. The path for storing the sql-dump on target machine.</li>
-<li><strong> --source-dump[=SOURCE-DUMP]</strong>. The path for retrieving the sql-dump on source machine.</li>
-<li><strong> --extra-dump=EXTRA-DUMP</strong>. Add custom arguments/options to the dumping of the database (e.g. mysqldump command).</li>
-<li><strong> --skip-tables-key=SKIP-TABLES-KEY</strong>. A key in the $skip_tables array. @see <a href="../../site-aliases/">Site aliases</a></li>
-<li><strong> --structure-tables-key=STRUCTURE-TABLES-KEY</strong>. A key in the $structure_tables array. @see <a href="../../site-aliases/">Site aliases</a></li>
-<li><strong> --tables-key=TABLES-KEY</strong>. A key in the $tables array.</li>
-<li><strong> --skip-tables-list=SKIP-TABLES-LIST</strong>. A comma-separated list of tables to exclude completely.</li>
-<li><strong> --structure-tables-list=STRUCTURE-TABLES-LIST</strong>. A comma-separated list of tables to include for structure, but not data.</li>
-<li><strong> --tables-list=TABLES-LIST</strong>. A comma-separated list of tables to transfer.</li>
+<li>** --no-dump**. Do not dump the sql database; always use an existing dump file.</li>
+<li>** --no-sync**. Do not rsync the database dump file from source to target.</li>
+<li>** --runner=RUNNER<em><em>. Where to run the rsync command; defaults to the local site. Can also be </em>source</em> or <em>target</em>.</li>
+<li>** --create-db**. Create a new database before importing the database dump on the target machine.</li>
+<li>** --db-su=DB-SU<em><em>. Account to use when creating a new database (e.g. </em>root</em>).</li>
+<li>** --db-su-pw=DB-SU-PW**. Password for the db-su account.</li>
+<li>** --target-dump=TARGET-DUMP**. The path for storing the sql-dump on target machine.</li>
+<li>** --source-dump[=SOURCE-DUMP]**. The path for retrieving the sql-dump on source machine.</li>
+<li>** --extra-dump=EXTRA-DUMP**. Add custom arguments/options to the dumping of the database (e.g. mysqldump command).</li>
+<li>** --skip-tables-key=SKIP-TABLES-KEY**. A key in the $skip_tables array. @see <a href="../../site-aliases/">Site aliases</a></li>
+<li>** --structure-tables-key=STRUCTURE-TABLES-KEY**. A key in the $structure_tables array. @see <a href="../../site-aliases/">Site aliases</a></li>
+<li>** --tables-key=TABLES-KEY**. A key in the $tables array.</li>
+<li>** --skip-tables-list=SKIP-TABLES-LIST**. A comma-separated list of tables to exclude completely.</li>
+<li>** --structure-tables-list=STRUCTURE-TABLES-LIST**. A comma-separated list of tables to include for structure, but not data.</li>
+<li>** --tables-list=TABLES-LIST**. A comma-separated list of tables to transfer.</li>
 </ul>
 <h4 id="global-options">Global Options<a class="headerlink" href="#global-options" title="Permanent link">&para;</a></h4>
 <ul>
-<li><strong> -v|vv|vvv, --verbose</strong>. Increase the verbosity of messages: 1 for normal output, 2 for more verbose output and 3 for debug</li>
-<li><strong> -y, --yes</strong>. Auto-accept the default for all user prompts. Equivalent to --no-interaction.</li>
-<li><strong> -l, --uri=URI</strong>. A base URL for building links and selecting a multi-site. Defaults to <em><a href="https://default">https://default</a></em>.</li>
+<li>** -v|vv|vvv, --verbose**. Increase the verbosity of messages: 1 for normal output, 2 for more verbose output and 3 for debug</li>
+<li>** -y, --yes**. Auto-accept the default for all user prompts. Equivalent to --no-interaction.</li>
+<li>** -l, --uri=URI<em><em>. A base URL for building links and selecting a multi-site. Defaults to </em><a href="https://default">https://default</a></em>.</li>
 <li>To see all global options, run <code>drush topic</code> and pick the first choice.</li>
 </ul>
 <h4 id="topics">Topics<a class="headerlink" href="#topics" title="Permanent link">&para;</a></h4>

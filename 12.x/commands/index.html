@@ -21,7 +21,7 @@
         <link rel="next" href="../hooks/">
       
       <link rel="icon" href="../img/favicon.ico">
-      <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-9.1.19">
+      <meta name="generator" content="mkdocs-1.5.1, mkdocs-material-9.1.21">
     
     
       
@@ -5233,8 +5233,8 @@
 </div>
 <p>Creating a new Drush command is easy. Follow the steps below.</p>
 <ol>
-<li>Run <code>drush generate drush-command-file</code>.</li>
-<li>Drush will prompt for the machine name of the module that should "own" the file. The module selected must already exist and be enabled. Use <code>drush generate module-standard</code> to create a new module.</li>
+<li>Run <code>drush generate drush:command-file</code>.</li>
+<li>Drush will prompt for the machine name of the module that should "own" the file. The module selected must already exist and be enabled. Use <code>drush generate module</code> to create a new module.</li>
 <li>Drush will then report that it created a commandfile. Edit as needed.</li>
 <li>Use the classes for the core Drush commands at <a href="https://github.com/drush-ops/drush/tree/12.x/src/Commands">/src/Commands</a> as inspiration and documentation.</li>
 <li>See the <a href="../dependency-injection/">dependency injection docs</a> for interfaces you can implement to gain access to Drush config, Drupal site aliases, etc. Also note the <a href="../dependency-injection/#create-method">create() method</a> for injecting Drupal or Drush dependencies.</li>
@@ -5378,7 +5378,7 @@ With this configuration in place, global commands may be placed as described in 
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">July 8, 2023</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">August 1, 2023</span>
       
     
   </small>
@@ -5393,7 +5393,7 @@ With this configuration in place, global commands may be placed as described in 
     
         <div class="md-source-date">
             <small>
-                Authors: <span class='git-page-authors git-authors'><a href='mailto:clau.cristea@gmail.com'>Claudiu Cristea</a>, <a href='mailto:greg.1.anderson@greenknowe.org'>Greg Anderson</a>, <a href='mailto:neclimdul@gmail.com'>James Gilliland</a>, <a href='mailto:weitzman@tejasa.com'>Moshe Weitzman</a></span>
+                Authors: <span class='git-page-authors git-authors'><a href='mailto:clau.cristea@gmail.com'>Claudiu Cristea</a>, <a href='mailto:greg.1.anderson@greenknowe.org'>Greg Anderson</a>, <a href='mailto:neclimdul@gmail.com'>James Gilliland</a>, <a href='mailto:weitzman@tejasa.com'>Moshe Weitzman</a>, <a href='mailto:1451472+ptmkenny@users.noreply.github.com'>ptmkenny</a></span>
             </small>
         </div>
     
