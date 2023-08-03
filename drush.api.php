@@ -1,6 +1,11 @@
 <?php
 
 /**
+ * @file
+ * Drupal hooks provided by the Drush package.
+ */
+
+/**
  * Executes a deploy function which is intended to update data, like entities,
  * after config is imported during a deployment.
  *
