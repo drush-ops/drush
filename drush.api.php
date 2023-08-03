@@ -1,6 +1,11 @@
 <?php
 
 /**
+ * @file
+ * Drupal hooks provided by the Drush package.
+ */
+
+/**
  * Executes a deploy function which is intended to update data, like entities,
  * after config is imported during a deployment.
  *
@@ -30,7 +35,7 @@
  * @ingroup update_api
  *
  * @see hook_update_N()
- * @see hook_post_update_N()
+ * @see hook_post_update_NAME()
  */
 function hook_deploy_NAME(array &$sandbox): string {
   $node = \Drupal\node\Entity\Node::load(123);
