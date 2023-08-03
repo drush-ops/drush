@@ -10,6 +10,8 @@ use Drupal\field\Entity\FieldConfig;
 use Drupal\field\FieldConfigInterface;
 use Drush\Attributes as CLI;
 use Drush\Commands\DrushCommands;
+use Symfony\Component\Console\Completion\CompletionInput;
+use Symfony\Component\Console\Completion\CompletionSuggestions;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -54,6 +56,7 @@ class FieldDeleteCommands extends DrushCommands
     #[CLI\Usage(name: 'field-delete taxonomy_term tag', description: 'Delete a field and fill in the remaining information through prompts.')]
     #[CLI\Usage(name: 'field-delete taxonomy_term tag --field-name=field_tag_label', description: 'Delete a field in a non-interactive way.')]
     #[CLI\Usage(name: 'field-delete taxonomy_term --field-name=field_tag_label --all-bundles', description: 'Delete a field from all bundles.')]
+    #[CLI\Complete(method_name_or_callable: 'complete')]
     #[CLI\Version(version: '11.0')]
     public function delete(?string $entityType = null, ?string $bundle = null, array $options = [
         'field-name' => InputOption::VALUE_REQUIRED,
@@ -123,6 +126,20 @@ class FieldDeleteCommands extends DrushCommands
         // low batch limit to avoid administrators having to wait for cron runs when
         // removing fields that meet this criteria.
         field_purge_batch(10);
+    }
+
+    public function complete(CompletionInput $input, CompletionSuggestions $suggestions): void
+    {
+        if ($input->getCompletionName() === 'entityType') {
+            $suggestions->suggestValues(array_keys($this->getFieldableEntityTypes()));
+        }
+
+        if ($input->getCompletionName() === 'bundle') {
+            $entityTypeId = $input->getArgument('entityType');
+            $bundleInfo = $this->entityTypeBundleInfo->getBundleInfo($entityTypeId);
+
+            $suggestions->suggestValues(array_keys($bundleInfo));
+        }
     }
 
     protected function askExisting(string $entityType, ?string $bundle): ?string
