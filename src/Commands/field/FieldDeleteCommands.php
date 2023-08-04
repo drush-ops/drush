@@ -130,54 +130,41 @@ class FieldDeleteCommands extends DrushCommands
 
     public function complete(CompletionInput $input, CompletionSuggestions $suggestions): void
     {
-        if ($input->getCompletionName() === 'entityType') {
-            $suggestions->suggestValues(array_keys($this->getFieldableEntityTypes()));
+        if ($input->getCompletionType() === CompletionInput::TYPE_ARGUMENT_VALUE) {
+            if ($input->getCompletionName() === 'entityType') {
+                $suggestions->suggestValues(array_keys($this->getFieldableEntityTypes()));
+            }
+
+            if ($input->getCompletionName() === 'bundle') {
+                $entityTypeId = $input->getArgument('entityType');
+                $bundleInfo = $this->entityTypeBundleInfo->getBundleInfo($entityTypeId);
+
+                $suggestions->suggestValues(array_keys($bundleInfo));
+            }
         }
 
-        if ($input->getCompletionName() === 'bundle') {
-            $entityTypeId = $input->getArgument('entityType');
-            $bundleInfo = $this->entityTypeBundleInfo->getBundleInfo($entityTypeId);
+        if ($input->getCompletionType() === CompletionInput::TYPE_OPTION_VALUE) {
+            if ($input->getCompletionName() === 'field-name') {
+                $entityTypeId = $input->getArgument('entityType');
 
-            $suggestions->suggestValues(array_keys($bundleInfo));
+                if ($entityTypeId) {
+                    $bundle = $input->getArgument('bundle');
+                    $fieldNames = array_map(
+                        fn (FieldConfig $fieldConfig) => $fieldConfig->get('field_name'),
+                        $this->getFieldConfigs($entityTypeId, $bundle),
+                    );
+
+                    $suggestions->suggestValues($fieldNames);
+                }
+            }
         }
     }
 
     protected function askExisting(string $entityType, ?string $bundle): ?string
     {
-        /** @var FieldConfigInterface[] $fieldConfigs */
-        $fieldConfigs = $this->entityTypeManager
-            ->getStorage('field_config')
-            ->loadByProperties([
-                'entity_type' => $entityType,
-            ]);
-
-        if ($fieldConfigs === []) {
-            throw new \InvalidArgumentException(
-                dt("Entity type '!entityType' has no fields.", [
-                    '!entityType' => $entityType,
-                ])
-            );
-        }
-
-        if ($bundle !== null) {
-            /** @var FieldConfigInterface[] $fieldConfigs */
-            $fieldConfigs = $this->entityTypeManager
-                ->getStorage('field_config')
-                ->loadByProperties([
-                    'entity_type' => $entityType,
-                    'bundle' => $bundle,
-                ]);
-
-            if ($fieldConfigs === []) {
-                throw new \InvalidArgumentException(
-                    dt("Bundle '!bundle' has no fields.", [
-                        '!bundle' => $bundle,
-                    ])
-                );
-            }
-        }
-
+        $fieldConfigs = $this->getFieldConfigs($entityType, $bundle);
         $choices = [];
+
         foreach ($fieldConfigs as $fieldConfig) {
             $label = $this->input->getOption('show-machine-names')
                 ? $fieldConfig->get('field_name')
@@ -224,6 +211,49 @@ class FieldDeleteCommands extends DrushCommands
         }
 
         return $answer;
+    }
+
+    /**
+     * Returns all field configs for the given entity type and bundle.
+     *
+     * @return FieldConfigInterface[]
+     */
+    protected function getFieldConfigs(string $entityType, ?string $bundle): array
+    {
+        /** @var FieldConfigInterface[] $fieldConfigs */
+        $fieldConfigs = $this->entityTypeManager
+            ->getStorage('field_config')
+            ->loadByProperties([
+                'entity_type' => $entityType,
+            ]);
+
+        if ($fieldConfigs === []) {
+            throw new \InvalidArgumentException(
+                dt("Entity type '!entityType' has no fields.", [
+                    '!entityType' => $entityType,
+                ])
+            );
+        }
+
+        if ($bundle !== null) {
+            /** @var FieldConfigInterface[] $fieldConfigs */
+            $fieldConfigs = $this->entityTypeManager
+                ->getStorage('field_config')
+                ->loadByProperties([
+                    'entity_type' => $entityType,
+                    'bundle' => $bundle,
+                ]);
+
+            if ($fieldConfigs === []) {
+                throw new \InvalidArgumentException(
+                    dt("Bundle '!bundle' has no fields.", [
+                        '!bundle' => $bundle,
+                    ])
+                );
+            }
+        }
+
+        return $fieldConfigs;
     }
 
     protected function deleteFieldConfig(FieldConfigInterface $fieldConfig): void
