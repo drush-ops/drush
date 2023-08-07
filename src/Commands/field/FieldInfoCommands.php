@@ -9,6 +9,8 @@ use Drupal\Core\Entity\EntityTypeBundleInfoInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drush\Attributes as CLI;
 use Drush\Commands\DrushCommands;
+use Symfony\Component\Console\Completion\CompletionInput;
+use Symfony\Component\Console\Completion\CompletionSuggestions;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class FieldInfoCommands extends DrushCommands
@@ -64,6 +66,7 @@ class FieldInfoCommands extends DrushCommands
     #[CLI\FilterDefaultField(field: 'field_name')]
     #[CLI\Usage(name: 'field:info taxonomy_term tag', description: 'List all fields.')]
     #[CLI\Usage(name: 'field:info', description: 'List all fields and fill in the remaining information through prompts.')]
+    #[CLI\Complete(method_name_or_callable: 'complete')]
     #[CLI\Version(version: '11.0')]
     public function info(?string $entityType = null, ?string $bundle = null, array $options = [
         'format' => 'table',
@@ -83,5 +86,19 @@ class FieldInfoCommands extends DrushCommands
             ]);
 
         return $this->getRowsOfFieldsByFieldDefinitions($fieldDefinitions);
+    }
+
+    public function complete(CompletionInput $input, CompletionSuggestions $suggestions): void
+    {
+        if ($input->getCompletionName() === 'entityType') {
+            $suggestions->suggestValues(array_keys($this->getFieldableEntityTypes()));
+        }
+
+        if ($input->getCompletionName() === 'bundle') {
+            $entityTypeId = $input->getArgument('entityType');
+            $bundleInfo = $this->entityTypeBundleInfo->getBundleInfo($entityTypeId);
+
+            $suggestions->suggestValues(array_keys($bundleInfo));
+        }
     }
 }

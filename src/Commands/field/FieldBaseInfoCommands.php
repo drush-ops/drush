@@ -10,6 +10,8 @@ use Drupal\Core\Entity\EntityTypeBundleInfoInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drush\Attributes as CLI;
 use Drush\Commands\DrushCommands;
+use Symfony\Component\Console\Completion\CompletionInput;
+use Symfony\Component\Console\Completion\CompletionSuggestions;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class FieldBaseInfoCommands extends DrushCommands
@@ -66,6 +68,7 @@ class FieldBaseInfoCommands extends DrushCommands
     #[CLI\FilterDefaultField(field: 'field_name')]
     #[CLI\Usage(name: 'field:base-info taxonomy_term', description: 'List all base fields.')]
     #[CLI\Usage(name: 'field:base-info', description: 'List all base fields and fill in the remaining information through prompts.')]
+    #[CLI\Complete(method_name_or_callable: 'complete')]
     #[CLI\Version(version: '11.0')]
     public function info(?string $entityType = null, array $options = [
         'format' => 'table',
@@ -77,5 +80,12 @@ class FieldBaseInfoCommands extends DrushCommands
         $fieldDefinitions = $this->entityFieldManager->getBaseFieldDefinitions($entityType);
 
         return $this->getRowsOfFieldsByFieldDefinitions($fieldDefinitions);
+    }
+
+    public function complete(CompletionInput $input, CompletionSuggestions $suggestions): void
+    {
+        if ($input->getCompletionName() === 'entityType') {
+            $suggestions->suggestValues(array_keys($this->getFieldableEntityTypes()));
+        }
     }
 }
