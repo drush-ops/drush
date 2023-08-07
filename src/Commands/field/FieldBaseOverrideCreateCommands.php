@@ -123,15 +123,25 @@ class FieldBaseOverrideCreateCommands extends DrushCommands
 
     public function complete(CompletionInput $input, CompletionSuggestions $suggestions): void
     {
-        if ($input->getCompletionName() === 'entityType') {
-            $suggestions->suggestValues(array_keys($this->getFieldableEntityTypes()));
+        if ($input->getCompletionType() === CompletionInput::TYPE_ARGUMENT_VALUE) {
+            if ($input->getCompletionName() === 'entityType') {
+                $suggestions->suggestValues(array_keys($this->getFieldableEntityTypes()));
+            }
+
+            if ($input->getCompletionName() === 'bundle') {
+                $entityTypeId = $input->getArgument('entityType');
+                $bundleInfo = $this->entityTypeBundleInfo->getBundleInfo($entityTypeId);
+
+                $suggestions->suggestValues(array_keys($bundleInfo));
+            }
         }
 
-        if ($input->getCompletionName() === 'bundle') {
-            $entityTypeId = $input->getArgument('entityType');
-            $bundleInfo = $this->entityTypeBundleInfo->getBundleInfo($entityTypeId);
-
-            $suggestions->suggestValues(array_keys($bundleInfo));
+        if ($input->getCompletionType() === CompletionInput::TYPE_OPTION_VALUE) {
+            if ($input->getCompletionName() === 'field-name') {
+                $entityTypeId = $input->getArgument('entityType');
+                $definitions = $this->entityFieldManager->getBaseFieldDefinitions($entityTypeId);
+                $suggestions->suggestValues(array_keys($definitions));
+            }
         }
     }
 
