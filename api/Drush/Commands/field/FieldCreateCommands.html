@@ -387,6 +387,18 @@ DrushConfig as return type. Helps with IDE completion.</p></p>                </
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
+                    array
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_getFieldableEntityTypes">getFieldableEntityTypes</a>()
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../../Drush/Commands/field/EntityTypeBundleAskTrait.html#method_getFieldableEntityTypes">
+<abbr title="Drush\Commands\field\EntityTypeBundleAskTrait">EntityTypeBundleAskTrait</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
                     string|null
                 </div>
                 <div class="col-md-8">
@@ -463,6 +475,17 @@ DrushConfig as return type. Helps with IDE completion.</p></p>                </
                     <a href="#method_fieldCreate">fieldCreate</a>(string|null $entityType = null, string|null $bundle = null, array $options = [&#039;field-name&#039; =&gt; InputOption::VALUE_REQUIRED, &#039;field-label&#039; =&gt; InputOption::VALUE_REQUIRED, &#039;field-description&#039; =&gt; InputOption::VALUE_OPTIONAL, &#039;field-type&#039; =&gt; InputOption::VALUE_REQUIRED, &#039;field-widget&#039; =&gt; InputOption::VALUE_REQUIRED, &#039;is-required&#039; =&gt; InputOption::VALUE_OPTIONAL, &#039;is-translatable&#039; =&gt; InputOption::VALUE_OPTIONAL, &#039;cardinality&#039; =&gt; InputOption::VALUE_REQUIRED, &#039;target-type&#039; =&gt; InputOption::VALUE_OPTIONAL, &#039;target-bundle&#039; =&gt; InputOption::VALUE_OPTIONAL, &#039;show-machine-names&#039; =&gt; InputOption::VALUE_OPTIONAL, &#039;existing-field-name&#039; =&gt; InputOption::VALUE_OPTIONAL, &#039;existing&#039; =&gt; false])
         
                                             <p><p>Create a new field</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    void
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_complete">complete</a>(<abbr title="Symfony\Component\Console\Completion\CompletionInput">CompletionInput</abbr> $input, <abbr title="Symfony\Component\Console\Completion\CompletionSuggestions">CompletionSuggestions</abbr> $suggestions)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -657,7 +680,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>                </
                     array
                 </div>
                 <div class="col-md-8">
-                    <a href="#method_getExistingFieldStorageOptions">getExistingFieldStorageOptions</a>(string $entityType, string $bundle)
+                    <a href="#method_getExistingFieldStorageOptions">getExistingFieldStorageOptions</a>(string $entityType, string $bundle, bool $showMachineNames)
         
                                             <p class="no-description">No description</p>
                                     </div>
@@ -887,7 +910,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method___construct">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/field/FieldCreateCommands.php#L44">at line 44</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/field/FieldCreateCommands.php#L46">at line 46</a></div>
         <code>                    
     <strong>__construct</strong>(<abbr title="Drupal\Core\Field\FieldTypePluginManagerInterface">FieldTypePluginManagerInterface</abbr> $fieldTypePluginManager, <abbr title="Drupal\Core\Field\WidgetPluginManager">WidgetPluginManager</abbr> $widgetPluginManager, <abbr title="Drupal\Core\Entity\EntityReferenceSelection\SelectionPluginManagerInterface">SelectionPluginManagerInterface</abbr> $selectionPluginManager, <abbr title="Drupal\Core\Entity\EntityTypeManagerInterface">EntityTypeManagerInterface</abbr> $entityTypeManager, <abbr title="Drupal\Core\Entity\EntityTypeBundleInfoInterface">EntityTypeBundleInfoInterface</abbr> $entityTypeBundleInfo, <abbr title="Drupal\Core\Extension\ModuleHandlerInterface">ModuleHandlerInterface</abbr> $moduleHandler, <abbr title="Drupal\Core\Entity\EntityFieldManagerInterface">EntityFieldManagerInterface</abbr> $entityFieldManager)
         </code>
@@ -1171,9 +1194,43 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
 
             </div>
                     <div class="method-item">
+                    <h3 id="method_getFieldableEntityTypes">
+        <div class="location">in <a href="../../../Drush/Commands/field/EntityTypeBundleAskTrait.html#method_getFieldableEntityTypes">
+<abbr title="Drush\Commands\field\EntityTypeBundleAskTrait">EntityTypeBundleAskTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/field/EntityTypeBundleAskTrait.php#L22">at line 22</a></div>
+        <code>            protected        array
+    <strong>getFieldableEntityTypes</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>array</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
                     <h3 id="method_askEntityType">
         <div class="location">in <a href="../../../Drush/Commands/field/EntityTypeBundleAskTrait.html#method_askEntityType">
-<abbr title="Drush\Commands\field\EntityTypeBundleAskTrait">EntityTypeBundleAskTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/field/EntityTypeBundleAskTrait.php#L22">at line 22</a></div>
+<abbr title="Drush\Commands\field\EntityTypeBundleAskTrait">EntityTypeBundleAskTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/field/EntityTypeBundleAskTrait.php#L32">at line 32</a></div>
         <code>            protected        string|null
     <strong>askEntityType</strong>()
         </code>
@@ -1207,7 +1264,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
                     <div class="method-item">
                     <h3 id="method_askBundle">
         <div class="location">in <a href="../../../Drush/Commands/field/EntityTypeBundleAskTrait.html#method_askBundle">
-<abbr title="Drush\Commands\field\EntityTypeBundleAskTrait">EntityTypeBundleAskTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/field/EntityTypeBundleAskTrait.php#L45">at line 45</a></div>
+<abbr title="Drush\Commands\field\EntityTypeBundleAskTrait">EntityTypeBundleAskTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/field/EntityTypeBundleAskTrait.php#L50">at line 50</a></div>
         <code>            protected        string|null
     <strong>askBundle</strong>()
         </code>
@@ -1333,7 +1390,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_create">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/field/FieldCreateCommands.php#L55">at line 55</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/field/FieldCreateCommands.php#L57">at line 57</a></div>
         <code>        static            <a href="../../../Drush/Commands/field/FieldCreateCommands.html"><abbr title="Drush\Commands\field\FieldCreateCommands">FieldCreateCommands</abbr></a>
     <strong>create</strong>(<abbr title="Symfony\Component\DependencyInjection\ContainerInterface">ContainerInterface</abbr> $container)
         </code>
@@ -1376,7 +1433,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_setContentTranslationManager">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/field/FieldCreateCommands.php#L74">at line 74</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/field/FieldCreateCommands.php#L76">at line 76</a></div>
         <code>                    void
     <strong>setContentTranslationManager</strong>(<abbr title="Drupal\content_translation\ContentTranslationManagerInterface">ContentTranslationManagerInterface</abbr> $manager = null)
         </code>
@@ -1419,7 +1476,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_fieldCreate">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/field/FieldCreateCommands.php#L87">at line 87</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/field/FieldCreateCommands.php#L89">at line 89</a></div>
         <code>                    void
     <strong>fieldCreate</strong>(string|null $entityType = null, string|null $bundle = null, array $options = [&#039;field-name&#039; =&gt; InputOption::VALUE_REQUIRED, &#039;field-label&#039; =&gt; InputOption::VALUE_REQUIRED, &#039;field-description&#039; =&gt; InputOption::VALUE_OPTIONAL, &#039;field-type&#039; =&gt; InputOption::VALUE_REQUIRED, &#039;field-widget&#039; =&gt; InputOption::VALUE_REQUIRED, &#039;is-required&#039; =&gt; InputOption::VALUE_OPTIONAL, &#039;is-translatable&#039; =&gt; InputOption::VALUE_OPTIONAL, &#039;cardinality&#039; =&gt; InputOption::VALUE_REQUIRED, &#039;target-type&#039; =&gt; InputOption::VALUE_OPTIONAL, &#039;target-bundle&#039; =&gt; InputOption::VALUE_OPTIONAL, &#039;show-machine-names&#039; =&gt; InputOption::VALUE_OPTIONAL, &#039;existing-field-name&#039; =&gt; InputOption::VALUE_OPTIONAL, &#039;existing&#039; =&gt; false])
         </code>
@@ -1487,8 +1544,56 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
 
             </div>
                     <div class="method-item">
+                    <h3 id="method_complete">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/field/FieldCreateCommands.php#L205">at line 205</a></div>
+        <code>                    void
+    <strong>complete</strong>(<abbr title="Symfony\Component\Console\Completion\CompletionInput">CompletionInput</abbr> $input, <abbr title="Symfony\Component\Console\Completion\CompletionSuggestions">CompletionSuggestions</abbr> $suggestions)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Symfony\Component\Console\Completion\CompletionInput">CompletionInput</abbr></td>
+                <td>$input</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><abbr title="Symfony\Component\Console\Completion\CompletionSuggestions">CompletionSuggestions</abbr></td>
+                <td>$suggestions</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>void</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
                     <h3 id="method_askExistingFieldName">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/field/FieldCreateCommands.php#L202">at line 202</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/field/FieldCreateCommands.php#L258">at line 258</a></div>
         <code>            protected        string|null
     <strong>askExistingFieldName</strong>()
         </code>
@@ -1521,7 +1626,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_askFieldName">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/field/FieldCreateCommands.php#L215">at line 215</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/field/FieldCreateCommands.php#L272">at line 272</a></div>
         <code>            protected        string
     <strong>askFieldName</strong>()
         </code>
@@ -1554,7 +1659,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_askFieldLabel">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/field/FieldCreateCommands.php#L251">at line 251</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/field/FieldCreateCommands.php#L308">at line 308</a></div>
         <code>            protected        string
     <strong>askFieldLabel</strong>()
         </code>
@@ -1587,7 +1692,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_askFieldDescription">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/field/FieldCreateCommands.php#L256">at line 256</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/field/FieldCreateCommands.php#L313">at line 313</a></div>
         <code>            protected        string|null
     <strong>askFieldDescription</strong>()
         </code>
@@ -1620,7 +1725,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_askFieldType">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/field/FieldCreateCommands.php#L261">at line 261</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/field/FieldCreateCommands.php#L318">at line 318</a></div>
         <code>            protected        string
     <strong>askFieldType</strong>()
         </code>
@@ -1653,7 +1758,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_askFieldWidget">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/field/FieldCreateCommands.php#L274">at line 274</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/field/FieldCreateCommands.php#L331">at line 331</a></div>
         <code>            protected        string|null
     <strong>askFieldWidget</strong>()
         </code>
@@ -1686,7 +1791,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_askRequired">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/field/FieldCreateCommands.php#L305">at line 305</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/field/FieldCreateCommands.php#L362">at line 362</a></div>
         <code>            protected        bool
     <strong>askRequired</strong>()
         </code>
@@ -1719,7 +1824,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_askTranslatable">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/field/FieldCreateCommands.php#L310">at line 310</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/field/FieldCreateCommands.php#L367">at line 367</a></div>
         <code>            protected        bool
     <strong>askTranslatable</strong>()
         </code>
@@ -1752,7 +1857,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_askCardinality">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/field/FieldCreateCommands.php#L319">at line 319</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/field/FieldCreateCommands.php#L376">at line 376</a></div>
         <code>            protected        int
     <strong>askCardinality</strong>()
         </code>
@@ -1785,7 +1890,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_createField">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/field/FieldCreateCommands.php#L344">at line 344</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/field/FieldCreateCommands.php#L401">at line 401</a></div>
         <code>            protected        <abbr title="Drupal\field\FieldConfigInterface">FieldConfigInterface</abbr>
     <strong>createField</strong>()
         </code>
@@ -1818,7 +1923,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_createFieldStorage">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/field/FieldCreateCommands.php#L372">at line 372</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/field/FieldCreateCommands.php#L429">at line 429</a></div>
         <code>            protected        <abbr title="Drupal\field\FieldStorageConfigInterface">FieldStorageConfigInterface</abbr>
     <strong>createFieldStorage</strong>()
         </code>
@@ -1851,7 +1956,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_createFieldDisplay">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/field/FieldCreateCommands.php#L398">at line 398</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/field/FieldCreateCommands.php#L455">at line 455</a></div>
         <code>            protected        void
     <strong>createFieldDisplay</strong>(string $context)
         </code>
@@ -1894,7 +1999,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_getEntityDisplay">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/field/FieldCreateCommands.php#L439">at line 439</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/field/FieldCreateCommands.php#L496">at line 496</a></div>
         <code>            protected        <abbr title="Drush\Commands\field\Drupal\Core\Entity\Display\EntityDisplayInterface">EntityDisplayInterface</abbr>|null
     <strong>getEntityDisplay</strong>(string $context)
         </code>
@@ -1937,7 +2042,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_logResult">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/field/FieldCreateCommands.php#L449">at line 449</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/field/FieldCreateCommands.php#L506">at line 506</a></div>
         <code>            protected        void
     <strong>logResult</strong>(<abbr title="Drupal\field\FieldConfigInterface">FieldConfigInterface</abbr> $field)
         </code>
@@ -1980,7 +2085,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_generateFieldName">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/field/FieldCreateCommands.php#L480">at line 480</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/field/FieldCreateCommands.php#L537">at line 537</a></div>
         <code>            protected        string
     <strong>generateFieldName</strong>(string $source, string $bundle)
         </code>
@@ -2028,7 +2133,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_fieldExists">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/field/FieldCreateCommands.php#L498">at line 498</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/field/FieldCreateCommands.php#L555">at line 555</a></div>
         <code>            protected        bool
     <strong>fieldExists</strong>(string $fieldName, string $entityType, string $bundle)
         </code>
@@ -2081,7 +2186,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_fieldStorageExists">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/field/FieldCreateCommands.php#L505">at line 505</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/field/FieldCreateCommands.php#L562">at line 562</a></div>
         <code>            protected        bool
     <strong>fieldStorageExists</strong>(string $fieldName, string $entityType)
         </code>
@@ -2129,9 +2234,9 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_getExistingFieldStorageOptions">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/field/FieldCreateCommands.php#L512">at line 512</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/field/FieldCreateCommands.php#L569">at line 569</a></div>
         <code>            protected        array
-    <strong>getExistingFieldStorageOptions</strong>(string $entityType, string $bundle)
+    <strong>getExistingFieldStorageOptions</strong>(string $entityType, string $bundle, bool $showMachineNames)
         </code>
     </h3>
     <div class="details">    
@@ -2156,6 +2261,11 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
                 <td>$bundle</td>
                 <td></td>
             </tr>
+                    <tr>
+                <td>bool</td>
+                <td>$showMachineNames</td>
+                <td></td>
+            </tr>
             </table>
 
             
@@ -2177,7 +2287,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_hasContentTranslation">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/field/FieldCreateCommands.php#L543">at line 543</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/field/FieldCreateCommands.php#L600">at line 600</a></div>
         <code>            protected        bool
     <strong>hasContentTranslation</strong>()
         </code>
@@ -2210,7 +2320,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_ensureOption">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/field/FieldCreateCommands.php#L552">at line 552</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/field/FieldCreateCommands.php#L609">at line 609</a></div>
         <code>            protected        void
     <strong>ensureOption</strong>(string $name, callable $asker, bool $required)
         </code>

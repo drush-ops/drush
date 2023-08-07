@@ -364,6 +364,18 @@ DrushConfig as return type. Helps with IDE completion.</p></p>                </
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
+                    array
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_getFieldableEntityTypes">getFieldableEntityTypes</a>()
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../../Drush/Commands/field/EntityTypeBundleAskTrait.html#method_getFieldableEntityTypes">
+<abbr title="Drush\Commands\field\EntityTypeBundleAskTrait">EntityTypeBundleAskTrait</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
                     string|null
                 </div>
                 <div class="col-md-8">
@@ -432,6 +444,17 @@ DrushConfig as return type. Helps with IDE completion.</p></p>                </
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
+                    void
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_complete">complete</a>(<abbr title="Symfony\Component\Console\Completion\CompletionInput">CompletionInput</abbr> $input, <abbr title="Symfony\Component\Console\Completion\CompletionSuggestions">CompletionSuggestions</abbr> $suggestions)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
                     string|null
                 </div>
                 <div class="col-md-8">
@@ -439,6 +462,16 @@ DrushConfig as return type. Helps with IDE completion.</p></p>                </
         
                                             <p class="no-description">No description</p>
                                     </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    array
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_getFieldConfigs">getFieldConfigs</a>(string $entityType, string|null $bundle)
+        
+                                            <p><p>Returns all field configs for the given entity type and bundle.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -654,7 +687,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method___construct">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/field/FieldDeleteCommands.php#L26">at line 26</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/field/FieldDeleteCommands.php#L28">at line 28</a></div>
         <code>                    
     <strong>__construct</strong>(<abbr title="Drupal\Core\Entity\EntityTypeManagerInterface">EntityTypeManagerInterface</abbr> $entityTypeManager, <abbr title="Drupal\Core\Entity\EntityTypeBundleInfo">EntityTypeBundleInfo</abbr> $entityTypeBundleInfo)
         </code>
@@ -913,9 +946,43 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
 
             </div>
                     <div class="method-item">
+                    <h3 id="method_getFieldableEntityTypes">
+        <div class="location">in <a href="../../../Drush/Commands/field/EntityTypeBundleAskTrait.html#method_getFieldableEntityTypes">
+<abbr title="Drush\Commands\field\EntityTypeBundleAskTrait">EntityTypeBundleAskTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/field/EntityTypeBundleAskTrait.php#L22">at line 22</a></div>
+        <code>            protected        array
+    <strong>getFieldableEntityTypes</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>array</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
                     <h3 id="method_askEntityType">
         <div class="location">in <a href="../../../Drush/Commands/field/EntityTypeBundleAskTrait.html#method_askEntityType">
-<abbr title="Drush\Commands\field\EntityTypeBundleAskTrait">EntityTypeBundleAskTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/field/EntityTypeBundleAskTrait.php#L22">at line 22</a></div>
+<abbr title="Drush\Commands\field\EntityTypeBundleAskTrait">EntityTypeBundleAskTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/field/EntityTypeBundleAskTrait.php#L32">at line 32</a></div>
         <code>            protected        string|null
     <strong>askEntityType</strong>()
         </code>
@@ -948,7 +1015,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_askBundle">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/field/FieldDeleteCommands.php#L175">at line 175</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/field/FieldDeleteCommands.php#L179">at line 179</a></div>
         <code>            protected        string|null
     <strong>askBundle</strong>()
         </code>
@@ -1074,7 +1141,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_create">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/field/FieldDeleteCommands.php#L32">at line 32</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/field/FieldDeleteCommands.php#L34">at line 34</a></div>
         <code>        static            <a href="../../../Drush/Commands/field/FieldDeleteCommands.html"><abbr title="Drush\Commands\field\FieldDeleteCommands">FieldDeleteCommands</abbr></a>
     <strong>create</strong>(<abbr title="Symfony\Component\DependencyInjection\ContainerInterface">ContainerInterface</abbr> $container)
         </code>
@@ -1117,7 +1184,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_delete">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/field/FieldDeleteCommands.php#L47">at line 47</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/field/FieldDeleteCommands.php#L49">at line 49</a></div>
         <code>                    void
     <strong>delete</strong>(string|null $entityType = null, string|null $bundle = null, array $options = [&#039;field-name&#039; =&gt; InputOption::VALUE_REQUIRED, &#039;show-machine-names&#039; =&gt; InputOption::VALUE_OPTIONAL, &#039;all-bundles&#039; =&gt; InputOption::VALUE_OPTIONAL])
         </code>
@@ -1179,8 +1246,56 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
 
             </div>
                     <div class="method-item">
+                    <h3 id="method_complete">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/field/FieldDeleteCommands.php#L131">at line 131</a></div>
+        <code>                    void
+    <strong>complete</strong>(<abbr title="Symfony\Component\Console\Completion\CompletionInput">CompletionInput</abbr> $input, <abbr title="Symfony\Component\Console\Completion\CompletionSuggestions">CompletionSuggestions</abbr> $suggestions)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Symfony\Component\Console\Completion\CompletionInput">CompletionInput</abbr></td>
+                <td>$input</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><abbr title="Symfony\Component\Console\Completion\CompletionSuggestions">CompletionSuggestions</abbr></td>
+                <td>$suggestions</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>void</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
                     <h3 id="method_askExisting">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/field/FieldDeleteCommands.php#L128">at line 128</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/field/FieldDeleteCommands.php#L163">at line 163</a></div>
         <code>            protected        string|null
     <strong>askExisting</strong>(string $entityType, string|null $bundle)
         </code>
@@ -1227,8 +1342,55 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
 
             </div>
                     <div class="method-item">
+                    <h3 id="method_getFieldConfigs">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/field/FieldDeleteCommands.php#L221">at line 221</a></div>
+        <code>            protected        array
+    <strong>getFieldConfigs</strong>(string $entityType, string|null $bundle)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Returns all field configs for the given entity type and bundle.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$entityType</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>string|null</td>
+                <td>$bundle</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>array</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
                     <h3 id="method_deleteFieldConfig">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/field/FieldDeleteCommands.php#L212">at line 212</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/field/FieldDeleteCommands.php#L259">at line 259</a></div>
         <code>            protected        void
     <strong>deleteFieldConfig</strong>(<abbr title="Drupal\field\FieldConfigInterface">FieldConfigInterface</abbr> $fieldConfig)
         </code>
