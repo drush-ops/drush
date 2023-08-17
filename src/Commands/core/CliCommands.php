@@ -308,7 +308,7 @@ final class CliCommands extends DrushCommands
     {
         foreach ($this->entityTypeManager->getDefinitions() as $definition) {
             $class = $definition->getClass();
-            $reflectionClass = new ReflectionClass($class);
+            $reflectionClass = new \ReflectionClass($class);
             if ($reflectionClass->isFinal()) {
                 continue;
             }
