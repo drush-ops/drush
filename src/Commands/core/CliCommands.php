@@ -308,6 +308,10 @@ final class CliCommands extends DrushCommands
     {
         foreach ($this->entityTypeManager->getDefinitions() as $definition) {
             $class = $definition->getClass();
+            $reflectionClass = new \ReflectionClass($class);
+            if ($reflectionClass->isFinal()) {
+                continue;
+            }
             $parts = explode('\\', $class);
             // Make it possible to easily load revisions.
             eval(sprintf('class %s extends \%s {
