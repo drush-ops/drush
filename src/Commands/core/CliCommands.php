@@ -309,10 +309,12 @@ final class CliCommands extends DrushCommands
         foreach ($this->entityTypeManager->getDefinitions() as $definition) {
             $class = $definition->getClass();
             $reflectionClass = new \ReflectionClass($class);
-            if ($reflectionClass->isFinal()) {
+            $parts = explode('\\', $class);
+            $end = end($parts);
+            // https://github.com/drush-ops/drush/pull/5729 and https://github.com/drush-ops/drush/issues/5730.
+            if ($reflectionClass->isFinal() || class_exists($end)) {
                 continue;
             }
-            $parts = explode('\\', $class);
             // Make it possible to easily load revisions.
             eval(sprintf('class %s extends \%s {
                 public static function loadRevision($id) {
@@ -321,7 +323,7 @@ final class CliCommands extends DrushCommands
                     $storage = $entity_type_manager->getStorage($entity_type_repository->getEntityTypeFromClass(static::class));
                     return $storage->loadRevision($id);
                 }
-            }', end($parts), $class));
+            }', $end, $class));
         }
     }
 }
