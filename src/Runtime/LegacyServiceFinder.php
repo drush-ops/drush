@@ -16,7 +16,7 @@ use Composer\Semver\Semver;
  *
  * This discovery class is used solely for backwards compatability with
  * Drupal modules that still use drush.services.ymls to define Drush
- * Commands, Generators & etc.; this mechanism is deprecated, though.
+ * Commands, Alterers & etc.; this mechanism is deprecated, though.
  * Modules should instead use the static factory `create` mechanism.
  */
 class LegacyServiceFinder
@@ -42,26 +42,13 @@ class LegacyServiceFinder
     }
 
     /**
-     * Search for drush.service.yml files in discoverable locaions.
+     * Search for drush.service.yml files in discoverable locations.
      */
     protected function discoverDrushServiceProviders()
     {
-        // Add those Drush service providers from Drush core that
-        // need references to the Drupal DI container. This includes
-        // Drush commands, and those services needed by those Drush
-        // commands.
-        //
-        // Note that:
-        //  - We list all of the individual service files we use here.
-        //  - These commands are not available until Drupal is bootstrapped.
-        $this->addDrushServiceProvider("_drush__config", $this->drushConfig->get('drush.base-dir') . '/src/Drupal/Commands/config/drush.services.yml');
-        $this->addDrushServiceProvider("_drush__core", $this->drushConfig->get('drush.base-dir') . '/src/Drupal/Commands/core/drush.services.yml');
-        $this->addDrushServiceProvider("_drush__field", $this->drushConfig->get('drush.base-dir') . '/src/Drupal/Commands/field/drush.services.yml');
-        $this->addDrushServiceProvider("_drush__generate", $this->drushConfig->get('drush.base-dir') . '/src/Drupal/Commands/generate/drush.services.yml');
-        $this->addDrushServiceProvider("_drush__pm", $this->drushConfig->get('drush.base-dir') . '/src/Drupal/Commands/pm/drush.services.yml');
         $this->addDrushServiceProvider("_drush__sql", $this->drushConfig->get('drush.base-dir') . '/src/Drupal/Commands/sql/drush.services.yml');
 
-        // Also add Drush services from all modules
+        // Add Drush services from all modules
         $module_filenames = $this->getModuleFileNames();
         // Load each module's serviceProvider class.
         foreach ($module_filenames as $module => $filename) {
@@ -173,7 +160,6 @@ class LegacyServiceFinder
         }
 
         // Regardless, we still return a services file.
-        Drush::logger()->debug(dt('{module} commands loaded even though its constraint ({constraints}) is incompatible with Drush {version}. Broaden the constraint in {composer} (see \'extra\drush\services\' section) to remove this message.', ['module' => $module, 'composer' => $dir . '/composer.json', 'constraints' => implode(',', $services), 'version' => $version]));
         return $dir . '/' . $serviceYmlPath;
     }
 

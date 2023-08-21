@@ -41,7 +41,7 @@ final class TopicCommands extends DrushCommands
         return $application->run($input);
     }
 
-    #[CLI\Hook(type: HookManager::INTERACT, target: 'topic')]
+    #[CLI\Hook(type: HookManager::INTERACT, target: self::TOPIC)]
     public function interact(InputInterface $input, OutputInterface $output): void
     {
         $topics = self::getAllTopics();
@@ -65,7 +65,7 @@ final class TopicCommands extends DrushCommands
         }
     }
 
-    #[CLI\Hook(type: HookManager::ARGUMENT_VALIDATOR, target: 'topic')]
+    #[CLI\Hook(type: HookManager::ARGUMENT_VALIDATOR, target: self::TOPIC)]
     public function validate(CommandData $commandData): void
     {
         $topic_name = $commandData->input()->getArgument('topic_name');

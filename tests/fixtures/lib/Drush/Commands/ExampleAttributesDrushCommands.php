@@ -14,7 +14,12 @@ use Symfony\Component\Console\Completion\CompletionSuggestions;
 
 class ExampleAttributesDrushCommands extends DrushCommands
 {
-    #[CLI\Command(name: 'my:echo', aliases: ['c'])]
+    const ARITHMATIC = 'test:arithmatic';
+    const ECHO = 'my:echo';
+    const VALIDATESTUFF = 'validatestuff';
+    const BIRDS = 'birds';
+
+    #[CLI\Command(name: self::ECHO, aliases: ['c'])]
     #[CLI\Help(description: 'This is the my:echo command', synopsis: "This command will concatenate two parameters. If the --flip flag\nis provided, then the result is the concatenation of two and one.", hidden: true)]
     #[CLI\Argument(name: 'one', description: 'The first parameter')]
     #[CLI\Argument(name: 'two', description: 'The other parameter')]
@@ -30,7 +35,7 @@ class ExampleAttributesDrushCommands extends DrushCommands
     }
 
     #[CLI\Command(name: 'improved:echo', aliases: ['c'])]
-    #[CLI\Help(description: 'This is the improved:echo command', synopsis: "This command will concatenate two parameters. If the --flip flag\nis provided, then the result is the concatenation of two and one.")]
+    #[CLI\Help(description: 'This is the improved:echo command', synopsis: "This command will concatenate two parameters. If the --flip flag\nis provided, then the result is the concatenation of two and one.", hidden: true)]
     #[CLI\Argument(name: 'args', description: 'Any number of arguments separated by spaces.')]
     #[CLI\Option(name: 'flip', description: 'Whether or not the second parameter should come first in the result.')]
     #[CLI\Usage(name: 'bet alpha --flip', description: 'Concatenate "alpha" and "bet".')]
@@ -42,8 +47,8 @@ class ExampleAttributesDrushCommands extends DrushCommands
         return implode(' ', $args);
     }
 
-    #[CLI\Command(name: 'test:arithmatic', aliases: ['arithmatic'])]
-    #[CLI\Help(description: 'This is the test:arithmatic command', synopsis: "This command will add one and two. If the --negate flag\nis provided, then the result is negated.")]
+    #[CLI\Command(name: self::ARITHMATIC, aliases: ['arithmatic'])]
+    #[CLI\Help(description: 'This is the test:arithmatic command', synopsis: "This command will add one and two. If the --negate flag\nis provided, then the result is negated.", hidden: true)]
     // suggestedValues available on Symfony 6.1+. Also see the CLI\Complete Attribute below.
     #[CLI\Argument(name: 'one', description: 'The first number to add.', suggestedValues: [1,2,3,4,5])]
     #[CLI\Argument(name: 'two', description: 'The other number to add.')]
@@ -65,7 +70,7 @@ class ExampleAttributesDrushCommands extends DrushCommands
     }
 
     // Declare a hook with a target.
-    #[CLI\Hook(type: HookManager::POST_COMMAND_HOOK, target: 'test:arithmatic')]
+    #[CLI\Hook(type: HookManager::POST_COMMAND_HOOK, target: self::ARITHMATIC)]
     #[CLI\Help(description: 'Add a text after test:arithmatic command')]
     public function postArithmatic()
     {
@@ -73,8 +78,8 @@ class ExampleAttributesDrushCommands extends DrushCommands
     }
 
     // Use lots of hooks including ValidateEntityLoad and Bootstrap.
-    #[AC\Command(name: 'validatestuff')]
-    #[AC\Help(description: 'Exercise some validators')]
+    #[AC\Command(name: self::VALIDATESTUFF)]
+    #[AC\Help(description: 'Exercise some validators', hidden: true)]
     #[AC\Argument(name: 'permissions', description: 'A list of permissions.')]
     #[AC\Argument(name: 'paths', description: 'A list of paths.')]
     #[AC\Argument(name: 'roleName', description: 'A role name')]
@@ -89,7 +94,8 @@ class ExampleAttributesDrushCommands extends DrushCommands
         return 'Validators are happy';
     }
 
-    #[CLI\Command(name: 'birds')]
+    #[CLI\Command(name: self::BIRDS)]
+    #[CLI\Help(description: 'List birds and their color.', hidden: true)]
     #[CLI\FieldLabels(labels: ['name' => 'Name', 'color' => 'Color'])]
     #[CLI\DefaultFields(fields: ['color'])]
     #[CLI\FilterDefaultField(field: 'name')]

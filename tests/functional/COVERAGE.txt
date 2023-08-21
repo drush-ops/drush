@@ -31,7 +31,7 @@ core:rsync: GOOD
 generate: GOOD. See annotatedCommandCase and userCase
 image: GOOD
 queue: GOOD
-runserver
+runserver: GOOD
 site:install: GOOD
 site:alias: implicit
 state: NONE

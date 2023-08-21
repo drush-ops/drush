@@ -6,6 +6,7 @@ services:
       -  { name: drush.command }
   woot.command:
     class: Drupal\woot\Commands\WootCommands
+    arguments: ['%app.root%']
     tags:
       -  { name: drush.command }
   greet.command:
@@ -16,13 +17,3 @@ services:
     class: Drupal\woot\Commands\AnnotatedGreetCommand
     tags:
       -  { name: console.command }
-  woot.example.generator:
-      class: Drupal\woot\Generators\ExampleGenerator
-      arguments: ['@module_handler']
-      tags:
-        -  { name: drush.generator.v3 }
-  woot.command_info_alter:
-    class: Drupal\woot\WootCommandInfoAlterer
-    arguments: ['@logger.factory']
-    tags:
-      -  { name: drush.command_info_alterer }

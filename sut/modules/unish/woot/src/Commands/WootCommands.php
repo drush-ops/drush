@@ -11,6 +11,8 @@ use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
  */
 class WootCommands
 {
+    public function __construct(protected string $appRoot) {}
+
     /**
      * Woot mightily.
      *
@@ -20,6 +22,14 @@ class WootCommands
     public function woot(): string
     {
         return 'Woot!';
+    }
+
+    /**
+     * @command woot:root
+     */
+    public function appRoot(): string
+    {
+        return "The app root is {$this->appRoot}";
     }
 
     /**

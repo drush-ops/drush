@@ -323,7 +323,7 @@ abstract class SqlBase implements ConfigAwareInterface
             $process->run();
             $this->setProcess($process);
             if ($process->isSuccessful()) {
-                $input_file = trim($input_file, '.gz');
+                $input_file = preg_replace('/\.gz$/i', '', $input_file);
             } else {
                 Drush::logger()->error(dt('Failed to decompress input file.'));
                 return false;
@@ -600,7 +600,8 @@ abstract class SqlBase implements ConfigAwareInterface
                     'port'   => null,
                     'path'   => null,
                 ];
-                $url = (object)array_map('urldecode', $url);
+                // Suppress deprecation notice when any value in $url is null.
+                $url = (object)@array_map('urldecode', $url);
                 $db_spec = [
                     'driver'   => $url->scheme,
                     'username' => $url->user,

@@ -19,14 +19,19 @@ use function t;
  */
 trait EntityTypeBundleAskTrait
 {
-    protected function askEntityType(): ?string
+    protected function getFieldableEntityTypes(): array
     {
-        $entityTypeDefinitions = array_filter(
+        return array_filter(
             $this->entityTypeManager->getDefinitions(),
             function (EntityTypeInterface $entityType) {
                 return $entityType->entityClassImplements(FieldableEntityInterface::class);
             }
         );
+    }
+
+    protected function askEntityType(): ?string
+    {
+        $entityTypeDefinitions = $this->getFieldableEntityTypes();
         $choices = [];
 
         foreach ($entityTypeDefinitions as $entityTypeDefinition) {

@@ -114,7 +114,7 @@ final class RsyncCommands extends DrushCommands implements SiteAliasManagerAware
      * from the source and target aliases, if any, so that these
      * values may participate in configuration injection.
      */
-    #[CLI\Hook(type: HookManager::COMMAND_EVENT, target: 'core:rsync')]
+    #[CLI\Hook(type: HookManager::COMMAND_EVENT, target: self::RSYNC)]
     public function preCommandEvent(ConsoleCommandEvent $event): void
     {
         $input = $event->getInput();

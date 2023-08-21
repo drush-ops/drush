@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Drush\Runtime;
 
+use Drush\Formatters\EntityToArraySimplifier;
 use Drush\Log\Logger;
 use League\Container\Container;
 use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Robo\Robo;
 use Drush\Formatters\DrushFormatterManager;
-use Drush\Boot\AutoloaderAwareInterface;
 use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
 use Consolidation\SiteProcess\ProcessManagerAwareInterface;
 use Drush\Command\GlobalOptionsEventListener;
@@ -114,18 +114,19 @@ class DependencyInjection
         // @todo not sure that we'll use this. Maybe remove it.
         Robo::addShared($container, 'formatterManager', DrushFormatterManager::class)
             ->addMethodCall('addDefaultFormatters', [])
-            ->addMethodCall('addDefaultSimplifiers', []);
+            ->addMethodCall('addDefaultSimplifiers', [])
+            ->addMethodCall('addSimplifier', [new EntityToArraySimplifier()]);
 
         // Add some of our own objects to the container
         Robo::addShared($container, 'service.manager', 'Drush\Runtime\ServiceManager')
             ->addArgument('loader')
-            ->addMethodCall('setConfig', ['config']);
+            ->addArgument('config')
+            ->addArgument('logger');
         Robo::addShared($container, 'bootstrap.drupal8', 'Drush\Boot\DrupalBoot8')
-            ->addArgument('service.manager');
+            ->addArgument('service.manager')
+            ->addArgument('loader');
         Robo::addShared($container, 'bootstrap.manager', 'Drush\Boot\BootstrapManager')
-            ->addMethodCall('setDrupalFinder', [$drupalFinder]);
-        // TODO: Can we somehow add these via discovery (e.g. backdrop extension?)
-        $container->extend('bootstrap.manager')
+            ->addMethodCall('setDrupalFinder', [$drupalFinder])
             ->addMethodCall('add', ['bootstrap.drupal8']);
         Robo::addShared($container, 'bootstrap.hook', 'Drush\Boot\BootstrapHook')
           ->addArgument('bootstrap.manager');
@@ -149,8 +150,6 @@ class DependencyInjection
         Robo::addShared($container, 'shutdownHandler', 'Drush\Runtime\ShutdownHandler');
 
         // Add inflectors. @see \Drush\Boot\BaseBoot::inflect
-        $container->inflector(AutoloaderAwareInterface::class)
-            ->invokeMethod('setAutoloader', ['loader']);
         $container->inflector(SiteAliasManagerAwareInterface::class)
             ->invokeMethod('setSiteAliasManager', ['site.alias.manager']);
         $container->inflector(ProcessManagerAwareInterface::class)

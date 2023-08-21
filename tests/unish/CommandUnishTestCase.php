@@ -37,7 +37,7 @@ abstract class CommandUnishTestCase extends UnishTestCase
      * Invoke drush command via startExecute(), and return the resulting process.
      *
      * Use this method when you need to interact with the Drush command under
-     * test while it is still running. Currently used to test 'watchdog:tail'.
+     * test while it is still running. Currently used to test watchdog:tail, runserver.
      *
      * @param command
      *   A defined drush command such as 'cron', 'status' or any of the available ones such as 'drush pm'.

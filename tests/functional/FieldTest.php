@@ -59,6 +59,16 @@ class FieldTest extends CommandUnishTestCase
         $this->assertStringContainsString('Success', $this->getErrorOutputRaw());
         $this->drush('field:create', ['unish_article', 'beta'], ['existing-field-name' => 'field_test3', 'field-label' => 'Body', 'field-widget' => 'text_textarea_with_summary'], null, null, self::EXIT_ERROR);
         $this->assertStringContainsString('Field with name \'field_test3\' already exists on bundle \'beta\'', $this->getErrorOutputRaw());
+        if (version_compare(\Drupal::VERSION, '10.1.0') < 0) {
+            $this->markTestSkipped('Allowed formats available since Drupal 10.1.0');
+        }
+        // Allowed formats
+        $this->drush('field:create', ['unish_article', 'alpha'], ['field-name' => 'field_test_allowed_formats', 'field-label' => 'Text', 'field-type' => 'string', 'allowed-formats' => 'minimal'], null, null, self::EXIT_ERROR);
+        $this->assertStringContainsString('The "--allowed-formats" option does not exist.', $this->getSimplifiedErrorOutput());
+        $this->drush('field:create', ['unish_article', 'alpha'], ['field-name' => 'field_test_allowed_formats', 'field-label' => 'Text', 'field-type' => 'text_long', 'cardinality' => 1, 'allowed-formats' => 'baz'], null, null, self::EXIT_ERROR);
+        $this->assertStringContainsString('The following text formats do not exist: baz', $this->getSimplifiedErrorOutput());
+        $this->drush('field:create', ['unish_article', 'alpha'], ['field-name' => 'field_test_allowed_formats', 'field-label' => 'Text', 'field-type' => 'text_long', 'cardinality' => 1, 'allowed-formats' => 'plain_text']);
+        $this->assertStringContainsString("Successfully created field 'field_test_allowed_formats' on unish_article type with bundle 'alpha'", $this->getErrorOutputRaw());
     }
 
     public function testFieldInfo()

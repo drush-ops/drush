@@ -4,18 +4,19 @@ declare(strict_types=1);
 
 namespace Drush\Commands\core;
 
-use Drush\Boot\DrupalBootLevels;
-use Drush\Log\SuccessInterface;
-use Drush\Drupal\DrupalUtil;
-use Drush\Attributes as CLI;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Consolidation\OutputFormatters\StructuredData\UnstructuredListData;
 use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
 use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
+use Drupal\Core\Database\Database;
 use Drupal\Core\Utility\Error;
+use Drush\Attributes as CLI;
+use Drush\Boot\DrupalBootLevels;
 use Drush\Commands\DrushCommands;
+use Drush\Drupal\DrupalUtil;
 use Drush\Drush;
 use Drush\Exceptions\UserAbortException;
+use Drush\Log\SuccessInterface;
 use Psr\Log\LogLevel;
 
 final class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInterface
@@ -25,6 +26,10 @@ final class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAw
     const UPDATEDB = 'updatedb';
     const STATUS = 'updatedb:status';
     const BATCH_PROCESS = 'updatedb:batch-process';
+
+    /**
+     * Note - can't inject @database since a method below is static.
+     */
 
     /**
      * Apply any database updates required (as with running update.php).

@@ -35,17 +35,21 @@ class ProcessManager extends ConsolidationProcessManager
      */
     public function drushSiteProcess(SiteAliasInterface $siteAlias, array $args = [], array $options = [], array $options_double_dash = []): ProcessBase
     {
+        $drushScript = $this->drushScript($siteAlias);
+
         // Fill in the root and URI from the site alias, if the caller
         // did not already provide them in $options.
         if ($siteAlias->has('uri')) {
             $options += [ 'uri' => $siteAlias->uri(), ];
         }
-        if ($siteAlias->hasRoot()) {
+        // Include the --root parameter only if calling a global Drush.
+        // This is deprecated in Drush 12, and will be removed in Drush 13.
+        if ($siteAlias->hasRoot() && ($drushScript == "drush")) {
             $options += [ 'root' => $siteAlias->root(), ];
         }
 
         // The executable is always 'drush' (at some path or another)
-        array_unshift($args, $this->drushScript($siteAlias));
+        array_unshift($args, $drushScript);
 
         return $this->siteProcess($siteAlias, $args, $options, $options_double_dash);
     }
@@ -65,13 +69,17 @@ class ProcessManager extends ConsolidationProcessManager
         // If the provided site alias is for a remote site / container et. al.,
         // then use the 'drush' in the $PATH.
         if ($this->hasTransport($siteAlias)) {
+            if ($siteAlias->hasRoot()) {
+                return Path::join($siteAlias->root(), $this->relativePathToVendorBinDrush());
+            }
+
             return $defaultDrushScript;
         }
 
         // If the target is a local Drupal site that has a vendor/bin/drush,
         // then use that.
         if ($siteAlias->hasRoot()) {
-            $localDrushScript = Path::join($siteAlias->root(), '../vendor/bin/drush');
+            $localDrushScript = Path::join($siteAlias->root(), $this->relativePathToVendorBinDrush());
             if (file_exists($localDrushScript)) {
                 return $localDrushScript;
             }
@@ -80,6 +88,19 @@ class ProcessManager extends ConsolidationProcessManager
         // Otherwise, use the path to the version of Drush that is running
         // right now (if available).
         return $this->getConfig()->get('runtime.drush-script', $defaultDrushScript);
+    }
+
+    /**
+     * Return the relative path to 'vendor/bin/drush' from the project root.
+     */
+    protected function relativePathToVendorBinDrush()
+    {
+        $absoluteVendorBin = $_composer_bin_dir ?? Path::join($this->getConfig()->get('drush.vendor-dir'), 'bin');
+        $basePath = $this->getConfig()->get('drush.base-dir');
+
+        $relativeVendorBin = Path::makeRelative($absoluteVendorBin, $basePath);
+
+        return Path::join($relativeVendorBin, 'drush');
     }
 
     /**

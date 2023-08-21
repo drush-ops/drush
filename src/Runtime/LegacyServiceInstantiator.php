@@ -11,6 +11,7 @@ use Symfony\Component\Console\Application;
 use Composer\Autoload\ClassLoader;
 use Drush\Command\DrushCommandInfoAlterer;
 use Psr\Container\ContainerInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Yaml\Yaml;
 use Robo\Robo;
 use Symfony\Component\DependencyInjection\Exception\ParameterNotFoundException;
@@ -28,10 +29,10 @@ use Symfony\Component\DependencyInjection\Exception\ParameterNotFoundException;
  */
 class LegacyServiceInstantiator
 {
-    protected array $drushServicesContainer = [];
+    protected array $instantiatedDrushServices = [];
     protected array $tags = [];
 
-    public function __construct(protected ContainerInterface $container)
+    public function __construct(protected ContainerInterface $container, protected LoggerInterface $logger)
     {
     }
 
@@ -55,10 +56,56 @@ class LegacyServiceInstantiator
                 $serviceFileData = Yaml::parse($serviceFileContents);
             }
 
-            if (isset($serviceFileData['services'])) {
+            if ($this->isValidServiceData($serviceFile, $serviceFileData)) {
                 $this->instantiateServices($serviceFileData['services']);
             }
         }
+    }
+
+    /**
+     * Validate service data before using it.
+     *
+     * @param string $serviceFile Path to service file being checked
+     * @param array $serviceFileData Parsed data from drush.services.yml
+     */
+    protected function isValidServiceData(string $serviceFile, array $serviceFileData): bool
+    {
+        // If there are no services, then silently skip this service file.
+        if (!isset($serviceFileData['services'])) {
+            return false;
+        }
+
+        // We don't support auto-wiring
+        if (!empty($serviceFileData['services']['_defaults']['autowire'])) {
+            $this->logger->info(dt('Autowire not supported; skipping @file', ['@file' => $serviceFile]));
+            return false;
+        }
+
+        // Every entry in services must have a 'class' entry
+        if (!$this->allServicesHaveClassElement($serviceFile, $serviceFileData['services'])) {
+            return false;
+        }
+
+        // If we didn't find anything wrong, then assume it's probably okay
+        return true;
+    }
+
+    /**
+     * Check all elements for required "class" elements.
+     *
+     * @param string $serviceFile Path to service file being checked
+     * @param array $services List of data from 'services' element from drush.services.yml
+     */
+    protected function allServicesHaveClassElement(string $serviceFile, array $services): bool
+    {
+        foreach ($services as $service => $data) {
+            if (!isset($data['class'])) {
+                $this->logger->info(dt('Service @service does not have a class element; skipping @file', ['@service' => $service, '@file' => $serviceFile]));
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**
@@ -72,13 +119,19 @@ class LegacyServiceInstantiator
     public function instantiateServices(array $services)
     {
         foreach ($services as $serviceName => $info) {
+            // Skip legacy generators.
+            $tag_names = \array_column($info['tags'] ?? [], 'name');
+            if (\in_array('drush.generator', $tag_names) || \in_array('drush.generator.v2', $tag_names)) {
+                continue;
+            }
+
             $service = $this->create(
                 $info['class'],
                 $info['arguments'] ?? [],
                 $info['calls'] ?? []
             );
 
-            $this->drushServicesContainer[$serviceName] = $service;
+            $this->instantiatedDrushServices[$serviceName] = $service;
 
             // If `tags` to contains an item with `name: drush.command`,
             // then we should do something special with it
@@ -185,16 +238,25 @@ class LegacyServiceInstantiator
             return $arg;
         }
 
+        // Instantiate references to services, either in the
+        // Drupal container, or other services created earlier by
+        // some drush.services.yml file.
         if ($arg[0] == '@') {
             // Check to see if a previous drush.services.yml instantiated
             // this service; return any service found.
             $drushServiceName = ltrim(substr($arg, 1), '?');
-            if (isset($this->drushServicesContainer[$drushServiceName])) {
-                return $this->drushServicesContainer[$drushServiceName];
+            if (isset($this->instantiatedDrushServices[$drushServiceName])) {
+                return $this->instantiatedDrushServices[$drushServiceName];
             }
 
             // If the service is not found in the dynamic container
             return $this->resolveFromContainer($this->container, substr($arg, 1));
+        }
+
+        // Look up references to service parameters
+        if (preg_match('#^%.*%$#', $arg)) {
+            $serviceParameterName = trim($arg, '%');
+            return $this->container->getParameter($serviceParameterName);
         }
 
         return $arg;

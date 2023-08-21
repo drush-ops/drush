@@ -8,8 +8,6 @@ namespace Drush\Commands;
 
 use Drupal\Core\DrupalKernel;
 use Drupal\Core\Site\Settings;
-use Drush\Boot\AutoloaderAwareInterface;
-use Drush\Boot\AutoloaderAwareTrait;
 use Drush\Drush;
 
 class FixtureCommands extends DrushCommands

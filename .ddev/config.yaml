@@ -15,8 +15,13 @@ composer_version: ""
 disable_settings_management: true
 webimage_extra_packages:
   - bash-completion
+# https://ddev.readthedocs.io/en/latest/users/extend/database-types/
+# When switching DBs, use ddev delete --omit-snapshot
+#database:
+#  type: postgres
+#  version: 14
 web_environment:
   - UNISH_DB_URL=mysql://root:root@db
 #  - "UNISH_DB_URL=sqlite://:memory:"
-#  - UNISH_DB_URL=pgsql://postgres:@localhost
+#  - UNISH_DB_URL=pgsql://db:db@db:5432
   - DRUSH_OPTIONS_URI=$DDEV_PRIMARY_URL

@@ -62,6 +62,9 @@ final class StateCommands extends DrushCommands implements StdinAwareInterface
     #[CLI\Usage(name: 'drush sset system.maintenance_mode 1 --input-format=integer', description: 'Put site into Maintenance mode.')]
     #[CLI\Usage(name: 'drush state:set system.cron_last 1406682882 --input-format=integer', description: 'Sets a timestamp for last cron run.')]
     #[CLI\Usage(name: 'php -r "print json_encode(array(\'drupal\', \'simpletest\'));"  | drush state-set --input-format=json foo.name -', description: 'Set a key to a complex value (e.g. array)')]
+    #[CLI\Usage(name: 'drush state:set twig_debug TRUE', description: 'Enable the Twig debug mode (since Drupal 10.1)')]
+    #[CLI\Usage(name: 'drush state:set twig_autoreload TRUE', description: 'Enable Twig auto reload (since Drupal 10.1)')]
+    #[CLI\Usage(name: 'drush state:set twig_cache_disable TRUE', description: 'Disable the Twig, page, render and dynamic page caches (since Drupal 10.1)')]
     public function set(string $key, $value, $options = ['input-format' => 'auto']): void
     {
 

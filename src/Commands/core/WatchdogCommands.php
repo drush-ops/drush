@@ -7,7 +7,7 @@ namespace Drush\Commands\core;
 use Consolidation\AnnotatedCommand\Hooks\HookManager;
 use Consolidation\OutputFormatters\StructuredData\PropertyList;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
-use Drupal\Core\Database\Database;
+use Drupal\Core\Database\Connection;
 use Drupal\Core\Logger\RfcLogLevel;
 use Drupal\Core\Session\AnonymousUserSession;
 use Drupal\user\Entity\User;
@@ -21,6 +21,7 @@ use Symfony\Component\Console\Completion\CompletionInput;
 use Symfony\Component\Console\Completion\CompletionSuggestions;
 use Symfony\Component\Console\Output\OutputInterface;
 use Drush\Boot\DrupalBootLevels;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 final class WatchdogCommands extends DrushCommands
 {
@@ -29,6 +30,19 @@ final class WatchdogCommands extends DrushCommands
     const TAIL = 'watchdog:tail';
     const DELETE = 'watchdog:delete';
     const SHOW_ONE = 'watchdog:show-one';
+
+    public function __construct(protected Connection $connection)
+    {
+    }
+
+    public static function create(ContainerInterface $container): self
+    {
+        $commandHandler = new static(
+            $container->get('database')
+        );
+
+        return $commandHandler;
+    }
 
     /**
      * Show watchdog messages.
@@ -64,8 +78,8 @@ final class WatchdogCommands extends DrushCommands
     #[CLI\Bootstrap(level: DrupalBootLevels::FULL)]
     public function show($substring = '', $options = ['format' => 'table', 'count' => 10, 'severity' => self::REQ, 'severity-min' => self::REQ, 'type' => self::REQ, 'extended' => false]): ?RowsOfFields
     {
-        $where = $this->where($options['type'], $options['severity'], $substring, 'AND', $options['severity-min']);
-        $query = Database::getConnection()->select('watchdog', 'w')
+        $where = $this->where((string)$options['type'], $options['severity'], $substring, 'AND', $options['severity-min']);
+        $query = $this->connection->select('watchdog', 'w')
             ->range(0, $options['count'])
             ->fields('w')
             ->orderBy('wid', 'DESC');
@@ -94,7 +108,7 @@ final class WatchdogCommands extends DrushCommands
     #[CLI\Option(name: 'severity', description: 'Restrict to messages of a given severity level (numeric or string).')]
     #[CLI\Option(name: 'type', description: 'Restrict to messages of a given type.')]
     #[CLI\Option(name: 'extended', description: 'Return extended information about each message.')]
-    #[CLI\Usage(name: 'drush watchdog:list', description: 'Prompt for message type or severity, then run watchdog-show.')]
+    #[CLI\Usage(name: 'drush watchdog:list', description: 'Prompt for message type or severity, then run watchdog:show.')]
     #[CLI\FieldLabels(labels: [
         'wid' => 'ID',
         'type' => 'Type',
@@ -110,8 +124,9 @@ final class WatchdogCommands extends DrushCommands
     #[CLI\DefaultTableFields(fields: ['wid', 'date', 'type', 'severity', 'message'])]
     #[CLI\Complete(method_name_or_callable: 'watchdogComplete')]
     #[CLI\Bootstrap(level: DrupalBootLevels::FULL)]
-    public function watchdogList($substring = '', $options = ['format' => 'table', 'count' => 10, 'extended' => false]): RowsOfFields
+    public function watchdogList($substring = '', $options = ['format' => 'table', 'count' => 10, 'extended' => false]): ?RowsOfFields
     {
+        $options['severity-min'] = null;
         return $this->show($substring, $options);
     }
 
@@ -148,7 +163,7 @@ final class WatchdogCommands extends DrushCommands
         $last_seen_wid = 0;
         while (true) {
             $where['args'][':wid'] = $last_seen_wid;
-            $query = Database::getConnection()->select('watchdog', 'w')
+            $query = $this->connection->select('watchdog', 'w')
                 ->fields('w')
                 ->orderBy('wid', 'DESC');
             if ($last_seen_wid === 0) {
@@ -169,7 +184,7 @@ final class WatchdogCommands extends DrushCommands
         }
     }
 
-    #[CLI\Hook(type: HookManager::INTERACT, target: 'watchdog-list')]
+    #[CLI\Hook(type: HookManager::INTERACT, target: self::LIST)]
     public function interactList($input, $output): void
     {
 
@@ -214,14 +229,14 @@ final class WatchdogCommands extends DrushCommands
             if (!$this->io()->confirm(dt('Do you really want to continue?'))) {
                 throw new UserAbortException();
             }
-            $ret = Database::getConnection()->truncate('watchdog')->execute();
+            $ret = $this->connection->truncate('watchdog')->execute();
             $this->logger()->success(dt('All watchdog messages have been deleted.'));
         } elseif (is_numeric($substring)) {
             $this->output()->writeln(dt('Watchdog message #!wid will be deleted.', ['!wid' => $substring]));
             if (!$this->io()->confirm(dt('Do you want to continue?'))) {
                 throw new UserAbortException();
             }
-            $affected_rows = Database::getConnection()->delete('watchdog')->condition('wid', $substring)->execute();
+            $affected_rows = $this->connection->delete('watchdog')->condition('wid', $substring)->execute();
             if ($affected_rows == 1) {
                 $this->logger()->success(dt('Watchdog message #!wid has been deleted.', ['!wid' => $substring]));
             } else {
@@ -236,7 +251,7 @@ final class WatchdogCommands extends DrushCommands
             if (!$this->io()->confirm(dt('Do you want to continue?'))) {
                 throw new UserAbortException();
             }
-            $affected_rows = Database::getConnection()->delete('watchdog')
+            $affected_rows = $this->connection->delete('watchdog')
                 ->where($where['where'], $where['args'])
                 ->execute();
             $this->logger()->success(dt('!affected_rows watchdog messages have been deleted.', ['!affected_rows' => $affected_rows]));
@@ -252,7 +267,7 @@ final class WatchdogCommands extends DrushCommands
     #[CLI\Bootstrap(level: DrupalBootLevels::FULL)]
     public function showOne($id, $options = ['format' => 'yaml']): PropertyList
     {
-        $rsc = Database::getConnection()->select('watchdog', 'w')
+        $rsc = $this->connection->select('watchdog', 'w')
             ->fields('w')
             ->condition('wid', (int)$id)
             ->range(0, 1)

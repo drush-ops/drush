@@ -318,7 +318,7 @@ final class ArchiveDumpCommands extends DrushCommands
         $process->mustRun();
         $composerInfoRaw = $process->getOutput();
         $installedPackages = json_decode($composerInfoRaw, true)['installed'] ?? [];
-        $installedPackagesPaths = array_column($installedPackages, 'path');
+        $installedPackagesPaths = array_filter(array_column($installedPackages, 'path'));
         $installedPackagesRelativePaths = array_map(
             fn($path) => ltrim(str_replace([$this->getComposerRoot()], '', $path), '/'),
             $installedPackagesPaths

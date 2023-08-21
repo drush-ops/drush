@@ -22,7 +22,7 @@ class LocaleTest extends UnishIntegrationTestCase
         $this->drush(PmCommands::INSTALL, ['language', 'locale']);
         $this->drush(LanguageCommands::ADD, ['nl'], ['skip-translations' => null]);
 
-        $this->sourceFile = Path::join(__DIR__, '../functional/resources/drush_empty_module.nl.po');
+        $this->sourceFile = Path::join(__DIR__, '/resources/drush_empty_module.nl.po');
 
         $this->drush(LocaleCommands::IMPORT, ['nl', $this->sourceFile]);
         $this->assertTranslation('Drush Empty Module', 'NL Drush Empty Module', 'nl', 0);
