@@ -168,19 +168,19 @@ final class CliCommands extends DrushCommands
      * See http://symfony.com/doc/current/components/var_dumper/advanced.html#casters
      * for more information.
      *
-     * @return array.
+     * @return callable[].
      *   An array of caster callbacks keyed by class or interface.
      */
     protected function getCasters(): array
     {
         return [
-        \Drupal\Core\Entity\ContentEntityInterface::class => 'Drush\Psysh\Caster::castContentEntity',
-        \Drupal\Core\Field\FieldItemListInterface::class => 'Drush\Psysh\Caster::castFieldItemList',
-        \Drupal\Core\Field\FieldItemInterface::class => 'Drush\Psysh\Caster::castFieldItem',
-        \Drupal\Core\Config\Entity\ConfigEntityInterface::class => 'Drush\Psysh\Caster::castConfigEntity',
-        \Drupal\Core\Config\ConfigBase::class => 'Drush\Psysh\Caster::castConfig',
-        \Drupal\Component\DependencyInjection\Container::class => 'Drush\Psysh\Caster::castContainer',
-        \Drupal\Component\Render\MarkupInterface::class => 'Drush\Psysh\Caster::castMarkup',
+            \Drupal\Core\Entity\ContentEntityInterface::class => \Drush\Psysh\Caster::castContentEntity(...),
+            \Drupal\Core\Field\FieldItemListInterface::class => \Drush\Psysh\Caster::castFieldItemList(...),
+            \Drupal\Core\Field\FieldItemInterface::class => \Drush\Psysh\Caster::castFieldItem(...),
+            \Drupal\Core\Config\Entity\ConfigEntityInterface::class => \Drush\Psysh\Caster::castConfigEntity(...),
+            \Drupal\Core\Config\ConfigBase::class => \Drush\Psysh\Caster::castConfig(...),
+            \Drupal\Component\DependencyInjection\Container::class => \Drush\Psysh\Caster::castContainer(...),
+            \Drupal\Component\Render\MarkupInterface::class => \Drush\Psysh\Caster::castMarkup(...),
         ];
     }
 
