@@ -174,13 +174,13 @@ final class CliCommands extends DrushCommands
     protected function getCasters(): array
     {
         return [
-        'Drupal\Core\Entity\ContentEntityInterface' => 'Drush\Psysh\Caster::castContentEntity',
-        'Drupal\Core\Field\FieldItemListInterface' => 'Drush\Psysh\Caster::castFieldItemList',
-        'Drupal\Core\Field\FieldItemInterface' => 'Drush\Psysh\Caster::castFieldItem',
-        'Drupal\Core\Config\Entity\ConfigEntityInterface' => 'Drush\Psysh\Caster::castConfigEntity',
-        'Drupal\Core\Config\ConfigBase' => 'Drush\Psysh\Caster::castConfig',
-        'Drupal\Component\DependencyInjection\Container' => 'Drush\Psysh\Caster::castContainer',
-        'Drupal\Component\Render\MarkupInterface' => 'Drush\Psysh\Caster::castMarkup',
+        \Drupal\Core\Entity\ContentEntityInterface::class => 'Drush\Psysh\Caster::castContentEntity',
+        \Drupal\Core\Field\FieldItemListInterface::class => 'Drush\Psysh\Caster::castFieldItemList',
+        \Drupal\Core\Field\FieldItemInterface::class => 'Drush\Psysh\Caster::castFieldItem',
+        \Drupal\Core\Config\Entity\ConfigEntityInterface::class => 'Drush\Psysh\Caster::castConfigEntity',
+        \Drupal\Core\Config\ConfigBase::class => 'Drush\Psysh\Caster::castConfig',
+        \Drupal\Component\DependencyInjection\Container::class => 'Drush\Psysh\Caster::castContainer',
+        \Drupal\Component\Render\MarkupInterface::class => 'Drush\Psysh\Caster::castMarkup',
         ];
     }
 
