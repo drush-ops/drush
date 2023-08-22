@@ -247,7 +247,7 @@ final class LocaleCommands extends DrushCommands
         foreach ($poFiles as $file) {
             // Ensure we have the file intended for upload.
             if (!file_exists($file)) {
-                $this->logger->warning(dt('Can read file @file.', ['@file' => $file]));
+                $this->logger->warning(dt('Can not read file @file.', ['@file' => $file]));
                 continue;
             }
             $poFile = (object) [
@@ -262,7 +262,7 @@ final class LocaleCommands extends DrushCommands
                 continue;
             }
             if (!$this->getLanguageManager()->getLanguage($poFile->langcode)) {
-                $this->logger->warning(dt('Language @language not exists for file @file', [
+                $this->logger->warning(dt('Language @language does not exist for file @file', [
                     '@language' => $poFile->langcode,
                     '@file' => $file,
                 ]));
