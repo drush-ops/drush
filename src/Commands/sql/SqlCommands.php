@@ -160,8 +160,8 @@ final class SqlCommands extends DrushCommands implements StdinAwareInterface
     #[CLI\Usage(name: 'drush sql:query --db-prefix "SELECT * FROM {users}"', description: 'Browse user record. Table prefixes are honored.  Caution: All curly-braces will be stripped.')]
     #[CLI\Usage(name: '$(drush sql:connect) < example.sql', description: 'Import sql statements from a file into the current database.')]
     #[CLI\Usage(name: 'drush sql:query --file=example.sql', description: 'Alternate way to import sql statements from a file.')]
-    #[CLI\Usage(name: 'drush ev "return db_query(\'SELECT * FROM users\')->fetchAll()" --format=json', description: 'Get data back in JSON format. See https://github.com/drush-ops/drush/issues/3071#issuecomment-347929777.')]
-    #[CLI\Usage(name: '`drush sql:connect` -e "select * from users limit 5;"', description: 'Results are formatted in a pretty table with borders and column headers.')]
+    #[CLI\Usage(name: 'drush php:eval --format=json "return \Drupal::service(\'database\')->query(\'SELECT * FROM users LIMIT 5\')->fetchAll()"', description: 'Get data back in JSON format. See https://github.com/drush-ops/drush/issues/3071#issuecomment-347929777.')]
+    #[CLI\Usage(name: '$(drush sql:connect) -e "SELECT * FROM users LIMIT 5;"', description: 'Results are formatted in a pretty table with borders and column headers.')]
     #[CLI\ValidateFileExists(argName: 'file')]
     public function query($query = '', $options = ['result-file' => null, 'file' => self::REQ, 'file-delete' => false, 'extra' => self::REQ, 'db-prefix' => false]): bool
     {
@@ -190,7 +190,7 @@ final class SqlCommands extends DrushCommands implements StdinAwareInterface
     /**
      * Exports the Drupal DB as SQL using mysqldump or equivalent.
      *
-     * --createdb is used by sql-sync, since including the DROP TABLE statements interferes with the import when the database is created.
+     * --create-db is used by sql-sync, since including the DROP TABLE statements interferes with the import when the database is created.
      */
     #[CLI\Command(name: self::DUMP, aliases: ['sql-dump'])]
     #[CLI\Bootstrap(level: DrupalBootLevels::MAX, max_level: DrupalBootLevels::CONFIGURATION)]

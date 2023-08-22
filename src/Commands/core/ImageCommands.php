@@ -39,7 +39,7 @@ final class ImageCommands extends DrushCommands
     }
 
     #[CLI\Hook(type: HookManager::INTERACT, target: self::FLUSH)]
-    public function interactFlush($input, $output): void
+    public function interactFlush(InputInterface $input, $output): void
     {
         $styles = array_keys(ImageStyle::loadMultiple());
         $style_names = $input->getArgument('style_names');
@@ -56,10 +56,10 @@ final class ImageCommands extends DrushCommands
         }
     }
 
-    #[CLI\Hook(type: HookManager::INITIALIZE, target: self::FLUSH)]
-    public function initFlush(InputInterface $input, AnnotationData $annotationData): void
+    #[CLI\Hook(type: HookManager::POST_INITIALIZE, target: self::FLUSH)]
+    public function postInit(InputInterface $input, AnnotationData $annotationData): void
     {
-        // Needed for non-interactive calls.
+        // Needed for non-interactive calls.We use post-init phase because interact() methods run early
         if ($input->getOption('all')) {
             $styles = array_keys(ImageStyle::loadMultiple());
             $input->setArgument('style_names', implode(",", $styles));

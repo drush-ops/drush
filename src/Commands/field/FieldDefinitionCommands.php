@@ -12,6 +12,8 @@ use Drupal\Core\Field\FormatterPluginManager;
 use Drupal\Core\Field\WidgetPluginManager;
 use Drush\Attributes as CLI;
 use Drush\Commands\DrushCommands;
+use Symfony\Component\Console\Completion\CompletionInput;
+use Symfony\Component\Console\Completion\CompletionSuggestions;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 final class FieldDefinitionCommands extends DrushCommands
@@ -90,6 +92,7 @@ final class FieldDefinitionCommands extends DrushCommands
     ),
     ]
     #[CLI\FilterDefaultField(field: 'id')]
+    #[CLI\Complete(method_name_or_callable: 'complete')]
     public function widgets(array $options = ['format' => 'yaml', 'field-type' => self::REQ]): UnstructuredListData
     {
         $processor = static fn(array $definition): array => [
@@ -126,6 +129,7 @@ final class FieldDefinitionCommands extends DrushCommands
     ),
     ]
     #[CLI\FilterDefaultField(field: 'id')]
+    #[CLI\Complete(method_name_or_callable: 'complete')]
     public function formatters(array $options = ['format' => 'yaml', 'field-type' => self::REQ]): UnstructuredListData
     {
         $processor = static fn(array $definition): array => [
@@ -141,6 +145,16 @@ final class FieldDefinitionCommands extends DrushCommands
             $definitions = self::filterByFieldType($definitions, $options['field-type']);
         }
         return new UnstructuredListData($definitions);
+    }
+
+    public function complete(CompletionInput $input, CompletionSuggestions $suggestions): void
+    {
+        if ($input->getCompletionType() === CompletionInput::TYPE_OPTION_VALUE) {
+            if ($input->getCompletionName() === 'field-type') {
+                $fieldTypes = $this->typePluginManager->getDefinitions();
+                $suggestions->suggestValues(array_keys($fieldTypes));
+            }
+        }
     }
 
     /**

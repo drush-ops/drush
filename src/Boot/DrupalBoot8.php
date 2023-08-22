@@ -31,6 +31,7 @@ class DrupalBoot8 extends DrupalBoot
 
     public function __construct(protected ServiceManager $serviceManager, protected $autoloader)
     {
+        parent::__construct();
     }
 
     public function getRequest(): Request
@@ -100,11 +101,6 @@ class DrupalBoot8 extends DrupalBoot
             $site_path = DrupalKernel::findSitePath($this->getRequest(), $require_settings);
         }
         return $site_path;
-    }
-
-    public function bootstrapDrupalCore(BootstrapManager $manager, string $drupal_root): string
-    {
-        return Path::join($drupal_root, 'core');
     }
 
     public function bootstrapDrupalSiteValidate(BootstrapManager $manager): bool

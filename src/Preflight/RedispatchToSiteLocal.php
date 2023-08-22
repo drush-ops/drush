@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Drush\Preflight;
 
+use Drush\Commands\DrushCommands;
 use Symfony\Component\Filesystem\Path;
 
 /**
@@ -23,27 +24,26 @@ class RedispatchToSiteLocal
      * @param string $vendor The path to the vendor directory
      * @param PreflightLog $preflightLog A basic logger.
      *
-     * @return bool
-     *   True if redispatch occurred, and was returned successfully.
+     * @return array{preflightDidRedispatch: bool, exitStatus: int}
      */
-    public static function redispatchIfSiteLocalDrush(array $argv, string $root, string $vendor, PreflightLog $preflightLog)
+    public static function redispatchIfSiteLocalDrush(array $argv, string $root, string $vendor, PreflightLog $preflightLog): array
     {
 
         // Try to find the site-local Drush. If there is none, we are done.
         $siteLocalDrush = static::findSiteLocalDrush($root);
         if (!$siteLocalDrush) {
-            return false;
+            return [false, DrushCommands::EXIT_SUCCESS];
         }
 
         // If the site-local Drush is us, then we do not need to redispatch.
         if (Path::isBasePath($vendor, $siteLocalDrush)) {
-            return false;
+            return [false, DrushCommands::EXIT_SUCCESS];
         }
 
         // Do another special check to detect symlinked Drush folder similar
         // to what the SUT sets up for Drush functional tests.
         if (dirname($vendor) === dirname($siteLocalDrush)) {
-            return false;
+            return [false, DrushCommands::EXIT_SUCCESS];
         }
 
         // Redispatch!
@@ -58,7 +58,8 @@ class RedispatchToSiteLocal
         );
         $command .= ' ' . implode(' ', $args);
         passthru($command, $status);
-        return $status;
+
+        return [true, $status];
     }
 
     /**

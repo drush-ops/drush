@@ -287,7 +287,8 @@ class Environment
     public function docsPath(): ?string
     {
         if (!$this->docPrefix) {
-            $this->docPrefix = $this->findDocsPath($this->drushBasePath);
+            $foundPath = $this->findDocsPath($this->drushBasePath);
+            $this->docPrefix = $foundPath ?: null;
         }
         return $this->docPrefix;
     }

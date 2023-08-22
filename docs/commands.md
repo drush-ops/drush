@@ -2,12 +2,13 @@
 
 !!! tip
 
-    Drush 11 and prior required [dependency injection via a drush.services.yml file](https://www.drush.org/11.x/dependency-injection/#services-files). This approach is deprecated in Drush 12 and will be removed in Drush 13. See [create() method](dependency-injection.md#create-method).
+      1. Drush 12 expects commandfiles to use a [create() method](dependency-injection.md#create-method) to inject Drupal and Drush dependencies. Prior versions used a [drush.services.yml file](https://www.drush.org/11.x/dependency-injection/#services-files) which is now deprecated and will be removed in Drush 13.
+      1. Drush 12 expects all commandfiles in the `<module-name>/Drush/<Commands|Generators>` directory. The `Drush` subdirectory is a new requirement.
 
 Creating a new Drush command is easy. Follow the steps below.
 
-1. Run `drush generate drush-command-file`.
-2. Drush will prompt for the machine name of the module that should "own" the file. The module selected must already exist and be enabled. Use `drush generate module-standard` to create a new module.
+1. Run `drush generate drush:command-file`.
+2. Drush will prompt for the machine name of the module that should "own" the file. The module selected must already exist and be enabled. Use `drush generate module` to create a new module.
 3. Drush will then report that it created a commandfile. Edit as needed.
 4. Use the classes for the core Drush commands at [/src/Commands](https://github.com/drush-ops/drush/tree/12.x/src/Commands) as inspiration and documentation.
 5. See the [dependency injection docs](dependency-injection.md) for interfaces you can implement to gain access to Drush config, Drupal site aliases, etc. Also note the [create() method](dependency-injection.md#create-method) for injecting Drupal or Drush dependencies.
@@ -58,13 +59,14 @@ The following are both valid ways to declare a command:
 - [See Attributes provided by Drush core](https://www.drush.org/api/Drush/Attributes.html). Custom code can add additional attributes.
 
 ## Altering Command Info
-Drush command info (annotations/attributes) can be altered from other modules. This is done by creating and registering 'command info alterers'. Alterers are class services that are able to intercept and manipulate an existing command annotation.
+Drush command info (annotations/attributes) can be altered from other modules. This is done by creating and registering _command info alterers_. Alterers are classes that are able to intercept and manipulate an existing command annotation.
 
-In order to alter an existing command info, follow the steps below:
+In the module that wants to alter a command info, add a class that:
 
-1. In the module that wants to alter a command info, add a service class that implements the `\Consolidation\AnnotatedCommand\CommandInfoAltererInterface`.
-1. In the module `drush.services.yml` declare a service pointing to this class and tag the service with the `drush.command_info_alterer` tag.
-1. In that class, implement the alteration logic in the `alterCommandInfo()` method.
+1. The generator class namespace, relative to base namespace, should be `Drupal\<module-name>\Drush\CommandInfoAlterers` and the class file should be located under the `src/Drush/CommandInfoAlterers` directory.
+1. The filename must have a name like FooCommandInfoAlterer.php. The prefix `Foo` can be whatever string you want. The file must end in `CommandInfoAlterer.php`.
+1. The class must implement the `\Consolidation\AnnotatedCommand\CommandInfoAltererInterface`.
+1. Implement the alteration logic in the `alterCommandInfo()` method.
 1. Along with the alter code, it's strongly recommended to log a debug message explaining what exactly was altered. This makes things easier on others who may need to debug the interaction of the alter code with other modules. Also it's a good practice to inject the the logger in the class constructor.
 
 For an example, see [WootCommandInfoAlterer](https://github.com/drush-ops/drush/blob/12.x/sut/modules/unish/woot/src/WootCommandInfoAlterer.php) provided by the testing 'woot' module.

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Drush\Commands\core;
 
-use Consolidation\AnnotatedCommand\AnnotatedCommand;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drush\Attributes as CLI;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
@@ -17,11 +17,27 @@ use Drush\Utils\FsUtils;
 use Psy\Configuration;
 use Psy\VersionUpdater\Checker;
 use Drush\Boot\DrupalBootLevels;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 final class CliCommands extends DrushCommands
 {
     const DOCS_REPL = 'docs:repl';
     const PHP = 'php:cli';
+
+    public function __construct(
+        protected EntityTypeManagerInterface $entityTypeManager
+    ) {
+        parent::__construct();
+    }
+
+    public static function create(ContainerInterface $container): self
+    {
+        $commandHandler = new static(
+            $container->get('entity_type.manager')
+        );
+
+        return $commandHandler;
+    }
 
     /**
      * Drush's PHP Shell.
@@ -42,6 +58,8 @@ final class CliCommands extends DrushCommands
     #[CLI\Option(name: 'version-history', description: 'Use command history based on Drupal version. Default is per site.')]
     #[CLI\Option(name: 'cwd', description: 'A directory to change to before launching the shell. Default is the project root directory')]
     #[CLI\Topics(topics: [self::DOCS_REPL])]
+    #[CLI\Usage(name: '$node = Node::load(1)', description: 'Entity classes are available without their namespace. For example, Node::load(1) works instead of Drupal\Node\entity\Node::load(1).')]
+    #[CLI\Usage(name: '$paragraph = Paragraph::loadRevision(1)', description: 'Also, a loadRevision static method is made available for easier load of revisions.')]
     #[CLI\Bootstrap(level: DrupalBootLevels::FULL)]
     public function cli(array $options = ['version-history' => false, 'cwd' => self::REQ]): void
     {
@@ -69,12 +87,14 @@ final class CliCommands extends DrushCommands
         Handle::register();
         $shell->setScopeVariables(['container' => \Drupal::getContainer()]);
 
-        // Add Drupal 8 specific casters to the shell configuration.
+        // Add our casters to the shell configuration.
         $configuration->addCasters($this->getCasters());
 
-        // Add Drush commands to the shell.
+        // Add most Drush commands to the shell.
         $shell->addCommands([new DrushHelpCommand()]);
         $shell->addCommands($this->getDrushCommands());
+
+        $this->makeEntitiesAvailableWithShortClassNames();
 
         // PsySH will never return control to us, but our shutdown handler will still
         // run after the user presses ^D.  Mark this command as completed to avoid a
@@ -282,5 +302,28 @@ final class CliCommands extends DrushCommands
         'while',
         'xor',
         ];
+    }
+
+    public function makeEntitiesAvailableWithShortClassNames(): void
+    {
+        foreach ($this->entityTypeManager->getDefinitions() as $definition) {
+            $class = $definition->getClass();
+            $reflectionClass = new \ReflectionClass($class);
+            $parts = explode('\\', $class);
+            $end = end($parts);
+            // https://github.com/drush-ops/drush/pull/5729 and https://github.com/drush-ops/drush/issues/5730.
+            if ($reflectionClass->isFinal() || class_exists($end)) {
+                continue;
+            }
+            // Make it possible to easily load revisions.
+            eval(sprintf('class %s extends \%s {
+                public static function loadRevision($id) {
+                    $entity_type_repository = \Drupal::service("entity_type.repository");
+                    $entity_type_manager = \Drupal::entityTypeManager();
+                    $storage = $entity_type_manager->getStorage($entity_type_repository->getEntityTypeFromClass(static::class));
+                    return $storage->loadRevision($id);
+                }
+            }', $end, $class));
+        }
     }
 }
