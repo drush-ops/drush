@@ -38,7 +38,7 @@ Other commandfiles may provide implementations via a PHP8 Attribute or an Annota
 
     ```php
     /**
-     * #[CLI\Hook(type: HookManager::ON_EVENT, selector: 'my-event')]
+     * #[CLI\Hook(type: HookManager::ON_EVENT, target: 'my-event')]
      */
     public function hookOne()
     {
