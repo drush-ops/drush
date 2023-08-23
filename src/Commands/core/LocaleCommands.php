@@ -220,6 +220,7 @@ final class LocaleCommands extends DrushCommands
     #[CLI\Option(name: 'override', description: 'Whether and how imported strings will override existing translations. Defaults to the Import behavior configured in the admin interface. Recognized values: <info>none</info>, <info>customized</info>, <info>not-customized</info>, <info>all</info>', suggestedValues: ['none', 'not-customized', 'customized', 'all'])]
     #[CLI\Usage(name: 'drush locale:import-all /var/www/translations', description: 'Import all translations from the defined directory (non-recursively). Supported filename patterns are: {project}-{version}.{langcode}.po, {prefix}.{langcode}.po or {langcode}.po.')]
     #[CLI\Usage(name: 'drush locale:import-all /var/www/translations/custom --types=customized --override=all', description: 'Import all custom translations from the defined directory (non-recursively) and override any existing translation. Supported filename patterns are: {project}-{version}.{langcode}.po, {prefix}.{langcode}.po or {langcode}.po.')]
+    #[CLI\Version(version: '12.2')]
     #[CLI\ValidateModulesEnabled(modules: ['locale'])]
     public function importAll($directory, $options = ['type' => self::REQ, 'override' => self::REQ])
     {
@@ -247,7 +248,7 @@ final class LocaleCommands extends DrushCommands
         foreach ($poFiles as $file) {
             // Ensure we have the file intended for upload.
             if (!file_exists($file)) {
-                $this->logger->warning(dt('Can not read file @file.', ['@file' => $file]));
+                $this->logger()->warning(dt('Can not read file @file.', ['@file' => $file]));
                 continue;
             }
             $poFile = (object) [
@@ -256,13 +257,13 @@ final class LocaleCommands extends DrushCommands
             ];
             $poFile = locale_translate_file_attach_properties($poFile, $translationOptions);
             if ($poFile->langcode == LanguageInterface::LANGCODE_NOT_SPECIFIED) {
-                $this->logger->warning(dt('Can not autodetect language of file @file. Supported filename patterns are: {project}-{version}.{langcode}.po, {prefix}.{langcode}.po or {langcode}.po.', [
+                $this->logger()->warning(dt('Can not autodetect language of file @file. Supported filename patterns are: {project}-{version}.{langcode}.po, {prefix}.{langcode}.po or {langcode}.po.', [
                    '@file' => $file,
                 ]));
                 continue;
             }
             if (!$this->getLanguageManager()->getLanguage($poFile->langcode)) {
-                $this->logger->warning(dt('Language @language does not exist for file @file', [
+                $this->logger()->warning(dt('Language @language does not exist for file @file', [
                     '@language' => $poFile->langcode,
                     '@file' => $file,
                 ]));
