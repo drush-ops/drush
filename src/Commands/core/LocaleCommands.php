@@ -407,7 +407,7 @@ final class LocaleCommands extends DrushCommands
                 $language = ConfigurableLanguage::createFromLangcode($langcode);
                 $language->save();
 
-                $this->logger->success(dt('Added language @language', [
+                $this->logger()->success(dt('Added language @language', [
                     '@language' => $language->label(),
                 ]));
             } else {
