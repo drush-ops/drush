@@ -6797,13 +6797,6 @@
 <span class="sd">/**</span>
 <span class="sd"> * Run these commands using the --include option - e.g. `drush --include=/path/to/drush/examples art sandwich`</span>
 <span class="sd"> *</span>
-<span class="sd"> * For an example of a Drupal module implementing commands, see</span>
-<span class="sd"> * - http://cgit.drupalcode.org/devel/tree/devel_generate/src/Commands</span>
-<span class="sd"> * - http://cgit.drupalcode.org/devel/tree/devel_generate/drush.services.yml</span>
-<span class="sd"> *</span>
-<span class="sd"> * This file is a good example of the first of those bullets (a commandfile) but</span>
-<span class="sd"> * since it isn&#39;t part of a module, it does not implement drush.services.yml.</span>
-<span class="sd"> *</span>
 <span class="sd"> * See [Drush Test Traits](https://github.com/drush-ops/drush/blob/12.x/docs/contribute/unish.md#about-the-test-suites) for info on testing Drush commands.</span>
 <span class="sd"> */</span>
 
@@ -6869,7 +6862,7 @@
 <span class="sd">     * more art by implementing a &#39;drush-art&#39; on-event hook. This on-event</span>
 <span class="sd">     * hook is defined in the &#39;findArt&#39; method below.</span>
 <span class="sd">     */</span>
-    <span class="p">#[</span><span class="nd">CLI\Hook</span><span class="p">(</span><span class="nx">type</span><span class="o">:</span> <span class="nx">HookManager</span><span class="o">::</span><span class="na">ON_EVENT</span><span class="p">,</span> <span class="nx">selector</span><span class="o">:</span> <span class="s1">&#39;drush-art&#39;</span><span class="p">)]</span>
+    <span class="p">#[</span><span class="nd">CLI\Hook</span><span class="p">(</span><span class="nx">type</span><span class="o">:</span> <span class="nx">HookManager</span><span class="o">::</span><span class="na">ON_EVENT</span><span class="p">,</span> <span class="nx">target</span><span class="o">:</span> <span class="s1">&#39;drush-art&#39;</span><span class="p">)]</span>
     <span class="nd">public</span> <span class="nd">function</span> <span class="nd">builtInArt</span><span class="p">()</span>
     <span class="p">{</span>
         <span class="nd">return</span> <span class="p">[</span>
