@@ -141,8 +141,13 @@ final class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwa
             if ($this->getConfig()->simulate()) {
                 $source_dump_path = '/simulated/path/to/dump.tgz';
             } else {
-                $json = $process->getOutputAsJson();
-                $source_dump_path = $json['path'];
+                try {
+                    $json = $process->getOutputAsJson();
+                    $source_dump_path = $json['path'];
+                } catch (\InvalidArgumentException $e) {
+                    $this->logger()->warning(dt('The Drush sql:dump command succeeded but the output was not JSON. Ensure drush/drush on the source site is version 9.6 or higher.'));
+                    $source_dump_path = $options['source-dump'];
+                }
             }
         } else {
             $source_dump_path = $options['source-dump'];
