@@ -139,6 +139,9 @@ class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwareInte
         $dump_options = $global_options + [
             'gzip' => true,
             'result-file' => $options['source-dump'] ?: 'auto',
+
+            // Old drush commands need --backend to produce output consumable by drush_backend_parse_output()
+            'backend' => 'true'
         ];
         if (!$options['no-dump']) {
             $this->logger()->notice(dt('Starting to dump database on source.'));
@@ -154,7 +157,7 @@ class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwareInte
                     $source_dump_path = $json['path'];
                 } else {
                     // Next, try 9.5- format.
-                    $return = drush_backend_parse_output($process->getOutput());
+                    $return = c($process->getOutput());
                     if (!$return['error_status'] || !empty($return['object'])) {
                         $source_dump_path = $return['object'];
                     }
