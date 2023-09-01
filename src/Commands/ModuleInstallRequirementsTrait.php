@@ -13,7 +13,8 @@ trait ModuleInstallRequirementsTrait
      * @return array
      *   List of modules not meeting the install requirements.
      */
-    private function hasModuleInstallUnmetRequirements(array $modules): array {
+    private function hasModuleInstallUnmetRequirements(array $modules): array
+    {
         require_once DRUSH_DRUPAL_CORE . '/includes/install.inc';
 
         $erroneous_modules = [];
