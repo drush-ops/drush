@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace Drush\Commands\config;
 
 use Consolidation\AnnotatedCommand\Hooks\HookManager;
+use Drupal\Core\StringTranslation\PluralTranslatableMarkup;
 use Drush\Boot\DrupalBootLevels;
 use Drush\Commands\core\DocsCommands;
+use Drush\Commands\ModuleInstallRequirementsTrait;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Drush\Attributes as CLI;
 use Drupal\Core\Config\ImportStorageTransformer;
@@ -35,6 +37,8 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class ConfigImportCommands extends DrushCommands
 {
+    use ModuleInstallRequirementsTrait;
+
     const IMPORT = 'config:import';
     protected ?StorageInterface $configStorageSync;
     protected ?ImportStorageTransformer $importStorageTransformer;
@@ -256,6 +260,22 @@ class ConfigImportCommands extends DrushCommands
                     foreach ($sync_steps as $step) {
                         $context = [];
                         do {
+                            if ($step === 'processExtensions') {
+                                // Checking for unmet requirements.
+                                if ($modules = $config_importer->getExtensionChangelist('module', 'install')) {
+                                    if ($modules = $this->hasModuleInstallUnmetRequirements($modules)) {
+                                        // Don't continue the import as not being able to install
+                                        // modules might have severe consequences for the rest.
+                                        throw new ConfigException((string) new PluralTranslatableMarkup(
+                                            count($modules),
+                                            'Module @modules has unmet install requirement(s)',
+                                            'Modules @modules have unmet install requirement(s)',
+                                            ['@modules' =>  implode(', ', $modules)],
+                                        ));
+                                    }
+                                }
+                            }
+
                             $config_importer->doSyncStep($step, $context);
                             if (isset($context['message'])) {
                                 $this->logger()->notice(str_replace('Synchronizing', 'Synchronized', (string)$context['message']));

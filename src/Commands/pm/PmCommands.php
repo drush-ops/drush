@@ -16,6 +16,7 @@ use Drupal\Core\Extension\ThemeHandlerInterface;
 use Drush\Attributes as CLI;
 use Drush\Boot\DrupalBootLevels;
 use Drush\Commands\DrushCommands;
+use Drush\Commands\ModuleInstallRequirementsTrait;
 use Drush\Drush;
 use Drush\Exceptions\UserAbortException;
 use Drush\Utils\StringUtils;
@@ -23,6 +24,8 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 
 final class PmCommands extends DrushCommands
 {
+    use ModuleInstallRequirementsTrait;
+
     const INSTALL = 'pm:install';
     const UNINSTALL = 'pm:uninstall';
     const LIST = 'pm:list';
@@ -123,35 +126,7 @@ final class PmCommands extends DrushCommands
             return;
         }
 
-        require_once DRUSH_DRUPAL_CORE . '/includes/install.inc';
-        $error = false;
-        foreach ($modules as $module) {
-            // Note: we can't just call the API ($moduleHandler->loadInclude($module, 'install')),
-            // because the API ignores modules that haven't been installed yet. We have
-            // to do it the same way the `function drupal_check_module($module)` does.
-            $module_list = \Drupal::service('extension.list.module');
-            $file = DRUPAL_ROOT . '/' . $module_list->getPath($module) . "/$module.install";
-            if (is_file($file)) {
-                require_once $file;
-            }
-            // Once we've loaded the module, we can invoke its requirements hook.
-            $requirements = $this->getModuleHandler()->invoke($module, 'requirements', ['install']);
-            if (is_array($requirements) && drupal_requirements_severity($requirements) == REQUIREMENT_ERROR) {
-                $error = true;
-                $reasons = [];
-                foreach ($requirements as $id => $requirement) {
-                    if (isset($requirement['severity']) && $requirement['severity'] == REQUIREMENT_ERROR) {
-                        $message = $requirement['description'];
-                        if (isset($requirement['value']) && $requirement['value']) {
-                            $message = dt('@requirements_message (Currently using @item version @version)', ['@requirements_message' => $requirement['description'], '@item' => $requirement['title'], '@version' => $requirement['value']]);
-                        }
-                        $reasons[$id] = $message;
-                    }
-                }
-                $this->logger()->error(sprintf("Unable to install module '%s' due to unmet requirement(s):%s", $module, "\n  - " . implode("\n  - ", $reasons)));
-            }
-        }
-
+        $error = (bool) $this->hasModuleInstallUnmetRequirements($modules);
         if ($error) {
             // Allow the user to bypass the install requirements.
             if (!$this->io()->confirm(dt('The module install requirements failed. Do you wish to continue?'), false)) {
