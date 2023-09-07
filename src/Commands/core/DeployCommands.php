@@ -59,7 +59,7 @@ final class DeployCommands extends DrushCommands implements SiteAliasManagerAwar
     {
         // It is possible that no updates were pending and thus no caches cleared yet.
         $this->logger()->success("Cache rebuild start.");
-        $process = $manager->drush($self, CacheCommands::REBUILD, [], $redispatchOptions);
+        $process = $manager->drush($self, CacheRebuildCommands::REBUILD, [], $redispatchOptions);
         $process->mustRun($process->showRealtime());
     }
 }
