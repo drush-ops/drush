@@ -93,8 +93,6 @@
     
         
 
-            <div class="description">
-            <p><p>cache:rebuild must not use a create() method or else it will not stop at SITE bootstrap.</p></p>                    </div>
             
                 <h2>Traits</h2>
 
@@ -261,12 +259,11 @@ DrushConfig as return type. Helps with IDE completion.</p></p>                </
                     
                 </div>
                 <div class="col-md-8">
-                    <a href="#method___construct">__construct</a>()
+                    <a href="#method___construct">__construct</a>(<a href="../../../Drush/Boot/BootstrapManager.html"><abbr title="Drush\Boot\BootstrapManager">BootstrapManager</abbr></a> $bootstrapManager, <abbr title="Composer\Autoload\ClassLoader">ClassLoader</abbr> $autoloader)
         
                                             <p class="no-description">No description</p>
                                     </div>
-                <div class="col-md-2"><small>from&nbsp;<a href="../../../Drush/Commands/DrushCommands.html#method___construct">
-<abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a></small></div>
+                <div class="col-md-2"></div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
@@ -333,6 +330,17 @@ DrushConfig as return type. Helps with IDE completion.</p></p>                </
                                             <p><p>Get a Guzzle handler stack that uses the Drush logger.</p></p>                </div>
                 <div class="col-md-2"><small>from&nbsp;<a href="../../../Drush/Commands/DrushCommands.html#method_getStack">
 <abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    static&nbsp;<a href="../../../Drush/Commands/core/CacheRebuildCommands.html"><abbr title="Drush\Commands\core\CacheRebuildCommands">CacheRebuildCommands</abbr></a>
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_createEarly">createEarly</a>(<abbr title="Psr\Container\ContainerInterface">ContainerInterface</abbr> $drush_container)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
@@ -546,10 +554,9 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method___construct">
-        <div class="location">in <a href="../../../Drush/Commands/DrushCommands.html#method___construct">
-<abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a> <a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/DrushCommands.php#L51">at line 51</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/CacheRebuildCommands.php#L22">at line 22</a></div>
         <code>                    
-    <strong>__construct</strong>()
+    <strong>__construct</strong>(<a href="../../../Drush/Boot/BootstrapManager.html"><abbr title="Drush\Boot\BootstrapManager">BootstrapManager</abbr></a> $bootstrapManager, <abbr title="Composer\Autoload\ClassLoader">ClassLoader</abbr> $autoloader)
         </code>
     </h3>
     <div class="details">    
@@ -561,6 +568,21 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
                     
         </div>
         <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><a href="../../../Drush/Boot/BootstrapManager.html"><abbr title="Drush\Boot\BootstrapManager">BootstrapManager</abbr></a></td>
+                <td>$bootstrapManager</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><abbr title="Composer\Autoload\ClassLoader">ClassLoader</abbr></td>
+                <td>$autoloader</td>
+                <td></td>
+            </tr>
+            </table>
+
             
             
             
@@ -791,8 +813,51 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
 
             </div>
                     <div class="method-item">
+                    <h3 id="method_createEarly">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/CacheRebuildCommands.php#L29">at line 29</a></div>
+        <code>        static            <a href="../../../Drush/Commands/core/CacheRebuildCommands.html"><abbr title="Drush\Commands\core\CacheRebuildCommands">CacheRebuildCommands</abbr></a>
+    <strong>createEarly</strong>(<abbr title="Psr\Container\ContainerInterface">ContainerInterface</abbr> $drush_container)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Psr\Container\ContainerInterface">ContainerInterface</abbr></td>
+                <td>$drush_container</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><a href="../../../Drush/Commands/core/CacheRebuildCommands.html"><abbr title="Drush\Commands\core\CacheRebuildCommands">CacheRebuildCommands</abbr></a></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
                     <h3 id="method_rebuild">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/CacheRebuildCommands.php#L26">at line 26</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/CacheRebuildCommands.php#L44">at line 44</a></div>
         <code>                    
     <strong>rebuild</strong>($options = [&#039;cache-clear&#039; =&gt; true])
         </code>
