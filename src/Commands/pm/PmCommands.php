@@ -81,7 +81,6 @@ final class PmCommands extends DrushCommands
     #[CLI\Command(name: self::INSTALL, aliases: ['in', 'install', 'pm-install', 'en', 'pm-enable', 'pm:enable'])]
     #[CLI\Argument(name: 'modules', description: 'A comma delimited list of modules.')]
     #[CLI\Usage(name: 'drush pm:install --simulate content_moderation', description: "Display what modules would be installed but don't install them.")]
-    #[CLI\Bootstrap(level: DrupalBootLevels::ROOT)]
     public function install(array $modules): void
     {
         $modules = StringUtils::csvToArray($modules);

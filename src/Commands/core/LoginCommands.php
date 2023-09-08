@@ -28,16 +28,14 @@ final class LoginCommands extends DrushCommands implements SiteAliasManagerAware
 
     const LOGIN = 'user:login';
 
-    public function __construct(protected TimeInterface $time, protected LanguageManagerInterface $languageManager, private BootstrapManager $bootstrapManager)
+    public function __construct(private BootstrapManager $bootstrapManager)
     {
         parent::__construct();
     }
 
-    public static function create(ContainerInterface $container, $drush_container): self
+    public static function createEarly($drush_container): self
     {
         $commandHandler = new static(
-            $container->get('datetime.time'),
-            $container->get('language_manager'),
             $drush_container->get('bootstrap.manager')
         );
 
@@ -95,7 +93,7 @@ final class LoginCommands extends DrushCommands implements SiteAliasManagerAware
                 throw new \InvalidArgumentException(dt('Account !name is blocked and thus cannot login. The user:unblock command may be helpful.', ['!name' => $account->getAccountName()]));
             }
 
-            $timestamp = $this->time->getRequestTime();
+            $timestamp = \Drupal::time()->getRequestTime();
             $link = Url::fromRoute(
                 'user.reset.login',
                 [
@@ -106,7 +104,7 @@ final class LoginCommands extends DrushCommands implements SiteAliasManagerAware
                 [
                   'absolute' => true,
                   'query' => $path ? ['destination' => $path] : [],
-                  'language' => $this->languageManager->getLanguage($account->getPreferredLangcode()),
+                  'language' => \Drupal::languageManager()->getLanguage($account->getPreferredLangcode()),
                 ]
             )->toString();
         }
