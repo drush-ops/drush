@@ -4,19 +4,37 @@ declare(strict_types=1);
 
 namespace Drush\Commands\core;
 
+use Composer\Autoload\ClassLoader;
+use Consolidation\SiteAlias\SiteAliasManager;
 use Drush\Attributes as CLI;
+use Drush\Boot\BootstrapManager;
 use Drush\Boot\DrupalBootLevels;
 use Drush\Commands\DrushCommands;
 use Drupal\Core\DrupalKernel;
 use Drupal\Core\Site\Settings;
 use Drush\Drush;
+use Psr\Container\ContainerInterface as DrushContainer;
 
-/**
- * cache:rebuild must not use a create() method or else it will not stop at SITE bootstrap.
- */
 final class CacheRebuildCommands extends DrushCommands
 {
     const REBUILD = 'cache:rebuild';
+
+    public function __construct(
+        private BootstrapManager $bootstrapManager,
+        private ClassLoader $autoloader
+    ) {
+        parent::__construct();
+    }
+
+    public static function createEarly(DrushContainer $drush_container): self
+    {
+        $commandHandler = new static(
+            $drush_container->get('bootstrap.manager'),
+            $drush_container->get('loader')
+        );
+
+        return $commandHandler;
+    }
 
     /**
      * Rebuild all caches.
@@ -35,19 +53,17 @@ final class CacheRebuildCommands extends DrushCommands
 
         // We no longer clear APC and similar caches as they are useless on CLI.
         // See https://github.com/drush-ops/drush/pull/2450
-        $bootstrapManager = Drush::bootstrapManager();
-        $root  = $bootstrapManager->getRoot();
+        $root  = $this->bootstrapManager->getRoot();
         require_once DRUSH_DRUPAL_CORE . '/includes/utility.inc';
 
-        $request = $bootstrapManager->bootstrap()->getRequest();
+        $request = $this->bootstrapManager->bootstrap()->getRequest();
         DrupalKernel::bootEnvironment();
 
         $site_path = DrupalKernel::findSitePath($request);
-        $autoloader = Drush::getContainer()->get('loader');
-        Settings::initialize($root, $site_path, $autoloader);
+        Settings::initialize($root, $site_path, $this->autoloader);
 
         // drupal_rebuild() calls drupal_flush_all_caches() itself, so we don't do it manually.
-        drupal_rebuild($autoloader, $request);
+        drupal_rebuild($this->autoloader, $request);
         $this->logger()->success(dt('Cache rebuild complete.'));
     }
 }
