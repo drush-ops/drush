@@ -13,6 +13,7 @@ use Drush\Config\ConfigLocator;
 use Drush\Config\DrushConfig;
 use Drush\Config\Environment;
 use Drush\SiteAlias\SiteAliasFileLoader;
+use Drush\Utils\FsUtils;
 use RuntimeException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Filesystem\Path;
@@ -320,6 +321,9 @@ class Preflight
             if ($preflightDidRedispatch) {
                 return [$preflightDidRedispatch, $exitStatus];
             }
+
+            // Handle altered root containing a symlink.
+            $alteredRoot = FsUtils::realpath($alteredRoot);
 
             // If the Drupal site changed, and the alternate site does not
             // contain its own copy of Drush, then we cannot continue.
