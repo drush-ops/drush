@@ -322,8 +322,13 @@ class Preflight
                 return [$preflightDidRedispatch, $exitStatus];
             }
 
-            // Handle altered root containing a symlink.
-            $alteredRoot = FsUtils::realpath($alteredRoot);
+            // Handle altered root containing a symlink. Path::canonicalize()
+            // is called, because DrushDrupalFinder::getDrupalRoot() also calls
+            // it. realpath() will return a path with OS specific directory
+            // separators, whereas Path::canonicalize standardises on /. This
+            // means on Windows, the path returned by realpath() will have \
+            // but we need / to compare against $root.
+            $alteredRoot = Path::canonicalize(FsUtils::realpath($alteredRoot));
 
             // If the Drupal site changed, and the alternate site does not
             // contain its own copy of Drush, then we cannot continue.
