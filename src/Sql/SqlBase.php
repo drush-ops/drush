@@ -296,6 +296,7 @@ abstract class SqlBase implements ConfigAwareInterface
             return $this->alwaysQuery($query, $input_file, $result_file);
         }
         $this->logQueryInDebugMode($query, $input_file);
+        return true;
     }
 
     /**
