@@ -17,3 +17,7 @@ services:
     class: Drupal\woot\Commands\AnnotatedGreetCommand
     tags:
       -  { name: console.command }
+  woot.command_alterer:
+    class: Drupal\woot\Drush\CommandInfoAlterers\WootCommandInfoAlterer
+    tags:
+      -  { name: drush.command_info_alterer }
