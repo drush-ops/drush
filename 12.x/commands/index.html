@@ -5308,7 +5308,7 @@
 <li>Implement the alteration logic in the <code>alterCommandInfo()</code> method.</li>
 <li>Along with the alter code, it's strongly recommended to log a debug message explaining what exactly was altered. This makes things easier on others who may need to debug the interaction of the alter code with other modules. Also it's a good practice to inject the the logger in the class constructor.</li>
 </ol>
-<p>For an example, see <a href="https://github.com/drush-ops/drush/blob/12.x/sut/modules/unish/woot/src/WootCommandInfoAlterer.php">WootCommandInfoAlterer</a> provided by the testing 'woot' module.</p>
+<p>For an example, see <a href="https://github.com/drush-ops/drush/blob/12.x/sut/modules/unish/woot/src/Drush/CommandInfoAlterers/WootCommandInfoAlterer.php">WootCommandInfoAlterer</a> provided by the testing 'woot' module.</p>
 <h2 id="symfony-console-commands">Symfony Console Commands<a class="headerlink" href="#symfony-console-commands" title="Permanent link">&para;</a></h2>
 <p>Drush lists and runs Symfony Console commands, in addition to more typical annotated commands. See <a href="https://github.com/drush-ops/drush/blob/eed106ae4510d5a2df89f8e7fd54b41ffb0aa5fa/tests/integration/AnnotatedCommandCase.php#L178-L180">this test</a> and this <a href="https://github.com/drush-ops/drush/blob/12.x/sut/modules/unish/woot/src/Commands/GreetCommand.php">commandfile</a>.</p>
 <h2 id="auto-discovered-commands-psr4">Auto-discovered commands (PSR4)<a class="headerlink" href="#auto-discovered-commands-psr4" title="Permanent link">&para;</a></h2>
@@ -5392,7 +5392,7 @@ With this configuration in place, global commands may be placed as described in 
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">August 1, 2023</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">September 14, 2023</span>
       
     
   </small>
@@ -5407,7 +5407,7 @@ With this configuration in place, global commands may be placed as described in 
     
         <div class="md-source-date">
             <small>
-                Authors: <span class='git-page-authors git-authors'><a href='mailto:clau.cristea@gmail.com'>Claudiu Cristea</a>, <a href='mailto:greg.1.anderson@greenknowe.org'>Greg Anderson</a>, <a href='mailto:neclimdul@gmail.com'>James Gilliland</a>, <a href='mailto:weitzman@tejasa.com'>Moshe Weitzman</a>, <a href='mailto:1451472+ptmkenny@users.noreply.github.com'>ptmkenny</a></span>
+                Authors: <span class='git-page-authors git-authors'><a href='mailto:adam@adamzimmermann.com'>Adam Zimmermann</a>, <a href='mailto:clau.cristea@gmail.com'>Claudiu Cristea</a>, <a href='mailto:greg.1.anderson@greenknowe.org'>Greg Anderson</a>, <a href='mailto:neclimdul@gmail.com'>James Gilliland</a>, <a href='mailto:weitzman@tejasa.com'>Moshe Weitzman</a>, <a href='mailto:1451472+ptmkenny@users.noreply.github.com'>ptmkenny</a></span>
             </small>
         </div>
     
