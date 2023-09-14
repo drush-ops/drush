@@ -259,7 +259,7 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
     {
         $entityType = $this->input->getArgument('entityType');
         $bundle = $this->input->getArgument('bundle');
-        $showMachineNames = $this->input->getOption('show-machine-names');
+        $showMachineNames = (bool) $this->input->getOption('show-machine-names');
         $choices = $this->getExistingFieldStorageOptions($entityType, $bundle, $showMachineNames);
 
         if (empty($choices)) {
