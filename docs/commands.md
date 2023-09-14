@@ -68,7 +68,7 @@ In the module that wants to alter a command info, add a class that:
 1. The class must implement the `\Consolidation\AnnotatedCommand\CommandInfoAltererInterface`.
 1. Implement the alteration logic in the `alterCommandInfo()` method.
 1. Create a tagged service definition in `drush.services.yml` with the `drush.command_info_alterer` tag for the alterer class.
-   ```ymal
+   ```yaml
    foo.command_alterer:
     class: \Drupal\<module-name>\Drush\CommandInfoAlterers\FooCommandInfoAlterer
     tags:
