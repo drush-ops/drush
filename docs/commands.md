@@ -70,9 +70,9 @@ In the module that wants to alter a command info, add a class that:
 1. Create a tagged service definition in `drush.services.yml` with the `drush.command_info_alterer` tag for the alterer class.
    ```yaml
    foo.command_alterer:
-    class: \Drupal\<module-name>\Drush\CommandInfoAlterers\FooCommandInfoAlterer
-    tags:
-      - { name: drush.command_info_alterer }
+     class: \Drupal\<module-name>\Drush\CommandInfoAlterers\FooCommandInfoAlterer
+     tags:
+       - { name: drush.command_info_alterer }
    ```
 1. Along with the alter code, it's strongly recommended to log a debug message explaining what exactly was altered. This makes things easier on others who may need to debug the interaction of the alter code with other modules. Also it's a good practice to inject the the logger in the class constructor.
 
