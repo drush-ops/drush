@@ -26,11 +26,12 @@ final class DeployCommands extends DrushCommands implements SiteAliasManagerAwar
      * Run several commands after performing a code deployment.
      */
     #[CLI\Command(name: self::DEPLOY)]
+    #[CLI\Option(name: 'ignore-mismatched-config', description: 'Proceed with config:import even if changes made by update hooks will be reverted.')]
     #[CLI\Usage(name: 'drush deploy -v -y', description: 'Run updates with verbose logging and accept all prompts.')]
     #[CLI\Version(version: '10.3')]
     #[CLI\Topics(topics: [DocsCommands::DEPLOY])]
     #[CLI\Bootstrap(level: DrupalBootLevels::FULL)]
-    public function deploy(): void
+    public function deploy(array $options = ['ignore-mismatched-config' => false]): void
     {
         $self = $this->siteAliasManager()->getSelf();
         $redispatchOptions = Drush::redispatchOptions();
@@ -63,7 +64,9 @@ final class DeployCommands extends DrushCommands implements SiteAliasManagerAwar
             $this->logger()->warning(dt('The following config changes will be lost during config import: :config', [
                 ':config' => implode(', ', $configDiff),
             ]));
-            throw new \RuntimeException('Update hooks altered config that is about to be reverted during config import. Aborting.');
+            if (!$options['ignore-mismatched-config']) {
+                throw new \RuntimeException('Update hooks altered config that is about to be reverted during config import. Aborting.');
+            }
         }
 
         $this->logger()->success("Config import start.");
