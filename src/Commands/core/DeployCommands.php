@@ -65,7 +65,7 @@ final class DeployCommands extends DrushCommands implements SiteAliasManagerAwar
                 ':config' => implode(', ', $configDiff),
             ]));
             if (!$options['ignore-mismatched-config']) {
-                throw new \RuntimeException('Update hooks altered config that is about to be reverted during config import. Aborting.');
+                throw new \RuntimeException('Update hooks altered config that is about to be reverted during config import. Use --ignore-mismatched-config to bypass this error. Aborting.');
             }
         }
 
