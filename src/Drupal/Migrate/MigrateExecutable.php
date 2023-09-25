@@ -226,7 +226,7 @@ class MigrateExecutable extends MigrateExecutableBase
      */
     protected function getSourceIdKey(array $source_id): string
     {
-      return implode('-', $source_id);
+        return implode('-', $source_id);
     }
 
     /**
