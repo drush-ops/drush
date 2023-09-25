@@ -214,6 +214,22 @@ class MigrateExecutable extends MigrateExecutableBase
     }
 
     /**
+     * The array key to use to represent Source ID values.
+     *
+     * Helps speed up array searched by serializing the value for a key.
+     *
+     * @param array $source_id
+     *   The Source ID array.
+     *
+     * @return string
+     *   The array key to represent Source ID values.
+     */
+    protected function getSourceIdKey(array $source_id): string
+    {
+      return implode('-', $source_id);
+    }
+
+    /**
      * Handles missing source rows after import.
      *
      * Detect if, before importing, the destination contains rows that are no
@@ -242,7 +258,8 @@ class MigrateExecutable extends MigrateExecutableBase
         $destinationIds = [];
         while ($idMap->valid()) {
             $mapSourceId = $idMap->currentSource();
-            if (!in_array($mapSourceId, $this->allSourceIdValues)) {
+            $sourceIdKey = $this->getSourceIdKey($mapSourceId);
+            if (!isset($this->allSourceIdValues[$sourceIdKey])) {
                 $destinationIds[] = $idMap->currentDestination();
             }
             $idMap->next();
@@ -479,7 +496,8 @@ class MigrateExecutable extends MigrateExecutableBase
 
         // Collect all Source ID values so that we can handle missing source
         // rows post import.
-        $this->allSourceIdValues[] = $sourceId;
+        $sourceIdKey = $this->getSourceIdKey($sourceId);
+        $this->allSourceIdValues[$sourceIdKey] = $sourceId;
 
         if ($this->feedback && $this->counter && $this->counter % $this->feedback === 0) {
             $this->importFeedbackMessage(false);
