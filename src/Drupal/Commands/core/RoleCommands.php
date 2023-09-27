@@ -105,6 +105,9 @@ class RoleCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
      * then all of the roles that have been granted that permission will be listed.
      *
      * @command role:list
+     * @param $machine_name The role to display.
+     * @usage drush role:list authenticated
+     *   Display permissions for the 'authenticated' role.
      * @usage drush role:list --filter='administer nodes'
      *   Display a list of roles that have the administer nodes permission assigned.
      * @aliases rls,role-list
@@ -115,10 +118,17 @@ class RoleCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
      *
      * @filter-default-field perms
      */
-    public function roleList($options = ['format' => 'yaml']): RowsOfFields
+    public function roleList($machine_name = '', $options = ['format' => 'yaml']): RowsOfFields
     {
         $rows = [];
-        $roles = Role::loadMultiple();
+
+        if ($machine_name) {
+            $roles = Role::loadMultiple([$machine_name]);
+        }
+        else {
+            $roles = Role::loadMultiple();
+        }
+
         foreach ($roles as $role) {
             $rows[$role->id()] = [
             'label' => $role->label(),
