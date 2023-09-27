@@ -124,8 +124,7 @@ class RoleCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
 
         if ($machine_name) {
             $roles = Role::loadMultiple([$machine_name]);
-        }
-        else {
+        } else {
             $roles = Role::loadMultiple();
         }
 
