@@ -108,14 +108,21 @@ final class RoleCommands extends DrushCommands implements SiteAliasManagerAwareI
      * then all of the roles that have been granted that permission will be listed.
      */
     #[CLI\Command(name: self::LIST, aliases: ['rls', 'role-list'])]
+    #[CLI\Argument(name: 'machine_name', description: 'The role to display.')]
+    #[CLI\Usage(name: "drush role:list authenticated", description: 'Display permissions for the authenticated role.')]
     #[CLI\Usage(name: "drush role:list --filter='administer nodes'", description: 'Display a list of roles that have the administer nodes permission assigned.')]
     #[CLI\FieldLabels(labels: ['rid' => 'ID', 'label' => 'Role Label', 'perms' => 'Permissions'])]
     #[CLI\FilterDefaultField(field: 'perms')]
     #[CLI\Bootstrap(level: DrupalBootLevels::FULL)]
-    public function roleList($options = ['format' => 'yaml']): RowsOfFields
+    public function roleList($machine_name = '', $options = ['format' => 'yaml']): RowsOfFields
     {
         $rows = [];
-        $roles = Role::loadMultiple();
+        if ($machine_name) {
+            $roles = Role::loadMultiple([$machine_name]);
+        }
+        else {
+            $roles = Role::loadMultiple();
+        }
         foreach ($roles as $role) {
             $rows[$role->id()] = [
             'label' => $role->label(),
