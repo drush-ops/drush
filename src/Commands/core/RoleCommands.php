@@ -104,21 +104,15 @@ final class RoleCommands extends DrushCommands implements SiteAliasManagerAwareI
      * Display all roles and their permissions.
      */
     #[CLI\Command(name: self::LIST, aliases: ['rls', 'role-list'])]
-    #[CLI\Argument(name: 'machine_name', description: 'The role to display.')]
-    #[CLI\Usage(name: "drush role:list authenticated", description: 'Display permissions for the authenticated role.')]
     #[CLI\Usage(name: "drush role:list --filter='administer nodes'", description: 'Display a list of roles that have the administer nodes permission assigned.')]
     #[CLI\Usage(name: "drush role:list --filter='rid=anonymous'", description: 'Display only the anonymous role.')]
     #[CLI\FieldLabels(labels: ['rid' => 'ID', 'label' => 'Role Label', 'perms' => 'Permissions'])]
     #[CLI\FilterDefaultField(field: 'perms')]
     #[CLI\Bootstrap(level: DrupalBootLevels::FULL)]
-    public function roleList($machine_name = '', $options = ['format' => 'yaml']): RowsOfFields
+    public function roleList($options = ['format' => 'yaml']): RowsOfFields
     {
         $rows = [];
-        if ($machine_name) {
-            $roles = Role::loadMultiple([$machine_name]);
-        } else {
-            $roles = Role::loadMultiple();
-        }
+        $roles = Role::loadMultiple([$machine_name]);
         foreach ($roles as $role) {
             $rows[$role->id()] = [
                 'rid' => $role->id(),
