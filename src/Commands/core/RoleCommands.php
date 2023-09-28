@@ -101,7 +101,7 @@ final class RoleCommands extends DrushCommands implements SiteAliasManagerAwareI
     }
 
     /**
-     * Display all roles and their permissions.
+     * Display roles and their permissions.
      */
     #[CLI\Command(name: self::LIST, aliases: ['rls', 'role-list'])]
     #[CLI\Usage(name: "drush role:list --filter='administer nodes'", description: 'Display a list of roles that have the administer nodes permission assigned.')]
