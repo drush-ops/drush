@@ -420,7 +420,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>                </
                 <div class="col-md-8">
                     <a href="#method_roleList">roleList</a>($options = [&#039;format&#039; =&gt; &#039;yaml&#039;])
         
-                                            <p><p>Display a list of all roles defined on the system.</p></p>                </div>
+                                            <p><p>Display roles and their permissions.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -1067,7 +1067,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_roleList">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/RoleCommands.php#L110">at line 110</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/RoleCommands.php#L106">at line 106</a></div>
         <code>                    <abbr title="Consolidation\OutputFormatters\StructuredData\RowsOfFields">RowsOfFields</abbr>
     <strong>roleList</strong>($options = [&#039;format&#039; =&gt; &#039;yaml&#039;])
         </code>
@@ -1077,9 +1077,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             
 
         <div class="method-description">
-                            <p><p>Display a list of all roles defined on the system.</p></p>                <p><p>If a role name is provided as an argument, then all of the permissions of
-that role will be listed.  If a permission name is provided as an option,
-then all of the roles that have been granted that permission will be listed.</p></p>        
+                            <p><p>Display roles and their permissions.</p></p>                        
         </div>
         <div class="tags">
                             <h4>Parameters</h4>
@@ -1111,7 +1109,7 @@ then all of the roles that have been granted that permission will be listed.</p>
             </div>
                     <div class="method-item">
                     <h3 id="method_renderPermsCell">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/RoleCommands.php#L133">at line 133</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/RoleCommands.php#L131">at line 131</a></div>
         <code>                    string
     <strong>renderPermsCell</strong>($key, $cellData, <abbr title="Consolidation\OutputFormatters\Options\FormatterOptions">FormatterOptions</abbr> $options)
         </code>
@@ -1164,7 +1162,7 @@ then all of the roles that have been granted that permission will be listed.</p>
             </div>
                     <div class="method-item">
                     <h3 id="method_roleComplete">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/RoleCommands.php#L141">at line 141</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/RoleCommands.php#L139">at line 139</a></div>
         <code>                    void
     <strong>roleComplete</strong>(<abbr title="Symfony\Component\Console\Completion\CompletionInput">CompletionInput</abbr> $input, <abbr title="Symfony\Component\Console\Completion\CompletionSuggestions">CompletionSuggestions</abbr> $suggestions)
         </code>
