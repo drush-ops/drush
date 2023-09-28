@@ -112,7 +112,7 @@ final class RoleCommands extends DrushCommands implements SiteAliasManagerAwareI
     public function roleList($options = ['format' => 'yaml']): RowsOfFields
     {
         $rows = [];
-        $roles = Role::loadMultiple([$machine_name]);
+        $roles = Role::loadMultiple();
         foreach ($roles as $role) {
             $rows[$role->id()] = [
                 'rid' => $role->id(),
