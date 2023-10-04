@@ -100,16 +100,13 @@ class RoleCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
     /**
      * Display a list of all roles defined on the system.
      *
-     * If a role name is provided as an argument, then all of the permissions of
-     * that role will be listed.  If a permission name is provided as an option,
-     * then all of the roles that have been granted that permission will be listed.
-     *
      * @command role:list
-     * @param $machine_name The role to display.
      * @usage drush role:list authenticated
      *   Display permissions for the 'authenticated' role.
      * @usage drush role:list --filter='administer nodes'
-     *   Display a list of roles that have the administer nodes permission assigned.
+     *   Display a list of roles that have the 'administer nodes' permission assigned.
+     * @usage drush role:list --filter='rid=anonymous'
+     *   Display only the 'anonymous' role.
      * @aliases rls,role-list
      * @field-labels
      *   rid: ID
@@ -118,20 +115,16 @@ class RoleCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
      *
      * @filter-default-field perms
      */
-    public function roleList($machine_name = '', $options = ['format' => 'yaml']): RowsOfFields
+    public function roleList($options = ['format' => 'yaml']): RowsOfFields
     {
         $rows = [];
 
-        if ($machine_name) {
-            $roles = Role::loadMultiple([$machine_name]);
-        } else {
-            $roles = Role::loadMultiple();
-        }
-
+        $roles = Role::loadMultiple();
         foreach ($roles as $role) {
             $rows[$role->id()] = [
-            'label' => $role->label(),
-            'perms' => $role->getPermissions(),
+                'rid' => $role->id(),
+                'label' => $role->label(),
+                'perms' => $role->getPermissions(),
             ];
         }
         $result = new RowsOfFields($rows);
