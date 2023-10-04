@@ -86,7 +86,7 @@
 
     
     <p>    abstract     class
-    <strong>BaseBoot</strong>        implements        <a href="../../Drush/Boot/Boot.html"><abbr title="Drush\Boot\Boot">Boot</abbr></a>, <abbr title="Psr\Log\LoggerAwareInterface">LoggerAwareInterface</abbr>        (<a href="https://github.com/drush-ops/drush/blob/12.x/src/Boot/BaseBoot.php">View source</a>)
+    <strong>BaseBoot</strong>        implements        <a href="../../Drush/Boot/Boot.html"><abbr title="Drush\Boot\Boot">Boot</abbr></a>, <abbr title="Psr\Log\LoggerAwareInterface">LoggerAwareInterface</abbr>        (<a href="https://github.com/drush-ops/drush/blob/11.x/src/Boot/BaseBoot.php">View source</a>)
 </p>
 
         
@@ -189,7 +189,7 @@ if the user did not explicitly specify a URI.</p></p>                </div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    void
+                    
                 </div>
                 <div class="col-md-8">
                     <a href="#method_setPhase">setPhase</a>(int $phase)
@@ -200,10 +200,10 @@ if the user did not explicitly specify a URI.</p></p>                </div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    bool
+                    true
                 </div>
                 <div class="col-md-8">
-                    <a href="#method_validRoot">validRoot</a>(string|null $path)
+                    <a href="#method_validRoot">validRoot</a>($path)
         
                                             <p><p>This function determines if the specified path points to
 the root directory of a CMS that can be bootstrapped by
@@ -240,6 +240,20 @@ the specific subclass that implements it.</p></p>                </div>
         
                                             <p><p>Called by Drush if a command is not found, or if the
 command was found, but did not meet requirements.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    array
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_bootstrapPhases">bootstrapPhases</a>()
+        
+                                            <p><p>Returns an array that determines what bootstrap phases
+are necessary to bootstrap this CMS.  This array
+should map from a numeric phase to the name of a method
+(string) in the Boot class that handles the bootstrap
+phase.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -304,7 +318,7 @@ phase index constant (e.g. DRUSH_BOOTSTRAP_DRUPAL_FULL).</p></p>                
             <div id="method-details">
                     <div class="method-item">
                     <h3 id="method___construct">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Boot/BaseBoot.php#L17">at line 17</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Boot/BaseBoot.php#L15">at line 15</a></div>
         <code>                    
     <strong>__construct</strong>()
         </code>
@@ -328,7 +342,7 @@ phase index constant (e.g. DRUSH_BOOTSTRAP_DRUPAL_FULL).</p></p>                
             </div>
                     <div class="method-item">
                     <h3 id="method_findUri">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Boot/BaseBoot.php#L22">at line 22</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Boot/BaseBoot.php#L20">at line 20</a></div>
         <code>                    
     <strong>findUri</strong>($root, $uri)
         </code>
@@ -367,7 +381,7 @@ if the user did not explicitly specify a URI.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_getUri">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Boot/BaseBoot.php#L27">at line 27</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Boot/BaseBoot.php#L25">at line 25</a></div>
         <code>                    string
     <strong>getUri</strong>()
         </code>
@@ -400,7 +414,7 @@ if the user did not explicitly specify a URI.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_setUri">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Boot/BaseBoot.php#L32">at line 32</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Boot/BaseBoot.php#L30">at line 30</a></div>
         <code>                    
     <strong>setUri</strong>(string $uri)
         </code>
@@ -433,7 +447,7 @@ if the user did not explicitly specify a URI.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_getPhase">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Boot/BaseBoot.php#L37">at line 37</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Boot/BaseBoot.php#L35">at line 35</a></div>
         <code>                    int
     <strong>getPhase</strong>()
         </code>
@@ -466,8 +480,8 @@ if the user did not explicitly specify a URI.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_setPhase">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Boot/BaseBoot.php#L42">at line 42</a></div>
-        <code>                    void
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Boot/BaseBoot.php#L40">at line 40</a></div>
+        <code>                    
     <strong>setPhase</strong>(int $phase)
         </code>
     </h3>
@@ -491,15 +505,6 @@ if the user did not explicitly specify a URI.</p></p>
             </table>
 
             
-                            <h4>Return Value</h4>
-
-                    <table class="table table-condensed">
-        <tr>
-            <td>void</td>
-            <td></td>
-        </tr>
-    </table>
-
             
             
             
@@ -509,9 +514,9 @@ if the user did not explicitly specify a URI.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_validRoot">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Boot/BaseBoot.php#L47">at line 47</a></div>
-        <code>                    bool
-    <strong>validRoot</strong>(string|null $path)
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Boot/BaseBoot.php#L45">at line 45</a></div>
+        <code>                    true
+    <strong>validRoot</strong>($path)
         </code>
     </h3>
     <div class="details">    
@@ -529,9 +534,9 @@ one class will return TRUE for any given $path.</p></p>
 
                     <table class="table table-condensed">
                     <tr>
-                <td>string|null</td>
-                <td>$path</td>
                 <td></td>
+                <td>$path</td>
+                <td><p>to a directory to test</p></td>
             </tr>
             </table>
 
@@ -540,8 +545,8 @@ one class will return TRUE for any given $path.</p></p>
 
                     <table class="table table-condensed">
         <tr>
-            <td>bool</td>
-            <td></td>
+            <td>true</td>
+            <td><p>if $path is a valid root directory</p></td>
         </tr>
     </table>
 
@@ -554,7 +559,7 @@ one class will return TRUE for any given $path.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_getVersion">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Boot/BaseBoot.php#L51">at line 51</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Boot/BaseBoot.php#L49">at line 49</a></div>
         <code>                    string|null
     <strong>getVersion</strong>(string $root)
         </code>
@@ -596,7 +601,7 @@ one class will return TRUE for any given $path.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_commandDefaults">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Boot/BaseBoot.php#L55">at line 55</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Boot/BaseBoot.php#L53">at line 53</a></div>
         <code>                    
     <strong>commandDefaults</strong>()
         </code>
@@ -620,7 +625,7 @@ one class will return TRUE for any given $path.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_reportCommandError">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Boot/BaseBoot.php#L59">at line 59</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Boot/BaseBoot.php#L57">at line 57</a></div>
         <code>                    
     <strong>reportCommandError</strong>($command)
         </code>
@@ -655,8 +660,44 @@ to be overridden.</p></p>
 
             </div>
                     <div class="method-item">
+                    <h3 id="method_bootstrapPhases">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Boot/BaseBoot.php#L62">at line 62</a></div>
+        <code>                    array
+    <strong>bootstrapPhases</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Returns an array that determines what bootstrap phases
+are necessary to bootstrap this CMS.  This array
+should map from a numeric phase to the name of a method
+(string) in the Boot class that handles the bootstrap
+phase.</p></p>                        
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>array</td>
+            <td><p>of PHASE index =&gt; method name.</p></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
                     <h3 id="method_bootstrapPhaseMap">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Boot/BaseBoot.php#L64">at line 64</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Boot/BaseBoot.php#L69">at line 69</a></div>
         <code>                    array
     <strong>bootstrapPhaseMap</strong>()
         </code>
@@ -690,7 +731,7 @@ phase index constant (e.g. DRUSH_BOOTSTRAP_DRUPAL_FULL).</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_lookUpPhaseIndex">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Boot/BaseBoot.php#L78">at line 78</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Boot/BaseBoot.php#L83">at line 83</a></div>
         <code>                    
     <strong>lookUpPhaseIndex</strong>($phase)
         </code>
@@ -723,7 +764,7 @@ phase index constant (e.g. DRUSH_BOOTSTRAP_DRUPAL_FULL).</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_bootstrapDrush">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Boot/BaseBoot.php#L94">at line 94</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Boot/BaseBoot.php#L96">at line 96</a></div>
         <code>                    
     <strong>bootstrapDrush</strong>()
         </code>
@@ -747,7 +788,7 @@ phase index constant (e.g. DRUSH_BOOTSTRAP_DRUPAL_FULL).</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_hasRegisteredSymfonyCommand">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Boot/BaseBoot.php#L98">at line 98</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Boot/BaseBoot.php#L100">at line 100</a></div>
         <code>            protected        bool
     <strong>hasRegisteredSymfonyCommand</strong>($application, $name)
         </code>
@@ -795,7 +836,7 @@ phase index constant (e.g. DRUSH_BOOTSTRAP_DRUPAL_FULL).</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_terminate">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Boot/BaseBoot.php#L111">at line 111</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Boot/BaseBoot.php#L113">at line 113</a></div>
         <code>                    void
     <strong>terminate</strong>()
         </code>

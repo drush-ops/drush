@@ -86,16 +86,59 @@
 
     
     <p>        class
-    <strong>DrushCommandFile</strong>        extends <abbr title="DrupalCodeGenerator\Command\BaseGenerator">BaseGenerator</abbr>        (<a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/generate/Generators/Drush/DrushCommandFile.php">View source</a>)
+    <strong>DrushCommandFile</strong>        extends <abbr title="DrupalCodeGenerator\Command\ModuleGenerator">ModuleGenerator</abbr>        (<a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/generate/Generators/Drush/DrushCommandFile.php">View source</a>)
 </p>
 
         
     
         
 
+            <div class="description">
+            <p><p>Implements drush-command-file command.</p></p>                    </div>
             
         
     
+            <h2>Properties</h2>
+
+            <table class="table table-condensed">
+                    <tr>
+                <td class="type" id="property_name">
+                                        protected                                        
+                                                                                
+                                    </td>
+                <td>$name</td>
+                <td class="last"></td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_description">
+                                        protected                                        
+                                                                                
+                                    </td>
+                <td>$description</td>
+                <td class="last"></td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_alias">
+                                        protected                                        
+                                                                                
+                                    </td>
+                <td>$alias</td>
+                <td class="last"></td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_templatePath">
+                                        protected                                        
+                                                                                
+                                    </td>
+                <td>$templatePath</td>
+                <td class="last"></td>
+                <td></td>
+            </tr>
+            </table>
+
     
             <h2>Methods</h2>
 
@@ -105,9 +148,31 @@
                     void
                 </div>
                 <div class="col-md-8">
-                    <a href="#method_generate">generate</a>(array $vars, <abbr title="DrupalCodeGenerator\Asset\AssetCollection">AssetCollection</abbr> $assets)
+                    <a href="#method_generate">generate</a>(array $vars)
         
                                             <p>{@inheritdoc}</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    string
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_getOwningModulePath">getOwningModulePath</a>(array $vars)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    array
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_adjustCommands">adjustCommands</a>(array $commands)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
                 <div class="col-md-2"></div>
             </div>
             </div>
@@ -118,9 +183,9 @@
             <div id="method-details">
                     <div class="method-item">
                     <h3 id="method_generate">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/generate/Generators/Drush/DrushCommandFile.php#L25">at line 25</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/generate/Generators/Drush/DrushCommandFile.php#L22">at line 22</a></div>
         <code>            protected        void
-    <strong>generate</strong>(array $vars, <abbr title="DrupalCodeGenerator\Asset\AssetCollection">AssetCollection</abbr> $assets)
+    <strong>generate</strong>(array $vars)
         </code>
     </h3>
     <div class="details">    
@@ -139,9 +204,47 @@
                 <td>$vars</td>
                 <td></td>
             </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>void</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getOwningModulePath">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/generate/Generators/Drush/DrushCommandFile.php#L49">at line 49</a></div>
+        <code>            protected        string
+    <strong>getOwningModulePath</strong>(array $vars)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
                     <tr>
-                <td><abbr title="DrupalCodeGenerator\Asset\AssetCollection">AssetCollection</abbr></td>
-                <td>$assets</td>
+                <td>array</td>
+                <td>$vars</td>
                 <td></td>
             </tr>
             </table>
@@ -151,7 +254,50 @@
 
                     <table class="table table-condensed">
         <tr>
-            <td>void</td>
+            <td>string</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_adjustCommands">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Commands/generate/Generators/Drush/DrushCommandFile.php#L63">at line 63</a></div>
+        <code>            protected        array
+    <strong>adjustCommands</strong>(array $commands)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>array</td>
+                <td>$commands</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>array</td>
             <td></td>
         </tr>
     </table>
