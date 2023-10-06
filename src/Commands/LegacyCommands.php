@@ -27,4 +27,14 @@ final class LegacyCommands extends DrushCommands
     public function secphp(): void
     {
     }
+
+    /**
+     * pm:security has been removed. Please use `composer audit` command. See https://www.drupal.org/project/project_composer/issues/3301876.
+     */
+    #[CLI\Command(name: 'pm:security', aliases: ['sec', 'pm-security'])]
+    #[CLI\Help(hidden: true)]
+    #[CLI\HookSelector(name: 'obsolete')]
+    public function sec(): void
+    {
+    }
 }
