@@ -3,7 +3,6 @@ COMMANDS
 pm:install: GOOD. testEnDisUnList().
 pm:uninstall: GOOD. testEnDisUnList().
 pm:list: GOOD. testEnDisUnList().
-pm:security: GOOD.
 
 sql:cli: GOOD
 sql:connect: GOOD
