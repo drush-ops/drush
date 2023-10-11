@@ -1,4 +1,5 @@
 tests/phpunit.xml
+.ddev/config.personal.yaml
 vendor
 box.phar
 drush.phar
