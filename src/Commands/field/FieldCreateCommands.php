@@ -321,6 +321,10 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
         $choices = [];
 
         foreach ($definitions as $definition) {
+            if (isset($definition['no_ui']) && $definition['no_ui'] === true) {
+                continue;
+            }
+
             $label = $this->input->getOption('show-machine-names') ? $definition['id'] : $definition['label']->render();
             $choices[$definition['id']] = $label;
         }
