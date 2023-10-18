@@ -96,9 +96,9 @@ class ProcessManager extends ConsolidationProcessManager
     protected function relativePathToVendorBinDrush()
     {
         $absoluteVendorBin = $_composer_bin_dir ?? Path::join($this->getConfig()->get('drush.vendor-dir'), 'bin');
-        $basePath = $this->getConfig()->get('drush.base-dir');
+        $projectRoot = $this->getConfig()->get('runtime.project');
 
-        $relativeVendorBin = Path::makeRelative($absoluteVendorBin, $basePath);
+        $relativeVendorBin = Path::makeRelative($absoluteVendorBin, $projectRoot);
 
         return Path::join($relativeVendorBin, 'drush');
     }
