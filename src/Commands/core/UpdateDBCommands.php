@@ -11,13 +11,16 @@ use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
 use Drupal\Core\Database\Database;
 use Drupal\Core\Utility\Error;
 use Drush\Attributes as CLI;
+use Drush\Boot\BootstrapManager;
 use Drush\Boot\DrupalBootLevels;
 use Drush\Commands\DrushCommands;
 use Drush\Drupal\DrupalUtil;
 use Drush\Drush;
 use Drush\Exceptions\UserAbortException;
 use Drush\Log\SuccessInterface;
+use Psr\Container\ContainerInterface as DrushContainer;
 use Psr\Log\LogLevel;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 final class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInterface
 {
@@ -26,6 +29,21 @@ final class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAw
     const UPDATEDB = 'updatedb';
     const STATUS = 'updatedb:status';
     const BATCH_PROCESS = 'updatedb:batch-process';
+
+    public function __construct(
+        private BootstrapManager $bootstrapManager,
+    ) {
+        parent::__construct();
+    }
+
+    public static function create(ContainerInterface $container, DrushContainer $drush_container): self
+    {
+        $commandHandler = new static(
+            $drush_container->get('bootstrap.manager'),
+        );
+
+        return $commandHandler;
+    }
 
     /**
      * Note - can't inject @database since a method below is static.
@@ -84,7 +102,7 @@ final class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAw
         // end. This ensures that we are compatible with updates that rely
         // on this behavior.
         if ($options['cache-clear']) {
-            drupal_flush_all_caches();
+            drupal_flush_all_caches($this->bootstrapManager->bootstrap()->getKernel());
         }
 
         return $success ? self::EXIT_SUCCESS : self::EXIT_FAILURE;
