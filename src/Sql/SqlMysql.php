@@ -35,10 +35,14 @@ class SqlMysql extends SqlBase
         return 'mysql';
     }
 
-    public function dumpProgram() {
+    public function dumpProgram(): string
+    {
         return 'mysqldump';
     }
 
+    /**
+     * The server version.
+     */
     public function getVersion(): string
     {
         return $this->version;
