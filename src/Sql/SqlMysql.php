@@ -8,11 +8,49 @@ use PDO;
 
 class SqlMysql extends SqlBase
 {
+    protected string $version;
+
     public string $queryExtra = '-A';
+
+    /**
+     * A factory method which creates a mysql or mariadb instance as needed.
+     */
+    public static function make(array $dbSpec, array $options)
+    {
+        // First get a MySQL instance
+        $instance = new static($dbSpec, $options);
+        $sql = 'SELECT VERSION();"';
+        $instance->alwaysQuery($sql);
+        $out = trim($instance->getProcess()->getOutput());
+        if (str_contains($out, 'MariaDB')) {
+            // Replace with a MariaDB driver.
+            $instance = new SqlMariaDB($dbSpec, $options);
+        }
+        $instance->setVersion($out);
+        return $instance;
+    }
 
     public function command(): string
     {
         return 'mysql';
+    }
+
+    public function dumpProgram(): string
+    {
+        return 'mysqldump';
+    }
+
+    /**
+     * The server version.
+     */
+    public function getVersion(): string
+    {
+        return $this->version;
+    }
+
+    public function setVersion(string $version): void
+    {
+        $this->version = $version;
     }
 
     public function creds($hide_password = true): string
@@ -160,7 +198,7 @@ EOT;
         // The ordered-dump option is only supported by MySQL for now.
         $ordered_dump = $this->getOption('ordered-dump');
 
-        $exec = 'mysqldump ';
+        $exec = $this->dumpProgram() . ' ';
         // mysqldump wants 'databasename' instead of 'database=databasename' for no good reason.
         $only_db_name = str_replace('--database=', ' ', $this->creds());
         $exec .= $only_db_name;
