@@ -17,5 +17,4 @@ class SqlMariaDB extends SqlMysql
         }
         return parent::dumpProgram();
     }
-
 }
