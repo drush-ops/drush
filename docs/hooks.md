@@ -1,6 +1,6 @@
 
 ## Core Hooks
-All commandfiles may implement methods that are called by Drush at various times in the request cycle. To implement one, add a `#[CLI\Hook(type: HookManager::ARGUMENT_VALIDATOR, target: 'pm:install')]` (for example) to the top of your method.
+All commandfiles may implement methods that are called by Drush at various times in the request cycle. To implement one, add a `#[CLI\Hook(type: HookManager::ARGUMENT_VALIDATOR, target: 'pm:install')]` (for example) to the top of your method. The class constants for hooks are located in [HookManager](https://github.com/consolidation/annotated-command/blob/e01152f698eff4cb5df3ebfe5e097ef335dbd3c9/src/Hooks/HookManager.php#L30-L57). 
 
 - [Documentation about available hooks](https://github.com/consolidation/annotated-command#hooks).
 - To see how core commands implement a hook, you can [search the Drush source code](https://github.com/drush-ops/drush/search?q="%40#[CLI\Hook]"&type=Code&utf8=%E2%9C%93).
