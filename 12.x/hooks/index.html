@@ -5222,7 +5222,7 @@
   <h1>Hooks</h1>
 
 <h2 id="core-hooks">Core Hooks<a class="headerlink" href="#core-hooks" title="Permanent link">&para;</a></h2>
-<p>All commandfiles may implement methods that are called by Drush at various times in the request cycle. To implement one, add a <code>#[CLI\Hook(type: HookManager::ARGUMENT_VALIDATOR, target: 'pm:install')]</code> (for example) to the top of your method.</p>
+<p>All commandfiles may implement methods that are called by Drush at various times in the request cycle. To implement one, add a <code>#[CLI\Hook(type: HookManager::ARGUMENT_VALIDATOR, target: 'pm:install')]</code> (for example) to the top of your method. The class constants for hooks are located in <a href="https://github.com/consolidation/annotated-command/blob/e01152f698eff4cb5df3ebfe5e097ef335dbd3c9/src/Hooks/HookManager.php#L30-L57">HookManager</a>. </p>
 <ul>
 <li><a href="https://github.com/consolidation/annotated-command#hooks">Documentation about available hooks</a>.</li>
 <li>To see how core commands implement a hook, you can <a href="https://github.com/drush-ops/drush/search?q=&quot;%40#[CLI\Hook]&quot;&amp;type=Code&amp;utf8=%E2%9C%93">search the Drush source code</a>.</li>
@@ -5280,7 +5280,7 @@
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">August 23, 2023</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">October 25, 2023</span>
       
     
   </small>
