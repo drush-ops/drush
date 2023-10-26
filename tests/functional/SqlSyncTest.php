@@ -66,7 +66,7 @@ class SqlSyncTest extends CommandUnishTestCase
         // Test simulated remote invoke with a remote runner.
         $this->drush(SqlSyncCommands::SYNC, ['@synctest.remote', '@synctest.local'], $options, 'user@server/path/to/drupal#sitename');
         $output = $this->getSimplifiedErrorOutput();
-        $this->assertStringContainsString("[notice] Simulating: ssh -o PasswordAuthentication=no user@server '/path/to/drupal/vendor/bin/drush --no-interaction sql:sync @synctest.remote @synctest.local --uri=sitename'", $output);
+        $this->assertStringContainsString("[notice] Simulating: ssh -o PasswordAuthentication=no user@server '/path/to/vendor/bin/drush --no-interaction sql:sync @synctest.remote @synctest.local --uri=sitename'", $output);
     }
 
     /**
