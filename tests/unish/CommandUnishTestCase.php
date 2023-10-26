@@ -189,7 +189,7 @@ abstract class CommandUnishTestCase extends UnishTestCase
             $cmd[] = '2>' . $this->bitBucket();
         }
         // Remove NULLs
-        $exec = @array_filter($cmd, 'strlen');
+        $exec = array_filter($cmd, fn ($value) => !is_null($value));
         $cmd = implode(' ', $exec);
         return [$cmd, $coverage_file];
     }
