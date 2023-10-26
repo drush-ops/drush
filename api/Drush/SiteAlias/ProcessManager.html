@@ -98,10 +98,46 @@
             
         
     
+            <h2>Properties</h2>
+
+            <table class="table table-condensed">
+                    <tr>
+                <td class="type" id="property_drupalFinder">
+                                        protected                                        
+                                                                                
+                                    </td>
+                <td>$drupalFinder</td>
+                <td class="last"></td>
+                <td></td>
+            </tr>
+            </table>
+
     
             <h2>Methods</h2>
 
             <div class="container-fluid underlined">
+                    <div class="row">
+                <div class="col-md-2 type">
+                    void
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_setDrupalFinder">setDrupalFinder</a>($drupalFinder)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_getDrupalFinder">getDrupalFinder</a>()
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
                     <div class="row">
                 <div class="col-md-2 type">
                     <abbr title="Consolidation\SiteProcess\ProcessBase">ProcessBase</abbr>
@@ -139,7 +175,7 @@
                 <div class="col-md-8">
                     <a href="#method_relativePathToVendorBinDrush">relativePathToVendorBinDrush</a>()
         
-                                            <p><p>Return the relative path to 'vendor/bin/drush' from the project root.</p></p>                </div>
+                                            <p><p>Return the relative path to 'vendor/bin/drush' from the Drupal root.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -190,8 +226,75 @@
 
             <div id="method-details">
                     <div class="method-item">
+                    <h3 id="method_setDrupalFinder">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/SiteAlias/ProcessManager.php#L23">at line 23</a></div>
+        <code>                    void
+    <strong>setDrupalFinder</strong>($drupalFinder)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$drupalFinder</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>void</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getDrupalFinder">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/SiteAlias/ProcessManager.php#L28">at line 28</a></div>
+        <code>                    
+    <strong>getDrupalFinder</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
                     <h3 id="method_drush">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/SiteAlias/ProcessManager.php#L24">at line 24</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/SiteAlias/ProcessManager.php#L36">at line 36</a></div>
         <code>                    <abbr title="Consolidation\SiteProcess\ProcessBase">ProcessBase</abbr>
     <strong>drush</strong>(<abbr title="Consolidation\SiteAlias\SiteAliasInterface">SiteAliasInterface</abbr> $siteAlias, string $command, array $args = [], array $options = [], array $options_double_dash = [])
         </code>
@@ -253,7 +356,7 @@
             </div>
                     <div class="method-item">
                     <h3 id="method_drushSiteProcess">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/SiteAlias/ProcessManager.php#L36">at line 36</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/SiteAlias/ProcessManager.php#L48">at line 48</a></div>
         <code>                    <abbr title="Consolidation\SiteProcess\ProcessBase">ProcessBase</abbr>
     <strong>drushSiteProcess</strong>(<abbr title="Consolidation\SiteAlias\SiteAliasInterface">SiteAliasInterface</abbr> $siteAlias, array $args = [], array $options = [], array $options_double_dash = [])
         </code>
@@ -318,7 +421,7 @@ which does not have specific knowledge about which argument is the command.</td>
             </div>
                     <div class="method-item">
                     <h3 id="method_drushScript">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/SiteAlias/ProcessManager.php#L60">at line 60</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/SiteAlias/ProcessManager.php#L72">at line 72</a></div>
         <code>                    
     <strong>drushScript</strong>(<abbr title="Consolidation\SiteAlias\SiteAliasInterface">SiteAliasInterface</abbr> $siteAlias)
         </code>
@@ -351,7 +454,7 @@ which does not have specific knowledge about which argument is the command.</td>
             </div>
                     <div class="method-item">
                     <h3 id="method_relativePathToVendorBinDrush">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/SiteAlias/ProcessManager.php#L96">at line 96</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/SiteAlias/ProcessManager.php#L108">at line 108</a></div>
         <code>            protected        
     <strong>relativePathToVendorBinDrush</strong>()
         </code>
@@ -361,7 +464,7 @@ which does not have specific knowledge about which argument is the command.</td>
             
 
         <div class="method-description">
-                            <p><p>Return the relative path to 'vendor/bin/drush' from the project root.</p></p>                        
+                            <p><p>Return the relative path to 'vendor/bin/drush' from the Drupal root.</p></p>                        
         </div>
         <div class="tags">
             
@@ -374,7 +477,7 @@ which does not have specific knowledge about which argument is the command.</td>
             </div>
                     <div class="method-item">
                     <h3 id="method_siteProcess">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/SiteAlias/ProcessManager.php#L112">at line 112</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/SiteAlias/ProcessManager.php#L123">at line 123</a></div>
         <code>                    <abbr title="Consolidation\SiteProcess\ProcessBase">ProcessBase</abbr>
     <strong>siteProcess</strong>(<abbr title="Consolidation\SiteAlias\SiteAliasInterface">SiteAliasInterface</abbr> $siteAlias, $args = [], $options = [], $optionsPassedAsArgs = [])
         </code>
@@ -432,7 +535,7 @@ which does not have specific knowledge about which argument is the command.</td>
             </div>
                     <div class="method-item">
                     <h3 id="method_process">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/SiteAlias/ProcessManager.php#L132">at line 132</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/SiteAlias/ProcessManager.php#L143">at line 143</a></div>
         <code>                    <abbr title="Consolidation\SiteProcess\ProcessBase">ProcessBase</abbr>
     <strong>process</strong>(array $commandline, string|null $cwd = null, array $env = null, mixed|null $input = null, int|float|null $timeout = 60)
         </code>
@@ -496,7 +599,7 @@ Call this method to get a Process and then call setters as needed.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_shell">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/SiteAlias/ProcessManager.php#L146">at line 146</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/SiteAlias/ProcessManager.php#L157">at line 157</a></div>
         <code>                    <abbr title="Consolidation\SiteProcess\ProcessBase">ProcessBase</abbr>
     <strong>shell</strong>(string $command, string|null $cwd = null, array $env = null, mixed|null $input = null, int|float|null $timeout = 60)
         </code>
@@ -558,7 +661,7 @@ Call this method to get a Process and then call setters as needed.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_configureProcess">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/SiteAlias/ProcessManager.php#L155">at line 155</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/SiteAlias/ProcessManager.php#L166">at line 166</a></div>
         <code>        static    protected        <abbr title="Consolidation\SiteProcess\ProcessBase">ProcessBase</abbr>
     <strong>configureProcess</strong>(<abbr title="Consolidation\SiteProcess\ProcessBase">ProcessBase</abbr> $process)
         </code>

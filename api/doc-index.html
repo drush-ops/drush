@@ -965,7 +965,9 @@ commands in Drush 12+.</p></dd><dt><a href="Drush/Runtime/ServiceManager.html#me
 <abbr title="Drush\Runtime\ServiceManager">ServiceManager</abbr>::discoverModuleCommandInfoAlterers</a>() &mdash; <em>Method in class <a href="Drush/Runtime/ServiceManager.html"><abbr title="Drush\Runtime\ServiceManager">ServiceManager</abbr></a></em></dt>
                     <dd><p>Discover command info alterers in modules.</p></dd><dt><a href="Drush/Runtime/ServiceManager.html#method_discoverModuleGenerators">
 <abbr title="Drush\Runtime\ServiceManager">ServiceManager</abbr>::discoverModuleGenerators</a>() &mdash; <em>Method in class <a href="Drush/Runtime/ServiceManager.html"><abbr title="Drush\Runtime\ServiceManager">ServiceManager</abbr></a></em></dt>
-                    <dd><p>Return generators that ship in modules.</p></dd><dt><a href="Drush/SiteAlias/ProcessManager.html#method_drush">
+                    <dd><p>Return generators that ship in modules.</p></dd><dt>$<a href="Drush/SiteAlias/ProcessManager.html#property_drupalFinder">
+<abbr title="Drush\SiteAlias\ProcessManager">ProcessManager</abbr>#drupalFinder</a> &mdash; <em>Property in class <a href="Drush/SiteAlias/ProcessManager.html"><abbr title="Drush\SiteAlias\ProcessManager">ProcessManager</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/SiteAlias/ProcessManager.html#method_drush">
 <abbr title="Drush\SiteAlias\ProcessManager">ProcessManager</abbr>::drush</a>() &mdash; <em>Method in class <a href="Drush/SiteAlias/ProcessManager.html"><abbr title="Drush\SiteAlias\ProcessManager">ProcessManager</abbr></a></em></dt>
                     <dd><p>Run a Drush command on a site alias (or @self).</p></dd><dt><a href="Drush/SiteAlias/ProcessManager.html#method_drushSiteProcess">
 <abbr title="Drush\SiteAlias\ProcessManager">ProcessManager</abbr>::drushSiteProcess</a>() &mdash; <em>Method in class <a href="Drush/SiteAlias/ProcessManager.html"><abbr title="Drush\SiteAlias\ProcessManager">ProcessManager</abbr></a></em></dt>
@@ -1521,7 +1523,9 @@ just the option name of any item that is an option.</p></dd><dt><a href="Drush/P
 <abbr title="Drush\Runtime\LegacyServiceFinder">LegacyServiceFinder</abbr>::getDrushServiceFiles</a>() &mdash; <em>Method in class <a href="Drush/Runtime/LegacyServiceFinder.html"><abbr title="Drush\Runtime\LegacyServiceFinder">LegacyServiceFinder</abbr></a></em></dt>
                     <dd><p>Get all service files that this class can discover.</p></dd><dt><a href="Drush/Runtime/LegacyServiceFinder.html#method_getModuleFileNames">
 <abbr title="Drush\Runtime\LegacyServiceFinder">LegacyServiceFinder</abbr>::getModuleFileNames</a>() &mdash; <em>Method in class <a href="Drush/Runtime/LegacyServiceFinder.html"><abbr title="Drush\Runtime\LegacyServiceFinder">LegacyServiceFinder</abbr></a></em></dt>
-                    <dd><p>Find Drupal modules</p></dd><dt><a href="Drush/Sql/SqlBase.html#method_getEnv">
+                    <dd><p>Find Drupal modules</p></dd><dt><a href="Drush/SiteAlias/ProcessManager.html#method_getDrupalFinder">
+<abbr title="Drush\SiteAlias\ProcessManager">ProcessManager</abbr>::getDrupalFinder</a>() &mdash; <em>Method in class <a href="Drush/SiteAlias/ProcessManager.html"><abbr title="Drush\SiteAlias\ProcessManager">ProcessManager</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/Sql/SqlBase.html#method_getEnv">
 <abbr title="Drush\Sql\SqlBase">SqlBase</abbr>::getEnv</a>() &mdash; <em>Method in class <a href="Drush/Sql/SqlBase.html"><abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a></em></dt>
                     <dd><p>Get environment variables to pass to Process.</p></dd><dt><a href="Drush/Sql/SqlBase.html#method_getProcess">
 <abbr title="Drush\Sql\SqlBase">SqlBase</abbr>::getProcess</a>() &mdash; <em>Method in class <a href="Drush/Sql/SqlBase.html"><abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a></em></dt>
@@ -2396,7 +2400,7 @@ if it is.</p></dd><dt><a href="Drush/Runtime/RedispatchHook.html#method_redispat
 <abbr title="Drush\Runtime\ShutdownHandler">ShutdownHandler</abbr>::returnStatus</a>() &mdash; <em>Method in class <a href="Drush/Runtime/ShutdownHandler.html"><abbr title="Drush\Runtime\ShutdownHandler">ShutdownHandler</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/SiteAlias/ProcessManager.html#method_relativePathToVendorBinDrush">
 <abbr title="Drush\SiteAlias\ProcessManager">ProcessManager</abbr>::relativePathToVendorBinDrush</a>() &mdash; <em>Method in class <a href="Drush/SiteAlias/ProcessManager.html"><abbr title="Drush\SiteAlias\ProcessManager">ProcessManager</abbr></a></em></dt>
-                    <dd><p>Return the relative path to 'vendor/bin/drush' from the project root.</p></dd><dt><a href="Drush/Utils/FsUtils.html#method_registerForDeletion">
+                    <dd><p>Return the relative path to 'vendor/bin/drush' from the Drupal root.</p></dd><dt><a href="Drush/Utils/FsUtils.html#method_registerForDeletion">
 <abbr title="Drush\Utils\FsUtils">FsUtils</abbr>::registerForDeletion</a>() &mdash; <em>Method in class <a href="Drush/Utils/FsUtils.html"><abbr title="Drush\Utils\FsUtils">FsUtils</abbr></a></em></dt>
                     <dd><p>Add the given directory to a list to be deleted on exit.</p></dd><dt><a href="Drush/Utils/FsUtils.html#method_realpath">
 <abbr title="Drush\Utils\FsUtils">FsUtils</abbr>::realpath</a>() &mdash; <em>Method in class <a href="Drush/Utils/FsUtils.html"><abbr title="Drush\Utils\FsUtils">FsUtils</abbr></a></em></dt>
@@ -2672,6 +2676,8 @@ database sanitizer for sql-sync.</p></dd><dt>$<a href="Drush/Drupal/DrupalKernel
                     <dd><p>Manage Drush services.</p></dd><dt><a href="Drush/Runtime/ShutdownHandler.html"><abbr title="Drush\Runtime\ShutdownHandler">ShutdownHandler</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Runtime.html">Drush\Runtime</a></em></dt>
                     <dd><p>Drush's shutdown handler</p></dd><dt><a href="Drush/Runtime/ShutdownHandler.html#method_shutdownHandler">
 <abbr title="Drush\Runtime\ShutdownHandler">ShutdownHandler</abbr>::shutdownHandler</a>() &mdash; <em>Method in class <a href="Drush/Runtime/ShutdownHandler.html"><abbr title="Drush\Runtime\ShutdownHandler">ShutdownHandler</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/SiteAlias/ProcessManager.html#method_setDrupalFinder">
+<abbr title="Drush\SiteAlias\ProcessManager">ProcessManager</abbr>::setDrupalFinder</a>() &mdash; <em>Method in class <a href="Drush/SiteAlias/ProcessManager.html"><abbr title="Drush\SiteAlias\ProcessManager">ProcessManager</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/SiteAlias/ProcessManager.html#method_siteProcess">
 <abbr title="Drush\SiteAlias\ProcessManager">ProcessManager</abbr>::siteProcess</a>() &mdash; <em>Method in class <a href="Drush/SiteAlias/ProcessManager.html"><abbr title="Drush\SiteAlias\ProcessManager">ProcessManager</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/SiteAlias/ProcessManager.html#method_shell">
