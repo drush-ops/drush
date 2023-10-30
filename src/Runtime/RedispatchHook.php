@@ -91,7 +91,8 @@ class RedispatchHook implements InitializeHookInterface, ConfigAwareInterface, S
         if (!Tty::isTtySupported()) {
             $process->setInput(STDIN);
         } else {
-            $process->setTty($this->getConfig()->get('ssh.tty', $input->isInteractive()));
+            // Command line options are always strings so cast - https://github.com/drush-ops/drush/issues/5798.
+            $process->setTty((bool) $this->getConfig()->get('ssh.tty', $input->isInteractive()));
         }
         $process->mustRun($process->showRealtime());
 
