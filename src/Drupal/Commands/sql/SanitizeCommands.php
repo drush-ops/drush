@@ -16,14 +16,15 @@ final class SanitizeCommands extends DrushCommands implements CustomEventAwareIn
     use CustomEventAwareTrait;
 
     const SANITIZE = 'sql:sanitize';
+    const CONFIRMS = 'sql-sanitize-confirms';
 
     /**
      * Sanitize the database by removing or obfuscating user data.
      *
      * Commandfiles may add custom operations by implementing:
      *
-     *     - `#[CLI\Hook(type: HookManager::ON_EVENT, target: 'sql-sanitize-confirms')]`. Display summary to user before confirmation.
-     *     - `#[CLI\Hook(type: HookManager::POST_COMMAND_HOOK, target: 'sql:sanitize')]`. Run queries or call APIs to perform sanitizing
+     *     - `#[CLI\Hook(type: HookManager::ON_EVENT, target: SanitizeCommands::CONFIRMS)]`. Display summary to user before confirmation.
+     *     - `#[CLI\Hook(type: HookManager::POST_COMMAND_HOOK, target: SanitizeCommands::SANITIZE)]`. Run queries or call APIs to perform sanitizing
      *
      * Several working commandfiles may be found at https://github.com/drush-ops/drush/tree/12.x/src/Drupal/Commands/sql
      */
@@ -40,7 +41,7 @@ final class SanitizeCommands extends DrushCommands implements CustomEventAwareIn
      */
         $messages = [];
         $input = $this->input();
-        $handlers = $this->getCustomEventHandlers('sql-sanitize-confirms');
+        $handlers = $this->getCustomEventHandlers(self::CONFIRMS);
         foreach ($handlers as $handler) {
             $handler($messages, $input);
         }
