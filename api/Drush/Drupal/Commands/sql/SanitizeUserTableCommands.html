@@ -353,7 +353,7 @@ database sanitizer for sql-sync.</p></p>                </div>
                 <div class="col-md-8">
                     <a href="#method_messages">messages</a>(array $messages, <abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr> $input)
         
-                                            <p><p>Use #[CLI\Hook(type: HookManager::ON_EVENT, target: 'sql-sanitize-confirms')]</p></p>                </div>
+                                            <p><p>Use #[CLI\Hook(type: HookManager::ON_EVENT, target: SanitizeCommands::CONFIRMS)]</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -859,7 +859,7 @@ database sanitizer for sql-sync.</p></p>
                 <td><abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr></td>
                 <td>$commandData</td>
                 <td><p>Information about the current request.</p>
-<p>Use <code>#[CLI\Hook(type: HookManager::POST_COMMAND_HOOK, target: 'sql:sanitize')]</code></p></td>
+<p>Use <code>#[CLI\Hook(type: HookManager::POST_COMMAND_HOOK, target: SanitizeCommands::SANITIZE)]</code></p></td>
             </tr>
             </table>
 
@@ -926,7 +926,7 @@ database sanitizer for sql-sync.</p></p>
             
 
         <div class="method-description">
-                            <p><p>Use #[CLI\Hook(type: HookManager::ON_EVENT, target: 'sql-sanitize-confirms')]</p></p>                        
+                            <p><p>Use #[CLI\Hook(type: HookManager::ON_EVENT, target: SanitizeCommands::CONFIRMS)]</p></p>                        
         </div>
         <div class="tags">
                             <h4>Parameters</h4>

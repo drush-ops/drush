@@ -190,6 +190,15 @@
                     <p></p>
                 </td>
             </tr>
+                    <tr>
+                <td>
+                                                                                                                        CONFIRMS
+                                    </td>
+                <td class="last">
+                    <p><em></em></p>
+                    <p></p>
+                </td>
+            </tr>
             </table>
 
     
@@ -795,7 +804,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_sanitize">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Drupal/Commands/sql/SanitizeCommands.php#L30">at line 30</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Drupal/Commands/sql/SanitizeCommands.php#L31">at line 31</a></div>
         <code>                    void
     <strong>sanitize</strong>()
         </code>
@@ -806,8 +815,8 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
 
         <div class="method-description">
                             <p><p>Sanitize the database by removing or obfuscating user data.</p></p>                <p><p>Commandfiles may add custom operations by implementing:</p>
-<pre><code>- `#[CLI\Hook(type: HookManager::ON_EVENT, target: 'sql-sanitize-confirms')]`. Display summary to user before confirmation.
-- `#[CLI\Hook(type: HookManager::POST_COMMAND_HOOK, target: 'sql:sanitize')]`. Run queries or call APIs to perform sanitizing</code></pre>
+<pre><code>- `#[CLI\Hook(type: HookManager::ON_EVENT, target: SanitizeCommands::CONFIRMS)]`. Display summary to user before confirmation.
+- `#[CLI\Hook(type: HookManager::POST_COMMAND_HOOK, target: SanitizeCommands::SANITIZE)]`. Run queries or call APIs to perform sanitizing</code></pre>
 <p>Several working commandfiles may be found at <a href="https://github.com/drush-ops/drush/tree/12.x/src/Drupal/Commands/sql">https://github.com/drush-ops/drush/tree/12.x/src/Drupal/Commands/sql</a></p></p>        
         </div>
         <div class="tags">
