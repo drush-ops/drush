@@ -5249,8 +5249,8 @@
 <h1 id="sqlsanitize">sql:sanitize<a class="headerlink" href="#sqlsanitize" title="Permanent link">&para;</a></h1>
 <p>Sanitize the database by removing or obfuscating user data.</p>
 <p>Commandfiles may add custom operations by implementing:</p>
-<div class="highlight"><pre><span></span><code>- `#[CLI\Hook(type: HookManager::ON_EVENT, target: &#39;sql-sanitize-confirms&#39;)]`. Display summary to user before confirmation.
-- `#[CLI\Hook(type: HookManager::POST_COMMAND_HOOK, target: &#39;sql:sanitize&#39;)]`. Run queries or call APIs to perform sanitizing
+<div class="highlight"><pre><span></span><code>- `#[CLI\Hook(type: HookManager::ON_EVENT, target: SanitizeCommands::CONFIRMS)]`. Display summary to user before confirmation.
+- `#[CLI\Hook(type: HookManager::POST_COMMAND_HOOK, target: SanitizeCommands::SANITIZE)]`. Run queries or call APIs to perform sanitizing
 </code></pre></div>
 <p>Several working commandfiles may be found at <a href="https://github.com/drush-ops/drush/tree/12.x/src/Drupal/Commands/sql">https://github.com/drush-ops/drush/tree/12.x/src/Drupal/Commands/sql</a></p>
 <h4 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h4>
