@@ -45,7 +45,7 @@ final class SanitizeUserFieldsCommands extends DrushCommands implements Sanitize
      *
      * @todo Use Drupal services to get field info.
      */
-    #[CLI\Hook(type: HookManager::POST_COMMAND_HOOK, target: 'sql-sanitize')]
+    #[CLI\Hook(type: HookManager::POST_COMMAND_HOOK, target: SanitizeCommands::SANITIZE)]
     public function sanitize($result, CommandData $commandData): void
     {
         $options = $commandData->options();
@@ -119,13 +119,13 @@ final class SanitizeUserFieldsCommands extends DrushCommands implements Sanitize
         }
     }
 
-    #[CLI\Hook(type: HookManager::ON_EVENT, target: 'sql-sanitize-confirms')]
+    #[CLI\Hook(type: HookManager::ON_EVENT, target: SanitizeCommands::CONFIRMS)]
     public function messages(&$messages, InputInterface $input): void
     {
         $messages[] = dt('Sanitize text fields associated with users.');
     }
 
-    #[CLI\Hook(type: HookManager::OPTION_HOOK, target: 'sql-sanitize')]
+    #[CLI\Hook(type: HookManager::OPTION_HOOK, target: SanitizeCommands::SANITIZE)]
     #[CLI\Option(name: 'allowlist-fields', description: 'A comma delimited list of fields exempt from sanitization.')]
     public function options($options = ['allowlist-fields' => '']): void
     {
