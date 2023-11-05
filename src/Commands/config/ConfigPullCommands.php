@@ -8,6 +8,7 @@ use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\AnnotatedCommand\Hooks\HookManager;
 use Drush\Attributes as CLI;
 use Drush\Commands\core\DocsCommands;
+use Drush\Commands\core\RsyncCommands;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Consolidation\SiteAlias\HostPath;
@@ -45,7 +46,7 @@ final class ConfigPullCommands extends DrushCommands implements SiteAliasManager
             'format' => 'string',
         ];
         $this->logger()->notice(dt('Starting to export configuration on :destination.', [':destination' => $destination]));
-        $process = $this->processManager()->drush($sourceRecord, 'config-export', [], $export_options + $global_options);
+        $process = $this->processManager()->drush($sourceRecord, ConfigExportCommands::EXPORT, [], $export_options + $global_options);
         $process->mustRun();
 
         if ($this->getConfig()->simulate()) {
@@ -77,7 +78,7 @@ final class ConfigPullCommands extends DrushCommands implements SiteAliasManager
             'delete' => true,
             'exclude' => '.htaccess',
         ];
-        $process = $this->processManager()->drush($runner, 'core-rsync', $args, ['yes' => true, 'debug' => true], $options_double_dash);
+        $process = $this->processManager()->drush($runner, RsyncCommands::RSYNC, $args, ['yes' => true, 'debug' => true], $options_double_dash);
         $process->mustRun();
         return new PropertyList(['path' => $destinationHostPath->getOriginal()]);
     }
