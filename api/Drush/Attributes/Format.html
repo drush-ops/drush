@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="robots" content="index, follow, all" />
-    <title>Drush\Attributes\Obsolete | Drush API %version%</title>
+    <title>Drush\Attributes\Format | Drush API %version%</title>
 
             <link rel="stylesheet" type="text/css" href="../../css/bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="../../css/bootstrap-theme.min.css">
@@ -19,7 +19,7 @@
 
     </head>
 
-    <body id="class" data-name="class:Drush_Attributes_Obsolete" data-root-path="../../" data-search-index-url="../../doctum-search.json">
+    <body id="class" data-name="class:Drush_Attributes_Format" data-root-path="../../" data-search-index-url="../../doctum-search.json">
             <div id="content">
         <div id="left-column">
                 <div id="control-panel">
@@ -75,46 +75,42 @@
                         <div class="namespace-breadcrumbs">
             <ol class="breadcrumb">
                 <li><span class="label label-default">class</span></li>
-                        <li><a href="../../Drush.html">Drush</a></li><li class="backslash">\</li><li><a href="../../Drush/Attributes.html">Attributes</a></li><li class="backslash">\</li><li>Obsolete</li>
+                        <li><a href="../../Drush.html">Drush</a></li><li class="backslash">\</li><li><a href="../../Drush/Attributes.html">Attributes</a></li><li class="backslash">\</li><li>Format</li>
             </ol>
         </div>
                 <div id="page-content">
     <div class="page-header">
-        <h1>Obsolete    
+        <h1>Format    
             </h1>
     </div>
 
     
     <p>        class
-    <strong>Obsolete</strong>        extends <a href="../../Drush/Attributes/NoArgumentsBase.html"><abbr title="Drush\Attributes\NoArgumentsBase">NoArgumentsBase</abbr></a>        (<a href="https://github.com/drush-ops/drush/blob/12.x/src/Attributes/Obsolete.php">View source</a>)
+    <strong>Format</strong>        (<a href="https://github.com/drush-ops/drush/blob/12.x/src/Attributes/Format.php">View source</a>)
 </p>
 
         
     
         
 
-            <div class="description">
-            <p><p>Mark commands as obsolete. These commands are omitted from help list and when
-user tries to run one, the command's description is shown. Example usage at <a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/LegacyCommands.php">https://github.com/drush-ops/drush/blob/12.x/src/Commands/LegacyCommands.php</a></p></p>                    </div>
             
         
-            <h2>Constants</h2>    <table class="table table-condensed">
-                    <tr>
-                <td>
-                                                                                                                        NAME
-                                    </td>
-                <td class="last">
-                    <p><em></em></p>
-                    <p></p>
-                </td>
-            </tr>
-            </table>
-
     
     
             <h2>Methods</h2>
 
             <div class="container-fluid underlined">
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method___construct">__construct</a>(string|null $listDelimiter, string|null $tableStyle)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
                     <div class="row">
                 <div class="col-md-2 type">
                     static&nbsp;
@@ -133,8 +129,47 @@ user tries to run one, the command's description is shown. Example usage at <a h
 
             <div id="method-details">
                     <div class="method-item">
+                    <h3 id="method___construct">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Attributes/Format.php#L22">at line 22</a></div>
+        <code>                    
+    <strong>__construct</strong>(string|null $listDelimiter, string|null $tableStyle)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string|null</td>
+                <td>$listDelimiter</td>
+                <td><p>The delimiter between fields</p></td>
+            </tr>
+                    <tr>
+                <td>string|null</td>
+                <td>$tableStyle</td>
+                <td><p>The table style.</p></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
                     <h3 id="method_handle">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Attributes/Obsolete.php#L19">at line 19</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Attributes/Format.php#L29">at line 29</a></div>
         <code>        static            
     <strong>handle</strong>(ReflectionAttribute $attribute, <abbr title="Consolidation\AnnotatedCommand\Parser\CommandInfo">CommandInfo</abbr> $commandInfo)
         </code>
