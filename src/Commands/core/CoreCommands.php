@@ -69,8 +69,7 @@ final class CoreCommands extends DrushCommands implements SiteAliasManagerAwareI
      * Show Drush version.
      */
     #[CLI\Command(name: self::VERSION)]
-    #[CLI\HookSelector(name: 'table-style', value: 'compact')]
-    #[CLI\HookSelector(name: 'list-delimiter', value: ':')]
+    #[CLI\Format(listDelimiter: ':', tableStyle: 'compact')]
     #[CLI\FieldLabels(labels: ['drush-version' => 'Drush version'])]
     public function version($options = ['format' => 'table']): PropertyList
     {
