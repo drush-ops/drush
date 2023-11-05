@@ -36,8 +36,7 @@ final class StatusCommands extends DrushCommands implements SiteAliasManagerAwar
     #[CLI\Option(name: 'project', description: 'A comma delimited list of projects. Their paths will be added to path-aliases section.')]
     #[CLI\Usage(name: 'drush core-status --field=files', description: 'Emit just one field, not all the default fields.')]
     #[CLI\Usage(name: 'drush core-status --fields=*', description: 'Emit all fields, not just the default ones.')]
-    #[CLI\HookSelector(name: 'table-style', value: 'compact')]
-    #[CLI\HookSelector(name: 'list-delimiter', value: ':')]
+    #[CLI\Format(listDelimiter: ':', tableStyle: 'compact')]
     #[CLI\FieldLabels(labels: [
         'drupal-version' => 'Drupal version',
         'uri' => 'Site URI',
