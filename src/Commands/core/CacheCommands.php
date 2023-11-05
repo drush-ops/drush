@@ -199,7 +199,7 @@ final class CacheCommands extends DrushCommands implements CustomEventAwareInter
             if (is_object($data) && $data->data) {
                 $data = $data->data;
             } elseif (is_array($data) && isset($data['data'])) {
-                // But $data returned from `drush cache-get --format=json` will be an array.
+                // But $data returned from `drush cache:get --format=json` will be an array.
                 $data = $data['data'];
             } else {
                 // If $data is neither object nor array and cache-get was specified, then

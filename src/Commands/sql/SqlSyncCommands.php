@@ -7,6 +7,7 @@ namespace Drush\Commands\sql;
 use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\AnnotatedCommand\Hooks\HookManager;
 use Drush\Attributes as CLI;
+use Drush\Commands\core\CoreCommands;
 use Drush\Commands\core\DocsCommands;
 use Drush\Commands\core\RsyncCommands;
 use Drush\Commands\core\StatusCommands;
@@ -114,7 +115,7 @@ final class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwa
             return 'simulated_db';
         }
 
-        $process = $this->processManager()->drush($record, 'core-status', [], ['fields' => 'db-name', 'format' => 'json']);
+        $process = $this->processManager()->drush($record, StatusCommands::STATUS, [], ['fields' => 'db-name', 'format' => 'json']);
         $process->setSimulated(false);
         $process->mustRun();
         $data = $process->getOutputAsJson();

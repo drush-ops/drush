@@ -78,7 +78,7 @@ final class RoleCommands extends DrushCommands implements SiteAliasManagerAwareI
         $perms = StringUtils::csvToArray($permissions);
         user_role_grant_permissions($machine_name, $perms);
         $this->logger()->success(dt('Added "!permissions" to "!role"', ['!permissions' => $permissions, '!role' => $machine_name]));
-        $this->processManager()->drush($this->siteAliasManager()->getSelf(), 'cache:rebuild');
+        $this->processManager()->drush($this->siteAliasManager()->getSelf(), CacheRebuildCommands::REBUILD);
     }
 
     /**
@@ -97,7 +97,7 @@ final class RoleCommands extends DrushCommands implements SiteAliasManagerAwareI
         $perms = StringUtils::csvToArray($permissions);
         user_role_revoke_permissions($machine_name, $perms);
         $this->logger()->success(dt('Removed "!permissions" to "!role"', ['!permissions' => $permissions, '!role' => $machine_name]));
-        $this->processManager()->drush($this->siteAliasManager()->getSelf(), 'cache:rebuild');
+        $this->processManager()->drush($this->siteAliasManager()->getSelf(), CacheRebuildCommands::REBUILD);
     }
 
     /**

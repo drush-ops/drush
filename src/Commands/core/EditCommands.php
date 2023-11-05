@@ -32,7 +32,7 @@ final class EditCommands extends DrushCommands implements SiteAliasManagerAwareI
     #[CLI\Usage(name: 'drush core:edit sett', description: 'Edit settings.php for the current Drupal site.')]
     #[CLI\Usage(name: 'drush core:edit --choice=2', description: 'Edit the second file in the choice list.')]
     #[CLI\Bootstrap(level: DrupalBootLevels::MAX)]
-    #[CLI\HookSelector(name: 'optionset_get_editor')]
+    #[CLI\OptionsetGetEditor]
     public function edit($filter = null, array $options = []): void
     {
         $all = $this->load();
