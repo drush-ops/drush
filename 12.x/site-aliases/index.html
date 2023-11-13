@@ -5392,9 +5392,11 @@ is really nothing more than a collection of options.</p>
   the <code>ssh --t</code> option) based on whether the local Drush command is running
   interactively or not. To force Drush to always or never create a tty,
   set the <code>ssh.tty</code> option to <em>true</em> or <em>false</em>, respectively.</li>
-<li><strong>paths</strong>: An array of aliases for common rsync targets. Relative aliases are always taken from the Drupal root.</li>
-<li><strong>files</strong>: Path to <em>files</em> directory.  This will be looked up if not specified.</li>
+<li><strong>paths</strong>: An array of aliases for common rsync targets. Relative aliases are always taken from the Drupal root.<ul>
+<li><strong>files</strong>: Path to <em>files</em> directory. This will be looked up if not specified.</li>
 <li><strong>drush-script</strong>: Path to the remote Drush command.</li>
+</ul>
+</li>
 <li><strong>command</strong>: These options will only be set if the alias is used with the specified command.  In the advanced example below, the option
   <code>--no-dump</code> will be selected whenever the <code>@stage</code> alias is used in any of the following ways:<ul>
 <li><code>drush @stage sql-sync @self @live</code></li>
