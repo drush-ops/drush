@@ -5374,10 +5374,12 @@ See below.</p>
 local or remote Drupal installations; however, an alias
 is really nothing more than a collection of options.</p>
 <ul>
-<li><strong>docker</strong>: When specified, Drush executes via <code>docker-compose</code> exec rather than <code>ssh</code>.</li>
+<li><strong>docker</strong>: When specified, Drush executes via <code>docker-compose</code> exec rather than <code>ssh</code>.<ul>
 <li><strong>service</strong>: the name of the container to run on.</li>
 <li><strong>exec</strong>:<ul>
 <li><strong>options</strong>: Options for the exec subcommand.</li>
+</ul>
+</li>
 </ul>
 </li>
 <li><strong>os</strong>: The operating system of the remote server.  Valid values
@@ -5385,20 +5387,21 @@ is really nothing more than a collection of options.</p>
   aliases where the remote's OS differs from the local. This is especially relevant
   for the <a href="../commands/sql_sync/">sql:sync</a> command.</li>
 <li><strong>ssh</strong>: Contains settings used to control how ssh commands are generated
-  when running remote commands.</li>
+  when running remote commands.<ul>
 <li><strong>options</strong>: Contains additional commandline options for the <code>ssh</code> command
   itself, e.g. <code>-p 100</code></li>
 <li><strong>tty</strong>: Usually, Drush will decide whether or not to create a tty (via
   the <code>ssh --t</code> option) based on whether the local Drush command is running
   interactively or not. To force Drush to always or never create a tty,
   set the <code>ssh.tty</code> option to <em>true</em> or <em>false</em>, respectively.</li>
+</ul>
+</li>
 <li><strong>paths</strong>: An array of aliases for common rsync targets. Relative aliases are always taken from the Drupal root.<ul>
 <li><strong>files</strong>: Path to <em>files</em> directory. This will be looked up if not specified.</li>
 <li><strong>drush-script</strong>: Path to the remote Drush command.</li>
 </ul>
 </li>
-<li><strong>command</strong>: These options will only be set if the alias is used with the specified command.  In the advanced example below, the option
-  <code>--no-dump</code> will be selected whenever the <code>@stage</code> alias is used in any of the following ways:<ul>
+<li><strong>command</strong>: These options will only be set if the alias is used with the specified command.  In the advanced example below, the option <code>--no-dump</code> will be selected whenever the <code>@stage</code> alias is used in any of the following ways:<ul>
 <li><code>drush @stage sql-sync @self @live</code></li>
 <li><code>drush sql-sync @stage @live</code></li>
 <li><code>drush sql-sync @live @stage</code></li>
