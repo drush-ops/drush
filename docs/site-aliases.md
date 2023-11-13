@@ -140,8 +140,8 @@ is really nothing more than a collection of options.
   interactively or not. To force Drush to always or never create a tty,
   set the `ssh.tty` option to _true_ or _false_, respectively.
 - **paths**: An array of aliases for common rsync targets. Relative aliases are always taken from the Drupal root.
-  - **files**: Path to _files_ directory.  This will be looked up if not specified.
-  - **drush-script**: Path to the remote Drush command.
+    - **files**: Path to _files_ directory. This will be looked up if not specified.
+    - **drush-script**: Path to the remote Drush command.
 - **command**: These options will only be set if the alias is used with the specified command.  In the advanced example below, the option
   `--no-dump` will be selected whenever the `@stage` alias is used in any of the following ways:
     - `drush @stage sql-sync @self @live`
