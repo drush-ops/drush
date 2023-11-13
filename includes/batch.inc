@@ -113,8 +113,20 @@ function _drush_backend_batch_process($command = 'batch-process', $args = [], $o
         $batch['id'] = $batch_storage->getId();
       }
       catch (IntegrityConstraintViolationException) {
-        // Remove calls to nextId() once 10.0 is no longer supported.
-        $batch['id'] = \Drupal::database()->nextId();
+        // @todo this is here to support the update path to deprecate
+        // Connection::nextId(). Remove when Drupal 10.1 and lower is no longer
+        // supported.
+        $connection = \Drupal::database();
+        $max_bid = (int) $connection->query('SELECT MAX([bid]) FROM {batch}')->fetchField();
+        $batch['id'] = $max_bid + 1;
+        $connection->insert('batch')
+          ->fields([
+            'bid' => $batch['id'],
+            'timestamp' => \Drupal::time()->getRequestTime(),
+            'token' => '',
+            'batch' => NULL,
+          ])
+          ->execute();
       }
     }
     else {
