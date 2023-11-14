@@ -55,7 +55,7 @@ final class LoginCommands extends DrushCommands implements SiteAliasManagerAware
     #[CLI\Bootstrap(level: DrupalBootLevels::NONE)]
     #[CLI\HandleRemoteCommands]
     #[CLI\Usage(name: 'drush user:login', description: 'Open browser to homepage, logged in as uid=1.')]
-    #[CLI\Usage(name: 'drush user:login --name=ryan node/add/blog', description: 'Open browser (if configured or detected) for a one-time login link for username ryan that redirects to node/add/blog.')]
+    #[CLI\Usage(name: 'drush user:login --name=ryan /node/add/article', description: 'Open browser (if configured or detected) for a one-time login link for username ryan that redirects to /node/add/article.')]
     #[CLI\Usage(name: 'drush user:login --uid=123', description: 'Open browser and login as user with uid "123".')]
     #[CLI\Usage(name: 'drush user:login --mail=foo@bar.com', description: 'Open browser and login as user with mail "foo@bar.com".')]
     public function login(string $path = '', $options = ['name' => null, 'uid' => null, 'mail' => null, 'browser' => true, 'redirect-port' => self::REQ])
