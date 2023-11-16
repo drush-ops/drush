@@ -340,7 +340,7 @@ database sanitizer for sql-sync.</p></p>                </div>
                     void
                 </div>
                 <div class="col-md-8">
-                    <a href="#method_options">options</a>($options = [&#039;sanitize-email&#039; =&gt; &#039;user+%uid@localhost.localdomain&#039;, &#039;sanitize-password&#039; =&gt; null])
+                    <a href="#method_options">options</a>($options = [&#039;sanitize-email&#039; =&gt; &#039;user+%uid@localhost.localdomain&#039;, &#039;sanitize-password&#039; =&gt; null, &#039;ignored-roles&#039; =&gt; null])
         
                                             <p class="no-description">No description</p>
                                     </div>
@@ -873,9 +873,9 @@ database sanitizer for sql-sync.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_options">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Drupal/Commands/sql/SanitizeUserTableCommands.php#L86">at line 86</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Drupal/Commands/sql/SanitizeUserTableCommands.php#L102">at line 102</a></div>
         <code>                    void
-    <strong>options</strong>($options = [&#039;sanitize-email&#039; =&gt; &#039;user+%uid@localhost.localdomain&#039;, &#039;sanitize-password&#039; =&gt; null])
+    <strong>options</strong>($options = [&#039;sanitize-email&#039; =&gt; &#039;user+%uid@localhost.localdomain&#039;, &#039;sanitize-password&#039; =&gt; null, &#039;ignored-roles&#039; =&gt; null])
         </code>
     </h3>
     <div class="details">    
@@ -916,7 +916,7 @@ database sanitizer for sql-sync.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_messages">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Drupal/Commands/sql/SanitizeUserTableCommands.php#L93">at line 93</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Drupal/Commands/sql/SanitizeUserTableCommands.php#L110">at line 110</a></div>
         <code>                    string[]
     <strong>messages</strong>(array $messages, <abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr> $input)
         </code>
@@ -963,7 +963,7 @@ database sanitizer for sql-sync.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_isEnabled">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Drupal/Commands/sql/SanitizeUserTableCommands.php#L108">at line 108</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Drupal/Commands/sql/SanitizeUserTableCommands.php#L128">at line 128</a></div>
         <code>            protected        bool
     <strong>isEnabled</strong>(string|null $value)
         </code>
