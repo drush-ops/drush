@@ -1,0 +1,197 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Drush\Commands\core;
+
+use Consolidation\AnnotatedCommand\CommandData;
+use Consolidation\AnnotatedCommand\Hooks\HookManager;
+use Consolidation\SiteProcess\Util\Escape;
+use Drupal\Core\Entity\ContentEntityInterface;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Core\Field\FieldDefinitionInterface;
+use Drupal\Core\Session\AccountSwitcherInterface;
+use Drupal\field\Entity\FieldStorageConfig;
+use Drush\Attributes as CLI;
+use Drush\Commands\DrushCommands;
+use Drush\Utils\StringUtils;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\Yaml\Yaml;
+
+final class EntityCreateCommands extends DrushCommands
+{
+    const CREATE = 'entity:create';
+
+    public function __construct(
+        protected EntityTypeManagerInterface $entityTypeManager,
+        protected AccountSwitcherInterface $accountSwitcher
+    ) {
+        parent::__construct();
+    }
+
+    public static function create(ContainerInterface $container): self
+    {
+        $commandHandler = new static(
+            $container->get('entity_type.manager'),
+            $container->get('account_switcher'),
+        );
+
+        return $commandHandler;
+    }
+
+    /**
+     * Create a content entity after prompting for field values.
+     */
+    #[CLI\Command(name: self::CREATE, aliases: ['econ', 'entity-create'])]
+    #[CLI\Argument(name: 'entity_type', description: 'An entity type name.')]
+    #[CLI\Argument(name: 'bundle', description: 'A bundle name')]
+    #[CLI\Option(name: 'uid', description: 'The entity author ID. Also used by permission checks (e.g. content moderation')]
+    #[CLI\Option(name: 'skip-fields', description: 'A list of field names that skip both data entry and validation. Delimit fields by comma')]
+    #[CLI\Option(name: 'validate', description: 'Validate the entity before saving.')]
+    #[CLI\OptionsetGetEditor]
+    #[CLI\Usage(name: 'drush entity:create node article --validate=0', description: 'Create an article entity and skip validation.')]
+    #[CLI\Usage(name: 'drush entity:create node article --skip-fields=field_media_image,field_tags', description: 'Create an article omitting two fields.')]
+    #[CLI\Usage(name: 'drush entity:create user user --editor=nano', description: 'Create a user using the Nano text editor.')]
+    public function createEntity(string $entity_type, $bundle, array $options = ['file' => self::REQ, 'validate' => true, 'uid' => self::REQ, 'skip-fields' => self::REQ]): string
+    {
+        $bundleKey = $this->entityTypeManager->getDefinition($entity_type)->getKey('bundle');
+        $entity = $this->entityTypeManager->getStorage($entity_type)->create([$bundleKey => $bundle]);
+        /** @var \Drupal\Core\Field\FieldDefinitionInterface[] $instances */
+        $instances = \Drupal::service('entity_field.manager')->getFieldDefinitions($entity_type, $bundle);
+        $skip_fields = StringUtils::csvToArray($options['skip-fields']);
+        if ($skip_fields) {
+            $instances = array_diff_key($instances, array_flip($skip_fields));
+        }
+        ksort($instances);
+        $yaml = $this->getInitialYaml($instances, $entity, $options);
+        // Write tmp YAML file for editing
+        $path = drush_save_data_to_temp_file($yaml, '.yml');
+        do {
+            $messages = [];
+            $yaml = $this->edit($options['editor'], $path);
+            try {
+                $values = Yaml::parse($yaml);
+            } catch (\Exception $e) {
+                $yaml = "# Error: {$e->getMessage()}\n" . $yaml;
+                file_put_contents($path, $yaml);
+                continue;
+            }
+            foreach (array_filter($values) as $name => $value) {
+                $entity->set($name, $value);
+            }
+            if (!$options['validate'] || !$entity->validate()->count()) {
+                break;
+            }
+            $this->removePreamble($yaml, $lines);
+
+            // Switch needed to overcome Content Moderation constraint.
+            if ($options['uid']) {
+                $this->accountSwitcher->switchTo($this->entityTypeManager->getStorage('user')->load($options['uid']));
+            }
+            foreach ($entity->validate() as $violation) {
+                if (!in_array($violation->getPropertyPath(), $skip_fields)) {
+                    $messages[] = "# {$violation->getPropertyPath()}: {$violation->getMessage()}";
+                }
+            }
+            file_put_contents($path, "# Violations:\n" . implode("\n", $messages) . "\n" . implode("\n", $lines));
+        } while (true);
+        $entity->save();
+        return $entity->toUrl('canonical', ['absolute' => true])->toString();
+    }
+
+    private function edit($editor, string $path): string
+    {
+        $exec = self::getEditor($editor);
+        $cmd = sprintf($exec, Escape::shellArg($path));
+        $process = $this->processManager()->shell($cmd);
+        $process->setTty(true);
+        $process->mustRun();
+        return file_get_contents($path);
+    }
+
+
+    /**
+     * Build initial YAML including comments with authoring hints.
+     *
+     * @param \Drupal\Core\Field\FieldDefinitionInterface[] $instances
+     * @param ContentEntityInterface $entity
+     * @param array $options
+     */
+    private function getInitialYaml(array $instances, ContentEntityInterface $entity, array $options): string
+    {
+        $lines = $comments = [];
+        // Build field names and default value.
+        foreach ($instances as $field_name => $instance) {
+            $comment = [];
+            $suffix = '';
+            if (!$this->showfield($instance)) {
+                continue;
+            }
+            $cardinality = $instance->getFieldStorageDefinition()->getCardinality();
+            $multiple = $instance->getFieldStorageDefinition()->isMultiple();
+            $suffix = $multiple ? '[]' : '';
+            if ($instance->isRequired()) {
+                $comment[] = 'required';
+            }
+            if (!in_array($cardinality, [1, FieldStorageConfig::CARDINALITY_UNLIMITED])) {
+                $comment[] = "max: $cardinality";
+            }
+            // Get a simple default value if defined.
+            $default_value = '';
+            if ($field_name == 'uid') {
+                $default_value = $options['uid'];
+            } elseif ($default = $instance->getDefaultValue($entity)) {
+                if (count($default) == 1 && (count($default[0]) == 1)) {
+                    // var_export converts boolean to "true".
+                    $default_value = var_export(reset($default[0]), true);
+                    ;
+                }
+            }
+            $comments[] = $comment;
+            $lines[] = "$field_name: $default_value" . $suffix;
+        }
+        // Append comment as needed, using padding.
+        $max_len = max(array_map('strlen', $lines));
+        foreach ($lines as $key => $line) {
+            if ($comments[$key]) {
+                $lines[$key] = str_pad($line, $max_len + 1) . '# ' . implode(', ', $comments[$key]);
+            }
+        }
+        return implode("\n", $lines);
+    }
+
+    private function showfield(FieldDefinitionInterface $instance): bool
+    {
+        if ($instance->isReadOnly()) {
+            return false;
+        }
+        // @todo Let users use strtotime() strings to enter timestamps. IMO adds clutter without enough benefit.
+        if (in_array($instance->getType(), ['timestamp', 'image', 'layout_section', 'changed', 'created'])) {
+            return false;
+        }
+        foreach (['revision', 'content_translation', 'default_langcode', 'revision', 'content_translation'] as $deny) {
+            if (str_starts_with($instance->getName(), $deny)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    #[CLI\Hook(type: HookManager::ARGUMENT_VALIDATOR)]
+    private function validate(CommandData $commandData)
+    {
+        if (!$this->input()->isInteractive()) {
+            throw new \RuntimeException('entity:create is designed for an interactive terminal.');
+        }
+    }
+
+    private function removePreamble(string $yaml, &$lines): void
+    {
+        $lines = explode("\n", $yaml);
+        foreach ($lines as $index => $line) {
+            if (str_starts_with($line, '#')) {
+                unset($lines[$index]);
+            }
+        }
+    }
+}
