@@ -45,6 +45,10 @@ final class EntityCreateCommands extends DrushCommands
 
     /**
      * Create a content entity after prompting for field values.
+     *
+     * When entering field values, one may submit an incomplete document and any entity violations
+     * will be helpfully reported at the top of the document. enter the string 'skip' as
+     * a value in order to skip validation for that field.
      */
     #[CLI\Command(name: self::CREATE, aliases: ['econ', 'entity-create'])]
     #[CLI\Argument(name: 'entity_type', description: 'An entity type name.')]
@@ -53,14 +57,13 @@ final class EntityCreateCommands extends DrushCommands
     #[CLI\Option(name: 'skip-fields', description: 'A list of field names that skip both data entry and validation. Delimit fields by comma')]
     #[CLI\Option(name: 'validate', description: 'Validate the entity before saving.')]
     #[CLI\OptionsetGetEditor]
-    #[CLI\Usage(name: 'drush entity:create node article --validate=0', description: 'Create an article entity and skip validation.')]
+    #[CLI\Usage(name: 'drush entity:create node article --validate=0', description: 'Create an article entity and skip validation entirely.')]
     #[CLI\Usage(name: 'drush entity:create node article --skip-fields=field_media_image,field_tags', description: 'Create an article omitting two fields.')]
     #[CLI\Usage(name: 'drush entity:create user user --editor=nano', description: 'Create a user using the Nano text editor.')]
     public function createEntity(string $entity_type, $bundle, array $options = ['file' => self::REQ, 'validate' => true, 'uid' => self::REQ, 'skip-fields' => self::REQ]): string
     {
         $bundleKey = $this->entityTypeManager->getDefinition($entity_type)->getKey('bundle');
         $entity = $this->entityTypeManager->getStorage($entity_type)->create([$bundleKey => $bundle]);
-        /** @var \Drupal\Core\Field\FieldDefinitionInterface[] $instances */
         $instances = $this->entityFieldManager->getFieldDefinitions($entity_type, $bundle);
         $skip_fields = StringUtils::csvToArray($options['skip-fields']);
         if ($skip_fields) {
@@ -135,7 +138,6 @@ final class EntityCreateCommands extends DrushCommands
         // Build field names and default value.
         foreach ($instances as $field_name => $instance) {
             $comment = [];
-            $suffix = '';
             if (!$this->showfield($instance)) {
                 continue;
             }
@@ -196,7 +198,7 @@ final class EntityCreateCommands extends DrushCommands
     }
 
     #[CLI\Hook(type: HookManager::ARGUMENT_VALIDATOR)]
-    private function validate(CommandData $commandData)
+    private function validate(CommandData $commandData): void
     {
         if (!$this->input()->isInteractive()) {
             throw new \RuntimeException('entity:create is designed for an interactive terminal.');
@@ -213,7 +215,7 @@ final class EntityCreateCommands extends DrushCommands
         }
     }
 
-    private function filterViolations(EntityConstraintViolationListInterface &$violations, array $skip_fields)
+    private function filterViolations(EntityConstraintViolationListInterface &$violations, array $skip_fields): void
     {
         foreach ($violations as $key => $violation) {
             if (in_array($violation->getPropertyPath(), $skip_fields)) {
