@@ -8,6 +8,8 @@ use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\AnnotatedCommand\Hooks\HookManager;
 use Consolidation\SiteProcess\Util\Escape;
 use Drupal\Core\Entity\ContentEntityInterface;
+use Drupal\Core\Entity\EntityConstraintViolationListInterface;
+use Drupal\Core\Entity\EntityFieldManagerInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\Session\AccountSwitcherInterface;
@@ -24,6 +26,7 @@ final class EntityCreateCommands extends DrushCommands
 
     public function __construct(
         protected EntityTypeManagerInterface $entityTypeManager,
+        protected EntityFieldManagerInterface $entityFieldManager,
         protected AccountSwitcherInterface $accountSwitcher
     ) {
         parent::__construct();
@@ -33,7 +36,8 @@ final class EntityCreateCommands extends DrushCommands
     {
         $commandHandler = new static(
             $container->get('entity_type.manager'),
-            $container->get('account_switcher'),
+            $container->get('entity_field.manager'),
+            $container->get('account_switcher')
         );
 
         return $commandHandler;
@@ -57,7 +61,7 @@ final class EntityCreateCommands extends DrushCommands
         $bundleKey = $this->entityTypeManager->getDefinition($entity_type)->getKey('bundle');
         $entity = $this->entityTypeManager->getStorage($entity_type)->create([$bundleKey => $bundle]);
         /** @var \Drupal\Core\Field\FieldDefinitionInterface[] $instances */
-        $instances = \Drupal::service('entity_field.manager')->getFieldDefinitions($entity_type, $bundle);
+        $instances = $this->entityFieldManager->getFieldDefinitions($entity_type, $bundle);
         $skip_fields = StringUtils::csvToArray($options['skip-fields']);
         if ($skip_fields) {
             $instances = array_diff_key($instances, array_flip($skip_fields));
@@ -77,9 +81,19 @@ final class EntityCreateCommands extends DrushCommands
                 continue;
             }
             foreach (array_filter($values) as $name => $value) {
-                $entity->set($name, $value);
+                if ($value !== 'skip') {
+                    $entity->set($name, $value);
+                } else {
+                    $skip_fields[] = $name;
+                }
             }
-            if (!$options['validate'] || !$entity->validate()->count()) {
+
+            if (!$options['validate']) {
+                break;
+            }
+            $violations = $entity->validate();
+            $this->filterViolations($violations, $skip_fields);
+            if (!$violations->count()) {
                 break;
             }
             $this->removePreamble($yaml, $lines);
@@ -88,10 +102,8 @@ final class EntityCreateCommands extends DrushCommands
             if ($options['uid']) {
                 $this->accountSwitcher->switchTo($this->entityTypeManager->getStorage('user')->load($options['uid']));
             }
-            foreach ($entity->validate() as $violation) {
-                if (!in_array($violation->getPropertyPath(), $skip_fields)) {
-                    $messages[] = "# {$violation->getPropertyPath()}: {$violation->getMessage()}";
-                }
+            foreach ($violations as $violation) {
+                $messages[] = "# {$violation->getPropertyPath()}: {$violation->getMessage()}";
             }
             file_put_contents($path, "# Violations:\n" . implode("\n", $messages) . "\n" . implode("\n", $lines));
         } while (true);
@@ -160,6 +172,12 @@ final class EntityCreateCommands extends DrushCommands
         return implode("\n", $lines);
     }
 
+    /**
+     * Show/hide a field when building initial YAML.
+     *
+     * @param FieldDefinitionInterface $instance
+     * @return bool
+     */
     private function showfield(FieldDefinitionInterface $instance): bool
     {
         if ($instance->isReadOnly()) {
@@ -191,6 +209,15 @@ final class EntityCreateCommands extends DrushCommands
         foreach ($lines as $index => $line) {
             if (str_starts_with($line, '#')) {
                 unset($lines[$index]);
+            }
+        }
+    }
+
+    private function filterViolations(EntityConstraintViolationListInterface &$violations, array $skip_fields)
+    {
+        foreach ($violations as $key => $violation) {
+            if (in_array($violation->getPropertyPath(), $skip_fields)) {
+                $violations->remove($key);
             }
         }
     }
