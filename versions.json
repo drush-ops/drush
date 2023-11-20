@@ -1,5 +1,10 @@
 [
   {
+    "version": "12.4.3",
+    "title": "12.4.3",
+    "aliases": []
+  },
+  {
     "version": "12.4.2",
     "title": "12.4.2",
     "aliases": []
@@ -48,8 +53,8 @@
     "version": "12.x",
     "title": "12.x",
     "aliases": [
-      "latest",
-      "dev"
+      "dev",
+      "latest"
     ]
   },
   {
