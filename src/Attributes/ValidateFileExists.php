@@ -30,6 +30,7 @@ class ValidateFileExists
         /** @var HookManager $hookManager */
         $hookManager = Drush::getContainer()->get('hookManager');
         $hookManager->add(
+            // Use Closure to pass arguments to validate().
             fn(CommandData $commandData) => self::validate($commandData, $attribute->getArguments()),
             $hookManager::ARGUMENT_VALIDATOR,
             // @todo not currently a public property.
