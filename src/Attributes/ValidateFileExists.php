@@ -33,7 +33,7 @@ class ValidateFileExists
             // Use Closure to pass arguments to validate().
             fn(CommandData $commandData) => self::validate($commandData, $attribute->getArguments()),
             $hookManager::ARGUMENT_VALIDATOR,
-            // @todo not currently a public property.
+            // @todo not currently a public property, and getName() gives an infinite loop - parsing still in progress.
             $commandInfo->name
         );
     }
