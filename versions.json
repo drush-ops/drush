@@ -53,8 +53,8 @@
     "version": "12.x",
     "title": "12.x",
     "aliases": [
-      "dev",
-      "latest"
+      "latest",
+      "dev"
     ]
   },
   {
