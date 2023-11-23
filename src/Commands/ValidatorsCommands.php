@@ -53,34 +53,6 @@ final class ValidatorsCommands
     }
 
     /**
-     * Validate that the file path exists.
-     *
-     * Annotation value should be the name of the argument containing the path.
-     */
-    #[CLI\Hook(type: HookManager::ARGUMENT_VALIDATOR, selector: 'validate-file-exists')]
-    public function validateFileExists(CommandData $commandData)
-    {
-        $missing = [];
-        $arg_names =  StringUtils::csvToArray($commandData->annotationData()->get('validate-file-exists', null));
-        foreach ($arg_names as $arg_name) {
-            if ($commandData->input()->hasArgument($arg_name)) {
-                $path = $commandData->input()->getArgument($arg_name);
-            } elseif ($commandData->input()->hasOption($arg_name)) {
-                $path = $commandData->input()->getOption($arg_name);
-            }
-            if (!empty($path) && !file_exists($path)) {
-                $missing[] = $path;
-            }
-            unset($path);
-        }
-
-        if ($missing) {
-            $msg = dt('File(s) not found: !paths', ['!paths' => implode(', ', $missing)]);
-            return new CommandError($msg);
-        }
-    }
-
-    /**
      * Validate that required PHP extension exists.
      *
      * Annotation value should be extension name. If multiple, delimit by a comma.
