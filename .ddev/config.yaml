@@ -25,3 +25,4 @@ web_environment:
 #  - "UNISH_DB_URL=sqlite://:memory:"
 #  - UNISH_DB_URL=pgsql://db:db@db:5432
   - DRUSH_OPTIONS_URI=$DDEV_PRIMARY_URL
+  - EDITOR=nano
