@@ -16,13 +16,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 /**
  * Run these commands using the --include option - e.g. `drush --include=/path/to/drush/examples art sandwich`
  *
- * For an example of a Drupal module implementing commands, see
- * - http://cgit.drupalcode.org/devel/tree/devel_generate/src/Commands
- * - http://cgit.drupalcode.org/devel/tree/devel_generate/drush.services.yml
- *
- * This file is a good example of the first of those bullets (a commandfile) but
- * since it isn't part of a module, it does not implement drush.services.yml.
- *
  * See [Drush Test Traits](https://github.com/drush-ops/drush/blob/12.x/docs/contribute/unish.md#about-the-test-suites) for info on testing Drush commands.
  */
 
@@ -88,7 +81,7 @@ class ArtCommands extends DrushCommands implements CustomEventAwareInterface
      * more art by implementing a 'drush-art' on-event hook. This on-event
      * hook is defined in the 'findArt' method below.
      */
-    #[CLI\Hook(type: HookManager::ON_EVENT, selector: 'drush-art')]
+    #[CLI\Hook(type: HookManager::ON_EVENT, target: 'drush-art')]
     public function builtInArt()
     {
         return [

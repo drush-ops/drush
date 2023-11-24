@@ -133,7 +133,8 @@ class DependencyInjection
         Robo::addShared($container, 'tildeExpansion.hook', 'Drush\Runtime\TildeExpansionHook');
         Robo::addShared($container, 'process.manager', ProcessManager::class)
             ->addMethodCall('setConfig', ['config'])
-            ->addMethodCall('setConfigRuntime', ['config.runtime']);
+            ->addMethodCall('setConfigRuntime', ['config.runtime'])
+            ->addMethodCall('setDrupalFinder', [$drupalFinder]);
         Robo::addShared($container, 'redispatch.hook', 'Drush\Runtime\RedispatchHook')
             ->addArgument('process.manager');
 

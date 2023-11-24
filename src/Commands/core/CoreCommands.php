@@ -18,11 +18,12 @@ final class CoreCommands extends DrushCommands implements SiteAliasManagerAwareI
     use SiteAliasManagerAwareTrait;
 
     const VERSION = 'version';
+    const GLOBAL_OPTIONS = 'core:global-options';
 
     /**
      * All global options.
      */
-    #[CLI\Command(name: 'core:global-options', aliases: ['core-global-options'])]
+    #[CLI\Command(name: self::GLOBAL_OPTIONS, aliases: ['core-global-options'])]
     #[CLI\Help(hidden: true)]
     #[CLI\Topics(isTopic: true)]
     #[CLI\FieldLabels(labels: ['name' => 'Name', 'description' => 'Description'])]
@@ -68,8 +69,7 @@ final class CoreCommands extends DrushCommands implements SiteAliasManagerAwareI
      * Show Drush version.
      */
     #[CLI\Command(name: self::VERSION)]
-    #[CLI\HookSelector(name: 'table-style', value: 'compact')]
-    #[CLI\HookSelector(name: 'list-delimiter', value: ':')]
+    #[CLI\Format(listDelimiter: ':', tableStyle: 'compact')]
     #[CLI\FieldLabels(labels: ['drush-version' => 'Drush version'])]
     public function version($options = ['format' => 'table']): PropertyList
     {

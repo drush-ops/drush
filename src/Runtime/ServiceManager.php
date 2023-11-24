@@ -329,8 +329,8 @@ class ServiceManager
                 // "*AwareInterface" used by the handler
                 $this->inflect($drushContainer, $commandHandler);
                 $commandHandlers[] = $commandHandler;
-            } catch (\Exception $e) {
-                $this->logger->debug("Cound not instantiate {class}: {message}", ['class' => $class, 'message' => $e->getMessage()]);
+            } catch (\Throwable $e) {
+                $this->logger->debug("Could not instantiate {class}: {message}", ['class' => $class, 'message' => $e->getMessage()]);
             }
         }
 

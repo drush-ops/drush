@@ -259,7 +259,7 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
     {
         $entityType = $this->input->getArgument('entityType');
         $bundle = $this->input->getArgument('bundle');
-        $showMachineNames = $this->input->getOption('show-machine-names');
+        $showMachineNames = (bool) $this->input->getOption('show-machine-names');
         $choices = $this->getExistingFieldStorageOptions($entityType, $bundle, $showMachineNames);
 
         if (empty($choices)) {
@@ -321,6 +321,10 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
         $choices = [];
 
         foreach ($definitions as $definition) {
+            if (isset($definition['no_ui']) && $definition['no_ui'] === true) {
+                continue;
+            }
+
             $label = $this->input->getOption('show-machine-names') ? $definition['id'] : $definition['label']->render();
             $choices[$definition['id']] = $label;
         }

@@ -60,11 +60,11 @@ createEarly() method
 Drush commands that need to be instantiated prior to bootstrap may do so by
 utilizing the `createEarly()` static factory. This method looks and functions
 exacty like the `create()` static factory, except it is only passed the Drush
-container. The Drupal container is not avalable to command handlers that use
+container. The Drupal container is not available to command handlers that use
 `createEarly()`.
 
 Note also that Drush commands packaged with Drupal modules are not discovered
-until after Dupal bootstraps, and therefore cannot use `createEarly()`. This
+until after Drupal bootstraps, and therefore cannot use `createEarly()`. This
 mechanism is only usable by PSR-4 discovered commands packaged with Composer
 projects that are *not* Drupal modules.
 

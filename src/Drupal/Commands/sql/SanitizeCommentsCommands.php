@@ -53,7 +53,7 @@ final class SanitizeCommentsCommands extends DrushCommands implements SanitizePl
         }
     }
 
-    #[CLI\Hook(type: HookManager::ON_EVENT, target: 'sql-sanitize-confirms')]
+    #[CLI\Hook(type: HookManager::ON_EVENT, target: SanitizeCommands::CONFIRMS)]
     public function messages(&$messages, InputInterface $input): void
     {
         if ($this->applies()) {

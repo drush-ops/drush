@@ -65,6 +65,7 @@ final class StateCommands extends DrushCommands implements StdinAwareInterface
     #[CLI\Usage(name: 'drush state:set twig_debug TRUE', description: 'Enable the Twig debug mode (since Drupal 10.1)')]
     #[CLI\Usage(name: 'drush state:set twig_autoreload TRUE', description: 'Enable Twig auto reload (since Drupal 10.1)')]
     #[CLI\Usage(name: 'drush state:set twig_cache_disable TRUE', description: 'Disable the Twig, page, render and dynamic page caches (since Drupal 10.1)')]
+    #[CLI\Usage(name: 'drush state:set disable_rendered_output_cache_bins TRUE', description: 'Disables render cache, dynamic page cache, and page cache. (since Drupal 10.1)')]
     public function set(string $key, $value, $options = ['input-format' => 'auto']): void
     {
 

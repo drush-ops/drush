@@ -139,7 +139,7 @@ final class SqlCommands extends DrushCommands implements StdinAwareInterface
         if (!Tty::isTtySupported()) {
             $process->setInput($this->stdin()->getStream());
         } else {
-            $process->setTty($this->getConfig()->get('ssh.tty', $input->isInteractive()));
+            $process->setTty((bool) $this->getConfig()->get('ssh.tty', $input->isInteractive()));
         }
         $process->mustRun($process->showRealtime());
     }

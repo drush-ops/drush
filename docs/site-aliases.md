@@ -124,35 +124,29 @@ local or remote Drupal installations; however, an alias
 is really nothing more than a collection of options.
 
 - **docker**: When specified, Drush executes via `docker-compose` exec rather than `ssh`.
-  - **service**: the name of the container to run on.
-  - **exec**:
-    - **options**: Options for the exec subcommand.
+    - **service**: the name of the container to run on.
+    - **exec**:
+        - **options**: Options for the exec subcommand.
 - **os**: The operating system of the remote server.  Valid values
   are _Windows_ and _Linux_. Set this value for all remote
   aliases where the remote's OS differs from the local. This is especially relevant
   for the [sql:sync](commands/sql_sync.md) command.
 - **ssh**: Contains settings used to control how ssh commands are generated
   when running remote commands.
-  - **options**: Contains additional commandline options for the `ssh` command
+    - **options**: Contains additional commandline options for the `ssh` command
   itself, e.g. `-p 100`
-  - **tty**: Usually, Drush will decide whether or not to create a tty (via
+    - **tty**: Usually, Drush will decide whether or not to create a tty (via
   the `ssh --t` option) based on whether the local Drush command is running
   interactively or not. To force Drush to always or never create a tty,
   set the `ssh.tty` option to _true_ or _false_, respectively.
-- **paths**: An array of aliases for common rsync targets.
-  Relative aliases are always taken from the Drupal root.
-  - **files**: Path to _files_ directory.  This will be looked up if not
-    specified.
-  - **drush-script**: Path to the remote Drush command.
-- **command**: These options will only be set if the alias
-  is used with the specified command.  In the advanced example below, the option
-  `--no-dump` will be selected whenever the `@stage` alias
-  is used in any of the following ways:
+- **paths**: An array of aliases for common rsync targets. Relative aliases are always taken from the Drupal root.
+    - **files**: Path to _files_ directory. This will be looked up if not specified.
+    - **drush-script**: Path to the remote Drush command.
+- **command**: These options will only be set if the alias is used with the specified command.  In the advanced example below, the option `--no-dump` will be selected whenever the `@stage` alias is used in any of the following ways:
     - `drush @stage sql-sync @self @live`
     - `drush sql-sync @stage @live`
     - `drush sql-sync @live @stage`
-- **env-vars**: An array of key / value pairs that will be set as environment
-  variables.
+- **env-vars**: An array of key / value pairs that will be set as environment variables.
 
 Complex example:
 

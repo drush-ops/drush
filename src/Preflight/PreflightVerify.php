@@ -38,8 +38,11 @@ class PreflightVerify
      * @param string $minimumPhpVersion
      *   The minimum allowable php version
      */
-    public function confirmPhpVersion(string $minimumPhpVersion): void
+    public function confirmPhpVersion(string|null $minimumPhpVersion): void
     {
+        if (empty($minimumPhpVersion)) {
+            return;
+        }
         if (version_compare(phpversion(), $minimumPhpVersion) < 0 && !getenv('DRUSH_NO_MIN_PHP')) {
             throw new \Exception(StringUtils::interpolate('Your command line PHP installation is too old. Drush requires at least PHP {version}. To suppress this check, set the environment variable DRUSH_NO_MIN_PHP=1', ['version' => $minimumPhpVersion]));
         }

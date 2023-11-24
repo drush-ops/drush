@@ -14,8 +14,6 @@ use Drush\Attributes as CLI;
 use Drush\Boot\BootstrapManager;
 use Drush\Boot\DrupalBootLevels;
 use Drush\Commands\DrushCommands;
-use Drupal\Core\DrupalKernel;
-use Drupal\Core\Site\Settings;
 use Drupal\Core\Cache\Cache;
 use Drush\Utils\StringUtils;
 use Consolidation\AnnotatedCommand\Input\StdinAwareInterface;
@@ -36,6 +34,7 @@ final class CacheCommands extends DrushCommands implements CustomEventAwareInter
     const TAGS = 'cache:tags';
     const CLEAR = 'cache:clear';
     const SET = 'cache:set';
+    // @deprecated. Use CacheRebuildCommands::REBUILD
     const REBUILD = 'cache:rebuild';
     const EVENT_CLEAR = 'cache-clear';
 
@@ -200,7 +199,7 @@ final class CacheCommands extends DrushCommands implements CustomEventAwareInter
             if (is_object($data) && $data->data) {
                 $data = $data->data;
             } elseif (is_array($data) && isset($data['data'])) {
-                // But $data returned from `drush cache-get --format=json` will be an array.
+                // But $data returned from `drush cache:get --format=json` will be an array.
                 $data = $data['data'];
             } else {
                 // If $data is neither object nor array and cache-get was specified, then
@@ -210,37 +209,6 @@ final class CacheCommands extends DrushCommands implements CustomEventAwareInter
         }
 
         return $data;
-    }
-
-    /**
-     * Rebuild all caches.
-     *
-     * This is a copy of core/rebuild.php.
-     */
-    #[CLI\Command(name: self::REBUILD, aliases: ['cr', 'rebuild', 'cache-rebuild'])]
-    #[CLI\Option(name: 'cache-clear', description: 'Set to 0 to suppress normal cache clearing; the caller should then clear if needed.')]
-    #[CLI\Bootstrap(level: DrupalBootLevels::SITE)]
-    public function rebuild($options = ['cache-clear' => true])
-    {
-        if (!$options['cache-clear']) {
-            $this->logger()->info(dt("Skipping cache-clear operation due to --no-cache-clear option."));
-            return true;
-        }
-
-        // We no longer clear APC and similar caches as they are useless on CLI.
-        // See https://github.com/drush-ops/drush/pull/2450
-        $root  = $this->bootstrapManager->getRoot();
-        require_once DRUSH_DRUPAL_CORE . '/includes/utility.inc';
-
-        $request = $this->bootstrapManager->bootstrap()->getRequest();
-        DrupalKernel::bootEnvironment();
-
-        $site_path = DrupalKernel::findSitePath($request);
-        Settings::initialize($root, $site_path, $this->autoloader);
-
-        // drupal_rebuild() calls drupal_flush_all_caches() itself, so we don't do it manually.
-        drupal_rebuild($this->autoloader, $request);
-        $this->logger()->success(dt('Cache rebuild complete.'));
     }
 
     #[CLI\Hook(type: HookManager::ARGUMENT_VALIDATOR, target: self::CLEAR)]
