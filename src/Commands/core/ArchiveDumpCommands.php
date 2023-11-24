@@ -47,7 +47,7 @@ final class ArchiveDumpCommands extends DrushCommands
     /**
      * Backup your code, files, and database into a single file.
      *
-     * --destination starting point is Drupal root, normally web for drupal/recommended-project projects.
+     * --destination starting point is Drupal root, normally "web" for drupal/recommended-project projects.
      *
      * The following paths would be excluded from a code archive:
      *
