@@ -26,14 +26,14 @@ class ValidateFileExists
 
     public static function handle(\ReflectionAttribute $attribute, CommandInfo $commandInfo)
     {
-        // @todo Inject hookManager?
+        // @todo Maybe the caller should pass $hookManager into handle() method?
         /** @var HookManager $hookManager */
         $hookManager = Drush::getContainer()->get('hookManager');
         $hookManager->add(
-            // Use Closure to pass arguments to validate().
+            // Use a Closure to acquire $commandData and $args.
             fn(CommandData $commandData) => self::validate($commandData, $attribute->getArguments()),
             $hookManager::ARGUMENT_VALIDATOR,
-            // @todo not currently a public property, and getName() gives an infinite loop - parsing still in progress.
+            // @todo not currently a public property, and getName() gives an infinite loop because parsing still in progress.
             $commandInfo->name
         );
     }
