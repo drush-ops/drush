@@ -47,8 +47,6 @@ final class ArchiveDumpCommands extends DrushCommands
     /**
      * Backup your code, files, and database into a single file.
      *
-     * --destination starting point is Drupal root, normally "web" for drupal/recommended-project projects.
-     *
      * The following paths would be excluded from a code archive:
      *
      *  - .git
@@ -66,7 +64,7 @@ final class ArchiveDumpCommands extends DrushCommands
      */
     #[CLI\Command(name: self::DUMP, aliases: ['ard'])]
     #[CLI\ValidatePhpExtensions(extensions: ['Phar'])]
-    #[CLI\Option(name: 'destination', description: 'The full path and filename in which the archive should be stored. If omitted, it will be saved to the drush-backups directory.')]
+    #[CLI\Option(name: 'destination', description: 'The full path and filename in which the archive should be stored, relative to Drupal root, normally "web" for drupal/recommended-project projects. If omitted, it will be saved to the drush-backups directory.')]
     #[CLI\Option(name: 'overwrite', description: 'Overwrite destination file if exists.')]
     #[CLI\Option(name: 'code', description: 'Archive codebase.')]
     #[CLI\Option(name: 'exclude-code-paths', description: 'Comma-separated list of paths (or regular expressions matching paths) to exclude from the code archive.')]
