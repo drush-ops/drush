@@ -10,6 +10,7 @@ use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\AnnotatedCommand\Hooks\HookManager;
 use Drush\Attributes as CLI;
 use Drush\Utils\StringUtils;
+use JetBrains\PhpStorm\Deprecated;
 use Symfony\Component\Console\Input\Input;
 
 /*
@@ -49,6 +50,35 @@ final class ValidatorsCommands
         if ($missing = array_diff($names, array_keys($loaded))) {
             $msg = dt('Missing module: !str', ['!str' => implode(', ', $missing)]);
             throw new \Exception($msg);
+        }
+    }
+
+    /**
+     * Validate that the file path exists.
+     *
+     * Annotation value should be the name of the argument containing the path.
+     */
+    #[Deprecated('Use CLI/ValidateFileExists Attribute instead')]
+    #[CLI\Hook(type: HookManager::ARGUMENT_VALIDATOR, selector: 'validate-file-exists')]
+    public function validateFileExists(CommandData $commandData)
+    {
+        $missing = [];
+        $arg_names =  StringUtils::csvToArray($commandData->annotationData()->get('validate-file-exists', null));
+        foreach ($arg_names as $arg_name) {
+            if ($commandData->input()->hasArgument($arg_name)) {
+                $path = $commandData->input()->getArgument($arg_name);
+            } elseif ($commandData->input()->hasOption($arg_name)) {
+                $path = $commandData->input()->getOption($arg_name);
+            }
+            if (!empty($path) && !file_exists($path)) {
+                $missing[] = $path;
+            }
+            unset($path);
+        }
+
+        if ($missing) {
+            $msg = dt('File(s) not found: !paths', ['!paths' => implode(', ', $missing)]);
+            return new CommandError($msg);
         }
     }
 
