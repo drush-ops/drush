@@ -47,7 +47,7 @@ class ArchiveTest extends CommandUnishTestCase
                 'overwrite' => null,
             ])
         );
-        $actualArchivePath = $this->getOutput();
+        $actualArchivePath = Path::canonicalize($this->getOutput());
         $this->assertEquals($this->archivePath, $actualArchivePath);
 
         $this->restorePath = Path::join($this->getSandbox(), 'restore');
@@ -105,7 +105,7 @@ class ArchiveTest extends CommandUnishTestCase
                 'overwrite' => null,
             ])
         );
-        $actualArchivePath = $this->getOutput();
+        $actualArchivePath = Path::canonicalize($this->getOutput());
         $this->assertEquals($this->archivePath, $actualArchivePath);
 
         // Validate database credentials are present in settings.php file.
