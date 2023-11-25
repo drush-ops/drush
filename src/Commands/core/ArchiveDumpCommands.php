@@ -200,7 +200,7 @@ final class ArchiveDumpCommands extends DrushCommands
         );
         $this->filesystem->rename($archivePath, $options['destination']);
 
-        return $options['destination'];
+        return realpath($options['destination']);
     }
 
     /**
