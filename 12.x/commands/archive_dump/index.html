@@ -5271,7 +5271,7 @@
 <li><strong> --code</strong>. Archive codebase.</li>
 <li><strong> --files</strong>. Archive Drupal files.</li>
 <li><strong> --db</strong>. Archive database SQL dump.</li>
-<li><strong> --destination=DESTINATION</strong>. The full path and filename in which the archive should be stored. If omitted, it will be saved to the drush-backups directory.</li>
+<li><strong> --destination=DESTINATION</strong>. The full path and filename in which the archive should be stored. Any relative path will be calculated from Drupal root (usually *web</web> for drupal/recommended-project projects). If omitted, it will be saved to the configured temp directory.</li>
 <li><strong> --overwrite</strong>. Overwrite destination file if exists.</li>
 <li><strong> --description=DESCRIPTION</strong>. Describe the archive contents.</li>
 <li><strong> --tags=TAGS</strong>. Add tags to the archive manifest. Delimit several by commas.</li>
