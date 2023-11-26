@@ -67,7 +67,7 @@ trait DrushTestTrait
 
         // Insert drush command arguments.
         foreach ($args as $arg) {
-            $cmd[] = self::escapeshellarg($arg);
+            $cmd[] = self::escapeshellarg((string) $arg);
         }
         // insert drush command options
         foreach ($options as $key => $value) {
