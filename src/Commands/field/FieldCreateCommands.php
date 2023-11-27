@@ -286,23 +286,19 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
         }
 
         while (!$fieldName) {
-            // @todo Move validation below to a Closure.
-            $answer = text('Field name', default: $machineName, required: true);
+            $answer = text('Field name', default: $machineName, required: true, validate: function ($answer) use ($entityType) {
+                if (!preg_match('/^[_a-z]+[_a-z0-9]*$/', $answer)) {
+                    return'Only lowercase alphanumeric chars/underscores allowed; only letters/underscore allowed as first character.';
+                }
 
-            if (!preg_match('/^[_a-z]+[_a-z0-9]*$/', $answer)) {
-                $this->logger()->error('Only lowercase alphanumeric characters and underscores are allowed, and only lowercase letters and underscore are allowed as the first character.');
-                continue;
-            }
+                if (strlen($answer) > 32) {
+                    return 'Field name must not be longer than 32 characters.';
+                }
 
-            if (strlen($answer) > 32) {
-                $this->logger()->error('Field name must not be longer than 32 characters.');
-                continue;
-            }
-
-            if ($this->fieldStorageExists($answer, $entityType)) {
-                $this->logger()->error('A field with this name already exists.');
-                continue;
-            }
+                if ($this->fieldStorageExists($answer, $entityType)) {
+                    return 'A field with this name already exists.';
+                }
+            });
 
             $fieldName = $answer;
         }
