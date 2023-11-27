@@ -16,6 +16,9 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
+use function Laravel\Prompts\multiselect;
+use function Laravel\Prompts\select;
+
 class FieldTextHooks extends DrushCommands
 {
     use EntityTypeBundleValidationTrait;
@@ -123,11 +126,6 @@ class FieldTextHooks extends DrushCommands
             $choices[$format->id()] = $format->label();
         }
 
-        $question = (new ChoiceQuestion('Allowed formats', $choices, '_none'))
-            ->setMultiselect(true);
-
-        return array_filter(
-            $this->io()->askQuestion($question)
-        );
+        return multiselect('Allowed formats', $choices, ['_none'], required: true, hint: 'If \'None\' is selected, all available text formats will be displayed to the user.');
     }
 }

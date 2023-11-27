@@ -31,6 +31,10 @@ use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 use function dt;
+use function Laravel\Prompts\confirm;
+use function Laravel\Prompts\note;
+use function Laravel\Prompts\select;
+use function Laravel\Prompts\text;
 use function t;
 
 class FieldCreateCommands extends DrushCommands implements CustomEventAwareInterface
@@ -266,7 +270,7 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
             return null;
         }
 
-        return $this->io()->choice('Choose an existing field', $choices);
+        return select('Choose an existing field', $choices);
     }
 
     protected function askFieldName(): string
@@ -282,7 +286,8 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
         }
 
         while (!$fieldName) {
-            $answer = $this->io()->ask('Field name', $machineName);
+            // @todo Move validation below to a Closure.
+            $answer = text('Field name', default: $machineName, required: true);
 
             if (!preg_match('/^[_a-z]+[_a-z0-9]*$/', $answer)) {
                 $this->logger()->error('Only lowercase alphanumeric characters and underscores are allowed, and only lowercase letters and underscore are allowed as the first character.');
@@ -307,12 +312,12 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
 
     protected function askFieldLabel(): string
     {
-        return $this->io()->askRequired('Field label');
+        return text('Field label', required: true, hint: 'The human-readable name of this field.');
     }
 
     protected function askFieldDescription(): ?string
     {
-        return $this->io()->ask('Field description');
+        return text('Field description', hint: 'Instructions to present to the user below this field on the editing form');
     }
 
     protected function askFieldType(): string
@@ -329,7 +334,7 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
             $choices[$definition['id']] = $label;
         }
 
-        return $this->io()->choice('Field type', $choices);
+        return select('Field type', $choices);
     }
 
     protected function askFieldWidget(): ?string
@@ -349,7 +354,7 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
         $widgets = $this->widgetPluginManager->getOptions($fieldType);
 
         if ($widgets === []) {
-            $this->io()->comment('No widgets available for this field type. Skipping option.');
+            note('No widgets available for this field type. Skipping option.');
             return null;
         }
 
@@ -360,12 +365,12 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
 
         $default = $this->input->getOption('show-machine-names') ? key($choices) : current($choices);
 
-        return $this->io()->choice('Field widget', $choices, $default);
+        return select('Field widget', $choices, $default);
     }
 
     protected function askRequired(): bool
     {
-        return $this->io()->confirm('Required', false);
+        return confirm('Required', false);
     }
 
     protected function askTranslatable(): bool
@@ -374,7 +379,7 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
             return false;
         }
 
-        return $this->io()->confirm('Translatable', false);
+        return confirm('Translatable', false);
     }
 
     protected function askCardinality(): int
@@ -388,7 +393,7 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
         }
 
         $choices = ['Limited', 'Unlimited'];
-        $cardinality = $this->io()->choice(
+        $cardinality = select(
             'Allowed number of values',
             array_combine($choices, $choices),
             0
@@ -396,7 +401,7 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
 
         $limit = FieldStorageDefinitionInterface::CARDINALITY_UNLIMITED;
         while ($cardinality === 'Limited' && $limit < 1) {
-            $limit = (int) $this->io()->ask('Allowed number of values', '1');
+            $limit = (int) text('Allowed number of values', '1');
         }
 
         return $limit;
