@@ -17,6 +17,8 @@ use Symfony\Component\Console\Output\BufferedOutput;
 use Symfony\Component\Filesystem\Path;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
+use function Laravel\Prompts\confirm;
+
 final class ConfigExportCommands extends DrushCommands
 {
     const EXPORT = 'config:export';
@@ -142,7 +144,7 @@ final class ConfigExportCommands extends DrushCommands
                 $this->logger()->notice($preamble . $preview);
             }
 
-            if (!$this->io()->confirm(dt('The .yml files in your export directory (!target) will be deleted and replaced with the active config.', ['!target' => $destination_dir]))) {
+            if (!confirm(dt('The .yml files in your export directory will be deleted: (!target)', ['!target' => $destination_dir]))) {
                 throw new UserAbortException();
             }
 
