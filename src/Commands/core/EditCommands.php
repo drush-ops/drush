@@ -13,6 +13,8 @@ use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
 use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
 use Drush\Exec\ExecTrait;
 
+use function Laravel\Prompts\select;
+
 final class EditCommands extends DrushCommands implements SiteAliasManagerAwareInterface
 {
     use SiteAliasManagerAwareTrait;
@@ -50,7 +52,7 @@ final class EditCommands extends DrushCommands implements SiteAliasManagerAwareI
         if (count($all) == 1) {
             $filepath = current($all);
         } else {
-            $choice = $this->io()->choice(dt("Choose a file to edit"), $all);
+            $choice = select(dt("Choose a file to edit"), $all, scroll: 10);
             $filepath = $choice;
             // We don't yet support launching editor at a start line.
             if ($pos = strpos($filepath, ':')) {

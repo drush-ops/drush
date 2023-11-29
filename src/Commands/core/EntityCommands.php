@@ -14,6 +14,8 @@ use Drush\Commands\DrushCommands;
 use Drush\Utils\StringUtils;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
+use function Laravel\Prompts\progress;
+
 final class EntityCommands extends DrushCommands
 {
     const DELETE = 'entity:delete';
@@ -49,7 +51,7 @@ final class EntityCommands extends DrushCommands
     #[CLI\Usage(name: 'drush entity:delete node 22,24', description: 'Delete nodes 22 and 24.')]
     #[CLI\Usage(name: 'drush entity:delete user', description: 'Delete all users except uid=1.')]
     #[CLI\Usage(name: 'drush entity:delete node --exclude=9,14,81', description: 'Delete all nodes except node 9, 14 and 81.')]
-    #[CLI\Usage(name: 'drush entity:delete node --chunks=5', description: 'Delete all node entities in steps of 5.')]
+    #[CLI\Usage(name: 'drush entity:delete node --chunks=5', description: 'Delete all node entities in groups of 5.')]
     public function delete(string $entity_type, $ids = null, array $options = ['bundle' => self::REQ, 'exclude' => self::REQ, 'chunks' => 50]): void
     {
         $query = $this->getQuery($entity_type, $ids, $options);
@@ -63,12 +65,14 @@ final class EntityCommands extends DrushCommands
         if (empty($result)) {
             $this->logger()->success(dt('No matching entities found.'));
         } else {
-            $this->io()->progressStart(count($result));
-            foreach (array_chunk($result, (int) $options['chunks'], true) as $chunk) {
+            $chunks = array_chunk($result, (int)$options['chunks'], true);
+            $progress = progress('Deleting entitites', count($chunks));
+            $progress->start();
+            foreach ($chunks as $chunk) {
                 drush_op([$this, 'doDelete'], $entity_type, $chunk);
-                $this->io()->progressAdvance(count($chunk));
+                $progress->advance();
             }
-            $this->io()->progressFinish();
+            $progress->finish();
             $this->logger()->success(dt("Deleted !type entity Ids: !ids", ['!type' => $entity_type, '!ids' => implode(', ', array_values($result))]));
         }
     }
