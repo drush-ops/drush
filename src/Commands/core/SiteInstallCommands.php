@@ -27,6 +27,9 @@ use Consolidation\SiteAlias\SiteAliasManager;
 use Drush\Config\DrushConfig;
 use Composer\Autoload\ClassLoader;
 
+use function Laravel\Prompts\confirm;
+use function Laravel\Prompts\text;
+
 final class SiteInstallCommands extends DrushCommands
 {
     use ExecTrait;
@@ -278,12 +281,12 @@ final class SiteInstallCommands extends DrushCommands
             // TODO: we should only 'ask' in hook interact, never in hook validate
             if ($commandData->input()->getOption('db-url') == '') {
                 // Prompt for the db-url data if it was not provided via --db-url.
-                $database = $this->io()->ask('Database name', 'drupal');
-                $driver = $this->io()->ask('Database driver', 'mysql');
-                $username = $this->io()->ask('Database username', 'drupal');
-                $password = $this->io()->ask('Database password', 'drupal');
-                $host = $this->io()->ask('Database host', '127.0.0.1');
-                $port = $this->io()->ask('Database port', '3306');
+                $database = text('Database name', default: 'drupal');
+                $driver = text('Database driver', default: 'mysql');
+                $username = text('Database username', default: 'drupal');
+                $password = text('Database password', default: 'drupal');
+                $host = text('Database host', default: '127.0.0.1');
+                $port = text('Database port', default: '3306');
                 $db_url = "$driver://$username:$password@$host:$port/$database";
                 $commandData->input()->setOption('db-url', $db_url);
 
@@ -357,7 +360,7 @@ final class SiteInstallCommands extends DrushCommands
             $this->io()->listing($msg);
         }
 
-        if (!$this->io()->confirm(dt('Do you want to continue?'))) {
+        if (!confirm(dt('Do you want to continue?'))) {
             throw new UserAbortException();
         }
 
