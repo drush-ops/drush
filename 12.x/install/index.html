@@ -5221,7 +5221,7 @@
 </div>
 <ol>
 <li><strong>Composer</strong>. It is required that Drupal sites be built using Composer, with Drush listed as a dependency. See <a href="https://www.drupal.org/docs/develop/using-composer/using-composer-to-install-drupal-and-manage-dependencies">recommended-project</a> (Drush must be added). If your Composer project doesn't yet depend on Drush, run <code>composer require drush/drush</code> to add it.</li>
-<li><strong>Execution</strong>. Change your working directory to your project root, and call Drush via <code>vendor/bin/drush</code>. To make this easier, append <code>./vendor/bin</code> to the end of your <code>$PATH</code>; this allows you to call Drush via <code>drush</code> once your working directory is set. If you only have only one Drupal codebase on your system, you may put <code>/path/to/vendor/bin/drush</code> in your <code>$PATH</code>; if you do this, then it is not necessary to set your working directory before calling Drush.</li>
+<li><strong>Execution</strong>. Change to the project root, and call Drush via <code>vendor/bin/drush</code>. To simplify things, add <code>./vendor/bin</code> to your <code>$PATH</code>, allowing you to call Drush via <code>drush</code> from the project root. If you have only one Drupal codebase on your system, you may put <code>/path/to/vendor/bin</code> in your <code>$PATH</code>; now you can call Drush from everywhere, without having to change to project root.</li>
 <li><strong>Completion</strong>. Optional. Append to .bashrc or equivalent for ZSH or <a href="https://fishshell.com/">Fish shell</a>. Run <code>drush completion --help</code> for more details.  </li>
 <li><strong>Multiple Codebases</strong>. Optional. If using the bash shell, consider installing the <a href="https://github.com/g1a/fd">fd</a> project, a small set of scripts that make it easier to switch between different project directories quickly, with type completion.</li>
 </ol>
@@ -5320,7 +5320,7 @@
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">June 6, 2023</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">December 1, 2023</span>
       
     
   </small>
