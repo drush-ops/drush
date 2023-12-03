@@ -10,7 +10,7 @@ use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Entity\FieldableEntityInterface;
 use Symfony\Component\Console\Input\InputInterface;
 
-use function Laravel\Prompts\select;
+use function Drush\Prompts\select;
 use function t;
 
 /**

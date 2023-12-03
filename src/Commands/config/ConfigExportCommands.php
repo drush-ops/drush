@@ -17,7 +17,7 @@ use Symfony\Component\Console\Output\BufferedOutput;
 use Symfony\Component\Filesystem\Path;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-use function Laravel\Prompts\confirm;
+use function Drush\Prompts\confirm;
 
 final class ConfigExportCommands extends DrushCommands
 {

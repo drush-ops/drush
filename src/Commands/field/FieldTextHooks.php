@@ -16,8 +16,8 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-use function Laravel\Prompts\multiselect;
-use function Laravel\Prompts\select;
+use function Drush\Prompts\multiselect;
+use function Drush\Prompts\select;
 
 class FieldTextHooks extends DrushCommands
 {

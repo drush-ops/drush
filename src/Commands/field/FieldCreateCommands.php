@@ -31,10 +31,10 @@ use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 use function dt;
-use function Laravel\Prompts\confirm;
-use function Laravel\Prompts\note;
-use function Laravel\Prompts\select;
-use function Laravel\Prompts\text;
+use function Drush\Prompts\confirm;
+use function Drush\Prompts\note;
+use function Drush\Prompts\select;
+use function Drush\Prompts\text;
 use function t;
 
 class FieldCreateCommands extends DrushCommands implements CustomEventAwareInterface

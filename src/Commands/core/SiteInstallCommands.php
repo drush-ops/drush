@@ -27,8 +27,8 @@ use Consolidation\SiteAlias\SiteAliasManager;
 use Drush\Config\DrushConfig;
 use Composer\Autoload\ClassLoader;
 
-use function Laravel\Prompts\confirm;
-use function Laravel\Prompts\text;
+use function Drush\Prompts\confirm;
+use function Drush\Prompts\text;
 
 final class SiteInstallCommands extends DrushCommands
 {

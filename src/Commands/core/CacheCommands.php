@@ -22,7 +22,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Filesystem\Exception\IOException;
 use Composer\Autoload\ClassLoader;
 
-use function Laravel\Prompts\select;
+use function Drush\Prompts\select;
 
 /*
  * Interact with Drupal's Cache API.

@@ -34,10 +34,10 @@ use Symfony\Component\Filesystem\Path;
 use Symfony\Component\Yaml\Parser;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-use function Laravel\Prompts\confirm;
-use function Laravel\Prompts\search;
-use function Laravel\Prompts\select;
-use function Laravel\Prompts\suggest;
+use function Drush\Prompts\confirm;
+use function Drush\Prompts\search;
+use function Drush\Prompts\select;
+use function Drush\Prompts\suggest;
 
 final class ConfigCommands extends DrushCommands implements StdinAwareInterface, SiteAliasManagerAwareInterface
 {

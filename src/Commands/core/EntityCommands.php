@@ -14,7 +14,7 @@ use Drush\Commands\DrushCommands;
 use Drush\Utils\StringUtils;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-use function Laravel\Prompts\progress;
+use function Drush\Prompts\progress;
 
 final class EntityCommands extends DrushCommands
 {

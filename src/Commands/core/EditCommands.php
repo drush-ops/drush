@@ -13,7 +13,7 @@ use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
 use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
 use Drush\Exec\ExecTrait;
 
-use function Laravel\Prompts\select;
+use function Drush\Prompts\select;
 
 final class EditCommands extends DrushCommands implements SiteAliasManagerAwareInterface
 {

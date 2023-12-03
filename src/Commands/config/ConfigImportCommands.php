@@ -33,7 +33,7 @@ use Drush\Exceptions\UserAbortException;
 use Symfony\Component\Filesystem\Path;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-use function Laravel\Prompts\confirm;
+use function Drush\Prompts\confirm;
 
 class ConfigImportCommands extends DrushCommands
 {

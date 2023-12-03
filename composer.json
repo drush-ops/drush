@@ -71,7 +71,10 @@
   "autoload": {
     "psr-4": {
       "Drush\\":            "src/"
-    }
+    },
+    "files": [
+      "src/Prompts/helpers.php"
+    ]
   },
   "autoload-dev": {
     "psr-4": {
