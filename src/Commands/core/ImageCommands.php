@@ -13,6 +13,8 @@ use Drush\Utils\StringUtils;
 use Symfony\Component\Console\Input\InputInterface;
 use Drush\Boot\DrupalBootLevels;
 
+use function Drush\Prompts\select;
+
 final class ImageCommands extends DrushCommands
 {
     const FLUSH = 'image:flush';
@@ -48,7 +50,7 @@ final class ImageCommands extends DrushCommands
             $styles_all = $styles;
             array_unshift($styles_all, 'all');
             $choices = array_combine($styles_all, $styles_all);
-            $style_names = $this->io()->choice(dt("Choose a style to flush"), $choices, 'all');
+            $style_names = select(dt("Choose a style to flush"), $choices, 'all', required: true);
             if ($style_names == 'all') {
                 $style_names = implode(',', $styles);
             }

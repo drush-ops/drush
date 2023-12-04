@@ -19,6 +19,8 @@ use Drush\Drush;
 use Drush\Exceptions\UserAbortException;
 use Psr\Log\LogLevel;
 
+use function Drush\Prompts\confirm;
+
 final class DeployHookCommands extends DrushCommands implements SiteAliasManagerAwareInterface
 {
     use SiteAliasManagerAwareTrait;
@@ -99,7 +101,7 @@ final class DeployHookCommands extends DrushCommands implements SiteAliasManager
         $process->mustRun();
         $this->output()->writeln($process->getOutput());
 
-        if (!$this->io()->confirm(dt('Do you wish to run the specified pending deploy hooks?'))) {
+        if (!confirm(dt('Do you wish to run the specified pending deploy hooks?'))) {
             throw new UserAbortException();
         }
 

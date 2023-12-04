@@ -19,6 +19,8 @@ use Symfony\Component\Console\Completion\CompletionInput;
 use Symfony\Component\Console\Completion\CompletionSuggestions;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
+use function Drush\Prompts\confirm;
+
 final class UserCommands extends DrushCommands
 {
     const INFORMATION = 'user:information';
@@ -290,7 +292,7 @@ final class UserCommands extends DrushCommands
             } elseif ($options['reassign-content']) {
                 $this->logger()->warning(dt('All content created by !name will be assigned to anonymous user.', ['!name' => $account->getAccountName()]));
             }
-            if ($this->io()->confirm('Cancel user account?: ')) {
+            if (confirm('Cancel user account?: ')) {
                 $method = $options['delete-content'] ? 'user_cancel_delete' : ($options['reassign-content'] ? 'user_cancel_reassign' : 'user_cancel_block');
                 user_cancel([], $account->id(), $method);
                 drush_backend_batch_process();

@@ -1,0 +1,38 @@
+# example.yaml
+# Short example input file for autocast.
+# See full-example.yaml for all possible configuration options and explanations.
+
+settings:
+  title: drush entity:create
+  timeout: 7s
+  type_speed: 50ms
+  environment:
+    - name: EDITOR
+      value: nano
+#  environment_capture:
+#    - HELLO
+#  prompt: "[example]$ "
+
+# Remember to have an Umami site before the demo.
+instructions:
+  - !Command
+    command: echo "entity:create is a content authoring experience for the CLI. Let's create an Umami recipe."
+  - !Wait 1s
+  - !Interactive
+    command: drush entity:create node recipe --editor=nano
+    keys:
+      - ^X
+      - ^M # new line as per https://en.wikipedia.org/wiki/C0_and_C1_control_codes#Basic_ASCII_control_codes
+#      - ^[[A
+      - h
+      - e
+      - l
+      - l
+      - o
+      - 1s
+      - ^X
+      - 1s
+      - y
+#  - !Command
+#    command: echo $GOODBYE
+  - !Wait 1s
