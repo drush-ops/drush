@@ -5,7 +5,7 @@ Drush is a command line shell and Unix scripting interface for Drupal. Drush cor
 Resources
 -----------
 * [Installing and Upgrading](install.md)
-* [Commands](commands/all.md) and [Generators](generators/all.md)
+* [Commands](commands.md) and [Generators](generators.md)
 * [API Documentation](https://www.drush.org/api)
 * [Drush packages available via Composer](https://packagist.org/search/?type=drupal-drush)
 * [A list of modules that include Drush integration](https://www.drupal.org/project/project_module?f[2]=im_vid_3%3A4654&solrsort=ds_project_latest_release+desc)
