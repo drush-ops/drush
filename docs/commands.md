@@ -17,7 +17,7 @@ Creating a new Drush command is easy. Follow the steps below.
 ## Attributes or Annotations
 The following are both valid ways to declare a command:
 
-=== "PHP8 Attributes"
+### "PHP8 Attributes"
     
     ```php
     use Drush\Attributes as CLI;
@@ -36,7 +36,7 @@ The following are both valid ways to declare a command:
     }
     ```
 
-=== "Annotations"
+### "Annotations"
     
     ```php
     /**
