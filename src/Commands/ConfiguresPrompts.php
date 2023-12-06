@@ -16,7 +16,6 @@ use Laravel\Prompts\SelectPrompt;
 use Laravel\Prompts\SuggestPrompt;
 use Laravel\Prompts\TextPrompt;
 use Symfony\Component\Console\Input\InputInterface;
-use Unish\UnishTestCase;
 
 trait ConfiguresPrompts
 {
@@ -32,7 +31,7 @@ trait ConfiguresPrompts
 
         Prompt::interactive(($input->isInteractive() && defined('STDIN') && stream_isatty(STDIN)) || $this->runningUnitTests());
 
-        Prompt::fallbackWhen(!$input->isInteractive() || UnishTestCase::isWindows() || $this->runningUnitTests());
+        Prompt::fallbackWhen(!$input->isInteractive() || strtoupper(substr(PHP_OS, 0, 3)) == "WIN" || $this->runningUnitTests());
 
         TextPrompt::fallbackUsing(fn (TextPrompt $prompt) => $this->promptUntilValid(
             fn () => $this->io()->ask($prompt->label, $prompt->default ?: null) ?? '',
