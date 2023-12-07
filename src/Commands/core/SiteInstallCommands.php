@@ -21,6 +21,7 @@ use Drush\Exec\ExecTrait;
 use Drush\Sql\SqlBase;
 use Drush\Utils\StringUtils;
 use Psr\Container\ContainerInterface as DrushContainer;
+use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Filesystem\Path;
 use Drush\Boot\BootstrapManager;
 use Consolidation\SiteAlias\SiteAliasManager;
@@ -353,7 +354,8 @@ final class SiteInstallCommands extends DrushCommands
         }
 
         if ($msg) {
-            $this->io()->text(dt('You are about to:'));
+            // Awkwardly use the text() method from parent because DrushStyle uses it for a prompt.
+            (new SymfonyStyle($this->input, $this->output))->text(dt('You are about to:'));
             $this->io()->listing($msg);
         }
 
