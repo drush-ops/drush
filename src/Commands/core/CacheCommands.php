@@ -22,8 +22,6 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Filesystem\Exception\IOException;
 use Composer\Autoload\ClassLoader;
 
-use function Drush\Prompts\select;
-
 /*
  * Interact with Drupal's Cache API.
  */
@@ -142,14 +140,14 @@ final class CacheCommands extends DrushCommands implements CustomEventAwareInter
         if (empty($input->getArgument('type'))) {
             $types = $this->getTypes($this->bootstrapManager->hasBootstrapped(DrupalBootLevels::FULL));
             $choices = array_combine(array_keys($types), array_keys($types));
-            $type = select(dt("Choose a cache to clear"), $choices, 'render', scroll: 10);
+            $type = $this->io()->choice(dt("Choose a cache to clear"), $choices, 'render');
             $input->setArgument('type', $type);
         }
 
         if ($input->getArgument('type') == 'bin' && empty($input->getArgument('args'))) {
             $bins = Cache::getBins();
             $choices = array_combine(array_keys($bins), array_keys($bins));
-            $chosen = select(dt("Choose a cache to clear"), $choices, 'default', scroll: 15);
+            $chosen = $this->io()->choice(dt("Choose a cache to clear"), $choices, 'default');
             $input->setArgument('args', [$chosen]);
         }
     }

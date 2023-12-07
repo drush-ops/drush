@@ -33,8 +33,6 @@ use Drush\Exceptions\UserAbortException;
 use Symfony\Component\Filesystem\Path;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-use function Drush\Prompts\confirm;
-
 class ConfigImportCommands extends DrushCommands
 {
     const IMPORT = 'config:import';
@@ -226,7 +224,7 @@ class ConfigImportCommands extends DrushCommands
             $this->output()->writeln($output);
         }
 
-        if (!confirm(dt('Import the listed configuration changes?'))) {
+        if (!$this->io()->confirm(dt('Import the listed configuration changes?'))) {
             throw new UserAbortException();
         }
         return drush_op([$this, 'doImport'], $storage_comparer);

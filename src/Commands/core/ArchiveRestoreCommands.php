@@ -26,8 +26,6 @@ use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Path;
 use Throwable;
 
-use function Drush\Prompts\confirm;
-
 final class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAwareInterface
 {
     use SiteAliasManagerAwareTrait;
@@ -179,7 +177,7 @@ final class ArchiveRestoreCommands extends DrushCommands implements SiteAliasMan
             }
 
             if (
-                !confirm(
+                !$this->io()->confirm(
                     dt(
                         'Destination path !path already exists. Are you sure you want to delete !path directory before restoring the archive into it?',
                         [
@@ -314,7 +312,7 @@ final class ArchiveRestoreCommands extends DrushCommands implements SiteAliasMan
         if (
             is_dir($destinationAbsolute) &&
             (!$options['code'] || !$options['overwrite']) &&
-            !confirm(
+            !$this->io()->confirm(
                 dt(
                     'Destination Drupal files path !path already exists. Are you sure you want restore Drupal files archive into it?',
                     [
@@ -441,7 +439,7 @@ final class ArchiveRestoreCommands extends DrushCommands implements SiteAliasMan
         $destination = rtrim($destination, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
 
         if (
-            !confirm(
+            !$this->io()->confirm(
                 dt(
                     'Are you sure you want to sync files from "!source" to "!destination"?',
                     [
@@ -558,7 +556,7 @@ final class ArchiveRestoreCommands extends DrushCommands implements SiteAliasMan
 
         if (
             $isDbExist &&
-            !confirm(
+            !$this->io()->confirm(
                 dt(
                     'Are you sure you want to drop the database "!database" (username: !user, password: !password, port: !port, prefix: !prefix) and import the database dump "!path"?',
                     [

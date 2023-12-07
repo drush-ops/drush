@@ -19,8 +19,6 @@ use Drush\Backend\BackendPathEvaluator;
 use Drush\Config\ConfigLocator;
 use Symfony\Component\Console\Event\ConsoleCommandEvent;
 
-use function Drush\Prompts\confirm;
-
 final class RsyncCommands extends DrushCommands implements SiteAliasManagerAwareInterface
 {
     use SiteAliasManagerAwareTrait;
@@ -65,7 +63,7 @@ final class RsyncCommands extends DrushCommands implements SiteAliasManagerAware
         // Prompt for confirmation. This is destructive.
         if (!$this->getConfig()->simulate()) {
             $replacements = ['!source' => $this->sourceEvaluatedPath->fullyQualifiedPathPreservingTrailingSlash(), '!target' => $this->targetEvaluatedPath->fullyQualifiedPath()];
-            if (confirm(dt("Copy new and override existing files at !target. The source is !source?", $replacements))) {
+            if (!$this->io()->confirm(dt("Copy new and override existing files at !target. The source is !source?", $replacements))) {
                 throw new UserAbortException();
             }
         }

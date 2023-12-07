@@ -14,8 +14,6 @@ use Drush\Commands\DrushCommands;
 use Drush\Utils\StringUtils;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-use function Drush\Prompts\progress;
-
 final class EntityCommands extends DrushCommands
 {
     const DELETE = 'entity:delete';
@@ -66,7 +64,7 @@ final class EntityCommands extends DrushCommands
             $this->logger()->success(dt('No matching entities found.'));
         } else {
             $chunks = array_chunk($result, (int)$options['chunks'], true);
-            $progress = progress('Deleting entitites', count($chunks));
+            $progress = $this->io()->progress('Deleting entitites', count($chunks));
             $progress->start();
             foreach ($chunks as $chunk) {
                 drush_op([$this, 'doDelete'], $entity_type, $chunk);
@@ -119,7 +117,7 @@ final class EntityCommands extends DrushCommands
             $this->logger()->success(dt('No matching entities found.'));
         } else {
             $chunks = array_chunk($result, (int) $options['chunks'], true);
-            $progress = progress('Saving entities', count($chunks));
+            $progress = $this->io()->progress('Saving entities', count($chunks));
             $progress->start();
             foreach ($chunks as $chunk) {
                 drush_op([$this, 'doSave'], $entity_type, $chunk);

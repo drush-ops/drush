@@ -23,9 +23,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Drush\Boot\DrupalBootLevels;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-use function Drush\Prompts\confirm;
-use function Drush\Prompts\select;
-
 final class WatchdogCommands extends DrushCommands
 {
     const SHOW = 'watchdog:show';
@@ -202,7 +199,7 @@ final class WatchdogCommands extends DrushCommands
         foreach ($severities as $key => $value) {
             $choices[$key] = $value;
         }
-        $option = select(dt('Select a message type or severity level'), $choices);
+        $option = $this->io()->choice(dt('Select a message type or severity level'), $choices);
         if (isset($types[$option])) {
             $input->setOption('type', $types[$option]);
         } else {
@@ -229,14 +226,14 @@ final class WatchdogCommands extends DrushCommands
     {
         if ($substring == 'all') {
             $this->output()->writeln(dt('All watchdog messages will be deleted.'));
-            if (!confirm(dt('Do you really want to continue?'))) {
+            if (!$this->io()->confirm(dt('Do you really want to continue?'))) {
                 throw new UserAbortException();
             }
             $ret = $this->connection->truncate('watchdog')->execute();
             $this->logger()->success(dt('All watchdog messages have been deleted.'));
         } elseif (is_numeric($substring)) {
             $this->output()->writeln(dt('Watchdog message #!wid will be deleted.', ['!wid' => $substring]));
-            if (!confirm(dt('Do you want to continue?'))) {
+            if (!$this->io()->confirm(dt('Do you want to continue?'))) {
                 throw new UserAbortException();
             }
             $affected_rows = $this->connection->delete('watchdog')->condition('wid', $substring)->execute();
@@ -251,7 +248,7 @@ final class WatchdogCommands extends DrushCommands
             }
             $where = $this->where($options['type'], $options['severity'], $substring, 'OR');
             $this->output()->writeln(dt('All messages with !where will be deleted.', ['!where' => preg_replace("/message LIKE %$substring%/", "message body containing '$substring'", strtr($where['where'], $where['args']))]));
-            if (!confirm(dt('Do you want to continue?'))) {
+            if (!$this->io()->confirm(dt('Do you want to continue?'))) {
                 throw new UserAbortException();
             }
             $affected_rows = $this->connection->delete('watchdog')

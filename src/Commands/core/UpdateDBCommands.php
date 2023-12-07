@@ -19,8 +19,6 @@ use Drush\Exceptions\UserAbortException;
 use Drush\Log\SuccessInterface;
 use Psr\Log\LogLevel;
 
-use function Drush\Prompts\confirm;
-
 final class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInterface
 {
     use SiteAliasManagerAwareTrait;
@@ -53,7 +51,7 @@ final class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAw
 
         // Check requirements before updating.
         if (!$this->updateCheckRequirements()) {
-            if (!confirm(dt('Requirements check reports errors. Do you wish to continue?'))) {
+            if (!$this->io()->confirm(dt('Requirements check reports errors. Do you wish to continue?'))) {
                 throw new UserAbortException();
             }
         }
@@ -66,7 +64,7 @@ final class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAw
         if ($output = $process->getOutput()) {
             // We have pending updates - let's run em.
             $this->output()->writeln($output);
-            if (!confirm(dt('Do you wish to run the specified pending updates?'))) {
+            if (!$this->io()->confirm(dt('Do you wish to run the specified pending updates?'))) {
                 throw new UserAbortException();
             }
             if ($this->getConfig()->simulate()) {

@@ -31,10 +31,6 @@ use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 use function dt;
-use function Drush\Prompts\confirm;
-use function Drush\Prompts\note;
-use function Drush\Prompts\select;
-use function Drush\Prompts\text;
 use function t;
 
 class FieldCreateCommands extends DrushCommands implements CustomEventAwareInterface
@@ -270,7 +266,7 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
             return null;
         }
 
-        return select('Choose an existing field', $choices);
+        return $this->io()->choice('Choose an existing field', $choices);
     }
 
     protected function askFieldName(): string
@@ -286,19 +282,22 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
         }
 
         while (!$fieldName) {
-            $answer = text('Field name', default: $machineName, required: true, validate: function ($answer) use ($entityType) {
-                if (!preg_match('/^[_a-z]+[_a-z0-9]*$/', $answer)) {
-                    return'Only lowercase alphanumeric chars/underscores allowed; only letters/underscore allowed as first character.';
-                }
+            $answer = $this->io()->ask('Field name', $machineName);
 
-                if (strlen($answer) > 32) {
-                    return 'Field name must not be longer than 32 characters.';
-                }
+            if (!preg_match('/^[_a-z]+[_a-z0-9]*$/', $answer)) {
+                $this->logger()->error('Only lowercase alphanumeric characters and underscores are allowed, and only lowercase letters and underscore are allowed as the first character.');
+                continue;
+            }
 
-                if ($this->fieldStorageExists($answer, $entityType)) {
-                    return 'A field with this name already exists.';
-                }
-            });
+            if (strlen($answer) > 32) {
+                $this->logger()->error('Field name must not be longer than 32 characters.');
+                continue;
+            }
+
+            if ($this->fieldStorageExists($answer, $entityType)) {
+                $this->logger()->error('A field with this name already exists.');
+                continue;
+            }
 
             $fieldName = $answer;
         }
@@ -308,12 +307,12 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
 
     protected function askFieldLabel(): string
     {
-        return text('Field label', required: true, hint: 'The human-readable name of this field.');
+        return $this->io()->askRequired('Field label');
     }
 
     protected function askFieldDescription(): ?string
     {
-        return text('Field description', hint: 'Instructions to present to the user below this field on the editing form');
+        return $this->io()->ask('Field description');
     }
 
     protected function askFieldType(): string
@@ -330,7 +329,7 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
             $choices[$definition['id']] = $label;
         }
 
-        return select('Field type', $choices);
+        return $this->io()->choice('Field type', $choices);
     }
 
     protected function askFieldWidget(): ?string
@@ -350,7 +349,7 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
         $widgets = $this->widgetPluginManager->getOptions($fieldType);
 
         if ($widgets === []) {
-            note('No widgets available for this field type. Skipping option.');
+            $this->io()->comment('No widgets available for this field type. Skipping option.');
             return null;
         }
 
@@ -361,12 +360,12 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
 
         $default = $this->input->getOption('show-machine-names') ? key($choices) : current($choices);
 
-        return select('Field widget', $choices, $default);
+        return $this->io()->choice('Field widget', $choices, $default);
     }
 
     protected function askRequired(): bool
     {
-        return confirm('Required', false);
+        return $this->io()->confirm('Required', false);
     }
 
     protected function askTranslatable(): bool
@@ -375,7 +374,7 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
             return false;
         }
 
-        return confirm('Translatable', false);
+        return $this->io()->confirm('Translatable', false);
     }
 
     protected function askCardinality(): int
@@ -389,7 +388,7 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
         }
 
         $choices = ['Limited', 'Unlimited'];
-        $cardinality = select(
+        $cardinality = $this->io()->choice(
             'Allowed number of values',
             array_combine($choices, $choices),
             0
@@ -397,7 +396,7 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
 
         $limit = FieldStorageDefinitionInterface::CARDINALITY_UNLIMITED;
         while ($cardinality === 'Limited' && $limit < 1) {
-            $limit = (int) text('Allowed number of values', '1');
+            $limit = (int) $this->io()->ask('Allowed number of values', '1');
         }
 
         return $limit;

@@ -19,8 +19,6 @@ use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-use function Drush\Prompts\select;
-
 final class TopicCommands extends DrushCommands
 {
     const TOPIC = 'core:topic';
@@ -62,7 +60,7 @@ final class TopicCommands extends DrushCommands
                 $choices[$key] = $topic->getDescription() . " ($key)";
             }
             natcasesort($choices);
-            $topic_name = select(dt('Choose a topic'), $choices);
+            $topic_name = $this->io()->choice(dt('Choose a topic'), $choices);
             $input->setArgument('topic_name', $topic_name);
         }
     }

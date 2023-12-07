@@ -10,7 +10,6 @@ use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Entity\FieldableEntityInterface;
 use Symfony\Component\Console\Input\InputInterface;
 
-use function Drush\Prompts\select;
 use function t;
 
 /**
@@ -41,8 +40,7 @@ trait EntityTypeBundleAskTrait
                 : $entityTypeDefinition->getLabel();
         }
 
-        if (!$answer = select('Entity type', $choices, required:  true)) {
-            // @todo No longer needed with required field?
+        if (!$answer = $this->io()->choice('Entity type', $choices)) {
             throw new \InvalidArgumentException(dt('The entityType argument is required.'));
         }
 
@@ -73,7 +71,7 @@ trait EntityTypeBundleAskTrait
             $choices[$bundle] = $label;
         }
 
-        if (!$answer = select('Bundle', $choices, required: true)) {
+        if (!$answer = $this->io()->choice('Bundle', $choices)) {
             throw new \InvalidArgumentException(dt('The bundle argument is required.'));
         }
 

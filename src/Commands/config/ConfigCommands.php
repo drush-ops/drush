@@ -34,11 +34,6 @@ use Symfony\Component\Filesystem\Path;
 use Symfony\Component\Yaml\Parser;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-use function Drush\Prompts\confirm;
-use function Drush\Prompts\search;
-use function Drush\Prompts\select;
-use function Drush\Prompts\suggest;
-
 final class ConfigCommands extends DrushCommands implements StdinAwareInterface, SiteAliasManagerAwareInterface
 {
     use StdinAwareTrait;
@@ -191,18 +186,18 @@ final class ConfigCommands extends DrushCommands implements StdinAwareInterface,
         $new_key = $config->get($key) === null;
         $simulate = $this->getConfig()->simulate();
 
-        if ($key == '?' && !empty($data) && confirm(dt('Do you want to update or set multiple keys on !name config.', ['!name' => $config_name]))) {
+        if ($key == '?' && !empty($data) && $this->io()->confirm(dt('Do you want to update or set multiple keys on !name config.', ['!name' => $config_name]))) {
             foreach ($data as $data_key => $val) {
                 $config->set($data_key, $val);
             }
             return $simulate ? self::EXIT_SUCCESS : $config->save();
         } else {
             $confirmed = false;
-            if ($config->isNew() && confirm(dt('!name config doesn\'t exist. Create a new config object?', ['!name' => $config_name]))) {
+            if ($config->isNew() && $this->io()->confirm(dt('!name config does not exist. Do you want to create a new config object?', ['!name' => $config_name]))) {
                 $confirmed = true;
-            } elseif ($new_key && confirm(dt('!key key doesn\'t exist in !name config. Create a new config key?', ['!key' => $key, '!name' => $config_name]))) {
+            } elseif ($new_key && $this->io()->confirm(dt('!key key does not exist in !name config. Do you want to create a new config key?', ['!key' => $key, '!name' => $config_name]))) {
                 $confirmed = true;
-            } elseif (confirm(dt('Do you want to update !key key in !name config?', ['!key' => $key, '!name' => $config_name]))) {
+            } elseif ($this->io()->confirm(dt('Do you want to update !key key in !name config?', ['!key' => $key, '!name' => $config_name]))) {
                 $confirmed = true;
             }
             if ($confirmed && !$simulate) {
@@ -483,7 +478,7 @@ final class ConfigCommands extends DrushCommands implements StdinAwareInterface,
     {
         if (empty($input->getArgument('config_name'))) {
             $config_names = $this->getConfigFactory()->listAll();
-            $choice = suggest('Choose a configuration', array_combine($config_names, $config_names), required: true, scroll: 200, hint: 'Start typing the first letter(s) and matching choices will be shown.');
+            $choice = $this->io()->suggest('Choose a configuration', array_combine($config_names, $config_names), scroll: 200, required: true);
             $input->setArgument('config_name', $choice);
         }
     }
