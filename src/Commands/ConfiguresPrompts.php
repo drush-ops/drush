@@ -16,6 +16,7 @@ use Laravel\Prompts\SelectPrompt;
 use Laravel\Prompts\SuggestPrompt;
 use Laravel\Prompts\TextPrompt;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
 
 trait ConfiguresPrompts
 {
@@ -34,41 +35,42 @@ trait ConfiguresPrompts
         Prompt::fallbackWhen(!$input->isInteractive() || strtoupper(substr(PHP_OS, 0, 3)) == "WIN" || $this->runningUnitTests());
 
         TextPrompt::fallbackUsing(fn (TextPrompt $prompt) => $this->promptUntilValid(
-            fn () => $this->io()->ask($prompt->label, $prompt->default ?: null) ?? '',
+            fn () => (new SymfonyStyle($this->input, $this->output))->ask($prompt->label, $prompt->default ?: null) ?? '',
             $prompt->required,
             $prompt->validate
         ));
 
         PasswordPrompt::fallbackUsing(fn (PasswordPrompt $prompt) => $this->promptUntilValid(
             // @todo there is no secret().
-            fn () => $this->io()->secret($prompt->label) ?? '',
+            fn () => (new SymfonyStyle($this->input, $this->output))->secret($prompt->label) ?? '',
             $prompt->required,
             $prompt->validate
         ));
 
         ConfirmPrompt::fallbackUsing(fn (ConfirmPrompt $prompt) => $this->promptUntilValid(
-            fn () => $this->io()->confirm($prompt->label, $prompt->default),
+            fn () => (new SymfonyStyle($this->input, $this->output))->confirm($prompt->label, $prompt->default),
             $prompt->required,
             $prompt->validate
         ));
 
         SelectPrompt::fallbackUsing(fn (SelectPrompt $prompt) => $this->promptUntilValid(
-            fn () => $this->io()->choice($prompt->label, $prompt->options, $prompt->default),
+            fn () => (new SymfonyStyle($this->input, $this->output))->choice($prompt->label, $prompt->options, $prompt->default),
             false,
             $prompt->validate
         ));
 
         MultiSelectPrompt::fallbackUsing(function (MultiSelectPrompt $prompt) {
+            $style = new SymfonyStyle($this->input, $this->output);
             if ($prompt->default !== []) {
                 return $this->promptUntilValid(
-                    fn () => $this->io()->choice($prompt->label, $prompt->options, implode(',', $prompt->default), true),
+                    fn () => $style->choice($prompt->label, $prompt->options, implode(',', $prompt->default), true),
                     $prompt->required,
                     $prompt->validate
                 );
             }
 
             return $this->promptUntilValid(
-                fn () => collect($this->io()->choice($prompt->label, ['' => 'None', ...$prompt->options], 'None', true))
+                fn () => collect($style->choice($prompt->label, ['' => 'None', ...$prompt->options], 'None', true))
                     ->reject('')
                     ->all(),
                 $prompt->required,
@@ -78,18 +80,18 @@ trait ConfiguresPrompts
 
         SuggestPrompt::fallbackUsing(fn (SuggestPrompt $prompt) => $this->promptUntilValid(
             // @todo No askWithCompletion
-            fn () => $this->io()->askWithCompletion($prompt->label, $prompt->options, $prompt->default ?: null) ?? '',
+            fn () => (new SymfonyStyle($this->input, $this->output))->askWithCompletion($prompt->label, $prompt->options, $prompt->default ?: null) ?? '',
             $prompt->required,
             $prompt->validate
         ));
 
         SearchPrompt::fallbackUsing(fn (SearchPrompt $prompt) => $this->promptUntilValid(
             function () use ($prompt) {
-                $query = $this->io()->ask($prompt->label);
+                $query = (new SymfonyStyle($this->input, $this->output))->ask($prompt->label);
 
                 $options = ($prompt->options)($query);
 
-                return $this->io()->choice($prompt->label, $options);
+                return (new SymfonyStyle($this->input, $this->output))->choice($prompt->label, $options);
             },
             false,
             $prompt->validate
@@ -97,25 +99,26 @@ trait ConfiguresPrompts
 
         MultiSearchPrompt::fallbackUsing(fn (MultiSearchPrompt $prompt) => $this->promptUntilValid(
             function () use ($prompt) {
-                $query = $this->io()->ask($prompt->label);
+                $style = new SymfonyStyle($this->input, $this->output);
+                $query = $style->ask($prompt->label);
 
                 $options = ($prompt->options)($query);
 
                 if ($prompt->required === false) {
                     if (array_is_list($options)) {
-                        return collect($this->io()->choice($prompt->label, ['None', ...$options], 'None', true))
+                        return collect($style->choice($prompt->label, ['None', ...$options], 'None', true))
                             ->reject('None')
                             ->values()
                             ->all();
                     }
 
-                    return collect($this->io()->choice($prompt->label, ['' => 'None', ...$options], '', true))
+                    return collect($style->choice($prompt->label, ['' => 'None', ...$options], '', true))
                         ->reject('')
                         ->values()
                         ->all();
                 }
 
-                return $this->io()->choice($prompt->label, $options, true);
+                return $style->choice($prompt->label, $options, true);
             },
             $prompt->required,
             $prompt->validate
@@ -134,9 +137,10 @@ trait ConfiguresPrompts
     {
         while (true) {
             $result = $prompt();
+            $style = new SymfonyStyle($this->input, $this->output);
 
             if ($required && ($result === '' || $result === [] || $result === false)) {
-                $this->io()->error(is_string($required) ? $required : 'Required.');
+                $style->error(is_string($required) ? $required : 'Required.');
 
                 continue;
             }
@@ -145,7 +149,7 @@ trait ConfiguresPrompts
                 $error = $validate($result);
 
                 if (is_string($error) && strlen($error) > 0) {
-                    $this->io()->error($error);
+                    $style->error($error);
 
                     continue;
                 }
