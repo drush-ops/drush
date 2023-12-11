@@ -54,7 +54,8 @@ trait ConfiguresPrompts
         ));
 
         SelectPrompt::fallbackUsing(fn (SelectPrompt $prompt) => $this->promptUntilValid(
-            fn () => (new SymfonyStyle($this->input, $this->output))->choice($prompt->label, $prompt->options, $prompt->default),
+            // Cast null to empty string to satisfy return type of select().
+            fn () => (new SymfonyStyle($this->input, $this->output))->choice($prompt->label, $prompt->options, $prompt->default) ?? '',
             false,
             $prompt->validate
         ));
