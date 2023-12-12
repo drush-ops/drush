@@ -156,22 +156,22 @@ class FieldBaseOverrideCreateCommands extends DrushCommands
             $choices[$definition->getName()] = $label;
         }
 
-        return $this->io()->choice('Field name', $choices);
+        return $this->io()->select('Field name', $choices);
     }
 
     protected function askFieldLabel(string $default): string
     {
-        return $this->io()->ask('Field label', $default);
+        return $this->io()->text('Field label', default: $default);
     }
 
     protected function askFieldDescription(?string $default): ?string
     {
-        return $this->io()->ask('Field description', $default);
+        return $this->io()->text('Field description', default: $default);
     }
 
     protected function askRequired(bool $default): bool
     {
-        return $this->io()->askQuestion(new ConfirmationQuestion('Required', $default));
+        return $this->io()->confirm('Required', default: $default);
     }
 
     protected function createBaseFieldOverride(string $entityType, string $bundle, string $fieldName, $fieldLabel, $fieldDescription, bool $isRequired): BaseFieldOverride

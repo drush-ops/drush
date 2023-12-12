@@ -105,7 +105,7 @@ class FieldEntityReferenceHooks extends DrushCommands
             $choices[$name] = $label;
         }
 
-        return $this->io()->choice('Referenced entity type', $choices);
+        return $this->io()->select('Referenced entity type', $choices);
     }
 
     protected function askReferencedBundles(string $targetType): ?array
@@ -122,9 +122,6 @@ class FieldEntityReferenceHooks extends DrushCommands
             $choices[$bundle] = $label;
         }
 
-        $question = (new ChoiceQuestion('Referenced bundles', $choices))
-            ->setMultiselect(true);
-
-        return $this->io()->askQuestion($question) ?: null;
+        return $this->io()->multiselect('Referenced bundles', $choices);
     }
 }
