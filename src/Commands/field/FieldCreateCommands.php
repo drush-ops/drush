@@ -282,7 +282,7 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
         }
 
         while (!$fieldName) {
-            $answer = $this->io()->text('Field name',default: $machineName,  required: true, validate: function ($answer) use ($entityType) {
+            $answer = $this->io()->text('Field name', default: $machineName, required: true, validate: function ($answer) use ($entityType) {
                 if (!preg_match('/^[_a-z]+[_a-z0-9]*$/', $answer)) {
                     return'Only lowercase alphanumeric chars/underscores allowed; only letters/underscore allowed as first character.';
                 }
