@@ -86,24 +86,13 @@
 
     
     <p>        class
-    <strong>Logger</strong>        extends <abbr title="Robo\Log\RoboLogger">RoboLogger</abbr>        (<a href="https://github.com/drush-ops/drush/blob/12.x/src/Log/Logger.php">View source</a>)
+    <strong>Logger</strong>        extends <abbr title="Robo\Log\RoboLogger">RoboLogger</abbr>        (<a href="https://github.com/drush-ops/drush/blob/11.x/src/Log/Logger.php">View source</a>)
 </p>
 
         
     
         
 
-            <div class="description">
-            <p><p>Contains \Drush\Log\Logger.</p></p>            <p><p>This is the actual Logger for Drush that is responsible
-for logging messages.</p>
-<p>This logger is designed such that it can be provided to
-other libraries that log to a Psr\Log\LoggerInterface.</p>
-<p>Those who may wish to change the way logging works in Drush
-should therefore NOT attempt to replace this logger with their
-own LoggerInterface, as it will not work.  It would be okay
-to extend Drush\Log\Logger, or perhaps we could provide a way
-to set an output I/O object here, in case output redirection
-was the only thing that needed to be swapped out.</p></p>        </div>
             
         
     
@@ -152,7 +141,7 @@ was the only thing that needed to be swapped out.</p></p>        </div>
             <div id="method-details">
                     <div class="method-item">
                     <h3 id="method___construct">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Log/Logger.php#L29">at line 29</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Log/Logger.php#L29">at line 29</a></div>
         <code>                    
     <strong>__construct</strong>(<abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr> $output)
         </code>
@@ -186,7 +175,7 @@ was the only thing that needed to be swapped out.</p></p>        </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_log">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Log/Logger.php#L34">at line 34</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Log/Logger.php#L34">at line 34</a></div>
         <code>                    void
     <strong>log</strong>($level, $message, array $context = [])
         </code>
@@ -239,7 +228,7 @@ was the only thing that needed to be swapped out.</p></p>        </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_formatSize">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Log/Logger.php#L48">at line 48</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/Log/Logger.php#L48">at line 48</a></div>
         <code>        static            
     <strong>formatSize</strong>($size)
         </code>
