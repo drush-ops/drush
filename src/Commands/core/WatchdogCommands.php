@@ -199,7 +199,7 @@ final class WatchdogCommands extends DrushCommands
         foreach ($severities as $key => $value) {
             $choices[$key] = $value;
         }
-        $option = $this->io()->choice(dt('Select a message type or severity level'), $choices);
+        $option = $this->io()->select(dt('Select a message type or severity level'), $choices);
         if (isset($types[$option])) {
             $input->setOption('type', $types[$option]);
         } else {

@@ -60,7 +60,7 @@ final class TopicCommands extends DrushCommands
                 $choices[$key] = $topic->getDescription() . " ($key)";
             }
             natcasesort($choices);
-            $topic_name = $this->io()->choice(dt('Choose a topic'), $choices);
+            $topic_name = $this->io()->choice(dt('Choose a topic'), $choices, scroll: 30);
             $input->setArgument('topic_name', $topic_name);
         }
     }

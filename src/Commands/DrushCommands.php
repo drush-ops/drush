@@ -57,7 +57,7 @@ abstract class DrushCommands implements IOAwareInterface, LoggerAwareInterface, 
     /**
      * Override Robo's IO function with our custom style.
      */
-    protected function io(): SymfonyStyle
+    protected function io(): DrushStyle
     {
         if (!$this->io) {
             // Specify our own Style class when needed.

@@ -4,6 +4,7 @@ namespace Drush\Style;
 
 use Drush\Drush;
 use Illuminate\Support\Collection;
+use JetBrains\PhpStorm\Deprecated;
 use Laravel\Prompts\MultiSearchPrompt;
 use Laravel\Prompts\MultiSelectPrompt;
 use Laravel\Prompts\PasswordPrompt;
@@ -35,7 +36,7 @@ class DrushStyle extends SymfonyStyle
         return confirm($question, $default, $yes, $no, $required, $validate, $hint);
     }
 
-
+    #[Deprecated('Use select() or multiselect() instead.')]
     public function choice(string $question, array $choices, mixed $default = null, bool $multiSelect = false, int $scroll = 10, \Closure $validate = null, string $hint = '', bool|string $required = true): mixed
     {
         if ($multiSelect) {
