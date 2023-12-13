@@ -71,8 +71,9 @@ trait ConfiguresPrompts
             }
 
             return $this->promptUntilValid(
-                fn () => collect($style->choice($prompt->label, ['' => 'None', ...$prompt->options], 'None', true))
-                    ->reject('')
+                // MW: Had to change to 'none' as key to fix test failure. Deviates from Laravel.
+                fn () => collect($style->choice($prompt->label, ['none' => 'None', ...$prompt->options], 'none', true))
+                    ->reject('none')
                     ->all(),
                 $prompt->required,
                 $prompt->validate
