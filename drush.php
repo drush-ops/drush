@@ -134,7 +134,7 @@ $environment->applyEnvironment();
 // Preflight and run
 $preflight = new Preflight($environment);
 $di = new DependencyInjection();
-$di->desiredHandlers(['errorHandler', 'shutdownHandler']);
+$di->desiredHandlers(['errorHandler']);
 $runtime = new Runtime($preflight, $di);
 $status_code = $runtime->run($_SERVER['argv']);
 

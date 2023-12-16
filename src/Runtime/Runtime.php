@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Drush\Runtime;
 
+use JetBrains\PhpStorm\Deprecated;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Drush\Application;
 use Drush\Commands\DrushCommands;
@@ -109,40 +110,15 @@ class Runtime
         // Bootstrap: bootstrap site to the level requested by the command (via a 'post-init' hook)
         $status = $application->run($input, $output);
 
-        // Placate the Drush shutdown handler.
-        Runtime::setCompleted();
-        Runtime::setExitCode($status);
-
         return $status;
     }
 
     /**
      * Mark the current request as having completed successfully.
      */
+    #[Deprecated("Shutdown handling removed from Drush. Please remove the call to Runtime::setCompleted()")]
     public static function setCompleted(): void
     {
         Drush::config()->set(self::DRUSH_RUNTIME_COMPLETED_NAMESPACE, true);
-    }
-
-    /**
-     * Mark the exit code for current request.
-     *
-     * @deprecated
-     *   Was used by backend.inc
-     */
-    public static function setExitCode(int $code): void
-    {
-        Drush::config()->set(self::DRUSH_RUNTIME_EXIT_CODE_NAMESPACE, $code);
-    }
-
-    /**
-     * Get the exit code for current request.
-     *
-     * @deprecated
-     *   Was used by backend.inc
-     */
-    public static function exitCode()
-    {
-        return Drush::config()->get(self::DRUSH_RUNTIME_EXIT_CODE_NAMESPACE, 0);
     }
 }

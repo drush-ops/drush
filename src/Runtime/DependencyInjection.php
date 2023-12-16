@@ -146,9 +146,8 @@ class DependencyInjection
             ->addMethodCall('addSearchLocation', ['CommandFiles'])
             ->addMethodCall('setSearchPattern', ['#.*(Commands|CommandFile).php$#']);
 
-        // Error and Shutdown handlers
+        // Error handler
         Robo::addShared($container, 'errorHandler', 'Drush\Runtime\ErrorHandler');
-        Robo::addShared($container, 'shutdownHandler', 'Drush\Runtime\ShutdownHandler');
 
         // Add inflectors. @see \Drush\Boot\BaseBoot::inflect
         $container->inflector(SiteAliasManagerAwareInterface::class)
