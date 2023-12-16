@@ -22,9 +22,6 @@ use Drush\Preflight\Preflight;
  */
 class Runtime
 {
-    const DRUSH_RUNTIME_COMPLETED_NAMESPACE = 'runtime.execution.completed';
-    const DRUSH_RUNTIME_EXIT_CODE_NAMESPACE = 'runtime.exit_code';
-
     public function __construct(protected Preflight $preflight, protected DependencyInjection $di)
     {
     }
@@ -119,6 +116,6 @@ class Runtime
     #[Deprecated("Shutdown handling removed from Drush. Please remove the call to Runtime::setCompleted()")]
     public static function setCompleted(): void
     {
-        Drush::config()->set(self::DRUSH_RUNTIME_COMPLETED_NAMESPACE, true);
+        // Do nothing.
     }
 }
