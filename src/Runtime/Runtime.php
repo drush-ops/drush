@@ -24,7 +24,7 @@ class Runtime
 {
     #[Deprecated("Remove for Drush 13")]
     const DRUSH_RUNTIME_COMPLETED_NAMESPACE = 'runtime.execution.completed';
-    
+
     public function __construct(protected Preflight $preflight, protected DependencyInjection $di)
     {
     }
