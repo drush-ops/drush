@@ -86,7 +86,7 @@
 
     
     <p>        trait
-    <strong>OutputUtilsTrait</strong>        (<a href="https://github.com/drush-ops/drush/blob/11.x/src/TestTraits/OutputUtilsTrait.php">View source</a>)
+    <strong>OutputUtilsTrait</strong>        (<a href="https://github.com/drush-ops/drush/blob/12.x/src/TestTraits/OutputUtilsTrait.php">View source</a>)
 </p>
 
         
@@ -125,13 +125,12 @@ that define <code>getOutputRaw()</code> and <code>getErrorOutputRaw()</code> met
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    
+                    string
                 </div>
                 <div class="col-md-8">
                     <a href="#method_getSimplifiedOutput">getSimplifiedOutput</a>()
         
-                                            <p><p>Get command output and simplify away things like full paths and extra
-whitespace.</p></p>                </div>
+                                            <p><p>Get command output and simplify things like full paths and extra whitespace.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -156,7 +155,7 @@ whitespace.</p></p>                </div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    
+                    array
                 </div>
                 <div class="col-md-8">
                     <a href="#method_pathsToSimplify">pathsToSimplify</a>()
@@ -207,10 +206,10 @@ whitespace.</p></p>                </div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    array
+                    mixed
                 </div>
                 <div class="col-md-8">
-                    <a href="#method_getOutputFromJSON">getOutputFromJSON</a>(string $key = null)
+                    <a href="#method_getOutputFromJSON">getOutputFromJSON</a>(<abbr title="Drush\TestTraits\string|int">string|int</abbr> $key = null)
         
                                             <p><p>Accessor for the last output, decoded from json.</p></p>                </div>
                 <div class="col-md-2"></div>
@@ -223,7 +222,7 @@ whitespace.</p></p>                </div>
             <div id="method-details">
                     <div class="method-item">
                     <h3 id="method_getOutputRaw">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/TestTraits/OutputUtilsTrait.php#L21">at line 21</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/TestTraits/OutputUtilsTrait.php#L18">at line 18</a></div>
         <code>    abstract                string
     <strong>getOutputRaw</strong>()
         </code>
@@ -242,7 +241,7 @@ whitespace.</p></p>                </div>
                     <table class="table table-condensed">
         <tr>
             <td>string</td>
-            <td><p>Raw output as text.</p></td>
+            <td></td>
         </tr>
     </table>
 
@@ -255,7 +254,7 @@ whitespace.</p></p>                </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_getErrorOutputRaw">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/TestTraits/OutputUtilsTrait.php#L31">at line 31</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/TestTraits/OutputUtilsTrait.php#L23">at line 23</a></div>
         <code>    abstract                string
     <strong>getErrorOutputRaw</strong>()
         </code>
@@ -274,7 +273,7 @@ whitespace.</p></p>                </div>
                     <table class="table table-condensed">
         <tr>
             <td>string</td>
-            <td><p>Raw stderr as text.</p></td>
+            <td></td>
         </tr>
     </table>
 
@@ -287,8 +286,8 @@ whitespace.</p></p>                </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_getSimplifiedOutput">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/TestTraits/OutputUtilsTrait.php#L37">at line 37</a></div>
-        <code>            protected        
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/TestTraits/OutputUtilsTrait.php#L28">at line 28</a></div>
+        <code>            protected        string
     <strong>getSimplifiedOutput</strong>()
         </code>
     </h3>
@@ -297,11 +296,19 @@ whitespace.</p></p>                </div>
             
 
         <div class="method-description">
-                            <p><p>Get command output and simplify away things like full paths and extra
-whitespace.</p></p>                        
+                            <p><p>Get command output and simplify things like full paths and extra whitespace.</p></p>                        
         </div>
         <div class="tags">
             
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string</td>
+            <td></td>
+        </tr>
+    </table>
+
             
             
             
@@ -311,7 +318,7 @@ whitespace.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_getSimplifiedErrorOutput">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/TestTraits/OutputUtilsTrait.php#L49">at line 49</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/TestTraits/OutputUtilsTrait.php#L40">at line 40</a></div>
         <code>            protected        string
     <strong>getSimplifiedErrorOutput</strong>()
         </code>
@@ -344,7 +351,7 @@ paths and superfluous whitespace removed from it.</p></td>
             </div>
                     <div class="method-item">
                     <h3 id="method_simplifyOutput">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/TestTraits/OutputUtilsTrait.php#L63">at line 63</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/TestTraits/OutputUtilsTrait.php#L48">at line 48</a></div>
         <code>            protected        string
     <strong>simplifyOutput</strong>(string $output)
         </code>
@@ -363,7 +370,7 @@ paths and superfluous whitespace removed from it.</p></td>
                     <tr>
                 <td>string</td>
                 <td>$output</td>
-                <td><p>The output string to simplify.</p></td>
+                <td></td>
             </tr>
             </table>
 
@@ -373,7 +380,7 @@ paths and superfluous whitespace removed from it.</p></td>
                     <table class="table table-condensed">
         <tr>
             <td>string</td>
-            <td><p>The simplified output.</p></td>
+            <td></td>
         </tr>
     </table>
 
@@ -386,8 +393,8 @@ paths and superfluous whitespace removed from it.</p></td>
             </div>
                     <div class="method-item">
                     <h3 id="method_pathsToSimplify">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/TestTraits/OutputUtilsTrait.php#L88">at line 88</a></div>
-        <code>                    
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/TestTraits/OutputUtilsTrait.php#L73">at line 73</a></div>
+        <code>                    array
     <strong>pathsToSimplify</strong>()
         </code>
     </h3>
@@ -401,6 +408,15 @@ paths and superfluous whitespace removed from it.</p></td>
         </div>
         <div class="tags">
             
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>array</td>
+            <td></td>
+        </tr>
+    </table>
+
             
             
             
@@ -410,7 +426,7 @@ paths and superfluous whitespace removed from it.</p></td>
             </div>
                     <div class="method-item">
                     <h3 id="method_getOutput">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/TestTraits/OutputUtilsTrait.php#L101">at line 101</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/TestTraits/OutputUtilsTrait.php#L81">at line 81</a></div>
         <code>                    string
     <strong>getOutput</strong>()
         </code>
@@ -429,7 +445,7 @@ paths and superfluous whitespace removed from it.</p></td>
                     <table class="table table-condensed">
         <tr>
             <td>string</td>
-            <td><p>Trimmed output as text.</p></td>
+            <td></td>
         </tr>
     </table>
 
@@ -442,7 +458,7 @@ paths and superfluous whitespace removed from it.</p></td>
             </div>
                     <div class="method-item">
                     <h3 id="method_getErrorOutput">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/TestTraits/OutputUtilsTrait.php#L114">at line 114</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/TestTraits/OutputUtilsTrait.php#L89">at line 89</a></div>
         <code>                    string
     <strong>getErrorOutput</strong>()
         </code>
@@ -461,7 +477,7 @@ paths and superfluous whitespace removed from it.</p></td>
                     <table class="table table-condensed">
         <tr>
             <td>string</td>
-            <td><p>Trimmed stderr as text.</p></td>
+            <td></td>
         </tr>
     </table>
 
@@ -474,7 +490,7 @@ paths and superfluous whitespace removed from it.</p></td>
             </div>
                     <div class="method-item">
                     <h3 id="method_getOutputAsList">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/TestTraits/OutputUtilsTrait.php#L127">at line 127</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/TestTraits/OutputUtilsTrait.php#L97">at line 97</a></div>
         <code>                    array
     <strong>getOutputAsList</strong>()
         </code>
@@ -493,7 +509,7 @@ paths and superfluous whitespace removed from it.</p></td>
                     <table class="table table-condensed">
         <tr>
             <td>array</td>
-            <td><p>Output as array of lines.</p></td>
+            <td></td>
         </tr>
     </table>
 
@@ -506,7 +522,7 @@ paths and superfluous whitespace removed from it.</p></td>
             </div>
                     <div class="method-item">
                     <h3 id="method_getErrorOutputAsList">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/TestTraits/OutputUtilsTrait.php#L140">at line 140</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/TestTraits/OutputUtilsTrait.php#L105">at line 105</a></div>
         <code>                    array
     <strong>getErrorOutputAsList</strong>()
         </code>
@@ -525,7 +541,7 @@ paths and superfluous whitespace removed from it.</p></td>
                     <table class="table table-condensed">
         <tr>
             <td>array</td>
-            <td><p>Stderr as array of lines.</p></td>
+            <td></td>
         </tr>
     </table>
 
@@ -538,9 +554,9 @@ paths and superfluous whitespace removed from it.</p></td>
             </div>
                     <div class="method-item">
                     <h3 id="method_getOutputFromJSON">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/11.x/src/TestTraits/OutputUtilsTrait.php#L154">at line 154</a></div>
-        <code>                    array
-    <strong>getOutputFromJSON</strong>(string $key = null)
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/TestTraits/OutputUtilsTrait.php#L116">at line 116</a></div>
+        <code>                    mixed
+    <strong>getOutputFromJSON</strong>(<abbr title="Drush\TestTraits\string|int">string|int</abbr> $key = null)
         </code>
     </h3>
     <div class="details">    
@@ -555,7 +571,7 @@ paths and superfluous whitespace removed from it.</p></td>
 
                     <table class="table table-condensed">
                     <tr>
-                <td>string</td>
+                <td><abbr title="Drush\TestTraits\string|int">string|int</abbr></td>
                 <td>$key</td>
                 <td><p>Optionally return only a top level element from the json object.</p></td>
             </tr>
@@ -566,8 +582,8 @@ paths and superfluous whitespace removed from it.</p></td>
 
                     <table class="table table-condensed">
         <tr>
-            <td>array</td>
-            <td><p>Decoded array.</p></td>
+            <td>mixed</td>
+            <td></td>
         </tr>
     </table>
 
