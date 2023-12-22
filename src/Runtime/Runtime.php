@@ -22,7 +22,8 @@ use Drush\Preflight\Preflight;
  */
 class Runtime
 {
-    #[Deprecated("Remove for Drush 13")]
+
+    // Shutdown handling removed from Drush, but 3rd party commandfiles may add it back.
     const DRUSH_RUNTIME_COMPLETED_NAMESPACE = 'runtime.execution.completed';
 
     public function __construct(protected Preflight $preflight, protected DependencyInjection $di)
@@ -110,7 +111,7 @@ class Runtime
         // Bootstrap: bootstrap site to the level requested by the command (via a 'post-init' hook)
         $status = $application->run($input, $output);
 
-        // Placate the Drush shutdown handler (@todo remove for v13).
+        // Placate the Drush shutdown handler which can be provided via custom commandfile.
         Runtime::setCompleted();
 
         return $status;
@@ -118,8 +119,9 @@ class Runtime
 
     /**
      * Mark the current request as having completed successfully.
+     *
+     * Shutdown handling removed from Drush, but 3rd party commandfiles may add it back.
      */
-    #[Deprecated("Shutdown handling removed from Drush. Please remove the call to Runtime::setCompleted()")]
     public static function setCompleted(): void
     {
         Drush::config()->set(self::DRUSH_RUNTIME_COMPLETED_NAMESPACE, true);
