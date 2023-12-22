@@ -4,12 +4,11 @@ declare(strict_types=1);
 
 namespace Drush\Runtime;
 
-use JetBrains\PhpStorm\Deprecated;
-use Symfony\Component\Console\Output\ConsoleOutput;
 use Drush\Application;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Drush\Preflight\Preflight;
+use Symfony\Component\Console\Output\ConsoleOutput;
 
 /**
  * Control the Drush runtime environment
