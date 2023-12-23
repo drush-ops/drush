@@ -788,7 +788,7 @@ class MigrateRunnerCommands extends DrushCommands
                     $sourcePlugin->checkRequirements();
                 }
             } catch (RequirementsException $exception) {
-                $this->logger()->debug("Migration '$migrationId' is skipped as its source plugin has missed requirements: {$exception->getRequirementsString()}");
+                $this->logger()->debug("Migration '$migrationId' is skipped as its source plugin has missed requirements: {$exception->getMessage()}");
                 unset($migrations[$migrationId]);
             }
         }

@@ -30,7 +30,7 @@ class TestSourceWithMissedRequirements extends SourcePluginBase implements Requi
 
     public function checkRequirements(): array
     {
-        throw new RequirementsException('message', [
+        throw new RequirementsException('Requirements message.', [
           'type1' => ['a', 'b', 'c'],
           'type2' => ['x', 'y', 'z'],
         ]);

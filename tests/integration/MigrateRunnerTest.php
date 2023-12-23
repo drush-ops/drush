@@ -43,7 +43,7 @@ class MigrateRunnerTest extends UnishIntegrationTestCase
 
         // Debug message registered for 'test_migration_source_issues'.
         // @see \Drush\Drupal\Commands\core\MigrateRunnerCommands::getMigrationList()
-        $this->assertStringContainsString("[debug] Migration 'test_migration_source_issues' is skipped as its source plugin has missed requirements: type1: a. type1: b. type1: c. type2: x. type2: y. type2: z.", $this->getErrorOutputRaw());
+        $this->assertStringContainsString("[debug] Migration 'test_migration_source_issues' is skipped as its source plugin has missed requirements: Requirements message.", $this->getErrorOutputRaw());
 
         // With arguments.
         $this->drush(
