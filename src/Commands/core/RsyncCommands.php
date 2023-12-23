@@ -75,6 +75,10 @@ class RsyncCommands extends DrushCommands implements SiteAliasManagerAwareInterf
         $parameters[] = Escape::shellArg($this->targetEvaluatedPath->fullyQualifiedPath());
 
         $ssh_options = $this->getConfig()->get('ssh.options', '');
+
+        // Escape any single quotes in ssh.options.
+        $ssh_options = str_replace("'","'\''",$ssh_options);
+
         $exec = "rsync -e 'ssh $ssh_options'" . ' ' . implode(' ', array_filter($parameters));
         $process = $this->processManager()->shell($exec);
         $process->run($process->showRealtime());
