@@ -670,11 +670,13 @@ class MigrateRunnerCommands extends DrushCommands
                     $table[] = $this->preprocessMessageRow($row, $sourceIdKeys);
                 }
             }
+            \array_multisort($table);
             return new RowsOfFields($table);
         }
         foreach ($idMap->getMessages() as $row) {
             $table[] = $this->preprocessMessageRow($row, $sourceIdKeys);
         }
+        \array_multisort($table);
         return new RowsOfFields($table);
     }
 
