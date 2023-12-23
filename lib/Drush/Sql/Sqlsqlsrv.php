@@ -42,8 +42,13 @@ class Sqlsqlsrv extends SqlBase {
     $return = $this->query('SELECT TABLE_NAME FROM information_schema.tables');
     $tables = drush_shell_exec_output();
     if (!empty($tables)) {
-      // Shift off the header of the column of data returned.
-      array_shift($tables);
+      // Expected behavior is there won't be table header but not sure about
+      // the version of mssql behavior so we keeping a conditional check.
+      if ($tables[0] == 'TABLE_NAME') {
+        // Shift off the header of the column of data returned.
+        array_shift($tables);
+      }
+
       return $tables;
     }
   }
