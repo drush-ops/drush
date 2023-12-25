@@ -20,10 +20,9 @@ class ValidateConfigName extends ValidatorBase implements ValidatorInterface
     ) {
     }
 
-    public static function validate(CommandData $commandData, \ReflectionAttribute $attribute)
+    public function validate(CommandData $commandData)
     {
-        $argumentName = $attribute->newInstance()->argumentName;
-        $configName = $commandData->input()->getArgument($argumentName);
+        $configName = $commandData->input()->getArgument($this->argumentName);
         $config = \Drupal::config($configName);
         if ($config->isNew()) {
             $msg = dt('Config !name does not exist', ['!name' => $configName]);

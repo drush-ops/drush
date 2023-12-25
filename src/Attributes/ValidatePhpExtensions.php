@@ -20,11 +20,9 @@ class ValidatePhpExtensions extends ValidatorBase implements ValidatorInterface
     ) {
     }
 
-    public static function validate(CommandData $commandData, \ReflectionAttribute $attribute)
+    public function validate(CommandData $commandData)
     {
-        $instance = $attribute->newInstance();
-        $extensions = $instance->extensions;
-        $missing = array_filter($extensions, function ($extension) {
+        $missing = array_filter($this->extensions, function ($extension) {
             return !extension_loaded($extension);
         });
         if ($missing) {

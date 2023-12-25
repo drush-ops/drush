@@ -14,11 +14,11 @@ abstract class ValidatorBase
 {
     public static function handle(\ReflectionAttribute $attribute, CommandInfo $commandInfo)
     {
-        /** @var HookManager $hookManager */
+        $instance = $attribute->newInstance();
         $hookManager = Drush::getContainer()->get('hookManager');
         $hookManager->add(
         // Use a Closure to acquire $commandData and $args.
-            fn(CommandData $commandData) => static::validate($commandData, $attribute),
+            fn(CommandData $commandData) => $instance->validate($commandData, $attribute),
             $hookManager::ARGUMENT_VALIDATOR,
             $commandInfo->getName()
         );

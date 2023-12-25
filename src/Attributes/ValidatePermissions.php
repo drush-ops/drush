@@ -21,10 +21,10 @@ class ValidatePermissions extends ValidatorBase implements ValidatorInterface
     ) {
     }
 
-    public static function validate(CommandData $commandData, \ReflectionAttribute $attribute)
+    public function validate(CommandData $commandData)
     {
         $missing = [];
-        $arg_or_option_name = $attribute->newInstance()->argName;
+        $arg_or_option_name = $this->argName;
         if ($commandData->input()->hasArgument($arg_or_option_name)) {
             $permissions = StringUtils::csvToArray($commandData->input()->getArgument($arg_or_option_name));
         } else {

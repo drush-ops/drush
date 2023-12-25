@@ -24,13 +24,12 @@ class ValidateEntityLoad extends ValidatorBase implements ValidatorInterface
     ) {
     }
 
-    public static function validate(CommandData $commandData, \ReflectionAttribute $attribute)
+    public function validate(CommandData $commandData)
     {
-        $instance = $attribute->newInstance();
-        $names = StringUtils::csvToArray($commandData->input()->getArgument($instance->argumentName));
-        $loaded = \Drupal::entityTypeManager()->getStorage($instance->entityType)->loadMultiple($names);
+        $names = StringUtils::csvToArray($commandData->input()->getArgument($this->argumentName));
+        $loaded = \Drupal::entityTypeManager()->getStorage($this->entityType)->loadMultiple($names);
         if ($missing = array_diff($names, array_keys($loaded))) {
-            $msg = dt('Unable to load the !type: !str', ['!type' => $instance->entityType, '!str' => implode(', ', $missing)]);
+            $msg = dt('Unable to load the !type: !str', ['!type' => $this->entityType, '!str' => implode(', ', $missing)]);
             return new CommandError($msg);
         }
     }

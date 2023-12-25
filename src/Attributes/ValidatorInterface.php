@@ -6,5 +6,5 @@ use Consolidation\AnnotatedCommand\CommandData;
 
 interface ValidatorInterface
 {
-    public static function validate(CommandData $commandData, \ReflectionAttribute $attribute);
+    public function validate(CommandData $commandData);
 }

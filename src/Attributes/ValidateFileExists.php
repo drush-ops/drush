@@ -20,10 +20,10 @@ class ValidateFileExists extends ValidatorBase implements ValidatorInterface
     ) {
     }
 
-    public static function validate(CommandData $commandData, \ReflectionAttribute $attribute)
+    public function validate(CommandData $commandData)
     {
         $missing = [];
-        $argName = $attribute->newInstance()->argName;
+        $argName = $this->argName;
         if ($commandData->input()->hasArgument($argName)) {
             $path = $commandData->input()->getArgument($argName);
         } elseif ($commandData->input()->hasOption($argName)) {
