@@ -23,7 +23,7 @@ class ValidateQueueName extends ValidatorBase implements ValidatorInterface
     public function validate(CommandData $commandData)
     {
         $queueName = $commandData->input()->getArgument($this->argumentName);
-        if (!array_key_exists($queueName, self::getQueues())) {
+        if (!in_array($queueName, self::getQueues())) {
             $msg = dt('Queue not found: !name', ['!name' => $queueName]);
             return new CommandError($msg);
         }
@@ -31,9 +31,6 @@ class ValidateQueueName extends ValidatorBase implements ValidatorInterface
 
     public static function getQueues(): array
     {
-        foreach (\Drupal::service('plugin.manager.queue_worker')->getDefinitions() as $name => $info) {
-            $queues[$name] = $info;
-        }
-        return $queues ?? [];
+        return array_keys(\Drupal::service('plugin.manager.queue_worker')->getDefinitions());
     }
 }
