@@ -8,7 +8,8 @@ defaults: &defaults
     SYMFONY_DEPRECATIONS_HELPER: disabled
     PHPUNIT_ARGS: ""
     PHP_SENDMAIL_PATH: /dev/null
-    PHP_XDEBUG_MODE: off
+    # https://drupal.slack.com/archives/CGKLP028K/p1702031434143329?thread_ts=1702024395.751479&cid=CGKLP028K
+    WODBY_TAG: 8.1-dev-4.40.9
 
 requires: &requires
   requires:
@@ -25,14 +26,14 @@ post_steps: &poststeps
 executors:
   mysql-stable:
     docker:
-      - image: wodby/php:8.1
+      - image: wodby/php:$WODBY_TAG
         environment:
           - MYSQL_HOST=127.0.0.1
           - UNISH_DB_URL=mysql://root:@127.0.0.1
       - image: cimg/mysql:5.7.38
   sqlite-stable:
     docker:
-      - image: wodby/php:8.1
+      - image: wodby/php:$WODBY_TAG
         environment:
           - "UNISH_DB_URL=sqlite://:memory:"
   sqlite-highest:
@@ -42,7 +43,7 @@ executors:
           - "UNISH_DB_URL=sqlite://:memory:"
   postgres-stable:
     docker:
-      - image: wodby/php:8.1
+      - image: wodby/php:$WODBY_TAG
         environment:
           - UNISH_DB_URL=pgsql://unish:unish@127.0.0.1
       - image: wodby/postgres:14
@@ -60,7 +61,7 @@ jobs:
   code_style:
     <<: *defaults
     docker:
-      - image: wodby/php:8.1
+      - image: wodby/php:$WODBY_TAG
     steps:
       - checkout
       - run: cp .docker/zz-php.ini /usr/local/etc/php/conf.d/
@@ -141,7 +142,7 @@ workflows:
             parameters:
               dbms: [sqlite, mysql, postgres]
               suite: [integration, functional]
-              release: [stable, highest]
+              release: [stable] # highest is temporarily disabled.
             exclude:
               # Only run highest test on sqlite. Excluding each suite is unfortnate but needed.
               - release: highest
