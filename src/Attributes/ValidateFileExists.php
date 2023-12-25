@@ -13,7 +13,7 @@ use Drush\Drush;
 use Drush\Utils\StringUtils;
 
 #[Attribute(Attribute::TARGET_METHOD)]
-class ValidateFileExists
+class ValidateFileExists extends ValidatorBase
 {
     /**
      * @param $argName
@@ -24,33 +24,16 @@ class ValidateFileExists
     ) {
     }
 
-    public static function handle(\ReflectionAttribute $attribute, CommandInfo $commandInfo)
-    {
-        /** @var HookManager $hookManager */
-        $hookManager = Drush::getContainer()->get('hookManager');
-        $hookManager->add(
-            // Use a Closure to acquire $commandData and $args.
-            fn(CommandData $commandData) => self::validate($commandData, $attribute->getArguments()),
-            $hookManager::ARGUMENT_VALIDATOR,
-            // @todo not currently a public property, and getName() gives an infinite loop because parsing still in progress.
-            $commandInfo->getName()
-        );
-    }
-
-    public static function validate(CommandData $commandData, array $args)
+    public static function validate(CommandData $commandData, $argName)
     {
         $missing = [];
-        $arg_names =  StringUtils::csvToArray($args);
-        foreach ($arg_names as $arg_name) {
-            if ($commandData->input()->hasArgument($arg_name)) {
-                $path = $commandData->input()->getArgument($arg_name);
-            } elseif ($commandData->input()->hasOption($arg_name)) {
-                $path = $commandData->input()->getOption($arg_name);
-            }
-            if (!empty($path) && !file_exists($path)) {
-                $missing[] = $path;
-            }
-            unset($path);
+        if ($commandData->input()->hasArgument($argName)) {
+            $path = $commandData->input()->getArgument($argName);
+        } elseif ($commandData->input()->hasOption($argName)) {
+            $path = $commandData->input()->getOption($argName);
+        }
+        if (!empty($path) && !file_exists($path)) {
+            $missing[] = $path;
         }
 
         if ($missing) {
