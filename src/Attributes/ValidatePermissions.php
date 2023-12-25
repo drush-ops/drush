@@ -10,7 +10,7 @@ use Consolidation\AnnotatedCommand\CommandError;
 use Drush\Utils\StringUtils;
 
 #[Attribute(Attribute::TARGET_METHOD)]
-class ValidatePermissions extends ValidatorBase
+class ValidatePermissions extends ValidatorBase implements ValidatorInterface
 {
     /**
      * @param $argName

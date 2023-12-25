@@ -9,7 +9,7 @@ use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\AnnotatedCommand\CommandError;
 
 #[Attribute(Attribute::TARGET_METHOD)]
-class ValidatePhpExtensions
+class ValidatePhpExtensions extends ValidatorBase implements ValidatorInterface
 {
     /**
      * @param $extensions

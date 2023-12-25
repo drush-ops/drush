@@ -9,7 +9,7 @@ use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\AnnotatedCommand\CommandError;
 
 #[Attribute(Attribute::TARGET_METHOD)]
-class ValidateModulesEnabled extends ValidatorBase
+class ValidateModulesEnabled extends ValidatorBase implements ValidatorInterface
 {
     /**
      * @param $modules

@@ -9,7 +9,7 @@ use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\AnnotatedCommand\CommandError;
 
 #[Attribute(Attribute::TARGET_METHOD)]
-class ValidateFileExists extends ValidatorBase
+class ValidateFileExists extends ValidatorBase implements ValidatorInterface
 {
     /**
      * @param $argName

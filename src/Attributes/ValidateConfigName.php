@@ -9,7 +9,7 @@ use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\AnnotatedCommand\CommandError;
 
 #[Attribute(Attribute::TARGET_METHOD)]
-class ValidateConfigName extends ValidatorBase
+class ValidateConfigName extends ValidatorBase implements ValidatorInterface
 {
     /**
      * @param string $argumentName

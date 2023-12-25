@@ -10,7 +10,7 @@ use Consolidation\AnnotatedCommand\CommandError;
 use Drush\Utils\StringUtils;
 
 #[Attribute(Attribute::TARGET_METHOD)]
-class ValidateEntityLoad extends ValidatorBase
+class ValidateEntityLoad extends ValidatorBase implements ValidatorInterface
 {
     /**
      * @param $entityType
