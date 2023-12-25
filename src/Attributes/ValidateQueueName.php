@@ -11,8 +11,6 @@ use Consolidation\AnnotatedCommand\CommandError;
 #[Attribute(Attribute::TARGET_METHOD)]
 class ValidateQueueName extends ValidatorBase implements ValidatorInterface
 {
-    private static array $queues = [];
-
     /**
      * @param string $argumentName
      *   The name of the argument which specifies the queue name.
@@ -31,14 +29,11 @@ class ValidateQueueName extends ValidatorBase implements ValidatorInterface
         }
     }
 
-    public static function getQueues()
+    public static function getQueues(): array
     {
-        if (!isset(static::$queues)) {
-            static::$queues = [];
-            foreach (\Drupal::service('plugin.manager.queue_worker')->getDefinitions() as $name => $info) {
-                static::$queues[$name] = $info;
-            }
+        foreach (\Drupal::service('plugin.manager.queue_worker')->getDefinitions() as $name => $info) {
+            $queues[$name] = $info;
         }
-        return static::$queues;
+        return $queues ?? [];
     }
 }
