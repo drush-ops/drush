@@ -20,7 +20,7 @@ class ValidateModulesEnabled extends ValidatorBase implements ValidatorInterface
     ) {
     }
 
-    public function validate(CommandData $commandData)
+    public function validate(CommandData $commandData): ?CommandError
     {
         $missing = array_filter($this->modules, fn($module) => !\Drupal::moduleHandler()->moduleExists($module));
         if ($missing) {

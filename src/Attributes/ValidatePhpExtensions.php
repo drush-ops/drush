@@ -20,7 +20,7 @@ class ValidatePhpExtensions extends ValidatorBase implements ValidatorInterface
     ) {
     }
 
-    public function validate(CommandData $commandData)
+    public function validate(CommandData $commandData): ?CommandError
     {
         $missing = array_filter($this->extensions, fn($extension) => !extension_loaded($extension));
         if ($missing) {
