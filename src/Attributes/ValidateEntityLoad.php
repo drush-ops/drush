@@ -7,6 +7,7 @@ namespace Drush\Attributes;
 use Attribute;
 use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\AnnotatedCommand\CommandError;
+use Drush\Utils\StringUtils;
 
 #[Attribute(Attribute::TARGET_METHOD)]
 class ValidateEntityLoad extends ValidatorBase
@@ -26,10 +27,10 @@ class ValidateEntityLoad extends ValidatorBase
     public static function validate(CommandData $commandData, \ReflectionAttribute $attribute)
     {
         $instance = $attribute->newInstance();
-        $entityId = $commandData->input()->getArgument($instance->argumentName);
-        $entity = \Drupal::entityTypeManager()->getStorage($instance->entityType)->load($entityId);
-        if (!$entity) {
-            $msg = dt('Entity !type with ID !id does not exist', ['!type' => $instance->entityType, '!id' => $entityId]);
+        $names = StringUtils::csvToArray($commandData->input()->getArgument($instance->argumentName));
+        $loaded = \Drupal::entityTypeManager()->getStorage($instance->entityType)->loadMultiple($names);
+        if ($missing = array_diff($names, array_keys($loaded))) {
+            $msg = dt('Unable to load the !type: !str', ['!type' => $instance->entityType, '!str' => implode(', ', $missing)]);
             return new CommandError($msg);
         }
     }
