@@ -22,7 +22,7 @@ class ValidateQueueName extends ValidatorBase implements ValidatorInterface
     ) {
     }
 
-    public function validate(CommandData $commandData): ?CommandError
+    public function validate(CommandData $commandData)
     {
         $queueName = $commandData->input()->getArgument($this->argumentName);
         if (!array_key_exists($queueName, self::getQueues())) {
@@ -31,7 +31,7 @@ class ValidateQueueName extends ValidatorBase implements ValidatorInterface
         }
     }
 
-    public static function getQueues(): array
+    public static function getQueues()
     {
         if (!isset(static::$queues)) {
             static::$queues = [];

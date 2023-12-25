@@ -24,7 +24,7 @@ class ValidateEntityLoad extends ValidatorBase implements ValidatorInterface
     ) {
     }
 
-    public function validate(CommandData $commandData): ?CommandError
+    public function validate(CommandData $commandData)
     {
         $names = StringUtils::csvToArray($commandData->input()->getArgument($this->argumentName));
         $loaded = \Drupal::entityTypeManager()->getStorage($this->entityType)->loadMultiple($names);

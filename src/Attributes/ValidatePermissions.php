@@ -21,7 +21,7 @@ class ValidatePermissions extends ValidatorBase implements ValidatorInterface
     ) {
     }
 
-    public function validate(CommandData $commandData): ?CommandError
+    public function validate(CommandData $commandData)
     {
         $missing = [];
         $arg_or_option_name = $this->argName;

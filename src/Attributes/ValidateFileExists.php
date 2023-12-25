@@ -20,7 +20,7 @@ class ValidateFileExists extends ValidatorBase implements ValidatorInterface
     ) {
     }
 
-    public function validate(CommandData $commandData): ?CommandError
+    public function validate(CommandData $commandData)
     {
         $missing = [];
         $argName = $this->argName;

@@ -20,7 +20,7 @@ class ValidateConfigName extends ValidatorBase implements ValidatorInterface
     ) {
     }
 
-    public function validate(CommandData $commandData): ?CommandError
+    public function validate(CommandData $commandData)
     {
         $configName = $commandData->input()->getArgument($this->argumentName);
         $config = \Drupal::config($configName);
