@@ -8,6 +8,7 @@ defaults: &defaults
     SYMFONY_DEPRECATIONS_HELPER: disabled
     PHPUNIT_ARGS: ""
     PHP_SENDMAIL_PATH: /dev/null
+    PHP_XDEBUG_MODE: off
 
 requires: &requires
   requires:
