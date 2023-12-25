@@ -5,7 +5,8 @@ declare(strict_types=1);
 namespace Drush\Attributes;
 
 use Attribute;
-use Consolidation\AnnotatedCommand\Parser\CommandInfo;
+use Consolidation\AnnotatedCommand\CommandData;
+use Consolidation\AnnotatedCommand\CommandError;
 
 #[Attribute(Attribute::TARGET_METHOD)]
 class ValidatePhpExtensions
@@ -19,9 +20,16 @@ class ValidatePhpExtensions
     ) {
     }
 
-    public static function handle(\ReflectionAttribute $attribute, CommandInfo $commandInfo)
+    public static function validate(CommandData $commandData, \ReflectionAttribute $attribute)
     {
-        $args = $attribute->getArguments();
-        $commandInfo->addAnnotation('validate-php-extension', $args['extensions'] ?? $args[0]);
+        $instance = $attribute->newInstance();
+        $extensions = $instance->extensions;
+        $missing = array_filter($extensions, function ($extension) {
+            return !extension_loaded($extension);
+        });
+        if ($missing) {
+            $msg = dt('The following PHP extensions are required: !extensions', ['!extensions' => implode(', ', $missing)]);
+            return new CommandError($msg);
+        }
     }
 }

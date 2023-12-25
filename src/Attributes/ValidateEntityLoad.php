@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace Drush\Attributes;
 
 use Attribute;
-use Consolidation\AnnotatedCommand\Parser\CommandInfo;
-use Drush\Commands\ValidatorsCommands;
+use Consolidation\AnnotatedCommand\CommandData;
+use Consolidation\AnnotatedCommand\CommandError;
 
 #[Attribute(Attribute::TARGET_METHOD)]
-class ValidateEntityLoad
+class ValidateEntityLoad extends ValidatorBase
 {
     /**
      * @param $entityType
@@ -23,9 +23,14 @@ class ValidateEntityLoad
     ) {
     }
 
-    public static function handle(\ReflectionAttribute $attribute, CommandInfo $commandInfo)
+    public static function validate(CommandData $commandData, \ReflectionAttribute $attribute)
     {
-        $args = $attribute->getArguments();
-        $commandInfo->addAnnotation(ValidatorsCommands::VALIDATE_ENTITY_LOAD, "{$args['entityType']} {$args['argumentName']}");
+        $instance = $attribute->newInstance();
+        $entityId = $commandData->input()->getArgument($instance->argumentName);
+        $entity = \Drupal::entityTypeManager()->getStorage($instance->entityType)->load($entityId);
+        if (!$entity) {
+            $msg = dt('Entity !type with ID !id does not exist', ['!type' => $instance->entityType, '!id' => $entityId]);
+            return new CommandError($msg);
+        }
     }
 }
