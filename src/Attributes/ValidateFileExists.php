@@ -7,10 +7,6 @@ namespace Drush\Attributes;
 use Attribute;
 use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\AnnotatedCommand\CommandError;
-use Consolidation\AnnotatedCommand\Hooks\HookManager;
-use Consolidation\AnnotatedCommand\Parser\CommandInfo;
-use Drush\Drush;
-use Drush\Utils\StringUtils;
 
 #[Attribute(Attribute::TARGET_METHOD)]
 class ValidateFileExists extends ValidatorBase
@@ -24,9 +20,10 @@ class ValidateFileExists extends ValidatorBase
     ) {
     }
 
-    public static function validate(CommandData $commandData, $argName)
+    public static function validate(CommandData $commandData, \ReflectionAttribute $attribute)
     {
         $missing = [];
+        $argName = $attribute->newInstance()->argName;
         if ($commandData->input()->hasArgument($argName)) {
             $path = $commandData->input()->getArgument($argName);
         } elseif ($commandData->input()->hasOption($argName)) {

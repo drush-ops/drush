@@ -18,7 +18,7 @@ abstract class ValidatorBase
         $hookManager = Drush::getContainer()->get('hookManager');
         $hookManager->add(
         // Use a Closure to acquire $commandData and $args.
-            fn(CommandData $commandData) => static::validate($commandData, ...$attribute->getArguments()),
+            fn(CommandData $commandData) => static::validate($commandData, $attribute),
             $hookManager::ARGUMENT_VALIDATOR,
             $commandInfo->getName()
         );

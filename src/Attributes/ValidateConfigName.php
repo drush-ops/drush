@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace Drush\Attributes;
 
 use Attribute;
-use Consolidation\AnnotatedCommand\Parser\CommandInfo;
-use Drush\Commands\config\ConfigCommands;
+use Consolidation\AnnotatedCommand\CommandData;
+use Consolidation\AnnotatedCommand\CommandError;
 
 #[Attribute(Attribute::TARGET_METHOD)]
-class ValidateConfigName
+class ValidateConfigName extends ValidatorBase
 {
     /**
      * @param string $argumentName
@@ -20,8 +20,14 @@ class ValidateConfigName
     ) {
     }
 
-    public static function handle(\ReflectionAttribute $attribute, CommandInfo $commandInfo)
+    public static function validate(CommandData $commandData, \ReflectionAttribute $attribute)
     {
-        $commandInfo->addAnnotation(ConfigCommands::VALIDATE_CONFIG_NAME, $attribute->newInstance()->argumentName);
+        $argumentName = $attribute->newInstance()->argumentName;
+        $configName = $commandData->input()->getArgument($argumentName);
+        $config = \Drupal::config($configName);
+        if ($config->isNew()) {
+            $msg = dt('Config !name does not exist', ['!name' => $configName]);
+            return new CommandError($msg);
+        }
     }
 }
