@@ -11,7 +11,7 @@ use Consolidation\AnnotatedCommand\CommandError;
 #[Attribute(Attribute::TARGET_METHOD)]
 class ValidateQueueName extends ValidatorBase implements ValidatorInterface
 {
-    private static $queues;
+    private static array $queues = [];
 
     /**
      * @param string $argumentName
