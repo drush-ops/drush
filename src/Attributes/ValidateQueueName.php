@@ -15,7 +15,7 @@ class ValidateQueueName extends ValidatorBase implements ValidatorInterface
 
     /**
      * @param string $argumentName
-     *   The name of the argument which specifies the config ID.
+     *   The name of the argument which specifies the queue name.
      */
     public function __construct(
         public string $argumentName = 'queue_name'
