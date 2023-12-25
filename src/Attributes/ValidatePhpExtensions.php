@@ -22,9 +22,7 @@ class ValidatePhpExtensions extends ValidatorBase implements ValidatorInterface
 
     public function validate(CommandData $commandData)
     {
-        $missing = array_filter($this->extensions, function ($extension) {
-            return !extension_loaded($extension);
-        });
+        $missing = array_filter($this->extensions, fn($extension) => !extension_loaded($extension));
         if ($missing) {
             $msg = dt('The following PHP extensions are required: !extensions', ['!extensions' => implode(', ', $missing)]);
             return new CommandError($msg);
