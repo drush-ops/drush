@@ -18,12 +18,14 @@ use Drupal\Core\Queue\SuspendQueueException;
 use Drush\Attributes as CLI;
 use Drush\Commands\DrushCommands;
 use Drupal\Core\Queue\QueueGarbageCollectionInterface;
+use JetBrains\PhpStorm\Deprecated;
 use Symfony\Component\Console\Completion\CompletionInput;
 use Symfony\Component\Console\Completion\CompletionSuggestions;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 final class QueueCommands extends DrushCommands
 {
+    #[Deprecated('Use CLI/ValidateQueueName Attribute instead')]
     const VALIDATE_QUEUE = 'validate-queue';
     const RUN = 'queue:run';
     const LIST = 'queue:list';
