@@ -86,7 +86,7 @@
 
     
     <p>        class
-    <strong>ValidateConfigName</strong>        (<a href="https://github.com/drush-ops/drush/blob/12.x/src/Attributes/ValidateConfigName.php">View source</a>)
+    <strong>ValidateConfigName</strong>        extends <a href="../../Drush/Attributes/ValidatorBase.html"><abbr title="Drush\Attributes\ValidatorBase">ValidatorBase</abbr></a>        implements        <a href="../../Drush/Attributes/ValidatorInterface.html"><abbr title="Drush\Attributes\ValidatorInterface">ValidatorInterface</abbr></a>        (<a href="https://github.com/drush-ops/drush/blob/12.x/src/Attributes/ValidateConfigName.php">View source</a>)
 </p>
 
         
@@ -102,6 +102,18 @@
             <div class="container-fluid underlined">
                     <div class="row">
                 <div class="col-md-2 type">
+                    static&nbsp;
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_handle">handle</a>(ReflectionAttribute $attribute, <abbr title="Consolidation\AnnotatedCommand\Parser\CommandInfo">CommandInfo</abbr> $commandInfo)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../Drush/Attributes/ValidatorBase.html#method_handle">
+<abbr title="Drush\Attributes\ValidatorBase">ValidatorBase</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
                     
                 </div>
                 <div class="col-md-8">
@@ -113,10 +125,10 @@
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    static&nbsp;
+                    
                 </div>
                 <div class="col-md-8">
-                    <a href="#method_handle">handle</a>(ReflectionAttribute $attribute, <abbr title="Consolidation\AnnotatedCommand\Parser\CommandInfo">CommandInfo</abbr> $commandInfo)
+                    <a href="#method_validate">validate</a>(<abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr> $commandData)
         
                                             <p class="no-description">No description</p>
                                     </div>
@@ -128,6 +140,46 @@
         <h2>Details</h2>
 
             <div id="method-details">
+                    <div class="method-item">
+                    <h3 id="method_handle">
+        <div class="location">in <a href="../../Drush/Attributes/ValidatorBase.html#method_handle">
+<abbr title="Drush\Attributes\ValidatorBase">ValidatorBase</abbr></a> <a href="https://github.com/drush-ops/drush/blob/12.x/src/Attributes/ValidatorBase.php#L14">at line 14</a></div>
+        <code>        static            
+    <strong>handle</strong>(ReflectionAttribute $attribute, <abbr title="Consolidation\AnnotatedCommand\Parser\CommandInfo">CommandInfo</abbr> $commandInfo)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>ReflectionAttribute</td>
+                <td>$attribute</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><abbr title="Consolidation\AnnotatedCommand\Parser\CommandInfo">CommandInfo</abbr></td>
+                <td>$commandInfo</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
                     <div class="method-item">
                     <h3 id="method___construct">
         <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Attributes/ValidateConfigName.php#L18">at line 18</a></div>
@@ -163,10 +215,10 @@
 
             </div>
                     <div class="method-item">
-                    <h3 id="method_handle">
+                    <h3 id="method_validate">
         <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Attributes/ValidateConfigName.php#L23">at line 23</a></div>
-        <code>        static            
-    <strong>handle</strong>(ReflectionAttribute $attribute, <abbr title="Consolidation\AnnotatedCommand\Parser\CommandInfo">CommandInfo</abbr> $commandInfo)
+        <code>                    
+    <strong>validate</strong>(<abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr> $commandData)
         </code>
     </h3>
     <div class="details">    
@@ -182,13 +234,8 @@
 
                     <table class="table table-condensed">
                     <tr>
-                <td>ReflectionAttribute</td>
-                <td>$attribute</td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td><abbr title="Consolidation\AnnotatedCommand\Parser\CommandInfo">CommandInfo</abbr></td>
-                <td>$commandInfo</td>
+                <td><abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr></td>
+                <td>$commandData</td>
                 <td></td>
             </tr>
             </table>

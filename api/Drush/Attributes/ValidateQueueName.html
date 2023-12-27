@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="robots" content="index, follow, all" />
-    <title>Drush\Attributes\ValidateFileExists | Drush API %version%</title>
+    <title>Drush\Attributes\ValidateQueueName | Drush API %version%</title>
 
             <link rel="stylesheet" type="text/css" href="../../css/bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="../../css/bootstrap-theme.min.css">
@@ -19,7 +19,7 @@
 
     </head>
 
-    <body id="class" data-name="class:Drush_Attributes_ValidateFileExists" data-root-path="../../" data-search-index-url="../../doctum-search.json">
+    <body id="class" data-name="class:Drush_Attributes_ValidateQueueName" data-root-path="../../" data-search-index-url="../../doctum-search.json">
             <div id="content">
         <div id="left-column">
                 <div id="control-panel">
@@ -75,18 +75,18 @@
                         <div class="namespace-breadcrumbs">
             <ol class="breadcrumb">
                 <li><span class="label label-default">class</span></li>
-                        <li><a href="../../Drush.html">Drush</a></li><li class="backslash">\</li><li><a href="../../Drush/Attributes.html">Attributes</a></li><li class="backslash">\</li><li>ValidateFileExists</li>
+                        <li><a href="../../Drush.html">Drush</a></li><li class="backslash">\</li><li><a href="../../Drush/Attributes.html">Attributes</a></li><li class="backslash">\</li><li>ValidateQueueName</li>
             </ol>
         </div>
                 <div id="page-content">
     <div class="page-header">
-        <h1>ValidateFileExists    
+        <h1>ValidateQueueName    
             </h1>
     </div>
 
     
     <p>        class
-    <strong>ValidateFileExists</strong>        extends <a href="../../Drush/Attributes/ValidatorBase.html"><abbr title="Drush\Attributes\ValidatorBase">ValidatorBase</abbr></a>        implements        <a href="../../Drush/Attributes/ValidatorInterface.html"><abbr title="Drush\Attributes\ValidatorInterface">ValidatorInterface</abbr></a>        (<a href="https://github.com/drush-ops/drush/blob/12.x/src/Attributes/ValidateFileExists.php">View source</a>)
+    <strong>ValidateQueueName</strong>        extends <a href="../../Drush/Attributes/ValidatorBase.html"><abbr title="Drush\Attributes\ValidatorBase">ValidatorBase</abbr></a>        implements        <a href="../../Drush/Attributes/ValidatorInterface.html"><abbr title="Drush\Attributes\ValidatorInterface">ValidatorInterface</abbr></a>        (<a href="https://github.com/drush-ops/drush/blob/12.x/src/Attributes/ValidateQueueName.php">View source</a>)
 </p>
 
         
@@ -117,7 +117,7 @@
                     
                 </div>
                 <div class="col-md-8">
-                    <a href="#method___construct">__construct</a>(string $argName)
+                    <a href="#method___construct">__construct</a>(string $argumentName = &#039;queue_name&#039;)
         
                                             <p class="no-description">No description</p>
                                     </div>
@@ -129,6 +129,17 @@
                 </div>
                 <div class="col-md-8">
                     <a href="#method_validate">validate</a>(<abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr> $commandData)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    static&nbsp;array
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_getQueues">getQueues</a>()
         
                                             <p class="no-description">No description</p>
                                     </div>
@@ -182,9 +193,9 @@
             </div>
                     <div class="method-item">
                     <h3 id="method___construct">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Attributes/ValidateFileExists.php#L18">at line 18</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Attributes/ValidateQueueName.php#L18">at line 18</a></div>
         <code>                    
-    <strong>__construct</strong>(string $argName)
+    <strong>__construct</strong>(string $argumentName = &#039;queue_name&#039;)
         </code>
     </h3>
     <div class="details">    
@@ -201,8 +212,8 @@
                     <table class="table table-condensed">
                     <tr>
                 <td>string</td>
-                <td>$argName</td>
-                <td><p>The argument name containing the path to check.</p></td>
+                <td>$argumentName</td>
+                <td><p>The name of the argument which specifies the queue name.</p></td>
             </tr>
             </table>
 
@@ -216,7 +227,7 @@
             </div>
                     <div class="method-item">
                     <h3 id="method_validate">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Attributes/ValidateFileExists.php#L23">at line 23</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Attributes/ValidateQueueName.php#L23">at line 23</a></div>
         <code>                    
     <strong>validate</strong>(<abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr> $commandData)
         </code>
@@ -241,6 +252,39 @@
             </table>
 
             
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getQueues">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Attributes/ValidateQueueName.php#L32">at line 32</a></div>
+        <code>        static            array
+    <strong>getQueues</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>array</td>
+            <td></td>
+        </tr>
+    </table>
+
             
             
             
