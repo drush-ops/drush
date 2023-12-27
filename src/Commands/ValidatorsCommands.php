@@ -5,11 +5,12 @@ declare(strict_types=1);
 namespace Drush\Commands;
 
 use Consolidation\AnnotatedCommand\AnnotationData;
-use Consolidation\AnnotatedCommand\CommandError;
 use Consolidation\AnnotatedCommand\CommandData;
+use Consolidation\AnnotatedCommand\CommandError;
 use Consolidation\AnnotatedCommand\Hooks\HookManager;
 use Drush\Attributes as CLI;
 use Drush\Utils\StringUtils;
+use JetBrains\PhpStorm\Deprecated;
 use Symfony\Component\Console\Input\Input;
 
 /*
@@ -17,12 +18,14 @@ use Symfony\Component\Console\Input\Input;
  */
 final class ValidatorsCommands
 {
+    #[Deprecated('Use CLI/ValidateEntityLoad Attribute instead')]
     const VALIDATE_ENTITY_LOAD = 'validate-entity-load';
 
     /**
      * Validate that passed entity names are valid.
      * @see \Drush\Commands\core\ViewsCommands::execute for an example.
      */
+    #[Deprecated('Use CLI/ValidateEntityLoad Attribute instead')]
     #[CLI\Hook(type: HookManager::ARGUMENT_VALIDATOR, selector: self::VALIDATE_ENTITY_LOAD)]
     public function validateEntityLoad(CommandData $commandData)
     {
@@ -41,6 +44,7 @@ final class ValidatorsCommands
      *
      * @see \Drush\Commands\core\WatchdogCommands::show for an example.
      */
+    #[Deprecated('Use CLI/ValidateModulesEnabled Attribute instead')]
     #[CLI\Hook(type: HookManager::POST_INITIALIZE, selector: 'validate-module-enabled')]
     public function validateModuleEnabled(Input $input, AnnotationData $annotationData): void
     {
@@ -57,6 +61,7 @@ final class ValidatorsCommands
      *
      * Annotation value should be the name of the argument containing the path.
      */
+    #[Deprecated('Use CLI/ValidateFileExists Attribute instead')]
     #[CLI\Hook(type: HookManager::ARGUMENT_VALIDATOR, selector: 'validate-file-exists')]
     public function validateFileExists(CommandData $commandData)
     {
@@ -85,6 +90,7 @@ final class ValidatorsCommands
      *
      * Annotation value should be extension name. If multiple, delimit by a comma.
      */
+    #[Deprecated('Use CLI/ValidatePHPExtension Attribute instead')]
     #[CLI\Hook(type: HookManager::ARGUMENT_VALIDATOR, selector: 'validate-php-extension')]
     public function validatePHPExtension(CommandData $commandData)
     {
@@ -107,6 +113,7 @@ final class ValidatorsCommands
      *
      * Annotation value should be the name of the argument/option containing the permission(s).
      */
+    #[Deprecated('Use CLI/ValidatePermissions Attribute instead')]
     #[CLI\Hook(type: HookManager::ARGUMENT_VALIDATOR, selector: 'validate-permissions')]
     public function validatePermissions(CommandData $commandData)
     {

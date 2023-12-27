@@ -5,10 +5,11 @@ declare(strict_types=1);
 namespace Drush\Attributes;
 
 use Attribute;
-use Consolidation\AnnotatedCommand\Parser\CommandInfo;
+use Consolidation\AnnotatedCommand\CommandData;
+use Consolidation\AnnotatedCommand\CommandError;
 
 #[Attribute(Attribute::TARGET_METHOD)]
-class ValidateModulesEnabled
+class ValidateModulesEnabled extends ValidatorBase implements ValidatorInterface
 {
     /**
      * @param $modules
@@ -19,9 +20,12 @@ class ValidateModulesEnabled
     ) {
     }
 
-    public static function handle(\ReflectionAttribute $attribute, CommandInfo $commandInfo)
+    public function validate(CommandData $commandData)
     {
-        $args = $attribute->getArguments();
-        $commandInfo->addAnnotation('validate-module-enabled', $args['modules'] ?? $args[0]);
+        $missing = array_filter($this->modules, fn($module) => !\Drupal::moduleHandler()->moduleExists($module));
+        if ($missing) {
+            $msg = dt('The following modules are required: !modules', ['!modules' => implode(', ', $missing)]);
+            return new CommandError($msg);
+        }
     }
 }

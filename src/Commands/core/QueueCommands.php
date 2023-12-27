@@ -18,12 +18,14 @@ use Drupal\Core\Queue\SuspendQueueException;
 use Drush\Attributes as CLI;
 use Drush\Commands\DrushCommands;
 use Drupal\Core\Queue\QueueGarbageCollectionInterface;
+use JetBrains\PhpStorm\Deprecated;
 use Symfony\Component\Console\Completion\CompletionInput;
 use Symfony\Component\Console\Completion\CompletionSuggestions;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 final class QueueCommands extends DrushCommands
 {
+    #[Deprecated('Use CLI/ValidateQueueName Attribute instead')]
     const VALIDATE_QUEUE = 'validate-queue';
     const RUN = 'queue:run';
     const LIST = 'queue:list';
@@ -77,7 +79,7 @@ final class QueueCommands extends DrushCommands
     #[CLI\Option(name: 'time-limit', description: 'The maximum number of seconds allowed to run the queue.')]
     #[CLI\Option(name: 'items-limit', description: 'The maximum number of items allowed to run the queue.')]
     #[CLI\Option(name: 'lease-time', description: 'The maximum number of seconds that an item remains claimed.')]
-    #[CLI\HookSelector(name: self::VALIDATE_QUEUE, value: 'name')]
+    #[CLI\ValidateQueueName(argumentName: 'name')]
     #[CLI\Complete(method_name_or_callable: 'queueComplete')]
     public function run(string $name, $options = ['time-limit' => self::REQ, 'items-limit' => self::REQ, 'lease-time' => self::REQ]): void
     {
@@ -157,7 +159,7 @@ final class QueueCommands extends DrushCommands
      */
     #[CLI\Command(name: self::DELETE, aliases: ['queue-delete'])]
     #[CLI\Argument(name: 'name', description: 'The name of the queue to delete, as defined in either hook_queue_info or hook_cron_queue_info.')]
-    #[CLI\HookSelector(name: self::VALIDATE_QUEUE, value: 'name')]
+    #[CLI\ValidateQueueName(argumentName: 'name')]
     #[CLI\Complete(method_name_or_callable: 'queueComplete')]
     public function delete($name): void
     {
@@ -169,6 +171,7 @@ final class QueueCommands extends DrushCommands
     /**
      * Validate that a queue exists.
      */
+    #[Deprecated('Use CLI/ValidateQueueName Attribute instead')]
     #[CLI\Hook(type: HookManager::ARGUMENT_VALIDATOR, selector: self::VALIDATE_QUEUE)]
     public function validateQueueName(CommandData $commandData)
     {
