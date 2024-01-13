@@ -10,7 +10,6 @@ use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Drush\Psysh\DrushCommand;
 use Drush\Psysh\DrushHelpCommand;
-use Drupal\Component\Assertion\Handle;
 use Drush\Psysh\Shell;
 use Drush\Runtime\Runtime;
 use Drush\Utils\FsUtils;
@@ -82,9 +81,12 @@ final class CliCommands extends DrushCommands
         $shell = new Shell($configuration);
 
 
-        // Register the assertion handler so exceptions are thrown instead of errors
-        // being triggered. This plays nicer with PsySH.
-        Handle::register();
+        // Register the assertion handler so exceptions are thrown instead of
+        // errors being triggered. This plays nicer with PsySH. Since we're
+        // using exceptions, turn error warnings off.
+        assert_options(ASSERT_EXCEPTION, TRUE);
+        assert_options(ASSERT_WARNING, FALSE);
+
         $shell->setScopeVariables(['container' => \Drupal::getContainer()]);
 
         // Add our casters to the shell configuration.
