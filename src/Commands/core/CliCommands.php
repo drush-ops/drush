@@ -314,7 +314,7 @@ final class CliCommands extends DrushCommands
             $parts = explode('\\', $class);
             $end = end($parts);
             // https://github.com/drush-ops/drush/pull/5729 and https://github.com/drush-ops/drush/issues/5730.
-            if ($reflectionClass->isFinal() || class_exists($end)) {
+            if ($reflectionClass->isAbstract() || $reflectionClass->isFinal() || class_exists($end)) {
                 continue;
             }
             // Make it possible to easily load revisions.
