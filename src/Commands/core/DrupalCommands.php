@@ -133,12 +133,14 @@ final class DrupalCommands extends DrushCommands
     #[CLI\Command(name: self::ROUTE, aliases: ['route'])]
     #[CLI\Usage(name: 'drush route', description: 'View all routes.')]
     #[CLI\Usage(name: 'drush route --name=update.status', description: 'View details about the <info>update.status</info> route.')]
+    #[CLI\Usage(name: 'drush route --filter=devel', description: 'Show only routes starting with devel.')]
     #[CLI\Usage(name: 'drush route --path=/user/1', description: 'View details about the <info>entity.user.canonical</info> route.')]
     #[CLI\Usage(name: 'drush route --url=https://example.com/node/1', description: 'View details about the <info>entity.node.canonical</info> route.')]
     #[CLI\Option(name: 'name', description: 'A route name.')]
+    #[CLI\Option(name: 'filter', description: 'Restrict the list of returned routes to route names starting with this value.')]
     #[CLI\Option(name: 'path', description: 'An internal path or URL.')]
     #[CLI\Version(version: '10.5')]
-    public function route($options = ['name' => self::REQ, 'path' => self::REQ, 'format' => 'yaml'])
+    public function route($options = ['name' => self::REQ, 'path' => self::REQ, 'format' => 'yaml', 'filter' => self::REQ])
     {
         $route = $items = null;
         $provider = $this->getRouteProvider();
@@ -166,13 +168,14 @@ final class DrupalCommands extends DrushCommands
                 //  'methods' => $route->getMethods(),
             ];
             unset($return['options']['compiler_class'], $return['options']['utf8']);
-            return $return;
         }
 
         // Just show a list of all routes.
         $routes = $provider->getAllRoutes();
         foreach ($routes as $route_name => $route) {
-            $items[$route_name] = $route->getPath();
+            if (!isset($options['filter']) || strpos($route_name, $options['filter']) === 0) {
+                $items[$route_name] = $route->getPath();
+            }
         }
         return $items;
     }
