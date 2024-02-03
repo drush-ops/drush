@@ -30,6 +30,8 @@ trait ConfiguresPrompts
     {
         Prompt::setOutput($this->output);
 
+        Prompt::cancelUsing(fn() => false);
+
         Prompt::interactive(($input->isInteractive() && defined('STDIN') && stream_isatty(STDIN)) || $this->runningUnitTests());
 
         Prompt::fallbackWhen(!$input->isInteractive() || strtoupper(substr(PHP_OS, 0, 3)) == "WIN" || $this->runningUnitTests());
