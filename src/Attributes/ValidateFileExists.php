@@ -5,10 +5,11 @@ declare(strict_types=1);
 namespace Drush\Attributes;
 
 use Attribute;
-use Consolidation\AnnotatedCommand\Parser\CommandInfo;
+use Consolidation\AnnotatedCommand\CommandData;
+use Consolidation\AnnotatedCommand\CommandError;
 
 #[Attribute(Attribute::TARGET_METHOD)]
-class ValidateFileExists
+class ValidateFileExists extends ValidatorBase implements ValidatorInterface
 {
     /**
      * @param $argName
@@ -19,9 +20,22 @@ class ValidateFileExists
     ) {
     }
 
-    public static function handle(\ReflectionAttribute $attribute, CommandInfo $commandInfo)
+    public function validate(CommandData $commandData)
     {
-        $args = $attribute->getArguments();
-        $commandInfo->addAnnotation('validate-file-exists', $args['argName']);
+        $missing = [];
+        $argName = $this->argName;
+        if ($commandData->input()->hasArgument($argName)) {
+            $path = $commandData->input()->getArgument($argName);
+        } elseif ($commandData->input()->hasOption($argName)) {
+            $path = $commandData->input()->getOption($argName);
+        }
+        if (!empty($path) && !file_exists($path)) {
+            $missing[] = $path;
+        }
+
+        if ($missing) {
+            $msg = dt('File(s) not found: !paths', ['!paths' => implode(', ', $missing)]);
+            return new CommandError($msg);
+        }
     }
 }
