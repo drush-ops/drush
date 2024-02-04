@@ -60,7 +60,7 @@ final class EntityCreateCommands extends DrushCommands
     #[CLI\Usage(name: 'drush entity:create node article --validate=0', description: 'Create an article entity and skip validation entirely.')]
     #[CLI\Usage(name: 'drush entity:create node article --skip-fields=field_media_image,field_tags', description: 'Create an article omitting two fields.')]
     #[CLI\Usage(name: 'drush entity:create user user --editor=nano', description: 'Create a user using the Nano text editor.')]
-    #[CLI\Version('12.5')]
+    #[CLI\Version(version: '13.0')]
     public function createEntity(string $entity_type, $bundle, array $options = ['validate' => true, 'uid' => self::REQ, 'skip-fields' => self::REQ]): string
     {
         $bundleKey = $this->entityTypeManager->getDefinition($entity_type)->getKey('bundle');
