@@ -101,14 +101,12 @@ class ArtCommands extends DrushCommands implements CustomEventAwareInterface
     #[CLI\Hook(type: HookManager::INTERACT, target: 'artwork:show')]
     public function interact(InputInterface $input, OutputInterface $output, AnnotationData $annotationData)
     {
-        $io = new DrushStyle($input, $output);
-
         // If the user did not specify any artwork, then prompt for one.
         $art = $input->getArgument('art');
         if (empty($art)) {
             $data = $this->getArt();
             $selections = $this->convertArtListToKeyValue($data);
-            $selection = $io->choice('Select art to display', $selections);
+            $selection = $this->io()->select('Select art to display', $selections);
             $input->setArgument('art', $selection);
         }
     }

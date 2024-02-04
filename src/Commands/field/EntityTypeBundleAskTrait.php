@@ -40,7 +40,7 @@ trait EntityTypeBundleAskTrait
                 : $entityTypeDefinition->getLabel();
         }
 
-        if (!$answer = $this->io()->choice('Entity type', $choices)) {
+        if (!$answer = $this->io()->select('Entity type', $choices, required: true)) {
             throw new \InvalidArgumentException(dt('The entityType argument is required.'));
         }
 
@@ -71,7 +71,7 @@ trait EntityTypeBundleAskTrait
             $choices[$bundle] = $label;
         }
 
-        if (!$answer = $this->io()->choice('Bundle', $choices)) {
+        if (!$answer = $this->io()->select('Bundle', $choices)) {
             throw new \InvalidArgumentException(dt('The bundle argument is required.'));
         }
 

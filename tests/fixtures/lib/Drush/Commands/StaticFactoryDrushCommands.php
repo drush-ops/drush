@@ -34,6 +34,6 @@ class StaticFactoryDrushCommands extends DrushCommands
     #[CLI\Help(description: "This command asks the Kernel for the site path.", hidden: true)]
     public function mySitePath()
     {
-        $this->io()->text('The site path is: ' . $this->kernel->getSitePath());
+        $this->io()->note('The site path is: ' . $this->kernel->getSitePath());
     }
 }

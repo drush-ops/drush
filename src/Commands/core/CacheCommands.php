@@ -140,14 +140,14 @@ final class CacheCommands extends DrushCommands implements CustomEventAwareInter
         if (empty($input->getArgument('type'))) {
             $types = $this->getTypes($this->bootstrapManager->hasBootstrapped(DrupalBootLevels::FULL));
             $choices = array_combine(array_keys($types), array_keys($types));
-            $type = $this->io()->choice(dt("Choose a cache to clear"), $choices, 'render');
+            $type = $this->io()->select(dt("Choose a cache to clear"), $choices, 'render', scroll: 20);
             $input->setArgument('type', $type);
         }
 
         if ($input->getArgument('type') == 'bin' && empty($input->getArgument('args'))) {
             $bins = Cache::getBins();
             $choices = array_combine(array_keys($bins), array_keys($bins));
-            $chosen = $this->io()->choice(dt("Choose a cache to clear"), $choices, 'default');
+            $chosen = $this->io()->select(dt("Choose a cache to clear"), $choices, 'default', scroll: 20);
             $input->setArgument('args', [$chosen]);
         }
     }

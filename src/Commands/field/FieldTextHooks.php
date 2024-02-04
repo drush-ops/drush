@@ -123,11 +123,6 @@ class FieldTextHooks extends DrushCommands
             $choices[$format->id()] = $format->label();
         }
 
-        $question = (new ChoiceQuestion('Allowed formats', $choices, '_none'))
-            ->setMultiselect(true);
-
-        return array_filter(
-            $this->io()->askQuestion($question)
-        );
+        return $this->io()->multiselect('Allowed formats', $choices, ['_none']);
     }
 }

@@ -479,7 +479,7 @@ final class ConfigCommands extends DrushCommands implements StdinAwareInterface,
     {
         if (empty($input->getArgument('config_name'))) {
             $config_names = $this->getConfigFactory()->listAll();
-            $choice = $this->io()->choice('Choose a configuration', array_combine($config_names, $config_names));
+            $choice = $this->io()->suggest('Choose a configuration', array_combine($config_names, $config_names), scroll: 200, required: true);
             $input->setArgument('config_name', $choice);
         }
     }
