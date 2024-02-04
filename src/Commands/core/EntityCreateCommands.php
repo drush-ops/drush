@@ -139,7 +139,7 @@ final class EntityCreateCommands extends DrushCommands
         // Build field names and default value.
         foreach ($instances as $field_name => $instance) {
             $comment = [];
-            if (!$this->showfield($instance)) {
+            if (!$this->showField($instance)) {
                 continue;
             }
             $cardinality = $instance->getFieldStorageDefinition()->getCardinality();
