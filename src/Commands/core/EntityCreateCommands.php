@@ -181,7 +181,7 @@ final class EntityCreateCommands extends DrushCommands
      * @param FieldDefinitionInterface $instance
      * @return bool
      */
-    private function showfield(FieldDefinitionInterface $instance): bool
+    private function showField(FieldDefinitionInterface $instance): bool
     {
         if ($instance->isReadOnly()) {
             return false;
