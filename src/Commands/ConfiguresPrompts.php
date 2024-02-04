@@ -6,6 +6,8 @@
 
 namespace Drush\Commands;
 
+use Drush\Exceptions\UserAbortException;
+use Drush\Runtime\Runtime;
 use Laravel\Prompts\ConfirmPrompt;
 use Laravel\Prompts\MultiSearchPrompt;
 use Laravel\Prompts\MultiSelectPrompt;
@@ -30,7 +32,10 @@ trait ConfiguresPrompts
     {
         Prompt::setOutput($this->output);
 
-        Prompt::cancelUsing(fn() => false);
+        Prompt::cancelUsing(function () {
+            Runtime::setCompleted();
+            exit(1);
+        });
 
         Prompt::interactive(($input->isInteractive() && defined('STDIN') && stream_isatty(STDIN)) || $this->runningUnitTests());
 
