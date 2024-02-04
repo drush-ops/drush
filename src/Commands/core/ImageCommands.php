@@ -48,7 +48,7 @@ final class ImageCommands extends DrushCommands
             $styles_all = $styles;
             array_unshift($styles_all, 'all');
             $choices = array_combine($styles_all, $styles_all);
-            $style_names = $this->io()->choice(dt("Choose a style to flush"), $choices, 'all');
+            $style_names = $this->io()->select(dt("Choose a style to flush"), $choices, 'all', scroll: 20);
             if ($style_names == 'all') {
                 $style_names = implode(',', $styles);
             }

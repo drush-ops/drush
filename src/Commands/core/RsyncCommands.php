@@ -55,6 +55,7 @@ final class RsyncCommands extends DrushCommands implements SiteAliasManagerAware
     #[CLI\OptionsetSsh]
     #[CLI\Usage(name: 'drush rsync @dev @stage', description: 'Rsync Drupal root from Drush alias dev to the alias stage.')]
     #[CLI\Usage(name: 'drush rsync ./ @stage:%files/img', description: 'Rsync all files in the current directory to the <info>img</info>directory in the file storage folder on the Drush alias stage.')]
+    #[CLI\Usage(name: 'drush rsync @live:%private @stage:%private', description: 'Rsync private files from live to stage.')]
     #[CLI\Usage(name: 'drush rsync @dev @stage -- --exclude=*.sql --delete', description: 'Rsync Drupal root from the Drush alias dev to the alias stage, excluding all .sql files and delete all files on the destination that are no longer on the source.')]
     #[CLI\Usage(name: 'drush rsync @dev @stage --ssh-options="-o StrictHostKeyChecking=no" -- --delete', description: 'Customize how rsync connects with remote host via SSH. rsync options like --delete are placed after a --.')]
     #[CLI\Topics(topics: [DocsCommands::ALIASES])]

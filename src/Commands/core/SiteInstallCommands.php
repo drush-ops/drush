@@ -21,6 +21,7 @@ use Drush\Exec\ExecTrait;
 use Drush\Sql\SqlBase;
 use Drush\Utils\StringUtils;
 use Psr\Container\ContainerInterface as DrushContainer;
+use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Filesystem\Path;
 use Drush\Boot\BootstrapManager;
 use Consolidation\SiteAlias\SiteAliasManager;
@@ -278,12 +279,12 @@ final class SiteInstallCommands extends DrushCommands
             // TODO: we should only 'ask' in hook interact, never in hook validate
             if ($commandData->input()->getOption('db-url') == '') {
                 // Prompt for the db-url data if it was not provided via --db-url.
-                $database = $this->io()->ask('Database name', 'drupal');
-                $driver = $this->io()->ask('Database driver', 'mysql');
-                $username = $this->io()->ask('Database username', 'drupal');
-                $password = $this->io()->ask('Database password', 'drupal');
-                $host = $this->io()->ask('Database host', '127.0.0.1');
-                $port = $this->io()->ask('Database port', '3306');
+                $database = $this->io()->text('Database name', default: 'drupal');
+                $driver = $this->io()->text('Database driver', default: 'mysql');
+                $username = $this->io()->text('Database username', default: 'drupal');
+                $password = $this->io()->text('Database password', default: 'drupal');
+                $host = $this->io()->text('Database host', default: '127.0.0.1');
+                $port = $this->io()->text('Database port', default: '3306');
                 $db_url = "$driver://$username:$password@$host:$port/$database";
                 $commandData->input()->setOption('db-url', $db_url);
 
@@ -353,7 +354,8 @@ final class SiteInstallCommands extends DrushCommands
         }
 
         if ($msg) {
-            $this->io()->text(dt('You are about to:'));
+            // Awkwardly use the text() method from parent because DrushStyle uses it for a prompt.
+            (new SymfonyStyle($this->input, $this->output))->text(dt('You are about to:'));
             $this->io()->listing($msg);
         }
 

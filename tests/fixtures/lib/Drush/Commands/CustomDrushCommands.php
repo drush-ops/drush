@@ -14,6 +14,6 @@ class CustomDrushCommands extends DrushCommands
      */
     public function customCommand(): void
     {
-        $this->io()->text('Hello world!');
+        $this->io()->note('Hello world!');
     }
 }

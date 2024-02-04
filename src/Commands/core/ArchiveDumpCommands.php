@@ -64,7 +64,7 @@ final class ArchiveDumpCommands extends DrushCommands
      */
     #[CLI\Command(name: self::DUMP, aliases: ['ard'])]
     #[CLI\ValidatePhpExtensions(extensions: ['Phar'])]
-    #[CLI\Option(name: 'destination', description: 'The full path and filename in which the archive should be stored. If omitted, it will be saved to the drush-backups directory.')]
+    #[CLI\Option(name: 'destination', description: 'The full path and filename in which the archive should be stored. Any relative path will be calculated from Drupal root (usually <info>web</info> for drupal/recommended-project projects). If omitted, it will be saved to the configured temp directory.')]
     #[CLI\Option(name: 'overwrite', description: 'Overwrite destination file if exists.')]
     #[CLI\Option(name: 'code', description: 'Archive codebase.')]
     #[CLI\Option(name: 'exclude-code-paths', description: 'Comma-separated list of paths (or regular expressions matching paths) to exclude from the code archive.')]
@@ -200,7 +200,7 @@ final class ArchiveDumpCommands extends DrushCommands
         );
         $this->filesystem->rename($archivePath, $options['destination']);
 
-        return $options['destination'];
+        return realpath($options['destination']);
     }
 
     /**

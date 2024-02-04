@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Drush\Commands;
 
+use Consolidation\AnnotatedCommand\AnnotationData;
 use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\AnnotatedCommand\Hooks\HookManager;
 use Consolidation\SiteProcess\ProcessManagerAwareInterface;
@@ -35,6 +36,7 @@ abstract class DrushCommands implements IOAwareInterface, LoggerAwareInterface, 
     use IO {
         io as roboIo;
     }
+    use ConfiguresPrompts;
 
     // This is more readable.
     const REQ = InputOption::VALUE_REQUIRED;
@@ -55,7 +57,7 @@ abstract class DrushCommands implements IOAwareInterface, LoggerAwareInterface, 
     /**
      * Override Robo's IO function with our custom style.
      */
-    protected function io(): SymfonyStyle
+    protected function io(): DrushStyle
     {
         if (!$this->io) {
             // Specify our own Style class when needed.
@@ -104,6 +106,16 @@ abstract class DrushCommands implements IOAwareInterface, LoggerAwareInterface, 
     public function preHook(CommandData $commandData)
     {
         $this->commandData = $commandData;
+    }
+
+    /**
+     * Persist commandData for use in primary command callback. Used by 'topic' commands.
+     */
+    #[CLI\Hook(type: HookManager::INITIALIZE, target: '*')]
+    public function initHook($input, AnnotationData $annotationData)
+    {
+
+        $this->configurePrompts($input);
     }
 
     /**

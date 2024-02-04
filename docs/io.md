@@ -6,7 +6,7 @@
 ## The io() system 
 - If you need to ask the user a question, or print non-object content, use the io() system. 
 - A command callback gets access via `$this->io()`.
-- The main methods for gathering user input are `$this->io()->choice()` and `$this->io()->confirm()`.
+- The main methods for gathering user input are `$this->io()->select()` and `$this->io()->confirm()`. See [Laravel Prompts](https://laravel.com/docs/10.x/prompts) for other methods.
 - You may use any of the methods described in the [Symfony Style docs](https://symfony.com/doc/current/console/style.html).
 
 
