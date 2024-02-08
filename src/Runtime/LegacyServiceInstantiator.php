@@ -130,6 +130,10 @@ class LegacyServiceInstantiator
                 $info['arguments'] ?? [],
                 $info['calls'] ?? []
             );
+            if (empty($service)) {
+                $this->logger->debug("Could not instantiate {class} for '{service_name}' service", ['class' => $info['class'], 'service_name' => $serviceName]);
+                continue;
+            }
 
             $this->instantiatedDrushServices[$serviceName] = $service;
 
@@ -166,12 +170,15 @@ class LegacyServiceInstantiator
      * @param string[] $arguments Parameters to class constructor
      * @param array Method names and arguments to call after object is instantiated
      *
-     * @return object
-     *   Instantiated command handler from the service file
+     * @return object|null
+     *   Instantiated command handler from the service file or empty result
      */
     public function create($class, array $arguments, array $calls)
     {
         $instance = $this->instantiateObject($class, $arguments);
+        if (empty($instance)) {
+            return;
+        }
         foreach ($calls as $callInfo) {
             $this->call($instance, $callInfo[0], $callInfo[1]);
         }
@@ -189,7 +196,11 @@ class LegacyServiceInstantiator
      */
     public function instantiateObject($class, array $arguments)
     {
-        $refl = new \ReflectionClass($class);
+        try {
+            $refl = new \ReflectionClass($class);
+        } catch (\Throwable $e) {
+            return;
+        }
         return $refl->newInstanceArgs($this->resolveArguments($arguments));
     }
 
