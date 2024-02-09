@@ -53,14 +53,14 @@ final class EntityCreateCommands extends DrushCommands
     #[CLI\Command(name: self::CREATE, aliases: ['econ', 'entity-create'])]
     #[CLI\Argument(name: 'entity_type', description: 'An entity type name.')]
     #[CLI\Argument(name: 'bundle', description: 'A bundle name')]
-    #[CLI\Option(name: 'uid', description: 'The entity author ID. Also used by permission checks (e.g. content moderation')]
+    #[CLI\Option(name: 'uid', description: 'The entity author ID. Also used by permission checks (e.g. content moderation)')]
     #[CLI\Option(name: 'skip-fields', description: 'A list of field names that skip both data entry and validation. Delimit fields by comma')]
     #[CLI\Option(name: 'validate', description: 'Validate the entity before saving.')]
     #[CLI\OptionsetGetEditor]
     #[CLI\Usage(name: 'drush entity:create node article --validate=0', description: 'Create an article entity and skip validation entirely.')]
     #[CLI\Usage(name: 'drush entity:create node article --skip-fields=field_media_image,field_tags', description: 'Create an article omitting two fields.')]
     #[CLI\Usage(name: 'drush entity:create user user --editor=nano', description: 'Create a user using the Nano text editor.')]
-    #[CLI\Version(version: '13.0')]
+    #[CLI\Version(version: '12.5')]
     public function createEntity(string $entity_type, $bundle, array $options = ['validate' => true, 'uid' => self::REQ, 'skip-fields' => self::REQ]): string
     {
         $bundleKey = $this->entityTypeManager->getDefinition($entity_type)->getKey('bundle');
@@ -130,8 +130,6 @@ final class EntityCreateCommands extends DrushCommands
      * Build initial YAML including comments with authoring hints.
      *
      * @param \Drupal\Core\Field\FieldDefinitionInterface[] $instances
-     * @param ContentEntityInterface $entity
-     * @param array $options
      */
     private function getInitialYaml(array $instances, ContentEntityInterface $entity, array $options): string
     {
@@ -177,16 +175,13 @@ final class EntityCreateCommands extends DrushCommands
 
     /**
      * Show/hide a field when building initial YAML.
-     *
-     * @param FieldDefinitionInterface $instance
-     * @return bool
      */
     private function showField(FieldDefinitionInterface $instance): bool
     {
         if ($instance->isReadOnly()) {
             return false;
         }
-        // @todo Let users use strtotime() strings to enter timestamps. IMO adds clutter without enough benefit.
+        // @todo Let users use strtotime() strings to enter timestamps.
         if (in_array($instance->getType(), ['timestamp', 'image', 'layout_section', 'changed', 'created'])) {
             return false;
         }
