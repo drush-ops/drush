@@ -12,6 +12,7 @@ use Drush\Boot\DrupalBootLevels;
 use Drush\Commands\DrushCommands;
 use Drupal\Core\DrupalKernel;
 use Drupal\Core\Site\Settings;
+use Drush\Drupal\DrushLoggerServiceProvider;
 use Drush\Drush;
 use Psr\Container\ContainerInterface as DrushContainer;
 
@@ -61,6 +62,9 @@ final class CacheRebuildCommands extends DrushCommands
 
         $site_path = DrupalKernel::findSitePath($request);
         Settings::initialize($root, $site_path, $this->autoloader);
+
+        // Coax \Drupal\Core\DrupalKernel::discoverServiceProviders to add our logger.
+        $GLOBALS['conf']['container_service_providers'][] = DrushLoggerServiceProvider::class;
 
         // drupal_rebuild() calls drupal_flush_all_caches() itself, so we don't do it manually.
         drupal_rebuild($this->autoloader, $request);
