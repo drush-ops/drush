@@ -14,8 +14,6 @@ use Symfony\Component\Filesystem\Path;
  */
 class ModuleGeneratorTest extends CommandUnishTestCase
 {
-    use TestModuleHelperTrait;
-
     /**
      * Tests that generators provided by modules are registered.
      */
@@ -24,7 +22,6 @@ class ModuleGeneratorTest extends CommandUnishTestCase
         $this->setUpDrupal(1, true);
 
         $this->drush(PmCommands::INSTALL, ['woot']);
-        $this->drush(CacheCommands::CLEAR, ['drush']);
         $this->drush(GenerateCommands::GENERATE, ['list']);
         $this->assertStringContainsString('woot:example', $this->getOutput());
         $this->assertStringContainsString('Generates a woot.', $this->getOutput());
