@@ -1,0 +1,33 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Drupal\{{ machine_name }}\Drush\Generators;
+
+use DrupalCodeGenerator\Asset\AssetCollection as Assets;
+use DrupalCodeGenerator\Attribute\Generator;
+use DrupalCodeGenerator\Command\BaseGenerator;
+use DrupalCodeGenerator\GeneratorType;
+
+#[Generator(
+  name: '{{ generator.name }}',
+  description: '{{ generator.description }}',
+  templatePath: __DIR__,
+  type: GeneratorType::MODULE_COMPONENT,
+)]
+final class {{ class }} extends BaseGenerator {
+
+  /**
+   * {@inheritdoc}
+   */
+  protected function generate(array &$vars, Assets $assets): void {
+    $ir = $this->createInterviewer($vars);
+
+    $vars['machine_name'] = $ir->askMachineName();
+    $vars['name'] = $ir->askName();
+    $vars['class'] = $ir->askClass(default: '{machine_name|camelize}');
+
+    $assets->addFile('src/{class}.php', '{{ template_name }}.twig');
+  }
+
+}
