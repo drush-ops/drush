@@ -288,7 +288,7 @@ class ServiceManager
     }
 
     /**
-     * Instantiate objects given a lsit of classes. For each class, if it has
+     * Instantiate objects given a list of classes. For each class, if it has
      * a static `create` factory, use that to instantiate it, passing both the
      * Drupal and Drush DI containers. If there is no static factory, then
      * instantiate it via 'new $class'

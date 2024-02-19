@@ -11,10 +11,13 @@ Drush's generators reuse classes provided by the excellent [Drupal Code Generato
 ## Writing Custom Generators
 Drupal modules may supply their own Generators, just like they can supply Commands.
 
-See [Woot module](https://github.com/drush-ops/drush/tree/12.x/sut/modules/unish/woot/src/Drush/Generators), which Drush uses for testing. Specifically,
+Creating a new Drush generator is easy. Follow the steps below.
 
-  1. Write a class similar to [ExampleGenerator](https://github.com/drush-ops/drush/tree/12.x/sut/modules/unish/woot/src/Drush/Generators). Implement your custom logic in the generate() method. Typically this class is placed under the src/Drush/Generators directory.
-  2. Add a .twig file to the same directory. This template specifies what gets output from the generator.
+1. Run `drush generate drush:generator`.
+2. Drush will prompt for the machine name of the module that should _own_ the files. The module selected must already exist and be enabled. Use `drush generate module` to create a new module.
+3. Drush will then report that it created a generator (PHP class and twig file). Edit as needed.
+4. Similar to [ExampleGenerator](https://github.com/drush-ops/drush/tree/12.x/sut/modules/unish/woot/src/Drush/Generators), implement your custom logic in the generate() method.
+5. See the [dependency injection docs](dependency-injection.md) for interfaces you can implement to gain access to Drush config, Drush site aliases, etc. Also note the [create() method](dependency-injection.md#create-method) for injecting Drupal or Drush dependencies.
   
 ## Auto-discovered Generators (PSR4)
 

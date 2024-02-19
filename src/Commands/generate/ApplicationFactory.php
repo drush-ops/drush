@@ -8,6 +8,7 @@ use DrupalCodeGenerator\Application;
 use DrupalCodeGenerator\Event\GeneratorInfoAlter;
 use Drush\Commands\generate\Generators\Drush\DrushAliasFile;
 use Drush\Commands\generate\Generators\Drush\DrushCommandFile;
+use Drush\Commands\generate\Generators\Drush\DrushGenerator;
 use Drush\Runtime\ServiceManager;
 use Psr\Container\ContainerInterface as DrushContainer;
 use Psr\Log\LoggerInterface;
@@ -38,7 +39,7 @@ class ApplicationFactory
         $generators = $this->discover();
         $application->addCommands($generators);
         // Hide default Symfony console commands.
-        foreach (['help', 'list', 'completion', '_complete'] as $name) {
+        foreach (['help', 'list', 'completion', '_complete', 'generator'] as $name) {
             $application->get($name)->setHidden(true);
         }
         return $application;
@@ -57,12 +58,13 @@ class ApplicationFactory
         $module_generators = $this->serviceManager->instantiateServices($module_generator_classes, $this->drush_container, $this->container);
 
         $global_generator_classes = $this->serviceManager->discoverPsr4Generators();
-        $global_generator_classes = $this->filterCLassExists($global_generator_classes);
+        $global_generator_classes = $this->filterClassExists($global_generator_classes);
         $global_generators = $this->serviceManager->instantiateServices($global_generator_classes, $this->drush_container, $this->container);
 
         $generators = [
             new DrushCommandFile(),
             new DrushAliasFile(),
+            new DrushGenerator(),
             ...$global_generators,
             ...$module_generators,
         ];
@@ -75,7 +77,7 @@ class ApplicationFactory
      * @param array $classes
      * @return array
      */
-    public function filterCLassExists(array $classes): array
+    public function filterClassExists(array $classes): array
     {
         $exists = [];
         foreach ($classes as $class) {
