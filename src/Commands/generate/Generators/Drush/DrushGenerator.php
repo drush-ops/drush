@@ -20,7 +20,6 @@ use DrupalCodeGenerator\Validator\Required;
 )]
 class DrushGenerator extends BaseGenerator
 {
-
     protected function generate(array &$vars, Assets $assets): void
     {
         $ir = $this->createInterviewer($vars);
