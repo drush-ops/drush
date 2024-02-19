@@ -260,22 +260,23 @@ class ConfigImportCommands extends DrushCommands
                             if (isset($context['message'])) {
                                 $this->logger()->notice(str_replace('Synchronizing', 'Synchronized', (string)$context['message']));
                             }
-
-                            // Installing and uninstalling modules might trigger
-                            // batch operations. Let's process them here.
-                            // @see \Drush\Commands\pm\PmCommands::install()
-                            if ($step === 'processExtensions' && batch_get()) {
-                                drush_backend_batch_process();
-                            }
                         } while ($context['finished'] < 1);
                     }
                     // Clear the cache of the active config storage.
                     $this->getConfigCache()->deleteAll();
                 }
+
                 if ($config_importer->getErrors()) {
                     throw new ConfigException('Errors occurred during import');
-                } else {
-                    $this->logger()->success('The configuration was imported successfully.');
+                }
+
+                $this->logger()->success('The configuration was imported successfully.');
+
+                // Importing config might trigger batch operations (such as when installing and uninstalling modules).
+                // @see \Drush\Commands\pm\PmCommands::install()
+                if (batch_get()) {
+                    $this->logger()->info('Running batch operations...');
+                    drush_backend_batch_process();
                 }
             } catch (ConfigException $e) {
                 // Return a negative result for UI purposes. We do not differentiate
