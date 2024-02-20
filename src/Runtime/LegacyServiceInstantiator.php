@@ -45,20 +45,43 @@ class LegacyServiceInstantiator
      */
     public function loadServiceFiles(array $serviceFiles)
     {
+        $missingFiles = $parseFailded = [];
         foreach ($serviceFiles as $serviceFile) {
+            $isValida = TRUE;
             $serviceFileContents = '';
             $serviceFileData = [];
 
             if (file_exists($serviceFile)) {
                 $serviceFileContents = file_get_contents($serviceFile);
             }
+            else {
+                $missingFiles[] = $serviceFile;
+                $isValida = FALSE;
+            }
+
             if (!empty($serviceFileContents)) {
                 $serviceFileData = Yaml::parse($serviceFileContents);
+                if (!is_array($serviceFileData)) {
+                    $parseFailded[] = $serviceFile;
+                    $isValida = FALSE;
+                }
+            }
+
+            if ($isValida === FALSE) {
+                continue;
             }
 
             if ($this->isValidServiceData($serviceFile, $serviceFileData)) {
                 $this->instantiateServices($serviceFileData['services']);
             }
+        }
+        if (!empty($missingFiles) || !empty($parseFailded)) {
+            $result = [
+                'missing' => $missingFiles,
+                'failde' => $parseFailded,
+            ];
+            print_r($result);
+            throw new \Exception('isValidServiceData failed');
         }
     }
 
