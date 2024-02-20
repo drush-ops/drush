@@ -86,7 +86,7 @@ final class EntityCreateCommands extends DrushCommands
             }
             foreach (array_filter($values) as $name => $value) {
                 if ($value !== 'skip') {
-                    $entity->set($name, $value);
+                    $this->setValue($entity, $name, $value);
                 } else {
                     $skip_fields[] = $name;
                 }
@@ -181,8 +181,7 @@ final class EntityCreateCommands extends DrushCommands
         if ($instance->isReadOnly()) {
             return false;
         }
-        // @todo Let users use strtotime() strings to enter timestamps.
-        if (in_array($instance->getType(), ['timestamp', 'image', 'layout_section', 'changed', 'created'])) {
+        if (in_array($instance->getType(), ['image', 'layout_section', 'changed', 'created'])) {
             return false;
         }
         foreach (['revision', 'content_translation', 'default_langcode', 'revision', 'content_translation'] as $deny) {
@@ -217,6 +216,20 @@ final class EntityCreateCommands extends DrushCommands
             if (in_array($violation->getPropertyPath(), $skip_fields)) {
                 $violations->remove($key);
             }
+        }
+    }
+
+    protected function setValue(\Drupal\Core\Entity\EntityInterface $entity, int|string $name, mixed $value): void
+    {
+        switch ($entity->get($name)->getFieldDefinition()->getType()) {
+            case 'timestamp':
+                if (!is_numeric($value)) {
+                    $value = strtotime($value);
+                }
+                // Keep going.
+            default:
+                $entity->set($name, $value);
+                break;
         }
     }
 }
