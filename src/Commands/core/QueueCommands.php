@@ -25,8 +25,6 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 
 final class QueueCommands extends DrushCommands
 {
-    #[Deprecated('Use CLI/ValidateQueueName Attribute instead')]
-    const VALIDATE_QUEUE = 'validate-queue';
     const RUN = 'queue:run';
     const LIST = 'queue:list';
     const DELETE = 'queue:delete';
@@ -166,21 +164,6 @@ final class QueueCommands extends DrushCommands
         $queue = $this->getQueue($name);
         $queue->deleteQueue();
         $this->logger()->success(dt('All items in @name queue deleted.', ['@name' => $name]));
-    }
-
-    /**
-     * Validate that a queue exists.
-     */
-    #[Deprecated('Use CLI/ValidateQueueName Attribute instead')]
-    #[CLI\Hook(type: HookManager::ARGUMENT_VALIDATOR, selector: self::VALIDATE_QUEUE)]
-    public function validateQueueName(CommandData $commandData)
-    {
-        $arg_name = $commandData->annotationData()->get(self::VALIDATE_QUEUE, null);
-        $name = $commandData->input()->getArgument($arg_name);
-        if (!array_key_exists($name, self::getQueues())) {
-            $msg = dt('Queue not found: !name', ['!name' => $name]);
-            return new CommandError($msg);
-        }
     }
 
     public function getQueues(): array
