@@ -47,8 +47,9 @@ final class EntityCreateCommands extends DrushCommands
      * Create a content entity after prompting for field values.
      *
      * When entering field values, one may submit an incomplete document and any entity violations
-     * will be helpfully reported at the top of the document. enter the string 'skip' as
-     * a value in order to skip validation for that field.
+     * will be helpfully reported at the top of the document. enter <info>skip</info> as
+     * a value in order to skip validation for that field. Timestamp values may be expressed via any string
+     * recognized by strtotime()
      */
     #[CLI\Command(name: self::CREATE, aliases: ['econ', 'entity-create'])]
     #[CLI\Argument(name: 'entity_type', description: 'An entity type name.')]
