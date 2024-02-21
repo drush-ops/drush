@@ -10,15 +10,27 @@ use Drush\Boot\DrupalBootLevels;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Drush\Exec\ExecTrait;
-use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
-use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
 
-final class BrowseCommands extends DrushCommands implements SiteAliasManagerAwareInterface
+final class BrowseCommands extends DrushCommands
 {
     use ExecTrait;
-    use SiteAliasManagerAwareTrait;
 
     const BROWSE = 'browse';
+
+    public function __construct(
+        private $siteAliasManager
+    ) {
+        parent::__construct();
+    }
+
+    public static function create(ContainerInterface $container, DrushContainer $drush_container): self
+    {
+        $commandHandler = new static(
+            $drush_container->get('site.alias.manager'),
+        );
+
+        return $commandHandler;
+    }
 
     /**
      * Display a link to a given path or open link in a browser.
@@ -33,7 +45,7 @@ final class BrowseCommands extends DrushCommands implements SiteAliasManagerAwar
     #[CLI\HandleRemoteCommands]
     public function browse($path = '', array $options = ['browser' => true, 'redirect-port' => self::REQ])
     {
-        $aliasRecord = $this->siteAliasManager()->getSelf();
+        $aliasRecord = $this->siteAliasManager->getSelf();
         // Redispatch if called against a remote-host so a browser is started on the
         // the *local* machine.
         if ($this->processManager()->hasTransport($aliasRecord)) {
