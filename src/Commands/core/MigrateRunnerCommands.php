@@ -19,28 +19,17 @@ use Drupal\migrate\Plugin\MigrationInterface;
 use Drupal\migrate\Plugin\MigrationPluginManagerInterface;
 use Drupal\migrate\Plugin\RequirementsInterface;
 use Drush\Attributes as CLI;
-use Drush\Commands\core\DocsCommands;
 use Drush\Commands\DrushCommands;
-use Drush\Config\ConfigAwareTrait;
 use Drush\Drupal\Migrate;
 use Drush\Drupal\Migrate\MigrateExecutable;
 use Drush\Drupal\Migrate\MigrateMessage;
 use Drush\Drupal\Migrate\MigrateUtils;
 use Drush\Utils\StringUtils;
-use Robo\Contract\ConfigAwareInterface;
-use Symfony\Component\Filesystem\Path;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\Filesystem\Path;
 
-/**
- * Migrate runner commands.
- */
-class MigrateRunnerCommands extends DrushCommands implements ConfigAwareInterface
+class MigrateRunnerCommands extends DrushCommands
 {
-    use ConfigAwareTrait;
-
-    /**
-     * The key-value store service.
-     */
     protected KeyValueStoreInterface $keyValue;
     protected ?MigrationPluginManagerInterface $migrationPluginManager = null;
 
@@ -54,8 +43,6 @@ class MigrateRunnerCommands extends DrushCommands implements ConfigAwareInterfac
 
     public static function create(ContainerInterface $container): self
     {
-        $migrationPluginManager = null;
-
         $commandHandler = new static(
             $container->get('date.formatter'),
             $container->get('keyvalue')
@@ -362,7 +349,7 @@ class MigrateRunnerCommands extends DrushCommands implements ConfigAwareInterfac
         ];
 
         // Include the file providing a migrate_prepare_row hook implementation.
-        require_once Path::join($this->config->get('drush.base-dir'), 'src/Drupal/Migrate/migrate_runner.inc');
+        require_once Path::join($this->getConfig()->get('drush.base-dir'), 'src/Drupal/Migrate/migrate_runner.inc');
         // If the 'migrate_prepare_row' hook implementations are already cached,
         // make sure that system_migrate_prepare_row() is picked-up.
         \Drupal::moduleHandler()->resetImplementations();
