@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="robots" content="index, follow, all" />
-    <title>Drush\Commands\core\QueueCommands | Drush API %version%</title>
+    <title>Drush\Commands\core\EntityCreateCommands | Drush API %version%</title>
 
             <link rel="stylesheet" type="text/css" href="../../../css/bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="../../../css/bootstrap-theme.min.css">
@@ -19,7 +19,7 @@
 
     </head>
 
-    <body id="class" data-name="class:Drush_Commands_core_QueueCommands" data-root-path="../../../" data-search-index-url="../../../doctum-search.json">
+    <body id="class" data-name="class:Drush_Commands_core_EntityCreateCommands" data-root-path="../../../" data-search-index-url="../../../doctum-search.json">
             <div id="content">
         <div id="left-column">
                 <div id="control-panel">
@@ -75,18 +75,18 @@
                         <div class="namespace-breadcrumbs">
             <ol class="breadcrumb">
                 <li><span class="label label-default">class</span></li>
-                        <li><a href="../../../Drush.html">Drush</a></li><li class="backslash">\</li><li><a href="../../../Drush/Commands.html">Commands</a></li><li class="backslash">\</li><li><a href="../../../Drush/Commands/core.html">core</a></li><li class="backslash">\</li><li>QueueCommands</li>
+                        <li><a href="../../../Drush.html">Drush</a></li><li class="backslash">\</li><li><a href="../../../Drush/Commands.html">Commands</a></li><li class="backslash">\</li><li><a href="../../../Drush/Commands/core.html">core</a></li><li class="backslash">\</li><li>EntityCreateCommands</li>
             </ol>
         </div>
                 <div id="page-content">
     <div class="page-header">
-        <h1>QueueCommands    
+        <h1>EntityCreateCommands    
             </h1>
     </div>
 
     
     <p>final         class
-    <strong>QueueCommands</strong>        extends <a href="../../../Drush/Commands/DrushCommands.html"><abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a>        (<a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/QueueCommands.php">View source</a>)
+    <strong>EntityCreateCommands</strong>        extends <a href="../../../Drush/Commands/DrushCommands.html"><abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a>        (<a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/EntityCreateCommands.php">View source</a>)
 </p>
 
         
@@ -183,25 +183,7 @@
             </tr>
                     <tr>
                 <td>
-                                                                                                                        RUN
-                                    </td>
-                <td class="last">
-                    <p><em></em></p>
-                    <p></p>
-                </td>
-            </tr>
-                    <tr>
-                <td>
-                                                                                                                        LIST
-                                    </td>
-                <td class="last">
-                    <p><em></em></p>
-                    <p></p>
-                </td>
-            </tr>
-                    <tr>
-                <td>
-                                                                                                                        DELETE
+                                                                                                                        CREATE
                                     </td>
                 <td class="last">
                     <p><em></em></p>
@@ -223,33 +205,6 @@
                 <td class="last"></td>
                 <td><small>from&nbsp;<a href="../../../Drush/Commands/DrushCommands.html#property_commandData">
 <abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a></small></td>
-            </tr>
-                    <tr>
-                <td class="type" id="property_workerManager">
-                                        protected                                        <abbr title="Drupal\Core\Queue\QueueWorkerManagerInterface">QueueWorkerManagerInterface</abbr>
-                                                                                
-                                    </td>
-                <td>$workerManager</td>
-                <td class="last"></td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td class="type" id="property_queueService">
-                                        protected                                        
-                                                                                
-                                    </td>
-                <td>$queueService</td>
-                <td class="last"></td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td class="type" id="property_queues">
-                    static                    protected                                        array
-                                                                                
-                                    </td>
-                <td>$queues</td>
-                <td class="last"><p>Keep track of queue definitions.</p></td>
-                <td></td>
             </tr>
             </table>
 
@@ -354,7 +309,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>                </
                     
                 </div>
                 <div class="col-md-8">
-                    <a href="#method___construct">__construct</a>(<abbr title="Drupal\Core\Queue\QueueWorkerManagerInterface">QueueWorkerManagerInterface</abbr> $workerManager, <abbr title="Drupal\Core\Queue\QueueFactory">QueueFactory</abbr> $queueService)
+                    <a href="#method___construct">__construct</a>(<abbr title="Drupal\Core\Entity\EntityTypeManagerInterface">EntityTypeManagerInterface</abbr> $entityTypeManager, <abbr title="Drupal\Core\Entity\EntityFieldManagerInterface">EntityFieldManagerInterface</abbr> $entityFieldManager, <abbr title="Drupal\Core\Session\AccountSwitcherInterface">AccountSwitcherInterface</abbr> $accountSwitcher)
         
                                             <p class="no-description">No description</p>
                                     </div>
@@ -439,7 +394,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>                </
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    static&nbsp;<a href="../../../Drush/Commands/core/QueueCommands.html"><abbr title="Drush\Commands\core\QueueCommands">QueueCommands</abbr></a>
+                    static&nbsp;<a href="../../../Drush/Commands/core/EntityCreateCommands.html"><abbr title="Drush\Commands\core\EntityCreateCommands">EntityCreateCommands</abbr></a>
                 </div>
                 <div class="col-md-8">
                     <a href="#method_create">create</a>(<abbr title="Symfony\Component\DependencyInjection\ContainerInterface">ContainerInterface</abbr> $container)
@@ -450,24 +405,12 @@ DrushConfig as return type. Helps with IDE completion.</p></p>                </
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    <abbr title="Drupal\Core\Queue\QueueWorkerManagerInterface">QueueWorkerManagerInterface</abbr>
+                    string
                 </div>
                 <div class="col-md-8">
-                    <a href="#method_getWorkerManager">getWorkerManager</a>()
+                    <a href="#method_createEntity">createEntity</a>(string $entity_type, $bundle, array $options = [&#039;validate&#039; =&gt; true, &#039;uid&#039; =&gt; self::REQ, &#039;skip-fields&#039; =&gt; self::REQ])
         
-                                            <p class="no-description">No description</p>
-                                    </div>
-                <div class="col-md-2"></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    <abbr title="Drupal\Core\Queue\QueueFactory">QueueFactory</abbr>
-                </div>
-                <div class="col-md-8">
-                    <a href="#method_getQueueService">getQueueService</a>()
-        
-                                            <p class="no-description">No description</p>
-                                    </div>
+                                            <p><p>Create a content entity after prompting for field values.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -475,59 +418,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>                </
                     void
                 </div>
                 <div class="col-md-8">
-                    <a href="#method_run">run</a>(string $name, $options = [&#039;time-limit&#039; =&gt; self::REQ, &#039;items-limit&#039; =&gt; self::REQ, &#039;lease-time&#039; =&gt; self::REQ])
-        
-                                            <p><p>Run a specific queue by name.</p></p>                </div>
-                <div class="col-md-2"></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    <abbr title="Consolidation\OutputFormatters\StructuredData\RowsOfFields">RowsOfFields</abbr>
-                </div>
-                <div class="col-md-8">
-                    <a href="#method_qList">qList</a>($options = [&#039;format&#039; =&gt; &#039;table&#039;])
-        
-                                            <p><p>Returns a list of all defined queues.</p></p>                </div>
-                <div class="col-md-2"></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    void
-                </div>
-                <div class="col-md-8">
-                    <a href="#method_delete">delete</a>($name)
-        
-                                            <p><p>Delete all items in a specific queue.</p></p>                </div>
-                <div class="col-md-2"></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    array
-                </div>
-                <div class="col-md-8">
-                    <a href="#method_getQueues">getQueues</a>()
-        
-                                            <p class="no-description">No description</p>
-                                    </div>
-                <div class="col-md-2"></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    <abbr title="Drupal\Core\Queue\QueueInterface">QueueInterface</abbr>
-                </div>
-                <div class="col-md-8">
-                    <a href="#method_getQueue">getQueue</a>($name)
-        
-                                            <p class="no-description">No description</p>
-                                    </div>
-                <div class="col-md-2"></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    void
-                </div>
-                <div class="col-md-8">
-                    <a href="#method_queueComplete">queueComplete</a>(<abbr title="Symfony\Component\Console\Completion\CompletionInput">CompletionInput</abbr> $input, <abbr title="Symfony\Component\Console\Completion\CompletionSuggestions">CompletionSuggestions</abbr> $suggestions)
+                    <a href="#method_setValue">setValue</a>(<abbr title="Drupal\Core\Entity\EntityInterface">EntityInterface</abbr> $entity, <abbr title="Drush\Commands\core\int|string">int|string</abbr> $name, mixed $value)
         
                                             <p class="no-description">No description</p>
                                     </div>
@@ -898,9 +789,9 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method___construct">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/QueueCommands.php#L39">at line 39</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/EntityCreateCommands.php#L27">at line 27</a></div>
         <code>                    
-    <strong>__construct</strong>(<abbr title="Drupal\Core\Queue\QueueWorkerManagerInterface">QueueWorkerManagerInterface</abbr> $workerManager, <abbr title="Drupal\Core\Queue\QueueFactory">QueueFactory</abbr> $queueService)
+    <strong>__construct</strong>(<abbr title="Drupal\Core\Entity\EntityTypeManagerInterface">EntityTypeManagerInterface</abbr> $entityTypeManager, <abbr title="Drupal\Core\Entity\EntityFieldManagerInterface">EntityFieldManagerInterface</abbr> $entityFieldManager, <abbr title="Drupal\Core\Session\AccountSwitcherInterface">AccountSwitcherInterface</abbr> $accountSwitcher)
         </code>
     </h3>
     <div class="details">    
@@ -916,13 +807,18 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
 
                     <table class="table table-condensed">
                     <tr>
-                <td><abbr title="Drupal\Core\Queue\QueueWorkerManagerInterface">QueueWorkerManagerInterface</abbr></td>
-                <td>$workerManager</td>
+                <td><abbr title="Drupal\Core\Entity\EntityTypeManagerInterface">EntityTypeManagerInterface</abbr></td>
+                <td>$entityTypeManager</td>
                 <td></td>
             </tr>
                     <tr>
-                <td><abbr title="Drupal\Core\Queue\QueueFactory">QueueFactory</abbr></td>
-                <td>$queueService</td>
+                <td><abbr title="Drupal\Core\Entity\EntityFieldManagerInterface">EntityFieldManagerInterface</abbr></td>
+                <td>$entityFieldManager</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><abbr title="Drupal\Core\Session\AccountSwitcherInterface">AccountSwitcherInterface</abbr></td>
+                <td>$accountSwitcher</td>
                 <td></td>
             </tr>
             </table>
@@ -1197,8 +1093,8 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_create">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/QueueCommands.php#L45">at line 45</a></div>
-        <code>        static            <a href="../../../Drush/Commands/core/QueueCommands.html"><abbr title="Drush\Commands\core\QueueCommands">QueueCommands</abbr></a>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/EntityCreateCommands.php#L35">at line 35</a></div>
+        <code>        static            <a href="../../../Drush/Commands/core/EntityCreateCommands.html"><abbr title="Drush\Commands\core\EntityCreateCommands">EntityCreateCommands</abbr></a>
     <strong>create</strong>(<abbr title="Symfony\Component\DependencyInjection\ContainerInterface">ContainerInterface</abbr> $container)
         </code>
     </h3>
@@ -1226,7 +1122,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
 
                     <table class="table table-condensed">
         <tr>
-            <td><a href="../../../Drush/Commands/core/QueueCommands.html"><abbr title="Drush\Commands\core\QueueCommands">QueueCommands</abbr></a></td>
+            <td><a href="../../../Drush/Commands/core/EntityCreateCommands.html"><abbr title="Drush\Commands\core\EntityCreateCommands">EntityCreateCommands</abbr></a></td>
             <td></td>
         </tr>
     </table>
@@ -1239,10 +1135,10 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
 
             </div>
                     <div class="method-item">
-                    <h3 id="method_getWorkerManager">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/QueueCommands.php#L55">at line 55</a></div>
-        <code>                    <abbr title="Drupal\Core\Queue\QueueWorkerManagerInterface">QueueWorkerManagerInterface</abbr>
-    <strong>getWorkerManager</strong>()
+                    <h3 id="method_createEntity">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/EntityCreateCommands.php#L54">at line 54</a></div>
+        <code>                    string
+    <strong>createEntity</strong>(string $entity_type, $bundle, array $options = [&#039;validate&#039; =&gt; true, &#039;uid&#039; =&gt; self::REQ, &#039;skip-fields&#039; =&gt; self::REQ])
         </code>
     </h3>
     <div class="details">    
@@ -1250,73 +1146,10 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             
 
         <div class="method-description">
-                            <p class="no-description">No description</p>
-                    
-        </div>
-        <div class="tags">
-            
-                            <h4>Return Value</h4>
-
-                    <table class="table table-condensed">
-        <tr>
-            <td><abbr title="Drupal\Core\Queue\QueueWorkerManagerInterface">QueueWorkerManagerInterface</abbr></td>
-            <td></td>
-        </tr>
-    </table>
-
-            
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
-                    <h3 id="method_getQueueService">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/QueueCommands.php#L60">at line 60</a></div>
-        <code>                    <abbr title="Drupal\Core\Queue\QueueFactory">QueueFactory</abbr>
-    <strong>getQueueService</strong>()
-        </code>
-    </h3>
-    <div class="details">    
-    
-            
-
-        <div class="method-description">
-                            <p class="no-description">No description</p>
-                    
-        </div>
-        <div class="tags">
-            
-                            <h4>Return Value</h4>
-
-                    <table class="table table-condensed">
-        <tr>
-            <td><abbr title="Drupal\Core\Queue\QueueFactory">QueueFactory</abbr></td>
-            <td></td>
-        </tr>
-    </table>
-
-            
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
-                    <h3 id="method_run">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/QueueCommands.php#L75">at line 75</a></div>
-        <code>                    void
-    <strong>run</strong>(string $name, $options = [&#039;time-limit&#039; =&gt; self::REQ, &#039;items-limit&#039; =&gt; self::REQ, &#039;lease-time&#039; =&gt; self::REQ])
-        </code>
-    </h3>
-    <div class="details">    
-    
-            
-
-        <div class="method-description">
-                            <p><p>Run a specific queue by name.</p></p>                        
+                            <p><p>Create a content entity after prompting for field values.</p></p>                <p><p>When entering field values, one may submit an incomplete document and any entity violations
+will be helpfully reported at the top of the document. enter <info>skip</info> as
+a value in order to skip validation for that field. Timestamp values may be expressed via any string
+recognized by strtotime()</p></p>        
         </div>
         <div class="tags">
                             <h4>Parameters</h4>
@@ -1324,11 +1157,16 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
                     <table class="table table-condensed">
                     <tr>
                 <td>string</td>
-                <td>$name</td>
+                <td>$entity_type</td>
                 <td></td>
             </tr>
                     <tr>
                 <td></td>
+                <td>$bundle</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>array</td>
                 <td>$options</td>
                 <td></td>
             </tr>
@@ -1339,7 +1177,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
 
                     <table class="table table-condensed">
         <tr>
-            <td>void</td>
+            <td>string</td>
             <td></td>
         </tr>
     </table>
@@ -1352,10 +1190,10 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
 
             </div>
                     <div class="method-item">
-                    <h3 id="method_qList">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/QueueCommands.php#L138">at line 138</a></div>
-        <code>                    <abbr title="Consolidation\OutputFormatters\StructuredData\RowsOfFields">RowsOfFields</abbr>
-    <strong>qList</strong>($options = [&#039;format&#039; =&gt; &#039;table&#039;])
+                    <h3 id="method_setValue">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/EntityCreateCommands.php#L223">at line 223</a></div>
+        <code>            protected        void
+    <strong>setValue</strong>(<abbr title="Drupal\Core\Entity\EntityInterface">EntityInterface</abbr> $entity, <abbr title="Drush\Commands\core\int|string">int|string</abbr> $name, mixed $value)
         </code>
     </h3>
     <div class="details">    
@@ -1363,181 +1201,26 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             
 
         <div class="method-description">
-                            <p><p>Returns a list of all defined queues.</p></p>                        
+                            <p class="no-description">No description</p>
+                    
         </div>
         <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
-                <td></td>
-                <td>$options</td>
+                <td><abbr title="Drupal\Core\Entity\EntityInterface">EntityInterface</abbr></td>
+                <td>$entity</td>
                 <td></td>
             </tr>
-            </table>
-
-            
-                            <h4>Return Value</h4>
-
-                    <table class="table table-condensed">
-        <tr>
-            <td><abbr title="Consolidation\OutputFormatters\StructuredData\RowsOfFields">RowsOfFields</abbr></td>
-            <td></td>
-        </tr>
-    </table>
-
-            
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
-                    <h3 id="method_delete">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/QueueCommands.php#L158">at line 158</a></div>
-        <code>                    void
-    <strong>delete</strong>($name)
-        </code>
-    </h3>
-    <div class="details">    
-    
-            
-
-        <div class="method-description">
-                            <p><p>Delete all items in a specific queue.</p></p>                        
-        </div>
-        <div class="tags">
-                            <h4>Parameters</h4>
-
-                    <table class="table table-condensed">
                     <tr>
-                <td></td>
+                <td><abbr title="Drush\Commands\core\int|string">int|string</abbr></td>
                 <td>$name</td>
                 <td></td>
             </tr>
-            </table>
-
-            
-                            <h4>Return Value</h4>
-
-                    <table class="table table-condensed">
-        <tr>
-            <td>void</td>
-            <td></td>
-        </tr>
-    </table>
-
-            
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
-                    <h3 id="method_getQueues">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/QueueCommands.php#L169">at line 169</a></div>
-        <code>                    array
-    <strong>getQueues</strong>()
-        </code>
-    </h3>
-    <div class="details">    
-    
-            
-
-        <div class="method-description">
-                            <p class="no-description">No description</p>
-                    
-        </div>
-        <div class="tags">
-            
-                            <h4>Return Value</h4>
-
-                    <table class="table table-condensed">
-        <tr>
-            <td>array</td>
-            <td></td>
-        </tr>
-    </table>
-
-            
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
-                    <h3 id="method_getQueue">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/QueueCommands.php#L180">at line 180</a></div>
-        <code>                    <abbr title="Drupal\Core\Queue\QueueInterface">QueueInterface</abbr>
-    <strong>getQueue</strong>($name)
-        </code>
-    </h3>
-    <div class="details">    
-    
-            
-
-        <div class="method-description">
-                            <p class="no-description">No description</p>
-                    
-        </div>
-        <div class="tags">
-                            <h4>Parameters</h4>
-
-                    <table class="table table-condensed">
                     <tr>
-                <td></td>
-                <td>$name</td>
-                <td></td>
-            </tr>
-            </table>
-
-            
-                            <h4>Return Value</h4>
-
-                    <table class="table table-condensed">
-        <tr>
-            <td><abbr title="Drupal\Core\Queue\QueueInterface">QueueInterface</abbr></td>
-            <td></td>
-        </tr>
-    </table>
-
-            
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
-                    <h3 id="method_queueComplete">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/QueueCommands.php#L185">at line 185</a></div>
-        <code>                    void
-    <strong>queueComplete</strong>(<abbr title="Symfony\Component\Console\Completion\CompletionInput">CompletionInput</abbr> $input, <abbr title="Symfony\Component\Console\Completion\CompletionSuggestions">CompletionSuggestions</abbr> $suggestions)
-        </code>
-    </h3>
-    <div class="details">    
-    
-            
-
-        <div class="method-description">
-                            <p class="no-description">No description</p>
-                    
-        </div>
-        <div class="tags">
-                            <h4>Parameters</h4>
-
-                    <table class="table table-condensed">
-                    <tr>
-                <td><abbr title="Symfony\Component\Console\Completion\CompletionInput">CompletionInput</abbr></td>
-                <td>$input</td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td><abbr title="Symfony\Component\Console\Completion\CompletionSuggestions">CompletionSuggestions</abbr></td>
-                <td>$suggestions</td>
+                <td>mixed</td>
+                <td>$value</td>
                 <td></td>
             </tr>
             </table>
