@@ -4,32 +4,32 @@ declare(strict_types=1);
 
 namespace Drush\Commands\core;
 
-use Consolidation\SiteAlias\SiteAliasManager;
-use Consolidation\SiteProcess\ProcessBase;
+use Consolidation\SiteAlias\HostPath;
 use Consolidation\SiteAlias\SiteAlias;
-use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
-use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
+use Consolidation\SiteAlias\SiteAliasManager;
+use Consolidation\SiteAlias\SiteAliasManagerInterface;
+use Consolidation\SiteProcess\ProcessBase;
 use Drupal;
+use Drupal\Component\DependencyInjection\ContainerInterface;
 use DrupalFinder\DrupalFinder;
 use Drush\Attributes as CLI;
 use Drush\Backend\BackendPathEvaluator;
+use Drush\Boot\BootstrapManager;
 use Drush\Boot\DrupalBootLevels;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Drush\Exceptions\UserAbortException;
-use Consolidation\SiteAlias\HostPath;
 use Drush\Sql\SqlBase;
 use Drush\Utils\FsUtils;
 use Exception;
+use League\Container\Container as DrushContainer;
 use PharData;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Path;
 use Throwable;
 
-final class ArchiveRestoreCommands extends DrushCommands implements SiteAliasManagerAwareInterface
+final class ArchiveRestoreCommands extends DrushCommands
 {
-    use SiteAliasManagerAwareTrait;
-
     const RESTORE = 'archive:restore';
     private Filesystem $filesystem;
     private ?string $destinationPath = null;
@@ -43,6 +43,23 @@ final class ArchiveRestoreCommands extends DrushCommands implements SiteAliasMan
     private const SITE_SUBDIR = 'default';
 
     private const TEMP_DIR_NAME = 'uncompressed';
+
+    public function __construct(
+        private readonly BootstrapManager $bootstrapManager,
+        private readonly SiteAliasManagerInterface $siteAliasManager
+    ) {
+        parent::__construct();
+    }
+
+    public static function createEarly(ContainerInterface $container, DrushContainer $drush_container): self
+    {
+        $commandHandler = new static(
+            $drush_container->get('bootstrap.manager'),
+            $drush_container->get('site.alias.manager'),
+        );
+
+        return $commandHandler;
+    }
 
     /**
      * Restore (import) your code, files, and database.
@@ -159,8 +176,7 @@ final class ArchiveRestoreCommands extends DrushCommands implements SiteAliasMan
 
         // If the destination path was not specified, extract over the current site
         if (!$this->destinationPath) {
-            $bootstrapManager = Drush::bootstrapManager();
-            $this->destinationPath = $bootstrapManager->getComposerRoot();
+            $this->destinationPath = $this->bootstrapManager->getComposerRoot();
         }
 
         // If there isn't a current site either, then extract to the cwd
@@ -347,11 +363,10 @@ final class ArchiveRestoreCommands extends DrushCommands implements SiteAliasMan
         }
 
         // If we are extracting over an existing site, query Drupal to get the files path
-        $bootstrapManager = Drush::bootstrapManager();
-        $path = $bootstrapManager->getComposerRoot();
+        $path = $this->bootstrapManager->getComposerRoot();
         if (!empty($path)) {
             try {
-                $bootstrapManager->doBootstrap(DrupalBootLevels::FULL);
+                $this->bootstrapManager->doBootstrap(DrupalBootLevels::FULL);
                 return Drupal::service('file_system')->realpath('public://');
             } catch (Throwable $t) {
                 $this->logger()->warning('Could not bootstrap Drupal site at destination to determine file path');
@@ -412,12 +427,10 @@ final class ArchiveRestoreCommands extends DrushCommands implements SiteAliasMan
     {
         $pathEvaluator = new BackendPathEvaluator();
         /** @var SiteAliasManager $manager */
-        $manager = $this->siteAliasManager();
-
         if (null !== $site) {
             $site .= ':%root';
         }
-        $evaluatedPath = HostPath::create($manager, $site);
+        $evaluatedPath = HostPath::create($this->siteAliasManager, $site);
         $pathEvaluator->evaluate($evaluatedPath);
 
         return $evaluatedPath->getSiteAlias();
@@ -542,8 +555,7 @@ final class ArchiveRestoreCommands extends DrushCommands implements SiteAliasMan
         } elseif ($options['destination-path']) {
             throw new Exception('Database connection settings are required if --destination-path option is provided');
         } else {
-            $bootstrapManager = Drush::bootstrapManager();
-            $bootstrapManager->doBootstrap(DrupalBootLevels::CONFIGURATION);
+            $this->bootstrapManager->doBootstrap(DrupalBootLevels::CONFIGURATION);
         }
 
         try {

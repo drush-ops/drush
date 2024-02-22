@@ -4,18 +4,32 @@ declare(strict_types=1);
 
 namespace Drush\Commands\core;
 
+use Consolidation\SiteAlias\SiteAliasManagerInterface;
 use Consolidation\SiteProcess\Util\Shell;
 use Consolidation\SiteProcess\Util\Tty;
+use Drupal\Component\DependencyInjection\ContainerInterface;
 use Drush\Attributes as CLI;
 use Drush\Commands\DrushCommands;
-use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
-use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
+use League\Container\Container as DrushContainer;
 
-final class SshCommands extends DrushCommands implements SiteAliasManagerAwareInterface
+final class SshCommands extends DrushCommands
 {
-    use SiteAliasManagerAwareTrait;
-
     const SSH = 'site:ssh';
+
+    public function __construct(
+        private readonly SiteAliasManagerInterface $siteAliasManager
+    ) {
+        parent::__construct();
+    }
+
+    public static function create(ContainerInterface $container, DrushContainer $drush_container): self
+    {
+        $commandHandler = new static(
+            $drush_container->get('site.alias.manager'),
+        );
+
+        return $commandHandler;
+    }
 
     /**
      * Connect to a webserver via SSH, and optionally run a shell command.
@@ -32,7 +46,7 @@ final class SshCommands extends DrushCommands implements SiteAliasManagerAwareIn
     #[CLI\Topics(topics: [DocsCommands::ALIASES])]
     public function ssh(array $code, $options = ['cd' => self::REQ]): void
     {
-        $alias = $this->siteAliasManager()->getSelf();
+        $alias = $this->siteAliasManager->getSelf();
 
         if (empty($code)) {
             $code[] = 'bash';
