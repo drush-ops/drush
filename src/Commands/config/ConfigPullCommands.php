@@ -15,7 +15,6 @@ use Drush\Commands\core\RsyncCommands;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use League\Container\Container as DrushContainer;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 final class ConfigPullCommands extends DrushCommands
 {
@@ -27,7 +26,7 @@ final class ConfigPullCommands extends DrushCommands
         parent::__construct();
     }
 
-    public static function createEarly(ContainerInterface $container, DrushContainer $drush_container): self
+    public static function createEarly(DrushContainer $drush_container): self
     {
         $commandHandler = new static(
             $drush_container->get('site.alias.manager'),

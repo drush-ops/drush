@@ -10,14 +10,12 @@ use Consolidation\SiteAlias\SiteAliasManager;
 use Consolidation\SiteAlias\SiteAliasManagerInterface;
 use Consolidation\SiteProcess\ProcessBase;
 use Drupal;
-use Drupal\Component\DependencyInjection\ContainerInterface;
 use DrupalFinder\DrupalFinder;
 use Drush\Attributes as CLI;
 use Drush\Backend\BackendPathEvaluator;
 use Drush\Boot\BootstrapManager;
 use Drush\Boot\DrupalBootLevels;
 use Drush\Commands\DrushCommands;
-use Drush\Drush;
 use Drush\Exceptions\UserAbortException;
 use Drush\Sql\SqlBase;
 use Drush\Utils\FsUtils;
@@ -51,7 +49,7 @@ final class ArchiveRestoreCommands extends DrushCommands
         parent::__construct();
     }
 
-    public static function createEarly(ContainerInterface $container, DrushContainer $drush_container): self
+    public static function createEarly(DrushContainer $drush_container): self
     {
         $commandHandler = new static(
             $drush_container->get('bootstrap.manager'),

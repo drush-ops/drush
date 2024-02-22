@@ -7,7 +7,6 @@ namespace Drush\Commands\core;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Consolidation\OutputFormatters\StructuredData\UnstructuredListData;
 use Consolidation\SiteAlias\SiteAliasManagerInterface;
-use Drupal\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\Database\Database;
 use Drupal\Core\Utility\Error;
 use Drush\Attributes as CLI;
@@ -32,7 +31,7 @@ final class UpdateDBCommands extends DrushCommands
         parent::__construct();
     }
 
-    public static function create(ContainerInterface $container, DrushContainer $drush_container): self
+    public static function createEarly(DrushContainer $drush_container): self
     {
         $commandHandler = new static(
             $drush_container->get('site.alias.manager'),

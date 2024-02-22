@@ -5,7 +5,6 @@ namespace Drush\Commands;
 use Consolidation\AnnotatedCommand\AnnotationData;
 use Consolidation\AnnotatedCommand\Hooks\HookManager;
 use Consolidation\SiteAlias\SiteAliasManagerInterface;
-use Drupal\Component\DependencyInjection\ContainerInterface;
 use Drush\Attributes as CLI;
 use League\Container\Container as DrushContainer;
 use Symfony\Component\Console\Input\InputInterface;
@@ -21,7 +20,7 @@ class SiteAliasAlterCommands extends DrushCommands
         parent::__construct();
     }
 
-    public static function createEarly(ContainerInterface $container, DrushContainer $drush_container): self
+    public static function createEarly(DrushContainer $drush_container): self
     {
         $commandHandler = new static(
             $drush_container->get('site.alias.manager'),

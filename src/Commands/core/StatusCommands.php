@@ -9,7 +9,6 @@ use Consolidation\AnnotatedCommand\Hooks\HookManager;
 use Consolidation\OutputFormatters\Options\FormatterOptions;
 use Consolidation\OutputFormatters\StructuredData\PropertyList;
 use Consolidation\SiteAlias\SiteAliasManagerInterface;
-use Drupal\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\Site\Settings;
 use Drupal\Core\StreamWrapper\PrivateStream;
 use Drupal\Core\StreamWrapper\PublicStream;
@@ -34,7 +33,7 @@ final class StatusCommands extends DrushCommands
         parent::__construct();
     }
 
-    public static function create(ContainerInterface $container, DrushContainer $drush_container): self
+    public static function createEarly(DrushContainer $drush_container): self
     {
         $commandHandler = new static(
             $drush_container->get('site.alias.manager'),

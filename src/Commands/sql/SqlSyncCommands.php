@@ -8,7 +8,6 @@ use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\AnnotatedCommand\Hooks\HookManager;
 use Consolidation\SiteAlias\SiteAlias;
 use Consolidation\SiteAlias\SiteAliasManagerInterface;
-use Drupal\Component\DependencyInjection\ContainerInterface;
 use Drush\Attributes as CLI;
 use Drush\Commands\core\DocsCommands;
 use Drush\Commands\core\RsyncCommands;
@@ -29,7 +28,7 @@ final class SqlSyncCommands extends DrushCommands
         parent::__construct();
     }
 
-    public static function create(ContainerInterface $container, DrushContainer $drush_container): self
+    public static function createEarly(DrushContainer $drush_container): self
     {
         $commandHandler = new static(
             $drush_container->get('site.alias.manager'),
