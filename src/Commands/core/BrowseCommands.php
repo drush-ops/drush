@@ -4,12 +4,15 @@ declare(strict_types=1);
 
 namespace Drush\Commands\core;
 
+use Consolidation\SiteAlias\SiteAliasManagerInterface;
 use Drupal\Core\Url;
 use Drush\Attributes as CLI;
 use Drush\Boot\DrupalBootLevels;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Drush\Exec\ExecTrait;
+use League\Container\Container as DrushContainer;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 final class BrowseCommands extends DrushCommands
 {
@@ -18,7 +21,7 @@ final class BrowseCommands extends DrushCommands
     const BROWSE = 'browse';
 
     public function __construct(
-        private $siteAliasManager
+        private SiteAliasManagerInterface $siteAliasManager
     ) {
         parent::__construct();
     }
