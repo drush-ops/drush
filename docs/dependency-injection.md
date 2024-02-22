@@ -9,7 +9,7 @@ create() method
 
 !!! tip
 
-    Drush 11 and prior required [dependency injection via a drush.services.yml file](https://www.drush.org/11.x/dependency-injection/#services-files). This approach is deprecated in Drush 12 and will be removed in Drush 13.
+    Drush 11 and prior required [dependency injection via a drush.services.yml file](https://www.drush.org/11.x/dependency-injection/#services-files). This approach is deprecated in Drush 12+ and will be removed in Drush 13.
 
 Drush command files can inject services by adding a create() method to the commandfile. See [creating commands](commands.md) for instructions on how to use the Drupal Code Generator to create a simple command file starter. A create() method and a constructor will look something like this:
 ```php
@@ -45,3 +45,10 @@ Note also that Drush commands packaged with Drupal modules are not discovered
 until after Drupal bootstraps, and therefore cannot use `createEarly()`. This
 mechanism is only usable by PSR-4 discovered commands packaged with Composer
 projects that are *not* Drupal modules.
+
+Inflection
+-----------------
+A command class may implement the following interfaces. When doing so, implement the corresponding trait to satisfy the interface.
+
+- [CustomEventAwareInterface](https://github.com/consolidation/annotated-command/blob/4.x/src/Events/CustomEventAwareInterface.php): Allows command files to [define and fire custom events](hooks.md) that other command files can hook. Example: [CacheCommands](https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/CacheCommands.php)
+- [StdinAwareInterface](https://github.com/consolidation/annotated-command/blob/4.x/src/Input/StdinAwareInterface.php): Read from standard input. This class contains facilities to redirect stdin to instead read from a file, e.g. in response to an option or argument value. Example: [CacheCommands](https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/CacheCommands.php)

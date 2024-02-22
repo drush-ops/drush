@@ -7,7 +7,6 @@ namespace Drush\Commands\core;
 use Consolidation\SiteAlias\SiteAliasManagerInterface;
 use Consolidation\SiteProcess\Util\Shell;
 use Consolidation\SiteProcess\Util\Tty;
-use Drupal\Component\DependencyInjection\ContainerInterface;
 use Drush\Attributes as CLI;
 use Drush\Commands\DrushCommands;
 use League\Container\Container as DrushContainer;
