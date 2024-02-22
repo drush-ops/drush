@@ -19,7 +19,6 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 
 final class ConfigPullCommands extends DrushCommands
 {
-
     const PULL = 'config:pull';
 
     public function __construct(

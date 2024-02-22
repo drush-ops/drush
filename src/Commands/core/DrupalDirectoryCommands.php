@@ -14,7 +14,6 @@ use League\Container\Container as DrushContainer;
 
 final class DrupalDirectoryCommands extends DrushCommands
 {
-
     const DIRECTORY = 'drupal:directory';
 
     protected BackendPathEvaluator $pathEvaluator;

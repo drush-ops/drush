@@ -25,7 +25,6 @@ use Symfony\Component\Yaml\Yaml;
 
 final class MkCommands extends DrushCommands
 {
-
     protected function __construct(
         private readonly ContainerInterface $container,
         private readonly DrushContainer $drush_container,
