@@ -11,8 +11,6 @@ use Drush\Boot\DrupalBootLevels;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Drush\Exec\ExecTrait;
-use League\Container\Container as DrushContainer;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Filesystem\Path;
 
 final class RunserverCommands extends DrushCommands
@@ -42,12 +40,11 @@ final class RunserverCommands extends DrushCommands
     #[CLI\Usage(name: 'drush rs :9000/admin', description: 'Start runserver on 127.0.0.1, port 9000, and open /admin in browser. Note that you need a colon when you specify port and path, but no IP.')]
     #[CLI\Usage(name: 'drush --quiet rs', description: 'Silence logging the printing of web requests to the console.')]
     #[CLI\Bootstrap(level: DrupalBootLevels::FULL)]
-    public function runserver($uri = null, $options = ['default-server' => self::REQ, 'browser' => true, 'dns' => false])
+    public function runserver($uri = null, $options = ['default-server' => self::REQ, 'browser' => true, 'dns' => false]): void
     {
-        // Determine active configuration.
         $uri = $this->uri($uri, $options);
         if (!$uri) {
-            return false;
+            throw new \RuntimeException('Unable to determine URI');
         }
 
         // Remove any leading slashes from the path, since that is what url() expects.
@@ -95,21 +92,20 @@ final class RunserverCommands extends DrushCommands
         $user_default = $this->parseUri($options['default-server']);
         $site_default = $this->parseUri($uri);
         $uri = $this->parseUri($uri);
-        if (is_array($uri)) {
-            // Populate defaults.
-            $uri = $uri + $user_default + $site_default + $drush_default;
-            if (ltrim($uri['path'], '/') == '-') {
-                // Allow a path of a single hyphen to clear a default path.
-                $uri['path'] = '';
-            }
-            // Determine and set the new URI.
-            $uri['addr'] = $uri['host'];
-            if ($options['dns']) {
-                if (ip2long($uri['host'])) {
-                    $uri['host'] = gethostbyaddr($uri['host']);
-                } else {
-                    $uri['addr'] = gethostbyname($uri['host']);
-                }
+
+        // Populate defaults.
+        $uri = $uri + $user_default + $site_default + $drush_default;
+        if (ltrim($uri['path'], '/') == '-') {
+            // Allow a path of a single hyphen to clear a default path.
+            $uri['path'] = '';
+        }
+        // Determine and set the new URI.
+        $uri['addr'] = $uri['host'];
+        if ($options['dns']) {
+            if (ip2long($uri['host'])) {
+                $uri['host'] = gethostbyaddr($uri['host']);
+            } else {
+                $uri['addr'] = gethostbyname($uri['host']);
             }
         }
         return $uri;
