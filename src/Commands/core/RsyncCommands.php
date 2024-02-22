@@ -6,23 +6,18 @@ namespace Drush\Commands\core;
 
 use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\AnnotatedCommand\Hooks\HookManager;
-use Consolidation\SiteProcess\ProcessBase;
+use Consolidation\SiteAlias\HostPath;
+use Consolidation\SiteAlias\SiteAliasManagerInterface;
 use Consolidation\SiteProcess\Util\Escape;
 use Drush\Attributes as CLI;
-use Drush\Commands\DrushCommands;
-use Drush\Drush;
-use Drush\Exceptions\UserAbortException;
-use Consolidation\SiteAlias\HostPath;
-use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
-use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
 use Drush\Backend\BackendPathEvaluator;
+use Drush\Commands\DrushCommands;
 use Drush\Config\ConfigLocator;
+use Drush\Exceptions\UserAbortException;
 use Symfony\Component\Console\Event\ConsoleCommandEvent;
 
-final class RsyncCommands extends DrushCommands implements SiteAliasManagerAwareInterface
+final class RsyncCommands extends DrushCommands
 {
-    use SiteAliasManagerAwareTrait;
-
     /**
      * These are arguments after the aliases and paths have been evaluated.
      * @see validate().
@@ -32,14 +27,24 @@ final class RsyncCommands extends DrushCommands implements SiteAliasManagerAware
     public $sourceEvaluatedPath;
     /** @var HostPath */
     public $targetEvaluatedPath;
-    /** @var BackendPathEvaluator */
-    protected $pathEvaluator;
+    protected BackendPathEvaluator $pathEvaluator;
 
-    public function __construct()
-    {
+    public function __construct(
+        private readonly SiteAliasManagerInterface $siteAliasManager
+    ) {
+        parent::__construct();
         // TODO: once the BackendInvoke service exists, inject it here
         // and use it to get the path evaluator
         $this->pathEvaluator = new BackendPathEvaluator();
+    }
+
+    public static function createEarly($drush_container): self
+    {
+        $commandHandler = new static(
+            $drush_container->get('site.alias.manager')
+        );
+
+        return $commandHandler;
     }
 
     /**
@@ -129,10 +134,8 @@ final class RsyncCommands extends DrushCommands implements SiteAliasManagerAware
         // context, that already has the options et. al. from the
         // site-selection alias ('drush @site rsync ...'), @self.
         $aliasConfigContext = $this->getConfig()->getContext(ConfigLocator::ALIAS_CONTEXT);
-        $manager = $this->siteAliasManager();
-
         $aliasName = $input->getArgument($parameterName);
-        $evaluatedPath = HostPath::create($manager, $aliasName);
+        $evaluatedPath = HostPath::create($this->siteAliasManager, $aliasName);
         $this->pathEvaluator->evaluate($evaluatedPath);
 
         $aliasRecord = $evaluatedPath->getSiteAlias();

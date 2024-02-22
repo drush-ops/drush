@@ -4,21 +4,36 @@ declare(strict_types=1);
 
 namespace Drush\Commands\core;
 
+use Consolidation\SiteAlias\SiteAliasManagerInterface;
 use Consolidation\SiteProcess\Util\Escape;
+use Drupal\Component\DependencyInjection\ContainerInterface;
 use Drush\Attributes as CLI;
 use Drush\Boot\DrupalBootLevels;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
-use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
-use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
 use Drush\Exec\ExecTrait;
+use League\Container\Container as DrushContainer;
 
-final class EditCommands extends DrushCommands implements SiteAliasManagerAwareInterface
+final class EditCommands extends DrushCommands
 {
-    use SiteAliasManagerAwareTrait;
     use ExecTrait;
 
     const EDIT = 'core:edit';
+
+    public function __construct(
+        private readonly SiteAliasManagerInterface $siteAliasManager
+    ) {
+        parent::__construct();
+    }
+
+    public static function create(ContainerInterface $container, DrushContainer $drush_container): self
+    {
+        $commandHandler = new static(
+            $drush_container->get('site.alias.manager'),
+        );
+
+        return $commandHandler;
+    }
 
     /**
      * Edit drush.yml, site alias, and Drupal settings.php files.
@@ -90,7 +105,7 @@ final class EditCommands extends DrushCommands implements SiteAliasManagerAwareI
             }
         }
 
-        if ($aliases = $this->siteAliasManager()->listAllFilePaths()) {
+        if ($aliases = $this->siteAliasManager->listAllFilePaths()) {
             sort($aliases);
             $aliases = array_combine($aliases, $aliases);
             if ($headers) {

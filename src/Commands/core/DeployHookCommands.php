@@ -4,29 +4,42 @@ declare(strict_types=1);
 
 namespace Drush\Commands\core;
 
-use Drush\Attributes as CLI;
-use Drush\Boot\DrupalBootLevels;
-use Drush\Commands\core\DocsCommands;
-use Drush\Log\SuccessInterface;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Consolidation\OutputFormatters\StructuredData\UnstructuredListData;
-use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
-use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
+use Consolidation\SiteAlias\SiteAliasManagerInterface;
+use Drupal\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\Update\UpdateRegistry;
 use Drupal\Core\Utility\Error;
+use Drush\Attributes as CLI;
+use Drush\Boot\DrupalBootLevels;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Drush\Exceptions\UserAbortException;
+use Drush\Log\SuccessInterface;
+use League\Container\Container as DrushContainer;
 use Psr\Log\LogLevel;
 
-final class DeployHookCommands extends DrushCommands implements SiteAliasManagerAwareInterface
+final class DeployHookCommands extends DrushCommands
 {
-    use SiteAliasManagerAwareTrait;
-
     const HOOK_STATUS = 'deploy:hook-status';
     const HOOK = 'deploy:hook';
     const BATCH_PROCESS = 'deploy:batch-process';
     const MARK_COMPLETE = 'deploy:mark-complete';
+
+    public function __construct(
+        private readonly SiteAliasManagerInterface $siteAliasManager
+    ) {
+        parent::__construct();
+    }
+
+    public static function create(ContainerInterface $container, DrushContainer $drush_container): self
+    {
+        $commandHandler = new static(
+            $drush_container->get('site.alias.manager'),
+        );
+
+        return $commandHandler;
+    }
 
     /**
      * Get the deploy hook update registry.
@@ -95,7 +108,7 @@ final class DeployHookCommands extends DrushCommands implements SiteAliasManager
             return self::EXIT_SUCCESS;
         }
 
-        $process = $this->processManager()->drush($this->siteAliasManager()->getSelf(), self::HOOK_STATUS);
+        $process = $this->processManager()->drush($this->siteAliasManager->getSelf(), self::HOOK_STATUS);
         $process->mustRun();
         $this->output()->writeln($process->getOutput());
 

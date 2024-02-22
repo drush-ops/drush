@@ -4,18 +4,18 @@ declare(strict_types=1);
 
 namespace Drush\Commands\config;
 
-use Consolidation\AnnotatedCommand\Hooks\HookManager;
-use Drupal\Core\Config\ConfigDirectoryNotDefinedException;
-use Drupal\Core\Config\ImportStorageTransformer;
-use Consolidation\AnnotatedCommand\CommandError;
 use Consolidation\AnnotatedCommand\CommandData;
+use Consolidation\AnnotatedCommand\CommandError;
+use Consolidation\AnnotatedCommand\Hooks\HookManager;
 use Consolidation\AnnotatedCommand\Input\StdinAwareInterface;
 use Consolidation\AnnotatedCommand\Input\StdinAwareTrait;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
-use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
+use Consolidation\SiteAlias\SiteAliasManagerInterface;
 use Consolidation\SiteProcess\Util\Escape;
+use Drupal\Core\Config\ConfigDirectoryNotDefinedException;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Config\FileStorage;
+use Drupal\Core\Config\ImportStorageTransformer;
 use Drupal\Core\Config\StorageComparer;
 use Drupal\Core\Config\StorageInterface;
 use Drupal\Core\Site\Settings;
@@ -23,23 +23,22 @@ use Drush\Attributes as CLI;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Drush\Exec\ExecTrait;
-use Drush\SiteAlias\SiteAliasManagerAwareInterface;
 use Drush\Utils\FsUtils;
 use Drush\Utils\StringUtils;
 use JetBrains\PhpStorm\Deprecated;
+use League\Container\Container;
 use Symfony\Component\Console\Completion\CompletionInput;
 use Symfony\Component\Console\Completion\CompletionSuggestions;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Filesystem\Path;
 use Symfony\Component\Yaml\Parser;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
-final class ConfigCommands extends DrushCommands implements StdinAwareInterface, SiteAliasManagerAwareInterface
+final class ConfigCommands extends DrushCommands implements StdinAwareInterface
 {
     use StdinAwareTrait;
     use ExecTrait;
-    use SiteAliasManagerAwareTrait;
 
     const INTERACT_CONFIG_NAME = 'interact-config-name';
     const VALIDATE_CONFIG_NAME = 'validate-config-name';
@@ -58,16 +57,17 @@ final class ConfigCommands extends DrushCommands implements StdinAwareInterface,
         return $this->configFactory;
     }
 
-    protected function __construct(protected ConfigFactoryInterface $configFactory, protected StorageInterface $configStorage)
+    protected function __construct(protected ConfigFactoryInterface $configFactory, protected StorageInterface $configStorage, protected SiteAliasManagerInterface $siteAliasManager)
     {
         parent::__construct();
     }
 
-    public static function create(ContainerInterface $container): self
+    public static function create(ContainerInterface $container, Container $drush_container): self
     {
         $commandHandler = new static(
             $container->get('config.factory'),
-            $container->get('config.storage')
+            $container->get('config.storage'),
+            $drush_container->get('site.alias.manager')
         );
 
         if ($container->has('config.storage.export')) {
@@ -242,7 +242,7 @@ final class ConfigCommands extends DrushCommands implements StdinAwareInterface,
         // Perform import operation if user did not immediately exit editor.
         if (!$options['bg']) {
             $redispatch_options = Drush::redispatchOptions() + ['strict' => 0, 'partial' => true, 'source' => $temp_dir];
-            $self = $this->siteAliasManager()->getSelf();
+            $self = $this->siteAliasManager->getSelf();
             $process = $this->processManager()->drush($self, ConfigImportCommands::IMPORT, [], $redispatch_options);
             $process->mustRun($process->showRealtime());
         }

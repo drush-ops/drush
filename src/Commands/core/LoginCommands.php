@@ -4,39 +4,34 @@ declare(strict_types=1);
 
 namespace Drush\Commands\core;
 
-use Drupal\Component\Datetime\TimeInterface;
-use Drupal\Core\Config\ConfigFactoryInterface;
-use Drupal\Core\Extension\ModuleHandlerInterface;
-use Drupal\Core\Language\LanguageManagerInterface;
-use Drupal\Core\State\StateInterface;
-use Drush\Attributes as CLI;
+use Consolidation\SiteAlias\SiteAliasManagerInterface;
+use Drupal\Core\Url;
 use Drupal\user\Entity\User;
+use Drush\Attributes as CLI;
 use Drush\Boot\BootstrapManager;
 use Drush\Boot\DrupalBootLevels;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Drush\Exec\ExecTrait;
-use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
-use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
-use Drupal\Core\Url;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
-final class LoginCommands extends DrushCommands implements SiteAliasManagerAwareInterface
+final class LoginCommands extends DrushCommands
 {
-    use SiteAliasManagerAwareTrait;
     use ExecTrait;
 
     const LOGIN = 'user:login';
 
-    public function __construct(private BootstrapManager $bootstrapManager)
-    {
+    public function __construct(
+        private readonly BootstrapManager $bootstrapManager,
+        private readonly SiteAliasManagerInterface $siteAliasManager
+    ) {
         parent::__construct();
     }
 
     public static function createEarly($drush_container): self
     {
         $commandHandler = new static(
-            $drush_container->get('bootstrap.manager')
+            $drush_container->get('bootstrap.manager'),
+            $drush_container->get('site.alias.manager')
         );
 
         return $commandHandler;
@@ -62,7 +57,7 @@ final class LoginCommands extends DrushCommands implements SiteAliasManagerAware
     {
         // Redispatch if called against a remote-host so a browser is started on the
         // the *local* machine.
-        $aliasRecord = $this->siteAliasManager()->getSelf();
+        $aliasRecord = $this->siteAliasManager->getSelf();
         if ($this->processManager()->hasTransport($aliasRecord)) {
             $process = $this->processManager()->drush($aliasRecord, self::LOGIN, [$path], Drush::redispatchOptions());
             $process->mustRun();

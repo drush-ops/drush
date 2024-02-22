@@ -5,21 +5,34 @@ declare(strict_types=1);
 namespace Drush\Commands\core;
 
 use Consolidation\SiteAlias\SiteAlias;
-use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
+use Consolidation\SiteAlias\SiteAliasManagerInterface;
 use Consolidation\SiteProcess\ProcessManager;
+use Drupal\Component\DependencyInjection\ContainerInterface;
 use Drush\Attributes as CLI;
-use Drush\Commands\DrushCommands;
-use Drush\Commands\config\ConfigImportCommands;
-use Drush\Commands\core\DeployHookCommands;
-use Drush\Drush;
-use Drush\SiteAlias\SiteAliasManagerAwareInterface;
 use Drush\Boot\DrupalBootLevels;
+use Drush\Commands\config\ConfigImportCommands;
+use Drush\Commands\DrushCommands;
+use Drush\Drush;
+use League\Container\Container as DrushContainer;
 
-final class DeployCommands extends DrushCommands implements SiteAliasManagerAwareInterface
+final class DeployCommands extends DrushCommands
 {
-    use SiteAliasManagerAwareTrait;
-
     const DEPLOY = 'deploy';
+
+    public function __construct(
+        private readonly SiteAliasManagerInterface $siteAliasManager
+    ) {
+        parent::__construct();
+    }
+
+    public static function create(ContainerInterface $container, DrushContainer $drush_container): self
+    {
+        $commandHandler = new static(
+            $drush_container->get('site.alias.manager'),
+        );
+
+        return $commandHandler;
+    }
 
     /**
      * Run several commands after performing a code deployment.
@@ -31,7 +44,7 @@ final class DeployCommands extends DrushCommands implements SiteAliasManagerAwar
     #[CLI\Bootstrap(level: DrupalBootLevels::FULL)]
     public function deploy(): void
     {
-        $self = $this->siteAliasManager()->getSelf();
+        $self = $this->siteAliasManager->getSelf();
         $redispatchOptions = Drush::redispatchOptions();
         $manager = $this->processManager();
 

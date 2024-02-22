@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 namespace Drush\Commands\core;
 
+use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\AnnotatedCommand\Hooks\HookManager;
+use Consolidation\OutputFormatters\Options\FormatterOptions;
 use Consolidation\OutputFormatters\StructuredData\PropertyList;
+use Consolidation\SiteAlias\SiteAliasManagerInterface;
 use Drupal\Core\Site\Settings;
 use Drupal\Core\StreamWrapper\PrivateStream;
 use Drupal\Core\StreamWrapper\PublicStream;
@@ -16,18 +19,28 @@ use Drush\Boot\DrupalBootLevels;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Drush\Sql\SqlBase;
-use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
-use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
-use Consolidation\OutputFormatters\Options\FormatterOptions;
-use Consolidation\AnnotatedCommand\CommandData;
 use Drush\Utils\StringUtils;
+use League\Container\Container as DrushContainer;
 use Symfony\Component\Filesystem\Path;
 
-final class StatusCommands extends DrushCommands implements SiteAliasManagerAwareInterface
+final class StatusCommands extends DrushCommands
 {
-    use SiteAliasManagerAwareTrait;
-
     const STATUS = 'core:status';
+
+    public function __construct(
+        private readonly SiteAliasManagerInterface $siteAliasManager
+    ) {
+        parent::__construct();
+    }
+
+    public static function createEarly(DrushContainer $drush_container): self
+    {
+        $commandHandler = new static(
+            $drush_container->get('site.alias.manager'),
+        );
+
+        return $commandHandler;
+    }
 
     /**
      * An overview of the environment - Drush and Drupal.
@@ -144,10 +157,10 @@ final class StatusCommands extends DrushCommands implements SiteAliasManagerAwar
         $status_table['drush-temp'] = Path::canonicalize($this->getConfig()->tmp());
         $status_table['drush-conf'] = array_map([Path::class, 'canonicalize'], $this->getConfig()->configPaths());
         // List available alias files
-        $alias_files = $this->siteAliasManager()->listAllFilePaths();
+        $alias_files = $this->siteAliasManager->listAllFilePaths();
         sort($alias_files);
         $status_table['drush-alias-files'] = $alias_files;
-        $alias_searchpaths = $this->siteAliasManager()->searchLocations();
+        $alias_searchpaths = $this->siteAliasManager->searchLocations();
         $status_table['alias-searchpaths'] = array_map([Path::class, 'canonicalize'], $alias_searchpaths);
 
         $paths = self::pathAliases($options, $boot_manager, $boot_object);

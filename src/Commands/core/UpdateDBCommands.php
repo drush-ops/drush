@@ -6,8 +6,7 @@ namespace Drush\Commands\core;
 
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Consolidation\OutputFormatters\StructuredData\UnstructuredListData;
-use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
-use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
+use Consolidation\SiteAlias\SiteAliasManagerInterface;
 use Drupal\Core\Database\Database;
 use Drupal\Core\Utility\Error;
 use Drush\Attributes as CLI;
@@ -17,15 +16,29 @@ use Drush\Drupal\DrupalUtil;
 use Drush\Drush;
 use Drush\Exceptions\UserAbortException;
 use Drush\Log\SuccessInterface;
+use League\Container\Container as DrushContainer;
 use Psr\Log\LogLevel;
 
-final class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInterface
+final class UpdateDBCommands extends DrushCommands
 {
-    use SiteAliasManagerAwareTrait;
-
     const UPDATEDB = 'updatedb';
     const STATUS = 'updatedb:status';
     const BATCH_PROCESS = 'updatedb:batch-process';
+
+    public function __construct(
+        private readonly SiteAliasManagerInterface $siteAliasManager
+    ) {
+        parent::__construct();
+    }
+
+    public static function createEarly(DrushContainer $drush_container): self
+    {
+        $commandHandler = new static(
+            $drush_container->get('site.alias.manager'),
+        );
+
+        return $commandHandler;
+    }
 
     /**
      * Note - can't inject @database since a method below is static.
@@ -59,7 +72,7 @@ final class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAw
         $status_options = ['strict' => 0];
         $status_options = array_merge(Drush::redispatchOptions(), $status_options);
 
-        $process = $this->processManager()->drush($this->siteAliasManager()->getSelf(), self::STATUS, [], $status_options);
+        $process = $this->processManager()->drush($this->siteAliasManager->getSelf(), self::STATUS, [], $status_options);
         $process->mustRun();
         if ($output = $process->getOutput()) {
             // We have pending updates - let's run em.

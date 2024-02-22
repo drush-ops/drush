@@ -4,18 +4,32 @@ declare(strict_types=1);
 
 namespace Drush\Commands\core;
 
+use Consolidation\OutputFormatters\StructuredData\UnstructuredListData;
+use Consolidation\SiteAlias\SiteAliasManagerInterface;
+use Drupal\Component\DependencyInjection\ContainerInterface;
 use Drush\Attributes as CLI;
 use Drush\Commands\DrushCommands;
-use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
-use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
-use Consolidation\OutputFormatters\StructuredData\UnstructuredListData;
+use League\Container\Container as DrushContainer;
 
-final class SiteCommands extends DrushCommands implements SiteAliasManagerAwareInterface
+final class SiteCommands extends DrushCommands
 {
-    use SiteAliasManagerAwareTrait;
-
     const SET = 'site:set';
     const ALIAS = 'site:alias';
+
+    public function __construct(
+        private readonly SiteAliasManagerInterface $siteAliasManager
+    ) {
+        parent::__construct();
+    }
+
+    public static function create(ContainerInterface $container, DrushContainer $drush_container): self
+    {
+        $commandHandler = new static(
+            $drush_container->get('site.alias.manager'),
+        );
+
+        return $commandHandler;
+    }
 
     /**
      * Set a site alias that will persist for the current session.
@@ -63,7 +77,7 @@ final class SiteCommands extends DrushCommands implements SiteAliasManagerAwareI
                 }
             }
             // Alias record lookup exists.
-            $aliasRecord = $this->siteAliasManager()->get($site);
+            $aliasRecord = $this->siteAliasManager->get($site);
             if ($aliasRecord) {
                 if (file_exists($filename)) {
                     @unlink($last_site_filename);
@@ -100,13 +114,13 @@ final class SiteCommands extends DrushCommands implements SiteAliasManagerAwareI
     {
         // First check to see if the user provided a specification that matches
         // multiple sites.
-        $aliasList = $this->siteAliasManager()->getMultiple($site);
+        $aliasList = $this->siteAliasManager->getMultiple($site);
         if (is_array($aliasList) && !empty($aliasList)) {
             return new UnstructuredListData($this->siteAliasExportList($aliasList, $options));
         }
 
         // Next check for a specific alias or a site specification.
-        $aliasRecord = $this->siteAliasManager()->get($site);
+        $aliasRecord = $this->siteAliasManager->get($site);
         if ($aliasRecord !== false) {
             return new UnstructuredListData([$aliasRecord->name() => $aliasRecord->export()]);
         }
