@@ -22,7 +22,7 @@ final class SshCommands extends DrushCommands
         parent::__construct();
     }
 
-    public static function create(ContainerInterface $container, DrushContainer $drush_container): self
+    public static function createEarly(ContainerInterface $container, DrushContainer $drush_container): self
     {
         $commandHandler = new static(
             $drush_container->get('site.alias.manager'),
