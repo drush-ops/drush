@@ -5214,17 +5214,30 @@
 
 <span class="k">use</span> <span class="nx">Consolidation\AnnotatedCommand\AnnotationData</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Consolidation\AnnotatedCommand\Hooks\HookManager</span><span class="p">;</span>
-<span class="k">use</span> <span class="nx">Consolidation\SiteAlias\SiteAliasManagerAwareInterface</span><span class="p">;</span>
-<span class="k">use</span> <span class="nx">Consolidation\SiteAlias\SiteAliasManagerAwareTrait</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Consolidation\SiteAlias\SiteAliasManagerInterface</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Drush\Attributes</span> <span class="k">as</span> <span class="nx">CLI</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">League\Container\Container</span> <span class="k">as</span> <span class="nx">DrushContainer</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Symfony\Component\Console\Input\InputInterface</span><span class="p">;</span>
 
 <span class="sd">/**</span>
 <span class="sd"> * Load this example by using the --include option - e.g. `drush --include=/path/to/drush/examples`</span>
 <span class="sd"> */</span>
-<span class="k">class</span> <span class="nc">SiteAliasAlterCommands</span> <span class="k">extends</span> <span class="nx">DrushCommands</span> <span class="k">implements</span> <span class="nx">SiteAliasManagerAwareInterface</span>
+<span class="k">class</span> <span class="nc">SiteAliasAlterCommands</span> <span class="k">extends</span> <span class="nx">DrushCommands</span>
 <span class="p">{</span>
-    <span class="k">use</span> <span class="nx">SiteAliasManagerAwareTrait</span><span class="p">;</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="fm">__construct</span><span class="p">(</span>
+        <span class="k">private</span> <span class="nx">readonly</span> <span class="nx">SiteAliasManagerInterface</span> <span class="nv">$siteAliasManager</span>
+    <span class="p">)</span> <span class="p">{</span>
+        <span class="k">parent</span><span class="o">::</span><span class="na">__construct</span><span class="p">();</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">createEarly</span><span class="p">(</span><span class="nx">DrushContainer</span> <span class="nv">$drush_container</span><span class="p">)</span><span class="o">:</span> <span class="nx">self</span>
+    <span class="p">{</span>
+        <span class="nv">$commandHandler</span> <span class="o">=</span> <span class="k">new</span> <span class="k">static</span><span class="p">(</span>
+            <span class="nv">$drush_container</span><span class="o">-&gt;</span><span class="na">get</span><span class="p">(</span><span class="s1">&#39;site.alias.manager&#39;</span><span class="p">),</span>
+        <span class="p">);</span>
+
+        <span class="k">return</span> <span class="nv">$commandHandler</span><span class="p">;</span>
+    <span class="p">}</span>
 
     <span class="sd">/**</span>
 <span class="sd">     * A few example alterations to site aliases.</span>
@@ -5232,7 +5245,7 @@
     <span class="p">#[</span><span class="nd">CLI\Hook</span><span class="p">(</span><span class="nx">type</span><span class="o">:</span> <span class="nx">HookManager</span><span class="o">::</span><span class="na">PRE_INITIALIZE</span><span class="p">,</span> <span class="nx">target</span><span class="o">:</span> <span class="s1">&#39;*&#39;</span><span class="p">)]</span>
     <span class="k">public</span> <span class="k">function</span> <span class="nf">alter</span><span class="p">(</span><span class="nx">InputInterface</span> <span class="nv">$input</span><span class="p">,</span> <span class="nx">AnnotationData</span> <span class="nv">$annotationData</span><span class="p">)</span>
     <span class="p">{</span>
-        <span class="nv">$self</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">siteAliasManager</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">getSelf</span><span class="p">();</span>
+        <span class="nv">$self</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">siteAliasManager</span><span class="o">-&gt;</span><span class="na">getSelf</span><span class="p">();</span>
         <span class="k">if</span> <span class="p">(</span><span class="nv">$self</span><span class="o">-&gt;</span><span class="na">isRemote</span><span class="p">())</span> <span class="p">{</span>
             <span class="c1">// Always pass along ssh keys.</span>
             <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nv">$self</span><span class="o">-&gt;</span><span class="na">has</span><span class="p">(</span><span class="s1">&#39;ssh.options&#39;</span><span class="p">))</span> <span class="p">{</span>
