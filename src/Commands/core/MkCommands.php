@@ -6,7 +6,6 @@ namespace Drush\Commands\core;
 
 use Consolidation\AnnotatedCommand\AnnotatedCommand;
 use Consolidation\AnnotatedCommand\AnnotationData;
-use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
 use Drush\Attributes as CLI;
 use Drush\Boot\DrupalBootLevels;
 use Drush\Commands\DrushCommands;
@@ -14,7 +13,6 @@ use Drush\Commands\generate\ApplicationFactory;
 use Drush\Commands\help\HelpCLIFormatter;
 use Drush\Commands\help\ListCommands;
 use Drush\Drush;
-use Drush\SiteAlias\SiteAliasManagerAwareInterface;
 use Psr\Container\ContainerInterface as DrushContainer;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Command\Command;
@@ -25,14 +23,14 @@ use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Path;
 use Symfony\Component\Yaml\Yaml;
 
-final class MkCommands extends DrushCommands implements SiteAliasManagerAwareInterface
+final class MkCommands extends DrushCommands
 {
-    use SiteAliasManagerAwareTrait;
 
     protected function __construct(
-        private ContainerInterface $container,
-        private DrushContainer $drush_container,
+        private readonly ContainerInterface $container,
+        private readonly DrushContainer $drush_container,
     ) {
+        parent::__construct();
     }
 
     public static function create(ContainerInterface $container, DrushContainer $drush_container): self

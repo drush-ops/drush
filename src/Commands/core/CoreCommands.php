@@ -9,14 +9,10 @@ use Drush\Attributes as CLI;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
-use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
-use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
 use Consolidation\OutputFormatters\Options\FormatterOptions;
 
-final class CoreCommands extends DrushCommands implements SiteAliasManagerAwareInterface
+final class CoreCommands extends DrushCommands
 {
-    use SiteAliasManagerAwareTrait;
-
     const VERSION = 'version';
     const GLOBAL_OPTIONS = 'core:global-options';
 
