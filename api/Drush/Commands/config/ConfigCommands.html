@@ -86,7 +86,7 @@
 
     
     <p>final         class
-    <strong>ConfigCommands</strong>        extends <a href="../../../Drush/Commands/DrushCommands.html"><abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a>        implements        <abbr title="Consolidation\AnnotatedCommand\Input\StdinAwareInterface">StdinAwareInterface</abbr>, <a href="../../../Drush/SiteAlias/SiteAliasManagerAwareInterface.html"><abbr title="Drush\SiteAlias\SiteAliasManagerAwareInterface">SiteAliasManagerAwareInterface</abbr></a>        (<a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/config/ConfigCommands.php">View source</a>)
+    <strong>ConfigCommands</strong>        extends <a href="../../../Drush/Commands/DrushCommands.html"><abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a>        implements        <abbr title="Consolidation\AnnotatedCommand\Input\StdinAwareInterface">StdinAwareInterface</abbr>        (<a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/config/ConfigCommands.php">View source</a>)
 </p>
 
         
@@ -106,11 +106,6 @@
                     <div class="row">
                 <div class="col-md-6">
                     <a href="../../../Drush/Exec/ExecTrait.html"><abbr title="Drush\Exec\ExecTrait">ExecTrait</abbr></a>    </div>
-                <div class="col-md-6"></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-6">
-                    <abbr title="Consolidation\SiteAlias\SiteAliasManagerAwareTrait">SiteAliasManagerAwareTrait</abbr>    </div>
                 <div class="col-md-6"></div>
             </div>
                     <div class="row">
@@ -396,7 +391,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>                </
                     
                 </div>
                 <div class="col-md-8">
-                    <a href="#method___construct">__construct</a>(<abbr title="Drupal\Core\Config\ConfigFactoryInterface">ConfigFactoryInterface</abbr> $configFactory, <abbr title="Drupal\Core\Config\StorageInterface">StorageInterface</abbr> $configStorage)
+                    <a href="#method___construct">__construct</a>(<abbr title="Drupal\Core\Config\ConfigFactoryInterface">ConfigFactoryInterface</abbr> $configFactory, <abbr title="Drupal\Core\Config\StorageInterface">StorageInterface</abbr> $configStorage, <abbr title="Consolidation\SiteAlias\SiteAliasManagerInterface">SiteAliasManagerInterface</abbr> $siteAliasManager)
         
                                             <p class="no-description">No description</p>
                                     </div>
@@ -495,7 +490,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>                </
                     static&nbsp;<a href="../../../Drush/Commands/config/ConfigCommands.html"><abbr title="Drush\Commands\config\ConfigCommands">ConfigCommands</abbr></a>
                 </div>
                 <div class="col-md-8">
-                    <a href="#method_create">create</a>(<abbr title="Symfony\Component\DependencyInjection\ContainerInterface">ContainerInterface</abbr> $container)
+                    <a href="#method_create">create</a>(<abbr title="Symfony\Component\DependencyInjection\ContainerInterface">ContainerInterface</abbr> $container, <abbr title="League\Container\Container">Container</abbr> $drush_container)
         
                                             <p class="no-description">No description</p>
                                     </div>
@@ -1063,9 +1058,9 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method___construct">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/config/ConfigCommands.php#L61">at line 61</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/config/ConfigCommands.php#L60">at line 60</a></div>
         <code>            protected        
-    <strong>__construct</strong>(<abbr title="Drupal\Core\Config\ConfigFactoryInterface">ConfigFactoryInterface</abbr> $configFactory, <abbr title="Drupal\Core\Config\StorageInterface">StorageInterface</abbr> $configStorage)
+    <strong>__construct</strong>(<abbr title="Drupal\Core\Config\ConfigFactoryInterface">ConfigFactoryInterface</abbr> $configFactory, <abbr title="Drupal\Core\Config\StorageInterface">StorageInterface</abbr> $configStorage, <abbr title="Consolidation\SiteAlias\SiteAliasManagerInterface">SiteAliasManagerInterface</abbr> $siteAliasManager)
         </code>
     </h3>
     <div class="details">    
@@ -1088,6 +1083,11 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
                     <tr>
                 <td><abbr title="Drupal\Core\Config\StorageInterface">StorageInterface</abbr></td>
                 <td>$configStorage</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><abbr title="Consolidation\SiteAlias\SiteAliasManagerInterface">SiteAliasManagerInterface</abbr></td>
+                <td>$siteAliasManager</td>
                 <td></td>
             </tr>
             </table>
@@ -1362,7 +1362,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_getConfigFactory">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/config/ConfigCommands.php#L56">at line 56</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/config/ConfigCommands.php#L55">at line 55</a></div>
         <code>                    <abbr title="Drupal\Core\Config\ConfigFactoryInterface">ConfigFactoryInterface</abbr>
     <strong>getConfigFactory</strong>()
         </code>
@@ -1395,9 +1395,9 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_create">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/config/ConfigCommands.php#L66">at line 66</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/config/ConfigCommands.php#L65">at line 65</a></div>
         <code>        static            <a href="../../../Drush/Commands/config/ConfigCommands.html"><abbr title="Drush\Commands\config\ConfigCommands">ConfigCommands</abbr></a>
-    <strong>create</strong>(<abbr title="Symfony\Component\DependencyInjection\ContainerInterface">ContainerInterface</abbr> $container)
+    <strong>create</strong>(<abbr title="Symfony\Component\DependencyInjection\ContainerInterface">ContainerInterface</abbr> $container, <abbr title="League\Container\Container">Container</abbr> $drush_container)
         </code>
     </h3>
     <div class="details">    
@@ -1415,6 +1415,11 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
                     <tr>
                 <td><abbr title="Symfony\Component\DependencyInjection\ContainerInterface">ContainerInterface</abbr></td>
                 <td>$container</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><abbr title="League\Container\Container">Container</abbr></td>
+                <td>$drush_container</td>
                 <td></td>
             </tr>
             </table>
