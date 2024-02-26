@@ -271,13 +271,6 @@ class ConfigImportCommands extends DrushCommands
                 }
 
                 $this->logger()->success('The configuration was imported successfully.');
-
-                // Importing config might trigger batch operations (such as when installing and uninstalling modules).
-                // @see \Drush\Commands\pm\PmCommands::install()
-                if (batch_get()) {
-                    $this->logger()->info('Running batch operations...');
-                    drush_backend_batch_process();
-                }
             } catch (ConfigException $e) {
                 // Return a negative result for UI purposes. We do not differentiate
                 // between an actual synchronization error and a failed lock, because
@@ -289,6 +282,13 @@ class ConfigImportCommands extends DrushCommands
 
                 watchdog_exception('config_import', $e);
                 throw new \Exception($message, $e->getCode(), $e);
+            } finally {
+                // Importing config might trigger batch operations (such as when installing and uninstalling modules).
+                // @see \Drush\Commands\pm\PmCommands::install()
+                if (batch_get()) {
+                    $this->logger()->notice('Running batch operations...');
+                    drush_backend_batch_process();
+                }
             }
         }
     }
