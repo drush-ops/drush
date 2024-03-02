@@ -193,9 +193,10 @@ final class SiteInstallCommands extends DrushCommands
         // @todo Arguably Drupal core [$boot->getKernel()->getInstallProfile()] could do this - https://github.com/drupal/drupal/blob/8.6.x/core/lib/Drupal/Core/DrupalKernel.php#L1606 reads from DB storage but not file storage.
         if (empty($profile) && $options['existing-config']) {
             FileCacheFactory::setConfiguration([FileCacheFactory::DISABLE_CACHE => true]);
-            $source_storage = new FileStorage(Settings::get('config_sync_directory'));
+            $config_directory = Settings::get('config_sync_directory');
+            $source_storage = new FileStorage($config_directory);
             if (!$source_storage->exists('core.extension')) {
-                throw new \Exception('Existing configuration directory not found or does not contain a core.extension.yml file.".');
+                throw new \Exception(dt('Existing configuration directory @config does not contain a core.extension.yml file.', ['@config' => $config_directory]));
             }
             $config = $source_storage->read('core.extension');
             $profile = $config['profile'];
