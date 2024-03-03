@@ -157,7 +157,8 @@ class MigrateRunnerTest extends TestCase
         $pdo = new \PDO("sqlite::memory:");
         /** @var \Composer\Autoload\ClassLoader $loader */
         $loader = require PHPUNIT_COMPOSER_INSTALL;
-        $loader->addPsr4('Drupal\\sqlite\\', Path::join(dirname(__DIR__, 2), 'sut/core/modules/sqlite/src'));
+        // @todo this needs to fetch the base path from soemwhere, no hardcoding.
+        $loader->addPsr4('Drupal\\sqlite\\', '/home/wodby/drush/vendor/composer/../../sut/core/modules/sqlite/src');
         dump($loader->getPrefixesPsr4());
         $connection = new Connection($pdo, $options);
 
