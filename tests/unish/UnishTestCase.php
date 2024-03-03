@@ -480,7 +480,7 @@ abstract class UnishTestCase extends TestCase
 
     public function dbUrl(string $env): string
     {
-        $info = Database::convertDbUrlToConnectionInfo(self::getDbUrl());
+        $info = Database::convertDbUrlToConnectionInfo(self::getDbUrl(), $this->webroot());
         dump([__METHOD__, $info]);
         return str_starts_with(self::getDbUrl(), 'sqlite') ?  "sqlite://sites/$env/files/unish.sqlite" : self::getDbUrl() . '/unish_' . $env;
     }
