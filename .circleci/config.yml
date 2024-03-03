@@ -106,7 +106,7 @@ jobs:
               - equal: [ stable, << parameters.release >> ] 
           steps:
             - run: composer -n config platform.php --unset
-            - run: composer -n require --dev drupal/core-recommended:10.1.x-dev --no-update
+            - run: composer -n require --dev drupal/core-recommended:11.x-dev --no-update
             - run: composer -n update
       - run: composer -n unit -- --log-junit /tmp/results/unit/junit.xml
       - run: composer -n << parameters.suite >> -- --log-junit /tmp/results/<< parameters.suite >>/junit.xml
@@ -142,7 +142,7 @@ workflows:
             parameters:
               dbms: [sqlite, mysql, postgres]
               suite: [integration, functional]
-              release: [stable] # highest is temporarily disabled.
+              release: [stable, highest]
             exclude:
               # Only run highest test on sqlite. Excluding each suite is unfortnate but needed.
               - release: highest
