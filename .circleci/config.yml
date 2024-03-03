@@ -35,12 +35,12 @@ executors:
     docker:
       - image: wodby/php:$WODBY_TAG
         environment:
-          - "UNISH_DB_URL=sqlite://:memory:?module=sqlite"
+          - "UNISH_DB_URL=sqlite://localhost/:memory:?module=sqlite"
   sqlite-highest:
     docker:
       - image: wodby/php:latest
         environment:
-          - "UNISH_DB_URL=sqlite://:memory:?module=sqlite"
+          - "UNISH_DB_URL=sqlite://localhost/:memory:?module=sqlite"
   postgres-stable:
     docker:
       - image: wodby/php:$WODBY_TAG
