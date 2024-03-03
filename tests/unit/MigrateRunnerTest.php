@@ -7,7 +7,7 @@ namespace Drush\Drupal\Migrate;
 use Composer\Semver\Comparator;
 use Drupal\migrate\Plugin\MigrationInterface;
 use Drupal\migrate\Plugin\MigrationPluginManagerInterface;
-use Drupal\sqlite\Database\Driver\sqlite\Connection;
+use Drupal\sqlite\Driver\Database\sqlite\Connection;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Filesystem\Path;
@@ -158,7 +158,9 @@ class MigrateRunnerTest extends TestCase
         /** @var \Composer\Autoload\ClassLoader $loader */
         $loader = require PHPUNIT_COMPOSER_INSTALL;
         // @todo this needs to fetch the base path from soemwhere, no hardcoding.
-        $loader->addPsr4('Drupal\\sqlite\\', '/home/wodby/drush/vendor/composer/../../sut/core/modules/sqlite/src');
+        if (!isset($loader->prefixDirsPsr4['Drupal\\sqlite\\'])) {
+          $loader->addPsr4('Drupal\\sqlite\\', '/home/wodby/drush/vendor/composer/../../sut/core/modules/sqlite/src');
+        }
         dump($loader->getPrefixesPsr4());
         $connection = new Connection($pdo, $options);
 
