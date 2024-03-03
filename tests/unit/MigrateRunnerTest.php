@@ -158,6 +158,7 @@ class MigrateRunnerTest extends TestCase
         /** @var \Composer\Autoload\ClassLoader $loader */
         $loader = require PHPUNIT_COMPOSER_INSTALL;
         $loader->addPsr4('Drupal\\sqlite\\', Path::join(dirname(__DIR__, 2), 'sut/core/modules/sqlite/src'));
+        $loader->register();
         $connection = new Connection($pdo, $options);
 
         // Create the table and load it with data.
