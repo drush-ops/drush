@@ -29,23 +29,23 @@ executors:
       - image: wodby/php:$WODBY_TAG
         environment:
           - MYSQL_HOST=127.0.0.1
-          - UNISH_DB_URL=mysql://root:@127.0.0.1
+          - UNISH_DB_URL=mysql://root:@127.0.0.1?module=mysql
       - image: cimg/mysql:5.7.38
   sqlite-stable:
     docker:
       - image: wodby/php:$WODBY_TAG
         environment:
-          - "UNISH_DB_URL=sqlite://:memory:"
+          - "UNISH_DB_URL=sqlite://:memory:?module=sqlite"
   sqlite-highest:
     docker:
       - image: wodby/php:latest
         environment:
-          - "UNISH_DB_URL=sqlite://:memory:"
+          - "UNISH_DB_URL=sqlite://:memory:?module=sqlite"
   postgres-stable:
     docker:
       - image: wodby/php:$WODBY_TAG
         environment:
-          - UNISH_DB_URL=pgsql://unish:unish@127.0.0.1
+          - UNISH_DB_URL=pgsql://unish:unish@127.0.0.1?module=pgsql
       - image: wodby/postgres:14
         environment:
           POSTGRES_DB_EXTENSIONS: pg_trgm
@@ -97,13 +97,13 @@ jobs:
       - when:
           condition:
             and:
-              - equal: [ stable, << parameters.release >> ] 
+              - equal: [ stable, << parameters.release >> ]
           steps:
             - run: composer -n install
       - unless:
           condition:
             and:
-              - equal: [ stable, << parameters.release >> ] 
+              - equal: [ stable, << parameters.release >> ]
           steps:
             - run: composer -n config platform.php --unset
             - run: composer -n require --dev drupal/core-recommended:11.x-dev --no-update
@@ -118,7 +118,7 @@ jobs:
 #      - image: wodby/php:8.0
 #        environment:
 #          - MYSQL_HOST=127.0.0.1
-#          - UNISH_DB_URL=mysql://root:@127.0.0.1
+#          - UNISH_DB_URL=mysql://root:@127.0.0.1?module=mysql
 #      - image: cimg/mysql:5.7.38
 #    steps:
 #      - checkout
@@ -156,5 +156,5 @@ workflows:
                 suite: integration
               - release: highest
                 dbms: postgres
-                suite: functional  
+                suite: functional
 

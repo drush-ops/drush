@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Drush\Drupal\Migrate;
 
 use Composer\Semver\Comparator;
-use Drupal\Core\Database\Driver\sqlite\Connection;
 use Drupal\migrate\Plugin\MigrationInterface;
 use Drupal\migrate\Plugin\MigrationPluginManagerInterface;
+use Drupal\sqlite\Database\Driver\sqlite\Connection;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Filesystem\Path;
