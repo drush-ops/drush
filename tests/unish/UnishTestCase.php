@@ -655,6 +655,7 @@ EOT;
             copy("$root/sites/default/default.settings.php", "$siteDir/settings.php");
         }
         $sutAlias = $this->sutAlias($uri);
+        dump([$optionsFromTest, $this->dbUrl, $uri]);
         $options = $optionsFromTest + [
             'root' => $this->webroot(),
             'uri' => $uri,

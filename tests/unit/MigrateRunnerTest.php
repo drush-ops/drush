@@ -161,7 +161,6 @@ class MigrateRunnerTest extends TestCase
             // @todo this needs to fetch the base path from soemwhere, no hardcoding.
             $loader->addPsr4('Drupal\\sqlite\\', '/home/wodby/drush/vendor/composer/../../sut/core/modules/sqlite/src');
         }
-        dump($loader->getPrefixesPsr4());
         $connection = new Connection($pdo, $options);
 
         // Create the table and load it with data.
