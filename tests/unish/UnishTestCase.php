@@ -7,6 +7,7 @@ namespace Unish;
 use Composer\Semver\Comparator;
 use Consolidation\SiteAlias\SiteAlias;
 use Consolidation\SiteProcess\ProcessManager;
+use Drupal\Core\Database\Database;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Path;
 use Symfony\Component\Process\Process;
@@ -479,12 +480,15 @@ abstract class UnishTestCase extends TestCase
 
     public function dbUrl(string $env): string
     {
+        $info = Database::convertDbUrlToConnectionInfo(self::getDbUrl());
+        dump([__METHOD__, $info]);
         return str_starts_with(self::getDbUrl(), 'sqlite') ?  "sqlite://sites/$env/files/unish.sqlite" : self::getDbUrl() . '/unish_' . $env;
     }
 
     public function dbDriver($db_url = null): array|false|int|null|string
     {
-        return parse_url($db_url ?: self::getDbUrl(), PHP_URL_SCHEME);
+        $info = Database::convertDbUrlToConnectionInfo($db_url ?: self::getDbUrl(), $this->webroot());
+        return $info['driver'] ?? false;
     }
 
     /**
@@ -655,7 +659,7 @@ EOT;
             copy("$root/sites/default/default.settings.php", "$siteDir/settings.php");
         }
         $sutAlias = $this->sutAlias($uri);
-        dump([$optionsFromTest, $this->dbUrl, $uri]);
+        dump([$optionsFromTest, $this->db_url, $uri, $this->dbUrl($uri)]);
         $options = $optionsFromTest + [
             'root' => $this->webroot(),
             'uri' => $uri,
