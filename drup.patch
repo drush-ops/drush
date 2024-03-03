@@ -1,10 +1,13 @@
 diff --git a/core/lib/Drupal/Core/Database/Database.php b/core/lib/Drupal/Core/Database/Database.php
-index 4e87201fba..fc97b619eb 100644
+index 4e87201fba..84ebb04c39 100644
 --- a/core/lib/Drupal/Core/Database/Database.php
 +++ b/core/lib/Drupal/Core/Database/Database.php
-@@ -536,6 +536,7 @@ public static function convertDbUrlToConnectionInfo($url, $root, ?bool $include_
+@@ -534,8 +534,9 @@ public static function convertDbUrlToConnectionInfo($url, $root, ?bool $include_
+     // this method can be called before Drupal is installed and is never
+     // called during regular runtime.
      $additional_class_loader = new ClassLoader();
-     $additional_class_loader->addPsr4($driverNamespace . '\\', $driver->getPath());
+-    $additional_class_loader->addPsr4($driverNamespace . '\\', $driver->getPath());
++    $additional_class_loader->addPsr4($driverNamespace . '\\', realpath($driver->getPath()));
      $additional_class_loader->register();
 +    dump($additional_class_loader->getPrefixesPsr4());
      $connection_class = $driverNamespace . '\\Connection';
