@@ -1,5 +1,5 @@
 diff --git a/core/lib/Drupal/Core/Database/Database.php b/core/lib/Drupal/Core/Database/Database.php
-index 4e87201fba..84ebb04c39 100644
+index 4e87201fba..320a7672df 100644
 --- a/core/lib/Drupal/Core/Database/Database.php
 +++ b/core/lib/Drupal/Core/Database/Database.php
 @@ -534,8 +534,9 @@ public static function convertDbUrlToConnectionInfo($url, $root, ?bool $include_
@@ -7,7 +7,7 @@ index 4e87201fba..84ebb04c39 100644
      // called during regular runtime.
      $additional_class_loader = new ClassLoader();
 -    $additional_class_loader->addPsr4($driverNamespace . '\\', $driver->getPath());
-+    $additional_class_loader->addPsr4($driverNamespace . '\\', realpath($driver->getPath()));
++    $additional_class_loader->addPsr4($driverNamespace . '\\', $root . DIRECTORY_SEPARATOR . $driver->getPath());
      $additional_class_loader->register();
 +    dump($additional_class_loader->getPrefixesPsr4());
      $connection_class = $driverNamespace . '\\Connection';
