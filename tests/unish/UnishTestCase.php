@@ -483,7 +483,6 @@ abstract class UnishTestCase extends TestCase
         $cwd = getcwd();
         chdir($this->webroot());
         $info = Database::convertDbUrlToConnectionInfo(self::getDbUrl(), $this->webroot());
-        dump([__METHOD__, $info]);
         if ($info['driver'] === 'sqlite') {
             $info['database'] = "sites/$env/files/unish.sqlite";
         } else {
@@ -491,14 +490,16 @@ abstract class UnishTestCase extends TestCase
         }
         $connection_class = $info['namespace'] . '\\Connection';
         $ret = $connection_class::createUrlFromConnectionOptions($info);
-        dump([__METHOD__, $info, $ret]);
         chdir($cwd);
         return $ret;
     }
 
     public function dbDriver($db_url = null): array|false|int|null|string
     {
+        $cwd = getcwd();
+        chdir($this->webroot());
         $info = Database::convertDbUrlToConnectionInfo($db_url ?: self::getDbUrl(), $this->webroot());
+        chdir($cwd);
         return $info['driver'] ?? false;
     }
 
