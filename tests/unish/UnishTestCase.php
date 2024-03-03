@@ -659,7 +659,7 @@ EOT;
             copy("$root/sites/default/default.settings.php", "$siteDir/settings.php");
         }
         $sutAlias = $this->sutAlias($uri);
-        dump([$optionsFromTest, $this->db_url, $uri, $this->dbUrl($uri)]);
+        dump([$optionsFromTest, self::$db_url, $uri, $this->dbUrl($uri)]);
         $options = $optionsFromTest + [
             'root' => $this->webroot(),
             'uri' => $uri,
