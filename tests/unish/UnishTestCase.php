@@ -486,8 +486,7 @@ abstract class UnishTestCase extends TestCase
         dump([__METHOD__, $info]);
         if ($info['driver'] === 'sqlite') {
             $info['database'] = "sites/$env/files/unish.sqlite";
-        }
-        else {
+        } else {
             $info['database'] = 'unish_' . $env;
         }
         $connection_class = $info['namespace'] . '\\Connection';
