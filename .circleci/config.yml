@@ -29,7 +29,7 @@ executors:
       - image: wodby/php:$WODBY_TAG
         environment:
           - MYSQL_HOST=127.0.0.1
-          - UNISH_DB_URL=mysql://root:@127.0.0.1?module=mysql
+          - UNISH_DB_URL=mysql://root:@127.0.0.1/unish_dev?module=mysql
       - image: cimg/mysql:5.7.38
   sqlite-stable:
     docker:
@@ -45,7 +45,7 @@ executors:
     docker:
       - image: wodby/php:$WODBY_TAG
         environment:
-          - UNISH_DB_URL=pgsql://unish:unish@127.0.0.1?module=pgsql
+          - UNISH_DB_URL=pgsql://unish:unish@127.0.0.1/unish_dev?module=pgsql
       - image: wodby/postgres:14
         environment:
           POSTGRES_DB_EXTENSIONS: pg_trgm
@@ -119,7 +119,7 @@ jobs:
 #      - image: wodby/php:8.0
 #        environment:
 #          - MYSQL_HOST=127.0.0.1
-#          - UNISH_DB_URL=mysql://root:@127.0.0.1?module=mysql
+#          - UNISH_DB_URL=mysql://root:@127.0.0.1/unish_dev?module=mysql
 #      - image: cimg/mysql:5.7.38
 #    steps:
 #      - checkout
