@@ -38,4 +38,20 @@ class ModuleDrushCommandTest extends CommandUnishTestCase
         $this->drush('woot:root');
         $this->assertStringContainsString('/sut', $this->getOutput());
     }
+
+    /**
+     * Tests retrieval of log messages.
+     */
+    public function testLogMessageRetrieval()
+    {
+        $this->setUpDrupal(1, true);
+        // Install the woot module.
+        $this->drush(PmCommands::INSTALL, ['woot']);
+
+        $this->drush('woot-messages', [], []);
+        $this->assertStringContainsString('Message 1', $this->getErrorOutput());
+        $this->assertStringContainsString('Message 2', $this->getErrorOutput());
+        $this->assertStringContainsString('Message 3', $this->getErrorOutput());
+        $this->assertStringContainsString('Message 4', $this->getErrorOutput());
+    }
 }

@@ -11,3 +11,12 @@ services:
     class: Drupal\woot\EventSubscriber\PreRowDeleteTestSubscriber
     tags:
       - { name: event_subscriber }
+  logger.channel.woot:
+    class: Drupal\Core\Logger\LoggerChannel
+    factory: logger.factory:get
+    arguments: ['woot']
+  woot.manager:
+    class: Drupal\woot\WootManager
+    arguments:
+      - '@current_user'
+      - '@logger.channel.woot'
