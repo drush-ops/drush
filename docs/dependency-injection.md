@@ -3,6 +3,11 @@ Dependency Injection
 
 Drush command files obtain references to the resources they need through a technique called _dependency injection_. When using this programing paradigm, a class by convention will never use the `new` operator to instantiate dependencies. Instead, it will store the other objects it needs in  class variables, and provide a way for other code to assign an object to that variable.
 
+Autowire
+------------------
+:octicons-tag-24: 13
+Command files may inject services by adding the Drupal [AutowireTrait](https://www.drupal.org/node/3396179) to their command class. This way, most constructor parameter type hints will nudge Drupal to find the correct service. When the type hint is insufficient, an [#[Autowire] Attribute](https://www.drupal.org/node/3396179) on the constructor property can direct Drupal to the right service. If this is still insufficient, the commandfile may implement its own `create()` method ...
+
 create() method
 ------------------
 :octicons-tag-24: 11.6+
@@ -11,7 +16,7 @@ create() method
 
     Drush 11 and prior required [dependency injection via a drush.services.yml file](https://www.drush.org/11.x/dependency-injection/#services-files). This approach is deprecated in Drush 12+ and will be removed in Drush 13.
 
-Drush command files can inject services by adding a create() method to the commandfile. See [creating commands](commands.md) for instructions on how to use the Drupal Code Generator to create a simple command file starter. A create() method and a constructor will look something like this:
+Command files may inject services by adding a create() method to the commandfile. See [creating commands](commands.md) for instructions on how to use the Drupal Code Generator to create a simple command file starter. A create() method and a constructor will look something like this:
 ```php
 class WootStaticFactoryCommands extends DrushCommands
 {
