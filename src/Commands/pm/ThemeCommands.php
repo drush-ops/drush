@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Drush\Commands\pm;
 
+use Drupal\Core\DependencyInjection\AutowireTrait;
 use Drupal\Core\Extension\ThemeInstallerInterface;
 use Drush\Commands\DrushCommands;
 use Drush\Attributes as CLI;
@@ -12,21 +13,15 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 
 final class ThemeCommands extends DrushCommands
 {
+    use AutowireTrait;
+
     const INSTALL = 'theme:install';
     const UNINSTALL = 'theme:uninstall';
 
-    public function __construct(protected ThemeInstallerInterface $themeInstaller)
-    {
+    public function __construct(
+        protected ThemeInstallerInterface $themeInstaller
+    ) {
         parent::__construct();
-    }
-
-    public static function create(ContainerInterface $container): self
-    {
-        $commandHandler = new static(
-            $container->get('theme_installer')
-        );
-
-        return $commandHandler;
     }
 
     /**
