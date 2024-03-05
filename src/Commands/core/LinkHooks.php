@@ -6,6 +6,7 @@ namespace Drush\Commands\core;
 
 use Consolidation\AnnotatedCommand\AnnotationData;
 use Consolidation\AnnotatedCommand\Hooks\HookManager;
+use Drupal\Core\DependencyInjection\AutowireTrait;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\link\LinkItemInterface;
 use Drush\Attributes as CLI;
@@ -14,22 +15,14 @@ use Drush\Commands\field\FieldCreateCommands;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 final class LinkHooks extends DrushCommands
 {
+    use AutowireTrait;
+
     public function __construct(
         protected ModuleHandlerInterface $moduleHandler
     ) {
-    }
-
-    public static function create(ContainerInterface $container): self
-    {
-        $commandHandler = new static(
-            $container->get('module_handler')
-        );
-
-        return $commandHandler;
     }
 
     #[CLI\Hook(type: HookManager::OPTION_HOOK, target: FieldCreateCommands::CREATE)]

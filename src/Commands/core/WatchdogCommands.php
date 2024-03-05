@@ -8,6 +8,7 @@ use Consolidation\AnnotatedCommand\Hooks\HookManager;
 use Consolidation\OutputFormatters\StructuredData\PropertyList;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Drupal\Core\Database\Connection;
+use Drupal\Core\DependencyInjection\AutowireTrait;
 use Drupal\Core\Logger\RfcLogLevel;
 use Drupal\Core\Session\AnonymousUserSession;
 use Drupal\user\Entity\User;
@@ -25,6 +26,8 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 
 final class WatchdogCommands extends DrushCommands
 {
+    use AutowireTrait;
+
     const SHOW = 'watchdog:show';
     const LIST = 'watchdog:list';
     const TAIL = 'watchdog:tail';
@@ -33,15 +36,6 @@ final class WatchdogCommands extends DrushCommands
 
     public function __construct(protected Connection $connection)
     {
-    }
-
-    public static function create(ContainerInterface $container): self
-    {
-        $commandHandler = new static(
-            $container->get('database')
-        );
-
-        return $commandHandler;
     }
 
     /**

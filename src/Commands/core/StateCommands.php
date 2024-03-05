@@ -7,15 +7,16 @@ namespace Drush\Commands\core;
 use Consolidation\AnnotatedCommand\Input\StdinAwareInterface;
 use Consolidation\AnnotatedCommand\Input\StdinAwareTrait;
 use Consolidation\OutputFormatters\StructuredData\PropertyList;
+use Drupal\Core\DependencyInjection\AutowireTrait;
 use Drupal\Core\State\StateInterface;
 use Drush\Attributes as CLI;
 use Drush\Commands\DrushCommands;
 use Symfony\Component\Yaml\Yaml;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 final class StateCommands extends DrushCommands implements StdinAwareInterface
 {
     use StdinAwareTrait;
+    use AutowireTrait;
 
     const GET = 'state:get';
     const SET = 'state:set';
@@ -23,15 +24,6 @@ final class StateCommands extends DrushCommands implements StdinAwareInterface
 
     public function __construct(protected StateInterface $state)
     {
-    }
-
-    public static function create(ContainerInterface $container): self
-    {
-        $commandHandler = new static(
-            $container->get('state')
-        );
-
-        return $commandHandler;
     }
 
     public function getState(): StateInterface

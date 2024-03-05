@@ -8,6 +8,7 @@ use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\AnnotatedCommand\Hooks\HookManager;
 use Drupal\Component\Gettext\PoStreamWriter;
 use Drupal\Core\Config\ConfigFactoryInterface;
+use Drupal\Core\DependencyInjection\AutowireTrait;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Language\LanguageInterface;
 use Drupal\Core\Language\LanguageManagerInterface;
@@ -18,10 +19,11 @@ use Drush\Attributes as CLI;
 use Drush\Commands\DrushCommands;
 use Drush\Exceptions\CommandFailedException;
 use Drush\Utils\StringUtils;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 final class LocaleCommands extends DrushCommands
 {
+    use AutowireTrait;
+
     const CHECK = 'locale:check';
     const CLEAR = 'locale:clear-status';
     const UPDATE = 'locale:update';
@@ -51,18 +53,6 @@ final class LocaleCommands extends DrushCommands
 
     public function __construct(protected LanguageManagerInterface $languageManager, protected ConfigFactoryInterface $configFactory, protected ModuleHandlerInterface $moduleHandler, protected StateInterface $state)
     {
-    }
-
-    public static function create(ContainerInterface $container): self
-    {
-        $commandHandler = new static(
-            $container->get('language_manager'),
-            $container->get('config.factory'),
-            $container->get('module_handler'),
-            $container->get('state')
-        );
-
-        return $commandHandler;
     }
 
     /**

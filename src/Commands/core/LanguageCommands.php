@@ -5,16 +5,18 @@ declare(strict_types=1);
 namespace Drush\Commands\core;
 
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
+use Drupal\Core\DependencyInjection\AutowireTrait;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Language\LanguageManagerInterface;
 use Drupal\language\Entity\ConfigurableLanguage;
 use Drush\Attributes as CLI;
 use Drush\Commands\DrushCommands;
 use Drush\Utils\StringUtils;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 final class LanguageCommands extends DrushCommands
 {
+    use AutowireTrait;
+
     const ADD = 'language:add';
     const INFO = 'language:info';
 
@@ -30,16 +32,6 @@ final class LanguageCommands extends DrushCommands
 
     public function __construct(protected LanguageManagerInterface $languageManager, protected ModuleHandlerInterface $moduleHandler)
     {
-    }
-
-    public static function create(ContainerInterface $container): self
-    {
-        $commandHandler = new static(
-            $container->get('language_manager'),
-            $container->get('module_handler')
-        );
-
-        return $commandHandler;
     }
 
     #[CLI\Command(name: self::ADD, aliases: ['language-add'])]
