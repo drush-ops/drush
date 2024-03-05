@@ -5,10 +5,10 @@ namespace Drupal\{{ machine_name }}\Drush\Commands;
 
 {% sort %}
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
+use Drupal\Core\DependencyInjection\AutowireTrait;
 use Drush\Attributes as CLI;
 use Drush\Commands\DrushCommands;
   {% if services %}
-use Symfony\Component\DependencyInjection\ContainerInterface;
 {{ di.use(services) }}
   {% endif %}
 {% endsort %}
@@ -18,6 +18,8 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 final class {{ class }} extends DrushCommands {
 {% if services %}
+  // https://www.drupal.org/node/3396179 shows how to use this trait to inject dependencies.
+  use AutowireTrait;
 
   /**
    * Constructs {{ class|article }} object.
@@ -26,15 +28,6 @@ final class {{ class }} extends DrushCommands {
 {{ di.signature(services) }}
   ) {
     parent::__construct();
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public static function create(ContainerInterface $container) {
-    return new static(
-{{ di.container(services) }}
-    );
   }
 {% endif %}
 
