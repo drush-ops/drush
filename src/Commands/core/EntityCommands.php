@@ -6,6 +6,7 @@ namespace Drush\Commands\core;
 
 use Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException;
 use Drupal\Component\Plugin\Exception\PluginNotFoundException;
+use Drupal\Core\DependencyInjection\AutowireTrait;
 use Drupal\Core\Entity\EntityStorageException;
 use Drupal\Core\Entity\Query\QueryInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
@@ -16,21 +17,14 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 
 final class EntityCommands extends DrushCommands
 {
+    use AutowireTrait;
+
     const DELETE = 'entity:delete';
     const SAVE = 'entity:save';
 
     public function __construct(protected EntityTypeManagerInterface $entityTypeManager)
     {
         parent::__construct();
-    }
-
-    public static function create(ContainerInterface $container): self
-    {
-        $commandHandler = new static(
-            $container->get('entity_type.manager'),
-        );
-
-        return $commandHandler;
     }
 
     /**

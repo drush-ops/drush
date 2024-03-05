@@ -8,6 +8,7 @@ use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\AnnotatedCommand\Hooks\HookManager;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Drupal\Core\Config\ConfigFactoryInterface;
+use Drupal\Core\DependencyInjection\AutowireTrait;
 use Drupal\Core\Extension\MissingDependencyException;
 use Drupal\Core\Extension\ModuleExtensionList;
 use Drupal\Core\Extension\ModuleHandlerInterface;
@@ -23,6 +24,9 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 
 final class PmCommands extends DrushCommands
 {
+
+    use AutowireTrait;
+
     const INSTALL = 'pm:install';
     const UNINSTALL = 'pm:uninstall';
     const LIST = 'pm:list';
@@ -35,19 +39,6 @@ final class PmCommands extends DrushCommands
         protected ModuleExtensionList $extensionListModule
     ) {
         parent::__construct();
-    }
-
-    public static function create(ContainerInterface $container): self
-    {
-        $commandHandler = new static(
-            $container->get('config.factory'),
-            $container->get('module_installer'),
-            $container->get('module_handler'),
-            $container->get('theme_handler'),
-            $container->get('extension.list.module')
-        );
-
-        return $commandHandler;
     }
 
     public function getConfigFactory(): ConfigFactoryInterface

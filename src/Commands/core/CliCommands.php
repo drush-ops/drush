@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Drush\Commands\core;
 
+use Drupal\Core\DependencyInjection\AutowireTrait;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drush\Attributes as CLI;
 use Drush\Commands\DrushCommands;
@@ -20,6 +21,8 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 
 final class CliCommands extends DrushCommands
 {
+    use AutowireTrait;
+
     const DOCS_REPL = 'docs:repl';
     const PHP = 'php:cli';
 
@@ -27,15 +30,6 @@ final class CliCommands extends DrushCommands
         protected EntityTypeManagerInterface $entityTypeManager
     ) {
         parent::__construct();
-    }
-
-    public static function create(ContainerInterface $container): self
-    {
-        $commandHandler = new static(
-            $container->get('entity_type.manager')
-        );
-
-        return $commandHandler;
     }
 
     /**
