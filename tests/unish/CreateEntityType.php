@@ -31,10 +31,6 @@ class CreateEntityType
             'No',
         ];
         $testCase->drush(GenerateCommands::GENERATE, ['module'], ['verbose' => null, 'answer' => $answers, 'destination' => Path::join($testCase->webroot(), 'modules/contrib')], null, null, $testCase::EXIT_SUCCESS, null, ['SHELL_INTERACTIVE' => 1]);
-        // @todo Currently needed for Drush 13.x tests on D11.
-        $path = Path::join($testCase->webroot(), 'modules/contrib/unish_article/unish_article.info.yml');
-        $contents = file_get_contents($path);
-        file_put_contents($path, str_replace('^10', '^10 || ^11', $contents));
 
         // Create a content entity type and enable its module.
         // Note that only the values below are used. The keys are for documentation.
