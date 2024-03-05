@@ -6,6 +6,7 @@ namespace Drush\Commands\field;
 
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Consolidation\OutputFormatters\StructuredData\UnstructuredListData;
+use Drupal\Core\DependencyInjection\AutowireTrait;
 use Drupal\Core\Field\BaseFieldDefinition;
 use Drupal\Core\Field\FieldTypePluginManagerInterface;
 use Drupal\Core\Field\FormatterPluginManager;
@@ -18,6 +19,8 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 
 final class FieldDefinitionCommands extends DrushCommands
 {
+    use AutowireTrait;
+
     const TYPES = 'field:types';
     const WIDGETS = 'field:widgets';
     const FORMATTERS = 'field:formatters';
@@ -28,17 +31,6 @@ final class FieldDefinitionCommands extends DrushCommands
         private readonly FormatterPluginManager $formatterPluginManager,
     ) {
         parent::__construct();
-    }
-
-    public static function create(ContainerInterface $container): self
-    {
-        $commandHandler = new static(
-            $container->get('plugin.manager.field.field_type'),
-            $container->get('plugin.manager.field.widget'),
-            $container->get('plugin.manager.field.formatter')
-        );
-
-        return $commandHandler;
     }
 
     #[CLI\Command(name: self::TYPES)]

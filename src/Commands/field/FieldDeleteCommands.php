@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Drush\Commands\field;
 
+use Drupal\Core\DependencyInjection\AutowireTrait;
 use Drupal\Core\Entity\EntityTypeBundleInfo;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\field\Entity\FieldConfig;
@@ -13,15 +14,14 @@ use Drush\Commands\DrushCommands;
 use Symfony\Component\Console\Completion\CompletionInput;
 use Symfony\Component\Console\Completion\CompletionSuggestions;
 use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 use function count;
 use function dt;
 use function field_purge_batch;
-use function t;
 
 class FieldDeleteCommands extends DrushCommands
 {
+    use AutowireTrait;
     use EntityTypeBundleAskTrait;
     use EntityTypeBundleValidationTrait;
 
@@ -29,16 +29,6 @@ class FieldDeleteCommands extends DrushCommands
         protected EntityTypeManagerInterface $entityTypeManager,
         protected EntityTypeBundleInfo $entityTypeBundleInfo
     ) {
-    }
-
-    public static function create(ContainerInterface $container): self
-    {
-        $commandHandler = new static(
-            $container->get('entity_type.manager'),
-            $container->get('entity_type.bundle.info')
-        );
-
-        return $commandHandler;
     }
 
     /**

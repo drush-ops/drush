@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Drush\Commands\field;
 
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
+use Drupal\Core\DependencyInjection\AutowireTrait;
 use Drupal\Core\Entity\EntityFieldManagerInterface;
 use Drupal\Core\Entity\EntityTypeBundleInfoInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
@@ -12,10 +13,11 @@ use Drush\Attributes as CLI;
 use Drush\Commands\DrushCommands;
 use Symfony\Component\Console\Completion\CompletionInput;
 use Symfony\Component\Console\Completion\CompletionSuggestions;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class FieldBaseInfoCommands extends DrushCommands
 {
+    use AutowireTrait;
+
     use EntityTypeBundleAskTrait;
     use EntityTypeBundleValidationTrait;
     use FieldDefinitionRowsOfFieldsTrait;
@@ -25,17 +27,6 @@ class FieldBaseInfoCommands extends DrushCommands
         protected EntityTypeBundleInfoInterface $entityTypeBundleInfo,
         protected EntityFieldManagerInterface $entityFieldManager
     ) {
-    }
-
-    public static function create(ContainerInterface $container): self
-    {
-        $commandHandler = new static(
-            $container->get('entity_type.manager'),
-            $container->get('entity_type.bundle.info'),
-            $container->get('entity_field.manager')
-        );
-
-        return $commandHandler;
     }
 
     /**

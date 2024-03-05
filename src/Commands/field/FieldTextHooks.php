@@ -5,6 +5,7 @@ namespace Drush\Commands\field;
 use Consolidation\AnnotatedCommand\AnnotationData;
 use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\AnnotatedCommand\Hooks\HookManager;
+use Drupal\Core\DependencyInjection\AutowireTrait;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Field\FieldTypePluginManagerInterface;
 use Drupal\text\Plugin\Field\FieldType\TextItemBase;
@@ -18,6 +19,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class FieldTextHooks extends DrushCommands
 {
+    use AutowireTrait;
     use EntityTypeBundleValidationTrait;
 
     public function __construct(
@@ -25,15 +27,6 @@ class FieldTextHooks extends DrushCommands
         protected FieldTypePluginManagerInterface $fieldTypePluginManager,
     ) {
     }
-
-    public static function create(ContainerInterface $container): static
-    {
-        return new static(
-            $container->get('entity_type.manager'),
-            $container->get('plugin.manager.field.field_type'),
-        );
-    }
-
 
     #[CLI\Hook(type: HookManager::OPTION_HOOK, target: FieldCreateCommands::CREATE)]
     public function hookOption(Command $command, AnnotationData $annotationData): void

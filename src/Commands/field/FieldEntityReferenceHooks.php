@@ -3,30 +3,22 @@
 namespace Drush\Commands\field;
 
 use Consolidation\AnnotatedCommand\Hooks\HookManager;
+use Drupal\Core\DependencyInjection\AutowireTrait;
 use Drupal\Core\Entity\EntityTypeBundleInfoInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drush\Attributes as CLI;
 use Drush\Commands\DrushCommands;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Question\ChoiceQuestion;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class FieldEntityReferenceHooks extends DrushCommands
 {
+    use AutowireTrait;
     use EntityTypeBundleValidationTrait;
 
     public function __construct(
         protected EntityTypeManagerInterface $entityTypeManager,
         protected EntityTypeBundleInfoInterface $entityTypeBundleInfo,
     ) {
-    }
-
-    public static function create(ContainerInterface $container): static
-    {
-        return new static(
-            $container->get('entity_type.manager'),
-            $container->get('entity_type.bundle.info'),
-        );
     }
 
     #[CLI\Hook(type: HookManager::ON_EVENT, target: 'field-create-field-storage')]

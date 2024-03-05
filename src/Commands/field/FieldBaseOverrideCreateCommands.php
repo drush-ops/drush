@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Drush\Commands\field;
 
+use Drupal\Core\DependencyInjection\AutowireTrait;
 use Drupal\Core\Entity\EntityFieldManagerInterface;
 use Drupal\Core\Entity\EntityTypeBundleInfoInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
@@ -24,23 +25,13 @@ class FieldBaseOverrideCreateCommands extends DrushCommands
 {
     use EntityTypeBundleAskTrait;
     use EntityTypeBundleValidationTrait;
+    use AutowireTrait;
 
     public function __construct(
         protected EntityTypeManagerInterface $entityTypeManager,
         protected EntityTypeBundleInfoInterface $entityTypeBundleInfo,
         protected EntityFieldManagerInterface $entityFieldManager
     ) {
-    }
-
-    public static function create(ContainerInterface $container): self
-    {
-        $commandHandler = new static(
-            $container->get('entity_type.manager'),
-            $container->get('entity_type.bundle.info'),
-            $container->get('entity_field.manager')
-        );
-
-        return $commandHandler;
     }
 
     /**
