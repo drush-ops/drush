@@ -43,8 +43,8 @@ final class DrupalCommands extends DrushCommands
     public function __construct(
         protected CronInterface $cron,
         protected ModuleHandlerInterface $moduleHandler,
-        protected RouteProviderInterface $routeProvider)
-    {
+        protected RouteProviderInterface $routeProvider
+    ) {
         parent::__construct();
     }
 

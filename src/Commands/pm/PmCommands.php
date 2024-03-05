@@ -24,7 +24,6 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 
 final class PmCommands extends DrushCommands
 {
-
     use AutowireTrait;
 
     const INSTALL = 'pm:install';
