@@ -15,6 +15,7 @@ use Drush\Attributes as CLI;
 use Drush\Commands\DrushCommands;
 use Symfony\Component\Console\Completion\CompletionInput;
 use Symfony\Component\Console\Completion\CompletionSuggestions;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 final class FieldDefinitionCommands extends DrushCommands
@@ -27,7 +28,10 @@ final class FieldDefinitionCommands extends DrushCommands
 
     public function __construct(
         private readonly FieldTypePluginManagerInterface $typePluginManager,
+        // @todo These attributes should not be needed but services aren't found otherwise.
+        #[Autowire(service: 'plugin.manager.field.widget')]
         private readonly WidgetPluginManager $widgetPluginManager,
+        #[Autowire(service: 'plugin.manager.field.formatter')]
         private readonly FormatterPluginManager $formatterPluginManager,
     ) {
         parent::__construct();

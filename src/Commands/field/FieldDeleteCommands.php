@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Drush\Commands\field;
 
 use Drupal\Core\DependencyInjection\AutowireTrait;
-use Drupal\Core\Entity\EntityTypeBundleInfo;
+use Drupal\Core\Entity\EntityTypeBundleInfoInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\field\Entity\FieldConfig;
 use Drupal\field\FieldConfigInterface;
@@ -27,7 +27,7 @@ class FieldDeleteCommands extends DrushCommands
 
     public function __construct(
         protected EntityTypeManagerInterface $entityTypeManager,
-        protected EntityTypeBundleInfo $entityTypeBundleInfo
+        protected EntityTypeBundleInfoInterface $entityTypeBundleInfo
     ) {
     }
 
