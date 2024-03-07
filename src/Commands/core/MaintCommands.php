@@ -6,13 +6,10 @@ namespace Drush\Commands\core;
 
 use Drupal\Core\State\StateInterface;
 use Drush\Attributes as CLI;
-use Drush\Commands\AutowireTrait;
 use Drush\Commands\DrushCommands;
 
 final class MaintCommands extends DrushCommands
 {
-    use AutowireTrait;
-
     const KEY = 'system.maintenance_mode';
     const GET = 'maint:get';
     const SET = 'maint:set';

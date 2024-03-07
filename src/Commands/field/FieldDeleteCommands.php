@@ -9,7 +9,6 @@ use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\field\Entity\FieldConfig;
 use Drupal\field\FieldConfigInterface;
 use Drush\Attributes as CLI;
-use Drush\Commands\AutowireTrait;
 use Drush\Commands\DrushCommands;
 use Symfony\Component\Console\Completion\CompletionInput;
 use Symfony\Component\Console\Completion\CompletionSuggestions;
@@ -21,7 +20,6 @@ use function field_purge_batch;
 
 class FieldDeleteCommands extends DrushCommands
 {
-    use AutowireTrait;
     use EntityTypeBundleAskTrait;
     use EntityTypeBundleValidationTrait;
 

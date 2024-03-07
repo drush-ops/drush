@@ -6,14 +6,11 @@ namespace Drush\Commands\pm;
 
 use Drupal\Core\Extension\ThemeInstallerInterface;
 use Drush\Attributes as CLI;
-use Drush\Commands\AutowireTrait;
 use Drush\Commands\DrushCommands;
 use Drush\Utils\StringUtils;
 
 final class ThemeCommands extends DrushCommands
 {
-    use AutowireTrait;
-
     const INSTALL = 'theme:install';
     const UNINSTALL = 'theme:uninstall';
 

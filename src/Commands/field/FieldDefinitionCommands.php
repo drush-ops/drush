@@ -10,7 +10,6 @@ use Drupal\Core\Field\FieldTypePluginManagerInterface;
 use Drupal\Core\Field\FormatterPluginManager;
 use Drupal\Core\Field\WidgetPluginManager;
 use Drush\Attributes as CLI;
-use Drush\Commands\AutowireTrait;
 use Drush\Commands\DrushCommands;
 use Symfony\Component\Console\Completion\CompletionInput;
 use Symfony\Component\Console\Completion\CompletionSuggestions;
@@ -18,8 +17,6 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 final class FieldDefinitionCommands extends DrushCommands
 {
-    use AutowireTrait;
-
     const TYPES = 'field:types';
     const WIDGETS = 'field:widgets';
     const FORMATTERS = 'field:formatters';

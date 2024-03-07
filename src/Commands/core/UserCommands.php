@@ -13,7 +13,6 @@ use Drupal\Core\Datetime\DateFormatterInterface;
 use Drupal\user\Entity\Role;
 use Drupal\user\Entity\User;
 use Drush\Attributes as CLI;
-use Drush\Commands\AutowireTrait;
 use Drush\Commands\DrushCommands;
 use Drush\Utils\StringUtils;
 use Symfony\Component\Console\Completion\CompletionInput;
@@ -21,8 +20,6 @@ use Symfony\Component\Console\Completion\CompletionSuggestions;
 
 final class UserCommands extends DrushCommands
 {
-    use AutowireTrait;
-
     const INFORMATION = 'user:information';
     const BLOCK = 'user:block';
     const UNBLOCK = 'user:unblock';

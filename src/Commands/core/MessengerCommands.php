@@ -7,14 +7,11 @@ namespace Drush\Commands\core;
 use Consolidation\AnnotatedCommand\Hooks\HookManager;
 use Drupal\Core\Messenger\MessengerInterface;
 use Drush\Attributes as CLI;
-use Drush\Commands\AutowireTrait;
 use Drush\Commands\DrushCommands;
 use Drush\Drupal\DrupalUtil;
 
 final class MessengerCommands extends DrushCommands
 {
-    use AutowireTrait;
-
     public function __construct(protected MessengerInterface $messenger)
     {
     }

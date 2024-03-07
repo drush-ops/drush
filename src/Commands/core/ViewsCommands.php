@@ -12,14 +12,11 @@ use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Render\RendererInterface;
 use Drupal\views\Views;
 use Drush\Attributes as CLI;
-use Drush\Commands\AutowireTrait;
 use Drush\Commands\DrushCommands;
 use Drush\Utils\StringUtils;
 
 final class ViewsCommands extends DrushCommands
 {
-    use AutowireTrait;
-
     const DEV = 'views:dev';
     const EXECUTE = 'views:execute';
     const LIST = 'views:list';

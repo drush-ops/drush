@@ -22,7 +22,6 @@ use Drupal\Core\Config\StorageInterface;
 use Drupal\Core\Config\StorageManagerInterface;
 use Drupal\Core\Site\Settings;
 use Drush\Attributes as CLI;
-use Drush\Commands\AutowireTrait;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Drush\Exec\ExecTrait;
@@ -40,7 +39,6 @@ use Symfony\Component\Yaml\Parser;
 
 final class ConfigCommands extends DrushCommands implements StdinAwareInterface
 {
-    use AutowireTrait;
     use StdinAwareTrait;
     use ExecTrait;
 

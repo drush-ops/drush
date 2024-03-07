@@ -8,7 +8,6 @@ use Consolidation\SiteAlias\SiteAliasManagerInterface;
 use Consolidation\SiteProcess\Util\Escape;
 use Drush\Attributes as CLI;
 use Drush\Boot\DrupalBootLevels;
-use Drush\Commands\AutowireTrait;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Drush\Exec\ExecTrait;
@@ -17,7 +16,6 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 final class EditCommands extends DrushCommands
 {
-    use AutowireTrait;
     use ExecTrait;
 
     const EDIT = 'core:edit';

@@ -14,15 +14,12 @@ use Drupal\Core\Queue\QueueWorkerManagerInterface;
 use Drupal\Core\Queue\RequeueException;
 use Drupal\Core\Queue\SuspendQueueException;
 use Drush\Attributes as CLI;
-use Drush\Commands\AutowireTrait;
 use Drush\Commands\DrushCommands;
 use Symfony\Component\Console\Completion\CompletionInput;
 use Symfony\Component\Console\Completion\CompletionSuggestions;
 
 final class QueueCommands extends DrushCommands
 {
-    use AutowireTrait;
-
     const RUN = 'queue:run';
     const LIST = 'queue:list';
     const DELETE = 'queue:delete';

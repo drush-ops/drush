@@ -7,24 +7,20 @@ namespace Drush\Commands\core;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Drupal\Core\DrupalKernelInterface;
 use Drupal\Core\Extension\ExtensionList;
+use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\PhpStorage\PhpStorageFactory;
 use Drupal\Core\State\StateInterface;
 use Drupal\Core\Template\TwigEnvironment;
 use Drush\Attributes as CLI;
-use Drush\Commands\AutowireTrait;
 use Drush\Commands\DrushCommands;
-use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drush\Drush;
 use Drush\Utils\StringUtils;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Filesystem\Path;
 use Symfony\Component\Finder\Finder;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 final class TwigCommands extends DrushCommands
 {
-    use AutowireTrait;
-
     const UNUSED = 'twig:unused';
     const COMPILE = 'twig:compile';
     const DEBUG = 'twig:debug';

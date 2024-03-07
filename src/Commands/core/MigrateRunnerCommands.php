@@ -11,7 +11,6 @@ use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Drupal\Component\Plugin\Exception\PluginException;
 use Drupal\Core\Datetime\DateFormatterInterface;
 use Drupal\Core\KeyValueStore\KeyValueFactoryInterface;
-use Drupal\Core\KeyValueStore\KeyValueStoreInterface;
 use Drupal\migrate\Exception\RequirementsException;
 use Drupal\migrate\MigrateMessageInterface;
 use Drupal\migrate\Plugin\MigrateIdMapInterface;
@@ -19,7 +18,6 @@ use Drupal\migrate\Plugin\MigrationInterface;
 use Drupal\migrate\Plugin\MigrationPluginManagerInterface;
 use Drupal\migrate\Plugin\RequirementsInterface;
 use Drush\Attributes as CLI;
-use Drush\Commands\AutowireTrait;
 use Drush\Commands\DrushCommands;
 use Drush\Drupal\Migrate;
 use Drush\Drupal\Migrate\MigrateExecutable;
@@ -28,13 +26,10 @@ use Drush\Drupal\Migrate\MigrateUtils;
 use Drush\Drush;
 use Drush\Utils\StringUtils;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Filesystem\Path;
 
 class MigrateRunnerCommands extends DrushCommands
 {
-    use AutowireTrait;
-
     protected ?MigrationPluginManagerInterface $migrationPluginManager = null;
 
     public function __construct(

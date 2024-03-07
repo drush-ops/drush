@@ -7,27 +7,23 @@ namespace Drush\Commands\core;
 use Consolidation\AnnotatedCommand\Hooks\HookManager;
 use Consolidation\OutputFormatters\StructuredData\PropertyList;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
+use Drupal\Component\Utility\Html;
+use Drupal\Component\Utility\Unicode;
 use Drupal\Core\Database\Connection;
 use Drupal\Core\Logger\RfcLogLevel;
 use Drupal\Core\Session\AnonymousUserSession;
 use Drupal\user\Entity\User;
 use Drush\Attributes as CLI;
-use Drush\Commands\AutowireTrait;
+use Drush\Boot\DrupalBootLevels;
 use Drush\Commands\DrushCommands;
-use Drupal\Component\Utility\Unicode;
-use Drupal\Component\Utility\Html;
 use Drush\Drupal\DrupalUtil;
 use Drush\Exceptions\UserAbortException;
 use Symfony\Component\Console\Completion\CompletionInput;
 use Symfony\Component\Console\Completion\CompletionSuggestions;
 use Symfony\Component\Console\Output\OutputInterface;
-use Drush\Boot\DrupalBootLevels;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 final class WatchdogCommands extends DrushCommands
 {
-    use AutowireTrait;
-
     const SHOW = 'watchdog:show';
     const LIST = 'watchdog:list';
     const TAIL = 'watchdog:tail';

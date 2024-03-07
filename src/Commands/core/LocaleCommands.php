@@ -14,7 +14,6 @@ use Drupal\Core\Language\LanguageManagerInterface;
 use Drupal\Core\State\StateInterface;
 use Drupal\language\Entity\ConfigurableLanguage;
 use Drupal\locale\PoDatabaseReader;
-use Drush\Commands\AutowireTrait;
 use Drush\Attributes as CLI;
 use Drush\Commands\DrushCommands;
 use Drush\Exceptions\CommandFailedException;
@@ -22,8 +21,6 @@ use Drush\Utils\StringUtils;
 
 final class LocaleCommands extends DrushCommands
 {
-    use AutowireTrait;
-
     const CHECK = 'locale:check';
     const CLEAR = 'locale:clear-status';
     const UPDATE = 'locale:update';

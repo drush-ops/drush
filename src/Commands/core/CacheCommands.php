@@ -21,7 +21,6 @@ use Drupal\Core\Theme\Registry;
 use Drush\Attributes as CLI;
 use Drush\Boot\BootstrapManager;
 use Drush\Boot\DrupalBootLevels;
-use Drush\Commands\AutowireTrait;
 use Drush\Commands\DrushCommands;
 use Drush\Runtime\DependencyInjection;
 use Drush\Utils\StringUtils;
@@ -33,7 +32,6 @@ use Symfony\Component\Filesystem\Exception\IOException;
  */
 final class CacheCommands extends DrushCommands implements CustomEventAwareInterface, StdinAwareInterface
 {
-    use AutowireTrait;
     use CustomEventAwareTrait;
     use StdinAwareTrait;
 

@@ -6,13 +6,11 @@ use Consolidation\AnnotatedCommand\Hooks\HookManager;
 use Drupal\Core\Entity\EntityTypeBundleInfoInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drush\Attributes as CLI;
-use Drush\Commands\AutowireTrait;
 use Drush\Commands\DrushCommands;
 use Symfony\Component\Console\Input\InputInterface;
 
 class FieldEntityReferenceHooks extends DrushCommands
 {
-    use AutowireTrait;
     use EntityTypeBundleValidationTrait;
 
     public function __construct(

@@ -9,7 +9,6 @@ use Consolidation\SiteProcess\Util\Shell;
 use Consolidation\SiteProcess\Util\Tty;
 use Drush\Attributes as CLI;
 use Drush\Boot\DrupalBootLevels;
-use Drush\Commands\AutowireTrait;
 use Drush\Commands\DrushCommands;
 use Drush\Runtime\DependencyInjection;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
@@ -17,8 +16,6 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
 #[CLI\Bootstrap(DrupalBootLevels::NONE)]
 final class SshCommands extends DrushCommands
 {
-    use AutowireTrait;
-
     const SSH = 'site:ssh';
 
     public function __construct(

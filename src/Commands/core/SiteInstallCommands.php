@@ -17,7 +17,6 @@ use Drush\Attributes as CLI;
 use Drush\Boot\BootstrapManager;
 use Drush\Boot\DrupalBootLevels;
 use Drush\Boot\Kernels;
-use Drush\Commands\AutowireTrait;
 use Drush\Commands\DrushCommands;
 use Drush\Exceptions\UserAbortException;
 use Drush\Exec\ExecTrait;
@@ -31,7 +30,6 @@ use Symfony\Component\Filesystem\Path;
 #[CLI\Bootstrap(DrupalBootLevels::NONE)]
 final class SiteInstallCommands extends DrushCommands
 {
-    use AutowireTrait;
     use ExecTrait;
 
     const INSTALL = 'site:install';
