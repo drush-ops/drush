@@ -10,6 +10,7 @@ use Consolidation\OutputFormatters\StructuredData\PropertyList;
 use Consolidation\SiteAlias\HostPath;
 use Consolidation\SiteAlias\SiteAliasManagerInterface;
 use Drush\Attributes as CLI;
+use Drush\Boot\DrupalBootLevels;
 use Drush\Commands\AutowireTrait;
 use Drush\Commands\core\DocsCommands;
 use Drush\Commands\core\RsyncCommands;
@@ -18,6 +19,7 @@ use Drush\Drush;
 use Drush\Runtime\DependencyInjection;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
+#[CLI\Bootstrap(DrupalBootLevels::NONE)]
 final class ConfigPullCommands extends DrushCommands
 {
     use AutowireTrait;
