@@ -25,6 +25,7 @@ use Drush\Drupal\Migrate;
 use Drush\Drupal\Migrate\MigrateExecutable;
 use Drush\Drupal\Migrate\MigrateMessage;
 use Drush\Drupal\Migrate\MigrateUtils;
+use Drush\Drush;
 use Drush\Utils\StringUtils;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -34,17 +35,21 @@ class MigrateRunnerCommands extends DrushCommands
 {
     use AutowireTrait;
 
-    protected KeyValueStoreInterface $keyValue;
     protected ?MigrationPluginManagerInterface $migrationPluginManager = null;
 
     public function __construct(
         protected DateFormatterInterface $dateFormatter,
         // @todo Can we avoid the autowire attribute here?
         #[Autowire(service: 'keyvalue')]
-        KeyValueFactoryInterface $keyValueFactory
+        protected KeyValueFactoryInterface $keyValueFactory
     ) {
         parent::__construct();
         $this->keyValue = $keyValueFactory->get('migrate_last_imported');
+
+        $container = Drush::getContainer();
+        if ($container->has('plugin.manager.migration')) {
+            $this->setMigrationPluginManager($container->get('plugin.manager.migration'));
+        }
     }
 
     /**
