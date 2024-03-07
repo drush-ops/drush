@@ -10,15 +10,15 @@ Drush command files obtain references to the resources they need through a techn
 Autowire
 ------------------
 :octicons-tag-24: 13
-Command files may inject services by adding the Drupal [AutowireTrait](https://github.com/drush-ops/drush/blob/13.x/src/Commands/AutowireTrait.php) to their command class. This way, constructor parameter type hints determine the the injected service. When a type hint is insufficient, an [#[Autowire] Attribute](https://www.drupal.org/node/3396179) on the constructor property (with _service:_ named argument) can direct AutoWireTrait to the right service. This Attribute is currently required when injecting Drsuh services (as opposed to Drupal services). 
+Command files may inject Drush and Drupal services via [AutowireTrait](https://github.com/drush-ops/drush/blob/13.x/src/Commands/AutowireTrait.php) which is available is implemented by the base [DrushCommands](https://github.com/drush-ops/drush/blob/13.x/src/Commands/DrushCommands.php) class. [Constructor parameter type hints determine the the injected service](https://www.drupal.org/node/3396179). When a type hint is insufficient, an [#[Autowire] Attribute](https://www.drupal.org/node/3396179) on the constructor property (with _service:_ named argument) directs AutoWireTrait to the right service. This Attribute is currently _required_ when injecting Drush services (not required for Drupal services). 
 
-If your commandfile is not found by Drush, add the `-vvv` option for debug info about any service instantiation errors. If Autowire is still insufficient, a commandfile may omit AutowireTrait and implement its own `create()` method (see below).
+If your command is not found by Drush, add the `-vvv` option for debug info about any service instantiation errors. If Autowire is still insufficient, a commandfile may implement its own `create()` method (see below).
 
 create() method
 ------------------
 :octicons-tag-24: 11.6+
 
-Command files may inject services by adding a create() method to the commandfile. See [creating commands](commands.md) for instructions on how to use the Drupal Code Generator to create a simple command file starter. A create() method and a constructor will look something like this:
+Command files not using Autowire may inject services by adding a create() method to the commandfile. A create() method and a constructor will look something like this:
 ```php
 class WootStaticFactoryCommands extends DrushCommands
 {
@@ -34,7 +34,7 @@ class WootStaticFactoryCommands extends DrushCommands
         return new static($container->get('config.factory'));
     }
 ```
-See the [Drupal Documentation](https://www.drupal.org/docs/drupal-apis/services-and-dependency-injection/services-and-dependency-injection-in-drupal-8#s-injecting-dependencies-into-controllers-forms-and-blocks) for details on how to inject Drupal services into your command file. Drush's approach mimics Drupal's blocks, forms, and controllers.
+See the [Drupal Documentation](https://www.drupal.org/docs/drupal-apis/services-and-dependency-injection/services-and-dependency-injection-in-drupal-8#s-injecting-dependencies-into-controllers-forms-and-blocks) for details on how to inject Drupal services into your command file. This approach mimics Drupal's blocks, forms, and controllers.
 
 createEarly() method
 ------------------

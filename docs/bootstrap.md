@@ -43,7 +43,7 @@ Bootstrapping is done from a Symfony Console command hook. The different bootstr
 
 none
 -----------------------
-Only run Drush _preflight_, without considering Drupal at all. Any code that operates on the Drush installation, and not specifically any Drupal directory, should bootstrap to this phase. This Attribute and value may also be used on a command class when it wants to load before Drupal bootstrap is started. Commands that ship inside Drupal modules always bootstrap, regardless of this Attribute.
+Only run Drush _preflight_, without considering Drupal at all. Any code that operates on the Drush installation, and not specifically any Drupal directory, should bootstrap to this phase. This Attribute and value may also be used on a command _class_ when it wants to load before Drupal bootstrap is started. Commands that ship inside Drupal modules always bootstrap to full, regardless of _none_ value.
 
 root
 ------------------------------

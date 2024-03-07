@@ -5,7 +5,6 @@ namespace Drupal\{{ machine_name }}\Drush\Commands;
 
 {% sort %}
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
-use Drupal\Core\DependencyInjection\AutowireTrait;
 use Drush\Attributes as CLI;
 use Drush\Commands\DrushCommands;
   {% if services %}
@@ -18,8 +17,6 @@ use Drush\Commands\DrushCommands;
  */
 final class {{ class }} extends DrushCommands {
 {% if services %}
-  // https://www.drupal.org/node/3396179 shows how to use this trait to inject dependencies.
-  use AutowireTrait;
 
   /**
    * Constructs {{ class|article }} object.
