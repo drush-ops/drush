@@ -100,7 +100,6 @@ jobs:
               - equal: [ stable, << parameters.release >> ]
           steps:
             - run: composer -n install
-            - run: composer -n require --dev drupal/core-recommended:10.2.x-dev -W
       - unless:
           condition:
             and:
