@@ -10,7 +10,9 @@ Drush command files obtain references to the resources they need through a techn
 Autowire
 ------------------
 :octicons-tag-24: 13
-Command files may inject services by adding the Drupal [AutowireTrait](https://github.com/drush-ops/drush/blob/13.x/src/Commands/AutowireTrait.php) to their command class. This way, constructor parameter type hints determine the the injected service. When a type hint is insufficient, an [#[Autowire] Attribute](https://www.drupal.org/node/3396179) on the constructor property (with _service:_ named argument) can direct AutoWireTrait to the right service. If your commandfile is not found by Drush, add the `-vvv` option for debug info about any service instantiation errors. If Autowire is still insufficient, a commandfile may omit Autowire and implement its own `create()` method (see below).
+Command files may inject services by adding the Drupal [AutowireTrait](https://github.com/drush-ops/drush/blob/13.x/src/Commands/AutowireTrait.php) to their command class. This way, constructor parameter type hints determine the the injected service. When a type hint is insufficient, an [#[Autowire] Attribute](https://www.drupal.org/node/3396179) on the constructor property (with _service:_ named argument) can direct AutoWireTrait to the right service. This Attribute is currently required when injecting Drsuh services (as opposed to Drupal services). 
+
+If your commandfile is not found by Drush, add the `-vvv` option for debug info about any service instantiation errors. If Autowire is still insufficient, a commandfile may omit AutowireTrait and implement its own `create()` method (see below).
 
 create() method
 ------------------
@@ -37,16 +39,13 @@ See the [Drupal Documentation](https://www.drupal.org/docs/drupal-apis/services-
 createEarly() method
 ------------------
 :octicons-tag-24: 12.0+
-Drush commands that need to be instantiated prior to bootstrap may do so by
-utilizing the `createEarly()` static factory. This method looks and functions
-exacty like the `create()` static factory, except it is only passed the Drush
-container. The Drupal container is not available to command handlers that use
-`createEarly()`.
+!!! tip
 
-Note also that Drush commands packaged with Drupal modules are not discovered
-until after Drupal bootstraps, and therefore cannot use `createEarly()`. This
-mechanism is only usable by PSR-4 discovered commands packaged with Composer
-projects that are *not* Drupal modules.
+    Drush 12 supported a createEarly() method. This is replaced in Drush 13+ by putting `#[CLI\Bootstrap(DrupalBootLevels::NONE)]` Attribute on the command class and injecting dependencies via the usual `__construct` with AutowireTrait. Note also that Drush commands packaged with Drupal modules are not discovered
+    until after Drupal bootstraps, and therefore cannot use `createEarly()`. This
+    mechanism is only usable by PSR-4 discovered commands packaged with Composer
+    projects that are *not* Drupal modules.
+
 
 Inflection
 -----------------

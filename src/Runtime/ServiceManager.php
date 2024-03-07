@@ -107,9 +107,9 @@ class ServiceManager
             [FilterHooks::class]
         ));
 
-        // If a command class has a static `create` method, then we will
+        // If a command class has a Bootstrap Attribute, then we will
         // postpone instantiating it until after we bootstrap Drupal.
-        $this->bootstrapCommandClasses = array_filter($commandClasses, [$this, 'hasStaticCreateFactory']);
+        $this->bootstrapCommandClasses = array_filter($commandClasses, [$this, 'requiresBootstrap']);
 
         // Remove the command classes that we put into the bootstrap command classes.
         $commandClasses = array_diff($commandClasses, $this->bootstrapCommandClasses);
@@ -352,7 +352,7 @@ class ServiceManager
      */
     protected function hasStaticCreateFactory(string $class): bool
     {
-        return static::hasStaticMethod($class, 'create') && !static::hasBootStrapAttributeNone($class);
+        return static::hasStaticMethod($class, 'create');
     }
 
     /**
@@ -369,6 +369,14 @@ class ServiceManager
         } catch (\ReflectionException $e) {
         }
         return false;
+    }
+
+    /**
+     * Check whether a command class requires Drupal bootstrap.
+     */
+    protected function requiresBootstrap(string $class): bool
+    {
+        return $this->hasStaticCreateFactory($class) && !$this->hasBootStrapAttributeNone($class);
     }
 
     /**
