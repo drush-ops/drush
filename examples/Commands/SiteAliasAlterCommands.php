@@ -6,28 +6,22 @@ use Consolidation\AnnotatedCommand\AnnotationData;
 use Consolidation\AnnotatedCommand\Hooks\HookManager;
 use Consolidation\SiteAlias\SiteAliasManagerInterface;
 use Drush\Attributes as CLI;
+use Drush\Boot\DrupalBootLevels;
 use Drush\Runtime\DependencyInjection;
-use League\Container\Container as DrushContainer;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 /**
  * Load this example by using the --include option - e.g. `drush --include=/path/to/drush/examples`
  */
+#[CLI\Bootstrap(DrupalBootLevels::NONE)]
 class SiteAliasAlterCommands extends DrushCommands
 {
     public function __construct(
+        #[Autowire(service: DependencyInjection::SITE_ALIAS_MANAGER)]
         private readonly SiteAliasManagerInterface $siteAliasManager
     ) {
         parent::__construct();
-    }
-
-    public static function createEarly(DrushContainer $drush_container): self
-    {
-        $commandHandler = new static(
-            $drush_container->get(DependencyInjection::SITE_ALIAS_MANAGER),
-        );
-
-        return $commandHandler;
     }
 
     /**

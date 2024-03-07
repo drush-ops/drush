@@ -13,6 +13,8 @@ use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
 use Consolidation\SiteProcess\ProcessManagerAwareInterface;
 use Drupal\Component\DependencyInjection\ContainerInterface as DrupalContainer;
 use DrupalCodeGenerator\Command\BaseGenerator;
+use Drush\Attributes\Bootstrap;
+use Drush\Boot\DrupalBootLevels;
 use Drush\Commands\DrushCommands;
 use Drush\Config\DrushConfig;
 use Grasmash\YamlCli\Command\GetValueCommand;
@@ -324,8 +326,6 @@ class ServiceManager
             try {
                 if ($this->hasStaticCreateFactory($class)) {
                     $commandHandler = $class::create($drushContainer);
-                } elseif (!$container && $this->hasStaticCreateEarlyFactory($class)) {
-                    $commandHandler = $class::createEarly($drushContainer);
                 } else {
                     $commandHandler = new $class();
                 }
@@ -352,20 +352,23 @@ class ServiceManager
      */
     protected function hasStaticCreateFactory(string $class): bool
     {
-        return static::hasStaticMethod($class, 'create');
+        return static::hasStaticMethod($class, 'create') && !static::hasBootStrapAttributeNone($class);
     }
 
     /**
-     * Check to see if the provided class has a static `createEarly` method.
-     *
-     * @param string $class The name of the class to check
-     *
-     * @return bool
-     *   True if class has a static `createEarly` method.
+     * Check to see if the provided class has Bootstrap Attribute`indicating early loading.
      */
-    protected function hasStaticCreateEarlyFactory(string $class): bool
+    protected function hasBootStrapAttributeNone(string $class): bool
     {
-        return static::hasStaticMethod($class, 'createEarly');
+        try {
+            $reflection = new \ReflectionClass($class);
+            if ($attributes = $reflection->getAttributes(Bootstrap::class)) {
+                $bootstrap = $attributes[0]->newInstance();
+                return $bootstrap->level === DrupalBootLevels::NONE;
+            }
+        } catch (\ReflectionException $e) {
+        }
+        return false;
     }
 
     /**

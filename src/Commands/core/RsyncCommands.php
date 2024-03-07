@@ -11,13 +11,20 @@ use Consolidation\SiteAlias\SiteAliasManagerInterface;
 use Consolidation\SiteProcess\Util\Escape;
 use Drush\Attributes as CLI;
 use Drush\Backend\BackendPathEvaluator;
+use Drush\Boot\DrupalBootLevels;
+use Drush\Commands\AutowireTrait;
 use Drush\Commands\DrushCommands;
 use Drush\Config\ConfigLocator;
 use Drush\Exceptions\UserAbortException;
+use Drush\Runtime\DependencyInjection;
 use Symfony\Component\Console\Event\ConsoleCommandEvent;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
+#[CLI\Bootstrap(DrupalBootLevels::NONE)]
 final class RsyncCommands extends DrushCommands
 {
+    use AutowireTrait;
+
     /**
      * These are arguments after the aliases and paths have been evaluated.
      * @see validate().
@@ -30,21 +37,13 @@ final class RsyncCommands extends DrushCommands
     protected BackendPathEvaluator $pathEvaluator;
 
     public function __construct(
+        #[Autowire(service: DependencyInjection::SITE_ALIAS_MANAGER)]
         private readonly SiteAliasManagerInterface $siteAliasManager
     ) {
         parent::__construct();
         // TODO: once the BackendInvoke service exists, inject it here
         // and use it to get the path evaluator
         $this->pathEvaluator = new BackendPathEvaluator();
-    }
-
-    public static function createEarly($drush_container): self
-    {
-        $commandHandler = new static(
-            $drush_container->get('site.alias.manager')
-        );
-
-        return $commandHandler;
     }
 
     /**

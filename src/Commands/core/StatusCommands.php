@@ -16,30 +16,27 @@ use Drush\Attributes as CLI;
 use Drush\Boot\BootstrapManager;
 use Drush\Boot\DrupalBoot;
 use Drush\Boot\DrupalBootLevels;
+use Drush\Commands\AutowireTrait;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
+use Drush\Runtime\DependencyInjection;
 use Drush\Sql\SqlBase;
 use Drush\Utils\StringUtils;
-use League\Container\Container as DrushContainer;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Filesystem\Path;
 
+#[CLI\Bootstrap(DrupalBootLevels::NONE)]
 final class StatusCommands extends DrushCommands
 {
+    use AutowireTrait;
+
     const STATUS = 'core:status';
 
     public function __construct(
+        #[Autowire(service: DependencyInjection::SITE_ALIAS_MANAGER)]
         private readonly SiteAliasManagerInterface $siteAliasManager
     ) {
         parent::__construct();
-    }
-
-    public static function createEarly(DrushContainer $drush_container): self
-    {
-        $commandHandler = new static(
-            $drush_container->get('site.alias.manager'),
-        );
-
-        return $commandHandler;
     }
 
     /**

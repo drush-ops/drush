@@ -41,8 +41,6 @@ final class CacheCommands extends DrushCommands implements CustomEventAwareInter
     const TAGS = 'cache:tags';
     const CLEAR = 'cache:clear';
     const SET = 'cache:set';
-    // @deprecated. Use CacheRebuildCommands::REBUILD
-    const REBUILD = 'cache:rebuild';
     const EVENT_CLEAR = 'cache-clear';
 
     public function __construct(

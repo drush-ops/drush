@@ -28,6 +28,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Filesystem\Path;
 
+#[CLI\Bootstrap(DrupalBootLevels::NONE)]
 final class SiteInstallCommands extends DrushCommands
 {
     use AutowireTrait;
