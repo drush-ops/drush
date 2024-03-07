@@ -20,8 +20,6 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
 #[CLI\Bootstrap(DrupalBootLevels::NONE)]
 class TestFixtureCommands extends DrushCommands
 {
-    use AutowireTrait;
-
     protected function __construct(
         #[Autowire(service: DependencyInjection::LOADER)]
         private $autoloader
