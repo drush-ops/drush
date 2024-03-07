@@ -8,9 +8,10 @@ use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\AnnotatedCommand\Hooks\HookManager;
 use Consolidation\AnnotatedCommand\Input\StdinAwareInterface;
 use Consolidation\AnnotatedCommand\Input\StdinAwareTrait;
+use Consolidation\OutputFormatters\StructuredData\PropertyList;
 use Consolidation\SiteProcess\Util\Tty;
-use Drush\Attributes as CLI;
 use Drupal\Core\Database\Database;
+use Drush\Attributes as CLI;
 use Drush\Boot\DrupalBootLevels;
 use Drush\Commands\core\DocsCommands;
 use Drush\Commands\DrushCommands;
@@ -18,7 +19,6 @@ use Drush\Drush;
 use Drush\Exceptions\UserAbortException;
 use Drush\Exec\ExecTrait;
 use Drush\Sql\SqlBase;
-use Consolidation\OutputFormatters\StructuredData\PropertyList;
 use Symfony\Component\Console\Input\InputInterface;
 
 final class SqlCommands extends DrushCommands implements StdinAwareInterface
@@ -86,7 +86,7 @@ final class SqlCommands extends DrushCommands implements StdinAwareInterface
     #[CLI\Usage(name: 'drush sql:create --db-su=root --db-su-pw=rootpassword --db-url="mysql://drupal_db_user:drupal_db_password@127.0.0.1/drupal_db"', description: 'Create the database as specified in the db-url option.')]
     #[CLI\Bootstrap(level: DrupalBootLevels::MAX, max_level: DrupalBootLevels::CONFIGURATION)]
     #[CLI\OptionsetSql]
-    public function create($options = ['db-su' => self::REQ, 'db-su-pw' => self::REQ]): void
+    public function createDb($options = ['db-su' => self::REQ, 'db-su-pw' => self::REQ]): void
     {
         $sql = SqlBase::create($options);
         $db_spec = $sql->getDbSpec();
