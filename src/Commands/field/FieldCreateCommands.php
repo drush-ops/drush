@@ -15,7 +15,6 @@ use Drupal\Core\Entity\EntityTypeBundleInfoInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
-use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\Field\FieldStorageDefinitionInterface;
 use Drupal\Core\Field\FieldTypePluginManagerInterface;
 use Drupal\Core\Field\WidgetPluginManager;
@@ -24,14 +23,12 @@ use Drupal\field\FieldConfigInterface;
 use Drupal\field\FieldStorageConfigInterface;
 use Drush\Attributes as CLI;
 use Drush\Commands\DrushCommands;
+use Psr\Container\ContainerInterface;
 use Symfony\Component\Console\Completion\CompletionInput;
 use Symfony\Component\Console\Completion\CompletionSuggestions;
 use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Question\ChoiceQuestion;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 use function dt;
-use function t;
 
 class FieldCreateCommands extends DrushCommands implements CustomEventAwareInterface
 {
@@ -52,6 +49,7 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
         protected ModuleHandlerInterface $moduleHandler,
         protected EntityFieldManagerInterface $entityFieldManager
     ) {
+        parent::__construct();
     }
 
     public static function create(ContainerInterface $container): self

@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Drush\Commands\core;
 
 use Consolidation\AnnotatedCommand\Hooks\HookManager;
-use Drupal\Core\DependencyInjection\AutowireTrait;
 use Drupal\Core\Messenger\MessengerInterface;
 use Drush\Attributes as CLI;
+use Drush\Commands\AutowireTrait;
 use Drush\Commands\DrushCommands;
 use Drush\Drupal\DrupalUtil;
 

@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace Drush\Commands\core;
 
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
-use Drupal\Core\DependencyInjection\AutowireTrait;
 use Drupal\Core\DrupalKernelInterface;
 use Drupal\Core\Extension\ExtensionList;
 use Drupal\Core\PhpStorage\PhpStorageFactory;
 use Drupal\Core\State\StateInterface;
 use Drupal\Core\Template\TwigEnvironment;
 use Drush\Attributes as CLI;
+use Drush\Commands\AutowireTrait;
 use Drush\Commands\DrushCommands;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drush\Drush;

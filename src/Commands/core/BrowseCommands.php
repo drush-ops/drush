@@ -8,31 +8,25 @@ use Consolidation\SiteAlias\SiteAliasManagerInterface;
 use Drupal\Core\Url;
 use Drush\Attributes as CLI;
 use Drush\Boot\DrupalBootLevels;
+use Drush\Commands\AutowireTrait;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Drush\Exec\ExecTrait;
-use League\Container\Container as DrushContainer;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Drush\Runtime\DependencyInjection;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 final class BrowseCommands extends DrushCommands
 {
+    use AutowireTrait;
     use ExecTrait;
 
     const BROWSE = 'browse';
 
     public function __construct(
+        #[Autowire(service: DependencyInjection::SITE_ALIAS_MANAGER)]
         private SiteAliasManagerInterface $siteAliasManager
     ) {
         parent::__construct();
-    }
-
-    public static function create(ContainerInterface $container, DrushContainer $drush_container): self
-    {
-        $commandHandler = new static(
-            $drush_container->get('site.alias.manager'),
-        );
-
-        return $commandHandler;
     }
 
     /**

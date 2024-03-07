@@ -5,28 +5,29 @@ declare(strict_types=1);
 namespace Drush;
 
 use Composer\InstalledVersions;
-use Robo\Runner;
-use Robo\Robo;
-use Drush\Config\DrushConfig;
-use Drush\Boot\BootstrapManager;
-use Drush\Boot\Boot;
 use Consolidation\AnnotatedCommand\AnnotatedCommandFactory;
 use Consolidation\SiteAlias\SiteAliasInterface;
 use Consolidation\SiteAlias\SiteAliasManager;
 use Consolidation\SiteProcess\ProcessBase;
 use Consolidation\SiteProcess\SiteProcess;
+use Drush\Boot\Boot;
+use Drush\Boot\BootstrapManager;
+use Drush\Config\DrushConfig;
+use Drush\Preflight\PreflightArgs;
+use Drush\Runtime\DependencyInjection;
 use Drush\SiteAlias\ProcessManager;
 use Psr\Log\LoggerInterface;
+use Robo\Robo;
+use Robo\Runner;
 use RuntimeException;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Exception\InvalidArgumentException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+
 // TODO: Not sure if we should have a reference to PreflightArgs here.
 // Maybe these constants should be in config, and PreflightArgs can
 // reference them from there as well.
-use Drush\Preflight\PreflightArgs;
-use Symfony\Component\Process\Process;
 
 /**
  * Static Service Container wrapper.
@@ -231,7 +232,7 @@ class Drush
      */
     public static function aliasManager(): SiteAliasManager
     {
-        return self::service('site.alias.manager');
+        return self::service(DependencyInjection::SITE_ALIAS_MANAGER);
     }
 
     /**

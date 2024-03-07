@@ -19,40 +19,32 @@ use Drupal\migrate\Plugin\MigrationInterface;
 use Drupal\migrate\Plugin\MigrationPluginManagerInterface;
 use Drupal\migrate\Plugin\RequirementsInterface;
 use Drush\Attributes as CLI;
+use Drush\Commands\AutowireTrait;
 use Drush\Commands\DrushCommands;
 use Drush\Drupal\Migrate;
 use Drush\Drupal\Migrate\MigrateExecutable;
 use Drush\Drupal\Migrate\MigrateMessage;
 use Drush\Drupal\Migrate\MigrateUtils;
 use Drush\Utils\StringUtils;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Filesystem\Path;
 
 class MigrateRunnerCommands extends DrushCommands
 {
+    use AutowireTrait;
+
     protected KeyValueStoreInterface $keyValue;
     protected ?MigrationPluginManagerInterface $migrationPluginManager = null;
 
     public function __construct(
         protected DateFormatterInterface $dateFormatter,
+        // @todo Can we avoid the autowire attribute here?
+        #[Autowire(service: 'keyvalue')]
         KeyValueFactoryInterface $keyValueFactory
     ) {
         parent::__construct();
         $this->keyValue = $keyValueFactory->get('migrate_last_imported');
-    }
-
-    public static function create(ContainerInterface $container): self
-    {
-        $commandHandler = new static(
-            $container->get('date.formatter'),
-            $container->get('keyvalue')
-        );
-
-        if ($container->has('plugin.manager.migration')) {
-            $commandHandler->setMigrationPluginManager($container->get('plugin.manager.migration'));
-        }
-
-        return $commandHandler;
     }
 
     /**

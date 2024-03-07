@@ -7,9 +7,9 @@ namespace Drush\Commands\core;
 use Consolidation\AnnotatedCommand\Input\StdinAwareInterface;
 use Consolidation\AnnotatedCommand\Input\StdinAwareTrait;
 use Consolidation\OutputFormatters\StructuredData\PropertyList;
-use Drupal\Core\DependencyInjection\AutowireTrait;
 use Drupal\Core\State\StateInterface;
 use Drush\Attributes as CLI;
+use Drush\Commands\AutowireTrait;
 use Drush\Commands\DrushCommands;
 use Symfony\Component\Yaml\Yaml;
 

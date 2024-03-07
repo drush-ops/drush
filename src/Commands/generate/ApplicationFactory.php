@@ -10,9 +10,9 @@ use Drush\Commands\generate\Generators\Drush\DrushAliasFile;
 use Drush\Commands\generate\Generators\Drush\DrushCommandFile;
 use Drush\Commands\generate\Generators\Drush\DrushGenerator;
 use Drush\Runtime\ServiceManager;
+use Psr\Container\ContainerInterface;
 use Psr\Container\ContainerInterface as DrushContainer;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class ApplicationFactory
 {

@@ -313,12 +313,17 @@ class ServiceManager
             return !$reflection->isAbstract();
         });
 
+        // @todo where to do this?
+        // Combine the two containers.
+        if ($container) {
+            $drushContainer->delegate($container);
+        }
         foreach ($bootstrapCommandClasses as $class) {
             $commandHandler = null;
 
             try {
                 if ($container && $this->hasStaticCreateFactory($class)) {
-                    $commandHandler = $class::create($container, $drushContainer);
+                    $commandHandler = $class::create($drushContainer, $drushContainer);
                 } elseif (!$container && $this->hasStaticCreateEarlyFactory($class)) {
                     $commandHandler = $class::createEarly($drushContainer);
                 } else {
@@ -432,7 +437,7 @@ class ServiceManager
         }
         // These may be removed in future versions of Drush
         if ($object instanceof SiteAliasManagerAwareInterface) {
-            $object->setSiteAliasManager($container->get('site.alias.manager'));
+            $object->setSiteAliasManager($container->get(DependencyInjection::SITE_ALIAS_MANAGER));
         }
         if ($object instanceof StdinAwareInterface) {
             $object->setStdinHandler($container->get('stdinHandler'));

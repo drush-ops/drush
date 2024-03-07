@@ -6,6 +6,7 @@ use Consolidation\AnnotatedCommand\AnnotationData;
 use Consolidation\AnnotatedCommand\Hooks\HookManager;
 use Consolidation\SiteAlias\SiteAliasManagerInterface;
 use Drush\Attributes as CLI;
+use Drush\Runtime\DependencyInjection;
 use League\Container\Container as DrushContainer;
 use Symfony\Component\Console\Input\InputInterface;
 
@@ -23,7 +24,7 @@ class SiteAliasAlterCommands extends DrushCommands
     public static function createEarly(DrushContainer $drush_container): self
     {
         $commandHandler = new static(
-            $drush_container->get('site.alias.manager'),
+            $drush_container->get(DependencyInjection::SITE_ALIAS_MANAGER),
         );
 
         return $commandHandler;

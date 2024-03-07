@@ -7,31 +7,26 @@ namespace Drush\Commands\core;
 use Consolidation\SiteAlias\SiteAlias;
 use Consolidation\SiteAlias\SiteAliasManagerInterface;
 use Consolidation\SiteProcess\ProcessManager;
-use Drupal\Component\DependencyInjection\ContainerInterface;
 use Drush\Attributes as CLI;
 use Drush\Boot\DrupalBootLevels;
+use Drush\Commands\AutowireTrait;
 use Drush\Commands\config\ConfigImportCommands;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
-use League\Container\Container as DrushContainer;
+use Drush\Runtime\DependencyInjection;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 final class DeployCommands extends DrushCommands
 {
+    use AutowireTrait;
+
     const DEPLOY = 'deploy';
 
     public function __construct(
+        #[Autowire(service: DependencyInjection::SITE_ALIAS_MANAGER)]
         private readonly SiteAliasManagerInterface $siteAliasManager
     ) {
         parent::__construct();
-    }
-
-    public static function create(ContainerInterface $container, DrushContainer $drush_container): self
-    {
-        $commandHandler = new static(
-            $drush_container->get('site.alias.manager'),
-        );
-
-        return $commandHandler;
     }
 
     /**

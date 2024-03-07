@@ -7,6 +7,7 @@ namespace Drush\Commands\config;
 use Consolidation\AnnotatedCommand\Hooks\HookManager;
 use Drush\Boot\DrupalBootLevels;
 use Drush\Commands\core\DocsCommands;
+use Psr\Container\ContainerInterface;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Drush\Attributes as CLI;
 use Drupal\Core\Config\ImportStorageTransformer;
@@ -31,7 +32,6 @@ use Drupal\Core\StringTranslation\TranslationInterface;
 use Drush\Commands\DrushCommands;
 use Drush\Exceptions\UserAbortException;
 use Symfony\Component\Filesystem\Path;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class ConfigImportCommands extends DrushCommands
 {

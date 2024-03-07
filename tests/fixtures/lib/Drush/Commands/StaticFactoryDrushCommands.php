@@ -2,32 +2,23 @@
 
 namespace Custom\Library\Drush\Commands;
 
+use Drupal\Core\DrupalKernelInterface;
 use Drush\Attributes as CLI;
+use Drush\Commands\AutowireTrait;
 use Drush\Commands\DrushCommands;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-use Drupal\Core\DrupalKernel;
 
 /**
  * Composer library commandfiles discovered by virtue of being located
  * in Drush/Commands directory + namespace, relative to some entry in
  * the library's `autoload` section in its composer.json file.
- *
- * The static 'create' function (the static factory) is used to
- * initialize the command instance, similar to the pattern used
- * by Drupal forms.
  */
 class StaticFactoryDrushCommands extends DrushCommands
 {
-    protected DrupalKernel $kernel;
+    use AutowireTrait;
 
-    protected function __construct(DrupalKernel $kernel)
+    protected function __construct(protected DrupalKernelInterface $kernel)
     {
-        $this->kernel = $kernel;
-    }
-
-    public static function create(ContainerInterface $container): self
-    {
-        return new static($container->get('kernel'));
+        parent::__construct();
     }
 
     #[CLI\Command(name: 'site:path')]
