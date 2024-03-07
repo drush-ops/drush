@@ -322,8 +322,8 @@ class ServiceManager
             $commandHandler = null;
 
             try {
-                if ($container && $this->hasStaticCreateFactory($class)) {
-                    $commandHandler = $class::create($drushContainer, $drushContainer);
+                if ($this->hasStaticCreateFactory($class)) {
+                    $commandHandler = $class::create($drushContainer);
                 } elseif (!$container && $this->hasStaticCreateEarlyFactory($class)) {
                     $commandHandler = $class::createEarly($drushContainer);
                 } else {

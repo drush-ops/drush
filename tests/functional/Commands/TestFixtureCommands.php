@@ -12,17 +12,22 @@ namespace Drush\Commands;
 use Drupal\Core\DrupalKernel;
 use Drupal\Core\Site\Settings;
 use Drush\Drush;
-use Psr\Container\ContainerInterface as DrushContainer;
+use Drush\Runtime\DependencyInjection;
+use Psr\Container\ContainerInterface;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 class TestFixtureCommands extends DrushCommands
 {
+    use AutowireTrait;
+
     protected function __construct(
+        #[Autowire(service: DependencyInjection::LOADER)]
         private $autoloader
     ) {
         parent::__construct();
     }
 
-    public static function createEarly(DrushContainer $drush_container): self
+    public static function createEarly(ContainerInterface $drush_container): self
     {
         $commandHandler = new static(
             $drush_container->get('loader')

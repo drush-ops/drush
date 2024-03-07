@@ -10,29 +10,25 @@ use Consolidation\OutputFormatters\StructuredData\PropertyList;
 use Consolidation\SiteAlias\HostPath;
 use Consolidation\SiteAlias\SiteAliasManagerInterface;
 use Drush\Attributes as CLI;
+use Drush\Commands\AutowireTrait;
 use Drush\Commands\core\DocsCommands;
 use Drush\Commands\core\RsyncCommands;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
-use League\Container\Container as DrushContainer;
+use Drush\Runtime\DependencyInjection;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 final class ConfigPullCommands extends DrushCommands
 {
+    use AutowireTrait;
+
     const PULL = 'config:pull';
 
     public function __construct(
+        #[Autowire(service: DependencyInjection::SITE_ALIAS_MANAGER)]
         private readonly SiteAliasManagerInterface $siteAliasManager
     ) {
         parent::__construct();
-    }
-
-    public static function createEarly(DrushContainer $drush_container): self
-    {
-        $commandHandler = new static(
-            $drush_container->get('site.alias.manager'),
-        );
-
-        return $commandHandler;
     }
 
     /**
