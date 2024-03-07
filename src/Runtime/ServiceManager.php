@@ -344,11 +344,6 @@ class ServiceManager
 
     /**
      * Check to see if the provided class has a static `create` method.
-     *
-     * @param string $class The name of the class to check
-     *
-     * @return bool
-     *   True if class has a static `create` method.
      */
     protected function hasStaticCreateFactory(string $class): bool
     {
@@ -356,7 +351,7 @@ class ServiceManager
     }
 
     /**
-     * Check to see if the provided class has Bootstrap Attribute`indicating early loading.
+     * Does the provided class have a Bootstrap Attribute, indicating early loading.
      */
     protected function hasBootStrapAttributeNone(string $class): bool
     {
@@ -381,12 +376,6 @@ class ServiceManager
 
     /**
      * Check to see if the provided class has the specified static method.
-     *
-     * @param string $class The name of the class to check
-     * @param string $methodName The name of the method the class should have
-     *
-     * @return bool
-     *   True if class has a static method with the specified name.
      */
     protected function hasStaticMethod(string $class, string $methodName): bool
     {
