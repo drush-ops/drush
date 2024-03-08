@@ -158,7 +158,7 @@ class MigrateRunnerTest extends TestCase
         /** @var \Composer\Autoload\ClassLoader $loader */
         $loader = require PHPUNIT_COMPOSER_INSTALL;
         if (!isset($loader->getPrefixesPsr4()['Drupal\\sqlite\\'])) {
-            // @todo this needs to fetch the base path from soemwhere, no hardcoding.
+            // @todo this needs to fetch the base path from somewhere, no hardcoding.
             $loader->addPsr4('Drupal\\sqlite\\', '/home/wodby/drush/vendor/composer/../../sut/core/modules/sqlite/src');
         }
         $connection = new Connection($pdo, $options);
