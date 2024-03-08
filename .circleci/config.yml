@@ -36,11 +36,11 @@ executors:
       - image: wodby/php:$WODBY_TAG
         environment:
           - "UNISH_DB_URL=sqlite://localhost/:memory:?module=sqlite"
-  sqlite-highest:
+  mysql-highest:
     docker:
       - image: wodby/php:latest
         environment:
-          - "UNISH_DB_URL=sqlite://localhost/:memory:?module=sqlite"
+          - "UNISH_DB_URL=mysql://localhost/:memory:?module=mysql"
   postgres-stable:
     docker:
       - image: wodby/php:$WODBY_TAG
