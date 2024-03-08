@@ -107,7 +107,7 @@ class ServiceManager
             [FilterHooks::class]
         ));
 
-        // If a command class has a Bootstrap Attribute, then we will
+        // If a command class has a Bootstrap Attribute or static `create` method, we
         // postpone instantiating it until after we bootstrap Drupal.
         $this->bootstrapCommandClasses = array_filter($commandClasses, [$this, 'requiresBootstrap']);
 
