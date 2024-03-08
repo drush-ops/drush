@@ -4,42 +4,34 @@ declare(strict_types=1);
 
 namespace Drush\Commands\core;
 
-use Drupal\Component\Datetime\TimeInterface;
-use Drupal\Core\Config\ConfigFactoryInterface;
-use Drupal\Core\Extension\ModuleHandlerInterface;
-use Drupal\Core\Language\LanguageManagerInterface;
-use Drupal\Core\State\StateInterface;
-use Drush\Attributes as CLI;
-use Drupal\user\Entity\User;
-use Drush\Boot\BootstrapManager;
-use Drush\Boot\DrupalBootLevels;
-use Drush\Commands\DrushCommands;
-use Drush\Drush;
-use Drush\Exec\ExecTrait;
 use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
 use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
 use Drupal\Core\Url;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Drupal\user\Entity\User;
+use Drush\Attributes as CLI;
+use Drush\Boot\BootstrapManager;
+use Drush\Boot\DrupalBootLevels;
+use Drush\Commands\AutowireTrait;
+use Drush\Commands\DrushCommands;
+use Drush\Drush;
+use Drush\Exec\ExecTrait;
+use Drush\Runtime\DependencyInjection;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
+#[CLI\Bootstrap(level: DrupalBootLevels::NONE)]
 final class LoginCommands extends DrushCommands implements SiteAliasManagerAwareInterface
 {
+    use AutowireTrait;
     use SiteAliasManagerAwareTrait;
     use ExecTrait;
 
     const LOGIN = 'user:login';
 
-    public function __construct(private BootstrapManager $bootstrapManager)
-    {
+    public function __construct(
+        #[Autowire(service: DependencyInjection::BOOTSTRAP_MANAGER)]
+        private BootstrapManager $bootstrapManager
+    ) {
         parent::__construct();
-    }
-
-    public static function createEarly($drush_container): self
-    {
-        $commandHandler = new static(
-            $drush_container->get('bootstrap.manager')
-        );
-
-        return $commandHandler;
     }
 
     /**

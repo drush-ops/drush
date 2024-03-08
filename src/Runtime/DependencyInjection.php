@@ -4,37 +4,38 @@ declare(strict_types=1);
 
 namespace Drush\Runtime;
 
-use Drush\Formatters\EntityToArraySimplifier;
-use Drush\Log\Logger;
-use League\Container\Container;
-use Symfony\Component\Console\Input\StringInput;
-use Symfony\Component\Console\Output\ConsoleOutput;
-use Robo\Robo;
-use Drush\Formatters\DrushFormatterManager;
+use Composer\Autoload\ClassLoader;
+use Consolidation\Config\ConfigInterface;
+use Consolidation\Config\Util\ConfigOverlay;
+use Consolidation\SiteAlias\SiteAliasManager;
 use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
 use Consolidation\SiteProcess\ProcessManagerAwareInterface;
-use Drush\Command\GlobalOptionsEventListener;
-use Drush\Drush;
-use Drush\Symfony\DrushStyleInjector;
 use Drush\Cache\CommandCache;
-use Drush\DrupalFinder\DrushDrupalFinder;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Application;
-use Consolidation\Config\ConfigInterface;
-use Composer\Autoload\ClassLoader;
-use League\Container\ContainerInterface;
-use Consolidation\SiteAlias\SiteAliasManager;
 use Drush\Command\DrushCommandInfoAlterer;
-use Consolidation\Config\Util\ConfigOverlay;
+use Drush\Command\GlobalOptionsEventListener;
 use Drush\Config\DrushConfig;
+use Drush\DrupalFinder\DrushDrupalFinder;
+use Drush\Drush;
+use Drush\Formatters\DrushFormatterManager;
+use Drush\Formatters\EntityToArraySimplifier;
+use Drush\Log\Logger;
 use Drush\SiteAlias\ProcessManager;
+use Drush\Symfony\DrushStyleInjector;
+use League\Container\Container;
+use League\Container\ContainerInterface;
+use Robo\Robo;
+use Symfony\Component\Console\Application;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\StringInput;
+use Symfony\Component\Console\Output\ConsoleOutput;
+use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Prepare our Dependency Injection Container
  */
 class DependencyInjection
 {
+    const BOOTSTRAP_MANAGER = 'bootstrap.manager';
     protected array $handlers = [];
 
     public function desiredHandlers($handlerList): void
@@ -125,11 +126,11 @@ class DependencyInjection
         Robo::addShared($container, 'bootstrap.drupal8', 'Drush\Boot\DrupalBoot8')
             ->addArgument('service.manager')
             ->addArgument('loader');
-        Robo::addShared($container, 'bootstrap.manager', 'Drush\Boot\BootstrapManager')
+        Robo::addShared($container, self::BOOTSTRAP_MANAGER, 'Drush\Boot\BootstrapManager')
             ->addMethodCall('setDrupalFinder', [$drupalFinder])
             ->addMethodCall('add', ['bootstrap.drupal8']);
         Robo::addShared($container, 'bootstrap.hook', 'Drush\Boot\BootstrapHook')
-          ->addArgument('bootstrap.manager');
+          ->addArgument(self::BOOTSTRAP_MANAGER);
         Robo::addShared($container, 'tildeExpansion.hook', 'Drush\Runtime\TildeExpansionHook');
         Robo::addShared($container, 'process.manager', ProcessManager::class)
             ->addMethodCall('setConfig', ['config'])
@@ -183,7 +184,7 @@ class DependencyInjection
     protected function injectApplicationServices($container, Application $application): void
     {
         $application->setLogger($container->get('logger'));
-        $application->setBootstrapManager($container->get('bootstrap.manager'));
+        $application->setBootstrapManager($container->get(self::BOOTSTRAP_MANAGER));
         $application->setAliasManager($container->get('site.alias.manager'));
         $application->setRedispatchHook($container->get('redispatch.hook'));
         $application->setTildeExpansionHook($container->get('tildeExpansion.hook'));
