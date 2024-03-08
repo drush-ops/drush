@@ -29,23 +29,25 @@ executors:
       - image: wodby/php:$WODBY_TAG
         environment:
           - MYSQL_HOST=127.0.0.1
-          - UNISH_DB_URL=mysql://root:@127.0.0.1
+          - UNISH_DB_URL=mysql://root:@127.0.0.1/unish_dev?module=mysql
       - image: cimg/mysql:5.7.38
   sqlite-stable:
     docker:
       - image: wodby/php:$WODBY_TAG
         environment:
-          - "UNISH_DB_URL=sqlite://:memory:"
-  sqlite-highest:
+          - "UNISH_DB_URL=sqlite://localhost/:memory:?module=sqlite"
+  mysql-highest:
     docker:
       - image: wodby/php:latest
         environment:
-          - "UNISH_DB_URL=sqlite://:memory:"
+          - MYSQL_HOST=127.0.0.1
+          - UNISH_DB_URL=mysql://root:@127.0.0.1/unish_dev?module=mysql
+      - image: cimg/mysql:5.7.38
   postgres-stable:
     docker:
       - image: wodby/php:$WODBY_TAG
         environment:
-          - UNISH_DB_URL=pgsql://unish:unish@127.0.0.1
+          - UNISH_DB_URL=pgsql://unish:unish@127.0.0.1/unish_dev?module=pgsql
       - image: wodby/postgres:14
         environment:
           POSTGRES_DB_EXTENSIONS: pg_trgm
@@ -97,17 +99,18 @@ jobs:
       - when:
           condition:
             and:
-              - equal: [ stable, << parameters.release >> ] 
+              - equal: [ stable, << parameters.release >> ]
           steps:
             - run: composer -n install
       - unless:
           condition:
             and:
-              - equal: [ stable, << parameters.release >> ] 
+              - equal: [ stable, << parameters.release >> ]
           steps:
             - run: composer -n config platform.php --unset
-            - run: composer -n require --dev drupal/core-recommended:10.1.x-dev --no-update
+            - run: composer -n require --dev drupal/core-recommended:11.x-dev --no-update
             - run: composer -n update
+            - run: composer -n require chi-teck/drupal-code-generator:3.x-dev
       - run: composer -n unit -- --log-junit /tmp/results/unit/junit.xml
       - run: composer -n << parameters.suite >> -- --log-junit /tmp/results/<< parameters.suite >>/junit.xml
 
@@ -118,7 +121,7 @@ jobs:
 #      - image: wodby/php:8.0
 #        environment:
 #          - MYSQL_HOST=127.0.0.1
-#          - UNISH_DB_URL=mysql://root:@127.0.0.1
+#          - UNISH_DB_URL=mysql://root:@127.0.0.1/unish_dev?module=mysql
 #      - image: cimg/mysql:5.7.38
 #    steps:
 #      - checkout
@@ -142,19 +145,19 @@ workflows:
             parameters:
               dbms: [sqlite, mysql, postgres]
               suite: [integration, functional]
-              release: [stable] # highest is temporarily disabled.
+              release: [stable, highest]
             exclude:
-              # Only run highest test on sqlite. Excluding each suite is unfortnate but needed.
+              # Only run highest test on sqlite. Excluding each suite is unfortunate but needed.
               - release: highest
-                dbms: mysql
+                dbms: sqlite
                 suite: integration
               - release: highest
-                dbms: mysql
+                dbms: sqlite
                 suite: functional
               - release: highest
                 dbms: postgres
                 suite: integration
               - release: highest
                 dbms: postgres
-                suite: functional  
+                suite: functional
 
