@@ -52,7 +52,7 @@ final class SiteInstallCommands extends DrushCommands
      */
     #[CLI\Command(name: self::INSTALL, aliases: ['si', 'sin', 'site-install'])]
     #[CLI\Argument(name: 'profile', description: 'An install profile name. Defaults to <info>standard</info> unless an install profile is marked as a distribution. Use <info>minimal</info> for a bare minimum installation. Additional info for the install profile may also be provided with additional arguments. The key is in the form <info>[form name].[parameter name]</info>')]
-    #[CLI\Option(name: 'db-url', description: 'A Drupal 6 style database URL. Required for initial install, not re-install. If omitted and required, Drush prompts for this item.')]
+    #[CLI\Option(name: 'db-url', description: 'A Drupal 10 style database URL. Required for initial install, not re-install. If omitted and required, Drush prompts for this item.')]
     #[CLI\Option(name: 'db-prefix', description: 'An optional table prefix to use for initial install.')]
     #[CLI\Option(name: 'db-su', description: 'Account to use when creating a new database. Must have Grant permission (mysql only). Optional.')]
     #[CLI\Option(name: 'db-su-pw', description: 'Password for the <info>db-su</info> account. Optional.')]
@@ -65,9 +65,9 @@ final class SiteInstallCommands extends DrushCommands
     #[CLI\Option(name: 'sites-subdir', description: 'Name of directory under <info>sites</info> which should be created.')]
     #[CLI\Option(name: 'existing-config', description: 'Configuration from <info>sync</info> directory should be imported during installation.')]
     #[CLI\Usage(name: 'drush si demo_umami --locale=da', description: '(Re)install using the Umami install profile. Set default language to Danish.')]
-    #[CLI\Usage(name: 'drush si --db-url=mysql://root:pass@localhost:port/dbname', description: 'Install using the specified DB params.')]
-    #[CLI\Usage(name: 'drush si --db-url=sqlite://sites/example.com/files/.ht.sqlite', description: 'Install using SQLite')]
-    #[CLI\Usage(name: 'drush si --db-url=sqlite://:memory:', description: 'Install using SQLite in-memory database.')]
+    #[CLI\Usage(name: 'drush si --db-url=mysql://root:pass@localhost:port/dbname?module=mysql#tableprefix', description: 'Install on MySQL using the specified DB params.')]
+    #[CLI\Usage(name: 'drush si --db-url=sqlite://sites/example.com/files/.ht.sqlite?module=sqlite#tableprefix', description: 'Install on SQLite, using database file <info>sites/example.com/files/.ht.sqlite</info>')]
+    #[CLI\Usage(name: 'drush si --db-url=sqlite://:memory:?module=sqlite', description: 'Install using SQLite in-memory database, that is not persisted. Useful for testing.')]
     #[CLI\Usage(name: 'drush si --account-pass=mom', description: 'Re-install with specified uid1 password.')]
     #[CLI\Usage(name: 'drush si --existing-config', description: 'Install based on the yml files stored in the config export/import directory.')]
     #[CLI\Usage(name: 'drush si standard install_configure_form.enable_update_status_emails=NULL', description: 'Disable email notification during install and later. If your server has no mail transfer agent, this gets rid of an error during install.')]
@@ -270,18 +270,79 @@ final class SiteInstallCommands extends DrushCommands
             // will prompt the user to provide them in the 'catch' block below.
             SqlBase::create($commandData->input()->getOptions());
         } catch (\Exception) {
-            // Ask questions to get our data.
+            // Prompt for the db-url data if it was not provided via --db-url.
             // TODO: we should only 'ask' in hook interact, never in hook validate
             if ($commandData->input()->getOption('db-url') == '') {
-                // Prompt for the db-url data if it was not provided via --db-url.
-                $database = $this->io()->text('Database name', default: 'drupal');
-                $driver = $this->io()->text('Database driver', default: 'mysql');
-                $username = $this->io()->text('Database username', default: 'drupal');
-                $password = $this->io()->text('Database password', default: 'drupal');
-                $host = $this->io()->text('Database host', default: '127.0.0.1');
-                $port = $this->io()->text('Database port', default: '3306');
-                $db_url = "$driver://$username:$password@$host:$port/$database";
-                $commandData->input()->setOption('db-url', $db_url);
+                global $install_state;
+                try {
+                    // Do some install booting to get basic services available.
+                    $profile = array_shift($commandData->input()->getArgument('profile')) ?: '';
+                    $this->determineProfile($profile, $commandData->input()->getOptions());
+                    require_once DRUSH_DRUPAL_CORE . '/includes/install.core.inc';
+                    $install_state = ['interactive' => false] + install_state_defaults();
+                    $install_state['parameters']['profile'] = $profile;
+                    install_begin_request($this->autoloader, $install_state);
+
+                    // Get the installable drivers.
+                    $driverList = Database::getDriverList()->getInstallableList();
+                    $driverSelectOptions = [];
+                    foreach ($driverList as $namespace => $driverExtension) {
+                        $driverSelectOptions[$namespace] = $driverExtension->getInstallTasks()->name();
+                    }
+
+                    // Ask questions to get our data.
+                    $driverNamespace = $this->io()->select('Select the database driver', $driverSelectOptions);
+                    $formOptions = $driverList[$driverNamespace]->getInstallTasks()->getFormOptions([]);
+                    $databaseInfo = [
+                        'driver' => $driverList[$driverNamespace]->getDriverName(),
+                        'module' => $driverList[$driverNamespace]->getModule()->getName(),
+                    ];
+                    $databaseInfo['database'] = $this->io()->text(
+                        $formOptions['database']['#title'],
+                        default: $formOptions['database']['#default_value'] ?: 'drupal',
+                        hint: (string) ($formOptions['database']['#description'] ?? null),
+                    );
+                    if (isset($formOptions['username'])) {
+                        $databaseInfo['username'] = $this->io()->text(
+                            $formOptions['username']['#title'],
+                            default: 'drupal',
+                            hint: (string) ($formOptions['username']['#description'] ?? null),
+                        );
+                    }
+                    if (isset($formOptions['password'])) {
+                        $databaseInfo['password'] = $this->io()->text(
+                            $formOptions['password']['#title'],
+                            default: 'drupal',
+                            hint: (string) ($formOptions['password']['#description'] ?? null),
+                        );
+                    }
+                    if (isset($formOptions['advanced_options']['host'])) {
+                        $databaseInfo['host'] = $this->io()->text(
+                            $formOptions['advanced_options']['host']['#title'],
+                            default: $formOptions['advanced_options']['host']['#default_value'],
+                            hint: (string) ($formOptions['advanced_options']['host']['#description'] ?? null),
+                        );
+                    }
+                    if (isset($formOptions['advanced_options']['port'])) {
+                        $databaseInfo['port'] = $this->io()->text(
+                            $formOptions['advanced_options']['port']['#title'],
+                            default: $formOptions['advanced_options']['port']['#default_value'],
+                            hint: (string) ($formOptions['advanced_options']['port']['#description'] ?? null),
+                        );
+                    }
+                    if (isset($formOptions['advanced_options']['prefix'])) {
+                        $databaseInfo['prefix'] = $this->io()->text(
+                            $formOptions['advanced_options']['prefix']['#title'],
+                            default: $formOptions['advanced_options']['prefix']['#default_value'],
+                            hint: (string) ($formOptions['advanced_options']['prefix']['#description'] ?? null),
+                        );
+                    }
+                    $connectionClass = $driverNamespace . '\\Connection';
+                    $db_url = $connectionClass::createUrlFromConnectionOptions($databaseInfo);
+                    $commandData->input()->setOption('db-url', $db_url);
+                } finally {
+                    unset($install_state);
+                }
 
                 try {
                     // Try to instantiate an sql accessor object from the
