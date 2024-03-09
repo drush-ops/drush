@@ -32,8 +32,8 @@ final class LanguageCommands extends DrushCommands
 
     public function __construct(
         protected LanguageManagerInterface $languageManager,
-        protected ModuleHandlerInterface $moduleHandler)
-    {
+        protected ModuleHandlerInterface $moduleHandler
+    ) {
         parent::__construct();
     }
 
