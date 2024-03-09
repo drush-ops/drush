@@ -2,7 +2,7 @@
 
 !!! tip
 
-    Drush 11 and prior required generators to define a [drush.services.yml file](https://www.drush.org/11.x/dependency-injection/#services-files). This is no longer used with Drush 12+ generators. See [create() method](dependency-injection.md#create-method) for injecting dependencies.
+    Drush 11 and prior required generators to define a [drush.services.yml file](https://www.drush.org/11.x/dependency-injection/#services-files). This is no longer used with Drush 12+ generators. See [docs](dependency-injection.md) for injecting dependencies..
 
 Generators jump start your coding by building all the boring boilerplate code for you. After running the [generate command](commands/generate.md), you have a guide for where to insert your custom logic.
 
