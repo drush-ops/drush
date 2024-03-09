@@ -36,6 +36,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 class DependencyInjection
 {
     const BOOTSTRAP_MANAGER = 'bootstrap.manager';
+    const LOADER = 'loader';
+    const SITE_ALIAS_MANAGER = 'site.alias.manager';
     protected array $handlers = [];
 
     public function desiredHandlers($handlerList): void
@@ -104,8 +106,8 @@ class DependencyInjection
           ->addMethodCall('setLogOutputStyler', ['logStyler'])
           ->addMethodCall('add', ['drush', new Logger($output)]);
 
-        Robo::addShared($container, 'loader', $loader);
-        Robo::addShared($container, 'site.alias.manager', $aliasManager);
+        Robo::addShared($container, self::LOADER, $loader);
+        Robo::addShared($container, self::SITE_ALIAS_MANAGER, $aliasManager);
 
         // Fetch the runtime config, where -D et. al. are stored, and
         // add a reference to it to the container.
@@ -120,12 +122,12 @@ class DependencyInjection
 
         // Add some of our own objects to the container
         Robo::addShared($container, 'service.manager', 'Drush\Runtime\ServiceManager')
-            ->addArgument('loader')
+            ->addArgument(self::LOADER)
             ->addArgument('config')
             ->addArgument('logger');
         Robo::addShared($container, 'bootstrap.drupal8', 'Drush\Boot\DrupalBoot8')
             ->addArgument('service.manager')
-            ->addArgument('loader');
+            ->addArgument(self::LOADER);
         Robo::addShared($container, self::BOOTSTRAP_MANAGER, 'Drush\Boot\BootstrapManager')
             ->addMethodCall('setDrupalFinder', [$drupalFinder])
             ->addMethodCall('add', ['bootstrap.drupal8']);
@@ -153,7 +155,7 @@ class DependencyInjection
 
         // Add inflectors. @see \Drush\Boot\BaseBoot::inflect
         $container->inflector(SiteAliasManagerAwareInterface::class)
-            ->invokeMethod('setSiteAliasManager', ['site.alias.manager']);
+            ->invokeMethod('setSiteAliasManager', [self::SITE_ALIAS_MANAGER]);
         $container->inflector(ProcessManagerAwareInterface::class)
             ->invokeMethod('setProcessManager', ['process.manager']);
     }
@@ -185,7 +187,7 @@ class DependencyInjection
     {
         $application->setLogger($container->get('logger'));
         $application->setBootstrapManager($container->get(self::BOOTSTRAP_MANAGER));
-        $application->setAliasManager($container->get('site.alias.manager'));
+        $application->setAliasManager($container->get(self::SITE_ALIAS_MANAGER));
         $application->setRedispatchHook($container->get('redispatch.hook'));
         $application->setTildeExpansionHook($container->get('tildeExpansion.hook'));
         $application->setDispatcher($container->get('eventDispatcher'));
