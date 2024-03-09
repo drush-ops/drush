@@ -705,8 +705,8 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#types-of-injection" class="md-nav__link">
-    Types of Injection
+  <a href="#autowire" class="md-nav__link">
+    Autowire
   </a>
   
 </li>
@@ -5253,28 +5253,17 @@
 
 <h1 id="dependency-injection">Dependency Injection<a class="headerlink" href="#dependency-injection" title="Permanent link">&para;</a></h1>
 <p>Drush command files obtain references to the resources they need through a technique called <em>dependency injection</em>. When using this programing paradigm, a class by convention will never use the <code>new</code> operator to instantiate dependencies. Instead, it will store the other objects it needs in  class variables, and provide a way for other code to assign an object to that variable.</p>
-<h2 id="types-of-injection">Types of Injection<a class="headerlink" href="#types-of-injection" title="Permanent link">&para;</a></h2>
-<p>There are two ways that a class can receive its dependencies. One is called “constructor injection”, and the other is called “setter injection”.</p>
-<p><em>Example of constructor injection:</em>
-<div class="highlight"><pre><span></span><code>    <span class="k">public</span> <span class="k">function</span> <span class="fm">__construct</span><span class="p">(</span><span class="nx">DependencyType</span> <span class="nv">$service</span><span class="p">)</span>
-    <span class="p">{</span>
-        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">service</span> <span class="o">=</span> <span class="nv">$service</span><span class="p">;</span>
-    <span class="p">}</span>
-</code></pre></div></p>
-<p><em>Example of setter injection:</em>
-<div class="highlight"><pre><span></span><code>    <span class="k">public</span> <span class="k">function</span> <span class="nf">setService</span><span class="p">(</span><span class="nx">DependencyType</span> <span class="nv">$service</span><span class="p">)</span>
-    <span class="p">{</span>
-        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">service</span> <span class="o">=</span> <span class="nv">$service</span><span class="p">;</span>
-    <span class="p">}</span>
-</code></pre></div>
-The code that is responsible for providing the dependencies a class needs is usually an object called the dependency injection container.</p>
-<h2 id="create-method">create() method<a class="headerlink" href="#create-method" title="Permanent link">&para;</a></h2>
-<p><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7.75 6.5a1.25 1.25 0 1 0 0 2.5 1.25 1.25 0 0 0 0-2.5Z"/><path d="M2.5 1h8.44a1.5 1.5 0 0 1 1.06.44l10.25 10.25a1.5 1.5 0 0 1 0 2.12l-8.44 8.44a1.5 1.5 0 0 1-2.12 0L1.44 12A1.497 1.497 0 0 1 1 10.94V2.5A1.5 1.5 0 0 1 2.5 1Zm0 1.5v8.44l10.25 10.25 8.44-8.44L10.94 2.5Z"/></svg></span> 11.6+</p>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
-<p>Drush 11 and prior required <a href="https://www.drush.org/11.x/dependency-injection/#services-files">dependency injection via a drush.services.yml file</a>. This approach is deprecated in Drush 12 and will be removed in Drush 13.</p>
+<p>Drush 11 and prior required <a href="https://www.drush.org/11.x/dependency-injection/#services-files">dependency injection via a drush.services.yml file</a>. This approach is deprecated in Drush 12+.</p>
 </div>
-<p>Drush command files can inject services by adding a create() method to the commandfile. See <a href="../commands/">creating commands</a> for instructions on how to use the Drupal Code Generator to create a simple command file starter. A create() method and a constructor will look something like this:
+<h2 id="autowire">Autowire<a class="headerlink" href="#autowire" title="Permanent link">&para;</a></h2>
+<p><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7.75 6.5a1.25 1.25 0 1 0 0 2.5 1.25 1.25 0 0 0 0-2.5Z"/><path d="M2.5 1h8.44a1.5 1.5 0 0 1 1.06.44l10.25 10.25a1.5 1.5 0 0 1 0 2.12l-8.44 8.44a1.5 1.5 0 0 1-2.12 0L1.44 12A1.497 1.497 0 0 1 1 10.94V2.5A1.5 1.5 0 0 1 2.5 1Zm0 1.5v8.44l10.25 10.25 8.44-8.44L10.94 2.5Z"/></svg></span> 12.5+
+Command files may inject Drush and Drupal services by adding the <a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/AutowireTrait.php">AutowireTrait</a> to the class (example: <a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/pm/MaintCommands.php">PmCommands</a>). This enables your <a href="https://www.drupal.org/node/3396179">Constructor parameter type hints determine the the injected service</a>. When a type hint is insufficient, an <a href="https://www.drupal.org/node/3396179">#[Autowire] Attribute</a> on the constructor property (with <em>service:</em> named argument) directs AutoWireTrait to the right service (example: <a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/LoginCommands.php">LoginCommands</a>). This Attribute is currently <em>required</em> when injecting Drush services (not required for Drupal services).</p>
+<p>If your command is not found by Drush, add the <code>-vvv</code> option for debug info about any service instantiation errors. If Autowire is still insufficient, a commandfile may implement its own <code>create()</code> method (see below).</p>
+<h2 id="create-method">create() method<a class="headerlink" href="#create-method" title="Permanent link">&para;</a></h2>
+<p><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7.75 6.5a1.25 1.25 0 1 0 0 2.5 1.25 1.25 0 0 0 0-2.5Z"/><path d="M2.5 1h8.44a1.5 1.5 0 0 1 1.06.44l10.25 10.25a1.5 1.5 0 0 1 0 2.12l-8.44 8.44a1.5 1.5 0 0 1-2.12 0L1.44 12A1.497 1.497 0 0 1 1 10.94V2.5A1.5 1.5 0 0 1 2.5 1Zm0 1.5v8.44l10.25 10.25 8.44-8.44L10.94 2.5Z"/></svg></span> 11.6+</p>
+<p>Command files not using Autowire may inject services by adding a create() method to the commandfile. A create() method and a constructor will look something like this:
 <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">WootStaticFactoryCommands</span> <span class="k">extends</span> <span class="nx">DrushCommands</span>
 <span class="p">{</span>
     <span class="k">protected</span> <span class="nv">$configFactory</span><span class="p">;</span>
@@ -5284,73 +5273,34 @@ The code that is responsible for providing the dependencies a class needs is usu
         <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">configFactory</span> <span class="o">=</span> <span class="nv">$configFactory</span><span class="p">;</span>
     <span class="p">}</span>
 
-    <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">create</span><span class="p">(</span><span class="nx">ContainerInterface</span> <span class="nv">$container</span><span class="p">,</span> <span class="nx">DrushContainer</span> <span class="nv">$drush</span><span class="p">)</span><span class="o">:</span> <span class="nx">self</span>
+    <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">create</span><span class="p">(</span><span class="nx">ContainerInterface</span> <span class="nv">$container</span><span class="p">)</span><span class="o">:</span> <span class="nx">self</span>
     <span class="p">{</span>
         <span class="k">return</span> <span class="k">new</span> <span class="k">static</span><span class="p">(</span><span class="nv">$container</span><span class="o">-&gt;</span><span class="na">get</span><span class="p">(</span><span class="s1">&#39;config.factory&#39;</span><span class="p">));</span>
     <span class="p">}</span>
 </code></pre></div>
-See the <a href="https://www.drupal.org/docs/drupal-apis/services-and-dependency-injection/services-and-dependency-injection-in-drupal-8#s-injecting-dependencies-into-controllers-forms-and-blocks">Drupal Documentation</a> for details on how to inject Drupal services into your command file. Drush's approach mimics Drupal's blocks, forms, and controllers.</p>
-<p>Note that if you do not need to pull any services from the Drush container, then you may
-omit the second parameter to the <code>create()</code> method.</p>
+See the <a href="https://www.drupal.org/docs/drupal-apis/services-and-dependency-injection/services-and-dependency-injection-in-drupal-8#s-injecting-dependencies-into-controllers-forms-and-blocks">Drupal Documentation</a> for details on how to inject Drupal services into your command file. This approach mimics Drupal's blocks, forms, and controllers.</p>
 <h2 id="createearly-method">createEarly() method<a class="headerlink" href="#createearly-method" title="Permanent link">&para;</a></h2>
-<p><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7.75 6.5a1.25 1.25 0 1 0 0 2.5 1.25 1.25 0 0 0 0-2.5Z"/><path d="M2.5 1h8.44a1.5 1.5 0 0 1 1.06.44l10.25 10.25a1.5 1.5 0 0 1 0 2.12l-8.44 8.44a1.5 1.5 0 0 1-2.12 0L1.44 12A1.497 1.497 0 0 1 1 10.94V2.5A1.5 1.5 0 0 1 2.5 1Zm0 1.5v8.44l10.25 10.25 8.44-8.44L10.94 2.5Z"/></svg></span> 12.0+
-Drush commands that need to be instantiated prior to bootstrap may do so by
-utilizing the <code>createEarly()</code> static factory. This method looks and functions
-exacty like the <code>create()</code> static factory, except it is only passed the Drush
-container. The Drupal container is not available to command handlers that use
-<code>createEarly()</code>.</p>
-<p>Note also that Drush commands packaged with Drupal modules are not discovered
+<p><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7.75 6.5a1.25 1.25 0 1 0 0 2.5 1.25 1.25 0 0 0 0-2.5Z"/><path d="M2.5 1h8.44a1.5 1.5 0 0 1 1.06.44l10.25 10.25a1.5 1.5 0 0 1 0 2.12l-8.44 8.44a1.5 1.5 0 0 1-2.12 0L1.44 12A1.497 1.497 0 0 1 1 10.94V2.5A1.5 1.5 0 0 1 2.5 1Zm0 1.5v8.44l10.25 10.25 8.44-8.44L10.94 2.5Z"/></svg></span> 12.0+</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>The createEarly() method was deprecated in Drush 12.5. Instead put a <code>#[CLI\Bootstrap(DrupalBootLevels::NONE)]</code> Attribute on the command class and inject dependencies via the usual <code>__construct</code> with <a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/AutowireTrait.php">AutowireTrait</a>. Note also that Drush commands packaged with Drupal modules are not discovered
 until after Drupal bootstraps, and therefore cannot use <code>createEarly()</code>. This
 mechanism is only usable by PSR-4 discovered commands packaged with Composer
 projects that are <em>not</em> Drupal modules.</p>
-<h2 id="inflection">Inflection<a class="headerlink" href="#inflection" title="Permanent link">&para;</a></h2>
-<div class="admonition tip">
-<p class="admonition-title">Tip</p>
-<p>Inflection is deprecated in Drush 12; use <code>create()</code> or <code>createEarly()</code> instead.
-Some classes are no longer available for inflection in Drush 12, and more (or potentially all)
-may be removed in Drush 13.</p>
 </div>
-<p>Drush will also inject dependencies that it provides using a technique called inflection. Inflection is a kind of dependency injection that works by way of a set of provided inflection interfaces, one for each available service. Each of these interfaces will define one or more setter methods (usually only one); these will automatically be called by Drush when the commandfile object is instantiated. The command only needs to implement this method and save the provided object in a class field. There is usually a corresponding trait that may be included via a <code>use</code> statement to fulfill this requirement.</p>
-<p>For example:</p>
-<div class="highlight"><pre><span></span><code><span class="o">&lt;?</span><span class="nx">php</span>
-<span class="k">namespace</span> <span class="nx">Drupal\my_module\Commands</span><span class="p">;</span>
-
-<span class="k">use</span> <span class="nx">Drush\Commands\DrushCommands</span><span class="p">;</span>
-<span class="k">use</span> <span class="nx">Consolidation\OutputFormatters\StructuredData\ListDataFromKeys</span><span class="p">;</span>
-<span class="k">use</span> <span class="nx">Consolidation\SiteAlias\SiteAliasManagerAwareInterface</span><span class="p">;</span>
-<span class="k">use</span> <span class="nx">Consolidation\SiteAlias\SiteAliasManagerAwareTrait</span><span class="p">;</span>
-
-<span class="k">class</span> <span class="nc">MyModuleCommands</span> <span class="k">extends</span> <span class="nx">DrushCommands</span> <span class="k">implements</span> <span class="nx">SiteAliasManagerAwareInterface</span>
-<span class="p">{</span>
-  <span class="k">use</span> <span class="nx">SiteAliasManagerAwareTrait</span><span class="p">;</span>
-
-  <span class="sd">/**</span>
-<span class="sd">   * Prints the current alias name and info.</span>
-<span class="sd">   */</span>
-  <span class="p">#[</span><span class="nd">CLI\Command</span><span class="p">(</span><span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;mymodule:myAlias&#39;</span><span class="p">)]</span>
-  <span class="k">public</span> <span class="k">function</span> <span class="nf">myAlias</span><span class="p">()</span><span class="o">:</span> <span class="nx">ListDataFromKeys</span> 
-  <span class="p">{</span>
-    <span class="nv">$selfAlias</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">siteAliasManager</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">getSelf</span><span class="p">();</span>
-    <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">logger</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">success</span><span class="p">(</span><span class="nx">‘The</span> <span class="nb">current</span> <span class="nx">alias</span> <span class="nx">is</span> <span class="p">{</span><span class="nx">name</span><span class="p">}</span><span class="nx">’</span><span class="p">,</span> <span class="p">[</span><span class="nx">‘name’</span> <span class="o">=&gt;</span> <span class="nv">$selfAlias</span><span class="p">]);</span>
-    <span class="k">return</span> <span class="k">new</span> <span class="nx">ListDataFromKeys</span><span class="p">(</span><span class="nv">$aliasRecord</span><span class="o">-&gt;</span><span class="na">export</span><span class="p">());</span>
-  <span class="p">}</span>
-<span class="p">}</span>
-</code></pre></div>
-<p>All Drush command files extend DrushCommands. DrushCommands implements ConfigAwareInterface, IOAwareInterface, LoggerAwareInterface, which gives access to <code>$this-&gt;getConfig()</code>, <code>$this-&gt;logger()</code> and other ways to do input and output. See the <a href="../io/">IO documentation</a> for more information.</p>
-<p>Any additional services that are desired must be injected by implementing the appropriate inflection interface.</p>
-<p>Additional Interfaces:</p>
+<h2 id="inflection">Inflection<a class="headerlink" href="#inflection" title="Permanent link">&para;</a></h2>
+<p>A command class may implement the following interfaces. When doing so, implement the corresponding trait to satisfy the interface.</p>
 <ul>
-<li>SiteAliasManagerAwareInterface: The site alias manager <a href="../site-alias-manager/">allows alias records to be obtained</a>.</li>
-<li>CustomEventAwareInterface: Allows command files to <a href="../hooks/">define and fire custom events</a> that other command files can hook.</li>
+<li><a href="https://github.com/consolidation/annotated-command/blob/4.x/src/Events/CustomEventAwareInterface.php">CustomEventAwareInterface</a>: Allows command files to <a href="../hooks/">define and fire custom events</a> that other command files can hook. Example: <a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/CacheCommands.php">CacheCommands</a></li>
+<li><a href="https://github.com/consolidation/annotated-command/blob/4.x/src/Input/StdinAwareInterface.php">StdinAwareInterface</a>: Read from standard input. This class contains facilities to redirect stdin to instead read from a file, e.g. in response to an option or argument value. Example: <a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/CacheCommands.php">CacheCommands</a></li>
 </ul>
-<p>Note that although the autoloader and Drush dependency injection container is available and may be injected into your command file if needed, this should be avoided. Favor using services that can be injected from Drupal or Drush. Some of the objects in the container are not part of the Drush public API, and may not maintain compatibility in minor and patch releases.</p>
 
   <hr>
 <div class="md-source-file">
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">September 8, 2023</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">March 9, 2024</span>
       
     
   </small>
@@ -5365,7 +5315,7 @@ may be removed in Drush 13.</p>
     
         <div class="md-source-date">
             <small>
-                Authors: <span class='git-page-authors git-authors'><a href='mailto:esolitos@gmail.com'>Esolitos Marlon</a>, <a href='mailto:greg.1.anderson@greenknowe.org'>Greg Anderson</a>, <a href='mailto:mark.gerarts@gmail.com'>Mark Gerarts</a>, <a href='mailto:weitzman@tejasa.com'>Moshe Weitzman</a>, <a href='mailto:richardbporter@users.noreply.github.com'>Richard B. Porter</a></span>
+                Authors: <span class='git-page-authors git-authors'><a href='mailto:esolitos@gmail.com'>Esolitos Marlon</a>, <a href='mailto:greg.1.anderson@greenknowe.org'>Greg Anderson</a>, <a href='mailto:weitzman@tejasa.com'>Moshe Weitzman</a></span>
             </small>
         </div>
     
