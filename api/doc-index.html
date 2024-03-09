@@ -123,7 +123,8 @@
 <abbr title="Drush\Command\DrushCommandInfoAlterer">DrushCommandInfoAlterer</abbr>::alterCommandInfo</a>() &mdash; <em>Method in class <a href="Drush/Command/DrushCommandInfoAlterer.html"><abbr title="Drush\Command\DrushCommandInfoAlterer">DrushCommandInfoAlterer</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Command/ServiceCommandlist.html#method_addCommandReference">
 <abbr title="Drush\Command\ServiceCommandlist">ServiceCommandlist</abbr>::addCommandReference</a>() &mdash; <em>Method in class <a href="Drush/Command/ServiceCommandlist.html"><abbr title="Drush\Command\ServiceCommandlist">ServiceCommandlist</abbr></a></em></dt>
-                    <dd></dd><dt><a href="Drush/Commands/ExampleCommands.html#method_alterFormatters">
+                    <dd></dd><dt><a href="Drush/Commands/AutowireTrait.html"><abbr title="Drush\Commands\AutowireTrait">AutowireTrait</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands.html">Drush\Commands</a></em></dt>
+                    <dd><p>A copy of \Drupal\Core\DependencyInjection\AutowireTrait with first params' type hint changed.</p></dd><dt><a href="Drush/Commands/ExampleCommands.html#method_alterFormatters">
 <abbr title="Drush\Commands\ExampleCommands">ExampleCommands</abbr>::alterFormatters</a>() &mdash; <em>Method in class <a href="Drush/Commands/ExampleCommands.html"><abbr title="Drush\Commands\ExampleCommands">ExampleCommands</abbr></a></em></dt>
                     <dd><p>Demonstrate an alter hook with an option.</p></dd><dt><a href="Drush/Commands/core/ArchiveDumpCommands.html"><abbr title="Drush\Commands\core\ArchiveDumpCommands">ArchiveDumpCommands</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands/core.html">Drush\Commands\core</a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/core/ArchiveRestoreCommands.html"><abbr title="Drush\Commands\core\ArchiveRestoreCommands">ArchiveRestoreCommands</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands/core.html">Drush\Commands\core</a></em></dt>
@@ -470,7 +471,9 @@ available in the search paths provided via Preflight</p></dd><dt><a href="Drush/
 <abbr title="Drush\Boot\DrupalBoot8">DrupalBoot8</abbr>::confPath</a>() &mdash; <em>Method in class <a href="Drush/Boot/DrupalBoot8.html"><abbr title="Drush\Boot\DrupalBoot8">DrupalBoot8</abbr></a></em></dt>
                     <dd><p>Beware, this function populates Database::Connection info.</p></dd><dt>$<a href="Drush/Command/ServiceCommandlist.html#property_commandList">
 <abbr title="Drush\Command\ServiceCommandlist">ServiceCommandlist</abbr>#commandList</a> &mdash; <em>Property in class <a href="Drush/Command/ServiceCommandlist.html"><abbr title="Drush\Command\ServiceCommandlist">ServiceCommandlist</abbr></a></em></dt>
-                    <dd></dd><dt>$<a href="Drush/Commands/DrushCommands.html#property_commandData">
+                    <dd></dd><dt><a href="Drush/Commands/AutowireTrait.html#method_create">
+<abbr title="Drush\Commands\AutowireTrait">AutowireTrait</abbr>::create</a>() &mdash; <em>Method in class <a href="Drush/Commands/AutowireTrait.html"><abbr title="Drush\Commands\AutowireTrait">AutowireTrait</abbr></a></em></dt>
+                    <dd><p>Instantiates a new instance of the implementing class using autowiring.</p></dd><dt>$<a href="Drush/Commands/DrushCommands.html#property_commandData">
 <abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr>#commandData</a> &mdash; <em>Property in class <a href="Drush/Commands/DrushCommands.html"><abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/config/ConfigCommands.html"><abbr title="Drush\Commands\config\ConfigCommands">ConfigCommands</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands/config.html">Drush\Commands\config</a></em></dt>
                     <dd></dd><dt>$<a href="Drush/Commands/config/ConfigCommands.html#property_configStorageExport">
@@ -558,11 +561,7 @@ available in the search paths provided via Preflight</p></dd><dt><a href="Drush/
 <abbr title="Drush\Commands\core\LocaleCommands">LocaleCommands</abbr>::check</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/LocaleCommands.html"><abbr title="Drush\Commands\core\LocaleCommands">LocaleCommands</abbr></a></em></dt>
                     <dd><p>Checks for available translation updates.</p></dd><dt><a href="Drush/Commands/core/LocaleCommands.html#method_clearStatus">
 <abbr title="Drush\Commands\core\LocaleCommands">LocaleCommands</abbr>::clearStatus</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/LocaleCommands.html"><abbr title="Drush\Commands\core\LocaleCommands">LocaleCommands</abbr></a></em></dt>
-                    <dd><p>Clears the translation status.</p></dd><dt><a href="Drush/Commands/core/LoginCommands.html#method_createEarly">
-<abbr title="Drush\Commands\core\LoginCommands">LoginCommands</abbr>::createEarly</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/LoginCommands.html"><abbr title="Drush\Commands\core\LoginCommands">LoginCommands</abbr></a></em></dt>
-                    <dd></dd><dt><a href="Drush/Commands/core/MaintCommands.html#method_create">
-<abbr title="Drush\Commands\core\MaintCommands">MaintCommands</abbr>::create</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/MaintCommands.html"><abbr title="Drush\Commands\core\MaintCommands">MaintCommands</abbr></a></em></dt>
-                    <dd></dd><dt><a href="Drush/Commands/core/MessengerCommands.html#method_create">
+                    <dd><p>Clears the translation status.</p></dd><dt><a href="Drush/Commands/core/MessengerCommands.html#method_create">
 <abbr title="Drush\Commands\core\MessengerCommands">MessengerCommands</abbr>::create</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/MessengerCommands.html"><abbr title="Drush\Commands\core\MessengerCommands">MessengerCommands</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/core/MigrateRunnerCommands.html#method_create">
 <abbr title="Drush\Commands\core\MigrateRunnerCommands">MigrateRunnerCommands</abbr>::create</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/MigrateRunnerCommands.html"><abbr title="Drush\Commands\core\MigrateRunnerCommands">MigrateRunnerCommands</abbr></a></em></dt>
@@ -653,8 +652,8 @@ available in the search paths provided via Preflight</p></dd><dt><a href="Drush/
 <abbr title="Drush\Commands\sql\SqlCommands">SqlCommands</abbr>::conf</a>() &mdash; <em>Method in class <a href="Drush/Commands/sql/SqlCommands.html"><abbr title="Drush\Commands\sql\SqlCommands">SqlCommands</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/sql/SqlCommands.html#method_connect">
 <abbr title="Drush\Commands\sql\SqlCommands">SqlCommands</abbr>::connect</a>() &mdash; <em>Method in class <a href="Drush/Commands/sql/SqlCommands.html"><abbr title="Drush\Commands\sql\SqlCommands">SqlCommands</abbr></a></em></dt>
-                    <dd><p>A string for connecting to the DB.</p></dd><dt><a href="Drush/Commands/sql/SqlCommands.html#method_create">
-<abbr title="Drush\Commands\sql\SqlCommands">SqlCommands</abbr>::create</a>() &mdash; <em>Method in class <a href="Drush/Commands/sql/SqlCommands.html"><abbr title="Drush\Commands\sql\SqlCommands">SqlCommands</abbr></a></em></dt>
+                    <dd><p>A string for connecting to the DB.</p></dd><dt><a href="Drush/Commands/sql/SqlCommands.html#method_createDb">
+<abbr title="Drush\Commands\sql\SqlCommands">SqlCommands</abbr>::createDb</a>() &mdash; <em>Method in class <a href="Drush/Commands/sql/SqlCommands.html"><abbr title="Drush\Commands\sql\SqlCommands">SqlCommands</abbr></a></em></dt>
                     <dd><p>Create a database.</p></dd><dt><a href="Drush/Commands/sql/SqlCommands.html#method_cli">
 <abbr title="Drush\Commands\sql\SqlCommands">SqlCommands</abbr>::cli</a>() &mdash; <em>Method in class <a href="Drush/Commands/sql/SqlCommands.html"><abbr title="Drush\Commands\sql\SqlCommands">SqlCommands</abbr></a></em></dt>
                     <dd><p>Open a SQL command-line interface using Drupal's credentials.</p></dd><dt><a href="Drush/Config/ConfigAwareTrait.html"><abbr title="Drush\Config\ConfigAwareTrait">ConfigAwareTrait</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Config.html">Drush\Config</a></em></dt>
@@ -1701,7 +1700,9 @@ for structure only, or have structure and data dumped.</p></dd><dt><a href="Drus
                     <dd><p>HandlerInterface represents a PHP system handler (e.g. the error reporting
 handler, the shutdown handler) that may be globally installed.</p></dd><dt><a href="Drush/Runtime/ServiceManager.html#method_hasStaticCreateFactory">
 <abbr title="Drush\Runtime\ServiceManager">ServiceManager</abbr>::hasStaticCreateFactory</a>() &mdash; <em>Method in class <a href="Drush/Runtime/ServiceManager.html"><abbr title="Drush\Runtime\ServiceManager">ServiceManager</abbr></a></em></dt>
-                    <dd><p>Check to see if the provided class has a static <code>create</code> method.</p></dd><dt><a href="Drush/Runtime/ServiceManager.html#method_hasStaticCreateEarlyFactory">
+                    <dd><p>Check to see if the provided class has a static <code>create</code> method.</p></dd><dt><a href="Drush/Runtime/ServiceManager.html#method_hasBootStrapAttributeNone">
+<abbr title="Drush\Runtime\ServiceManager">ServiceManager</abbr>::hasBootStrapAttributeNone</a>() &mdash; <em>Method in class <a href="Drush/Runtime/ServiceManager.html"><abbr title="Drush\Runtime\ServiceManager">ServiceManager</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/Runtime/ServiceManager.html#method_hasStaticCreateEarlyFactory">
 <abbr title="Drush\Runtime\ServiceManager">ServiceManager</abbr>::hasStaticCreateEarlyFactory</a>() &mdash; <em>Method in class <a href="Drush/Runtime/ServiceManager.html"><abbr title="Drush\Runtime\ServiceManager">ServiceManager</abbr></a></em></dt>
                     <dd><p>Check to see if the provided class has a static <code>createEarly</code> method.</p></dd><dt><a href="Drush/Runtime/ServiceManager.html#method_hasStaticMethod">
 <abbr title="Drush\Runtime\ServiceManager">ServiceManager</abbr>::hasStaticMethod</a>() &mdash; <em>Method in class <a href="Drush/Runtime/ServiceManager.html"><abbr title="Drush\Runtime\ServiceManager">ServiceManager</abbr></a></em></dt>
@@ -2400,7 +2401,9 @@ if it is.</p></dd><dt><a href="Drush/Runtime/RedispatchHook.html#method_redispat
                     <dd><p>Called from RemoteCommandProxy::execute() to run remote commands.</p></dd><dt><a href="Drush/Runtime/Runtime.html"><abbr title="Drush\Runtime\Runtime">Runtime</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Runtime.html">Drush\Runtime</a></em></dt>
                     <dd><p>Control the Drush runtime environment</p></dd><dt><a href="Drush/Runtime/Runtime.html#method_run">
 <abbr title="Drush\Runtime\Runtime">Runtime</abbr>::run</a>() &mdash; <em>Method in class <a href="Drush/Runtime/Runtime.html"><abbr title="Drush\Runtime\Runtime">Runtime</abbr></a></em></dt>
-                    <dd><p>Run the application, catching any errors that may be thrown.</p></dd><dt><a href="Drush/Runtime/ShutdownHandler.html#method_returnStatus">
+                    <dd><p>Run the application, catching any errors that may be thrown.</p></dd><dt><a href="Drush/Runtime/ServiceManager.html#method_requiresBootstrap">
+<abbr title="Drush\Runtime\ServiceManager">ServiceManager</abbr>::requiresBootstrap</a>() &mdash; <em>Method in class <a href="Drush/Runtime/ServiceManager.html"><abbr title="Drush\Runtime\ServiceManager">ServiceManager</abbr></a></em></dt>
+                    <dd><p>Check whether a command class requires Drupal bootstrap.</p></dd><dt><a href="Drush/Runtime/ShutdownHandler.html#method_returnStatus">
 <abbr title="Drush\Runtime\ShutdownHandler">ShutdownHandler</abbr>::returnStatus</a>() &mdash; <em>Method in class <a href="Drush/Runtime/ShutdownHandler.html"><abbr title="Drush\Runtime\ShutdownHandler">ShutdownHandler</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/SiteAlias/ProcessManager.html#method_relativePathToVendorBinDrush">
 <abbr title="Drush\SiteAlias\ProcessManager">ProcessManager</abbr>::relativePathToVendorBinDrush</a>() &mdash; <em>Method in class <a href="Drush/SiteAlias/ProcessManager.html"><abbr title="Drush\SiteAlias\ProcessManager">ProcessManager</abbr></a></em></dt>
@@ -2679,7 +2682,9 @@ database sanitizer for sql-sync.</p></dd><dt>$<a href="Drush/Drupal/DrupalKernel
                     <dd><p>Mark the current request as having completed successfully.</p></dd><dt><a href="Drush/Runtime/Runtime.html#method_setExitCode">
 <abbr title="Drush\Runtime\Runtime">Runtime</abbr>::setExitCode</a>() &mdash; <em>Method in class <a href="Drush/Runtime/Runtime.html"><abbr title="Drush\Runtime\Runtime">Runtime</abbr></a></em></dt>
                     <dd><p>Mark the exit code for current request.</p></dd><dt><a href="Drush/Runtime/ServiceManager.html"><abbr title="Drush\Runtime\ServiceManager">ServiceManager</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Runtime.html">Drush\Runtime</a></em></dt>
-                    <dd><p>Manage Drush services.</p></dd><dt><a href="Drush/Runtime/ShutdownHandler.html"><abbr title="Drush\Runtime\ShutdownHandler">ShutdownHandler</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Runtime.html">Drush\Runtime</a></em></dt>
+                    <dd><p>Manage Drush services.</p></dd><dt><a href="Drush/Runtime/ServiceManager.html#method_supportsCompoundContainer">
+<abbr title="Drush\Runtime\ServiceManager">ServiceManager</abbr>::supportsCompoundContainer</a>() &mdash; <em>Method in class <a href="Drush/Runtime/ServiceManager.html"><abbr title="Drush\Runtime\ServiceManager">ServiceManager</abbr></a></em></dt>
+                    <dd><p>Determine if the first parameter of the create method supports our container with delegate.</p></dd><dt><a href="Drush/Runtime/ShutdownHandler.html"><abbr title="Drush\Runtime\ShutdownHandler">ShutdownHandler</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Runtime.html">Drush\Runtime</a></em></dt>
                     <dd><p>Drush's shutdown handler</p></dd><dt><a href="Drush/Runtime/ShutdownHandler.html#method_shutdownHandler">
 <abbr title="Drush\Runtime\ShutdownHandler">ShutdownHandler</abbr>::shutdownHandler</a>() &mdash; <em>Method in class <a href="Drush/Runtime/ShutdownHandler.html"><abbr title="Drush\Runtime\ShutdownHandler">ShutdownHandler</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/SiteAlias/ProcessManager.html#method_setDrupalFinder">
