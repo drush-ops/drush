@@ -5217,8 +5217,11 @@
 <p>The <a href="https://github.com/consolidation/site-alias/blob/4.0.1/src/SiteAliasManager.php">Site Alias Manager (SAM)</a> service is used to retrieve information about one or all of the site aliases for the current installation.</p>
 <ul>
 <li>An informative example is the <a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/BrowseCommands.php">browse command</a></li>
-<li>A commandfile gets access to the SAM by implementing the SiteAliasManagerAwareInterface and <em>use</em>ing the SiteAliasManagerAwareTrait trait. Then you gain access via <code>$this-&gt;siteAliasManager()</code>.</li>
-<li>If an alias was used for the current request, it is available via <code>$this-&gt;siteAliasManager()-&gt;getself()</code>.</li>
+<li>A commandfile gets access to the SAM as follows:
+<div class="highlight"><pre><span></span><code><span class="p">#[</span><span class="nd">Autowire</span><span class="p">(</span><span class="nx">service</span><span class="o">:</span> <span class="nx">DependencyInjection</span><span class="o">::</span><span class="na">SITE_ALIAS_MANAGER</span><span class="p">)]</span>
+<span class="k">private</span> <span class="nx">readonly</span> <span class="nx">SiteAliasManagerInterface</span> <span class="nv">$siteAliasManager</span>
+</code></pre></div></li>
+<li>If an alias was used for the current request, it is available via <code>$this-&gt;siteAliasManager-&gt;getself()</code>.</li>
 <li>The SAM generally deals in <a href="https://github.com/consolidation/site-alias/blob/main/src/SiteAlias.php">SiteAlias</a> objects. That is how any given site alias is represented. See its methods for determining things like whether the alias points to a local host or remote host.</li>
 <li><a href="../site-aliases/">Site alias docs</a>.</li>
 <li><a href="https://raw.githubusercontent.com/drush-ops/drush/11.x/examples/Commands/SiteAliasAlterCommands.php">Dynamically alter site aliases</a>.</li>
@@ -5230,7 +5233,7 @@
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">June 7, 2023</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">March 9, 2024</span>
       
     
   </small>

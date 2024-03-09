@@ -5257,7 +5257,7 @@
 </ul>
 <h2 id="custom-hooks">Custom Hooks<a class="headerlink" href="#custom-hooks" title="Permanent link">&para;</a></h2>
 <p>Drush commands can define custom events that other command files can hook. You can find examples in <a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/CacheCommands.php">CacheCommands</a> and <a href="https://github.com/drush-ops/drush/blob/12.x/src/Drupal/Commands/sql/SanitizeCommands.php">SanitizeCommands</a></p>
-<p>First, the command must implement CustomEventAwareInterface and use CustomEventAwareTrait, as described in the <a href="../dependency-injection/">dependency injection</a> documentation.</p>
+<p>First, the command must implement CustomEventAwareInterface and use CustomEventAwareTrait, as described in the <a href="../dependency-injection/#inflection">dependency injection</a> documentation.</p>
 <p>Then, the command may ask the provided hook manager to return a list of handlers with a certain attribute. In the example below, the <code>my-event</code> label is used:
 <div class="highlight"><pre><span></span><code>    <span class="sd">/**</span>
 <span class="sd">     * This command uses a custom event &#39;my-event&#39; to collect data.  Note that</span>
@@ -5308,7 +5308,7 @@
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">October 25, 2023</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">March 9, 2024</span>
       
     
   </small>

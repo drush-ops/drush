@@ -5327,7 +5327,7 @@
 </div>
 <p>Bootstrapping is done from a Symfony Console command hook. The different bootstrap levels are described below.</p>
 <h2 id="none">none<a class="headerlink" href="#none" title="Permanent link">&para;</a></h2>
-<p>Only run Drush <em>preflight</em>, without considering Drupal at all. Any code that operates on the Drush installation, and not specifically any Drupal directory, should bootstrap to this phase.</p>
+<p>Only run Drush <em>preflight</em>, without considering Drupal at all. Any code that operates on the Drush installation, and not specifically any Drupal directory, should bootstrap to this phase. This Attribute and value may also be used on a command <em>class</em> when it wants to load before Drupal bootstrap is started. Commands that ship inside Drupal modules always bootstrap to full, regardless of <em>none</em> value.</p>
 <h2 id="root">root<a class="headerlink" href="#root" title="Permanent link">&para;</a></h2>
 <p>Set up and test for a valid Drupal root, either through the --root options, or evaluated based on the current working directory. Any code that interacts with an entire Drupal installation, and not a specific site on the Drupal installation should use this bootstrap phase.</p>
 <h2 id="site">site<a class="headerlink" href="#site" title="Permanent link">&para;</a></h2>
@@ -5346,7 +5346,7 @@
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">June 4, 2023</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">March 9, 2024</span>
       
     
   </small>
