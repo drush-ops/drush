@@ -7,6 +7,8 @@ namespace Drush\Commands\core;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Consolidation\OutputFormatters\StructuredData\UnstructuredListData;
 use Consolidation\SiteAlias\SiteAliasManagerInterface;
+use Drupal\Core\Extension\ThemeHandlerInterface;
+use Drupal\Core\KeyValueStore\KeyValueFactoryInterface;
 use Drupal\Core\Update\UpdateRegistry;
 use Drupal\Core\Utility\Error;
 use Drush\Attributes as CLI;
@@ -44,15 +46,26 @@ final class DeployHookCommands extends DrushCommands
         $registry = new class (
             \Drupal::getContainer()->getParameter('app.root'),
             \Drupal::getContainer()->getParameter('site.path'),
-            array_keys(\Drupal::service('module_handler')->getModuleList()),
-            \Drupal::service('keyvalue')->get('deploy_hook')
+            \Drupal::service('module_handler')->getModuleList(),
+            \Drupal::service('keyvalue'),
+            \Drupal::service('theme_handler'),
         ) extends UpdateRegistry {
-            public function setUpdateType(string $type): void
-            {
-                $this->updateType = $type;
+            public function __construct(
+                $root,
+                $site_path,
+                $module_list,
+                KeyValueFactoryInterface $key_value_factory,
+                ThemeHandlerInterface $theme_handler,
+            ) {
+                // Do not call the parent constructor, we set the properties directly.
+                // We need a different key value store and set the update type.
+                $this->root = $root;
+                $this->sitePath = $site_path;
+                $this->enabledExtensions = array_merge(array_keys($module_list), array_keys($theme_handler->listInfo()));
+                $this->keyValue = $key_value_factory->get('post_update');
+                $this->updateType = 'deploy';
             }
         };
-        $registry->setUpdateType('deploy');
 
         return $registry;
     }

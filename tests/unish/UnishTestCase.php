@@ -7,6 +7,7 @@ namespace Unish;
 use Composer\Semver\Comparator;
 use Consolidation\SiteAlias\SiteAlias;
 use Consolidation\SiteProcess\ProcessManager;
+use Drupal\Core\Database\Database;
 use Drush\Commands\core\SiteInstallCommands;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Path;
@@ -480,12 +481,27 @@ abstract class UnishTestCase extends TestCase
 
     public function dbUrl(string $env): string
     {
-        return str_starts_with(self::getDbUrl(), 'sqlite') ?  "sqlite://sites/$env/files/unish.sqlite" : self::getDbUrl() . '/unish_' . $env;
+        $cwd = getcwd();
+        chdir($this->webroot());
+        $info = Database::convertDbUrlToConnectionInfo(self::getDbUrl(), $this->webroot());
+        if ($info['driver'] === 'sqlite') {
+            $info['database'] = "sites/$env/files/unish.sqlite";
+        } else {
+            $info['database'] = 'unish_' . $env;
+        }
+        $connection_class = $info['namespace'] . '\\Connection';
+        $ret = $connection_class::createUrlFromConnectionOptions($info);
+        chdir($cwd);
+        return $ret;
     }
 
     public function dbDriver($db_url = null): array|false|int|null|string
     {
-        return parse_url($db_url ?: self::getDbUrl(), PHP_URL_SCHEME);
+        $cwd = getcwd();
+        chdir($this->webroot());
+        $info = Database::convertDbUrlToConnectionInfo($db_url ?: self::getDbUrl(), $this->webroot());
+        chdir($cwd);
+        return $info['driver'] ?? false;
     }
 
     /**
@@ -664,7 +680,6 @@ EOT;
             'yes' => true,
             // quiet suppresses error reporting as well.
             // 'quiet' => true,
-            'debug' => true,
         ];
         if ($level = $this->logLevel()) {
             $options[$level] = true;

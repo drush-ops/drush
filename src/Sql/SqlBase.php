@@ -579,42 +579,8 @@ abstract class SqlBase implements ConfigAwareInterface
      */
     public static function dbSpecFromDbUrl($db_url): array
     {
-        $db_spec = [];
-
         $db_url_default = is_array($db_url) ? $db_url['default'] : $db_url;
-
-        // If it's a sqlite database, pick the database path and we're done.
-        if (str_starts_with($db_url_default, 'sqlite://')) {
-            $db_spec = [
-                'driver'   => 'sqlite',
-                'database' => substr($db_url_default, strlen('sqlite://')),
-            ];
-        } else {
-            $url = parse_url($db_url_default);
-            if ($url) {
-                // Fill in defaults to prevent notices.
-                $url += [
-                    'scheme' => null,
-                    'user'   => null,
-                    'pass'   => null,
-                    'host'   => null,
-                    'port'   => null,
-                    'path'   => null,
-                ];
-                // Suppress deprecation notice when any value in $url is null.
-                $url = (object)@array_map('urldecode', $url);
-                $db_spec = [
-                    'driver'   => $url->scheme,
-                    'username' => $url->user,
-                    'password' => $url->pass,
-                    'host' => $url->host,
-                    'port' => $url->port,
-                    'database' => ltrim($url->path, '/'),
-                ];
-            }
-        }
-
-        return $db_spec;
+        return Database::convertDbUrlToConnectionInfo($db_url_default, DRUSH_DRUPAL_CORE);
     }
 
     /**

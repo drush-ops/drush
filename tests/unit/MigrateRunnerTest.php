@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Drush\Drupal\Migrate;
 
 use Composer\Semver\Comparator;
-use Drupal\Core\Database\Driver\sqlite\Connection;
+use Drupal\Core\Database\Database;
 use Drupal\migrate\Plugin\MigrationInterface;
 use Drupal\migrate\Plugin\MigrationPluginManagerInterface;
 use PHPUnit\Framework\TestCase;
@@ -153,14 +153,19 @@ class MigrateRunnerTest extends TestCase
         if (!extension_loaded('pdo_sqlite')) {
             $this->markTestSkipped('The pdo_sqlite extension is not available.');
         }
-        $options['database'] = ':memory:';
-        $pdo = new \PDO("sqlite::memory:");
-        if (Comparator::greaterThanOrEqualTo(\Drupal::VERSION, '9.4')) {
-            /** @var \Composer\Autoload\ClassLoader $loader */
-            $loader = require PHPUNIT_COMPOSER_INSTALL;
-            $loader->addPsr4('Drupal\sqlite\\', Path::join(dirname(__DIR__, 2), 'sut/core/modules/sqlite/src'));
-        }
-        $connection = new Connection($pdo, $options);
+
+        // Need to manually add the class loader info for the driver.
+        /** @var \Composer\Autoload\ClassLoader $loader */
+        $loader = require PHPUNIT_COMPOSER_INSTALL;
+        $loader->addPsr4('Drupal\\sqlite\\', $this->webroot() . '/core/modules/sqlite/src');
+
+        // Get the database connection.
+        $cwd = getcwd();
+        chdir($this->webroot());
+        $info = Database::convertDbUrlToConnectionInfo('sqlite://localhost/:memory:?module=sqlite', $this->webroot());
+        Database::addConnectionInfo('default', 'default', $info);
+        $connection = Database::getConnection();
+        chdir($cwd);
 
         // Create the table and load it with data.
         $mapTableSchema = $this->getMapTableSchema();
@@ -181,6 +186,11 @@ class MigrateRunnerTest extends TestCase
         $insert->execute();
 
         return $connection;
+    }
+
+    public static function webroot(): string
+    {
+        return Path::join(Path::canonicalize(dirname(__DIR__, 2)), 'sut');
     }
 
     /**

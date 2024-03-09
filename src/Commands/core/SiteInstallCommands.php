@@ -136,8 +136,8 @@ final class SiteInstallCommands extends DrushCommands
         if ($sql) {
             $db_spec = $sql->getDbSpec();
             $settings['forms']['install_settings_form'] = [
-                'driver' => $db_spec['driver'],
-                $db_spec['driver'] => $db_spec,
+                'driver' => $db_spec['namespace'],
+                $db_spec['namespace'] => $db_spec,
                 'op' => dt('Save and continue'),
             ];
         }
