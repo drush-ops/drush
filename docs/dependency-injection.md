@@ -10,7 +10,7 @@ Drush command files obtain references to the resources they need through a techn
 Autowire
 ------------------
 :octicons-tag-24: 13
-Command files may inject Drush and Drupal services by adding the [AutowireTrait](https://github.com/drush-ops/drush/blob/13.x/src/Commands/AutowireTrait.php) to the class. This enables your [Constructor parameter type hints determine the the injected service](https://www.drupal.org/node/3396179). When a type hint is insufficient, an [#[Autowire] Attribute](https://www.drupal.org/node/3396179) on the constructor property (with _service:_ named argument) directs AutoWireTrait to the right service. This Attribute is currently _required_ when injecting Drush services (not required for Drupal services). 
+Command files may inject Drush and Drupal services by adding the [AutowireTrait](https://github.com/drush-ops/drush/blob/13.x/src/Commands/AutowireTrait.php) to the class (example: [PmCommands](https://github.com/drush-ops/drush/blob/13.x/src/Commands/pm/PmCommands.php)). This enables your [Constructor parameter type hints determine the the injected service](https://www.drupal.org/node/3396179). When a type hint is insufficient, an [#[Autowire] Attribute](https://www.drupal.org/node/3396179) on the constructor property (with _service:_ named argument) directs AutoWireTrait to the right service (example: [LoginCommands](https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/LoginCommands.php)). This Attribute is currently _required_ when injecting Drush services (not required for Drupal services). 
 
 If your command is not found by Drush, add the `-vvv` option for debug info about any service instantiation errors. If Autowire is still insufficient, a commandfile may implement its own `create()` method (see below).
 
