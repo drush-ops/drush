@@ -11,7 +11,6 @@ use Consolidation\AnnotatedCommand\Input\StdinAwareInterface;
 use Consolidation\Filter\Hooks\FilterHooks;
 use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
 use Consolidation\SiteProcess\ProcessManagerAwareInterface;
-use Drupal\Component\DependencyInjection\ContainerInterface;
 use Drupal\Component\DependencyInjection\ContainerInterface as DrupalContainer;
 use DrupalCodeGenerator\Command\BaseGenerator;
 use Drush\Attributes\Bootstrap;
@@ -324,7 +323,7 @@ class ServiceManager
             $commandHandler = null;
 
             try {
-                if ($this->hasStaticCreateFactory($class) && !$this->expectsSymfonyContainer($class)) {
+                if ($this->hasStaticCreateFactory($class) && $this->supportsCompoundContainer($class, $drushContainer)) {
                     // Hurray, this class is compatible with the container with delegate.
                     $commandHandler = $class::create($drushContainer);
                 } elseif ($container && $this->hasStaticCreateFactory($class)) {
@@ -348,12 +347,13 @@ class ServiceManager
     }
 
     /**
-     * Determine if the first parameter of the create method is a Symfony or Drupal container.
+     * Determine if the first parameter of the create method supports our container with delegate.
      */
-    protected function expectsSymfonyContainer($class): bool
+    protected function supportsCompoundContainer($class, $drush_container): bool
     {
         $reflection = new \ReflectionMethod($class, 'create');
-        return in_array((string) $reflection->getParameters()[0]->getType(), [null, ContainerInterface::class, \Symfony\Component\DependencyInjection\ContainerInterface::class]);
+        $hint = (string)$reflection->getParameters()[0]->getType();
+        return is_a($drush_container, $hint);
     }
 
     /**

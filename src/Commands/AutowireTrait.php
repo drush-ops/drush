@@ -23,7 +23,7 @@ trait AutowireTrait
    *
    * @return static
    */
-    public static function create(\Psr\Container\ContainerInterface $container)
+    public static function create(\Psr\Container\ContainerInterface $container): self
     {
         $args = [];
 
