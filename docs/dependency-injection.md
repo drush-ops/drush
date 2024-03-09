@@ -10,6 +10,7 @@ Drush command files obtain references to the resources they need through a techn
 Autowire
 ------------------
 :octicons-tag-24: 12.5+
+
 Command files may inject Drush and Drupal services by adding the [AutowireTrait](https://github.com/drush-ops/drush/blob/12.x/src/Commands/AutowireTrait.php) to the class (example: [PmCommands](https://github.com/drush-ops/drush/blob/12.x/src/Commands/pm/MaintCommands.php)). This enables your [Constructor parameter type hints determine the the injected service](https://www.drupal.org/node/3396179). When a type hint is insufficient, an [#[Autowire] Attribute](https://www.drupal.org/node/3396179) on the constructor property (with _service:_ named argument) directs AutoWireTrait to the right service (example: [LoginCommands](https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/LoginCommands.php)). This Attribute is currently _required_ when injecting Drush services (not required for Drupal services).
 
 If your command is not found by Drush, add the `-vvv` option for debug info about any service instantiation errors. If Autowire is still insufficient, a commandfile may implement its own `create()` method (see below).
@@ -39,13 +40,13 @@ See the [Drupal Documentation](https://www.drupal.org/docs/drupal-apis/services-
 createEarly() method
 ------------------
 :octicons-tag-24: 12.0+
-!!! tip
 
-    The createEarly() method was deprecated in Drush 12.5. Instead put a `#[CLI\Bootstrap(DrupalBootLevels::NONE)]` Attribute on the command class and inject dependencies via the usual `__construct` with [AutowireTrait](https://github.com/drush-ops/drush/blob/13.x/src/Commands/AutowireTrait.php). Note also that Drush commands packaged with Drupal modules are not discovered
-    until after Drupal bootstraps, and therefore cannot use `createEarly()`. This
-    mechanism is only usable by PSR-4 discovered commands packaged with Composer
-    projects that are *not* Drupal modules.
+The `createEarly()` method was deprecated in Drush 12.5. Instead put a `#[CLI\Bootstrap(DrupalBootLevels::NONE)]` Attribute on the command class and inject dependencies via the usual `__construct` with [AutowireTrait](https://github.com/drush-ops/drush/blob/13.x/src/Commands/AutowireTrait.php). 
 
+Note also that Drush commands packaged with Drupal modules are not discovered
+until after Drupal bootstraps, and therefore cannot use `createEarly()`. This
+mechanism is only usable by PSR-4 discovered commands packaged with Composer
+projects that are *not* Drupal modules.
 
 Inflection
 -----------------

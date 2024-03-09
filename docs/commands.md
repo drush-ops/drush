@@ -2,7 +2,7 @@
 
 !!! tip
 
-      1. You may now use [Autowire](https://github.com/drush-ops/drush/blob/13.x/src/Commands/AutowireTrait.php) to inject Drupal and Drush dependencies. Prior approaches were using a [create() method](dependency-injection.md#create-method and using a [drush.services.yml file](https://www.drush.org/11.x/dependency-injection/#services-files). These are now deprecated.
+      1. You may now use [Autowire](https://github.com/drush-ops/drush/blob/13.x/src/Commands/AutowireTrait.php) to inject Drupal and Drush dependencies. Prior approaches were using a [create() method](dependency-injection.md#create-method] and using a [drush.services.yml file](https://www.drush.org/11.x/dependency-injection/#services-files). These are now deprecated.
       1. Drush 12 expects all commandfiles in the `<module-name>/src/Drush/<Commands|Generators>` directory. The `Drush` subdirectory is a new requirement.
 
 Creating a new Drush command is easy. Follow the steps below.
