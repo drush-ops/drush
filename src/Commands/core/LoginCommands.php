@@ -10,6 +10,7 @@ use Drupal\user\Entity\User;
 use Drush\Attributes as CLI;
 use Drush\Boot\BootstrapManager;
 use Drush\Boot\DrupalBootLevels;
+use Drush\Commands\AutowireTrait;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Drush\Exec\ExecTrait;
@@ -19,6 +20,7 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
 #[CLI\Bootstrap(DrupalBootLevels::NONE)]
 final class LoginCommands extends DrushCommands
 {
+    use AutowireTrait;
     use ExecTrait;
 
     const LOGIN = 'user:login';

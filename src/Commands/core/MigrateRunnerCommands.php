@@ -18,6 +18,7 @@ use Drupal\migrate\Plugin\MigrationInterface;
 use Drupal\migrate\Plugin\MigrationPluginManagerInterface;
 use Drupal\migrate\Plugin\RequirementsInterface;
 use Drush\Attributes as CLI;
+use Drush\Commands\AutowireTrait;
 use Drush\Commands\DrushCommands;
 use Drush\Drupal\Migrate;
 use Drush\Drupal\Migrate\MigrateExecutable;
@@ -30,6 +31,8 @@ use Symfony\Component\Filesystem\Path;
 
 class MigrateRunnerCommands extends DrushCommands
 {
+    use AutowireTrait;
+
     protected ?MigrationPluginManagerInterface $migrationPluginManager = null;
 
     public function __construct(

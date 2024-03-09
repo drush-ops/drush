@@ -10,11 +10,14 @@ use Drupal\Core\Entity\EntityStorageException;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Entity\Query\QueryInterface;
 use Drush\Attributes as CLI;
+use Drush\Commands\AutowireTrait;
 use Drush\Commands\DrushCommands;
 use Drush\Utils\StringUtils;
 
 final class EntityCommands extends DrushCommands
 {
+    use AutowireTrait;
+
     const DELETE = 'entity:delete';
     const SAVE = 'entity:save';
 

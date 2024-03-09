@@ -9,6 +9,7 @@ use Consolidation\SiteAlias\SiteAliasManagerInterface;
 use Consolidation\SiteProcess\ProcessManager;
 use Drush\Attributes as CLI;
 use Drush\Boot\DrupalBootLevels;
+use Drush\Commands\AutowireTrait;
 use Drush\Commands\config\ConfigImportCommands;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
@@ -17,6 +18,8 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 final class DeployCommands extends DrushCommands
 {
+    use AutowireTrait;
+
     const DEPLOY = 'deploy';
 
     public function __construct(

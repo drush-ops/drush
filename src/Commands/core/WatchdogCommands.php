@@ -15,6 +15,7 @@ use Drupal\Core\Session\AnonymousUserSession;
 use Drupal\user\Entity\User;
 use Drush\Attributes as CLI;
 use Drush\Boot\DrupalBootLevels;
+use Drush\Commands\AutowireTrait;
 use Drush\Commands\DrushCommands;
 use Drush\Drupal\DrupalUtil;
 use Drush\Exceptions\UserAbortException;
@@ -24,6 +25,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 final class WatchdogCommands extends DrushCommands
 {
+    use AutowireTrait;
+
     const SHOW = 'watchdog:show';
     const LIST = 'watchdog:list';
     const TAIL = 'watchdog:tail';

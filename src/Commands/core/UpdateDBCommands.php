@@ -11,6 +11,7 @@ use Drupal\Core\Database\Database;
 use Drupal\Core\Utility\Error;
 use Drush\Attributes as CLI;
 use Drush\Boot\DrupalBootLevels;
+use Drush\Commands\AutowireTrait;
 use Drush\Commands\DrushCommands;
 use Drush\Drupal\DrupalUtil;
 use Drush\Drush;
@@ -23,6 +24,8 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
 #[CLI\Bootstrap(DrupalBootLevels::NONE)]
 final class UpdateDBCommands extends DrushCommands
 {
+    use AutowireTrait;
+
     const UPDATEDB = 'updatedb';
     const STATUS = 'updatedb:status';
     const BATCH_PROCESS = 'updatedb:batch-process';

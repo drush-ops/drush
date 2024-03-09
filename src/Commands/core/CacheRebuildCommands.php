@@ -10,6 +10,7 @@ use Drupal\Core\Site\Settings;
 use Drush\Attributes as CLI;
 use Drush\Boot\BootstrapManager;
 use Drush\Boot\DrupalBootLevels;
+use Drush\Commands\AutowireTrait;
 use Drush\Commands\DrushCommands;
 use Drush\Drupal\DrushLoggerServiceProvider;
 use Drush\Runtime\DependencyInjection;
@@ -17,6 +18,8 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 final class CacheRebuildCommands extends DrushCommands
 {
+    use AutowireTrait;
+
     const REBUILD = 'cache:rebuild';
 
     public function __construct(

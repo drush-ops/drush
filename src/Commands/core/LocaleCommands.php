@@ -15,12 +15,15 @@ use Drupal\Core\State\StateInterface;
 use Drupal\language\Entity\ConfigurableLanguage;
 use Drupal\locale\PoDatabaseReader;
 use Drush\Attributes as CLI;
+use Drush\Commands\AutowireTrait;
 use Drush\Commands\DrushCommands;
 use Drush\Exceptions\CommandFailedException;
 use Drush\Utils\StringUtils;
 
 final class LocaleCommands extends DrushCommands
 {
+    use AutowireTrait;
+
     const CHECK = 'locale:check';
     const CLEAR = 'locale:clear-status';
     const UPDATE = 'locale:update';
@@ -48,8 +51,13 @@ final class LocaleCommands extends DrushCommands
         return $this->state;
     }
 
-    public function __construct(protected LanguageManagerInterface $languageManager, protected ConfigFactoryInterface $configFactory, protected ModuleHandlerInterface $moduleHandler, protected StateInterface $state)
-    {
+    public function __construct(
+        protected LanguageManagerInterface $languageManager,
+        protected ConfigFactoryInterface $configFactory,
+        protected ModuleHandlerInterface $moduleHandler,
+        protected StateInterface $state
+    ) {
+        parent::__construct();
     }
 
     /**

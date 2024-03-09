@@ -17,6 +17,8 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
 #[CLI\Bootstrap(DrupalBootLevels::NONE)]
 class SiteAliasAlterCommands extends DrushCommands
 {
+    use AutowireTrait;
+
     public function __construct(
         #[Autowire(service: DependencyInjection::SITE_ALIAS_MANAGER)]
         private readonly SiteAliasManagerInterface $siteAliasManager

@@ -9,11 +9,13 @@ use Consolidation\AnnotatedCommand\Input\StdinAwareTrait;
 use Consolidation\OutputFormatters\StructuredData\PropertyList;
 use Drupal\Core\State\StateInterface;
 use Drush\Attributes as CLI;
+use Drush\Commands\AutowireTrait;
 use Drush\Commands\DrushCommands;
 use Symfony\Component\Yaml\Yaml;
 
 final class StateCommands extends DrushCommands implements StdinAwareInterface
 {
+    use AutowireTrait;
     use StdinAwareTrait;
 
     const GET = 'state:get';

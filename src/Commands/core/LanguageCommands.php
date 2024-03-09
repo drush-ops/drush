@@ -9,11 +9,14 @@ use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Language\LanguageManagerInterface;
 use Drupal\language\Entity\ConfigurableLanguage;
 use Drush\Attributes as CLI;
+use Drush\Commands\AutowireTrait;
 use Drush\Commands\DrushCommands;
 use Drush\Utils\StringUtils;
 
 final class LanguageCommands extends DrushCommands
 {
+    use AutowireTrait;
+
     const ADD = 'language:add';
     const INFO = 'language:info';
 
@@ -27,8 +30,11 @@ final class LanguageCommands extends DrushCommands
         return $this->moduleHandler;
     }
 
-    public function __construct(protected LanguageManagerInterface $languageManager, protected ModuleHandlerInterface $moduleHandler)
+    public function __construct(
+        protected LanguageManagerInterface $languageManager,
+        protected ModuleHandlerInterface $moduleHandler)
     {
+        parent::__construct();
     }
 
     #[CLI\Command(name: self::ADD, aliases: ['language-add'])]

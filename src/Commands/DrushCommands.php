@@ -28,7 +28,6 @@ use Symfony\Component\Filesystem\Path;
 
 abstract class DrushCommands implements IOAwareInterface, LoggerAwareInterface, ConfigAwareInterface, ProcessManagerAwareInterface
 {
-    use AutowireTrait;
     use ProcessManagerAwareTrait;
     use ExecTrait;
     use ConfigAwareTrait;

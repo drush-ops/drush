@@ -11,8 +11,8 @@ use Drush\Boot\DrupalBootLevels;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Drush\Exec\ExecTrait;
-use Drush\Runtime\DependencyInjection;
-use Symfony\Component\DependencyInjection\Attribute\Autowire;
+use League\Container\Container as DrushContainer;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 final class EditCommands extends DrushCommands
 {
@@ -21,10 +21,21 @@ final class EditCommands extends DrushCommands
     const EDIT = 'core:edit';
 
     public function __construct(
-        #[Autowire(service: DependencyInjection::SITE_ALIAS_MANAGER)]
         private readonly SiteAliasManagerInterface $siteAliasManager
     ) {
         parent::__construct();
+    }
+
+    /**
+     * Not using Autowire in order to implicitly test backward compat.
+     */
+    public static function create(ContainerInterface $container, DrushContainer $drush_container): self
+    {
+        $commandHandler = new static(
+            $drush_container->get('site.alias.manager'),
+        );
+
+        return $commandHandler;
     }
 
     /**

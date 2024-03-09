@@ -10,6 +10,7 @@ use Consolidation\SiteAlias\SiteAlias;
 use Consolidation\SiteAlias\SiteAliasManagerInterface;
 use Drush\Attributes as CLI;
 use Drush\Boot\DrupalBootLevels;
+use Drush\Commands\AutowireTrait;
 use Drush\Commands\core\DocsCommands;
 use Drush\Commands\core\RsyncCommands;
 use Drush\Commands\core\StatusCommands;
@@ -23,6 +24,8 @@ use Symfony\Component\Filesystem\Path;
 #[CLI\Bootstrap(DrupalBootLevels::NONE)]
 final class SqlSyncCommands extends DrushCommands
 {
+    use AutowireTrait;
+
     const SYNC = 'sql:sync';
 
     public function __construct(

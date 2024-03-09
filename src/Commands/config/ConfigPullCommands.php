@@ -11,6 +11,7 @@ use Consolidation\SiteAlias\HostPath;
 use Consolidation\SiteAlias\SiteAliasManagerInterface;
 use Drush\Attributes as CLI;
 use Drush\Boot\DrupalBootLevels;
+use Drush\Commands\AutowireTrait;
 use Drush\Commands\core\DocsCommands;
 use Drush\Commands\core\RsyncCommands;
 use Drush\Commands\DrushCommands;
@@ -21,6 +22,8 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
 #[CLI\Bootstrap(DrupalBootLevels::NONE)]
 final class ConfigPullCommands extends DrushCommands
 {
+    use AutowireTrait;
+
     const PULL = 'config:pull';
 
     public function __construct(

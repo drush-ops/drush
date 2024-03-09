@@ -7,6 +7,7 @@ namespace Drush\Commands\core;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drush\Attributes as CLI;
 use Drush\Boot\DrupalBootLevels;
+use Drush\Commands\AutowireTrait;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Drush\Psysh\DrushCommand;
@@ -19,6 +20,8 @@ use Psy\VersionUpdater\Checker;
 
 final class CliCommands extends DrushCommands
 {
+    use AutowireTrait;
+
     const DOCS_REPL = 'docs:repl';
     const PHP = 'php:cli';
 

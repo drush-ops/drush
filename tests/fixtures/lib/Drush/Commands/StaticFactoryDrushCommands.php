@@ -4,6 +4,7 @@ namespace Custom\Library\Drush\Commands;
 
 use Drupal\Core\DrupalKernelInterface;
 use Drush\Attributes as CLI;
+use Drush\Commands\AutowireTrait;
 use Drush\Commands\DrushCommands;
 
 /**
@@ -13,6 +14,8 @@ use Drush\Commands\DrushCommands;
  */
 class StaticFactoryDrushCommands extends DrushCommands
 {
+    use AutowireTrait;
+
     protected function __construct(protected DrupalKernelInterface $kernel)
     {
         parent::__construct();

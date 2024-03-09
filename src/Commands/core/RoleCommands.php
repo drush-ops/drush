@@ -10,6 +10,7 @@ use Consolidation\SiteAlias\SiteAliasManager;
 use Drupal\user\Entity\Role;
 use Drush\Attributes as CLI;
 use Drush\Boot\DrupalBootLevels;
+use Drush\Commands\AutowireTrait;
 use Drush\Commands\DrushCommands;
 use Drush\Runtime\DependencyInjection;
 use Drush\Utils\StringUtils;
@@ -19,6 +20,8 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 final class RoleCommands extends DrushCommands
 {
+    use AutowireTrait;
+
     const CREATE = 'role:create';
     const DELETE = 'role:delete';
     const PERM_ADD = 'role:perm:add';

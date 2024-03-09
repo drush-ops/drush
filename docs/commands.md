@@ -2,7 +2,7 @@
 
 !!! tip
 
-      1. Drush 13 expects commandfiles to use Autowire to inject Drupal and Drush dependencies. Prior versions used a [drush.services.yml file](https://www.drush.org/11.x/dependency-injection/#services-files) which is now deprecated and will be removed in Drush 13.
+      1. Drush 13 expects commandfiles to use [Autowire](https://github.com/drush-ops/drush/blob/13.x/src/Commands/AutowireTrait.php) to inject Drupal and Drush dependencies. Prior versions used a [drush.services.yml file](https://www.drush.org/11.x/dependency-injection/#services-files) which is now deprecated and will be removed in Drush 13.
       1. Drush 12 expects all commandfiles in the `<module-name>/src/Drush/<Commands|Generators>` directory. The `Drush` subdirectory is a new requirement.
 
 Creating a new Drush command is easy. Follow the steps below.

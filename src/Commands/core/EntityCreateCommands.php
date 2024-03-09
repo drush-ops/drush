@@ -15,12 +15,15 @@ use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\Session\AccountSwitcherInterface;
 use Drupal\field\Entity\FieldStorageConfig;
 use Drush\Attributes as CLI;
+use Drush\Commands\AutowireTrait;
 use Drush\Commands\DrushCommands;
 use Drush\Utils\StringUtils;
 use Symfony\Component\Yaml\Yaml;
 
 final class EntityCreateCommands extends DrushCommands
 {
+    use AutowireTrait;
+
     const CREATE = 'entity:create';
 
     public function __construct(

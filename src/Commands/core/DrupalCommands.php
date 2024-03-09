@@ -10,12 +10,15 @@ use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Routing\RouteProviderInterface;
 use Drupal\Core\Url;
 use Drush\Attributes as CLI;
+use Drush\Commands\AutowireTrait;
 use Drush\Commands\DrushCommands;
 use Drush\Drupal\DrupalUtil;
 use Drush\Utils\StringUtils;
 
 final class DrupalCommands extends DrushCommands
 {
+    use AutowireTrait;
+
     const CRON = 'core:cron';
     const REQUIREMENTS = 'core:requirements';
     const ROUTE = 'core:route';

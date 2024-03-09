@@ -18,10 +18,9 @@ use Drush\Boot\DrupalBoot;
 use Drush\Boot\DrupalBootLevels;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
-use Drush\Runtime\DependencyInjection;
 use Drush\Sql\SqlBase;
 use Drush\Utils\StringUtils;
-use Symfony\Component\DependencyInjection\Attribute\Autowire;
+use League\Container\Container as DrushContainer;
 use Symfony\Component\Filesystem\Path;
 
 #[CLI\Bootstrap(DrupalBootLevels::NONE)]
@@ -30,10 +29,21 @@ final class StatusCommands extends DrushCommands
     const STATUS = 'core:status';
 
     public function __construct(
-        #[Autowire(service: DependencyInjection::SITE_ALIAS_MANAGER)]
         private readonly SiteAliasManagerInterface $siteAliasManager
     ) {
         parent::__construct();
+    }
+
+    /**
+     * Not using Autowire in order to implicitly test backward compat.
+     */
+    public static function createEarly(DrushContainer $drush_container): self
+    {
+        $commandHandler = new static(
+            $drush_container->get('site.alias.manager'),
+        );
+
+        return $commandHandler;
     }
 
     /**

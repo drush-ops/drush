@@ -14,6 +14,7 @@ use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Extension\ModuleInstallerInterface;
 use Drupal\Core\Extension\ThemeHandlerInterface;
 use Drush\Attributes as CLI;
+use Drush\Commands\AutowireTrait;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Drush\Exceptions\UserAbortException;
@@ -21,6 +22,8 @@ use Drush\Utils\StringUtils;
 
 final class PmCommands extends DrushCommands
 {
+    use AutowireTrait;
+
     const INSTALL = 'pm:install';
     const UNINSTALL = 'pm:uninstall';
     const LIST = 'pm:list';

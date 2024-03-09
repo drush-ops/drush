@@ -8,6 +8,7 @@ use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Drush\Attributes as CLI;
 use Drush\Commands\DrushCommands;
   {% if services %}
+use Drush\Commands\AutowireTrait;
 {{ di.use(services) }}
   {% endif %}
 {% endsort %}
@@ -17,6 +18,8 @@ use Drush\Commands\DrushCommands;
  */
 final class {{ class }} extends DrushCommands {
 {% if services %}
+
+  use AutowireTrait;
 
   /**
    * Constructs {{ class|article }} object.

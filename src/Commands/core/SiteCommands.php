@@ -7,12 +7,15 @@ namespace Drush\Commands\core;
 use Consolidation\OutputFormatters\StructuredData\UnstructuredListData;
 use Consolidation\SiteAlias\SiteAliasManagerInterface;
 use Drush\Attributes as CLI;
+use Drush\Commands\AutowireTrait;
 use Drush\Commands\DrushCommands;
 use Drush\Runtime\DependencyInjection;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 final class SiteCommands extends DrushCommands
 {
+    use AutowireTrait;
+
     const SET = 'site:set';
     const ALIAS = 'site:alias';
 

@@ -9,6 +9,7 @@ use Consolidation\AnnotatedCommand\Hooks\HookManager;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\link\LinkItemInterface;
 use Drush\Attributes as CLI;
+use Drush\Commands\AutowireTrait;
 use Drush\Commands\DrushCommands;
 use Drush\Commands\field\FieldCreateCommands;
 use Symfony\Component\Console\Command\Command;
@@ -17,9 +18,12 @@ use Symfony\Component\Console\Input\InputOption;
 
 final class LinkHooks extends DrushCommands
 {
+    use AutowireTrait;
+
     public function __construct(
         protected ModuleHandlerInterface $moduleHandler
     ) {
+        parent::__construct();
     }
 
     #[CLI\Hook(type: HookManager::OPTION_HOOK, target: FieldCreateCommands::CREATE)]

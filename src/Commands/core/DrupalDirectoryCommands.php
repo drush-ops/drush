@@ -8,12 +8,15 @@ use Consolidation\SiteAlias\HostPath;
 use Consolidation\SiteAlias\SiteAliasManagerInterface;
 use Drush\Attributes as CLI;
 use Drush\Backend\BackendPathEvaluator;
+use Drush\Commands\AutowireTrait;
 use Drush\Commands\DrushCommands;
 use Drush\Runtime\DependencyInjection;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 final class DrupalDirectoryCommands extends DrushCommands
 {
+    use AutowireTrait;
+
     const DIRECTORY = 'drupal:directory';
 
     protected BackendPathEvaluator $pathEvaluator;

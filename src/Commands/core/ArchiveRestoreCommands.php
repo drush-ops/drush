@@ -15,6 +15,7 @@ use Drush\Attributes as CLI;
 use Drush\Backend\BackendPathEvaluator;
 use Drush\Boot\BootstrapManager;
 use Drush\Boot\DrupalBootLevels;
+use Drush\Commands\AutowireTrait;
 use Drush\Commands\DrushCommands;
 use Drush\Exceptions\UserAbortException;
 use Drush\Runtime\DependencyInjection;
@@ -30,6 +31,8 @@ use Throwable;
 #[CLI\Bootstrap(DrupalBootLevels::NONE)]
 final class ArchiveRestoreCommands extends DrushCommands
 {
+    use AutowireTrait;
+
     const RESTORE = 'archive:restore';
     private Filesystem $filesystem;
     private ?string $destinationPath = null;

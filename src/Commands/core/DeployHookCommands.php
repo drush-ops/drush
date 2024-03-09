@@ -11,6 +11,7 @@ use Drupal\Core\Update\UpdateRegistry;
 use Drupal\Core\Utility\Error;
 use Drush\Attributes as CLI;
 use Drush\Boot\DrupalBootLevels;
+use Drush\Commands\AutowireTrait;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Drush\Exceptions\UserAbortException;
@@ -21,6 +22,8 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 final class DeployHookCommands extends DrushCommands
 {
+    use AutowireTrait;
+
     const HOOK_STATUS = 'deploy:hook-status';
     const HOOK = 'deploy:hook';
     const BATCH_PROCESS = 'deploy:batch-process';

@@ -12,6 +12,7 @@ use Drupal\Core\PhpStorage\PhpStorageFactory;
 use Drupal\Core\State\StateInterface;
 use Drupal\Core\Template\TwigEnvironment;
 use Drush\Attributes as CLI;
+use Drush\Commands\AutowireTrait;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Drush\Utils\StringUtils;
@@ -21,6 +22,8 @@ use Symfony\Component\Finder\Finder;
 
 final class TwigCommands extends DrushCommands
 {
+    use AutowireTrait;
+
     const UNUSED = 'twig:unused';
     const COMPILE = 'twig:compile';
     const DEBUG = 'twig:debug';

@@ -315,17 +315,22 @@ class ServiceManager
             return !$reflection->isAbstract();
         });
 
-        // @todo where to do this?
-        // Combine the two containers.
-        if ($container) {
+        // Prevent duplicate calls to delegate() by checking for state.
+        if ($container && !$drushContainer->has('state')) {
+            // Combine the two containers.
             $drushContainer->delegate($container);
         }
         foreach ($bootstrapCommandClasses as $class) {
             $commandHandler = null;
 
             try {
-                if ($this->hasStaticCreateFactory($class)) {
+                if ($this->hasStaticCreateFactory($class) && $this->supportsCompoundContainer($class, $drushContainer)) {
+                    // Hurray, this class is compatible with the container with delegate.
                     $commandHandler = $class::create($drushContainer);
+                } elseif ($container && $this->hasStaticCreateFactory($class)) {
+                    $commandHandler = $class::create($container, $drushContainer);
+                } elseif (!$container && $this->hasStaticCreateEarlyFactory($class)) {
+                    $commandHandler = $class::createEarly($drushContainer);
                 } else {
                     $commandHandler = new $class();
                 }
@@ -340,6 +345,16 @@ class ServiceManager
         }
 
         return $commandHandlers;
+    }
+
+    /**
+     * Determine if the first parameter of the create method supports our container with delegate.
+     */
+    protected function supportsCompoundContainer($class, $drush_container): bool
+    {
+        $reflection = new \ReflectionMethod($class, 'create');
+        $hint = (string)$reflection->getParameters()[0]->getType();
+        return is_a($drush_container, $hint);
     }
 
     /**
@@ -385,6 +400,19 @@ class ServiceManager
 
         $reflectionMethod = new \ReflectionMethod($class, $methodName);
         return $reflectionMethod->isStatic();
+    }
+
+    /**
+     * Check to see if the provided class has a static `createEarly` method.
+     *
+     * @param string $class The name of the class to check
+     *
+     * @return bool
+     *   True if class has a static `createEarly` method.
+     */
+    protected function hasStaticCreateEarlyFactory(string $class): bool
+    {
+        return static::hasStaticMethod($class, 'createEarly');
     }
 
     /**
