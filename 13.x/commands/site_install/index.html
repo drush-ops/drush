@@ -5279,9 +5279,9 @@
 <h4 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h4>
 <ul>
 <li><code>drush si demo_umami --locale=da</code>. (Re)install using the Umami install profile. Set default language to Danish.</li>
-<li><code>drush si --db-url=mysql://root:pass@localhost:port/dbname</code>. Install using the specified DB params.</li>
-<li><code>drush si --db-url=sqlite://sites/example.com/files/.ht.sqlite</code>. Install using SQLite</li>
-<li><code>drush si --db-url=sqlite://:memory:</code>. Install using SQLite in-memory database.</li>
+<li><code>drush si --db-url=mysql://root:pass@localhost:port/dbname?module=mysql#tableprefix</code>. Install on MySQL using the specified DB params.</li>
+<li><code>drush si --db-url=sqlite://sites/example.com/files/.ht.sqlite?module=sqlite#tableprefix</code>. Install on SQLite, using database file <em>sites/example.com/files/.ht.sqlite</em></li>
+<li><code>drush si --db-url=sqlite://:memory:?module=sqlite</code>. Install using SQLite in-memory database, that is not persisted. Useful for testing.</li>
 <li><code>drush si --account-pass=mom</code>. Re-install with specified uid1 password.</li>
 <li><code>drush si --existing-config</code>. Install based on the yml files stored in the config export/import directory.</li>
 <li><code>drush si standard install_configure_form.enable_update_status_emails=NULL</code>. Disable email notification during install and later. If your server has no mail transfer agent, this gets rid of an error during install.</li>
@@ -5292,7 +5292,7 @@
 </ul>
 <h4 id="options">Options<a class="headerlink" href="#options" title="Permanent link">&para;</a></h4>
 <ul>
-<li><strong> --db-url=DB-URL</strong>. A Drupal 6 style database URL. Required for initial install, not re-install. If omitted and required, Drush prompts for this item.</li>
+<li><strong> --db-url=DB-URL</strong>. A Drupal 10 style database URL. Required for initial install, not re-install. If omitted and required, Drush prompts for this item.</li>
 <li><strong> --db-prefix=DB-PREFIX</strong>. An optional table prefix to use for initial install.</li>
 <li><strong> --db-su=DB-SU</strong>. Account to use when creating a new database. Must have Grant permission (mysql only). Optional.</li>
 <li><strong> --db-su-pw=DB-SU-PW</strong>. Password for the <em>db-su</em> account. Optional.</li>
