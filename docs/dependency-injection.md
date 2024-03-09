@@ -40,12 +40,13 @@ See the [Drupal Documentation](https://www.drupal.org/docs/drupal-apis/services-
 createEarly() method
 ------------------
 :octicons-tag-24: 12.0+
-!!! tip
 
-    Drush 12 supported a createEarly() method. This is deprecated and instead put a `#[CLI\Bootstrap(DrupalBootLevels::NONE)]` Attribute on the command class and inject dependencies via the usual `__construct` with [AutowireTrait](https://github.com/drush-ops/drush/blob/13.x/src/Commands/AutowireTrait.php). Note also that Drush commands packaged with Drupal modules are not discovered
-    until after Drupal bootstraps, and therefore cannot use `createEarly()`. This
-    mechanism is only usable by PSR-4 discovered commands packaged with Composer
-    projects that are *not* Drupal modules.
+Drush 12 supported a `createEarly()` method. This is deprecated and instead put a `#[CLI\Bootstrap(DrupalBootLevels::NONE)]` Attribute on the command class and inject dependencies via the usual `__construct()` and [AutowireTrait](https://github.com/drush-ops/drush/blob/13.x/src/Commands/AutowireTrait.php). 
+
+Note also that Drush commands packaged with Drupal modules are not discovered
+until after Drupal bootstraps, and therefore cannot use `createEarly()`. This
+mechanism is only usable by PSR-4 discovered commands packaged with Composer
+projects that are *not* Drupal modules.
 
 
 Inflection
