@@ -279,69 +279,77 @@ final class SiteInstallCommands extends DrushCommands
             // Prompt for the db-url data if it was not provided via --db-url.
             // TODO: we should only 'ask' in hook interact, never in hook validate
             if ($commandData->input()->getOption('db-url') == '') {
-                // Do some install booting to get basic services available.
-                require_once DRUPAL_ROOT . '/core/includes/install.core.inc';
-                $classLoader = require DRUPAL_ROOT . '/autoload.php';
-                $installState = install_state_defaults();
-                install_begin_request($classLoader, $installState);
+                global $install_state;
+                try {
+                    // Do some install booting to get basic services available.
+                    $profile = array_shift($commandData->input()->getArgument('profile')) ?: '';
+                    $this->determineProfile($profile, $commandData->input()->getOptions());
+                    require_once DRUSH_DRUPAL_CORE . '/includes/install.core.inc';
+                    $install_state = ['interactive' => false] + install_state_defaults();
+                    $install_state['parameters']['profile'] = $profile;
+                    install_begin_request($this->autoloader, $install_state);
 
-                // Get the installable drivers.
-                $driverList = Database::getDriverList()->getInstallableList();
-                $driverSelectOptions = [];
-                foreach ($driverList as $namespace => $driverExtension) {
-                    $driverSelectOptions[$namespace] = $driverExtension->getInstallTasks()->name();
-                }
+                    // Get the installable drivers.
+                    $driverList = Database::getDriverList()->getInstallableList();
+                    $driverSelectOptions = [];
+                    foreach ($driverList as $namespace => $driverExtension) {
+                        $driverSelectOptions[$namespace] = $driverExtension->getInstallTasks()->name();
+                    }
 
-                // Ask questions to get our data.
-                $driverNamespace = $this->io()->select('Select the database driver', $driverSelectOptions);
-                $formOptions = $driverList[$driverNamespace]->getInstallTasks()->getFormOptions([]);
-                $databaseInfo = [
-                    'driver' => $driverList[$driverNamespace]->getDriverName(),
-                    'module' => $driverList[$driverNamespace]->getModule()->getName(),
-                ];
-                $databaseInfo['database'] = $this->io()->text(
-                    $formOptions['database']['#title'],
-                    default: $formOptions['database']['#default_value'] ?: 'drupal',
-                    hint: (string) ($formOptions['database']['#description'] ?? NULL),
-                );
-                if (isset($formOptions['username'])) {
-                    $databaseInfo['username'] = $this->io()->text(
-                        $formOptions['username']['#title'],
-                        default: 'drupal',
-                        hint: (string) ($formOptions['username']['#description'] ?? NULL),
+                    // Ask questions to get our data.
+                    $driverNamespace = $this->io()->select('Select the database driver', $driverSelectOptions);
+                    $formOptions = $driverList[$driverNamespace]->getInstallTasks()->getFormOptions([]);
+                    $databaseInfo = [
+                        'driver' => $driverList[$driverNamespace]->getDriverName(),
+                        'module' => $driverList[$driverNamespace]->getModule()->getName(),
+                    ];
+                    $databaseInfo['database'] = $this->io()->text(
+                        $formOptions['database']['#title'],
+                        default: $formOptions['database']['#default_value'] ?: 'drupal',
+                        hint: (string) ($formOptions['database']['#description'] ?? NULL),
                     );
-                }
-                if (isset($formOptions['password'])) {
-                    $databaseInfo['password'] = $this->io()->text(
-                        $formOptions['password']['#title'],
-                        default: 'drupal',
-                        hint: (string) ($formOptions['password']['#description'] ?? NULL),
+                    if (isset($formOptions['username'])) {
+                        $databaseInfo['username'] = $this->io()->text(
+                            $formOptions['username']['#title'],
+                            default: 'drupal',
+                            hint: (string) ($formOptions['username']['#description'] ?? NULL),
+                        );
+                    }
+                    if (isset($formOptions['password'])) {
+                        $databaseInfo['password'] = $this->io()->text(
+                            $formOptions['password']['#title'],
+                            default: 'drupal',
+                            hint: (string) ($formOptions['password']['#description'] ?? NULL),
+                        );
+                    }
+                    if (isset($formOptions['advanced_options']['host'])) {
+                        $databaseInfo['host'] = $this->io()->text(
+                            $formOptions['advanced_options']['host']['#title'],
+                            default: $formOptions['advanced_options']['host']['#default_value'],
+                            hint: (string) ($formOptions['advanced_options']['host']['#description'] ?? NULL),
                     );
+                    }
+                    if (isset($formOptions['advanced_options']['port'])) {
+                        $databaseInfo['port'] = $this->io()->text(
+                            $formOptions['advanced_options']['port']['#title'],
+                            default: $formOptions['advanced_options']['port']['#default_value'],
+                            hint: (string) ($formOptions['advanced_options']['port']['#description'] ?? NULL),
+                        );
+                    }
+                    if (isset($formOptions['advanced_options']['prefix'])) {
+                        $databaseInfo['prefix'] = $this->io()->text(
+                            $formOptions['advanced_options']['prefix']['#title'],
+                            default: $formOptions['advanced_options']['prefix']['#default_value'],
+                            hint: (string) ($formOptions['advanced_options']['prefix']['#description'] ?? NULL),
+                        );
+                    }
+                    $connectionClass = $driverNamespace . '\\Connection';
+                    $db_url = $connectionClass::createUrlFromConnectionOptions($databaseInfo);
+                    $commandData->input()->setOption('db-url', $db_url);
                 }
-                if (isset($formOptions['advanced_options']['host'])) {
-                    $databaseInfo['host'] = $this->io()->text(
-                        $formOptions['advanced_options']['host']['#title'],
-                        default: $formOptions['advanced_options']['host']['#default_value'],
-                        hint: (string) ($formOptions['advanced_options']['host']['#description'] ?? NULL),
-                );
+                finally {
+                    unset($install_state);
                 }
-                if (isset($formOptions['advanced_options']['port'])) {
-                    $databaseInfo['port'] = $this->io()->text(
-                        $formOptions['advanced_options']['port']['#title'],
-                        default: $formOptions['advanced_options']['port']['#default_value'],
-                        hint: (string) ($formOptions['advanced_options']['port']['#description'] ?? NULL),
-                    );
-                }
-                if (isset($formOptions['advanced_options']['prefix'])) {
-                    $databaseInfo['prefix'] = $this->io()->text(
-                        $formOptions['advanced_options']['prefix']['#title'],
-                        default: $formOptions['advanced_options']['prefix']['#default_value'],
-                        hint: (string) ($formOptions['advanced_options']['prefix']['#description'] ?? NULL),
-                    );
-                }
-                $connectionClass = $driverNamespace . '\\Connection';
-                $db_url = $connectionClass::createUrlFromConnectionOptions($databaseInfo);
-                $commandData->input()->setOption('db-url', $db_url);
 
                 try {
                     // Try to instantiate an sql accessor object from the
