@@ -5217,7 +5217,7 @@
 <p>The <a href="https://github.com/consolidation/site-alias/blob/4.0.1/src/SiteAliasManager.php">Site Alias Manager (SAM)</a> service is used to retrieve information about one or all of the site aliases for the current installation.</p>
 <ul>
 <li>An informative example is the <a href="https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/BrowseCommands.php">browse command</a></li>
-<li>A commandfile gets access to the SAM as follows:
+<li>A commandfile gets usually access to the SAM via <a href="../dependency-injection/#autowire">autowire</a> of a dependency:
 <div class="highlight"><pre><span></span><code><span class="p">#[</span><span class="nd">Autowire</span><span class="p">(</span><span class="nx">service</span><span class="o">:</span> <span class="nx">DependencyInjection</span><span class="o">::</span><span class="na">SITE_ALIAS_MANAGER</span><span class="p">)]</span>
 <span class="k">private</span> <span class="nx">readonly</span> <span class="nx">SiteAliasManagerInterface</span> <span class="nv">$siteAliasManager</span>
 </code></pre></div></li>
