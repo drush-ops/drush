@@ -2,7 +2,7 @@
 
 !!! tip
 
-      1. Drush 12 expects commandfiles to use a [create() method](dependency-injection.md#create-method) to inject Drupal and Drush dependencies. Prior versions used a [drush.services.yml file](https://www.drush.org/11.x/dependency-injection/#services-files) which is now deprecated and will be removed in Drush 13.
+      1. You may now use [Autowire](https://github.com/drush-ops/drush/blob/13.x/src/Commands/AutowireTrait.php) to inject Drupal and Drush dependencies. Prior approaches were using a [create() method](dependency-injection.md#create-method and using a [drush.services.yml file](https://www.drush.org/11.x/dependency-injection/#services-files). These are now deprecated.
       1. Drush 12 expects all commandfiles in the `<module-name>/src/Drush/<Commands|Generators>` directory. The `Drush` subdirectory is a new requirement.
 
 Creating a new Drush command is easy. Follow the steps below.
@@ -11,7 +11,7 @@ Creating a new Drush command is easy. Follow the steps below.
 2. Drush will prompt for the machine name of the module that should "own" the file. The module selected must already exist and be enabled. Use `drush generate module` to create a new module.
 3. Drush will then report that it created a commandfile. Edit as needed.
 4. Use the classes for the core Drush commands at [/src/Commands](https://github.com/drush-ops/drush/tree/12.x/src/Commands) as inspiration and documentation.
-5. See the [dependency injection docs](dependency-injection.md) for interfaces you can implement to gain access to Drush config, Drupal site aliases, etc. Also note the [create() method](dependency-injection.md#create-method) for injecting Drupal or Drush dependencies.
+5. You may [inject dependencies](dependency-injection.md) into a command instance.
 6. Write PHPUnit tests based on [Drush Test Traits](https://github.com/drush-ops/drush/blob/12.x/docs/contribute/unish.md#drush-test-traits).
 
 ## Attributes or Annotations

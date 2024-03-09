@@ -43,7 +43,7 @@ Bootstrapping is done from a Symfony Console command hook. The different bootstr
 
 none
 -----------------------
-Only run Drush _preflight_, without considering Drupal at all. Any code that operates on the Drush installation, and not specifically any Drupal directory, should bootstrap to this phase.
+Only run Drush _preflight_, without considering Drupal at all. Any code that operates on the Drush installation, and not specifically any Drupal directory, should bootstrap to this phase. This Attribute and value may also be used on a command _class_ when it wants to load before Drupal bootstrap is started. Commands that ship inside Drupal modules always bootstrap to full, regardless of _none_ value.
 
 root
 ------------------------------
@@ -68,4 +68,3 @@ Fully initialize Drupal. This is analogous to the DRUPAL\_BOOTSTRAP\_FULL bootst
 max
 ---------------------
 This is not an actual bootstrap phase. Commands that use the "max" bootstrap level will cause Drush to bootstrap as far as possible, and then run the command regardless of the bootstrap phase that was reached. This is useful for Drush commands that work without a bootstrapped site, but that provide additional information or capabilities in the presence of a bootstrapped site. For example, [`drush status`](commands/core_status.md) will show progressively more information the farther the site bootstraps.
-
