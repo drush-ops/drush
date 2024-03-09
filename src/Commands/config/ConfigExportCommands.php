@@ -6,16 +6,16 @@ namespace Drush\Commands\config;
 
 use Consolidation\AnnotatedCommand\Hooks\HookManager;
 use Drupal\Core\Config\ConfigManagerInterface;
-use Drupal\Core\Config\StorageComparer;
 use Drupal\Core\Config\FileStorage;
+use Drupal\Core\Config\StorageComparer;
 use Drupal\Core\Config\StorageInterface;
 use Drupal\Core\Site\Settings;
 use Drush\Attributes as CLI;
 use Drush\Commands\DrushCommands;
 use Drush\Exceptions\UserAbortException;
+use Psr\Container\ContainerInterface;
 use Symfony\Component\Console\Output\BufferedOutput;
 use Symfony\Component\Filesystem\Path;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 final class ConfigExportCommands extends DrushCommands
 {

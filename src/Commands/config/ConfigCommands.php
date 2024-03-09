@@ -16,27 +16,31 @@ use Drupal\Core\Config\ConfigDirectoryNotDefinedException;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Config\FileStorage;
 use Drupal\Core\Config\ImportStorageTransformer;
+use Drupal\Core\Config\StorageCacheInterface;
 use Drupal\Core\Config\StorageComparer;
 use Drupal\Core\Config\StorageInterface;
+use Drupal\Core\Config\StorageManagerInterface;
 use Drupal\Core\Site\Settings;
 use Drush\Attributes as CLI;
+use Drush\Commands\AutowireTrait;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Drush\Exec\ExecTrait;
+use Drush\Runtime\DependencyInjection;
 use Drush\Utils\FsUtils;
 use Drush\Utils\StringUtils;
 use JetBrains\PhpStorm\Deprecated;
-use League\Container\Container;
 use Symfony\Component\Console\Completion\CompletionInput;
 use Symfony\Component\Console\Completion\CompletionSuggestions;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Filesystem\Path;
 use Symfony\Component\Yaml\Parser;
 
 final class ConfigCommands extends DrushCommands implements StdinAwareInterface
 {
+    use AutowireTrait;
     use StdinAwareTrait;
     use ExecTrait;
 
@@ -48,44 +52,20 @@ final class ConfigCommands extends DrushCommands implements StdinAwareInterface
     const DELETE = 'config:delete';
     const STATUS = 'config:status';
 
-    protected ?StorageInterface $configStorageExport;
-
-    protected ?ImportStorageTransformer $importStorageTransformer;
-
     public function getConfigFactory(): ConfigFactoryInterface
     {
         return $this->configFactory;
     }
 
-    protected function __construct(protected ConfigFactoryInterface $configFactory, protected StorageInterface $configStorage, protected SiteAliasManagerInterface $siteAliasManager)
-    {
+    public function __construct(
+        protected ConfigFactoryInterface $configFactory,
+        protected StorageCacheInterface $configStorage,
+        #[Autowire(service: DependencyInjection::SITE_ALIAS_MANAGER)]
+        protected SiteAliasManagerInterface $siteAliasManager,
+        protected StorageManagerInterface $configStorageExport,
+        protected ImportStorageTransformer $importStorageTransformer,
+    ) {
         parent::__construct();
-    }
-
-    public static function create(ContainerInterface $container, Container $drush_container): self
-    {
-        $commandHandler = new static(
-            $container->get('config.factory'),
-            $container->get('config.storage'),
-            $drush_container->get('site.alias.manager')
-        );
-
-        if ($container->has('config.storage.export')) {
-            $commandHandler->setExportStorage($container->get('config.storage.export'));
-        }
-        if ($container->has('config.import_transformer')) {
-            $commandHandler->setImportTransformer($container->get('config.import_transformer'));
-        }
-
-        return $commandHandler;
-    }
-
-    /**
-     * @param StorageInterface $exportStorage
-     */
-    public function setExportStorage(StorageInterface $exportStorage): void
-    {
-        $this->configStorageExport = $exportStorage;
     }
 
     /**
@@ -97,11 +77,6 @@ final class ConfigCommands extends DrushCommands implements StdinAwareInterface
             return $this->configStorageExport;
         }
         return $this->configStorage;
-    }
-
-    public function setImportTransformer(ImportStorageTransformer $importStorageTransformer): void
-    {
-        $this->importStorageTransformer = $importStorageTransformer;
     }
 
     public function hasImportTransformer(): bool

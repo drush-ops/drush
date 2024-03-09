@@ -6,13 +6,13 @@ namespace Drush\Commands\core;
 
 use Consolidation\SiteAlias\SiteAliasManagerInterface;
 use Consolidation\SiteProcess\Util\Escape;
-use Drupal\Component\DependencyInjection\ContainerInterface;
 use Drush\Attributes as CLI;
 use Drush\Boot\DrupalBootLevels;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Drush\Exec\ExecTrait;
 use League\Container\Container as DrushContainer;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 final class EditCommands extends DrushCommands
 {
@@ -26,6 +26,9 @@ final class EditCommands extends DrushCommands
         parent::__construct();
     }
 
+    /**
+     * Not using Autowire in order to implicitly test backward compat.
+     */
     public static function create(ContainerInterface $container, DrushContainer $drush_container): self
     {
         $commandHandler = new static(

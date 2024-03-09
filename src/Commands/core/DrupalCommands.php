@@ -10,14 +10,15 @@ use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Routing\RouteProviderInterface;
 use Drupal\Core\Url;
 use Drush\Attributes as CLI;
-use Drush\Commands\core\DocsCommands;
+use Drush\Commands\AutowireTrait;
 use Drush\Commands\DrushCommands;
 use Drush\Drupal\DrupalUtil;
 use Drush\Utils\StringUtils;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 final class DrupalCommands extends DrushCommands
 {
+    use AutowireTrait;
+
     const CRON = 'core:cron';
     const REQUIREMENTS = 'core:requirements';
     const ROUTE = 'core:route';
@@ -37,19 +38,12 @@ final class DrupalCommands extends DrushCommands
         return $this->routeProvider;
     }
 
-    public function __construct(protected CronInterface $cron, protected ModuleHandlerInterface $moduleHandler, protected RouteProviderInterface $routeProvider)
-    {
-    }
-
-    public static function create(ContainerInterface $container): self
-    {
-        $commandHandler = new static(
-            $container->get('cron'),
-            $container->get('module_handler'),
-            $container->get('router.route_provider')
-        );
-
-        return $commandHandler;
+    public function __construct(
+        protected CronInterface $cron,
+        protected ModuleHandlerInterface $moduleHandler,
+        protected RouteProviderInterface $routeProvider
+    ) {
+        parent::__construct();
     }
 
     /**

@@ -10,14 +10,16 @@ use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Render\RendererInterface;
-use Drush\Attributes as CLI;
-use Drush\Commands\DrushCommands;
 use Drupal\views\Views;
+use Drush\Attributes as CLI;
+use Drush\Commands\AutowireTrait;
+use Drush\Commands\DrushCommands;
 use Drush\Utils\StringUtils;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 final class ViewsCommands extends DrushCommands
 {
+    use AutowireTrait;
+
     const DEV = 'views:dev';
     const EXECUTE = 'views:execute';
     const LIST = 'views:list';
@@ -31,18 +33,6 @@ final class ViewsCommands extends DrushCommands
         protected EntityTypeManagerInterface $entityTypeManager,
         protected RendererInterface $renderer
     ) {
-    }
-
-    public static function create(ContainerInterface $container): self
-    {
-        $commandHandler = new static(
-            $container->get('config.factory'),
-            $container->get('module_handler'),
-            $container->get('entity_type.manager'),
-            $container->get('renderer')
-        );
-
-        return $commandHandler;
     }
 
     public function getConfigFactory(): ConfigFactoryInterface

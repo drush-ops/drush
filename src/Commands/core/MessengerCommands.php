@@ -7,23 +7,16 @@ namespace Drush\Commands\core;
 use Consolidation\AnnotatedCommand\Hooks\HookManager;
 use Drupal\Core\Messenger\MessengerInterface;
 use Drush\Attributes as CLI;
+use Drush\Commands\AutowireTrait;
 use Drush\Commands\DrushCommands;
 use Drush\Drupal\DrupalUtil;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 final class MessengerCommands extends DrushCommands
 {
+    use AutowireTrait;
+
     public function __construct(protected MessengerInterface $messenger)
     {
-    }
-
-    public static function create(ContainerInterface $container): self
-    {
-        $commandHandler = new static(
-            $container->get('messenger')
-        );
-
-        return $commandHandler;
     }
 
     #[CLI\Hook(type: HookManager::PRE_COMMAND_HOOK, target: '*')]

@@ -4,41 +4,31 @@ declare(strict_types=1);
 
 namespace Drush\Commands\field;
 
-use Drupal\Core\Entity\EntityTypeBundleInfo;
+use Drupal\Core\Entity\EntityTypeBundleInfoInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\field\Entity\FieldConfig;
 use Drupal\field\FieldConfigInterface;
 use Drush\Attributes as CLI;
+use Drush\Commands\AutowireTrait;
 use Drush\Commands\DrushCommands;
 use Symfony\Component\Console\Completion\CompletionInput;
 use Symfony\Component\Console\Completion\CompletionSuggestions;
 use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 use function count;
 use function dt;
 use function field_purge_batch;
-use function t;
 
 class FieldDeleteCommands extends DrushCommands
 {
+    use AutowireTrait;
     use EntityTypeBundleAskTrait;
     use EntityTypeBundleValidationTrait;
 
     public function __construct(
         protected EntityTypeManagerInterface $entityTypeManager,
-        protected EntityTypeBundleInfo $entityTypeBundleInfo
+        protected EntityTypeBundleInfoInterface $entityTypeBundleInfo
     ) {
-    }
-
-    public static function create(ContainerInterface $container): self
-    {
-        $commandHandler = new static(
-            $container->get('entity_type.manager'),
-            $container->get('entity_type.bundle.info')
-        );
-
-        return $commandHandler;
     }
 
     /**

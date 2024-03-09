@@ -11,6 +11,7 @@ use Drush\Boot\DrupalBootLevels;
 use Drush\Commands\DrushCommands;
 use Symfony\Component\Finder\Finder;
 
+#[CLI\Bootstrap(DrupalBootLevels::NONE)]
 final class PhpCommands extends DrushCommands implements StdinAwareInterface
 {
     use StdinAwareTrait;

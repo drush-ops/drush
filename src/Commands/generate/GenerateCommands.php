@@ -8,12 +8,12 @@ use Drush\Attributes as CLI;
 use Drush\Commands\core\DocsCommands;
 use Drush\Commands\DrushCommands;
 use Drush\Commands\help\ListCommands;
+use Psr\Container\ContainerInterface;
 use Psr\Container\ContainerInterface as DrushContainer;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Completion\CompletionInput;
 use Symfony\Component\Console\Completion\CompletionSuggestions;
 use Symfony\Component\Console\Input\ArgvInput;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 final class GenerateCommands extends DrushCommands
 {
@@ -25,11 +25,11 @@ final class GenerateCommands extends DrushCommands
     ) {
     }
 
-    public static function create(ContainerInterface $container, DrushContainer $drush_container): self
+    public static function create(ContainerInterface $container): self
     {
         $commandHandler = new static(
+            $container->get('service_container'),
             $container,
-            $drush_container,
         );
 
         return $commandHandler;

@@ -4,23 +4,25 @@ declare(strict_types=1);
 
 namespace Drush\Commands\core;
 
-use Consolidation\AnnotatedCommand\Hooks\HookManager;
-use Drupal\Core\Datetime\DateFormatterInterface;
 use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\AnnotatedCommand\CommandError;
+use Consolidation\AnnotatedCommand\Hooks\HookManager;
 use Consolidation\OutputFormatters\Options\FormatterOptions;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
+use Drupal\Core\Datetime\DateFormatterInterface;
 use Drupal\user\Entity\Role;
 use Drupal\user\Entity\User;
 use Drush\Attributes as CLI;
+use Drush\Commands\AutowireTrait;
 use Drush\Commands\DrushCommands;
 use Drush\Utils\StringUtils;
 use Symfony\Component\Console\Completion\CompletionInput;
 use Symfony\Component\Console\Completion\CompletionSuggestions;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 final class UserCommands extends DrushCommands
 {
+    use AutowireTrait;
+
     const INFORMATION = 'user:information';
     const BLOCK = 'user:block';
     const UNBLOCK = 'user:unblock';
@@ -57,15 +59,6 @@ final class UserCommands extends DrushCommands
 
     public function __construct(protected DateFormatterInterface $dateFormatter)
     {
-    }
-
-    public static function create(ContainerInterface $container): self
-    {
-        $commandHandler = new static(
-            $container->get('date.formatter')
-        );
-
-        return $commandHandler;
     }
 
     /**

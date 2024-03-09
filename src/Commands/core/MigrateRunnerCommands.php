@@ -11,7 +11,6 @@ use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Drupal\Component\Plugin\Exception\PluginException;
 use Drupal\Core\Datetime\DateFormatterInterface;
 use Drupal\Core\KeyValueStore\KeyValueFactoryInterface;
-use Drupal\Core\KeyValueStore\KeyValueStoreInterface;
 use Drupal\migrate\Exception\RequirementsException;
 use Drupal\migrate\MigrateMessageInterface;
 use Drupal\migrate\Plugin\MigrateIdMapInterface;
@@ -19,40 +18,36 @@ use Drupal\migrate\Plugin\MigrationInterface;
 use Drupal\migrate\Plugin\MigrationPluginManagerInterface;
 use Drupal\migrate\Plugin\RequirementsInterface;
 use Drush\Attributes as CLI;
+use Drush\Commands\AutowireTrait;
 use Drush\Commands\DrushCommands;
 use Drush\Drupal\Migrate;
 use Drush\Drupal\Migrate\MigrateExecutable;
 use Drush\Drupal\Migrate\MigrateMessage;
 use Drush\Drupal\Migrate\MigrateUtils;
+use Drush\Drush;
 use Drush\Utils\StringUtils;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Filesystem\Path;
 
 class MigrateRunnerCommands extends DrushCommands
 {
-    protected KeyValueStoreInterface $keyValue;
+    use AutowireTrait;
+
     protected ?MigrationPluginManagerInterface $migrationPluginManager = null;
 
     public function __construct(
         protected DateFormatterInterface $dateFormatter,
-        KeyValueFactoryInterface $keyValueFactory
+        // @todo Can we avoid the autowire attribute here?
+        #[Autowire(service: 'keyvalue')]
+        protected KeyValueFactoryInterface $keyValueFactory
     ) {
         parent::__construct();
         $this->keyValue = $keyValueFactory->get('migrate_last_imported');
-    }
 
-    public static function create(ContainerInterface $container): self
-    {
-        $commandHandler = new static(
-            $container->get('date.formatter'),
-            $container->get('keyvalue')
-        );
-
+        $container = Drush::getContainer();
         if ($container->has('plugin.manager.migration')) {
-            $commandHandler->setMigrationPluginManager($container->get('plugin.manager.migration'));
+            $this->setMigrationPluginManager($container->get('plugin.manager.migration'));
         }
-
-        return $commandHandler;
     }
 
     /**

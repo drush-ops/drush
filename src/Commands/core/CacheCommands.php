@@ -4,29 +4,36 @@ declare(strict_types=1);
 
 namespace Drush\Commands\core;
 
-use Consolidation\AnnotatedCommand\Hooks\HookManager;
-use Drupal\Core\Cache\CacheTagsInvalidatorInterface;
+use Composer\Autoload\ClassLoader;
 use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\AnnotatedCommand\Events\CustomEventAwareInterface;
 use Consolidation\AnnotatedCommand\Events\CustomEventAwareTrait;
+use Consolidation\AnnotatedCommand\Hooks\HookManager;
+use Consolidation\AnnotatedCommand\Input\StdinAwareInterface;
+use Consolidation\AnnotatedCommand\Input\StdinAwareTrait;
 use Consolidation\OutputFormatters\StructuredData\PropertyList;
+use Drupal\Core\Asset\JsCollectionOptimizerLazy;
+use Drupal\Core\Cache\Cache;
+use Drupal\Core\Cache\CacheTagsInvalidatorInterface;
+use Drupal\Core\Plugin\CachedDiscoveryClearerInterface;
+use Drupal\Core\Routing\RouteBuilderInterface;
+use Drupal\Core\Theme\Registry;
 use Drush\Attributes as CLI;
 use Drush\Boot\BootstrapManager;
 use Drush\Boot\DrupalBootLevels;
+use Drush\Commands\AutowireTrait;
 use Drush\Commands\DrushCommands;
-use Drupal\Core\Cache\Cache;
+use Drush\Runtime\DependencyInjection;
 use Drush\Utils\StringUtils;
-use Consolidation\AnnotatedCommand\Input\StdinAwareInterface;
-use Consolidation\AnnotatedCommand\Input\StdinAwareTrait;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Filesystem\Exception\IOException;
-use Composer\Autoload\ClassLoader;
 
 /*
  * Interact with Drupal's Cache API.
  */
 final class CacheCommands extends DrushCommands implements CustomEventAwareInterface, StdinAwareInterface
 {
+    use AutowireTrait;
     use CustomEventAwareTrait;
     use StdinAwareTrait;
 
@@ -34,37 +41,24 @@ final class CacheCommands extends DrushCommands implements CustomEventAwareInter
     const TAGS = 'cache:tags';
     const CLEAR = 'cache:clear';
     const SET = 'cache:set';
-    // @deprecated. Use CacheRebuildCommands::REBUILD
-    const REBUILD = 'cache:rebuild';
     const EVENT_CLEAR = 'cache-clear';
 
     public function __construct(
         private CacheTagsInvalidatorInterface $invalidator,
-        private $themeRegistry,
-        private $routerBuilder,
-        private $jsOptimizer,
+        private Registry $themeRegistry,
+        private RouteBuilderInterface $routerBuilder,
+        // @todo Type hints not sufficient for unknown reason.
+        #[Autowire(service: 'asset.js.collection_optimizer')]
+        private JsCollectionOptimizerLazy $jsOptimizer,
+        #[Autowire(service: 'asset.css.collection_optimizer')]
         private $cssOptimizer,
-        private $pluginCacheClearer,
+        private CachedDiscoveryClearerInterface $pluginCacheClearer,
+        #[Autowire(service: DependencyInjection::BOOTSTRAP_MANAGER)]
         private BootstrapManager $bootstrapManager,
+        #[Autowire(service: DependencyInjection::LOADER)]
         private ClassLoader $autoloader
     ) {
         parent::__construct();
-    }
-
-    public static function create(ContainerInterface $container, $drush_container): self
-    {
-        $commandHandler = new static(
-            $container->get('cache_tags.invalidator'),
-            $container->get('theme.registry'),
-            $container->get('router.builder'),
-            $container->get('asset.js.collection_optimizer'),
-            $container->get('asset.css.collection_optimizer'),
-            $container->get('plugin.cache_clearer'),
-            $drush_container->get('bootstrap.manager'),
-            $drush_container->get('loader')
-        );
-
-        return $commandHandler;
     }
 
     /**

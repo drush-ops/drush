@@ -15,13 +15,15 @@ use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\Session\AccountSwitcherInterface;
 use Drupal\field\Entity\FieldStorageConfig;
 use Drush\Attributes as CLI;
+use Drush\Commands\AutowireTrait;
 use Drush\Commands\DrushCommands;
 use Drush\Utils\StringUtils;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Yaml\Yaml;
 
 final class EntityCreateCommands extends DrushCommands
 {
+    use AutowireTrait;
+
     const CREATE = 'entity:create';
 
     public function __construct(
@@ -30,17 +32,6 @@ final class EntityCreateCommands extends DrushCommands
         protected AccountSwitcherInterface $accountSwitcher
     ) {
         parent::__construct();
-    }
-
-    public static function create(ContainerInterface $container): self
-    {
-        $commandHandler = new static(
-            $container->get('entity_type.manager'),
-            $container->get('entity_field.manager'),
-            $container->get('account_switcher')
-        );
-
-        return $commandHandler;
     }
 
     /**

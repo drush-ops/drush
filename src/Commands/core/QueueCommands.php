@@ -4,34 +4,29 @@ declare(strict_types=1);
 
 namespace Drush\Commands\core;
 
-use Consolidation\AnnotatedCommand\Hooks\HookManager;
-use Drupal\Core\Queue\QueueInterface;
-use Consolidation\AnnotatedCommand\CommandData;
-use Consolidation\AnnotatedCommand\CommandError;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Drupal\Core\Queue\DelayableQueueInterface;
 use Drupal\Core\Queue\DelayedRequeueException;
 use Drupal\Core\Queue\QueueFactory;
+use Drupal\Core\Queue\QueueGarbageCollectionInterface;
+use Drupal\Core\Queue\QueueInterface;
 use Drupal\Core\Queue\QueueWorkerManagerInterface;
 use Drupal\Core\Queue\RequeueException;
 use Drupal\Core\Queue\SuspendQueueException;
 use Drush\Attributes as CLI;
+use Drush\Commands\AutowireTrait;
 use Drush\Commands\DrushCommands;
-use Drupal\Core\Queue\QueueGarbageCollectionInterface;
-use JetBrains\PhpStorm\Deprecated;
 use Symfony\Component\Console\Completion\CompletionInput;
 use Symfony\Component\Console\Completion\CompletionSuggestions;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 final class QueueCommands extends DrushCommands
 {
+    use AutowireTrait;
+
     const RUN = 'queue:run';
     const LIST = 'queue:list';
     const DELETE = 'queue:delete';
 
-    /**
-     * @var QueueWorkerManagerInterface
-     */
     protected QueueWorkerManagerInterface $workerManager;
 
     protected $queueService;
@@ -40,16 +35,6 @@ final class QueueCommands extends DrushCommands
     {
         $this->workerManager = $workerManager;
         $this->queueService = $queueService;
-    }
-
-    public static function create(ContainerInterface $container): self
-    {
-        $commandHandler = new static(
-            $container->get('plugin.manager.queue_worker'),
-            $container->get('queue')
-        );
-
-        return $commandHandler;
     }
 
     public function getWorkerManager(): QueueWorkerManagerInterface

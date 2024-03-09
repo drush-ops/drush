@@ -10,18 +10,17 @@ use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Field\BaseFieldDefinition;
 use Drupal\Core\Field\Entity\BaseFieldOverride;
 use Drush\Attributes as CLI;
+use Drush\Commands\AutowireTrait;
 use Drush\Commands\DrushCommands;
 use Symfony\Component\Console\Completion\CompletionInput;
 use Symfony\Component\Console\Completion\CompletionSuggestions;
 use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Question\ConfirmationQuestion;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 use function dt;
-use function t;
 
 class FieldBaseOverrideCreateCommands extends DrushCommands
 {
+    use AutowireTrait;
     use EntityTypeBundleAskTrait;
     use EntityTypeBundleValidationTrait;
 
@@ -30,17 +29,6 @@ class FieldBaseOverrideCreateCommands extends DrushCommands
         protected EntityTypeBundleInfoInterface $entityTypeBundleInfo,
         protected EntityFieldManagerInterface $entityFieldManager
     ) {
-    }
-
-    public static function create(ContainerInterface $container): self
-    {
-        $commandHandler = new static(
-            $container->get('entity_type.manager'),
-            $container->get('entity_type.bundle.info'),
-            $container->get('entity_field.manager')
-        );
-
-        return $commandHandler;
     }
 
     /**

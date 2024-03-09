@@ -7,40 +7,35 @@ namespace Drush\Commands\core;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Consolidation\OutputFormatters\StructuredData\UnstructuredListData;
 use Consolidation\SiteAlias\SiteAliasManagerInterface;
-use Drupal\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\Extension\ThemeHandlerInterface;
 use Drupal\Core\KeyValueStore\KeyValueFactoryInterface;
 use Drupal\Core\Update\UpdateRegistry;
 use Drupal\Core\Utility\Error;
 use Drush\Attributes as CLI;
 use Drush\Boot\DrupalBootLevels;
+use Drush\Commands\AutowireTrait;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Drush\Exceptions\UserAbortException;
 use Drush\Log\SuccessInterface;
-use League\Container\Container as DrushContainer;
+use Drush\Runtime\DependencyInjection;
 use Psr\Log\LogLevel;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 final class DeployHookCommands extends DrushCommands
 {
+    use AutowireTrait;
+
     const HOOK_STATUS = 'deploy:hook-status';
     const HOOK = 'deploy:hook';
     const BATCH_PROCESS = 'deploy:batch-process';
     const MARK_COMPLETE = 'deploy:mark-complete';
 
     public function __construct(
+        #[Autowire(service: DependencyInjection::SITE_ALIAS_MANAGER)]
         private readonly SiteAliasManagerInterface $siteAliasManager
     ) {
         parent::__construct();
-    }
-
-    public static function create(ContainerInterface $container, DrushContainer $drush_container): self
-    {
-        $commandHandler = new static(
-            $drush_container->get('site.alias.manager'),
-        );
-
-        return $commandHandler;
     }
 
     /**

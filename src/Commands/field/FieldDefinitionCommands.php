@@ -4,41 +4,35 @@ declare(strict_types=1);
 
 namespace Drush\Commands\field;
 
-use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Consolidation\OutputFormatters\StructuredData\UnstructuredListData;
 use Drupal\Core\Field\BaseFieldDefinition;
 use Drupal\Core\Field\FieldTypePluginManagerInterface;
 use Drupal\Core\Field\FormatterPluginManager;
 use Drupal\Core\Field\WidgetPluginManager;
 use Drush\Attributes as CLI;
+use Drush\Commands\AutowireTrait;
 use Drush\Commands\DrushCommands;
 use Symfony\Component\Console\Completion\CompletionInput;
 use Symfony\Component\Console\Completion\CompletionSuggestions;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 final class FieldDefinitionCommands extends DrushCommands
 {
+    use AutowireTrait;
+
     const TYPES = 'field:types';
     const WIDGETS = 'field:widgets';
     const FORMATTERS = 'field:formatters';
 
     public function __construct(
         private readonly FieldTypePluginManagerInterface $typePluginManager,
+        // @todo These attributes should not be needed but services aren't found otherwise.
+        #[Autowire(service: 'plugin.manager.field.widget')]
         private readonly WidgetPluginManager $widgetPluginManager,
+        #[Autowire(service: 'plugin.manager.field.formatter')]
         private readonly FormatterPluginManager $formatterPluginManager,
     ) {
         parent::__construct();
-    }
-
-    public static function create(ContainerInterface $container): self
-    {
-        $commandHandler = new static(
-            $container->get('plugin.manager.field.field_type'),
-            $container->get('plugin.manager.field.widget'),
-            $container->get('plugin.manager.field.formatter')
-        );
-
-        return $commandHandler;
     }
 
     #[CLI\Command(name: self::TYPES)]

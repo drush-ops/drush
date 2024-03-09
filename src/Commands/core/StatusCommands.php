@@ -23,6 +23,7 @@ use Drush\Utils\StringUtils;
 use League\Container\Container as DrushContainer;
 use Symfony\Component\Filesystem\Path;
 
+#[CLI\Bootstrap(DrupalBootLevels::NONE)]
 final class StatusCommands extends DrushCommands
 {
     const STATUS = 'core:status';
@@ -33,6 +34,9 @@ final class StatusCommands extends DrushCommands
         parent::__construct();
     }
 
+    /**
+     * Not using Autowire in order to implicitly test backward compat.
+     */
     public static function createEarly(DrushContainer $drush_container): self
     {
         $commandHandler = new static(

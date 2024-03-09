@@ -9,12 +9,13 @@ use Consolidation\AnnotatedCommand\Input\StdinAwareTrait;
 use Consolidation\OutputFormatters\StructuredData\PropertyList;
 use Drupal\Core\State\StateInterface;
 use Drush\Attributes as CLI;
+use Drush\Commands\AutowireTrait;
 use Drush\Commands\DrushCommands;
 use Symfony\Component\Yaml\Yaml;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 final class StateCommands extends DrushCommands implements StdinAwareInterface
 {
+    use AutowireTrait;
     use StdinAwareTrait;
 
     const GET = 'state:get';
@@ -23,15 +24,6 @@ final class StateCommands extends DrushCommands implements StdinAwareInterface
 
     public function __construct(protected StateInterface $state)
     {
-    }
-
-    public static function create(ContainerInterface $container): self
-    {
-        $commandHandler = new static(
-            $container->get('state')
-        );
-
-        return $commandHandler;
     }
 
     public function getState(): StateInterface

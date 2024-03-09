@@ -5,36 +5,30 @@ declare(strict_types=1);
 namespace Drush\Commands\core;
 
 use Composer\Autoload\ClassLoader;
-use Consolidation\SiteAlias\SiteAliasManager;
+use Drupal\Core\DrupalKernel;
+use Drupal\Core\Site\Settings;
 use Drush\Attributes as CLI;
 use Drush\Boot\BootstrapManager;
 use Drush\Boot\DrupalBootLevels;
+use Drush\Commands\AutowireTrait;
 use Drush\Commands\DrushCommands;
-use Drupal\Core\DrupalKernel;
-use Drupal\Core\Site\Settings;
 use Drush\Drupal\DrushLoggerServiceProvider;
-use Drush\Drush;
-use Psr\Container\ContainerInterface as DrushContainer;
+use Drush\Runtime\DependencyInjection;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 final class CacheRebuildCommands extends DrushCommands
 {
+    use AutowireTrait;
+
     const REBUILD = 'cache:rebuild';
 
     public function __construct(
+        #[Autowire(service: DependencyInjection::BOOTSTRAP_MANAGER)]
         private BootstrapManager $bootstrapManager,
+        #[Autowire(service: DependencyInjection::LOADER)]
         private ClassLoader $autoloader
     ) {
         parent::__construct();
-    }
-
-    public static function createEarly(DrushContainer $drush_container): self
-    {
-        $commandHandler = new static(
-            $drush_container->get('bootstrap.manager'),
-            $drush_container->get('loader')
-        );
-
-        return $commandHandler;
     }
 
     /**

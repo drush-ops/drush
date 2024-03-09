@@ -6,9 +6,6 @@ namespace Drupal\woot\Commands;
 
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 
-/**
- * Commandfiles must be listed in a module's drush.services.yml file.
- */
 class WootCommands
 {
     public function __construct(protected string $appRoot) {}

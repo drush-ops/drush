@@ -8,6 +8,7 @@ use Composer\Semver\Comparator;
 use Consolidation\SiteAlias\SiteAlias;
 use Consolidation\SiteProcess\ProcessManager;
 use Drupal\Core\Database\Database;
+use Drush\Commands\core\SiteInstallCommands;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Path;
 use Symfony\Component\Process\Process;
@@ -683,7 +684,7 @@ EOT;
         if ($level = $this->logLevel()) {
             $options[$level] = true;
         }
-        $process = $this->processManager()->siteProcess($sutAlias, [self::getDrush(), 'site:install', 'testing', 'install_configure_form.enable_update_status_emails=NULL'], $options);
+        $process = $this->processManager()->siteProcess($sutAlias, [self::getDrush(), SiteInstallCommands::INSTALL, 'testing', 'install_configure_form.enable_update_status_emails=NULL'], $options);
         // Set long timeout because Xdebug slows everything.
         $process->setTimeout(0);
         $this->process = $process;

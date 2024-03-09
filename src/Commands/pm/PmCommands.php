@@ -14,15 +14,16 @@ use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Extension\ModuleInstallerInterface;
 use Drupal\Core\Extension\ThemeHandlerInterface;
 use Drush\Attributes as CLI;
-use Drush\Boot\DrupalBootLevels;
+use Drush\Commands\AutowireTrait;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Drush\Exceptions\UserAbortException;
 use Drush\Utils\StringUtils;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 final class PmCommands extends DrushCommands
 {
+    use AutowireTrait;
+
     const INSTALL = 'pm:install';
     const UNINSTALL = 'pm:uninstall';
     const LIST = 'pm:list';
@@ -35,19 +36,6 @@ final class PmCommands extends DrushCommands
         protected ModuleExtensionList $extensionListModule
     ) {
         parent::__construct();
-    }
-
-    public static function create(ContainerInterface $container): self
-    {
-        $commandHandler = new static(
-            $container->get('config.factory'),
-            $container->get('module_installer'),
-            $container->get('module_handler'),
-            $container->get('theme_handler'),
-            $container->get('extension.list.module')
-        );
-
-        return $commandHandler;
     }
 
     public function getConfigFactory(): ConfigFactoryInterface

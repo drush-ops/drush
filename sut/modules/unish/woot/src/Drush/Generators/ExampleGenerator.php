@@ -4,16 +4,12 @@ declare(strict_types=1);
 
 namespace Drupal\woot\Drush\Generators;
 
-use Drupal\Core\Config\ConfigFactoryInterface;
-use Drupal\Core\Extension\ModuleExtensionList;
 use Drupal\Core\Extension\ModuleHandlerInterface;
-use Drupal\Core\Extension\ModuleInstallerInterface;
-use Drupal\Core\Extension\ThemeHandlerInterface;
 use DrupalCodeGenerator\Asset\AssetCollection as Assets;
 use DrupalCodeGenerator\Attribute\Generator;
 use DrupalCodeGenerator\Command\BaseGenerator;
 use DrupalCodeGenerator\GeneratorType;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Drush\Commands\AutowireTrait;
 
 #[Generator(
     name: 'woot:example',
@@ -24,6 +20,8 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 )]
 class ExampleGenerator extends BaseGenerator
 {
+    use AutowireTrait;
+
     /**
      * Illustrates how to inject a dependency into a Generator.
      */
@@ -31,15 +29,6 @@ class ExampleGenerator extends BaseGenerator
         protected ModuleHandlerInterface $moduleHandler,
     ) {
         parent::__construct();
-    }
-
-    public static function create(ContainerInterface $container): self
-    {
-        $commandHandler = new static(
-            $container->get('module_handler'),
-        );
-
-        return $commandHandler;
     }
 
     protected function generate(array &$vars, Assets $assets): void
