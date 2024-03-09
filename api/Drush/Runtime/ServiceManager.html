@@ -86,7 +86,7 @@
 
     
     <p>        class
-    <strong>ServiceManager</strong>        (<a href="https://github.com/drush-ops/drush/blob/13.x/src/Runtime/ServiceManager.php">View source</a>)
+    <strong>ServiceManager</strong>        (<a href="https://github.com/drush-ops/drush/blob/12.4.4/src/Runtime/ServiceManager.php">View source</a>)
 </p>
 
         
@@ -253,7 +253,7 @@ as Drush commands.</p></p>                </div>
                 <div class="col-md-8">
                     <a href="#method_instantiateServices">instantiateServices</a>(array $bootstrapCommandClasses, <abbr title="Psr\Container\ContainerInterface">ContainerInterface</abbr> $drushContainer, <abbr title="Drush\Runtime\Drupal\Component\DependencyInjection\ContainerInterface">ContainerInterface</abbr>|null $container = null)
         
-                                            <p><p>Instantiate objects given a list of classes. For each class, if it has
+                                            <p><p>Instantiate objects given a lsit of classes. For each class, if it has
 a static <code>create</code> factory, use that to instantiate it, passing both the
 Drupal and Drush DI containers. If there is no static factory, then
 instantiate it via 'new $class'</p></p>                </div>
@@ -317,7 +317,7 @@ instantiate it via 'new $class'</p></p>                </div>
             <div id="method-details">
                     <div class="method-item">
                     <h3 id="method___construct">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Runtime/ServiceManager.php#L53">at line 53</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.4.4/src/Runtime/ServiceManager.php#L53">at line 53</a></div>
         <code>                    
     <strong>__construct</strong>(<abbr title="Composer\Autoload\ClassLoader">ClassLoader</abbr> $autoloader, <a href="../../Drush/Config/DrushConfig.html"><abbr title="Drush\Config\DrushConfig">DrushConfig</abbr></a> $config, <abbr title="Psr\Log\LoggerInterface">LoggerInterface</abbr> $logger)
         </code>
@@ -361,7 +361,7 @@ instantiate it via 'new $class'</p></p>                </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_loadCommandClasses">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Runtime/ServiceManager.php#L66">at line 66</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.4.4/src/Runtime/ServiceManager.php#L66">at line 66</a></div>
         <code>            protected        void
     <strong>loadCommandClasses</strong>(array $commandClasses)
         </code>
@@ -404,7 +404,7 @@ is, in fact, included.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_bootstrapCommandClasses">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Runtime/ServiceManager.php#L81">at line 81</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.4.4/src/Runtime/ServiceManager.php#L81">at line 81</a></div>
         <code>                    array
     <strong>bootstrapCommandClasses</strong>()
         </code>
@@ -436,7 +436,7 @@ is, in fact, included.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_discover">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Runtime/ServiceManager.php#L99">at line 99</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.4.4/src/Runtime/ServiceManager.php#L99">at line 99</a></div>
         <code>                    array
     <strong>discover</strong>(array $commandfileSearchpath, string $baseNamespace)
         </code>
@@ -487,7 +487,7 @@ search diretory. Namespace components mirror directory structure.</p></td>
             </div>
                     <div class="method-item">
                     <h3 id="method_discoverCommandsFromConfiguration">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Runtime/ServiceManager.php#L124">at line 124</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.4.4/src/Runtime/ServiceManager.php#L124">at line 124</a></div>
         <code>                    array
     <strong>discoverCommandsFromConfiguration</strong>()
         </code>
@@ -519,7 +519,7 @@ search diretory. Namespace components mirror directory structure.</p></td>
             </div>
                     <div class="method-item">
                     <h3 id="method_discoverCommands">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Runtime/ServiceManager.php#L150">at line 150</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.4.4/src/Runtime/ServiceManager.php#L150">at line 150</a></div>
         <code>                    array
     <strong>discoverCommands</strong>(array $directoryList, string $baseNamespace)
         </code>
@@ -567,7 +567,7 @@ search directory. Namespace components mirror directory structure.</p></td>
             </div>
                     <div class="method-item">
                     <h3 id="method_discoverPsr4Commands">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Runtime/ServiceManager.php#L174">at line 174</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.4.4/src/Runtime/ServiceManager.php#L174">at line 174</a></div>
         <code>                    array
     <strong>discoverPsr4Commands</strong>()
         </code>
@@ -600,7 +600,7 @@ library command handlers.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_discoverPsr4Generators">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Runtime/ServiceManager.php#L196">at line 196</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.4.4/src/Runtime/ServiceManager.php#L196">at line 196</a></div>
         <code>                    array
     <strong>discoverPsr4Generators</strong>()
         </code>
@@ -632,7 +632,7 @@ library command handlers.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_discoverModuleCommands">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Runtime/ServiceManager.php#L223">at line 223</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.4.4/src/Runtime/ServiceManager.php#L223">at line 223</a></div>
         <code>                    array
     <strong>discoverModuleCommands</strong>(array $directoryList, string $baseNamespace)
         </code>
@@ -680,7 +680,7 @@ commands in Drush 12+.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_discoverModuleCommandInfoAlterers">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Runtime/ServiceManager.php#L246">at line 246</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.4.4/src/Runtime/ServiceManager.php#L246">at line 246</a></div>
         <code>                    array
     <strong>discoverModuleCommandInfoAlterers</strong>(array $directoryList, string $baseNamespace)
         </code>
@@ -728,7 +728,7 @@ search directory. Namespace components mirror directory structure.</p></td>
             </div>
                     <div class="method-item">
                     <h3 id="method_instantiateYamlCliCommands">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Runtime/ServiceManager.php#L267">at line 267</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.4.4/src/Runtime/ServiceManager.php#L267">at line 267</a></div>
         <code>                    array
     <strong>instantiateYamlCliCommands</strong>()
         </code>
@@ -761,7 +761,7 @@ as Drush commands.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_instantiateServices">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Runtime/ServiceManager.php#L303">at line 303</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.4.4/src/Runtime/ServiceManager.php#L303">at line 303</a></div>
         <code>                    array
     <strong>instantiateServices</strong>(array $bootstrapCommandClasses, <abbr title="Psr\Container\ContainerInterface">ContainerInterface</abbr> $drushContainer, <abbr title="Drush\Runtime\Drupal\Component\DependencyInjection\ContainerInterface">ContainerInterface</abbr>|null $container = null)
         </code>
@@ -771,7 +771,7 @@ as Drush commands.</p></p>
             
 
         <div class="method-description">
-                            <p><p>Instantiate objects given a list of classes. For each class, if it has
+                            <p><p>Instantiate objects given a lsit of classes. For each class, if it has
 a static <code>create</code> factory, use that to instantiate it, passing both the
 Drupal and Drush DI containers. If there is no static factory, then
 instantiate it via 'new $class'</p></p>                        
@@ -816,7 +816,7 @@ instantiate it via 'new $class'</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_hasStaticCreateFactory">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Runtime/ServiceManager.php#L348">at line 348</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.4.4/src/Runtime/ServiceManager.php#L348">at line 348</a></div>
         <code>            protected        bool
     <strong>hasStaticCreateFactory</strong>(string $class)
         </code>
@@ -858,7 +858,7 @@ instantiate it via 'new $class'</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_hasStaticCreateEarlyFactory">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Runtime/ServiceManager.php#L361">at line 361</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.4.4/src/Runtime/ServiceManager.php#L361">at line 361</a></div>
         <code>            protected        bool
     <strong>hasStaticCreateEarlyFactory</strong>(string $class)
         </code>
@@ -900,7 +900,7 @@ instantiate it via 'new $class'</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_hasStaticMethod">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Runtime/ServiceManager.php#L375">at line 375</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.4.4/src/Runtime/ServiceManager.php#L375">at line 375</a></div>
         <code>            protected        bool
     <strong>hasStaticMethod</strong>(string $class, string $methodName)
         </code>
@@ -947,7 +947,7 @@ instantiate it via 'new $class'</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_discoverModuleGenerators">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Runtime/ServiceManager.php#L391">at line 391</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.4.4/src/Runtime/ServiceManager.php#L391">at line 391</a></div>
         <code>                    array
     <strong>discoverModuleGenerators</strong>(array $directoryList, string $baseNamespace)
         </code>
@@ -994,7 +994,7 @@ instantiate it via 'new $class'</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_inflect">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Runtime/ServiceManager.php#L411">at line 411</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.4.4/src/Runtime/ServiceManager.php#L411">at line 411</a></div>
         <code>                    void
     <strong>inflect</strong>(<abbr title="Psr\Container\ContainerInterface">ContainerInterface</abbr> $container, mixed $object)
         </code>
