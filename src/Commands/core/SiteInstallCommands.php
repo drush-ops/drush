@@ -4,28 +4,26 @@ declare(strict_types=1);
 
 namespace Drush\Commands\core;
 
+use Composer\Autoload\ClassLoader;
 use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\AnnotatedCommand\Hooks\HookManager;
+use Consolidation\SiteAlias\SiteAliasManager;
 use Drupal\Component\FileCache\FileCacheFactory;
+use Drupal\Core\Config\FileStorage;
 use Drupal\Core\Database\Database;
 use Drupal\Core\Installer\Exception\AlreadyInstalledException;
 use Drupal\Core\Site\Settings;
 use Drush\Attributes as CLI;
+use Drush\Boot\BootstrapManager;
 use Drush\Boot\DrupalBootLevels;
 use Drush\Boot\Kernels;
 use Drush\Commands\DrushCommands;
-use Drush\Drush;
 use Drush\Exceptions\UserAbortException;
-use Drupal\Core\Config\FileStorage;
 use Drush\Exec\ExecTrait;
 use Drush\Sql\SqlBase;
 use Drush\Utils\StringUtils;
 use Psr\Container\ContainerInterface as DrushContainer;
 use Symfony\Component\Filesystem\Path;
-use Drush\Boot\BootstrapManager;
-use Consolidation\SiteAlias\SiteAliasManager;
-use Drush\Config\DrushConfig;
-use Composer\Autoload\ClassLoader;
 
 final class SiteInstallCommands extends DrushCommands
 {
@@ -70,7 +68,7 @@ final class SiteInstallCommands extends DrushCommands
     #[CLI\Option(name: 'sites-subdir', description: 'Name of directory under <info>sites</info> which should be created.')]
     #[CLI\Option(name: 'existing-config', description: 'Configuration from <info>sync</info> directory should be imported during installation.')]
     #[CLI\Usage(name: 'drush si demo_umami --locale=da', description: '(Re)install using the Umami install profile. Set default language to Danish.')]
-    #[CLI\Usage(name: 'drush si --db-url=mysql://root:pass@localhost:port/dbname', description: 'Install using the specified DB params.')]
+    #[CLI\Usage(name: 'drush si --db-url=mysql://user:pass@localhost:port/dbname', description: 'Install using the specified DB params.')]
     #[CLI\Usage(name: 'drush si --db-url=sqlite://sites/example.com/files/.ht.sqlite', description: 'Install using SQLite')]
     #[CLI\Usage(name: 'drush si --db-url=sqlite://:memory:', description: 'Install using SQLite in-memory database.')]
     #[CLI\Usage(name: 'drush si --account-pass=mom', description: 'Re-install with specified uid1 password.')]
