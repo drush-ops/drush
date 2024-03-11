@@ -57,7 +57,7 @@
   "require-dev": {
     "composer/installers": "^2",
     "cweagans/composer-patches": "~1.0",
-    "drupal/core-recommended": "11.x-dev",
+    "drupal/core-recommended": "^10.2.4",
     "drupal/semver_example": "2.3.0",
     "phpunit/phpunit": "^9",
     "rector/rector": "^0.12",
@@ -113,7 +113,7 @@
     "mk:docs": "./drush --uri=dev -v mk:docs",
     "rector": "rector process",
     "sut": "./drush --uri=dev",
-    "sut:si": "./drush --uri=dev site:install ${INSTALL_PROFILE:-testing} --sites-subdir=dev --db-url=${UNISH_DB_URL:-mysql://root:password@mariadb/unish_dev?module=mysql} -v",
+    "sut:si": "./drush --uri=dev site:install ${INSTALL_PROFILE:-testing} --sites-subdir=dev --db-url=${UNISH_DB_URL:-mysql://root:password@mariadb}/unish_dev -v",
     "phpunit": "php -d sendmail_path='true' vendor/bin/phpunit --colors=always --testdox --configuration tests",
     "unit": "composer phpunit -- --testsuite unit",
     "integration": "composer phpunit -- --testsuite integration",
