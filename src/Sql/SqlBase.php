@@ -580,7 +580,7 @@ abstract class SqlBase implements ConfigAwareInterface
     public static function dbSpecFromDbUrl($db_url): array
     {
         $db_url_default = is_array($db_url) ? $db_url['default'] : $db_url;
-        return Database::convertDbUrlToConnectionInfo($db_url_default, null);
+        return Database::convertDbUrlToConnectionInfo($db_url_default, DRUSH_DRUPAL_CORE);
     }
 
     /**

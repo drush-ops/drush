@@ -57,7 +57,7 @@
   "require-dev": {
     "composer/installers": "^2",
     "cweagans/composer-patches": "~1.0",
-    "drupal/core-recommended": "^10.2.4",
+    "drupal/core-recommended": "11.x-dev",
     "drupal/semver_example": "2.3.0",
     "phpunit/phpunit": "^9",
     "rector/rector": "^0.12",
