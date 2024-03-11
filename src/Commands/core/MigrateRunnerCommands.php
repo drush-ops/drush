@@ -11,6 +11,7 @@ use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Drupal\Component\Plugin\Exception\PluginException;
 use Drupal\Core\Datetime\DateFormatterInterface;
 use Drupal\Core\KeyValueStore\KeyValueFactoryInterface;
+use Drupal\Core\KeyValueStore\KeyValueStoreInterface;
 use Drupal\migrate\Exception\RequirementsException;
 use Drupal\migrate\MigrateMessageInterface;
 use Drupal\migrate\Plugin\MigrateIdMapInterface;
@@ -34,6 +35,8 @@ class MigrateRunnerCommands extends DrushCommands
     use AutowireTrait;
 
     protected ?MigrationPluginManagerInterface $migrationPluginManager = null;
+    protected KeyValueStoreInterface $keyValue;
+    private MigrateMessage $migrateMessage;
 
     public function __construct(
         protected DateFormatterInterface $dateFormatter,
