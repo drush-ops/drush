@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace Drush\Sql;
 
+use Consolidation\Config\Util\Interpolator;
 use Consolidation\SiteProcess\Util\Escape;
 use Drupal\Core\Database\Database;
 use Drush\Boot\DrupalBootLevels;
+use Drush\Config\ConfigAwareTrait;
 use Drush\Drush;
 use Drush\Utils\FsUtils;
-use Drush\Config\ConfigAwareTrait;
 use Robo\Contract\ConfigAwareInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Path;
 use Symfony\Component\Process\Process;
-use Consolidation\Config\Util\Interpolator;
 
 /**
  * The base implementation for Drush database connections.
@@ -580,7 +580,7 @@ abstract class SqlBase implements ConfigAwareInterface
     public static function dbSpecFromDbUrl($db_url): array
     {
         $db_url_default = is_array($db_url) ? $db_url['default'] : $db_url;
-        return Database::convertDbUrlToConnectionInfo($db_url_default, DRUSH_DRUPAL_CORE);
+        return Database::convertDbUrlToConnectionInfo($db_url_default, null);
     }
 
     /**
