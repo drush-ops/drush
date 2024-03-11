@@ -21,6 +21,10 @@ class ImageTest extends UnishIntegrationTestCase
         $styles_dir = $this->webroot() . '/sites/default/files/styles/';
         $thumbnail = $styles_dir . 'thumbnail/public/' . $logo;
         $medium = $styles_dir . 'medium/public/' . $logo;
+        if ($this->isDrupalGreaterThanOrEqualTo('10.3.0')) {
+            $thumbnail .= '.webp';
+            $medium .= '.webp';
+        }
 
         // Remove stray files left over from previous runs
         @unlink($thumbnail);

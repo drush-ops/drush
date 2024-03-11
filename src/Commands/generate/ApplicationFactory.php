@@ -39,7 +39,7 @@ class ApplicationFactory
         $generators = $this->discover();
         $application->addCommands($generators);
         // Hide default Symfony console commands.
-        foreach (['help', 'list', 'completion', '_complete', 'generator'] as $name) {
+        foreach (['help', 'list', 'completion', '_complete'] as $name) {
             $application->get($name)->setHidden(true);
         }
         return $application;

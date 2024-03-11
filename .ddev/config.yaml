@@ -1,7 +1,7 @@
 name: drush
 type: php
 docroot: sut
-php_version: "8.1"
+php_version: "8.3"
 webserver_type: nginx-fpm
 router_http_port: "87"
 router_https_port: "444"
@@ -21,8 +21,8 @@ webimage_extra_packages:
 #  type: postgres
 #  version: 14
 web_environment:
-  - UNISH_DB_URL=mysql://root:root@db
-#  - "UNISH_DB_URL=sqlite://:memory:"
-#  - UNISH_DB_URL=pgsql://db:db@db:5432
+  - UNISH_DB_URL=mysql://root:root@db/unish_dev?module=mysql
+#  - "UNISH_DB_URL=sqlite://:memory:?module=sqlite"
+#  - UNISH_DB_URL=pgsql://db:db@db:5432?module=pgsql
   - DRUSH_OPTIONS_URI=$DDEV_PRIMARY_URL
   - EDITOR=nano
