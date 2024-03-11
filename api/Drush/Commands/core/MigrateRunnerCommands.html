@@ -211,6 +211,15 @@
                 <td class="last"></td>
                 <td></td>
             </tr>
+                    <tr>
+                <td class="type" id="property_keyValue">
+                                        protected                                        <abbr title="Drupal\Core\KeyValueStore\KeyValueStoreInterface">KeyValueStoreInterface</abbr>
+                                                                                
+                                    </td>
+                <td>$keyValue</td>
+                <td class="last"></td>
+                <td></td>
+            </tr>
             </table>
 
     
@@ -973,7 +982,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method___construct">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/MigrateRunnerCommands.php#L38">at line 38</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/MigrateRunnerCommands.php#L41">at line 41</a></div>
         <code>                    
     <strong>__construct</strong>(<abbr title="Drupal\Core\Datetime\DateFormatterInterface">DateFormatterInterface</abbr> $dateFormatter, <abbr title="Drupal\Core\KeyValueStore\KeyValueFactoryInterface">KeyValueFactoryInterface</abbr> $keyValueFactory)
         </code>
@@ -1315,7 +1324,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_setMigrationPluginManager">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/MigrateRunnerCommands.php#L56">at line 56</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/MigrateRunnerCommands.php#L59">at line 59</a></div>
         <code>                    
     <strong>setMigrationPluginManager</strong>(<abbr title="Drupal\migrate\Plugin\MigrationPluginManagerInterface">MigrationPluginManagerInterface</abbr> $migrationPluginManager)
         </code>
@@ -1348,7 +1357,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_status">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/MigrateRunnerCommands.php#L64">at line 64</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/MigrateRunnerCommands.php#L67">at line 67</a></div>
         <code>                    <abbr title="Consolidation\OutputFormatters\StructuredData\RowsOfFields">RowsOfFields</abbr>
     <strong>status</strong>(string|null $migrationIds = null, array $options = [&#039;tag&#039; =&gt; self::REQ, &#039;format&#039; =&gt; &#039;table&#039;])
         </code>
@@ -1395,7 +1404,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_getMigrationSourceRowsCount">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/MigrateRunnerCommands.php#L175">at line 175</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/MigrateRunnerCommands.php#L178">at line 178</a></div>
         <code>            protected        int|null
     <strong>getMigrationSourceRowsCount</strong>(<abbr title="Drupal\migrate\Plugin\MigrationInterface">MigrationInterface</abbr> $migration)
         </code>
@@ -1438,7 +1447,7 @@ the source count couldn't be retrieved.</p></td>
             </div>
                     <div class="method-item">
                     <h3 id="method_getMigrationNeedingUpdateCount">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/MigrateRunnerCommands.php#L203">at line 203</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/MigrateRunnerCommands.php#L206">at line 206</a></div>
         <code>            protected        int
     <strong>getMigrationNeedingUpdateCount</strong>(<abbr title="Drupal\migrate\Plugin\MigrationInterface">MigrationInterface</abbr> $migration)
         </code>
@@ -1480,7 +1489,7 @@ the source count couldn't be retrieved.</p></td>
             </div>
                     <div class="method-item">
                     <h3 id="method_getMigrationUnprocessedCount">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/MigrateRunnerCommands.php#L218">at line 218</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/MigrateRunnerCommands.php#L221">at line 221</a></div>
         <code>            protected        int|null
     <strong>getMigrationUnprocessedCount</strong>(<abbr title="Drupal\migrate\Plugin\MigrationInterface">MigrationInterface</abbr> $migration)
         </code>
@@ -1522,7 +1531,7 @@ the source count couldn't be retrieved.</p></td>
             </div>
                     <div class="method-item">
                     <h3 id="method_getMigrationImportedCount">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/MigrateRunnerCommands.php#L236">at line 236</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/MigrateRunnerCommands.php#L239">at line 239</a></div>
         <code>            protected        int|null
     <strong>getMigrationImportedCount</strong>(<abbr title="Drupal\migrate\Plugin\MigrationInterface">MigrationInterface</abbr> $migration)
         </code>
@@ -1564,7 +1573,7 @@ the source count couldn't be retrieved.</p></td>
             </div>
                     <div class="method-item">
                     <h3 id="method_getMigrationLastImportedTime">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/MigrateRunnerCommands.php#L259">at line 259</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/MigrateRunnerCommands.php#L262">at line 262</a></div>
         <code>            protected        string
     <strong>getMigrationLastImportedTime</strong>(<abbr title="Drupal\migrate\Plugin\MigrationInterface">MigrationInterface</abbr> $migration)
         </code>
@@ -1606,7 +1615,7 @@ the source count couldn't be retrieved.</p></td>
             </div>
                     <div class="method-item">
                     <h3 id="method_padTableRow">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/MigrateRunnerCommands.php#L278">at line 278</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/MigrateRunnerCommands.php#L281">at line 281</a></div>
         <code>            protected        array
     <strong>padTableRow</strong>(array $row, array $fields)
         </code>
@@ -1653,7 +1662,7 @@ the source count couldn't be retrieved.</p></td>
             </div>
                     <div class="method-item">
                     <h3 id="method_import">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/MigrateRunnerCommands.php#L292">at line 292</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/MigrateRunnerCommands.php#L295">at line 295</a></div>
         <code>                    void
     <strong>import</strong>(string|null $migrationIds = null, array $options = [&#039;all&#039; =&gt; false, &#039;tag&#039; =&gt; self::REQ, &#039;limit&#039; =&gt; self::REQ, &#039;feedback&#039; =&gt; self::REQ, &#039;idlist&#039; =&gt; self::REQ, &#039;update&#039; =&gt; false, &#039;force&#039; =&gt; false, &#039;execute-dependencies&#039; =&gt; false, &#039;timestamp&#039; =&gt; false, &#039;total&#039; =&gt; false, &#039;progress&#039; =&gt; true, &#039;delete&#039; =&gt; false])
         </code>
@@ -1709,7 +1718,7 @@ the source count couldn't be retrieved.</p></td>
             </div>
                     <div class="method-item">
                     <h3 id="method_executeMigration">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/MigrateRunnerCommands.php#L373">at line 373</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/MigrateRunnerCommands.php#L376">at line 376</a></div>
         <code>            protected        void
     <strong>executeMigration</strong>(<abbr title="Drupal\migrate\Plugin\MigrationInterface">MigrationInterface</abbr> $migration, string $migrationId, array $userData)
         </code>
@@ -1771,7 +1780,7 @@ dependencies will also be executed first.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_rollback">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/MigrateRunnerCommands.php#L419">at line 419</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/MigrateRunnerCommands.php#L422">at line 422</a></div>
         <code>                    void
     <strong>rollback</strong>(string|null $migrationIds = null, array $options = [&#039;all&#039; =&gt; false, &#039;tag&#039; =&gt; self::REQ, &#039;feedback&#039; =&gt; self::REQ, &#039;idlist&#039; =&gt; self::REQ, &#039;progress&#039; =&gt; true])
         </code>
@@ -1827,7 +1836,7 @@ dependencies will also be executed first.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_stop">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/MigrateRunnerCommands.php#L467">at line 467</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/MigrateRunnerCommands.php#L470">at line 470</a></div>
         <code>                    void
     <strong>stop</strong>(string $migrationId)
         </code>
@@ -1878,7 +1887,7 @@ dependencies will also be executed first.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_resetStatus">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/MigrateRunnerCommands.php#L499">at line 499</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/MigrateRunnerCommands.php#L502">at line 502</a></div>
         <code>                    void
     <strong>resetStatus</strong>(string $migrationId)
         </code>
@@ -1929,7 +1938,7 @@ dependencies will also be executed first.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_messages">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/MigrateRunnerCommands.php#L523">at line 523</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/MigrateRunnerCommands.php#L526">at line 526</a></div>
         <code>                    <abbr title="Consolidation\OutputFormatters\StructuredData\RowsOfFields">RowsOfFields</abbr>
     <strong>messages</strong>(string $migrationId, array $options = [&#039;idlist&#039; =&gt; self::REQ, &#039;format&#039; =&gt; &#039;table&#039;])
         </code>
@@ -1985,7 +1994,7 @@ dependencies will also be executed first.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_preprocessMessageRow">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/MigrateRunnerCommands.php#L598">at line 598</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/MigrateRunnerCommands.php#L601">at line 601</a></div>
         <code>            protected        array
     <strong>preprocessMessageRow</strong>(<a target="_blank" rel="noopener" href="https://www.php.net/StdClass">StdClass</a> $row, array $sourceIdKeys)
         </code>
@@ -2044,7 +2053,7 @@ MigrateIdMapInterface::getMessages(), prepare it for display.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_fieldsSource">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/MigrateRunnerCommands.php#L625">at line 625</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/MigrateRunnerCommands.php#L628">at line 628</a></div>
         <code>                    <abbr title="Consolidation\OutputFormatters\StructuredData\RowsOfFields">RowsOfFields</abbr>
     <strong>fieldsSource</strong>(string $migrationId, $options = [&#039;format&#039; =&gt; &#039;table&#039;])
         </code>
@@ -2100,7 +2109,7 @@ MigrateIdMapInterface::getMessages(), prepare it for display.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_getMigrationList">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/MigrateRunnerCommands.php#L666">at line 666</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/MigrateRunnerCommands.php#L669">at line 669</a></div>
         <code>            protected        array
     <strong>getMigrationList</strong>(string|null $migrationIds, string|null $tags)
         </code>
@@ -2158,7 +2167,7 @@ migrations or an empty array if no migrations match the input criteria.</p></td>
             </div>
                     <div class="method-item">
                     <h3 id="method_getMigrateMessage">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/MigrateRunnerCommands.php#L718">at line 718</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/MigrateRunnerCommands.php#L721">at line 721</a></div>
         <code>            protected        <abbr title="Drupal\migrate\MigrateMessageInterface">MigrateMessageInterface</abbr>
     <strong>getMigrateMessage</strong>()
         </code>
@@ -2190,7 +2199,7 @@ migrations or an empty array if no migrations match the input criteria.</p></td>
             </div>
                     <div class="method-item">
                     <h3 id="method_getSourceIdKeys">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/MigrateRunnerCommands.php#L735">at line 735</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/MigrateRunnerCommands.php#L738">at line 738</a></div>
         <code>            protected        array
     <strong>getSourceIdKeys</strong>(<abbr title="Drupal\migrate\Plugin\MigrateIdMapInterface">MigrateIdMapInterface</abbr> $idMap)
         </code>
@@ -2232,7 +2241,7 @@ migrations or an empty array if no migrations match the input criteria.</p></td>
             </div>
                     <div class="method-item">
                     <h3 id="method_validateMigrationId">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/MigrateRunnerCommands.php#L756">at line 756</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/MigrateRunnerCommands.php#L759">at line 759</a></div>
         <code>                    <abbr title="Drush\Commands\core\Consolidation\AnnotatedCommand\CommandError">CommandError</abbr>|null
     <strong>validateMigrationId</strong>(<abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr> $commandData)
         </code>
