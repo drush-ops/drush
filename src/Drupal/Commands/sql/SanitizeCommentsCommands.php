@@ -10,6 +10,7 @@ use Drupal\Core\Database\Connection;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drush\Attributes as CLI;
 use Drush\Boot\DrupalBootLevels;
+use Drush\Commands\AutowireTrait;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Symfony\Component\Console\Input\InputInterface;
@@ -19,10 +20,13 @@ use Symfony\Component\Console\Input\InputInterface;
  */
 final class SanitizeCommentsCommands extends DrushCommands implements SanitizePluginInterface
 {
+    use AutowireTrait;
+
     public function __construct(
         protected Connection $database,
         protected ModuleHandlerInterface $moduleHandler
     ) {
+        parent::__construct();
     }
 
     /**

@@ -9,6 +9,7 @@ use Consolidation\AnnotatedCommand\Hooks\HookManager;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Password\PasswordInterface;
 use Drush\Attributes as CLI;
+use Drush\Commands\AutowireTrait;
 use Drush\Commands\DrushCommands;
 use Drush\Sql\SqlBase;
 use Drush\Utils\StringUtils;
@@ -19,11 +20,14 @@ use Symfony\Component\Console\Input\InputInterface;
  */
 final class SanitizeUserTableCommands extends DrushCommands implements SanitizePluginInterface
 {
+    use AutowireTrait;
+    
     public function __construct(
         protected \Drupal\Core\Database\Connection $database,
         protected PasswordInterface $passwordHasher,
         protected EntityTypeManagerInterface $entityTypeManager
     ) {
+        parent::__construct();
     }
 
     /**
