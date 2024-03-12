@@ -7,6 +7,7 @@ namespace Unish;
 use Drush\Commands\core\PhpCommands;
 use Drush\Commands\core\UpdateDBCommands;
 use Drush\Commands\pm\PmCommands;
+use Drush\Commands\sql\SqlCommands;
 use Symfony\Component\Filesystem\Path;
 
 /**
@@ -62,19 +63,19 @@ class UpdateDBTest extends CommandUnishTestCase
         $options = [
             'yes' => null,
         ];
-        $this->drush('pm-install', ['woot'], $options);
+        $this->drush(PmCommands::INSTALL, ['woot'], $options);
 
         // Force a pending update.
-        $this->drush('php-script', ['updatedb_script'], ['script-path' => __DIR__ . '/resources']);
+        $this->drush(PhpCommands::SCRIPT, ['updatedb_script'], ['script-path' => __DIR__ . '/resources']);
 
         // Force re-run of woot_update_8101().
-        $this->drush('php:eval', array('Drupal::service("update.update_hook_registry")->setInstalledVersion("woot", ' . $last_successful_update . ')'), $options);
+        $this->drush(PhpCommands::EVAL, array('Drupal::service("update.update_hook_registry")->setInstalledVersion("woot", ' . $last_successful_update . ')'), $options);
 
         // Force re-run of the post-update woot_post_update_failing().
         $this->forcePostUpdate('woot_post_update_failing', $options);
 
         // Run updates.
-        $this->drush('updatedb', [], $options, null, null, self::EXIT_ERROR);
+        $this->drush(UpdateDBCommands::UPDATEDB, [], $options, null, null, self::EXIT_ERROR);
 
         foreach ($expected_status_report as $needle) {
             $this->assertStringContainsString($needle, $this->getOutput());
@@ -145,17 +146,17 @@ class UpdateDBTest extends CommandUnishTestCase
         $options = [
             'yes' => null,
         ];
-        $this->drush('pm-install', ['woot'], $options);
+        $this->drush(PmCommands::INSTALL, ['woot'], $options);
 
         // Force re-run of woot_update_8104().
-        $this->drush('php:eval', array('Drupal::service("update.update_hook_registry")->setInstalledVersion("woot", 8103)'), $options);
+        $this->drush(PhpCommands::EVAL, array('Drupal::service("update.update_hook_registry")->setInstalledVersion("woot", 8103)'), $options);
 
         // Force re-run of post-update hooks.
         $this->forcePostUpdate('woot_post_update_a', $options);
         $this->forcePostUpdate('woot_post_update_failing', $options);
 
         // Run updates.
-        $this->drush('updatedb', [], $options, null, null, self::EXIT_ERROR);
+        $this->drush(UpdateDBCommands::UPDATEDB, [], $options, null, null, self::EXIT_ERROR);
         $this->assertStringContainsString('woot     a           post-update     Successful post-update.', $this->getOutput());
         $this->assertStringContainsString('woot     failing     post-update     Failing post-update.', $this->getOutput());
         $this->assertStringContainsString('This is the exception message thrown in woot_post_update_failing', $this->getErrorOutput());
@@ -194,7 +195,7 @@ class UpdateDBTest extends CommandUnishTestCase
         $options = [
             'include' => __DIR__,
         ];
-        $this->drush('pm-install', ['woot'], $options);
+        $this->drush(PmCommands::INSTALL, ['woot'], $options);
 
         // Force re-run of the post-update woot_post_update_install_drush_empty_module().
         $this->forcePostUpdate('woot_post_update_install_drush_empty_module', $options);
@@ -224,10 +225,10 @@ YAML_FRAGMENT;
         file_put_contents($filename, $moduleDependency, FILE_APPEND);
 
         // Run updates.
-        $this->drush('updatedb');
+        $this->drush(UpdateDBCommands::UPDATEDB);
 
         // Assert that the updates were run correctly.
-        $this->drush('updatedb:status');
+        $this->drush(UpdateDBCommands::STATUS);
         $err = $this->getErrorOutput();
         $this->assertStringContainsString('[success] No database updates required.', $err);
     }
@@ -241,17 +242,17 @@ YAML_FRAGMENT;
         $options = [
             'yes' => null,
         ];
-        $this->drush('pm-install', ['woot'], $options);
+        $this->drush(PmCommands::INSTALL, ['woot'], $options);
 
         // Force re-run of woot_update_8104() which is expected to be completed successfully.
-        $this->drush('php:eval', array('Drupal::service("update.update_hook_registry")->setInstalledVersion("woot", 8103)'), $options);
+        $this->drush(PhpCommands::EVAL, array('Drupal::service("update.update_hook_registry")->setInstalledVersion("woot", 8103)'), $options);
 
         // Force re-run of post-update hooks which are expected to be completed successfully.
         $this->forcePostUpdate('woot_post_update_a', $options);
         $this->forcePostUpdate('woot_post_update_render', $options);
 
         // Run updates.
-        $this->drush('updatedb', [], $options);
+        $this->drush(UpdateDBCommands::UPDATEDB, [], $options);
         // Check output.
         $this->assertStringContainsString('woot 8104 hook_update_n', $this->getSimplifiedOutput());
         $this->assertStringContainsString('woot a post-update Successful post-update.', $this->getSimplifiedOutput());
@@ -267,23 +268,19 @@ YAML_FRAGMENT;
      */
     public function testBatchUpdateLogMessages()
     {
-        if (!$this->isDrupalGreaterThanOrEqualTo('9.3.0')) {
-            $this->markTestSkipped('Test uses setInstalledVersion from update.update_hook_registry, introduced in Drupal 9.3.0, instead of drupal_set_installed_schema_version');
-        }
-
         $options = [
             'yes' => null,
         ];
         $this->setUpDrupal(1, true);
-        $this->drush('pm:install', ['woot'], $options);
+        $this->drush(PmCommands::INSTALL, ['woot'], $options);
 
         // Force re-run of woot_update_8105().
-        $this->drush('php:eval', ['Drupal::service("update.update_hook_registry")->setInstalledVersion("woot", 8104)'], $options);
+        $this->drush(PhpCommands::EVAL, ['Drupal::service("update.update_hook_registry")->setInstalledVersion("woot", 8104)'], $options);
         // Force re-run of woot_post_update_batch().
         $this->forcePostUpdate('woot_post_update_batch', $options);
 
         // Run updates.
-        $this->drush('updatedb', [], $options);
+        $this->drush(UpdateDBCommands::UPDATEDB, [], $options);
 
         $expected_update_output = <<<UPDATE
 >  [notice] Update started: woot_update_8105
@@ -317,19 +314,19 @@ POST_UPDATE;
             'yes' => null,
         ];
         $this->setUpDrupal(1, true);
-        $this->drush('pm:install', ['woot'], $options);
+        $this->drush(PmCommands::INSTALL, ['woot'], $options);
 
         // Force re-run of woot_update_8106().
-        $this->drush('php:eval', ['Drupal::service("update.update_hook_registry")->setInstalledVersion("woot", 8105)'], $options);
+        $this->drush(PhpCommands::EVAL, ['Drupal::service("update.update_hook_registry")->setInstalledVersion("woot", 8105)'], $options);
 
         // Run updates.
-        $this->drush('updatedb', [], $options);
+        $this->drush(UpdateDBCommands::UPDATEDB, [], $options);
 
         // Check that the post-update function returns the new entity type ID.
         $this->assertStringContainsString('[notice] taxonomy_term', $this->getErrorOutputRaw());
 
         // Check that the new entity type is installed.
-        $this->drush('php:eval', ['woot_get_taxonomy_term_entity_type_id();']);
+        $this->drush(PhpCommands::EVAL, ['woot_get_taxonomy_term_entity_type_id();']);
         $this->assertStringContainsString('taxonomy_term', $this->getOutputRaw());
     }
 
@@ -342,19 +339,19 @@ POST_UPDATE;
             'yes' => null,
         ];
         $this->setUpDrupal(1, true);
-        $this->drush('pm:install', ['woot'], $options);
+        $this->drush(PmCommands::INSTALL, ['woot'], $options);
 
         // Force re-run of woot_post_update_install_taxonomy().
         $this->forcePostUpdate('woot_post_update_install_taxonomy', $options);
 
         // Run updates.
-        $this->drush('updatedb', [], $options);
+        $this->drush(UpdateDBCommands::UPDATEDB, [], $options);
 
         // Check that the post-update function returns the new entity type ID.
         $this->assertStringContainsString('[notice] taxonomy_term', $this->getErrorOutputRaw());
 
         // Check that the new entity type is installed.
-        $this->drush('php:eval', ['woot_get_taxonomy_term_entity_type_id();']);
+        $this->drush(PhpCommands::EVAL, ['woot_get_taxonomy_term_entity_type_id();']);
         $this->assertStringContainsString('taxonomy_term', $this->getOutputRaw());
     }
 
@@ -386,10 +383,10 @@ POST_UPDATE;
      */
     protected function forcePostUpdate($hook, array $options)
     {
-        $this->drush('sql:query', ["SELECT value FROM key_value WHERE collection = 'post_update' AND name = 'existing_updates'"], $options);
+        $this->drush(SqlCommands::QUERY, ["SELECT value FROM key_value WHERE collection = 'post_update' AND name = 'existing_updates'"], $options);
         $functions = unserialize($this->getOutput());
         unset($functions[array_search($hook, $functions)]);
         $functions = serialize($functions);
-        $this->drush('sql:query', ["UPDATE key_value SET value = '$functions' WHERE collection = 'post_update' AND name = 'existing_updates'"], $options);
+        $this->drush(SqlCommands::QUERY, ["UPDATE key_value SET value = '$functions' WHERE collection = 'post_update' AND name = 'existing_updates'"], $options);
     }
 }

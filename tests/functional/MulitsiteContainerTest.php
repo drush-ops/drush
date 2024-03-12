@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Unish;
 
 use Drush\Commands\core\DrupalCommands;
+use Drush\Commands\pm\PmCommands;
 
 /**
  * Tests for core commands.
@@ -44,7 +45,7 @@ EOT;
         $options['uri'] = 'dev';
         file_put_contents($conf_dir . '/modules/my_module/my_module.info.yml', $info);
         file_put_contents($conf_dir . '/modules/my_module/my_module.module', $module);
-        $this->drush('pm-install', ['my_module'], $options);
+        $this->drush(PmCommands::INSTALL, ['my_module'], $options);
 
         $this->drush(DrupalCommands::CRON, [], $options);
         $this->assertStringContainsString('Message: test', $this->getErrorOutput());
