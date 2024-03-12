@@ -86,7 +86,7 @@
 
     
     <p>        class
-    <strong>ServiceManager</strong>        (<a href="https://github.com/drush-ops/drush/blob/13.x/src/Runtime/ServiceManager.php">View source</a>)
+    <strong>ServiceManager</strong>        (<a href="https://github.com/drush-ops/drush/blob/12.x/src/Runtime/ServiceManager.php">View source</a>)
 </p>
 
         
@@ -253,7 +253,7 @@ as Drush commands.</p></p>                </div>
                 <div class="col-md-8">
                     <a href="#method_instantiateServices">instantiateServices</a>(array $bootstrapCommandClasses, <abbr title="Psr\Container\ContainerInterface">ContainerInterface</abbr> $drushContainer, <abbr title="Drush\Runtime\Drupal\Component\DependencyInjection\ContainerInterface">ContainerInterface</abbr>|null $container = null)
         
-                                            <p><p>Instantiate objects given a list of classes. For each class, if it has
+                                            <p><p>Instantiate objects given a lsit of classes. For each class, if it has
 a static <code>create</code> factory, use that to instantiate it, passing both the
 Drupal and Drush DI containers. If there is no static factory, then
 instantiate it via 'new $class'</p></p>                </div>
@@ -286,7 +286,8 @@ instantiate it via 'new $class'</p></p>                </div>
                 <div class="col-md-8">
                     <a href="#method_bootStrapAttributeValue">bootStrapAttributeValue</a>(string $class)
         
-                                            <p><p>Does the provided class have a Bootstrap Attribute, indicating early loading.</p></p>                </div>
+                                            <p class="no-description">No description</p>
+                                    </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -304,9 +305,9 @@ instantiate it via 'new $class'</p></p>                </div>
                     bool
                 </div>
                 <div class="col-md-8">
-                    <a href="#method_hasStaticMethod">hasStaticMethod</a>(string $class, string $methodName)
+                    <a href="#method_hasStaticCreateEarlyFactory">hasStaticCreateEarlyFactory</a>(string $class)
         
-                                            <p><p>Check to see if the provided class has the specified static method.</p></p>                </div>
+                                            <p><p>Check to see if the provided class has a static <code>createEarly</code> method.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -314,9 +315,9 @@ instantiate it via 'new $class'</p></p>                </div>
                     bool
                 </div>
                 <div class="col-md-8">
-                    <a href="#method_hasStaticCreateEarlyFactory">hasStaticCreateEarlyFactory</a>(string $class)
+                    <a href="#method_hasStaticMethod">hasStaticMethod</a>(string $class, string $methodName)
         
-                                            <p><p>Check to see if the provided class has a static <code>createEarly</code> method.</p></p>                </div>
+                                            <p><p>Check to see if the provided class has the specified static method.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -347,7 +348,7 @@ instantiate it via 'new $class'</p></p>                </div>
             <div id="method-details">
                     <div class="method-item">
                     <h3 id="method___construct">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Runtime/ServiceManager.php#L55">at line 55</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Runtime/ServiceManager.php#L55">at line 55</a></div>
         <code>                    
     <strong>__construct</strong>(<abbr title="Composer\Autoload\ClassLoader">ClassLoader</abbr> $autoloader, <a href="../../Drush/Config/DrushConfig.html"><abbr title="Drush\Config\DrushConfig">DrushConfig</abbr></a> $config, <abbr title="Psr\Log\LoggerInterface">LoggerInterface</abbr> $logger)
         </code>
@@ -391,7 +392,7 @@ instantiate it via 'new $class'</p></p>                </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_loadCommandClasses">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Runtime/ServiceManager.php#L68">at line 68</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Runtime/ServiceManager.php#L68">at line 68</a></div>
         <code>            protected        void
     <strong>loadCommandClasses</strong>(array $commandClasses)
         </code>
@@ -434,7 +435,7 @@ is, in fact, included.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_bootstrapCommandClasses">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Runtime/ServiceManager.php#L83">at line 83</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Runtime/ServiceManager.php#L83">at line 83</a></div>
         <code>                    array
     <strong>bootstrapCommandClasses</strong>()
         </code>
@@ -466,7 +467,7 @@ is, in fact, included.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_discover">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Runtime/ServiceManager.php#L101">at line 101</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Runtime/ServiceManager.php#L101">at line 101</a></div>
         <code>                    array
     <strong>discover</strong>(array $commandfileSearchpath, string $baseNamespace)
         </code>
@@ -517,7 +518,7 @@ search diretory. Namespace components mirror directory structure.</p></td>
             </div>
                     <div class="method-item">
                     <h3 id="method_discoverCommandsFromConfiguration">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Runtime/ServiceManager.php#L126">at line 126</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Runtime/ServiceManager.php#L126">at line 126</a></div>
         <code>                    array
     <strong>discoverCommandsFromConfiguration</strong>()
         </code>
@@ -549,7 +550,7 @@ search diretory. Namespace components mirror directory structure.</p></td>
             </div>
                     <div class="method-item">
                     <h3 id="method_discoverCommands">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Runtime/ServiceManager.php#L152">at line 152</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Runtime/ServiceManager.php#L152">at line 152</a></div>
         <code>                    array
     <strong>discoverCommands</strong>(array $directoryList, string $baseNamespace)
         </code>
@@ -597,7 +598,7 @@ search directory. Namespace components mirror directory structure.</p></td>
             </div>
                     <div class="method-item">
                     <h3 id="method_discoverPsr4Commands">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Runtime/ServiceManager.php#L176">at line 176</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Runtime/ServiceManager.php#L176">at line 176</a></div>
         <code>                    array
     <strong>discoverPsr4Commands</strong>()
         </code>
@@ -630,7 +631,7 @@ library command handlers.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_discoverPsr4Generators">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Runtime/ServiceManager.php#L198">at line 198</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Runtime/ServiceManager.php#L198">at line 198</a></div>
         <code>                    array
     <strong>discoverPsr4Generators</strong>()
         </code>
@@ -662,7 +663,7 @@ library command handlers.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_discoverModuleCommands">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Runtime/ServiceManager.php#L225">at line 225</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Runtime/ServiceManager.php#L225">at line 225</a></div>
         <code>                    array
     <strong>discoverModuleCommands</strong>(array $directoryList, string $baseNamespace)
         </code>
@@ -710,7 +711,7 @@ commands in Drush 12+.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_discoverModuleCommandInfoAlterers">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Runtime/ServiceManager.php#L248">at line 248</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Runtime/ServiceManager.php#L248">at line 248</a></div>
         <code>                    array
     <strong>discoverModuleCommandInfoAlterers</strong>(array $directoryList, string $baseNamespace)
         </code>
@@ -758,7 +759,7 @@ search directory. Namespace components mirror directory structure.</p></td>
             </div>
                     <div class="method-item">
                     <h3 id="method_instantiateYamlCliCommands">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Runtime/ServiceManager.php#L269">at line 269</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Runtime/ServiceManager.php#L269">at line 269</a></div>
         <code>                    array
     <strong>instantiateYamlCliCommands</strong>()
         </code>
@@ -791,7 +792,7 @@ as Drush commands.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_instantiateServices">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Runtime/ServiceManager.php#L305">at line 305</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Runtime/ServiceManager.php#L305">at line 305</a></div>
         <code>                    array
     <strong>instantiateServices</strong>(array $bootstrapCommandClasses, <abbr title="Psr\Container\ContainerInterface">ContainerInterface</abbr> $drushContainer, <abbr title="Drush\Runtime\Drupal\Component\DependencyInjection\ContainerInterface">ContainerInterface</abbr>|null $container = null)
         </code>
@@ -801,7 +802,7 @@ as Drush commands.</p></p>
             
 
         <div class="method-description">
-                            <p><p>Instantiate objects given a list of classes. For each class, if it has
+                            <p><p>Instantiate objects given a lsit of classes. For each class, if it has
 a static <code>create</code> factory, use that to instantiate it, passing both the
 Drupal and Drush DI containers. If there is no static factory, then
 instantiate it via 'new $class'</p></p>                        
@@ -846,7 +847,7 @@ instantiate it via 'new $class'</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_supportsCompoundContainer">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Runtime/ServiceManager.php#L353">at line 353</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Runtime/ServiceManager.php#L352">at line 352</a></div>
         <code>            protected        bool
     <strong>supportsCompoundContainer</strong>($class, $drush_container)
         </code>
@@ -893,7 +894,7 @@ instantiate it via 'new $class'</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_hasStaticCreateFactory">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Runtime/ServiceManager.php#L363">at line 363</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Runtime/ServiceManager.php#L367">at line 367</a></div>
         <code>            protected        bool
     <strong>hasStaticCreateFactory</strong>(string $class)
         </code>
@@ -912,7 +913,7 @@ instantiate it via 'new $class'</p></p>
                     <tr>
                 <td>string</td>
                 <td>$class</td>
-                <td></td>
+                <td><p>The name of the class to check</p></td>
             </tr>
             </table>
 
@@ -922,7 +923,7 @@ instantiate it via 'new $class'</p></p>
                     <table class="table table-condensed">
         <tr>
             <td>bool</td>
-            <td></td>
+            <td><p>True if class has a static <code>create</code> method.</p></td>
         </tr>
     </table>
 
@@ -935,7 +936,7 @@ instantiate it via 'new $class'</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_bootStrapAttributeValue">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Runtime/ServiceManager.php#L371">at line 371</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Runtime/ServiceManager.php#L375">at line 375</a></div>
         <code>            protected        int|null
     <strong>bootStrapAttributeValue</strong>(string $class)
         </code>
@@ -945,7 +946,8 @@ instantiate it via 'new $class'</p></p>
             
 
         <div class="method-description">
-                            <p><p>Does the provided class have a Bootstrap Attribute, indicating early loading.</p></p>                        
+                            <p class="no-description">No description</p>
+                    
         </div>
         <div class="tags">
                             <h4>Parameters</h4>
@@ -977,7 +979,7 @@ instantiate it via 'new $class'</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_requiresBootstrap">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Runtime/ServiceManager.php#L387">at line 387</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Runtime/ServiceManager.php#L391">at line 391</a></div>
         <code>            protected        bool
     <strong>requiresBootstrap</strong>(string $class)
         </code>
@@ -1018,55 +1020,8 @@ instantiate it via 'new $class'</p></p>
 
             </div>
                     <div class="method-item">
-                    <h3 id="method_hasStaticMethod">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Runtime/ServiceManager.php#L400">at line 400</a></div>
-        <code>            protected        bool
-    <strong>hasStaticMethod</strong>(string $class, string $methodName)
-        </code>
-    </h3>
-    <div class="details">    
-    
-            
-
-        <div class="method-description">
-                            <p><p>Check to see if the provided class has the specified static method.</p></p>                        
-        </div>
-        <div class="tags">
-                            <h4>Parameters</h4>
-
-                    <table class="table table-condensed">
-                    <tr>
-                <td>string</td>
-                <td>$class</td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td>string</td>
-                <td>$methodName</td>
-                <td></td>
-            </tr>
-            </table>
-
-            
-                            <h4>Return Value</h4>
-
-                    <table class="table table-condensed">
-        <tr>
-            <td>bool</td>
-            <td></td>
-        </tr>
-    </table>
-
-            
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
                     <h3 id="method_hasStaticCreateEarlyFactory">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Runtime/ServiceManager.php#L418">at line 418</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Runtime/ServiceManager.php#L409">at line 409</a></div>
         <code>            protected        bool
     <strong>hasStaticCreateEarlyFactory</strong>(string $class)
         </code>
@@ -1107,8 +1062,55 @@ instantiate it via 'new $class'</p></p>
 
             </div>
                     <div class="method-item">
+                    <h3 id="method_hasStaticMethod">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Runtime/ServiceManager.php#L423">at line 423</a></div>
+        <code>            protected        bool
+    <strong>hasStaticMethod</strong>(string $class, string $methodName)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Check to see if the provided class has the specified static method.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$class</td>
+                <td><p>The name of the class to check</p></td>
+            </tr>
+                    <tr>
+                <td>string</td>
+                <td>$methodName</td>
+                <td><p>The name of the method the class should have</p></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>bool</td>
+            <td><p>True if class has a static method with the specified name.</p></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
                     <h3 id="method_discoverModuleGenerators">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Runtime/ServiceManager.php#L429">at line 429</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Runtime/ServiceManager.php#L439">at line 439</a></div>
         <code>                    array
     <strong>discoverModuleGenerators</strong>(array $directoryList, string $baseNamespace)
         </code>
@@ -1155,7 +1157,7 @@ instantiate it via 'new $class'</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_inflect">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Runtime/ServiceManager.php#L449">at line 449</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Runtime/ServiceManager.php#L459">at line 459</a></div>
         <code>                    void
     <strong>inflect</strong>(<abbr title="Psr\Container\ContainerInterface">ContainerInterface</abbr> $container, mixed $object)
         </code>
