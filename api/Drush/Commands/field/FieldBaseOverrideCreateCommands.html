@@ -85,7 +85,7 @@
     </div>
 
     
-    <p>        class
+    <p>final         class
     <strong>FieldBaseOverrideCreateCommands</strong>        extends <a href="../../../Drush/Commands/DrushCommands.html"><abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a>        (<a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/field/FieldBaseOverrideCreateCommands.php">View source</a>)
 </p>
 
@@ -190,6 +190,15 @@
                     <tr>
                 <td>
                                                                                                                         EXIT_FAILURE_WITH_CLARITY
+                                    </td>
+                <td class="last">
+                    <p><em></em></p>
+                    <p></p>
+                </td>
+            </tr>
+                    <tr>
+                <td>
+                                                                                                                        BASE_OVERRIDE_CREATE
                                     </td>
                 <td class="last">
                     <p><em></em></p>
@@ -962,7 +971,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method___construct">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/field/FieldBaseOverrideCreateCommands.php#L27">at line 27</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/field/FieldBaseOverrideCreateCommands.php#L29">at line 29</a></div>
         <code>                    
     <strong>__construct</strong>(<abbr title="Drupal\Core\Entity\EntityTypeManagerInterface">EntityTypeManagerInterface</abbr> $entityTypeManager, <abbr title="Drupal\Core\Entity\EntityTypeBundleInfoInterface">EntityTypeBundleInfoInterface</abbr> $entityTypeBundleInfo, <abbr title="Drupal\Core\Entity\EntityFieldManagerInterface">EntityFieldManagerInterface</abbr> $entityFieldManager)
         </code>
@@ -1504,7 +1513,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_baseOverrideCreateField">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/field/FieldBaseOverrideCreateCommands.php#L40">at line 40</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/field/FieldBaseOverrideCreateCommands.php#L42">at line 42</a></div>
         <code>                    void
     <strong>baseOverrideCreateField</strong>(string|null $entityType = null, string|null $bundle = null, array $options = [&#039;field-name&#039; =&gt; InputOption::VALUE_REQUIRED, &#039;field-label&#039; =&gt; InputOption::VALUE_REQUIRED, &#039;field-description&#039; =&gt; InputOption::VALUE_REQUIRED, &#039;is-required&#039; =&gt; InputOption::VALUE_REQUIRED, &#039;show-machine-names&#039; =&gt; InputOption::VALUE_OPTIONAL])
         </code>
@@ -1573,7 +1582,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_complete">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/field/FieldBaseOverrideCreateCommands.php#L112">at line 112</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/field/FieldBaseOverrideCreateCommands.php#L114">at line 114</a></div>
         <code>                    void
     <strong>complete</strong>(<abbr title="Symfony\Component\Console\Completion\CompletionInput">CompletionInput</abbr> $input, <abbr title="Symfony\Component\Console\Completion\CompletionSuggestions">CompletionSuggestions</abbr> $suggestions)
         </code>
@@ -1621,7 +1630,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_askFieldName">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/field/FieldBaseOverrideCreateCommands.php#L136">at line 136</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/field/FieldBaseOverrideCreateCommands.php#L138">at line 138</a></div>
         <code>            protected        string|null
     <strong>askFieldName</strong>(string $entityType)
         </code>
@@ -1664,7 +1673,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_askFieldLabel">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/field/FieldBaseOverrideCreateCommands.php#L150">at line 150</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/field/FieldBaseOverrideCreateCommands.php#L152">at line 152</a></div>
         <code>            protected        string
     <strong>askFieldLabel</strong>(string $default)
         </code>
@@ -1707,7 +1716,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_askFieldDescription">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/field/FieldBaseOverrideCreateCommands.php#L155">at line 155</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/field/FieldBaseOverrideCreateCommands.php#L157">at line 157</a></div>
         <code>            protected        string|null
     <strong>askFieldDescription</strong>(string|null $default)
         </code>
@@ -1750,7 +1759,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_askRequired">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/field/FieldBaseOverrideCreateCommands.php#L160">at line 160</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/field/FieldBaseOverrideCreateCommands.php#L162">at line 162</a></div>
         <code>            protected        bool
     <strong>askRequired</strong>(bool $default)
         </code>
@@ -1793,7 +1802,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_createBaseFieldOverride">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/field/FieldBaseOverrideCreateCommands.php#L165">at line 165</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/field/FieldBaseOverrideCreateCommands.php#L167">at line 167</a></div>
         <code>            protected        <abbr title="Drupal\Core\Field\Entity\BaseFieldOverride">BaseFieldOverride</abbr>
     <strong>createBaseFieldOverride</strong>(string $entityType, string $bundle, string $fieldName, $fieldLabel, $fieldDescription, bool $isRequired)
         </code>
@@ -1861,7 +1870,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_logResult">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/field/FieldBaseOverrideCreateCommands.php#L180">at line 180</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/field/FieldBaseOverrideCreateCommands.php#L182">at line 182</a></div>
         <code>            protected        void
     <strong>logResult</strong>(<abbr title="Drupal\Core\Field\Entity\BaseFieldOverride">BaseFieldOverride</abbr> $baseFieldOverride)
         </code>
@@ -1904,7 +1913,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_getBaseFieldDefinition">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/field/FieldBaseOverrideCreateCommands.php#L192">at line 192</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/field/FieldBaseOverrideCreateCommands.php#L194">at line 194</a></div>
         <code>            protected        <abbr title="Drush\Commands\field\Drupal\Core\Field\BaseFieldDefinition">BaseFieldDefinition</abbr>|null
     <strong>getBaseFieldDefinition</strong>(string $entityType, string $fieldName)
         </code>
