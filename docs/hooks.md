@@ -7,7 +7,7 @@ All commandfiles may implement methods that are called by Drush at various times
 
 ## Custom Hooks
 
-Drush commands can define custom events that other command files can hook. You can find examples in [CacheCommands](https://github.com/drush-ops/drush/blob/12.x/src/Commands/core/CacheCommands.php) and [SanitizeCommands](https://github.com/drush-ops/drush/blob/12.x/src/Drupal/Commands/sql/SanitizeCommands.php)
+Drush commands can define custom events that other command files can hook. You can find examples in [CacheCommands](https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/CacheCommands.php) and [SanitizeCommands](https://github.com/drush-ops/drush/blob/13.x/src/Commands/sql/sanitize/SanitizeCommands.php)
 
 First, the command must implement CustomEventAwareInterface and use CustomEventAwareTrait, as described in the [dependency injection](dependency-injection.md#inflection) documentation.
 

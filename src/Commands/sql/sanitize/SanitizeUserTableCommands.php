@@ -16,7 +16,7 @@ use Drush\Utils\StringUtils;
 use Symfony\Component\Console\Input\InputInterface;
 
 /**
- * A sql-sanitize plugin.
+ * A sql:sanitize plugin.
  */
 final class SanitizeUserTableCommands extends DrushCommands implements SanitizePluginInterface
 {

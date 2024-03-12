@@ -14,7 +14,7 @@ use Drush\Commands\DrushCommands;
 use Symfony\Component\Console\Input\InputInterface;
 
 /**
- * This class is a good example of how to build a sql-sanitize plugin.
+ * This class is a good example of how to build a sql:sanitize plugin.
  */
 final class SanitizeUserFieldsCommands extends DrushCommands implements SanitizePluginInterface
 {
