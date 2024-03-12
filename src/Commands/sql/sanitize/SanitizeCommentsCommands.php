@@ -9,10 +9,8 @@ use Consolidation\AnnotatedCommand\Hooks\HookManager;
 use Drupal\Core\Database\Connection;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drush\Attributes as CLI;
-use Drush\Boot\DrupalBootLevels;
 use Drush\Commands\AutowireTrait;
 use Drush\Commands\DrushCommands;
-use Drush\Drush;
 use Symfony\Component\Console\Input\InputInterface;
 
 /**
@@ -32,7 +30,7 @@ final class SanitizeCommentsCommands extends DrushCommands implements SanitizePl
     /**
      * Sanitize comment names from the DB.
      */
-    #[CLI\Hook(type: HookManager::POST_COMMAND_HOOK, target: 'sql-sanitize')]
+    #[CLI\Hook(type: HookManager::POST_COMMAND_HOOK, target: SanitizeCommands::SANITIZE)]
     public function sanitize($result, CommandData $commandData): void
     {
         if ($this->applies()) {
@@ -67,7 +65,6 @@ final class SanitizeCommentsCommands extends DrushCommands implements SanitizePl
 
     protected function applies()
     {
-        Drush::bootstrapManager()->doBootstrap(DrupalBootLevels::FULL);
         return $this->moduleHandler->moduleExists('comment');
     }
 }

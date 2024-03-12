@@ -7,10 +7,12 @@ namespace Drush\Commands\sql\sanitize;
 use Consolidation\AnnotatedCommand\Events\CustomEventAwareInterface;
 use Consolidation\AnnotatedCommand\Events\CustomEventAwareTrait;
 use Drush\Attributes as CLI;
+use Drush\Boot\DrupalBootLevels;
 use Drush\Commands\core\DocsCommands;
 use Drush\Commands\DrushCommands;
 use Drush\Exceptions\UserAbortException;
 
+#[CLI\Bootstrap(level: DrupalBootLevels::FULL)]
 final class SanitizeCommands extends DrushCommands implements CustomEventAwareInterface
 {
     use CustomEventAwareTrait;
@@ -36,7 +38,7 @@ final class SanitizeCommands extends DrushCommands implements CustomEventAwareIn
     {
      /**
      * In order to present only one prompt, collect all confirmations from
-     * commandfiles up front. sql-sanitize plugins are commandfiles that implement
+     * commandfiles up front. sql:sanitize plugins are commandfiles that implement
      * \Drush\Commands\sql\SanitizePluginInterface
      */
         $messages = [];
@@ -54,6 +56,6 @@ final class SanitizeCommands extends DrushCommands implements CustomEventAwareIn
         }
 
         // All sanitize operations defined in post-command hooks, including Drush
-        // core sanitize routines. See \Drush\Commands\sql\SanitizePluginInterface.
+        // core sanitize routines. See \Drush\Commands\sql\sanitize\SanitizePluginInterface.
     }
 }
