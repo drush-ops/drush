@@ -21,7 +21,7 @@ use Symfony\Component\Console\Input\InputInterface;
 final class SanitizeUserTableCommands extends DrushCommands implements SanitizePluginInterface
 {
     use AutowireTrait;
-    
+
     public function __construct(
         protected \Drupal\Core\Database\Connection $database,
         protected PasswordInterface $passwordHasher,
@@ -32,7 +32,7 @@ final class SanitizeUserTableCommands extends DrushCommands implements SanitizeP
 
     /**
      * Sanitize emails and passwords. This also an example of how to write a
-     * database sanitizer for sql-sync.
+     * database sanitizer for sql:sync.
      */
     #[CLI\Hook(type: HookManager::POST_COMMAND_HOOK, target: SanitizeCommands::SANITIZE)]
     public function sanitize($result, CommandData $commandData): void
