@@ -19,11 +19,13 @@ use function count;
 use function dt;
 use function field_purge_batch;
 
-class FieldDeleteCommands extends DrushCommands
+final class FieldDeleteCommands extends DrushCommands
 {
     use AutowireTrait;
     use EntityTypeBundleAskTrait;
     use EntityTypeBundleValidationTrait;
+
+    const DELETE = 'field:delete';
 
     public function __construct(
         protected EntityTypeManagerInterface $entityTypeManager,
@@ -36,7 +38,7 @@ class FieldDeleteCommands extends DrushCommands
      *
      * @see \Drupal\field_ui\Form\FieldConfigDeleteForm
      */
-    #[CLI\Command(name: 'field:delete', aliases: ['field-delete', 'fd'])]
+    #[CLI\Command(name: self::DELETE, aliases: ['field-delete', 'fd'])]
     #[CLI\Argument(name: 'entityType', description: 'The machine name of the entity type.')]
     #[CLI\Argument(name: 'bundle', description: 'The machine name of the bundle.')]
     #[CLI\Option(name: 'field-name', description: 'The machine name of the field.')]

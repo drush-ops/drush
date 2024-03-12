@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Unish;
 
+use Drush\Commands\core\ArchiveDumpCommands;
+use Drush\Commands\core\ArchiveRestoreCommands;
+use Drush\Commands\core\StatusCommands;
 use PharData;
 use Symfony\Component\Filesystem\Path;
 use Symfony\Component\Process\Process;
@@ -40,7 +43,7 @@ class ArchiveTest extends CommandUnishTestCase
 
         $this->archivePath = Path::join($this->getSandbox(), 'archive.tar.gz');
         $this->drush(
-            'archive:dump',
+            ArchiveDumpCommands::DUMP,
             [],
             array_merge($this->archiveDumpOptions, [
                 'destination' => $this->archivePath,
@@ -59,7 +62,7 @@ class ArchiveTest extends CommandUnishTestCase
         $archive->extractTo($this->extractPath);
 
         $this->drush(
-            'status',
+            StatusCommands::STATUS,
             [],
             ['format' => 'json']
         );
@@ -85,7 +88,7 @@ class ArchiveTest extends CommandUnishTestCase
 
         // Try to overwrite the existing archive with "--destination".
         $this->drush(
-            'archive:dump',
+            ArchiveDumpCommands::DUMP,
             [],
             array_merge($this->archiveDumpOptions, [
                 'destination' => $this->archivePath,
@@ -98,7 +101,7 @@ class ArchiveTest extends CommandUnishTestCase
 
         // Overwrite the existing archive with "--destination" and "--override".
         $this->drush(
-            'archive:dump',
+            ArchiveDumpCommands::DUMP,
             [],
             array_merge($this->archiveDumpOptions, [
                 'destination' => $this->archivePath,
@@ -110,7 +113,7 @@ class ArchiveTest extends CommandUnishTestCase
 
         // Validate database credentials are present in settings.php file.
         $this->drush(
-            'archive:dump',
+            ArchiveDumpCommands::DUMP,
             [],
             [],
             null,
@@ -143,7 +146,7 @@ class ArchiveTest extends CommandUnishTestCase
         $testFileName = 'test-file-' . mt_rand() . '.txt';
         file_put_contents(Path::join($this->extractPath, 'code', 'sut', $testFileName), 'foo_bar');
         $this->drush(
-            'archive:restore',
+            ArchiveRestoreCommands::RESTORE,
             [],
             array_merge($this->archiveRestoreOptions, [
                 'code' => null,
@@ -159,7 +162,7 @@ class ArchiveTest extends CommandUnishTestCase
 
         // Restore archive from an existing file and an existing destination path.
         $this->drush(
-            'archive:restore',
+            ArchiveRestoreCommands::RESTORE,
             [$this->archivePath],
             array_diff_key($this->archiveRestoreOptions, ['overwrite' => null]),
             null,
@@ -173,7 +176,7 @@ class ArchiveTest extends CommandUnishTestCase
 
         // Restore archive from an existing file.
         $this->drush(
-            'archive:restore',
+            ArchiveRestoreCommands::RESTORE,
             [$this->archivePath],
             $this->archiveRestoreOptions
         );
@@ -185,7 +188,7 @@ class ArchiveTest extends CommandUnishTestCase
         file_put_contents(Path::join($this->extractPath, 'files', $testFileName), 'foo_bar');
         $filesRelativePath = Path::join('sut', 'sites', 'default', 'files');
         $this->drush(
-            'archive:restore',
+            ArchiveRestoreCommands::RESTORE,
             [],
             array_merge($this->archiveRestoreOptions, [
                 'files' => null,
@@ -200,7 +203,7 @@ class ArchiveTest extends CommandUnishTestCase
 
         // Restore the database from a source path.
         $this->drush(
-            'archive:restore',
+            ArchiveRestoreCommands::RESTORE,
             [],
             array_merge($this->archiveRestoreOptions, [
                 'db' => null,
@@ -213,7 +216,7 @@ class ArchiveTest extends CommandUnishTestCase
 
         // Restore database with invalid --db-url.
         $this->drush(
-            'archive:restore',
+            ArchiveRestoreCommands::RESTORE,
             [],
             array_merge($this->archiveRestoreOptions, [
                 'db' => null,
@@ -234,7 +237,7 @@ class ArchiveTest extends CommandUnishTestCase
 
         // Restore database with --db-url option with an invalid host.
         $this->drush(
-            'archive:restore',
+            ArchiveRestoreCommands::RESTORE,
             [],
             array_merge($this->archiveRestoreOptions, [
                 'db' => null,
@@ -262,7 +265,7 @@ class ArchiveTest extends CommandUnishTestCase
 
         // Restore database with a set of database connection options.
         $this->drush(
-            'archive:restore',
+            ArchiveRestoreCommands::RESTORE,
             [],
             array_merge(
                 array_diff_key($this->archiveRestoreOptions, ['db-url' => null]),
@@ -283,7 +286,7 @@ class ArchiveTest extends CommandUnishTestCase
 
         // Restore database with a set of database connection options with an invalid host.
         $this->drush(
-            'archive:restore',
+            ArchiveRestoreCommands::RESTORE,
             [],
             array_merge(
                 array_diff_key($this->archiveRestoreOptions, ['db-url' => null]),
@@ -312,7 +315,7 @@ class ArchiveTest extends CommandUnishTestCase
         // Restore archive from a non-existing file.
         $nonExistingArchivePath = Path::join($this->getSandbox(), 'arch.tar.gz');
         $this->drush(
-            'archive:restore',
+            ArchiveRestoreCommands::RESTORE,
             [$nonExistingArchivePath],
             $this->archiveRestoreOptions,
             null,
@@ -329,7 +332,7 @@ class ArchiveTest extends CommandUnishTestCase
 
         // Restore database without database connection settings.
         $this->drush(
-            'archive:restore',
+            ArchiveRestoreCommands::RESTORE,
             [],
             array_merge(
                 array_diff_key($this->archiveRestoreOptions, ['db-url' => null]),
@@ -374,7 +377,7 @@ class ArchiveTest extends CommandUnishTestCase
         $this->assertTrue(is_file(Path::join($this->restorePath, 'sut', 'sites', 'dev', 'settings.local.php')));
 
         $this->drush(
-            'status',
+            StatusCommands::STATUS,
             [],
             ['format' => 'json'],
             null,

@@ -18,11 +18,13 @@ use Symfony\Component\Console\Input\InputOption;
 
 use function dt;
 
-class FieldBaseOverrideCreateCommands extends DrushCommands
+final class FieldBaseOverrideCreateCommands extends DrushCommands
 {
     use AutowireTrait;
     use EntityTypeBundleAskTrait;
     use EntityTypeBundleValidationTrait;
+
+    const BASE_OVERRIDE_CREATE = 'field:base-override-create';
 
     public function __construct(
         protected EntityTypeManagerInterface $entityTypeManager,
@@ -37,7 +39,7 @@ class FieldBaseOverrideCreateCommands extends DrushCommands
      * @see \Drupal\field_ui\Form\FieldConfigEditForm
      * @see \Drupal\field_ui\Form\FieldStorageConfigEditForm
      */
-    #[CLI\Command(name: 'field:base-override-create', aliases: ['bfoc'])]
+    #[CLI\Command(name: self::BASE_OVERRIDE_CREATE, aliases: ['bfoc'])]
     #[CLI\Argument(name: 'entityType', description: 'The machine name of the entity type.')]
     #[CLI\Argument(name: 'bundle', description: 'The machine name of the bundle.')]
     #[CLI\Option(name: 'field-name', description: 'A unique machine-readable name containing letters, numbers, and underscores.')]
