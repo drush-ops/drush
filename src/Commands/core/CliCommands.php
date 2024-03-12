@@ -53,7 +53,7 @@ final class CliCommands extends DrushCommands
     /**
      * Open an interactive shell on a Drupal site.
      */
-    #[CLI\Command(name: self::PHP, aliases: ['php,core:cli', 'core-cli'])]
+    #[CLI\Command(name: self::PHP, aliases: ['php', 'core:cli', 'core-cli'])]
     #[CLI\Option(name: 'version-history', description: 'Use command history based on Drupal version. Default is per site.')]
     #[CLI\Option(name: 'cwd', description: 'A directory to change to before launching the shell. Default is the project root directory')]
     #[CLI\Topics(topics: [self::DOCS_REPL])]
