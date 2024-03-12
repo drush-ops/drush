@@ -2,33 +2,37 @@
 
 declare(strict_types=1);
 
-namespace Drush\Drupal\Commands\sql;
+namespace Drush\Commands\sql\sanitize;
 
 use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\AnnotatedCommand\Hooks\HookManager;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Password\PasswordInterface;
 use Drush\Attributes as CLI;
+use Drush\Commands\AutowireTrait;
 use Drush\Commands\DrushCommands;
 use Drush\Sql\SqlBase;
 use Drush\Utils\StringUtils;
 use Symfony\Component\Console\Input\InputInterface;
 
 /**
- * A sql-sanitize plugin.
+ * A sql:sanitize plugin.
  */
 final class SanitizeUserTableCommands extends DrushCommands implements SanitizePluginInterface
 {
+    use AutowireTrait;
+
     public function __construct(
         protected \Drupal\Core\Database\Connection $database,
         protected PasswordInterface $passwordHasher,
         protected EntityTypeManagerInterface $entityTypeManager
     ) {
+        parent::__construct();
     }
 
     /**
      * Sanitize emails and passwords. This also an example of how to write a
-     * database sanitizer for sql-sync.
+     * database sanitizer for sql:sync.
      */
     #[CLI\Hook(type: HookManager::POST_COMMAND_HOOK, target: SanitizeCommands::SANITIZE)]
     public function sanitize($result, CommandData $commandData): void

@@ -4,12 +4,9 @@ declare(strict_types=1);
 
 namespace Drush\Runtime;
 
-use Drush\Log\Logger;
-use Drush\Drush;
-use Symfony\Component\Console\Application;
-use League\Container\Container as DrushContainer;
-use Drush\Config\DrushConfig;
 use Composer\Semver\Semver;
+use Drush\Config\DrushConfig;
+use Drush\Drush;
 
 /**
  * Find drush.services.yml files.
@@ -46,8 +43,6 @@ class LegacyServiceFinder
      */
     protected function discoverDrushServiceProviders()
     {
-        $this->addDrushServiceProvider("_drush__sql", $this->drushConfig->get('drush.base-dir') . '/src/Drupal/Commands/sql/drush.services.yml');
-
         // Add Drush services from all modules
         $module_filenames = $this->getModuleFileNames();
         // Load each module's serviceProvider class.

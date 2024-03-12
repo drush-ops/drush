@@ -2,22 +2,26 @@
 
 declare(strict_types=1);
 
-namespace Drush\Drupal\Commands\sql;
+namespace Drush\Commands\sql\sanitize;
 
 use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\AnnotatedCommand\Hooks\HookManager;
-use Drush\Attributes as CLI;
-use Drush\Commands\DrushCommands;
 use Drupal\Core\Database\Connection;
+use Drush\Attributes as CLI;
+use Drush\Commands\AutowireTrait;
+use Drush\Commands\DrushCommands;
 use Symfony\Component\Console\Input\InputInterface;
 
 /**
- * This class is a good example of how to build a sql-sanitize plugin.
+ * This class is a good example of how to build a sql:sanitize plugin.
  */
 final class SanitizeSessionsCommands extends DrushCommands implements SanitizePluginInterface
 {
+    use AutowireTrait;
+
     public function __construct(protected Connection $database)
     {
+        parent::__construct();
     }
 
     /**
