@@ -370,19 +370,19 @@ class ServiceManager
     }
 
     /*
-     * Does the provided class have a Bootstrap Attribute, indicating early loading.
+     * Get any value for the #[Bootstrap] Attribute on the class.
      */
-    protected function hasBootStrapAttributeNone(string $class): bool
+    protected function bootStrapAttributeValue(string $class): ?int
     {
         try {
             $reflection = new \ReflectionClass($class);
             if ($attributes = $reflection->getAttributes(Bootstrap::class)) {
                 $bootstrap = $attributes[0]->newInstance();
-                return $bootstrap->level === DrupalBootLevels::NONE;
+                return $bootstrap->level;
             }
         } catch (\ReflectionException $e) {
         }
-        return false;
+        return null;
     }
 
     /**
@@ -390,7 +390,12 @@ class ServiceManager
      */
     protected function requiresBootstrap(string $class): bool
     {
-        return $this->hasStaticCreateFactory($class) && !$this->hasBootStrapAttributeNone($class);
+        if ($this->bootStrapAttributeValue($class) === DrupalBootLevels::FULL) {
+            return true;
+        } elseif ($this->bootStrapAttributeValue($class) === DrupalBootLevels::NONE) {
+            return false;
+        }
+        return $this->hasStaticCreateFactory($class);
     }
 
     /**
