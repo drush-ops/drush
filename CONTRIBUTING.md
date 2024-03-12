@@ -5,9 +5,9 @@ Drush is built by people like you! Please [join us](https://github.com/drush-ops
 
 ## Git and Pull requests
 * Contributions are submitted, reviewed, and accepted using GitHub pull requests.
-* The latest changes are in the `12.x` branch. PR's should initially target this branch.
+* The latest changes are in the `13.x` branch. PR's should initially target this branch.
 * See the test-specific [README.md](https://github.com/drush-ops/drush/blob/12.x/docs/contribute/unish.md) for instructions on running the test suite. Test before you push. Get familiar with Unish, our test suite. Optionally run tests in the provided Docker containers.
-* We maintain branches named 12.x, 11.x, etc. These are release branches. From these branches, we make new tags for patch and minor versions.
+* We maintain branches named 13.x, 12.x, etc. These are release branches. From these branches, we make new tags for patch and minor versions.
 
 ## Development Environment
 * You may choose to use the [DDEV](https://ddev.readthedocs.io/) for a [standardized development environment](/.ddev/config.yaml).
