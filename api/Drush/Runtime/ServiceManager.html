@@ -281,10 +281,10 @@ instantiate it via 'new $class'</p></p>                </div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    bool
+                    int|null
                 </div>
                 <div class="col-md-8">
-                    <a href="#method_hasBootStrapAttributeNone">hasBootStrapAttributeNone</a>(string $class)
+                    <a href="#method_bootStrapAttributeValue">bootStrapAttributeValue</a>(string $class)
         
                                             <p><p>Does the provided class have a Bootstrap Attribute, indicating early loading.</p></p>                </div>
                 <div class="col-md-2"></div>
@@ -934,10 +934,10 @@ instantiate it via 'new $class'</p></p>
 
             </div>
                     <div class="method-item">
-                    <h3 id="method_hasBootStrapAttributeNone">
+                    <h3 id="method_bootStrapAttributeValue">
         <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Runtime/ServiceManager.php#L371">at line 371</a></div>
-        <code>            protected        bool
-    <strong>hasBootStrapAttributeNone</strong>(string $class)
+        <code>            protected        int|null
+    <strong>bootStrapAttributeValue</strong>(string $class)
         </code>
     </h3>
     <div class="details">    
@@ -963,7 +963,7 @@ instantiate it via 'new $class'</p></p>
 
                     <table class="table table-condensed">
         <tr>
-            <td>bool</td>
+            <td>int|null</td>
             <td></td>
         </tr>
     </table>
@@ -1019,7 +1019,7 @@ instantiate it via 'new $class'</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_hasStaticMethod">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Runtime/ServiceManager.php#L395">at line 395</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Runtime/ServiceManager.php#L400">at line 400</a></div>
         <code>            protected        bool
     <strong>hasStaticMethod</strong>(string $class, string $methodName)
         </code>
@@ -1066,7 +1066,7 @@ instantiate it via 'new $class'</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_hasStaticCreateEarlyFactory">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Runtime/ServiceManager.php#L413">at line 413</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Runtime/ServiceManager.php#L418">at line 418</a></div>
         <code>            protected        bool
     <strong>hasStaticCreateEarlyFactory</strong>(string $class)
         </code>
@@ -1108,7 +1108,7 @@ instantiate it via 'new $class'</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_discoverModuleGenerators">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Runtime/ServiceManager.php#L424">at line 424</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Runtime/ServiceManager.php#L429">at line 429</a></div>
         <code>                    array
     <strong>discoverModuleGenerators</strong>(array $directoryList, string $baseNamespace)
         </code>
@@ -1155,7 +1155,7 @@ instantiate it via 'new $class'</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_inflect">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Runtime/ServiceManager.php#L444">at line 444</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Runtime/ServiceManager.php#L449">at line 449</a></div>
         <code>                    void
     <strong>inflect</strong>(<abbr title="Psr\Container\ContainerInterface">ContainerInterface</abbr> $container, mixed $object)
         </code>
