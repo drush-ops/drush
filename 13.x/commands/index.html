@@ -5263,7 +5263,7 @@
                   
 
   
-    <a href="https://github.com/drush-ops/drush/blob/12.x/docs/commands.md" title="Edit this page" class="md-content__button md-icon">
+    <a href="https://github.com/drush-ops/drush/blob/13.x/docs/commands.md" title="Edit this page" class="md-content__button md-icon">
       
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4v-2m10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1 2.1 2.1Z"/></svg>
     </a>
@@ -5272,7 +5272,7 @@
     
       
     
-    <a href="https://github.com/drush-ops/drush/raw/12.x/docs/commands.md" title="View source of this page" class="md-content__button md-icon">
+    <a href="https://github.com/drush-ops/drush/raw/13.x/docs/commands.md" title="View source of this page" class="md-content__button md-icon">
       
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 18c.56 0 1 .44 1 1s-.44 1-1 1-1-.44-1-1 .44-1 1-1m0-3c-2.73 0-5.06 1.66-6 4 .94 2.34 3.27 4 6 4s5.06-1.66 6-4c-.94-2.34-3.27-4-6-4m0 6.5a2.5 2.5 0 0 1-2.5-2.5 2.5 2.5 0 0 1 2.5-2.5 2.5 2.5 0 0 1 2.5 2.5 2.5 2.5 0 0 1-2.5 2.5M9.27 20H6V4h7v5h5v4.07c.7.08 1.36.25 2 .49V8l-6-6H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h4.5a8.15 8.15 0 0 1-1.23-2Z"/></svg>
     </a>
@@ -5292,9 +5292,9 @@
 <li>Run <code>drush generate drush:command-file</code>.</li>
 <li>Drush will prompt for the machine name of the module that should <em>own</em> the file. The module selected must already exist and be enabled. Use <code>drush generate module</code> to create a new module.</li>
 <li>Drush will then report that it created a commandfile. Edit as needed.</li>
-<li>Use the classes for the core Drush commands at <a href="https://github.com/drush-ops/drush/tree/12.x/src/Commands">/src/Commands</a> as inspiration and documentation.</li>
+<li>Use the classes for the core Drush commands at <a href="https://github.com/drush-ops/drush/tree/13.x/src/Commands">/src/Commands</a> as inspiration and documentation.</li>
 <li>You may <a href="../dependency-injection/">inject dependencies</a> into a command instance.</li>
-<li>Write PHPUnit tests based on <a href="https://github.com/drush-ops/drush/blob/12.x/docs/contribute/unish.md#drush-test-traits">Drush Test Traits</a>.</li>
+<li>Write PHPUnit tests based on <a href="https://github.com/drush-ops/drush/blob/13.x/docs/contribute/unish.md#drush-test-traits">Drush Test Traits</a>.</li>
 </ol>
 <h2 id="attributes-or-annotations">Attributes or Annotations<a class="headerlink" href="#attributes-or-annotations" title="Permanent link">&para;</a></h2>
 <p>The following are both valid ways to declare a command:</p>
@@ -5350,9 +5350,9 @@
 <li>Implement the alteration logic in the <code>alterCommandInfo()</code> method.</li>
 <li>Along with the alter code, it's strongly recommended to log a debug message explaining what exactly was altered. This makes things easier on others who may need to debug the interaction of the alter code with other modules. Also it's a good practice to inject the the logger in the class constructor.</li>
 </ol>
-<p>For an example, see <a href="https://github.com/drush-ops/drush/blob/12.x/sut/modules/unish/woot/src/Drush/CommandInfoAlterers/WootCommandInfoAlterer.php">WootCommandInfoAlterer</a> provided by the testing 'woot' module.</p>
+<p>For an example, see <a href="https://github.com/drush-ops/drush/blob/13.x/sut/modules/unish/woot/src/Drush/CommandInfoAlterers/WootCommandInfoAlterer.php">WootCommandInfoAlterer</a> provided by the testing 'woot' module.</p>
 <h2 id="symfony-console-commands">Symfony Console Commands<a class="headerlink" href="#symfony-console-commands" title="Permanent link">&para;</a></h2>
-<p>Drush lists and runs Symfony Console commands, in addition to more typical annotated commands. See <a href="https://github.com/drush-ops/drush/blob/eed106ae4510d5a2df89f8e7fd54b41ffb0aa5fa/tests/integration/AnnotatedCommandCase.php#L178-L180">this test</a> and this <a href="https://github.com/drush-ops/drush/blob/12.x/sut/modules/unish/woot/src/Commands/GreetCommand.php">commandfile</a>.</p>
+<p>Drush lists and runs Symfony Console commands, in addition to more typical annotated commands. See <a href="https://github.com/drush-ops/drush/blob/eed106ae4510d5a2df89f8e7fd54b41ffb0aa5fa/tests/integration/AnnotatedCommandCase.php#L178-L180">this test</a> and this <a href="https://github.com/drush-ops/drush/blob/13.x/sut/modules/unish/woot/src/Commands/GreetCommand.php">commandfile</a>.</p>
 <h2 id="auto-discovered-commands-psr4">Auto-discovered commands (PSR4)<a class="headerlink" href="#auto-discovered-commands-psr4" title="Permanent link">&para;</a></h2>
 <p>Such commands are auto-discovered by their class PSR4 namespace and class/file name suffix. Drush will auto-discover commands if:</p>
 <ul>
@@ -5375,10 +5375,10 @@
 Using <code>require</code> in place of <code>conflict</code> is not recommended.</p>
 <div class="admonition warning">
 <p class="admonition-title">Symlinked packages</p>
-<p>While it is good practice to make your custom commands into a Composer package, please beware that symlinked packages (by using the composer repository type <a href="https://getcomposer.org/doc/05-repositories.md#path">Path</a>) will <strong>not</strong> be discovered by Drush. When in development, it is recommended to <a href="https://github.com/drush-ops/drush/blob/12.x/examples/example.drush.yml#L52-L67">specify your package's</a> path in your <code>drush.yml</code> to have quick access to your commands.</p>
+<p>While it is good practice to make your custom commands into a Composer package, please beware that symlinked packages (by using the composer repository type <a href="https://getcomposer.org/doc/05-repositories.md#path">Path</a>) will <strong>not</strong> be discovered by Drush. When in development, it is recommended to <a href="https://github.com/drush-ops/drush/blob/13.x/examples/example.drush.yml#L52-L67">specify your package's</a> path in your <code>drush.yml</code> to have quick access to your commands.</p>
 </div>
 <h2 id="site-wide-commands">Site-wide Commands<a class="headerlink" href="#site-wide-commands" title="Permanent link">&para;</a></h2>
-<p>Commandfiles that are installed in a Drupal site and are not bundled inside a Drupal module are called <em>site-wide</em> commandfiles. Site-wide commands may either be added directly to the Drupal site's repository (e.g. for site-specific policy files), or via <code>composer require</code>. See the <a href="https://github.com/drush-ops/drush/tree/12.x/examples/Commands">examples/Commands</a> folder for examples. In general, it's preferable to use modules to carry your Drush commands.</p>
+<p>Commandfiles that are installed in a Drupal site and are not bundled inside a Drupal module are called <em>site-wide</em> commandfiles. Site-wide commands may either be added directly to the Drupal site's repository (e.g. for site-specific policy files), or via <code>composer require</code>. See the <a href="https://github.com/drush-ops/drush/tree/13.x/examples/Commands">examples/Commands</a> folder for examples. In general, it's preferable to use modules to carry your Drush commands.</p>
 <p>Here are some examples of valid commandfile names and namespaces:</p>
 <ol>
 <li>Simple<ul>
@@ -5434,7 +5434,7 @@ With this configuration in place, global commands may be placed as described in 
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">March 9, 2024</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">March 12, 2024</span>
       
     
   </small>
@@ -5449,7 +5449,7 @@ With this configuration in place, global commands may be placed as described in 
     
         <div class="md-source-date">
             <small>
-                Authors: <span class='git-page-authors git-authors'><a href='mailto:adam@adamzimmermann.com'>Adam Zimmermann</a>, <a href='mailto:clau.cristea@gmail.com'>Claudiu Cristea</a>, <a href='mailto:greg.1.anderson@greenknowe.org'>Greg Anderson</a>, <a href='mailto:gabor@hojtsy.hu'>Gábor Hojtsy</a>, <a href='mailto:neclimdul@gmail.com'>James Gilliland</a>, <a href='mailto:weitzman@tejasa.com'>Moshe Weitzman</a>, <a href='mailto:1451472+ptmkenny@users.noreply.github.com'>ptmkenny</a></span>
+                Authors: <span class='git-page-authors git-authors'><a href='mailto:clau.cristea@gmail.com'>Claudiu Cristea</a>, <a href='mailto:greg.1.anderson@greenknowe.org'>Greg Anderson</a>, <a href='mailto:gabor@hojtsy.hu'>Gábor Hojtsy</a>, <a href='mailto:neclimdul@gmail.com'>James Gilliland</a>, <a href='mailto:weitzman@tejasa.com'>Moshe Weitzman</a>, <a href='mailto:1451472+ptmkenny@users.noreply.github.com'>ptmkenny</a></span>
             </small>
         </div>
     

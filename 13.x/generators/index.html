@@ -5242,7 +5242,7 @@
                   
 
   
-    <a href="https://github.com/drush-ops/drush/blob/12.x/docs/generators.md" title="Edit this page" class="md-content__button md-icon">
+    <a href="https://github.com/drush-ops/drush/blob/13.x/docs/generators.md" title="Edit this page" class="md-content__button md-icon">
       
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4v-2m10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1 2.1 2.1Z"/></svg>
     </a>
@@ -5251,7 +5251,7 @@
     
       
     
-    <a href="https://github.com/drush-ops/drush/raw/12.x/docs/generators.md" title="View source of this page" class="md-content__button md-icon">
+    <a href="https://github.com/drush-ops/drush/raw/13.x/docs/generators.md" title="View source of this page" class="md-content__button md-icon">
       
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 18c.56 0 1 .44 1 1s-.44 1-1 1-1-.44-1-1 .44-1 1-1m0-3c-2.73 0-5.06 1.66-6 4 .94 2.34 3.27 4 6 4s5.06-1.66 6-4c-.94-2.34-3.27-4-6-4m0 6.5a2.5 2.5 0 0 1-2.5-2.5 2.5 2.5 0 0 1 2.5-2.5 2.5 2.5 0 0 1 2.5 2.5 2.5 2.5 0 0 1-2.5 2.5M9.27 20H6V4h7v5h5v4.07c.7.08 1.36.25 2 .49V8l-6-6H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h4.5a8.15 8.15 0 0 1-1.23-2Z"/></svg>
     </a>
@@ -5272,11 +5272,11 @@
 <li>Run <code>drush generate drush:generator</code>.</li>
 <li>Drush will prompt for the machine name of the module that should <em>own</em> the files. The module selected must already exist and be enabled. Use <code>drush generate module</code> to create a new module.</li>
 <li>Drush will then report that it created a generator (PHP class and twig file). Edit as needed.</li>
-<li>Similar to <a href="https://github.com/drush-ops/drush/tree/12.x/sut/modules/unish/woot/src/Drush/Generators">ExampleGenerator</a>, implement your custom logic in the generate() method.</li>
+<li>Similar to <a href="https://github.com/drush-ops/drush/tree/13.x/sut/modules/unish/woot/src/Drush/Generators">ExampleGenerator</a>, implement your custom logic in the generate() method.</li>
 <li>You may <a href="../dependency-injection/">inject dependencies</a> from Drupal or Drush.</li>
 </ol>
 <h2 id="auto-discovered-generators-psr4">Auto-discovered Generators (PSR4)<a class="headerlink" href="#auto-discovered-generators-psr4" title="Permanent link">&para;</a></h2>
-<p>Generators that don't ship inside Drupal modules are called <em>global</em> generators. For example see <a href="https://github.com/drush-ops/drush/blob/12.x/tests/fixtures/lib/Drush/Generators/CustomGenerator.php">CustomDrushGenerator</a>. In general, it is better to use modules to carry your generators. If you still prefer using a global generator, please note:</p>
+<p>Generators that don't ship inside Drupal modules are called <em>global</em> generators. For example see <a href="https://github.com/drush-ops/drush/blob/13.x/tests/fixtures/lib/Drush/Generators/CustomGenerator.php">CustomDrushGenerator</a>. In general, it is better to use modules to carry your generators. If you still prefer using a global generator, please note:</p>
 <ol>
 <li>The generator class should be PSR4 auto-loadable.</li>
 <li>The generator class namespace, relative to base namespace, should be <code>Drush\Generators</code>. For instance, if a Drush generator provider third party library maps this PSR4 autoload entry:
@@ -5299,7 +5299,7 @@
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">March 9, 2024</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">March 12, 2024</span>
       
     
   </small>
