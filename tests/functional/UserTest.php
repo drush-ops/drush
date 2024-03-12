@@ -118,7 +118,7 @@ class UserTest extends CommandUnishTestCase
     {
         $newpass = 'newpass';
         $name = self::NAME;
-        $this->drush('user:password', [self::NAME, $newpass]);
+        $this->drush(UserCommands::PASSWORD, [self::NAME, $newpass]);
         $eval = "return Drupal::service(\"user.auth\")->authenticate(\"$name\", \"$newpass\");";
         $this->drush(PhpCommands::EVAL, [$eval]);
         $output = $this->getOutput();
