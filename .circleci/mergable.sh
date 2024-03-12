@@ -1,6 +1,6 @@
 set -e
 
-# No need to check for mergability on commits that are already merged.
+# No need to check for mergeability on commits that are already merged.
 if [ "$CIRCLE_BRANCH" == "11.x" ] || [ "$CIRCLE_BRANCH" == "12.x" ] ; then
 	exit 0
 fi
