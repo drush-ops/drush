@@ -9,7 +9,7 @@ use Consolidation\AnnotatedCommand\Parser\CommandInfo;
 
 /**
  * Mark commands as obsolete. These commands are omitted from help list and when
- * user tries to run one, the command's description is shown. Example usage at https://github.com/drush-ops/drush/blob/12.x/src/Commands/LegacyCommands.php
+ * user tries to run one, the command's description is shown. Example usage at https://github.com/drush-ops/drush/blob/13.x/src/Commands/LegacyCommands.php
  */
 #[Attribute(Attribute::TARGET_METHOD)]
 class Obsolete extends NoArgumentsBase

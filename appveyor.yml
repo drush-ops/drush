@@ -4,7 +4,7 @@ platform: 'x86'
 clone_folder: C:\projects\work
 branches:
   only:
-    - 12.x
+    - 13.x
 
   ## Cache composer bits
 cache:

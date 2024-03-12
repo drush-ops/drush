@@ -26,7 +26,7 @@ final class MkCommands extends DrushCommands
     /**
      * Build a Markdown document for each Drush command/generator that is available on a site.
      *
-     * This command is an early step when building the www.drush.org static site. Adapt it to build a similar site listing the commands that are available on your site. Also see Drush's [Github Actions workflow](https://github.com/drush-ops/drush/blob/12.x/.github/workflows/main.yml).
+     * This command is an early step when building the www.drush.org static site. Adapt it to build a similar site listing the commands that are available on your site. Also see Drush's [Github Actions workflow](https://github.com/drush-ops/drush/blob/13.x/.github/workflows/main.yml).
      */
     #[CLI\Command(name: 'mk:docs')]
     #[CLI\Bootstrap(level: DrupalBootLevels::FULL)]
@@ -125,7 +125,7 @@ EOT;
                             $value = "- [$topic_description]($target_relative) ($name)";
                         } else {
                             $rel_from_root = Path::makeRelative($abs, $base);
-                            $value = "- [$topic_description](https://raw.githubusercontent.com/drush-ops/drush/12.x/$rel_from_root) ($name)";
+                            $value = "- [$topic_description](https://raw.githubusercontent.com/drush-ops/drush/13.x/$rel_from_root) ($name)";
                         }
                     }
                 }
@@ -203,7 +203,7 @@ EOT;
         if ($command instanceof AnnotatedCommand) {
             $path = Path::makeRelative($command->getAnnotationData()->get('_path'), $root);
         }
-        $edit_url = $path ? "https://github.com/drush-ops/drush/blob/12.x/$path" : '';
+        $edit_url = $path ? "https://github.com/drush-ops/drush/blob/13.x/$path" : '';
         $body = <<<EOT
 ---
 edit_url: $edit_url
