@@ -43,7 +43,7 @@ class RsyncTest extends CommandUnishTestCase
         // the remote side, at which point they will be evaluated & any needed
         // injection will be done.
         $this->drush(RsyncCommands::RSYNC, ['@example.dev', '@example.stage'], $options, 'user@server/path/to/drupal#sitename');
-        $expected = "[notice] Simulating: ssh -o PasswordAuthentication=no user@server '/path/to/vendor/bin/drush --no-interaction rsync @example.dev @example.stage --uri=sitename";
+        $expected = "[notice] Simulating: ssh -o PasswordAuthentication=no user@server '/path/to/vendor/bin/drush --no-interaction core:rsync @example.dev @example.stage --uri=sitename";
         $this->assertStringContainsString($expected, $this->getSimplifiedErrorOutput());
     }
 
@@ -100,6 +100,6 @@ class RsyncTest extends CommandUnishTestCase
         $site = current($this->getAliases());
         $options['simulate'] = null;
         $this->drush(RsyncCommands::RSYNC, ["$site:%files", "/tmp"], $options, null, null, self::EXIT_SUCCESS, '2>&1;');
-        $this->assertStringContainsString('[notice] Simulating: rsync -e \'ssh \' -akz __DIR__/sut/sites/dev/files/ /tmp', $this->getSimplifiedOutput());
+        $this->assertStringContainsString('[notice] Simulating: core:rsync -e \'ssh \' -akz __DIR__/sut/sites/dev/files/ /tmp', $this->getSimplifiedOutput());
     }
 }
