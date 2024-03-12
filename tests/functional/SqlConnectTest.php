@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Unish;
 
+use Drush\Commands\core\StatusCommands;
 use Drush\Commands\sql\SqlCommands;
 
 /**
@@ -47,21 +48,21 @@ class SqlConnectTest extends CommandUnishTestCase
         $this->assertStringContainsString('1', $output);
 
         // Run 'core-status' and insure that we can bootstrap Drupal.
-        $this->drush('core-status', [], ['fields' => 'bootstrap']);
+        $this->drush(StatusCommands::STATUS, [], ['fields' => 'bootstrap']);
         $output = $this->getOutput();
         $this->assertStringContainsString('Successful', $output);
 
         // Test to see if 'sql-create' can erase the database.
         // The only output is a confirmation string, so we'll run
         // other commands to confirm that this worked.
-        $this->drush('sql-create');
+        $this->drush(SqlCommands::CREATE);
 
         // Try to execute a query.  This should give a "table not found" error.
         $this->execute($connectionString . ' ' . $shell_options . ' "SELECT uid FROM users where uid = 1;"', self::EXIT_ERROR, $this->webroot());
 
         // We should still be able to run 'core-status' without getting an
         // error, although Drupal should not bootstrap any longer.
-        $this->drush('core-status', [], ['fields' => 'bootstrap']);
+        $this->drush(StatusCommands::STATUS, [], ['fields' => 'bootstrap']);
         $output = $this->getOutput();
         $this->assertStringNotContainsString('Successful', $output);
     }

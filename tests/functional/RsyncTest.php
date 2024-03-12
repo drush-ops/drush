@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Unish;
 
+use Drush\Commands\core\RsyncCommands;
+
 /**
  * @file
  *   Tests for rsync command
@@ -40,7 +42,7 @@ class RsyncTest extends CommandUnishTestCase
         // targets. The aliases are not interpreted at all until they recache
         // the remote side, at which point they will be evaluated & any needed
         // injection will be done.
-        $this->drush('rsync', ['@example.dev', '@example.stage'], $options, 'user@server/path/to/drupal#sitename');
+        $this->drush(RsyncCommands::RSYNC, ['@example.dev', '@example.stage'], $options, 'user@server/path/to/drupal#sitename');
         $expected = "[notice] Simulating: ssh -o PasswordAuthentication=no user@server '/path/to/vendor/bin/drush --no-interaction rsync @example.dev @example.stage --uri=sitename";
         $this->assertStringContainsString($expected, $this->getSimplifiedErrorOutput());
     }
@@ -80,7 +82,7 @@ class RsyncTest extends CommandUnishTestCase
 
         // Test an actual rsync between our two fixture sites. Note that
         // these sites share the same web root.
-        $this->drush('rsync', ["$source_alias:%files/a/", "$target_alias:%files/b"], $options, null, null, self::EXIT_SUCCESS, '2>&1');
+        $this->drush(RsyncCommands::RSYNC, ["$source_alias:%files/a/", "$target_alias:%files/b"], $options, null, null, self::EXIT_SUCCESS, '2>&1');
         $this->assertStringContainsString('Copy new and override existing files at ', $this->getOutput());
 
         // Test to see if our fixture file now exists at $target
@@ -97,7 +99,7 @@ class RsyncTest extends CommandUnishTestCase
     {
         $site = current($this->getAliases());
         $options['simulate'] = null;
-        $this->drush('core:rsync', ["$site:%files", "/tmp"], $options, null, null, self::EXIT_SUCCESS, '2>&1;');
+        $this->drush(RsyncCommands::RSYNC, ["$site:%files", "/tmp"], $options, null, null, self::EXIT_SUCCESS, '2>&1;');
         $this->assertStringContainsString('[notice] Simulating: rsync -e \'ssh \' -akz __DIR__/sut/sites/dev/files/ /tmp', $this->getSimplifiedOutput());
     }
 }

@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Unish;
 
+use Drush\Commands\core\PhpCommands;
+use Drush\Commands\pm\PmCommands;
+
 /**
  * Tests for watchdog tail command.
  *
@@ -19,7 +22,7 @@ class WatchdogTailTest extends CommandUnishTestCase
     public function testWatchdogTail()
     {
         $this->setUpDrupal(1, true);
-        $ret = $this->drush('pm:install', ['dblog']);
+        $ret = $this->drush(PmCommands::INSTALL, ['dblog']);
         $options = [];
         $childDrushProcess = $this->drushBackground('watchdog:tail', [], $options + ['simulate' => null]);
         $iteration = 0;
@@ -27,7 +30,7 @@ class WatchdogTailTest extends CommandUnishTestCase
         do {
             $iteration++;
             $expected_output[$iteration] = "watchdog tail iteration $iteration.";
-            $this->drush('php-eval', ["Drupal::logger('drush')->notice('{$expected_output[$iteration]}');"]);
+            $this->drush(PhpCommands::EVAL, ["Drupal::logger('drush')->notice('{$expected_output[$iteration]}');"]);
             sleep(3);
             $output = $childDrushProcess->getIncrementalOutput();
             $this->assertStringContainsString($expected_output[$iteration], $output);

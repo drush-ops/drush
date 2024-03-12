@@ -47,7 +47,7 @@ class UpdateDBTest extends CommandUnishTestCase
         // Assure that a pending post-update is reported.
         $this->pathPostUpdate = Path::join($this->webroot(), 'modules/unish/drush_empty_module/drush_empty_module.post_update.php');
         copy(__DIR__ . '/resources/drush_empty_module.post_update.php', $this->pathPostUpdate);
-        $this->drush('updatedb:status', [], ['format' => 'json']);
+        $this->drush(UpdateDBCommands::STATUS, [], ['format' => 'json']);
         $out = $this->getOutputFromJSON('drush_empty_module-post-null_op');
         $this->assertStringContainsString('This is a test of the emergency broadcast system.', trim($out['description']));
     }
