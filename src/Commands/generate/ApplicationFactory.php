@@ -8,7 +8,7 @@ use DrupalCodeGenerator\Application;
 use DrupalCodeGenerator\Event\GeneratorInfoAlter;
 use Drush\Commands\generate\Generators\Drush\DrushAliasFile;
 use Drush\Commands\generate\Generators\Drush\DrushCommandFile;
-use Drush\Commands\generate\Generators\Drush\DrushGenerator;
+use Drush\Commands\generate\Generators\Drush\DrushGeneratorFile;
 use Drush\Runtime\ServiceManager;
 use Psr\Container\ContainerInterface;
 use Psr\Container\ContainerInterface as DrushContainer;
@@ -64,7 +64,7 @@ class ApplicationFactory
         $generators = [
             new DrushCommandFile(),
             new DrushAliasFile(),
-            new DrushGenerator(),
+            new DrushGeneratorFile(),
             ...$global_generators,
             ...$module_generators,
         ];

@@ -18,7 +18,7 @@ use DrupalCodeGenerator\Validator\Required;
     templatePath: __DIR__,
     type: GeneratorType::MODULE_COMPONENT,
 )]
-class DrushGenerator extends BaseGenerator
+class DrushGeneratorFile extends BaseGenerator
 {
     protected function generate(array &$vars, Assets $assets): void
     {
