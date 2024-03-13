@@ -277,7 +277,7 @@ final class ConfigCommands extends DrushCommands implements StdinAwareInterface,
     }
 
     /**
-     * Display status of configuration (differences between the filesystem configuration and database configuration).
+     * Display status of configuration (differences between the filesystem and database).
      */
     #[CLI\Command(name: self::STATUS, aliases: ['cst', 'config-status'])]
     #[CLI\Option(name: 'state', description: 'A comma-separated list of states to filter results.')]
