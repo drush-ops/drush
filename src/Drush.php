@@ -365,7 +365,7 @@ class Drush
      * @return
      *   A wrapper around Symfony Process.
      */
-    public static function shell(string $command, $cwd = null, array $env = null, $input = null, $timeout = 60): ProcessBase
+    public static function shell(string $command, $cwd = null, ?array $env = null, $input = null, $timeout = 60): ProcessBase
     {
         return self::processManager()->shell($command, $cwd, $env, $input, $timeout);
     }
