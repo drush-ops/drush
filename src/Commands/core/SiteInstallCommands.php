@@ -12,6 +12,8 @@ use Drupal\Component\FileCache\FileCacheFactory;
 use Drupal\Core\Config\FileStorage;
 use Drupal\Core\Database\Database;
 use Drupal\Core\Installer\Exception\AlreadyInstalledException;
+use Drupal\Core\Installer\Exception\InstallerException;
+use Drupal\Core\Mail\MailFormatHelper;
 use Drupal\Core\Site\Settings;
 use Drush\Attributes as CLI;
 use Drush\Boot\BootstrapManager;
@@ -24,6 +26,7 @@ use Drush\Exec\ExecTrait;
 use Drush\Runtime\DependencyInjection;
 use Drush\Sql\SqlBase;
 use Drush\Utils\StringUtils;
+use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Filesystem\Path;
@@ -162,6 +165,8 @@ final class SiteInstallCommands extends DrushCommands
         // @todo Get Drupal to not call that function when on the CLI.
         try {
             drush_op('install_drupal', $this->autoloader, $settings, [$this, 'taskCallback']);
+        } catch (InstallerException $e) {
+            throw new InstallerException(MailFormatHelper::htmlToText($e->getMessage()), $e->getTitle(), $e->getCode(), ($this->output()->getVerbosity() > OutputInterface::VERBOSITY_NORMAL) ? $e : null);
         } catch (AlreadyInstalledException $e) {
             if ($sql && !$this->programExists($sql->command())) {
                 throw new \Exception(dt('Drush was unable to drop all tables because `@program` was not found, and therefore Drupal threw an AlreadyInstalledException. Ensure `@program` is available in your PATH.', ['@program' => $sql->command()]));
