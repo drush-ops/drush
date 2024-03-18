@@ -10,6 +10,9 @@ defaults: &defaults
     PHP_SENDMAIL_PATH: /dev/null
     # https://drupal.slack.com/archives/CGKLP028K/p1702031434143329?thread_ts=1702024395.751479&cid=CGKLP028K
     WODBY_TAG: 8.1-dev-4.40.9
+    # These are not working. We disable the mode in .docker/zz-php.ini
+    PHP_EXTENSIONS_DISABLE: xdebug
+    PHP_XDEBUG_MODE: off
 
 requires: &requires
   requires:
@@ -95,6 +98,7 @@ jobs:
     steps:
       - checkout
       - run: cp .docker/zz-php.ini /usr/local/etc/php/conf.d/
+      - run: php -i
       - run: mkdir -p /tmp/results
       - when:
           condition:
@@ -160,4 +164,3 @@ workflows:
               - release: highest
                 dbms: postgres
                 suite: functional
-
