@@ -10,7 +10,9 @@ defaults: &defaults
     PHP_SENDMAIL_PATH: /dev/null
     # https://drupal.slack.com/archives/CGKLP028K/p1702031434143329?thread_ts=1702024395.751479&cid=CGKLP028K
     WODBY_TAG: 8.1-dev-4.40.9
+    # This disable is not working and should not even be needed https://github.com/wodby/php/issues/58#issuecomment-2004017685
     PHP_EXTENSIONS_DISABLE: xdebug
+    PHP_XDEBUG_MODE: off
 
 requires: &requires
   requires:
