@@ -5277,6 +5277,7 @@
 <li><code>drush archive:dump --destination=/path/to/archive.tar.gz --overwrite</code>. Create (or overwrite if exists) /path/to/archive.tar.gz file containing code, database and Drupal files.</li>
 <li><code>drush archive:dump --code --destination=/path/to/archive.tar.gz</code>. Create /path/to/archive.tar.gz file containing the code only.</li>
 <li><code>drush archive:dump --exclude-code-paths=foo_bar.txt,web/sites/.+/settings.php --destination=/path/to/archive.tar.gz</code>. Create /path/to/archive.tar.gz file containing code, database and Drupal files but excluding foo_bar.txt file and settings.php files if found in web/sites/* subdirectories.</li>
+<li><code>drush archive:dump --extra-dump=--no-data --destination=/path/to/archive.tar.gz</code>. Create /path/to/archive.tar.gz file and pass extra option to <em>mysqldump</em> command.</li>
 <li><code>drush archive:dump --files --destination=/path/to/archive.tar.gz</code>. Create /path/to/archive.tar.gz file containing the Drupal files only.</li>
 <li><code>drush archive:dump --database --destination=/path/to/archive.tar.gz</code>. Create /path/to/archive.tar.gz archive file containing the database dump only.</li>
 </ul>
@@ -5292,6 +5293,7 @@
 <li><strong> --generator=GENERATOR</strong>. The generator name to store in the MANIFEST.yml file. The default is "Drush archive-dump".</li>
 <li><strong> --generatorversion=GENERATORVERSION</strong>. The generator version number to store in the MANIFEST file. The default is Drush version.</li>
 <li><strong> --exclude-code-paths=EXCLUDE-CODE-PATHS</strong>. Comma-separated list of paths (or regular expressions matching paths) to exclude from the code archive.</li>
+<li><strong> --extra-dump=EXTRA-DUMP</strong>. Add custom arguments/options to the dumping of the database (e.g. <em>mysqldump</em> command).</li>
 <li><strong> --skip-tables-key=SKIP-TABLES-KEY</strong>. A key in the $skip_tables array. @see <a href="../../site-aliases/">Site aliases</a></li>
 <li><strong> --structure-tables-key=STRUCTURE-TABLES-KEY</strong>. A key in the $structure_tables array. @see <a href="../../site-aliases/">Site aliases</a></li>
 <li><strong> --tables-key=TABLES-KEY</strong>. A key in the $tables array.</li>
