@@ -97,7 +97,7 @@ final class ArchiveDumpCommands extends DrushCommands
         'generator' => InputOption::VALUE_REQUIRED,
         'generatorversion' => InputOption::VALUE_REQUIRED,
         'exclude-code-paths' => InputOption::VALUE_REQUIRED,
-        'extra-dump' => false,
+        'extra-dump' => self::REQ,
     ]): string
     {
         $this->prepareArchiveDir();
