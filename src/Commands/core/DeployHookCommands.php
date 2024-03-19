@@ -147,10 +147,10 @@ final class DeployHookCommands extends DrushCommands implements SiteAliasManager
     #[CLI\Argument(name: 'batch_id', description: 'The batch id that will be processed.')]
     #[CLI\Bootstrap(level: DrupalBootLevels::FULL)]
     #[CLI\Help(hidden: true)]
-    public function process(string $batch_id, $options = ['format' => 'json']): UnstructuredListData
+    public function process(string $batch_id, $options = ['format' => 'json']): ?UnstructuredListData
     {
         $result = drush_batch_command($batch_id);
-        return new UnstructuredListData($result);
+        return $result ? new UnstructuredListData($result) : null;
     }
 
     /**
