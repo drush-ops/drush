@@ -5263,7 +5263,7 @@
 <p>If your command is not found by Drush, add the <code>-vvv</code> option for debug info about any service instantiation errors. If Autowire is still insufficient, a commandfile may implement its own <code>create()</code> method (see below).</p>
 <h2 id="create-method">create() method<a class="headerlink" href="#create-method" title="Permanent link">&para;</a></h2>
 <p><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7.75 6.5a1.25 1.25 0 1 0 0 2.5 1.25 1.25 0 0 0 0-2.5Z"/><path d="M2.5 1h8.44a1.5 1.5 0 0 1 1.06.44l10.25 10.25a1.5 1.5 0 0 1 0 2.12l-8.44 8.44a1.5 1.5 0 0 1-2.12 0L1.44 12A1.497 1.497 0 0 1 1 10.94V2.5A1.5 1.5 0 0 1 2.5 1Zm0 1.5v8.44l10.25 10.25 8.44-8.44L10.94 2.5Z"/></svg></span> 11.6+</p>
-<p>Command files not using Autowire may inject services by adding a create() method to the commandfile. A create() method and a constructor will look something like this:
+<p>Command files not using Autowire may inject services by adding a create() method to the commandfile. The passed in Container is a <a href="https://container.thephpleague.com/">League container</a> with a delegate to the Drupal container. Note that the type hint should be to <code>Psr\Container\ContanierInterface</code> not <code>Symfony\Component\DependencyInjection\ContainerInterface</code>. A create() method and constructor will look something like this:
 <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">WootStaticFactoryCommands</span> <span class="k">extends</span> <span class="nx">DrushCommands</span>
 <span class="p">{</span>
     <span class="k">protected</span> <span class="nv">$configFactory</span><span class="p">;</span>
@@ -5273,7 +5273,7 @@
         <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">configFactory</span> <span class="o">=</span> <span class="nv">$configFactory</span><span class="p">;</span>
     <span class="p">}</span>
 
-    <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">create</span><span class="p">(</span><span class="nx">ContainerInterface</span> <span class="nv">$container</span><span class="p">)</span><span class="o">:</span> <span class="nx">self</span>
+    <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">create</span><span class="p">(</span><span class="nx">Psr\Container\ContainerInterface</span> <span class="nv">$container</span><span class="p">)</span><span class="o">:</span> <span class="nx">self</span>
     <span class="p">{</span>
         <span class="k">return</span> <span class="k">new</span> <span class="k">static</span><span class="p">(</span><span class="nv">$container</span><span class="o">-&gt;</span><span class="na">get</span><span class="p">(</span><span class="s1">&#39;config.factory&#39;</span><span class="p">));</span>
     <span class="p">}</span>
