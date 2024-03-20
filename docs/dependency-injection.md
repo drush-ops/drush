@@ -19,7 +19,7 @@ create() method
 ------------------
 :octicons-tag-24: 11.6+
 
-Command files not using Autowire may inject services by adding a create() method to the commandfile. A create() method and a constructor will look something like this:
+Command files not using Autowire may inject services by adding a create() method to the commandfile. The passed in Container is a [League container](https://container.thephpleague.com/) with a delegate to the Drupal container. Note that the type hint should be to `Psr\Container\ContanierInterface` not `Symfony\Component\DependencyInjection\ContainerInterface`. A create() method and constructor will look something like this:
 ```php
 class WootStaticFactoryCommands extends DrushCommands
 {
@@ -30,7 +30,7 @@ class WootStaticFactoryCommands extends DrushCommands
         $this->configFactory = $configFactory;
     }
 
-    public static function create(ContainerInterface $container): self
+    public static function create(Psr\Container\ContainerInterface $container): self
     {
         return new static($container->get('config.factory'));
     }
