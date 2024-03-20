@@ -332,7 +332,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>                </
                     
                 </div>
                 <div class="col-md-8">
-                    <a href="#method___construct">__construct</a>(<abbr title="Drupal\Core\Template\TwigEnvironment">TwigEnvironment</abbr> $twig, <abbr title="Drupal\Core\Extension\ModuleHandlerInterface">ModuleHandlerInterface</abbr> $moduleHandler, <abbr title="Drupal\Core\Extension\ExtensionList">ExtensionList</abbr> $extensionList, <abbr title="Drupal\Core\State\StateInterface">StateInterface</abbr> $state, <abbr title="Drupal\Core\DrupalKernelInterface">DrupalKernelInterface</abbr> $kernel)
+                    <a href="#method___construct">__construct</a>(<abbr title="Drupal\Core\Template\TwigEnvironment">TwigEnvironment</abbr> $twig, <abbr title="Drupal\Core\Extension\ModuleHandlerInterface">ModuleHandlerInterface</abbr> $moduleHandler, <abbr title="Drupal\Core\Extension\ModuleExtensionList">ModuleExtensionList</abbr> $extensionList, <abbr title="Drupal\Core\State\StateInterface">StateInterface</abbr> $state, <abbr title="Drupal\Core\DrupalKernelInterface">DrupalKernelInterface</abbr> $kernel)
         
                                             <p class="no-description">No description</p>
                                     </div>
@@ -843,9 +843,9 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method___construct">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/TwigCommands.php#L31">at line 31</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/TwigCommands.php#L30">at line 30</a></div>
         <code>                    
-    <strong>__construct</strong>(<abbr title="Drupal\Core\Template\TwigEnvironment">TwigEnvironment</abbr> $twig, <abbr title="Drupal\Core\Extension\ModuleHandlerInterface">ModuleHandlerInterface</abbr> $moduleHandler, <abbr title="Drupal\Core\Extension\ExtensionList">ExtensionList</abbr> $extensionList, <abbr title="Drupal\Core\State\StateInterface">StateInterface</abbr> $state, <abbr title="Drupal\Core\DrupalKernelInterface">DrupalKernelInterface</abbr> $kernel)
+    <strong>__construct</strong>(<abbr title="Drupal\Core\Template\TwigEnvironment">TwigEnvironment</abbr> $twig, <abbr title="Drupal\Core\Extension\ModuleHandlerInterface">ModuleHandlerInterface</abbr> $moduleHandler, <abbr title="Drupal\Core\Extension\ModuleExtensionList">ModuleExtensionList</abbr> $extensionList, <abbr title="Drupal\Core\State\StateInterface">StateInterface</abbr> $state, <abbr title="Drupal\Core\DrupalKernelInterface">DrupalKernelInterface</abbr> $kernel)
         </code>
     </h3>
     <div class="details">    
@@ -871,7 +871,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
                 <td></td>
             </tr>
                     <tr>
-                <td><abbr title="Drupal\Core\Extension\ExtensionList">ExtensionList</abbr></td>
+                <td><abbr title="Drupal\Core\Extension\ModuleExtensionList">ModuleExtensionList</abbr></td>
                 <td>$extensionList</td>
                 <td></td>
             </tr>
@@ -1200,7 +1200,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_getTwig">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/TwigCommands.php#L41">at line 41</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/TwigCommands.php#L39">at line 39</a></div>
         <code>                    <abbr title="Drupal\Core\Template\TwigEnvironment">TwigEnvironment</abbr>
     <strong>getTwig</strong>()
         </code>
@@ -1233,7 +1233,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_getModuleHandler">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/TwigCommands.php#L46">at line 46</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/TwigCommands.php#L44">at line 44</a></div>
         <code>                    <abbr title="Drupal\Core\Extension\ModuleHandlerInterface">ModuleHandlerInterface</abbr>
     <strong>getModuleHandler</strong>()
         </code>
@@ -1266,7 +1266,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_unused">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/TwigCommands.php#L57">at line 57</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/TwigCommands.php#L55">at line 55</a></div>
         <code>                    <abbr title="Consolidation\OutputFormatters\StructuredData\RowsOfFields">RowsOfFields</abbr>
     <strong>unused</strong>($searchpaths)
         </code>
@@ -1309,7 +1309,7 @@ use your Production PHPStorage dir for comparison.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_twigCompile">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/TwigCommands.php#L94">at line 94</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/TwigCommands.php#L92">at line 92</a></div>
         <code>                    void
     <strong>twigCompile</strong>()
         </code>
@@ -1341,7 +1341,7 @@ use your Production PHPStorage dir for comparison.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_twigDebug">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/TwigCommands.php#L127">at line 127</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/TwigCommands.php#L125">at line 125</a></div>
         <code>                    void
     <strong>twigDebug</strong>(string $mode)
         </code>
