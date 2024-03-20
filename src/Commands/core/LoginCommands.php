@@ -15,8 +15,6 @@ use Drush\Commands\AutowireTrait;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Drush\Exec\ExecTrait;
-use Drush\Runtime\DependencyInjection;
-use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 #[CLI\Bootstrap(level: DrupalBootLevels::NONE)]
 final class LoginCommands extends DrushCommands implements SiteAliasManagerAwareInterface
@@ -28,7 +26,6 @@ final class LoginCommands extends DrushCommands implements SiteAliasManagerAware
     const LOGIN = 'user:login';
 
     public function __construct(
-        #[Autowire(service: DependencyInjection::BOOTSTRAP_MANAGER)]
         private BootstrapManager $bootstrapManager
     ) {
         parent::__construct();

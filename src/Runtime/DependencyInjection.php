@@ -9,7 +9,9 @@ use Consolidation\Config\ConfigInterface;
 use Consolidation\Config\Util\ConfigOverlay;
 use Consolidation\SiteAlias\SiteAliasManager;
 use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
+use Consolidation\SiteAlias\SiteAliasManagerInterface;
 use Consolidation\SiteProcess\ProcessManagerAwareInterface;
+use Drush\Boot\BootstrapManager;
 use Drush\Cache\CommandCache;
 use Drush\Command\DrushCommandInfoAlterer;
 use Drush\Command\GlobalOptionsEventListener;
@@ -107,7 +109,9 @@ class DependencyInjection
           ->addMethodCall('add', ['drush', new Logger($output)]);
 
         Robo::addShared($container, self::LOADER, $loader);
+        Robo::addShared($container, ClassLoader::class, self::LOADER);  // For autowiring
         Robo::addShared($container, self::SITE_ALIAS_MANAGER, $aliasManager);
+        Robo::addShared($container, SiteAliasManagerInterface::class, self::SITE_ALIAS_MANAGER);  // For autowiring
 
         // Fetch the runtime config, where -D et. al. are stored, and
         // add a reference to it to the container.
@@ -131,6 +135,7 @@ class DependencyInjection
         Robo::addShared($container, self::BOOTSTRAP_MANAGER, 'Drush\Boot\BootstrapManager')
             ->addMethodCall('setDrupalFinder', [$drupalFinder])
             ->addMethodCall('add', ['bootstrap.drupal8']);
+        Robo::addShared($container, BootstrapManager::class, self::BOOTSTRAP_MANAGER); // For autowiring
         Robo::addShared($container, 'bootstrap.hook', 'Drush\Boot\BootstrapHook')
           ->addArgument(self::BOOTSTRAP_MANAGER);
         Robo::addShared($container, 'tildeExpansion.hook', 'Drush\Runtime\TildeExpansionHook');
