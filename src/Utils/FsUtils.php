@@ -248,8 +248,8 @@ class FsUtils
         $content_type = false;
         if (class_exists('finfo')) {
             $finfo = new finfo(FILEINFO_MIME_TYPE);
-            $content_type = $finfo->file($path);
-            if ($content_type == 'application/octet-stream') {
+            $content_type = @$finfo->file($path);
+            if ($content_type === 'application/octet-stream') {
                 Drush::logger()->debug(dt('Mime type for !file is application/octet-stream.', ['!file' => $path]));
                 $content_type = false;
             }
@@ -260,7 +260,7 @@ class FsUtils
         //  own by examining the file's magic header bytes.
         if (!$content_type) {
             Drush::logger()->debug(dt('Examining !file headers.', ['!file' => $path]));
-            if ($file = fopen($path, 'rb')) {
+            if ($file = @fopen($path, 'rb')) {
                 $first = fread($file, 2);
                 fclose($file);
 
@@ -292,7 +292,7 @@ class FsUtils
                 } else {
                     Drush::logger()->warning(dt('Unable to read !file.', ['!file' => $path]));
                 }
-            } else {
+            } elseif (!preg_match('#^/dev/fd/\d+$#', $path)) {
                 Drush::logger()->warning(dt('Unable to open !file.', ['!file' => $path]));
             }
         }
