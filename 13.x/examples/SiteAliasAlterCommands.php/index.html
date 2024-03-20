@@ -5203,9 +5203,7 @@
 <span class="k">use</span> <span class="nx">Consolidation\SiteAlias\SiteAliasManagerInterface</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Drush\Attributes</span> <span class="k">as</span> <span class="nx">CLI</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Drush\Boot\DrupalBootLevels</span><span class="p">;</span>
-<span class="k">use</span> <span class="nx">Drush\Runtime\DependencyInjection</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Symfony\Component\Console\Input\InputInterface</span><span class="p">;</span>
-<span class="k">use</span> <span class="nx">Symfony\Component\DependencyInjection\Attribute\Autowire</span><span class="p">;</span>
 
 <span class="sd">/**</span>
 <span class="sd"> * Load this example by using the --include option - e.g. `drush --include=/path/to/drush/examples`</span>
@@ -5216,7 +5214,6 @@
     <span class="k">use</span> <span class="nx">AutowireTrait</span><span class="p">;</span>
 
     <span class="k">public</span> <span class="k">function</span> <span class="fm">__construct</span><span class="p">(</span>
-        <span class="p">#[</span><span class="nd">Autowire</span><span class="p">(</span><span class="nx">service</span><span class="o">:</span> <span class="nx">DependencyInjection</span><span class="o">::</span><span class="na">SITE_ALIAS_MANAGER</span><span class="p">)]</span>
         <span class="k">private</span> <span class="nx">readonly</span> <span class="nx">SiteAliasManagerInterface</span> <span class="nv">$siteAliasManager</span>
     <span class="p">)</span> <span class="p">{</span>
         <span class="k">parent</span><span class="o">::</span><span class="na">__construct</span><span class="p">();</span>

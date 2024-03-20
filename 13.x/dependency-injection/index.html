@@ -5259,7 +5259,7 @@
 </div>
 <h2 id="autowire">Autowire<a class="headerlink" href="#autowire" title="Permanent link">&para;</a></h2>
 <p><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7.75 6.5a1.25 1.25 0 1 0 0 2.5 1.25 1.25 0 0 0 0-2.5Z"/><path d="M2.5 1h8.44a1.5 1.5 0 0 1 1.06.44l10.25 10.25a1.5 1.5 0 0 1 0 2.12l-8.44 8.44a1.5 1.5 0 0 1-2.12 0L1.44 12A1.497 1.497 0 0 1 1 10.94V2.5A1.5 1.5 0 0 1 2.5 1Zm0 1.5v8.44l10.25 10.25 8.44-8.44L10.94 2.5Z"/></svg></span> 12.5+</p>
-<p>Command files may inject Drush and Drupal services by adding the <a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/AutowireTrait.php">AutowireTrait</a> to the class (example: <a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/pm/PmCommands.php">PmCommands</a>). This enables your <a href="https://www.drupal.org/node/3396179">Constructor parameter type hints determine the the injected service</a>. When a type hint is insufficient, an <a href="https://www.drupal.org/node/3396179">#[Autowire] Attribute</a> on the constructor property (with <em>service:</em> named argument) directs AutoWireTrait to the right service (example: <a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/LoginCommands.php">LoginCommands</a>). This Attribute is currently <em>required</em> when injecting Drush services (not required for Drupal services). </p>
+<p>Command files may inject Drush and Drupal services by adding the <a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/AutowireTrait.php">AutowireTrait</a> to the class (example: <a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/pm/PmCommands.php">PmCommands</a>). This enables your <a href="https://www.drupal.org/node/3396179">Constructor parameter type hints determine the the injected service</a>. When a type hint is insufficient, an <a href="https://www.drupal.org/node/3396179">#[Autowire] Attribute</a> on the constructor property (with <em>service:</em> named argument) directs AutoWireTrait to the right service (example: <a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/LoginCommands.php">LoginCommands</a>). </p>
 <p>If your command is not found by Drush, add the <code>-vvv</code> option for debug info about any service instantiation errors. If Autowire is still insufficient, a commandfile may implement its own <code>create()</code> method (see below).</p>
 <h2 id="create-method">create() method<a class="headerlink" href="#create-method" title="Permanent link">&para;</a></h2>
 <p><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7.75 6.5a1.25 1.25 0 1 0 0 2.5 1.25 1.25 0 0 0 0-2.5Z"/><path d="M2.5 1h8.44a1.5 1.5 0 0 1 1.06.44l10.25 10.25a1.5 1.5 0 0 1 0 2.12l-8.44 8.44a1.5 1.5 0 0 1-2.12 0L1.44 12A1.497 1.497 0 0 1 1 10.94V2.5A1.5 1.5 0 0 1 2.5 1Zm0 1.5v8.44l10.25 10.25 8.44-8.44L10.94 2.5Z"/></svg></span> 11.6+</p>
@@ -5298,7 +5298,7 @@ projects that are <em>not</em> Drupal modules.</p>
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">March 9, 2024</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">March 20, 2024</span>
       
     
   </small>
