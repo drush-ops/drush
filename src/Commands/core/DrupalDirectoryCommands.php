@@ -10,8 +10,6 @@ use Drush\Attributes as CLI;
 use Drush\Backend\BackendPathEvaluator;
 use Drush\Commands\AutowireTrait;
 use Drush\Commands\DrushCommands;
-use Drush\Runtime\DependencyInjection;
-use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 final class DrupalDirectoryCommands extends DrushCommands
 {
@@ -22,7 +20,6 @@ final class DrupalDirectoryCommands extends DrushCommands
     protected BackendPathEvaluator $pathEvaluator;
 
     public function __construct(
-        #[Autowire(service: DependencyInjection::SITE_ALIAS_MANAGER)]
         private readonly SiteAliasManagerInterface $siteAliasManager
     ) {
         parent::__construct();

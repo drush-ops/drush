@@ -6,17 +6,15 @@ namespace Drush\Commands\core;
 
 use Consolidation\OutputFormatters\Options\FormatterOptions;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
-use Consolidation\SiteAlias\SiteAliasManager;
+use Consolidation\SiteAlias\SiteAliasManagerInterface;
 use Drupal\user\Entity\Role;
 use Drush\Attributes as CLI;
 use Drush\Boot\DrupalBootLevels;
 use Drush\Commands\AutowireTrait;
 use Drush\Commands\DrushCommands;
-use Drush\Runtime\DependencyInjection;
 use Drush\Utils\StringUtils;
 use Symfony\Component\Console\Completion\CompletionInput;
 use Symfony\Component\Console\Completion\CompletionSuggestions;
-use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 final class RoleCommands extends DrushCommands
 {
@@ -29,8 +27,7 @@ final class RoleCommands extends DrushCommands
     const LIST = 'role:list';
 
     public function __construct(
-        #[Autowire(service: DependencyInjection::SITE_ALIAS_MANAGER)]
-        private readonly SiteAliasManager $siteAliasManager
+        private readonly SiteAliasManagerInterface $siteAliasManager
     ) {
         parent::__construct();
     }

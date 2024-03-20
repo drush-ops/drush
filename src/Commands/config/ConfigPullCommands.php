@@ -16,8 +16,6 @@ use Drush\Commands\core\DocsCommands;
 use Drush\Commands\core\RsyncCommands;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
-use Drush\Runtime\DependencyInjection;
-use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 #[CLI\Bootstrap(DrupalBootLevels::NONE)]
 final class ConfigPullCommands extends DrushCommands
@@ -27,7 +25,6 @@ final class ConfigPullCommands extends DrushCommands
     const PULL = 'config:pull';
 
     public function __construct(
-        #[Autowire(service: DependencyInjection::SITE_ALIAS_MANAGER)]
         private readonly SiteAliasManagerInterface $siteAliasManager
     ) {
         parent::__construct();
