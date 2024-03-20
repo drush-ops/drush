@@ -11,8 +11,6 @@ use Drush\Attributes as CLI;
 use Drush\Boot\DrupalBootLevels;
 use Drush\Commands\AutowireTrait;
 use Drush\Commands\DrushCommands;
-use Drush\Runtime\DependencyInjection;
-use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 #[CLI\Bootstrap(DrupalBootLevels::NONE)]
 final class SshCommands extends DrushCommands
@@ -22,7 +20,6 @@ final class SshCommands extends DrushCommands
     const SSH = 'site:ssh';
 
     public function __construct(
-        #[Autowire(service: DependencyInjection::SITE_ALIAS_MANAGER)]
         private readonly SiteAliasManagerInterface $siteAliasManager
     ) {
         parent::__construct();

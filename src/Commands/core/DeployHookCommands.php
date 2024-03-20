@@ -18,9 +18,7 @@ use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Drush\Exceptions\UserAbortException;
 use Drush\Log\SuccessInterface;
-use Drush\Runtime\DependencyInjection;
 use Psr\Log\LogLevel;
-use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 final class DeployHookCommands extends DrushCommands
 {
@@ -32,7 +30,6 @@ final class DeployHookCommands extends DrushCommands
     const MARK_COMPLETE = 'deploy:mark-complete';
 
     public function __construct(
-        #[Autowire(service: DependencyInjection::SITE_ALIAS_MANAGER)]
         private readonly SiteAliasManagerInterface $siteAliasManager
     ) {
         parent::__construct();

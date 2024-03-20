@@ -9,13 +9,12 @@ declare(strict_types=1);
 
 namespace Drush\Commands;
 
+use Composer\Autoload\ClassLoader;
 use Drupal\Core\DrupalKernel;
 use Drupal\Core\Site\Settings;
 use Drush\Attributes as CLI;
 use Drush\Boot\DrupalBootLevels;
 use Drush\Drush;
-use Drush\Runtime\DependencyInjection;
-use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 #[CLI\Bootstrap(DrupalBootLevels::NONE)]
 class TestFixtureCommands extends DrushCommands
@@ -23,8 +22,7 @@ class TestFixtureCommands extends DrushCommands
     use AutowireTrait;
 
     protected function __construct(
-        #[Autowire(service: DependencyInjection::LOADER)]
-        private $autoloader
+        private ClassLoader $autoloader
     ) {
         parent::__construct();
     }

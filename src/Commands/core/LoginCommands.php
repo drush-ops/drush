@@ -14,8 +14,6 @@ use Drush\Commands\AutowireTrait;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Drush\Exec\ExecTrait;
-use Drush\Runtime\DependencyInjection;
-use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 #[CLI\Bootstrap(DrupalBootLevels::NONE)]
 final class LoginCommands extends DrushCommands
@@ -26,9 +24,7 @@ final class LoginCommands extends DrushCommands
     const LOGIN = 'user:login';
 
     public function __construct(
-        #[Autowire(service: DependencyInjection::BOOTSTRAP_MANAGER)]
         private readonly BootstrapManager $bootstrapManager,
-        #[Autowire(service: DependencyInjection::SITE_ALIAS_MANAGER)]
         private readonly SiteAliasManagerInterface $siteAliasManager
     ) {
         parent::__construct();

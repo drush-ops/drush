@@ -16,9 +16,7 @@ use Drush\Commands\AutowireTrait;
 use Drush\Commands\DrushCommands;
 use Drush\Config\ConfigLocator;
 use Drush\Exceptions\UserAbortException;
-use Drush\Runtime\DependencyInjection;
 use Symfony\Component\Console\Event\ConsoleCommandEvent;
-use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 #[CLI\Bootstrap(DrupalBootLevels::NONE)]
 final class RsyncCommands extends DrushCommands
@@ -37,7 +35,6 @@ final class RsyncCommands extends DrushCommands
     protected BackendPathEvaluator $pathEvaluator;
 
     public function __construct(
-        #[Autowire(service: DependencyInjection::SITE_ALIAS_MANAGER)]
         private readonly SiteAliasManagerInterface $siteAliasManager
     ) {
         parent::__construct();

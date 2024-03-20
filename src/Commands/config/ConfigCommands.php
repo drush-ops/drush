@@ -26,7 +26,6 @@ use Drush\Commands\AutowireTrait;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Drush\Exec\ExecTrait;
-use Drush\Runtime\DependencyInjection;
 use Drush\Utils\FsUtils;
 use Drush\Utils\StringUtils;
 use JetBrains\PhpStorm\Deprecated;
@@ -34,7 +33,6 @@ use Symfony\Component\Console\Completion\CompletionInput;
 use Symfony\Component\Console\Completion\CompletionSuggestions;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Filesystem\Path;
 use Symfony\Component\Yaml\Parser;
 
@@ -60,7 +58,6 @@ final class ConfigCommands extends DrushCommands implements StdinAwareInterface
     public function __construct(
         protected ConfigFactoryInterface $configFactory,
         protected StorageCacheInterface $configStorage,
-        #[Autowire(service: DependencyInjection::SITE_ALIAS_MANAGER)]
         protected SiteAliasManagerInterface $siteAliasManager,
         protected StorageManagerInterface $configStorageExport,
         protected ImportStorageTransformer $importStorageTransformer,

@@ -7,7 +7,7 @@ namespace Drush\Commands\core;
 use Composer\Autoload\ClassLoader;
 use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\AnnotatedCommand\Hooks\HookManager;
-use Consolidation\SiteAlias\SiteAliasManager;
+use Consolidation\SiteAlias\SiteAliasManagerInterface;
 use Drupal\Component\FileCache\FileCacheFactory;
 use Drupal\Core\Config\FileStorage;
 use Drupal\Core\Database\Database;
@@ -23,12 +23,10 @@ use Drush\Commands\AutowireTrait;
 use Drush\Commands\DrushCommands;
 use Drush\Exceptions\UserAbortException;
 use Drush\Exec\ExecTrait;
-use Drush\Runtime\DependencyInjection;
 use Drush\Sql\SqlBase;
 use Drush\Utils\StringUtils;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Filesystem\Path;
 
 #[CLI\Bootstrap(DrupalBootLevels::NONE)]
@@ -40,11 +38,8 @@ final class SiteInstallCommands extends DrushCommands
     const INSTALL = 'site:install';
 
     public function __construct(
-        #[Autowire(service: DependencyInjection::BOOTSTRAP_MANAGER)]
         private BootstrapManager $bootstrapManager,
-        #[Autowire(service: DependencyInjection::SITE_ALIAS_MANAGER)]
-        private SiteAliasManager $siteAliasManager,
-        #[Autowire(service: DependencyInjection::LOADER)]
+        private SiteAliasManagerInterface $siteAliasManager,
         private ClassLoader $autoloader
     ) {
         parent::__construct();

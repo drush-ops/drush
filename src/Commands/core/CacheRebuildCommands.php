@@ -13,8 +13,6 @@ use Drush\Boot\DrupalBootLevels;
 use Drush\Commands\AutowireTrait;
 use Drush\Commands\DrushCommands;
 use Drush\Drupal\DrushLoggerServiceProvider;
-use Drush\Runtime\DependencyInjection;
-use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 final class CacheRebuildCommands extends DrushCommands
 {
@@ -23,9 +21,7 @@ final class CacheRebuildCommands extends DrushCommands
     const REBUILD = 'cache:rebuild';
 
     public function __construct(
-        #[Autowire(service: DependencyInjection::BOOTSTRAP_MANAGER)]
         private BootstrapManager $bootstrapManager,
-        #[Autowire(service: DependencyInjection::LOADER)]
         private ClassLoader $autoloader
     ) {
         parent::__construct();

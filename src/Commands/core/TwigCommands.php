@@ -6,7 +6,7 @@ namespace Drush\Commands\core;
 
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Drupal\Core\DrupalKernelInterface;
-use Drupal\Core\Extension\ExtensionList;
+use Drupal\Core\Extension\ModuleExtensionList;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\PhpStorage\PhpStorageFactory;
 use Drupal\Core\State\StateInterface;
@@ -16,7 +16,6 @@ use Drush\Commands\AutowireTrait;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Drush\Utils\StringUtils;
-use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Filesystem\Path;
 use Symfony\Component\Finder\Finder;
 
@@ -31,8 +30,7 @@ final class TwigCommands extends DrushCommands
     public function __construct(
         protected TwigEnvironment $twig,
         protected ModuleHandlerInterface $moduleHandler,
-        #[Autowire(service: 'extension.list.module')]
-        private ExtensionList $extensionList,
+        private ModuleExtensionList $extensionList,
         private StateInterface $state,
         private DrupalKernelInterface $kernel
     ) {
