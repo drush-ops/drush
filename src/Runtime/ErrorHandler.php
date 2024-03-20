@@ -24,6 +24,7 @@ class ErrorHandler implements LoggerAwareInterface, HandlerInterface
 
     public function errorHandler($errno, $message, $filename, $line)
     {
+        _drupal_error_handler($errno, $message, $filename, $line);
         // "error_reporting" is usually set in php.ini, but may be changed by
         // drush_errors_on() and drush_errors_off().
         if ($errno & error_reporting()) {
