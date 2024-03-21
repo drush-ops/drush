@@ -194,7 +194,8 @@ final class SiteInstallCommands extends DrushCommands
                 throw new \Exception(dt('Existing configuration directory @config does not contain a core.extension.yml file.', ['@config' => $config_directory]));
             }
             $config = $source_storage->read('core.extension');
-            $profile = $config['profile'];
+            $profile = $config['profile'] ?? FALSE;
+            return $profile;
         }
 
         if (empty($profile)) {
