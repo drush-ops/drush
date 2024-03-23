@@ -6,16 +6,14 @@ namespace Drush\Preflight;
 
 use Composer\Autoload\ClassLoader;
 use Consolidation\SiteAlias\SiteAliasManager;
-use DrupalFinder\DrupalFinder;
 use Drush\Commands\DrushCommands;
-use Drush\DrupalFinder\DrushDrupalFinder;
 use Drush\Config\ConfigLocator;
 use Drush\Config\DrushConfig;
 use Drush\Config\Environment;
+use Drush\DrupalFinder\DrushDrupalFinder;
 use Drush\SiteAlias\SiteAliasFileLoader;
 use RuntimeException;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Filesystem\Path;
 use Symfony\Component\HttpKernel\Kernel;
 
 /**
@@ -304,30 +302,6 @@ class Preflight
         // any configuration it might contain.
         $this->aliasManager->setSelf($selfSiteAlias);
         $this->configLocator->addAliasConfig($selfSiteAlias->exportConfig());
-
-        // Check to see if the alias on the command line points at
-        // a local Drupal site that is not the site at $root
-        $localAliasDrupalFinder = new DrupalFinder($this->environment());
-        $foundAlternateRoot = $localAliasDrupalFinder->locateRoot($selfSiteAlias->localRoot());
-        if ($foundAlternateRoot) {
-            $alteredRoot = Path::canonicalize($localAliasDrupalFinder->getDrupalRoot());
-
-            // Now that we have our final Drupal root, check to see if there is
-            // a site-local Drush. If there is, we will redispatch to it.
-            // NOTE: termination handlers have not been set yet, so it is okay
-            // to exit early without taking special action.
-            [$preflightDidRedispatch, $exitStatus] = RedispatchToSiteLocal::redispatchIfSiteLocalDrush($argv, $alteredRoot, $this->environment->vendorPath(), $this->logger());
-            if ($preflightDidRedispatch) {
-                return [$preflightDidRedispatch, $exitStatus];
-            }
-
-            // If the Drupal site changed, and the alternate site does not
-            // contain its own copy of Drush, then we cannot continue.
-            if ($alteredRoot != $root) {
-                $aliasName = $this->preflightArgs->alias();
-                throw new \Exception("The alias $aliasName references a Drupal site that does not contain its own copy of Drush. Please add Drush to this site to use it.");
-            }
-        }
 
         // Remember the paths to all the files we loaded, so that we can
         // report on it from Drush status or wherever else it may be needed.
