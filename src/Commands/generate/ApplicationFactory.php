@@ -10,20 +10,20 @@ use Drush\Commands\generate\Generators\Drush\DrushAliasFile;
 use Drush\Commands\generate\Generators\Drush\DrushCommandFile;
 use Drush\Commands\generate\Generators\Drush\DrushGeneratorFile;
 use Drush\Runtime\ServiceManager;
-use Psr\Container\ContainerInterface;
 use Psr\Container\ContainerInterface as DrushContainer;
 use Psr\Log\LoggerInterface;
 
 class ApplicationFactory
 {
     private ServiceManager $serviceManager;
+    private \Symfony\Component\DependencyInjection\ContainerInterface $container;
 
     public function __construct(
-        private ContainerInterface $container,
         private DrushContainer $drush_container,
         private LoggerInterface $logger
     ) {
         $this->serviceManager = $this->drush_container->get('service.manager');
+        $this->container = $this->drush_container->get('service_container');
     }
 
     /**
