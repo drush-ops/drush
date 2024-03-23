@@ -48,7 +48,7 @@ final class MkCommands extends DrushCommands
         $destination_path = Path::join($dir_root, 'docs', $destination);
         $this->prepare($destination_path);
         $container = Drush::getContainer();
-        $application_generate = (new ApplicationFactory($container->get('service_container'), $container, $this->logger()))->create();
+        $application_generate = (new ApplicationFactory($container, $this->logger()))->create();
         $all = $this->createAnnotatedCommands($application_generate, Drush::getApplication());
         $namespaced = ListCommands::categorize($all);
         [$nav_generators, $pages_generators, $map_generators] = $this->writeContentFilesAndBuildNavAndBuildRedirectMap($namespaced, $destination, $dir_root, $destination_path);
