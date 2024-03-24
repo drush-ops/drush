@@ -211,7 +211,7 @@ class BootstrapManager implements LoggerAwareInterface, ConfigAwareInterface
      *   TRUE if the specified bootstrap phase has completed.
      * @see \Drush\Boot\Boot::bootstrapPhases()
      */
-    public function doBootstrap(int $phase, $phase_max = false, AnnotationData $annotationData = null): bool
+    public function doBootstrap(int $phase, $phase_max = false, ?AnnotationData $annotationData = null): bool
     {
         $bootstrap = $this->bootstrap();
         $phases = $this->bootstrapPhases(true);
@@ -314,7 +314,7 @@ class BootstrapManager implements LoggerAwareInterface, ConfigAwareInterface
      *   Thrown when an unknown bootstrap phase is passed in the annotation
      *   data.
      */
-    public function bootstrapToPhase(string $bootstrapPhase, AnnotationData $annotationData = null): bool
+    public function bootstrapToPhase(string $bootstrapPhase, ?AnnotationData $annotationData = null): bool
     {
         $this->logger->info('Starting bootstrap to {phase}', ['phase' => $bootstrapPhase]);
         $phase = $this->bootstrap()->lookUpPhaseIndex($bootstrapPhase);
@@ -348,7 +348,7 @@ class BootstrapManager implements LoggerAwareInterface, ConfigAwareInterface
      *   Optional annotation data from the command.
      *   TRUE if the specified bootstrap phase has completed.
      */
-    public function bootstrapToPhaseIndex(int $max_phase_index, AnnotationData $annotationData = null): bool
+    public function bootstrapToPhaseIndex(int $max_phase_index, ?AnnotationData $annotationData = null): bool
     {
         if ($max_phase_index == DRUSH_BOOTSTRAP_MAX) {
             // Try get a max phase.
@@ -396,7 +396,7 @@ class BootstrapManager implements LoggerAwareInterface, ConfigAwareInterface
      *
      *   The maximum phase to which we bootstrapped.
      */
-    public function bootstrapMax($max_phase_index = false, AnnotationData $annotationData = null): int
+    public function bootstrapMax($max_phase_index = false, ?AnnotationData $annotationData = null): int
     {
         // Bootstrap as far as we can without throwing an error, but log for
         // debugging purposes.

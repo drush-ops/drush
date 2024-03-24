@@ -71,7 +71,7 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
         return $commandHandler;
     }
 
-    public function setContentTranslationManager(ContentTranslationManagerInterface $manager = null): void
+    public function setContentTranslationManager(?ContentTranslationManagerInterface $manager = null): void
     {
         if ($manager) {
             $this->contentTranslationManager = $manager;

@@ -258,7 +258,9 @@ class ConfigImportCommands extends DrushCommands
                         do {
                             $config_importer->doSyncStep($step, $context);
                             if (isset($context['message'])) {
-                                $this->logger()->notice(str_replace('Synchronizing', 'Synchronized', (string)$context['message']));
+                                $this->logger()->notice(
+                                    str_replace('Synchronizing', 'Synchronized', (string)$context['message'])
+                                );
                             }
                         } while ($context['finished'] < 1);
                     }
@@ -280,7 +282,6 @@ class ConfigImportCommands extends DrushCommands
                 $message = 'The import failed due to the following reasons:' . "\n";
                 $message .= implode("\n", $config_importer->getErrors());
 
-                watchdog_exception('config_import', $e);
                 throw new \Exception($message, $e->getCode(), $e);
             } finally {
                 // Importing config might trigger batch operations (such as when installing and uninstalling modules).

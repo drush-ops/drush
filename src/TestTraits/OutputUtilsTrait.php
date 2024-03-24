@@ -113,7 +113,7 @@ trait OutputUtilsTrait
      * @param $key
      *   Optionally return only a top level element from the json object.
      */
-    public function getOutputFromJSON(string|int $key = null): mixed
+    public function getOutputFromJSON(string|int|null $key = null): mixed
     {
         $output = $this->getOutput();
         $json = json_decode($output, true);
