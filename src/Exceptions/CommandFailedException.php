@@ -9,7 +9,7 @@ namespace Drush\Exceptions;
  */
 class CommandFailedException extends \Exception
 {
-    public function __construct($message = "Failed.", $code = 1, \Throwable $previous = null)
+    public function __construct($message = "Failed.", $code = 1, ?\Throwable $previous = null)
     {
         parent::__construct($message, $code, $previous);
     }

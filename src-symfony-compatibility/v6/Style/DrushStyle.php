@@ -22,7 +22,7 @@ use function Laravel\Prompts\select;
 
 class DrushStyle extends SymfonyStyle
 {
-    public function confirm(string $question, bool $default = true, string $yes = 'Yes', string $no = 'No', bool|string $required = false, \Closure $validate = null, string $hint = ''): bool
+    public function confirm(string $question, bool $default = true, string $yes = 'Yes', string $no = 'No', bool|string $required = false, ?\Closure $validate = null, string $hint = ''): bool
     {
         // Automatically accept confirmations if the --yes argument was supplied.
         if (Drush::affirmative()) {
@@ -37,7 +37,7 @@ class DrushStyle extends SymfonyStyle
     }
 
     #[Deprecated('Use select() or multiselect() instead.')]
-    public function choice(string $question, array $choices, mixed $default = null, bool $multiSelect = false, int $scroll = 10, \Closure $validate = null, string $hint = '', bool|string $required = true): mixed
+    public function choice(string $question, array $choices, mixed $default = null, bool $multiSelect = false, int $scroll = 10, ?\Closure $validate = null, string $hint = '', bool|string $required = true): mixed
     {
         if ($multiSelect) {
             // For backward compat. Deprecated.
@@ -50,7 +50,7 @@ class DrushStyle extends SymfonyStyle
     /**
      * Prompt the user for text input.
      */
-    public function text($label, string $placeholder = '', string $default = '', bool|string $required = false, \Closure $validate = null, string $hint = ''): string
+    public function text($label, string $placeholder = '', string $default = '', bool|string $required = false, ?\Closure $validate = null, string $hint = ''): string
     {
         return (new TextPrompt($label, $placeholder, $default, $required, $validate, $hint))->prompt();
     }
@@ -58,7 +58,7 @@ class DrushStyle extends SymfonyStyle
     /**
      * Prompt the user for input, hiding the value.
      */
-    public function password(string $label, string $placeholder = '', bool|string $required = false, \Closure $validate = null, string $hint = ''): string
+    public function password(string $label, string $placeholder = '', bool|string $required = false, ?\Closure $validate = null, string $hint = ''): string
     {
         return (new PasswordPrompt($label, $placeholder, $required, $validate, $hint))->prompt();
     }
@@ -69,7 +69,7 @@ class DrushStyle extends SymfonyStyle
      * @param  array<int|string, string>|Collection<int|string, string>  $options
      * @param  true|string  $required
      */
-    public function select(string $label, array|Collection $options, int|string $default = null, int $scroll = 10, \Closure $validate = null, string $hint = '', bool|string $required = true): int|string
+    public function select(string $label, array|Collection $options, int|string|null $default = null, int $scroll = 10, ?\Closure $validate = null, string $hint = '', bool|string $required = true): int|string
     {
         return (new SelectPrompt($label, $options, $default, $scroll, $validate, $hint, $required))->prompt();
     }
@@ -81,7 +81,7 @@ class DrushStyle extends SymfonyStyle
      * @param  array<int|string>|Collection<int, int|string>  $default
      * @return array<int|string>
      */
-    public function multiselect(string $label, array|Collection $options, array|Collection $default = [], int $scroll = 10, bool|string $required = false, \Closure $validate = null, string $hint = 'Use the space bar to select options.'): array
+    public function multiselect(string $label, array|Collection $options, array|Collection $default = [], int $scroll = 10, bool|string $required = false, ?\Closure $validate = null, string $hint = 'Use the space bar to select options.'): array
     {
         return (new MultiSelectPrompt($label, $options, $default, $scroll, $required, $validate, $hint))->prompt();
     }
@@ -91,7 +91,7 @@ class DrushStyle extends SymfonyStyle
      *
      * @param  array<string>|Collection<int, string>|Closure(string): array<string>  $options
      */
-    public function suggest(string $label, array|Collection|\Closure $options, string $placeholder = '', string $default = '', int $scroll = 10, bool|string $required = false, \Closure $validate = null, string $hint = 'Start typing the first letter(s) and matching choices will be shown.'): string
+    public function suggest(string $label, array|Collection|\Closure $options, string $placeholder = '', string $default = '', int $scroll = 10, bool|string $required = false, ?\Closure $validate = null, string $hint = 'Start typing the first letter(s) and matching choices will be shown.'): string
     {
         return (new SuggestPrompt($label, $options, $placeholder, $default, $scroll, $required, $validate, $hint))->prompt();
     }
@@ -102,7 +102,7 @@ class DrushStyle extends SymfonyStyle
      * @param  Closure(string): array<int|string, string>  $options
      * @param  true|string  $required
      */
-    public function search(string $label, \Closure $options, string $placeholder = '', int $scroll = 10, \Closure $validate = null, string $hint = '', bool|string $required = true): int|string
+    public function search(string $label, \Closure $options, string $placeholder = '', int $scroll = 10, ?\Closure $validate = null, string $hint = '', bool|string $required = true): int|string
     {
         return (new SearchPrompt($label, $options, $placeholder, $scroll, $validate, $hint, $required))->prompt();
     }
@@ -113,7 +113,7 @@ class DrushStyle extends SymfonyStyle
      * @param  Closure(string): array<int|string, string>  $options
      * @return array<int|string>
      */
-    public function multisearch(string $label, \Closure $options, string $placeholder = '', int $scroll = 10, bool|string $required = false, \Closure $validate = null, string $hint = 'Use the space bar to select options.'): array
+    public function multisearch(string $label, \Closure $options, string $placeholder = '', int $scroll = 10, bool|string $required = false, ?\Closure $validate = null, string $hint = 'Use the space bar to select options.'): array
     {
         return (new MultiSearchPrompt($label, $options, $placeholder, $scroll, $required, $validate, $hint))->prompt();
     }
@@ -141,7 +141,7 @@ class DrushStyle extends SymfonyStyle
      * @param  ?Closure((TSteps is int ? int : value-of<TSteps>), Progress<TSteps>): TReturn  $callback
      * @return ($callback is null ? Progress<TSteps> : array<TReturn>)
      */
-    public function progress(string $label, iterable|int $steps, \Closure $callback = null, string $hint = ''): array|Progress
+    public function progress(string $label, iterable|int $steps, ?\Closure $callback = null, string $hint = ''): array|Progress
     {
         $progress = new Progress($label, $steps, $hint);
 

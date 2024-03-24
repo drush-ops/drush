@@ -482,7 +482,7 @@ final class LocaleCommands extends DrushCommands
      * @param array $options The export options for PoDatabaseReader.
      * @return bool True if successful.
      */
-    private function writePoFile(string $file_uri, LanguageInterface $language = null, array $options = []): bool
+    private function writePoFile(string $file_uri, ?LanguageInterface $language = null, array $options = []): bool
     {
         $reader = new PoDatabaseReader();
 

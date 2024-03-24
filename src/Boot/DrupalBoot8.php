@@ -197,7 +197,7 @@ class DrupalBoot8 extends DrupalBoot
         parent::bootstrapDrupalDatabase($manager);
     }
 
-    public function bootstrapDrupalConfiguration(BootstrapManager $manager, AnnotationData $annotationData = null): void
+    public function bootstrapDrupalConfiguration(BootstrapManager $manager, ?AnnotationData $annotationData = null): void
     {
         // Coax \Drupal\Core\DrupalKernel::discoverServiceProviders to add our logger.
         $GLOBALS['conf']['container_service_providers'][] = DrushLoggerServiceProvider::class;
