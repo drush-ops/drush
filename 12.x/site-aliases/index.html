@@ -628,9 +628,29 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#docker-compose-and-other-transports" class="md-nav__link">
-    Docker Compose and other transports
+  <a href="#docker-compose" class="md-nav__link">
+    Docker Compose
   </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#kubernetes" class="md-nav__link">
+    Kubernetes
+  </a>
+  
+    <nav class="md-nav" aria-label="Kubernetes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#key-options" class="md-nav__link">
+    Key options
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -5396,6 +5416,12 @@ is really nothing more than a collection of options.</p>
 </li>
 </ul>
 </li>
+<li><strong>kubectl</strong> When specified, Drush executes via <code>kubectl</code> exec rather than <code>ssh</code>.<ul>
+<li><strong>namespace</strong> The namespace to execute the command in.</li>
+<li><strong>resource</strong> The k8s object to execute the command on.</li>
+<li><strong>container</strong> The container in the resource to execute the command on.</li>
+</ul>
+</li>
 <li><strong>os</strong>: The operating system of the remote server.  Valid values
   are <em>Windows</em> and <em>Linux</em>. Set this value for all remote
   aliases where the remote's OS differs from the local. This is especially relevant
@@ -5491,7 +5517,7 @@ match. This is not desirable in instances where the specified environment
 does not exist (e.g. if the user made a typo). An alias alter hook in a
 policy file may be used to catch these mistakes and report an error.
 See <a href="https://www.drush.org/latest/examples/SiteAliasAlterCommands.php/">SiteAliasAlterCommands</a> for an example on how to do this.</p>
-<h3 id="docker-compose-and-other-transports">Docker Compose and other transports<a class="headerlink" href="#docker-compose-and-other-transports" title="Permanent link">&para;</a></h3>
+<h3 id="docker-compose">Docker Compose<a class="headerlink" href="#docker-compose" title="Permanent link">&para;</a></h3>
 <p>The example below shows drush calling into a Docker hosted site. See the <a href="https://github.com/consolidation/site-alias">https://github.com/consolidation/site-alias</a> and <a href="https://github.com/consolidation/site-process">https://github.com/consolidation/site-process</a> projects for more developer
 information about transports. </p>
 <p>An example appears below. Edit to suit:</p>
@@ -5520,6 +5546,22 @@ dev:
   root: /path/to/docroot
   uri: https://dev.example.com
 </code></pre></div>
+<h3 id="kubernetes">Kubernetes<a class="headerlink" href="#kubernetes" title="Permanent link">&para;</a></h3>
+<p>Drush provides transport for running drush commands on your Kubernetes cluster via <a href="https://kubernetes.io/docs/reference/kubectl/">kubectl</a>. See an example and options below.</p>
+<div class="highlight"><pre><span></span><code>prod: 
+  kubectl:
+    namespace: &#39;my-drupal-namespace&#39;
+    resource: &#39;pods/my-drupal-pod&#39; 
+    container: &#39;drupal&#39;
+</code></pre></div>
+<h4 id="key-options">Key options<a class="headerlink" href="#key-options" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>namespace:</strong> The namespace where your Drupal deployment resides.</li>
+<li><strong>resource:</strong>  Kubernetes resource type (usually 'pods').</li>
+<li><strong>container:</strong> The specific container within the pod where Drupal runs.</li>
+<li><strong>kubeconfig:</strong> The kubeconfig file to use for authentication.</li>
+<li><strong>entrypoint:</strong> The command to use as the container entrypoint.</li>
+</ul>
 <h3 id="example-of-rsync-with-exclude-paths">Example of rsync with exclude-paths<a class="headerlink" href="#example-of-rsync-with-exclude-paths" title="Permanent link">&para;</a></h3>
 <p>Note that most options typically passed to rsync via <code>drush rsync</code> are
 "passthrough options", which is to say they appear after the <code>--</code> separator
@@ -5544,7 +5586,7 @@ may be specified in an alias record, as shown below.</p>
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">November 13, 2023</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">March 24, 2024</span>
       
     
   </small>
@@ -5559,7 +5601,7 @@ may be specified in an alias record, as shown below.</p>
     
         <div class="md-source-date">
             <small>
-                Authors: <span class='git-page-authors git-authors'><a href='mailto:weitzman@tejasa.com'>Moshe Weitzman</a></span>
+                Authors: <span class='git-page-authors git-authors'><a href='mailto:matthew.ramir@gmail.com'>Matthew Ramir</a>, <a href='mailto:weitzman@tejasa.com'>Moshe Weitzman</a></span>
             </small>
         </div>
     
