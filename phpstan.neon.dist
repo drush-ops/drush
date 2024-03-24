@@ -8,8 +8,8 @@ parameters:
     drupal:
         drupal_root: sut
     excludePaths:
+        # Deliberately calls ptional external code.
         - src/Psysh/Caster.php
-        - src/Exec/ExecTrait.php
     ignoreErrors:
         # XHprof
         - '#tideways_xhprof_enable#'
