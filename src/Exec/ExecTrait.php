@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace Drush\Exec;
 
-use Consolidation\SiteProcess\Util\Shell;
 use Consolidation\SiteProcess\Util\Escape;
+use Consolidation\SiteProcess\Util\Shell;
 use Drush\Drush;
 
 trait ExecTrait
 {
+    protected $uri;
+    
     /**
      * Starts a background browser/tab for the current site or a specified URL.
      *

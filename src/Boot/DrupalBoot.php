@@ -45,16 +45,13 @@ abstract class DrupalBoot extends BaseBoot
         return false;
     }
 
-    public function validRoot(?string $path): bool
-    {
-    }
-
     public function getVersion($drupal_root)
     {
     }
 
     public function confPath(bool $require_settings = true, bool $reset = false): ?string
     {
+        return null;
     }
 
     /**
@@ -164,7 +161,6 @@ abstract class DrupalBoot extends BaseBoot
      */
     public function bootstrapDrupalSite(BootstrapManager $manager)
     {
-        $this->bootstrapDoDrupalSite($manager);
     }
 
     /**

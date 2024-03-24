@@ -1,0 +1,18 @@
+parameters:
+    level: 0
+    editorUrl: 'phpstorm://open?file=%%file%%&line=%%line%%'
+    bootstrapFiles:
+        - phpstan-bootstrap.php
+    paths:
+        - src
+    drupal:
+        drupal_root: sut
+    excludePaths:
+        - src/Psysh/Caster.php
+        - src/Exec/ExecTrait.php
+    ignoreErrors:
+        # XHprof
+        - '#tideways_xhprof_enable#'
+        - '#tideways_xhprof_disable#'
+includes:
+    - vendor/mglaman/phpstan-drupal/extension.neon

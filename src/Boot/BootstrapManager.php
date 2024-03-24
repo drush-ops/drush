@@ -4,16 +4,12 @@ declare(strict_types=1);
 
 namespace Drush\Boot;
 
-use Psr\Log\LoggerInterface;
-use Consolidation\AnnotatedCommand\Events\CustomEventAwareInterface;
-use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
-use Consolidation\SiteProcess\ProcessManagerAwareInterface;
-use Consolidation\AnnotatedCommand\Input\StdinAwareInterface;
 use Consolidation\AnnotatedCommand\AnnotationData;
-use Drush\DrupalFinder\DrushDrupalFinder;
 use Drush\Config\ConfigAwareTrait;
+use Drush\DrupalFinder\DrushDrupalFinder;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
+use Psr\Log\LoggerInterface;
 use Robo\Contract\ConfigAwareInterface;
 
 class BootstrapManager implements LoggerAwareInterface, ConfigAwareInterface
@@ -74,9 +70,6 @@ class BootstrapManager implements LoggerAwareInterface, ConfigAwareInterface
 
     public function drupalFinder(): DrushDrupalFinder
     {
-        if (!isset($this->drupalFinder)) {
-            $this->drupalFinder = new DrushDrupalFinder();
-        }
         return $this->drupalFinder;
     }
 

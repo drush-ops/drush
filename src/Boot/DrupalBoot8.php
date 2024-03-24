@@ -4,28 +4,26 @@ declare(strict_types=1);
 
 namespace Drush\Boot;
 
-use Drupal\Core\DrupalKernelInterface;
 use Consolidation\AnnotatedCommand\AnnotationData;
 use Drupal\Core\Database\Database;
-use Drupal\Core\Render\HtmlResponse;
 use Drupal\Core\DrupalKernel;
+use Drupal\Core\DrupalKernelInterface;
+use Drupal\Core\Render\HtmlResponse;
 use Drupal\Core\Session\AnonymousUserSession;
 use Drush\Config\ConfigLocator;
 use Drush\Drupal\DrushLoggerServiceProvider;
 use Drush\Drush;
+use Drush\Runtime\LegacyServiceFinder;
+use Drush\Runtime\LegacyServiceInstantiator;
 use Drush\Runtime\ServiceManager;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\Filesystem\Path;
+use Robo\Robo;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Consolidation\AnnotatedCommand\CommandFileDiscovery;
-use Robo\Robo;
-use Drush\Runtime\LegacyServiceInstantiator;
-use Drush\Runtime\LegacyServiceFinder;
 
 class DrupalBoot8 extends DrupalBoot
 {
-    protected ?LoggrInterface $drupalLoggerAdapter = null;
+    protected ?LoggerInterface $drupalLoggerAdapter = null;
     protected ?DrupalKernelInterface $kernel = null;
     protected Request $request;
 
