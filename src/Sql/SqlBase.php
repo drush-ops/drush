@@ -119,8 +119,8 @@ abstract class SqlBase implements ConfigAwareInterface
     public static function getInstance($db_spec, $options): ?self
     {
         $driver = $db_spec['driver'];
-        $class_name = 'Drush\Sql\Sql' . ucfirst($driver);
-        if (class_exists($class_name)) {
+        $class_name = !empty($driver) ? 'Drush\Sql\Sql' . ucfirst($driver) : null;
+        if ($class_name && class_exists($class_name)) {
             $instance = method_exists($class_name, 'make') ? $class_name::make($db_spec, $options) : new $class_name($db_spec, $options);
             // Inject config
             $instance->setConfig(Drush::config());
