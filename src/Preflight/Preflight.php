@@ -323,8 +323,6 @@ class Preflight
      */
     protected function preferredSite()
     {
-        $projectRoot = dirname($this->environment->vendorPath());
-        // $this->drupalFinder->locateRoot($projectRoot);
         $root = $this->drupalFinder()->getDrupalRoot();
 
         // We prohibit global installs of Drush (without a Drupal site).
@@ -335,25 +333,16 @@ class Preflight
         return $root;
     }
 
-    /**
-     * Return the Drupal Finder
-     */
     public function drupalFinder(): DrushDrupalFinder
     {
         return $this->drupalFinder;
     }
 
-    /**
-     * Return the alias manager
-     */
     public function aliasManager(): SiteAliasManager
     {
         return $this->aliasManager;
     }
 
-    /**
-     * Return the environment
-     */
     public function environment(): Environment
     {
         return $this->environment;
