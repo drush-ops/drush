@@ -12,8 +12,6 @@ use Drush\Commands\AutowireTrait;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Drush\Exec\ExecTrait;
-use Drush\Runtime\DependencyInjection;
-use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 final class BrowseCommands extends DrushCommands
 {
@@ -23,7 +21,6 @@ final class BrowseCommands extends DrushCommands
     const BROWSE = 'browse';
 
     public function __construct(
-        #[Autowire(service: DependencyInjection::SITE_ALIAS_MANAGER)]
         private SiteAliasManagerInterface $siteAliasManager
     ) {
         parent::__construct();

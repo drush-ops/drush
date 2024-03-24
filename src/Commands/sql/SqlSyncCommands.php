@@ -17,8 +17,6 @@ use Drush\Commands\core\StatusCommands;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Drush\Exceptions\UserAbortException;
-use Drush\Runtime\DependencyInjection;
-use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Filesystem\Path;
 
 #[CLI\Bootstrap(DrupalBootLevels::NONE)]
@@ -29,7 +27,6 @@ final class SqlSyncCommands extends DrushCommands
     const SYNC = 'sql:sync';
 
     public function __construct(
-        #[Autowire(service: DependencyInjection::SITE_ALIAS_MANAGER)]
         private readonly SiteAliasManagerInterface $siteAliasManager
     ) {
         parent::__construct();

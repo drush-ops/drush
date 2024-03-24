@@ -11,7 +11,7 @@ Autowire
 ------------------
 :octicons-tag-24: 12.5+
 
-Command files may inject Drush and Drupal services by adding the [AutowireTrait](https://github.com/drush-ops/drush/blob/13.x/src/Commands/AutowireTrait.php) to the class (example: [PmCommands](https://github.com/drush-ops/drush/blob/13.x/src/Commands/pm/PmCommands.php)). This enables your [Constructor parameter type hints determine the the injected service](https://www.drupal.org/node/3396179). When a type hint is insufficient, an [#[Autowire] Attribute](https://www.drupal.org/node/3396179) on the constructor property (with _service:_ named argument) directs AutoWireTrait to the right service (example: [LoginCommands](https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/LoginCommands.php)). This Attribute is currently _required_ when injecting Drush services (not required for Drupal services). 
+Command files may inject Drush and Drupal services by adding the [AutowireTrait](https://github.com/drush-ops/drush/blob/13.x/src/Commands/AutowireTrait.php) to the class (example: [PmCommands](https://github.com/drush-ops/drush/blob/13.x/src/Commands/pm/PmCommands.php)). This enables your [Constructor parameter type hints determine the the injected service](https://www.drupal.org/node/3396179). When a type hint is insufficient, an [#[Autowire] Attribute](https://www.drupal.org/node/3396179) on the constructor property (with _service:_ named argument) directs AutoWireTrait to the right service (example: [LoginCommands](https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/LoginCommands.php)).
 
 If your command is not found by Drush, add the `-vvv` option for debug info about any service instantiation errors. If Autowire is still insufficient, a commandfile may implement its own `create()` method (see below).
 
@@ -19,7 +19,7 @@ create() method
 ------------------
 :octicons-tag-24: 11.6+
 
-Command files not using Autowire may inject services by adding a create() method to the commandfile. A create() method and a constructor will look something like this:
+Command files not using Autowire may inject services by adding a create() method to the commandfile. The passed in Container is a [League container](https://container.thephpleague.com/) with a delegate to the Drupal container. Note that the type hint should be to `Psr\Container\ContanierInterface` not `Symfony\Component\DependencyInjection\ContainerInterface`. A create() method and constructor will look something like this:
 ```php
 class WootStaticFactoryCommands extends DrushCommands
 {
@@ -30,7 +30,7 @@ class WootStaticFactoryCommands extends DrushCommands
         $this->configFactory = $configFactory;
     }
 
-    public static function create(ContainerInterface $container): self
+    public static function create(Psr\Container\ContainerInterface $container): self
     {
         return new static($container->get('config.factory'));
     }

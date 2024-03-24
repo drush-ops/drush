@@ -258,25 +258,21 @@ class ConfigImportCommands extends DrushCommands
                         do {
                             $config_importer->doSyncStep($step, $context);
                             if (isset($context['message'])) {
-                                $this->logger()->notice(str_replace('Synchronizing', 'Synchronized', (string)$context['message']));
-                            }
-
-                            // Installing and uninstalling modules might trigger
-                            // batch operations. Let's process them here.
-                            // @see \Drush\Commands\pm\PmCommands::install()
-                            if ($step === 'processExtensions' && batch_get()) {
-                                drush_backend_batch_process();
+                                $this->logger()->notice(
+                                    str_replace('Synchronizing', 'Synchronized', (string)$context['message'])
+                                );
                             }
                         } while ($context['finished'] < 1);
                     }
                     // Clear the cache of the active config storage.
                     $this->getConfigCache()->deleteAll();
                 }
+
                 if ($config_importer->getErrors()) {
                     throw new ConfigException('Errors occurred during import');
-                } else {
-                    $this->logger()->success('The configuration was imported successfully.');
                 }
+
+                $this->logger()->success('The configuration was imported successfully.');
             } catch (ConfigException $e) {
                 // Return a negative result for UI purposes. We do not differentiate
                 // between an actual synchronization error and a failed lock, because
@@ -286,8 +282,14 @@ class ConfigImportCommands extends DrushCommands
                 $message = 'The import failed due to the following reasons:' . "\n";
                 $message .= implode("\n", $config_importer->getErrors());
 
-                watchdog_exception('config_import', $e);
                 throw new \Exception($message, $e->getCode(), $e);
+            } finally {
+                // Importing config might trigger batch operations (such as when installing and uninstalling modules).
+                // @see \Drush\Commands\pm\PmCommands::install()
+                if (batch_get()) {
+                    $this->logger()->notice('Running batch operations...');
+                    drush_backend_batch_process();
+                }
             }
         }
     }

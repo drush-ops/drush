@@ -57,7 +57,7 @@ final class GenerateCommands extends DrushCommands
     #[CLI\Complete(method_name_or_callable: 'generatorNameComplete')]
     public function generate(string $generator = '', $options = ['replace' => false, 'working-dir' => self::REQ, 'answer' => [], 'destination' => self::REQ, 'dry-run' => false]): int
     {
-        $application = (new ApplicationFactory($this->container, $this->drush_container, $this->logger()))->create();
+        $application = (new ApplicationFactory($this->drush_container, $this->logger()))->create();
 
         if (!$generator || $generator == 'list') {
             $all = $application->all();

@@ -23,7 +23,6 @@ use Drush\Boot\BootstrapManager;
 use Drush\Boot\DrupalBootLevels;
 use Drush\Commands\AutowireTrait;
 use Drush\Commands\DrushCommands;
-use Drush\Runtime\DependencyInjection;
 use Drush\Utils\StringUtils;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Filesystem\Exception\IOException;
@@ -53,9 +52,7 @@ final class CacheCommands extends DrushCommands implements CustomEventAwareInter
         #[Autowire(service: 'asset.css.collection_optimizer')]
         private $cssOptimizer,
         private CachedDiscoveryClearerInterface $pluginCacheClearer,
-        #[Autowire(service: DependencyInjection::BOOTSTRAP_MANAGER)]
         private BootstrapManager $bootstrapManager,
-        #[Autowire(service: DependencyInjection::LOADER)]
         private ClassLoader $autoloader
     ) {
         parent::__construct();

@@ -13,8 +13,6 @@ use Drush\Commands\AutowireTrait;
 use Drush\Commands\config\ConfigImportCommands;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
-use Drush\Runtime\DependencyInjection;
-use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 final class DeployCommands extends DrushCommands
 {
@@ -23,7 +21,6 @@ final class DeployCommands extends DrushCommands
     const DEPLOY = 'deploy';
 
     public function __construct(
-        #[Autowire(service: DependencyInjection::SITE_ALIAS_MANAGER)]
         private readonly SiteAliasManagerInterface $siteAliasManager
     ) {
         parent::__construct();

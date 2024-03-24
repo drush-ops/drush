@@ -17,9 +17,7 @@ use Drush\Drupal\DrupalUtil;
 use Drush\Drush;
 use Drush\Exceptions\UserAbortException;
 use Drush\Log\SuccessInterface;
-use Drush\Runtime\DependencyInjection;
 use Psr\Log\LogLevel;
-use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 #[CLI\Bootstrap(DrupalBootLevels::NONE)]
 final class UpdateDBCommands extends DrushCommands
@@ -31,7 +29,6 @@ final class UpdateDBCommands extends DrushCommands
     const BATCH_PROCESS = 'updatedb:batch-process';
 
     public function __construct(
-        #[Autowire(service: DependencyInjection::SITE_ALIAS_MANAGER)]
         private readonly SiteAliasManagerInterface $siteAliasManager
     ) {
         parent::__construct();

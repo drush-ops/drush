@@ -9,8 +9,6 @@ use Consolidation\SiteAlias\SiteAliasManagerInterface;
 use Drush\Attributes as CLI;
 use Drush\Commands\AutowireTrait;
 use Drush\Commands\DrushCommands;
-use Drush\Runtime\DependencyInjection;
-use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 final class SiteCommands extends DrushCommands
 {
@@ -20,7 +18,6 @@ final class SiteCommands extends DrushCommands
     const ALIAS = 'site:alias';
 
     public function __construct(
-        #[Autowire(service: DependencyInjection::SITE_ALIAS_MANAGER)]
         private readonly SiteAliasManagerInterface $siteAliasManager
     ) {
         parent::__construct();

@@ -18,12 +18,10 @@ use Drush\Boot\DrupalBootLevels;
 use Drush\Commands\AutowireTrait;
 use Drush\Commands\DrushCommands;
 use Drush\Exceptions\UserAbortException;
-use Drush\Runtime\DependencyInjection;
 use Drush\Sql\SqlBase;
 use Drush\Utils\FsUtils;
 use Exception;
 use PharData;
-use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Path;
 use Throwable;
@@ -48,9 +46,7 @@ final class ArchiveRestoreCommands extends DrushCommands
     private const TEMP_DIR_NAME = 'uncompressed';
 
     public function __construct(
-        #[Autowire(service: DependencyInjection::BOOTSTRAP_MANAGER)]
         private readonly BootstrapManager $bootstrapManager,
-        #[Autowire(service: DependencyInjection::SITE_ALIAS_MANAGER)]
         private readonly SiteAliasManagerInterface $siteAliasManager
     ) {
         parent::__construct();
