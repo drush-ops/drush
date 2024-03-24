@@ -51,8 +51,7 @@
     "symfony/filesystem": "^6.1",
     "symfony/finder": "^6",
     "symfony/var-dumper": "^6.0",
-    "symfony/yaml": "^6.0",
-    "webflo/drupal-finder": "^1.2"
+    "symfony/yaml": "^6.0"
   },
   "require-dev": {
     "composer/installers": "^2",
