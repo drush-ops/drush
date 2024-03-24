@@ -182,7 +182,7 @@ final class SiteInstallCommands extends DrushCommands
     }
 
 
-    protected function determineProfile($profile, $options)
+    protected function determineProfile($profile, $options): string|bool
     {
         // Try to get profile from existing config if not provided as an argument.
         // @todo Arguably Drupal core [$boot->getKernel()->getInstallProfile()] could do this - https://github.com/drupal/drupal/blob/8.6.x/core/lib/Drupal/Core/DrupalKernel.php#L1606 reads from DB storage but not file storage.
