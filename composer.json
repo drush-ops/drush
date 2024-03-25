@@ -73,17 +73,7 @@
   "autoload": {
     "psr-4": {
       "Drush\\":            "src/"
-    },
-    "files": [
-      "includes/batch.inc",
-      "includes/bootstrap.inc",
-      "includes/drush.inc",
-      "includes/filesystem.inc",
-      "includes/legacy.inc",
-      "includes/output.inc",
-      "includes/preflight.inc",
-      "includes/site_install.inc"
-    ]
+    }
   },
   "autoload-dev": {
     "psr-4": {
