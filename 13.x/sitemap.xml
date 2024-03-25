@@ -101,11 +101,6 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/latest/commands/archive_restore/</loc>
-         <lastmod>2024-03-25</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
          <loc>https://www.drush.org/latest/latest/commands/browse/</loc>
          <lastmod>2024-03-25</lastmod>
          <changefreq>daily</changefreq>
