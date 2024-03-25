@@ -6,7 +6,6 @@ namespace Drush\Preflight;
 
 use Composer\Autoload\ClassLoader;
 use Consolidation\SiteAlias\SiteAliasManager;
-use DrupalFinder\DrupalFinder;
 use Drush\Commands\DrushCommands;
 use Drush\Config\ConfigLocator;
 use Drush\Config\DrushConfig;
@@ -15,7 +14,6 @@ use Drush\DrupalFinder\DrushDrupalFinder;
 use Drush\SiteAlias\SiteAliasFileLoader;
 use RuntimeException;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Filesystem\Path;
 use Symfony\Component\HttpKernel\Kernel;
 
 /**
@@ -305,30 +303,6 @@ class Preflight
         $this->aliasManager->setSelf($selfSiteAlias);
         $this->configLocator->addAliasConfig($selfSiteAlias->exportConfig());
 
-        // Check to see if the alias on the command line points at
-        // a local Drupal site that is not the site at $root
-        $localAliasDrupalFinder = new DrupalFinder();
-        $foundAlternateRoot = $localAliasDrupalFinder->locateRoot($selfSiteAlias->localRoot());
-        if ($foundAlternateRoot) {
-            $alteredRoot = Path::canonicalize($localAliasDrupalFinder->getDrupalRoot());
-
-            // Now that we have our final Drupal root, check to see if there is
-            // a site-local Drush. If there is, we will redispatch to it.
-            // NOTE: termination handlers have not been set yet, so it is okay
-            // to exit early without taking special action.
-            [$preflightDidRedispatch, $exitStatus] = RedispatchToSiteLocal::redispatchIfSiteLocalDrush($argv, $alteredRoot, $this->environment->vendorPath(), $this->logger());
-            if ($preflightDidRedispatch) {
-                return [$preflightDidRedispatch, $exitStatus];
-            }
-
-            // If the Drupal site changed, and the alternate site does not
-            // contain its own copy of Drush, then we cannot continue.
-            if ($alteredRoot != $root) {
-                $aliasName = $this->preflightArgs->alias();
-                throw new \Exception("The alias $aliasName references a Drupal site that does not contain its own copy of Drush. Please add Drush to this site to use it.");
-            }
-        }
-
         // Remember the paths to all the files we loaded, so that we can
         // report on it from Drush status or wherever else it may be needed.
         $configFilePaths = $this->configLocator->configFilePaths();
@@ -349,8 +323,6 @@ class Preflight
      */
     protected function preferredSite()
     {
-        $projectRoot = dirname($this->environment->vendorPath());
-        // $this->drupalFinder->locateRoot($projectRoot);
         $root = $this->drupalFinder()->getDrupalRoot();
 
         // We prohibit global installs of Drush (without a Drupal site).
@@ -361,25 +333,16 @@ class Preflight
         return $root;
     }
 
-    /**
-     * Return the Drupal Finder
-     */
     public function drupalFinder(): DrushDrupalFinder
     {
         return $this->drupalFinder;
     }
 
-    /**
-     * Return the alias manager
-     */
     public function aliasManager(): SiteAliasManager
     {
         return $this->aliasManager;
     }
 
-    /**
-     * Return the environment
-     */
     public function environment(): Environment
     {
         return $this->environment;
