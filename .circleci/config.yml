@@ -72,6 +72,7 @@ jobs:
       - run: cp .docker/zz-php.ini /usr/local/etc/php/conf.d/
       - run: composer -n validate --no-check-all
       - run: composer -n install
+      - run: mkdir -p /tmp/results
       - run: composer -n cs -- --report=junit --report-file=/tmp/results/junit.phpcs.xml
       - run: vendor/bin/phpstan --error-format=junit > /tmp/results/phpstan.junit.xml
 
