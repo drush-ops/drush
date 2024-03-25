@@ -48,7 +48,7 @@ final class MkCommands extends DrushCommands
         $destination_path = Path::join($dir_root, 'docs', $destination);
         $this->prepare($destination_path);
         $container = Drush::getContainer();
-        $application_generate = (new ApplicationFactory($container->get('service_container'), $container, $this->logger()))->create();
+        $application_generate = (new ApplicationFactory($container, $this->logger()))->create();
         $all = $this->createAnnotatedCommands($application_generate, Drush::getApplication());
         $namespaced = ListCommands::categorize($all);
         [$nav_generators, $pages_generators, $map_generators] = $this->writeContentFilesAndBuildNavAndBuildRedirectMap($namespaced, $destination, $dir_root, $destination_path);
@@ -62,6 +62,7 @@ final class MkCommands extends DrushCommands
      */
     public function createAnnotatedCommands(Application $application_generate, Application $application_drush): array
     {
+        $commands = [];
         $definition = $application_drush->get('generate')->getDefinition();
         foreach ($application_generate->all() as $command) {
             $annotated = new AnnotatedCommand($command->getName());
@@ -243,6 +244,7 @@ EOT;
 
     protected function writeAllMd(array $pages_all, string $destination_path, string $title): void
     {
+        $items = [];
         unset($pages_all['all']);
         foreach ($pages_all as $name => $page) {
             $basename = basename($page);
@@ -364,7 +366,7 @@ EOT;
             $this->logger()->info('Found {pages} pages in {cat}', ['pages' => count($pages), 'cat' => $category]);
             $nav[] = [$category => $pages];
             $pages_all = array_merge($pages_all, $pages);
-            unset($pages);
+            $pages = [];
         }
         return [$nav, $pages_all, $map_all];
     }

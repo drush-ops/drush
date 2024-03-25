@@ -52,9 +52,9 @@ final class DrupalCommands extends DrushCommands
     #[CLI\Command(name: self::CRON, aliases: ['cron', 'core-cron'])]
     #[CLI\Usage(name: 'drush maint:status && drush core:cron', description: 'Run cron unless maintenance mode is enabled')]
     #[CLI\Topics(topics: [DocsCommands::CRON])]
-    public function cron(): void
+    public function cron(): bool
     {
-        $this->getCron()->run();
+        return $this->getCron()->run();
     }
 
     /**
@@ -118,7 +118,7 @@ final class DrupalCommands extends DrushCommands
                 unset($rows[$key]);
             }
         }
-        return new RowsOfFields($rows);
+        return new RowsOfFields($rows ?? []);
     }
 
     /**

@@ -196,6 +196,7 @@ final class DeployHookCommands extends DrushCommands
                 break;
             }
         }
+        assert(isset($module) && isset($name) && isset($filename));
 
         if (function_exists($function)) {
             if (empty($context['results'][$module][$name]['type'])) {

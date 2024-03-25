@@ -54,7 +54,7 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
 
     public static function create(ContainerInterface $container): self
     {
-        $commandHandler = new static(
+        $commandHandler = new self(
             $container->get('plugin.manager.field.field_type'),
             $container->get('plugin.manager.field.widget'),
             $container->get('plugin.manager.entity_reference_selection'),
@@ -71,7 +71,7 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
         return $commandHandler;
     }
 
-    public function setContentTranslationManager(ContentTranslationManagerInterface $manager = null): void
+    public function setContentTranslationManager(?ContentTranslationManagerInterface $manager = null): void
     {
         if ($manager) {
             $this->contentTranslationManager = $manager;

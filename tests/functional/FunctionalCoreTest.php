@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Unish;
 
 use Drush\Commands\core\StatusCommands;
-use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Path;
 use Symfony\Component\Yaml\Yaml;
 

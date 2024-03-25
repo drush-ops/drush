@@ -342,7 +342,7 @@ class Preflight
     {
         return $this->aliasManager;
     }
-
+    
     public function environment(): Environment
     {
         return $this->environment;

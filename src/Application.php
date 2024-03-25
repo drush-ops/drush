@@ -336,16 +336,6 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
     }
 
     /**
-     * Renders a caught exception. Omits the command docs at end.
-     */
-    public function renderException(\Exception $e, OutputInterface $output)
-    {
-        $output->writeln('', OutputInterface::VERBOSITY_QUIET);
-
-        $this->doRenderException($e, $output);
-    }
-
-    /**
      * Renders a caught Throwable. Omits the command docs at end.
      */
     public function renderThrowable(\Throwable $e, OutputInterface $output): void

@@ -92,6 +92,7 @@ final class TwigCommands extends DrushCommands
     #[CLI\Command(name: self::COMPILE, aliases: ['twigc', 'twig-compile'])]
     public function twigCompile(): void
     {
+        $searchpaths = [];
         require_once DRUSH_DRUPAL_CORE . "/themes/engines/twig/twig.engine";
         // Scan all enabled modules and themes.
         $modules = array_keys($this->getModuleHandler()->getModuleList());

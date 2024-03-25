@@ -288,10 +288,9 @@ final class WatchdogCommands extends DrushCommands
      * @param $severity_min
      *   Int or String for the minimum severity to return.
      */
-    protected function where(?string $type = null, $severity = null, ?string $filter = null, string $criteria = 'AND', int|string $severity_min = null): array
+    protected function where(?string $type = null, $severity = null, ?string $filter = null, string $criteria = 'AND', int|string|null $severity_min = null): array
     {
-        $args = [];
-        $conditions = [];
+        $args = $levels = $conditions = [];
         if ($type) {
             $types = $this->messageTypes();
             if (!in_array($type, $types)) {

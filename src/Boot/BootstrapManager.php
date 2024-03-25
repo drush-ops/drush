@@ -4,16 +4,12 @@ declare(strict_types=1);
 
 namespace Drush\Boot;
 
-use Psr\Log\LoggerInterface;
-use Consolidation\AnnotatedCommand\Events\CustomEventAwareInterface;
-use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
-use Consolidation\SiteProcess\ProcessManagerAwareInterface;
-use Consolidation\AnnotatedCommand\Input\StdinAwareInterface;
 use Consolidation\AnnotatedCommand\AnnotationData;
-use Drush\DrupalFinder\DrushDrupalFinder;
 use Drush\Config\ConfigAwareTrait;
+use Drush\DrupalFinder\DrushDrupalFinder;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
+use Psr\Log\LoggerInterface;
 use Robo\Contract\ConfigAwareInterface;
 
 class BootstrapManager implements LoggerAwareInterface, ConfigAwareInterface
@@ -74,9 +70,6 @@ class BootstrapManager implements LoggerAwareInterface, ConfigAwareInterface
 
     public function drupalFinder(): DrushDrupalFinder
     {
-        if (!isset($this->drupalFinder)) {
-            $this->drupalFinder = new DrushDrupalFinder();
-        }
         return $this->drupalFinder;
     }
 
@@ -211,7 +204,7 @@ class BootstrapManager implements LoggerAwareInterface, ConfigAwareInterface
      *   TRUE if the specified bootstrap phase has completed.
      * @see \Drush\Boot\Boot::bootstrapPhases()
      */
-    public function doBootstrap(int $phase, $phase_max = false, AnnotationData $annotationData = null): bool
+    public function doBootstrap(int $phase, $phase_max = false, ?AnnotationData $annotationData = null): bool
     {
         $bootstrap = $this->bootstrap();
         $phases = $this->bootstrapPhases(true);
@@ -314,7 +307,7 @@ class BootstrapManager implements LoggerAwareInterface, ConfigAwareInterface
      *   Thrown when an unknown bootstrap phase is passed in the annotation
      *   data.
      */
-    public function bootstrapToPhase(string $bootstrapPhase, AnnotationData $annotationData = null): bool
+    public function bootstrapToPhase(string $bootstrapPhase, ?AnnotationData $annotationData = null): bool
     {
         $this->logger->info('Starting bootstrap to {phase}', ['phase' => $bootstrapPhase]);
         $phase = $this->bootstrap()->lookUpPhaseIndex($bootstrapPhase);
@@ -348,7 +341,7 @@ class BootstrapManager implements LoggerAwareInterface, ConfigAwareInterface
      *   Optional annotation data from the command.
      *   TRUE if the specified bootstrap phase has completed.
      */
-    public function bootstrapToPhaseIndex(int $max_phase_index, AnnotationData $annotationData = null): bool
+    public function bootstrapToPhaseIndex(int $max_phase_index, ?AnnotationData $annotationData = null): bool
     {
         if ($max_phase_index == DRUSH_BOOTSTRAP_MAX) {
             // Try get a max phase.
@@ -396,7 +389,7 @@ class BootstrapManager implements LoggerAwareInterface, ConfigAwareInterface
      *
      *   The maximum phase to which we bootstrapped.
      */
-    public function bootstrapMax($max_phase_index = false, AnnotationData $annotationData = null): int
+    public function bootstrapMax($max_phase_index = false, ?AnnotationData $annotationData = null): int
     {
         // Bootstrap as far as we can without throwing an error, but log for
         // debugging purposes.
