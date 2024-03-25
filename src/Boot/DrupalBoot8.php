@@ -324,4 +324,15 @@ class DrupalBoot8 extends DrupalBoot
             $this->kernel->terminate($this->getRequest(), $response);
         }
     }
+
+    /**
+     * Initialize a site on the Drupal root.
+     *
+     * We now set various contexts that we determined and confirmed to be valid.
+     * Additionally we load an optional drush.yml file in the site directory.
+     */
+    public function bootstrapDrupalSite(BootstrapManager $manager)
+    {
+        $this->bootstrapDoDrupalSite($manager);
+    }
 }

@@ -154,16 +154,6 @@ abstract class DrupalBoot extends BaseBoot
     }
 
     /**
-     * Initialize a site on the Drupal root.
-     *
-     * We now set various contexts that we determined and confirmed to be valid.
-     * Additionally we load an optional drush.yml file in the site directory.
-     */
-    public function bootstrapDrupalSite(BootstrapManager $manager)
-    {
-    }
-
-    /**
      * Initialize and load the Drupal configuration files.
      */
     public function bootstrapDrupalConfiguration(BootstrapManager $manager)
