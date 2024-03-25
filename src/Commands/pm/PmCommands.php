@@ -190,10 +190,8 @@ final class PmCommands extends DrushCommands
         if ($modules = $commandData->input()->getArgument('modules')) {
             $modules = StringUtils::csvToArray($modules);
             if ($validation_reasons = $this->getModuleInstaller()->validateUninstall($modules)) {
-                foreach ($validation_reasons as $module => $list) {
-                    foreach ($list as $markup) {
-                        $reasons[$module] = "$module: " . (string) $markup;
-                    }
+                foreach ($validation_reasons as $module => $reason) {
+                    $reasons[$module] = "$module: " . (string)$reason;
                 }
                 throw new \Exception(implode("/n", $reasons));
             }

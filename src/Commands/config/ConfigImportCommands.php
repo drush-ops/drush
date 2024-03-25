@@ -203,7 +203,7 @@ class ConfigImportCommands extends DrushCommands
         }
 
         $config_manager = $this->getConfigManager();
-        $storage_comparer = new StorageComparer($source_storage, $active_storage, $config_manager);
+        $storage_comparer = new StorageComparer($source_storage, $active_storage);
 
 
         if (!$storage_comparer->createChangelist()->hasChanges()) {

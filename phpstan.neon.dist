@@ -1,5 +1,5 @@
 parameters:
-    level: 0
+    level: 1
     editorUrl: 'phpstorm://open?file=%%file%%&line=%%line%%'
     bootstrapFiles:
         - phpstan-bootstrap.php
@@ -8,11 +8,15 @@ parameters:
     drupal:
         drupal_root: sut
     excludePaths:
-        # Deliberately calls ptional external code.
+        # Deliberately calls optional external code.
         - src/Psysh/Caster.php
     ignoreErrors:
         # XHprof
         - '#tideways_xhprof_enable#'
         - '#tideways_xhprof_disable#'
+        - '#Constant DRUSH_DRUPAL_CORE not found.#'
+        - '#Constant TIDEWAYS_XHPROF_FLAGS_NO_BUILTINS not found.#'
+        - '#Constant TIDEWAYS_XHPROF_FLAGS_CPU not found.#'
+        - '#Constant TIDEWAYS_XHPROF_FLAGS_MEMORY not found.#'
 includes:
     - vendor/mglaman/phpstan-drupal/extension.neon

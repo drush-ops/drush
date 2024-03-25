@@ -99,6 +99,7 @@ class MigrateRunnerCommands extends DrushCommands
       'format' => 'table'
     ]): RowsOfFields
     {
+        $fields = [];
         if ($options['field']) {
             $fields = [$options['field']];
         } elseif ($options['fields']) {
