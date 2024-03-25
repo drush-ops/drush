@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Drush\Drupal;
 
-use Composer\Semver\Semver;
 use Drupal\Core\DependencyInjection\ServiceModifierInterface;
 use Drupal\Core\Site\Settings;
 use Drush\Drush;
@@ -91,6 +90,6 @@ trait DrupalKernelTrait
     public function discoverServiceProviders()
     {
         // Let Drupal discover all of its service providers
-        parent::discoverServiceProviders();
+        return parent::discoverServiceProviders();
     }
 }

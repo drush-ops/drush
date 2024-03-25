@@ -307,9 +307,8 @@ final class UpdateDBCommands extends DrushCommands
             }
         } else {
             $ret['#abort'] = ['success' => false];
-            Drush::logger()->warning(dt('Post update function @function not found in file @filename', [
-                '@function' => $function,
-                '@filename' => "$filename.php",
+            Drush::logger()->warning(dt('Post update function @function not found.', [
+                '@function' => $function
             ]));
         }
 

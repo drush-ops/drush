@@ -71,6 +71,7 @@ final class NotifyCommands extends DrushCommands
 
         if (!empty($override)) {
             $cmd = $override;
+            $error_message = dt('custom notify command failed.');
         } else {
             switch (PHP_OS) {
                 case 'Darwin':

@@ -53,6 +53,7 @@ final class PhpCommands extends DrushCommands implements StdinAwareInterface
     public function script(array $extra, $options = ['format' => 'var_export', 'script-path' => self::REQ])
     {
         $found = false;
+        $all = [];
         $script = array_shift($extra);
 
         if ($script == '-') {

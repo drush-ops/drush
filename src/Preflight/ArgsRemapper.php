@@ -33,9 +33,7 @@ class ArgsRemapper
         $sawCommand = false;
         foreach ($argv as $arg) {
             $arg = $this->checkRemap($arg, $sawCommand);
-            if (isset($arg)) {
-                $result[] = $arg;
-            }
+            $result[] = $arg;
         }
         return $result;
     }

@@ -166,7 +166,7 @@ class FsUtils
         foreach (static::$deletionList as $dir) {
             try {
                 $fs->remove($dir);
-            } catch (IOException $e) {
+            } catch (\Exception $e) {
               // No action taken if someone already deleted the directory
             }
         }

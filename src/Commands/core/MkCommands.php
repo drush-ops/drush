@@ -62,6 +62,7 @@ final class MkCommands extends DrushCommands
      */
     public function createAnnotatedCommands(Application $application_generate, Application $application_drush): array
     {
+        $commands = [];
         $definition = $application_drush->get('generate')->getDefinition();
         foreach ($application_generate->all() as $command) {
             $annotated = new AnnotatedCommand($command->getName());
@@ -243,6 +244,7 @@ EOT;
 
     protected function writeAllMd(array $pages_all, string $destination_path, string $title): void
     {
+        $items = [];
         unset($pages_all['all']);
         foreach ($pages_all as $name => $page) {
             $basename = basename($page);
@@ -364,7 +366,7 @@ EOT;
             $this->logger()->info('Found {pages} pages in {cat}', ['pages' => count($pages), 'cat' => $category]);
             $nav[] = [$category => $pages];
             $pages_all = array_merge($pages_all, $pages);
-            unset($pages);
+            $pages = [];
         }
         return [$nav, $pages_all, $map_all];
     }

@@ -85,7 +85,7 @@ final class EditCommands extends DrushCommands
 
     public function load($headers = true): array
     {
-        $php_header = $rcs_header = $aliases_header = $drupal_header = $drupal = [];
+        $php_header = $rcs_header = $aliases_header = $drupal_header = $bash_header = $drupal = [];
         $php = $this->phpIniFiles();
         if (!empty($php)) {
             if ($headers) {

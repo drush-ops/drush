@@ -18,7 +18,7 @@ class SqlMysql extends SqlBase
     public static function make(array $dbSpec, array $options)
     {
         // First get a MySQL instance
-        $instance = new static($dbSpec, $options);
+        $instance = new self($dbSpec, $options);
         $sql = 'SELECT VERSION();"';
         $instance->alwaysQuery($sql);
         $out = trim($instance->getProcess()->getOutput());

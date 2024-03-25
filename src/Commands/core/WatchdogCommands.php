@@ -290,8 +290,7 @@ final class WatchdogCommands extends DrushCommands
      */
     protected function where(?string $type = null, $severity = null, ?string $filter = null, string $criteria = 'AND', int|string|null $severity_min = null): array
     {
-        $args = [];
-        $conditions = [];
+        $args = $levels = $conditions = [];
         if ($type) {
             $types = $this->messageTypes();
             if (!in_array($type, $types)) {

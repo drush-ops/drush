@@ -54,7 +54,7 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
 
     public static function create(ContainerInterface $container): self
     {
-        $commandHandler = new static(
+        $commandHandler = new self(
             $container->get('plugin.manager.field.field_type'),
             $container->get('plugin.manager.field.widget'),
             $container->get('plugin.manager.entity_reference_selection'),

@@ -118,7 +118,7 @@ final class DrupalCommands extends DrushCommands
                 unset($rows[$key]);
             }
         }
-        return new RowsOfFields($rows);
+        return new RowsOfFields($rows ?? []);
     }
 
     /**

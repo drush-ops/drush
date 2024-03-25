@@ -1,0 +1,25 @@
+parameters:
+    level: 1
+    editorUrl: 'phpstorm://open?file=%%file%%&line=%%line%%'
+    bootstrapFiles:
+        - phpstan-bootstrap.php
+    paths:
+        - src
+    drupal:
+        drupal_root: sut
+    excludePaths:
+        # Deliberately calls optional external code.
+        - src/Psysh/Caster.php
+        # Remove once https://github.com/mglaman/phpstan-drupal/issues/741 is resolved
+        - src/Commands/core/LocaleCommands.php
+        - src/Commands/core/LanguageCommands.php
+    ignoreErrors:
+        # XHprof
+        - '#tideways_xhprof_enable#'
+        - '#tideways_xhprof_disable#'
+        - '#Constant DRUSH_DRUPAL_CORE not found.#'
+        - '#Constant TIDEWAYS_XHPROF_FLAGS_NO_BUILTINS not found.#'
+        - '#Constant TIDEWAYS_XHPROF_FLAGS_CPU not found.#'
+        - '#Constant TIDEWAYS_XHPROF_FLAGS_MEMORY not found.#'
+includes:
+    - vendor/mglaman/phpstan-drupal/extension.neon
