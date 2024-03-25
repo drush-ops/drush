@@ -386,9 +386,7 @@ phase index constant (e.g. DRUSH_BOOTSTRAP_DRUPAL_FULL).</p></dd><dt><a href="Dr
 <abbr title="Drush\Boot\DrupalBoot">DrupalBoot</abbr>::bootstrapDrupalCore</a>() &mdash; <em>Method in class <a href="Drush/Boot/DrupalBoot.html"><abbr title="Drush\Boot\DrupalBoot">DrupalBoot</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Boot/DrupalBoot.html#method_bootstrapDrupalSiteValidate">
 <abbr title="Drush\Boot\DrupalBoot">DrupalBoot</abbr>::bootstrapDrupalSiteValidate</a>() &mdash; <em>Method in class <a href="Drush/Boot/DrupalBoot.html"><abbr title="Drush\Boot\DrupalBoot">DrupalBoot</abbr></a></em></dt>
-                    <dd><p>VALIDATE the DRUSH_BOOTSTRAP_DRUPAL_SITE phase.</p></dd><dt><a href="Drush/Boot/DrupalBoot.html#method_bootstrapDrupalSite">
-<abbr title="Drush\Boot\DrupalBoot">DrupalBoot</abbr>::bootstrapDrupalSite</a>() &mdash; <em>Method in class <a href="Drush/Boot/DrupalBoot.html"><abbr title="Drush\Boot\DrupalBoot">DrupalBoot</abbr></a></em></dt>
-                    <dd><p>Initialize a site on the Drupal root.</p></dd><dt><a href="Drush/Boot/DrupalBoot.html#method_bootstrapDrupalConfiguration">
+                    <dd><p>VALIDATE the DRUSH_BOOTSTRAP_DRUPAL_SITE phase.</p></dd><dt><a href="Drush/Boot/DrupalBoot.html#method_bootstrapDrupalConfiguration">
 <abbr title="Drush\Boot\DrupalBoot">DrupalBoot</abbr>::bootstrapDrupalConfiguration</a>() &mdash; <em>Method in class <a href="Drush/Boot/DrupalBoot.html"><abbr title="Drush\Boot\DrupalBoot">DrupalBoot</abbr></a></em></dt>
                     <dd><p>Initialize and load the Drupal configuration files.</p></dd><dt><a href="Drush/Boot/DrupalBoot.html#method_bootstrapDrupalDatabaseValidate">
 <abbr title="Drush\Boot\DrupalBoot">DrupalBoot</abbr>::bootstrapDrupalDatabaseValidate</a>() &mdash; <em>Method in class <a href="Drush/Boot/DrupalBoot.html"><abbr title="Drush\Boot\DrupalBoot">DrupalBoot</abbr></a></em></dt>
@@ -411,7 +409,9 @@ of the Drush drupal site bootstrap.</p></dd><dt><a href="Drush/Boot/DrupalBoot8.
 <abbr title="Drush\Boot\DrupalBoot8">DrupalBoot8</abbr>::bootstrapDrupalConfiguration</a>() &mdash; <em>Method in class <a href="Drush/Boot/DrupalBoot8.html"><abbr title="Drush\Boot\DrupalBoot8">DrupalBoot8</abbr></a></em></dt>
                     <dd><p>Initialize and load the Drupal configuration files.</p></dd><dt><a href="Drush/Boot/DrupalBoot8.html#method_bootstrapDrupalFull">
 <abbr title="Drush\Boot\DrupalBoot8">DrupalBoot8</abbr>::bootstrapDrupalFull</a>() &mdash; <em>Method in class <a href="Drush/Boot/DrupalBoot8.html"><abbr title="Drush\Boot\DrupalBoot8">DrupalBoot8</abbr></a></em></dt>
-                    <dd><p>Attempt to load the full Drupal system.</p></dd><dt><a href="Drush/Boot/EmptyBoot.html#method_bootstrapPhases">
+                    <dd><p>Attempt to load the full Drupal system.</p></dd><dt><a href="Drush/Boot/DrupalBoot8.html#method_bootstrapDrupalSite">
+<abbr title="Drush\Boot\DrupalBoot8">DrupalBoot8</abbr>::bootstrapDrupalSite</a>() &mdash; <em>Method in class <a href="Drush/Boot/DrupalBoot8.html"><abbr title="Drush\Boot\DrupalBoot8">DrupalBoot8</abbr></a></em></dt>
+                    <dd><p>Initialize a site on the Drupal root.</p></dd><dt><a href="Drush/Boot/EmptyBoot.html#method_bootstrapPhases">
 <abbr title="Drush\Boot\EmptyBoot">EmptyBoot</abbr>::bootstrapPhases</a>() &mdash; <em>Method in class <a href="Drush/Boot/EmptyBoot.html"><abbr title="Drush\Boot\EmptyBoot">EmptyBoot</abbr></a></em></dt>
                     <dd><p>Returns an array that determines what bootstrap phases
 are necessary to bootstrap this CMS.  This array
@@ -1272,8 +1272,6 @@ in the 'extra' section like so:</p></dd><dt><a href="Drush/Runtime/LegacyService
 <abbr title="Drush\Commands\core\LocaleCommands">LocaleCommands</abbr>::getLanguageManager</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/LocaleCommands.html"><abbr title="Drush\Commands\core\LocaleCommands">LocaleCommands</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/core/LocaleCommands.html#method_getConfigFactory">
 <abbr title="Drush\Commands\core\LocaleCommands">LocaleCommands</abbr>::getConfigFactory</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/LocaleCommands.html"><abbr title="Drush\Commands\core\LocaleCommands">LocaleCommands</abbr></a></em></dt>
-                    <dd></dd><dt><a href="Drush/Commands/core/LocaleCommands.html#method_getModuleHandler">
-<abbr title="Drush\Commands\core\LocaleCommands">LocaleCommands</abbr>::getModuleHandler</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/LocaleCommands.html"><abbr title="Drush\Commands\core\LocaleCommands">LocaleCommands</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/core/LocaleCommands.html#method_getState">
 <abbr title="Drush\Commands\core\LocaleCommands">LocaleCommands</abbr>::getState</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/LocaleCommands.html"><abbr title="Drush\Commands\core\LocaleCommands">LocaleCommands</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/core/MaintCommands.html#method_getState">
@@ -2200,9 +2198,7 @@ that shares the <code>vendor</code> directory with Drush).</p></dd><dt><a href="
                     <dd></dd><dt><a href="Drush/Application.html#method_refineUriSelection">
 <abbr title="Drush\Application">Application</abbr>::refineUriSelection</a>() &mdash; <em>Method in class <a href="Drush/Application.html"><abbr title="Drush\Application">Application</abbr></a></em></dt>
                     <dd><p>If the user did not explicitly select a site URI,
-then pick an appropriate site from the cwd.</p></dd><dt><a href="Drush/Application.html#method_renderException">
-<abbr title="Drush\Application">Application</abbr>::renderException</a>() &mdash; <em>Method in class <a href="Drush/Application.html"><abbr title="Drush\Application">Application</abbr></a></em></dt>
-                    <dd><p>Renders a caught exception. Omits the command docs at end.</p></dd><dt><a href="Drush/Application.html#method_renderThrowable">
+then pick an appropriate site from the cwd.</p></dd><dt><a href="Drush/Application.html#method_renderThrowable">
 <abbr title="Drush\Application">Application</abbr>::renderThrowable</a>() &mdash; <em>Method in class <a href="Drush/Application.html"><abbr title="Drush\Application">Application</abbr></a></em></dt>
                     <dd><p>Renders a caught Throwable. Omits the command docs at end.</p></dd><dt><a href="Drush/Backend/BackendPathEvaluator.html#method_resolve">
 <abbr title="Drush\Backend\BackendPathEvaluator">BackendPathEvaluator</abbr>::resolve</a>() &mdash; <em>Method in class <a href="Drush/Backend/BackendPathEvaluator.html"><abbr title="Drush\Backend\BackendPathEvaluator">BackendPathEvaluator</abbr></a></em></dt>
@@ -2761,7 +2757,9 @@ the finished page.</p></dd><dt><a href="Drush/Commands/core/UpdateDBCommands.htm
                     <dd><p>Overridden version of UpdateKernel adapted to the needs of Drush.</p></dd><dt><a href="Drush/Drush.html#method_unsetContainer">
 <abbr title="Drush\Drush">Drush</abbr>::unsetContainer</a>() &mdash; <em>Method in class <a href="Drush/Drush.html"><abbr title="Drush\Drush">Drush</abbr></a></em></dt>
                     <dd><p>Unsets the global container.</p></dd><dt><a href="Drush/Exceptions/UserAbortException.html"><abbr title="Drush\Exceptions\UserAbortException">UserAbortException</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Exceptions.html">Drush\Exceptions</a></em></dt>
-                    <dd><p>Throw an exception indicating that the user cancelled the operation.</p></dd><dt><a href="Drush/Preflight/PreflightArgs.html#method_uri">
+                    <dd><p>Throw an exception indicating that the user cancelled the operation.</p></dd><dt>$<a href="Drush/Exec/ExecTrait.html#property_uri">
+<abbr title="Drush\Exec\ExecTrait">ExecTrait</abbr>#uri</a> &mdash; <em>Property in class <a href="Drush/Exec/ExecTrait.html"><abbr title="Drush\Exec\ExecTrait">ExecTrait</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/Preflight/PreflightArgs.html#method_uri">
 <abbr title="Drush\Preflight\PreflightArgs">PreflightArgs</abbr>::uri</a>() &mdash; <em>Method in class <a href="Drush/Preflight/PreflightArgs.html"><abbr title="Drush\Preflight\PreflightArgs">PreflightArgs</abbr></a></em></dt>
                     <dd><p>Get the selected uri</p></dd>        </dl><h2 id="letterV">V</h2>
         <dl id="indexV"><dt><a href="Drush/Attributes/ValidateConfigName.html"><abbr title="Drush\Attributes\ValidateConfigName">ValidateConfigName</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Attributes.html">Drush\Attributes</a></em></dt>
@@ -2796,10 +2794,6 @@ the finished page.</p></dd><dt><a href="Drush/Commands/core/UpdateDBCommands.htm
 the root directory of a CMS that can be bootstrapped by
 the specific subclass that implements it.</p></dd><dt><a href="Drush/Boot/Boot.html#method_validRoot">
 <abbr title="Drush\Boot\Boot">Boot</abbr>::validRoot</a>() &mdash; <em>Method in class <a href="Drush/Boot/Boot.html"><abbr title="Drush\Boot\Boot">Boot</abbr></a></em></dt>
-                    <dd><p>This function determines if the specified path points to
-the root directory of a CMS that can be bootstrapped by
-the specific subclass that implements it.</p></dd><dt><a href="Drush/Boot/DrupalBoot.html#method_validRoot">
-<abbr title="Drush\Boot\DrupalBoot">DrupalBoot</abbr>::validRoot</a>() &mdash; <em>Method in class <a href="Drush/Boot/DrupalBoot.html"><abbr title="Drush\Boot\DrupalBoot">DrupalBoot</abbr></a></em></dt>
                     <dd><p>This function determines if the specified path points to
 the root directory of a CMS that can be bootstrapped by
 the specific subclass that implements it.</p></dd><dt><a href="Drush/Boot/DrupalBoot8.html#method_validRoot">
