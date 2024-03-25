@@ -9,6 +9,15 @@ use Drush\Attributes as CLI;
 final class LegacyCommands extends DrushCommands
 {
     /**
+     * archive:restore has been removed. A replacement may be available from your web host.
+     */
+    #[CLI\Command(name: 'archive:restore', aliases: ['arr'])]
+    #[CLI\Obsolete]
+    public function archiveRestore(): void
+    {
+    }
+
+    /**
      * site:alias-convert has been removed. Please use Drush 11 or convert by hand.
      */
     #[CLI\Command(name: 'site:alias-convert', aliases: ['sa-convert', 'sac'])]
