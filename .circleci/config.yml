@@ -72,7 +72,8 @@ jobs:
       - run: cp .docker/zz-php.ini /usr/local/etc/php/conf.d/
       - run: composer -n validate --no-check-all
       - run: composer -n install
-      - run: composer -n cs
+      - run: composer -n cs -- --report=junit /tmp/results/junit.phpcs.xml
+      - run: vendor/bin/phpstan --error-format=junit > /tmp/results/phpstan.junit.xml
 
   # Mergeable test:
   #   FAIL if merging test branch with 12.x produces conflicts
@@ -138,7 +139,8 @@ jobs:
 workflows:
   drush:
     jobs:
-      - code_style
+      - code_style:
+          <<: *poststeps
       - check_mergable
 #      - test_80_drupal92_security:
 #          <<: *requires
