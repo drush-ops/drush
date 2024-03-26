@@ -202,10 +202,7 @@ class ConfigImportCommands extends DrushCommands
             $source_storage = $this->getImportTransformer()->transform($source_storage);
         }
 
-        $config_manager = $this->getConfigManager();
         $storage_comparer = new StorageComparer($source_storage, $active_storage);
-
-
         if (!$storage_comparer->createChangelist()->hasChanges()) {
             $this->logger()->notice(('There are no changes to import.'));
             return;

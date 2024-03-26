@@ -192,7 +192,6 @@ final class CliCommands extends DrushCommands
      *
      * This can either be site specific (default) or Drupal version specific.
      *
-     * @param array $options
      *
      * @return string.
      */

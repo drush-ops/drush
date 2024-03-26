@@ -48,8 +48,6 @@ class DrushHelpCommand extends BaseCommand
 
     /**
      * Helper for setting a subcommand to retrieve help for.
-     *
-     * @param \Symfony\Component\Console\Command\Command $command
      */
     public function setCommand(Command $command): void
     {
