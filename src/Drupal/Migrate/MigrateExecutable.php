@@ -229,7 +229,6 @@ class MigrateExecutable extends MigrateExecutableBase
      * propagation, thus avoiding the destination object rollback, even when
      * the`--delete` option has been passed.
      *
-     * @param MigrationInterface $migration
      *
      * @see \Drush\Drupal\Migrate\MigrateExecutable::onMissingSourceRows()
      */
@@ -504,8 +503,6 @@ class MigrateExecutable extends MigrateExecutableBase
 
     /**
      * Returns the number of items created.
-     *
-     * @return int
      */
     public function getCreatedCount(): int
     {
@@ -514,8 +511,6 @@ class MigrateExecutable extends MigrateExecutableBase
 
     /**
      * Returns the number of items updated.
-     *
-     * @return int
      */
     public function getUpdatedCount(): int
     {
@@ -524,8 +519,6 @@ class MigrateExecutable extends MigrateExecutableBase
 
     /**
      * Returns the number of items ignored.
-     *
-     * @return int
      */
     public function getIgnoredCount(): int
     {
@@ -534,8 +527,6 @@ class MigrateExecutable extends MigrateExecutableBase
 
     /**
      * Returns the number of items that failed.
-     *
-     * @return int
      */
     public function getFailedCount(): int
     {
@@ -547,8 +538,6 @@ class MigrateExecutable extends MigrateExecutableBase
      *
      * Note that STATUS_NEEDS_UPDATE is not counted, since this is typically set
      * on stubs created as side effects, not on the primary item being imported.
-     *
-     * @return int
      */
     public function getProcessedCount(): int
     {
@@ -560,8 +549,6 @@ class MigrateExecutable extends MigrateExecutableBase
 
     /**
      * Returns the number of items rolled back.
-     *
-     * @return int
      */
     public function getRollbackCount(): int
     {

@@ -27,7 +27,6 @@ class PreflightSiteLocator
      * provided on the commandline that is either missing or invalid.
      *
      * @param PreflightArgsInterface $preflightArgs An alias name or site specification
-     * @param Environment $environment
      * @param string $root The default Drupal root (from site:set, --root or cwd)
      */
     public function findSite(PreflightArgsInterface $preflightArgs, Environment $environment, string $root): SiteAlias|false

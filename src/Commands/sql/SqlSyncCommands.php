@@ -161,7 +161,6 @@ final class SqlSyncCommands extends DrushCommands
     }
 
     /**
-     * @param array $options
      * @param $source_dump_path
      *   Path to the target file.
      * @throws \Exception

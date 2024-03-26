@@ -74,7 +74,7 @@ trait SqlTableSelectionTrait
     {
         // Table name expansion based on `*` wildcard.
         $expanded_db_tables = [];
-        foreach ($tables as $k => $table) {
+        foreach ($tables as $table) {
             // Only deal with table names containing a wildcard.
             if (str_contains($table, '*')) {
                 $pattern = '/^' . str_replace('*', '.*', $table) . '$/i';

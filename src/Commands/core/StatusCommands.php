@@ -166,14 +166,12 @@ final class StatusCommands extends DrushCommands
         $status_table['alias-searchpaths'] = array_map([Path::class, 'canonicalize'], $alias_searchpaths);
 
         $paths = self::pathAliases($options, $boot_manager, $boot_object);
-        if ($paths !== []) {
-            foreach ($paths as $target => $one_path) {
-                $name = $target;
-                if (str_starts_with($name, '%')) {
-                    $name = substr($name, 1);
-                }
-                $status_table[$name] = $one_path;
+        foreach ($paths as $target => $one_path) {
+            $name = $target;
+            if (str_starts_with($name, '%')) {
+                $name = substr($name, 1);
             }
+            $status_table[$name] = $one_path;
         }
 
         // Store the paths into the '%paths' index; this will be
@@ -205,10 +203,6 @@ final class StatusCommands extends DrushCommands
         }
     }
 
-    /**
-     * @param array $options
-     * @param BootstrapManager $boot_manager
-     */
     public static function pathAliases(array $options, BootstrapManager $boot_manager, $boot): array
     {
         $paths = [];

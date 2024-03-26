@@ -115,7 +115,7 @@ final class LanguageCommands extends DrushCommands
     private function filterValidLangcode($langcodes): array
     {
         $standardLanguages = $this->getLanguageManager()->getStandardLanguageList();
-        foreach ($langcodes as $key => $langcode) {
+        foreach ($langcodes as $langcode) {
             if (!isset($standardLanguages[$langcode])) {
                 throw new \Exception(dt('Unknown language: !langcode', [
                     '!langcode' => $langcode

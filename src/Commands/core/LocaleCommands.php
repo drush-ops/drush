@@ -108,7 +108,7 @@ final class LocaleCommands extends DrushCommands
         $module_handler->loadInclude('locale', 'bulk.inc');
 
         $langcodes = [];
-        foreach (locale_translation_get_status() as $project_id => $project) {
+        foreach (locale_translation_get_status() as $project) {
             foreach ($project as $langcode => $project_info) {
                 if (!empty($project_info->type) && !in_array($langcode, $langcodes)) {
                     $langcodes[] = $langcode;
@@ -418,8 +418,6 @@ final class LocaleCommands extends DrushCommands
 
     /**
      * Check if language is translatable.
-     *
-     * @param LanguageInterface $language
      */
     private function isTranslatable(LanguageInterface $language): bool
     {

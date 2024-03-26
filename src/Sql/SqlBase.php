@@ -587,8 +587,6 @@ abstract class SqlBase implements ConfigAwareInterface
      * Start building the command to run a query.
      *
      * @param $input_file
-     *
-     * @return array
      */
     public function alwaysQueryCommand($input_file): array
     {

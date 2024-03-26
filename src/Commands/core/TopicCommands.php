@@ -90,7 +90,7 @@ final class TopicCommands extends DrushCommands
     {
         $application = Drush::getApplication();
         $all = $application->all();
-        foreach ($all as $key => $command) {
+        foreach ($all as $command) {
             if ($command instanceof AnnotatedCommand) {
                 /** @var AnnotationData $annotationData */
                 $annotationData = $command->getAnnotationData();

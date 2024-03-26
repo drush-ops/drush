@@ -14,8 +14,6 @@ class PreflightVerify
 {
     /**
      * Throw an exception if the environment is not right for running Drush.
-     *
-     * @param Environment $environment
      */
     public function verify(Environment $environment): void
     {
@@ -50,8 +48,6 @@ class PreflightVerify
 
     /**
      * Fail if not being run from the command line.
-     *
-     * @param Environment $environment
      */
     protected function confirmUsingCLI(Environment $environment): void
     {

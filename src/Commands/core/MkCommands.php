@@ -278,9 +278,7 @@ EOT;
     /**
      * Build an array since that's what HelpCLIFormatter expects.
      *
-     * @param InputArgument $arg
      *
-     * @return iterable
      */
     public static function argToArray(InputArgument $arg): iterable
     {
@@ -294,9 +292,7 @@ EOT;
     /**
      * Build an array since that's what HelpCLIFormatter expects.
      *
-     * @param InputOption $opt
      *
-     * @return iterable
      */
     public static function optionToArray(InputOption $opt): iterable
     {

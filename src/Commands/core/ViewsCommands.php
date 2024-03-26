@@ -239,7 +239,7 @@ final class ViewsCommands extends DrushCommands
 
         if (!empty($views)) {
             $analyzer = \Drupal::service('views.analyzer');
-            foreach ($views as $view_name => $view) {
+            foreach ($views as $view) {
                 $view = $view->getExecutable();
 
                 if ($messages = $analyzer->getMessages($view)) {

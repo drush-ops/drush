@@ -131,7 +131,7 @@ final class UserCommands extends DrushCommands
     public function block(string $names = '', $options = ['uid' => self::REQ, 'mail' => self::REQ]): void
     {
         $accounts = $this->getAccounts($names, $options);
-        foreach ($accounts as $id => $account) {
+        foreach ($accounts as $account) {
             $account->block();
             $account->save();
             $this->logger->success(dt('Blocked user(s): !user', ['!user' => $account->getAccountName()]));
@@ -149,7 +149,7 @@ final class UserCommands extends DrushCommands
     public function unblock(string $names = '', $options = ['uid' => self::REQ, 'mail' => self::REQ]): void
     {
         $accounts = $this->getAccounts($names, $options);
-        foreach ($accounts as $id => $account) {
+        foreach ($accounts as $account) {
             $account->activate();
             $account->save();
             $this->logger->success(dt('Unblocked user(s): !user', ['!user' => $account->getAccountName()]));
@@ -170,7 +170,7 @@ final class UserCommands extends DrushCommands
     public function addRole(string $role, string $names = '', $options = ['uid' => self::REQ, 'mail' => self::REQ]): void
     {
         $accounts = $this->getAccounts($names, $options);
-        foreach ($accounts as $id => $account) {
+        foreach ($accounts as $account) {
             $account->addRole($role);
             $account->save();
             $this->logger->success(dt('Added !role role to !user', [
@@ -194,7 +194,7 @@ final class UserCommands extends DrushCommands
     public function removeRole(string $role, string $names = '', $options = ['uid' => self::REQ, 'mail' => self::REQ]): void
     {
         $accounts = $this->getAccounts($names, $options);
-        foreach ($accounts as $id => $account) {
+        foreach ($accounts as $account) {
             $account->removeRole($role);
             $account->save();
             $this->logger->success(dt('Removed !role role from !user', [
@@ -277,7 +277,7 @@ final class UserCommands extends DrushCommands
     public function cancel(string $names = '', $options = ['delete-content' => false, 'reassign-content' => false, 'uid' => self::REQ, 'mail' => self::REQ]): void
     {
         $accounts = $this->getAccounts($names, $options);
-        foreach ($accounts as $id => $account) {
+        foreach ($accounts as $account) {
             if ($options['delete-content']) {
                 $this->logger()->warning(dt('All content created by !name will be deleted.', ['!name' => $account->getAccountName()]));
             } elseif ($options['reassign-content']) {
@@ -340,7 +340,6 @@ final class UserCommands extends DrushCommands
     /**
      * Get accounts from name variables or uid & mail options.
      *
-     * @param string $names
      * @param array $options
      *
      *   A array of loaded accounts.

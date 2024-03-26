@@ -13,7 +13,7 @@ use Symfony\Component\Filesystem\Path;
 class FsUtils
 {
     // @var null|string[] List of directories to delete
-    private static $deletionList = null;
+    private static $deletionList;
 
     /**
      * Decide where our backup directory should go
@@ -209,7 +209,6 @@ class FsUtils
     /**
      * Check whether a file is a supported tarball.
      *
-     * @param string $path
      *
      * @return string|bool
      *   The file content type if it's a tarball. FALSE otherwise.
@@ -238,7 +237,6 @@ class FsUtils
      * has either mime_content_type() or finfo installed -- if not, only tar,
      * gz, zip and bzip2 types can be detected.
      *
-     * @param string $path
      *
      * @return string|bool|null
      *   The MIME content type of the file.

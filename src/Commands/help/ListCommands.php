@@ -165,7 +165,7 @@ class ListCommands extends DrushCommands
     {
         $table = new Table($this->output());
         $table->setStyle('compact');
-        foreach ($namespaced as $namespace => $commands) {
+        foreach ($namespaced as $commands) {
             foreach ($commands as $command) {
                 $table->addRow([$command->getName(), $command->getDescription()]);
             }
@@ -200,7 +200,7 @@ class ListCommands extends DrushCommands
         ksort($namespaced);
 
         // Sort inside namespaces.
-        foreach ($namespaced as $key => &$items) {
+        foreach ($namespaced as &$items) {
             ksort($items);
         }
         return $namespaced;

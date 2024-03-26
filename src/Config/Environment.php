@@ -227,8 +227,6 @@ class Environment
 
     /**
      * Set the class loader from the autload.php file, if available.
-     *
-     * @param ClassLoader $loader
      */
     public function setLoader(ClassLoader $loader): void
     {

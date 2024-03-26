@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Drush\Boot;
 
+use Composer\Autoload\ClassLoader;
 use Consolidation\AnnotatedCommand\AnnotationData;
 use Drupal\Core\Database\Database;
 use Drupal\Core\DrupalKernel;
@@ -27,7 +28,7 @@ class DrupalBoot8 extends DrupalBoot
     protected ?DrupalKernelInterface $kernel = null;
     protected Request $request;
 
-    public function __construct(protected ServiceManager $serviceManager, protected $autoloader)
+    public function __construct(protected ServiceManager $serviceManager, protected ClassLoader $autoloader)
     {
         parent::__construct();
     }
@@ -208,7 +209,6 @@ class DrupalBoot8 extends DrupalBoot
         $request = $this->getRequest();
         $kernel_factory = Kernels::getKernelFactory($kernel);
         $allow_dumping = $kernel !== Kernels::UPDATE;
-        /** @var DrupalKernelInterface kernel */
         $this->kernel = $kernel_factory($request, $this->autoloader, 'prod', $allow_dumping, $manager->getRoot());
 
         // Unset drupal error handler and restore Drush's one.

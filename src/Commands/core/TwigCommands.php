@@ -101,7 +101,7 @@ final class TwigCommands extends DrushCommands
         }
 
         $themes = \Drupal::service('theme_handler')->listInfo();
-        foreach ($themes as $name => $theme) {
+        foreach ($themes as $theme) {
             $searchpaths[] = $theme->getPath();
         }
 

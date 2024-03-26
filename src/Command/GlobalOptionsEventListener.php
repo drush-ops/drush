@@ -24,13 +24,11 @@ class GlobalOptionsEventListener implements EventSubscriberInterface
      * Before a Console command runs, examine the global
      * commandline options from the event Input, and set
      * configuration values as appropriate.
-     *
-     * @param ConsoleCommandEvent $event
      */
     public function setGlobalOptions(ConsoleCommandEvent $event): void
     {
-        $input = $event->getInput();
-        $output = $event->getOutput();
+        $event->getInput();
+        $event->getOutput();
 
         // TODO: We need a good strategy for managing global options.
         // $simulate = $input->getOption('simulate');
