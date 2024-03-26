@@ -71,9 +71,6 @@ class ApplicationFactory
 
     /**
      * Check each class for existence.
-     *
-     * @param array $classes
-     * @return array
      */
     public function filterClassExists(array $classes): array
     {

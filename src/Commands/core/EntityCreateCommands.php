@@ -186,7 +186,7 @@ final class EntityCreateCommands extends DrushCommands
     }
 
     #[CLI\Hook(type: HookManager::ARGUMENT_VALIDATOR)]
-    private function validate(CommandData $commandData): void
+    private function validate() : void
     {
         if (!$this->input()->isInteractive()) {
             throw new \RuntimeException('entity:create is designed for an interactive terminal.');

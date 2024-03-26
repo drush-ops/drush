@@ -25,7 +25,6 @@ trait ConfiguresPrompts
     /**
      * Configure the prompt fallbacks.
      *
-     * @param InputInterface $input
      * @return void
      */
     protected function configurePrompts(InputInterface $input)

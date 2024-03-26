@@ -525,7 +525,6 @@ final class SiteInstallCommands extends DrushCommands
     /**
      * Assure that a config directory exists and is populated.
      *
-     * @param CommandData $commandData
      * @param $directory
      * @throws \Exception
      */

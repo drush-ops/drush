@@ -201,8 +201,7 @@ class ConfigImportCommands extends DrushCommands
             // with StorageCopyTrait::replaceStorageContents.
             $source_storage = $this->getImportTransformer()->transform($source_storage);
         }
-
-        $config_manager = $this->getConfigManager();
+        
         $storage_comparer = new StorageComparer($source_storage, $active_storage);
 
 

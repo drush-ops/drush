@@ -340,7 +340,6 @@ final class UserCommands extends DrushCommands
     /**
      * Get accounts from name variables or uid & mail options.
      *
-     * @param string $names
      * @param array $options
      *
      *   A array of loaded accounts.

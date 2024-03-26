@@ -287,7 +287,6 @@ class LegacyServiceInstantiator
      * Check to see if the provided argument begins with a `?`;
      * those that do not are required.
      *
-     * @param string $arg
      *
      * @return bool, string
      *   Boolean indicating whether the object is required to be in the container,

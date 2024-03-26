@@ -418,8 +418,6 @@ final class LocaleCommands extends DrushCommands
 
     /**
      * Check if language is translatable.
-     *
-     * @param LanguageInterface $language
      */
     private function isTranslatable(LanguageInterface $language): bool
     {

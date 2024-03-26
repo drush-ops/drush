@@ -74,7 +74,7 @@ class RedispatchHook implements InitializeHookInterface, ConfigAwareInterface, S
     {
         // Get the command arguments, and shift off the Drush command.
         $redispatchArgs = $this->getConfig()->get('runtime.argv');
-        $drush_path = array_shift($redispatchArgs);
+        array_shift($redispatchArgs);
         $command_name = $this->getConfig()->get('runtime.command');
 
         Drush::logger()->debug('Redispatch hook {command}', ['command' => $command_name]);
