@@ -4,13 +4,12 @@ declare(strict_types=1);
 
 namespace Drush\Commands\core;
 
-use Drupal\Core\Entity\EntityInterface;
-use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\AnnotatedCommand\Hooks\HookManager;
 use Consolidation\SiteProcess\Util\Escape;
 use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Entity\EntityConstraintViolationListInterface;
 use Drupal\Core\Entity\EntityFieldManagerInterface;
+use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\Session\AccountSwitcherInterface;
@@ -186,7 +185,7 @@ final class EntityCreateCommands extends DrushCommands
     }
 
     #[CLI\Hook(type: HookManager::ARGUMENT_VALIDATOR)]
-    private function validate() : void
+    private function validate(): void
     {
         if (!$this->input()->isInteractive()) {
             throw new \RuntimeException('entity:create is designed for an interactive terminal.');
