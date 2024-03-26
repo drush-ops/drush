@@ -74,7 +74,7 @@ final class PmCommands extends DrushCommands
         $modules = StringUtils::csvToArray($modules);
         $todo = $this->addInstallDependencies($modules);
         $todo_str = ['!list' => implode(', ', $todo)];
-        if (empty($todo)) {
+        if ($todo === []) {
             $this->logger()->notice(dt('Already enabled: !list', ['!list' => implode(', ', $modules)]));
             return;
         } elseif (Drush::simulate()) {
@@ -106,7 +106,7 @@ final class PmCommands extends DrushCommands
         $modules = $commandData->input()->getArgument('modules');
         $modules = StringUtils::csvToArray($modules);
         $modules = $this->addInstallDependencies($modules);
-        if (empty($modules)) {
+        if ($modules === []) {
             return;
         }
 
@@ -267,7 +267,7 @@ final class PmCommands extends DrushCommands
             }
 
             // Filter by package.
-            if (!empty($package_filter)) {
+            if ($package_filter !== []) {
                 if (!in_array(strtolower($extension->info['package']), $package_filter)) {
                     unset($modules[$key]);
                     continue;

@@ -80,14 +80,9 @@ class LegacyServiceInstantiator
             $this->logger->info(dt('Autowire not supported; skipping @file', ['@file' => $serviceFile]));
             return false;
         }
-
         // Every entry in services must have a 'class' entry
-        if (!$this->allServicesHaveClassElement($serviceFile, $serviceFileData['services'])) {
-            return false;
-        }
-
         // If we didn't find anything wrong, then assume it's probably okay
-        return true;
+        return $this->allServicesHaveClassElement($serviceFile, $serviceFileData['services']);
     }
 
     /**
@@ -241,7 +236,7 @@ class LegacyServiceInstantiator
         // Instantiate references to services, either in the
         // Drupal container, or other services created earlier by
         // some drush.services.yml file.
-        if ($arg[0] == '@') {
+        if ($arg[0] === '@') {
             // Check to see if a previous drush.services.yml instantiated
             // this service; return any service found.
             $drushServiceName = ltrim(substr($arg, 1), '?');
@@ -301,7 +296,7 @@ class LegacyServiceInstantiator
      */
     protected function isRequired(string $arg)
     {
-        if ($arg[0] == '?') {
+        if ($arg[0] === '?') {
             return [false, substr($arg, 1)];
         }
 

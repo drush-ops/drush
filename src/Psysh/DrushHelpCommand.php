@@ -77,7 +77,7 @@ class DrushHelpCommand extends BaseCommand
             // Find the alignment width.
             $width = 0;
             foreach ($commands as $command) {
-                $width = strlen($command->getName()) > $width ? strlen($command->getName()) : $width;
+                $width = max(strlen($command->getName()), $width);
             }
             $width += 2;
 

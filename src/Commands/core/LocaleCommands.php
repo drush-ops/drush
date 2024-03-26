@@ -452,7 +452,7 @@ final class LocaleCommands extends DrushCommands
             'not_translated' => 'not-translated',
         ];
 
-        if (empty($types)) {
+        if ($types === []) {
             return array_fill_keys(array_keys($valid_convertions), true);
         }
 

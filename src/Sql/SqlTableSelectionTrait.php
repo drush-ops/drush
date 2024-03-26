@@ -153,7 +153,7 @@ trait SqlTableSelectionTrait
             if (array_key_exists($key, $all_tables)) {
                 return $all_tables[$key];
             }
-            if ($option_name != 'tables') {
+            if ($option_name !== 'tables') {
                 $all_tables = $this->getConfig()->get('sql.tables', []);
                 if (array_key_exists($key, $all_tables)) {
                     return $all_tables[$key];

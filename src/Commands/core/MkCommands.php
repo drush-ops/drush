@@ -167,8 +167,7 @@ EOT;
                 $body .= '- ** ' . HelpCLIFormatter::formatOptionKeys(self::optionToArray($value)) . '**. ' . self::cliTextToMarkdown($value->getDescription()) . "\n";
             }
             $body .= '- To see all global options, run <code>drush topic</code> and pick the first choice.' . "\n";
-            $body = "#### Global Options\n\n$body\n";
-            return $body;
+            return "#### Global Options\n\n$body\n";
         }
         return '';
     }
@@ -331,7 +330,7 @@ EOT;
         foreach ($namespaced as $category => $commands) {
             foreach ($commands as $command) {
                 // Special case a single page
-                if (empty($pages_all)) {
+                if ($pages_all === []) {
                     $pages['all'] = $destination . '/all.md';
                 }
 
@@ -344,14 +343,14 @@ EOT;
                 }
                 $body .= self::appendArguments($command);
                 $body .= self::appendOptions($command);
-                if ($destination == 'commands') {
+                if ($destination === 'commands') {
                     $body .= self::appendOptionsGlobal($command->getApplication());
                 }
                 if ($command instanceof AnnotatedCommand) {
                     $body .= self::appendTopics($command, $destination_path);
                 }
                 $body .= self::appendAliases($command);
-                if ($destination == 'commands') {
+                if ($destination === 'commands') {
                     $body .= self::appendPostAmble();
                 }
                 $filename = $this->getFilename($command->getName());
@@ -376,7 +375,7 @@ EOT;
         $map = [];
         foreach ($command->getAliases() as $alias) {
             // Skip trivial aliases that differ by a dash.
-            if (str_replace([':', '-'], '', $command->getName()) == str_replace([':', '-'], '', $alias)) {
+            if (str_replace([':', '-'], '', $command->getName()) === str_replace([':', '-'], '', $alias)) {
                 continue;
             }
             $map[Path::join($destination, $this->getFilename($alias))] = Path::join($destination, $this->getFilename($command->getName()));

@@ -44,7 +44,7 @@ class StringUtils
     public static function interpolate(string $message, array $context = []): string
     {
         // Take no action if there is no context
-        if (empty($context)) {
+        if ($context === []) {
             return $message;
         }
 

@@ -83,7 +83,7 @@ final class SiteInstallCommands extends DrushCommands
             // Allow for numeric and NULL values to be passed in.
             if (is_numeric($value)) {
                 $value = (int) $value;
-            } elseif ($value == 'NULL') {
+            } elseif ($value === 'NULL') {
                 $value = null;
             }
 
@@ -474,7 +474,7 @@ final class SiteInstallCommands extends DrushCommands
             $sites = [];
             include $sites_file;
             // @phpstan-ignore-next-line
-            if (!empty($sites) && array_key_exists($uri, $sites)) {
+            if ($sites !== [] && array_key_exists($uri, $sites)) {
                 return $sites[$uri];
             }
         }

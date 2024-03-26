@@ -90,6 +90,6 @@ class ArgsRemapper
             return true;
         }
 
-        return $arg[strlen($candidate)] == '=';
+        return $arg[strlen($candidate)] === '=';
     }
 }

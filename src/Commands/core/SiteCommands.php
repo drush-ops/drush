@@ -45,7 +45,7 @@ final class SiteCommands extends DrushCommands
         $filename = $this->getConfig()->get('runtime.site-file-current');
         if ($filename) {
             $last_site_filename = $this->getConfig()->get('runtime.site-file-previous');
-            if ($site == '-') {
+            if ($site === '-') {
                 if (file_exists($last_site_filename)) {
                     $site = file_get_contents($last_site_filename);
                 } else {
@@ -65,7 +65,7 @@ final class SiteCommands extends DrushCommands
                 }
                 // Using 'site:set @self' is quiet if there is no change.
                 $current = is_file($filename) ? trim(file_get_contents($filename)) : "@none";
-                if ($current == $site) {
+                if ($current === $site) {
                     return;
                 }
             }
@@ -108,7 +108,7 @@ final class SiteCommands extends DrushCommands
         // First check to see if the user provided a specification that matches
         // multiple sites.
         $aliasList = $this->siteAliasManager->getMultiple($site);
-        if (is_array($aliasList) && !empty($aliasList)) {
+        if (is_array($aliasList) && $aliasList !== []) {
             return new UnstructuredListData($this->siteAliasExportList($aliasList, $options));
         }
 

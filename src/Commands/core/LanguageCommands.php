@@ -50,7 +50,7 @@ final class LanguageCommands extends DrushCommands
             $langcodes = array_unique($langcodes);
             $langcodes = $this->filterValidLangcode($langcodes);
             $langcodes = $this->filterNewLangcode($langcodes);
-            if (empty($langcodes)) {
+            if ($langcodes === []) {
                 return;
             }
 

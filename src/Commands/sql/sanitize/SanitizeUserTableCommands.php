@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Drush\Commands\sql\sanitize;
 
+use Drupal\Core\Database\Connection;
+use Drupal\Core\Database\Query\SelectInterface;
 use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\AnnotatedCommand\Hooks\HookManager;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
@@ -23,7 +25,7 @@ final class SanitizeUserTableCommands extends DrushCommands implements SanitizeP
     use AutowireTrait;
 
     public function __construct(
-        protected \Drupal\Core\Database\Connection $database,
+        protected Connection $database,
         protected PasswordInterface $passwordHasher,
         protected EntityTypeManagerInterface $entityTypeManager
     ) {
@@ -60,10 +62,10 @@ final class SanitizeUserTableCommands extends DrushCommands implements SanitizeP
                 // We need a different sanitization query for MSSQL, Postgres and Mysql.
                 $sql = SqlBase::create($commandData->input()->getOptions());
                 $db_driver = $sql->scheme();
-                if ($db_driver == 'pgsql') {
+                if ($db_driver === 'pgsql') {
                     $email_map = ['%uid' => "' || uid || '", '%mail' => "' || replace(mail, '@', '_') || '", '%name' => "' || replace(name, ' ', '_') || '"];
                     $new_mail =  "'" . str_replace(array_keys($email_map), array_values($email_map), $options['sanitize-email']) . "'";
-                } elseif ($db_driver == 'mssql') {
+                } elseif ($db_driver === 'mssql') {
                     $email_map = ['%uid' => "' + uid + '", '%mail' => "' + replace(mail, '@', '_') + '", '%name' => "' + replace(name, ' ', '_') + '"];
                     $new_mail =  "'" . str_replace(array_keys($email_map), array_values($email_map), $options['sanitize-email']) . "'";
                 } else {
@@ -80,7 +82,7 @@ final class SanitizeUserTableCommands extends DrushCommands implements SanitizeP
 
         if (!empty($options['ignored-roles'])) {
             $roles = explode(',', $options['ignored-roles']);
-            /** @var \Drupal\Core\Database\Query\SelectInterface $roles_query */
+            /** @var SelectInterface $roles_query */
             $roles_query = $this->database->select('user__roles', 'ur');
             $roles_query
                 ->condition('roles_target_id', $roles, 'IN')

@@ -556,7 +556,7 @@ class MigrateRunnerCommands extends DrushCommands
         $idMap = $migration->getIdMap();
         $sourceIdKeys = $this->getSourceIdKeys($idMap);
         $table = [];
-        if (empty($sourceIdKeys)) {
+        if ($sourceIdKeys === []) {
             // Cannot find one item to extract keys from, no need to process
             // messages on an empty ID map.
             return new RowsOfFields($table);

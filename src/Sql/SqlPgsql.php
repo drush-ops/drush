@@ -129,7 +129,7 @@ class SqlPgsql extends SqlBase
 
     public function queryFormat($query)
     {
-        if (strtolower($query) == 'show tables;') {
+        if (strtolower($query) === 'show tables;') {
             return PSQL_SHOW_TABLES;
         }
         return $query;

@@ -16,7 +16,7 @@ use Rector\Set\ValueObject\SetList;
 
 return static function (RectorConfig $config): void {
     $config->importNames();
-    $config->disableImportShortClasses();
+    $config->importShortClasses(false);
 
     $config->paths([
         __DIR__ . '/src',
@@ -37,5 +37,7 @@ return static function (RectorConfig $config): void {
         SimplifyIfElseToTernaryRector::class,
         FinalizePublicClassConstantRector::class,
         NullToStrictStringFuncCallArgRector::class,
+        \Rector\Php81\Rector\Array_\FirstClassCallableRector::class,
+        \Rector\Strict\Rector\Empty_\DisallowedEmptyRuleFixerRector::class
     ]);
 };

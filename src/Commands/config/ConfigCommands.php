@@ -140,7 +140,7 @@ final class ConfigCommands extends DrushCommands implements StdinAwareInterface
         }
 
         // Special handling for null.
-        if (strtolower($data) == 'null') {
+        if (strtolower($data) === 'null') {
             $data = null;
         }
 

@@ -39,7 +39,7 @@ trait ConfiguresPrompts
 
         Prompt::interactive(($input->isInteractive() && defined('STDIN') && stream_isatty(STDIN)) || $this->runningUnitTests());
 
-        Prompt::fallbackWhen(!$input->isInteractive() || strtoupper(substr(PHP_OS, 0, 3)) == "WIN" || $this->runningUnitTests());
+        Prompt::fallbackWhen(!$input->isInteractive() || strtoupper(substr(PHP_OS, 0, 3)) === "WIN" || $this->runningUnitTests());
 
         TextPrompt::fallbackUsing(fn (TextPrompt $prompt) => $this->promptUntilValid(
             fn () => (new SymfonyStyle($this->input, $this->output))->ask($prompt->label, $prompt->default ?: null) ?? '',

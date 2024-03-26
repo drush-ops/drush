@@ -20,19 +20,17 @@ final class GenerateCommands extends DrushCommands
     const GENERATE = 'generate';
 
     protected function __construct(
-        private ContainerInterface $container,
-        private DrushContainer $drush_container,
+        private readonly DrushContainer $container,
+        private readonly DrushContainer $drush_container,
     ) {
     }
 
-    public static function create(ContainerInterface $container): self
+    public static function create(DrushContainer $container): self
     {
-        $commandHandler = new static(
+        return new self(
             $container->get('service_container'),
             $container,
         );
-
-        return $commandHandler;
     }
 
     /**
@@ -59,7 +57,7 @@ final class GenerateCommands extends DrushCommands
     {
         $application = (new ApplicationFactory($this->drush_container, $this->logger()))->create();
 
-        if (!$generator || $generator == 'list') {
+        if (!$generator || $generator === 'list') {
             $all = $application->all();
             unset($all['help'], $all['list'], $all['completion']);
             $namespaced = ListCommands::categorize($all);

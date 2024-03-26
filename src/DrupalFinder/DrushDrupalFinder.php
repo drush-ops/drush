@@ -11,7 +11,7 @@ use Symfony\Component\Filesystem\Path;
  */
 class DrushDrupalFinder
 {
-    public function __construct(private Environment $environment)
+    public function __construct(private readonly Environment $environment)
     {
     }
 

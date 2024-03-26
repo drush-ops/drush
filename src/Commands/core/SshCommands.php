@@ -42,7 +42,7 @@ final class SshCommands extends DrushCommands
     {
         $alias = $this->siteAliasManager->getSelf();
 
-        if (empty($code)) {
+        if ($code === []) {
             $code[] = 'bash';
             $code[] = '-l';
 

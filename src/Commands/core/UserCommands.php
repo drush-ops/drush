@@ -97,7 +97,7 @@ final class UserCommands extends DrushCommands
                 }
             }
         }
-        if (empty($accounts)) {
+        if ($accounts === []) {
             throw new \Exception(dt('Unable to find a matching user'));
         }
 
@@ -376,7 +376,7 @@ final class UserCommands extends DrushCommands
                 }
             }
         }
-        if (empty($accounts)) {
+        if ($accounts === []) {
             throw new \Exception(dt('Unable to find any matching user'));
         }
 

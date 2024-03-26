@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Drush;
 
+use Psr\Container\ContainerInterface;
 use Composer\InstalledVersions;
 use Consolidation\AnnotatedCommand\AnnotatedCommandFactory;
 use Consolidation\SiteAlias\SiteAliasInterface;
@@ -140,7 +141,7 @@ class Drush
      *
      * @throws RuntimeException
      */
-    public static function getContainer(): \Psr\Container\ContainerInterface
+    public static function getContainer(): ContainerInterface
     {
         if (!Robo::hasContainer()) {
             throw new RuntimeException('Drush::$container is not initialized yet. \Drush::setContainer() must be called with a real container.');

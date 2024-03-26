@@ -175,14 +175,11 @@ final class CacheCommands extends DrushCommands implements CustomEventAwareInter
             $data = $this->stdin()->contents();
         }
 
-        // Now, we parse the object.
-        switch ($options['input-format']) {
-            case 'json':
-                $data = json_decode($data, true);
-                if ($data === false) {
-                    throw new \Exception('Unable to parse JSON.');
-                }
-                break;
+        if ($options['input-format'] === 'json') {
+            $data = json_decode($data, true);
+            if ($data === false) {
+                throw new \Exception('Unable to parse JSON.');
+            }
         }
 
         if ($options['cache-get']) {
