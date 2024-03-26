@@ -25,21 +25,21 @@ trait ConfiguresPrompts
     /**
      * Configure the prompt fallbacks.
      *
-     * @param  \Symfony\Component\Console\Input\InputInterface  $input
+     * @param InputInterface $input
      * @return void
      */
     protected function configurePrompts(InputInterface $input)
     {
         Prompt::setOutput($this->output);
 
-        Prompt::cancelUsing(function () {
+        Prompt::cancelUsing(function (): never {
             Runtime::setCompleted();
             exit(1);
         });
 
         Prompt::interactive(($input->isInteractive() && defined('STDIN') && stream_isatty(STDIN)) || $this->runningUnitTests());
 
-        Prompt::fallbackWhen(!$input->isInteractive() || strtoupper(substr(PHP_OS, 0, 3)) == "WIN" || $this->runningUnitTests());
+        Prompt::fallbackWhen(!$input->isInteractive() || strtoupper(substr(PHP_OS, 0, 3)) === "WIN" || $this->runningUnitTests());
 
         TextPrompt::fallbackUsing(fn (TextPrompt $prompt) => $this->promptUntilValid(
             fn () => (new SymfonyStyle($this->input, $this->output))->ask($prompt->label, $prompt->default ?: null) ?? '',
@@ -180,10 +180,7 @@ trait ConfiguresPrompts
 
     protected function runningUnitTests(): bool
     {
-        if (! defined('PHPUNIT_COMPOSER_INSTALL') && ! defined('__PHPUNIT_PHAR__')) {
-            // is not PHPUnit run
-            return false;
-        }
-        return true;
+        // is not PHPUnit run
+        return !(! defined('PHPUNIT_COMPOSER_INSTALL') && ! defined('__PHPUNIT_PHAR__'));
     }
 }

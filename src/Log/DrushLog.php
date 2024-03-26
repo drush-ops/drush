@@ -75,7 +75,7 @@ class DrushLog implements LoggerInterface, LoggerAwareInterface
             return is_scalar($element) || is_callable([$element, '__toString']);
         });
 
-        $message = empty($message_placeholders) ? $message : strtr($message, $message_placeholders);
+        $message = $message_placeholders === [] ? $message : strtr($message, $message_placeholders);
 
         Drush::logger()->log($error_type, $message, $context);
     }

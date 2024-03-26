@@ -39,11 +39,9 @@ final class StatusCommands extends DrushCommands
      */
     public static function createEarly(DrushContainer $drush_container): self
     {
-        $commandHandler = new static(
+        return new self(
             $drush_container->get('site.alias.manager'),
         );
-
-        return $commandHandler;
     }
 
     /**
@@ -168,7 +166,7 @@ final class StatusCommands extends DrushCommands
         $status_table['alias-searchpaths'] = array_map([Path::class, 'canonicalize'], $alias_searchpaths);
 
         $paths = self::pathAliases($options, $boot_manager, $boot_object);
-        if (!empty($paths)) {
+        if ($paths !== []) {
             foreach ($paths as $target => $one_path) {
                 $name = $target;
                 if (str_starts_with($name, '%')) {

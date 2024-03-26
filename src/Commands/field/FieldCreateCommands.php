@@ -260,7 +260,7 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
         $showMachineNames = (bool) $this->input->getOption('show-machine-names');
         $choices = $this->getExistingFieldStorageOptions($entityType, $bundle, $showMachineNames);
 
-        if (empty($choices)) {
+        if ($choices === []) {
             return null;
         }
 

@@ -117,7 +117,7 @@ class DrushCommand extends BaseCommand
             }
         }
 
-        if (!empty($examples)) {
+        if ($examples !== []) {
             $help .= "\n\ne.g.";
 
             foreach ($examples as $ex => $def) {

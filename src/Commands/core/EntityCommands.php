@@ -49,7 +49,7 @@ final class EntityCommands extends DrushCommands
         $result = $query->execute();
 
         // Don't delete uid=1, uid=0.
-        if ($entity_type == 'user') {
+        if ($entity_type === 'user') {
             unset($result[0], $result[1]);
         }
 

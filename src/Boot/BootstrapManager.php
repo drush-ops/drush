@@ -326,7 +326,7 @@ class BootstrapManager implements LoggerAwareInterface, ConfigAwareInterface
     {
         $bootstrap_words = explode(' ', $bootstrap_str);
         array_shift($bootstrap_words);
-        if (empty($bootstrap_words)) {
+        if ($bootstrap_words === []) {
             return null;
         }
         $stop_phase_name = array_shift($bootstrap_words);

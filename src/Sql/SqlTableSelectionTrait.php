@@ -18,7 +18,7 @@ trait SqlTableSelectionTrait
      * @param array $options An options array as passed to an Annotated Command.
      * @param array $all_tables A list of all eligible tables.
      *
-     * @return
+     * @return array
      *   An array of tables with each table name in the appropriate
      *   element of the array.
      */
@@ -48,8 +48,8 @@ trait SqlTableSelectionTrait
      *   `*` wildcard character.
      * @param $db_tables
      *   The list of tables present in a database.
-     * @return
-     *   An array of tables with non-existant tables removed.
+     * @return array
+     *   An array of tables with non-existent tables removed.
      */
     public function expandAndFilterTables(array $tables, array $db_tables): array
     {
@@ -67,7 +67,7 @@ trait SqlTableSelectionTrait
      *   An array of table names, some of which may contain wildcards (`*`).
      * @param array $db_tables
      *   An array with all the existing table names in the current database.
-     * @return
+     * @return array
      *   $tables array with wildcards resolved to real table names.
      */
     public function expandWildcardTables(array $tables, array $db_tables): array
@@ -93,7 +93,7 @@ trait SqlTableSelectionTrait
      *   An array of table names to filter.
      * @param $db_tables
      *   An array with all the existing table names in the current database.
-     * @return
+     * @return array
      *   An array with only valid table names (i.e. all of which actually exist in
      *   the database).
      */
@@ -118,7 +118,7 @@ trait SqlTableSelectionTrait
      * - structure: tables to only have their structure i.e. DDL dumped
      * - tables: tables to have structure and data dumped
      *
-     * @return
+     * @return array
      *   An array of table names with each table name in the appropriate
      *   element of the array.
      */
@@ -137,11 +137,11 @@ trait SqlTableSelectionTrait
     /**
      * Consult the specified options and return the list of tables specified.
      *
-     * @param option_name
+     * @param $option_name
      *   The option name to check: skip-tables, structure-tables
      *   or tables.  This function will check both *-key and *-list.
      * @param $options An options array as passed to an Annotated Command.
-     * @return
+     * @return array
      *   Returns an array of tables based on the first option
      *   found, or an empty array if there were no matches.
      */
@@ -153,7 +153,7 @@ trait SqlTableSelectionTrait
             if (array_key_exists($key, $all_tables)) {
                 return $all_tables[$key];
             }
-            if ($option_name != 'tables') {
+            if ($option_name !== 'tables') {
                 $all_tables = $this->getConfig()->get('sql.tables', []);
                 if (array_key_exists($key, $all_tables)) {
                     return $all_tables[$key];

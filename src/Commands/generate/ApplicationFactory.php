@@ -15,12 +15,12 @@ use Psr\Log\LoggerInterface;
 
 class ApplicationFactory
 {
-    private ServiceManager $serviceManager;
-    private \Symfony\Component\DependencyInjection\ContainerInterface $container;
+    private readonly ServiceManager $serviceManager;
+    private readonly \Symfony\Component\DependencyInjection\ContainerInterface $container;
 
     public function __construct(
-        private DrushContainer $drush_container,
-        private LoggerInterface $logger
+        private readonly DrushContainer $drush_container,
+        private readonly LoggerInterface $logger
     ) {
         $this->serviceManager = $this->drush_container->get('service.manager');
         $this->container = $this->drush_container->get('service_container');
@@ -60,15 +60,13 @@ class ApplicationFactory
         $global_generator_classes = $this->serviceManager->discoverPsr4Generators();
         $global_generator_classes = $this->filterClassExists($global_generator_classes);
         $global_generators = $this->serviceManager->instantiateServices($global_generator_classes, $this->drush_container, $this->container);
-
-        $generators = [
+        return [
             new DrushCommandFile(),
             new DrushAliasFile(),
             new DrushGeneratorFile(),
             ...$global_generators,
             ...$module_generators,
         ];
-        return $generators;
     }
 
     /**

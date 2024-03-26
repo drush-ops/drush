@@ -97,7 +97,7 @@ final class FieldDefinitionCommands extends DrushCommands
         ];
         $definitions = \array_map($processor, $this->widgetPluginManager->getDefinitions());
         if ($options['field-type']) {
-            $definitions = self::filterByFieldType($definitions, $options['field-type']);
+            $definitions = $this->filterByFieldType($definitions, $options['field-type']);
         }
         return new UnstructuredListData($definitions);
     }
@@ -136,7 +136,7 @@ final class FieldDefinitionCommands extends DrushCommands
         ];
         $definitions = \array_map($processor, $this->formatterPluginManager->getDefinitions());
         if ($options['field-type']) {
-            $definitions = self::filterByFieldType($definitions, $options['field-type']);
+            $definitions = $this->filterByFieldType($definitions, $options['field-type']);
         }
         return new UnstructuredListData($definitions);
     }
@@ -154,7 +154,7 @@ final class FieldDefinitionCommands extends DrushCommands
     /**
      * Filters definitions by applicable field types.
      */
-    private static function filterByFieldType(array $definitions, string $search): array
+    private function filterByFieldType(array $definitions, string $search): array
     {
         $match = static fn(string $field_type): bool => \str_contains($field_type, $search);
         $total_matches = static fn(array $field_types): int => \count(\array_filter($field_types, $match));

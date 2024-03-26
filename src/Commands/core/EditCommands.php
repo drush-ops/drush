@@ -31,11 +31,9 @@ final class EditCommands extends DrushCommands
      */
     public static function create(ContainerInterface $container, DrushContainer $drush_container): self
     {
-        $commandHandler = new static(
+        return new self(
             $drush_container->get('site.alias.manager'),
         );
-
-        return $commandHandler;
     }
 
     /**
@@ -87,14 +85,14 @@ final class EditCommands extends DrushCommands
     {
         $php_header = $rcs_header = $aliases_header = $drupal_header = $bash_header = $drupal = [];
         $php = $this->phpIniFiles();
-        if (!empty($php)) {
+        if ($php !== []) {
             if ($headers) {
                 $php_header = ['phpini' => '-- PHP ini files --'];
             }
         }
 
         $bash = $this->bashFiles();
-        if (!empty($bash)) {
+        if ($bash !== []) {
             if ($headers) {
                 $bash_header = ['bash' => '-- Bash files --'];
             }

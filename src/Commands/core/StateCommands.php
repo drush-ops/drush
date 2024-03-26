@@ -102,7 +102,7 @@ final class StateCommands extends DrushCommands implements StdinAwareInterface
    */
     public static function format(mixed $value, string $format): mixed
     {
-        if ($format == 'auto') {
+        if ($format === 'auto') {
             if (is_numeric($value)) {
                 $value += 0; // http://php.net/manual/en/function.is-numeric.php#107326
                 $format = gettype($value);

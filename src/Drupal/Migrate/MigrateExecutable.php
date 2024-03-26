@@ -145,7 +145,7 @@ class MigrateExecutable extends MigrateExecutableBase
         // - `--idlist` option is used,
         // - `--limit` option is used,
         // - The migration source plugin has high_water_property set.
-        $this->deleteMissingSourceRows = $options['delete'] && !($this->limit || !empty($this->idlist) || !empty($migration->getSourceConfiguration()['high_water_property']));
+        $this->deleteMissingSourceRows = $options['delete'] && !($this->limit || $this->idlist !== [] || !empty($migration->getSourceConfiguration()['high_water_property']));
         // Cannot use the progress bar when:
         // - `--no-progress` option is used,
         // - `--feedback` option is used,
@@ -464,7 +464,7 @@ class MigrateExecutable extends MigrateExecutableBase
         $row = $event->getRow();
         $sourceId = $row->getSourceIdValues();
 
-        if (!empty($this->idlist)) {
+        if ($this->idlist !== []) {
             $skip = true;
             foreach ($this->idlist as $id) {
                 if (array_values($sourceId) == $id) {

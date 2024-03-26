@@ -17,8 +17,8 @@ class Environment
 {
     protected string $homeDir;
     protected string $originalCwd;
-    protected string $etcPrefix;
-    protected string $sharePrefix;
+    protected string $etcPrefix = '';
+    protected string $sharePrefix = '';
     protected string $drushBasePath;
     protected string $vendorDir;
 
@@ -38,8 +38,6 @@ class Environment
     {
         $this->homeDir = $homeDir;
         $this->originalCwd = Path::canonicalize(FsUtils::realpath($cwd));
-        $this->etcPrefix = '';
-        $this->sharePrefix = '';
         $this->drushBasePath = Path::canonicalize(dirname(__DIR__, 2));
         $this->vendorDir = FsUtils::realpath(dirname($autoloadFile));
     }

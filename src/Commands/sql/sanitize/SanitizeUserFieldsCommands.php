@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Drush\Commands\sql\sanitize;
 
+use Drupal\Core\Database\Connection;
 use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\AnnotatedCommand\Hooks\HookManager;
 use Drupal\Core\Entity\EntityFieldManagerInterface;
@@ -21,7 +22,7 @@ final class SanitizeUserFieldsCommands extends DrushCommands implements Sanitize
     use AutowireTrait;
 
     public function __construct(
-        protected \Drupal\Core\Database\Connection $database,
+        protected Connection $database,
         protected EntityFieldManagerInterface $entityFieldManager,
         protected EntityTypeManagerInterface $entityTypeManager
     ) {

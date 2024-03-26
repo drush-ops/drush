@@ -21,7 +21,7 @@ final class BrowseCommands extends DrushCommands
     const BROWSE = 'browse';
 
     public function __construct(
-        private SiteAliasManagerInterface $siteAliasManager
+        private readonly SiteAliasManagerInterface $siteAliasManager
     ) {
         parent::__construct();
     }
