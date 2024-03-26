@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Drush\Commands\core;
 
-use Symfony\Component\Filesystem\Filesystem;
 use Composer\Autoload\ClassLoader;
 use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\AnnotatedCommand\Hooks\HookManager;
@@ -28,6 +27,7 @@ use Drush\Sql\SqlBase;
 use Drush\Utils\StringUtils;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Path;
 
 #[CLI\Bootstrap(DrupalBootLevels::NONE)]
@@ -473,7 +473,6 @@ final class SiteInstallCommands extends DrushCommands
         if (file_exists($sites_file)) {
             $sites = [];
             include $sites_file;
-            // @phpstan-ignore-next-line
             if ($sites !== [] && array_key_exists($uri, $sites)) {
                 return $sites[$uri];
             }
