@@ -39,11 +39,9 @@ final class StatusCommands extends DrushCommands
      */
     public static function createEarly(DrushContainer $drush_container): self
     {
-        $commandHandler = new static(
+        return new self(
             $drush_container->get('site.alias.manager'),
         );
-
-        return $commandHandler;
     }
 
     /**

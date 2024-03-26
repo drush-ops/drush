@@ -25,14 +25,14 @@ trait ConfiguresPrompts
     /**
      * Configure the prompt fallbacks.
      *
-     * @param  \Symfony\Component\Console\Input\InputInterface  $input
+     * @param InputInterface $input
      * @return void
      */
     protected function configurePrompts(InputInterface $input)
     {
         Prompt::setOutput($this->output);
 
-        Prompt::cancelUsing(function () {
+        Prompt::cancelUsing(function (): never {
             Runtime::setCompleted();
             exit(1);
         });
@@ -180,10 +180,7 @@ trait ConfiguresPrompts
 
     protected function runningUnitTests(): bool
     {
-        if (! defined('PHPUNIT_COMPOSER_INSTALL') && ! defined('__PHPUNIT_PHAR__')) {
-            // is not PHPUnit run
-            return false;
-        }
-        return true;
+        // is not PHPUnit run
+        return !(! defined('PHPUNIT_COMPOSER_INSTALL') && ! defined('__PHPUNIT_PHAR__'));
     }
 }

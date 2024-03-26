@@ -31,11 +31,9 @@ final class EditCommands extends DrushCommands
      */
     public static function create(ContainerInterface $container, DrushContainer $drush_container): self
     {
-        $commandHandler = new static(
+        return new self(
             $drush_container->get('site.alias.manager'),
         );
-
-        return $commandHandler;
     }
 
     /**

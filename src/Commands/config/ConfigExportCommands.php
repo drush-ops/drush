@@ -65,7 +65,7 @@ final class ConfigExportCommands extends DrushCommands
 
     public static function create(ContainerInterface $container): self
     {
-        $commandHandler = new static(
+        $commandHandler = new self(
             $container->get('config.manager'),
             $container->get('config.storage')
         );

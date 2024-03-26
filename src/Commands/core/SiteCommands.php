@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Drush\Commands\core;
 
+use Symfony\Component\Filesystem\Filesystem;
 use Consolidation\OutputFormatters\StructuredData\UnstructuredListData;
 use Consolidation\SiteAlias\SiteAliasManagerInterface;
 use Drush\Attributes as CLI;
@@ -76,7 +77,7 @@ final class SiteCommands extends DrushCommands
                     @rename($filename, $last_site_filename);
                 }
                 $success_message = dt('Site set to @site', ['@site' => $site]);
-                $fs = new \Symfony\Component\Filesystem\Filesystem();
+                $fs = new Filesystem();
                 if ($site == '@none' || $site == '') {
                     $fs->remove($filename);
                     $this->logger()->success(dt('Site unset.'));
@@ -127,12 +128,11 @@ final class SiteCommands extends DrushCommands
 
     protected function siteAliasExportList(array $aliasList, $options): array
     {
-        $result = array_map(
+        return array_map(
             function ($aliasRecord) {
                 return $aliasRecord->export();
             },
             $aliasList
         );
-        return $result;
     }
 }

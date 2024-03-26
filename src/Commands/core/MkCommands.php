@@ -76,7 +76,7 @@ final class MkCommands extends DrushCommands
             $annotated->setTopics([DocsCommands::GENERATORS]);
             $annotated->setHidden($command->isHidden());
             $values = [];
-            if (in_array($command->getName(), ['entity:bundle-class'])) {
+            if ($command->getName() == 'entity:bundle-class') {
                 $values['version'] = '11.0';
             }
             $annotated->setAnnotationData(new AnnotationData($values));

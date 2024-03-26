@@ -4,6 +4,14 @@ declare(strict_types=1);
 
 namespace Drush\Commands\core;
 
+use Drupal\Core\Entity\ContentEntityInterface;
+use Drush\Psysh\Caster;
+use Drupal\Core\Field\FieldItemListInterface;
+use Drupal\Core\Field\FieldItemInterface;
+use Drupal\Core\Config\Entity\ConfigEntityInterface;
+use Drupal\Core\Config\ConfigBase;
+use Drupal\Component\DependencyInjection\Container;
+use Drupal\Component\Render\MarkupInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drush\Attributes as CLI;
 use Drush\Boot\DrupalBootLevels;
@@ -169,13 +177,13 @@ final class CliCommands extends DrushCommands
     protected function getCasters(): array
     {
         return [
-            \Drupal\Core\Entity\ContentEntityInterface::class => \Drush\Psysh\Caster::castContentEntity(...),
-            \Drupal\Core\Field\FieldItemListInterface::class => \Drush\Psysh\Caster::castFieldItemList(...),
-            \Drupal\Core\Field\FieldItemInterface::class => \Drush\Psysh\Caster::castFieldItem(...),
-            \Drupal\Core\Config\Entity\ConfigEntityInterface::class => \Drush\Psysh\Caster::castConfigEntity(...),
-            \Drupal\Core\Config\ConfigBase::class => \Drush\Psysh\Caster::castConfig(...),
-            \Drupal\Component\DependencyInjection\Container::class => \Drush\Psysh\Caster::castContainer(...),
-            \Drupal\Component\Render\MarkupInterface::class => \Drush\Psysh\Caster::castMarkup(...),
+            ContentEntityInterface::class => Caster::castContentEntity(...),
+            FieldItemListInterface::class => Caster::castFieldItemList(...),
+            FieldItemInterface::class => Caster::castFieldItem(...),
+            ConfigEntityInterface::class => Caster::castConfigEntity(...),
+            ConfigBase::class => Caster::castConfig(...),
+            Container::class => Caster::castContainer(...),
+            MarkupInterface::class => Caster::castMarkup(...),
         ];
     }
 

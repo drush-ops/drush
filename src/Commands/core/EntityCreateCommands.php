@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Drush\Commands\core;
 
+use Drupal\Core\Entity\EntityInterface;
 use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\AnnotatedCommand\Hooks\HookManager;
 use Consolidation\SiteProcess\Util\Escape;
@@ -121,7 +122,7 @@ final class EntityCreateCommands extends DrushCommands
     /**
      * Build initial YAML including comments with authoring hints.
      *
-     * @param \Drupal\Core\Field\FieldDefinitionInterface[] $instances
+     * @param FieldDefinitionInterface[] $instances
      */
     private function getInitialYaml(array $instances, ContentEntityInterface $entity, array $options): string
     {
@@ -211,7 +212,7 @@ final class EntityCreateCommands extends DrushCommands
         }
     }
 
-    protected function setValue(\Drupal\Core\Entity\EntityInterface $entity, int|string $name, mixed $value): void
+    protected function setValue(EntityInterface $entity, int|string $name, mixed $value): void
     {
         switch ($entity->get($name)->getFieldDefinition()->getType()) {
             case 'timestamp':

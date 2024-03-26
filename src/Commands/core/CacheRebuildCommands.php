@@ -21,8 +21,8 @@ final class CacheRebuildCommands extends DrushCommands
     const REBUILD = 'cache:rebuild';
 
     public function __construct(
-        private BootstrapManager $bootstrapManager,
-        private ClassLoader $autoloader
+        private readonly BootstrapManager $bootstrapManager,
+        private readonly ClassLoader $autoloader
     ) {
         parent::__construct();
     }

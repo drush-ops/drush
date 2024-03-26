@@ -30,9 +30,9 @@ final class TwigCommands extends DrushCommands
     public function __construct(
         protected TwigEnvironment $twig,
         protected ModuleHandlerInterface $moduleHandler,
-        private ModuleExtensionList $extensionList,
-        private StateInterface $state,
-        private DrupalKernelInterface $kernel
+        private readonly ModuleExtensionList $extensionList,
+        private readonly StateInterface $state,
+        private readonly DrupalKernelInterface $kernel
     ) {
     }
 
