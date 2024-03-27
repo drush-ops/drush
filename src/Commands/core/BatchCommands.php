@@ -20,9 +20,9 @@ class BatchCommands extends DrushCommands
     #[CLI\Argument(name: 'batch_id', description: 'The batch id that will be processed.')]
     #[CLI\Help(hidden: true)]
     #[CLI\Bootstrap(level: DrupalBootLevels::FULL)]
-    public function process($batch_id, $options = ['format' => 'json']): UnstructuredListData
+    public function process($batch_id, $options = ['format' => 'json']): ?UnstructuredListData
     {
         $return = drush_batch_command($batch_id);
-        return new UnstructuredListData($return);
+        return $return ? new UnstructuredListData($return) : null;
     }
 }
