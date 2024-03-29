@@ -7,6 +7,7 @@ namespace Drush\Commands\config;
 use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\AnnotatedCommand\CommandError;
 use Consolidation\AnnotatedCommand\Hooks\HookManager;
+use Consolidation\SiteAlias\SiteAliasManagerInterface;
 use Drupal\config\StorageReplaceDataWrapper;
 use Drupal\Core\Cache\CacheBackendInterface;
 use Drupal\Core\Config\ConfigException;
@@ -28,6 +29,7 @@ use Drush\Attributes as CLI;
 use Drush\Boot\DrupalBootLevels;
 use Drush\Commands\core\DocsCommands;
 use Drush\Commands\DrushCommands;
+use Drush\Exceptions\CommandFailedException;
 use Drush\Exceptions\UserAbortException;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\Filesystem\Path;
@@ -130,7 +132,8 @@ class ConfigImportCommands extends DrushCommands
         protected ModuleInstallerInterface $moduleInstaller,
         protected ThemeHandlerInterface $themeHandler,
         protected TranslationInterface $stringTranslation,
-        protected ModuleExtensionList $moduleExtensionList
+        protected ModuleExtensionList $moduleExtensionList,
+        private readonly SiteAliasManagerInterface $siteAliasManager
     ) {
         parent::__construct();
     }
@@ -149,6 +152,7 @@ class ConfigImportCommands extends DrushCommands
             $container->get('theme_handler'),
             $container->get('string_translation'),
             $container->get('extension.list.module'),
+            $container->get('site.alias.manager')
         );
 
         if ($container->has('config.import_transformer')) {
@@ -168,12 +172,13 @@ class ConfigImportCommands extends DrushCommands
     #[CLI\Option(name: 'diff', description: 'Show preview as a diff.')]
     #[CLI\Option(name: 'source', description: 'An arbitrary directory that holds the configuration files.')]
     #[CLI\Option(name: 'partial', description: 'Allows for partial config imports from the source directory. Only updates and new configs will be processed with this flag (missing configs will not be deleted). No config transformation happens.')]
+    #[CLI\Option(name: 'override-site-uuid', description: 'Override the target site UUID with the provided value. If none is provided, Drush will attempt to read the site UUID from the config sync directory.')]
     #[CLI\Bootstrap(level: DrupalBootLevels::FULL)]
     #[CLI\Usage(name: 'drush config:import', description: 'Update Drupal\'s configuration so it matches the contents of the config directory.')]
     #[CLI\Usage(name: 'drush config:import --partial --source=/app/config', description: 'Import from the /app/config directory which typically contains one or a few yaml files.')]
     #[CLI\Usage(name: 'cat tmp.yml | drush config:set --input-format=yaml user.mail ? -', description: 'Update the <info>user.mail</info> config object in its entirety.')]
     #[CLI\Topics(topics: [DocsCommands::DEPLOY])]
-    public function import(array $options = ['source' => self::REQ, 'partial' => false, 'diff' => false])
+    public function import(array $options = ['source' => self::REQ, 'partial' => false, 'diff' => false, 'override-site-uuid' => false])
     {
         // Determine source directory.
         $source_storage_dir = ConfigCommands::getDirectory($options['source']);
@@ -183,6 +188,24 @@ class ConfigImportCommands extends DrushCommands
             $source_storage = $this->getConfigStorageSync();
         } else {
             $source_storage = new FileStorage($source_storage_dir);
+        }
+
+        // Overriding the site UUID is only applicable for a full import.
+        if (!$options['partial'] && $site_uuid = $options['override-site-uuid']) {
+            // If the option is enabled but not set to a string, then try to
+            // fetch the uuid value from the source config.
+            if ($site_uuid === true) {
+                if (!$source_storage->exists('system.site')) {
+                    throw new CommandFailedException(message: 'Unable to locate the system.site config file.');
+                }
+
+                $site_config = $source_storage->read('system.site');
+                $site_uuid = $site_config['uuid'];
+            }
+
+            $alias_record = $this->siteAliasManager->getself();
+            $process = $this->processManager()->drush($alias_record, ConfigCommands::SET, ['system.site', 'uuid', $site_uuid],);
+            $process->mustRun();
         }
 
         // Determine $source_storage in partial case.
