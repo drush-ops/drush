@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Drupal\woot\Commands;
+namespace Drupal\woot\Drush\Commands;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -16,7 +16,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  *
  * See: http://symfony.com/doc/2.7/components/console/introduction.html#creating-a-basic-command
  */
-class GreetCommand extends Command
+class GreetCommands extends Command
 {
     protected function configure(): void
     {

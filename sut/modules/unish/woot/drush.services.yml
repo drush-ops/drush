@@ -9,10 +9,6 @@ services:
     arguments: ['%app.root%']
     tags:
       -  { name: drush.command }
-  greet.command:
-    class: Drupal\woot\Commands\GreetCommand
-    tags:
-      -  { name: console.command }
   annotated_greet.command:
     class: Drupal\woot\Commands\AnnotatedGreetCommand
     tags:
