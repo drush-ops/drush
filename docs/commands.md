@@ -74,7 +74,7 @@ For an example, see [WootCommandInfoAlterer](https://github.com/drush-ops/drush/
 ## Symfony Console Commands
 
 Drush lists and runs Symfony Console commands, in addition to more typical annotated commands.
-See [this test](https://github.com/drush-ops/drush/blob/eed106ae4510d5a2df89f8e7fd54b41ffb0aa5fa/tests/integration/AnnotatedCommandCase.php#L178-L180) and this [commandfile](https://github.com/drush-ops/drush/blob/13.x/sut/modules/unish/woot/src/Commands/GreetCommand.php). Note that these commands must conform to the usual class name and class namespace requirements. You might need to extend the Console class if you can't rename and move it.
+See [GreetCommands](https://github.com/drush-ops/drush/blob/13.x/sut/modules/unish/woot/src/Drush/Commands/GreetCommands.php) as an example. Note that these commands must conform to the usual class name and class namespace requirements. You might need to extend the Console class if you can't rename and move it.
 
 ## Auto-discovered commands (PSR4)
 
