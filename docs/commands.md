@@ -63,7 +63,7 @@ Drush command info (annotations/attributes) can be altered from other modules. T
 
 In the module that wants to alter a command info, add a class that:
 
-1. The generator class namespace, relative to base namespace, should be `Drupal\<module-name>\Drush\CommandInfoAlterers` and the class file should be located under the `src/Drush/CommandInfoAlterers` directory.
+1. The class namespace, relative to base namespace, should be `Drupal\<module-name>\Drush\CommandInfoAlterers` and the class file should be located under the `src/Drush/CommandInfoAlterers` directory.
 1. The filename must have a name like FooCommandInfoAlterer.php. The prefix `Foo` can be whatever string you want. The file must end in `CommandInfoAlterer.php`.
 1. The class must implement the `\Consolidation\AnnotatedCommand\CommandInfoAltererInterface`.
 1. Implement the alteration logic in the `alterCommandInfo()` method.
@@ -72,7 +72,9 @@ In the module that wants to alter a command info, add a class that:
 For an example, see [WootCommandInfoAlterer](https://github.com/drush-ops/drush/blob/13.x/sut/modules/unish/woot/src/Drush/CommandInfoAlterers/WootCommandInfoAlterer.php) provided by the testing 'woot' module.
 
 ## Symfony Console Commands
-Drush lists and runs Symfony Console commands, in addition to more typical annotated commands. See [this test](https://github.com/drush-ops/drush/blob/eed106ae4510d5a2df89f8e7fd54b41ffb0aa5fa/tests/integration/AnnotatedCommandCase.php#L178-L180) and this [commandfile](https://github.com/drush-ops/drush/blob/13.x/sut/modules/unish/woot/src/Commands/GreetCommand.php).
+
+Drush lists and runs Symfony Console commands, in addition to more typical annotated commands.
+See [this test](https://github.com/drush-ops/drush/blob/eed106ae4510d5a2df89f8e7fd54b41ffb0aa5fa/tests/integration/AnnotatedCommandCase.php#L178-L180) and this [commandfile](https://github.com/drush-ops/drush/blob/13.x/sut/modules/unish/woot/src/Commands/GreetCommand.php). Note that these commands must conform to the usual class name and class namespace requirements. You might need to extend the Console class if you can't rename and move it.
 
 ## Auto-discovered commands (PSR4)
 
