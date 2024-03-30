@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Drush;
 
-use Psr\Container\ContainerInterface;
 use Composer\InstalledVersions;
 use Consolidation\AnnotatedCommand\AnnotatedCommandFactory;
 use Consolidation\SiteAlias\SiteAliasInterface;
@@ -17,6 +16,7 @@ use Drush\Config\DrushConfig;
 use Drush\Preflight\PreflightArgs;
 use Drush\Runtime\DependencyInjection;
 use Drush\SiteAlias\ProcessManager;
+use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 use Robo\Robo;
 use Robo\Runner;
@@ -446,12 +446,18 @@ class Drush
         // $input->getOptions() returns an associative array of option => value
         $options = $input->getOptions();
 
-        // The 'runtime.options' config contains a list of option names on th cli
+        // The 'runtime.options' config contains a list of option names on the CLI
         $optionNamesFromCommandline = self::config()->get('runtime.options');
 
         // Attempt to normalize option names.
         foreach ($optionNamesFromCommandline as $key => $name) {
             try {
+                // Don't incorrectly remap these to --verbose, or discard them.
+                if ($name == 'vv' || $name == 'vvv') {
+                    // Special value for \Consolidation\SiteProcess\Util\ArgumentProcessor::convertOptions
+                    $options[$name] = '-short';
+                    continue;
+                }
                 $optionNamesFromCommandline[$key] = Drush::getApplication()->get($command_name)->getDefinition()->shortcutToName($name);
             } catch (InvalidArgumentException $e) {
                 // Do nothing. It's expected.
