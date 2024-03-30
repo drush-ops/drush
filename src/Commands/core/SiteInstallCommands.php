@@ -185,7 +185,7 @@ final class SiteInstallCommands extends DrushCommands
     }
 
 
-    protected function determineProfile($profile, $options)
+    protected function determineProfile($profile, $options): string|bool
     {
         // Try to get profile from existing config if not provided as an argument.
         // @todo Arguably Drupal core [$boot->getKernel()->getInstallProfile()] could do this - https://github.com/drupal/drupal/blob/8.6.x/core/lib/Drupal/Core/DrupalKernel.php#L1606 reads from DB storage but not file storage.
@@ -197,7 +197,8 @@ final class SiteInstallCommands extends DrushCommands
                 throw new \Exception(dt('Existing configuration directory @config does not contain a core.extension.yml file.', ['@config' => $config_directory]));
             }
             $config = $source_storage->read('core.extension');
-            $profile = $config['profile'];
+            $profile = $config['profile'] ?? false;
+            return $profile;
         }
 
         if (empty($profile)) {
