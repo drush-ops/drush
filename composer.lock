@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e6d308380d24037b96d657f63233c02b",
+    "content-hash": "9ce941ee41808c047f47f38b49ca1395",
     "packages": [
         {
             "name": "chi-teck/drupal-code-generator",
@@ -608,16 +608,16 @@
         },
         {
             "name": "consolidation/site-process",
-            "version": "5.2.0",
+            "version": "dev-convertOptionsAllowShort",
             "source": {
                 "type": "git",
                 "url": "https://github.com/consolidation/site-process.git",
-                "reference": "6c44638d7af8a8b4abe12c3180701243f480539d"
+                "reference": "ef9350f121894960e00aaee0d9854d2ec4d96cbe"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/consolidation/site-process/zipball/6c44638d7af8a8b4abe12c3180701243f480539d",
-                "reference": "6c44638d7af8a8b4abe12c3180701243f480539d",
+                "url": "https://api.github.com/repos/consolidation/site-process/zipball/ef9350f121894960e00aaee0d9854d2ec4d96cbe",
+                "reference": "ef9350f121894960e00aaee0d9854d2ec4d96cbe",
                 "shasum": ""
             },
             "require": {
@@ -659,9 +659,9 @@
             "description": "A thin wrapper around the Symfony Process Component that allows applications to use the Site Alias library to specify the target for a remote call.",
             "support": {
                 "issues": "https://github.com/consolidation/site-process/issues",
-                "source": "https://github.com/consolidation/site-process/tree/5.2.0"
+                "source": "https://github.com/consolidation/site-process/tree/convertOptionsAllowShort"
             },
-            "time": "2022-12-06T17:57:16+00:00"
+            "time": "2024-04-01T11:36:23+00:00"
         },
         {
             "name": "dflydev/dot-access-data",
@@ -8286,9 +8286,18 @@
             "time": "2020-10-27T09:42:17+00:00"
         }
     ],
-    "aliases": [],
+    "aliases": [
+        {
+            "package": "consolidation/site-process",
+            "version": "dev-convertOptionsAllowShort",
+            "alias": "5.2.0",
+            "alias_normalized": "5.2.0.0"
+        }
+    ],
     "minimum-stability": "dev",
-    "stability-flags": [],
+    "stability-flags": {
+        "consolidation/site-process": 20
+    },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
