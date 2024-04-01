@@ -10,7 +10,6 @@ use Consolidation\SiteAlias\SiteAliasInterface;
 use Consolidation\SiteAlias\SiteAliasManager;
 use Consolidation\SiteProcess\ProcessBase;
 use Consolidation\SiteProcess\SiteProcess;
-use Consolidation\SiteProcess\Util\ArgumentProcessor;
 use Drush\Boot\Boot;
 use Drush\Boot\BootstrapManager;
 use Drush\Config\DrushConfig;
@@ -455,8 +454,8 @@ class Drush
             try {
                 // Don't incorrectly remap these to --verbose, or discard them.
                 if ($name == 'vv' || $name == 'vvv') {
-                    // Special value for \Consolidation\SiteProcess\Util\ArgumentProcessor::convertOptions
-                    $options[$name] = ArgumentProcessor::SHORT_OPTION;
+                    // Special handling is in \Consolidation\SiteProcess\Util\ArgumentProcessor::convertOptions
+                    $options[$name] = true;
                     continue;
                 }
                 $optionNamesFromCommandline[$key] = Drush::getApplication()->get($command_name)->getDefinition()->shortcutToName($name);
