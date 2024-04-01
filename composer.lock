@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e6d308380d24037b96d657f63233c02b",
+    "content-hash": "3d5df5e7ecb3a7a3b21f8cc4225e882b",
     "packages": [
         {
             "name": "chi-teck/drupal-code-generator",
@@ -608,16 +608,16 @@
         },
         {
             "name": "consolidation/site-process",
-            "version": "5.2.0",
+            "version": "5.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/consolidation/site-process.git",
-                "reference": "6c44638d7af8a8b4abe12c3180701243f480539d"
+                "reference": "5e8eff50fd0015e7ca0b6ce4082cacef012f2f77"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/consolidation/site-process/zipball/6c44638d7af8a8b4abe12c3180701243f480539d",
-                "reference": "6c44638d7af8a8b4abe12c3180701243f480539d",
+                "url": "https://api.github.com/repos/consolidation/site-process/zipball/5e8eff50fd0015e7ca0b6ce4082cacef012f2f77",
+                "reference": "5e8eff50fd0015e7ca0b6ce4082cacef012f2f77",
                 "shasum": ""
             },
             "require": {
@@ -659,9 +659,9 @@
             "description": "A thin wrapper around the Symfony Process Component that allows applications to use the Site Alias library to specify the target for a remote call.",
             "support": {
                 "issues": "https://github.com/consolidation/site-process/issues",
-                "source": "https://github.com/consolidation/site-process/tree/5.2.0"
+                "source": "https://github.com/consolidation/site-process/tree/5.3.0"
             },
-            "time": "2022-12-06T17:57:16+00:00"
+            "time": "2024-04-01T12:42:12+00:00"
         },
         {
             "name": "dflydev/dot-access-data",
