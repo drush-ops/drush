@@ -8,7 +8,6 @@ use Drush\Attributes as CLI;
 use Drush\Commands\core\DocsCommands;
 use Drush\Commands\DrushCommands;
 use Drush\Commands\help\ListCommands;
-use Psr\Container\ContainerInterface;
 use Psr\Container\ContainerInterface as DrushContainer;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Completion\CompletionInput;
@@ -20,19 +19,15 @@ final class GenerateCommands extends DrushCommands
     const GENERATE = 'generate';
 
     protected function __construct(
-        private ContainerInterface $container,
-        private DrushContainer $drush_container,
+        private readonly DrushContainer $drush_container,
     ) {
     }
 
-    public static function create(ContainerInterface $container): self
+    public static function create(DrushContainer $container): self
     {
-        $commandHandler = new static(
-            $container->get('service_container'),
+        return new self(
             $container,
         );
-
-        return $commandHandler;
     }
 
     /**
@@ -59,7 +54,7 @@ final class GenerateCommands extends DrushCommands
     {
         $application = (new ApplicationFactory($this->drush_container, $this->logger()))->create();
 
-        if (!$generator || $generator == 'list') {
+        if (!$generator || $generator === 'list') {
             $all = $application->all();
             unset($all['help'], $all['list'], $all['completion']);
             $namespaced = ListCommands::categorize($all);

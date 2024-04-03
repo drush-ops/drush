@@ -30,9 +30,9 @@ final class TwigCommands extends DrushCommands
     public function __construct(
         protected TwigEnvironment $twig,
         protected ModuleHandlerInterface $moduleHandler,
-        private ModuleExtensionList $extensionList,
-        private StateInterface $state,
-        private DrupalKernelInterface $kernel
+        private readonly ModuleExtensionList $extensionList,
+        private readonly StateInterface $state,
+        private readonly DrupalKernelInterface $kernel
     ) {
     }
 
@@ -92,6 +92,7 @@ final class TwigCommands extends DrushCommands
     #[CLI\Command(name: self::COMPILE, aliases: ['twigc', 'twig-compile'])]
     public function twigCompile(): void
     {
+        $searchpaths = [];
         require_once DRUSH_DRUPAL_CORE . "/themes/engines/twig/twig.engine";
         // Scan all enabled modules and themes.
         $modules = array_keys($this->getModuleHandler()->getModuleList());

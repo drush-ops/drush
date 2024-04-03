@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Drush\Commands\core;
 
-use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\AnnotatedCommand\Hooks\HookManager;
 use Consolidation\SiteProcess\Util\Escape;
 use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Entity\EntityConstraintViolationListInterface;
 use Drupal\Core\Entity\EntityFieldManagerInterface;
+use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\Session\AccountSwitcherInterface;
@@ -121,7 +121,7 @@ final class EntityCreateCommands extends DrushCommands
     /**
      * Build initial YAML including comments with authoring hints.
      *
-     * @param \Drupal\Core\Field\FieldDefinitionInterface[] $instances
+     * @param FieldDefinitionInterface[] $instances
      */
     private function getInitialYaml(array $instances, ContentEntityInterface $entity, array $options): string
     {
@@ -185,7 +185,7 @@ final class EntityCreateCommands extends DrushCommands
     }
 
     #[CLI\Hook(type: HookManager::ARGUMENT_VALIDATOR)]
-    private function validate(CommandData $commandData): void
+    private function validate(): void
     {
         if (!$this->input()->isInteractive()) {
             throw new \RuntimeException('entity:create is designed for an interactive terminal.');
@@ -211,7 +211,7 @@ final class EntityCreateCommands extends DrushCommands
         }
     }
 
-    protected function setValue(\Drupal\Core\Entity\EntityInterface $entity, int|string $name, mixed $value): void
+    protected function setValue(EntityInterface $entity, int|string $name, mixed $value): void
     {
         switch ($entity->get($name)->getFieldDefinition()->getType()) {
             case 'timestamp':

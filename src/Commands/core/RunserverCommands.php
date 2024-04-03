@@ -95,7 +95,7 @@ final class RunserverCommands extends DrushCommands
 
         // Populate defaults.
         $uri = $uri + $user_default + $site_default + $drush_default;
-        if (ltrim($uri['path'], '/') == '-') {
+        if (ltrim($uri['path'], '/') === '-') {
             // Allow a path of a single hyphen to clear a default path.
             $uri['path'] = '';
         }
@@ -124,7 +124,7 @@ final class RunserverCommands extends DrushCommands
         if (empty($uri)) {
             return [];
         }
-        if ($uri[0] == ':') {
+        if ($uri[0] === ':') {
             // ':port/path' shorthand, insert a placeholder hostname to allow parsing.
             $uri = 'placeholder-hostname' . $uri;
         }
@@ -147,7 +147,7 @@ final class RunserverCommands extends DrushCommands
                 unset($uri['path']);
             }
         }
-        if (isset($uri['host']) && $uri['host'] == 'placeholder-hostname') {
+        if (isset($uri['host']) && $uri['host'] === 'placeholder-hostname') {
             unset($uri['host']);
         }
         return $uri;

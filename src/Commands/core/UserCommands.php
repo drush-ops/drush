@@ -97,7 +97,7 @@ final class UserCommands extends DrushCommands
                 }
             }
         }
-        if (empty($accounts)) {
+        if ($accounts === []) {
             throw new \Exception(dt('Unable to find a matching user'));
         }
 
@@ -340,7 +340,6 @@ final class UserCommands extends DrushCommands
     /**
      * Get accounts from name variables or uid & mail options.
      *
-     * @param string $names
      * @param array $options
      *
      *   A array of loaded accounts.
@@ -376,7 +375,7 @@ final class UserCommands extends DrushCommands
                 }
             }
         }
-        if (empty($accounts)) {
+        if ($accounts === []) {
             throw new \Exception(dt('Unable to find any matching user'));
         }
 

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Drush\Commands\sql\sanitize;
 
+use Drupal\Core\Database\Connection;
 use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\AnnotatedCommand\Hooks\HookManager;
 use Drupal\Core\Entity\EntityFieldManagerInterface;
@@ -21,7 +22,7 @@ final class SanitizeUserFieldsCommands extends DrushCommands implements Sanitize
     use AutowireTrait;
 
     public function __construct(
-        protected \Drupal\Core\Database\Connection $database,
+        protected Connection $database,
         protected EntityFieldManagerInterface $entityFieldManager,
         protected EntityTypeManagerInterface $entityTypeManager
     ) {
@@ -46,8 +47,6 @@ final class SanitizeUserFieldsCommands extends DrushCommands implements Sanitize
 
     /**
      * Sanitize string fields associated with the user.
-     *
-     * @todo Use Drupal services to get field info.
      */
     #[CLI\Hook(type: HookManager::POST_COMMAND_HOOK, target: SanitizeCommands::SANITIZE)]
     public function sanitize($result, CommandData $commandData): void
@@ -74,34 +73,21 @@ final class SanitizeUserFieldsCommands extends DrushCommands implements Sanitize
             if (in_array($def->getType(), $supported_field_types)) {
                 $value_array = $field_type_class::generateSampleValue($def);
                 $value = $value_array['value'];
+            } else {
+                continue;
             }
             switch ($def->getType()) {
-                case 'email':
-                    $query->fields([$name . '_value' => $value]);
-                    $execute = true;
-                    break;
                 case 'string':
-                    $query->fields([$name . '_value' => $value]);
-                    $execute = true;
-                    break;
-
                 case 'string_long':
+                case 'text':
+                case 'text_long':
+                case 'email':
                     $query->fields([$name . '_value' => $value]);
                     $execute = true;
                     break;
 
                 case 'telephone':
                     $query->fields([$name . '_value' => '15555555555']);
-                    $execute = true;
-                    break;
-
-                case 'text':
-                    $query->fields([$name . '_value' => $value]);
-                    $execute = true;
-                    break;
-
-                case 'text_long':
-                    $query->fields([$name . '_value' => $value]);
                     $execute = true;
                     break;
 

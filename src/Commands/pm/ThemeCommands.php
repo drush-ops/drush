@@ -23,9 +23,6 @@ final class ThemeCommands extends DrushCommands
         parent::__construct();
     }
 
-    /**
-     * @return mixed
-     */
     public function getThemeInstaller(): ThemeInstallerInterface
     {
         return $this->themeInstaller;

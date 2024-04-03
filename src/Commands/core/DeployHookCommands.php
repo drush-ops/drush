@@ -40,7 +40,7 @@ final class DeployHookCommands extends DrushCommands
      */
     public static function getRegistry(): UpdateRegistry
     {
-        $registry = new class (
+        return new class (
             \Drupal::getContainer()->getParameter('app.root'),
             \Drupal::getContainer()->getParameter('site.path'),
             \Drupal::service('module_handler')->getModuleList(),
@@ -63,8 +63,6 @@ final class DeployHookCommands extends DrushCommands
                 $this->updateType = 'deploy';
             }
         };
-
-        return $registry;
     }
 
     /**
@@ -196,6 +194,7 @@ final class DeployHookCommands extends DrushCommands
                 break;
             }
         }
+        assert(isset($module) && isset($name) && isset($filename));
 
         if (function_exists($function)) {
             if (empty($context['results'][$module][$name]['type'])) {
@@ -218,7 +217,7 @@ final class DeployHookCommands extends DrushCommands
 
                 $variables = Error::decodeException($e);
                 $variables = array_filter($variables, function ($key) {
-                    return $key[0] == '@' || $key[0] == '%';
+                    return $key[0] === '@' || $key[0] === '%';
                 }, ARRAY_FILTER_USE_KEY);
                 // On windows there is a problem with json encoding a string with backslashes.
                 $variables['%file'] = strtr($variables['%file'], [DIRECTORY_SEPARATOR => '/']);

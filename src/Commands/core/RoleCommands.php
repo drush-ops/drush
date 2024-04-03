@@ -45,7 +45,7 @@ final class RoleCommands extends DrushCommands
         $role = Role::create([
             'id' => $machine_name,
             'label' => $human_readable_name ?: ucfirst($machine_name),
-        ], 'user_role');
+        ]);
         $role->save();
         $this->logger()->success(dt('Created "!role"', ['!role' => $machine_name]));
         return $role;

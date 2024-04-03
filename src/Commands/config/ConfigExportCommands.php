@@ -65,7 +65,7 @@ final class ConfigExportCommands extends DrushCommands
 
     public static function create(ContainerInterface $container): self
     {
-        $commandHandler = new static(
+        $commandHandler = new self(
             $container->get('config.manager'),
             $container->get('config.storage')
         );
@@ -118,7 +118,7 @@ final class ConfigExportCommands extends DrushCommands
 
         if (count(glob($destination_dir . '/*')) > 0) {
             // Retrieve a list of differences between the active and target configuration (if any).
-            $config_comparer = new StorageComparer($this->getConfigStorageExport(), $target_storage, $this->getConfigManager());
+            $config_comparer = new StorageComparer($this->getConfigStorageExport(), $target_storage);
             if (!$config_comparer->createChangelist()->hasChanges()) {
                 $this->logger()->notice(dt('The active configuration is identical to the configuration in the export directory (!target).', ['!target' => $destination_dir]));
                 return;

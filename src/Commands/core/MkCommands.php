@@ -62,6 +62,7 @@ final class MkCommands extends DrushCommands
      */
     public function createAnnotatedCommands(Application $application_generate, Application $application_drush): array
     {
+        $commands = [];
         $definition = $application_drush->get('generate')->getDefinition();
         foreach ($application_generate->all() as $command) {
             $annotated = new AnnotatedCommand($command->getName());
@@ -75,7 +76,7 @@ final class MkCommands extends DrushCommands
             $annotated->setTopics([DocsCommands::GENERATORS]);
             $annotated->setHidden($command->isHidden());
             $values = [];
-            if (in_array($command->getName(), ['entity:bundle-class'])) {
+            if ($command->getName() == 'entity:bundle-class') {
                 $values['version'] = '11.0';
             }
             $annotated->setAnnotationData(new AnnotationData($values));
@@ -166,8 +167,7 @@ EOT;
                 $body .= '- ** ' . HelpCLIFormatter::formatOptionKeys(self::optionToArray($value)) . '**. ' . self::cliTextToMarkdown($value->getDescription()) . "\n";
             }
             $body .= '- To see all global options, run <code>drush topic</code> and pick the first choice.' . "\n";
-            $body = "#### Global Options\n\n$body\n";
-            return $body;
+            return "#### Global Options\n\n$body\n";
         }
         return '';
     }
@@ -243,6 +243,7 @@ EOT;
 
     protected function writeAllMd(array $pages_all, string $destination_path, string $title): void
     {
+        $items = [];
         unset($pages_all['all']);
         foreach ($pages_all as $name => $page) {
             $basename = basename($page);
@@ -277,9 +278,7 @@ EOT;
     /**
      * Build an array since that's what HelpCLIFormatter expects.
      *
-     * @param InputArgument $arg
      *
-     * @return iterable
      */
     public static function argToArray(InputArgument $arg): iterable
     {
@@ -293,9 +292,7 @@ EOT;
     /**
      * Build an array since that's what HelpCLIFormatter expects.
      *
-     * @param InputOption $opt
      *
-     * @return iterable
      */
     public static function optionToArray(InputOption $opt): iterable
     {
@@ -329,7 +326,7 @@ EOT;
         foreach ($namespaced as $category => $commands) {
             foreach ($commands as $command) {
                 // Special case a single page
-                if (empty($pages_all)) {
+                if ($pages_all === []) {
                     $pages['all'] = $destination . '/all.md';
                 }
 
@@ -342,14 +339,14 @@ EOT;
                 }
                 $body .= self::appendArguments($command);
                 $body .= self::appendOptions($command);
-                if ($destination == 'commands') {
+                if ($destination === 'commands') {
                     $body .= self::appendOptionsGlobal($command->getApplication());
                 }
                 if ($command instanceof AnnotatedCommand) {
                     $body .= self::appendTopics($command, $destination_path);
                 }
                 $body .= self::appendAliases($command);
-                if ($destination == 'commands') {
+                if ($destination === 'commands') {
                     $body .= self::appendPostAmble();
                 }
                 $filename = $this->getFilename($command->getName());
@@ -364,7 +361,7 @@ EOT;
             $this->logger()->info('Found {pages} pages in {cat}', ['pages' => count($pages), 'cat' => $category]);
             $nav[] = [$category => $pages];
             $pages_all = array_merge($pages_all, $pages);
-            unset($pages);
+            $pages = [];
         }
         return [$nav, $pages_all, $map_all];
     }
@@ -374,7 +371,7 @@ EOT;
         $map = [];
         foreach ($command->getAliases() as $alias) {
             // Skip trivial aliases that differ by a dash.
-            if (str_replace([':', '-'], '', $command->getName()) == str_replace([':', '-'], '', $alias)) {
+            if (str_replace([':', '-'], '', $command->getName()) === str_replace([':', '-'], '', $alias)) {
                 continue;
             }
             $map[Path::join($destination, $this->getFilename($alias))] = Path::join($destination, $this->getFilename($command->getName()));

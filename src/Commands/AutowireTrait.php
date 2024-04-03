@@ -2,6 +2,7 @@
 
 namespace Drush\Commands;
 
+use Psr\Container\ContainerInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\DependencyInjection\Exception\AutowiringFailedException;
 
@@ -16,14 +17,14 @@ use Symfony\Component\DependencyInjection\Exception\AutowiringFailedException;
 trait AutowireTrait
 {
   /**
-   * Instantiates a new instance of the implementing class using autowiring.
-   *
-   * @param \Psr\Container\ContainerInterface $container
-   *   The service container this instance should use.
-   *
-   * @return static
-   */
-    public static function create(\Psr\Container\ContainerInterface $container)
+     * Instantiates a new instance of the implementing class using autowiring.
+     *
+     * @param ContainerInterface $container
+     *   The service container this instance should use.
+     *
+     * @return static
+     */
+    public static function create(ContainerInterface $container)
     {
         $args = [];
 
@@ -43,6 +44,6 @@ trait AutowireTrait
             }
         }
 
-        return new static(...$args);
+        return new self(...$args);
     }
 }

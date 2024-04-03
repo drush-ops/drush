@@ -12,7 +12,6 @@ class Shell extends BaseShell
     /**
      * Get a command (if one exists) for the current input string.
      *
-     * @param string $input
      *
      * @return null|string
      */
@@ -26,7 +25,6 @@ class Shell extends BaseShell
     /**
      * Check whether a command is set for the current input string.
      *
-     * @param string $input
      *
      * @return bool True if the shell has a command for the given input.
      */

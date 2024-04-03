@@ -49,7 +49,7 @@ final class EntityCommands extends DrushCommands
         $result = $query->execute();
 
         // Don't delete uid=1, uid=0.
-        if ($entity_type == 'user') {
+        if ($entity_type === 'user') {
             unset($result[0], $result[1]);
         }
 
@@ -71,8 +71,6 @@ final class EntityCommands extends DrushCommands
     /**
      * Actual delete method.
      *
-     * @param string $entity_type
-     * @param array $ids
      *
      * @throws InvalidPluginDefinitionException
      * @throws PluginNotFoundException
@@ -124,8 +122,6 @@ final class EntityCommands extends DrushCommands
     /**
      * Actual save method.
      *
-     * @param string $entity_type
-     * @param array $ids
      *
      * @throws InvalidPluginDefinitionException
      * @throws PluginNotFoundException
@@ -141,10 +137,7 @@ final class EntityCommands extends DrushCommands
     }
 
     /**
-     * @param string $entity_type
      * @param string|null $ids
-     * @param array $options
-     * @return QueryInterface
      * @throws InvalidPluginDefinitionException
      * @throws PluginNotFoundException
      */

@@ -27,6 +27,7 @@ use Drush\Sql\SqlBase;
 use Drush\Utils\StringUtils;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Path;
 
 #[CLI\Bootstrap(DrupalBootLevels::NONE)]
@@ -38,9 +39,9 @@ final class SiteInstallCommands extends DrushCommands
     const INSTALL = 'site:install';
 
     public function __construct(
-        private BootstrapManager $bootstrapManager,
-        private SiteAliasManagerInterface $siteAliasManager,
-        private ClassLoader $autoloader
+        private readonly BootstrapManager $bootstrapManager,
+        private readonly SiteAliasManagerInterface $siteAliasManager,
+        private readonly ClassLoader $autoloader
     ) {
         parent::__construct();
     }
@@ -81,8 +82,8 @@ final class SiteInstallCommands extends DrushCommands
 
             // Allow for numeric and NULL values to be passed in.
             if (is_numeric($value)) {
-                $value = intval($value);
-            } elseif ($value == 'NULL') {
+                $value = (int) $value;
+            } elseif ($value === 'NULL') {
                 $value = null;
             }
 
@@ -164,7 +165,7 @@ final class SiteInstallCommands extends DrushCommands
             throw new InstallerException(MailFormatHelper::htmlToText($e->getMessage()), $e->getTitle(), $e->getCode(), ($this->output()->getVerbosity() > OutputInterface::VERBOSITY_NORMAL) ? $e : null);
         } catch (AlreadyInstalledException $e) {
             if ($sql && !$this->programExists($sql->command())) {
-                throw new \Exception(dt('Drush was unable to drop all tables because `@program` was not found, and therefore Drupal threw an AlreadyInstalledException. Ensure `@program` is available in your PATH.', ['@program' => $sql->command()]));
+                throw new \Exception(dt('Drush was unable to drop all tables because `@program` was not found, and therefore Drupal threw an AlreadyInstalledException. Ensure `@program` is available in your PATH.', ['@program' => $sql->command()]), $e->getCode(), $e);
             }
             throw $e;
         }
@@ -182,7 +183,7 @@ final class SiteInstallCommands extends DrushCommands
     }
 
 
-    protected function determineProfile($profile, $options)
+    protected function determineProfile($profile, $options): string|bool
     {
         // Try to get profile from existing config if not provided as an argument.
         // @todo Arguably Drupal core [$boot->getKernel()->getInstallProfile()] could do this - https://github.com/drupal/drupal/blob/8.6.x/core/lib/Drupal/Core/DrupalKernel.php#L1606 reads from DB storage but not file storage.
@@ -194,7 +195,8 @@ final class SiteInstallCommands extends DrushCommands
                 throw new \Exception(dt('Existing configuration directory @config does not contain a core.extension.yml file.', ['@config' => $config_directory]));
             }
             $config = $source_storage->read('core.extension');
-            $profile = $config['profile'];
+            $profile = $config['profile'] ?? false;
+            return $profile;
         }
 
         if (empty($profile)) {
@@ -349,7 +351,7 @@ final class SiteInstallCommands extends DrushCommands
                     // provided credential values.
                     SqlBase::create($commandData->input()->getOptions());
                 } catch (\Exception $e) {
-                    throw new \Exception(dt('Could not determine database connection parameters. Pass --db-url option.'));
+                    throw new \Exception(dt('Could not determine database connection parameters. Pass --db-url option.'), $e->getCode(), $e);
                 }
             }
         }
@@ -389,7 +391,7 @@ final class SiteInstallCommands extends DrushCommands
         $settingsfile = Path::join($confPath, 'settings.php');
         $sitesfile = "sites/sites.php";
         $default = realpath(Path::join($root, 'sites/default'));
-        $sitesfile_write = realpath($confPath) != $default && !file_exists($sitesfile);
+        $sitesfile_write = realpath($confPath) !== $default && !file_exists($sitesfile);
 
         $msg = [];
         if (!file_exists($settingsfile)) {
@@ -421,7 +423,7 @@ final class SiteInstallCommands extends DrushCommands
 
         // Can't install without sites subdirectory and settings.php.
         if (!file_exists($confPath)) {
-            if ((new \Symfony\Component\Filesystem\Filesystem())->mkdir($confPath) && !$this->config->simulate()) {
+            if ((new Filesystem())->mkdir($confPath) && !$this->config->simulate()) {
                 throw new \Exception(dt('Failed to create directory @confPath', ['@confPath' => $confPath]));
             }
         } else {
@@ -472,7 +474,7 @@ final class SiteInstallCommands extends DrushCommands
         if (file_exists($sites_file)) {
             $sites = [];
             include $sites_file;
-            if (!empty($sites) && array_key_exists($uri, $sites)) {
+            if ($sites !== [] && array_key_exists($uri, $sites)) {
                 return $sites[$uri];
             }
         }
@@ -524,7 +526,6 @@ final class SiteInstallCommands extends DrushCommands
     /**
      * Assure that a config directory exists and is populated.
      *
-     * @param CommandData $commandData
      * @param $directory
      * @throws \Exception
      */

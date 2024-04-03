@@ -155,7 +155,7 @@ class LegacyServiceFinder
         }
 
         // Regardless, we still return a services file.
-        return $dir . '/' . $serviceYmlPath;
+        return $dir . '/' . ($serviceYmlPath ?? '');
     }
 
     /**

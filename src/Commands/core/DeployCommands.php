@@ -55,11 +55,6 @@ final class DeployCommands extends DrushCommands
         $process->mustRun($process->showRealtime());
     }
 
-    /**
-     * @param ProcessManager $manager
-     * @param SiteAlias $self
-     * @param array $redispatchOptions
-     */
     public function cacheRebuild(ProcessManager $manager, SiteAlias $self, array $redispatchOptions): void
     {
         // It is possible that no updates were pending and thus no caches cleared yet.

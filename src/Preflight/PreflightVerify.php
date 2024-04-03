@@ -14,8 +14,6 @@ class PreflightVerify
 {
     /**
      * Throw an exception if the environment is not right for running Drush.
-     *
-     * @param Environment $environment
      */
     public function verify(Environment $environment): void
     {
@@ -50,8 +48,6 @@ class PreflightVerify
 
     /**
      * Fail if not being run from the command line.
-     *
-     * @param Environment $environment
      */
     protected function confirmUsingCLI(Environment $environment): void
     {
@@ -77,7 +73,7 @@ class PreflightVerify
                 $prohibited_list[] = $prohibited_mode;
             }
         }
-        if (!empty($prohibited_list)) {
+        if ($prohibited_list !== []) {
             throw new \Exception(StringUtils::interpolate('The following restricted PHP modes have non-empty values: {prohibited_list}. This configuration is incompatible with drush.  {php_ini_msg}', ['prohibited_list' => implode(' and ', $prohibited_list), 'php_ini_msg' => $this->loadedPhpIniMessage()]));
         }
     }

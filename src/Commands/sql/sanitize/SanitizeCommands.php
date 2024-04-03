@@ -47,7 +47,7 @@ final class SanitizeCommands extends DrushCommands implements CustomEventAwareIn
         foreach ($handlers as $handler) {
             $handler($messages, $input);
         }
-        if (!empty($messages)) {
+        if ($messages) {
             $this->output()->writeln(dt('The following operations will be performed:'));
             $this->io()->listing($messages);
         }

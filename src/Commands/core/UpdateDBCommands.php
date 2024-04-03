@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Drush\Commands\core;
 
+use Drupal\Core\Update\UpdateRegistry;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Consolidation\OutputFormatters\StructuredData\UnstructuredListData;
 use Consolidation\SiteAlias\SiteAliasManagerInterface;
@@ -307,9 +308,8 @@ final class UpdateDBCommands extends DrushCommands
             }
         } else {
             $ret['#abort'] = ['success' => false];
-            Drush::logger()->warning(dt('Post update function @function not found in file @filename', [
-                '@function' => $function,
-                '@filename' => "$filename.php",
+            Drush::logger()->warning(dt('Post update function @function not found.', [
+                '@function' => $function
             ]));
         }
 
@@ -362,7 +362,7 @@ final class UpdateDBCommands extends DrushCommands
         // potentially very large.)
         $dependency_map = [];
         foreach ($updates as $function => $update) {
-            $dependency_map[$function] = !empty($update['reverse_paths']) ? array_keys($update['reverse_paths']) : [];
+            $dependency_map[$function] = empty($update['reverse_paths']) ? [] : array_keys($update['reverse_paths']);
         }
 
         $operations = [];
@@ -517,7 +517,7 @@ final class UpdateDBCommands extends DrushCommands
         }
 
         // Pending hook_post_update_X() implementations.
-        /** @var \Drupal\Core\Update\UpdateRegistry $post_update_registry */
+        /** @var UpdateRegistry $post_update_registry */
         $post_update_registry = \Drupal::service('update.post_update_registry');
         $post_updates = $post_update_registry->getPendingUpdateInformation();
         foreach ($post_updates as $module => $post_update) {

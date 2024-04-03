@@ -297,7 +297,6 @@ class ServiceManager
      *
      * @param string[] $bootstrapCommandClasses Classes to instantiate.
      * @param Drupal\Component\DependencyInjection\ContainerInterface $container
-     * @param Psr\Container\ContainerInterface $drushContainer
      *
      * @return object[]
      *   List of instantiated service objects

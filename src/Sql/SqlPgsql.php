@@ -129,7 +129,7 @@ class SqlPgsql extends SqlBase
 
     public function queryFormat($query)
     {
-        if (strtolower($query) == 'show tables;') {
+        if (strtolower($query) === 'show tables;') {
             return PSQL_SHOW_TABLES;
         }
         return $query;
@@ -137,7 +137,7 @@ class SqlPgsql extends SqlBase
 
     public function listTables(): array
     {
-        $return = $this->alwaysQuery(PSQL_SHOW_TABLES);
+        $this->alwaysQuery(PSQL_SHOW_TABLES);
         $tables = explode(PHP_EOL, trim($this->getProcess()->getOutput()));
         return array_filter($tables);
     }

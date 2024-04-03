@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Drush\Commands\core;
 
+use Drush\Drupal\Migrate\ValidateMigrationId;
 use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\AnnotatedCommand\CommandError;
 use Consolidation\AnnotatedCommand\Hooks\HookManager;
@@ -99,6 +100,7 @@ class MigrateRunnerCommands extends DrushCommands
       'format' => 'table'
     ]): RowsOfFields
     {
+        $fields = [];
         if ($options['field']) {
             $fields = [$options['field']];
         } elseif ($options['fields']) {
@@ -471,7 +473,7 @@ class MigrateRunnerCommands extends DrushCommands
     #[CLI\Argument(name: 'migrationId', description: 'The ID of migration to stop.')]
     #[CLI\Topics(topics: [DocsCommands::MIGRATE])]
     #[CLI\ValidateModulesEnabled(modules: ['migrate'])]
-    #[Migrate\ValidateMigrationId()]
+    #[ValidateMigrationId()]
     #[CLI\Version(version: '10.4')]
     public function stop(string $migrationId): void
     {
@@ -503,7 +505,7 @@ class MigrateRunnerCommands extends DrushCommands
     #[CLI\Argument(name: 'migrationId', description: 'The ID of migration to reset.')]
     #[CLI\Topics(topics: [DocsCommands::MIGRATE])]
     #[CLI\ValidateModulesEnabled(modules: ['migrate'])]
-    #[Migrate\ValidateMigrationId()]
+    #[ValidateMigrationId()]
     #[CLI\Version(version: '10.4')]
     public function resetStatus(string $migrationId): void
     {
@@ -531,7 +533,7 @@ class MigrateRunnerCommands extends DrushCommands
     #[CLI\Usage(name: 'migrate:messages custom_node_revision --idlist=1:"r:1",2:"r:3"', description: 'Show messages related to node revision records with source IDs [1,"r:1"], and [2,"r:3"].')]
     #[CLI\Topics(topics: [DocsCommands::MIGRATE])]
     #[CLI\ValidateModulesEnabled(modules: ['migrate'])]
-    #[Migrate\ValidateMigrationId()]
+    #[ValidateMigrationId()]
     #[CLI\FieldLabels(labels: [
         'level' => 'Level',
         'source_ids' => 'Source ID(s)',
@@ -554,7 +556,7 @@ class MigrateRunnerCommands extends DrushCommands
         $idMap = $migration->getIdMap();
         $sourceIdKeys = $this->getSourceIdKeys($idMap);
         $table = [];
-        if (empty($sourceIdKeys)) {
+        if ($sourceIdKeys === []) {
             // Cannot find one item to extract keys from, no need to process
             // messages on an empty ID map.
             return new RowsOfFields($table);
@@ -630,7 +632,7 @@ class MigrateRunnerCommands extends DrushCommands
     #[CLI\Usage(name: 'migrate:fields-source article', description: 'List fields for the source in the article migration.')]
     #[CLI\Topics(topics: ['docs:migrate'])]
     #[CLI\ValidateModulesEnabled(modules: ['migrate'])]
-    #[Migrate\ValidateMigrationId()]
+    #[ValidateMigrationId()]
     #[CLI\FieldLabels(labels: [
         'machine_name' => 'Field name',
         'description' => 'Description',

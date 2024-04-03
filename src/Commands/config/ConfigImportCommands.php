@@ -137,7 +137,7 @@ class ConfigImportCommands extends DrushCommands
 
     public static function create(ContainerInterface $container): self
     {
-        $commandHandler = new static(
+        $commandHandler = new self(
             $container->get('config.manager'),
             $container->get('config.storage'),
             $container->get('cache.config'),
@@ -202,10 +202,7 @@ class ConfigImportCommands extends DrushCommands
             $source_storage = $this->getImportTransformer()->transform($source_storage);
         }
 
-        $config_manager = $this->getConfigManager();
-        $storage_comparer = new StorageComparer($source_storage, $active_storage, $config_manager);
-
-
+        $storage_comparer = new StorageComparer($source_storage, $active_storage);
         if (!$storage_comparer->createChangelist()->hasChanges()) {
             $this->logger()->notice(('There are no changes to import.'));
             return;
