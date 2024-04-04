@@ -67,7 +67,7 @@
     "composer-runtime-api": "^2.2",
     "chi-teck/drupal-code-generator": "dev-symfony7",
     "composer/semver": "^1.4 || ^3",
-    "consolidation/annotated-command": "dev-symfony7",
+    "consolidation/annotated-command": "dev-symfony7-4.x",
     "consolidation/config": "dev-symfony7",
     "consolidation/filter-via-dot-access-data": "^2.0.2",
     "consolidation/output-formatters": "^4.3.2",

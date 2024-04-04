@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "23308b5142cb857a4a0be7eb5ebc1660",
+    "content-hash": "713b837d73d0414249b6b7f90e573d93",
     "packages": [
         {
             "name": "chi-teck/drupal-code-generator",
@@ -153,16 +153,16 @@
         },
         {
             "name": "consolidation/annotated-command",
-            "version": "dev-symfony7",
+            "version": "dev-symfony7-4.x",
             "source": {
                 "type": "git",
                 "url": "https://github.com/consolidation/annotated-command.git",
-                "reference": "af6282367975583ad7230237a19add558325ea9c"
+                "reference": "4d340bf9dfd21ce810db9728549d948e17a7c2be"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/consolidation/annotated-command/zipball/af6282367975583ad7230237a19add558325ea9c",
-                "reference": "af6282367975583ad7230237a19add558325ea9c",
+                "url": "https://api.github.com/repos/consolidation/annotated-command/zipball/4d340bf9dfd21ce810db9728549d948e17a7c2be",
+                "reference": "4d340bf9dfd21ce810db9728549d948e17a7c2be",
                 "shasum": ""
             },
             "require": {
@@ -180,6 +180,11 @@
                 "yoast/phpunit-polyfills": "^0.2.0"
             },
             "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-main": "4.x-dev"
+                }
+            },
             "autoload": {
                 "psr-4": {
                     "Consolidation\\AnnotatedCommand\\": "src"
@@ -198,9 +203,9 @@
             "description": "Initialize Symfony Console commands from annotated command class methods.",
             "support": {
                 "issues": "https://github.com/consolidation/annotated-command/issues",
-                "source": "https://github.com/consolidation/annotated-command/tree/symfony7"
+                "source": "https://github.com/consolidation/annotated-command/tree/symfony7-4.x"
             },
-            "time": "2024-04-02T15:32:58+00:00"
+            "time": "2024-04-04T11:36:02+00:00"
         },
         {
             "name": "consolidation/config",
@@ -470,16 +475,16 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/larowlan/robo.git",
-                "reference": "8afcf32ec8dfb0a284d98dc2fc285b2000aa6dbb"
+                "reference": "a92ddc381cb54f3d8ac07b67520fc730564d9e81"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/larowlan/robo/zipball/8afcf32ec8dfb0a284d98dc2fc285b2000aa6dbb",
-                "reference": "8afcf32ec8dfb0a284d98dc2fc285b2000aa6dbb",
+                "url": "https://api.github.com/repos/larowlan/robo/zipball/a92ddc381cb54f3d8ac07b67520fc730564d9e81",
+                "reference": "a92ddc381cb54f3d8ac07b67520fc730564d9e81",
                 "shasum": ""
             },
             "require": {
-                "consolidation/annotated-command": "dev-symfony7",
+                "consolidation/annotated-command": "dev-symfony7-4.x",
                 "consolidation/config": "dev-symfony7",
                 "consolidation/log": "dev-symfony7",
                 "consolidation/output-formatters": "^4.1.2",
@@ -561,7 +566,7 @@
             "support": {
                 "source": "https://github.com/larowlan/robo/tree/symfony7"
             },
-            "time": "2024-04-03T00:47:42+00:00"
+            "time": "2024-04-04T11:45:32+00:00"
         },
         {
             "name": "consolidation/self-update",
