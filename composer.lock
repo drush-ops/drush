@@ -157,12 +157,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/consolidation/annotated-command.git",
-                "reference": "4d340bf9dfd21ce810db9728549d948e17a7c2be"
+                "reference": "0cbe71c37ade5d122fa75ae3d74562db9ae16a59"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/consolidation/annotated-command/zipball/4d340bf9dfd21ce810db9728549d948e17a7c2be",
-                "reference": "4d340bf9dfd21ce810db9728549d948e17a7c2be",
+                "url": "https://api.github.com/repos/consolidation/annotated-command/zipball/0cbe71c37ade5d122fa75ae3d74562db9ae16a59",
+                "reference": "0cbe71c37ade5d122fa75ae3d74562db9ae16a59",
                 "shasum": ""
             },
             "require": {
@@ -205,7 +205,7 @@
                 "issues": "https://github.com/consolidation/annotated-command/issues",
                 "source": "https://github.com/consolidation/annotated-command/tree/symfony7-4.x"
             },
-            "time": "2024-04-04T11:36:02+00:00"
+            "time": "2024-04-04T12:09:41+00:00"
         },
         {
             "name": "consolidation/config",
@@ -714,12 +714,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/larowlan/site-process.git",
-                "reference": "290ffc00df952e98cde25522112005711e697f25"
+                "reference": "9dcba4b63d8e28958f1d1850cc1a45a1cf832832"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/larowlan/site-process/zipball/290ffc00df952e98cde25522112005711e697f25",
-                "reference": "290ffc00df952e98cde25522112005711e697f25",
+                "url": "https://api.github.com/repos/larowlan/site-process/zipball/9dcba4b63d8e28958f1d1850cc1a45a1cf832832",
+                "reference": "9dcba4b63d8e28958f1d1850cc1a45a1cf832832",
                 "shasum": ""
             },
             "require": {
@@ -786,7 +786,7 @@
             "support": {
                 "source": "https://github.com/larowlan/site-process/tree/symfony7"
             },
-            "time": "2024-04-03T01:01:05+00:00"
+            "time": "2024-04-04T11:38:34+00:00"
         },
         {
             "name": "dflydev/dot-access-data",
