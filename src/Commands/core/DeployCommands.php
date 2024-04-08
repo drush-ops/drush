@@ -34,6 +34,7 @@ final class DeployCommands extends DrushCommands
     #[CLI\Version(version: '10.3')]
     #[CLI\Topics(topics: [DocsCommands::DEPLOY])]
     #[CLI\Bootstrap(level: DrupalBootLevels::FULL)]
+    #[CLI\Kernel(name: 'update')]
     public function deploy(): void
     {
         $self = $this->siteAliasManager->getSelf();
