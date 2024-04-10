@@ -8,13 +8,13 @@ use Consolidation\SiteAlias\SiteAlias;
 use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
 use Consolidation\SiteProcess\ProcessManager;
 use Drush\Attributes as CLI;
-use Drush\Commands\DrushCommands;
+use Drush\Boot\DrupalBootLevels;
 use Drush\Commands\config\ConfigImportCommands;
-use Drush\Commands\core\DeployHookCommands;
+use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Drush\SiteAlias\SiteAliasManagerAwareInterface;
-use Drush\Boot\DrupalBootLevels;
 
+#[CLI\Bootstrap(DrupalBootLevels::NONE)]
 final class DeployCommands extends DrushCommands implements SiteAliasManagerAwareInterface
 {
     use SiteAliasManagerAwareTrait;
@@ -28,7 +28,6 @@ final class DeployCommands extends DrushCommands implements SiteAliasManagerAwar
     #[CLI\Usage(name: 'drush deploy -v -y', description: 'Run updates with verbose logging and accept all prompts.')]
     #[CLI\Version(version: '10.3')]
     #[CLI\Topics(topics: [DocsCommands::DEPLOY])]
-    #[CLI\Bootstrap(level: DrupalBootLevels::FULL)]
     public function deploy(): void
     {
         $self = $this->siteAliasManager()->getSelf();
