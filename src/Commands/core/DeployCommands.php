@@ -14,6 +14,7 @@ use Drush\Commands\config\ConfigImportCommands;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
 
+#[CLI\Bootstrap(DrupalBootLevels::NONE)]
 final class DeployCommands extends DrushCommands
 {
     use AutowireTrait;
@@ -33,7 +34,6 @@ final class DeployCommands extends DrushCommands
     #[CLI\Usage(name: 'drush deploy -v -y', description: 'Run updates with verbose logging and accept all prompts.')]
     #[CLI\Version(version: '10.3')]
     #[CLI\Topics(topics: [DocsCommands::DEPLOY])]
-    #[CLI\Bootstrap(level: DrupalBootLevels::FULL)]
     public function deploy(): void
     {
         $self = $this->siteAliasManager->getSelf();
