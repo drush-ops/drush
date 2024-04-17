@@ -119,7 +119,7 @@ jobs:
             and:
               - equal: [ stable, << parameters.release >> ]
           steps:
-            - run: composer -n -v install
+            - run: composer -n install
       - unless:
           condition:
             and:
@@ -127,7 +127,7 @@ jobs:
           steps:
             - run: composer -n config platform.php --unset
             # - run: composer -n require --dev drupal/core-recommended:11.x-dev --no-update
-            - run: composer -n -vvv update
+            - run: composer -n update
             #- run: composer -n require chi-teck/drupal-code-generator:3.x-dev
       - run: composer -n unit -- --log-junit /tmp/results/unit/junit.xml
       - run: composer -n << parameters.suite >> -- --log-junit /tmp/results/<< parameters.suite >>/junit.xml
