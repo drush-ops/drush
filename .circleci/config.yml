@@ -71,8 +71,8 @@ jobs:
       - checkout
       - run: cp .docker/zz-php.ini /usr/local/etc/php/conf.d/
       # https://support.circleci.com/hc/en-us/articles/360046718553-PHP-Composer-Fails-With-Could-not-authenticate-against-github-com
-      - run: echo $GITHUB_PAT
-      - run: composer config --auth github-oauth.github.com $GITHUB_PAT
+      - run: echo ${GITHUB_PAT}
+      - run: composer config --auth github-oauth.github.com ${GITHUB_PAT}
       - run: composer -n validate --no-check-all
       - run: composer -n install
       - run: mkdir -p /tmp/results
