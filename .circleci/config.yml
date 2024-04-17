@@ -9,7 +9,7 @@ defaults: &defaults
     PHPUNIT_ARGS: ""
     PHP_SENDMAIL_PATH: /dev/null
     # https://drupal.slack.com/archives/CGKLP028K/p1702031434143329?thread_ts=1702024395.751479&cid=CGKLP028K
-    WODBY_TAG: latest
+    WODBY_TAG: 8.3
     # These are not working. We disable the mode in .docker/zz-php.ini
     PHP_EXTENSIONS_DISABLE: xdebug
     PHP_XDEBUG_MODE: off
@@ -70,6 +70,8 @@ jobs:
     steps:
       - checkout
       - run: cp .docker/zz-php.ini /usr/local/etc/php/conf.d/
+      # https://support.circleci.com/hc/en-us/articles/360046718553-PHP-Composer-Fails-With-Could-not-authenticate-against-github-com
+      - run: composer config github-oauth.github.com $GITHUB_PAT
       - run: composer -n validate --no-check-all
       - run: composer -n install
       - run: mkdir -p /tmp/results
