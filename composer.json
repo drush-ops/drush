@@ -28,52 +28,24 @@
       "type": "composer",
       "url": "https://packages.drupal.org/8"
     },
-    "sf7_robo": {
-      "type": "vcs",
-      "url": "https://github.com/larowlan/robo"
-    },
-    "sf7_config": {
-      "type": "vcs",
-      "url": "https://github.com/larowlan/config"
-    },
-    "sf7_log": {
-      "type": "vcs",
-      "url": "https://github.com/larowlan/log"
-    },
-    "sf7_self-update": {
-      "type": "vcs",
-      "url": "https://github.com/larowlan/self-update"
-    },
-    "sf7_site-process": {
-      "type": "vcs",
-      "url": "https://github.com/larowlan/site-process"
-    },
-    "sf7_site-alias": {
-      "type": "vcs",
-      "url": "https://github.com/larowlan/site-alias"
-    },
     "sf7_yaml-cli": {
       "type": "vcs",
       "url": "https://github.com/larowlan/yaml-cli"
-    },
-    "sf7_code-generator": {
-      "type": "vcs",
-      "url": "https://github.com/larowlan/drupal-code-generator"
     }
   },
   "require": {
     "php": ">=8.3",
     "ext-dom": "*",
     "composer-runtime-api": "^2.2",
-    "chi-teck/drupal-code-generator": "dev-symfony7",
+    "chi-teck/drupal-code-generator": "4.x-dev",
     "composer/semver": "^1.4 || ^3",
-    "consolidation/annotated-command": "dev-symfony7-4.x",
-    "consolidation/config": "dev-symfony7",
+    "consolidation/annotated-command": "^4",
+    "consolidation/config": "^3",
     "consolidation/filter-via-dot-access-data": "^2.0.2",
     "consolidation/output-formatters": "^4.3.2",
-    "consolidation/robo": "dev-symfony7",
-    "consolidation/site-alias": "dev-symfony7",
-    "consolidation/site-process": "dev-symfony7",
+    "consolidation/robo": "dev-larowlan-symfony7",
+    "consolidation/site-alias": "^4",
+    "consolidation/site-process": "^5",
     "grasmash/yaml-cli": "dev-symfony7",
     "guzzlehttp/guzzle": "^7.0",
     "laravel/prompts": "^0.1.15",
