@@ -162,11 +162,12 @@ workflows:
           <<: *poststeps
           matrix:
             parameters:
-              dbms: [sqlite, mysql, postgres]
+              #sqlite removed pending https://github.com/wodby/php/issues/194
+              dbms: [ mysql, postgres ]
               suite: [integration, functional]
               release: [stable, highest]
             exclude:
-              # Only run highest test on sqlite. Excluding each suite is unfortunate but needed.
+              # Only run highest test on mysql. Excluding each suite is unfortunate but needed.
               - release: highest
                 dbms: sqlite
                 suite: integration
