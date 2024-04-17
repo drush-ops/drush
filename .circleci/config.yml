@@ -30,7 +30,7 @@ commands:
   # https://support.circleci.com/hc/en-us/articles/360046718553-PHP-Composer-Fails-With-Could-not-authenticate-against-github-com
   composer-auth:
     steps:
-      # This var is unavailable to forked PRs. Maybe implement https://circleci.com/blog/triggering-trusted-ci-jobs-on-untrusted-forks/ or move to Github actions
+      # This env var is available to forked PRs as it has no special perms.
       - run: |
           if [ -n "$GITHUB_PAT" ]; then
               composer config --auth github-oauth.github.com $GITHUB_PAT
@@ -82,7 +82,7 @@ jobs:
       - run: cp .docker/zz-php.ini /usr/local/etc/php/conf.d/
       - composer-auth
       - run: composer -n validate --no-check-all
-      - run: composer -n install
+      - run: composer -n -v install
       - run: mkdir -p /tmp/results
       - run: composer -n cs -- --report=junit --report-file=/tmp/results/junit.phpcs.xml
       - run: vendor/bin/phpstan --error-format=junit > /tmp/results/phpstan.junit.xml
@@ -119,7 +119,7 @@ jobs:
             and:
               - equal: [ stable, << parameters.release >> ]
           steps:
-            - run: composer -n install
+            - run: composer -n -v install
       - unless:
           condition:
             and:
@@ -127,7 +127,7 @@ jobs:
           steps:
             - run: composer -n config platform.php --unset
             - run: composer -n require --dev drupal/core-recommended:11.x-dev --no-update
-            - run: composer -n update
+            - run: composer -n -vvv update
             - run: composer -n require chi-teck/drupal-code-generator:3.x-dev
       - run: composer -n unit -- --log-junit /tmp/results/unit/junit.xml
       - run: composer -n << parameters.suite >> -- --log-junit /tmp/results/<< parameters.suite >>/junit.xml
