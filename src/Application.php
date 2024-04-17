@@ -312,7 +312,7 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
         // configured in case we wish to use them (e.g. for logging) in
         // any of the configuration steps we do here.
         $this->configureIO($input, $output);
-        
+
         // Directly add the yaml-cli commands.
         $this->addCommands($this->serviceManager->instantiateYamlCliCommands());
 
