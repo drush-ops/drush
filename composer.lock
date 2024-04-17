@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "1f9e34af185aa05e68e7e32ca34617b6",
+    "content-hash": "e626e837f6697f6b950eb1309a17c450",
     "packages": [
         {
             "name": "chi-teck/drupal-code-generator",
@@ -422,25 +422,25 @@
         },
         {
             "name": "consolidation/robo",
-            "version": "dev-larowlan-symfony7",
+            "version": "5.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/consolidation/robo.git",
-                "reference": "c135e3be0f511a7329a97fe38417b1af081945e7"
+                "reference": "7343841ea1a8471d44248905f49e82df271a22eb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/consolidation/robo/zipball/c135e3be0f511a7329a97fe38417b1af081945e7",
-                "reference": "c135e3be0f511a7329a97fe38417b1af081945e7",
+                "url": "https://api.github.com/repos/consolidation/robo/zipball/7343841ea1a8471d44248905f49e82df271a22eb",
+                "reference": "7343841ea1a8471d44248905f49e82df271a22eb",
                 "shasum": ""
             },
             "require": {
                 "consolidation/annotated-command": "^4.8.1",
-                "consolidation/config": "^2.0.1 || ^3",
-                "consolidation/log": "^2.0.2 || ^3",
+                "consolidation/config": "^3",
+                "consolidation/log": "^3",
                 "consolidation/output-formatters": "^4.1.2",
                 "league/container": "^3.3.1 || ^4.0",
-                "php": ">=8.0",
+                "php": ">=8.2",
                 "phpowermove/docblock": "^4.0",
                 "symfony/console": "^6 || ^7",
                 "symfony/event-dispatcher": "6 || ^7",
@@ -489,9 +489,9 @@
             "description": "Modern task runner",
             "support": {
                 "issues": "https://github.com/consolidation/robo/issues",
-                "source": "https://github.com/consolidation/robo/tree/larowlan-symfony7"
+                "source": "https://github.com/consolidation/robo/tree/5.0.0"
             },
-            "time": "2024-04-17T03:01:46+00:00"
+            "time": "2024-04-17T15:13:19+00:00"
         },
         {
             "name": "consolidation/site-alias",
@@ -738,16 +738,16 @@
         },
         {
             "name": "grasmash/yaml-cli",
-            "version": "dev-symfony7",
+            "version": "3.2.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/larowlan/yaml-cli.git",
-                "reference": "2db796c537eccb1bfba578d2e0ee75177c8d2044"
+                "url": "https://github.com/grasmash/yaml-cli.git",
+                "reference": "a5af7c16a0b98fca7d06e85ba517d526e1ba21de"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/larowlan/yaml-cli/zipball/2db796c537eccb1bfba578d2e0ee75177c8d2044",
-                "reference": "2db796c537eccb1bfba578d2e0ee75177c8d2044",
+                "url": "https://api.github.com/repos/grasmash/yaml-cli/zipball/a5af7c16a0b98fca7d06e85ba517d526e1ba21de",
+                "reference": "a5af7c16a0b98fca7d06e85ba517d526e1ba21de",
                 "shasum": ""
             },
             "require": {
@@ -776,37 +776,7 @@
                     "Grasmash\\YamlCli\\": "src/"
                 }
             },
-            "autoload-dev": {
-                "psr-4": {
-                    "Grasmash\\YamlCli\\Tests\\": "tests/src/"
-                }
-            },
-            "scripts": {
-                "cs": [
-                    "phpcs"
-                ],
-                "cbf": [
-                    "phpcbf"
-                ],
-                "unit": [
-                    "phpunit"
-                ],
-                "lint": [
-                    "find src -name '*.php' -print0 | xargs -0 -n1 php -l",
-                    "find tests -name '*.php' -print0 | xargs -0 -n1 php -l"
-                ],
-                "test": [
-                    "@lint",
-                    "@unit",
-                    "@cs"
-                ],
-                "coverage": [
-                    "php -d pcov.enabled=1 vendor/bin/phpunit tests/src --coverage-clover build/logs/clover.xml"
-                ],
-                "coveralls": [
-                    "php-coveralls -vvv"
-                ]
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -817,9 +787,10 @@
             ],
             "description": "A command line tool for reading and manipulating yaml files.",
             "support": {
-                "source": "https://github.com/larowlan/yaml-cli/tree/symfony7"
+                "issues": "https://github.com/grasmash/yaml-cli/issues",
+                "source": "https://github.com/grasmash/yaml-cli/tree/3.2.0"
             },
-            "time": "2024-04-03T00:51:55+00:00"
+            "time": "2024-04-17T16:23:04+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",
@@ -4237,12 +4208,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/drupal/core.git",
-                "reference": "b7a11f6db0f0bab2d5198857d5e68470c179698d"
+                "reference": "12a7aa172c6acd403def6ff16c6e360d65c15fbd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/drupal/core/zipball/b7a11f6db0f0bab2d5198857d5e68470c179698d",
-                "reference": "b7a11f6db0f0bab2d5198857d5e68470c179698d",
+                "url": "https://api.github.com/repos/drupal/core/zipball/12a7aa172c6acd403def6ff16c6e360d65c15fbd",
+                "reference": "12a7aa172c6acd403def6ff16c6e360d65c15fbd",
                 "shasum": ""
             },
             "require": {
@@ -4394,7 +4365,7 @@
             "support": {
                 "source": "https://github.com/drupal/core/tree/11.x"
             },
-            "time": "2024-04-16T23:58:06+00:00"
+            "time": "2024-04-17T16:16:31+00:00"
         },
         {
             "name": "drupal/core-recommended",
@@ -8222,8 +8193,6 @@
     "minimum-stability": "dev",
     "stability-flags": {
         "chi-teck/drupal-code-generator": 20,
-        "consolidation/robo": 20,
-        "grasmash/yaml-cli": 20,
         "drupal/core-recommended": 20
     },
     "prefer-stable": true,
