@@ -64,9 +64,9 @@ install:
 
 test_script:
   - composer info phpunit/phpunit
-  - vendor/bin/phpunit --colors=always --configuration tests --testsuite functional --debug
-  - vendor/bin/phpunit --colors=always --configuration tests --testsuite integration --debug
-  - vendor/bin/phpunit --colors=always --configuration tests --testsuite unit --debug
+  - vendor/bin/phpunit --colors=always --configuration tests --testsuite functional
+  - vendor/bin/phpunit --colors=always --configuration tests --testsuite integration
+  - vendor/bin/phpunit --colors=always --configuration tests --testsuite unit
 
 on_finish:
   # Uncomment this and above line to enable RDP into build machine https://www.appveyor.com/docs/how-to/rdp-to-build-worker/
