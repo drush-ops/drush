@@ -12,6 +12,7 @@ use Consolidation\AnnotatedCommand\Hooks\HookManager;
 use Consolidation\AnnotatedCommand\Input\StdinAwareInterface;
 use Consolidation\AnnotatedCommand\Input\StdinAwareTrait;
 use Consolidation\OutputFormatters\StructuredData\PropertyList;
+use Drupal\Core\Asset\AssetQueryStringInterface;
 use Drupal\Core\Asset\JsCollectionOptimizerLazy;
 use Drupal\Core\Cache\Cache;
 use Drupal\Core\Cache\CacheTagsInvalidatorInterface;
@@ -53,7 +54,8 @@ final class CacheCommands extends DrushCommands implements CustomEventAwareInter
         private $cssOptimizer,
         private CachedDiscoveryClearerInterface $pluginCacheClearer,
         private BootstrapManager $bootstrapManager,
-        private ClassLoader $autoloader
+        private ClassLoader $autoloader,
+        private AssetQueryStringInterface $assetQueryString
     ) {
         parent::__construct();
     }
@@ -287,7 +289,7 @@ final class CacheCommands extends DrushCommands implements CustomEventAwareInter
 
     public function clearCssJs(): void
     {
-        _drupal_flush_css_js();
+        $this->assetQueryString->reset();
         $this->cssOptimizer->deleteAll();
         $this->jsOptimizer->deleteAll();
     }

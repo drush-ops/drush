@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Drush\Psysh;
 
+use Drush\Commands\DrushCommands;
 use Psy\Command\Command as BaseCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Formatter\OutputFormatter;
@@ -57,7 +58,7 @@ class DrushHelpCommand extends BaseCommand
     /**
      * {@inheritdoc}
      */
-    protected function execute(InputInterface $input, OutputInterface $output): void
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         if ($this->command !== null) {
             // Help for an individual command.
@@ -118,5 +119,6 @@ class DrushHelpCommand extends BaseCommand
 
             $output->page($messages);
         }
+        return DrushCommands::EXIT_SUCCESS;
     }
 }

@@ -13,9 +13,9 @@ use Laravel\Prompts\SearchPrompt;
 use Laravel\Prompts\SelectPrompt;
 use Laravel\Prompts\Spinner;
 use Laravel\Prompts\SuggestPrompt;
-use Laravel\Prompts\TextPrompt;
 use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Console\Style\SymfonyStyle;
+
 use function Laravel\Prompts\confirm;
 use function Laravel\Prompts\multiselect;
 use function Laravel\Prompts\select;
@@ -50,9 +50,17 @@ class DrushStyle extends SymfonyStyle
     /**
      * Prompt the user for text input.
      */
-    public function text($label, string $placeholder = '', string $default = '', bool|string $required = false, ?\Closure $validate = null, string $hint = ''): string
+    public function text(
+        $label,
+        string $placeholder = '',
+        string $default = '',
+        bool|string $required = false,
+        ?\Closure $validate = null,
+        string $hint = ''
+    ): void
     {
-        return (new TextPrompt($label, $placeholder, $default, $required, $validate, $hint))->prompt();
+        // @todo return type of parent has changed
+        // return (new TextPrompt($label, $placeholder, $default, $required, $validate, $hint))->prompt();
     }
 
     /**
@@ -152,17 +160,17 @@ class DrushStyle extends SymfonyStyle
         return $progress;
     }
 
-    public function warning(string|array $message)
+    public function warning(string|array $message): void
     {
         $this->block($message, 'WARNING', 'fg=black;bg=yellow', ' ! ', true);
     }
 
-    public function note(string|array $message)
+    public function note(string|array $message): void
     {
         $this->block($message, 'NOTE', 'fg=black;bg=yellow', ' ! ');
     }
 
-    public function caution(string|array $message)
+    public function caution(string|array $message): void
     {
         $this->block($message, 'CAUTION', 'fg=black;bg=yellow', ' ! ', true);
     }
