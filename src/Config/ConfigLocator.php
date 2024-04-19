@@ -105,11 +105,11 @@ class ConfigLocator
         // Add placeholders to establish priority. We add
         // contexts from lowest to highest priority.
         $this->config->addPlaceholder(self::DRUSH_CONTEXT);
+        $this->config->addPlaceholder(self::USER_CONTEXT);
         if (!empty($envPrefix)) {
             $envConfig = new EnvConfig($envPrefix);
             $this->config->addContext(self::ENV_CONTEXT, $envConfig);
         }
-        $this->config->addPlaceholder(self::USER_CONTEXT);
         $this->config->addPlaceholder(self::DRUPAL_CONTEXT);
         $this->config->addPlaceholder(self::SITE_CONTEXT);
         $this->config->addPlaceholder(self::ALIAS_CONTEXT);
