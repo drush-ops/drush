@@ -83,8 +83,7 @@ final class TwigCommands extends DrushCommands
                         'compiled' => $key,
                     ];
                 }
-            }
-            else {
+            } else {
                 throw new \Exception('There was a problem, please ensure your twig cache is enabled.');
             }
         }
