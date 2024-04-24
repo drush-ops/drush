@@ -452,7 +452,7 @@ class ServiceManager
             $object->setConfig($container->get('config'));
         }
         if ($object instanceof LoggerAwareInterface) {
-            $object->setLogger($container->get('logger'));
+            $object->setLoggerIfEmpty($container->get('logger'));
         }
         // Made available by DrushCommands (must preserve for basic bc)
         if ($object instanceof ProcessManagerAwareInterface) {
