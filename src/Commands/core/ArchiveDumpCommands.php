@@ -67,6 +67,7 @@ final class ArchiveDumpCommands extends DrushCommands
     #[CLI\Option(name: 'destination', description: 'The full path and filename in which the archive should be stored. Any relative path will be calculated from Drupal root (usually <info>web</info> for drupal/recommended-project projects). If omitted, it will be saved to the configured temp directory.')]
     #[CLI\Option(name: 'overwrite', description: 'Overwrite destination file if exists.')]
     #[CLI\Option(name: 'code', description: 'Archive codebase.')]
+    #[CLI\Option(name: 'convert-symlinks', description: 'Converts all symlinks into standard files/directories.')]
     #[CLI\Option(name: 'exclude-code-paths', description: 'Comma-separated list of paths (or regular expressions matching paths) to exclude from the code archive.')]
     #[CLI\Option(name: 'extra-dump', description: 'Add custom arguments/options to the dumping of the database (e.g. <info>mysqldump</info> command).')]
     #[CLI\Option(name: 'files', description: 'Archive Drupal files.')]
@@ -98,6 +99,7 @@ final class ArchiveDumpCommands extends DrushCommands
         'generatorversion' => InputOption::VALUE_REQUIRED,
         'exclude-code-paths' => InputOption::VALUE_REQUIRED,
         'extra-dump' => self::REQ,
+        'convert-symlinks' => false,
     ]): string
     {
         $this->prepareArchiveDir();
@@ -140,7 +142,8 @@ final class ArchiveDumpCommands extends DrushCommands
     protected function prepareArchiveDir(): void
     {
         $this->filesystem = new Filesystem();
-        $this->archiveDir = FsUtils::tmpDir(self::ARCHIVES_DIR_NAME);
+        // $this->archiveDir = FsUtils::tmpDir(self::ARCHIVES_DIR_NAME);
+        $this->archiveDir = "/tmp/findmetmp";
     }
 
     /**
@@ -166,9 +169,47 @@ final class ArchiveDumpCommands extends DrushCommands
         $archivePath = Path::join(dirname($this->archiveDir), self::ARCHIVE_FILE_NAME);
 
         stream_wrapper_restore('phar');
+        $this->logger()->info(var_export($archivePath, TRUE));
         $archive = new PharData($archivePath);
 
         $this->createManifestFile($options);
+
+        $this->logger()->info(var_export($this->archiveDir, TRUE));
+
+        // If symlinks are disabled, convert symlinks to full content.
+        if ($options['convert-symlinks'] === TRUE && is_dir($this->archiveDir)) {
+            $this->logger()->info(dt('Converting symlinks...'));
+
+            $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($this->archiveDir), RecursiveIteratorIterator::SELF_FIRST);
+
+            foreach ($iterator as $file) {
+                if ($file->isLink()) {
+                    $target = readlink($file->getPathname());
+
+                    if (is_file($target)) {
+                        $content = file_get_contents($target);
+                        unlink($file->getPathname());
+                        file_put_contents($file->getPathname(), $content);
+                    } elseif (is_dir($target)) {
+                        $path = $file->getPathname();
+                        unlink($path);
+                        mkdir($path, 0755);
+                        foreach (
+                            $iterator = new \RecursiveIteratorIterator(
+                                new \RecursiveDirectoryIterator($target, \RecursiveDirectoryIterator::SKIP_DOTS),
+                                \RecursiveIteratorIterator::SELF_FIRST) as $item
+                        ) {
+                            if ($item->isDir()) {
+                                mkdir($path . DIRECTORY_SEPARATOR . $iterator->getSubPathname());
+                            } else {
+                                copy($item->getPathname(), $path . DIRECTORY_SEPARATOR . $iterator->getSubPathname());
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         $archive->buildFromDirectory($this->archiveDir);
 
         $this->logger()->info(dt('Compressing archive...'));
