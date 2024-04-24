@@ -66,6 +66,16 @@ abstract class DrushCommands implements IOAwareInterface, LoggerAwareInterface, 
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function setLogger(LoggerInterface $logger): void 
+    {
+        if ($this->logger === NULL) {
+            $this->logger = $logger;
+        }
+    }
+
+    /**
      * Returns a logger object.
      */
     protected function logger(): ?DrushLoggerManager
