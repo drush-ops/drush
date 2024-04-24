@@ -96,14 +96,15 @@ class ConfigLocatorTest extends TestCase
      */
     public function testEnvVar()
     {
-        putenv('TEST_HOME=An env overridden setting');
         $configLocator = $this->createConfigLocator();
 
         $sources = $configLocator->sources();
         $this->assertEquals($this->fixturesDir() . '/home/.drush/drush.yml', Path::canonicalize($sources['test']['home']));
 
         $config = $configLocator->config();
+        $this->assertEquals('A user-specific setting', $config->get('test.home'));
 
+        putenv('TEST_HOME=An env overridden setting');
         $this->assertNotEquals('A user-specific setting', $config->get('test.home'));
         $this->assertEquals('An env overridden setting', $config->get('test.home'));
         putenv('TEST_HOME');
