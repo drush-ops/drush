@@ -8,10 +8,10 @@ use Composer\Autoload\ClassLoader;
 use Consolidation\SiteAlias\SiteAliasManager;
 use DrupalFinder\DrupalFinder;
 use Drush\Commands\DrushCommands;
-use Drush\DrupalFinder\DrushDrupalFinder;
 use Drush\Config\ConfigLocator;
 use Drush\Config\DrushConfig;
 use Drush\Config\Environment;
+use Drush\DrupalFinder\DrushDrupalFinder;
 use Drush\SiteAlias\SiteAliasFileLoader;
 use RuntimeException;
 use Symfony\Component\Console\Input\InputInterface;
@@ -307,7 +307,7 @@ class Preflight
 
         // Check to see if the alias on the command line points at
         // a local Drupal site that is not the site at $root
-        $localAliasDrupalFinder = new DrupalFinder($this->environment());
+        $localAliasDrupalFinder = new DrupalFinder($this->environment()->cwd());
         $foundAlternateRoot = $localAliasDrupalFinder->locateRoot($selfSiteAlias->localRoot());
         if ($foundAlternateRoot) {
             $alteredRoot = Path::canonicalize($localAliasDrupalFinder->getDrupalRoot());
