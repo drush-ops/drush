@@ -312,7 +312,7 @@ abstract class SqlBase implements ConfigAwareInterface
      * @param $result_file
      *   A path to save query results to. Can be drush_bit_bucket() if desired.
      *
-     * @return
+     * @return bool
      *   TRUE on success, FALSE on failure.
      */
     public function alwaysQuery(string $query, $input_file = null, ?string $result_file = ''): bool
@@ -424,13 +424,13 @@ abstract class SqlBase implements ConfigAwareInterface
     /**
      * Build a SQL string for dropping and creating a database.
      *
-     * @param string dbname
+     * @param $dbname
      *   The database name.
-     * @param boolean $quoted
+     * @param $quoted
      *   Quote the database name. Mysql uses backticks to quote which can cause problems
      *   in a Windows shell. Set TRUE if the CREATE is not running on the bash command line.
      */
-    public function createdbSql($dbname, bool $quoted = false): string
+    public function createdbSql(string $dbname, bool $quoted = false): string
     {
         return '';
     }
@@ -506,7 +506,7 @@ abstract class SqlBase implements ConfigAwareInterface
     /**
      * Extract the name of all existing tables in the given database.
      *
-     * @return
+     * @return array
      *   An array of table names which exist in the current database,
      *   appropriately quoted for the RDMS.
      */
@@ -572,7 +572,7 @@ abstract class SqlBase implements ConfigAwareInterface
     /**
      * Convert from an old-style database URL to an array of database settings.
      *
-     * @param db_url
+     * @param $db_url
      *   A Drupal 6 db url string to convert, or an array with a 'default' element.
      *   An array of database values containing only the 'default' element of
      *   the db url. If the parse fails the array is empty.

@@ -423,7 +423,8 @@ final class SiteInstallCommands extends DrushCommands
 
         // Can't install without sites subdirectory and settings.php.
         if (!file_exists($confPath)) {
-            if ((new Filesystem())->mkdir($confPath) && !$this->config->simulate()) {
+            (new Filesystem())->mkdir($confPath);
+            if (!$this->getConfig()->simulate()) {
                 throw new \Exception(dt('Failed to create directory @confPath', ['@confPath' => $confPath]));
             }
         } else {
@@ -431,14 +432,14 @@ final class SiteInstallCommands extends DrushCommands
         }
 
         if (!drush_file_not_empty($settingsfile)) {
-            if (!drush_op('copy', 'sites/default/default.settings.php', $settingsfile) && !$this->config->simulate()) {
+            if (!drush_op('copy', 'sites/default/default.settings.php', $settingsfile) && !$this->getConfig()->simulate()) {
                 throw new \Exception(dt('Failed to copy sites/default/default.settings.php to @settingsfile', ['@settingsfile' => $settingsfile]));
             }
         }
 
         // Write an empty sites.php if we using multi-site.
         if ($sitesfile_write) {
-            if (!drush_op('copy', 'sites/example.sites.php', $sitesfile) && !$this->config->simulate()) {
+            if (!drush_op('copy', 'sites/example.sites.php', $sitesfile) && !$this->getConfig()->simulate()) {
                 throw new \Exception(dt('Failed to copy sites/example.sites.php to @sitesfile', ['@sitesfile' => $sitesfile]));
             }
         }
