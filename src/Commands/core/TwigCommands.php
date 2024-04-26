@@ -90,20 +90,26 @@ final class TwigCommands extends DrushCommands
      * Compile all Twig template(s).
      */
     #[CLI\Command(name: self::COMPILE, aliases: ['twigc', 'twig-compile'])]
-    public function twigCompile(): void
+    #[CLI\Argument(name: 'searchpaths', description: 'Optional comma delimited list of paths to recursively search')]
+    public function twigCompile($searchpaths = null): void
     {
-        $searchpaths = [];
-        require_once DRUSH_DRUPAL_CORE . "/themes/engines/twig/twig.engine";
-        // Scan all enabled modules and themes.
-        $modules = array_keys($this->getModuleHandler()->getModuleList());
-        foreach ($modules as $module) {
-            $searchpaths[] = $this->extensionList->getPath($module);
+        if(!$searchpaths) {
+            require_once DRUSH_DRUPAL_CORE . "/themes/engines/twig/twig.engine";
+            // Scan all enabled modules and themes.
+            $modules = array_keys($this->getModuleHandler()->getModuleList());
+            foreach ($modules as $module) {
+                $searchpaths[] = $this->extensionList->getPath($module);
+            }
+
+            $themes = \Drupal::service('theme_handler')->listInfo();
+            foreach ($themes as $name => $theme) {
+                $searchpaths[] = $theme->getPath();
+            }
+        }
+        else {
+           $searchpaths = StringUtils::csvToArray($searchpaths);
         }
 
-        $themes = \Drupal::service('theme_handler')->listInfo();
-        foreach ($themes as $name => $theme) {
-            $searchpaths[] = $theme->getPath();
-        }
 
         $files = Finder::create()
         ->files()
