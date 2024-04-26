@@ -345,13 +345,13 @@ final class WatchdogCommands extends DrushCommands
      * Format a watchdog database row.
      *
      * @param $result
-     *   Array. A database result object.
+     *   A database result object.
      * @param $extended
-     *   Boolean. Return extended message details.
+     *   Return extended message details.
      * @return
-     *   Array. The result object with some attributes themed.
+     *   The result object with some attributes themed.
      */
-    protected function formatResult($result, bool $extended = false)
+    protected function formatResult(\stdClass $result, bool $extended = false): \stdClass
     {
         // Severity.
         $severities = RfcLogLevel::getLevels();

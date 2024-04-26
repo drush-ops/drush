@@ -134,7 +134,7 @@ final class UserCommands extends DrushCommands
         foreach ($accounts as $id => $account) {
             $account->block();
             $account->save();
-            $this->logger->success(dt('Blocked user(s): !user', ['!user' => $account->getAccountName()]));
+            $this->logger()->success(dt('Blocked user(s): !user', ['!user' => $account->getAccountName()]));
         }
     }
 
@@ -152,7 +152,7 @@ final class UserCommands extends DrushCommands
         foreach ($accounts as $id => $account) {
             $account->activate();
             $account->save();
-            $this->logger->success(dt('Unblocked user(s): !user', ['!user' => $account->getAccountName()]));
+            $this->logger()->success(dt('Unblocked user(s): !user', ['!user' => $account->getAccountName()]));
         }
     }
 
@@ -173,7 +173,7 @@ final class UserCommands extends DrushCommands
         foreach ($accounts as $id => $account) {
             $account->addRole($role);
             $account->save();
-            $this->logger->success(dt('Added !role role to !user', [
+            $this->logger()->success(dt('Added !role role to !user', [
             '!role' => $role,
             '!user' => $account->getAccountName(),
             ]));
@@ -197,7 +197,7 @@ final class UserCommands extends DrushCommands
         foreach ($accounts as $id => $account) {
             $account->removeRole($role);
             $account->save();
-            $this->logger->success(dt('Removed !role role from !user', [
+            $this->logger()->success(dt('Removed !role role from !user', [
             '!role' => $role,
             '!user' => $account->getAccountName(),
             ]));
