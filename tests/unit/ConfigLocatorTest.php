@@ -92,6 +92,25 @@ class ConfigLocatorTest extends TestCase
     }
 
     /**
+     * Test an env var supersedes user's configuration file.
+     */
+    public function testEnvVar()
+    {
+        $configLocator = $this->createConfigLocator();
+
+        $sources = $configLocator->sources();
+        $this->assertEquals($this->fixturesDir() . '/home/.drush/drush.yml', Path::canonicalize($sources['test']['home']));
+
+        $config = $configLocator->config();
+        $this->assertEquals('A user-specific setting', $config->get('test.home'));
+
+        putenv('TEST_HOME=An env overridden setting');
+        $this->assertNotEquals('A user-specific setting', $config->get('test.home'));
+        $this->assertEquals('An env overridden setting', $config->get('test.home'));
+        putenv('TEST_HOME');
+    }
+
+    /**
      * Create a config locator from All The Sources, for use in multiple tests.
      */
     protected function createConfigLocator($isLocal = false, $configPath = '')
