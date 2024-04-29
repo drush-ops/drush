@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Drush\Utils;
 
-class StringUtils
+final class StringUtils
 {
     /**
      * Convert a csv string, or an array of items which
