@@ -47,7 +47,7 @@ class DrushHelpCommand extends BaseCommand
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         assert($output instanceof ShellOutput);
-        
+
         if ($name = $input->getArgument('command_name')) {
             // Help for an individual command.
             /** @var Command $command */
