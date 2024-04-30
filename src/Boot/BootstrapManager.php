@@ -58,7 +58,7 @@ class BootstrapManager implements LoggerAwareInterface, ConfigAwareInterface
     /**
      * Add a bootstrap object to the list of candidates.
      *
-     * @param \Drush\Boot\Boot|Array
+     * @param \Drush\Boot\Boot|array $candidateList
      *   List of boot candidates
      */
     public function add($candidateList): void
@@ -126,7 +126,7 @@ class BootstrapManager implements LoggerAwareInterface, ConfigAwareInterface
     /**
      * Crete the bootstrap object if necessary, then return it.
      */
-    public function bootstrap(): Boot
+    public function bootstrap(): DrupalBoot8
     {
         if (!$this->bootstrap) {
             $this->bootstrap = $this->bootstrapObjectForRoot($this->getRoot());
@@ -382,14 +382,14 @@ class BootstrapManager implements LoggerAwareInterface, ConfigAwareInterface
     /**
      * Bootstrap to the highest level possible, without triggering any errors.
      *
-     * @param int $max_phase_index
+     * @param $max_phase_index
      *   (optional) Only attempt bootstrap to the specified level.
      * @param AnnotationData $annotationData
      *   Optional annotation data from the command.
      *
      *   The maximum phase to which we bootstrapped.
      */
-    public function bootstrapMax($max_phase_index = false, ?AnnotationData $annotationData = null): int
+    public function bootstrapMax(bool|int|null $max_phase_index = false, ?AnnotationData $annotationData = null): int
     {
         // Bootstrap as far as we can without throwing an error, but log for
         // debugging purposes.

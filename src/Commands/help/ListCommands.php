@@ -67,10 +67,12 @@ class ListCommands extends DrushCommands
             return null;
         } elseif ($options['format'] == 'xml') {
             $descriptor = new XmlDescriptor();
-            return $descriptor->describe($this->output, $application, []);
+            $descriptor->describe($this->output, $application, []);
+            return null;
         } elseif ($options['format'] == 'json') {
             $descriptor = new JsonDescriptor();
-            return $descriptor->describe($this->output, $application, []);
+            $descriptor->describe($this->output, $application, []);
+            return null;
         } else {
             // No longer used. Works for XML, but gives error for JSON.
             // $dom = $this->buildDom($namespaced, $application);

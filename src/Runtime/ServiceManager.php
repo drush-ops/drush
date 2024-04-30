@@ -22,12 +22,13 @@ use Grasmash\YamlCli\Command\LintCommand;
 use Grasmash\YamlCli\Command\UnsetKeyCommand;
 use Grasmash\YamlCli\Command\UpdateKeyCommand;
 use Grasmash\YamlCli\Command\UpdateValueCommand;
-use Psr\Container\ContainerInterface as DrushContainer;
+use League\Container\Container as DrushContainer;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 use Robo\ClassDiscovery\RelativeNamespaceDiscovery;
 use Robo\Contract\ConfigAwareInterface;
 use Robo\Contract\OutputAwareInterface;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputAwareInterface;
 
 /**
@@ -63,7 +64,7 @@ class ServiceManager
      * Ensure that any discovered class that is not part of the autoloader
      * is, in fact, included.
      *
-     * @param array Associative array mapping path => class.
+     * @param array $commandClasses Associative array mapping path => class.
      */
     protected function loadCommandClasses(array $commandClasses): void
     {
@@ -296,7 +297,6 @@ class ServiceManager
      * instantiate it via 'new $class'
      *
      * @param string[] $bootstrapCommandClasses Classes to instantiate.
-     * @param Drupal\Component\DependencyInjection\ContainerInterface $container
      *
      * @return object[]
      *   List of instantiated service objects

@@ -5,11 +5,10 @@ declare(strict_types=1);
 namespace Drush\Config;
 
 use Consolidation\Config\ConfigInterface;
-use Robo\Config\Config;
 use Consolidation\Config\Loader\ConfigLoaderInterface;
-use Drush\Config\Loader\YamlConfigLoader;
 use Consolidation\Config\Loader\ConfigProcessor;
 use Consolidation\Config\Util\EnvConfig;
+use Drush\Config\Loader\YamlConfigLoader;
 use Symfony\Component\Filesystem\Path;
 
 /**
@@ -192,8 +191,6 @@ class ConfigLocator
      * it to the configuration.  The Environment object itself is only
      * available during preflight; the information exported here may be
      * obtained by commands et. al. as needed. @see Environment::exportConfigData()
-     *
-     * @param Environment $environent
      */
     public function addEnvironment(Environment $environment): self
     {
@@ -203,10 +200,8 @@ class ConfigLocator
 
     /**
      *  Add config paths defined in preflight configuration.
-     *
-     * @param array $paths
      */
-    public function addPreflightConfigFiles($filepaths): self
+    public function addPreflightConfigFiles(array $filepaths): self
     {
         $this->addConfigPaths(self::PREFLIGHT_CONTEXT, (array) $filepaths);
         return $this;
@@ -253,10 +248,8 @@ class ConfigLocator
     /**
      * Add any configuration files found around the Drupal root of the
      * selected site.
-     *
-     * @param Path to the selected Drupal site
      */
-    public function addSitewideConfig($siteRoot): ?self
+    public function addSitewideConfig(string $siteRoot): ?self
     {
         // There might not be a site.
         if (!is_dir($siteRoot)) {
@@ -503,8 +496,8 @@ class ConfigLocator
      * @param array $candidates
      *   An array filenames that are considered config files.
      *
-     * @return
-     *   An array whose first item is an array of files, and the second item is an
+     * @return array
+     *   The first item is an array of files, and the second item is an
      *   array of dirs.
      */
     protected function findConfigFiles(array $paths, array $candidates): array
@@ -538,7 +531,7 @@ class ConfigLocator
      * @param $siteConfig
      *   The site-specific config file.
      *
-     * @return
+     * @return bool
      *   Whether the config exists and was processed.
      */
     public static function addSiteSpecificConfig(DrushConfig $config, $siteConfig): bool

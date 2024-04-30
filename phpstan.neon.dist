@@ -6,7 +6,11 @@ parameters:
     paths:
         - src
     drupal:
-        drupal_root: sut
+        drupal_root: %currentWorkingDirectory%/sut
+    universalObjectCratesClasses:
+        # Useful until we have https://www.drupal.org/project/drupal/issues/2024043
+        - Drupal\Core\Extension\Extension
+        - Drupal\views\ViewExecutable
     excludePaths:
         # Deliberately calls optional external code.
         - src/Psysh/Caster.php

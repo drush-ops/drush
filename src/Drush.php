@@ -10,8 +10,8 @@ use Consolidation\SiteAlias\SiteAliasInterface;
 use Consolidation\SiteAlias\SiteAliasManager;
 use Consolidation\SiteProcess\ProcessBase;
 use Consolidation\SiteProcess\SiteProcess;
-use Drush\Boot\Boot;
 use Drush\Boot\BootstrapManager;
+use Drush\Boot\DrupalBoot8;
 use Drush\Config\DrushConfig;
 use Drush\Preflight\PreflightArgs;
 use Drush\Runtime\DependencyInjection;
@@ -360,10 +360,10 @@ class Drush
      * @param mixed|null $input   The input as stream resource, scalar or \Traversable, or null for no input
      * @param int|float|null $timeout The timeout in seconds or null to disable
      *
-     * @return
+     * @return ProcessBase
      *   A wrapper around Symfony Process.
      */
-    public static function shell(string $command, $cwd = null, ?array $env = null, $input = null, $timeout = 60): ProcessBase
+    public static function shell(string $command, ?string $cwd = null, ?array $env = null, mixed $input = null, int|float|null $timeout = 60): ProcessBase
     {
         return self::processManager()->shell($command, $cwd, $env, $input, $timeout);
     }
@@ -433,7 +433,7 @@ class Drush
     /**
      * Return the Bootstrap object.
      */
-    public static function bootstrap(): Boot
+    public static function bootstrap(): DrupalBoot8
     {
         return self::bootstrapManager()->bootstrap();
     }
