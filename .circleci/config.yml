@@ -37,14 +37,14 @@ commands:
           fi
 
 executors:
-  mysql-stable:
+  mysql-lowest:
     docker:
       - image: wodby/php:$WODBY_TAG
         environment:
           - MYSQL_HOST=127.0.0.1
           - UNISH_DB_URL=mysql://root:@127.0.0.1/unish_dev?module=mysql
       - image: cimg/mysql:5.7.38
-  sqlite-stable:
+  sqlite-lowest:
     docker:
       - image: wodby/php:$WODBY_TAG
         environment:
@@ -56,7 +56,7 @@ executors:
           - MYSQL_HOST=127.0.0.1
           - UNISH_DB_URL=mysql://root:@127.0.0.1/unish_dev?module=mysql
       - image: cimg/mysql:5.7.38
-  postgres-stable:
+  postgres-lowest:
     docker:
       - image: wodby/php:$WODBY_TAG
         environment:
@@ -117,13 +117,13 @@ jobs:
       - when:
           condition:
             and:
-              - equal: [ stable, << parameters.release >> ]
+              - equal: [ lowest, << parameters.release >> ]
           steps:
-            - run: composer -n install
+            - run: composer -n update --prefer-lowest
       - unless:
           condition:
             and:
-              - equal: [ stable, << parameters.release >> ]
+              - equal: [ lowest, << parameters.release >> ]
           steps:
             - run: composer -n config platform.php --unset
             - run: composer -n require --dev drupal/core-recommended:11.x-dev --no-update
@@ -164,7 +164,7 @@ workflows:
               #sqlite removed pending https://github.com/wodby/php/issues/194
               dbms: [ mysql, postgres ]
               suite: [integration, functional]
-              release: [stable, highest]
+              release: [ lowest, highest ]
             exclude:
               # Only run highest test on mysql. Excluding each suite is unfortunate but needed.
               - release: highest
